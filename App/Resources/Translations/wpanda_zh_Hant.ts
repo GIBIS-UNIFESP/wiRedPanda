@@ -423,6 +423,11 @@
         <translation>您是否要將此 beWavedDolphin 檔案連結到您目前的 wiRedPanda 檔案並儲存？</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;beWavedDolphin 是 wiRedPanda 的波形模擬器，由聖保羅聯邦大學開發，旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;建立者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin 目前由 Prof. Fábio Cappabianco, Ph.D. 及其學生維護。&lt;/p&gt;&lt;p&gt; 如果您發現錯誤或想要請求新功能，請在我們的 GitHub 頁面上提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
         <source>Save File as...</source>
         <translation>將檔案另存為...</translation>
@@ -489,11 +494,6 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
         <translation>無法開啟檔案進行讀取：%1</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
-        <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;beWavedDolphin 是 wiRedPanda 的波形模擬器，由聖保羅聯邦大學開發，旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;建立者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin 目前由 Prof. Fábio Cappabianco, Ph.D. 及其學生維護。&lt;/p&gt;&lt;p&gt; 如果您發現錯誤或想要請求新功能，請在我們的 GitHub 頁面上提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
@@ -1186,27 +1186,27 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="174"/>
+        <location filename="../../Element/GraphicElement.cpp" line="175"/>
         <source>File does not exist</source>
         <translation>檔案不存在</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="176"/>
+        <location filename="../../Element/GraphicElement.cpp" line="177"/>
         <source>File is not readable</source>
         <translation>檔案不可讀取</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="177"/>
+        <location filename="../../Element/GraphicElement.cpp" line="178"/>
         <source>Unknown reason</source>
         <translation>未知原因</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="182"/>
+        <location filename="../../Element/GraphicElement.cpp" line="183"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>無法載入像素圖：%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="407"/>
+        <location filename="../../Element/GraphicElement.cpp" line="408"/>
         <source>Default</source>
         <translation>預設</translation>
     </message>
@@ -1223,7 +1223,7 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>外觀索引 %1 超出範圍（大小=%2）——資料流可能已損毀</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1281,18 +1281,18 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Element/IC.cpp" line="515"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="unfinished"></translation>
+        <translation>已超出 IC 巢狀深度上限 (%1)——blob 可能為惡意構造</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="271"/>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
         <translation>無法開啟檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="275"/>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
         <translation>無法儲存檔案：%1</translation>
     </message>
@@ -1941,8 +1941,8 @@ Each wireless channel must have a unique label.</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1354"/>
-        <location filename="../../UI/MainWindow.cpp" line="1920"/>
+        <location filename="../../UI/MainWindow.cpp" line="1357"/>
+        <location filename="../../UI/MainWindow.cpp" line="1923"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>靜音</translation>
@@ -1978,7 +1978,7 @@ Each wireless channel must have a unique label.</source>
         <translation>背景模擬</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="960"/>
+        <location filename="../../UI/MainWindow.cpp" line="963"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>快捷鍵與提示</translation>
@@ -1994,88 +1994,88 @@ Each wireless channel must have a unique label.</source>
         <translation>報告翻譯錯誤或協助改善 Weblate 上的翻譯</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="403"/>
+        <location filename="../../UI/MainWindow.cpp" line="406"/>
         <source>Error!</source>
         <translation>錯誤！</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="431"/>
-        <location filename="../../UI/MainWindow.cpp" line="670"/>
-        <location filename="../../UI/MainWindow.cpp" line="1173"/>
-        <location filename="../../UI/MainWindow.cpp" line="1712"/>
+        <location filename="../../UI/MainWindow.cpp" line="434"/>
+        <location filename="../../UI/MainWindow.cpp" line="673"/>
+        <location filename="../../UI/MainWindow.cpp" line="1176"/>
+        <location filename="../../UI/MainWindow.cpp" line="1715"/>
         <source>New Project</source>
         <translation>新專案</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
+        <location filename="../../UI/MainWindow.cpp" line="505"/>
         <source>File saved successfully.</source>
         <translation>檔案儲存成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="651"/>
+        <location filename="../../UI/MainWindow.cpp" line="654"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>檔案未儲存。仍要關閉分頁嗎？</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="672"/>
+        <location filename="../../UI/MainWindow.cpp" line="675"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> 已被修改。
 您要儲存變更嗎？</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="744"/>
+        <location filename="../../UI/MainWindow.cpp" line="747"/>
         <source>File loaded successfully.</source>
         <translation>檔案載入成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="804"/>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="807"/>
+        <location filename="../../UI/MainWindow.cpp" line="1976"/>
         <source>Open File</source>
         <translation>開啟檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="335"/>
-        <location filename="../../UI/MainWindow.cpp" line="804"/>
-        <location filename="../../UI/MainWindow.cpp" line="838"/>
-        <location filename="../../UI/MainWindow.cpp" line="892"/>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2177"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
+        <location filename="../../UI/MainWindow.cpp" line="807"/>
+        <location filename="../../UI/MainWindow.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="895"/>
+        <location filename="../../UI/MainWindow.cpp" line="2109"/>
+        <location filename="../../UI/MainWindow.cpp" line="2180"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda 檔案 (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="335"/>
+        <location filename="../../UI/MainWindow.cpp" line="338"/>
         <source>Select IC file to embed</source>
         <translation>選擇要嵌入的 IC 檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="340"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
         <source>Could not read file: %1</source>
         <translation>無法讀取檔案: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="522"/>
+        <location filename="../../UI/MainWindow.cpp" line="525"/>
         <source>Update Available</source>
         <translation>有可用更新</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="533"/>
+        <location filename="../../UI/MainWindow.cpp" line="536"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 現已推出。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您目前執行的是版本 %2。&lt;br&gt;請造訪發佈頁面下載新版本。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="542"/>
+        <location filename="../../UI/MainWindow.cpp" line="545"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>不再通知我關於此版本的更新</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="546"/>
+        <location filename="../../UI/MainWindow.cpp" line="549"/>
         <source>Download</source>
         <translation>下載</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="630"/>
+        <location filename="../../UI/MainWindow.cpp" line="633"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2094,278 +2094,278 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 在存取 IC 和外觀或執行 beWavedDolphin 模擬之前，您需要先儲存新專案。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="838"/>
-        <location filename="../../UI/MainWindow.cpp" line="892"/>
+        <location filename="../../UI/MainWindow.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="895"/>
         <source>Save File as ...</source>
         <translation>另存為...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1023"/>
+        <location filename="../../UI/MainWindow.cpp" line="942"/>
+        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;wiRedPanda 是由聖保羅聯邦大學學生開發的軟體，旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;建立者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda 目前由 Prof. Fábio Cappabianco, Ph.D.、João Pedro M. Oliveira、Matheus R. Esteves 和 Maycon A. Santana 維護。&lt;/p&gt;&lt;p&gt; 如果您發現錯誤或想要請求新功能，請在我們的 GitHub 頁面上提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1026"/>
         <source>Are you sure?</source>
         <translation>您確定嗎？</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="340"/>
-        <location filename="../../UI/MainWindow.cpp" line="1241"/>
-        <location filename="../../UI/MainWindow.cpp" line="2067"/>
-        <location filename="../../UI/MainWindow.cpp" line="2078"/>
-        <location filename="../../UI/MainWindow.cpp" line="2101"/>
-        <location filename="../../UI/MainWindow.cpp" line="2129"/>
-        <location filename="../../UI/MainWindow.cpp" line="2136"/>
-        <location filename="../../UI/MainWindow.cpp" line="2166"/>
-        <location filename="../../UI/MainWindow.cpp" line="2201"/>
-        <location filename="../../UI/MainWindow.cpp" line="2229"/>
+        <location filename="../../UI/MainWindow.cpp" line="343"/>
+        <location filename="../../UI/MainWindow.cpp" line="1244"/>
+        <location filename="../../UI/MainWindow.cpp" line="2070"/>
+        <location filename="../../UI/MainWindow.cpp" line="2081"/>
+        <location filename="../../UI/MainWindow.cpp" line="2104"/>
+        <location filename="../../UI/MainWindow.cpp" line="2132"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="2169"/>
+        <location filename="../../UI/MainWindow.cpp" line="2204"/>
+        <location filename="../../UI/MainWindow.cpp" line="2232"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="530"/>
+        <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 已可用。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您目前正在執行版本 %2。&lt;br&gt;按一下&lt;b&gt;下載&lt;/b&gt;以儲存新版本。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="578"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>正在下載 wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="578"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="576"/>
+        <location filename="../../UI/MainWindow.cpp" line="579"/>
         <source>Downloading Update</source>
         <translation>正在下載更新</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="600"/>
-        <location filename="../../UI/MainWindow.cpp" line="608"/>
+        <location filename="../../UI/MainWindow.cpp" line="603"/>
+        <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Download Failed</source>
         <translation>下載失敗</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="600"/>
+        <location filename="../../UI/MainWindow.cpp" line="603"/>
         <source>Could not download the update:
 %1</source>
         <translation>無法下載更新:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="608"/>
+        <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Could not save the file:
 %1</source>
         <translation>無法儲存檔案:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="617"/>
+        <location filename="../../UI/MainWindow.cpp" line="620"/>
         <source>Download Complete</source>
         <translation>下載完成</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="621"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda 已下載至:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="850"/>
-        <location filename="../../UI/MainWindow.cpp" line="903"/>
+        <location filename="../../UI/MainWindow.cpp" line="853"/>
+        <location filename="../../UI/MainWindow.cpp" line="906"/>
         <source>File Conflict</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="851"/>
-        <location filename="../../UI/MainWindow.cpp" line="904"/>
-        <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案衝突</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="854"/>
         <location filename="../../UI/MainWindow.cpp" line="907"/>
-        <source>Switch to Tab</source>
-        <translation type="unfinished"></translation>
+        <source>The file &quot;%1&quot; is already open in another tab.</source>
+        <translation>檔案「%1」已在另一個分頁中開啟。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1430"/>
-        <location filename="../../UI/MainWindow.cpp" line="1459"/>
-        <location filename="../../UI/MainWindow.cpp" line="1482"/>
+        <location filename="../../UI/MainWindow.cpp" line="857"/>
+        <location filename="../../UI/MainWindow.cpp" line="910"/>
+        <source>Switch to Tab</source>
+        <translation>切換到分頁</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
         <translation>缺少檔案名稱。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1436"/>
-        <location filename="../../UI/MainWindow.cpp" line="1465"/>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
         <translation>.panda 檔案是空的。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1447"/>
+        <location filename="../../UI/MainWindow.cpp" line="1450"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino 程式碼產生成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1474"/>
+        <location filename="../../UI/MainWindow.cpp" line="1477"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>SystemVerilog 程式碼已成功產生。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1511"/>
+        <location filename="../../UI/MainWindow.cpp" line="1514"/>
         <source>Generate Arduino Code</source>
         <translation>產生 Arduino 程式碼</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1511"/>
+        <location filename="../../UI/MainWindow.cpp" line="1514"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino 檔案 (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1533"/>
+        <location filename="../../UI/MainWindow.cpp" line="1536"/>
         <source>Generate SystemVerilog Code</source>
         <translation>產生 SystemVerilog 程式碼</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1533"/>
+        <location filename="../../UI/MainWindow.cpp" line="1536"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>SystemVerilog 檔案 (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1644"/>
+        <location filename="../../UI/MainWindow.cpp" line="1647"/>
         <source>Export to PDF</source>
         <translation>匯出為 PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1644"/>
+        <location filename="../../UI/MainWindow.cpp" line="1647"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF 檔案 (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1981"/>
+        <location filename="../../UI/MainWindow.cpp" line="1984"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>所選檔案（及其相依檔案）將被複製到目前的專案資料夾。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2040"/>
+        <location filename="../../UI/MainWindow.cpp" line="2043"/>
         <source>Name Collision</source>
         <translation>名稱衝突</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2041"/>
+        <location filename="../../UI/MainWindow.cpp" line="2044"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>名為 &quot;%1&quot; 的嵌入式 IC 已存在。
 建議名稱:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2067"/>
-        <location filename="../../UI/MainWindow.cpp" line="2129"/>
+        <location filename="../../UI/MainWindow.cpp" line="2070"/>
+        <location filename="../../UI/MainWindow.cpp" line="2132"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>請先儲存專案，以便解析 IC。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2078"/>
-        <location filename="../../UI/MainWindow.cpp" line="2136"/>
-        <location filename="../../UI/MainWindow.cpp" line="2229"/>
+        <location filename="../../UI/MainWindow.cpp" line="2081"/>
+        <location filename="../../UI/MainWindow.cpp" line="2139"/>
+        <location filename="../../UI/MainWindow.cpp" line="2232"/>
         <source>Could not read IC file: %1</source>
         <translation>無法讀取 IC 檔案: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2086"/>
-        <location filename="../../UI/MainWindow.cpp" line="2154"/>
+        <location filename="../../UI/MainWindow.cpp" line="2089"/>
+        <location filename="../../UI/MainWindow.cpp" line="2157"/>
         <source>IC embedded successfully.</source>
         <translation>IC 嵌入成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2177"/>
+        <location filename="../../UI/MainWindow.cpp" line="2109"/>
+        <location filename="../../UI/MainWindow.cpp" line="2180"/>
         <source>Extract IC to file...</source>
         <translation>擷取 IC 到檔案...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2117"/>
-        <location filename="../../UI/MainWindow.cpp" line="2188"/>
+        <location filename="../../UI/MainWindow.cpp" line="2120"/>
+        <location filename="../../UI/MainWindow.cpp" line="2191"/>
         <source>IC extracted to %1</source>
         <translation>IC 已擷取到 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2101"/>
-        <location filename="../../UI/MainWindow.cpp" line="2166"/>
-        <location filename="../../UI/MainWindow.cpp" line="2201"/>
+        <location filename="../../UI/MainWindow.cpp" line="2104"/>
+        <location filename="../../UI/MainWindow.cpp" line="2169"/>
+        <location filename="../../UI/MainWindow.cpp" line="2204"/>
         <source>Please save the project first.</source>
         <translation>請先儲存專案。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2218"/>
+        <location filename="../../UI/MainWindow.cpp" line="2221"/>
         <source>No file-based ICs to embed.</source>
         <translation>沒有基於檔案的 IC 可嵌入。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2244"/>
+        <location filename="../../UI/MainWindow.cpp" line="2247"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>已嵌入 %1 個 IC。電路現在是自包含的。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1655"/>
-        <location filename="../../UI/MainWindow.cpp" line="1683"/>
+        <location filename="../../UI/MainWindow.cpp" line="1658"/>
+        <location filename="../../UI/MainWindow.cpp" line="1686"/>
         <source>Exported file successfully.</source>
         <translation>檔案匯出成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="939"/>
-        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRedPanda 是由聖保羅聯邦大學學生開發的軟體，旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;建立者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda 目前由 Prof. Fábio Cappabianco, Ph.D.、João Pedro M. Oliveira、Matheus R. Esteves 和 Maycon A. Santana 維護。&lt;/p&gt;&lt;p&gt; 如果您發現錯誤或想要請求新功能，請在我們的 GitHub 頁面上提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="961"/>
+        <location filename="../../UI/MainWindow.cpp" line="964"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;畫布快捷鍵&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : 放大 &lt;/li&gt;&lt;li&gt; Ctrl+- : 縮小 &lt;/li&gt;&lt;li&gt; Ctrl+1 : 隱藏/顯示連線 &lt;/li&gt;&lt;li&gt; Ctrl+2 : 隱藏/顯示邏輯閘 &lt;/li&gt;&lt;li&gt; Ctrl+F : 搜尋元件 &lt;/li&gt;&lt;li&gt; Ctrl+W : 開啟 beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : 儲存專案 &lt;/li&gt;&lt;li&gt; Ctrl+Q : 結束 wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : 開始/暫停模擬 &lt;/li&gt;&lt;li&gt; [ : 上一個主要元件屬性 &lt;/li&gt;&lt;li&gt; ] : 下一個主要元件屬性 &lt;/li&gt;&lt;li&gt; { : 上一個次要元件屬性 &lt;/li&gt;&lt;li&gt; } : 下一個次要元件屬性 &lt;/li&gt;&lt;li&gt; &amp;lt; : 變形為上一個元件 &lt;/li&gt;&lt;li&gt; &amp;gt; : 變形為下一個元件 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;一般提示&lt;/h1&gt;&lt;p&gt;雙擊連線以建立節點&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1022"/>
+        <location filename="../../UI/MainWindow.cpp" line="1025"/>
         <source>Exit</source>
         <translation>結束</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1672"/>
+        <location filename="../../UI/MainWindow.cpp" line="1675"/>
         <source>Export to Image</source>
         <translation>匯出為圖片</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1672"/>
+        <location filename="../../UI/MainWindow.cpp" line="1675"/>
         <source>PNG files (*.png)</source>
         <translation>PNG 檔案 (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1354"/>
-        <location filename="../../UI/MainWindow.cpp" line="1920"/>
+        <location filename="../../UI/MainWindow.cpp" line="1357"/>
+        <location filename="../../UI/MainWindow.cpp" line="1923"/>
         <source>Unmute</source>
         <translation>取消靜音</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1970"/>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
         <translation>請先儲存檔案。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="1976"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1981"/>
-        <location filename="../../UI/MainWindow.cpp" line="1998"/>
+        <location filename="../../UI/MainWindow.cpp" line="1984"/>
+        <location filename="../../UI/MainWindow.cpp" line="2001"/>
         <source>Info</source>
         <translation>資訊</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1998"/>
+        <location filename="../../UI/MainWindow.cpp" line="2001"/>
         <source>Drag here to remove.</source>
         <translation>拖曳到此處以移除。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2023"/>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
         <translation>移除檔案時發生錯誤：%1</translation>
     </message>
@@ -2467,7 +2467,7 @@ Suggested name:</source>
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="223"/>
+        <location filename="../../Element/ICRegistry.cpp" line="224"/>
         <source>Add embedded IC</source>
         <translation>新增嵌入式 IC</translation>
     </message>
@@ -2488,7 +2488,7 @@ Suggested name:</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="374"/>
+        <location filename="../../Main.cpp" line="407"/>
         <source>Error!</source>
         <translation>錯誤！</translation>
     </message>
@@ -2584,7 +2584,7 @@ Suggested name:</source>
     <message>
         <location filename="../../Scene/Commands.cpp" line="1048"/>
         <source>Remove blob &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>移除 blob「%1」</translation>
     </message>
 </context>
 <context>
@@ -2646,22 +2646,22 @@ Suggested name:</source>
     <message>
         <location filename="../../IO/Serialization.cpp" line="271"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="unfinished"></translation>
+        <translation>讀取中繼資料計數時發生資料流錯誤</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>相對於剩餘資料流位元組，中繼資料計數 %1 不合理</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="291"/>
         <source>Stream error reading blob map count</source>
-        <translation type="unfinished"></translation>
+        <translation>讀取 blob 計數時發生資料流錯誤</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>相對於剩餘資料流位元組，blob 計數 %1 不合理</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="347"/>
@@ -2879,7 +2879,7 @@ Please update wiRedPanda to save changes to this file.</source>
         <location filename="../../Scene/Workspace.cpp" line="262"/>
         <location filename="../../Scene/Workspace.cpp" line="301"/>
         <source>Save File (original location is read-only)</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存檔案（原始位置為唯讀）</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="270"/>
@@ -2939,12 +2939,12 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法提交自動儲存檔案：%1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>移除內嵌 IC「%1」</translation>
     </message>
 </context>
 <context>
@@ -2976,62 +2976,62 @@ A backup of the original file has been created with name: %3</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="238"/>
+        <location filename="../../Main.cpp" line="271"/>
         <source>Circuit file to open.</source>
         <translation>要開啟的電路檔案。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="242"/>
+        <location filename="../../Main.cpp" line="275"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>詳細程度級別 0 到 5，預設停用。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="243"/>
+        <location filename="../../Main.cpp" line="276"/>
         <source>verbosity level</source>
         <translation>詳細程度級別</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="248"/>
+        <location filename="../../Main.cpp" line="281"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>將電路匯出到 &lt;arduino-file&gt;。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="260"/>
+        <location filename="../../Main.cpp" line="293"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>將電路匯出到波形文字檔案，從終端讀取輸入。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="265"/>
+        <location filename="../../Main.cpp" line="298"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>與 -c/--terminal 一起使用時，如果電路包含真值表則阻止執行。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="271"/>
+        <location filename="../../Main.cpp" line="304"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>以 MCP（模型上下文協定）模式執行以進行程式化控制。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="276"/>
+        <location filename="../../Main.cpp" line="309"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>以可見的 GUI 視窗執行 MCP 模式。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="334"/>
+        <location filename="../../Main.cpp" line="367"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>錯誤：電路包含真值表元件。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="249"/>
+        <location filename="../../Main.cpp" line="282"/>
         <source>arduino file</source>
         <translation>Arduino 檔案</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="254"/>
+        <location filename="../../Main.cpp" line="287"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>將電路匯出到波形文字檔案。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="255"/>
+        <location filename="../../Main.cpp" line="288"/>
         <source>waveform input text file</source>
         <translation>波形輸入文字檔案</translation>
     </message>
