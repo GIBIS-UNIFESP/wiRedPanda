@@ -1,0 +1,57 @@
+name: wiredpanda
+title: wiRedPanda
+version: '5.0.1'
+summary: Logic circuit simulator focused on education
+description: |
+  wiRedPanda is free software designed to help students learn about logic
+  circuits and simulate them in an easy and friendly way.
+
+  Features include real-time logic simulation, a user-friendly interface,
+  and support for exporting circuits as images or PDFs.
+
+base: core24
+confinement: strict
+license: GPL-3.0-or-later
+grade: stable
+
+apps:
+  wiredpanda:
+    command: usr/bin/wiredpanda
+    desktop: usr/share/applications/wiredpanda.desktop
+    common-id: io.github.gibis_unifesp.wiRedPanda
+    extensions:
+      - kde-neon-6
+    plugs:
+      - home
+      - removable-media
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - opengl
+      - audio-playback
+
+parts:
+  wiredpanda:
+    plugin: cmake
+    source: https://github.com/GIBIS-UNIFESP/wiRedPanda.git
+    source-tag: '5.0.1'
+    source-depth: 1
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+      - -DCMAKE_BUILD_TYPE=Release
+    build-packages:
+      - libqt6multimedia6
+      - libqt6svg6-dev
+    stage-packages:
+      - libqt6svg6
+    override-build: |
+      craftctl default
+      install -Dm755 "${CRAFT_PART_BUILD}/wiredpanda" "${CRAFT_PART_INSTALL}/usr/bin/wiredpanda"
+      install -Dm644 App/Resources/Freedesktop/wiredpanda.desktop "${CRAFT_PART_INSTALL}/usr/share/applications/wiredpanda.desktop"
+      install -Dm644 App/Resources/Freedesktop/wiredpanda-mime.xml "${CRAFT_PART_INSTALL}/usr/share/mime/packages/wiredpanda-mime.xml"
+      install -Dm644 App/Resources/Freedesktop/io.github.gibis_unifesp.wiRedPanda.metainfo.xml "${CRAFT_PART_INSTALL}/usr/share/metainfo/io.github.gibis_unifesp.wiRedPanda.metainfo.xml"
+      install -Dm644 App/Resources/Assets/Logos/wpanda.svg "${CRAFT_PART_INSTALL}/usr/share/icons/hicolor/scalable/apps/wpanda.svg"
+      install -Dm644 App/Resources/Assets/Logos/wpanda-256x256.png "${CRAFT_PART_INSTALL}/usr/share/icons/hicolor/256x256/apps/wpanda.png"
+      mkdir -p "${CRAFT_PART_INSTALL}/usr/share/wiredpanda"
+      cp -r Examples "${CRAFT_PART_INSTALL}/usr/share/wiredpanda/"

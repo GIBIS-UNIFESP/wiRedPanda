@@ -1,0 +1,36 @@
+id: io.github.gibis_unifesp.wiRedPanda
+runtime: org.kde.Platform
+runtime-version: '6.9'
+sdk: org.kde.Sdk
+command: wiredpanda
+
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=home
+
+rename-desktop-file: wiredpanda.desktop
+rename-appdata-file: io.github.gibis_unifesp.wiRedPanda.metainfo.xml
+rename-icon: wpanda
+
+modules:
+  - name: wiredpanda
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/refs/tags/5.0.1.tar.gz
+        sha256: 0000000000000000000000000000000000000000000000000000000000000000
+    build-commands:
+      - cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+      - cmake --build build
+      - install -Dm755 build/wiredpanda /app/bin/wiredpanda
+      - install -Dm644 App/Resources/Freedesktop/wiredpanda.desktop /app/share/applications/wiredpanda.desktop
+      - install -Dm644 App/Resources/Freedesktop/wiredpanda-mime.xml /app/share/mime/packages/wiredpanda-mime.xml
+      - install -Dm644 App/Resources/Freedesktop/io.github.gibis_unifesp.wiRedPanda.metainfo.xml /app/share/metainfo/io.github.gibis_unifesp.wiRedPanda.metainfo.xml
+      - install -Dm644 App/Resources/Assets/Logos/wpanda.svg /app/share/icons/hicolor/scalable/apps/wpanda.svg
+      - install -Dm644 App/Resources/Assets/Logos/wpanda-256x256.png /app/share/icons/hicolor/256x256/apps/wpanda.png
+      - mkdir -p /app/share/wiredpanda
+      - cp -r Examples /app/share/wiredpanda/

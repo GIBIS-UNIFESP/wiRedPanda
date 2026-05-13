@@ -1,0 +1,43 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Publish to Snap Store
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_SNAP_ENABLED=true and
+# adding the SNAPCRAFT_STORE_CREDENTIALS secret (output of
+# `snapcraft export-login -` on a maintainer machine after logging in
+# to the wiredpanda snap on snapcraft.io).
+
+jobs:
+  publish:
+    if: vars.PUBLISH_SNAP_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
+
+      - name: Patch snapcraft.yaml version and source-tag
+        run: |
+          sed -i "s/^version: .*/version: '${VERSION}'/" Packaging/snap/snapcraft.yaml
+          sed -i "s/^    source-tag: .*/    source-tag: '${VERSION}'/" Packaging/snap/snapcraft.yaml
+
+      - name: Build snap
+        id: snapcraft
+        uses: snapcore/action-build@v1
+        with:
+          path: Packaging/snap
+
+      - name: Publish to stable channel
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          snap: ${{ steps.snapcraft.outputs.snap }}
+          release: stable
