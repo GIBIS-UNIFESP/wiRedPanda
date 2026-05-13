@@ -914,9 +914,21 @@ void BewavedDolphin::on_actionAutoCrop_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Auto crop"));
-        // Crop (or extend) the simulation to exactly the full truth table size for the
-        // current number of input elements, then re-run to refresh output rows
-        setLength(static_cast<int>(std::pow(2, m_inputs.length())), true);
+        int lastNonZero = 0;
+        for (int col = m_model->columnCount() - 1; col >= 0; --col) {
+            bool allZero = true;
+            for (int row = 0; row < m_inputPorts; ++row) {
+                if (m_model->item(row, col)->data(Qt::DisplayRole).toInt() != 0) {
+                    allZero = false;
+                    break;
+                }
+            }
+            if (!allZero) {
+                lastNonZero = col;
+                break;
+            }
+        }
+        setLength(lastNonZero + 1, true);
     });
 }
 
