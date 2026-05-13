@@ -7,6 +7,11 @@
 
 QMap<ElementType, ElementMetadata> &ElementMetadataRegistry::registry()
 {
+    // Single-threaded static: all registrations happen via static-inline
+    // lambdas in element .cpp translation units during the startup phase
+    // (before QApplication::exec()). Accessing this from multiple threads
+    // after startup is undefined — add QReadWriteLock if plugin loading
+    // or dynamic element discovery is ever introduced.
     static QMap<ElementType, ElementMetadata> s_registry;
     return s_registry;
 }

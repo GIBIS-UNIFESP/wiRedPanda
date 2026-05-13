@@ -177,14 +177,20 @@ void ElementPalette::onSearchTextChanged(const QString &text)
             m_ui->tabElements->setTabEnabled(searchTabIndex, true);
         }
 
+        // Single tree traversal — reused for all three filter passes.
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
         // First pass: match by object name (e.g. "label_and") — prioritises exact type hits.
-        QRegularExpression regex1(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
-        auto searchResults = m_ui->scrollArea_Search->findChildren<ElementLabel *>(regex1);
-
+        const QRegularExpression regex1(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
         // Second pass: match by human-readable translated element name.
-        QRegularExpression regex2(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
+        const QRegularExpression regex2(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
+
+        QList<ElementLabel *> searchResults;
+        for (auto *item : allItems) {
+            if (regex1.match(item->objectName()).hasMatch()) {
+                searchResults.append(item);
+            }
+        }
         for (auto *item : allItems) {
             if (regex2.match(item->name()).hasMatch() && !searchResults.contains(item)) {
                 searchResults.append(item);
@@ -192,10 +198,9 @@ void ElementPalette::onSearchTextChanged(const QString &text)
         }
 
         // Third pass: also search IC file names (all share object name "label_ic").
-        const auto ics = m_ui->scrollArea_Search->findChildren<ElementLabel *>("label_ic");
-        for (auto *ic : ics) {
-            if (regex2.match(ic->icFileName()).hasMatch()) {
-                searchResults.append(ic);
+        for (auto *item : allItems) {
+            if (item->objectName() == QLatin1String("label_ic") && regex2.match(item->icFileName()).hasMatch()) {
+                searchResults.append(item);
             }
         }
 
