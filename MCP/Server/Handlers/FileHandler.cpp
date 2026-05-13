@@ -211,13 +211,19 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
             generator.setDescription("Circuit exported from wiRedPanda");
 
             QPainter painter(&generator);
+            if (!painter.isActive()) {
+                return createErrorResponse("Failed to open SVG file for writing", requestId);
+            }
             scene->render(&painter, QRectF(), sceneRect);
             painter.end();
+            const QFileInfo svgInfo(filename);
+            if (!svgInfo.exists() || svgInfo.size() == 0) {
+                return createErrorResponse("SVG export failed: file was not written", requestId, JsonRpcError::FileError);
+            }
         } else if (format == "pdf") {
             QPdfWriter pdfWriter(filename);
             pdfWriter.setTitle("wiRedPanda Circuit");
             pdfWriter.setCreator("wiRedPanda");
-            // Map scene pixels 1:1 to PDF points (72 DPI) and size the page to the bounding box.
             pdfWriter.setResolution(72);
             pdfWriter.setPageSize(QPageSize(sceneRect.size(), QPageSize::Point));
             pdfWriter.setPageMargins(QMarginsF(0, 0, 0, 0));

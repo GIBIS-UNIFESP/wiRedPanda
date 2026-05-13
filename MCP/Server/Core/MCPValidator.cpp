@@ -240,7 +240,11 @@ json MCPValidator::qjsonToNlohmann(const QJsonObject &qjson)
 {
     QJsonDocument doc(qjson);
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
-    return json::parse(jsonData.toStdString());
+    try {
+        return json::parse(jsonData.toStdString());
+    } catch (const json::parse_error &e) {
+        throw std::runtime_error(std::string("qjsonToNlohmann: JSON parse error: ") + e.what());
+    }
 }
 
 QJsonObject MCPValidator::nlohmannToQJson(const json &nlohmannJson)

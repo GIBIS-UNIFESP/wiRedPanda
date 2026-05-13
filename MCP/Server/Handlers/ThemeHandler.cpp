@@ -33,6 +33,10 @@ QJsonObject ThemeHandler::handleGetTheme(const QJsonObject &, const QJsonValue &
 
 QJsonObject ThemeHandler::handleSetTheme(const QJsonObject &params, const QJsonValue &requestId)
 {
+    if (!validateParameters(params, {"theme"})) {
+        return createErrorResponse("Missing required parameter: theme", requestId);
+    }
+
     const QString themeStr = params["theme"].toString().toLower();
     Theme theme;
 

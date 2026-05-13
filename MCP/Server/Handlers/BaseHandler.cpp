@@ -178,7 +178,11 @@ bool BaseHandler::validatePortRange(GraphicElement *element, int portIndex, bool
         return false;
     }
 
-    // Use the safe QVector size() instead of calling outputPort()/inputPort()
+    if (portIndex < 0) {
+        errorMsg = QString("Parameter '%1' port index must be non-negative (got %2)").arg(paramName).arg(portIndex);
+        return false;
+    }
+
     int maxPorts = 0;
     if (isOutput) {
         maxPorts = static_cast<int>(element->outputs().size());
