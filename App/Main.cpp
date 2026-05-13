@@ -5,6 +5,10 @@
 #include <windows.h>
 #endif
 
+#ifdef Q_OS_LINUX
+#include <cstdio>
+#endif
+
 #include <QCommandLineParser>
 #include <QDir>
 #include <QFile>
@@ -31,6 +35,31 @@
 
 #ifdef HAVE_SENTRY
 #include "thirdparty/sentry/include/sentry.h"
+#endif
+
+#ifdef Q_OS_LINUX
+namespace {
+
+QtMessageHandler g_previousMessageHandler = nullptr;
+
+void portalQuietMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &message)
+{
+    // Qt 6.10 QDesktopUnixServices issues a Screenshot.version Get before the host-portal
+    // Register, so xdg-desktop-portal caches our sender and rejects Register (QTBUG-145847).
+    if (type == QtWarningMsg && context.category
+        && qstrcmp(context.category, "qt.qpa.services") == 0
+        && message.startsWith(QLatin1String("Failed to register with host portal"))) {
+        return;
+    }
+    if (g_previousMessageHandler) {
+        g_previousMessageHandler(type, context, message);
+    } else {
+        std::fputs(qPrintable(qFormatLogMessage(type, context, message)), stderr);
+        std::fputc('\n', stderr);
+    }
+}
+
+}
 #endif
 
 int main(int argc, char *argv[])
@@ -138,6 +167,10 @@ int main(int argc, char *argv[])
     if (mcpMode && !mcpGuiMode) {
         qputenv("QT_QPA_PLATFORM", "offscreen");
     }
+#endif
+
+#ifdef Q_OS_LINUX
+    g_previousMessageHandler = qInstallMessageHandler(portalQuietMessageHandler);
 #endif
 
     Application app(argc, argv);
