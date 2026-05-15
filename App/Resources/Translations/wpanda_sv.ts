@@ -543,12 +543,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="872"/>
+        <location filename="../../Scene/Commands.cpp" line="871"/>
         <source>Change input size to %1</source>
         <translation>Ändra ingångsstorlek till %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="873"/>
+        <location filename="../../Scene/Commands.cpp" line="872"/>
         <source>Change output size to %1</source>
         <translation>Ändra utgångsstorlek till %1</translation>
     </message>
@@ -1178,7 +1178,7 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="811"/>
+        <location filename="../../Scene/Commands.cpp" line="810"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Vänd %1 element i axel %2</translation>
     </message>
@@ -1186,27 +1186,27 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="175"/>
+        <location filename="../../Element/GraphicElement.cpp" line="173"/>
         <source>File does not exist</source>
         <translation>Filen finns inte</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="177"/>
+        <location filename="../../Element/GraphicElement.cpp" line="175"/>
         <source>File is not readable</source>
         <translation>Filen är inte läsbar</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="178"/>
+        <location filename="../../Element/GraphicElement.cpp" line="176"/>
         <source>Unknown reason</source>
         <translation>Okänd orsak</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="183"/>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Kunde inte ladda pixmap: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="408"/>
+        <location filename="../../Element/GraphicElement.cpp" line="406"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
@@ -1239,47 +1239,47 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="110"/>
+        <location filename="../../Element/IC.cpp" line="113"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="109"/>
+        <location filename="../../Element/IC.cpp" line="112"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>INTEGRERAD KRETS</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="222"/>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC-laddning: inget IC-namn i serialiserade data</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="347"/>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
         <translation>%1 hittades inte.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="388"/>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Cirkulär IC-referens upptäckt: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="395"/>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
         <translation>Fel vid öppning av fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="449"/>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC-migrering: kan inte öppna filen för skrivning: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="456"/>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC-migrering: kunde inte slutföra den omsparade filen: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="515"/>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>IC-nästningsdjupets gräns (%1) överskreds — bloben kan vara skadligt skapad</translation>
     </message>
@@ -2475,12 +2475,12 @@ Föreslaget namn:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>Strömfel vid läsning av anslutningskarta vid offset %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Strömfel vid läsning av anslutningsport-ID:n vid offset %1</translation>
     </message>
@@ -2574,7 +2574,7 @@ Föreslaget namn:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1025"/>
+        <location filename="../../Scene/Commands.cpp" line="1024"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrera blob &quot;%1&quot;</translation>
     </message>
@@ -2582,7 +2582,7 @@ Föreslaget namn:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1048"/>
+        <location filename="../../Scene/Commands.cpp" line="1047"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Ta bort blob &quot;%1&quot;</translation>
     </message>
@@ -2625,18 +2625,18 @@ Föreslaget namn:</translation>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="566"/>
+        <location filename="../../Scene/Scene.cpp" line="564"/>
         <source>&amp;Undo</source>
         <translation>&amp;Ångra</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="572"/>
+        <location filename="../../Scene/Scene.cpp" line="570"/>
         <source>&amp;Redo</source>
         <translation>&amp;Gör om</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="592"/>
+        <location filename="../../Scene/Scene.cpp" line="590"/>
         <source>Paste</source>
         <translation>Klistra in</translation>
     </message>
@@ -2644,68 +2644,68 @@ Föreslaget namn:</translation>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="271"/>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
         <translation>Strömfel vid läsning av antalet metadata</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>Metadataantalet %1 är orimligt jämfört med återstående byte i strömmen</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="291"/>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
         <translation>Strömfel vid läsning av antalet blobar</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>Blobantalet %1 är orimligt jämfört med återstående byte i strömmen</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="347"/>
-        <location filename="../../IO/Serialization.cpp" line="357"/>
-        <location filename="../../IO/Serialization.cpp" line="361"/>
-        <location filename="../../IO/Serialization.cpp" line="396"/>
-        <location filename="../../IO/Serialization.cpp" line="400"/>
-        <location filename="../../IO/Serialization.cpp" line="404"/>
-        <location filename="../../IO/Serialization.cpp" line="410"/>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
         <translation>Ogiltigt filformat.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="518"/>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Strömfel vid läsning av typtagg vid position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="530"/>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Strömfel vid läsning av elementtyp vid position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="542"/>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Strömfel vid laddning av element vid position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="561"/>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Strömfel vid laddning av anslutning vid position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="568"/>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Ogiltig typ. Data är möjligen korrupt.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="621"/>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Kunde inte skapa versionssäkerhetskopia: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="701"/>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
         <translation>Fel vid kopiering av fil: %1</translation>
     </message>
@@ -2754,12 +2754,12 @@ Föreslaget namn:</translation>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1340"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Utdatavariabel inte mappad för sanningstabell: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1390"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
         <translation>Elementtyp stöds inte: %1</translation>
     </message>
@@ -2793,12 +2793,12 @@ Föreslaget namn:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="966"/>
+        <location filename="../../Scene/Commands.cpp" line="965"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Växla Sanningstabell-utdata vid position: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="975"/>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
         <translation>Kunde inte hitta sanningstabell-element!</translation>
     </message>
@@ -2832,7 +2832,7 @@ Föreslaget namn:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1081"/>
+        <location filename="../../Scene/Commands.cpp" line="1080"/>
         <source>Update %1 IC blobs</source>
         <translation>Uppdatera %1 IC-blobbar</translation>
     </message>

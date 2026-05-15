@@ -543,12 +543,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="872"/>
+        <location filename="../../Scene/Commands.cpp" line="871"/>
         <source>Change input size to %1</source>
         <translation>Cambiar el tamaño de entrada a %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="873"/>
+        <location filename="../../Scene/Commands.cpp" line="872"/>
         <source>Change output size to %1</source>
         <translation>Cambiar el tamaño de salida a %1</translation>
     </message>
@@ -1178,7 +1178,7 @@ Cada canal inalámbrico debe tener una etiqueta única.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="811"/>
+        <location filename="../../Scene/Commands.cpp" line="810"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Invertir %1 elementos en el eje %2</translation>
     </message>
@@ -1186,27 +1186,27 @@ Cada canal inalámbrico debe tener una etiqueta única.</translation>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="175"/>
+        <location filename="../../Element/GraphicElement.cpp" line="173"/>
         <source>File does not exist</source>
         <translation>El archivo no existe</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="177"/>
+        <location filename="../../Element/GraphicElement.cpp" line="175"/>
         <source>File is not readable</source>
         <translation>El archivo no es legible</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="178"/>
+        <location filename="../../Element/GraphicElement.cpp" line="176"/>
         <source>Unknown reason</source>
         <translation>Razón desconocida</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="183"/>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>No se pudo cargar pixmap: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="408"/>
+        <location filename="../../Element/GraphicElement.cpp" line="406"/>
         <source>Default</source>
         <translation>Predeterminado</translation>
     </message>
@@ -1239,47 +1239,47 @@ Cada canal inalámbrico debe tener una etiqueta única.</translation>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="109"/>
+        <location filename="../../Element/IC.cpp" line="112"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>CIRCUITO INTEGRADO</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="110"/>
+        <location filename="../../Element/IC.cpp" line="113"/>
         <source>IC</source>
         <translation>CI</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="222"/>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>Carga de CI: no hay nombre de CI en los datos serializados</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="347"/>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
         <translation>%1 no encontrado.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="388"/>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Referencia circular de CI detectada: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="395"/>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
         <translation>Error al abrir archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="449"/>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Migración de CI: no se puede abrir el archivo para escritura: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="456"/>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Migración de CI: no se pudo confirmar el archivo reguardado: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="515"/>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Límite de profundidad de anidamiento de CI (%1) superado — el blob puede haber sido manipulado</translation>
     </message>
@@ -2474,12 +2474,12 @@ Nombre sugerido:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>Error de flujo al leer el mapa de conexiones en el desplazamiento %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Error de flujo al leer los ID de puertos de conexión en el desplazamiento %1</translation>
     </message>
@@ -2573,7 +2573,7 @@ Nombre sugerido:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1025"/>
+        <location filename="../../Scene/Commands.cpp" line="1024"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrar blob &quot;%1&quot;</translation>
     </message>
@@ -2581,7 +2581,7 @@ Nombre sugerido:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1048"/>
+        <location filename="../../Scene/Commands.cpp" line="1047"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Eliminar blob &quot;%1&quot;</translation>
     </message>
@@ -2624,18 +2624,18 @@ Nombre sugerido:</translation>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="566"/>
+        <location filename="../../Scene/Scene.cpp" line="564"/>
         <source>&amp;Undo</source>
         <translation>&amp;Deshacer</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="572"/>
+        <location filename="../../Scene/Scene.cpp" line="570"/>
         <source>&amp;Redo</source>
         <translation>&amp;Rehacer</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="592"/>
+        <location filename="../../Scene/Scene.cpp" line="590"/>
         <source>Paste</source>
         <translation>Pegar</translation>
     </message>
@@ -2643,68 +2643,68 @@ Nombre sugerido:</translation>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="271"/>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
         <translation>Error de flujo al leer el recuento de metadatos</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>Recuento de metadatos %1 inverosímil para los bytes restantes del flujo</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="291"/>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
         <translation>Error de flujo al leer el recuento de blobs</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>Recuento de blobs %1 inverosímil para los bytes restantes del flujo</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="347"/>
-        <location filename="../../IO/Serialization.cpp" line="357"/>
-        <location filename="../../IO/Serialization.cpp" line="361"/>
-        <location filename="../../IO/Serialization.cpp" line="396"/>
-        <location filename="../../IO/Serialization.cpp" line="400"/>
-        <location filename="../../IO/Serialization.cpp" line="404"/>
-        <location filename="../../IO/Serialization.cpp" line="410"/>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
         <translation>Formato de archivo inválido.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="518"/>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Error de flujo al leer la etiqueta de tipo en la posición %1: estado %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="530"/>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Error de flujo al leer el tipo de elemento en la posición %1: estado %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="542"/>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Error de flujo al cargar el elemento en la posición %1: estado %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="561"/>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Error de flujo al cargar la conexión en la posición %1: estado %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="568"/>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Tipo inválido. Los datos posiblemente están corruptos.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="621"/>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>No se pudo crear la copia de seguridad versionada: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="701"/>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
         <translation>Error al copiar el archivo: %1</translation>
     </message>
@@ -2753,12 +2753,12 @@ Nombre sugerido:</translation>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1340"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Variable de salida no asignada para la tabla de verdad: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1390"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
         <translation>Tipo de elemento no compatible: %1</translation>
     </message>
@@ -2792,12 +2792,12 @@ Nombre sugerido:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="966"/>
+        <location filename="../../Scene/Commands.cpp" line="965"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Activar o desactivar la salida de la tabla de verdad en la posición: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="975"/>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
         <translation>¡No se pudo encontrar el elemento de tabla de verdad!</translation>
     </message>
@@ -2831,7 +2831,7 @@ Nombre sugerido:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1081"/>
+        <location filename="../../Scene/Commands.cpp" line="1080"/>
         <source>Update %1 IC blobs</source>
         <translation>Actualizar %1 blobs de CI</translation>
     </message>
