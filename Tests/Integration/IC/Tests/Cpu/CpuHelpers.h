@@ -363,7 +363,7 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
         adderAnd2.append(new And());
         adderCarryOr.append(new Or());
         adderSum.append(new Xor());
-        if (i < 8) carryChain.append(new Or());  // For multi-bit carries
+        carryChain.append(new Or());  // For multi-bit carries
     }
 
     // Add all elements to workspace
@@ -371,7 +371,7 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
         builder.add(a[i], b[i], result[i], andGates[i], orGates[i], xorGates[i],
                     resultMuxes[i], notB[i], bMux[i], adderXor[i], adderAnd1[i], adderXor2[i],
                     adderAnd2[i], adderCarryOr[i], adderSum[i]);
-        if (i < 8) builder.add(carryChain[i]);
+        builder.add(carryChain[i]);
     }
     for (int i = 0; i < 3; i++) {
         builder.add(aluOp[i]);

@@ -276,10 +276,6 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readmux()
         readValue |= (bitValue ? (1 << bit) : 0);
     }
 
-    if (readValue != expectedReadData) {
-        // Don't fail yet, just log - we're debugging
-    }
-
     QCOMPARE(readValue, expectedReadData);
 }
 
