@@ -89,7 +89,6 @@ class TestRunnable(Protocol):
 
     async def run_test_method(self, test_method: Any) -> bool:
         """Run a single test method"""
-        ...
 
 
 @runtime_checkable
@@ -98,7 +97,6 @@ class CommandSender(Protocol):
 
     async def send_command(self, command: str, parameters: Dict[str, Any]) -> Any:
         """Send an MCP command (internally converts to JSON-RPC 2.0 format)"""
-        ...
 
 
 # ==================== PERFORMANCE BENCHMARK TYPES ====================

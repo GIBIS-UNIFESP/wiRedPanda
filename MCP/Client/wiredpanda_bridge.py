@@ -99,7 +99,3 @@ class ProcessManager:
             except (OSError, ValueError):
                 # Some signals may not be available on all platforms
                 pass
-
-
-# Global process manager instance
-_mcp_process_manager = ProcessManager()
