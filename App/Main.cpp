@@ -51,6 +51,15 @@ void portalQuietMessageHandler(QtMsgType type, const QMessageLogContext &context
         && message.startsWith(QLatin1String("Failed to register with host portal"))) {
         return;
     }
+    // Qt multimedia probes pipewire-0.3 unconditionally; on systems where it's
+    // absent or version-mismatched (common in the AppImage on minimal hosts)
+    // it logs two unsuppressable warnings per process. They're harmless — audio
+    // simply falls back to ALSA / PulseAudio — so drop them rather than pollute
+    // CLI output with noise users can't act on.
+    if (type == QtWarningMsg && context.category
+        && qstrcmp(context.category, "qt.multimedia.symbolsresolver") == 0) {
+        return;
+    }
     if (g_previousMessageHandler) {
         g_previousMessageHandler(type, context, message);
     } else {
@@ -323,31 +332,38 @@ int main(int argc, char *argv[])
         // without entering the Qt event loop.  Application::interactiveMode is set
         // to false so that error dialogs are suppressed and errors go to stderr only.
 
+        // Resolve the positional argument against the original working
+        // directory.  QFile would handle a relative path on its own, but
+        // resolving up-front means any "file does not exist" error reports the
+        // absolute path the user actually opened, which is far less confusing
+        // than echoing back a bare basename.
+        const QString inputFile = args.empty() ? QString() : QDir::current().absoluteFilePath(args.at(0));
+
         if (const QString arduFile = parser.value(arduinoFileOption); !arduFile.isEmpty()) {
-            if (!args.empty()) {
+            if (!inputFile.isEmpty()) {
                 Application::interactiveMode = false;
                 MainWindow window;
-                window.loadPandaFile(args.at(0));
+                window.loadPandaFile(inputFile);
                 window.exportToArduino(arduFile);
             }
-            exit(0);
+            return 0;
         }
 
         if (const QString wfFile = parser.value(waveformFileOption); !wfFile.isEmpty()) {
-            if (!args.empty()) {
+            if (!inputFile.isEmpty()) {
                 Application::interactiveMode = false;
                 MainWindow window;
-                window.loadPandaFile(args.at(0));
+                window.loadPandaFile(inputFile);
                 window.exportToWaveFormFile(wfFile);
             }
-            exit(0);
+            return 0;
         }
 
         if (const bool isTerminal = parser.isSet(terminalFileOption); isTerminal) {
-            if (!args.empty()) {
+            if (!inputFile.isEmpty()) {
                 Application::interactiveMode = false;
                 MainWindow window;
-                window.loadPandaFile(args.at(0));
+                window.loadPandaFile(inputFile);
 
                 // --blockTruthTable allows callers (e.g. automated graders) to
                 // reject circuits that contain truth tables, which cannot be
@@ -364,14 +380,14 @@ int main(int argc, char *argv[])
                     }
 
                     if (containsTruthTable) {
-                        QTextStream(stderr) << QCoreApplication::translate("main", "Error: Circuit contains Truth Table elements.");
-                        exit(1);
+                        QTextStream(stderr) << QCoreApplication::translate("main", "Error: Circuit contains Truth Table elements.") << '\n';
+                        return 1;
                     }
                 }
 
                 window.exportToWaveFormTerminal();
             }
-            exit(0);
+            return 0;
         }
 
 #ifdef ENABLE_MCP_SERVER
@@ -399,14 +415,19 @@ int main(int argc, char *argv[])
         app.setMainWindow(window);
         window->show();
 
-        if (!args.empty()) {
-            window->loadPandaFile(args.at(0));
+        if (!inputFile.isEmpty()) {
+            window->loadPandaFile(inputFile);
         }
     } catch (const std::exception &e) {
         if (Application::interactiveMode) {
             QMessageBox::critical(nullptr, QObject::tr("Error!"), e.what());
+        } else {
+            // Non-interactive (CLI / MCP) modes have no dialog to fall back on;
+            // without this, the process exits silently and the user sees no
+            // indication that the file failed to load.
+            QTextStream(stderr) << QCoreApplication::translate("main", "Error: ") << e.what() << '\n';
         }
-        exit(1);
+        return 1;
     }
 
     return app.exec();
