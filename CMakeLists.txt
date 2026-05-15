@@ -223,26 +223,8 @@ include(CMakeSources.cmake)
 # Find available translation files
 file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 
-# Initialize QM_FILES list
-set(QM_FILES)
-
-# Create QM files in source directory so QRC can find them
 find_package(Qt6LinguistTools QUIET)
-if(Qt6LinguistTools_FOUND)
-    foreach(ts_file ${TS_FILES})
-        get_filename_component(qm_file ${ts_file} NAME_WE)
-        get_filename_component(ts_dir ${ts_file} DIRECTORY)
-        set(qm_path ${ts_dir}/${qm_file}.qm)
-        add_custom_command(
-            OUTPUT ${qm_path}
-            COMMAND Qt6::lrelease ${ts_file} -qm ${qm_path}
-            DEPENDS ${ts_file}
-            COMMENT "Compiling ${qm_file}.qm"
-            VERBATIM
-        )
-        list(APPEND QM_FILES ${qm_path})
-    endforeach()
-endif()
+
 qt6_add_resources(RESOURCES_RCC ${RESOURCES})
 
 add_library(wiredpanda_resources OBJECT ${RESOURCES_RCC})
@@ -295,74 +277,16 @@ include_directories(
 
 # ========= TRANSLATIONS ===========================
 
-# Find available translation files
-file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
-
-# Custom targets for translation management
+# lupdate target — refreshes .ts files from source.  Manual invocation only;
+# unrelated to the build-time .qm compilation handled by qt_add_translations.
 if(Qt6LinguistTools_FOUND)
-    # Custom target to update translation source files
     add_custom_target(lupdate
         COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES} -no-obsolete
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMENT "Updating translation source files"
     )
-
-    # Custom target to compile translation files
-    add_custom_target(lrelease
-        DEPENDS ${QM_FILES}
-        COMMENT "Compiling translation files"
-    )
-
-    # Make sure resources depend on QM files
-    add_custom_target(compile_translations ALL DEPENDS ${QM_FILES})
 endif()
 
-# CMake script to generate translations.qrc natively
-set(QRC_GENERATOR_SCRIPT "${CMAKE_BINARY_DIR}/generate_translations_qrc.cmake")
-
-# Write the QRC generator script
-file(WRITE ${QRC_GENERATOR_SCRIPT} "
-# CMake script to generate translations.qrc
-set(QRC_FILE \"${CMAKE_SOURCE_DIR}/App/Resources/Translations/Translations.qrc\")
-
-# Get list of .qm files in translations directory
-file(GLOB QM_FILES \"${CMAKE_SOURCE_DIR}/App/Resources/Translations/*.qm\")
-
-# Sort the files for consistent output
-list(SORT QM_FILES)
-
-# Start QRC content
-set(QRC_CONTENT \"<RCC>\\n    <qresource prefix=\\\"/Translations\\\">\\n\")
-
-# Add each .qm file
-foreach(qm_file \${QM_FILES})
-    get_filename_component(qm_name \${qm_file} NAME)
-    string(APPEND QRC_CONTENT \"        <file>\${qm_name}</file>\\n\")
-endforeach()
-
-# End QRC content
-string(APPEND QRC_CONTENT \"    </qresource>\\n</RCC>\\n\")
-
-# Write the QRC file
-file(WRITE \${QRC_FILE} \${QRC_CONTENT})
-
-# Report generation
-list(LENGTH QM_FILES QM_COUNT)
-message(STATUS \"Generated translations.qrc with \${QM_COUNT} files\")
-foreach(qm_file \${QM_FILES})
-    get_filename_component(qm_name \${qm_file} NAME)
-    message(STATUS \"  - \${qm_name}\")
-endforeach()
-")
-
-# Custom target to regenerate translations.qrc using native CMake
-add_custom_target(generate_translations_qrc
-    COMMAND ${CMAKE_COMMAND} -P ${QRC_GENERATOR_SCRIPT}
-    COMMENT "Generating translations.qrc with CMake"
-    DEPENDS lrelease
-)
-
-# Print translation information
 list(LENGTH TS_FILES TS_FILES_COUNT)
 message(STATUS "Found ${TS_FILES_COUNT} translation files:")
 foreach(ts_file ${TS_FILES})
@@ -439,6 +363,22 @@ endif()
 link_wiredpanda_whole_archive(wiredpanda)
 target_link_libraries(wiredpanda PRIVATE wiredpanda_resources)
 
+# Compile .ts → .qm and embed as Qt resources at :/i18n/wpanda_<lang>.qm.
+# On Qt 6.9+ MERGE_QT_TRANSLATIONS also bakes qtbase / Widgets / Gui /
+# Multimedia / Svg catalogs into the same .qm files so Qt-owned dialogs
+# (file picker, message boxes) translate too and RTL flips for ar/he/fa
+# via the embedded QT_LAYOUT_DIRECTION string.  No filesystem deployment.
+if(Qt6LinguistTools_FOUND)
+    set(_merge_qt_translations)
+    if(Qt6_VERSION VERSION_GREATER_EQUAL "6.9.0")
+        set(_merge_qt_translations MERGE_QT_TRANSLATIONS)
+    endif()
+    qt_add_translations(wiredpanda
+        TS_FILES ${TS_FILES}
+        ${_merge_qt_translations}
+    )
+endif()
+
 # Preload example files into Emscripten's virtual filesystem
 if(EMSCRIPTEN)
     target_link_options(wiredpanda PRIVATE
@@ -476,7 +416,10 @@ if(EMSCRIPTEN)
     )
 endif()
 
-# Run windeployqt on Windows to copy Qt dependencies
+# Run windeployqt on Windows to copy Qt dependencies (DLLs, plugins).
+# --no-translations: Qt translations are now embedded in the binary via
+# qt_add_translations(MERGE_QT_TRANSLATIONS), so no separate translations
+# directory is needed in the deploy folder.
 if(WIN32)
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS ${Qt${QT_VERSION_MAJOR}_DIR}/../../../bin)
 
@@ -489,32 +432,6 @@ if(WIN32)
     else()
         message(WARNING "windeployqt not found - Qt libraries will not be automatically deployed")
     endif()
-
-    # Copy Qt base translations so QLibraryInfo::TranslationsPath resolves correctly.
-    # windeployqt places Qt DLLs in the build dir, so Qt looks for translations
-    # relative to the DLLs — in <build>/translations/ — not the Qt installation.
-    find_package(Python3 QUIET COMPONENTS Interpreter)
-    if(Python3_FOUND)
-        cmake_path(GET Qt6_DIR PARENT_PATH _qt_cmake_dir)
-        cmake_path(GET _qt_cmake_dir PARENT_PATH _qt_cmake_dir)
-        cmake_path(GET _qt_cmake_dir PARENT_PATH _qt_prefix)
-        set(_qt_translations_src "${_qt_prefix}/translations")
-        if(IS_DIRECTORY "${_qt_translations_src}")
-            add_custom_command(TARGET wiredpanda POST_BUILD
-                COMMAND ${Python3_EXECUTABLE}
-                    "${CMAKE_SOURCE_DIR}/Scripts/copy_qt_translations.py"
-                    "${_qt_translations_src}"
-                    "$<TARGET_FILE_DIR:wiredpanda>/translations"
-                COMMENT "Copying Qt translations to build directory"
-                VERBATIM
-            )
-        endif()
-    endif()
-endif()
-
-# Ensure translations are compiled before building the main executable
-if(Qt6LinguistTools_FOUND)
-    add_dependencies(wiredpanda lrelease)
 endif()
 
 if(ENABLE_PCH)
