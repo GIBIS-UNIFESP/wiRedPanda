@@ -6,7 +6,6 @@ Just tests the welcome message + first command flow
 
 import asyncio
 import sys
-from typing import Any, Dict
 
 from beartype import beartype
 from pydantic import BaseModel, ConfigDict, Field
@@ -18,7 +17,6 @@ if sys.platform == "win32" and hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
 
 from mcp_infrastructure import MCPInfrastructure
-from mcp_models import MCPResponse
 
 
 class MCPTestConfig(BaseModel):

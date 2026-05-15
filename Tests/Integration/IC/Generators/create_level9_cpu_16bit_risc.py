@@ -45,7 +45,6 @@ Usage:
 
 import asyncio
 from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
-from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 
 
 class CPU16BitRISCBuilder(ICBuilderBase):
