@@ -27,7 +27,6 @@ class Multiplexer2to1Builder(ICBuilderBase):
     async def create(self) -> bool:
         """Create 2-to-1 Multiplexer IC"""
         data_inputs = 2
-        select_bits = 1
         input_size = 3  # 2 data + 1 select
 
         await self.begin_build('Multiplexer 2-to-1')

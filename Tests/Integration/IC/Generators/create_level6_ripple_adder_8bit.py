@@ -98,7 +98,6 @@ class Adder8BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created and chained 8 Full Adders with ripple carry")
 
         # Create output LEDs for Sum bits
-        output_x = fa_x + (8 * HORIZONTAL_GATE_SPACING)
         for bit in range(8):
             sum_led = await self.create_element("Led", fa_x + bit * HORIZONTAL_GATE_SPACING, fa_y + VERTICAL_STAGE_SPACING, f"Sum[{bit}]")
             if sum_led is None:

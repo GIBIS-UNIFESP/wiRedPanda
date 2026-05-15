@@ -237,8 +237,8 @@ class SequentialTests(MCPTestBase):
         await self.send_command("set_input_value", {"element_id": element_mapping2[5], "value": True})  # Set data
 
         # BewavedDolphin pattern: Double reads for propagation
-        _temp_resp3 = await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
-        _temp_resp4 = await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
 
         enabled_resp = await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
         enabled_output = (
@@ -250,8 +250,8 @@ class SequentialTests(MCPTestBase):
         await self.send_command("set_input_value", {"element_id": element_mapping2[5], "value": False})  # Change data
 
         # BewavedDolphin pattern: Double reads for propagation
-        _temp_resp1 = await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
-        _temp_resp2 = await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
 
         disabled_resp = await self.send_command("get_output_value", {"element_id": element_mapping2[6]})
         disabled_output = (
@@ -345,8 +345,8 @@ class SequentialTests(MCPTestBase):
         await self.send_command("set_input_value", {"element_id": element_mapping[5], "value": False})  # Data input low
 
         # Double read for propagation
-        _temp_resp5 = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
-        _temp_resp6 = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping[6]})
 
         state1_resp = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
         state2_resp = await self.send_command("get_output_value", {"element_id": element_mapping[7]})
@@ -362,8 +362,8 @@ class SequentialTests(MCPTestBase):
         )  # Release reset (inactive high)
 
         # Double read for propagation
-        _temp_resp7 = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
-        _temp_resp8 = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping[6]})
 
         state1_resp = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
         state2_resp = await self.send_command("get_output_value", {"element_id": element_mapping[7]})
@@ -390,8 +390,8 @@ class SequentialTests(MCPTestBase):
         )  # Clock rising edge
 
         # Check after first clock edge
-        _temp_resp9 = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
-        _temp_resp10 = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping[6]})
+        await self.send_command("get_output_value", {"element_id": element_mapping[6]})
 
         state1_resp = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
         state2_resp = await self.send_command("get_output_value", {"element_id": element_mapping[7]})
@@ -538,8 +538,8 @@ class SequentialTests(MCPTestBase):
             await self.send_command("set_input_value", {"element_id": element_mapping[5], "value": True})
 
             # Double read for propagation
-            _temp_resp11 = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
-            _temp_resp12 = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
+            await self.send_command("get_output_value", {"element_id": element_mapping[6]})
+            await self.send_command("get_output_value", {"element_id": element_mapping[6]})
 
             state1_resp = await self.send_command("get_output_value", {"element_id": element_mapping[6]})
             state2_resp = await self.send_command("get_output_value", {"element_id": element_mapping[7]})

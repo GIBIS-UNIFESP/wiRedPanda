@@ -334,12 +334,12 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         await self.send_command("set_input_value", {"element_id": element_mapping[3], "value": False})  # CLK=0
 
         # Double read for propagation
-        _temp_resp13 = await self.send_command("get_output_value", {"element_id": element_mapping[5]})
-        _temp_resp14 = await self.send_command("get_output_value", {"element_id": element_mapping[5]})
+        await self.send_command("get_output_value", {"element_id": element_mapping[5]})
+        await self.send_command("get_output_value", {"element_id": element_mapping[5]})
 
         # Clock rising edge to reset to Q=0
         await self.send_command("set_input_value", {"element_id": element_mapping[3], "value": True})  # CLK rising edge
-        _temp_resp15 = await self.send_command("get_output_value", {"element_id": element_mapping[5]})
+        await self.send_command("get_output_value", {"element_id": element_mapping[5]})
 
         previous_q = False  # Start with Q=0 after reset
         jk_test_results = []
@@ -359,13 +359,13 @@ class AdvancedSequentialLogicTests(MCPTestBase):
 
             # Clock transition (falling edge then rising edge)
             await self.send_command("set_input_value", {"element_id": element_mapping[3], "value": False})
-            _temp_resp = await self.send_command("get_output_value", {"element_id": element_mapping[5]})
+            await self.send_command("get_output_value", {"element_id": element_mapping[5]})
 
             await self.send_command("set_input_value", {"element_id": element_mapping[3], "value": True})
 
             # Double read for propagation
-            _temp_resp16 = await self.send_command("get_output_value", {"element_id": element_mapping[5]})
-            _temp_resp17 = await self.send_command("get_output_value", {"element_id": element_mapping[5]})
+            await self.send_command("get_output_value", {"element_id": element_mapping[5]})
+            await self.send_command("get_output_value", {"element_id": element_mapping[5]})
 
             # Read final outputs
             q_resp = await self.send_command("get_output_value", {"element_id": element_mapping[5]})

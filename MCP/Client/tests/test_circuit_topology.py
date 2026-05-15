@@ -142,10 +142,10 @@ class CircuitTopologyTests(MCPTestBase):
                     await self.send_command("set_input_value", {"element_id": element_mapping[1], "value": test_val})
 
                     # Double read for propagation (BewavedDolphin pattern)
-                    _temp_resp21 = await self.send_command(
+                    await self.send_command(
                         "get_output_value", {"element_id": element_mapping[output_id]}
                     )
-                    _temp_resp22 = await self.send_command(
+                    await self.send_command(
                         "get_output_value", {"element_id": element_mapping[output_id]}
                     )
 
@@ -296,10 +296,10 @@ class CircuitTopologyTests(MCPTestBase):
                     fanout_results = []
                     for led_id in range(2, 22):  # LEDs have IDs 2-21
                         if led_id in fanout_mapping:
-                            _temp_resp23 = await self.send_command(
+                            await self.send_command(
                                 "get_output_value", {"element_id": fanout_mapping[led_id]}
                             )
-                            _temp_resp24 = await self.send_command(
+                            await self.send_command(
                                 "get_output_value", {"element_id": fanout_mapping[led_id]}
                             )
 
