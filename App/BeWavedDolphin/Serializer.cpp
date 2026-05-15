@@ -39,7 +39,9 @@ WaveformData loadBinary(QDataStream &stream, const int maxInputPorts)
     }
 
     if ((cols < 2) || (cols > 2048)) {
-        throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer", "Invalid number of columns.");
+        throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer",
+            "Invalid number of columns: got %1, expected between 2 and 2048.",
+            static_cast<int>(cols));
     }
 
     WaveformData data;
@@ -99,7 +101,9 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
     }
 
     if ((cols < 2) || (cols > 2048)) {
-        throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer", "Invalid number of columns.");
+        throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer",
+            "Invalid number of columns: got %1, expected between 2 and 2048.",
+            cols);
     }
 
     // Validate before indexing to avoid out-of-bounds access on corrupt files
