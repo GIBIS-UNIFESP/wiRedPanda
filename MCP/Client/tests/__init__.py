@@ -45,7 +45,8 @@ from mcp_organizer import MCPTestOrganizer
 from mcp_runner import MCPTestRunner
 from mcp_validation import MCPValidation
 
-from .mcp_test_base import MCPTestBase, MCPTestOrchestrator
+from .mcp_test_base import MCPTestBase
+from .mcp_test_orchestrator import MCPTestOrchestrator
 
 # Configuration and utilities
 from .test_config import config, get_test_images_dir
