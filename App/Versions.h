@@ -38,13 +38,23 @@ inline const QVersionNumber V_5_1 = QVersionNumber(5, 1);
 
 } // namespace Versions
 
-/// File-format version, independent of the application release version.
-/// Only incremented when the on-disk binary format actually changes.
-namespace FileVersion {
+/// File-format revision, independent of the application release version.
+///
+/// Legacy revisions are the multi-segment `Versions::V_X_Y` constants above:
+/// historically they tracked the app version that introduced them, which made
+/// log/dialog output ambiguous once the two concepts drifted apart.
+///
+/// New revisions use **monotonic single-segment integers starting at 100**
+/// (`Rev100`, `Rev101`, ...).  Picking 100 as the boundary keeps the on-disk
+/// encoding (`QVersionNumber`) unchanged — `QVersionNumber(100)` compares
+/// greater than every legacy `Versions::V_X_Y` segment-by-segment, so existing
+/// readers and version comparisons keep working unmodified.  The next real
+/// format change should be `Rev100`.
+namespace FormatRev {
 
 inline const QVersionNumber current = Versions::V_5_1;
 
-} // namespace FileVersion
+} // namespace FormatRev
 
 /// Application version derived from the CMake-defined APP_VERSION string.
 namespace AppVersion {
