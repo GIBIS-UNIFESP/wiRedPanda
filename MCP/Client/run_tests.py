@@ -64,7 +64,7 @@ async def main() -> None:
     )
 
     # Create test suite with validated options
-    from tests.mcp_test_base import MCPTestOrchestrator
+    from tests.mcp_test_orchestrator import MCPTestOrchestrator
 
     tester = MCPTestOrchestrator(
         enable_image_export=config.images,
