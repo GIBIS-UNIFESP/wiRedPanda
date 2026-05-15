@@ -194,6 +194,39 @@ jobs:
         LIBDIR=/usr/lib/${ARCH_TRIPLE}-linux-gnu
         sudo ln -sf $LIBDIR/libtiff.so.6 $LIBDIR/libtiff.so.5
 
+        # Bundle GTK 3 and GIO/GVFS modules from the CI host alongside our own
+        # glib so they load against the bundled libglib-2.0 (built on Ubuntu
+        # 24.04, glib ~2.80) instead of the user's system glib (often newer,
+        # ~2.82+).  Without this, GTK and GIO fall back to the *system*
+        # libcanberra-gtk-module.so / libgvfsdbus.so at runtime; they reference
+        # newer glib symbols (e.g. g_variant_builder_init_static) that don't
+        # exist in our bundled glib, producing the "Failed to load module"
+        # warnings.
+        #
+        # Install the providing packages, then resolve the real installed paths
+        # via dpkg -L (so this works on x86_64 and arm64 without hard-coding
+        # multiarch tuples).  Mirror each path under appimage/lib/ — stripping
+        # the leading /usr matches go-appimage's lib/ layout, so the files
+        # appear at the same location where GTK_PATH and GIO discovery search.
+        sudo apt-get install -y libcanberra-gtk3-module gvfs gvfs-libs
+
+        for spec in \
+            "libcanberra-gtk3-module:/libcanberra-gtk-module\.so$" \
+            "gvfs:/libgvfsdbus\.so$" \
+            "gvfs-libs:/libgvfscommon\.so$"; do
+          pkg="${spec%%:*}"
+          pattern="${spec#*:}"
+          src=$(dpkg -L "$pkg" | grep -E "$pattern" | head -1)
+          if [ -z "$src" ] || [ ! -f "$src" ]; then
+            echo "Failed to locate $pattern from package $pkg" >&2
+            exit 1
+          fi
+          dst="appimage${src#/usr}"
+          mkdir -p "$(dirname "$dst")"
+          cp "$src" "$dst"
+          echo "Bundled $src -> $dst"
+        done
+
         # Deploy: bundle all dependencies (including glibc) and patch RPATHs.
         # go-appimage uses patchelf internally to set $ORIGIN-relative RPATHs
         # on all bundled ELFs, covering transitive deps like libGLdispatch.so.0.
@@ -227,17 +260,11 @@ jobs:
         # before the binary is exec'd.  Preserves any user-supplied rules.
         sed -i '/^HERE=/a\\nexport QT_LOGGING_RULES="qt.multimedia.symbolsresolver=false${QT_LOGGING_RULES:+;$QT_LOGGING_RULES}"' appimage/AppRun
 
-        # go-appimage bundles libcanberra-gtk3-module.so (with "3") but GTK 3's
-        # default gtk-modules setting names it "canberra-gtk-module" (no "3" —
-        # GTK 3's canberra plugin lives at /usr/lib/.../gtk-3.0/modules/libcanberra-gtk-module.so
-        # on Debian/Ubuntu, an unfortunate naming).  Without the unsuffixed name,
-        # GTK logs "Failed to load module 'canberra-gtk-module'" via glib's logger
-        # which bypasses Qt logging entirely.  Symlinking the expected name fixes it.
-        GTK_MODULES_DIR=$(find appimage -type d -name modules -path '*gtk-3.0*' | head -1)
-        if [ -n "$GTK_MODULES_DIR" ] && [ -f "$GTK_MODULES_DIR/libcanberra-gtk3-module.so" ] \
-           && [ ! -e "$GTK_MODULES_DIR/libcanberra-gtk-module.so" ]; then
-          ln -s libcanberra-gtk3-module.so "$GTK_MODULES_DIR/libcanberra-gtk-module.so"
-        fi
+        # Point GIO at our bundled gio/modules so it loads the bundled
+        # libgvfsdbus.so (matched to our bundled glib) and the system one is
+        # ignored.  GTK already finds our bundled libcanberra-gtk-module.so via
+        # GTK_PATH (set by go-appimage to $HERE/lib/.../gtk-3.0/).
+        sed -i '/^export QT_LOGGING_RULES=/a\\nexport GIO_MODULE_DIR="$HERE/lib/'${ARCH_TRIPLE}'-linux-gnu/gio/modules"' appimage/AppRun
 
         APPIMAGE_EXTRACT_AND_RUN=1 VERSION=$VERSION \
           ./appimagetool appimage
