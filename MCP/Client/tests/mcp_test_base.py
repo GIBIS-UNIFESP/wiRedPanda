@@ -199,15 +199,18 @@ class MCPTestBase(ABC):
 
         test_result = False
         test_exception = None
+        teardown_success = False
+        final_result = False
 
         try:
-            # Execute test method
-            test_result = await test_method()
+            try:
+                # Execute test method
+                test_result = await test_method()
 
-        except Exception as e:
-            # Handle exceptions as test failures
-            test_result = False
-            test_exception = e
+            except Exception as e:
+                # Handle exceptions as test failures
+                test_result = False
+                test_exception = e
 
         finally:
             # Teardown phase - always execute, even on test failure
@@ -251,7 +254,7 @@ class MCPTestBase(ABC):
                     self._runner.test_results.errors.append(f"{test_name}: Teardown failed - resource cleanup error")
                     print(f"🔴 {test_name} FAILED (teardown cleanup failed)")
 
-            return final_result
+        return final_result
 
     @abstractmethod
     async def run_category_tests(self) -> bool:

@@ -190,6 +190,7 @@ class MCPInfrastructure:
             try:
                 await self._stderr_drain_task
             except asyncio.CancelledError:
+                # expected — we just cancelled the task above
                 pass
             self._stderr_drain_task = None
 
