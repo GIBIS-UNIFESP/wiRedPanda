@@ -543,12 +543,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="872"/>
+        <location filename="../../Scene/Commands.cpp" line="871"/>
         <source>Change input size to %1</source>
         <translation>입력 크기를 %1로 변경</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="873"/>
+        <location filename="../../Scene/Commands.cpp" line="872"/>
         <source>Change output size to %1</source>
         <translation>출력 크기를 %1로 변경</translation>
     </message>
@@ -1178,7 +1178,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="811"/>
+        <location filename="../../Scene/Commands.cpp" line="810"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%2 축에서 %1개 요소 뒤집기</translation>
     </message>
@@ -1186,27 +1186,27 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="175"/>
+        <location filename="../../Element/GraphicElement.cpp" line="173"/>
         <source>File does not exist</source>
         <translation>파일이 존재하지 않습니다</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="177"/>
+        <location filename="../../Element/GraphicElement.cpp" line="175"/>
         <source>File is not readable</source>
         <translation>파일을 읽을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="178"/>
+        <location filename="../../Element/GraphicElement.cpp" line="176"/>
         <source>Unknown reason</source>
         <translation>알 수 없는 이유</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="183"/>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>픽스맵을 로드할 수 없습니다: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="408"/>
+        <location filename="../../Element/GraphicElement.cpp" line="406"/>
         <source>Default</source>
         <translation>기본값</translation>
     </message>
@@ -1239,47 +1239,47 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="110"/>
+        <location filename="../../Element/IC.cpp" line="113"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="109"/>
+        <location filename="../../Element/IC.cpp" line="112"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>집적 회로</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="222"/>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC 로드: 직렬화된 데이터에 IC 이름이 없습니다</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="347"/>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
         <translation>%1을(를) 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="388"/>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
         <translation>순환 IC 참조가 감지되었습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="395"/>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
         <translation>파일 열기 오류: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="449"/>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC 마이그레이션: 파일을 쓰기용으로 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="456"/>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC 마이그레이션: 다시 저장한 파일을 커밋하지 못했습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="515"/>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>IC 중첩 깊이 한계(%1)를 초과했습니다 — blob이 악의적으로 조작되었을 수 있습니다</translation>
     </message>
@@ -2475,12 +2475,12 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>오프셋 %1에서 연결 맵을 읽는 중 스트림 오류</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>오프셋 %1에서 연결 포트 ID 읽기 중 스트림 오류</translation>
     </message>
@@ -2574,7 +2574,7 @@ Suggested name:</source>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1025"/>
+        <location filename="../../Scene/Commands.cpp" line="1024"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>블롭 &quot;%1&quot; 등록</translation>
     </message>
@@ -2582,7 +2582,7 @@ Suggested name:</source>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1048"/>
+        <location filename="../../Scene/Commands.cpp" line="1047"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>blob &quot;%1&quot; 제거</translation>
     </message>
@@ -2625,18 +2625,18 @@ Suggested name:</source>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="566"/>
+        <location filename="../../Scene/Scene.cpp" line="564"/>
         <source>&amp;Undo</source>
         <translation>실행 취소(&amp;U)</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="572"/>
+        <location filename="../../Scene/Scene.cpp" line="570"/>
         <source>&amp;Redo</source>
         <translation>다시 실행(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="592"/>
+        <location filename="../../Scene/Scene.cpp" line="590"/>
         <source>Paste</source>
         <translation>붙여넣기</translation>
     </message>
@@ -2644,68 +2644,68 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="271"/>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
         <translation>메타데이터 개수를 읽는 중 스트림 오류</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>남은 스트림 바이트로 볼 때 메타데이터 개수 %1은(는) 비현실적입니다</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="291"/>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
         <translation>blob 개수를 읽는 중 스트림 오류</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>남은 스트림 바이트로 볼 때 blob 개수 %1은(는) 비현실적입니다</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="347"/>
-        <location filename="../../IO/Serialization.cpp" line="357"/>
-        <location filename="../../IO/Serialization.cpp" line="361"/>
-        <location filename="../../IO/Serialization.cpp" line="396"/>
-        <location filename="../../IO/Serialization.cpp" line="400"/>
-        <location filename="../../IO/Serialization.cpp" line="404"/>
-        <location filename="../../IO/Serialization.cpp" line="410"/>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
         <translation>잘못된 파일 형식입니다.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="518"/>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>위치 %1에서 유형 태그 읽기 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="530"/>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>위치 %1에서 요소 유형 읽기 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="542"/>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>위치 %1에서 요소 로드 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="561"/>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>위치 %1에서 연결 로드 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="568"/>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>잘못된 유형입니다. 데이터가 손상되었을 가능성이 있습니다.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="621"/>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>버전 백업 생성에 실패했습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="701"/>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
         <translation>파일 복사 오류: %1</translation>
     </message>
@@ -2754,12 +2754,12 @@ Suggested name:</source>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1340"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>진리표에 출력 변수가 매핑되지 않았습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1390"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
         <translation>지원되지 않는 요소 유형: %1</translation>
     </message>
@@ -2793,12 +2793,12 @@ Suggested name:</source>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="966"/>
+        <location filename="../../Scene/Commands.cpp" line="965"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>위치 %1에서 진리표 출력 토글</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="975"/>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
         <translation>진리표 요소를 찾을 수 없습니다!</translation>
     </message>
@@ -2832,7 +2832,7 @@ Suggested name:</source>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1081"/>
+        <location filename="../../Scene/Commands.cpp" line="1080"/>
         <source>Update %1 IC blobs</source>
         <translation>%1개의 IC 블롭 업데이트</translation>
     </message>
