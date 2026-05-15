@@ -51,13 +51,18 @@ void portalQuietMessageHandler(QtMsgType type, const QMessageLogContext &context
         && message.startsWith(QLatin1String("Failed to register with host portal"))) {
         return;
     }
-    // Qt multimedia probes pipewire-0.3 unconditionally; on systems where it's
-    // absent or version-mismatched (common in the AppImage on minimal hosts)
-    // it logs two unsuppressable warnings per process. They're harmless — audio
-    // simply falls back to ALSA / PulseAudio — so drop them rather than pollute
-    // CLI output with noise users can't act on.
+    // Qt Wayland's text-input v3 backend emits a "leave event for surface 0x0" warning
+    // every time focus changes between widgets — a known Qt issue affecting many apps
+    // (FreeCAD, Transmission, Telegram).  No user-actionable signal; spammy on Wayland.
     if (type == QtWarningMsg && context.category
-        && qstrcmp(context.category, "qt.multimedia.symbolsresolver") == 0) {
+        && qstrcmp(context.category, "qt.qpa.wayland.textinput") == 0) {
+        return;
+    }
+    // Qt's HarfBuzz/font database logs "OpenType support missing for <font>, script <N>"
+    // when a fallback font lacks coverage for a particular Unicode script.  Harmless —
+    // Qt then falls back to a font that does cover the script.  Note: this is emitted
+    // as qDebug, not qCWarning, so we deliberately don't gate on type here.
+    if (message.startsWith(QLatin1String("OpenType support missing"))) {
         return;
     }
     if (g_previousMessageHandler) {
