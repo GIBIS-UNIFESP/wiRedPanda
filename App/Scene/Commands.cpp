@@ -99,9 +99,9 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
         }
     }
 
-    /* Stores the ids of all elements listed in items; */
+    // Store the ids of all elements listed in items.
     storeIds(elements + connections, ids);
-    /* Stores all the elements linked to each connection that will not be deleted. */
+    // Store all elements linked to each connection that will not be deleted.
     storeOtherIds(connections, ids, otherIds);
     return elements + connections;
 }
