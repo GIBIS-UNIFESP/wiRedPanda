@@ -92,7 +92,7 @@ jobs:
         pip install -r MCP/Client/requirements.txt
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v4
+      uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
       with:
         version: ${{ matrix.qt }}
         cache: true
@@ -102,13 +102,13 @@ jobs:
         arch: ${{ matrix.qt_arch }}
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@main
+      uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
       with:
         key: ${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
 
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
-      uses: TheMrMilchmann/setup-msvc-dev@v4.0.0
+      uses: TheMrMilchmann/setup-msvc-dev@79dac248aac9d0059f86eae9d8b5bfab4e95e97c # v4.0.0
       with:
         arch: ${{ matrix.os == 'windows-11-arm' && 'arm64' || 'x64' }}
 

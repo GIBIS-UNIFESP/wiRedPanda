@@ -24,7 +24,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v4
+      uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
       with:
         version: 6.9.3
         cache: true
@@ -32,7 +32,7 @@ jobs:
         modules: qtmultimedia qtimageformats
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@main
+      uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
       with:
         key: coverage-${{ runner.os }}
 
@@ -52,7 +52,7 @@ jobs:
         gcov -abcfu $(find . -name "*.gcno")
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v6
+      uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: build-coverage
