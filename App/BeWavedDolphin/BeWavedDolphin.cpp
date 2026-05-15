@@ -17,6 +17,7 @@
 #include <QPrinter>
 #include <QSaveFile>
 #include <QTextStream>
+#include <QTransform>
 
 #include "App/BeWavedDolphin/Serializer.h"
 #include "App/Core/Application.h"
@@ -37,7 +38,6 @@
 
 static constexpr int    kDefaultColumnWidth = 49;    ///<  Per-column pixel width at reset zoom.
 static constexpr int    kMaxSimLength       = 2048;  ///<  Maximum allowed simulation length.
-static constexpr int    kMaxScenePixels     = 4000;  ///<  Scene size limit before forced zoom reset.
 static constexpr double kZoomStep           = 1.25;  ///<  Multiplicative factor per zoom step.
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
@@ -461,13 +461,8 @@ void BewavedDolphin::resizeScene()
     // Subtract 2px to avoid a persistent vertical scrollbar appearing at the boundary
     const int newHeight = m_ui->centralwidget->height() - 2;
 
-    // kMaxScenePixels is a practical upper bound; beyond this Qt rendering becomes
-    // unreliable and memory usage spikes. Reset zoom to recover a safe state.
-    if (newWidth > kMaxScenePixels || newHeight > kMaxScenePixels) {
-        on_actionResetZoom_triggered();
-        throw PANDACEPTION("Waveform would be too big! Resetting zoom.");
-    }
-
+    // Zoom is already bounded to 6 discrete steps by WaveformView::canZoomIn();
+    // no additional scene-size guard is needed here.
     setTableViewSize(newWidth, newHeight);
     m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }
@@ -851,8 +846,9 @@ void BewavedDolphin::on_actionResetZoom_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom reset"));
+        m_view.resetTransform();
         m_view.resetZoom();
-        m_scale = 1.0;
+        m_scale = kZoomStep;
         adjustColumnWidths([](int) { return kDefaultColumnWidth; });
     });
 }
@@ -869,21 +865,14 @@ void BewavedDolphin::on_actionFitScreen_triggered()
         sentryBreadcrumb("waveform", QStringLiteral("Fit screen"));
         const int hLen = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
         const int vLen = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
-        // Bail out on degenerate geometry: a zero divisor would yield infinity,
-        // which Qt's backing-store sizing turns into a qFatal on Windows (WIREDPANDA-HW).
         if (hLen <= 0 || vLen <= 0) {
             return;
         }
-        // First undo the current scale transform so the measurements below are in logical pixels
-        m_view.scale(1.0 / m_scale, 1.0 / m_scale);
+        m_view.resetTransform();
         const double wScale = static_cast<double>(m_view.width()) / hLen;
         const double hScale = static_cast<double>(m_view.height()) / vLen;
-        // Clamp the fit factor so pathological inputs can't request an extreme
-        // backing-store size; bounds chosen to cover any realistic waveform.
         m_scale = std::clamp((std::min)(wScale, hScale), 0.05, 20.0);
-        m_view.scale(1.0 * m_scale, 1.0 * m_scale);
-        // FitScreen sets an arbitrary transform, so reset the discrete level to 0
-        // so canZoomIn/Out limits are correct for subsequent zoom actions
+        m_view.setTransform(QTransform::fromScale(m_scale, m_scale));
         m_view.resetZoom();
         resizeScene();
         zoomChanged();
