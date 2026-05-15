@@ -221,6 +221,24 @@ jobs:
         # fallback through gtk2 → ubuntu → gtk3.
         sed -i 's/QT_QPA_PLATFORMTHEME=gtk2/QT_QPA_PLATFORMTHEME=gtk3/' appimage/AppRun
 
+        # Qt Multimedia probes pipewire-0.3 from a static initializer that fires
+        # before main() — qInstallMessageHandler can't catch it.  Suppress at
+        # the source via QT_LOGGING_RULES, set in AppRun so it's in the env
+        # before the binary is exec'd.  Preserves any user-supplied rules.
+        sed -i '/^HERE=/a\\nexport QT_LOGGING_RULES="qt.multimedia.symbolsresolver=false${QT_LOGGING_RULES:+;$QT_LOGGING_RULES}"' appimage/AppRun
+
+        # go-appimage bundles libcanberra-gtk3-module.so (with "3") but GTK 3's
+        # default gtk-modules setting names it "canberra-gtk-module" (no "3" —
+        # GTK 3's canberra plugin lives at /usr/lib/.../gtk-3.0/modules/libcanberra-gtk-module.so
+        # on Debian/Ubuntu, an unfortunate naming).  Without the unsuffixed name,
+        # GTK logs "Failed to load module 'canberra-gtk-module'" via glib's logger
+        # which bypasses Qt logging entirely.  Symlinking the expected name fixes it.
+        GTK_MODULES_DIR=$(find appimage -type d -name modules -path '*gtk-3.0*' | head -1)
+        if [ -n "$GTK_MODULES_DIR" ] && [ -f "$GTK_MODULES_DIR/libcanberra-gtk3-module.so" ] \
+           && [ ! -e "$GTK_MODULES_DIR/libcanberra-gtk-module.so" ]; then
+          ln -s libcanberra-gtk3-module.so "$GTK_MODULES_DIR/libcanberra-gtk-module.so"
+        fi
+
         APPIMAGE_EXTRACT_AND_RUN=1 VERSION=$VERSION \
           ./appimagetool appimage
 
