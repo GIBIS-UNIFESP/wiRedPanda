@@ -2488,7 +2488,7 @@ Suggested name:</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="407"/>
+        <location filename="../../Main.cpp" line="423"/>
         <source>Error!</source>
         <translation>ত্রুটি!</translation>
     </message>
@@ -2976,62 +2976,67 @@ A backup of the original file has been created with name: %3</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="271"/>
+        <location filename="../../Main.cpp" line="280"/>
         <source>Circuit file to open.</source>
         <translation>খুলতে সার্কিট ফাইল।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="275"/>
+        <location filename="../../Main.cpp" line="284"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>ভার্বোসিটি স্তর 0 থেকে 5, ডিফল্টভাবে নিষ্ক্রিয়।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="276"/>
+        <location filename="../../Main.cpp" line="285"/>
         <source>verbosity level</source>
         <translation>ভার্বোসিটি স্তর</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="281"/>
+        <location filename="../../Main.cpp" line="290"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>সার্কিট &lt;arduino-file&gt; এ রপ্তানি করে।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="293"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>টার্মিনাল থেকে ইনপুট পড়ে সার্কিটটি তরঙ্গরূপ টেক্সট ফাইলে রপ্তানি করে।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="298"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>-c/--terminal এর সাথে ব্যবহার করলে, সার্কিটে সত্যতালিকা থাকলে নিষ্পাদন ব্লক করুন।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="304"/>
+        <location filename="../../Main.cpp" line="313"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>প্রোগ্রামেটিক নিয়ন্ত্রণের জন্য MCP (Model Context Protocol) মোডে চালান।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="309"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>দৃশ্যমান GUI উইন্ডো সহ MCP মোড চালান।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="367"/>
+        <location filename="../../Main.cpp" line="383"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>ত্রুটি: সার্কিটে সত্যতালিকা উপাদান রয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="282"/>
+        <location filename="../../Main.cpp" line="428"/>
+        <source>Error: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="291"/>
         <source>arduino file</source>
         <translation>arduino ফাইল</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="287"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>সার্কিটটি তরঙ্গরূপ টেক্সট ফাইলে রপ্তানি করে।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="288"/>
+        <location filename="../../Main.cpp" line="297"/>
         <source>waveform input text file</source>
         <translation>তরঙ্গরূপ ইনপুট টেক্সট ফাইল</translation>
     </message>
