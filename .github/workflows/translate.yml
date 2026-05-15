@@ -24,10 +24,6 @@ on:
         description: 'Update source strings (lupdate)'
         type: boolean
         default: false
-      compile_only:
-        description: 'Compile translations (lrelease)'
-        type: boolean
-        default: true
 
 jobs:
   update-sources:
@@ -58,11 +54,6 @@ jobs:
           cmake -B build_translations
           cmake --build build_translations --target lupdate
 
-      - name: Compile translations
-        run: |
-          cmake --build build_translations --target lrelease
-          cmake --build build_translations --target generate_translations_qrc
-
       - name: Create PR for translation updates
         run: |
           git config user.name "Translation Bot"
@@ -80,11 +71,9 @@ jobs:
             changed_files=$(git diff --cached --name-only | wc -l)
             echo "Translation update: Updated $changed_files files"
 
-            git commit -m "Update translation sources and compiled files
+            git commit -m "Update translation sources
 
             - Updated source strings with lupdate
-            - Compiled .ts files to .qm files with lrelease
-            - Regenerated translations.qrc
 
             🤖 Automated translation update"
 
@@ -98,8 +87,6 @@ jobs:
 
             ## Changes
             - Updated source strings with \`lupdate\`
-            - Compiled .ts files to .qm files with \`lrelease\`
-            - Regenerated \`translations.qrc\`
 
             ## Files Changed
             $(git diff --name-only HEAD~1)
@@ -111,19 +98,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  compile-translations:
-    name: Compile Translations
+  validate-translations:
+    name: Validate Translations
     permissions:
-      contents: write    # needed to commit compiled translations
+      contents: read
     runs-on: ubuntu-24.04
-    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.compile_only == 'true')
+    if: github.event_name == 'pull_request'
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
           # For PRs, checkout the PR branch from the correct repository
           repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
@@ -158,12 +143,17 @@ jobs:
             fi
           done
 
-      - name: Compile translations
+      - name: Dry-run lrelease (verify .ts files compile)
         run: |
-          cmake -B build_translations
-          cmake --build build_translations --target lrelease
-          cmake --build build_translations --target generate_translations_qrc
-
+          mkdir -p /tmp/qm-check
+          for ts_file in App/Resources/Translations/wpanda_*.ts; do
+            lang=$(basename "$ts_file" .ts | sed 's/wpanda_//')
+            if ! lrelease "$ts_file" -qm "/tmp/qm-check/$lang.qm" 2>&1; then
+              echo "❌ lrelease failed for $ts_file"
+              exit 1
+            fi
+          done
+          echo "✅ All .ts files compile cleanly"
 
       - name: Check translation completeness
         run: |
@@ -190,34 +180,10 @@ jobs:
             fi
           done
 
-      - name: Commit compiled translations (for PRs)
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        run: |
-          git config user.name "Translation Bot"
-          git config user.email "translation-bot@users.noreply.github.com"
-
-          # Check if there are any changes to compiled files
-          if ! git diff --quiet App/Resources/Translations/; then
-            git add App/Resources/Translations/*.qm
-            git add App/Resources/Translations/translations.qrc
-
-            git commit -m "Compile translation files
-
-            - Compiled .ts files to .qm files with lrelease
-            - Regenerated translations.qrc
-
-            🤖 Automated by translation workflow"
-
-            git push origin HEAD:${{ github.head_ref }}
-            echo "✅ Compiled translations committed to PR"
-          else
-            echo "ℹ️ No compiled translation updates needed"
-          fi
-
   weblate-pr-handler:
     name: Handle Weblate PR
     permissions:
-      contents: write           # needed to commit processed files
+      contents: write           # needed to commit backup-file cleanup
       pull-requests: write      # needed to comment on PRs
     runs-on: ubuntu-24.04
     if: github.event_name == 'pull_request' && contains(github.event.pull_request.title, 'Weblate') || contains(github.event.pull_request.user.login, 'weblate')
@@ -272,44 +238,40 @@ jobs:
             fi
           done
 
-      - name: Compile translations
+      - name: Dry-run lrelease (verify .ts files compile)
         run: |
-          cmake -B build_translations
-          cmake --build build_translations --target lrelease
-          cmake --build build_translations --target generate_translations_qrc
+          mkdir -p /tmp/qm-check
+          for ts_file in App/Resources/Translations/wpanda_*.ts; do
+            lang=$(basename "$ts_file" .ts | sed 's/wpanda_//')
+            if ! lrelease "$ts_file" -qm "/tmp/qm-check/$lang.qm" 2>&1; then
+              echo "❌ lrelease failed for $ts_file"
+              exit 1
+            fi
+          done
 
-
-      - name: Commit compiled files
+      - name: Commit backup-file cleanup
         run: |
           git config user.name "Weblate Integration"
           git config user.email "weblate-integration@users.noreply.github.com"
 
-          # Remove any backup files
-          find App/Resources/Translations -name "*.backup" -delete
-
-          # Add all translation-related changes
+          # If Weblate left any .backup files we deleted above, commit the removal.
+          # Compiled .qm files are no longer tracked — qt_add_translations regenerates
+          # them at build time.
           git add App/Resources/Translations/
 
-          # Check if there are changes to commit
           if ! git diff --cached --quiet; then
-            # Get list of modified languages
             modified_langs=$(git diff --cached --name-only | grep '\.ts$' | sed 's/.*wpanda_//' | sed 's/\.ts$//' | sort | tr '\n' ' ')
 
             git commit -m "Process Weblate translation updates
 
             Languages updated: $modified_langs
 
-            - Processed translation updates from Weblate
-            - Compiled .ts files to .qm files
-            - Regenerated translations.qrc
-            - Cleaned up backup files
-
             🌐 Weblate integration update"
 
             git push origin HEAD:${{ github.head_ref }}
-            echo "✅ Weblate changes processed and compiled"
+            echo "✅ Weblate changes processed"
           else
-            echo "ℹ️ No changes to commit from Weblate PR"
+            echo "ℹ️ No further cleanup needed"
           fi
 
       - name: Add PR comment with translation status
@@ -346,7 +308,7 @@ jobs:
               report += `| ${lang} | ${percentage}% (${finished}/${total}) | ${status} |\n`;
             }
 
-            report += '\n✅ Translation files have been compiled and are ready for merge.';
+            report += '\n✅ Translation files validated.';
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
