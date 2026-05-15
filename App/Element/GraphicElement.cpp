@@ -24,8 +24,6 @@
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 
-[[maybe_unused]] static const int s_graphicElementMetatypeId = qRegisterMetaType<GraphicElement>();
-
 /// Shared label font — constructed once to avoid repeated QFont creation and fontconfig lookups.
 static const QFont &labelFont()
 {

@@ -13,9 +13,6 @@
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Scene.h"
 
-[[maybe_unused]] static const int s_inputPortMetatypeId = qRegisterMetaType<QNEInputPort>();
-[[maybe_unused]] static const int s_outputPortMetatypeId = qRegisterMetaType<QNEOutputPort>();
-
 QNEPort::QNEPort(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
