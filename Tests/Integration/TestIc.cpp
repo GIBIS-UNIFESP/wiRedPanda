@@ -831,7 +831,7 @@ void TestIC::testICFileMigrationCreatesBackup()
         QFile f(subDst); QVERIFY(f.open(QIODevice::ReadOnly));
         QDataStream s(&f);
         const QVersionNumber v = Serialization::readPandaHeader(s);
-        QVERIFY2(v < FileVersion::current, "Fixture must be older than current version for this test");
+        QVERIFY2(v < FormatRev::current, "Fixture must be older than current version for this test");
     }
 
     // Load the sub-circuit via IC::loadFile() with migration enabled
@@ -858,7 +858,7 @@ void TestIC::testICFileMigrationCreatesBackup()
 void TestIC::testICFileMigrationUpdatesSubcircuitVersion()
 {
     // After IC::loadFile() migrates a sub-circuit file, re-reading its header
-    // must return FileVersion::current.
+    // must return FormatRev::current.
 
     const QString srcDir = TestUtils::backwardCompatibilityDir() + "v4.2.0/";
     QTemporaryDir tempDir;
@@ -883,7 +883,7 @@ void TestIC::testICFileMigrationUpdatesSubcircuitVersion()
     QVERIFY(file.open(QIODevice::ReadOnly));
     QDataStream stream(&file);
     const QVersionNumber versionAfter = Serialization::readPandaHeader(stream);
-    QCOMPARE(versionAfter, FileVersion::current);
+    QCOMPARE(versionAfter, FormatRev::current);
 }
 
 void TestIC::testICFileMigrationDisabledSkips()
