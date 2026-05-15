@@ -92,10 +92,31 @@ void LanguageManager::loadTranslation(const QString &language)
     }
 
     m_qtTranslator = new QTranslator(this);
-    const QString qtBase  = QStringLiteral("qtbase_") + language;
-    const bool    qtFound = m_qtTranslator->load(qtBase, QLibraryInfo::path(QLibraryInfo::TranslationsPath));
+    const QString qtBase = QStringLiteral("qtbase_") + language;
+
+    // Deployed binaries bundle qtbase_<lang>.qm next to the application but
+    // QLibraryInfo::TranslationsPath returns the build-host path baked into
+    // libQt6Core, which doesn't exist on user machines.  Try the platform
+    // bundle layouts first, then fall back to the system Qt install for dev
+    // builds.
+    const QStringList searchPaths = {
+        QCoreApplication::applicationDirPath() + QStringLiteral("/../translations"),           // Linux AppImage (usr/translations)
+        QCoreApplication::applicationDirPath() + QStringLiteral("/translations"),              // Windows windeployqt
+        QCoreApplication::applicationDirPath() + QStringLiteral("/../Resources/translations"), // macOS bundle
+        QLibraryInfo::path(QLibraryInfo::TranslationsPath),                                    // System Qt install
+    };
+
+    bool qtFound = false;
+    for (const QString &dir : searchPaths) {
+        if (m_qtTranslator->load(qtBase, dir)) {
+            qtFound = true;
+            break;
+        }
+    }
+
     if (!qtFound || !Application::instance()->installTranslator(m_qtTranslator)) {
-        qWarning() << "Failed to load Qt translation for" << language << ", continuing without Qt translation";
+        qWarning() << "Failed to load Qt translation for" << language
+                   << "— tried:" << searchPaths;
         delete m_qtTranslator;
         m_qtTranslator = nullptr;
     }
