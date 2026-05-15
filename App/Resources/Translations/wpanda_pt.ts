@@ -2488,7 +2488,7 @@ Nome sugerido:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="407"/>
+        <location filename="../../Main.cpp" line="423"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
@@ -2976,62 +2976,67 @@ Foi criada uma cópia de segurança do ficheiro original com o nome: %3</transla
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="271"/>
+        <location filename="../../Main.cpp" line="280"/>
         <source>Circuit file to open.</source>
         <translation>Ficheiro de circuito para abrir.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="275"/>
+        <location filename="../../Main.cpp" line="284"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Nível de verbosidade 0 a 5, desativado por defeito.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="276"/>
+        <location filename="../../Main.cpp" line="285"/>
         <source>verbosity level</source>
         <translation>nível de verbosidade</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="281"/>
+        <location filename="../../Main.cpp" line="290"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Exporta o circuito para &lt;ficheiro-arduino&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="293"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Exporta o circuito para ficheiro de texto de forma de onda, lendo entrada do terminal.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="298"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Quando usado com -c/--terminal, bloqueia execução se o circuito contiver Tabelas Verdade.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="304"/>
+        <location filename="../../Main.cpp" line="313"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Executar em modo MCP (Model Context Protocol) para controlo programático.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="309"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Executar modo MCP com janela gráfica visível.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="367"/>
+        <location filename="../../Main.cpp" line="383"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Erro: O circuito contém elementos de Tabela Verdade.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="282"/>
+        <location filename="../../Main.cpp" line="428"/>
+        <source>Error: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="291"/>
         <source>arduino file</source>
         <translation>ficheiro arduino</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="287"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Exporta o circuito para ficheiro de texto de forma de onda.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="288"/>
+        <location filename="../../Main.cpp" line="297"/>
         <source>waveform input text file</source>
         <translation>ficheiro de texto de entrada de forma de onda</translation>
     </message>

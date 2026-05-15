@@ -2488,7 +2488,7 @@ Suggested name:</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="407"/>
+        <location filename="../../Main.cpp" line="423"/>
         <source>Error!</source>
         <translation>خطا!</translation>
     </message>
@@ -2976,62 +2976,67 @@ A backup of the original file has been created with name: %3</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="271"/>
+        <location filename="../../Main.cpp" line="280"/>
         <source>Circuit file to open.</source>
         <translation>فایل مداری برای باز کردن.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="275"/>
+        <location filename="../../Main.cpp" line="284"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>سطح جزئیات 0 تا 5، به طور پیش‌فرض غیرفعال.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="276"/>
+        <location filename="../../Main.cpp" line="285"/>
         <source>verbosity level</source>
         <translation>سطح جزئیات</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="281"/>
+        <location filename="../../Main.cpp" line="290"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>صادرات مدار به &lt;فایل-آردوینو&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="293"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>صادرات مدار به فایل متنی شکل موج، خواندن ورودی از ترمینال.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="298"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>هنگام استفاده با -c/--terminal، اجرا را مسدود کن اگر مدار شامل جداول صحت باشد.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="304"/>
+        <location filename="../../Main.cpp" line="313"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>اجرا در حالت MCP (Model Context Protocol) برای کنترل برنامه‌ریزی‌شده.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="309"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>اجرای حالت MCP با پنجره رابط کاربری قابل مشاهده.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="367"/>
+        <location filename="../../Main.cpp" line="383"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>خطا: مدار شامل عناصر جدول حقیقت است.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="282"/>
+        <location filename="../../Main.cpp" line="428"/>
+        <source>Error: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="291"/>
         <source>arduino file</source>
         <translation>فایل arduino</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="287"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>صادرات مدار به فایل متنی شکل موج.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="288"/>
+        <location filename="../../Main.cpp" line="297"/>
         <source>waveform input text file</source>
         <translation>فایل متنی ورودی موج</translation>
     </message>

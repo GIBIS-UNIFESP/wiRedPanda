@@ -2488,7 +2488,7 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="407"/>
+        <location filename="../../Main.cpp" line="423"/>
         <source>Error!</source>
         <translation>Erreur&#x202f;!</translation>
     </message>
@@ -2976,62 +2976,67 @@ Une sauvegarde du fichier original a été créée sous le nom&#xa0;: %3</transl
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="271"/>
+        <location filename="../../Main.cpp" line="280"/>
         <source>Circuit file to open.</source>
         <translation>Fichier de circuit à ouvrir.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="275"/>
+        <location filename="../../Main.cpp" line="284"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Niveau de verbosité de 0 à 5, désactivé par défaut.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="276"/>
+        <location filename="../../Main.cpp" line="285"/>
         <source>verbosity level</source>
         <translation>niveau de verbosité</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="281"/>
+        <location filename="../../Main.cpp" line="290"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Exporte le circuit vers &lt;fichier-arduino&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="298"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Lorsqu&apos;utilisé avec -c/--terminal, bloque l&apos;exécution si le circuit contient des Tables de Vérité.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="304"/>
+        <location filename="../../Main.cpp" line="313"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Lancer en mode MCP (Model Context Protocol) pour un contrôle programmatique.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="309"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Lancer le mode MCP avec une fenêtre graphique visible.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="367"/>
+        <location filename="../../Main.cpp" line="383"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Erreur : Le circuit contient des éléments de Table de Vérité.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="282"/>
+        <location filename="../../Main.cpp" line="428"/>
+        <source>Error: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="291"/>
         <source>arduino file</source>
         <translation>fichier arduino</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="288"/>
+        <location filename="../../Main.cpp" line="297"/>
         <source>waveform input text file</source>
         <translation>fichier texte de formes d&apos;onde</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="293"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Exporte le circuit vers un fichier texte de formes d&apos;onde, en lisant l&apos;entrée du terminal.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="287"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Exporte le circuit vers un fichier texte de formes d&apos;onde.</translation>
     </message>
