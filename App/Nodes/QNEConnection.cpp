@@ -22,8 +22,6 @@
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
 
-[[maybe_unused]] static const int s_connectionMetatypeId = qRegisterMetaType<QNEConnection>();
-
 QNEConnection::QNEConnection(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
