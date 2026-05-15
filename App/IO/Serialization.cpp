@@ -177,7 +177,10 @@ QVariant readBoundedVariant(QDataStream &stream)
     }
 
     const quint32 typeId = qFromBigEndian<quint32>(hdr);
-    const quint8  isNull = static_cast<quint8>(hdr[4]);
+    // hdr[4] holds the isNull byte; deliberately unread because Qt 6.9 also reads
+    // type-specific data when isNull != 0, so it is not a safe skip-guard (see
+    // function header). Still peek 5 bytes so the consumeHeader lambda below
+    // re-reads the exact same bytes Qt's QVariant operator>> expects.
 
     // Consume the 5 header bytes we peeked before dispatching.
     auto consumeHeader = [&]() { char s[5]; stream.readRawData(s, 5); };
