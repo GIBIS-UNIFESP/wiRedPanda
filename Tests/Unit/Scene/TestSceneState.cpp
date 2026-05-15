@@ -476,7 +476,6 @@ void TestSceneState::testHoverPortTracking()
     conn->setStartPort(dynamic_cast<QNEOutputPort *>(port1));
     conn->setEndPort(dynamic_cast<QNEInputPort *>(port2));
     scene.addItem(conn);
-    QVERIFY2(conn != nullptr, "Connection between ports should be creatable");
 
     // Verify we can navigate the connection chain
     QVERIFY2(conn->startPort() != nullptr && conn->endPort() != nullptr,

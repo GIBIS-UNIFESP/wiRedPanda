@@ -148,7 +148,7 @@ void TestDanglingPointer::bug4_restartMustClearStaleTopology()
     WorkSpace ws;
     auto *sim = ws.scene()->simulation();
     auto *ic = loadInitializedIC(ws);
-    QVERIFY(ic);
+    QVERIFY(ic != nullptr);
     QVERIFY(sim->m_initialized);
     QVERIFY(!sim->m_sortedElements.isEmpty());
 
@@ -176,7 +176,7 @@ void TestDanglingPointer::bug5_setCircuitUpdateRequiredMustNotLieAboutInit()
     // Load a real circuit — initialize() succeeds, m_initialized=true,
     // m_sortedElements populated.
     auto *ic = loadInitializedIC(ws);
-    QVERIFY(ic);
+    QVERIFY(ic != nullptr);
     QVERIFY(sim->m_initialized);
     QVERIFY(!sim->m_sortedElements.isEmpty());
 

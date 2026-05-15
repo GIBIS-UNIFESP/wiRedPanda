@@ -433,13 +433,15 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     if (!newProperties.isEmpty()) {
         const bool needsMacro = !wirelessConnsToDelete.isEmpty();
         auto *scene = getCurrentScene();
-        if (needsMacro) {
-            scene->undoStack()->beginMacro(QStringLiteral("Change wireless mode"));
-        }
-        scene->receiveCommand(new UpdateCommand({element}, oldData, scene));
-        if (needsMacro) {
-            scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, scene));
-            scene->undoStack()->endMacro();
+        if (scene) {
+            if (needsMacro) {
+                scene->undoStack()->beginMacro(QStringLiteral("Change wireless mode"));
+            }
+            scene->receiveCommand(new UpdateCommand({element}, oldData, scene));
+            if (needsMacro) {
+                scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, scene));
+                scene->undoStack()->endMacro();
+            }
         }
     }
 
