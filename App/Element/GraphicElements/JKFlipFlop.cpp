@@ -118,3 +118,12 @@ void JKFlipFlop::updateLogic()
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }
+
+void JKFlipFlop::resetSimState()
+{
+    GraphicElement::resetSimState();
+    m_simLastClk = Status::Inactive;
+    m_simLastJ   = Status::Active;
+    m_simLastK   = Status::Active;
+}
+

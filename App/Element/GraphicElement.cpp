@@ -1071,6 +1071,21 @@ void GraphicElement::updateLogic()
     // Default no-op — decorative elements (Line, Text) have no simulation behaviour.
 }
 
+void GraphicElement::resetSimState()
+{
+    // Reset each output slot to the port's power-on default so that the next
+    // BeWavedDolphin sweep starts from a known, reproducible state.
+    // Subclasses with internal edge-detection variables (flip-flops) override this
+    // to also clear those fields.
+    for (int i = 0; i < m_simOutputValues.size(); ++i) {
+        const Status def = (i < m_outputPorts.size())
+                               ? m_outputPorts.at(i)->defaultValue()
+                               : Status::Inactive;
+        m_simOutputValues[i] = (def == Status::Unknown) ? Status::Inactive : def;
+    }
+    m_simOutputChanged = true;
+}
+
 qsizetype GraphicElement::simOutputSize() const
 {
     return m_simOutputValues.size();

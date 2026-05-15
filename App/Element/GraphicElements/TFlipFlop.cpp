@@ -105,3 +105,11 @@ void TFlipFlop::updateLogic()
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }
+
+void TFlipFlop::resetSimState()
+{
+    GraphicElement::resetSimState();
+    m_simLastClk   = Status::Inactive;
+    m_simLastValue = Status::Active;
+}
+

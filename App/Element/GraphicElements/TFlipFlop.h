@@ -41,6 +41,8 @@ public:
 
     /// Updates output state on each rising clock edge.
     void updateLogic() override;
+    /// Resets Q/~Q outputs and edge-detection state to power-on defaults.
+    void resetSimState() override;
 private:
     Status m_simLastClk = Status::Inactive;
     Status m_simLastValue = Status::Active;

@@ -384,6 +384,16 @@ void BewavedDolphin::run()
     // waveform shows incorrect values.
     SimulationThrottleDisabler throttleDisabler(m_simulation);
 
+    // Reset every element's sequential state (Q/~Q outputs, edge-detection variables) to
+    // power-on defaults before the sweep so results are reproducible regardless of any
+    // prior simulation run that may have left flip-flops in a different state.
+    qCDebug(zero) << "Resetting simulation state of all elements.";
+    for (auto *elm : m_externalScene->elements()) {
+        if (elm && elm->type() == GraphicElement::Type) {
+            elm->resetSimState();
+        }
+    }
+
     // --- Step through each time column and compute circuit outputs ---
     for (int column = 0; column < m_model->columnCount(); ++column) {
         qCDebug(four) << "Itr: " << column << ", inputs: " << m_inputs.size();
@@ -430,16 +440,13 @@ void BewavedDolphin::restoreInputs()
 {
     qCDebug(zero) << "Restoring old values to inputs, prior to simulation.";
 
-    // Uses m_oldInputValues captured at loadSignals() time. Note that index maps to
-    // the element level, not the port level — multi-port inputs share the same saved value.
-    for (int index = 0; index < m_inputs.size(); ++index) {
-        auto *input = m_inputs.at(index);
-        if (!input) {
-            continue;
-        }
+    // m_oldInputValues is indexed by PORT (one entry per output port of each input element),
+    // not by element. A separate port-level index is required to avoid reading the wrong
+    // saved value for multi-port inputs (e.g. InputRotary).
+    int portIndex = 0;
+    for (auto *input : std::as_const(m_inputs)) {
         for (int port = 0; port < input->outputSize(); ++port) {
-            const bool oldValue = static_cast<bool>(m_oldInputValues.at(index));
-
+            const bool oldValue = static_cast<bool>(m_oldInputValues.at(portIndex++));
             if (input->outputSize() > 1) {
                 input->setOn(oldValue, port);
             } else {

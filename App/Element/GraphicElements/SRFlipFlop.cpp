@@ -115,3 +115,12 @@ void SRFlipFlop::updateLogic()
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }
+
+void SRFlipFlop::resetSimState()
+{
+    GraphicElement::resetSimState();
+    m_simLastClk = Status::Inactive;
+    m_simLastS   = Status::Inactive;
+    m_simLastR   = Status::Inactive;
+}
+
