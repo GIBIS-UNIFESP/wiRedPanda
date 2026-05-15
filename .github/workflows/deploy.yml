@@ -194,13 +194,6 @@ jobs:
         LIBDIR=/usr/lib/${ARCH_TRIPLE}-linux-gnu
         sudo ln -sf $LIBDIR/libtiff.so.6 $LIBDIR/libtiff.so.5
 
-        # Copy Qt base translations so user-facing dialog strings (buttons,
-        # file picker, message boxes) are translated. go-appimage does not
-        # bundle these automatically; QLibraryInfo::TranslationsPath resolves
-        # to usr/translations/ inside the AppImage at runtime.
-        mkdir -p appimage/usr/translations
-        python3 Scripts/copy_qt_translations.py "$QT_ROOT_DIR/translations" appimage/usr/translations
-
         # Deploy: bundle all dependencies (including glibc) and patch RPATHs.
         # go-appimage uses patchelf internally to set $ORIGIN-relative RPATHs
         # on all bundled ELFs, covering transitive deps like libGLdispatch.so.0.
@@ -522,13 +515,6 @@ jobs:
         cp -r Examples build-sentry-breakpad/wiredpanda.app/Contents/Resources/Examples
         # Note: breakpad backend doesn't generate crashpad_handler (in-process crash handling)
         cp thirdparty/sentry/lib/libsentry.dylib build-sentry-breakpad/wiredpanda.app/Contents/Frameworks/
-
-    - name: Copy Qt translations
-      if: runner.os == 'macOS'
-      shell: bash
-      run: |
-        mkdir -p build-sentry-breakpad/wiredpanda.app/Contents/translations
-        python3 Scripts/copy_qt_translations.py "$QT_ROOT_DIR/translations" build-sentry-breakpad/wiredpanda.app/Contents/translations
 
     - name: Generate macOS dSYM Symbols
       if: runner.os == 'macOS'

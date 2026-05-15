@@ -63,7 +63,6 @@ signals:
 private:
     // --- Members ---
 
-    QTranslator *m_pandaTranslator = nullptr; ///< Translator for the application's own .qm strings.
-    QTranslator *m_qtTranslator    = nullptr; ///< Translator for Qt's own translatable strings.
+    QTranslator *m_translator = nullptr; ///< Single translator carrying both app and (with MERGE_QT_TRANSLATIONS) Qt strings.
 };
 

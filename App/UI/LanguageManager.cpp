@@ -4,7 +4,6 @@
 #include "App/UI/LanguageManager.h"
 
 #include <QDir>
-#include <QLibraryInfo>
 #include <QLocale>
 #include <QResource>
 #include <QTranslator>
@@ -48,9 +47,8 @@ LanguageManager::LanguageManager(QObject *parent)
 
 LanguageManager::~LanguageManager()
 {
-    // Remove translators from Application::instance() before they are deleted by the QObject parent tree.
-    Application::instance()->removeTranslator(m_pandaTranslator);
-    Application::instance()->removeTranslator(m_qtTranslator);
+    // Remove translator from Application::instance() before it is deleted by the QObject parent tree.
+    Application::instance()->removeTranslator(m_translator);
 }
 
 void LanguageManager::loadTranslation(const QString &language)
@@ -61,64 +59,36 @@ void LanguageManager::loadTranslation(const QString &language)
 
     Settings::setLanguage(language);
 
-    // Always recreate translators rather than re-loading; Qt does not guarantee
-    // that calling load() on an existing translator re-emits languageChanged.
-    Application::instance()->removeTranslator(m_pandaTranslator);
-    Application::instance()->removeTranslator(m_qtTranslator);
-
-    delete m_pandaTranslator;
-    delete m_qtTranslator;
-
-    m_pandaTranslator = nullptr;
-    m_qtTranslator    = nullptr;
+    // Always recreate the translator rather than re-loading; Qt does not
+    // guarantee that calling load() on an existing translator re-emits
+    // languageChanged.
+    Application::instance()->removeTranslator(m_translator);
+    delete m_translator;
+    m_translator = nullptr;
 
     if (language == "en") {
         emit translationChanged();
         return;
     }
 
-    const QString pandaFile = QString(":/Translations/wpanda_%1.qm").arg(language);
+    // qt_add_translations embeds wpanda_<lang>.qm at :/i18n/ at build time.
+    // On Qt 6.9+ MERGE_QT_TRANSLATIONS also bakes qtbase / Widgets / Gui /
+    // Multimedia / Svg catalogs into the same file, so a single translator
+    // covers both application and Qt-owned strings.  On Qt 6.2..6.8 the
+    // merge isn't available — Qt's own dialog strings (file picker, message
+    // boxes) stay English, but application strings still translate.
+    const QString qmFile = QStringLiteral(":/i18n/wpanda_%1.qm").arg(language);
 
-    if (QResource(pandaFile).isValid()) {
-        m_pandaTranslator = new QTranslator(this);
+    if (QResource(qmFile).isValid()) {
+        m_translator = new QTranslator(this);
 
-        if (!m_pandaTranslator->load(pandaFile) || !Application::instance()->installTranslator(m_pandaTranslator)) {
-            qWarning() << "Failed to load wiRedPanda translation for" << language << ", falling back to English";
-            delete m_pandaTranslator;
-            m_pandaTranslator = nullptr;
+        if (!m_translator->load(qmFile) || !Application::instance()->installTranslator(m_translator)) {
+            qWarning() << "Failed to load translation for" << language << ", falling back to English";
+            delete m_translator;
+            m_translator = nullptr;
             loadTranslation("en");
             return;
         }
-    }
-
-    m_qtTranslator = new QTranslator(this);
-    const QString qtBase = QStringLiteral("qtbase_") + language;
-
-    // Deployed binaries bundle qtbase_<lang>.qm next to the application but
-    // QLibraryInfo::TranslationsPath returns the build-host path baked into
-    // libQt6Core, which doesn't exist on user machines.  Try the platform
-    // bundle layouts first, then fall back to the system Qt install for dev
-    // builds.
-    const QStringList searchPaths = {
-        QCoreApplication::applicationDirPath() + QStringLiteral("/../translations"),           // Linux AppImage (usr/translations)
-        QCoreApplication::applicationDirPath() + QStringLiteral("/translations"),              // Windows windeployqt
-        QCoreApplication::applicationDirPath() + QStringLiteral("/../Resources/translations"), // macOS bundle
-        QLibraryInfo::path(QLibraryInfo::TranslationsPath),                                    // System Qt install
-    };
-
-    bool qtFound = false;
-    for (const QString &dir : searchPaths) {
-        if (m_qtTranslator->load(qtBase, dir)) {
-            qtFound = true;
-            break;
-        }
-    }
-
-    if (!qtFound || !Application::instance()->installTranslator(m_qtTranslator)) {
-        qWarning() << "Failed to load Qt translation for" << language
-                   << "— tried:" << searchPaths;
-        delete m_qtTranslator;
-        m_qtTranslator = nullptr;
     }
 
     emit translationChanged();
@@ -128,8 +98,8 @@ QStringList LanguageManager::availableLanguages() const
 {
     QStringList languages{"en"};
 
-    // Qt's resource system exposes ":/Translations" as a virtual directory.
-    QDir translationsDir(":/Translations");
+    // Qt's resource system exposes ":/i18n" as a virtual directory.
+    QDir translationsDir(QStringLiteral(":/i18n"));
     if (translationsDir.exists()) {
         const QStringList qmFiles = translationsDir.entryList({"wpanda_*.qm"}, QDir::Files);
 
@@ -138,7 +108,7 @@ QStringList LanguageManager::availableLanguages() const
             langCode.remove("wpanda_");
             langCode.remove(".qm");
 
-            if (!langCode.isEmpty() && QResource(QString(":/Translations/%1").arg(file)).isValid()) {
+            if (!langCode.isEmpty() && QResource(QStringLiteral(":/i18n/") + file).isValid()) {
                 languages << langCode;
             }
         }
@@ -152,7 +122,7 @@ QStringList LanguageManager::availableLanguages() const
         };
 
         for (const QString &langCode : kKnownLanguages) {
-            if (QResource(QString(":/Translations/wpanda_%1.qm").arg(langCode)).isValid()) {
+            if (QResource(QStringLiteral(":/i18n/wpanda_%1.qm").arg(langCode)).isValid()) {
                 languages << langCode;
             }
         }
