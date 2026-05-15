@@ -15,3 +15,5 @@ paths-ignore:
   - Tests/BackwardCompatibility
   - Tests/Fuzz/regressions
   - "**/*.md"
+  # All build-tree artifacts (FetchContent deps, Unity builds, Qt MOC autogen)
+  - "build-*/**"
