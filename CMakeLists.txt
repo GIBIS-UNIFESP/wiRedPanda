@@ -7,7 +7,7 @@ set(CMAKE_POLICY_VERSION_MINIMUM 3.16) # for nlohmann/json
 # the WHOLE_ARCHIVE genex) into a single reference, which kills the macOS
 # "ld: warning: ignoring duplicate libraries" noise.
 cmake_policy(SET CMP0156 NEW)
-project(wiredpanda VERSION 5.0.1 LANGUAGES CXX)
+project(wiredpanda VERSION 5.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
