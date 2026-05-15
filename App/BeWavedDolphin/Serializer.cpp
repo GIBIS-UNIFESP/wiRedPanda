@@ -105,9 +105,11 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
     // Validate before indexing to avoid out-of-bounds access on corrupt files
     const qsizetype expectedSize = 2 + static_cast<qsizetype>(rows) * cols;
     if (wordList.size() < expectedSize) {
+        // Pass QString so .arg() selects the variadic-string overload and avoids
+        // QString::arg(qlonglong, int)'s narrowing of the second qsizetype to int.
         throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer",
             "Invalid CSV format: expected %1 elements, got %2.",
-            expectedSize, wordList.size());
+            QString::number(expectedSize), QString::number(wordList.size()));
     }
 
     WaveformData data;
