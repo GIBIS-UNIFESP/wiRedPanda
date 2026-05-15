@@ -140,10 +140,7 @@ void TestIC::testICNestedMultiLevel()
     for (IC *ic : loadedICs) {
         QVERIFY2(ic->inputSize() >= 0, "IC should have non-negative input count");
         QVERIFY2(ic->outputSize() >= 0, "IC should have non-negative output count");
-        // At least one port should exist (most ICs are not completely empty)
-        if (ic->inputSize() == 0 && ic->outputSize() == 0) {
-            // Empty IC is acceptable
-        }
+        // Empty ICs (no inputs and no outputs) are acceptable; nothing to assert.
     }
 }
 

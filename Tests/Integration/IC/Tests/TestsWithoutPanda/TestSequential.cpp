@@ -705,16 +705,11 @@ void TestSequential::testFsmTimingEdgeCases()
 
         bool newState = triggerValue;
         int readAfter = getInputStatus(stateLed);
-        int readAfterQnot = getInputStatus(stateNotLed);
 
         if (readAfter != static_cast<int>(newState)) {
             postClockViolations++;
             violationDetails.append(QString("Cycle %1 post-clock: Q=%2, expected %3 (trigger=%4)")
                 .arg(i).arg(readAfter).arg(newState).arg(triggerValue));
-        }
-
-        // Verify Q_not is complement
-        if (readAfter != (readAfterQnot == 0 ? 1 : 0)) {
         }
 
         currentState = newState;
@@ -803,16 +798,11 @@ void TestSequential::testFsmExtendedSequences()
         // Expected next state: what's on trigger (captured on rising edge)
         bool expectedNextState = triggerValue;
         int readAfter = getInputStatus(stateLed);
-        int readAfterQnot = getInputStatus(stateNotLed);
 
         if (readAfter != static_cast<int>(expectedNextState)) {
             postClockViolations++;
             violationDetails.append(QString("Cycle %1 post-clock: Q=%2, expected %3 (trigger=%4)")
                 .arg(cycle).arg(readAfter).arg(expectedNextState).arg(triggerValue));
-        }
-
-        // Verify Q_not is complement
-        if (readAfter != (readAfterQnot == 0 ? 1 : 0)) {
         }
 
         stateTrace.append(readAfter);
@@ -1182,17 +1172,11 @@ void TestSequential::testFsmLongTermStability()
 
         if (Q != expectedQ) {
             stateErrors++;
-            if (stateErrors <= 5) {  // Only report first 5 errors
-            }
         }
 
         // Check complement every 50 cycles
         if (cycle % 50 == 0 && Q != (Qnot == 0 ? 1 : 0)) {
             complementErrors++;
-        }
-
-        // Progress indicator every 100 cycles
-        if (cycle % 100 == 0) {
         }
     }
 
