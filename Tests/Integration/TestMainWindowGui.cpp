@@ -2341,7 +2341,7 @@ void TestMainWindowGui::testContextMenuRotateLeft()
 
     qreal before = andGate->rotation();
     scene->rotateLeft();
-    QVERIFY(andGate->rotation() != before);
+    QVERIFY(!qFuzzyCompare(andGate->rotation(), before));
 }
 
 void TestMainWindowGui::testContextMenuRotateRight()
@@ -2357,7 +2357,7 @@ void TestMainWindowGui::testContextMenuRotateRight()
 
     qreal before = andGate->rotation();
     scene->rotateRight();
-    QVERIFY(andGate->rotation() != before);
+    QVERIFY(!qFuzzyCompare(andGate->rotation(), before));
 }
 
 void TestMainWindowGui::testContextMenuCopy()

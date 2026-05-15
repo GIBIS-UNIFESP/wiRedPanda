@@ -383,7 +383,7 @@ void TestElementProperties::testFrequencyValidation()
     QVERIFY(clock.frequency() > 0.0);
     // Verify that frequency is either unchanged or set to requested value
     // (High frequency may be rejected due to precision limits)
-    if (clock.frequency() == before) {
+    if (qFuzzyCompare(clock.frequency(), before)) {
         // High frequency was rejected - this is acceptable
         QCOMPARE(clock.frequency(), before);
     } else {
