@@ -216,7 +216,7 @@ class PerformanceTests(MCPTestBase):
 
                 # Delete all elements
                 for elem_id in created_ids:
-                    resp = await self.send_command("delete_element", {"element_id": elem_id})
+                    await self.send_command("delete_element", {"element_id": elem_id})
 
                 # Check memory after batch
                 current_memory = proc.memory_info().rss / 1024 / 1024

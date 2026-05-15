@@ -196,8 +196,6 @@ class StackPointer8BitBuilder(ICBuilderBase):
         # Create a single Vcc element to keep Preset/Clear inactive (active-LOW)
         vcc_preset_clear_id = await self.create_element("InputVcc", 400.0, 500.0, "Vcc_PresetClear")
         if vcc_preset_clear_id is None:
-            return False
-        if vcc_preset_clear_id is None:
             self.log_error("extract element_id for Vcc Preset/Clear")
             return False
 

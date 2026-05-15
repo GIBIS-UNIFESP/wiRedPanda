@@ -158,7 +158,7 @@ async def main():
                 continue
 
             # Close tab
-            resp = await send_command(proc, "close_circuit", {}, req_id)
+            await send_command(proc, "close_circuit", {}, req_id)
             req_id += 1
 
             migrated += 1
