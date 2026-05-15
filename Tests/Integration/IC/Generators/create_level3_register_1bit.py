@@ -16,6 +16,7 @@ Usage:
 """
 
 import asyncio
+import sys
 
 from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
@@ -296,4 +297,4 @@ async def build(mcp) -> bool:
 
 if __name__ == "__main__":
     exit_code = asyncio.run(run_ic_builder(build, "1-bit Register IC"))
-    exit(exit_code)
+    sys.exit(exit_code)

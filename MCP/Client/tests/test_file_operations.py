@@ -98,6 +98,7 @@ class FileOperationTests(MCPTestBase):
             if os.path.exists(temp_file):
                 os.remove(temp_file)
         except OSError:
+            # best-effort cleanup — temp file may already be gone
             pass
 
         return all_passed
@@ -160,6 +161,7 @@ class FileOperationTests(MCPTestBase):
                 if os.path.exists(temp_path):
                     os.remove(temp_path)
             except OSError:
+                # best-effort cleanup — temp file may already be gone
                 pass
 
         return all_passed
@@ -260,6 +262,7 @@ class FileOperationTests(MCPTestBase):
             if os.path.exists(temp_file):
                 os.remove(temp_file)
         except OSError:
+            # best-effort cleanup — temp file may already be gone
             pass
 
         return all_passed
@@ -298,6 +301,7 @@ class FileOperationTests(MCPTestBase):
                 # Clean up dummy file
                 os.remove(invalid_file)
             except OSError:
+                # best-effort cleanup — temp file may already be gone
                 pass
 
         # Test save/load with missing filename parameter

@@ -5,6 +5,7 @@ Provides comprehensive validation using both JSON Schema and Pydantic models.
 """
 
 import json
+import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypedDict, Union
 
@@ -77,7 +78,7 @@ class MCPSchemaValidator:
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"❌ CRITICAL: Failed to load schema from {self.schema_path}: {e}")
             print("🛑 Stopping execution - schema loading failed")
-            exit(1)
+            sys.exit(1)
 
     @beartype
     def validate_command_json_schema(self, command_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -307,7 +308,7 @@ class _ValidatorSingleton:
             if not schema_file_path.exists():
                 print(f"❌ CRITICAL: Schema file not found at {schema_file_path.absolute()}")
                 print("🛑 Stopping execution - schema is required for validation")
-                exit(1)
+                sys.exit(1)
             cls._instance = MCPSchemaValidator(str(schema_file_path))
 
         return cls._instance

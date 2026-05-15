@@ -40,6 +40,7 @@ Usage:
 """
 
 import asyncio
+import sys
 
 from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import (
@@ -826,4 +827,4 @@ async def build(mcp) -> bool:
 
 if __name__ == "__main__":
     exit_code = asyncio.run(run_ic_builder(build, "JK Flip-Flop IC"))
-    exit(exit_code)
+    sys.exit(exit_code)
