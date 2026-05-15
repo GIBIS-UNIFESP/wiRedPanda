@@ -799,7 +799,6 @@ void MorphCommand::transferPortConnections(GraphicElement *oldElm, GraphicElemen
     }
 }
 
-// FIXME: verticalFlip is rotating on the horizontal axis too
 FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, Scene *scene, QUndoCommand *parent)
     : ElementsCommand(items, scene, parent)
     , m_axis(axis)
