@@ -94,7 +94,7 @@ jobs:
       shell: bash
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v4
+      uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
       with:
         version: ${{ matrix.qt }}
         cache: true
@@ -104,7 +104,7 @@ jobs:
         arch: ${{ matrix.qt_arch }}
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@main
+      uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
       with:
         key: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.qt }}
 
@@ -335,7 +335,7 @@ jobs:
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish Ubuntu
-      uses: softprops/action-gh-release@v3
+      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
       if: runner.os == 'Linux'
       with:
         fail_on_unmatched_files: true
@@ -345,7 +345,7 @@ jobs:
 
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
-      uses: TheMrMilchmann/setup-msvc-dev@v4.0.0
+      uses: TheMrMilchmann/setup-msvc-dev@79dac248aac9d0059f86eae9d8b5bfab4e95e97c # v4.0.0
       with:
         arch: ${{ matrix.arch == 'arm64' && 'arm64' || 'x64' }}
 
@@ -494,7 +494,7 @@ jobs:
 
     - name: Publish Windows
       if: runner.os == 'Windows'
-      uses: softprops/action-gh-release@v3
+      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
       with:
         fail_on_unmatched_files: true
         files: 'build-sentry-crashpad/*.zip'
@@ -788,7 +788,7 @@ jobs:
 
     - name: Publish macOS
       if: runner.os == 'macOS'
-      uses: softprops/action-gh-release@v3
+      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
       with:
         fail_on_unmatched_files: true
         files: 'build-sentry-breakpad/*.dmg'

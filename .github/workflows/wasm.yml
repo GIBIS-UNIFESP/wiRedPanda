@@ -25,7 +25,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup Qt for WASM
-      uses: jurplel/install-qt-action@v4
+      uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
       with:
         version: 6.9.3
         host: all_os
@@ -46,7 +46,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y ninja-build
 
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@main
+      uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
       with:
         key: wasm-${{ runner.os }}
 
