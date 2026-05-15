@@ -138,7 +138,7 @@ void TestMultiplexing::testMuxEdgeCases()
 
     auto port1Pos = mux.inputPort(1)->pos();
     QCOMPARE(port1Pos.x(), 16);  // Second data input also on left
-    QVERIFY(port1Pos.y() != port0Pos.y());  // Different Y from first data
+    QVERIFY(!qFuzzyCompare(port1Pos.y(), port0Pos.y()));  // Different Y from first data
 
     auto selectPos = mux.inputPort(2)->pos();
     QVERIFY(selectPos.x() >= 32);  // Select line at bottom

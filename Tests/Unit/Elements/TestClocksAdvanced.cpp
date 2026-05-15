@@ -129,7 +129,7 @@ void TestClocksAdvanced::testTwoClocksDifferentFrequencies()
     QCOMPARE(clock2->frequency(), 100.0);
 
     // Verify they maintain independent frequencies
-    QVERIFY(clock1->frequency() != clock2->frequency());
+    QVERIFY(!qFuzzyCompare(clock1->frequency(), clock2->frequency()));
 }
 
 void TestClocksAdvanced::testThreeClocksConcurrentExecution()
@@ -171,7 +171,7 @@ void TestClocksAdvanced::testClockSynchronizationEdgeCases()
 
     // Modify one
     clock1->setFrequency(60.0);
-    QVERIFY(clock1->frequency() != clock2->frequency());
+    QVERIFY(!qFuzzyCompare(clock1->frequency(), clock2->frequency()));
 }
 
 void TestClocksAdvanced::testMultiClockPhaseRelationships()
