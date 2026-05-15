@@ -72,7 +72,6 @@ void TestSceneConnections::testConnectionQueryAfterWiring()
 
     // Create a connection manually
     auto *connection = new QNEConnection(nullptr);
-    QVERIFY(connection != nullptr);
 
     // Connect output to input
     auto *output = andGate->outputPort(0);

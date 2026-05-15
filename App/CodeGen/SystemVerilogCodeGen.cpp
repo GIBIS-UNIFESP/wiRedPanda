@@ -134,6 +134,10 @@ QString SystemVerilogCodeGen::otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &
     visited.insert(port);
 
     auto *elm = otherPort->graphicElement();
+    if (!elm) {
+        QString mapped = m_varMap.value(otherPort);
+        return mapped.isEmpty() ? highLow(port->defaultValue()) : mapped;
+    }
 
     // Check m_varMap first — if a wire/variable was declared for this port, use it
     // directly instead of inlining. This prevents fan-out collision (multiple gates
@@ -392,6 +396,9 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     for (int i = 0; i < ic->internalInputs().size(); ++i) {
         // m_internalInputs[i] is the Node's input port. Get the Node element.
         auto *nodeElm = ic->internalInputs()[i]->graphicElement();
+        if (!nodeElm) {
+            continue;
+        }
         // The Node's output port is what internal elements connect to.
         m_varMap[nodeElm->outputPort(0)] = info.inputNames[i];
         boundaryNodes.insert(nodeElm);
@@ -401,6 +408,9 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     // The assign for these is emitted separately at end of module.
     for (int i = 0; i < ic->internalOutputs().size(); ++i) {
         auto *nodeElm = ic->internalOutputs()[i]->graphicElement();
+        if (!nodeElm) {
+            continue;
+        }
         m_varMap[nodeElm->outputPort(0)] = info.outputNames[i];
         boundaryNodes.insert(nodeElm);
     }
@@ -427,6 +437,9 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     for (int i = 0; i < ic->internalOutputs().size(); ++i) {
         // m_internalOutputs[i] is the Node's output port. Get the Node element.
         auto *nodeElm = ic->internalOutputs()[i]->graphicElement();
+        if (!nodeElm) {
+            continue;
+        }
         // The Node's input port receives from internal logic
         QString value = otherPortName(nodeElm->inputPort(0));
         m_stream << "assign " << info.outputNames[i] << " = " << value << ";" << Qt::endl;

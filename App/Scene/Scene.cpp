@@ -114,14 +114,12 @@ void Scene::addItem(QGraphicsItem *item)
         if (!elm) {
             return;
         }
-        if (elm->elementType() == ElementType::IC) {
-            auto *ic = static_cast<IC *>(elm);
+        if (auto *ic = qobject_cast<IC *>(elm)) {
             if (!ic->file().isEmpty()) {
                 m_icRegistry.watchFile(ic->file());
             }
             connect(ic, &IC::requestOpenSubCircuit, this, &Scene::icOpenRequested);
-        } else if (elm->elementType() == ElementType::TruthTable) {
-            auto *tt = static_cast<TruthTable *>(elm);
+        } else if (auto *tt = qobject_cast<TruthTable *>(elm)) {
             connect(tt, &TruthTable::requestOpenTruthTableEditor, this, &Scene::openTruthTableRequested);
         }
     }

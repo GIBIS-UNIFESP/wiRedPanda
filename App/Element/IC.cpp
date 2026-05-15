@@ -75,6 +75,9 @@ void buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels)
     for (int i = 0; i < ports.size(); ++i) {
         auto *port = ports.at(i);
         auto *elm = port->graphicElement();
+        if (!elm) {
+            continue;
+        }
         QString lb = elm->label();
 
         if (!port->name().isEmpty()) {
