@@ -88,8 +88,8 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     setToolTip(m_translatedName);
 
     qCDebug(four) << "Including input and output ports.";
-    setInputSize(static_cast<int>(metadata.minInputSize));
-    setOutputSize(static_cast<int>(metadata.minOutputSize));
+    GraphicElement::setInputSize(static_cast<int>(metadata.minInputSize));
+    GraphicElement::setOutputSize(static_cast<int>(metadata.minOutputSize));
 
     GraphicElement::updatePortsProperties();
     GraphicElement::updateTheme();

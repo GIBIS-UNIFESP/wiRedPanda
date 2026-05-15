@@ -587,7 +587,7 @@ void TestSequential::testFsmStateTransitions()
     QVector<bool> triggers(transitionCount + 1);
     triggers[0] = false;  // Start in IDLE (trigger=0, so Q stays 0)
     for (int i = 1; i <= transitionCount; ++i) {
-        triggers[i] = (i % 2 == 1);  // Alternate: 1, 0, 1, 0, ...
+        triggers[i] = (i % 2 != 0);  // Alternate: 1, 0, 1, 0, ...
     }
 
     bool currentState = false;  // Initial state: IDLE (Q=0)
@@ -682,7 +682,7 @@ void TestSequential::testFsmTimingEdgeCases()
     QStringList violationDetails;
 
     for (int i = 0; i < rapidChanges; ++i) {
-        bool triggerValue = (i % 2 == 1);
+        bool triggerValue = (i % 2 != 0);
 
         triggerSwitch->setOn(triggerValue);
 
@@ -934,7 +934,7 @@ void TestSequential::testFsmLongSequenceStability()
 
     // Run alternating pattern for cycleCount cycles
     for (int cycle = 0; cycle < cycleCount; ++cycle) {
-        bool triggerValue = (cycle % 2 == 1);  // Alternate: 0,1,0,1,0,1...
+        bool triggerValue = (cycle % 2 != 0);  // Alternate: 0,1,0,1,0,1...
 
         triggerSwitch->setOn(triggerValue);
 
@@ -1054,7 +1054,7 @@ void TestSequential::testFsmRapidClockNoSettle()
     int stateErrors = 0;
 
     for (int cycle = 0; cycle < rapidCycleCount; ++cycle) {
-        bool triggerValue = (cycle % 2 == 1);
+        bool triggerValue = (cycle % 2 != 0);
 
         triggerSwitch->setOn(triggerValue);
 
@@ -1162,7 +1162,7 @@ void TestSequential::testFsmLongTermStability()
         // Mixed pattern: 4 alternating, 4 hold 1, 4 hold 0, repeat
         bool triggerValue;
         if (cycle % 12 < 4) {
-            triggerValue = (cycle % 2 == 1);  // Alternating: 0,1,0,1,...
+            triggerValue = (cycle % 2 != 0);  // Alternating: 0,1,0,1,...
         } else if (cycle % 12 < 8) {
             triggerValue = true;  // Hold 1
         } else {
