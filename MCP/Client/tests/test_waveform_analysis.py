@@ -457,7 +457,7 @@ class WaveformAnalysisTests(MCPTestBase):
                     time.sleep(0.1)
 
                     # Enhanced propagation using simulation update
-                    resp = await self.send_command("simulation_control", {"action": "update"})
+                    await self.send_command("simulation_control", {"action": "update"})
 
                     # Read outputs
                     resp_and = await self.send_command("get_output_value", {"element_id": mapping[5]})

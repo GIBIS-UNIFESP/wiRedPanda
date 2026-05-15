@@ -59,11 +59,7 @@ class CircuitConnectionTests(MCPTestBase):
         # Create new circuit
         # Create minimal elements for error testing
         input_id = await self.create_element_checked("InputButton", 100, 100, "Create input for error testing", label="ErrorInput")
-        if input_id is None:
-            all_passed = False
         gate_id = await self.create_element_checked("And", 300, 100, "Create gate for error testing", label="ErrorGate")
-        if gate_id is None:
-            all_passed = False
 
         # Early return if element creation failed
         if not input_id or not gate_id:
@@ -180,11 +176,7 @@ class CircuitConnectionTests(MCPTestBase):
         # Create new circuit
         # Create valid elements for error testing
         input_id = await self.create_element_checked("InputButton", 100, 100, "Create valid input for error tests", label="ValidInput")
-        if input_id is None:
-            all_passed = False
         gate_id = await self.create_element_checked("And", 300, 100, "Create valid gate for error tests", label="ValidGate")
-        if gate_id is None:
-            all_passed = False
 
         # Early return if element creation failed
         if not input_id or not gate_id:

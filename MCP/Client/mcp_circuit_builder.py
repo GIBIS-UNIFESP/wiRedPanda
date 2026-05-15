@@ -122,7 +122,6 @@ class MCPCircuitBuilder:
         for i, transition in enumerate(state_table):
             # Get current inputs and expected next state/outputs
             input_values = transition["inputs"]
-            expected_next_state = transition.get("next_state")
             expected_outputs = transition["outputs"]
             clock_edge = transition.get("clock_edge", "rising")  # rising/falling/level
 
@@ -154,7 +153,7 @@ class MCPCircuitBuilder:
             # Enhanced propagation for sequential circuits using quadruple update
             # Use new MCP update action for proper sequential element propagation
             # Exactly matches BewavedDolphin quadruple update hack (hardcoded 4 cycles)
-            resp = await self.infrastructure.send_command("simulation_control", {"action": "update"})
+            await self.infrastructure.send_command("simulation_control", {"action": "update"})
 
             transition_passed = await self._check_output_values(
                 outputs, expected_outputs, f"Transition {i}"
