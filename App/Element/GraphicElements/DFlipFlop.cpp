@@ -103,3 +103,14 @@ void DFlipFlop::updateLogic()
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }
+
+void DFlipFlop::resetSimState()
+{
+    // Reset Q/~Q to power-on defaults via the base class, then restore the
+    // edge-detection variables so column 0 of the next sweep is treated as
+    // a fresh start (no phantom rising edge from a prior run).
+    GraphicElement::resetSimState();
+    m_simLastClk   = Status::Inactive;
+    m_simLastValue = Status::Active;
+}
+

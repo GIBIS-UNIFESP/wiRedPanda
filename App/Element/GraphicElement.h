@@ -350,6 +350,15 @@ public:
      */
     virtual void updateLogic();
 
+    /**
+     * \brief Resets all simulation-visible state to power-on defaults.
+     * \details The base implementation resets each output slot to its port's
+     * defaultStatus().  Sequential elements (flip-flops, latches) override this
+     * to also clear their internal edge-detection variables (m_simLastClk, etc.)
+     * so that BeWavedDolphin can start every sweep from a known, reproducible state.
+     */
+    virtual void resetSimState();
+
     /// Returns the four-state signal value on simulation output port \a index.
     inline Status outputValue(const int index = 0) const
     {
