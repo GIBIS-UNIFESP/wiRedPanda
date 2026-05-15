@@ -10,7 +10,7 @@ Provides common functionality for all test categories.
 import asyncio
 import sys
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
 from beartype import beartype
 from mcp_models import MCPResponse

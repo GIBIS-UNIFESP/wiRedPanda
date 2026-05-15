@@ -7,15 +7,12 @@ Provides comprehensive validation using both JSON Schema and Pydantic models.
 import json
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypedDict, Union
+from typing import Any, Dict, List, Optional, TypedDict, Union
 
 import jsonschema
 from beartype import beartype
 from mcp_models import MCPResponse, parse_mcp_command
 from pydantic import ValidationError
-
-if TYPE_CHECKING:
-    from type_models import SchemaValidationResult, ValidationResult
 
 
 class PydanticValidationResult(TypedDict):

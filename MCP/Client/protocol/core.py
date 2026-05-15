@@ -8,7 +8,6 @@ These classes define the fundamental structure of commands and responses.
 
 from typing import Annotated, Any, Dict, Optional
 
-from beartype import beartype
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 

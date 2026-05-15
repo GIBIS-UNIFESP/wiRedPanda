@@ -8,7 +8,6 @@ These classes define the structure of data returned by various commands.
 
 from typing import Annotated, Any, List
 
-from beartype import beartype
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 # Import from type_models for circuit data structures

@@ -8,8 +8,6 @@ These classes define the structure and validation rules for all available comman
 
 from typing import Annotated, Dict, List, Optional
 
-from beartype import beartype
-
 # Import enums from domain package
 from domain.enums import ElementType, ImageExportFormat, SimulationAction, WaveformExportFormat
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
