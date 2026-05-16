@@ -74,7 +74,8 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     addRoutes(m_serverInfoHandler.get(), {"get_server_info", "list_commands", "describe_command"});
     addRoutes(m_fileHandler.get(), {
         "load_circuit", "save_circuit", "new_circuit", "close_circuit",
-        "get_tab_count", "export_image"
+        "get_tab_count", "export_image",
+        "export_arduino", "export_systemverilog"
     });
     addRoutes(m_elementHandler.get(), {
         "create_element", "delete_element", "list_elements", "move_element",
@@ -89,6 +90,7 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     addRoutes(m_simulationHandler.get(), {
         "simulation_control", "create_waveform", "export_waveform",
         "create_ic", "instantiate_ic", "list_ics",
+        "embed_ic", "extract_ic",
         "undo", "redo", "get_undo_stack"
     });
     addRoutes(m_themeHandler.get(), {
