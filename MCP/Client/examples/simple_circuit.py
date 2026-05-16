@@ -12,13 +12,13 @@ import sys
 from pathlib import Path
 from typing import Annotated
 
-# Add parent directory to path to import the infrastructure
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from beartype import beartype
 from pydantic import BaseModel, ConfigDict, Field
 
-from mcp_infrastructure import MCPInfrastructure
+# Add parent directory to path to import the project-local MCPInfrastructure module.
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from mcp_infrastructure import MCPInfrastructure  # pylint: disable=wrong-import-position
 
 
 class ElementPosition(BaseModel):

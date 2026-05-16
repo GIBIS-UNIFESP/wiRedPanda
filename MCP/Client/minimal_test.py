@@ -10,12 +10,8 @@ import sys
 from beartype import beartype
 from pydantic import BaseModel, ConfigDict, Field
 
-# Fix encoding for Windows console output
-if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
-if sys.platform == "win32" and hasattr(sys.stderr, "reconfigure"):
-    sys.stderr.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
-
+# mcp_infrastructure already performs the Windows stdout/stderr UTF-8 reconfigure
+# on import, so no extra setup is needed here.
 from mcp_infrastructure import MCPInfrastructure
 
 
