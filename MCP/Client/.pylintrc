@@ -28,4 +28,10 @@ disable =
     too-many-statements,
     # Protocol method bodies need `...` for pyright to infer the declared return type
     # (PEP 484/544 idiom). Pylint considers it redundant when a docstring is present.
-    unnecessary-ellipsis
+    unnecessary-ellipsis,
+    # Test runners legitimately wrap each test in `except Exception:` so one
+    # failure doesn't crash the suite, and asyncio.subprocess perimeter code
+    # (stderr drain, stdout reader, validator fallbacks) must catch anything
+    # to keep background tasks alive. Narrowing each site would mean listing
+    # 5+ types per catch with no behavior change.
+    broad-exception-caught
