@@ -189,8 +189,9 @@ class MCPSchemaValidator:
 
         return result
 
+    @staticmethod
     @beartype
-    def validate_command_pydantic(self, command_data: Dict[str, Any]) -> PydanticValidationResult:
+    def validate_command_pydantic(command_data: Dict[str, Any]) -> PydanticValidationResult:
         """
         Validate command using Pydantic models.
         Returns validation result with success status and details.
@@ -220,8 +221,9 @@ class MCPSchemaValidator:
 
         return result
 
+    @staticmethod
     @beartype
-    def validate_response_pydantic(self, response_data: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_response_pydantic(response_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Validate response using Pydantic models.
         Returns validation result with success status and details.
@@ -276,9 +278,10 @@ class MCPSchemaValidator:
             "validation_summary": self._create_validation_summary(json_result, pydantic_result),
         }
 
+    @staticmethod
     @beartype
     def _create_validation_summary(
-        self, json_result: Dict[str, Any], pydantic_result: Union[PydanticValidationResult, Dict[str, Any]]
+        json_result: Dict[str, Any], pydantic_result: Union[PydanticValidationResult, Dict[str, Any]]
     ) -> str:
         """Create a human-readable validation summary."""
         if json_result["valid"] and pydantic_result["valid"]:

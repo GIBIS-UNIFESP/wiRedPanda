@@ -84,8 +84,9 @@ class MCPTestRunner:
         """Cleanup circuit after test with proper async typing"""
         return await self.infrastructure.cleanup_circuit(test_name, self.organizer, self.keep_temp_files, self.verbose)
 
+    @staticmethod
     @beartype
-    async def run_all_tests(self, test_suite: Optional[Any] = None) -> bool:
+    async def run_all_tests(test_suite: Optional[Any] = None) -> bool:
         """Run complete test suite with process management
 
         Args:

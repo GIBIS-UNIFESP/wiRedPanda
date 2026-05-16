@@ -23,27 +23,32 @@ class MCPOutput:
         if self.verbose:
             print(message)
 
+    @staticmethod
     @beartype
-    def info(self, message: str) -> None:
+    def info(message: str) -> None:
         """Print info messages always"""
         print(message)
 
+    @staticmethod
     @beartype
-    def warning(self, message: str) -> None:
+    def warning(message: str) -> None:
         """Print warning messages always"""
         print(message)
 
+    @staticmethod
     @beartype
-    def error(self, message: str) -> None:
+    def error(message: str) -> None:
         """Print error messages always"""
         print(message)
 
+    @staticmethod
     @beartype
-    def cleanup(self, message: str) -> None:
+    def cleanup(message: str) -> None:
         """Print cleanup messages always (🧹)"""
         print(message)
 
+    @staticmethod
     @beartype
-    def test_result(self, message: str) -> None:
+    def test_result(message: str) -> None:
         """Print test result messages always"""
         print(message)
