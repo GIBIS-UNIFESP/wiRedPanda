@@ -333,7 +333,7 @@ def create_not_chain_circuit(chain_length: int) -> Dict[str, Any]:
                 "type": "Not",
                 "x": 150 + (i * 50),
                 "y": 100,
-                "label": f"NOT_{i+1}",
+                "label": f"NOT_{i + 1}",
             }
         )
 

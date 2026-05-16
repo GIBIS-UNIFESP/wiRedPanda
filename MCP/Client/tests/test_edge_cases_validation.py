@@ -14,7 +14,6 @@ Tests for edge cases, boundary conditions, and input validation including:
 MCP test implementation
 """
 
-
 from beartype import beartype
 
 # Import base infrastructure
@@ -81,7 +80,9 @@ class EdgeCasesValidationTests(MCPTestBase):
                 all_passed = False
 
         # Test: Single element circuit should have 1 element
-        input_id = await self.create_element_checked("InputButton", 100, 100, "Create single element", label="SINGLE_INPUT")
+        input_id = await self.create_element_checked(
+            "InputButton", 100, 100, "Create single element", label="SINGLE_INPUT"
+        )
         if input_id is None:
             all_passed = False
 
@@ -141,7 +142,9 @@ class EdgeCasesValidationTests(MCPTestBase):
         logic_id = await self.create_element_checked("And", 200, 200, "Create logic gate", label="LOGIC_GATE")
         if logic_id is None:
             all_passed = False
-        switch_id = await self.create_element_checked("InputSwitch", 50, 200, "Create switch input", label="SWITCH_INPUT")
+        switch_id = await self.create_element_checked(
+            "InputSwitch", 50, 200, "Create switch input", label="SWITCH_INPUT"
+        )
         if switch_id is None:
             all_passed = False
 
@@ -236,8 +239,12 @@ class EdgeCasesValidationTests(MCPTestBase):
 
         # Setup
         # Create elements for port testing
-        source_id = await self.create_element_checked("And", 100, 100, "Create source element for port test", label="Source")
-        target_id = await self.create_element_checked("Or", 200, 100, "Create target element for port test", label="Target")
+        source_id = await self.create_element_checked(
+            "And", 100, 100, "Create source element for port test", label="Source"
+        )
+        target_id = await self.create_element_checked(
+            "Or", 200, 100, "Create target element for port test", label="Target"
+        )
 
         # Early return if element creation failed
         if not source_id or not target_id:
@@ -322,7 +329,9 @@ class EdgeCasesValidationTests(MCPTestBase):
 
         # Setup
         # Test floating point coordinates (should be handled gracefully)
-        element_id = await self.create_element_checked("Or", 100.5, 200.7, "Create element with float coordinates", label="FloatCoords")
+        element_id = await self.create_element_checked(
+            "Or", 100.5, 200.7, "Create element with float coordinates", label="FloatCoords"
+        )
         if element_id:
             self.infrastructure.output.success("✅ Float coordinates accepted and element created")
             all_passed &= True

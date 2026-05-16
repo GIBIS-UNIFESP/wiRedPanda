@@ -94,9 +94,9 @@ class LogicGateTests(MCPTestBase):
         else:
             print(f"📋 {gate_name} truth table exposes propagation limitation")
             print(f"   Expected: Standard Boolean {gate_name} logic")
-            print(f"   Analysis: Signal propagation fails through multi-gate circuits")
-            print(f"   Impact: Critical - affects all digital logic education")
-            print(f"   Documentation: See .claude/WIREDPANDA_LIMITATIONS.md #1")
+            print("   Analysis: Signal propagation fails through multi-gate circuits")
+            print("   Impact: Critical - affects all digital logic education")
+            print("   Documentation: See .claude/WIREDPANDA_LIMITATIONS.md #1")
             # Note: validate_truth_table() already handles counting
 
         return validation_result
@@ -111,9 +111,9 @@ class LogicGateTests(MCPTestBase):
             "And",
             [
                 {"inputs": [False, False], "outputs": [False]},  # 0 AND 0 = 0
-                {"inputs": [False, True], "outputs": [False]},   # 0 AND 1 = 0
-                {"inputs": [True, False], "outputs": [False]},   # 1 AND 0 = 0
-                {"inputs": [True, True], "outputs": [True]},     # 1 AND 1 = 1
+                {"inputs": [False, True], "outputs": [False]},  # 0 AND 1 = 0
+                {"inputs": [True, False], "outputs": [False]},  # 1 AND 0 = 0
+                {"inputs": [True, True], "outputs": [True]},  # 1 AND 1 = 1
             ],
             "AND gate",
         )
@@ -126,9 +126,9 @@ class LogicGateTests(MCPTestBase):
             "Or",
             [
                 {"inputs": [False, False], "outputs": [False]},  # 0 OR 0 = 0
-                {"inputs": [False, True], "outputs": [True]},    # 0 OR 1 = 1
-                {"inputs": [True, False], "outputs": [True]},    # 1 OR 0 = 1
-                {"inputs": [True, True], "outputs": [True]},     # 1 OR 1 = 1
+                {"inputs": [False, True], "outputs": [True]},  # 0 OR 1 = 1
+                {"inputs": [True, False], "outputs": [True]},  # 1 OR 0 = 1
+                {"inputs": [True, True], "outputs": [True]},  # 1 OR 1 = 1
             ],
             "OR gate",
         )
@@ -141,9 +141,9 @@ class LogicGateTests(MCPTestBase):
             "Xor",
             [
                 {"inputs": [False, False], "outputs": [False]},  # 0 XOR 0 = 0
-                {"inputs": [False, True], "outputs": [True]},    # 0 XOR 1 = 1
-                {"inputs": [True, False], "outputs": [True]},    # 1 XOR 0 = 1
-                {"inputs": [True, True], "outputs": [False]},    # 1 XOR 1 = 0
+                {"inputs": [False, True], "outputs": [True]},  # 0 XOR 1 = 1
+                {"inputs": [True, False], "outputs": [True]},  # 1 XOR 0 = 1
+                {"inputs": [True, True], "outputs": [False]},  # 1 XOR 1 = 0
             ],
             "XOR gate",
         )

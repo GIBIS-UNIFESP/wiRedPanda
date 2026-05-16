@@ -83,33 +83,23 @@ class NegativeCaseTests(MCPTestBase):
             return False
 
         # Morph to invalid type
-        resp = await self.send_command(
-            "morph_element", {"element_ids": [and_id], "target_type": "FakeGate"}
-        )
+        resp = await self.send_command("morph_element", {"element_ids": [and_id], "target_type": "FakeGate"})
         all_passed &= await self.assert_failure(resp, "Morph to invalid type")
 
         # Morph with nonexistent element ID
-        resp = await self.send_command(
-            "morph_element", {"element_ids": [99999], "target_type": "Or"}
-        )
+        resp = await self.send_command("morph_element", {"element_ids": [99999], "target_type": "Or"})
         all_passed &= await self.assert_failure(resp, "Morph nonexistent element")
 
         # Missing target_type
-        resp = await self.send_command(
-            "morph_element", {"element_ids": [and_id]}
-        )
+        resp = await self.send_command("morph_element", {"element_ids": [and_id]})
         all_passed &= await self.assert_failure(resp, "Morph missing target_type")
 
         # Missing element_ids
-        resp = await self.send_command(
-            "morph_element", {"target_type": "Or"}
-        )
+        resp = await self.send_command("morph_element", {"target_type": "Or"})
         all_passed &= await self.assert_failure(resp, "Morph missing element_ids")
 
         # element_ids not an array
-        resp = await self.send_command(
-            "morph_element", {"element_ids": and_id, "target_type": "Or"}
-        )
+        resp = await self.send_command("morph_element", {"element_ids": and_id, "target_type": "Or"})
         all_passed &= await self.assert_failure(resp, "Morph element_ids not array")
 
         return all_passed
@@ -123,14 +113,14 @@ class NegativeCaseTests(MCPTestBase):
         all_passed: bool = True
 
         # AND gate: minInput=2, maxInput=8
-        and_id = await self.create_element_checked("And", 200, 200, "Create AND for boundary test", label="SizeBoundary")
+        and_id = await self.create_element_checked(
+            "And", 200, 200, "Create AND for boundary test", label="SizeBoundary"
+        )
         if and_id is None:
             return False
 
         # Try to set input size below minimum (1 < minInput=2)
-        resp = await self.send_command(
-            "change_input_size", {"element_id": and_id, "size": 1}
-        )
+        resp = await self.send_command("change_input_size", {"element_id": and_id, "size": 1})
         # This might succeed (command layer) but the element may clamp, or it may fail
         # Server uses ChangeInputSizeCommand which doesn't validate bounds itself
         # Just verify it doesn't crash
@@ -140,40 +130,28 @@ class NegativeCaseTests(MCPTestBase):
             self.infrastructure.output.success("Size 1: rejected (boundary enforced)")
 
         # Try to set input size above maximum (9 > maxInput=8)
-        resp = await self.send_command(
-            "change_input_size", {"element_id": and_id, "size": 9}
-        )
+        resp = await self.send_command("change_input_size", {"element_id": and_id, "size": 9})
         if resp.success:
             self.infrastructure.output.success("Size 9: accepted (may be clamped)")
         else:
             self.infrastructure.output.success("Size 9: rejected (boundary enforced)")
 
         # Missing parameters
-        resp = await self.send_command(
-            "change_input_size", {"element_id": and_id}
-        )
+        resp = await self.send_command("change_input_size", {"element_id": and_id})
         all_passed &= await self.assert_failure(resp, "Change input size missing size")
 
-        resp = await self.send_command(
-            "change_input_size", {"size": 4}
-        )
+        resp = await self.send_command("change_input_size", {"size": 4})
         all_passed &= await self.assert_failure(resp, "Change input size missing element_id")
 
         # Nonexistent element
-        resp = await self.send_command(
-            "change_input_size", {"element_id": 99999, "size": 4}
-        )
+        resp = await self.send_command("change_input_size", {"element_id": 99999, "size": 4})
         all_passed &= await self.assert_failure(resp, "Change input size nonexistent element")
 
         # Same tests for output size
-        resp = await self.send_command(
-            "change_output_size", {"element_id": and_id}
-        )
+        resp = await self.send_command("change_output_size", {"element_id": and_id})
         all_passed &= await self.assert_failure(resp, "Change output size missing size")
 
-        resp = await self.send_command(
-            "change_output_size", {"element_id": 99999, "size": 4}
-        )
+        resp = await self.send_command("change_output_size", {"element_id": 99999, "size": 4})
         all_passed &= await self.assert_failure(resp, "Change output size nonexistent element")
 
         return all_passed
@@ -187,9 +165,7 @@ class NegativeCaseTests(MCPTestBase):
         all_passed: bool = True
 
         # Missing parameters
-        resp = await self.send_command(
-            "split_connection", {"source_id": 1, "source_port": 0}
-        )
+        resp = await self.send_command("split_connection", {"source_id": 1, "source_port": 0})
         all_passed &= await self.assert_failure(resp, "Split missing target params")
 
         # All params but nonexistent elements
@@ -207,8 +183,12 @@ class NegativeCaseTests(MCPTestBase):
         all_passed &= await self.assert_failure(resp, "Split with nonexistent elements")
 
         # Create elements but no connection between them
-        in_id = await self.create_element_checked("InputButton", 100, 200, "Create input for split error", label="SplitErrIn")
-        out_id = await self.create_element_checked("Led", 400, 200, "Create output for split error", label="SplitErrOut")
+        in_id = await self.create_element_checked(
+            "InputButton", 100, 200, "Create input for split error", label="SplitErrIn"
+        )
+        out_id = await self.create_element_checked(
+            "Led", 400, 200, "Create output for split error", label="SplitErrOut"
+        )
 
         if in_id is not None and out_id is not None:
             resp = await self.send_command(
@@ -271,7 +251,9 @@ class NegativeCaseTests(MCPTestBase):
 
         all_passed: bool = True
 
-        elem_id = await self.create_element_checked("And", 200, 200, "Create element for undo rotate", label="UndoRotate")
+        elem_id = await self.create_element_checked(
+            "And", 200, 200, "Create element for undo rotate", label="UndoRotate"
+        )
         if elem_id is None:
             return False
 
@@ -315,9 +297,7 @@ class NegativeCaseTests(MCPTestBase):
             return False
 
         # Morph AND -> Or
-        resp = await self.send_command(
-            "morph_element", {"element_ids": [and_id], "target_type": "Or"}
-        )
+        resp = await self.send_command("morph_element", {"element_ids": [and_id], "target_type": "Or"})
         all_passed &= await self.assert_success(resp, "Morph AND to OR for undo test")
 
         # Verify it's an Or now
@@ -363,9 +343,7 @@ class NegativeCaseTests(MCPTestBase):
             return False
 
         # Change input size to 4
-        resp = await self.send_command(
-            "change_input_size", {"element_id": and_id, "size": 4}
-        )
+        resp = await self.send_command("change_input_size", {"element_id": and_id, "size": 4})
         all_passed &= await self.assert_success(resp, "Change input size to 4")
 
         # Undo the resize
@@ -398,10 +376,14 @@ class NegativeCaseTests(MCPTestBase):
         all_passed: bool = True
 
         # Create input -> output with a wire
-        input_id = await self.create_element_checked("InputButton", 100, 200, "Create input for undo split", label="UndoSplitIn")
+        input_id = await self.create_element_checked(
+            "InputButton", 100, 200, "Create input for undo split", label="UndoSplitIn"
+        )
         if input_id is None:
             return False
-        output_id = await self.create_element_checked("Led", 400, 200, "Create output for undo split", label="UndoSplitOut")
+        output_id = await self.create_element_checked(
+            "Led", 400, 200, "Create output for undo split", label="UndoSplitOut"
+        )
         if output_id is None:
             return False
 
@@ -435,9 +417,7 @@ class NegativeCaseTests(MCPTestBase):
         result = await self.assert_success_and_get_result(resp, "List connections after split")
         after_split_count = len(result.get("connections", [])) if result else 0
         if after_split_count > before_count:
-            self.infrastructure.output.success(
-                f"Split increased connections: {before_count} -> {after_split_count}"
-            )
+            self.infrastructure.output.success(f"Split increased connections: {before_count} -> {after_split_count}")
         else:
             print(f"Split didn't increase connections: {before_count} -> {after_split_count}")
             all_passed = False
@@ -451,9 +431,7 @@ class NegativeCaseTests(MCPTestBase):
         result = await self.assert_success_and_get_result(resp, "List connections after undo split")
         after_undo_count = len(result.get("connections", [])) if result else 0
         if after_undo_count == before_count:
-            self.infrastructure.output.success(
-                f"Undo restored connections: {after_undo_count}"
-            )
+            self.infrastructure.output.success(f"Undo restored connections: {after_undo_count}")
         else:
             print(f"Undo didn't restore connections: expected {before_count}, got {after_undo_count}")
             all_passed = False
@@ -473,9 +451,7 @@ class NegativeCaseTests(MCPTestBase):
             return False
 
         # Change the label
-        resp = await self.send_command(
-            "set_element_properties", {"element_id": elem_id, "label": "ChangedLabel"}
-        )
+        resp = await self.send_command("set_element_properties", {"element_id": elem_id, "label": "ChangedLabel"})
         all_passed &= await self.assert_success(resp, "Set label to ChangedLabel")
 
         # Undo — label should revert to OriginalLabel
@@ -526,14 +502,14 @@ class NegativeCaseTests(MCPTestBase):
         all_passed: bool = True
 
         # Create an element
-        elem_id = await self.create_element_checked("InputButton", 200, 200, "Create element for update", label="UpdateTest")
+        elem_id = await self.create_element_checked(
+            "InputButton", 200, 200, "Create element for update", label="UpdateTest"
+        )
         if elem_id is None:
             return False
 
         # Update label via update_element
-        resp = await self.send_command(
-            "update_element", {"element_id": elem_id, "label": "UpdatedLabel"}
-        )
+        resp = await self.send_command("update_element", {"element_id": elem_id, "label": "UpdatedLabel"})
         result = await self.assert_success_and_get_result(resp, "Update element label")
         if result:
             if result.get("element_id") == elem_id:
@@ -558,9 +534,7 @@ class NegativeCaseTests(MCPTestBase):
                 all_passed = False
 
         # Test update on nonexistent element
-        resp = await self.send_command(
-            "update_element", {"element_id": 99999, "label": "NoSuchElement"}
-        )
+        resp = await self.send_command("update_element", {"element_id": 99999, "label": "NoSuchElement"})
         all_passed &= await self.assert_failure(resp, "Update nonexistent element")
 
         # Test update with missing element_id
@@ -616,8 +590,6 @@ class NegativeCaseTests(MCPTestBase):
                 all_passed = False
 
         if all_passed:
-            self.infrastructure.output.success(
-                f"Server info validated: {len(capabilities)} capabilities"
-            )
+            self.infrastructure.output.success(f"Server info validated: {len(capabilities)} capabilities")
 
         return all_passed

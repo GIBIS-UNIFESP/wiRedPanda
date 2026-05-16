@@ -149,7 +149,9 @@ class MCPTestOrchestrator:
             print(f"⚠️  Could not load ElementTypeCoverageTests: {e}")
 
         try:
-            from tests.test_advanced_sequential_logic import AdvancedSequentialLogicTests
+            from tests.test_advanced_sequential_logic import (
+                AdvancedSequentialLogicTests,
+            )
 
             self.categories.append(AdvancedSequentialLogicTests(self._runner))
             print("📦 Loaded AdvancedSequentialLogicTests")

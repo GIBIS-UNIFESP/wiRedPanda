@@ -172,9 +172,9 @@ class ElementPropertiesTests(MCPTestBase):
         led_id = led_resp.result["element_id"]
 
         # Set custom appearance (using a built-in resource as test path)
-        resp = await self.send_command("set_element_properties", {
-            "element_id": led_id, "appearance": ":/Components/Output/Led/RedLed.svg"
-        })
+        resp = await self.send_command(
+            "set_element_properties", {"element_id": led_id, "appearance": ":/Components/Output/Led/RedLed.svg"}
+        )
         if not resp.success:
             print(f"Failed to set appearance: {resp.error}")
             return False
@@ -212,11 +212,10 @@ class ElementPropertiesTests(MCPTestBase):
         led_id = led_resp.result["element_id"]
 
         # Set appearance at index 1 (the "On" state for a 1-input white LED)
-        resp = await self.send_command("set_element_properties", {
-            "element_id": led_id,
-            "appearance": ":/Components/Output/Led/GreenLed.svg",
-            "appearance_index": 1
-        })
+        resp = await self.send_command(
+            "set_element_properties",
+            {"element_id": led_id, "appearance": ":/Components/Output/Led/GreenLed.svg", "appearance_index": 1},
+        )
         if not resp.success:
             print(f"Failed to set appearance at index: {resp.error}")
             return False
@@ -238,7 +237,9 @@ class ElementPropertiesTests(MCPTestBase):
 
         # Create a Clock with known frequency
         await self.send_command("create_element", {"type": "Clock", "x": 100.0, "y": 100.0, "label": "TestClock"})
-        await self.send_command("create_element", {"type": "InputSwitch", "x": 200.0, "y": 100.0, "label": "TestSwitch"})
+        await self.send_command(
+            "create_element", {"type": "InputSwitch", "x": 200.0, "y": 100.0, "label": "TestSwitch"}
+        )
         await self.send_command("create_element", {"type": "Led", "x": 300.0, "y": 100.0, "label": "TestLed"})
 
         resp = await self.send_command("list_elements", {})

@@ -12,7 +12,6 @@ Tests for Integrated Circuit (IC) functionality including:
 MCP test implementation
 """
 
-
 from beartype import beartype
 
 # Import base infrastructure
@@ -62,9 +61,13 @@ class ICOperationTests(MCPTestBase):
             # Create new circuit first
             # Create elements for IC using proper ElementGroup types
             # InputButton belongs to ElementGroup::Input (required for IC interface)
-            input_id = await self.create_element_checked("InputButton", 100.0, 100.0, "create IC input", label="IC_Input")
+            input_id = await self.create_element_checked(
+                "InputButton", 100.0, 100.0, "create IC input", label="IC_Input"
+            )
             # Create a simple buffer logic
-            buffer_id = await self.create_element_checked("Not", 200.0, 100.0, "create IC logic gate", label="IC_Buffer")
+            buffer_id = await self.create_element_checked(
+                "Not", 200.0, 100.0, "create IC logic gate", label="IC_Buffer"
+            )
             # Led belongs to ElementGroup::Output (required for IC interface)
             output_id = await self.create_element_checked("Led", 300.0, 100.0, "create IC output", label="IC_Output")
 

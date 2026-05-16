@@ -7,7 +7,12 @@ from the domain package. Use domain.enums directly for new code.
 """
 
 # Import enums from domain package
-from domain.enums import ElementType, ImageExportFormat, SimulationAction, WaveformExportFormat
+from domain.enums import (
+    ElementType,
+    ImageExportFormat,
+    SimulationAction,
+    WaveformExportFormat,
+)
 
 # Re-export for backward compatibility
 __all__ = ["ElementType", "SimulationAction", "ImageExportFormat", "WaveformExportFormat"]

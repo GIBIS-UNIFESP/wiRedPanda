@@ -8,9 +8,15 @@ These classes define the structure and validation rules for all available comman
 
 from typing import Annotated, Dict, List, Optional
 
-# Import enums from domain package
-from domain.enums import ElementType, ImageExportFormat, SimulationAction, WaveformExportFormat
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+# Import enums from domain package
+from domain.enums import (
+    ElementType,
+    ImageExportFormat,
+    SimulationAction,
+    WaveformExportFormat,
+)
 from type_models import EmptyParameters
 
 from .core import MCPCommand
@@ -430,9 +436,7 @@ class MorphElementCommand(MCPCommand):
     """Model for morph_element command"""
 
     class Parameters(BaseModel):
-        element_ids: List[Annotated[int, Field(gt=0)]] = Field(
-            min_length=1, description="Element IDs to morph"
-        )
+        element_ids: List[Annotated[int, Field(gt=0)]] = Field(min_length=1, description="Element IDs to morph")
         target_type: str = Field(min_length=1, description="Target element type")
 
         model_config = ConfigDict(extra="forbid")
