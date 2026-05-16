@@ -31,7 +31,6 @@ public:
     QJsonObject createErrorResponse(const QString &error, const QJsonValue &requestId = QJsonValue());
     QJsonObject createSuccessResponse(const QJsonObject &result = {}, const QJsonValue &requestId = QJsonValue());
     Scene *getCurrentScene();
-    bool validateAndSendResponse(const QJsonObject &response, const QString &command = QString());
     bool validateElementId(int elementId, const QString &paramName, QString &errorMsg);
     bool validateNonEmptyString(const QJsonValue &value, const QString &paramName, QString &errorMsg);
     bool validateNonNegativeInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg);
@@ -39,7 +38,6 @@ public:
     bool validateParameters(const QJsonObject &params, const QStringList &required);
     bool validatePortRange(GraphicElement *element, int portIndex, bool isOutput, const QString &paramName, QString &errorMsg);
     bool validatePositiveInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg);
-    void sendResponse(const QJsonObject &response);
 
     /**
      * \brief Wraps \a fn in a try/catch, returning an error response on exception.

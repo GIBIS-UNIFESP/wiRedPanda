@@ -5,9 +5,7 @@
 
 #include <cmath>
 
-#include <QJsonDocument>
 #include <QJsonObject>
-#include <QTextStream>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
@@ -15,7 +13,6 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
-#include "MCP/Server/Core/MCPValidator.h"
 
 BaseHandler::BaseHandler(MainWindow *mainWindow, MCPValidator *validator)
     : m_mainWindow(mainWindow)
@@ -58,39 +55,6 @@ bool BaseHandler::validateParameters(const QJsonObject &params, const QStringLis
         }
     }
     return true;
-}
-
-bool BaseHandler::validateAndSendResponse(const QJsonObject &response, const QString &command)
-{
-    // Validate response
-    if (m_validator) {
-        ValidationResult validationResult = m_validator->validateResponse(response, command);
-        if (!validationResult.isValid) {
-            QString detailedError = validationResult.errorMessage;
-
-            if (!validationResult.errorPath.isEmpty()) {
-                detailedError += QString(" (at path: %1)").arg(validationResult.errorPath);
-            }
-
-            QJsonObject errorResponse = createErrorResponse(QString("Internal validation error: %1").arg(detailedError));
-            sendResponse(errorResponse);
-            return false;
-        }
-    }
-
-    sendResponse(response);
-    return true;
-}
-
-void BaseHandler::sendResponse(const QJsonObject &response)
-{
-    QJsonDocument doc(response);
-    QByteArray data = doc.toJson(QJsonDocument::Compact);
-
-    // Output to stdout for MCP communication
-    QTextStream out(stdout);
-    out << QString::fromUtf8(data) << Qt::endl;
-    out.flush();
 }
 
 Scene *BaseHandler::getCurrentScene()
