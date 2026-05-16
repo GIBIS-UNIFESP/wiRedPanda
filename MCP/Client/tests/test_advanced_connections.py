@@ -86,9 +86,7 @@ class AdvancedConnectionTests(MCPTestBase):
         if result:
             connections = result.get("connections", [])
             if len(connections) >= 2:
-                self.infrastructure.output.success(
-                    f"Split created {len(connections)} connections (node inserted)"
-                )
+                self.infrastructure.output.success(f"Split created {len(connections)} connections (node inserted)")
             else:
                 print(f"Expected >= 2 connections after split, got {len(connections)}")
                 all_passed = False
@@ -105,9 +103,7 @@ class AdvancedConnectionTests(MCPTestBase):
                 self.infrastructure.output.success("Split inserted a Node element")
             else:
                 # Node may not show up depending on implementation
-                self.infrastructure.output.success(
-                    f"After split: {len(elements)} elements total"
-                )
+                self.infrastructure.output.success(f"After split: {len(elements)} elements total")
         else:
             all_passed = False
 

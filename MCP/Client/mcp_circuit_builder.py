@@ -134,13 +134,9 @@ class MCPCircuitBuilder:
             _two_phase = {"rising": (False, True), "falling": (True, False)}
             if clock_edge in _two_phase:
                 first_val, second_val = _two_phase[clock_edge]
-                await self.infrastructure.send_command(
-                    "set_input_value", {"element_id": clock_id, "value": first_val}
-                )
+                await self.infrastructure.send_command("set_input_value", {"element_id": clock_id, "value": first_val})
                 await asyncio.sleep(0.05)
-                await self.infrastructure.send_command(
-                    "set_input_value", {"element_id": clock_id, "value": second_val}
-                )
+                await self.infrastructure.send_command("set_input_value", {"element_id": clock_id, "value": second_val})
                 await asyncio.sleep(0.1)
             elif clock_edge == "level":
                 # Level sensitive (for latches)
@@ -155,9 +151,7 @@ class MCPCircuitBuilder:
             # Exactly matches BewavedDolphin quadruple update hack (hardcoded 4 cycles)
             await self.infrastructure.send_command("simulation_control", {"action": "update"})
 
-            transition_passed = await self._check_output_values(
-                outputs, expected_outputs, f"Transition {i}"
-            )
+            transition_passed = await self._check_output_values(outputs, expected_outputs, f"Transition {i}")
             if not transition_passed:
                 all_passed = False
 
@@ -168,9 +162,7 @@ class MCPCircuitBuilder:
 
         return all_passed
 
-    async def _apply_input_values(
-        self, inputs: List[int], input_values: List[Any], label: str
-    ) -> bool:
+    async def _apply_input_values(self, inputs: List[int], input_values: List[Any], label: str) -> bool:
         """Set each input element to its value; returns False if any command fails."""
         success = True
         for j, input_id in enumerate(inputs):
@@ -183,9 +175,7 @@ class MCPCircuitBuilder:
                     success = False
         return success
 
-    async def _check_output_values(
-        self, outputs: List[int], expected_outputs: List[Any], label: str = ""
-    ) -> bool:
+    async def _check_output_values(self, outputs: List[int], expected_outputs: List[Any], label: str = "") -> bool:
         """Check each output against expected; returns False on any mismatch or fetch error."""
         passed = True
         prefix = f"{label}: " if label else ""

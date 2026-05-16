@@ -691,7 +691,6 @@ class WaveformAnalysisTests(MCPTestBase):
                         validation_details = []
 
                         for step, (d, en, q) in enumerate(zip(d_values, en_values, q_values)):
-
                             if step == 0:
                                 # Initial step - any state acceptable
                                 step_correct = True

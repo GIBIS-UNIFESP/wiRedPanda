@@ -61,10 +61,14 @@ class ElementOperationTests(MCPTestBase):
 
         # Create new circuit first
         # Test basic element workflow: create -> verify -> interact
-        input_id = await self.create_element_checked("InputButton", 100, 100, "Create workflow input element", label="WorkflowInput")
+        input_id = await self.create_element_checked(
+            "InputButton", 100, 100, "Create workflow input element", label="WorkflowInput"
+        )
         if input_id is None:
             all_passed = False
-        output_id = await self.create_element_checked("Led", 200, 100, "Create workflow output element", label="WorkflowOutput")
+        output_id = await self.create_element_checked(
+            "Led", 200, 100, "Create workflow output element", label="WorkflowOutput"
+        )
         if output_id is None:
             all_passed = False
 
@@ -90,7 +94,9 @@ class ElementOperationTests(MCPTestBase):
 
         for i, elem_type in enumerate(valid_element_types):
             x, y = 100 + i * 150, 100
-            element_id = await self.create_element_checked(elem_type, x, y, f"Create {elem_type} element", label=f"Test{elem_type}")
+            element_id = await self.create_element_checked(
+                elem_type, x, y, f"Create {elem_type} element", label=f"Test{elem_type}"
+            )
             if element_id is not None:
                 created_elements.append(element_id)
             else:
@@ -117,7 +123,9 @@ class ElementOperationTests(MCPTestBase):
 
         for i, elem_type in enumerate(test_elements):
             x, y = 100 + i * 100, 100
-            element_id = await self.create_element_checked(elem_type, x, y, f"Create {elem_type} for listing", label=f"List{elem_type}")
+            element_id = await self.create_element_checked(
+                elem_type, x, y, f"Create {elem_type} for listing", label=f"List{elem_type}"
+            )
             if element_id is not None:
                 created_elements.append(element_id)
             else:
@@ -175,7 +183,9 @@ class ElementOperationTests(MCPTestBase):
 
         for i, elem_type in enumerate(test_elements):
             x, y = 100 + i * 100, 100
-            element_id = await self.create_element_checked(elem_type, x, y, f"Create {elem_type} for deletion", label=f"Delete{elem_type}")
+            element_id = await self.create_element_checked(
+                elem_type, x, y, f"Create {elem_type} for deletion", label=f"Delete{elem_type}"
+            )
             if element_id is not None:
                 created_elements.append(element_id)
             else:
@@ -240,8 +250,12 @@ class ElementOperationTests(MCPTestBase):
 
         try:
             # Create elements for management testing
-            elem1_id = await self.create_element_checked("And", 100.0, 100.0, "create element for management", label="TestAnd1")
-            elem2_id = await self.create_element_checked("Or", 200.0, 100.0, "create element for management", label="TestOr1")
+            elem1_id = await self.create_element_checked(
+                "And", 100.0, 100.0, "create element for management", label="TestAnd1"
+            )
+            elem2_id = await self.create_element_checked(
+                "Or", 200.0, 100.0, "create element for management", label="TestOr1"
+            )
 
             # Early return if elements couldn't be created
             if not elem1_id or not elem2_id:
@@ -269,9 +283,7 @@ class ElementOperationTests(MCPTestBase):
                 all_passed = False
 
             # Test change_input_size command
-            size_resp = await self.send_command(
-                "change_input_size", {"element_id": elem1_id, "size": 3}
-            )
+            size_resp = await self.send_command("change_input_size", {"element_id": elem1_id, "size": 3})
             if size_resp.success:
                 self.infrastructure.output.success("✅ change_input_size succeeded")
                 all_passed &= True

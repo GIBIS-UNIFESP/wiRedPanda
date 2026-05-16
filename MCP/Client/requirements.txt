@@ -1,9 +1,6 @@
 # Core formatters and linters
-ruff>=0.1.0              # Fast Python linter and formatter (replaces many tools)
-black>=23.0.0            # Code formatter
-isort>=5.12.0            # Import sorter
+ruff>=0.1.0              # Fast Python linter + formatter + import sorter (replaces black, isort, and flake8)
 pylint>=3.0.0            # Static analysis and linting
-flake8>=6.0.0            # Style guide enforcement
 mypy>=1.5.0              # Static type checker
 pyright>=1.1.300         # Microsoft's Python type checker
 pyrefly>=0.30.0          # Python refactoring tool

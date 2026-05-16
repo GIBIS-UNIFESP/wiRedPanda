@@ -58,7 +58,9 @@ class CircuitConnectionTests(MCPTestBase):
 
         # Create new circuit
         # Create minimal elements for error testing
-        input_id = await self.create_element_checked("InputButton", 100, 100, "Create input for error testing", label="ErrorInput")
+        input_id = await self.create_element_checked(
+            "InputButton", 100, 100, "Create input for error testing", label="ErrorInput"
+        )
         gate_id = await self.create_element_checked("And", 300, 100, "Create gate for error testing", label="ErrorGate")
 
         # Early return if element creation failed
@@ -100,13 +102,19 @@ class CircuitConnectionTests(MCPTestBase):
 
         # Create new circuit
         # Create elements for connection
-        input_id = await self.create_element_checked("InputButton", 100, 100, "Create input for basic connection", label="BasicInput")
+        input_id = await self.create_element_checked(
+            "InputButton", 100, 100, "Create input for basic connection", label="BasicInput"
+        )
         if input_id is None:
             all_passed = False
-        gate_id = await self.create_element_checked("And", 300, 100, "Create gate for basic connection", label="BasicGate")
+        gate_id = await self.create_element_checked(
+            "And", 300, 100, "Create gate for basic connection", label="BasicGate"
+        )
         if gate_id is None:
             all_passed = False
-        output_id = await self.create_element_checked("Led", 500, 100, "Create output for basic connection", label="BasicOutput")
+        output_id = await self.create_element_checked(
+            "Led", 500, 100, "Create output for basic connection", label="BasicOutput"
+        )
         if output_id is None:
             all_passed = False
 
@@ -175,8 +183,12 @@ class CircuitConnectionTests(MCPTestBase):
 
         # Create new circuit
         # Create valid elements for error testing
-        input_id = await self.create_element_checked("InputButton", 100, 100, "Create valid input for error tests", label="ValidInput")
-        gate_id = await self.create_element_checked("And", 300, 100, "Create valid gate for error tests", label="ValidGate")
+        input_id = await self.create_element_checked(
+            "InputButton", 100, 100, "Create valid input for error tests", label="ValidInput"
+        )
+        gate_id = await self.create_element_checked(
+            "And", 300, 100, "Create valid gate for error tests", label="ValidGate"
+        )
 
         # Early return if element creation failed
         if not input_id or not gate_id:
@@ -253,7 +265,9 @@ class CircuitConnectionTests(MCPTestBase):
         all_passed &= await self.assert_success(resp, "Create new circuit for label test")
 
         # Create an InputButton (output port has no explicit name, will test with index)
-        clock_input_id = await self.create_element_checked("InputButton", 100, 200, "Create clock input", label="ClockInput")
+        clock_input_id = await self.create_element_checked(
+            "InputButton", 100, 200, "Create clock input", label="ClockInput"
+        )
         if clock_input_id is None:
             all_passed = False
 

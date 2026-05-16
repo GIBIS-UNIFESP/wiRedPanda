@@ -118,7 +118,9 @@ class ElementTransformationTests(MCPTestBase):
         gate_id = await self.create_element_checked("And", 200, 200, "Create gate for flip", label="FlipTest")
         if gate_id is None:
             return False
-        input_id = await self.create_element_checked("InputButton", 100, 200, "Create input for flip", label="FlipInput")
+        input_id = await self.create_element_checked(
+            "InputButton", 100, 200, "Create input for flip", label="FlipInput"
+        )
         if input_id is None:
             return False
 
@@ -186,9 +188,7 @@ class ElementTransformationTests(MCPTestBase):
             return False
 
         # Morph AND -> OR
-        resp = await self.send_command(
-            "morph_element", {"element_ids": [and_id], "target_type": "Or"}
-        )
+        resp = await self.send_command("morph_element", {"element_ids": [and_id], "target_type": "Or"})
         result = await self.assert_success_and_get_result(resp, "Morph AND to OR")
         if result:
             if result.get("target_type") == "Or":
@@ -222,17 +222,15 @@ class ElementTransformationTests(MCPTestBase):
 
         # Test morph with invalid target type
         # Create a fresh element first
-        not_id = await self.create_element_checked("Not", 300, 200, "Create NOT for invalid morph", label="MorphInvalid")
+        not_id = await self.create_element_checked(
+            "Not", 300, 200, "Create NOT for invalid morph", label="MorphInvalid"
+        )
         if not_id is not None:
-            resp = await self.send_command(
-                "morph_element", {"element_ids": [not_id], "target_type": "NonExistentType"}
-            )
+            resp = await self.send_command("morph_element", {"element_ids": [not_id], "target_type": "NonExistentType"})
             all_passed &= await self.assert_failure(resp, "Morph to invalid type")
 
         # Test morph with empty element_ids
-        resp = await self.send_command(
-            "morph_element", {"element_ids": [], "target_type": "And"}
-        )
+        resp = await self.send_command("morph_element", {"element_ids": [], "target_type": "And"})
         all_passed &= await self.assert_failure(resp, "Morph with empty element_ids")
 
         return all_passed
@@ -272,9 +270,7 @@ class ElementTransformationTests(MCPTestBase):
         if result:
             connections_before = result.get("connections", [])
             if len(connections_before) == 1:
-                self.infrastructure.output.success(
-                    "Connection to Display14 port 14 confirmed before morph"
-                )
+                self.infrastructure.output.success("Connection to Display14 port 14 confirmed before morph")
             else:
                 print(f"Expected 1 connection before morph, got {len(connections_before)}")
                 all_passed = False
@@ -283,9 +279,7 @@ class ElementTransformationTests(MCPTestBase):
 
         # Morph Display14 -> Display7 (8 inputs: 7 segments + decimal point, ports 0-7)
         # Ports 8-14 are removed; the connection to port 14 must be cleaned up
-        resp = await self.send_command(
-            "morph_element", {"element_ids": [disp14_id], "target_type": "Display7"}
-        )
+        resp = await self.send_command("morph_element", {"element_ids": [disp14_id], "target_type": "Display7"})
         result = await self.assert_success_and_get_result(resp, "Morph Display14 to Display7")
         if result is None:
             return False
@@ -298,15 +292,11 @@ class ElementTransformationTests(MCPTestBase):
 
         # After morph, the connection to the removed port must no longer exist
         resp = await self.send_command("list_connections", {})
-        result = await self.assert_success_and_get_result(
-            resp, "List connections after morph (expect 0)"
-        )
+        result = await self.assert_success_and_get_result(resp, "List connections after morph (expect 0)")
         if result:
             connections_after = result.get("connections", [])
             if len(connections_after) == 0:
-                self.infrastructure.output.success(
-                    "Dangling connection correctly removed after morph"
-                )
+                self.infrastructure.output.success("Dangling connection correctly removed after morph")
             else:
                 print(
                     f"BUG: {len(connections_after)} dangling connection(s) remain after morph "
@@ -327,14 +317,14 @@ class ElementTransformationTests(MCPTestBase):
         all_passed: bool = True
 
         # AND gate: minInput=2, maxInput=8
-        and_id = await self.create_element_checked("And", 200, 200, "Create AND for input resize", label="InputSizeTest")
+        and_id = await self.create_element_checked(
+            "And", 200, 200, "Create AND for input resize", label="InputSizeTest"
+        )
         if and_id is None:
             return False
 
         # Increase to 4 inputs
-        resp = await self.send_command(
-            "change_input_size", {"element_id": and_id, "size": 4}
-        )
+        resp = await self.send_command("change_input_size", {"element_id": and_id, "size": 4})
         result = await self.assert_success_and_get_result(resp, "Change AND inputs to 4")
         if result:
             if result.get("new_size") == 4:
@@ -346,23 +336,19 @@ class ElementTransformationTests(MCPTestBase):
             all_passed = False
 
         # Increase to max (8 inputs)
-        resp = await self.send_command(
-            "change_input_size", {"element_id": and_id, "size": 8}
-        )
+        resp = await self.send_command("change_input_size", {"element_id": and_id, "size": 8})
         all_passed &= await self.assert_success(resp, "Change AND inputs to 8 (max)")
 
         # Decrease back to 2 (min)
-        resp = await self.send_command(
-            "change_input_size", {"element_id": and_id, "size": 2}
-        )
+        resp = await self.send_command("change_input_size", {"element_id": and_id, "size": 2})
         all_passed &= await self.assert_success(resp, "Change AND inputs to 2 (min)")
 
         # Test with Demux (minInput=2, maxInput=4)
-        demux_id = await self.create_element_checked("Demux", 400, 200, "Create Demux for input resize", label="DemuxResize")
+        demux_id = await self.create_element_checked(
+            "Demux", 400, 200, "Create Demux for input resize", label="DemuxResize"
+        )
         if demux_id is not None:
-            resp = await self.send_command(
-                "change_input_size", {"element_id": demux_id, "size": 3}
-            )
+            resp = await self.send_command("change_input_size", {"element_id": demux_id, "size": 3})
             all_passed &= await self.assert_success(resp, "Change Demux inputs to 3")
 
         return all_passed
@@ -376,14 +362,14 @@ class ElementTransformationTests(MCPTestBase):
         all_passed: bool = True
 
         # Demux: minOutput=2, maxOutput=8, default output=2
-        demux_id = await self.create_element_checked("Demux", 200, 200, "Create Demux for output resize", label="OutputSizeTest")
+        demux_id = await self.create_element_checked(
+            "Demux", 200, 200, "Create Demux for output resize", label="OutputSizeTest"
+        )
         if demux_id is None:
             return False
 
         # Increase to 4 outputs
-        resp = await self.send_command(
-            "change_output_size", {"element_id": demux_id, "size": 4}
-        )
+        resp = await self.send_command("change_output_size", {"element_id": demux_id, "size": 4})
         result = await self.assert_success_and_get_result(resp, "Change Demux outputs to 4")
         if result:
             if result.get("new_size") == 4:
@@ -395,15 +381,11 @@ class ElementTransformationTests(MCPTestBase):
             all_passed = False
 
         # Increase to max (8 outputs)
-        resp = await self.send_command(
-            "change_output_size", {"element_id": demux_id, "size": 8}
-        )
+        resp = await self.send_command("change_output_size", {"element_id": demux_id, "size": 8})
         all_passed &= await self.assert_success(resp, "Change Demux outputs to 8 (max)")
 
         # Decrease back to min (2)
-        resp = await self.send_command(
-            "change_output_size", {"element_id": demux_id, "size": 2}
-        )
+        resp = await self.send_command("change_output_size", {"element_id": demux_id, "size": 2})
         all_passed &= await self.assert_success(resp, "Change Demux outputs to 2 (min)")
 
         return all_passed
@@ -422,9 +404,7 @@ class ElementTransformationTests(MCPTestBase):
             return False
 
         # Toggle position 0
-        resp = await self.send_command(
-            "toggle_truth_table_output", {"element_id": tt_id, "position": 0}
-        )
+        resp = await self.send_command("toggle_truth_table_output", {"element_id": tt_id, "position": 0})
         result = await self.assert_success_and_get_result(resp, "Toggle truth table position 0")
         if result:
             if result.get("position") == 0:
@@ -436,21 +416,17 @@ class ElementTransformationTests(MCPTestBase):
             all_passed = False
 
         # Toggle position 1
-        resp = await self.send_command(
-            "toggle_truth_table_output", {"element_id": tt_id, "position": 1}
-        )
+        resp = await self.send_command("toggle_truth_table_output", {"element_id": tt_id, "position": 1})
         all_passed &= await self.assert_success(resp, "Toggle truth table position 1")
 
         # Test toggle on non-TruthTable element (should fail or handle gracefully)
         and_id = await self.create_element_checked("And", 400, 200, "Create AND for TT toggle test", label="NotTT")
         if and_id is not None:
-            resp = await self.send_command(
-                "toggle_truth_table_output", {"element_id": and_id, "position": 0}
-            )
+            resp = await self.send_command("toggle_truth_table_output", {"element_id": and_id, "position": 0})
             # This may succeed or fail depending on implementation -- just verify no crash
             if resp.success:
                 self.infrastructure.output.success("Toggle on non-TT element: handled gracefully")
             else:
-                self.infrastructure.output.success(f"Toggle on non-TT element: rejected as expected")
+                self.infrastructure.output.success("Toggle on non-TT element: rejected as expected")
 
         return all_passed

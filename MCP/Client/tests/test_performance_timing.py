@@ -129,7 +129,9 @@ class PerformanceTimingTests(MCPTestBase):
 
         # Setup with some elements# Create a few elements to list
         for i in range(3):
-            element_id = await self.create_element_checked("And", i * 100, 100, f"Create element {i} for list timing", label=f"ListTest{i}")
+            element_id = await self.create_element_checked(
+                "And", i * 100, 100, f"Create element {i} for list timing", label=f"ListTest{i}"
+            )
             if element_id is None:
                 all_passed = False
 
@@ -187,7 +189,9 @@ class PerformanceTimingTests(MCPTestBase):
 
         # Setup# Create some elements to list
         for i in range(3):
-            element_id = await self.create_element_checked("And", i * 100, 100, f"Create element {i} for rapid fire test", label=f"RapidTest{i}")
+            element_id = await self.create_element_checked(
+                "And", i * 100, 100, f"Create element {i} for rapid fire test", label=f"RapidTest{i}"
+            )
             if element_id is None:
                 all_passed = False
 

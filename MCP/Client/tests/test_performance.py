@@ -89,7 +89,9 @@ class PerformanceTests(MCPTestBase):
 
         # Create elements in sequence and verify they maintain order
         for i in range(5):
-            element_id = await self.create_element_checked("And", i * 100, 100, f"Sequential create {i}", label=f"Order{i}")
+            element_id = await self.create_element_checked(
+                "And", i * 100, 100, f"Sequential create {i}", label=f"Order{i}"
+            )
             if element_id:
                 element_ids.append(element_id)
 
@@ -266,8 +268,12 @@ class PerformanceTests(MCPTestBase):
             proc = psutil.Process(self.process.pid)
 
             # Setup circuit for simulation testing
-            await self.create_element_checked("InputButton", 100, 100, "Create input for simulation memory test", label="MemTestInput")
-            await self.create_element_checked("Led", 200, 100, "Create output for simulation memory test", label="MemTestOutput")
+            await self.create_element_checked(
+                "InputButton", 100, 100, "Create input for simulation memory test", label="MemTestInput"
+            )
+            await self.create_element_checked(
+                "Led", 200, 100, "Create output for simulation memory test", label="MemTestOutput"
+            )
 
             # Test repeated simulation start/stop
             print("Testing simulation memory usage...")

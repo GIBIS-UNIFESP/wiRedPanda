@@ -51,15 +51,11 @@ class WirelessNodeTests(MCPTestBase):
             return False
 
         # Set Tx first, then reset to None
-        resp = await self.send_command(
-            "set_element_properties", {"element_id": node_id, "wireless_mode": 1}
-        )
+        resp = await self.send_command("set_element_properties", {"element_id": node_id, "wireless_mode": 1})
         if not await self.assert_success(resp, "Set Tx mode"):
             return False
 
-        resp = await self.send_command(
-            "set_element_properties", {"element_id": node_id, "wireless_mode": 0}
-        )
+        resp = await self.send_command("set_element_properties", {"element_id": node_id, "wireless_mode": 0})
         result = await self.assert_success_and_get_result(resp, "Reset to None mode")
         if result is None:
             return False
@@ -81,9 +77,7 @@ class WirelessNodeTests(MCPTestBase):
         if node_id is None:
             return False
 
-        resp = await self.send_command(
-            "set_element_properties", {"element_id": node_id, "wireless_mode": 1}
-        )
+        resp = await self.send_command("set_element_properties", {"element_id": node_id, "wireless_mode": 1})
         result = await self.assert_success_and_get_result(resp, "Set Tx mode")
         if result is None:
             return False
@@ -109,9 +103,7 @@ class WirelessNodeTests(MCPTestBase):
         if node_id is None:
             return False
 
-        resp = await self.send_command(
-            "set_element_properties", {"element_id": node_id, "wireless_mode": 2}
-        )
+        resp = await self.send_command("set_element_properties", {"element_id": node_id, "wireless_mode": 2})
         result = await self.assert_success_and_get_result(resp, "Set Rx mode")
         if result is None:
             return False
@@ -134,9 +126,7 @@ class WirelessNodeTests(MCPTestBase):
             return False
 
         # The server silently skips wireless_mode for elements where hasWirelessMode() == false
-        resp = await self.send_command(
-            "set_element_properties", {"element_id": and_id, "wireless_mode": 1}
-        )
+        resp = await self.send_command("set_element_properties", {"element_id": and_id, "wireless_mode": 1})
         result = await self.assert_success_and_get_result(resp, "Set wireless_mode on And (should be ignored)")
         if result is None:
             return False
@@ -159,9 +149,7 @@ class WirelessNodeTests(MCPTestBase):
         if node_id is None:
             return False
 
-        resp = await self.send_command(
-            "set_element_properties", {"element_id": node_id, "wireless_mode": 3}
-        )
+        resp = await self.send_command("set_element_properties", {"element_id": node_id, "wireless_mode": 3})
         if not await self.assert_failure(resp, "wireless_mode=3 should fail"):
             return False
 
@@ -181,9 +169,7 @@ class WirelessNodeTests(MCPTestBase):
         if tx_id is None:
             return False
 
-        resp = await self.send_command(
-            "set_element_properties", {"element_id": tx_id, "wireless_mode": 1}
-        )
+        resp = await self.send_command("set_element_properties", {"element_id": tx_id, "wireless_mode": 1})
         if not await self.assert_success(resp, "Set Tx mode on Tx node"):
             return False
 
@@ -198,9 +184,7 @@ class WirelessNodeTests(MCPTestBase):
         if rx_id is None:
             return False
 
-        resp = await self.send_command(
-            "set_element_properties", {"element_id": rx_id, "wireless_mode": 2}
-        )
+        resp = await self.send_command("set_element_properties", {"element_id": rx_id, "wireless_mode": 2})
         if not await self.assert_success(resp, "Set Rx mode on Rx node"):
             return False
 

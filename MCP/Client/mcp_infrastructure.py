@@ -13,6 +13,7 @@ import sys
 from typing import Any, Dict, Optional
 
 from beartype import beartype
+
 from mcp_models import MCPResponse, create_error_response
 from mcp_output import MCPOutput
 from mcp_protocols import OrganizerProtocol
@@ -260,10 +261,10 @@ class MCPInfrastructure:
             for i in range(tab_count):
                 resp = await self.send_command("close_circuit", {})
                 if resp and resp.success:
-                    self.output.success(f"   ✅ Closed circuit tab {i+1}/{tab_count}")
+                    self.output.success(f"   ✅ Closed circuit tab {i + 1}/{tab_count}")
                 else:
                     self.output.warning(
-                        f"   ⚠️  Failed to close tab {i+1}/{tab_count}: {resp.error if resp else 'No response'}"
+                        f"   ⚠️  Failed to close tab {i + 1}/{tab_count}: {resp.error if resp else 'No response'}"
                     )
                     break
             return True
