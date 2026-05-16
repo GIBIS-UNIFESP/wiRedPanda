@@ -14,6 +14,8 @@ Tests for edge cases, boundary conditions, and input validation including:
 MCP test implementation
 """
 
+from typing import Awaitable, Callable, List
+
 from beartype import beartype
 
 # Import base infrastructure
@@ -23,13 +25,10 @@ from tests.mcp_test_base import MCPTestBase
 class EdgeCasesValidationTests(MCPTestBase):
     """Tests for edge cases, boundary conditions, and input validation"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all edge cases and validation tests
+    CATEGORY_NAME = "EDGE CASES AND VALIDATION"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_workflow_element_count_validation,
             self.test_edge_cases_extreme_coordinates,
             self.test_edge_cases_label_validation,
@@ -38,17 +37,6 @@ class EdgeCasesValidationTests(MCPTestBase):
             self.test_edge_cases_null_values,
             self.test_edge_cases_float_coordinates,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING EDGE CASES AND VALIDATION TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations
@@ -124,19 +112,16 @@ class EdgeCasesValidationTests(MCPTestBase):
             resp = await self.send_command("delete_element", {"element_id": input_id})
             all_passed &= await self.assert_success(resp, "Delete first element")
 
-            resp = await self.send_command("list_elements", {})
-            success = await self.assert_success(resp, "List elements after deletion")
-            all_passed &= success
-            if success:
-                result = await self.get_response_result(resp)
-                if result and "elements" in result:
-                    element_count = len(result["elements"])
-                    if element_count == 1:
-                        self.infrastructure.output.success(f"✅ Post-deletion element count: {element_count}")
-                        # Note: assert_success already incremented counters
-                    else:
-                        print(f"❌ Post-deletion unexpected count: {element_count} (expected 1)")
-                        all_passed = False
+            elements = await self.list_elements_or_none("List elements after deletion")
+            if elements is None:
+                all_passed = False
+            else:
+                element_count = len(elements)
+                if element_count == 1:
+                    self.infrastructure.output.success(f"✅ Post-deletion element count: {element_count}")
+                else:
+                    print(f"❌ Post-deletion unexpected count: {element_count} (expected 1)")
+                    all_passed = False
 
         # Test: Multi-element types validation
         logic_id = await self.create_element_checked("And", 200, 200, "Create logic gate", label="LOGIC_GATE")

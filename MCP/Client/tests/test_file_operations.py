@@ -14,6 +14,7 @@ MCP test implementation
 
 import os
 import tempfile
+from typing import Awaitable, Callable, List
 
 from beartype import beartype
 
@@ -24,29 +25,15 @@ from tests.mcp_test_base import MCPTestBase
 class FileOperationTests(MCPTestBase):
     """Tests for file operations and I/O"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all file operation tests
+    CATEGORY_NAME = "FILE OPERATIONS"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_file_operations,
             self.test_file_save_operations,
             self.test_file_load_operations,
             self.test_file_operation_errors,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING FILE OPERATIONS TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations

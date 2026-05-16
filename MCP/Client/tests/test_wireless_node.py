@@ -11,6 +11,7 @@ Tests for the WirelessMode property on Node elements:
 """
 
 import asyncio
+from typing import Awaitable, Callable, List
 
 from beartype import beartype
 
@@ -20,8 +21,10 @@ from tests.mcp_test_base import MCPTestBase
 class WirelessNodeTests(MCPTestBase):
     """Tests for wireless Node Tx/Rx mode via MCP"""
 
-    async def run_category_tests(self) -> bool:
-        tests = [
+    CATEGORY_NAME = "WIRELESS NODE"
+
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_set_wireless_mode_none,
             self.test_set_wireless_mode_tx,
             self.test_set_wireless_mode_rx,
@@ -29,17 +32,6 @@ class WirelessNodeTests(MCPTestBase):
             self.test_wireless_mode_invalid_value,
             self.test_wireless_signal_propagation,
         ]
-
-        print("\n" + "=" * 60)
-        print("RUNNING WIRELESS NODE TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     @beartype
     async def test_set_wireless_mode_none(self) -> bool:

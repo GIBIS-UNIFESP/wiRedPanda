@@ -13,6 +13,8 @@ Tests for error handling and invalid parameter rejection:
 MCP test implementation
 """
 
+from typing import Awaitable, Callable, List
+
 from beartype import beartype
 
 from tests.mcp_test_base import MCPTestBase
@@ -21,8 +23,10 @@ from tests.mcp_test_base import MCPTestBase
 class NegativeCaseTests(MCPTestBase):
     """Tests for error paths and invalid operations"""
 
-    async def run_category_tests(self) -> bool:
-        tests = [
+    CATEGORY_NAME = "NEGATIVE CASE"
+
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_rotate_invalid_element,
             self.test_morph_error_cases,
             self.test_port_size_boundaries,
@@ -36,17 +40,6 @@ class NegativeCaseTests(MCPTestBase):
             self.test_update_element,
             self.test_get_server_info,
         ]
-
-        print("\n" + "=" * 60)
-        print("RUNNING NEGATIVE CASE TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     @beartype
     async def test_rotate_invalid_element(self) -> bool:
@@ -169,17 +162,7 @@ class NegativeCaseTests(MCPTestBase):
         all_passed &= await self.assert_failure(resp, "Split missing target params")
 
         # All params but nonexistent elements
-        resp = await self.send_command(
-            "split_connection",
-            {
-                "source_id": 99999,
-                "source_port": 0,
-                "target_id": 99998,
-                "target_port": 0,
-                "x": 200.0,
-                "y": 200.0,
-            },
-        )
+        resp = await self.split_connection(99999, 0, 99998, 0, 200.0, 200.0)
         all_passed &= await self.assert_failure(resp, "Split with nonexistent elements")
 
         # Create elements but no connection between them
@@ -387,10 +370,7 @@ class NegativeCaseTests(MCPTestBase):
         if output_id is None:
             return False
 
-        resp = await self.send_command(
-            "connect_elements",
-            {"source_id": input_id, "source_port": 0, "target_id": output_id, "target_port": 0},
-        )
+        resp = await self.connect_elements(input_id, 0, output_id, 0)
         all_passed &= await self.assert_success(resp, "Connect for undo split")
 
         # Count connections before split
@@ -399,17 +379,7 @@ class NegativeCaseTests(MCPTestBase):
         before_count = len(result.get("connections", [])) if result else 0
 
         # Split the connection
-        resp = await self.send_command(
-            "split_connection",
-            {
-                "source_id": input_id,
-                "source_port": 0,
-                "target_id": output_id,
-                "target_port": 0,
-                "x": 250.0,
-                "y": 200.0,
-            },
-        )
+        resp = await self.split_connection(input_id, 0, output_id, 0, 250.0, 200.0)
         all_passed &= await self.assert_success(resp, "Split connection for undo")
 
         # Verify split increased connections

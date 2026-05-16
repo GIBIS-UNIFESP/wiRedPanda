@@ -11,6 +11,8 @@ from typing import Annotated, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from domain._validators import require_port_or_label
+
 # Import enums from domain package
 from domain.enums import (
     ElementType,
@@ -106,10 +108,9 @@ class ConnectElementsCommand(MCPCommand):
             """Ensure valid port specification and no self-connection"""
             if self.source_id == self.target_id:
                 raise ValueError("Element cannot connect to itself")
-            if self.source_port is None and self.source_port_label is None:
-                raise ValueError("Either source_port or source_port_label must be provided")
-            if self.target_port is None and self.target_port_label is None:
-                raise ValueError("Either target_port or target_port_label must be provided")
+            require_port_or_label(
+                self.source_port, self.source_port_label, self.target_port, self.target_port_label
+            )
             return self
 
         model_config = ConfigDict(extra="forbid")

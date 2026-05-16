@@ -13,7 +13,7 @@ Tests for element type coverage and availability including:
 MCP test implementation
 """
 
-from typing import List
+from typing import Awaitable, Callable, List
 
 from beartype import beartype
 
@@ -24,30 +24,16 @@ from tests.mcp_test_base import MCPTestBase
 class ElementTypeCoverageTests(MCPTestBase):
     """Tests for element type coverage and availability"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all element type coverage tests
+    CATEGORY_NAME = "ELEMENT TYPE COVERAGE"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_missing_logic_gate_types,
             self.test_missing_input_element_types,
             self.test_missing_output_element_types,
             self.test_missing_sequential_element_types,
             self.test_missing_complex_element_types,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING ELEMENT TYPE COVERAGE TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== SHARED HELPER ====================
 

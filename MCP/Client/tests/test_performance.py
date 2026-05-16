@@ -15,6 +15,7 @@ MCP test implementation
 
 import asyncio
 import time
+from typing import Awaitable, Callable, List
 
 import psutil
 from beartype import beartype
@@ -26,26 +27,16 @@ from tests.mcp_test_base import MCPTestBase
 class PerformanceTests(MCPTestBase):
     """Tests for performance and concurrency behavior"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all performance tests
+    CATEGORY_NAME = "PERFORMANCE"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_concurrent_rapid_sequential_commands,
             self.test_concurrent_command_ordering_integrity,
             self.test_concurrent_interleaved_command_types,
             self.test_memory_leak_element_operations,
             self.test_memory_leak_simulation_operations,
         ]
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     @beartype
     async def test_concurrent_rapid_sequential_commands(self) -> bool:
@@ -96,29 +87,25 @@ class PerformanceTests(MCPTestBase):
                 element_ids.append(element_id)
 
         # Verify elements were created in correct order
-        resp = await self.send_command("list_elements", {})
-        success = await self.assert_success(resp, "List elements for ordering check")
-        all_passed &= success
+        elements = await self.list_elements_or_none("List elements for ordering check")
+        if elements is None:
+            all_passed = False
+        else:
+            # Sort by element_id to check ordering
+            sorted_elements = sorted(elements, key=lambda x: x.get("element_id", 0))
 
-        if success:
-            result = await self.get_response_result(resp)
-            if result and "elements" in result:
-                elements = result["elements"]
-                # Sort by element_id to check ordering
-                sorted_elements = sorted(elements, key=lambda x: x.get("element_id", 0))
+            order_correct = True
+            for i, elem in enumerate(sorted_elements[-5:]):  # Last 5 elements
+                expected_label = f"Order{i}"
+                actual_label = elem.get("label", "")
+                if actual_label != expected_label:
+                    order_correct = False
+                    break
 
-                order_correct = True
-                for i, elem in enumerate(sorted_elements[-5:]):  # Last 5 elements
-                    expected_label = f"Order{i}"
-                    actual_label = elem.get("label", "")
-                    if actual_label != expected_label:
-                        order_correct = False
-                        break
-
-                if order_correct:
-                    self.infrastructure.output.success("✅ Element creation order maintained")
-                else:
-                    print("❌ Element creation order corrupted")
+            if order_correct:
+                self.infrastructure.output.success("✅ Element creation order maintained")
+            else:
+                print("❌ Element creation order corrupted")
 
         return all_passed
 

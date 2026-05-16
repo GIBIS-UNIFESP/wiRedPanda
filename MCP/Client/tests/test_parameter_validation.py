@@ -12,8 +12,7 @@ Tests for command parameter validation including:
 MCP test implementation
 """
 
-import os
-from typing import Any, Dict
+from typing import Any, Awaitable, Callable, Dict, List
 
 from beartype import beartype
 
@@ -24,27 +23,13 @@ from tests.mcp_test_base import MCPTestBase
 class ParameterValidationTests(MCPTestBase):
     """Tests for parameter validation and command coverage"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all parameter validation tests
+    CATEGORY_NAME = "PARAMETER VALIDATION"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_missing_parameter_validation,
             self.test_missing_command_coverage,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING PARAMETER VALIDATION TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations
@@ -148,64 +133,13 @@ class ParameterValidationTests(MCPTestBase):
         # Note: Individual IC operations will be counted via assert_success/assert_failure
 
         try:
-            # Clean up any existing test IC files to ensure clean state
-            test_ic_file = "test_ic.panda"
-            if os.path.exists(test_ic_file):
-                os.remove(test_ic_file)
-                print("🧹 Cleaned up existing test IC file")
-
-            # Create a simple circuit for IC creation
-            # Create elements for IC using proper ElementGroup types
-            # InputButton belongs to ElementGroup::Input (required for IC interface)
-            input_id = await self.create_element_checked(
-                "InputButton", 100.0, 100.0, "create IC input", label="IC_Input"
-            )
-            # Create a simple buffer logic
-            buffer_id = await self.create_element_checked(
-                "Not", 200.0, 100.0, "create IC logic gate", label="IC_Buffer"
-            )
-            # Led belongs to ElementGroup::Output (required for IC interface)
-            output_id = await self.create_element_checked("Led", 300.0, 100.0, "create IC output", label="IC_Output")
-
-            # Early return if element creation failed
-            if not input_id or not buffer_id or not output_id:
+            # Build the InputButton -> Not -> Led chain that IC creation expects.
+            if await self.setup_basic_ic_circuit() is None:
                 print("❌ IC test setup failed - could not create required elements")
-                all_passed = False
-                return all_passed
-
-            # Connect: InputButton -> NOT -> Led (creates IC with 1 input, 1 output)
-            connections = [
-                (input_id, 0, buffer_id, 0),  # InputButton to NOT gate
-                (buffer_id, 0, output_id, 0),  # NOT gate to Led
-            ]
-
-            for source_id, source_port, target_id, target_port in connections:
-                connect_resp = await self.send_command(
-                    "connect_elements",
-                    {
-                        "source_id": source_id,
-                        "source_port": source_port,
-                        "target_id": target_id,
-                        "target_port": target_port,
-                    },
-                )
-                if not connect_resp.success:
-                    print(f"❌ IC test setup failed - could not connect elements: {connect_resp.error}")
-                    return False
+                return False
 
             # Test create_ic command with properly connected circuit
-            ic_resp = await self.send_command(
-                "create_ic", {"name": "test_ic", "description": "Test IC created by test suite"}
-            )
-
-            if ic_resp.success:
-                self.infrastructure.output.success("✅ create_ic command successful")
-            else:
-                # Handle "file already exists" as acceptable for testing
-                if "already exists" in str(ic_resp.error):
-                    self.infrastructure.output.success(f"✅ create_ic handled existing file: {ic_resp.error}")
-                else:
-                    print(f"❌ create_ic failed: {ic_resp.error}")
+            await self.create_test_ic()
 
             # Test list_ics command
             list_resp = await self.send_command("list_ics", {})

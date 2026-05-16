@@ -10,6 +10,7 @@ from typing import Annotated, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from ._validators import require_port_or_label
 from .enums import ElementType
 
 
@@ -91,10 +92,9 @@ class ConnectionSpec(BaseModel):
     @model_validator(mode="after")
     def validate_ports(self) -> "ConnectionSpec":
         """Require at least one of (port index, port label) on each side of the connection."""
-        if self.source_port is None and self.source_port_label is None:
-            raise ValueError("Either source_port or source_port_label must be provided")
-        if self.target_port is None and self.target_port_label is None:
-            raise ValueError("Either target_port or target_port_label must be provided")
+        require_port_or_label(
+            self.source_port, self.source_port_label, self.target_port, self.target_port_label
+        )
         return self
 
 

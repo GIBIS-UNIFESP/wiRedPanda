@@ -14,7 +14,7 @@ MCP test implementation
 """
 
 import time
-from typing import List
+from typing import Awaitable, Callable, List
 
 from beartype import beartype
 
@@ -25,30 +25,16 @@ from tests.mcp_test_base import MCPTestBase
 class PerformanceTimingTests(MCPTestBase):
     """Tests for performance characteristics and timing analysis"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all performance and timing tests
+    CATEGORY_NAME = "PERFORMANCE AND TIMING"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_performance_new_circuit_timing,
             self.test_performance_element_creation_timing,
             self.test_performance_list_elements_timing,
             self.test_performance_simulation_start_timing,
             self.test_performance_rapid_fire_commands,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING PERFORMANCE AND TIMING TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations

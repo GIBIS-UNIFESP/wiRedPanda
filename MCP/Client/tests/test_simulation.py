@@ -14,6 +14,7 @@ MCP test implementation
 """
 
 import asyncio
+from typing import Awaitable, Callable, List
 
 from beartype import beartype
 
@@ -24,28 +25,14 @@ from tests.mcp_test_base import MCPTestBase
 class SimulationTests(MCPTestBase):
     """Tests for simulation operations and control"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all simulation tests
+    CATEGORY_NAME = "SIMULATION"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_simulation_control,
             self.test_simulation_start_stop_operations,
             self.test_simulation_input_output_operations,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING SIMULATION TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations
@@ -67,15 +54,7 @@ class SimulationTests(MCPTestBase):
             return all_passed
 
         # Connect elements
-        resp = await self.send_command(
-            "connect_elements",
-            {
-                "source_id": input_id,
-                "source_port": 0,
-                "target_id": output_id,
-                "target_port": 0,
-            },
-        )
+        resp = await self.connect_elements(input_id, 0, output_id, 0)
         all_passed &= await self.assert_success(resp, "Connect elements for simulation")
 
         # Test simulation control

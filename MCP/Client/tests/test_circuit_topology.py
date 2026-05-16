@@ -15,40 +15,27 @@ MCP test implementation
 
 import asyncio
 import time
-from typing import Any, Dict, List, Union
+from typing import Any, Awaitable, Callable, Dict, List, Union
 
 from beartype import beartype
 
 # Import base infrastructure
 from tests.mcp_test_base import MCPTestBase
+from tests.mcp_test_fixtures import HALF_ADDER_CIRCUIT
 
 
 class CircuitTopologyTests(MCPTestBase):
     """Tests for complex circuit topology and large-scale structures"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all circuit topology tests
+    CATEGORY_NAME = "CIRCUIT TOPOLOGY"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_large_circuit_100_element_chain,
             self.test_high_fanout_circuit_20_outputs,
             self.test_half_adder_circuit,
             self.test_large_circuit_performance,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING CIRCUIT TOPOLOGY TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations
@@ -353,31 +340,7 @@ class CircuitTopologyTests(MCPTestBase):
         # Test Half Adder Circuit (Sum = A XOR B, Carry = A AND B)
         print("Testing Half Adder circuit...")
 
-        half_adder_circuit = {
-            "elements": [
-                # Inputs
-                {"id": 1, "type": "InputButton", "x": 50, "y": 100, "label": "A"},
-                {"id": 2, "type": "InputButton", "x": 50, "y": 200, "label": "B"},
-                # XOR for Sum (A XOR B) - using native XOR gate
-                {"id": 3, "type": "Xor", "x": 250, "y": 80, "label": "SUM_XOR"},
-                # AND for Carry (A AND B)
-                {"id": 4, "type": "And", "x": 250, "y": 180, "label": "CARRY_AND"},
-                # Outputs
-                {"id": 5, "type": "Led", "x": 450, "y": 80, "label": "SUM"},
-                {"id": 6, "type": "Led", "x": 450, "y": 180, "label": "CARRY"},
-            ],
-            "connections": [
-                # Direct connections using native XOR
-                {"source": 1, "target": 3, "source_port": 0, "target_port": 0},  # A -> XOR
-                {"source": 2, "target": 3, "source_port": 0, "target_port": 1},  # B -> XOR
-                # AND for carry
-                {"source": 1, "target": 4, "source_port": 0, "target_port": 0},  # A -> AND
-                {"source": 2, "target": 4, "source_port": 0, "target_port": 1},  # B -> AND
-                # Outputs
-                {"source": 3, "target": 5, "source_port": 0, "target_port": 0},  # XOR -> SUM LED
-                {"source": 4, "target": 6, "source_port": 0, "target_port": 0},  # AND -> CARRY LED
-            ],
-        }
+        half_adder_circuit = HALF_ADDER_CIRCUIT
 
         mapping = await self.create_circuit_from_spec(half_adder_circuit)
 
