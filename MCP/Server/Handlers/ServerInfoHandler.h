@@ -21,4 +21,6 @@ public:
 
 private:
     QJsonObject handleGetServerInfo(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleListCommands(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleDescribeCommand(const QJsonObject &params, const QJsonValue &requestId);
 };
