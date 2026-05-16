@@ -318,8 +318,20 @@ endforeach()
 # on MSVC link.exe) and, unlike the previous hand-rolled version, doesn't add
 # the archive to the link line twice.
 function(link_wiredpanda_whole_archive target)
-    target_link_libraries(${target} PRIVATE
-        "$<LINK_LIBRARY:WHOLE_ARCHIVE,wiredpanda_lib>")
+    if(EMSCRIPTEN)
+        # CMake's $<LINK_LIBRARY:WHOLE_ARCHIVE> genex is not registered for the
+        # CXX link language under emscripten, so the feature-aware form errors
+        # out at configure time.  wasm-ld supports the same semantics via
+        # `--whole-archive`/`--no-whole-archive` direct flags — use those.
+        # target_link_libraries still records the dependency so transitive
+        # includes/defines propagate and the build re-runs when the lib changes.
+        target_link_options(${target} PRIVATE
+            "SHELL:-Wl,--whole-archive $<TARGET_FILE:wiredpanda_lib> -Wl,--no-whole-archive")
+        target_link_libraries(${target} PRIVATE wiredpanda_lib)
+    else()
+        target_link_libraries(${target} PRIVATE
+            "$<LINK_LIBRARY:WHOLE_ARCHIVE,wiredpanda_lib>")
+    endif()
 endfunction()
 
 # ========= LIB ===================================
