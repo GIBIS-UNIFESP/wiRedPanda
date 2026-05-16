@@ -30,6 +30,7 @@ class MCPTestConfig(BaseModel):
 
 @beartype
 async def main() -> bool:
+    """Run a minimal MCP smoke test used for debugging the Windows threading path."""
     print("🔬 Minimal MCP Test - Debugging Windows threading issue")
     print("=" * 60)
 

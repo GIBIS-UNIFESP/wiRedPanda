@@ -41,6 +41,7 @@ class TestConfiguration(BaseModel):
 
 @beartype
 async def main() -> None:
+    """Parse CLI args and run the full MCP integration test suite."""
     parser = argparse.ArgumentParser(description="MCP Test Suite")
     parser.add_argument(
         "--images",
