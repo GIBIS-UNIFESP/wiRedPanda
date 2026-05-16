@@ -48,6 +48,7 @@ class ICInfo(BaseModel):
     @field_validator("name")
     @classmethod
     def validate_identifier(cls, v: str) -> str:
+        """Reject names containing characters other than letters, digits, underscores, or hyphens."""
         if not v.replace("_", "").replace("-", "").isalnum():
             raise ValueError("Name must contain only letters, numbers, underscores, and hyphens")
         return v
@@ -67,6 +68,7 @@ class ElementSpec(BaseModel):
     @field_validator("id")
     @classmethod
     def validate_id(cls, v: str) -> str:
+        """Reject element IDs containing characters other than letters, digits, or underscores."""
         if not v.replace("_", "").isalnum():
             raise ValueError("Element ID must contain only letters, numbers, and underscores")
         return v
@@ -88,6 +90,7 @@ class ConnectionSpec(BaseModel):
 
     @model_validator(mode="after")
     def validate_ports(self) -> "ConnectionSpec":
+        """Require at least one of (port index, port label) on each side of the connection."""
         if self.source_port is None and self.source_port_label is None:
             raise ValueError("Either source_port or source_port_label must be provided")
         if self.target_port is None and self.target_port_label is None:
@@ -103,6 +106,7 @@ class CircuitSpecification(BaseModel):
 
     @model_validator(mode="after")
     def validate_unique_ids(self) -> "CircuitSpecification":
+        """Require element IDs to be unique and every connection endpoint to reference an existing element."""
         ids = [elem.id for elem in self.elements]
         if len(ids) != len(set(ids)):
             raise ValueError("Element IDs must be unique")
