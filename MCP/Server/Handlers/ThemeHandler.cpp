@@ -19,7 +19,8 @@ QJsonObject ThemeHandler::handleCommand(const QString &command, const QJsonObjec
     } else if (command == "get_effective_theme") {
         return handleGetEffectiveTheme(params, requestId);
     } else {
-        return createErrorResponse(QString("Unknown theme command: %1").arg(command), requestId);
+        return createErrorResponse(QString("Unknown theme command: %1").arg(command),
+                                   requestId, JsonRpcError::MethodNotFound);
     }
 }
 
@@ -42,7 +43,8 @@ QJsonObject ThemeHandler::handleSetTheme(const QJsonObject &params, const QJsonV
     } else if (themeStr == "system") {
         theme = Theme::System;
     } else {
-        return createErrorResponse(QString("Invalid theme: '%1'. Expected 'light', 'dark', or 'system'.").arg(themeStr), requestId);
+        return createErrorResponse(QString("Invalid theme: '%1'. Expected 'light', 'dark', or 'system'.").arg(themeStr),
+                                   requestId, JsonRpcError::ValidationError);
     }
 
     ThemeManager::setTheme(theme);

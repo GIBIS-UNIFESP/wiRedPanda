@@ -199,6 +199,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Versions.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/JsonRpcError.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.h

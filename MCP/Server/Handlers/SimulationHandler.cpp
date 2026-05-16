@@ -60,31 +60,32 @@ QJsonObject SimulationHandler::handleCommand(const QString &command, const QJson
     } else if (command == "get_undo_stack") {
         return handleGetUndoStack(params, requestId);
     } else {
-        return createErrorResponse(QString("Unknown simulation command: %1").arg(command), requestId);
+        return createErrorResponse(QString("Unknown simulation command: %1").arg(command),
+                                   requestId, JsonRpcError::MethodNotFound);
     }
 }
 
 QJsonObject SimulationHandler::handleSimulationControl(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"action"})) {
-        return createErrorResponse("Missing required parameter: action", requestId);
+        return createErrorResponse("Missing required parameter: action", requestId, JsonRpcError::InvalidParams);
     }
 
     QString errorMsg;
     if (!validateNonEmptyString(params.value("action"), "action", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
     QString action = params.value("action").toString();
 
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     Simulation *simulation = scene->simulation();
     if (!simulation) {
-        return createErrorResponse("No simulation available", requestId);
+        return createErrorResponse("No simulation available", requestId, JsonRpcError::SimulationError);
     }
 
     return tryCommand([&]() -> QJsonObject {
@@ -97,7 +98,8 @@ QJsonObject SimulationHandler::handleSimulationControl(const QJsonObject &params
         } else if (action == "update") {
             simulation->update();
         } else {
-            return createErrorResponse(QString("Invalid action: %1").arg(action), requestId);
+            return createErrorResponse(QString("Invalid action: %1").arg(action),
+                                       requestId, JsonRpcError::ValidationError);
         }
         return createSuccessResponse(QJsonObject(), requestId);
     }, "control simulation", requestId);
@@ -107,14 +109,14 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
 {
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     int duration = params.value("duration").toInt(32);
     QJsonObject inputPatterns = params.value("input_patterns").toObject();
 
     if (duration <= 0 || duration > 1024) {
-        return createErrorResponse("Duration must be between 1 and 1024", requestId);
+        return createErrorResponse("Duration must be between 1 and 1024", requestId, JsonRpcError::ValidationError);
     }
 
     return tryCommand([&]() -> QJsonObject {
@@ -145,19 +147,22 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
                 }
 
                 if (rowIndex == -1) {
-                    return createErrorResponse(QString("Input element with label '%1' not found").arg(inputLabel), requestId);
+                    return createErrorResponse(QString("Input element with label '%1' not found").arg(inputLabel),
+                                               requestId, JsonRpcError::ElementNotFound);
                 }
 
                 if (pattern.size() != duration) {
                     return createErrorResponse(QString("Pattern length for '%1' (%2) doesn't match duration (%3)")
-                                               .arg(inputLabel).arg(pattern.size()).arg(duration), requestId);
+                                               .arg(inputLabel).arg(pattern.size()).arg(duration),
+                                               requestId, JsonRpcError::ValidationError);
                 }
 
                 for (int col = 0; col < duration; ++col) {
                     int value = pattern[col].toInt();
                     if (value != 0 && value != 1) {
                         return createErrorResponse(QString("Invalid pattern value %1 for '%2' at step %3 (must be 0 or 1)")
-                                                   .arg(value).arg(inputLabel).arg(col), requestId);
+                                                   .arg(value).arg(inputLabel).arg(col),
+                                                   requestId, JsonRpcError::ValidationError);
                     }
                     bewavedDolphin->createElement(rowIndex, col, value, true, false);
                 }
@@ -219,18 +224,20 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
 QJsonObject SimulationHandler::handleExportWaveform(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"filename", "format"})) {
-        return createErrorResponse("Missing required parameters: filename, format", requestId);
+        return createErrorResponse("Missing required parameters: filename, format", requestId, JsonRpcError::InvalidParams);
     }
 
     QString filename = params.value("filename").toString();
     QString format = params.value("format").toString().toLower();
 
     if (format != "txt" && format != "png") {
-        return createErrorResponse("Only 'txt' and 'png' formats are supported for waveform export", requestId);
+        return createErrorResponse("Only 'txt' and 'png' formats are supported for waveform export",
+                                   requestId, JsonRpcError::ValidationError);
     }
 
     if (!m_persistentDolphin) {
-        return createErrorResponse("No waveform data available. Call create_waveform first.", requestId);
+        return createErrorResponse("No waveform data available. Call create_waveform first.",
+                                   requestId, JsonRpcError::SimulationError);
     }
 
     return tryCommand([&]() -> QJsonObject {
@@ -241,7 +248,8 @@ QJsonObject SimulationHandler::handleExportWaveform(const QJsonObject &params, c
         if (format == "txt") {
             QFile file(filename);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                return createErrorResponse(QString("Failed to create file: %1").arg(filename), requestId);
+                return createErrorResponse(QString("Failed to create file: %1").arg(filename),
+                                           requestId, JsonRpcError::FileError);
             }
 
             QTextStream stream(&file);
@@ -249,7 +257,7 @@ QJsonObject SimulationHandler::handleExportWaveform(const QJsonObject &params, c
 
         } else if (format == "png") {
             if (!m_persistentDolphin->exportToPng(filename)) {
-                return createErrorResponse("Failed to export waveform as PNG", requestId);
+                return createErrorResponse("Failed to export waveform as PNG", requestId, JsonRpcError::FileError);
             }
         }
 
@@ -261,19 +269,19 @@ QJsonObject SimulationHandler::handleExportWaveform(const QJsonObject &params, c
 QJsonObject SimulationHandler::handleCreateIC(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"name"})) {
-        return createErrorResponse("Missing required parameter: name", requestId);
+        return createErrorResponse("Missing required parameter: name", requestId, JsonRpcError::InvalidParams);
     }
 
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     QString name = params.value("name").toString();
     QString description = params.value("description").toString("");
 
     if (name.isEmpty()) {
-        return createErrorResponse("IC name cannot be empty", requestId);
+        return createErrorResponse("IC name cannot be empty", requestId, JsonRpcError::InvalidParams);
     }
 
     return tryCommand([&]() -> QJsonObject {
@@ -281,17 +289,18 @@ QJsonObject SimulationHandler::handleCreateIC(const QJsonObject &params, const Q
         QString fullPath = m_mainWindow->currentDir().absoluteFilePath(icFileName);
 
         if (QFile::exists(fullPath)) {
-            return createErrorResponse(QString("IC file already exists: %1").arg(icFileName), requestId);
+            return createErrorResponse(QString("IC file already exists: %1").arg(icFileName),
+                                       requestId, JsonRpcError::IcError);
         }
 
         const auto elements = scene->elements();
         if (elements.isEmpty()) {
-            return createErrorResponse("Cannot create IC from empty circuit", requestId);
+            return createErrorResponse("Cannot create IC from empty circuit", requestId, JsonRpcError::IcError);
         }
 
         auto *workspace = m_mainWindow->currentTab();
         if (!workspace) {
-            return createErrorResponse("No active workspace available", requestId);
+            return createErrorResponse("No active workspace available", requestId, JsonRpcError::InternalError);
         }
 
         workspace->save(fullPath);
@@ -311,12 +320,12 @@ QJsonObject SimulationHandler::handleCreateIC(const QJsonObject &params, const Q
 QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"ic_name", "x", "y"})) {
-        return createErrorResponse("Missing required parameters: ic_name, x, y", requestId);
+        return createErrorResponse("Missing required parameters: ic_name, x, y", requestId, JsonRpcError::InvalidParams);
     }
 
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     QString icName = params.value("ic_name").toString();
@@ -330,7 +339,8 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
         QString fullPath = m_mainWindow->currentDir().absoluteFilePath(icFileName);
 
         if (!QFile::exists(fullPath)) {
-            return createErrorResponse(QString("IC file not found: %1").arg(icFileName), requestId);
+            return createErrorResponse(QString("IC file not found: %1").arg(icFileName),
+                                       requestId, JsonRpcError::IcError);
         }
 
         auto ic = std::make_unique<IC>();
@@ -343,7 +353,8 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
         if (inlineMode) {
             QFile file(fullPath);
             if (!file.open(QIODevice::ReadOnly)) {
-                return createErrorResponse(QString("Could not read IC file: %1").arg(file.errorString()), requestId);
+                return createErrorResponse(QString("Could not read IC file: %1").arg(file.errorString()),
+                                           requestId, JsonRpcError::FileError);
             }
             QByteArray fileBytes = file.readAll();
             file.close();
@@ -356,7 +367,8 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
             auto *reg = scene->icRegistry();
             if (reg->hasBlob(blobName)) {
                 return createErrorResponse(QString("Blob name collision: an embedded IC named '%1' already exists. "
-                                                   "Use blob_name parameter to specify a different name.").arg(blobName), requestId);
+                                                   "Use blob_name parameter to specify a different name.").arg(blobName),
+                                           requestId, JsonRpcError::IcError);
             }
 
             icPtr = reg->createEmbeddedIC(blobName, fileBytes, icDirectory);
@@ -452,12 +464,12 @@ QJsonObject SimulationHandler::handleUndo(const QJsonObject &params, const QJson
     (void)params;  // Parameter not used
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     QUndoStack *undoStack = scene->undoStack();
     if (!undoStack) {
-        return createErrorResponse("Undo stack not available", requestId);
+        return createErrorResponse("Undo stack not available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&]() -> QJsonObject {
@@ -487,12 +499,12 @@ QJsonObject SimulationHandler::handleRedo(const QJsonObject &params, const QJson
     (void)params;  // Parameter not used
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     QUndoStack *undoStack = scene->undoStack();
     if (!undoStack) {
-        return createErrorResponse("Undo stack not available", requestId);
+        return createErrorResponse("Undo stack not available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&]() -> QJsonObject {
@@ -522,12 +534,12 @@ QJsonObject SimulationHandler::handleGetUndoStack(const QJsonObject &params, con
     (void)params;  // Parameter not used
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     QUndoStack *undoStack = scene->undoStack();
     if (!undoStack) {
-        return createErrorResponse("Undo stack not available", requestId);
+        return createErrorResponse("Undo stack not available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&]() -> QJsonObject {
@@ -547,49 +559,51 @@ QJsonObject SimulationHandler::handleGetUndoStack(const QJsonObject &params, con
 QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"element_id"})) {
-        return createErrorResponse("Missing required parameter: element_id", requestId);
+        return createErrorResponse("Missing required parameter: element_id", requestId, JsonRpcError::InvalidParams);
     }
 
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     int elementId = params.value("element_id").toInt();
     if (elementId <= 0) {
-        return createErrorResponse("element_id must be a positive integer", requestId);
+        return createErrorResponse("element_id must be a positive integer", requestId, JsonRpcError::InvalidParams);
     }
 
     return tryCommand([&]() -> QJsonObject {
         auto *item = scene->itemById(elementId);
         if (!item) {
-            return createErrorResponse(QString("Element with ID %1 not found").arg(elementId), requestId);
+            return createErrorResponse(QString("Element with ID %1 not found").arg(elementId),
+                                       requestId, JsonRpcError::ElementNotFound);
         }
 
         auto *elm = dynamic_cast<GraphicElement *>(item);
         if (!elm || elm->elementType() != ElementType::IC) {
-            return createErrorResponse("Element is not an IC", requestId);
+            return createErrorResponse("Element is not an IC", requestId, JsonRpcError::ValidationError);
         }
 
         auto *ic = static_cast<IC *>(elm);
 
         if (ic->isEmbedded()) {
-            return createErrorResponse("IC is already embedded", requestId);
+            return createErrorResponse("IC is already embedded", requestId, JsonRpcError::IcError);
         }
 
         if (ic->file().isEmpty()) {
-            return createErrorResponse("IC has no referenced file", requestId);
+            return createErrorResponse("IC has no referenced file", requestId, JsonRpcError::IcError);
         }
 
         const QString contextDir = scene->contextDir();
         if (contextDir.isEmpty()) {
-            return createErrorResponse("Project must be saved before embedding ICs", requestId);
+            return createErrorResponse("Project must be saved before embedding ICs", requestId, JsonRpcError::IcError);
         }
 
         const QString resolvedPath = QDir(contextDir).absoluteFilePath(ic->file());
         QFile file(resolvedPath);
         if (!file.open(QIODevice::ReadOnly)) {
-            return createErrorResponse(QString("Cannot read IC file: %1").arg(file.errorString()), requestId);
+            return createErrorResponse(QString("Cannot read IC file: %1").arg(file.errorString()),
+                                       requestId, JsonRpcError::FileError);
         }
         QByteArray fileBytes = file.readAll();
         file.close();
@@ -601,7 +615,8 @@ QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJ
 
         auto *reg = scene->icRegistry();
         if (reg->hasBlob(blobName)) {
-            return createErrorResponse(QString("Blob name collision: an embedded IC named '%1' already exists").arg(blobName), requestId);
+            return createErrorResponse(QString("Blob name collision: an embedded IC named '%1' already exists").arg(blobName),
+                                       requestId, JsonRpcError::IcError);
         }
 
         const int count = reg->embedICsByFile(ic->file(), fileBytes, blobName);
@@ -621,28 +636,29 @@ QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJ
 QJsonObject SimulationHandler::handleExtractIC(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"blob_name"})) {
-        return createErrorResponse("Missing required parameter: blob_name", requestId);
+        return createErrorResponse("Missing required parameter: blob_name", requestId, JsonRpcError::InvalidParams);
     }
 
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     const QString contextDir = scene->contextDir();
     if (contextDir.isEmpty()) {
-        return createErrorResponse("Project must be saved before extracting ICs", requestId);
+        return createErrorResponse("Project must be saved before extracting ICs", requestId, JsonRpcError::IcError);
     }
 
     const QString blobName = params.value("blob_name").toString();
     if (blobName.isEmpty()) {
-        return createErrorResponse("blob_name must not be empty", requestId);
+        return createErrorResponse("blob_name must not be empty", requestId, JsonRpcError::InvalidParams);
     }
 
     return tryCommand([&]() -> QJsonObject {
         auto *reg = scene->icRegistry();
         if (!reg->hasBlob(blobName)) {
-            return createErrorResponse(QString("No embedded IC with blob name '%1' found").arg(blobName), requestId);
+            return createErrorResponse(QString("No embedded IC with blob name '%1' found").arg(blobName),
+                                       requestId, JsonRpcError::IcError);
         }
 
         QString fileName = params.value("file_name").toString();
@@ -656,7 +672,8 @@ QJsonObject SimulationHandler::handleExtractIC(const QJsonObject &params, const 
         }
 
         if (QFile::exists(fileName) && !params.value("overwrite").toBool()) {
-            return createErrorResponse(QString("File '%1' already exists. Set overwrite=true to replace it.").arg(fileName), requestId);
+            return createErrorResponse(QString("File '%1' already exists. Set overwrite=true to replace it.").arg(fileName),
+                                       requestId, JsonRpcError::FileError);
         }
 
         const int count = reg->extractToFile(blobName, fileName);
