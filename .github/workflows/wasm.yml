@@ -24,6 +24,25 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
+    # Install the host Qt explicitly (with qttools) so qt_add_translations
+    # can find Qt6LinguistTools.  --autodesktop on the WASM step installs a
+    # base host Qt, but without qttools, lrelease/lupdate aren't available
+    # and qt_add_translations silently no-ops — leaving the WASM build with
+    # no embedded translations and an English-only language menu.
+    - name: Setup Qt (host, for LinguistTools)
+      uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
+      with:
+        version: 6.9.3
+        host: linux
+        target: desktop
+        arch: linux_gcc_64
+        # qtbase (the default install) ships lrelease/lupdate and the
+        # Qt6LinguistToolsConfig.cmake that qt_add_translations needs;
+        # no extra aqt module is required ("qttools" isn't a valid aqt
+        # module for Qt 6 — LinguistTools is part of the base install).
+        cache: true
+        aqtversion: ==3.*
+
     - name: Setup Qt for WASM
       uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
       with:
@@ -32,7 +51,6 @@ jobs:
         target: wasm
         arch: wasm_multithread
         modules: qtmultimedia qtimageformats
-        extra: --autodesktop
         cache: true
 
     - name: Setup emscripten
