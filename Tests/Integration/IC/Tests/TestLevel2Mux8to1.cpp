@@ -107,4 +107,3 @@ void TestLevel2MUX8To1::testMultiplexer8to1()
     bool expectedOutput = f.inputs[selectValue]->isOn();
     QCOMPARE(getInputStatus(f.output), expectedOutput);
 }
-

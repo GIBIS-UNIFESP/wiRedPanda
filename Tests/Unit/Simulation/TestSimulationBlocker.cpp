@@ -122,4 +122,3 @@ Scene *TestSimulationBlocker::createSimpleCircuit()
 
     return scene;
 }
-

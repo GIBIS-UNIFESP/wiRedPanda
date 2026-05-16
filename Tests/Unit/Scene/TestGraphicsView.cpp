@@ -62,4 +62,3 @@ void TestGraphicsView::testDragModeToggle()
     view->setDragMode(QGraphicsView::NoDrag);
     QCOMPARE(view->dragMode(), QGraphicsView::NoDrag);
 }
-

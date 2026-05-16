@@ -288,4 +288,3 @@ void TestDialogs::testElementEditorAllowsRxWithDuplicateLabel()
 
     QCOMPARE(rxNode->label(), QStringLiteral("SDA"));
 }
-

@@ -46,4 +46,3 @@ private slots:
     void testISA_LOAD();
     void testISA_StoreLoad();
 };
-

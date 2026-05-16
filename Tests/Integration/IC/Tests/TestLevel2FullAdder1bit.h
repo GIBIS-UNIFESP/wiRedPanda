@@ -25,4 +25,3 @@ private slots:
     // Structure and port validation test
     void testStructure();
 };
-

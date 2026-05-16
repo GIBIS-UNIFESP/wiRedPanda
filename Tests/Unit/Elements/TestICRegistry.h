@@ -17,4 +17,3 @@ private slots:
     void testRecursiveICLoading();
     void testICValidation();
 };
-

@@ -52,4 +52,3 @@ void Xor::updateLogic()
     }
     setOutputValue(StatusOps::statusXorAll(simInputs()));
 }
-

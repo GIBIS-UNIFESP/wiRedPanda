@@ -795,4 +795,3 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
         return createSuccessResponse(result, requestId);
     }, "morph elements", requestId);
 }
-

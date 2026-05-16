@@ -128,4 +128,3 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
 }
 
 } // namespace DolphinSerializer
-

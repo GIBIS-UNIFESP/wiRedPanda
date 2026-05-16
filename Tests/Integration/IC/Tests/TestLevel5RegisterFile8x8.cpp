@@ -193,4 +193,3 @@ void TestLevel5RegisterFile8X8::testBoundary8x8()
         QCOMPARE(f.readReg(regIdx), boundaryValue);
     }
 }
-

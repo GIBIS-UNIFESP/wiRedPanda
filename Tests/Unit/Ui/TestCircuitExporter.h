@@ -17,4 +17,3 @@ private slots:
     // Regression: D19 — renderToImage must throw on save failure
     void testRenderToImageThrowsOnInvalidPath();
 };
-

@@ -16,4 +16,3 @@ void TestElementPalette::testPaletteRebuild()
     // ElementPalette requires MainWindowUi — not available in unit tests
     QVERIFY(true);
 }
-

@@ -52,4 +52,3 @@ private:
      */
     static int calculateSelectLines(int dataCount);
 };
-

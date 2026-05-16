@@ -114,4 +114,3 @@ void TestLevel4BusMUX4Bit::testBusMux4Bit()
 
     QCOMPARE(result, expectedOutput);
 }
-

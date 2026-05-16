@@ -33,4 +33,3 @@ private slots:
     // Basic Display7 test (migrated from testelements)
     void testDisplay7();
 };
-

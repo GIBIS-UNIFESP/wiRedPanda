@@ -145,4 +145,3 @@ void TestLevel8DecodeStage::testDecodeStageStructure()
     QCOMPARE(f.ic->inputSize(), 7);
     QCOMPARE(f.ic->outputSize(), 6);
 }
-

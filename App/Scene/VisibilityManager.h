@@ -39,4 +39,3 @@ private:
     bool m_showGates = true;
     bool m_showWires = true;
 };
-

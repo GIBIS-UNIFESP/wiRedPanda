@@ -42,4 +42,3 @@ private:
 
     int m_id = -1; ///< The unique ID assigned by Scene; -1 means unassigned.
 };
-

@@ -84,4 +84,3 @@ void ICDropZone::dropEvent(QDropEvent *event)
         event->acceptProposedAction();
     }
 }
-

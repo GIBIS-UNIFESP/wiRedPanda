@@ -15,4 +15,3 @@ void TestLabeledSlider::testSliderValueChange()
 
     QCOMPARE(slider.value(), 50);
 }
-

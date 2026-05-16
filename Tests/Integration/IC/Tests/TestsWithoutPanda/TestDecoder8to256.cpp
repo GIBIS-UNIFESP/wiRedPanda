@@ -114,4 +114,3 @@ void TestDecoder8To256::test8to256Decoder()
         QCOMPARE(activeCount, 1);
     }
 }
-

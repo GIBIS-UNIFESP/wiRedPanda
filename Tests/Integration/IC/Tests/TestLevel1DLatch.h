@@ -17,4 +17,3 @@ private slots:
     // D Latch IC tests - sequential design for proper state testing
     void testDLatchSequential();
 };
-

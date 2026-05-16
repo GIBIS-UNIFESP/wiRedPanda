@@ -5852,4 +5852,3 @@ void TestICInline::testOnFileChangedPushesUndoCommandC5()
 
     QFile::remove(icPath);
 }
-

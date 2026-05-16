@@ -3208,4 +3208,3 @@ void TestMainWindowGui::testWaveformOnEmptySceneShowsWarningHQ()
 
     Application::interactiveMode = prevInteractive;
 }
-

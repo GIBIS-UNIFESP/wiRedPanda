@@ -18,4 +18,3 @@ private slots:
     void testClockGatedDecoder_data();
     void testClockGatedDecoder();
 };
-

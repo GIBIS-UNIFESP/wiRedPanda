@@ -24,4 +24,3 @@ public:
     /// Sets output to the logical AND of all inputs.
     void updateLogic() override;
 };
-

@@ -909,4 +909,3 @@ void ElementEditor::updateTheme()
 
     m_ui->groupBox->setStyleSheet(styleSheet.arg(borderColor));
 }
-

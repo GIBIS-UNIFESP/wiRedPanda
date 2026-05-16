@@ -40,4 +40,3 @@ void TestCoreSettings::testSettingsRoundTrip()
     Settings::setFastMode(originalFastMode);
     Settings::setLabelsUnderIcons(originalLabels);
 }
-

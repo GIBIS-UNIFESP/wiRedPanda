@@ -46,4 +46,3 @@ private slots:
     void testElementGroupValues();
     void testElementGroupToString();
 };
-

@@ -287,4 +287,3 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     labelBlobName->setText(QCoreApplication::translate("ElementEditor", "IC Name:"));
     labelVolume->setText(QCoreApplication::translate("ElementEditor", "Volume:"));
 }
-

@@ -47,4 +47,3 @@ private:
 
     ElementEditor *m_editor; ///< The owning ElementEditor; provides scene access and selection control.
 };
-

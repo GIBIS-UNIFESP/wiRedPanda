@@ -110,4 +110,3 @@ void TestLevel2ParityGenerator::testParityGenerator()
 
     QCOMPARE(getInputStatus(f.parityOutput), expectedParity);
 }
-

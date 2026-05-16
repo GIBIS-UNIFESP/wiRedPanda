@@ -36,4 +36,3 @@ private:
     QJsonObject handleToggleTruthTableOutput(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleMorphElement(const QJsonObject &params, const QJsonValue &requestId);
 };
-

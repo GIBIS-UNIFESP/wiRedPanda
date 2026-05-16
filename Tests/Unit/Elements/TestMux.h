@@ -16,4 +16,3 @@ private slots:
     void testMuxSelection();
     void testMuxPainting();
 };
-

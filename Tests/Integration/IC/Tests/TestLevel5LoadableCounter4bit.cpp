@@ -277,4 +277,3 @@ void TestLevel5LoadableCounter4Bit::testBinaryCounterHoldBehavior()
         QCOMPARE(f.readValue(), expectedValue & 0xF);
     }
 }
-

@@ -1311,4 +1311,3 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         QFAIL(qPrintable(QString("Invalid timingTest: %1").arg(timingTest)));
     }
 }
-

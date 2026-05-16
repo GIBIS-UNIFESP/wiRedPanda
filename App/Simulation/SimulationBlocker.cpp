@@ -29,4 +29,3 @@ SimulationBlocker::~SimulationBlocker()
         m_simulation->start();
     }
 }
-

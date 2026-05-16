@@ -18,4 +18,3 @@ private slots:
     void testComparator4BitEquality_data();
     void testComparator4BitEquality();
 };
-

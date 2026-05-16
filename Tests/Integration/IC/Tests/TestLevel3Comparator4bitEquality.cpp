@@ -109,4 +109,3 @@ void TestLevel3Comparator4BitEquality::testComparator4BitEquality()
 
     QCOMPARE(getInputStatus(f.ledEqual), expectedEqual);
 }
-

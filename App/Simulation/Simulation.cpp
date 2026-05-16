@@ -509,4 +509,3 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
     m_simHasFeedbackElements = !m_simFeedbackNodes.isEmpty();
     m_sortedElements = result.sorted;
 }
-

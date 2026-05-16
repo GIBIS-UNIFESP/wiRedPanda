@@ -174,4 +174,3 @@ void TestFiles::testBackwardCompatibility()
         QFAIL(qPrintable(QString("Failed to load %1: %2").arg(fileInfo.fileName(), errorMsg)));
     }
 }
-

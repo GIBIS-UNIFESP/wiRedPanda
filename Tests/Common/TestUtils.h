@@ -373,4 +373,3 @@ private:
      */
     QString getAvailableOutputPorts(GraphicElement *element) const;
 };
-

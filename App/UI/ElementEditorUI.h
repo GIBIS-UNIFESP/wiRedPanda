@@ -117,4 +117,3 @@ public:
     QLabel *labelBlobName = nullptr;
     QLineEdit *lineEditBlobName = nullptr;
 };
-

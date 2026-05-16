@@ -213,4 +213,3 @@ void TestCPURegisters::testSingleGatedRegister()
     QCOMPARE(readValue, 0x42);   // First write should succeed
     QCOMPARE(readValue2, 0x42);  // Second write should NOT happen
 }
-

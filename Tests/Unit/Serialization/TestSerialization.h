@@ -101,4 +101,3 @@ private:
 
     QTemporaryDir m_tempDir;
 };
-

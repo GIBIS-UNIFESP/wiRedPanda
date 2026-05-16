@@ -64,4 +64,3 @@ private:
     void verifyFeedbackDetection(Scene *scene);
     void verifyStableState(Scene *scene);
 };
-

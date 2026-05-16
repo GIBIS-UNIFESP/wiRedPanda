@@ -15,4 +15,3 @@ private slots:
     // 8-to-256 Decoder Tests (Memory Address Decoder)
     void test8to256Decoder();
 };
-

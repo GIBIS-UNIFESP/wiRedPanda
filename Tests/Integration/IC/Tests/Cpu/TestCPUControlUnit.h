@@ -17,4 +17,3 @@ private slots:
     void testControlUnitFlagWrite();
     void testControlUnit_data();
 };
-

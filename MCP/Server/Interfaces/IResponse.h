@@ -102,4 +102,3 @@ public:
      */
     virtual QString getStatusString() const = 0;
 };
-

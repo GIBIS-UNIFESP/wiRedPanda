@@ -71,4 +71,3 @@ void TestDisplay7::testDisplay7Paint()
 
     QVERIFY(true);
 }
-

@@ -17,4 +17,3 @@ private slots:
     void testMaxFilesLimit();
     void testRemoveOldestFile();
 };
-

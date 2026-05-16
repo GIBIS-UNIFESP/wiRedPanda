@@ -18,4 +18,3 @@ private slots:
     void testMultiplexer8to1_data();
     void testMultiplexer8to1();
 };
-

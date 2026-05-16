@@ -40,4 +40,3 @@ void TestWorkspaceUnit::testFullScreenHandling()
     QVERIFY(workspace.view() != nullptr);
     QVERIFY(workspace.simulation() != nullptr);
 }
-

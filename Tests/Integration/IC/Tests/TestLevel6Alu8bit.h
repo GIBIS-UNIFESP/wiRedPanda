@@ -26,4 +26,3 @@ private slots:
     void testALU8BitOutputPortIsolation_data();
     void testALU8BitOutputPortIsolation();
 };
-

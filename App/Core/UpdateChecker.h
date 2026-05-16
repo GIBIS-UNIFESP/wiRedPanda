@@ -49,4 +49,3 @@ private:
 
     QNetworkAccessManager m_network;
 };
-

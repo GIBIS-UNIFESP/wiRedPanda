@@ -41,4 +41,3 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 };
-

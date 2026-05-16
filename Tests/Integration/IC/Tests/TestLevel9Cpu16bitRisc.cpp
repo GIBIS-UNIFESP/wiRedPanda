@@ -213,4 +213,3 @@ void TestLevel9CPU16BitRISC::testInstrOpCodeFieldConsistency()
         QCOMPARE(opcode, expectedOpCode);
     }
 }
-

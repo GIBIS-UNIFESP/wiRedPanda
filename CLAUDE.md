@@ -218,7 +218,7 @@ The simulation accurately represents **ideal digital logic behavior** while deli
 
 ## Code Style Standards
 
-- **Trailing Newlines**: All source files must end with a final blank line (two trailing newline bytes, `\n\n`). Enforced by `Scripts/fix_style.py`.
+- **Trailing Newline**: All source files must end with a single trailing newline byte (`\n`) — POSIX convention, satisfies git's "no newline at end of file" warning, and matches what `black`, `pycodestyle`/`flake8` (W391), and `pylint` (C0305) expect. Enforced by `Scripts/fix_style.py`.
 - **Line Trimming**: All lines must have trailing whitespace trimmed (no spaces/tabs at line ends)
 - **Documentation Comments** (Doxygen C++ style):
   - Single-line documentation: Use `///` (e.g., `/// Brief description`)

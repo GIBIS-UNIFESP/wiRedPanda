@@ -66,4 +66,3 @@ public:
 private:
     QMap<ElementType, std::function<GraphicElement *()>> m_creatorMap;
 };
-

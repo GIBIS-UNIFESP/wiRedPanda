@@ -335,4 +335,3 @@ void TestElementFactory::testAllElementTypesRegistered()
                  qPrintable(QString("Missing factory creator for %1").arg(metaEnum.key(i))));
     }
 }
-

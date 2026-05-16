@@ -52,4 +52,3 @@ void Nor::updateLogic()
     }
     setOutputValue(StatusOps::statusNot(StatusOps::statusOrAll(simInputs())));
 }
-

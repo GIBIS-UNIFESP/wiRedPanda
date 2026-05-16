@@ -79,4 +79,3 @@ public:
 private:
     FileDialogProvider *m_old;
 };
-

@@ -38,4 +38,3 @@ QJsonObject ServerInfoHandler::handleGetServerInfo(const QJsonObject &, const QJ
 
     return createSuccessResponse(result, requestId);
 }
-

@@ -86,4 +86,3 @@ private:
     double m_frequency = 1047.0; // C6 default
     double m_phase = 0.0;
 };
-

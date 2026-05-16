@@ -44,4 +44,3 @@ Line::Line(QGraphicsItem *parent)
     : GraphicElement(ElementType::Line, parent)
 {
 }
-

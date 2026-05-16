@@ -52,4 +52,3 @@ private:
 
     Scene *m_scene = nullptr;
 };
-

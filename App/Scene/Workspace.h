@@ -150,4 +150,3 @@ private:
     int m_parentICElementId = -1;
     QString m_inlineBlobName;
 };
-

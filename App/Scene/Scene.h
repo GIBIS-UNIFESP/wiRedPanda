@@ -396,4 +396,3 @@ private:
     // Visibility control (delegated to VisibilityManager)
     VisibilityManager m_visibilityManager{this};
 };
-

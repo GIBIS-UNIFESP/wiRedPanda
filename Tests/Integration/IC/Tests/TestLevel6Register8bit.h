@@ -21,4 +21,3 @@ private slots:
     // Structure Tests
     void test8BitRegisterStructure();
 };
-

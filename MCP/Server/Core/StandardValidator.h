@@ -86,4 +86,3 @@ public:
 private:
     static StandardValidator s_instance;
 };
-

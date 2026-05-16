@@ -17,4 +17,3 @@ private slots:
     void testShiftRegisterPISO_data();
     void testShiftRegisterPISO();
 };
-

@@ -44,4 +44,3 @@ private:
     Simulation *m_simulation; ///< The guarded simulation instance.
     bool m_restart = false;   ///< Whether to restart on destruction.
 };
-

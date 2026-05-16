@@ -95,4 +95,3 @@ void TestCPUInstructionFetch::testInstructionFetch_data()
     QTest::newRow("fetch_hold_enable") << 0x00 << 1;
     QTest::newRow("fetch_timing") << 0x00 << 1;
 }
-

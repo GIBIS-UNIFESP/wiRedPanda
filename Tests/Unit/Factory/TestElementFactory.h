@@ -33,4 +33,3 @@ private slots:
     // Completeness Tests (1 test)
     void testAllElementTypesRegistered();
 };
-

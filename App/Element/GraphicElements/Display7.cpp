@@ -246,4 +246,3 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
         }
     }
 }
-

@@ -187,4 +187,3 @@ void TestComponents::testICs()
     // Verify at least one file was successfully loaded
     QCOMPARE(loadedCount, files.count());
 }
-

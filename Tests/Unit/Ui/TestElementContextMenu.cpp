@@ -35,4 +35,3 @@ void TestElementContextMenu::testICSubcircuitAction()
     SelectionCapabilities caps = computeCapabilities({});
     QVERIFY(!caps.hasElements);
 }
-

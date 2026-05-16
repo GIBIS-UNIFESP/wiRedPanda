@@ -188,4 +188,3 @@ private slots:
     void testCycleDetection();
     void testSimavrFunctionalSimulation();
 };
-

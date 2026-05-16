@@ -522,4 +522,3 @@ void TestLED::testSetAppearanceDefault()
     led.setAppearance(false, "/tmp/custom_led.png");
     QVERIFY(true);
 }
-

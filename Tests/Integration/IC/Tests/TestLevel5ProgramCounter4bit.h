@@ -19,4 +19,3 @@ private slots:
 
     void testProgramCounter4BitStructure();
 };
-

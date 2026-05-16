@@ -24,4 +24,3 @@ public:
     /// Sets output to the logical XOR of all inputs.
     void updateLogic() override;
 };
-

@@ -178,4 +178,3 @@ void TestLevel6StackMemoryInterface::testStackMemoryInterface()
     int expectedAddress = useStackPointer ? 0xFF : externalAddress;
     QCOMPARE(finalAddress & 0xFF, expectedAddress & 0xFF);
 }
-

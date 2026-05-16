@@ -284,4 +284,3 @@ void ClipboardManager::deserializeAndAdd(QDataStream &stream, const QVersionNumb
 
     m_scene->resizeScene();
 }
-

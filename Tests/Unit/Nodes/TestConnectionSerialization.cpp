@@ -484,4 +484,3 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
     QCOMPARE(loadedConn1->status(), Status::Active);
     QCOMPARE(loadedConn2->status(), and1->outputPort()->status());
 }
-

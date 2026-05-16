@@ -161,4 +161,3 @@
 #include <QtTest>
 
 #endif
-

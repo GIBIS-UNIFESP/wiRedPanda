@@ -66,4 +66,3 @@ void TestLanguageManager::testQtTranslatorIsLoadable()
     QVERIFY2(!translator.isEmpty(),
              "Loaded Qt German translator is empty — translation file may be a stub");
 }
-

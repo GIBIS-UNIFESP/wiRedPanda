@@ -302,4 +302,3 @@ void TestConnectionValidity::testIsConnectionAllowedPermitsRxOutputPort()
 
     QVERIFY(Scene::isConnectionAllowed(rxNode->outputPort(0), dst->inputPort(0)));
 }
-

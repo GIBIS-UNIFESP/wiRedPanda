@@ -52,4 +52,3 @@ void Xnor::updateLogic()
     }
     setOutputValue(StatusOps::statusNot(StatusOps::statusXorAll(simInputs())));
 }
-

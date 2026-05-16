@@ -1,12 +1,12 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifdef Q_OS_WIN
-#include <windows.h>
-#endif
-
 #ifdef Q_OS_LINUX
 #include <cstdio>
+#endif
+
+#ifdef Q_OS_WIN
+#include <windows.h>
 #endif
 
 #include <QCommandLineParser>
@@ -444,4 +444,3 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
-

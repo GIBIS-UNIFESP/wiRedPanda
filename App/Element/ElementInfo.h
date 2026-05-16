@@ -143,4 +143,3 @@ inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
  */
 template<typename T>
 struct ElementInfo;  // Undefined — must be specialized in each element .cpp
-

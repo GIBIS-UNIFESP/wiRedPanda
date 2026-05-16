@@ -71,4 +71,3 @@ void WaveformView::wheelEvent(QWheelEvent *event)
 
     event->accept();
 }
-

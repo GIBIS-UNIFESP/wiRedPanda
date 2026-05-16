@@ -93,4 +93,3 @@ inline IC* loadBuildingBlockIC(const QString &filename) {
     return ic.release();
 }
 } // namespace CPUTestUtils
-

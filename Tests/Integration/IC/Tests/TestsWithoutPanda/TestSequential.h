@@ -72,4 +72,3 @@ private slots:
     void testSRFlipFlopSetReset_data();
     void testSRFlipFlopSetReset();
 };
-

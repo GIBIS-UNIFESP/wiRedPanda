@@ -21,4 +21,3 @@ public:
     /// Constructs an InputVcc element.
     explicit InputVcc(QGraphicsItem *parent = nullptr);
 };
-

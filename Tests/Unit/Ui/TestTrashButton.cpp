@@ -26,4 +26,3 @@ void TestTrashButton::testEmptyDrop()
     TrashButton button;
     QVERIFY(true);
 }
-

@@ -560,4 +560,3 @@ void TestCommands::testUpdateCommand()
     undoStack->redo();
     QCOMPARE(andGate->label(), newLabel);
 }
-

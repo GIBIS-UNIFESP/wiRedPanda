@@ -64,4 +64,3 @@ void exec(QPoint screenPos,
           const std::function<void()> &onExtractToFile = {});
 
 } // namespace ElementContextMenu
-

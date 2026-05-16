@@ -732,4 +732,3 @@ void Serialization::copyPandaFile(const QFileInfo &srcPath, const QFileInfo &des
         }
     }
 }
-

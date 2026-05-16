@@ -35,4 +35,3 @@ private:
                      GraphicElement *element, bool isOutput,
                      int &portIndex, QString &errorMsg);
 };
-

@@ -168,4 +168,3 @@ void TestLevel8ExecuteStage::testExecuteStageStructure()
     QCOMPARE(f.ic->inputSize(), 21);
     QCOMPARE(f.ic->outputSize(), 10);
 }
-

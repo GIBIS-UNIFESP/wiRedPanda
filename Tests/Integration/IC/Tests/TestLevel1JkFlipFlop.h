@@ -21,4 +21,3 @@ private slots:
     void testAsyncClear();
     void testPresetClearOverrideClock();
 };
-

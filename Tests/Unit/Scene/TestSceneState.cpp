@@ -771,4 +771,3 @@ void TestSceneState::testConnectionPropertiesAfterElementMove()
     QVERIFY(conn->startPort() != nullptr);
     QVERIFY(conn->endPort() != nullptr);
 }
-

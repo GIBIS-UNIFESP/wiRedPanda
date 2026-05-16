@@ -18,4 +18,3 @@ SimulationThrottleDisabler::~SimulationThrottleDisabler()
     qCDebug(zero) << "Re-enabling visual throttle.";
     m_simulation->setVisualThrottleEnabled(true);
 }
-

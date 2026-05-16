@@ -149,4 +149,3 @@ void TestLevel5ProgramCounter4Bit::testProgramCounter4BitStructure()
     QCOMPARE(f.ic->inputSize(), 8);
     QCOMPARE(f.ic->outputSize(), 8);
 }
-

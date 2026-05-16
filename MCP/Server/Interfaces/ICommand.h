@@ -70,4 +70,3 @@ public:
      */
     virtual QJsonObject getExampleUsage() const = 0;
 };
-

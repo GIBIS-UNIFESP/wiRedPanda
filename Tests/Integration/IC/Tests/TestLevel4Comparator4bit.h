@@ -17,4 +17,3 @@ private slots:
     void testComparator4Bit_data();
     void testComparator4Bit();
 };
-

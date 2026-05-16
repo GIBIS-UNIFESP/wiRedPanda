@@ -332,4 +332,3 @@ void TestLevel9FetchStage16Bit::testPCWrapAround()
 
     QCOMPARE(f.readPC(), 0x00);
 }
-

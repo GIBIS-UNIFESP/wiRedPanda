@@ -14,4 +14,3 @@ Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
     // Cells are read-only in the model; editing is done programmatically via createElement()
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
-

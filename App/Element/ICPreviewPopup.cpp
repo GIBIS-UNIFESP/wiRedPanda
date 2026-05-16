@@ -130,4 +130,3 @@ void ICPreviewPopup::leaveEvent(QEvent *event)
     Q_UNUSED(event)
     scheduleHide();
 }
-

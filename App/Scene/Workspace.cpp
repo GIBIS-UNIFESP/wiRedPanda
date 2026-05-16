@@ -786,4 +786,3 @@ void WorkSpace::setCurrentFile(const QString &filePath)
     m_fileInfo = QFileInfo(filePath);
     m_scene.setContextDir(m_fileInfo.absolutePath());
 }
-

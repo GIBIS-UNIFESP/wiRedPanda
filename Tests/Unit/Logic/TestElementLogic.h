@@ -110,4 +110,3 @@ private slots:
 private:
     QVector<InputVcc *> m_inputs{8};
 };
-

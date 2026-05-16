@@ -31,4 +31,3 @@ void TestUpdateChecker::testNetworkError()
     // Should not crash on network error
     QVERIFY(true);
 }
-

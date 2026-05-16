@@ -274,4 +274,3 @@ const StandardValidator &StandardValidator::instance()
 {
     return s_instance;
 }
-

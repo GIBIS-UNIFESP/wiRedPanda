@@ -317,4 +317,3 @@ QString BaseHandler::getAvailableOutputPorts(GraphicElement *element)
 {
     return getAvailablePorts(element, true);
 }
-

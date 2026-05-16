@@ -33,4 +33,3 @@ private slots:
     void testAluFlags_data();
     void testAluFlags();
 };
-

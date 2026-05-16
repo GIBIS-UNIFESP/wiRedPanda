@@ -31,4 +31,3 @@ bool ElementMetadataRegistry::hasMetadata(ElementType type)
 {
     return registry().contains(type);
 }
-

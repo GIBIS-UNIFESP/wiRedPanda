@@ -362,4 +362,3 @@ void TestSequentialLogic::testTFlipFlopBehavior()
     QCOMPARE(TestUtils::getInputStatus(&ledQ), false);
     QCOMPARE(TestUtils::getInputStatus(&ledNQ), true);
 }
-

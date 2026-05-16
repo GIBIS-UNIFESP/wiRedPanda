@@ -99,4 +99,3 @@ inline void GraphicElementInput::updateOutputs()
         }
     }
 }
-

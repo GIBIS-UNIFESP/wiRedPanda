@@ -925,4 +925,3 @@ void IC::loadFromDrop(const QString &fileName, const QString &contextDir)
 {
     loadFile(fileName, contextDir);
 }
-

@@ -21,4 +21,3 @@ private slots:
     void testRamEdgeCases_data();
     void testRamEdgeCases();
 };
-

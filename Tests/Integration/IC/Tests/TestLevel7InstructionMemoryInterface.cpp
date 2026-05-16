@@ -146,4 +146,3 @@ void TestLevel7InstructionMemoryInterface::testInstructionMemoryInterfaceStructu
         QFAIL(qPrintable(QString("IC port access failed: %1").arg(e.what())));
     }
 }
-

@@ -62,4 +62,3 @@ namespace AppVersion {
 inline const QVersionNumber current = QVersionNumber::fromString(APP_VERSION).normalized();
 
 } // namespace AppVersion
-

@@ -127,4 +127,3 @@ void HandlerFactory::registerBuiltInHandlers()
         "get_theme", "set_theme", "get_effective_theme"
     });
 }
-

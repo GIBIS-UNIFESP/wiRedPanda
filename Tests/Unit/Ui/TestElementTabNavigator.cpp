@@ -33,4 +33,3 @@ void TestElementTabNavigator::testTabWrapAround()
     ElementTabNavigator navigator(&editor);
     QVERIFY(true);
 }
-

@@ -44,4 +44,3 @@ private slots:
 private:
     bool m_savedInteractiveMode = true;
 };
-

@@ -218,4 +218,3 @@ void TestBuzzer::testLoadVersionNew()
 
     QCOMPARE(buzzer2->frequency(), 440.0);
 }
-

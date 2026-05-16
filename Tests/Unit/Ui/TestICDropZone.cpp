@@ -17,4 +17,3 @@ void TestICDropZone::testICMimeData()
     ICDropZone dropZone(ICDropZone::Section::Embedded);
     QVERIFY(dropZone.acceptDrops());
 }
-

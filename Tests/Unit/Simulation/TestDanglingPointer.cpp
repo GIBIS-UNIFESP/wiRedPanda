@@ -576,4 +576,3 @@ void TestDanglingPointer::hcDrainConnectionsMustCleanRegistry()
     // so the registry entry is gone.
     QVERIFY(scene->itemById(connId) == nullptr);
 }
-

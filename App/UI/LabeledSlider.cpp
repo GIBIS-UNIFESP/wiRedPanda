@@ -98,4 +98,3 @@ void LabeledSlider::paintEvent(QPaintEvent *event)
         }
     }
 }
-

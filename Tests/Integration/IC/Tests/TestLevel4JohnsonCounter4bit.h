@@ -17,4 +17,3 @@ private slots:
     void testJohnsonCounter_data();
     void testJohnsonCounter();
 };
-

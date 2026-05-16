@@ -119,4 +119,3 @@ void TestLevel4JohnsonCounter4Bit::testJohnsonCounter()
 
     QCOMPARE(result & 0xF, expectedPattern & 0xF);
 }
-

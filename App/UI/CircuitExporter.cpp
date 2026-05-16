@@ -60,4 +60,3 @@ void renderToImage(Scene *scene, const QString &filePath)
 }
 
 } // namespace CircuitExporter
-

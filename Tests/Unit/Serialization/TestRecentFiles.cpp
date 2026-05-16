@@ -99,4 +99,3 @@ void TestRecentFilesUnit::testRemoveOldestFile()
     }
     Settings::setRecentFiles({});
 }
-

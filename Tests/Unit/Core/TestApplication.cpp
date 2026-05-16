@@ -43,4 +43,3 @@ void TestApplication::testIsSentryDenyMessageDoesNotFilterUnknown()
     QVERIFY(!Application::isSentryDenyMessage("Couldn't load pixmap: foo.svg"));
     QVERIFY(!Application::isSentryDenyMessage("Save file first."));
 }
-

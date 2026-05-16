@@ -48,4 +48,3 @@ enum ControlUnitState {
     CU_WRITEBACK = 3,
     CU_HALT = 4
 };
-

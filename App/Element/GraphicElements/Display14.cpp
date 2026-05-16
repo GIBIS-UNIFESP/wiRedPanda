@@ -178,4 +178,3 @@ void Display14::load(QDataStream &stream, SerializationContext &context)
         }
     }
 }
-

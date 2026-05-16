@@ -116,4 +116,3 @@ private:
     QMap<QString, QByteArray> m_blobs;       ///< Embedded IC blob storage (name → .panda bytes).
     QFileSystemWatcher m_fileWatcher;        ///< Watches IC source files for external modifications.
 };
-

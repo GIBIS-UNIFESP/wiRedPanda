@@ -217,4 +217,3 @@ void TestSystemVerilogCodeGenUnit::testEmptyScene()
     QVERIFY(codegen.inputMap().isEmpty());
     QVERIFY(codegen.outputMap().isEmpty());
 }
-

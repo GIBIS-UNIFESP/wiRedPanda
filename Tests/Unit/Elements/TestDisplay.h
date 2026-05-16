@@ -19,4 +19,3 @@ private slots:
     void testDisplay14Save();
     void testDisplay16Save();
 };
-

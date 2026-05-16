@@ -106,4 +106,3 @@ private:
 // Uses QStringLiteral so lupdate does not extract the string.
 #define PANDACEPTION_LITERAL(msg, ...) \
     Pandaception(QStringLiteral(msg) __VA_OPT__(.arg(__VA_ARGS__)), QStringLiteral(msg) __VA_OPT__(.arg(__VA_ARGS__)), __FILE__, __LINE__)
-

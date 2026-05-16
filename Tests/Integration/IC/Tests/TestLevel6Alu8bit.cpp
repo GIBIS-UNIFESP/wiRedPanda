@@ -259,4 +259,3 @@ void TestLevel6ALU8Bit::testALU8BitOutputPortIsolation()
         QCOMPARE(bit_result, expected);
     }
 }
-

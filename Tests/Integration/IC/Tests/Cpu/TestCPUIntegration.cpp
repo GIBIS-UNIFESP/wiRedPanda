@@ -75,4 +75,3 @@ void TestCPUIntegration::testProgramCounterIncrement_data()
     QTest::newRow("pc_increment_4_cycles") << 4;
     QTest::newRow("pc_increment_10_cycles") << 10;
 }
-

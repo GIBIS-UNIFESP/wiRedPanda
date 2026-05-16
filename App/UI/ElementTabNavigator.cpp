@@ -85,4 +85,3 @@ bool ElementTabNavigator::eventFilter(QObject *obj, QEvent *event)
     event->accept();
     return true;
 }
-

@@ -78,4 +78,3 @@ void RecentFiles::saveRecentFiles()
 {
     Settings::setRecentFiles(m_files);
 }
-

@@ -15,4 +15,3 @@ private slots:
     void testPaletteSearch();
     void testPaletteRebuild();
 };
-

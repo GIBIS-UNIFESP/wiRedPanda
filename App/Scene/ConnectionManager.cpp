@@ -284,4 +284,3 @@ QNEPort *ConnectionManager::hoverPort()
 
     return hoverPort;
 }
-

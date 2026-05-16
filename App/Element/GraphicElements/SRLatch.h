@@ -42,4 +42,3 @@ public:
     /// Updates Q based on S and R inputs.
     void updateLogic() override;
 };
-

@@ -18,4 +18,3 @@ private slots:
     void testParityGenerator_data();
     void testParityGenerator();
 };
-

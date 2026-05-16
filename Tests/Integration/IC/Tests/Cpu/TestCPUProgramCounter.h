@@ -18,4 +18,3 @@ private slots:
     void testProgramCounterPriority();
     void testProgramCounterPriority_data();
 };
-

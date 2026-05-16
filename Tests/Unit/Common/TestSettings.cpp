@@ -147,4 +147,3 @@ void TestSettings::testTypedAutosaveFiles()
     Settings::setAutosaveFiles(autosaveFiles);
     QCOMPARE(Settings::autosaveFiles(), autosaveFiles);
 }
-

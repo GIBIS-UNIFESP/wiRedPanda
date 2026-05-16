@@ -1479,4 +1479,3 @@ void SystemVerilogCodeGen::loop()
     }
     m_stream << "endmodule" << Qt::endl;
 }
-

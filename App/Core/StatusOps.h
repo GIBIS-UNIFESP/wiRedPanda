@@ -135,4 +135,3 @@ inline Status statusXorAll(const QVector<Status> &inputs)
 }
 
 } // namespace StatusOps
-

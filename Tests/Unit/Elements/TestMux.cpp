@@ -30,4 +30,3 @@ void TestMux::testMuxPainting()
     workspace.scene()->addItem(mux);
     QCOMPARE(mux->elementType(), ElementType::Mux);
 }
-

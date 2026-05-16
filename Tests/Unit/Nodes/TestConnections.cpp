@@ -503,4 +503,3 @@ void TestConnections::testPortIsConnected()
     QVERIFY(!sw.outputPort()->isConnected(orGate.inputPort(0)));
     QVERIFY(!orGate.inputPort(0)->isConnected(sw.outputPort()));
 }
-

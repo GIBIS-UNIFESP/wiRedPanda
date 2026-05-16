@@ -134,4 +134,3 @@ void TestLevel5BarrelShifter4Bit::testBarrelShifter()
 
     QCOMPARE(result & 0xF, expectedResult & 0xF);
 }
-

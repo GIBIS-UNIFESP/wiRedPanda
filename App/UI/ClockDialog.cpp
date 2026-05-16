@@ -30,4 +30,3 @@ int ClockDialog::frequency()
     // "user dismissed the dialog" without needing a separate success/failure flag
     return (exec() == QDialog::Accepted) ? m_ui->frequencySpinBox->value() : -1;
 }
-

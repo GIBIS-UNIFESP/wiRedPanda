@@ -324,4 +324,3 @@ void TestTruthTable::testLoadKeyOldVersion()
     // because load() returns early when version < 4.2
     QCOMPARE(truthTable2.key().count(true), 0);
 }
-

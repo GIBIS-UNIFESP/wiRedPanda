@@ -84,4 +84,3 @@ private:
 
     inline static QSettings *settings = nullptr;
 };
-

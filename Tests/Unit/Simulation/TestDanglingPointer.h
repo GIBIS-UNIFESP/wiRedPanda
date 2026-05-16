@@ -105,4 +105,3 @@ private slots:
     /// dereferences the dangling pointer.
     void jd_cancelledWireMustNotLeaveDanglingPointer();
 };
-

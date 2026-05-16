@@ -211,4 +211,3 @@ void MCPProcessor::sendResponse(const QJsonObject &response)
     m_stdout << QString::fromUtf8(data) << Qt::endl;
     m_stdout.flush();
 }
-

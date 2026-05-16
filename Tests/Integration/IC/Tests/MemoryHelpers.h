@@ -52,4 +52,3 @@ struct RegisterFile8x8Output {
 // Helper function declarations
 void buildRegisterFile4x4(RegisterFile4x4Output &out);
 void buildRegisterFile8x8(RegisterFile8x8Output &out);
-

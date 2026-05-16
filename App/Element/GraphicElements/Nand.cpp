@@ -52,4 +52,3 @@ void Nand::updateLogic()
     }
     setOutputValue(StatusOps::statusNot(StatusOps::statusAndAll(simInputs())));
 }
-

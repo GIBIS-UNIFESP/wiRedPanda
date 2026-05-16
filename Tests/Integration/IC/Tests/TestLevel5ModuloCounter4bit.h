@@ -17,4 +17,3 @@ private slots:
     void testModuloCounter_data();
     void testModuloCounter();
 };
-

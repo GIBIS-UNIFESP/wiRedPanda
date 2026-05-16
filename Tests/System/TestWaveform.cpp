@@ -60,4 +60,3 @@ void TestWaveform::testDisplay4Bits()
 
     QCOMPARE(tempFile.readAll().replace("\r\n", "\n"), referenceFile.readAll().replace("\r\n", "\n"));
 }
-

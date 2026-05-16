@@ -172,4 +172,3 @@ void TestLevel6RippleAdder8Bit::test8BitAdderStructure() {
     QCOMPARE(f.ic->inputSize(), 17);
     QCOMPARE(f.ic->outputSize(), 9);
 }
-

@@ -215,4 +215,3 @@ QString LanguageManager::flagIcon(const QString &langCode) const
 
     return kFlags.value(langCode, ":/Interface/Locale/default.svg");
 }
-

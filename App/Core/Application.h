@@ -155,4 +155,3 @@ private:
 
     MainWindow *m_mainWindow = nullptr;
 };
-

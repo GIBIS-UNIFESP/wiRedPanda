@@ -23,4 +23,3 @@ private slots:
     void testResetClearsPC();
     void testPCWrapAround();
 };
-

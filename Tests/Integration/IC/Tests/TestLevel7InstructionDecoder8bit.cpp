@@ -153,4 +153,3 @@ void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8BitStructure()
     QCOMPARE(f.ic->inputSize(), 8);
     QCOMPARE(f.ic->outputSize(), 256);
 }
-

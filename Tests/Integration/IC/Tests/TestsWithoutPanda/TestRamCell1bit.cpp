@@ -259,4 +259,3 @@ void TestRAMCell1Bit::testWriteZeroThenOneWithHold()
     f.sim->update();
     QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
 }
-

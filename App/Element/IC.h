@@ -169,4 +169,3 @@ private:
 
     QPixmap m_previewPixmap;           ///< Snapshot of the designed circuit, rendered at load time.
 };
-

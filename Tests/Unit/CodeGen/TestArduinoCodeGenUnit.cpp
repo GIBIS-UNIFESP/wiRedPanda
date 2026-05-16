@@ -166,4 +166,3 @@ void TestArduinoCodeGenUnit::testEmptyScene()
 
     QVERIFY(content.contains("void setup()"));
 }
-

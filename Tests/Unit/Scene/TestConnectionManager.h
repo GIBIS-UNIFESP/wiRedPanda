@@ -17,4 +17,3 @@ private slots:
     void testConnectionDeletion();
     void testMultiPortConnection();
 };
-

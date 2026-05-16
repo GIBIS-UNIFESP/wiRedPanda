@@ -134,4 +134,3 @@ void TestLevel1DFlipFlop::testDFlipFlopSequential()
     f.sim->update();
     QCOMPARE(getInputStatus(f.ledQ), false);  // Q held at 0
 }
-

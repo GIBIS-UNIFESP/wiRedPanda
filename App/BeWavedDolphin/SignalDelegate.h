@@ -58,4 +58,3 @@ private:
     QPixmap m_risingBlue;   ///< Blue rising-edge waveform (input signal).
     QPixmap m_risingGreen;  ///< Green rising-edge waveform (output signal).
 };
-

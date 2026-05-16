@@ -181,4 +181,3 @@ QSet<T *> findFeedbackNodes(
 
     return feedbackNodes;
 }
-

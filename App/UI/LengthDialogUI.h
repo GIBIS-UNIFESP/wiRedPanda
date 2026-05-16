@@ -56,4 +56,3 @@ public:
     // Buttons
     QDialogButtonBox *buttonBox = nullptr;
 };
-

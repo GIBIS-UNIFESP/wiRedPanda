@@ -169,4 +169,3 @@ private:
     IC *m_currentIC = nullptr;                 ///< IC currently being flattened (null at top level).
     ArduinoBoardConfig m_selectedBoard;        ///< Board configuration selected during generation.
 };
-

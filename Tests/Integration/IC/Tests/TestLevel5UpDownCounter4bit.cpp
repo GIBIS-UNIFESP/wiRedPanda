@@ -171,4 +171,3 @@ void TestLevel5UpDownCounter4Bit::testUpDownCounterFromValue()
 
     QCOMPARE(f.readValue(), expectedValue & 0xF);
 }
-

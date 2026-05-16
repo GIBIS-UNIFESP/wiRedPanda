@@ -23,4 +23,3 @@ private slots:
     // Regression: B21 — combo-box rebuild must not push spurious port-size commands
     void testSelectionDoesNotPushPortSizeCommandB21();
 };
-

@@ -668,4 +668,3 @@ void TestLevel9SingleCycleCPU8Bit::testISA_StoreLoad()
     // instruction@5=LOAD 3 is live. Result = mem[3].
     QCOMPARE(f.readResult(), 0xCD);
 }
-

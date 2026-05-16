@@ -58,4 +58,3 @@ private:
     QStringList m_files;
     QFileSystemWatcher m_fileWatcher;
 };
-

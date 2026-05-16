@@ -79,4 +79,3 @@ private:
     QVector<QPixmap> a, b, c, d, e, f, g, dp;
     int m_colorNumber = 1;
 };
-

@@ -497,4 +497,3 @@ void TestLevel4RippleALU4Bit::testAluFlags()
 
     QCOMPARE(maskedResult, maskedExpected);
 }
-

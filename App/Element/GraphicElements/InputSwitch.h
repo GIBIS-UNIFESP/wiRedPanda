@@ -58,4 +58,3 @@ protected:
     /// \reimp
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 };
-

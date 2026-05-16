@@ -137,4 +137,3 @@ void TestLevel5BarrelRotator::testBarrelRotator()
 
     QCOMPARE(actualResult & 0xF, expectedResult & 0xF);
 }
-

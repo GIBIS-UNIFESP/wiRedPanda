@@ -79,4 +79,3 @@ void TrashButton::dropEvent(QDropEvent *event)
         }
     }
 }
-

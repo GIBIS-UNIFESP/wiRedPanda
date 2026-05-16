@@ -43,4 +43,3 @@ InputGnd::InputGnd(QGraphicsItem *parent)
     : GraphicElement(ElementType::InputGnd, parent)
 {
 }
-

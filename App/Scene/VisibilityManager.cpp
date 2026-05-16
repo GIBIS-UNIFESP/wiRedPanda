@@ -72,4 +72,3 @@ void VisibilityManager::reapply()
     showWires(m_showWires);
     showGates(m_showGates);
 }
-

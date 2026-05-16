@@ -121,4 +121,3 @@ void TestCPUDecoders::testInstructionDecoder4to16()
         QCOMPARE(result, test.expectedOneHot);
     }
 }
-

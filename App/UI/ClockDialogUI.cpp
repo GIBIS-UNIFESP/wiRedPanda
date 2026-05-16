@@ -76,4 +76,3 @@ void ClockDialogUi::retranslateUi(QDialog *ClockDialog)
     maxLabel->setText(QCoreApplication::translate("ClockDialog", "1024"));
     minLabel->setText(QCoreApplication::translate("ClockDialog", "2"));
 }
-

@@ -42,4 +42,3 @@ private:
     /// Shared implementation for prev/nextSecondaryProperty(); \a dir is -1 or +1.
     void adjustSecondaryProperty(int dir);
 };
-

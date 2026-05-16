@@ -121,4 +121,3 @@ void TestLevel4ShiftRegisterSIPO::testShiftRegisterSIPO()
 
     QCOMPARE(result, expectedOutput);
 }
-

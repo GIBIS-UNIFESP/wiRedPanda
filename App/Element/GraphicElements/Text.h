@@ -26,4 +26,3 @@ public:
     /// Returns a bounding rect that includes the label text, not just the pixmap.
     QRectF boundingRect() const override;
 };
-

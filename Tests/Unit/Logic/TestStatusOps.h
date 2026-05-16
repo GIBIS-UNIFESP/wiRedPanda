@@ -59,4 +59,3 @@ private slots:
     void testUpdateInputsAllowUnknownPassesThrough();
     void testUpdateInputsAllowUnknownBlocksNullPredecessor();
 };
-

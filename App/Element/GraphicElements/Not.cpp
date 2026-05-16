@@ -52,4 +52,3 @@ void Not::updateLogic()
     }
     setOutputValue(StatusOps::statusNot(simInputs().at(0)));
 }
-

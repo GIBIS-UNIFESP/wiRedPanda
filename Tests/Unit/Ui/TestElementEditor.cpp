@@ -116,4 +116,3 @@ void TestElementEditor::testSelectionDoesNotPushPortSizeCommandB21()
 
     QCOMPARE(undoStack->count(), countBefore);
 }
-

@@ -73,4 +73,3 @@ private slots:
     void testMuxDemuxChained_data();
     void testMuxDemuxChained();
 };
-

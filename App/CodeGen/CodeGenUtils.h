@@ -47,4 +47,3 @@ inline QString removeForbiddenChars(const QString &input, const bool stripFirst 
 }
 
 }  // namespace CodeGenUtils
-

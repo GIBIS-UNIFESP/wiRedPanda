@@ -54,4 +54,3 @@ void And::updateLogic()
     }
     setOutputValue(StatusOps::statusAndAll(simInputs()));
 }
-

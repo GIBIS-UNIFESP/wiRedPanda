@@ -227,4 +227,3 @@ void TestLevel4RAM8X1::testRamEdgeCases()
         QCOMPARE(getInputStatus(f.dataOut), true);
     }
 }
-

@@ -24,4 +24,3 @@ public:
     /// Sets output to the logical XNOR of all inputs.
     void updateLogic() override;
 };
-

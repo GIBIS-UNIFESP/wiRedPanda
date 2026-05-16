@@ -18,4 +18,3 @@ private slots:
     void testDisplay7AllColors();
     void testDisplay7Paint();
 };
-

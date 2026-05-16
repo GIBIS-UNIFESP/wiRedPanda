@@ -83,4 +83,3 @@ inline bool hasConnectionQMap(const QVersionNumber &v) { return v >= Versions::V
 inline bool hasVersionedBlobRegistry(const QVersionNumber &v) { return v >= Versions::V_5_1; }
 
 } // namespace VersionInfo
-

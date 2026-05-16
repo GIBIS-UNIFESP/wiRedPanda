@@ -17,4 +17,3 @@ private slots:
     void testBusMux4Bit_data();
     void testBusMux4Bit();
 };
-

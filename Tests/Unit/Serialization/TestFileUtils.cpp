@@ -167,4 +167,3 @@ void TestFileUtils::testCopyPandaDepsTerminatesOnCircularMetadata()
     FileUtils::copyPandaDeps(aPath, sourceDir.path(), destDir.path());
     QVERIFY(true);
 }
-

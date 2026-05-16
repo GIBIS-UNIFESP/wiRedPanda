@@ -46,4 +46,3 @@ private:
     Status m_simLastS = Status::Inactive;
     Status m_simLastR = Status::Inactive;
 };
-

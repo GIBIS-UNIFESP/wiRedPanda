@@ -503,4 +503,3 @@ private:
     QString m_blobName;
     QList<ConnectionInfo> m_connections;
 };
-

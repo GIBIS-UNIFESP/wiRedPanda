@@ -38,4 +38,3 @@ private slots:
     // Regression: D13 — SplitCommand::redo must throw before allocating
     void testSplitCommandRedoThrowsBeforeAllocation();
 };
-

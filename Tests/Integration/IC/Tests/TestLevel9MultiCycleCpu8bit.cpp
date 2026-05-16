@@ -224,4 +224,3 @@ void TestLevel9MultiCycleCPU8Bit::testInstructionStabilityAcrossPipelineStages()
         QCOMPARE(instrStage, instrFetch);
     }
 }
-

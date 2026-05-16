@@ -114,4 +114,3 @@ ElementType &operator++(ElementType &type);
 QDataStream &operator>>(QDataStream &stream, ElementType &type);
 /// Serializes \a type into \a stream.
 QDataStream &operator<<(QDataStream &stream, const ElementType &type);
-

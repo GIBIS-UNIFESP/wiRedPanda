@@ -1577,4 +1577,3 @@ void TestSimulation::testDanglingConnectionGraceful()
     sim->update();
     QCOMPARE(getInputStatus(&led), false);
 }
-

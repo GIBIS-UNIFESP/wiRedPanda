@@ -134,4 +134,3 @@ void TestLevel4Register4Bit::test4BitRegister()
 
     QCOMPARE(result, expectedAfterLoad);
 }
-

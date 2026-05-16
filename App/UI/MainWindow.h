@@ -330,4 +330,3 @@ private:
     QShortcut *m_changePrevElmShortcut = nullptr;
     QShortcut *m_changeNextElmShortcut = nullptr;
 };
-

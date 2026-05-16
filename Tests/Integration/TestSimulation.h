@@ -65,4 +65,3 @@ private slots:
     void testPartiallyConnectedCircuitIsolation();
     void testDanglingConnectionGraceful();
 };
-

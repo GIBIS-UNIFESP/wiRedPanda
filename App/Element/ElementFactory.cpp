@@ -87,4 +87,3 @@ bool ElementFactory::hasCreator(ElementType type)
 {
     return instance().m_creatorMap.contains(type);
 }
-

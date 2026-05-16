@@ -125,4 +125,3 @@ void TestGraphicElement::testDisplay16Paint()
 
     QVERIFY(true);
 }
-

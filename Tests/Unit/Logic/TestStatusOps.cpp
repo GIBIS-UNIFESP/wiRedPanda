@@ -975,4 +975,3 @@ void TestStatusOps::testUpdateInputsAllowUnknownBlocksNullPredecessor()
     gate.updateLogic();
     QCOMPARE(gate.outputValue(), S::Unknown);  // Null predecessor → Unknown
 }
-

@@ -164,4 +164,3 @@ void TestLevel4RippleAdder4Bit::testRippleCarry()
     QCOMPARE(f.readSum(), expectedSum);
     QCOMPARE(getInputStatus(f.ledCarryOut), expectedCarryOut);
 }
-

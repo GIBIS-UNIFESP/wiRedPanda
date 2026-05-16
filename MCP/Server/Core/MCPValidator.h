@@ -79,4 +79,3 @@ private:
     QString m_schemaPath;
     bool m_schemaLoaded = false;
 };
-

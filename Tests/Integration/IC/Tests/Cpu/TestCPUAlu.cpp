@@ -167,4 +167,3 @@ void TestCPUAlu::testALU8bit_data()
     QTest::newRow("alu_zero_result") << 5 << 5 << static_cast<int>(ALU_SUB) << 0;
     QTest::newRow("alu_sign_result") << 10 << 20 << static_cast<int>(ALU_SUB) << 246;
 }
-

@@ -46,4 +46,3 @@ private:
     Status m_simLastJ = Status::Active;
     Status m_simLastK = Status::Active;
 };
-

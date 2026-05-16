@@ -16,4 +16,3 @@ private slots:
     void testRegisterBank();
     void testRegisterBank_data();
 };
-

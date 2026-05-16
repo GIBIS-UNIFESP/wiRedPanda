@@ -28,4 +28,3 @@ void TestCircuitExporter::testRenderToImageThrowsOnInvalidPath()
     const QString path = "/nonexistent/directory/that/does/not/exist/img.png";
     QVERIFY_EXCEPTION_THROWN(CircuitExporter::renderToImage(workspace.scene(), path), std::exception);
 }
-

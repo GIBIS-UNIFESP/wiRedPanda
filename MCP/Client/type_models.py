@@ -173,5 +173,3 @@ class TabCountResult(BaseModel):
     count: Annotated[int, Field(ge=0, description="Number of open tabs")]
 
     model_config = ConfigDict(extra="forbid", frozen=True)
-
-

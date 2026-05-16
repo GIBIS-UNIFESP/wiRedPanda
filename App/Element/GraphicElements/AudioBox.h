@@ -66,4 +66,3 @@ private:
     QFileInfo m_audio;
     QMediaPlayer *m_player = nullptr;
 };
-

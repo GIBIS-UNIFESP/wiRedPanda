@@ -19,4 +19,3 @@ private slots:
     void testInstructionRegister_data();
     void testSingleGatedRegister();
 };
-

@@ -24,4 +24,3 @@ private slots:
     void testSaveLoadPreservesConnectionStatus();
     void testSaveLoadWithStatusPropagation();
 };
-

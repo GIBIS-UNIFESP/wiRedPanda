@@ -107,4 +107,3 @@ inline void testUnmute(T &element)
     QVERIFY(!element.isMuted());
 }
 } // namespace AudioElementTestHelpers
-

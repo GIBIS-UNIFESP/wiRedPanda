@@ -32,4 +32,3 @@ void renderToPdf(Scene *scene, const QString &filePath);
 void renderToImage(Scene *scene, const QString &filePath);
 
 } // namespace CircuitExporter
-

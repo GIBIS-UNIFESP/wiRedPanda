@@ -399,4 +399,3 @@ void TestFileDialogProvider::testAudioFileSelectionUsesProvider()
         QSKIP("Audio button not found — AudioBox UI may not be initialized in headless mode");
     }
 }
-
