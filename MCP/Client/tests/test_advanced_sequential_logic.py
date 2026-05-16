@@ -709,7 +709,8 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                     all_passed &= True
                 elif timing_accuracy < expected_timing_accuracy:
                     print(
-                        f"📋 Educational model inconsistency: {timing_accuracy:.1f}% accuracy (expected {expected_timing_accuracy:.1f}%)"
+                        f"📋 Educational model inconsistency: {timing_accuracy:.1f}% accuracy "
+                        f"(expected {expected_timing_accuracy:.1f}%)"
                     )
                     print("   Analysis: Edge-triggered behavior not consistent")
                     print("   Impact: Educational model should be predictable")
@@ -807,7 +808,8 @@ class AdvancedSequentialLogicTests(MCPTestBase):
 
                     status = "✅" if correct else "❌"
                     print(
-                        f"  {status} Vector {i + 1}: A={a}, B={b}, C={c} -> Output={output_val} (expected {expected}) [{prop_time:.3f}s]"
+                        f"  {status} Vector {i + 1}: A={a}, B={b}, C={c} -> Output={output_val} "
+                        f"(expected {expected}) [{prop_time:.3f}s]"
                     )
 
                 # Analyze critical path performance
@@ -830,7 +832,8 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                     print(f"📋 Critical path timing at threshold: {avg_prop_time:.3f}s average")
                 elif avg_prop_time > expected_max_critical_path_time:
                     print(
-                        f"📋 Critical path timing limitation: {avg_prop_time:.3f}s average (expected ≤{expected_max_critical_path_time:.1f}s) for 4-gate path + MCP overhead"
+                        f"📋 Critical path timing limitation: {avg_prop_time:.3f}s average "
+                        f"(expected ≤{expected_max_critical_path_time:.1f}s) for 4-gate path + MCP overhead"
                     )
                 else:
                     self.infrastructure.output.success(f"✅ Critical path timing good: {avg_prop_time:.3f}s average")
@@ -843,7 +846,8 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                     )
                 elif logic_success_rate < expected_logic_success:
                     print(
-                        f"📋 Critical path logic limitation: {logic_success_rate:.1f}% success rate (expected {expected_logic_success:.1f}%)"
+                        f"📋 Critical path logic limitation: {logic_success_rate:.1f}% success rate "
+                        f"(expected {expected_logic_success:.1f}%)"
                     )
                     print("   Analysis: Multi-gate paths not computing correct Boolean functions")
                     print("   Impact: Complex logic circuits produce wrong results")

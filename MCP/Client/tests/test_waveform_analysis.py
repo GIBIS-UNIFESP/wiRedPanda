@@ -262,7 +262,8 @@ class WaveformAnalysisTests(MCPTestBase):
             self.infrastructure.output.success(f"✅ Waveform timing correlation: {correlation_percentage:.1f}%")
         else:
             print(
-                f"❌ Waveform timing correlation: {correlation_percentage:.1f}% (expected ≥{expected_min_correlation:.1f}%)"
+                f"❌ Waveform timing correlation: {correlation_percentage:.1f}% "
+                f"(expected ≥{expected_min_correlation:.1f}%)"
             )
             print("❌ Input-output correlation test failed")
             print("   Expected: Output should follow input with high correlation")

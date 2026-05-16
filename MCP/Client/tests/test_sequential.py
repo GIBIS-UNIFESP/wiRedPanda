@@ -163,7 +163,8 @@ class SequentialTests(MCPTestBase):
             print(f"📋 Multi-clock sync correlation at tolerance threshold: {actual_deviation:.1f}% deviation")
         elif actual_deviation > expected_max_deviation:
             print(
-                f"📋 Multi-clock domain limitation detected: {actual_deviation:.1f}% deviation (expected ≤{expected_max_deviation:.1f}%)"
+                f"📋 Multi-clock domain limitation detected: {actual_deviation:.1f}% deviation "
+                f"(expected ≤{expected_max_deviation:.1f}%)"
             )
             print(f"   Expected synchronizer correlation ~{expected_sync:.1f}%, got {sync_correlation:.1f}%")
             print("   Analysis: Clock domain crossing not working correctly")
@@ -443,7 +444,8 @@ class SequentialTests(MCPTestBase):
             operational_success = True
         else:
             print(
-                f"📋 Post-reset operation issue: Unexpected state after 1st edge (STATE1={first_edge_state1}, STATE2={first_edge_state2})"
+                f"📋 Post-reset operation issue: Unexpected state after 1st edge "
+                f"(STATE1={first_edge_state1}, STATE2={first_edge_state2})"
             )
             operational_success = False
 
@@ -561,7 +563,8 @@ class SequentialTests(MCPTestBase):
             )
 
             print(
-                f"Cycle {cycle}: Reset={'ACTIVE' if reset_active else 'RELEASED'} -> STATE1={cycle_state1}, STATE2={cycle_state2}"
+                f"Cycle {cycle}: Reset={'ACTIVE' if reset_active else 'RELEASED'} -> "
+                f"STATE1={cycle_state1}, STATE2={cycle_state2}"
             )
 
         # Analyze reset synchronization
@@ -573,7 +576,8 @@ class SequentialTests(MCPTestBase):
         if total_reset_cycles > 0:
             reset_effectiveness = (reset_effective_cycles / total_reset_cycles) * 100
             print(
-                f"\n📋 Reset effectiveness: {reset_effectiveness:.1f}% ({reset_effective_cycles}/{total_reset_cycles} cycles)"
+                f"\n📋 Reset effectiveness: {reset_effectiveness:.1f}% "
+                f"({reset_effective_cycles}/{total_reset_cycles} cycles)"
             )
 
             # Exact reset effectiveness validation - expect >=80% effectiveness
@@ -584,7 +588,8 @@ class SequentialTests(MCPTestBase):
                 )
             else:
                 print(
-                    f"📋 Reset timing limitation detected: {reset_effectiveness:.1f}% effectiveness (expected ≥{expected_min_reset_effectiveness:.1f}%)"
+                    f"📋 Reset timing limitation detected: {reset_effectiveness:.1f}% effectiveness "
+                    f"(expected ≥{expected_min_reset_effectiveness:.1f}%)"
                 )
                 print("   Analysis: Reset timing may not be working consistently")
                 print("   Expected: Reset should clear states effectively across cycles")
