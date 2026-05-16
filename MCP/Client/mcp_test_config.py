@@ -44,10 +44,8 @@ class TestConfig:
         # ("chore(presets): give release / sentry / macos presets their own
         # build dirs").  Probe in priority order: explicit Release first, then
         # the historical layouts MCP previously assumed.
-        # base_dir is MCP/Client/ (parent of MCP/Client/tests/), so the
-        # project root is two levels up — *not* one as the original code
-        # assumed (the docstring is stale from when this file lived at
-        # MCP/tests/test_config.py).
+        # base_dir is MCP/Client/, so the wiRedPanda project root is two
+        # levels above it (MCP/Client/.. = MCP/, then MCP/.. = repo root).
         project_root = self.base_dir.parent.parent
 
         # All preset binaryDirs from CMakePresets.json, in priority order
