@@ -11,6 +11,16 @@ generated-members = pydantic.*
 # List of decorators that produce context managers
 contextmanager-decorators = contextlib.contextmanager
 
+[BASIC]
+# Don't require docstrings on:
+#   ^_          — private (pylint default)
+#   ^Parameters$ — nested pydantic `Parameters` schemas inside each MCP
+#                  command class. The outer command class carries the
+#                  command's docstring; the inner Parameters is just the
+#                  schema for the `params` field and has no extra semantics
+#                  beyond what the outer class already describes.
+no-docstring-rgx = ^_|^Parameters$
+
 [MESSAGES CONTROL]
 disable =
     line-too-long,
