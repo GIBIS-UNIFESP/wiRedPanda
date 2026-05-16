@@ -2488,7 +2488,7 @@ Nama yang disarankan:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="423"/>
+        <location filename="../../Main.cpp" line="428"/>
         <source>Error!</source>
         <translation>Kesalahan!</translation>
     </message>
@@ -2976,67 +2976,67 @@ Cadangan berkas asli telah dibuat dengan nama: %3</translation>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="280"/>
+        <location filename="../../Main.cpp" line="285"/>
         <source>Circuit file to open.</source>
         <translation>Berkas sirkuit untuk dibuka.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="284"/>
+        <location filename="../../Main.cpp" line="289"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Level verbositas 0 sampai 5, dinonaktifkan secara default.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="285"/>
+        <location filename="../../Main.cpp" line="290"/>
         <source>verbosity level</source>
         <translation>level verbositas</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="290"/>
+        <location filename="../../Main.cpp" line="295"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Mengekspor sirkuit ke &lt;arduino-file&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Mengekspor sirkuit ke file teks gelombang, membaca input dari terminal.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="307"/>
+        <location filename="../../Main.cpp" line="312"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Ketika digunakan dengan -c/--terminal, blokir eksekusi jika sirkuit berisi Tabel Kebenaran.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="313"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Jalankan dalam mode MCP (Model Context Protocol) untuk kontrol programatis.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="318"/>
+        <location filename="../../Main.cpp" line="323"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Jalankan mode MCP dengan jendela GUI yang terlihat.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="383"/>
+        <location filename="../../Main.cpp" line="388"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Kesalahan: Sirkuit berisi elemen Tabel Kebenaran.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="428"/>
+        <location filename="../../Main.cpp" line="433"/>
         <source>Error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="291"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>arduino file</source>
         <translation>berkas arduino</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="301"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Mengekspor sirkuit ke file teks gelombang.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="297"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>waveform input text file</source>
         <translation>berkas teks input bentuk gelombang</translation>
     </message>

@@ -2488,7 +2488,7 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="423"/>
+        <location filename="../../Main.cpp" line="428"/>
         <source>Error!</source>
         <translation>Klaida!</translation>
     </message>
@@ -2976,67 +2976,67 @@ Originalaus failo atsarginė kopija sukurta pavadinimu: %3</translation>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="280"/>
+        <location filename="../../Main.cpp" line="285"/>
         <source>Circuit file to open.</source>
         <translation>Grandinės failas atidarymui.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="284"/>
+        <location filename="../../Main.cpp" line="289"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Išsamumo lygis nuo 0 iki 5, pagal nutylėjimą išjungtas.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="285"/>
+        <location filename="../../Main.cpp" line="290"/>
         <source>verbosity level</source>
         <translation>išsamumo lygis</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="290"/>
+        <location filename="../../Main.cpp" line="295"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Eksportuoja grandinę į &lt;arduino-failas&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Eksportuoja grandinę į bangų formos teksto failą, skaitant įėjimą iš terminalo.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="307"/>
+        <location filename="../../Main.cpp" line="312"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Naudojant su -c/--terminal, blokuoja vykdymą, jei grandinėje yra Tiesos lentelių.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="313"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Paleisti MCP (Model Context Protocol) režimu programiniam valdymui.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="318"/>
+        <location filename="../../Main.cpp" line="323"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Paleisti MCP režimą su matomu GUI langu.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="383"/>
+        <location filename="../../Main.cpp" line="388"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Klaida: Grandinėje yra Tiesos lentelės elementų.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="428"/>
+        <location filename="../../Main.cpp" line="433"/>
         <source>Error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="291"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>arduino file</source>
         <translation>arduino failas</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="301"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Eksportuoja grandinę į bangų formos teksto failą.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="297"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>waveform input text file</source>
         <translation>bangų formos įėjimo teksto failas</translation>
     </message>
