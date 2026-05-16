@@ -2198,6 +2198,37 @@
             "method"
           ],
           "additionalProperties": false
+        },
+        "list_commands": {
+          "type": "object",
+          "description": "List every available MCP method with its category",
+          "properties": {
+            "jsonrpc": { "type": "string", "const": "2.0" },
+            "method":  { "const": "list_commands" },
+            "params":  { "type": "object", "additionalProperties": false },
+            "id":      { "oneOf": [{ "type": "string" }, { "type": "number" }, { "type": "null" }] }
+          },
+          "required": ["jsonrpc", "method"],
+          "additionalProperties": false
+        },
+        "describe_command": {
+          "type": "object",
+          "description": "Return the JSON schema (input + response) for a single MCP method",
+          "properties": {
+            "jsonrpc": { "type": "string", "const": "2.0" },
+            "method":  { "const": "describe_command" },
+            "params":  {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string", "minLength": 1, "description": "Method name to describe" }
+              },
+              "required": ["name"],
+              "additionalProperties": false
+            },
+            "id":      { "oneOf": [{ "type": "string" }, { "type": "number" }, { "type": "null" }] }
+          },
+          "required": ["jsonrpc", "method", "params"],
+          "additionalProperties": false
         }
       }
     },
@@ -3223,6 +3254,58 @@
                     "undo_index": { "type": "integer", "minimum": 0 }
                   },
                   "required": ["can_undo", "can_redo", "undo_text", "redo_text", "undo_limit", "undo_count", "undo_index"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "list_commands_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "commands": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name":     { "type": "string" },
+                          "category": { "type": "string" }
+                        },
+                        "required": ["name", "category"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "categories": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  },
+                  "required": ["commands", "categories"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "describe_command_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "name":            { "type": "string" },
+                    "category":        { "type": "string" },
+                    "input_schema":    { "type": "object", "additionalProperties": true },
+                    "response_schema": { "type": "object", "additionalProperties": true }
+                  },
+                  "required": ["name", "category", "input_schema", "response_schema"],
                   "additionalProperties": false
                 }
               }

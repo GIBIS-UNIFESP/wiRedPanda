@@ -64,11 +64,13 @@ public:
     static json qjsonToNlohmann(const QJsonObject &qjson);
     static QJsonObject nlohmannToQJson(const json &nlohmannJson);
 
+    // Schema introspection (used by describe_command)
+    json findCommandSchema(const QString &commandName);
+    json findResponseSchema(const QString &commandName);
+
 private:
     // Internal validation methods
     ValidationResult validateAgainstSchema(const json &data, const json &schema, const QString &commandType);
-    json findCommandSchema(const QString &commandName);
-    json findResponseSchema(const QString &commandName);
     QString extractErrorPath(const QString &errorMsg);
 
     // Member variables

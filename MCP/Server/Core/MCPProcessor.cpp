@@ -71,7 +71,7 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
             m_dispatchMap.insert(method, handler);
         }
     };
-    addRoutes(m_serverInfoHandler.get(), {"get_server_info"});
+    addRoutes(m_serverInfoHandler.get(), {"get_server_info", "list_commands", "describe_command"});
     addRoutes(m_fileHandler.get(), {
         "load_circuit", "save_circuit", "new_circuit", "close_circuit",
         "get_tab_count", "export_image"
