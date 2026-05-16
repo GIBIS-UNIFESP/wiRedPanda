@@ -79,8 +79,8 @@ The test suite provides full validation across all MCP functionality:
 All tests use modern async patterns with comprehensive type safety:
 
 ```python
-from mcp_infrastructure import MCPInfrastructure
-from mcp_runner import MCPTestRunner
+from mcp_client.mcp_infrastructure import MCPInfrastructure
+from mcp_client.mcp_runner import MCPTestRunner
 from beartype import beartype
 from typing import Optional
 import asyncio

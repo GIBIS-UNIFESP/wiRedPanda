@@ -19,7 +19,7 @@ from typing import Awaitable, Callable, List
 from beartype import beartype
 
 # Import models - needed for test_invalid_json_handling
-from mcp_models import MCPResponse
+from mcp_client.mcp_models import MCPResponse
 
 # Import base infrastructure
 from tests.mcp_test_base import MCPTestBase

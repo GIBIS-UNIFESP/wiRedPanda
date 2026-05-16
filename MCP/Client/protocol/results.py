@@ -10,8 +10,7 @@ from typing import Annotated, Any, List
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-# Import from type_models for circuit data structures
-from type_models import CircuitConnection, CircuitElement
+from .type_models import CircuitConnection, CircuitElement
 
 
 class ElementCreationResult(BaseModel):

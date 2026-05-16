@@ -3,13 +3,13 @@ MCP Test Suite Package
 
 Organized test categories and modular components for the MCP (Model Context Protocol) functionality.
 
-Modular Architecture:
-- mcp_infrastructure: Process management and communication
-- mcp_validation: Response validation and assertion helpers
-- mcp_circuit_builder: Circuit construction and validation helpers
-- mcp_organizer: Test management, reporting, and image export
-- mcp_runner: Main test runner that orchestrates all components
-- mcp_test_base: Base classes and orchestrator for test execution
+Modular Architecture (all under the `mcp_client/` package):
+- mcp_client.mcp_infrastructure: Process management and communication
+- mcp_client.mcp_validation: Response validation and assertion helpers
+- mcp_client.mcp_circuit_builder: Circuit construction and validation helpers
+- mcp_client.mcp_organizer: Test management, reporting, and image export
+- mcp_client.mcp_runner: Main test runner that orchestrates all components
+- mcp_test_base: Base classes and orchestrator for test execution (stays under tests/)
 
 Test Categories:
 - test_basic_protocol: Basic MCP protocol tests
@@ -31,22 +31,22 @@ Test Categories:
 - test_integration_workflows: End-to-end workflow tests
 
 Utility Modules:
-- mcp_test_config: Test configuration and paths (top-level, not under tests/)
+- mcp_client.mcp_test_config: Test configuration and paths
 - test_results: Test result data structures
 - mcp_test_fixtures: Test fixtures and data
 - mcp_test_helpers: Helper functions for testing
 """
 
-from mcp_circuit_builder import MCPCircuitBuilder
+from mcp_client.mcp_circuit_builder import MCPCircuitBuilder
 
 # Core modular components
-from mcp_infrastructure import MCPInfrastructure
-from mcp_organizer import MCPTestOrganizer
-from mcp_runner import MCPTestRunner
+from mcp_client.mcp_infrastructure import MCPInfrastructure
+from mcp_client.mcp_organizer import MCPTestOrganizer
+from mcp_client.mcp_runner import MCPTestRunner
 
 # Configuration and utilities
-from mcp_test_config import config, get_test_images_dir
-from mcp_validation import MCPValidation
+from mcp_client.mcp_test_config import config, get_test_images_dir
+from mcp_client.mcp_validation import MCPValidation
 
 from .mcp_test_base import MCPTestBase
 from .mcp_test_orchestrator import MCPTestOrchestrator

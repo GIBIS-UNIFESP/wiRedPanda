@@ -38,7 +38,7 @@ class MCPTestOrchestrator:
             verbose: Show verbose output including all success messages
             mcp_gui: Run MCP server with GUI instead of headless mode
         """
-        from mcp_runner import MCPTestRunner
+        from mcp_client.mcp_runner import MCPTestRunner
 
         self._runner = MCPTestRunner(enable_image_export, enable_validation, keep_temp_files, verbose, mcp_gui)
 

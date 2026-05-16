@@ -61,7 +61,7 @@ echo '{"jsonrpc": "2.0", "method": "create_element", \
 ```python
 # Build complex circuits programmatically with async MCP
 async def create_4bit_adder():
-    from mcp_infrastructure import MCPInfrastructure
+    from mcp_client.mcp_infrastructure import MCPInfrastructure
 
     mcp = MCPInfrastructure(enable_validation=True)
     await mcp.start_mcp()
@@ -83,8 +83,8 @@ async def create_4bit_adder():
 ```python
 # Automated circuit validation with comprehensive type safety
 async def validate_student_circuit(circuit_file: str) -> tuple[bool, str]:
-    from mcp_runner import MCPTestRunner
-    from mcp_models import ValidationResult
+    from mcp_client.mcp_runner import MCPTestRunner
+    from mcp_client.mcp_models import ValidationResult
 
     runner = MCPTestRunner(enable_validation=True, verbose=False)
     await runner.start_mcp()
@@ -108,8 +108,8 @@ async def validate_student_circuit(circuit_file: str) -> tuple[bool, str]:
 # Perfect for Claude Code integration with async patterns
 async def create_circuit_from_description(description: str) -> str:
     """AI can call this to build circuits from natural language"""
-    from mcp_circuit_builder import MCPCircuitBuilder
-    from mcp_infrastructure import MCPInfrastructure
+    from mcp_client.mcp_circuit_builder import MCPCircuitBuilder
+    from mcp_client.mcp_infrastructure import MCPInfrastructure
     from beartype import beartype
 
     @beartype
@@ -213,7 +213,7 @@ with WiredPandaBridge() as bridge:
 ### Context Manager Usage
 
 ```python
-from wiredpanda_bridge import WiredPandaBridge
+from mcp_client.wiredpanda_bridge import WiredPandaBridge
 
 # Automatic process management and cleanup
 with WiredPandaBridge() as bridge:
@@ -225,7 +225,7 @@ with WiredPandaBridge() as bridge:
 
 ```python
 # Modern async interface with comprehensive type safety
-from mcp_runner import MCPTestRunner
+from mcp_client.mcp_runner import MCPTestRunner
 from beartype import beartype
 
 @beartype
@@ -256,10 +256,11 @@ async def circuit_operations(runner: MCPTestRunner) -> None:
 MCP/
 ├── schema-mcp.json                    # Complete API schema
 ├── Client/
-│   ├── mcp_infrastructure.py          # Core MCP infrastructure
-│   ├── wiredpanda_bridge.py           # Python automation bridge
-│   ├── mcp_models.py                  # Pydantic type models
-│   ├── mcp_schema_validator.py        # Python validation
+│   ├── mcp_client/                    # Core client package
+│   │   ├── mcp_infrastructure.py      # Core MCP infrastructure
+│   │   ├── wiredpanda_bridge.py       # Python automation bridge
+│   │   ├── mcp_models.py              # Pydantic type models
+│   │   └── mcp_schema_validator.py    # Python validation
 │   ├── examples/simple_circuit.py     # Usage examples
 │   └── tests/                         # Comprehensive test suite
 └── Server/                            # Server implementation architecture
@@ -270,7 +271,7 @@ MCP/
 #### JSON Schema & Runtime Type Safety
 
 ```python
-from mcp_models import MCPCommand, MCPResponse
+from mcp_client.mcp_models import MCPCommand, MCPResponse
 from pydantic import ValidationError, Field, BaseModel
 from beartype import beartype
 from typing import Optional

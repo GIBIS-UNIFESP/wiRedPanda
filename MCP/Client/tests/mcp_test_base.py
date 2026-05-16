@@ -17,8 +17,8 @@ from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple
 
 from beartype import beartype
 
-from mcp_models import MCPResponse
-from mcp_runner import MCPTestRunner
+from mcp_client.mcp_models import MCPResponse
+from mcp_client.mcp_runner import MCPTestRunner
 
 # Add parent directory to path for imports
 sys.path.insert(0, "..")

@@ -16,7 +16,7 @@ class TestConfig:
 
     def __init__(self) -> None:
         # Base directory is the mcp directory (parent of tests/)
-        self.base_dir = Path(__file__).parent.parent
+        self.base_dir = Path(__file__).parent.parent.parent
 
         # Test output directories - all use the temp/ folder
         self.temp_dir = self.base_dir / "temp"
@@ -44,9 +44,9 @@ class TestConfig:
         # ("chore(presets): give release / sentry / macos presets their own
         # build dirs").  Probe in priority order: explicit Release first, then
         # the historical layouts MCP previously assumed.
-        # base_dir is MCP/Client/, so the wiRedPanda project root is two
-        # levels above it (MCP/Client/.. = MCP/, then MCP/.. = repo root).
-        project_root = self.base_dir.parent.parent
+        # base_dir is MCP/ (set above), so the wiRedPanda repo root is one
+        # level above it (MCP/.. = repo root).
+        project_root = self.base_dir.parent
 
         # All preset binaryDirs from CMakePresets.json, in priority order
         # (most-likely first).  Windows multi-config may put the binary under
