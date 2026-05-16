@@ -21,8 +21,8 @@ def make_two_input_gate_circuit(gate_type: str) -> dict[str, Any]:
         "elements": [
             {"id": 1, "type": "InputButton", "x": 100, "y": 100, "label": "A"},
             {"id": 2, "type": "InputButton", "x": 100, "y": 200, "label": "B"},
-            {"id": 3, "type": gate_type,    "x": 300, "y": 150},
-            {"id": 4, "type": "Led",         "x": 500, "y": 150, "label": "OUT"},
+            {"id": 3, "type": gate_type, "x": 300, "y": 150},
+            {"id": 4, "type": "Led", "x": 500, "y": 150, "label": "OUT"},
         ],
         "connections": [
             {"source": 1, "target": 3, "source_port": 0, "target_port": 0},

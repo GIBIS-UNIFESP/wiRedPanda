@@ -145,9 +145,7 @@ class MCPTestBase(ABC):
         output_id = await self.create_element_checked("Led", 300, 100, f"{test_name}: Create output")
         return input_id, output_id
 
-    async def connect_elements(
-        self, source_id: int, source_port: int, target_id: int, target_port: int
-    ) -> MCPResponse:
+    async def connect_elements(self, source_id: int, source_port: int, target_id: int, target_port: int) -> MCPResponse:
         """Send a ``connect_elements`` MCP request with explicit port indices."""
         return await self.send_command(
             "connect_elements",
@@ -232,15 +230,9 @@ class MCPTestBase(ABC):
             os.remove(test_ic_file)
             print("🧹 Cleaned up existing test IC file")
 
-        input_id = await self.create_element_checked(
-            "InputButton", 100.0, 100.0, "create IC input", label="IC_Input"
-        )
-        buffer_id = await self.create_element_checked(
-            "Not", 200.0, 100.0, "create IC logic gate", label="IC_Buffer"
-        )
-        output_id = await self.create_element_checked(
-            "Led", 300.0, 100.0, "create IC output", label="IC_Output"
-        )
+        input_id = await self.create_element_checked("InputButton", 100.0, 100.0, "create IC input", label="IC_Input")
+        buffer_id = await self.create_element_checked("Not", 200.0, 100.0, "create IC logic gate", label="IC_Buffer")
+        output_id = await self.create_element_checked("Led", 300.0, 100.0, "create IC output", label="IC_Output")
         if not input_id or not buffer_id or not output_id:
             return None
 

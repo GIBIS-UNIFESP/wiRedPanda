@@ -92,9 +92,7 @@ class ConnectionSpec(BaseModel):
     @model_validator(mode="after")
     def validate_ports(self) -> "ConnectionSpec":
         """Require at least one of (port index, port label) on each side of the connection."""
-        require_port_or_label(
-            self.source_port, self.source_port_label, self.target_port, self.target_port_label
-        )
+        require_port_or_label(self.source_port, self.source_port_label, self.target_port, self.target_port_label)
         return self
 
 
