@@ -12,6 +12,7 @@ Tests for command parameter validation including:
 MCP test implementation
 """
 
+import os
 from typing import Any, Dict
 
 from beartype import beartype
@@ -148,8 +149,6 @@ class ParameterValidationTests(MCPTestBase):
 
         try:
             # Clean up any existing test IC files to ensure clean state
-            import os
-
             test_ic_file = "test_ic.panda"
             if os.path.exists(test_ic_file):
                 os.remove(test_ic_file)

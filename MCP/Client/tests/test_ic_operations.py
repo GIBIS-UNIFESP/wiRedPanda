@@ -12,6 +12,8 @@ Tests for Integrated Circuit (IC) functionality including:
 MCP test implementation
 """
 
+import os
+
 from beartype import beartype
 
 # Import base infrastructure
@@ -51,8 +53,6 @@ class ICOperationTests(MCPTestBase):
 
         try:
             # Clean up any existing test IC files to ensure clean state
-            import os
-
             test_ic_file = "test_ic.panda"
             if os.path.exists(test_ic_file):
                 os.remove(test_ic_file)
