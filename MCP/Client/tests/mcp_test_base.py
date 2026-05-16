@@ -224,11 +224,13 @@ class MCPTestBase(ABC):
                 if isinstance(before_test_count, int) and isinstance(after_test_count, int):
                     if after_test_count > before_test_count:
                         print(
-                            f"⚠️  TAB LEAK: {test_name} left {after_test_count - before_test_count} extra tabs ({before_test_count} → {after_test_count})"
+                            f"⚠️  TAB LEAK: {test_name} left {after_test_count - before_test_count} extra tabs "
+                            f"({before_test_count} → {after_test_count})"
                         )
                     elif after_test_count < before_test_count:
                         self.infrastructure.output.success(
-                            f"✅ TAB CLEANUP: {test_name} reduced tabs by {before_test_count - after_test_count} ({before_test_count} → {after_test_count})"
+                            f"✅ TAB CLEANUP: {test_name} reduced tabs by {before_test_count - after_test_count} "
+                            f"({before_test_count} → {after_test_count})"
                         )
 
             # Determine final result considering both test and teardown

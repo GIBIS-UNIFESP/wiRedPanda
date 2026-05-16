@@ -110,7 +110,8 @@ class PerformanceTimingTests(MCPTestBase):
         expected_max_create_time = 0.5
         if max_create_time > expected_max_create_time:
             print(
-                f"❌ Slow element creation: max {max_create_time:.3f}s, avg {avg_create_time:.3f}s (expected ≤{expected_max_create_time:.1f}s)"
+                f"❌ Slow element creation: max {max_create_time:.3f}s, avg {avg_create_time:.3f}s "
+                f"(expected ≤{expected_max_create_time:.1f}s)"
             )
         else:
             self.infrastructure.output.success(
@@ -209,7 +210,8 @@ class PerformanceTimingTests(MCPTestBase):
             avg_rapid_time = sum(rapid_fire_times) / len(rapid_fire_times)
             max_rapid_time = max(rapid_fire_times)
             self.infrastructure.output.success(
-                f"✅ Rapid fire test: {len(rapid_fire_times)} commands, max {max_rapid_time:.3f}s, avg {avg_rapid_time:.3f}s"
+                f"✅ Rapid fire test: {len(rapid_fire_times)} commands, "
+                f"max {max_rapid_time:.3f}s, avg {avg_rapid_time:.3f}s"
             )
 
         return all_passed

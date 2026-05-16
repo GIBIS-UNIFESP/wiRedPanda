@@ -240,7 +240,8 @@ class PerformanceTests(MCPTestBase):
                 print(f"📋 Memory growth at threshold: {memory_growth:.1f} MB")
             elif memory_growth > expected_max_memory_growth:
                 print(
-                    f"❌ Excessive memory growth: {memory_growth:.1f} MB (expected ≤{expected_max_memory_growth:.1f} MB)"
+                    f"❌ Excessive memory growth: {memory_growth:.1f} MB "
+                    f"(expected ≤{expected_max_memory_growth:.1f} MB)"
                 )
             else:
                 self.infrastructure.output.success(f"✅ Memory usage stable: {memory_growth:.1f} MB growth")
@@ -300,7 +301,8 @@ class PerformanceTests(MCPTestBase):
                 print(f"📋 Simulation memory growth at threshold: {sim_memory_growth:.1f} MB")
             elif sim_memory_growth > expected_max_sim_memory_growth:
                 print(
-                    f"❌ Excessive simulation memory growth: {sim_memory_growth:.1f} MB (expected ≤{expected_max_sim_memory_growth:.1f} MB)"
+                    f"❌ Excessive simulation memory growth: {sim_memory_growth:.1f} MB "
+                    f"(expected ≤{expected_max_sim_memory_growth:.1f} MB)"
                 )
             else:
                 self.infrastructure.output.success(f"✅ Simulation memory stable: {sim_memory_growth:.1f} MB")

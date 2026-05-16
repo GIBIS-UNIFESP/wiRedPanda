@@ -109,7 +109,8 @@ class CircuitTopologyTests(MCPTestBase):
         }
 
         print(
-            f"Circuit specifications: {len(large_circuit_elements)} elements, {len(large_circuit_connections)} connections"
+            f"Circuit specifications: {len(large_circuit_elements)} elements, "
+            f"{len(large_circuit_connections)} connections"
         )
 
         # Measure circuit creation time
@@ -171,7 +172,8 @@ class CircuitTopologyTests(MCPTestBase):
 
                     status = "✅" if propagation_correct else "❌"
                     print(
-                        f"  {status} Input={test_val} -> Output={output_val} (expected {expected_output}) [{prop_time:.3f}s]"
+                        f"  {status} Input={test_val} -> Output={output_val} "
+                        f"(expected {expected_output}) [{prop_time:.3f}s]"
                     )
 
                 # Analyze large circuit performance
@@ -187,7 +189,8 @@ class CircuitTopologyTests(MCPTestBase):
                 print(f"   Circuit creation time: {creation_time:.2f}s")
                 print(f"   Elements successfully created: {len(element_mapping)}/102")
                 print(
-                    f"   Signal propagation success: {propagation_success_rate:.1f}% ({correct_propagations}/{total_tests})"
+                    f"   Signal propagation success: {propagation_success_rate:.1f}% "
+                    f"({correct_propagations}/{total_tests})"
                 )
                 print(f"   Average propagation time: {avg_propagation_time:.3f}s")
 
@@ -198,7 +201,8 @@ class CircuitTopologyTests(MCPTestBase):
                     print(f"📋 Circuit creation timing at threshold: {creation_time:.2f}s")
                 elif creation_time > expected_max_creation_time:
                     print(
-                        f"📋 Circuit creation performance limitation: {creation_time:.2f}s (expected ≤{expected_max_creation_time:.1f}s) for 100-element circuit"
+                        f"📋 Circuit creation performance limitation: {creation_time:.2f}s "
+                        f"(expected ≤{expected_max_creation_time:.1f}s) for 100-element circuit"
                     )
                 else:
                     self.infrastructure.output.success(f"✅ Circuit creation timing good: {creation_time:.2f}s")
@@ -209,7 +213,8 @@ class CircuitTopologyTests(MCPTestBase):
                     print(f"📋 Signal propagation timing at threshold: {avg_propagation_time:.3f}s average")
                 elif avg_propagation_time > expected_max_avg_propagation:
                     print(
-                        f"📋 Signal propagation performance limitation: {avg_propagation_time:.3f}s average (expected ≤{expected_max_avg_propagation:.1f}s)"
+                        f"📋 Signal propagation performance limitation: {avg_propagation_time:.3f}s average "
+                        f"(expected ≤{expected_max_avg_propagation:.1f}s)"
                     )
 
                 # Exact propagation success validation - expect 100% success rate
@@ -220,7 +225,8 @@ class CircuitTopologyTests(MCPTestBase):
                     )
                 elif propagation_success_rate < expected_propagation_success:
                     print(
-                        f"📋 Large circuit propagation limitation: {propagation_success_rate:.1f}% success rate (expected {expected_propagation_success:.1f}%)"
+                        f"📋 Large circuit propagation limitation: {propagation_success_rate:.1f}% success rate "
+                        f"(expected {expected_propagation_success:.1f}%)"
                     )
                     print("   Analysis: Complex logic chains fail due to fundamental propagation issues")
                     print("   Impact: Large-scale digital systems unreliable")
@@ -312,7 +318,8 @@ class CircuitTopologyTests(MCPTestBase):
 
                     status = "✅" if fanout_success >= 95 else "❌"
                     print(
-                        f"  {status} Fan-out test (input={test_input}): {correct_outputs}/{total_outputs} outputs correct ({fanout_success:.1f}%)"
+                        f"  {status} Fan-out test (input={test_input}): "
+                        f"{correct_outputs}/{total_outputs} outputs correct ({fanout_success:.1f}%)"
                     )
 
                     # Track if this iteration failed
