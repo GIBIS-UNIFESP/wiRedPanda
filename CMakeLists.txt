@@ -223,7 +223,11 @@ include(CMakeSources.cmake)
 # Find available translation files
 file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 
-find_package(Qt6LinguistTools QUIET)
+# Use the COMPONENTS form so cross-compile builds (WASM) consult QT_HOST_PATH
+# for host-only tools.  The bare `find_package(Qt6LinguistTools)` form only
+# searches CMAKE_PREFIX_PATH, which points at the target Qt — where host
+# tools like lrelease aren't shipped.
+find_package(Qt6 QUIET COMPONENTS LinguistTools)
 
 qt6_add_resources(RESOURCES_RCC ${RESOURCES})
 
