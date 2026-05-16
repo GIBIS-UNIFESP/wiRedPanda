@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Performance Tests
 
@@ -15,7 +14,7 @@ MCP test implementation
 
 import asyncio
 import time
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 import psutil
 from beartype import beartype
@@ -29,7 +28,7 @@ class PerformanceTests(MCPTestBase):
 
     CATEGORY_NAME = "PERFORMANCE"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_concurrent_rapid_sequential_commands,
             self.test_concurrent_command_ordering_integrity,

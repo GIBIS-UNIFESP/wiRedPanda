@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Advanced Sequential Logic Tests
 
@@ -13,7 +12,8 @@ MCP test implementation
 """
 
 import time
-from typing import Any, Awaitable, Callable, Dict, List, Union
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from beartype import beartype
 
@@ -32,7 +32,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
 
     CATEGORY_NAME = "ADVANCED SEQUENTIAL LOGIC"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_sequential_sr_latch_validation,
             self.test_sequential_dflipflop_validation,
@@ -171,7 +171,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         clock_id = mapping[2]  # Clock
 
         # D Flip-Flop state table
-        dff_state_table: List[Dict[str, Any]] = [
+        dff_state_table: list[dict[str, Any]] = [
             {
                 "description": "Initial state - Q=0",
                 "inputs": [False],
@@ -229,10 +229,10 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         print("Testing JK flip-flop toggle functionality...")
 
         # Test: K Flip-Flop State Table Validation
-        jk_circuit_spec: Dict[str, Any] = JK_FLIP_FLOP_CIRCUIT
+        jk_circuit_spec: dict[str, Any] = JK_FLIP_FLOP_CIRCUIT
 
         # JK Flip-Flop State Table
-        jk_state_table: List[Dict[str, Any]] = [
+        jk_state_table: list[dict[str, Any]] = [
             # J, K, CLK_edge -> Expected Q, Q_NOT, Description
             {"inputs": [0, 0, 1], "expected_q": None, "expected_qn": None, "description": "Hold state (no change)"},
             {"inputs": [1, 0, 1], "expected_q": 1, "expected_qn": 0, "description": "Set state (Q=1)"},
@@ -373,7 +373,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         print("Testing T flip-flop divide-by-2 operation...")
 
         # Test: T Flip-Flop Divide-by-2 Counter
-        t_circuit_spec: Dict[str, Any] = T_FLIP_FLOP_CIRCUIT
+        t_circuit_spec: dict[str, Any] = T_FLIP_FLOP_CIRCUIT
 
         element_mapping = await self.create_circuit_from_spec(t_circuit_spec)
         if element_mapping:
@@ -404,7 +404,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                 # Now enable T input for toggle mode
                 await self.send_command("set_input_value", {"element_id": element_mapping[1], "value": True})  # T=1
 
-                t_flip_states: List[Dict[str, Union[int, bool]]] = []
+                t_flip_states: list[dict[str, int | bool]] = []
 
                 for cycle in range(8):  # Test for 8 clock cycles
                     # Create clean clock transition (low to high) for edge triggering
@@ -485,7 +485,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         print("Testing educational zero-delay timing model...")
 
         # Test: Setup/Hold Time Validation Circuit
-        setup_hold_spec: Dict[str, Any] = {
+        setup_hold_spec: dict[str, Any] = {
             "elements": [
                 {"id": 1, "type": "InputButton", "label": "DATA", "x": 0, "y": 0},
                 {"id": 2, "type": "InputButton", "label": "CLK", "x": 0, "y": 100},
@@ -512,11 +512,11 @@ class AdvancedSequentialLogicTests(MCPTestBase):
             if resp.success:
                 print("\nTesting educational model consistency...")
 
-                timing_tests: List[Dict[str, Any]] = []
+                timing_tests: list[dict[str, Any]] = []
 
                 # Test various data-to-clock scenarios in zero-delay educational model
                 # Focus on edge-triggered behavior consistency
-                test_scenarios: List[Dict[str, Union[bool, bool, float, str]]] = [
+                test_scenarios: list[dict[str, bool | bool | float | str]] = [
                     {"data_value": True, "data_early": True, "description": "Data=1 setup before clock edge"},
                     {"data_value": False, "data_early": True, "description": "Data=0 setup before clock edge"},
                     {"data_value": True, "data_early": False, "description": "Data=1 change after clock edge"},
@@ -585,14 +585,14 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                     # Educational Model: D flip-flop captures data on clock edge regardless of timing
                     # This is pedagogically correct - students learn edge-triggered behavior without timing complexity
 
-                    # In educational model, D flip-flop captures D input value present at rising clock edge
-                    # Educational behavior: consistent edge-triggered response
-                    if scenario["data_early"]:
-                        # DATA was set before CLK edge, so DFF should capture that DATA value
+                    # In educational model, D flip-flop captures D input value present at rising clock edge.
+                    # Educational behavior: consistent edge-triggered response.
+                    #   - DATA set before CLK edge → DFF captures that DATA value.
+                    #   - CLK edge before DATA change → DFF captures the old DATA value (0).
+                    if scenario["data_early"]:  # noqa: SIM108  (branch comments document pedagogical intent)
                         expected_q = scenario["data_value"]
                     else:
-                        # CLK edge occurred before DATA change, so DFF captures old DATA value (0)
-                        expected_q = False  # DATA was still 0 when CLK edge occurred
+                        expected_q = False
 
                     timing_correct = final_q == expected_q
                     status = "✅" if timing_correct else "📋"
@@ -658,7 +658,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         print("Testing propagation delay effects...")
 
         # Test: Critical Path Timing Analysis
-        critical_path_spec: Dict[str, Any] = {
+        critical_path_spec: dict[str, Any] = {
             "elements": [
                 {"id": 1, "type": "InputButton", "label": "A", "x": 0, "y": 0},
                 {"id": 2, "type": "InputButton", "label": "B", "x": 0, "y": 100},
@@ -694,14 +694,14 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                 print("\nTesting critical path propagation timing...")
 
                 # Test different input combinations and measure propagation
-                test_vectors: List[List[bool]] = [
+                test_vectors: list[list[bool]] = [
                     [True, True, False],  # A=1, B=1, C=0 -> AND1=1, AND2=0 -> OR1=1 -> NOT1=0
                     [False, True, True],  # A=0, B=1, C=1 -> AND1=0, AND2=1 -> OR1=1 -> NOT1=0
                     [False, False, False],  # A=0, B=0, C=0 -> AND1=0, AND2=0 -> OR1=0 -> NOT1=1
                 ]
 
-                propagation_times: List[float] = []
-                logic_correctness: List[bool] = []
+                propagation_times: list[float] = []
+                logic_correctness: list[bool] = []
 
                 for i, (a, b, c) in enumerate(test_vectors):
                     prop_start = time.time()

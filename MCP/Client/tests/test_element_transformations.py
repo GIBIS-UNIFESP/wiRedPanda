@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Element Transformation Tests
 
@@ -13,7 +12,7 @@ Tests for element transformation and configuration commands:
 MCP test implementation
 """
 
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -25,7 +24,7 @@ class ElementTransformationTests(MCPTestBase):
 
     CATEGORY_NAME = "ELEMENT TRANSFORMATION"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_rotate_element,
             self.test_flip_element,

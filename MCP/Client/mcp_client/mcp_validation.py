@@ -6,7 +6,7 @@ This module provides validation methods for MCP (Model Context Protocol)
 testing including response validation, element verification, and assertion helpers.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from beartype import beartype
 
@@ -25,7 +25,7 @@ class MCPValidation:
     """Validation methods: Response validation, element verification, assertion helpers"""
 
     def __init__(
-        self, test_results: TestResults, infrastructure: MCPInfrastructure, organizer: Optional[MCPTestOrganizer] = None
+        self, test_results: TestResults, infrastructure: MCPInfrastructure, organizer: MCPTestOrganizer | None = None
     ) -> None:
         self.test_results = test_results
         self.infrastructure = infrastructure
@@ -46,7 +46,7 @@ class MCPValidation:
 
     @staticmethod
     @beartype
-    async def get_response_result(response: MCPResponse) -> Optional[Dict[str, Any]]:
+    async def get_response_result(response: MCPResponse) -> dict[str, Any] | None:
         """Get the result data from a successful response"""
         return response.result if response.success else None
 
@@ -81,7 +81,7 @@ class MCPValidation:
         return True
 
     @beartype
-    async def validate_element_creation_response(self, response: MCPResponse, test_name: str) -> Optional[int]:
+    async def validate_element_creation_response(self, response: MCPResponse, test_name: str) -> int | None:
         """Validate element creation response and return element_id (or None if validation fails)"""
         if not await self.assert_success(response, test_name):
             return None

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Additional Type Models for MCP Server
 
@@ -7,7 +6,7 @@ Specific type definitions to replace Any types with proper typing.
 These models represent common data structures used throughout the MCP system.
 """
 
-from typing import Annotated, Any, Dict, List, Optional, Protocol, runtime_checkable
+from typing import Annotated, Any, Protocol, runtime_checkable
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -21,7 +20,7 @@ class CircuitElement(BaseModel):
     type: str = Field(description="Element type name")
     x: float = Field(description="X coordinate")
     y: float = Field(description="Y coordinate")
-    label: Optional[str] = Field(default=None, description="Optional element label")
+    label: str | None = Field(default=None, description="Optional element label")
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -35,10 +34,10 @@ class CircuitConnection(BaseModel):
 
     source: int = Field(description="Source element ID")
     target: int = Field(description="Target element ID")
-    source_port: Annotated[Optional[int], Field(ge=0, description="Source port index")] = None
-    source_port_label: Annotated[Optional[str], Field(min_length=1, description="Source port label")] = None
-    target_port: Annotated[Optional[int], Field(ge=0, description="Target port index")] = None
-    target_port_label: Annotated[Optional[str], Field(min_length=1, description="Target port label")] = None
+    source_port: Annotated[int | None, Field(ge=0, description="Source port index")] = None
+    source_port_label: Annotated[str | None, Field(min_length=1, description="Source port label")] = None
+    target_port: Annotated[int | None, Field(ge=0, description="Target port index")] = None
+    target_port_label: Annotated[str | None, Field(min_length=1, description="Target port label")] = None
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -47,7 +46,7 @@ class TimingTestCase(BaseModel):
     """Test case for timing validation"""
 
     operation: str = Field(description="Operation being tested")
-    inputs: List[bool] = Field(description="Input values")
+    inputs: list[bool] = Field(description="Input values")
     delay_ms: Annotated[float, Field(ge=0.0, description="Expected delay in milliseconds")]
     tolerance_ms: Annotated[float, Field(ge=0.0, description="Allowed timing tolerance")]
 
@@ -61,9 +60,9 @@ class ValidationResult(BaseModel):
     """Result of a validation operation"""
 
     valid: bool = Field(description="Whether validation passed")
-    errors: List[str] = Field(default_factory=list, description="Validation error messages")
-    warnings: List[str] = Field(default_factory=list, description="Validation warnings")
-    details: Optional[str] = Field(default=None, description="Additional result details")
+    errors: list[str] = Field(default_factory=list, description="Validation error messages")
+    warnings: list[str] = Field(default_factory=list, description="Validation warnings")
+    details: str | None = Field(default=None, description="Additional result details")
 
     model_config = ConfigDict(extra="forbid")
 
@@ -73,8 +72,8 @@ class SchemaValidationResult(BaseModel):
 
     json_schema_valid: bool = Field(description="JSON schema validation result")
     pydantic_valid: bool = Field(description="Pydantic validation result")
-    errors: List[str] = Field(default_factory=list, description="Validation errors")
-    warnings: List[str] = Field(default_factory=list, description="Validation warnings")
+    errors: list[str] = Field(default_factory=list, description="Validation errors")
+    warnings: list[str] = Field(default_factory=list, description="Validation warnings")
     summary: str = Field(description="Validation summary message")
 
     model_config = ConfigDict(extra="forbid")
@@ -96,7 +95,7 @@ class TestRunnable(Protocol):
 class CommandSender(Protocol):
     """Protocol for objects that can send MCP commands"""
 
-    async def send_command(self, command: str, parameters: Dict[str, Any]) -> Any:
+    async def send_command(self, command: str, parameters: dict[str, Any]) -> Any:
         """Send an MCP command (internally converts to JSON-RPC 2.0 format)"""
 
 

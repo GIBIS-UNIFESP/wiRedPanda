@@ -6,7 +6,7 @@ This module contains the base protocol classes for MCP (Model Context Protocol).
 These classes define the fundamental structure of commands and responses.
 """
 
-from typing import Annotated, Any, Dict, Optional
+from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -26,9 +26,9 @@ class MCPResponse(BaseModel):
     """Base model for all MCP responses (JSON-RPC 2.0 format)"""
 
     jsonrpc: str = Field(default="2.0", description="JSON-RPC version")
-    result: Optional[Dict[str, Any]] = Field(default=None, description="Command result data")
-    error: Optional[Dict[str, Any]] = Field(default=None, description="Error object with code and message")
-    id: Optional[int] = Field(default=None, description="Request ID")
+    result: dict[str, Any] | None = Field(default=None, description="Command result data")
+    error: dict[str, Any] | None = Field(default=None, description="Error object with code and message")
+    id: int | None = Field(default=None, description="Request ID")
 
     model_config = ConfigDict(extra="forbid")
 
@@ -50,7 +50,7 @@ class MCPResponse(BaseModel):
         return self.error is None
 
     @property
-    def message(self) -> Optional[str]:
+    def message(self) -> str | None:
         """Computed message property - extracts message from error object"""
         if self.error:
             return self.error.get("message", "")

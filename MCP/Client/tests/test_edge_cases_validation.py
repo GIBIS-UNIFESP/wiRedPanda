@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Edge Cases and Validation Tests
 
@@ -14,7 +13,7 @@ Tests for edge cases, boundary conditions, and input validation including:
 MCP test implementation
 """
 
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -27,7 +26,7 @@ class EdgeCasesValidationTests(MCPTestBase):
 
     CATEGORY_NAME = "EDGE CASES AND VALIDATION"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_workflow_element_count_validation,
             self.test_edge_cases_extreme_coordinates,

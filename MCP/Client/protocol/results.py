@@ -6,7 +6,7 @@ This module contains result classes for MCP (Model Context Protocol) responses.
 These classes define the structure of data returned by various commands.
 """
 
-from typing import Annotated, Any, List
+from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -24,7 +24,7 @@ class ElementCreationResult(BaseModel):
 class ElementListResult(BaseModel):
     """Result data for element listing"""
 
-    elements: List[CircuitElement] = Field(description="List of elements")
+    elements: list[CircuitElement] = Field(description="List of elements")
 
     model_config = ConfigDict(extra="forbid")
 
@@ -32,7 +32,7 @@ class ElementListResult(BaseModel):
 class ConnectionListResult(BaseModel):
     """Result data for connection listing"""
 
-    connections: List[CircuitConnection] = Field(description="List of connections")
+    connections: list[CircuitConnection] = Field(description="List of connections")
 
     model_config = ConfigDict(extra="forbid")
 
@@ -52,9 +52,9 @@ class TestResults(BaseModel):
     total: Annotated[int, Field(ge=0)]
     passed: Annotated[int, Field(ge=0)]
     failed: Annotated[int, Field(ge=0)]
-    errors: List[str] = Field(default_factory=list, description="List of actual failure error messages")
-    known_issues: List[str] = Field(default_factory=list, description="List of documented limitations")
-    process_issues: List[str] = Field(default_factory=list, description="List of process/stability issues")
+    errors: list[str] = Field(default_factory=list, description="List of actual failure error messages")
+    known_issues: list[str] = Field(default_factory=list, description="List of documented limitations")
+    process_issues: list[str] = Field(default_factory=list, description="List of process/stability issues")
 
     @field_validator("passed", "failed")
     @classmethod

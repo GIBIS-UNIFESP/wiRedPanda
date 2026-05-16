@@ -7,7 +7,7 @@ These classes define the structure and validation rules for all available comman
 """
 
 import math
-from typing import Annotated, Dict, List, Optional
+from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -51,11 +51,11 @@ class CreateElementCommand(MCPCommand):
         type: ElementType = Field(description="Type of element to create")
         x: Annotated[float, Field(ge=-2147483648, le=2147483647, description="X coordinate")]
         y: Annotated[float, Field(ge=-2147483648, le=2147483647, description="Y coordinate")]
-        label: Optional[str] = Field(default=None, description="Element label")
+        label: str | None = Field(default=None, description="Element label")
 
         @field_validator("label")
         @classmethod
-        def validate_label(cls, v: Optional[str]) -> Optional[str]:
+        def validate_label(cls, v: str | None) -> str | None:
             """Validate label contains only printable characters"""
             if v is not None:
                 if not all(c.isprintable() or c.isspace() for c in v):
@@ -97,11 +97,11 @@ class ConnectElementsCommand(MCPCommand):
 
     class Parameters(BaseModel):
         source_id: Annotated[int, Field(gt=0, description="Source element ID")]
-        source_port: Annotated[Optional[int], Field(ge=0, le=63, description="Source output port index")] = None
-        source_port_label: Annotated[Optional[str], Field(min_length=1, description="Source output port label")] = None
+        source_port: Annotated[int | None, Field(ge=0, le=63, description="Source output port index")] = None
+        source_port_label: Annotated[str | None, Field(min_length=1, description="Source output port label")] = None
         target_id: Annotated[int, Field(gt=0, description="Target element ID")]
-        target_port: Annotated[Optional[int], Field(ge=0, le=63, description="Target input port index")] = None
-        target_port_label: Annotated[Optional[str], Field(min_length=1, description="Target input port label")] = None
+        target_port: Annotated[int | None, Field(ge=0, le=63, description="Target input port index")] = None
+        target_port_label: Annotated[str | None, Field(min_length=1, description="Target input port label")] = None
 
         @model_validator(mode="after")
         def validate_ports_and_self_connection(self) -> "ConnectElementsCommand.Parameters":
@@ -220,7 +220,7 @@ class ExportImageCommand(MCPCommand):
     class Parameters(BaseModel):
         filename: Annotated[str, Field(min_length=1)]
         format: ImageExportFormat = Field(description="Export format")
-        padding: Optional[Annotated[int, Field(ge=0, description="Padding in pixels")]] = 20
+        padding: Annotated[int, Field(ge=0, description="Padding in pixels")] | None = 20
 
         model_config = ConfigDict(extra="forbid")
 
@@ -231,13 +231,13 @@ class CreateWaveformCommand(MCPCommand):
     """Model for create_waveform command"""
 
     class Parameters(BaseModel):
-        elements: Optional[List[Annotated[int, Field(gt=0)]]] = Field(
+        elements: list[Annotated[int, Field(gt=0)]] | None = Field(
             default=None, description="Optional list of element IDs to analyze"
         )
-        duration: Optional[Annotated[int, Field(ge=1, le=1024)]] = Field(
+        duration: Annotated[int, Field(ge=1, le=1024)] | None = Field(
             default=64, description="Number of simulation steps"
         )
-        input_patterns: Optional[Dict[str, List[Annotated[int, Field(ge=0, le=1)]]]] = Field(
+        input_patterns: dict[str, list[Annotated[int, Field(ge=0, le=1)]]] | None = Field(
             default=None, description="Input patterns for specific input elements"
         )
 
@@ -263,7 +263,7 @@ class CreateIcCommand(MCPCommand):
 
     class Parameters(BaseModel):
         name: Annotated[str, Field(min_length=1)]
-        description: Optional[str] = Field(default=None, description="Optional IC description")
+        description: str | None = Field(default=None, description="Optional IC description")
 
         model_config = ConfigDict(extra="forbid")
 
@@ -277,9 +277,9 @@ class InstantiateIcCommand(MCPCommand):
         ic_name: Annotated[str, Field(min_length=1)]
         x: Annotated[float, Field(ge=-2147483648, le=2147483647, description="X coordinate")]
         y: Annotated[float, Field(ge=-2147483648, le=2147483647, description="Y coordinate")]
-        label: Optional[str] = Field(default=None, description="Optional instance label")
-        inline: Optional[bool] = Field(default=False, description="Create as embedded IC")
-        blob_name: Optional[str] = Field(default=None, description="Custom blob name for inline mode")
+        label: str | None = Field(default=None, description="Optional instance label")
+        inline: bool | None = Field(default=False, description="Create as embedded IC")
+        blob_name: str | None = Field(default=None, description="Custom blob name for inline mode")
 
         model_config = ConfigDict(extra="forbid")
 
@@ -291,7 +291,7 @@ class EmbedIcCommand(MCPCommand):
 
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]
-        blob_name: Optional[str] = Field(default=None, description="Optional blob name override")
+        blob_name: str | None = Field(default=None, description="Optional blob name override")
 
         model_config = ConfigDict(extra="forbid")
 
@@ -303,8 +303,8 @@ class ExtractIcCommand(MCPCommand):
 
     class Parameters(BaseModel):
         blob_name: Annotated[str, Field(min_length=1)]
-        file_name: Optional[str] = Field(default=None, description="Optional output file path")
-        overwrite: Optional[bool] = Field(default=False, description="Overwrite existing file")
+        file_name: str | None = Field(default=None, description="Optional output file path")
+        overwrite: bool | None = Field(default=False, description="Overwrite existing file")
 
         model_config = ConfigDict(extra="forbid")
 
@@ -335,20 +335,20 @@ class SetElementPropertiesCommand(MCPCommand):
 
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]
-        label: Optional[str] = Field(default=None)
-        color: Optional[str] = Field(default=None)
-        frequency: Optional[Annotated[float, Field(ge=0)]] = None
-        rotation: Optional[float] = Field(default=None)
-        delay: Optional[Annotated[float, Field(ge=0)]] = None
-        trigger: Optional[str] = Field(default=None, description="Keyboard shortcut for input elements")
-        audio: Optional[str] = Field(default=None)
-        locked: Optional[bool] = Field(default=None, description="Lock state for input elements")
-        volume: Optional[float] = Field(default=None, description="Volume for audio elements")
-        appearance: Optional[str] = Field(default=None, description="Appearance path or 'default'")
-        appearance_index: Optional[Annotated[int, Field(ge=0)]] = Field(
+        label: str | None = Field(default=None)
+        color: str | None = Field(default=None)
+        frequency: Annotated[float, Field(ge=0)] | None = None
+        rotation: float | None = Field(default=None)
+        delay: Annotated[float, Field(ge=0)] | None = None
+        trigger: str | None = Field(default=None, description="Keyboard shortcut for input elements")
+        audio: str | None = Field(default=None)
+        locked: bool | None = Field(default=None, description="Lock state for input elements")
+        volume: float | None = Field(default=None, description="Volume for audio elements")
+        appearance: str | None = Field(default=None, description="Appearance path or 'default'")
+        appearance_index: Annotated[int, Field(ge=0)] | None = Field(
             default=None, description="State index for multi-state element appearances"
         )
-        wireless_mode: Optional[Annotated[int, Field(ge=0, le=2)]] = Field(
+        wireless_mode: Annotated[int, Field(ge=0, le=2)] | None = Field(
             default=None, description="Wireless mode: 0=None, 1=Tx, 2=Rx (Node elements only)"
         )
 
@@ -386,10 +386,10 @@ class UpdateElementCommand(MCPCommand):
 
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]
-        label: Optional[str] = Field(default=None)
-        color: Optional[str] = Field(default=None)
-        frequency: Optional[Annotated[float, Field(ge=0)]] = None
-        rotation: Optional[float] = Field(default=None)
+        label: str | None = Field(default=None)
+        color: str | None = Field(default=None)
+        frequency: Annotated[float, Field(ge=0)] | None = None
+        rotation: float | None = Field(default=None)
 
         model_config = ConfigDict(extra="forbid")
 
@@ -436,7 +436,7 @@ class MorphElementCommand(MCPCommand):
     """Model for morph_element command"""
 
     class Parameters(BaseModel):
-        element_ids: List[Annotated[int, Field(gt=0)]] = Field(min_length=1, description="Element IDs to morph")
+        element_ids: list[Annotated[int, Field(gt=0)]] = Field(min_length=1, description="Element IDs to morph")
         target_type: str = Field(min_length=1, description="Target element type")
 
         model_config = ConfigDict(extra="forbid")

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Negative/Error Path Tests
 
@@ -13,7 +12,7 @@ Tests for error handling and invalid parameter rejection:
 MCP test implementation
 """
 
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -25,7 +24,7 @@ class NegativeCaseTests(MCPTestBase):
 
     CATEGORY_NAME = "NEGATIVE CASE"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_rotate_invalid_element,
             self.test_morph_error_cases,

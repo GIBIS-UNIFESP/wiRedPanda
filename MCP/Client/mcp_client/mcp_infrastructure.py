@@ -9,10 +9,11 @@ testing including setup, teardown, communication, and process management.
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 from beartype import beartype
 
@@ -39,13 +40,13 @@ class MCPInfrastructure:
 
     @beartype
     def __init__(self, enable_validation: bool = True, verbose: bool = False, mcp_gui: bool = False) -> None:
-        self.process: Optional[asyncio.subprocess.Process] = None
+        self.process: asyncio.subprocess.Process | None = None
         self.enable_validation = enable_validation
         self.verbose = verbose
         self.mcp_gui = mcp_gui
         self.output = MCPOutput(verbose=verbose)
         self._request_id_counter = 1
-        self._stderr_drain_task: Optional[asyncio.Task] = None
+        self._stderr_drain_task: asyncio.Task | None = None
 
     @beartype
     async def start_mcp(self) -> bool:
@@ -192,11 +193,10 @@ class MCPInfrastructure:
         # Cancel stderr drain task first
         if self._stderr_drain_task:
             self._stderr_drain_task.cancel()
-            try:
+            # Awaiting a cancelled task re-raises CancelledError; suppress because
+            # we triggered the cancel ourselves on the previous line.
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._stderr_drain_task
-            except asyncio.CancelledError:
-                # expected — we just cancelled the task above
-                pass
             self._stderr_drain_task = None
 
         if self.process:
@@ -226,7 +226,7 @@ class MCPInfrastructure:
     async def cleanup_circuit(
         self,
         test_name: str,
-        organizer: Optional[MCPTestOrganizer] = None,
+        organizer: MCPTestOrganizer | None = None,
         keep_temp_files: bool = False,
         _verbose: bool = False,
     ) -> bool:
@@ -308,7 +308,7 @@ class MCPInfrastructure:
 
     # Communication Methods
     @beartype
-    async def send_command(self, command: str, parameters: Dict[str, Any], timeout: float = 10.0) -> MCPResponse:
+    async def send_command(self, command: str, parameters: dict[str, Any], timeout: float = 10.0) -> MCPResponse:
         """Send command with validation and get response"""
         if not self.process or self.process.stdin is None or self.process.stdout is None:
             raise RuntimeError("MCP process not started")
@@ -395,7 +395,7 @@ class MCPInfrastructure:
             return create_error_response(error_msg, request_id)
 
     @beartype
-    async def _read_json_response_with_timeout(self, timeout: float) -> Optional[str]:
+    async def _read_json_response_with_timeout(self, timeout: float) -> str | None:
         """
         Read a JSON response from stdout with timeout.
 

@@ -6,7 +6,7 @@ This module contains domain-specific models for circuit elements,
 connections, specifications, and test data structures.
 """
 
-from typing import Annotated, List, Optional
+from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -21,19 +21,19 @@ class ElementInfo(BaseModel):
     type: ElementType
     x: Annotated[float, Field(ge=-2147483648, le=2147483647)]
     y: Annotated[float, Field(ge=-2147483648, le=2147483647)]
-    label: Optional[str] = None
-    width: Optional[float] = None
-    height: Optional[float] = None
-    input_size: Optional[Annotated[int, Field(ge=0, le=64)]] = None
-    output_size: Optional[Annotated[int, Field(ge=0, le=64)]] = None
-    rotation: Optional[Annotated[float, Field(ge=-360, le=360)]] = None
-    color: Optional[str] = None
-    frequency: Optional[Annotated[float, Field(ge=0)]] = None
-    delay: Optional[Annotated[float, Field(ge=0)]] = None
-    trigger: Optional[str] = None
-    audio: Optional[str] = None
-    volume: Optional[float] = None
-    locked: Optional[bool] = None
+    label: str | None = None
+    width: float | None = None
+    height: float | None = None
+    input_size: Annotated[int, Field(ge=0, le=64)] | None = None
+    output_size: Annotated[int, Field(ge=0, le=64)] | None = None
+    rotation: Annotated[float, Field(ge=-360, le=360)] | None = None
+    color: str | None = None
+    frequency: Annotated[float, Field(ge=0)] | None = None
+    delay: Annotated[float, Field(ge=0)] | None = None
+    trigger: str | None = None
+    audio: str | None = None
+    volume: float | None = None
+    locked: bool | None = None
 
     model_config = ConfigDict(extra="forbid")
 
@@ -42,7 +42,7 @@ class ICInfo(BaseModel):
     """Model for integrated circuit information"""
 
     name: Annotated[str, Field(min_length=1)]
-    description: Optional[str] = None
+    description: str | None = None
     input_count: Annotated[int, Field(ge=0)]
     output_count: Annotated[int, Field(ge=1)]
 
@@ -64,7 +64,7 @@ class ElementSpec(BaseModel):
     type: ElementType
     x: Annotated[float, Field(ge=-2147483648, le=2147483647)]
     y: Annotated[float, Field(ge=-2147483648, le=2147483647)]
-    label: Optional[str] = None
+    label: str | None = None
 
     @field_validator("id")
     @classmethod
@@ -84,10 +84,10 @@ class ConnectionSpec(BaseModel):
 
     source: str
     target: str
-    source_port: Annotated[Optional[int], Field(ge=0, le=63)] = None
-    source_port_label: Annotated[Optional[str], Field(min_length=1)] = None
-    target_port: Annotated[Optional[int], Field(ge=0, le=63)] = None
-    target_port_label: Annotated[Optional[str], Field(min_length=1)] = None
+    source_port: Annotated[int | None, Field(ge=0, le=63)] = None
+    source_port_label: Annotated[str | None, Field(min_length=1)] = None
+    target_port: Annotated[int | None, Field(ge=0, le=63)] = None
+    target_port_label: Annotated[str | None, Field(min_length=1)] = None
 
     @model_validator(mode="after")
     def validate_ports(self) -> "ConnectionSpec":
@@ -101,8 +101,8 @@ class ConnectionSpec(BaseModel):
 class CircuitSpecification(BaseModel):
     """Model for complete circuit specification"""
 
-    elements: List[ElementSpec]
-    connections: List[ConnectionSpec]
+    elements: list[ElementSpec]
+    connections: list[ConnectionSpec]
 
     @model_validator(mode="after")
     def validate_unique_ids(self) -> "CircuitSpecification":
@@ -125,16 +125,16 @@ class CircuitSpecification(BaseModel):
 class TruthTableEntry(BaseModel):
     """Model for truth table entries in testing"""
 
-    inputs: List[Annotated[int, Field(ge=0, le=1)]]
-    outputs: List[Annotated[int, Field(ge=0, le=1)]]
-    description: Optional[str] = None
+    inputs: list[Annotated[int, Field(ge=0, le=1)]]
+    outputs: list[Annotated[int, Field(ge=0, le=1)]]
+    description: str | None = None
 
 
 class StateTableEntry(BaseModel):
     """Model for state table entries in sequential circuit testing"""
 
-    inputs: List[bool]
+    inputs: list[bool]
     clock_edge: Annotated[str, Field(pattern=r"^(rising|falling|level)$")] = "rising"
-    expected_outputs: List[bool]
-    next_state: Optional[str] = None
-    description: Optional[str] = None
+    expected_outputs: list[bool]
+    next_state: str | None = None
+    description: str | None = None

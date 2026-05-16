@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Sequential Logic Tests
 
@@ -12,8 +11,9 @@ Tests for advanced sequential logic functionality including:
 MCP test implementation
 """
 
-import time
-from typing import Any, Awaitable, Callable, Dict, List, Union
+import asyncio
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from beartype import beartype
 
@@ -26,7 +26,7 @@ class SequentialTests(MCPTestBase):
 
     CATEGORY_NAME = "SEQUENTIAL LOGIC"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_multi_clock_dual_domain_systems,
             self.test_multi_clock_gating_control,
@@ -45,7 +45,7 @@ class SequentialTests(MCPTestBase):
         print("Testing multi-clock domain circuits...")
 
         # Test: Dual Clock Domain System
-        dual_clock_spec: Dict[str, Any] = {
+        dual_clock_spec: dict[str, Any] = {
             "elements": [
                 {"id": 1, "type": "InputButton", "label": "CLK1", "x": 0, "y": 0},
                 {"id": 2, "type": "InputButton", "label": "CLK2", "x": 0, "y": 100},
@@ -71,7 +71,7 @@ class SequentialTests(MCPTestBase):
             ],
         }
 
-        element_mapping: Dict[int, int] = await self.create_circuit_from_spec(dual_clock_spec)
+        element_mapping: dict[int, int] = await self.create_circuit_from_spec(dual_clock_spec)
 
         # Early return if dual clock circuit creation failed
         if not element_mapping:
@@ -91,7 +91,7 @@ class SequentialTests(MCPTestBase):
             return all_passed
 
         # Test clock domain crossing
-        clock_domain_states: List[Dict[str, Union[int, bool]]] = []
+        clock_domain_states: list[dict[str, int | bool]] = []
 
         for step in range(20):  # Collect data over multiple clock cycles
             # Set input data patterns
@@ -102,7 +102,7 @@ class SequentialTests(MCPTestBase):
             await self.send_command("set_input_value", {"element_id": element_mapping[6], "value": data2_value})
 
             # Wait for propagation
-            time.sleep(0.05)
+            await asyncio.sleep(0.05)
 
             # Sample all outputs
             q1_resp = await self.send_command("get_output_value", {"element_id": element_mapping[7]})

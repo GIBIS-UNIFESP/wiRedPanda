@@ -1,13 +1,11 @@
 """Shared validation helpers used by both the domain and protocol layers."""
 
-from typing import Optional
-
 
 def require_port_or_label(
-    source_port: Optional[int],
-    source_port_label: Optional[str],
-    target_port: Optional[int],
-    target_port_label: Optional[str],
+    source_port: int | None,
+    source_port_label: str | None,
+    target_port: int | None,
+    target_port_label: str | None,
 ) -> None:
     """Raise ValueError unless each side of a connection has a port index or label."""
     if source_port is None and source_port_label is None:

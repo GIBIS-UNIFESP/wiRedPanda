@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Performance and Timing Tests
 
@@ -14,7 +13,7 @@ MCP test implementation
 """
 
 import time
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -27,7 +26,7 @@ class PerformanceTimingTests(MCPTestBase):
 
     CATEGORY_NAME = "PERFORMANCE AND TIMING"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_performance_new_circuit_timing,
             self.test_performance_element_creation_timing,
@@ -71,7 +70,7 @@ class PerformanceTimingTests(MCPTestBase):
         all_passed: bool = True
 
         # Setup# Test element creation timing
-        element_times: List[float] = []
+        element_times: list[float] = []
         for i in range(5):
             start_time = time.time()
             resp = await self.send_command(
@@ -183,7 +182,7 @@ class PerformanceTimingTests(MCPTestBase):
                 all_passed = False
 
         # Test rapid fire commands (stress test)
-        rapid_fire_times: List[float] = []
+        rapid_fire_times: list[float] = []
         for i in range(10):
             start_time = time.time()
             resp = await self.send_command("list_elements", {})
