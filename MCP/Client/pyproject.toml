@@ -1,0 +1,46 @@
+# Python tooling configuration for MCP/Client/.
+# Ruff's config still lives in ruff.toml.
+
+[tool.deptry]
+# Override deptry's default exclude (which silently skips tests/) so checks
+# against test files (where psutil is imported, for example) work correctly.
+exclude = ["venv", "\\.venv", "\\.direnv", "\\.git", "setup\\.py"]
+
+[tool.deptry.per_rule_ignores]
+# DEP002: declared in requirements.txt but never `import`ed. Each of these is
+# either a dev CLI tool (no source `import` ever), or a typing-stub package
+# consumed implicitly by mypy / pyright at type-check time.
+DEP002 = [
+    # Dev tooling — run from the venv shell, not imported
+    "ruff",
+    "pylint",
+    "mypy",
+    "pyright",
+    "pyrefly",
+    "vulture",
+    "deptry",
+    "import-linter",
+    # Type stubs — picked up implicitly by the type checkers, no import sites
+    "types-jsonschema",
+    "types-psutil",
+]
+
+[tool.importlinter]
+# import-linter (grimp) requires every root to be a real Python package
+# (a directory with __init__.py). Our flat-layout `mcp_*.py` modules don't
+# qualify, so we can only enforce contracts against the three real packages.
+# Cross-cutting "no top-level module imports from tests/" is enforced via the
+# grep check in CI / the pre-commit script — not here.
+root_packages = ["domain", "protocol", "tests"]
+
+[[tool.importlinter.contracts]]
+name = "domain and protocol must not import from tests/"
+type = "forbidden"
+source_modules = ["domain", "protocol"]
+forbidden_modules = ["tests"]
+
+[[tool.importlinter.contracts]]
+name = "domain must not depend on protocol (one-way layering)"
+type = "forbidden"
+source_modules = ["domain"]
+forbidden_modules = ["protocol"]

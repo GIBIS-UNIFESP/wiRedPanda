@@ -183,3 +183,4 @@ slow-unit-*
 # MCP (Model Context Protocol)
 MCP/Client/temp/
 MCP/Client/.venv/
+MCP/temp/

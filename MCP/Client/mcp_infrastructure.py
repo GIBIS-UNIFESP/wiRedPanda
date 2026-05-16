@@ -47,7 +47,7 @@ class MCPInfrastructure:
     async def start_mcp(self) -> bool:
         """Start MCP process"""
         # Try to get executable from config first, then fallback to manual search
-        from tests.test_config import config
+        from mcp_test_config import config
 
         executable_path = None
 
@@ -233,7 +233,7 @@ class MCPInfrastructure:
         # Handle circuit saving/cleanup based on keep_temp_files setting
         if keep_temp_files:
             # Save current circuit to test_circuits folder before closing
-            from tests.test_config import get_temp_files_dir
+            from mcp_test_config import get_temp_files_dir
 
             temp_dir = get_temp_files_dir()
             circuit_filename = os.path.join(temp_dir, f"{test_name}_circuit.panda")

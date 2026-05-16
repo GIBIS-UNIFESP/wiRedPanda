@@ -31,7 +31,7 @@ Test Categories:
 - test_integration_workflows: End-to-end workflow tests
 
 Utility Modules:
-- test_config: Test configuration and paths
+- mcp_test_config: Test configuration and paths (top-level, not under tests/)
 - test_results: Test result data structures
 - mcp_test_fixtures: Test fixtures and data
 - mcp_test_helpers: Helper functions for testing
@@ -43,13 +43,13 @@ from mcp_circuit_builder import MCPCircuitBuilder
 from mcp_infrastructure import MCPInfrastructure
 from mcp_organizer import MCPTestOrganizer
 from mcp_runner import MCPTestRunner
+
+# Configuration and utilities
+from mcp_test_config import config, get_test_images_dir
 from mcp_validation import MCPValidation
 
 from .mcp_test_base import MCPTestBase
 from .mcp_test_orchestrator import MCPTestOrchestrator
-
-# Configuration and utilities
-from .test_config import config, get_test_images_dir
 
 # Make commonly used classes available at package level
 __all__ = [

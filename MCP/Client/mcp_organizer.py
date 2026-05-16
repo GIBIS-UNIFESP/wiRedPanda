@@ -58,7 +58,7 @@ class MCPTestOrganizer:
 
         try:
             # Use centralized configuration for image directory
-            from tests.test_config import get_test_images_dir
+            from mcp_test_config import get_test_images_dir
 
             images_dir = get_test_images_dir()
 
@@ -98,7 +98,7 @@ class MCPTestOrganizer:
 
         try:
             # Get temp files directory
-            from tests.test_config import get_temp_files_dir
+            from mcp_test_config import get_temp_files_dir
 
             temp_dir = get_temp_files_dir()
 

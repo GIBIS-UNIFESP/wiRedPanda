@@ -5,6 +5,8 @@ mypy>=1.5.0              # Static type checker
 pyright>=1.1.300         # Microsoft's Python type checker
 pyrefly>=0.30.0          # Python refactoring tool
 vulture>=2.9.1           # Dead code finder
+deptry>=0.23.0           # Detect unused / missing / transitive dependencies
+import-linter>=2.0       # Enforce architectural layering (no domain → protocol, etc.)
 
 # Type checking and validation
 beartype>=0.15.0         # Runtime type checking
