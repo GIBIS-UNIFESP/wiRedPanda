@@ -2488,7 +2488,7 @@ Vorgeschlagener Name:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="423"/>
+        <location filename="../../Main.cpp" line="428"/>
         <source>Error!</source>
         <translation>Fehler!</translation>
     </message>
@@ -2976,67 +2976,67 @@ Eine Sicherungskopie der Originaldatei wurde erstellt unter dem Namen: %3</trans
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="280"/>
+        <location filename="../../Main.cpp" line="285"/>
         <source>Circuit file to open.</source>
         <translation>Schaltkreisdatei zum Öffnen.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="284"/>
+        <location filename="../../Main.cpp" line="289"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Detailgrad 0 bis 5, standardmäßig deaktiviert.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="285"/>
+        <location filename="../../Main.cpp" line="290"/>
         <source>verbosity level</source>
         <translation>Detailgrad</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="290"/>
+        <location filename="../../Main.cpp" line="295"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Exportiert Schaltkreis zu &lt;Arduino-Datei&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Exportiert Schaltkreis zu Signalverlauf-Textdatei, liest Eingabe vom Terminal.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="307"/>
+        <location filename="../../Main.cpp" line="312"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Bei Verwendung mit -c/--terminal, blockiert Ausführung wenn der Schaltkreis Wahrheitstabellen enthält.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="313"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Im MCP-Modus (Model Context Protocol) für programmgesteuerte Steuerung starten.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="318"/>
+        <location filename="../../Main.cpp" line="323"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>MCP-Modus mit sichtbarem GUI-Fenster starten.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="383"/>
+        <location filename="../../Main.cpp" line="388"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Fehler: Schaltkreis enthält Wahrheitstabellen-Elemente.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="428"/>
+        <location filename="../../Main.cpp" line="433"/>
         <source>Error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="291"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>arduino file</source>
         <translation>Arduino-Datei</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="301"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Exportiert Schaltkreis zu Signalverlauf-Textdatei.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="297"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>waveform input text file</source>
         <translation>Signalverlauf-Eingabe-Textdatei</translation>
     </message>
