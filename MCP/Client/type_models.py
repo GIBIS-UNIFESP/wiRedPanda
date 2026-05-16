@@ -89,6 +89,7 @@ class TestRunnable(Protocol):
 
     async def run_test_method(self, test_method: Any) -> bool:
         """Run a single test method"""
+        ...
 
 
 @runtime_checkable
