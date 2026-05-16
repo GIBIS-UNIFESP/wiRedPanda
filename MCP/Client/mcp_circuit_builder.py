@@ -7,7 +7,7 @@ testing including circuit construction and validation helpers.
 """
 
 import asyncio
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from beartype import beartype
 
@@ -115,7 +115,6 @@ class MCPCircuitBuilder:
     ) -> bool:
         """Validate sequential circuit state table behavior with clock transitions"""
         all_passed: bool = True
-        _current_state: Optional[Any] = None
 
         print(f"\n--- {test_name} State Table Validation ---")
 
