@@ -28,7 +28,8 @@ QJsonObject ConnectionHandler::handleCommand(const QString &command, const QJson
     } else if (command == "split_connection") {
         return handleSplitConnection(params, requestId);
     } else {
-        return createErrorResponse(QString("Unknown connection command: %1").arg(command), requestId);
+        return createErrorResponse(QString("Unknown connection command: %1").arg(command),
+                                   requestId, JsonRpcError::MethodNotFound);
     }
 }
 
@@ -37,39 +38,39 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
     // Required: source_id, target_id
     // For ports: either use index (source_port, target_port) or label (source_port_label, target_port_label)
     if (!validateParameters(params, {"source_id", "target_id"})) {
-        return createErrorResponse("Missing required parameters: source_id, target_id", requestId);
+        return createErrorResponse("Missing required parameters: source_id, target_id", requestId, JsonRpcError::InvalidParams);
     }
 
     QString errorMsg;
     auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
     if (!sourceElement) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
     auto *targetElement = getValidatedElement(params, "target_id", errorMsg);
     if (!targetElement) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
     int sourcePort = -1;
     if (!resolvePort(params, "source", sourceElement, true, sourcePort, errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::PortNotFound);
     }
 
     int targetPort = -1;
     if (!resolvePort(params, "target", targetElement, false, targetPort, errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::PortNotFound);
     }
 
     QNEPort *outputPort = sourceElement->outputPort(sourcePort);
     QNEPort *inputPort = targetElement->inputPort(targetPort);
 
     if (!outputPort || !inputPort) {
-        return createErrorResponse("Invalid port specification", requestId);
+        return createErrorResponse("Invalid port specification", requestId, JsonRpcError::PortNotFound);
     }
 
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     auto *connection = new QNEConnection();
@@ -81,10 +82,12 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
         scene->receiveCommand(new AddItemsCommand({connection}, scene));
     } catch (const std::exception &e) {
         delete connection;
-        return createErrorResponse(QString("Failed to connect elements: %1").arg(e.what()), requestId);
+        return createErrorResponse(QString("Failed to connect elements: %1").arg(e.what()),
+                                   requestId, JsonRpcError::ConnectionFailed);
     } catch (...) {
         delete connection;
-        return createErrorResponse("Failed to connect elements: Unknown exception", requestId);
+        return createErrorResponse("Failed to connect elements: Unknown exception",
+                                   requestId, JsonRpcError::ConnectionFailed);
     }
 
     return createSuccessResponse(QJsonObject(), requestId);
@@ -93,22 +96,22 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
 QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"source_id", "target_id"})) {
-        return createErrorResponse("Missing required parameters: source_id, target_id", requestId);
+        return createErrorResponse("Missing required parameters: source_id, target_id", requestId, JsonRpcError::InvalidParams);
     }
 
     QString errorMsg;
     auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
     if (!sourceElement) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
     auto *targetElement = getValidatedElement(params, "target_id", errorMsg);
     if (!targetElement) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     const auto connections = scene->items();
@@ -137,14 +140,15 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
         }
     }
 
-    return createErrorResponse(QString("No connection found between elements %1 and %2").arg(sourceElement->id()).arg(targetElement->id()), requestId);
+    return createErrorResponse(QString("No connection found between elements %1 and %2").arg(sourceElement->id()).arg(targetElement->id()),
+                               requestId, JsonRpcError::ConnectionFailed);
 }
 
 QJsonObject ConnectionHandler::handleListConnections(const QJsonObject &, const QJsonValue &requestId)
 {
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     QJsonArray connections;
@@ -188,22 +192,23 @@ QJsonObject ConnectionHandler::handleListConnections(const QJsonObject &, const 
 QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"source_id", "source_port", "target_id", "target_port", "x", "y"})) {
-        return createErrorResponse("Missing required parameters: source_id, source_port, target_id, target_port, x, y", requestId);
+        return createErrorResponse("Missing required parameters: source_id, source_port, target_id, target_port, x, y",
+                                   requestId, JsonRpcError::InvalidParams);
     }
 
     QString errorMsg;
 
     if (!validateNonNegativeInteger(params.value("source_port"), "source_port", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
     if (!validateNonNegativeInteger(params.value("target_port"), "target_port", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
     if (!validateNumeric(params.value("x"), "x", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
     if (!validateNumeric(params.value("y"), "y", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
     const int sourcePort = params.value("source_port").toInt();
@@ -213,16 +218,16 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
 
     auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
     if (!sourceElement) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
     auto *targetElement = getValidatedElement(params, "target_id", errorMsg);
     if (!targetElement) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     // Find the connection between source and target
@@ -256,7 +261,8 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
     }
 
     if (!connectionToSplit) {
-        return createErrorResponse("Connection not found between specified source and target", requestId);
+        return createErrorResponse("Connection not found between specified source and target",
+                                   requestId, JsonRpcError::ConnectionFailed);
     }
 
     return tryCommand([&] {

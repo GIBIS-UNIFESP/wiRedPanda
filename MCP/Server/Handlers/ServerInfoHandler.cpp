@@ -15,7 +15,8 @@ QJsonObject ServerInfoHandler::handleCommand(const QString &command, const QJson
     if (command == "get_server_info") {
         return handleGetServerInfo(params, requestId);
     } else {
-        return createErrorResponse(QString("Unknown server info command: %1").arg(command), requestId);
+        return createErrorResponse(QString("Unknown server info command: %1").arg(command),
+                                   requestId, JsonRpcError::MethodNotFound);
     }
 }
 

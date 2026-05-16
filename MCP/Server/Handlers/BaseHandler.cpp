@@ -31,13 +31,13 @@ QJsonObject BaseHandler::createSuccessResponse(const QJsonObject &result, const 
     return response;
 }
 
-QJsonObject BaseHandler::createErrorResponse(const QString &error, const QJsonValue &requestId)
+QJsonObject BaseHandler::createErrorResponse(const QString &error, const QJsonValue &requestId, int code)
 {
     QJsonObject response;
     response["jsonrpc"] = "2.0";
 
     QJsonObject errorObject;
-    errorObject["code"] = -32603; // Internal error
+    errorObject["code"] = code;
     errorObject["message"] = error;
     response["error"] = errorObject;
 

@@ -39,25 +39,26 @@ QJsonObject FileHandler::handleCommand(const QString &command, const QJsonObject
     } else if (command == "export_systemverilog") {
         return handleExportSystemVerilog(params, requestId);
     } else {
-        return createErrorResponse(QString("Unknown file command: %1").arg(command), requestId);
+        return createErrorResponse(QString("Unknown file command: %1").arg(command),
+                                   requestId, JsonRpcError::MethodNotFound);
     }
 }
 
 QJsonObject FileHandler::handleLoadCircuit(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"filename"})) {
-        return createErrorResponse("Missing required parameter: filename", requestId);
+        return createErrorResponse("Missing required parameter: filename", requestId, JsonRpcError::InvalidParams);
     }
 
     QString errorMsg;
     if (!validateNonEmptyString(params.value("filename"), "filename", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
     QString filename = params.value("filename").toString();
 
     if (!m_mainWindow) {
-        return createErrorResponse("No main window available", requestId);
+        return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&] {
@@ -69,22 +70,22 @@ QJsonObject FileHandler::handleLoadCircuit(const QJsonObject &params, const QJso
 QJsonObject FileHandler::handleSaveCircuit(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"filename"})) {
-        return createErrorResponse("Missing required parameter: filename", requestId);
+        return createErrorResponse("Missing required parameter: filename", requestId, JsonRpcError::InvalidParams);
     }
 
     QString errorMsg;
     if (!validateNonEmptyString(params.value("filename"), "filename", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
     QString filename = params.value("filename").toString();
 
     if (!filename.endsWith(".panda", Qt::CaseInsensitive)) {
-        return createErrorResponse("Invalid file extension. Use .panda for circuit files", requestId);
+        return createErrorResponse("Invalid file extension. Use .panda for circuit files", requestId, JsonRpcError::ValidationError);
     }
 
     if (!m_mainWindow) {
-        return createErrorResponse("No main window available", requestId);
+        return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&] {
@@ -96,7 +97,7 @@ QJsonObject FileHandler::handleSaveCircuit(const QJsonObject &params, const QJso
 QJsonObject FileHandler::handleNewCircuit(const QJsonObject &, const QJsonValue &requestId)
 {
     if (!m_mainWindow) {
-        return createErrorResponse("No main window available", requestId);
+        return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&]() -> QJsonObject {
@@ -114,17 +115,17 @@ QJsonObject FileHandler::handleNewCircuit(const QJsonObject &, const QJsonValue 
 QJsonObject FileHandler::handleCloseCircuit(const QJsonObject &, const QJsonValue &requestId)
 {
     if (!m_mainWindow) {
-        return createErrorResponse("No main window available", requestId);
+        return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&]() -> QJsonObject {
         QTabWidget *tabWidget = m_mainWindow->findChild<QTabWidget *>("tab");
         if (!tabWidget) {
-            return createErrorResponse("Tab widget not found", requestId);
+            return createErrorResponse("Tab widget not found", requestId, JsonRpcError::InternalError);
         }
 
         if (tabWidget->count() == 0) {
-            return createErrorResponse("No tabs to close", requestId);
+            return createErrorResponse("No tabs to close", requestId, JsonRpcError::OperationFailed);
         }
 
         Scene *scene = getCurrentScene();
@@ -147,13 +148,13 @@ QJsonObject FileHandler::handleCloseCircuit(const QJsonObject &, const QJsonValu
 QJsonObject FileHandler::handleGetTabCount(const QJsonObject &, const QJsonValue &requestId)
 {
     if (!m_mainWindow) {
-        return createErrorResponse("No main window available", requestId);
+        return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&]() -> QJsonObject {
         QTabWidget *tabWidget = m_mainWindow->findChild<QTabWidget *>("tab");
         if (!tabWidget) {
-            return createErrorResponse("Tab widget not found", requestId);
+            return createErrorResponse("Tab widget not found", requestId, JsonRpcError::InternalError);
         }
 
         QJsonObject result;
@@ -166,16 +167,16 @@ QJsonObject FileHandler::handleGetTabCount(const QJsonObject &, const QJsonValue
 QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"filename", "format"})) {
-        return createErrorResponse("Missing required parameters: filename, format", requestId);
+        return createErrorResponse("Missing required parameters: filename, format", requestId, JsonRpcError::InvalidParams);
     }
 
     QString errorMsg;
     if (!validateNonEmptyString(params.value("filename"), "filename", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
     if (!validateNonEmptyString(params.value("format"), "format", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
     QString filename = params.value("filename").toString();
@@ -184,17 +185,17 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
 
     Scene *scene = getCurrentScene();
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     if (format != "png" && format != "svg" && format != "pdf") {
-        return createErrorResponse("Unsupported format. Use 'png', 'svg', or 'pdf'", requestId);
+        return createErrorResponse("Unsupported format. Use 'png', 'svg', or 'pdf'", requestId, JsonRpcError::ValidationError);
     }
 
     return tryCommand([&]() -> QJsonObject {
         QRectF sceneRect = scene->itemsBoundingRect();
         if (sceneRect.isEmpty()) {
-            return createErrorResponse("Scene is empty - nothing to export", requestId);
+            return createErrorResponse("Scene is empty - nothing to export", requestId, JsonRpcError::OperationFailed);
         }
 
         sceneRect.adjust(-padding, -padding, padding, padding);
@@ -221,10 +222,10 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
 
             if (format == "png") {
                 if (!pixmap.save(filename, "PNG")) {
-                    return createErrorResponse("Failed to save PNG file", requestId);
+                    return createErrorResponse("Failed to save PNG file", requestId, JsonRpcError::FileError);
                 }
             } else if (format == "pdf") {
-                return createErrorResponse("PDF export not yet implemented - use PNG or SVG", requestId);
+                return createErrorResponse("PDF export not yet implemented - use PNG or SVG", requestId, JsonRpcError::InternalError);
             }
         }
 
@@ -240,18 +241,18 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
 QJsonObject FileHandler::handleExportArduino(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"filename"})) {
-        return createErrorResponse("Missing required parameter: filename", requestId);
+        return createErrorResponse("Missing required parameter: filename", requestId, JsonRpcError::InvalidParams);
     }
 
     QString errorMsg;
     if (!validateNonEmptyString(params.value("filename"), "filename", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
     QString filename = params.value("filename").toString();
 
     if (!m_mainWindow) {
-        return createErrorResponse("No main window available", requestId);
+        return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&]() -> QJsonObject {
@@ -268,18 +269,18 @@ QJsonObject FileHandler::handleExportArduino(const QJsonObject &params, const QJ
 QJsonObject FileHandler::handleExportSystemVerilog(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"filename"})) {
-        return createErrorResponse("Missing required parameter: filename", requestId);
+        return createErrorResponse("Missing required parameter: filename", requestId, JsonRpcError::InvalidParams);
     }
 
     QString errorMsg;
     if (!validateNonEmptyString(params.value("filename"), "filename", errorMsg)) {
-        return createErrorResponse(errorMsg, requestId);
+        return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
     QString filename = params.value("filename").toString();
 
     if (!m_mainWindow) {
-        return createErrorResponse("No main window available", requestId);
+        return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
     return tryCommand([&]() -> QJsonObject {

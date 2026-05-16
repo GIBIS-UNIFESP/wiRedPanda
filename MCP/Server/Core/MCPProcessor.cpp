@@ -13,6 +13,7 @@
 #include <QJsonDocument>
 
 #include "App/UI/MainWindow.h"
+#include "MCP/Server/Core/JsonRpcError.h"
 #include "MCP/Server/Core/MCPValidator.h"
 #include "MCP/Server/Handlers/BaseHandler.h"
 #include "MCP/Server/Handlers/ConnectionHandler.h"
@@ -138,7 +139,8 @@ void MCPProcessor::processCommand(const QString &line)
     QJsonDocument doc = QJsonDocument::fromJson(line.toUtf8(), &parseError);
 
     if (parseError.error != QJsonParseError::NoError) {
-        sendResponse(m_serverInfoHandler->createErrorResponse(QString("Invalid JSON: %1").arg(parseError.errorString())));
+        sendResponse(m_serverInfoHandler->createErrorResponse(QString("Invalid JSON: %1").arg(parseError.errorString()),
+                                                              QJsonValue(), JsonRpcError::ParseError));
         return;
     }
 
@@ -150,7 +152,8 @@ void MCPProcessor::processCommand(const QString &line)
     // JSON-RPC 2.0 format validation
     QString jsonrpc = request.value("jsonrpc").toString();
     if (jsonrpc != "2.0") {
-        sendResponse(m_serverInfoHandler->createErrorResponse("Invalid or missing jsonrpc version", requestId));
+        sendResponse(m_serverInfoHandler->createErrorResponse("Invalid or missing jsonrpc version",
+                                                              requestId, JsonRpcError::InvalidRequest));
         return;
     }
 
@@ -164,7 +167,8 @@ void MCPProcessor::processCommand(const QString &line)
                 detailedError += QString(" (at path: %1)").arg(validationResult.errorPath);
             }
 
-            sendResponse(m_serverInfoHandler->createErrorResponse(QString("Schema validation failed: %1").arg(detailedError), requestId));
+            sendResponse(m_serverInfoHandler->createErrorResponse(QString("Schema validation failed: %1").arg(detailedError),
+                                                                  requestId, JsonRpcError::InvalidParams));
             return;
         }
     }
@@ -179,12 +183,15 @@ void MCPProcessor::processCommand(const QString &line)
         if (auto *handler = m_dispatchMap.value(method)) {
             response = handler->handleCommand(method, params, requestId);
         } else {
-            response = m_serverInfoHandler->createErrorResponse(QString("Unknown method: %1").arg(method), requestId);
+            response = m_serverInfoHandler->createErrorResponse(QString("Unknown method: %1").arg(method),
+                                                                requestId, JsonRpcError::MethodNotFound);
         }
     } catch (const std::exception &e) {
-        response = m_serverInfoHandler->createErrorResponse(QString("Internal error: %1").arg(e.what()), requestId);
+        response = m_serverInfoHandler->createErrorResponse(QString("Internal error: %1").arg(e.what()),
+                                                            requestId, JsonRpcError::InternalError);
     } catch (...) {
-        response = m_serverInfoHandler->createErrorResponse("Internal error: unknown exception", requestId);
+        response = m_serverInfoHandler->createErrorResponse("Internal error: unknown exception",
+                                                            requestId, JsonRpcError::InternalError);
     }
 
     // Validate and send response
@@ -195,7 +202,8 @@ void MCPProcessor::processCommand(const QString &line)
             if (!validationResult.errorPath.isEmpty()) {
                 detailedError += QString(" (at path: %1)").arg(validationResult.errorPath);
             }
-            QJsonObject errorResponse = m_serverInfoHandler->createErrorResponse(QString("Internal validation error: %1").arg(detailedError), requestId);
+            QJsonObject errorResponse = m_serverInfoHandler->createErrorResponse(QString("Internal validation error: %1").arg(detailedError),
+                                                                                  requestId, JsonRpcError::InternalError);
             sendResponse(errorResponse);
             return;
         }

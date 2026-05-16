@@ -6,6 +6,8 @@
 #include <QJsonObject>
 #include <QString>
 
+#include "MCP/Server/Core/JsonRpcError.h"
+
 class MainWindow;
 class MCPValidator;
 class Scene;
@@ -28,7 +30,9 @@ public:
     virtual QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) = 0;
 
     // Public utility methods available to all classes
-    QJsonObject createErrorResponse(const QString &error, const QJsonValue &requestId = QJsonValue());
+    QJsonObject createErrorResponse(const QString &error,
+                                    const QJsonValue &requestId = QJsonValue(),
+                                    int code = JsonRpcError::InternalError);
     QJsonObject createSuccessResponse(const QJsonObject &result = {}, const QJsonValue &requestId = QJsonValue());
     Scene *getCurrentScene();
     bool validateElementId(int elementId, const QString &paramName, QString &errorMsg);
@@ -51,9 +55,11 @@ public:
         try {
             return std::forward<Fn>(fn)();
         } catch (const std::exception &e) {
-            return createErrorResponse(QString("Failed to %1: %2").arg(action, e.what()), requestId);
+            return createErrorResponse(QString("Failed to %1: %2").arg(action, e.what()),
+                                       requestId, JsonRpcError::OperationFailed);
         } catch (...) {
-            return createErrorResponse(QString("Failed to %1: Unknown exception").arg(action), requestId);
+            return createErrorResponse(QString("Failed to %1: Unknown exception").arg(action),
+                                       requestId, JsonRpcError::OperationFailed);
         }
     }
 
