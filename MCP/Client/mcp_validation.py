@@ -44,8 +44,9 @@ class MCPValidation:
         self.infrastructure.output.success(f"✅ {test_name}")
         return True
 
+    @staticmethod
     @beartype
-    async def get_response_result(self, response: MCPResponse) -> Optional[Dict[str, Any]]:
+    async def get_response_result(response: MCPResponse) -> Optional[Dict[str, Any]]:
         """Get the result data from a successful response"""
         return response.result if response.success else None
 
