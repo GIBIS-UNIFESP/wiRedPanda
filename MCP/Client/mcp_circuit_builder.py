@@ -59,11 +59,15 @@ class MCPCircuitBuilder:
 
                 if not has_source_port:
                     raise ValueError(
-                        f"Connection {conn_spec['source']} -> {conn_spec['target']} missing required source port specification (provide 'source_port' or 'source_port_label')"
+                        f"Connection {conn_spec['source']} -> {conn_spec['target']} "
+                        "missing required source port specification "
+                        "(provide 'source_port' or 'source_port_label')"
                     )
                 if not has_target_port:
                     raise ValueError(
-                        f"Connection {conn_spec['source']} -> {conn_spec['target']} missing required target port specification (provide 'target_port' or 'target_port_label')"
+                        f"Connection {conn_spec['source']} -> {conn_spec['target']} "
+                        "missing required target port specification "
+                        "(provide 'target_port' or 'target_port_label')"
                     )
 
                 # Build params with only provided fields
