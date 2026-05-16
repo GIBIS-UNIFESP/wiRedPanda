@@ -146,9 +146,8 @@ class MCPCircuitBuilder:
                 )
                 await asyncio.sleep(0.1)
 
-            # Enhanced propagation for sequential circuits using quadruple update
-            # Use new MCP update action for proper sequential element propagation
-            # Exactly matches BewavedDolphin quadruple update hack (hardcoded 4 cycles)
+            # Drive one propagation cycle after the clock edge so combinational
+            # logic downstream of the flip-flop settles before we sample outputs.
             await self.infrastructure.send_command("simulation_control", {"action": "update"})
 
             transition_passed = await self._check_output_values(outputs, expected_outputs, f"Transition {i}")

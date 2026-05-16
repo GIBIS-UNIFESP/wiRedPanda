@@ -78,7 +78,6 @@ class MCPTestOrganizer:
                 print(f"   📸 Circuit image exported: {filename}")
             else:
                 print(f"   ⚠️  Image export failed: {resp.error if resp else 'No response'}")
-                # Still create a placeholder for debugging
                 print(f"   🔍 Debug: Attempted to export {safe_test_name}")
 
         except Exception as e:
