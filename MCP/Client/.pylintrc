@@ -11,6 +11,16 @@ generated-members = pydantic.*
 # List of decorators that produce context managers
 contextmanager-decorators = contextlib.contextmanager
 
+# Skip attribute checks on stdlib `subprocess`: astroid on Python 3.12
+# mis-resolves the type annotation `asyncio.subprocess.Process` to
+# `subprocess.Process` (which doesn't exist), producing a spurious
+# no-member error on every annotation site. The annotation itself is
+# correct — asyncio.subprocess legitimately exports Process — only the
+# inference path is wrong. The codebase never imports stdlib subprocess
+# directly (asyncio.subprocess only), so ignoring the module costs us
+# nothing real.
+ignored-modules = subprocess
+
 [BASIC]
 # Don't require docstrings on:
 #   ^_          — private (pylint default)

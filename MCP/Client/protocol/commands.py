@@ -108,9 +108,7 @@ class ConnectElementsCommand(MCPCommand):
             """Ensure valid port specification and no self-connection"""
             if self.source_id == self.target_id:
                 raise ValueError("Element cannot connect to itself")
-            require_port_or_label(
-                self.source_port, self.source_port_label, self.target_port, self.target_port_label
-            )
+            require_port_or_label(self.source_port, self.source_port_label, self.target_port, self.target_port_label)
             return self
 
         model_config = ConfigDict(extra="forbid")
