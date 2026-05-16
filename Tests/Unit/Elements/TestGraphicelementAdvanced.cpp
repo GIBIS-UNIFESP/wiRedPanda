@@ -345,4 +345,3 @@ void TestGraphicelementAdvanced::testElementPositionPersistence()
     elem->setRotation(90);
     QCOMPARE(elem->pos(), pos);
 }
-

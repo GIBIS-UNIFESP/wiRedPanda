@@ -494,4 +494,3 @@ void TestLevel6Register8Bit::test8BitRegisterStructure() {
     QCOMPARE(f.ic->inputSize(), 11);
     QCOMPARE(f.ic->outputSize(), 8);
 }
-

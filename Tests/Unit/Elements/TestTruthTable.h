@@ -32,4 +32,3 @@ private slots:
     void testLoadKeyVersion42();
     void testLoadKeyOldVersion();
 };
-

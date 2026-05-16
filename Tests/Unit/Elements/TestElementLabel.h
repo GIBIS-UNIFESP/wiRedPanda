@@ -34,4 +34,3 @@ private slots:
     void testMimeDataContent();
     void testMimeDataWithIC();
 };
-

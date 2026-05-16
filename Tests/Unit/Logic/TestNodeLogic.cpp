@@ -79,4 +79,3 @@ void TestNodeLogic::testNodeFanOut()
     QCOMPARE(and1.outputValue(), Status::Inactive);
     QCOMPARE(and2.outputValue(), Status::Inactive);
 }
-

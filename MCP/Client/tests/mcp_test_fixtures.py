@@ -382,5 +382,3 @@ def create_not_chain_circuit(chain_length: int) -> Dict[str, Any]:
     )
 
     return {"elements": elements, "connections": connections}
-
-

@@ -189,4 +189,3 @@ void GraphicsView::resetZoom()
     sentryBreadcrumb("ui", QStringLiteral("Zoom reset"));
     emit zoomChanged();
 }
-

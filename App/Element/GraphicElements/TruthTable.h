@@ -68,4 +68,3 @@ private:
 
     QBitArray m_key;
 };
-

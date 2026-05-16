@@ -127,4 +127,3 @@ void TestLevel2MUX4To1::testMultiplexer4to1()
         QCOMPARE(actualOutput, expectedInput);
     }
 }
-

@@ -251,4 +251,3 @@ QJsonObject MCPValidator::nlohmannToQJson(const json &nlohmannJson)
     QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString));
     return doc.object();
 }
-

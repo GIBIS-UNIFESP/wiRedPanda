@@ -20,4 +20,3 @@ public:
     // Required implementation of pure virtual method (unused for utilities)
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
 };
-

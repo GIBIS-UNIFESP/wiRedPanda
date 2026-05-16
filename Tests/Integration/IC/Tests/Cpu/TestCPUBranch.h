@@ -17,4 +17,3 @@ private slots:
     void testBranchIntegration();
     void testBranchIntegration_data();
 };
-

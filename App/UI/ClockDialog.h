@@ -43,4 +43,3 @@ private:
 
     std::unique_ptr<ClockDialogUi> m_ui;
 };
-

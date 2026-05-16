@@ -213,4 +213,3 @@ QList<QPair<int, QString>> Clock::appearanceStates() const
 {
     return {{0, tr("Low")}, {1, tr("High")}};
 }
-

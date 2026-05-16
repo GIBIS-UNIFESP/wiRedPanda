@@ -125,4 +125,3 @@ void TestLevel4ShiftRegisterPISO::testShiftRegisterPISO()
         clockCycle(f.sim, f.clk);
     }
 }
-

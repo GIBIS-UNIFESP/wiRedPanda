@@ -48,4 +48,3 @@ private slots:
     // Basic InputRotary test (migrated from testelements)
     void testInputRotary();
 };
-

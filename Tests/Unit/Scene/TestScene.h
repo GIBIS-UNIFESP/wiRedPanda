@@ -89,4 +89,3 @@ private slots:
     // Regression: WIREDPANDA-HC — drainConnections must clean the registry
     void testDrainConnectionsCleansRegistryHC();
 };
-

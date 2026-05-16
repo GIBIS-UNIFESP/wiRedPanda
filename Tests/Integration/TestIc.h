@@ -54,4 +54,3 @@ private slots:
     void testICFileMigrationUpdatesSubcircuitVersion(); // sub-circuit re-saved at current version
     void testICFileMigrationDisabledSkips();         // no backup when migration disabled
 };
-

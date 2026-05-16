@@ -272,4 +272,3 @@ int ElementPalette::getTabIndex(const QString &objectName) const
     }
     return -1;
 }
-

@@ -21,4 +21,3 @@ private slots:
 private:
     void testICData(IC *ic);
 };
-

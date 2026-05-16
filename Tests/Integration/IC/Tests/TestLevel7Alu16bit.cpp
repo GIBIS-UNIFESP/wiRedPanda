@@ -140,4 +140,3 @@ void TestLevel7ALU16Bit::testALU16Bit()
 
     QCOMPARE(actualResult & 0xFFFF, expectedResult & 0xFFFF);
 }
-

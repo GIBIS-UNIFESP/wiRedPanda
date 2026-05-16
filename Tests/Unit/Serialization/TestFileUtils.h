@@ -29,4 +29,3 @@ private slots:
     // Regression: D16 — circular fileBackedICs metadata must not infinite-recurse
     void testCopyPandaDepsTerminatesOnCircularMetadata();
 };
-

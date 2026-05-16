@@ -34,4 +34,3 @@ void TestICRegistry::testICValidation()
     ICRegistry registry(workspace.scene());
     QVERIFY(!registry.hasBlob("nonexistent"));
 }
-

@@ -18,4 +18,3 @@ private slots:
     void testMultiplexer4to1_data();
     void testMultiplexer4to1();
 };
-

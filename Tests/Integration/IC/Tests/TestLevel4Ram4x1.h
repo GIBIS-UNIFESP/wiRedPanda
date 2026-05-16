@@ -22,4 +22,3 @@ private slots:
     void testIsolation();
     void testSequentialWrite();
 };
-

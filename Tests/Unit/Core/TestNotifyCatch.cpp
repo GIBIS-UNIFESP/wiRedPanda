@@ -103,4 +103,3 @@ void TestNotifyCatch::guardedSlotCatchesPostedSlotThrowWithDialog()
 
     Application::interactiveMode = false;
 }
-

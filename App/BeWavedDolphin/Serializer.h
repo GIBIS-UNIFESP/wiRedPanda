@@ -71,4 +71,3 @@ void saveCSV(QSaveFile &file, const QStandardItemModel *model);
 WaveformData loadCSV(QFile &file, int maxInputPorts);
 
 } // namespace DolphinSerializer
-

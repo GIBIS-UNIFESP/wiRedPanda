@@ -18,4 +18,3 @@ private slots:
     void testBCD7SegmentDecoder_data();
     void testBCD7SegmentDecoder();
 };
-

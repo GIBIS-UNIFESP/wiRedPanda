@@ -98,4 +98,3 @@ inline void copyPandaDeps(const QString &pandaPath, const QString &srcDir, const
 }
 
 } // namespace FileUtils
-

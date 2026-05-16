@@ -13,4 +13,3 @@ private slots:
     void testIcons_data();
     void testIcons();
 };
-

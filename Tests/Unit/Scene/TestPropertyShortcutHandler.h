@@ -23,4 +23,3 @@ private slots:
     void testMorphNextElement();
     void testMorphPrevElement();
 };
-

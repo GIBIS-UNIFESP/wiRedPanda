@@ -121,4 +121,3 @@ void TestLevel2PriorityMUX3To1::testPriorityMux3to1()
         QCOMPARE(result, static_cast<bool>(test.expected));
     }
 }
-

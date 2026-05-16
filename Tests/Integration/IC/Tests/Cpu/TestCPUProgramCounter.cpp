@@ -184,4 +184,3 @@ void TestCPUProgramCounter::testProgramCounterPriority_data()
     QTest::newRow("priority_inc_alone") << false << false << true << 0x00 << 0x01;
     QTest::newRow("priority_hold") << false << false << false << 0x00 << 0x00;
 }
-

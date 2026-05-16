@@ -159,4 +159,3 @@ private:
     static bool validateWithTestbench(const QString &verilogFile,
                                       const QString &tbFile);
 };
-

@@ -37,4 +37,3 @@ private slots:
     void testElementEditorAllowsSelfRelabelTx();
     void testElementEditorAllowsRxWithDuplicateLabel();
 };
-

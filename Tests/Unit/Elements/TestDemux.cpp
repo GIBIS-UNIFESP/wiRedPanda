@@ -31,4 +31,3 @@ void TestDemux::testDemuxPainting()
     workspace.scene()->addItem(demux);
     QCOMPARE(demux->elementType(), ElementType::Demux);
 }
-

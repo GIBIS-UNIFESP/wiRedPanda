@@ -1507,4 +1507,3 @@ void TestSerialization::testFuzzRegressionUnboundedPortList()
     }
     QVERIFY2(threw, "Implausible port count must be rejected, not allocated");
 }
-

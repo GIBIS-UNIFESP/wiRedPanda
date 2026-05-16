@@ -197,4 +197,3 @@ void TestLevel4RAM4X1::testSequentialWrite()
         QCOMPARE(getInputStatus(f.dataOut), writeSequence[writeIdx]);
     }
 }
-

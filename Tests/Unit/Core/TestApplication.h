@@ -19,4 +19,3 @@ private slots:
     void testIsSentryDenyMessageMatchesClusterD();
     void testIsSentryDenyMessageDoesNotFilterUnknown();
 };
-

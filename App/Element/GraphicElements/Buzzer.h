@@ -61,4 +61,3 @@ private:
     ToneGenerator *m_generator = nullptr;
     double m_frequency = 1047.0;
 };
-

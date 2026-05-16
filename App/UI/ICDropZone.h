@@ -49,4 +49,3 @@ protected:
 private:
     Section m_section; ///< Which palette section this zone represents.
 };
-

@@ -18,4 +18,3 @@ private slots:
     void testBarrelRotator_data();
     void testBarrelRotator();
 };
-

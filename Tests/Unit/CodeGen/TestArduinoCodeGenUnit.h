@@ -18,4 +18,3 @@ private slots:
     void testDemuxCircuit();
     void testEmptyScene();
 };
-

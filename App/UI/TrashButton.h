@@ -43,4 +43,3 @@ protected:
     /// \reimp
     void dropEvent(QDropEvent *event) override;
 };
-

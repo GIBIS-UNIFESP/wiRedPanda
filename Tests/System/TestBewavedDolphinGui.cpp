@@ -922,4 +922,3 @@ void TestBewavedDolphinGui::testFitScreenClampsAndGuardsA26()
     QCOMPARE(dolphin->m_scale, scaleBeforeBadFit);
     QVERIFY(std::isfinite(dolphin->m_scale));
 }
-

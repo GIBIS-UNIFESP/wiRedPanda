@@ -16,4 +16,3 @@ private slots:
     void testNoUpdate();
     void testNetworkError();
 };
-

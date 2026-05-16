@@ -17,4 +17,3 @@ private slots:
     void testRingCounter_data();
     void testRingCounter();
 };
-

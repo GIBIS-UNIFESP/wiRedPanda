@@ -981,4 +981,3 @@ void GraphicElement::loadFromDrop(const QString &fileName, const QString &contex
     Q_UNUSED(fileName)
     Q_UNUSED(contextDir)
 }
-

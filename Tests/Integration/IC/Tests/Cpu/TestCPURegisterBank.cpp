@@ -102,4 +102,3 @@ void TestCPURegisterBank::testRegisterBank_data()
     QTest::newRow("regbank_zero_write") << 2 << 0x00 << 2 << 2 << 0x00 << 0x00;
     QTest::newRow("regbank_all_ones") << 6 << 0xFF << 6 << 6 << 0xFF << 0xFF;
 }
-

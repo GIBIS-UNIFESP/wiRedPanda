@@ -426,4 +426,3 @@ void TestMultiplexing::testDemuxBoundaryValues()
     demux.setOutputSize(INT_MIN);
     QCOMPARE(demux.outputSize(), 8);  // Stays at current since INT_MIN is invalid
 }
-

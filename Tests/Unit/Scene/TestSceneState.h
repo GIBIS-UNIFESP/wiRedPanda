@@ -57,4 +57,3 @@ private slots:
     void testElementPropertiesAfterMove();
     void testConnectionPropertiesAfterElementMove();
 };
-

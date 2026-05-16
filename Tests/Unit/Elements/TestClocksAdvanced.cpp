@@ -190,4 +190,3 @@ void TestClocksAdvanced::testMultiClockPhaseRelationships()
     // Verify ratio is maintained
     QCOMPARE(clock1->frequency() / clock2->frequency(), 2.0);
 }
-

@@ -44,4 +44,3 @@ private:
 
     Simulation *m_simulation; ///< The guarded simulation instance.
 };
-

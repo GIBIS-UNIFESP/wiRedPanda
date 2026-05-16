@@ -201,4 +201,3 @@ void TestLevel8FetchStage::testFetchStageStructure()
         QFAIL(qPrintable(QString("Fetch stage port access failed: %1").arg(e.what())));
     }
 }
-

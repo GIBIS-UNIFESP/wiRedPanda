@@ -1285,4 +1285,3 @@ inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
     builder.initSimulation();
     return workspace;
 }
-

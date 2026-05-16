@@ -380,4 +380,3 @@ int main(int argc, char **argv)
         {"TestTrashButton", []() -> QObject * { return new TestTrashButton; }},
     });
 }
-

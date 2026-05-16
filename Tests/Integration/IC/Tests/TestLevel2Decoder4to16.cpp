@@ -148,4 +148,3 @@ void TestLevel2Decoder4To16::test4to16DecoderMaxAddress()
     QCOMPARE(activeCount, 1);
     QCOMPARE(activeIndex, expectedOutput);
 }
-

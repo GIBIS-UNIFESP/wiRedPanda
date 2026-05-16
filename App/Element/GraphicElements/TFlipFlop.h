@@ -45,4 +45,3 @@ private:
     Status m_simLastClk = Status::Inactive;
     Status m_simLastValue = Status::Active;
 };
-

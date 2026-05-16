@@ -84,4 +84,3 @@ void DLatch::updateLogic()
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }
-

@@ -72,4 +72,3 @@ QString ThemeHandler::themeToString(int theme) const
         return "unknown";
     }
 }
-

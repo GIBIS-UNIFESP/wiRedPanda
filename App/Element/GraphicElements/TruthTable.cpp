@@ -246,4 +246,3 @@ void TruthTable::updateLogic()
         setOutputValue(i, result);
     }
 }
-

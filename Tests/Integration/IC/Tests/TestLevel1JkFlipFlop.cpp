@@ -290,4 +290,3 @@ void TestLevel1JKFlipFlop::testPresetClearOverrideClock()
     f.sim->update();
     QCOMPARE(f.q(), true);
 }
-

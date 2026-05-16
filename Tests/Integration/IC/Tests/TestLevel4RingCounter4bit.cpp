@@ -113,4 +113,3 @@ void TestLevel4RingCounter4Bit::testRingCounter()
 
     QCOMPARE(result & 0xF, expectedPattern & 0xF);
 }
-

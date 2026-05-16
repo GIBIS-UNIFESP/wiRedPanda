@@ -203,4 +203,3 @@ void Settings::setUpdateCheckSkippedVersion(const QString &version)
 {
     setValue("updateCheck/skippedVersion", version);
 }
-

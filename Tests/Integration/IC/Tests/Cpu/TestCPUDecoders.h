@@ -16,4 +16,3 @@ private slots:
     void testDecoder3to8();
     void testInstructionDecoder4to16();
 };
-

@@ -282,4 +282,3 @@ void ThemeAttributes::setTheme(const Theme theme)
 
     m_portHoverPort = QColor(Qt::yellow); // bright yellow on hover for high visibility regardless of theme
 }
-

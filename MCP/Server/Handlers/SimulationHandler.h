@@ -37,4 +37,3 @@ private:
 
     BewavedDolphin *m_persistentDolphin;
 };
-

@@ -22,4 +22,3 @@ public:
 private:
     QJsonObject handleGetServerInfo(const QJsonObject &params, const QJsonValue &requestId);
 };
-

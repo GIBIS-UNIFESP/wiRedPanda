@@ -102,4 +102,3 @@ void TestLevel2HalfAdder::testHalfAdder()
     QCOMPARE(getInputStatus(f.ledSum), expectedSum);
     QCOMPARE(getInputStatus(f.ledCarry), expectedCarry);
 }
-

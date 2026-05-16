@@ -20,4 +20,3 @@ private slots:
     void testRippleCarry_data();
     void testRippleCarry();
 };
-

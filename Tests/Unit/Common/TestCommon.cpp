@@ -41,4 +41,3 @@ void TestCommon::testPandaceptionEnglishMessage()
     // Both are different
     QVERIFY(QString::fromStdString(ex.what()) != ex.englishMessage());
 }
-

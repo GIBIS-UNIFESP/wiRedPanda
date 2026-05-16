@@ -2850,4 +2850,3 @@ void TestArduino::testSimavrFunctionalSimulation()
     c2.reset();
     qDeleteAll(elements);
 }
-

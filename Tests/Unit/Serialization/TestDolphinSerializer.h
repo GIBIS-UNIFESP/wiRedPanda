@@ -33,4 +33,3 @@ private slots:
     void testLoadBinaryRejectsNegativeRows();
     void testLoadCSVRejectsNegativeRows();
 };
-

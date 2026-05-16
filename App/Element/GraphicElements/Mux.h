@@ -47,4 +47,3 @@ private:
      */
     static int calculateSelectLines(int totalInputs);
 };
-

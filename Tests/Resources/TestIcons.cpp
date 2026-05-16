@@ -50,4 +50,3 @@ void TestIcons::testIcons()
     QVERIFY2(!pixmap.isNull(),
              qPrintable(QString("%1 (type=%2) pixmap not found").arg(typeName).arg(typeValue)));
 }
-

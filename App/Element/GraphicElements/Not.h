@@ -24,4 +24,3 @@ public:
     /// Sets output to the logical NOT of the single input.
     void updateLogic() override;
 };
-

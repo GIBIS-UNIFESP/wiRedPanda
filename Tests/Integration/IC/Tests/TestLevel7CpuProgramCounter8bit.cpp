@@ -158,4 +158,3 @@ void TestLevel7CPUProgramCounter8Bit::testProgramCounter8BitStructure() {
     QCOMPARE(f.ic->inputSize(), 13);
     QCOMPARE(f.ic->outputSize(), 8);
 }
-

@@ -29,4 +29,3 @@ private slots:
     void testBinaryCounterHoldBehavior_data();
     void testBinaryCounterHoldBehavior();
 };
-

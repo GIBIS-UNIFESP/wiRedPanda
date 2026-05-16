@@ -52,4 +52,3 @@ void Or::updateLogic()
     }
     setOutputValue(StatusOps::statusOrAll(simInputs()));
 }
-

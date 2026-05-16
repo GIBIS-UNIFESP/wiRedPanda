@@ -1513,4 +1513,3 @@ void TestScene::testDrainConnectionsCleansRegistryHC()
     // Pre-fix this assertion fails and proves the WIREDPANDA-HC hypothesis.
     QVERIFY(scene->itemById(connId) == nullptr);
 }
-

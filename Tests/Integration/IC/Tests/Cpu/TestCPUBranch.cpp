@@ -248,4 +248,3 @@ void TestCPUBranch::testBranchIntegration_data()
     QTest::newRow("bge_taken") << static_cast<int>(ISA_BGE) << false << false << 0x60 << true;
     QTest::newRow("bge_not_taken") << static_cast<int>(ISA_BGE) << false << true << 0x60 << false;
 }
-

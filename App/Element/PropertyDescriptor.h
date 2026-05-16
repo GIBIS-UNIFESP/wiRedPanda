@@ -37,4 +37,3 @@ struct PropertyDescriptor {
 
     Type type; ///< Which property this descriptor represents.
 };
-

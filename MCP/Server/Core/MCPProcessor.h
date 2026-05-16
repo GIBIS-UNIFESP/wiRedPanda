@@ -92,4 +92,3 @@ private:
     /// Maps each MCP method name to the handler responsible for it.
     QHash<QString, BaseHandler *> m_dispatchMap;
 };
-

@@ -37,4 +37,3 @@ private slots:
 private:
     QTemporaryDir m_tempDir;
 };
-

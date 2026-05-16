@@ -60,4 +60,3 @@ protected:
     /// \reimp
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 };
-

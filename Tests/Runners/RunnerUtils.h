@@ -88,4 +88,3 @@ inline int runTestSuite(int argc, char **argv, const std::vector<TestEntry> &tes
     }
     return status;
 }
-

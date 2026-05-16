@@ -334,4 +334,3 @@ void QNEOutputPort::updateTheme()
     setPen(theme.m_portOutputPen);
     setCurrentBrush(theme.m_portOutputBrush);
 }
-

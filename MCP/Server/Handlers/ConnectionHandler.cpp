@@ -294,4 +294,3 @@ bool ConnectionHandler::resolvePort(const QJsonObject &params, const QString &pr
     portIndex = params.value(indexParam).toInt();
     return validatePortRange(element, portIndex, isOutput, indexParam, errorMsg);
 }
-

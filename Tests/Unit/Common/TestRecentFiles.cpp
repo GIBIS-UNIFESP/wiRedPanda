@@ -208,4 +208,3 @@ void TestRecentFiles::testPersistence()
     QFile::remove(path1);
     QFile::remove(path2);
 }
-

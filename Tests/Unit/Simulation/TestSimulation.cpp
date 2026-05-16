@@ -96,4 +96,3 @@ void TestSimulationUnit::testSimulationStartStopNoBreadcrumbsB22()
              "Simulation::start must not emit a Sentry breadcrumb — every "
              "SimulationBlocker scope hits this and floods the buffer.");
 }
-

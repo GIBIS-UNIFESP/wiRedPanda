@@ -406,4 +406,3 @@ void TestSceneConnections::testWirelessNoneModeNodePortIsRequired()
     QCOMPARE(node->inputPort(0)->connections().size(), 1);
     QVERIFY(node->inputPort()->isRequired());  // required status unchanged by a connection
 }
-

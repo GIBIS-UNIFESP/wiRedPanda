@@ -670,4 +670,3 @@ QJsonObject SimulationHandler::handleExtractIC(const QJsonObject &params, const 
         return createSuccessResponse(result, requestId);
     }, "extract IC", requestId);
 }
-

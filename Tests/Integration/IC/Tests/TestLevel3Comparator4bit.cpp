@@ -115,4 +115,3 @@ void TestLevel3Comparator4Bit::testComparator4Bit()
     QCOMPARE(getInputStatus(f.ledEqual), expectedEqual);
     QCOMPARE(getInputStatus(f.ledLess), expectedLess);
 }
-

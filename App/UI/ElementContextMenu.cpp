@@ -235,4 +235,3 @@ void ElementContextMenu::exec(QPoint screenPos,
 
     throw PANDACEPTION_WITH_CONTEXT("ElementContextMenu", "Unknown context menu option.");
 }
-

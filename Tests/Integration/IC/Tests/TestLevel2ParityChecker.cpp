@@ -118,4 +118,3 @@ void TestLevel2ParityChecker::testOddParityChecker()
 
     QCOMPARE(getInputStatus(f.ledResult) ? 1 : 0, expectedResult);
 }
-

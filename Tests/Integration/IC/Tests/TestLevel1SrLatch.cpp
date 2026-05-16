@@ -114,4 +114,3 @@ void TestLevel1SRLatch::testSRLatchSequential()
     f.sim->update();
     QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 held
 }
-

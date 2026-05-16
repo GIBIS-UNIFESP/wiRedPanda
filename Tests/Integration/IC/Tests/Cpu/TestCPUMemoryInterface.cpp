@@ -126,4 +126,3 @@ void TestCPUMemoryInterface::testMemoryNoWrite()
     // Reading without writing should return 0 (fresh memory)
     writeAndVerify(0x10, 0x55, false, 0x00);
 }
-

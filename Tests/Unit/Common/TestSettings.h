@@ -34,4 +34,3 @@ private:
     QString m_testOrganization = "TestWiredPanda";
     QString m_testApplication = "TestSettings";
 };
-

@@ -319,4 +319,3 @@ void TestElementLogicErrors::testBoolOverloadMapsToStatus()
     QVERIFY(src.outputValue(0) != Status::Unknown);
     QVERIFY(src.outputValue(1) != Status::Unknown);
 }
-

@@ -554,4 +554,3 @@ void TestInputRotary::testInputRotary()
     // Test output ports exist
     QCOMPARE(inputRotary->outputs().size(), 4);
 }
-

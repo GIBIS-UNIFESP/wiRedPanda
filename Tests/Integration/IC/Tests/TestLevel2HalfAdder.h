@@ -18,4 +18,3 @@ private slots:
     void testHalfAdder_data();
     void testHalfAdder();
 };
-

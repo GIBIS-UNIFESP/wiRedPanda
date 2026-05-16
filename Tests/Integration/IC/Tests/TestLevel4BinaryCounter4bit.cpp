@@ -115,4 +115,3 @@ void TestLevel4BinaryCounter4Bit::testBinaryCounter()
 
     QCOMPARE(result & 0xF, expectedFinalCount & 0xF);
 }
-

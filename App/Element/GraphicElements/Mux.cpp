@@ -175,4 +175,3 @@ int Mux::calculateSelectLines(int totalInputs)
     }
     return k;
 }
-

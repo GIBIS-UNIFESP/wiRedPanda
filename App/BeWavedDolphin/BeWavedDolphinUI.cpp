@@ -302,4 +302,3 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     menuEdit->setTitle(QCoreApplication::translate("BewavedDolphin", "Edit"));
     menuView->setTitle(QCoreApplication::translate("BewavedDolphin", "View"));
 }
-

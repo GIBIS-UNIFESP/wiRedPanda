@@ -177,4 +177,3 @@ private:
     bool m_generatingICModule = false;         ///< True while emitting an IC sub-module body.
     int m_globalCounter = 1;                   ///< Monotonic counter for unique signal names.
 };
-

@@ -26,4 +26,3 @@ private slots:
     void testSRLatchBehavior();
     void testTFlipFlopBehavior();
 };
-

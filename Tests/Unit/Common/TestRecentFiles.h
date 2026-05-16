@@ -22,4 +22,3 @@ private slots:
     void testNonExistentFile();
     void testPersistence();
 };
-

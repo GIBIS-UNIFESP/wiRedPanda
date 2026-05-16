@@ -147,4 +147,3 @@ void TestLevel3BCD7SegmentDecoder::testBCD7SegmentDecoder()
                  qPrintable(QString("Invalid BCD output pattern: 0x%1").arg(actualSegmentPattern, 2, 16, QChar('0'))));
     }
 }
-

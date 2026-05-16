@@ -150,4 +150,3 @@ private:
     QString m_manyTriggers      = tr("<Many triggers>");
     QString m_manyWirelessModes = tr("<Many modes>");
 };
-

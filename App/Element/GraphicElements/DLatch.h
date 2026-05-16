@@ -42,4 +42,3 @@ public:
     /// Updates Q based on D and enable level.
     void updateLogic() override;
 };
-

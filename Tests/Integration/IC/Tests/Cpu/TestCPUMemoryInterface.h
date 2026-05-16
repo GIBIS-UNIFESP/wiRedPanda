@@ -16,4 +16,3 @@ private slots:
     void testMemoryWriteRead();
     void testMemoryNoWrite();
 };
-

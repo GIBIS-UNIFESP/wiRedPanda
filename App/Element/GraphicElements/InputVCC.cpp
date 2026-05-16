@@ -46,4 +46,3 @@ InputVcc::InputVcc(QGraphicsItem *parent)
     // wire colour and the simulation output vector are correct from the start.
     m_outputPorts.constFirst()->setDefaultStatus(Status::Active);
 }
-

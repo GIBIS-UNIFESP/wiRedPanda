@@ -140,4 +140,3 @@ void TestLevel6StackPointer8Bit::testStackPointer()
 
     QCOMPARE(readValue, expectedValue);
 }
-

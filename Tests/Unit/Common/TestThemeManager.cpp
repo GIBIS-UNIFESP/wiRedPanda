@@ -414,4 +414,3 @@ void TestThemeManager::testRepeatedThemeSwitching()
         QVERIFY(lightLuminance > darkLuminance);
     }
 }
-

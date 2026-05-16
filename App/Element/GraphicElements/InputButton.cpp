@@ -124,4 +124,3 @@ QList<QPair<int, QString>> InputButton::appearanceStates() const
 {
     return {{0, tr("Released")}, {1, tr("Pressed")}};
 }
-

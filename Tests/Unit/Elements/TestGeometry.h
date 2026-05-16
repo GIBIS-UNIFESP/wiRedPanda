@@ -25,4 +25,3 @@ private slots:
     void testPortCenteringAroundY32();
     void testPortSpacingCalculation();
 };
-

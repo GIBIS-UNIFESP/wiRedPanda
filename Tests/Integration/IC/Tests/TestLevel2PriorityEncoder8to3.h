@@ -17,4 +17,3 @@ private slots:
     void test8to3PriorityEncoder_data();
     void test8to3PriorityEncoder();
 };
-

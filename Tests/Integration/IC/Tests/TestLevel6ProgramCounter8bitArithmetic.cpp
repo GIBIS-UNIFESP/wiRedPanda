@@ -160,4 +160,3 @@ void TestLevel6ProgramCounter8BitArithmetic::testProgramCounter8BitWithPCPlus1()
     QCOMPARE(f.readPC(), 0xFF);
     QCOMPARE(f.readPCPlus1(), 0x00);
 }
-

@@ -30,4 +30,3 @@ protected:
     /// \reimp Draws the slider track and tick labels.
     void paintEvent(QPaintEvent *event) override;
 };
-

@@ -76,4 +76,3 @@ void LengthDialogUi::retranslateUi(QDialog *LengthDialog)
     titleLabel->setText(QCoreApplication::translate("LengthDialog", "Simulation Length"));
     maxLabel->setText(QCoreApplication::translate("LengthDialog", "2048"));
 }
-

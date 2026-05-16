@@ -49,4 +49,3 @@ private slots:
     // Generic properties tests
     void testGenericProperties();
 };
-

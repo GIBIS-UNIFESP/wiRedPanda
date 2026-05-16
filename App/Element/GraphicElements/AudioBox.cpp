@@ -192,4 +192,3 @@ void AudioBox::load(QDataStream &stream, SerializationContext &context)
         }
     }
 }
-

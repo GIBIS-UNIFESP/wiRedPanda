@@ -11,4 +11,3 @@ void TestFileDialogProviderUnit::testFileDialogCreation()
     // FileDialogProvider is abstract — verify global accessor works
     QVERIFY(FileDialogs::provider() != nullptr);
 }
-

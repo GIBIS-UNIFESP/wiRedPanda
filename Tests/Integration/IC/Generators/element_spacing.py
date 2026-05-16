@@ -9,4 +9,3 @@ HORIZONTAL_GATE_SPACING = 104  # Between logic gate centers horizontally
 
 # Vertical spacing between logic levels
 VERTICAL_STAGE_SPACING = 104  # Between stages of logic (input → gates → output)
-

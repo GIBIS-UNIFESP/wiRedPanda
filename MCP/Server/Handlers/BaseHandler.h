@@ -79,4 +79,3 @@ protected:
     MainWindow *m_mainWindow;
     MCPValidator *m_validator;
 };
-

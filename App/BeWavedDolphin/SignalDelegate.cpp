@@ -65,4 +65,3 @@ void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     // Number mode: delegate to the standard item delegate to render the "0"/"1" text
     QItemDelegate::paint(painter, option, index);
 }
-

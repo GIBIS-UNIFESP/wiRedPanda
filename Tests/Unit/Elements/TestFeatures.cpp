@@ -231,4 +231,3 @@ void TestFeatures::testFeatureConsistency()
     QCOMPARE(and1->hasAudio(), and2->hasAudio());
     QCOMPARE(and1->hasFrequency(), and2->hasFrequency());
 }
-

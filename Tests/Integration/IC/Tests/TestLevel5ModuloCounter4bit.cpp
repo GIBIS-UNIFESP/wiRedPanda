@@ -124,4 +124,3 @@ void TestLevel5ModuloCounter4Bit::testModuloCounter()
 
     QCOMPARE(f.readValue(), expectedPattern & 0xF);
 }
-

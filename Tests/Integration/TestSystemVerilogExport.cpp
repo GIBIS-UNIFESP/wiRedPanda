@@ -1429,4 +1429,3 @@ void TestSystemVerilogExport::testSystemVerilogExportSingleCycleCpu8Bit()
 {
     testSystemVerilogExportHelper("level9_single_cycle_cpu_8bit.panda");
 }
-

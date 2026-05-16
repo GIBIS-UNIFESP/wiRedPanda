@@ -330,4 +330,3 @@ void TestDisplays::testDisplay7()
     elm.setColor("Blue");
     QCOMPARE(elm.color(), QString("Blue"));
 }
-

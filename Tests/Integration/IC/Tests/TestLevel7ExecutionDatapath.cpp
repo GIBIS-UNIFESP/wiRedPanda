@@ -163,4 +163,3 @@ void TestLevel7ExecutionDatapath::testExecutionDatapathStructure()
     QCOMPARE(f.ic->inputSize(), 19);
     QCOMPARE(f.ic->outputSize(), 10);
 }
-

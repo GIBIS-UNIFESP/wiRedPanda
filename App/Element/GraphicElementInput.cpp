@@ -27,4 +27,3 @@ void GraphicElementInput::setAppearance(const bool defaultAppearance, const QStr
     m_usingDefaultAppearance = defaultAppearance;
     setPixmap(static_cast<int>(m_isOn));
 }
-

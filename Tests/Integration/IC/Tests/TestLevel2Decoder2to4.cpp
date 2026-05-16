@@ -154,4 +154,3 @@ void TestLevel2Decoder2To4::testMutualExclusivity()
         QCOMPARE(activeCount, 1);
     }
 }
-

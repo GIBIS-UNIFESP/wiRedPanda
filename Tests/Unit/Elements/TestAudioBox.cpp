@@ -416,4 +416,3 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     const QString savedPath = map.value("audiobox").toString();
     QCOMPARE(savedPath, tempInfo.fileName());
 }
-

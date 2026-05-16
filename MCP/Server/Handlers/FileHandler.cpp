@@ -292,4 +292,3 @@ QJsonObject FileHandler::handleExportSystemVerilog(const QJsonObject &params, co
         return createSuccessResponse(result, requestId);
     }, "export SystemVerilog code", requestId);
 }
-

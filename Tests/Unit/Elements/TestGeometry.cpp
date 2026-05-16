@@ -210,4 +210,3 @@ void TestGeometry::testPortSpacingCalculation()
     QCOMPARE(spacing1, 16.0);
     QCOMPARE(spacing2, 16.0);
 }
-

@@ -1137,4 +1137,3 @@ void Scene::addItem(QMimeData *mimeData)
     qCDebug(zero) << "Setting created element as selected.";
     raw->setSelected(true);
 }
-

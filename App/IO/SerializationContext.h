@@ -37,4 +37,3 @@ struct SerializationContext {
     /// Blob registry for resolving embedded IC blobNames during deserialization.
     QMap<QString, QByteArray> *blobRegistry = nullptr;
 };
-

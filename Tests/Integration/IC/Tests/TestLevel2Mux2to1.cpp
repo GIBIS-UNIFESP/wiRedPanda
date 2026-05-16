@@ -109,4 +109,3 @@ void TestLevel2MUX2To1::testMux2to1()
 
     QCOMPARE(getInputStatus(f.output), expectedOutput);
 }
-

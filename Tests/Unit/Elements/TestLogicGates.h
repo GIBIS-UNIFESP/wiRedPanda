@@ -28,4 +28,3 @@ private slots:
     void testXorGateBehavior();
     void testXnorGateBehavior();
 };
-

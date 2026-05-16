@@ -1098,4 +1098,3 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
     m_stream.setDevice(savedDevice);
     tbFile.close();
 }
-

@@ -433,4 +433,3 @@ void TestMemorySettlingTime::testSettlingTimeBenchmarkSummary()
     // Note: In zero-delay simulation, both settle equally; real hardware would show cascaded slower
     QCOMPARE(cas_avg >= ss_avg, true);
 }
-

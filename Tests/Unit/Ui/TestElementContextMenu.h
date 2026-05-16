@@ -17,4 +17,3 @@ private slots:
     void testMorphMenuAction();
     void testICSubcircuitAction();
 };
-

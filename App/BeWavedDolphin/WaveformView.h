@@ -46,4 +46,3 @@ public:
 protected:
     void wheelEvent(QWheelEvent *event) override;
 };
-

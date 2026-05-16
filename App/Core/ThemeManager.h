@@ -135,4 +135,3 @@ private:
     Theme m_theme = Theme::System;
     ThemeAttributes m_attributes;
 };
-

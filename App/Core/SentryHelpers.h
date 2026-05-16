@@ -27,4 +27,3 @@ inline void sentryBreadcrumb(const char *category, const QString &message)
     Q_UNUSED(message)
 #endif
 }
-

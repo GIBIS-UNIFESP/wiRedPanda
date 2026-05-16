@@ -401,4 +401,3 @@ QNEConnection *CircuitBuilder::connect(GraphicElement *from, const QString &from
     int toPort = getInputPortByLabel(to, toLabel);
     return connect(from, fromPort, to, toPort);
 }
-

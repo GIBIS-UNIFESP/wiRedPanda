@@ -83,4 +83,3 @@ private:
     /// Returns a reference to the singleton registry map.
     static QMap<ElementType, ElementMetadata> &registry();
 };
-

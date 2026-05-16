@@ -43,4 +43,3 @@ void TestQNEConnection::testConnectionDestruction()
     }
     QVERIFY(true);
 }
-

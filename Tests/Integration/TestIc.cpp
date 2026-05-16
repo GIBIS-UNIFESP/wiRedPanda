@@ -927,4 +927,3 @@ void TestIC::testICFileMigrationDisabledSkips()
     QFile f2(subDst); QVERIFY(f2.open(QIODevice::ReadOnly));
     QCOMPARE(f2.readAll(), originalBytes);
 }
-

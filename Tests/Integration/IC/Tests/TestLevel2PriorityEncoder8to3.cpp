@@ -118,4 +118,3 @@ void TestLevel2PriorityEncoder8To3::test8to3PriorityEncoder()
 
     QCOMPARE(actualOutput, expectedOutput);
 }
-

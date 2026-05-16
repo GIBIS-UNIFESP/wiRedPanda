@@ -20,4 +20,3 @@ private:
 
     QString themeToString(int theme) const;
 };
-

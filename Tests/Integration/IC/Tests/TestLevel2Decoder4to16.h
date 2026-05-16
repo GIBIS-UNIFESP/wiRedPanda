@@ -22,4 +22,3 @@ private slots:
     void test4to16DecoderMaxAddress_data();
     void test4to16DecoderMaxAddress();
 };
-

@@ -54,4 +54,3 @@ FileDialogResult RealFileDialogProvider::getSaveFileName(
 
     return {files.constFirst(), dialog.selectedNameFilter()};
 }
-

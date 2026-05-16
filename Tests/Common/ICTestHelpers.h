@@ -29,4 +29,3 @@ inline void embedIC(IC *ic, const QByteArray &pandaBytes, const QString &blobNam
 }
 
 } // namespace ICTestHelpers
-

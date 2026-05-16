@@ -71,4 +71,3 @@ protected:
     void play();
     void stop();
 };
-

@@ -446,4 +446,3 @@ QByteArray ICRegistry::captureSnapshot(const QList<GraphicElement *> &targets)
     }
     return data;
 }
-

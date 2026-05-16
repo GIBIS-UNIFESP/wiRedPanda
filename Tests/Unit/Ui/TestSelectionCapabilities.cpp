@@ -12,4 +12,3 @@ void TestSelectionCapabilities::testSelectionCapabilities()
     QVERIFY(!caps.hasElements);
     QCOMPARE(caps.elementType, ElementType::Unknown);
 }
-

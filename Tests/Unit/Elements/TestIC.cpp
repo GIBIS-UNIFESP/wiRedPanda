@@ -34,4 +34,3 @@ void TestICUnit::testICInvalidFile()
     IC ic;
     QVERIFY(ic.file().isEmpty());
 }
-

@@ -10,7 +10,7 @@ Runs three passes per .cpp/.h file:
    Handles #ifdef blocks by extracting their includes and splitting mixed
    blocks into per-condition wrappers.
 2. Blank-line collapse — replace any run of 3+ consecutive newlines with 2.
-3. Trailing blank line — ensure each file ends with exactly two newline bytes.
+3. Trailing newline — ensure each file ends with exactly one newline byte.
 
 Usage:
     python3 Scripts/fix_style.py [root_dir] [OPTIONS]
@@ -458,7 +458,7 @@ def fix_includes_in_file(filepath, verbose=False, force=False):
 
 
 def fix_blank_lines_in_file(filepath):
-    """Collapse runs of 3+ newlines to 2, and ensure file ends with exactly \\n\\n."""
+    """Collapse runs of 3+ newlines to 2, and ensure file ends with exactly \\n."""
     try:
         data = filepath.read_bytes()
     except Exception as e:
@@ -469,7 +469,7 @@ def fix_blank_lines_in_file(filepath):
         return False
 
     new_data = re.sub(rb"\n\n\n+", b"\n\n", data)
-    new_data = new_data.rstrip(b"\n") + b"\n\n"
+    new_data = new_data.rstrip(b"\n") + b"\n"
 
     if new_data == data:
         return False

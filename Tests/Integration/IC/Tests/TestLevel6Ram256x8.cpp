@@ -164,4 +164,3 @@ void TestLevel6RAM256X8::testRAMStructure()
     QCOMPARE(f.ic->inputSize(), 18);
     QCOMPARE(f.ic->outputSize(), 8);
 }
-

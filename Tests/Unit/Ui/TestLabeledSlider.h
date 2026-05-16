@@ -14,4 +14,3 @@ private slots:
 
     void testSliderValueChange();
 };
-

@@ -518,4 +518,3 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
     QVERIFY(node2->inputPort()->isVisible());
     QVERIFY(!node2->outputPort()->isVisible());
 }
-

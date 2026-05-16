@@ -20,4 +20,3 @@ private slots:
     void testSequentialScan();
     void testMutualExclusivity();
 };
-

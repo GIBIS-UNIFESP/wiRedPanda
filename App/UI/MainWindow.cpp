@@ -2246,4 +2246,3 @@ void MainWindow::makeSelfContained()
     m_palette->updateEmbeddedICList(scene);
     m_ui->statusBar->showMessage(tr("Embedded %1 IC(s). Circuit is now self-contained.").arg(totalEmbedded), 4000);
 }
-

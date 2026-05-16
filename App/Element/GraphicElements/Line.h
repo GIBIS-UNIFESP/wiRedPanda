@@ -23,4 +23,3 @@ public:
     /// Constructs a Line element.
     explicit Line(QGraphicsItem *parent = nullptr);
 };
-

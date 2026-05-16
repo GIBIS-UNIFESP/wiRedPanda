@@ -45,4 +45,3 @@ private:
 
     std::unique_ptr<LengthDialogUi> m_ui;
 };
-

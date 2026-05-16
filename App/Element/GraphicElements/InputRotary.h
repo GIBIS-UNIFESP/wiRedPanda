@@ -87,4 +87,3 @@ private:
     QPixmap m_rotary;
     int m_currentPort = 0;
 };
-

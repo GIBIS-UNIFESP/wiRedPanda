@@ -43,4 +43,3 @@ private slots:
     void testLightToDarkPaletteSwitching();
     void testRepeatedThemeSwitching();
 };
-

@@ -27,4 +27,3 @@ private:
     // Helper functions
     Scene *createSimpleCircuit();
 };
-

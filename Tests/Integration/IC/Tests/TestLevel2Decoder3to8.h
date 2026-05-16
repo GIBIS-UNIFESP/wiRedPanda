@@ -18,4 +18,3 @@ private slots:
     void test3to8Decoder_data();
     void test3to8Decoder();
 };
-

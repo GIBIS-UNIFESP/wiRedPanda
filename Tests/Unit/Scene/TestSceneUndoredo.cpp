@@ -2140,4 +2140,3 @@ void TestSceneUndoredo::testDeleteUndoSimulationCorrectness()
         QCOMPARE(TestUtils::getInputStatus(led), row.second);
     }
 }
-

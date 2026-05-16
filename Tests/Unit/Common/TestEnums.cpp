@@ -427,4 +427,3 @@ void TestEnums::testElementGroupToString()
     QVERIFY(varGate.toString() != varInput.toString());
     QVERIFY(varInput.toString() != varOutput.toString());
 }
-

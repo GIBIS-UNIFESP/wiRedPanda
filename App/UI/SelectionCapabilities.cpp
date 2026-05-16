@@ -105,4 +105,3 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
 
     return c;
 }
-

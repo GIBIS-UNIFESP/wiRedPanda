@@ -107,4 +107,3 @@ void TestLevel5InstructionDecoder4Bit::testInstructionDecoderStructure()
     QCOMPARE(f.ic->inputSize(), 4);
     QCOMPARE(f.ic->outputSize(), 16);
 }
-

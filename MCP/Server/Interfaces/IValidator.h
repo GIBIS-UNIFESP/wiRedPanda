@@ -215,4 +215,3 @@ public:
                                              bool required = true,
                                              const QString &description = QString()) const = 0;
 };
-

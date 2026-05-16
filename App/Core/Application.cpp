@@ -181,4 +181,3 @@ void Application::setMainWindow(MainWindow *mainWindow)
     sentry_set_tag("app.interactive", interactiveMode ? "true" : "false");
 #endif
 }
-

@@ -16,4 +16,3 @@ private slots:
     void testInstructionFetch();
     void testInstructionFetch_data();
 };
-

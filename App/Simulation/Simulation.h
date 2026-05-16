@@ -174,4 +174,3 @@ private:
     QSet<const GraphicElement *> m_simFeedbackNodes;
     bool m_simHasFeedbackElements = false;
 };
-

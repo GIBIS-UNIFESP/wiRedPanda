@@ -21,4 +21,3 @@ public:
     /// Constructs an InputGnd element.
     explicit InputGnd(QGraphicsItem *parent = nullptr);
 };
-

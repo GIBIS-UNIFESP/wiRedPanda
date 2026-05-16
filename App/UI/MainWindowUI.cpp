@@ -810,4 +810,3 @@ void MainWindowUi::retranslateUi()
     menuSimulation->setTitle(QCoreApplication::translate("MainWindow", "Sim&ulation"));
     menuExamples->setTitle(QCoreApplication::translate("MainWindow", "Examples"));
 }
-

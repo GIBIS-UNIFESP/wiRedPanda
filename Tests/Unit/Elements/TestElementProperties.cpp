@@ -683,4 +683,3 @@ void TestElementProperties::testNodeHasLabel()
     QCOMPARE(node.label(), QStringLiteral("CHANNEL_X"));
     QVERIFY(node.hasLabel());
 }
-

@@ -17,4 +17,3 @@ private slots:
     void testALU16Bit_data();
     void testALU16Bit();
 };
-

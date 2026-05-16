@@ -37,4 +37,3 @@ private slots:
     void testSaveLoadRxPortVisibility();
     void testSaveLoadTxPortVisibility();
 };
-

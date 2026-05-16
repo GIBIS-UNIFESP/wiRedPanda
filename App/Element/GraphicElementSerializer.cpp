@@ -591,4 +591,3 @@ QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
     item->save(stream);
     return stream;
 }
-

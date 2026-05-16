@@ -137,4 +137,3 @@ private:
     QHash<QString, HandlerInfo> m_handlers;
     static HandlerFactory s_instance;
 };
-

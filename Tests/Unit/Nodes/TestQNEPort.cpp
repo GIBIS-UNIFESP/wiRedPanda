@@ -20,4 +20,3 @@ void TestQNEPort::testPortHoverState()
     QVERIFY(port.isInput());
     QVERIFY(!port.isOutput());
 }
-

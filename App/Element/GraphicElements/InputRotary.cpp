@@ -325,4 +325,3 @@ int InputRotary::outputValue() const
 {
     return m_currentPort;
 }
-

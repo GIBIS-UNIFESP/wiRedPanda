@@ -679,4 +679,3 @@ void TestWorkspaceFileops::testMigrationCurrentVersionSkips()
         QStringList{"current_format.v*.panda"}, QDir::Files);
     QVERIFY2(backups.isEmpty(), "No versioned backup should be created for a current-format file");
 }
-

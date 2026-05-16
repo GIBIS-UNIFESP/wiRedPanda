@@ -67,4 +67,3 @@ private:
     QGraphicsPixmapItem *m_wirelessIndicator = nullptr;
     QColor m_wirelessColor;
 };
-

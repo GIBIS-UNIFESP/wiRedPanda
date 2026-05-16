@@ -1397,4 +1397,3 @@ void BewavedDolphin::on_actionAboutQt_triggered()
         QMessageBox::aboutQt(this);
     });
 }
-

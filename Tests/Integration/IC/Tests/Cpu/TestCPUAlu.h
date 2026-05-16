@@ -18,4 +18,3 @@ private slots:
     void testALU8bitFlags();
     void testALU8bitFlags_data();
 };
-

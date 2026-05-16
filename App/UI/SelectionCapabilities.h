@@ -81,4 +81,3 @@ struct SelectionCapabilities {
  * \return A fully populated SelectionCapabilities; all flags false if \a elements is empty.
  */
 SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &elements);
-

@@ -82,4 +82,3 @@ void TestCPUInstructionExecute::testInstructionExecute_data()
     QTest::newRow("exec_flags_carry") << 0xFF << 0x01 << static_cast<int>(ALU_ADD) << 0x00;
     QTest::newRow("exec_dependency_chain") << 0x10 << 0x20 << static_cast<int>(ALU_ADD) << 0x30;
 }
-

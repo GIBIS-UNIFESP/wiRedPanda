@@ -148,4 +148,3 @@ void TestLevel8MemoryStage::testMemoryStageStructure()
     QCOMPARE(f.ic->inputSize(), 28);
     QCOMPARE(f.ic->outputSize(), 8);
 }
-

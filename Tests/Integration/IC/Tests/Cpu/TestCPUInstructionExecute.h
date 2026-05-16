@@ -16,4 +16,3 @@ private slots:
     void testInstructionExecute();
     void testInstructionExecute_data();
 };
-

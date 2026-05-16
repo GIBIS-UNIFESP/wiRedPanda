@@ -15,4 +15,3 @@ private slots:
     void testBackwardCompatibility_data();
     void testBackwardCompatibility();
 };
-

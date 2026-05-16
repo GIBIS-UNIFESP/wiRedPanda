@@ -167,4 +167,3 @@ void TestLevel6RegisterFile8X8::testRegisterFile()
     QCOMPARE(readValue1, readValue2);
     QCOMPARE(readValue1, testData);
 }
-

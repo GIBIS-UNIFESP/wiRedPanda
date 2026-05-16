@@ -201,4 +201,3 @@ private:
     QTemporaryDir m_tempDir;
     QString m_fixtureDir;
 };
-

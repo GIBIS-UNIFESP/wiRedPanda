@@ -40,4 +40,3 @@ private slots:
     void testConnectionPositionUpdate();
     void testPortIsConnected();
 };
-

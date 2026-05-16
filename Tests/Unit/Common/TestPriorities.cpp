@@ -218,4 +218,3 @@ void TestPriorities::testFeedbackDiamond()
     const auto feedback = findFeedbackNodes(elements, successors);
     QVERIFY(feedback.isEmpty());
 }
-

@@ -139,4 +139,3 @@ void TestLevel7DataForwardingUnit::testDataForwardingUnitStructure()
     QCOMPARE(f.ic->inputSize(), 34);
     QCOMPARE(f.ic->outputSize(), 8);
 }
-

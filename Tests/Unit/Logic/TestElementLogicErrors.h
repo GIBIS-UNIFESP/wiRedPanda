@@ -28,4 +28,3 @@ private slots:
     void testInvalidPropagatesChain();
     void testBoolOverloadMapsToStatus();
 };
-

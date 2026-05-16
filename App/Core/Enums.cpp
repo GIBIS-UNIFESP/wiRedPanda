@@ -85,4 +85,3 @@ QDataStream &operator<<(QDataStream &stream, const ElementType &type)
     stream << static_cast<quint64>(type);
     return stream;
 }
-

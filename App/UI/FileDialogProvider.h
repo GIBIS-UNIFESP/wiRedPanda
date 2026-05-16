@@ -60,4 +60,3 @@ FileDialogProvider *provider();
 FileDialogProvider *setProvider(FileDialogProvider *newProvider);
 
 } // namespace FileDialogs
-

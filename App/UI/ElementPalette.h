@@ -98,4 +98,3 @@ private:
     MainWindowUi *m_ui;                ///< The host window's UI descriptor (not owned).
     int m_lastTabIndex = -1;           ///< Tab index active before a search was initiated; restored on clear.
 };
-

@@ -108,4 +108,3 @@ void TestLevel2Decoder3To8::test3to8Decoder()
         QCOMPARE(getInputStatus(f.ledOut[i]), expected);
     }
 }
-

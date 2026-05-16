@@ -165,4 +165,3 @@ void TestLevel5ClockGatedDecoder::testClockGatedDecoder()
         }
     }
 }
-

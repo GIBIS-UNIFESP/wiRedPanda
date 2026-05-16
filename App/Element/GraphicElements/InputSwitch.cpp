@@ -126,4 +126,3 @@ QList<QPair<int, QString>> InputSwitch::appearanceStates() const
 {
     return {{0, tr("Off")}, {1, tr("On")}};
 }
-

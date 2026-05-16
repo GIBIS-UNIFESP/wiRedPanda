@@ -1182,4 +1182,3 @@ void UpdateBlobCommand::reconnectConnections()
         m_scene->addItem(conn);
     }
 }
-

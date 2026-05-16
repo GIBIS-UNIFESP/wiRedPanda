@@ -98,4 +98,3 @@ private:
     int m_panStartX = 0;   ///< Mouse X at the start of the current pan gesture.
     int m_panStartY = 0;   ///< Mouse Y at the start of the current pan gesture.
 };
-

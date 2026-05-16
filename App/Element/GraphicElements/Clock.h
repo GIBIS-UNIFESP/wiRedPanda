@@ -80,4 +80,3 @@ private:
     std::chrono::microseconds m_interval;
     std::chrono::steady_clock::time_point m_startTime;
 };
-

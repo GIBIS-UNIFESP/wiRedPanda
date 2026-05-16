@@ -149,4 +149,3 @@ void TestLevel7FlagRegister::testFlagRegisterStructure()
     QCOMPARE(f.ic->inputSize(), 6);
     QCOMPARE(f.ic->outputSize(), 4);
 }
-

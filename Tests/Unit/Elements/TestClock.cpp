@@ -464,4 +464,3 @@ void TestClock::testGenericProperties()
     QString props3 = clock.genericProperties();
     QVERIFY(props3.contains("Hz"));
 }
-

@@ -188,4 +188,3 @@ void TestLevel3Register1Bit::test1BitRegisterStructure() {
     QCOMPARE(f.ic->inputSize(), 4);   // 4 input ports: Data, Clock, WriteEnable, Reset
     QCOMPARE(f.ic->outputSize(), 2);  // 2 output ports: Q, NotQ
 }
-

@@ -65,4 +65,3 @@ private:
 
     QTranslator *m_translator = nullptr; ///< Single translator carrying both app and (with MERGE_QT_TRANSLATIONS) Qt strings.
 };
-

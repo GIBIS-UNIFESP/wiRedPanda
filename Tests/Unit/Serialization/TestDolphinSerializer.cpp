@@ -197,4 +197,3 @@ void TestDolphinSerializer::testLoadCSVRejectsNegativeRows()
     QVERIFY(in.open(QIODevice::ReadOnly));
     QVERIFY_EXCEPTION_THROWN(DolphinSerializer::loadCSV(in, 8), std::exception);
 }
-

@@ -23,4 +23,3 @@ private slots:
     void testDisplay14Paint();
     void testDisplay16Paint();
 };
-

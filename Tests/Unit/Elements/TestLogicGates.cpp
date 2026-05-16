@@ -284,4 +284,3 @@ void TestLogicGates::testXnorGateBehavior()
     sw1.setOn(true); sw2.setOn(true); sim->update();
     QCOMPARE(TestUtils::getInputStatus(&led), true);   // 1 XNOR 1 = 1
 }
-

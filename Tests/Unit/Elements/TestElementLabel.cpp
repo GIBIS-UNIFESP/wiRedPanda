@@ -194,4 +194,3 @@ void TestElementLabel::testMimeDataWithIC()
     QByteArray mimeBytes = data->data("application/x-wiredpanda-dragdrop");
     QVERIFY(mimeBytes.size() > 0);
 }
-

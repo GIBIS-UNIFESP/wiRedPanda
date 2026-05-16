@@ -99,4 +99,3 @@ public:
     QMenu *menuEdit = nullptr;
     QMenu *menuView = nullptr;
 };
-

@@ -17,4 +17,3 @@ private slots:
     void testOddParityChecker_data();
     void testOddParityChecker();
 };
-

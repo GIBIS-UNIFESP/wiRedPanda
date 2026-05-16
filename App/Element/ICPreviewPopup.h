@@ -76,4 +76,3 @@ private:
     QPointer<IC> m_pendingIC;   ///< Auto-nulled if the IC is deleted while a timer is pending.
     QPoint m_pendingPos;
 };
-

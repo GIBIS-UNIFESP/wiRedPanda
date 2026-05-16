@@ -83,4 +83,3 @@ private:
     QString m_icFileName;
     bool m_isEmbedded = false;
 };
-

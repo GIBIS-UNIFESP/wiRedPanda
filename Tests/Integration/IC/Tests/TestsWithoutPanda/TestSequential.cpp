@@ -1330,4 +1330,3 @@ void TestSequential::testSRFlipFlopSetReset()
     // Verify complementary output
     QCOMPARE(qNotResult, !expectedQ);
 }
-

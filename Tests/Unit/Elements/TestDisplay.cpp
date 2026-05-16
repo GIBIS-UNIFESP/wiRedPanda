@@ -74,4 +74,3 @@ void TestDisplay::testDisplay16Save()
     display.save(stream);
     QVERIFY(!data.isEmpty());
 }
-

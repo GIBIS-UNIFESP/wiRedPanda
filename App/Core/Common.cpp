@@ -64,4 +64,3 @@ int Pandaception::line() const
 {
     return m_line;
 }
-

@@ -18,4 +18,3 @@ private slots:
     void testICEditing();
     void testFullScreenHandling();
 };
-

@@ -193,4 +193,3 @@ void TestPropertyShortcutHandler::testMorphPrevElement()
     QCOMPARE(selected.size(), 1);
     QCOMPARE(selected.first()->elementType(), ElementType::Xnor);
 }
-

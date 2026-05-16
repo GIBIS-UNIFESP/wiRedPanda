@@ -18,4 +18,3 @@ private slots:
     void testMux2to1_data();
     void testMux2to1();
 };
-

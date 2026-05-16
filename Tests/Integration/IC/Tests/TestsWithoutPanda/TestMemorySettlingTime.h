@@ -31,4 +31,3 @@ private slots:
     // T6.4: Performance benchmark summary
     void testSettlingTimeBenchmarkSummary();
 };
-

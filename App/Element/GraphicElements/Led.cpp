@@ -280,4 +280,3 @@ void Led::updateLogic()
         setOutputValue(i, simInputs().at(i));
     }
 }
-

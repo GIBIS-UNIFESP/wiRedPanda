@@ -169,4 +169,3 @@ void Buzzer::load(QDataStream &stream, SerializationContext &context)
         }
     }
 }
-

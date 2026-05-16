@@ -647,4 +647,3 @@ void TestInputElements::testAppearanceWithNonExistentFileFallback()
 
     QVERIFY2(threw, "setAppearance should throw when neither full path nor filename fallback resolves");
 }
-

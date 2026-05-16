@@ -29,4 +29,3 @@ private:
     QJsonObject handleExportArduino(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleExportSystemVerilog(const QJsonObject &params, const QJsonValue &requestId);
 };
-

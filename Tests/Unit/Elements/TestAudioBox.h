@@ -50,4 +50,3 @@ private slots:
     void testSetAudioWithNonExistentFileFallback();
     void testSaveStoresFilenameOnlyInProjectDir();
 };
-

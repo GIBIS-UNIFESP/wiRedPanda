@@ -36,4 +36,3 @@ private slots:
     void testLoadVersionOld();
     void testLoadVersionNew();
 };
-

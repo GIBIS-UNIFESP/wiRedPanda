@@ -48,4 +48,3 @@ private slots:
     void testAppearanceStates();
     void testSetAppearanceDefault();
 };
-

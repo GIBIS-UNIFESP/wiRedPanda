@@ -133,4 +133,3 @@ void TestCPUControlUnit::testControlUnit_data()
     QTest::newRow("cu_halt_state") << 4 << static_cast<int>(CU_HALT);  // 4 transitions: state 4 (HALT)
     QTest::newRow("cu_state_stability") << 1 << static_cast<int>(CU_DECODE);  // 1 transition: state 1
 }
-

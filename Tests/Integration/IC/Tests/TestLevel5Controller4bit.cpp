@@ -163,4 +163,3 @@ void TestLevel5Controller4Bit::testControllerStructure()
     QCOMPARE(f.ic->inputSize(), 4);
     QCOMPARE(f.ic->outputSize(), 4);
 }
-

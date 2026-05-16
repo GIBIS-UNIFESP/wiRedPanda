@@ -220,4 +220,3 @@ void Node::updateWirelessColor(Status status)
     m_wirelessColor = color;
     m_wirelessIndicator->setPixmap(renderWirelessPixmap(color));
 }
-

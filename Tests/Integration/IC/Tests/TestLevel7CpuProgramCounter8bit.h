@@ -19,4 +19,3 @@ private slots:
     // Structure Tests
     void testProgramCounter8BitStructure();
 };
-

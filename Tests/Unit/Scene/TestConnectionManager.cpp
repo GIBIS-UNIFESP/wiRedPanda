@@ -61,4 +61,3 @@ void TestConnectionManager::testMultiPortConnection()
 
     QVERIFY(andGate.inputs().size() > 0);
 }
-

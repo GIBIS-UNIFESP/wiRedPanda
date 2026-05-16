@@ -22,4 +22,3 @@ private slots:
     void testBoundary8x8_data();
     void testBoundary8x8();
 };
-

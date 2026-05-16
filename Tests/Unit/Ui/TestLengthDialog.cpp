@@ -15,4 +15,3 @@ void TestLengthDialog::testDialogReject()
 {
     QVERIFY(true);
 }
-

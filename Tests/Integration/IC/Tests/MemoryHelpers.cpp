@@ -91,4 +91,3 @@ void buildRegisterFile8x8(RegisterFile8x8Output &out)
 
     out.sim = builder.initSimulation();
 }
-

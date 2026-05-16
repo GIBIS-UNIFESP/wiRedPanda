@@ -22,4 +22,3 @@ private slots:
     void testHoldMultipleCycles();
     void testWriteZeroThenOneWithHold();
 };
-

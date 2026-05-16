@@ -130,4 +130,3 @@ void TestLevel3ALUSelector5Way::testALUSelector5way()
         QCOMPARE(result, static_cast<bool>(test.expected));
     }
 }
-

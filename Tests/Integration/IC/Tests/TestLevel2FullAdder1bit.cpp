@@ -195,4 +195,3 @@ void TestLevel2FullAdder1Bit::testStructure()
     QCOMPARE(f.ic->inputSize(), 3);   // 3 input ports: A, B, Cin
     QCOMPARE(f.ic->outputSize(), 2);  // 2 output ports: Sum, Cout
 }
-

@@ -85,4 +85,3 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
     const QUrl releaseUrl = QUrl(doc.object().value("html_url").toString());
     emit updateAvailable(latest.toString(), downloadUrl, releaseUrl);
 }
-

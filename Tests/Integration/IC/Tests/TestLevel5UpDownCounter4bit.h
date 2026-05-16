@@ -21,4 +21,3 @@ private slots:
     void testUpDownCounterFromValue_data();
     void testUpDownCounterFromValue();
 };
-

@@ -1499,4 +1499,3 @@ void TestElementLogic::test6InputAnd()
     elm.updateLogic();
     QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
-

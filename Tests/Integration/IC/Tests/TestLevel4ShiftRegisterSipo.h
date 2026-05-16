@@ -17,4 +17,3 @@ private slots:
     void testShiftRegisterSIPO_data();
     void testShiftRegisterSIPO();
 };
-

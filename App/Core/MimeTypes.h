@@ -32,4 +32,3 @@ constexpr const char *BlobRegistry    = "application/x-wiredpanda-blobregistry";
 /// still read the unversioned copy, while newer apps prefer this one.
 constexpr const char *BlobRegistryV2  = "application/x-wiredpanda-blobregistry-v2";
 } // namespace MimeType
-

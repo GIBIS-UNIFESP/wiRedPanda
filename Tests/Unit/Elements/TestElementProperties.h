@@ -54,4 +54,3 @@ private slots:
     void testPortCountAfterSizeChange();
     void testPortListIntegrity();
 };
-

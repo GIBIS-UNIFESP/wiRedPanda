@@ -38,4 +38,3 @@ private slots:
     void testRegisterFileTimingEdges_data();
     void testRegisterFileTimingEdges();
 };
-

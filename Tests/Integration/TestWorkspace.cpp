@@ -1185,4 +1185,3 @@ void TestWorkspace::testSaveRepromptsOnPermissionsErrorB24()
     QVERIFY2(QFile::exists(writablePath),
              qPrintable("Save should have been redirected to " + writablePath));
 }
-

@@ -17,4 +17,3 @@ private slots:
     void testBusMux8Bit_data();
     void testBusMux8Bit();
 };
-

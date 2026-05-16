@@ -17,4 +17,3 @@ private slots:
     void testRegisterFile_data();
     void testRegisterFile();
 };
-
