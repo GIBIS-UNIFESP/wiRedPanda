@@ -59,7 +59,8 @@
       "description": "Valid export formats for circuit images",
       "enum": [
         "png",
-        "svg"
+        "svg",
+        "pdf"
       ]
     },
     "WaveformExportFormat": {

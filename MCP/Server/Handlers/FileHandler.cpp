@@ -6,7 +6,9 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QPageSize>
 #include <QPainter>
+#include <QPdfWriter>
 #include <QPixmap>
 #include <QSvgGenerator>
 #include <QTabWidget>
@@ -211,7 +213,24 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
             QPainter painter(&generator);
             scene->render(&painter, QRectF(), sceneRect);
             painter.end();
-        } else {
+        } else if (format == "pdf") {
+            QPdfWriter pdfWriter(filename);
+            pdfWriter.setTitle("wiRedPanda Circuit");
+            pdfWriter.setCreator("wiRedPanda");
+            // Map scene pixels 1:1 to PDF points (72 DPI) and size the page to the bounding box.
+            pdfWriter.setResolution(72);
+            pdfWriter.setPageSize(QPageSize(sceneRect.size(), QPageSize::Point));
+            pdfWriter.setPageMargins(QMarginsF(0, 0, 0, 0));
+
+            QPainter painter(&pdfWriter);
+            if (!painter.isActive()) {
+                return createErrorResponse(QString("Failed to open PDF file for writing: %1").arg(filename),
+                                           requestId, JsonRpcError::FileError);
+            }
+            painter.setRenderHint(QPainter::Antialiasing);
+            scene->render(&painter, QRectF(), sceneRect);
+            painter.end();
+        } else {  // png
             QPixmap pixmap(sceneRect.size().toSize());
             pixmap.fill(Qt::white);
 
@@ -220,12 +239,8 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
             scene->render(&painter, QRectF(), sceneRect);
             painter.end();
 
-            if (format == "png") {
-                if (!pixmap.save(filename, "PNG")) {
-                    return createErrorResponse("Failed to save PNG file", requestId, JsonRpcError::FileError);
-                }
-            } else if (format == "pdf") {
-                return createErrorResponse("PDF export not yet implemented - use PNG or SVG", requestId, JsonRpcError::InternalError);
+            if (!pixmap.save(filename, "PNG")) {
+                return createErrorResponse("Failed to save PNG file", requestId, JsonRpcError::FileError);
             }
         }
 
