@@ -44,4 +44,14 @@ disable =
     # (stderr drain, stdout reader, validator fallbacks) must catch anything
     # to keep background tasks alive. Narrowing each site would mean listing
     # 5+ types per catch with no behavior change.
-    broad-exception-caught
+    broad-exception-caught,
+    # MCP/Client/ is test infrastructure throughout, and several modules
+    # use deferred imports for legitimate reasons: graceful test-category
+    # degradation in mcp_test_orchestrator (each `try: from tests.<X>
+    # import …; except ImportError`), circular avoidance between
+    # mcp_runner and the orchestrator, CLI fast-path in run_tests.py
+    # (don't load the heavy orchestrator on `--help`), and cross-module
+    # imports of tests.test_config helpers from mcp_organizer /
+    # mcp_infrastructure. The trivial hoistable cases have already been
+    # moved to the top of their modules.
+    import-outside-toplevel

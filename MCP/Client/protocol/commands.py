@@ -6,6 +6,7 @@ This module contains all command classes for MCP (Model Context Protocol).
 These classes define the structure and validation rules for all available commands.
 """
 
+import math
 from typing import Annotated, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -65,8 +66,6 @@ class CreateElementCommand(MCPCommand):
         @classmethod
         def validate_coordinates(cls, v: float) -> float:
             """Validate coordinates are not NaN or infinite"""
-            import math
-
             if not math.isfinite(v):
                 raise ValueError("Coordinates must be finite numbers")
             return v

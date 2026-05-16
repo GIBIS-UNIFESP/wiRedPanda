@@ -6,6 +6,7 @@ Just tests the welcome message + first command flow
 
 import asyncio
 import sys
+import traceback
 
 from beartype import beartype
 from pydantic import BaseModel, ConfigDict, Field
@@ -86,8 +87,6 @@ async def main() -> bool:
 
     except Exception as e:
         print(f"❌ Exception during test: {e}")
-        import traceback
-
         traceback.print_exc()
         return False
 
