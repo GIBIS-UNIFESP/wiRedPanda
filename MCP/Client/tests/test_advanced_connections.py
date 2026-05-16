@@ -10,6 +10,8 @@ Tests for advanced connection and circuit lifecycle commands:
 MCP test implementation
 """
 
+from typing import Awaitable, Callable, List
+
 from beartype import beartype
 
 from tests.mcp_test_base import MCPTestBase
@@ -18,23 +20,14 @@ from tests.mcp_test_base import MCPTestBase
 class AdvancedConnectionTests(MCPTestBase):
     """Tests for advanced connection operations and circuit lifecycle"""
 
-    async def run_category_tests(self) -> bool:
-        tests = [
+    CATEGORY_NAME = "ADVANCED CONNECTION"
+
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_split_connection,
             self.test_close_circuit,
             self.test_close_circuit_multi_tab,
         ]
-
-        print("\n" + "=" * 60)
-        print("RUNNING ADVANCED CONNECTION TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     @beartype
     async def test_split_connection(self) -> bool:
@@ -53,10 +46,7 @@ class AdvancedConnectionTests(MCPTestBase):
             return False
 
         # Connect them
-        resp = await self.send_command(
-            "connect_elements",
-            {"source_id": input_id, "source_port": 0, "target_id": output_id, "target_port": 0},
-        )
+        resp = await self.connect_elements(input_id, 0, output_id, 0)
         all_passed &= await self.assert_success(resp, "Connect input to output for split")
 
         # Verify connection exists
@@ -67,17 +57,7 @@ class AdvancedConnectionTests(MCPTestBase):
             return False
 
         # Split the connection at midpoint
-        resp = await self.send_command(
-            "split_connection",
-            {
-                "source_id": input_id,
-                "source_port": 0,
-                "target_id": output_id,
-                "target_port": 0,
-                "x": 250.0,
-                "y": 200.0,
-            },
-        )
+        resp = await self.split_connection(input_id, 0, output_id, 0, 250.0, 200.0)
         all_passed &= await self.assert_success(resp, "Split connection")
 
         # After split, we should have more connections than before (node inserted)
@@ -108,17 +88,7 @@ class AdvancedConnectionTests(MCPTestBase):
             all_passed = False
 
         # Test split on nonexistent connection
-        resp = await self.send_command(
-            "split_connection",
-            {
-                "source_id": 99999,
-                "source_port": 0,
-                "target_id": 99998,
-                "target_port": 0,
-                "x": 250.0,
-                "y": 200.0,
-            },
-        )
+        resp = await self.split_connection(99999, 0, 99998, 0, 250.0, 200.0)
         all_passed &= await self.assert_failure(resp, "Split nonexistent connection")
 
         return all_passed

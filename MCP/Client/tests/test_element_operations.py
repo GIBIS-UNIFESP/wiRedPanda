@@ -12,7 +12,7 @@ Tests for element management functionality including:
 MCP test implementation
 """
 
-from typing import List, Optional
+from typing import Awaitable, Callable, List, Optional
 
 from beartype import beartype
 
@@ -23,30 +23,16 @@ from tests.mcp_test_base import MCPTestBase
 class ElementOperationTests(MCPTestBase):
     """Tests for element operations and management"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all element operation tests
+    CATEGORY_NAME = "ELEMENT OPERATIONS"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_element_operations,
             self.test_element_creation,
             self.test_element_listing,
             self.test_element_deletion,
             self.test_element_management_commands,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING ELEMENT OPERATIONS TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations

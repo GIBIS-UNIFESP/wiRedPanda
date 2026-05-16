@@ -12,14 +12,18 @@ covering properties added in the MCP feature parity update:
 - Enhanced list_elements response fields
 """
 
+from typing import Awaitable, Callable, List
+
 from tests.mcp_test_base import MCPTestBase
 
 
 class ElementPropertiesTests(MCPTestBase):
     """Tests for extended element property support"""
 
-    async def run_category_tests(self) -> bool:
-        tests = [
+    CATEGORY_NAME = "ELEMENT PROPERTIES"
+
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_delay_property,
             self.test_trigger_property,
             self.test_volume_property,
@@ -28,17 +32,6 @@ class ElementPropertiesTests(MCPTestBase):
             self.test_appearance_index_property,
             self.test_list_elements_extended,
         ]
-
-        print("\n" + "=" * 60)
-        print("RUNNING ELEMENT PROPERTIES TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     async def test_delay_property(self) -> bool:
         """Test setting delay on a Clock element."""

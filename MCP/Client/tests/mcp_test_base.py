@@ -10,9 +10,10 @@ sibling ``tests.*`` packages and the import graph is acyclic.
 """
 
 import asyncio
+import os
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple
 
 from beartype import beartype
 
@@ -24,7 +25,22 @@ sys.path.insert(0, "..")
 
 
 class MCPTestBase(ABC):
-    """Abstract base class for all MCP test categories"""
+    """Abstract base class for all MCP test categories.
+
+    Concrete subclasses provide:
+
+      - ``CATEGORY_NAME`` — string used in the "🧪 RUNNING <NAME> TESTS"
+        banner that ``run_category_tests`` prints before the run.
+      - ``tests`` — method returning an ordered list of the test-method
+        callables to execute (each is an ``async`` method on ``self``
+        returning ``bool``).
+    """
+
+    CATEGORY_NAME: str = ""
+
+    @abstractmethod
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        """Return the ordered list of test-method callables for this category."""
 
     @beartype
     def __init__(self, runner: MCPTestRunner) -> None:
@@ -128,6 +144,124 @@ class MCPTestBase(ABC):
         input_id = await self.create_element_checked("InputButton", 100, 100, f"{test_name}: Create input")
         output_id = await self.create_element_checked("Led", 300, 100, f"{test_name}: Create output")
         return input_id, output_id
+
+    async def connect_elements(
+        self, source_id: int, source_port: int, target_id: int, target_port: int
+    ) -> MCPResponse:
+        """Send a ``connect_elements`` MCP request with explicit port indices."""
+        return await self.send_command(
+            "connect_elements",
+            {
+                "source_id": source_id,
+                "source_port": source_port,
+                "target_id": target_id,
+                "target_port": target_port,
+            },
+        )
+
+    async def split_connection(
+        self,
+        source_id: int,
+        source_port: int,
+        target_id: int,
+        target_port: int,
+        x: float,
+        y: float,
+    ) -> MCPResponse:
+        """Send a ``split_connection`` MCP request with the given split point."""
+        return await self.send_command(
+            "split_connection",
+            {
+                "source_id": source_id,
+                "source_port": source_port,
+                "target_id": target_id,
+                "target_port": target_port,
+                "x": x,
+                "y": y,
+            },
+        )
+
+    async def list_elements_or_none(self, test_name: str) -> Optional[List[Dict[str, Any]]]:
+        """Send ``list_elements``, assert success, and return the elements list (or ``None``).
+
+        Combines the recurring ``send_command`` → ``assert_success`` →
+        ``get_response_result`` → ``result["elements"]`` chain. Returns ``None``
+        if the request failed or the response had no ``elements`` key — callers
+        can short-circuit on that single None check.
+        """
+        resp = await self.send_command("list_elements", {})
+        if not await self.assert_success(resp, test_name):
+            return None
+        result = await self.get_response_result(resp)
+        if not result or "elements" not in result:
+            return None
+        return result["elements"]
+
+    async def create_test_ic(
+        self, name: str = "test_ic", description: str = "Test IC created by test suite"
+    ) -> MCPResponse:
+        """Send a ``create_ic`` request and log a friendly success/failure line.
+
+        "File already exists" is treated as success because IC tests run repeatedly
+        against the same temp directory and the second run shouldn't be a failure
+        signal. Returns the raw :class:`MCPResponse` so callers can branch further
+        on the actual outcome if they care.
+        """
+        resp = await self.send_command("create_ic", {"name": name, "description": description})
+        if resp.success:
+            self.infrastructure.output.success("✅ create_ic command successful")
+        elif "already exists" in str(resp.error):
+            self.infrastructure.output.success(f"✅ create_ic handled existing file: {resp.error}")
+        else:
+            print(f"❌ create_ic failed: {resp.error}")
+        return resp
+
+    async def setup_basic_ic_circuit(self) -> Optional[Tuple[int, int, int]]:
+        """Build an IC-ready 3-element chain: InputButton -> Not -> Led, wired source-to-sink.
+
+        Cleans up any stale ``test_ic.panda`` file, creates the three elements with
+        the labels expected by IC-workflow tests (``IC_Input``/``IC_Buffer``/
+        ``IC_Output``), then connects InputButton[0] → Not[0] → Led[0].
+
+        Returns ``(input_id, buffer_id, output_id)`` on success, or ``None`` if any
+        element creation or connection fails. Callers should treat ``None`` as a
+        test setup failure and skip the rest of the test body.
+        """
+        test_ic_file = "test_ic.panda"
+        if os.path.exists(test_ic_file):
+            os.remove(test_ic_file)
+            print("🧹 Cleaned up existing test IC file")
+
+        input_id = await self.create_element_checked(
+            "InputButton", 100.0, 100.0, "create IC input", label="IC_Input"
+        )
+        buffer_id = await self.create_element_checked(
+            "Not", 200.0, 100.0, "create IC logic gate", label="IC_Buffer"
+        )
+        output_id = await self.create_element_checked(
+            "Led", 300.0, 100.0, "create IC output", label="IC_Output"
+        )
+        if not input_id or not buffer_id or not output_id:
+            return None
+
+        for source_id, source_port, target_id, target_port in (
+            (input_id, 0, buffer_id, 0),
+            (buffer_id, 0, output_id, 0),
+        ):
+            connect_resp = await self.send_command(
+                "connect_elements",
+                {
+                    "source_id": source_id,
+                    "source_port": source_port,
+                    "target_id": target_id,
+                    "target_port": target_port,
+                },
+            )
+            if not connect_resp.success:
+                print(f"❌ IC test setup failed - could not connect elements: {connect_resp.error}")
+                return None
+
+        return input_id, buffer_id, output_id
 
     async def validate_truth_table(
         self, inputs: List[int], outputs: List[int], truth_table: List[Dict[str, Any]], test_name: str
@@ -256,10 +390,19 @@ class MCPTestBase(ABC):
 
         return final_result
 
-    @abstractmethod
     async def run_category_tests(self) -> bool:
-        """Run all tests in this category
+        """Print the category banner and run every test from :meth:`tests`.
 
         Returns:
-            bool: True if all tests passed, False otherwise
+            bool: True if every test method returned True, False otherwise.
         """
+        print("\n" + "=" * 60)
+        print(f"🧪 RUNNING {self.CATEGORY_NAME} TESTS")
+        print("=" * 60)
+
+        category_success = True
+        for test in self.tests():
+            if not await self.run_test_method(test):
+                category_success = False
+
+        return category_success

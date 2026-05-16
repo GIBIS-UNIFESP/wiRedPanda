@@ -13,7 +13,7 @@ MCP test implementation
 """
 
 import time
-from typing import Any, Dict, List, Union
+from typing import Any, Awaitable, Callable, Dict, List, Union
 
 from beartype import beartype
 
@@ -24,25 +24,15 @@ from tests.mcp_test_base import MCPTestBase
 class SequentialTests(MCPTestBase):
     """Tests for advanced sequential logic behavior"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all sequential logic tests
+    CATEGORY_NAME = "SEQUENTIAL LOGIC"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_multi_clock_dual_domain_systems,
             self.test_multi_clock_gating_control,
             self.test_power_on_reset_circuit_validation,
             self.test_reset_timing_synchronization,
         ]
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     @beartype
     async def test_multi_clock_dual_domain_systems(self) -> bool:

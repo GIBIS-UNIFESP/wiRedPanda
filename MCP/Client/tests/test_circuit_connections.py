@@ -12,6 +12,8 @@ Tests for circuit connection functionality including:
 MCP test implementation
 """
 
+from typing import Awaitable, Callable, List
+
 from beartype import beartype
 
 # Import base infrastructure
@@ -21,29 +23,15 @@ from tests.mcp_test_base import MCPTestBase
 class CircuitConnectionTests(MCPTestBase):
     """Tests for circuit connection operations"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all circuit connection tests
+    CATEGORY_NAME = "CIRCUIT CONNECTION"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_circuit_connections,
             self.test_connection_basic,
             self.test_connection_error_handling,
             self.test_connection_by_label,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING CIRCUIT CONNECTION TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations
@@ -69,15 +57,7 @@ class CircuitConnectionTests(MCPTestBase):
             return False
 
         # First establish a connection for disconnect testing
-        resp = await self.send_command(
-            "connect_elements",
-            {
-                "source_id": input_id,
-                "source_port": 0,
-                "target_id": gate_id,
-                "target_port": 0,
-            },
-        )
+        resp = await self.connect_elements(input_id, 0, gate_id, 0)
         all_passed &= await self.assert_success(resp, "Create connection for disconnect test")
 
         # Test disconnect functionality

@@ -13,6 +13,7 @@ MCP test implementation
 import asyncio
 import os
 import tempfile
+from typing import Awaitable, Callable, List
 
 from beartype import beartype
 
@@ -23,23 +24,13 @@ from tests.mcp_test_base import MCPTestBase
 class IntegrationWorkflowTests(MCPTestBase):
     """Tests for end-to-end integration workflows"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all integration workflow tests
+    CATEGORY_NAME = "INTEGRATION WORKFLOW"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_simple_workflow,
             self.test_fixed_issues,
         ]
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     @beartype
     async def test_simple_workflow(self) -> bool:
@@ -58,15 +49,7 @@ class IntegrationWorkflowTests(MCPTestBase):
             return False
 
         # Connect them
-        resp = await self.send_command(
-            "connect_elements",
-            {
-                "source_id": input_id,
-                "source_port": 0,
-                "target_id": output_id,
-                "target_port": 0,
-            },
-        )
+        resp = await self.connect_elements(input_id, 0, output_id, 0)
         all_passed &= await self.assert_success(resp, "Connect input to output")
 
         # Start simulation

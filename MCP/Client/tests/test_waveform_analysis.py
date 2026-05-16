@@ -16,24 +16,27 @@ MCP test implementation
 
 import os
 import time
-from typing import Dict, List, Union
+from typing import Awaitable, Callable, Dict, List, Union
 
 from beartype import beartype
 
 # Import base infrastructure
 from tests.mcp_test_base import MCPTestBase
+from tests.mcp_test_fixtures import (
+    BASIC_NOT_CIRCUIT,
+    D_LATCH_CIRCUIT,
+    MULTI_SIGNAL_CIRCUIT,
+    SIMPLE_INPUT_OUTPUT_CIRCUIT,
+)
 
 
 class WaveformAnalysisTests(MCPTestBase):
     """Tests for waveform generation, timing analysis, and signal behavior"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all waveform analysis tests
+    CATEGORY_NAME = "WAVEFORM ANALYSIS"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_waveform_generation_capability,
             self.test_waveform_timing_validation,
             self.test_waveform_pattern_recognition,
@@ -42,17 +45,6 @@ class WaveformAnalysisTests(MCPTestBase):
             self.test_waveform_dlatch_sequential_behavior,
             self.test_waveform_export_formats,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING WAVEFORM ANALYSIS TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Method implementations
@@ -71,15 +63,7 @@ class WaveformAnalysisTests(MCPTestBase):
 
         # Create a simple circuit for waveform testing
         # Create a controlled input and output for waveform generation
-        waveform_circuit = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "x": 100, "y": 100, "label": "INPUT"},
-                {"id": 2, "type": "Led", "x": 300, "y": 100, "label": "OUT"},
-            ],
-            "connections": [
-                {"source": 1, "target": 2, "source_port": 0, "target_port": 0},
-            ],
-        }
+        waveform_circuit = SIMPLE_INPUT_OUTPUT_CIRCUIT
 
         mapping = await self.create_circuit_from_spec(waveform_circuit)
 
@@ -161,15 +145,7 @@ class WaveformAnalysisTests(MCPTestBase):
 
         # Create a simple circuit for timing waveform testing
         # Create waveform timing test circuit
-        timing_circuit = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "x": 100, "y": 100, "label": "INPUT"},
-                {"id": 2, "type": "Led", "x": 300, "y": 100, "label": "OUT"},
-            ],
-            "connections": [
-                {"source": 1, "target": 2, "source_port": 0, "target_port": 0},
-            ],
-        }
+        timing_circuit = SIMPLE_INPUT_OUTPUT_CIRCUIT
 
         mapping = await self.create_circuit_from_spec(timing_circuit)
 
@@ -283,15 +259,7 @@ class WaveformAnalysisTests(MCPTestBase):
 
         # Create a simple circuit for pattern recognition testing
         # Create pattern recognition test circuit
-        pattern_circuit = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "x": 100, "y": 100, "label": "INPUT"},
-                {"id": 2, "type": "Led", "x": 300, "y": 100, "label": "OUT"},
-            ],
-            "connections": [
-                {"source": 1, "target": 2, "source_port": 0, "target_port": 0},
-            ],
-        }
+        pattern_circuit = SIMPLE_INPUT_OUTPUT_CIRCUIT
 
         mapping = await self.create_circuit_from_spec(pattern_circuit)
 
@@ -412,24 +380,7 @@ class WaveformAnalysisTests(MCPTestBase):
         print("Testing multi-signal waveform generation...")
 
         # Create more complex circuit for multi-signal waveform testing
-        multi_signal_circuit = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "x": 50, "y": 100, "label": "A"},
-                {"id": 2, "type": "InputButton", "x": 50, "y": 200, "label": "B"},
-                {"id": 3, "type": "And", "x": 200, "y": 150, "label": "AND_GATE"},
-                {"id": 4, "type": "Or", "x": 200, "y": 250, "label": "OR_GATE"},
-                {"id": 5, "type": "Led", "x": 350, "y": 150, "label": "AND_OUT"},
-                {"id": 6, "type": "Led", "x": 350, "y": 250, "label": "OR_OUT"},
-            ],
-            "connections": [
-                {"source": 1, "target": 3, "source_port": 0, "target_port": 0},  # A -> AND
-                {"source": 2, "target": 3, "source_port": 0, "target_port": 1},  # B -> AND
-                {"source": 1, "target": 4, "source_port": 0, "target_port": 0},  # A -> OR
-                {"source": 2, "target": 4, "source_port": 0, "target_port": 1},  # B -> OR
-                {"source": 3, "target": 5, "source_port": 0, "target_port": 0},  # AND -> LED
-                {"source": 4, "target": 6, "source_port": 0, "target_port": 0},  # OR -> LED
-            ],
-        }
+        multi_signal_circuit = MULTI_SIGNAL_CIRCUIT
 
         mapping = await self.create_circuit_from_spec(multi_signal_circuit)
 
@@ -547,17 +498,7 @@ class WaveformAnalysisTests(MCPTestBase):
         print("\n--- NOT Gate Waveform Analysis ---")
 
         # Create NOT gate circuit
-        not_circuit = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "x": 0, "y": 50, "label": "INPUT"},
-                {"id": 2, "type": "Not", "x": 100, "y": 50, "label": "NOT_GATE"},
-                {"id": 3, "type": "Led", "x": 200, "y": 50, "label": "OUTPUT"},
-            ],
-            "connections": [
-                {"source": 1, "target": 2, "source_port": 0, "target_port": 0},
-                {"source": 2, "target": 3, "source_port": 0, "target_port": 0},
-            ],
-        }
+        not_circuit = BASIC_NOT_CIRCUIT
 
         mapping = await self.create_circuit_from_spec(not_circuit)
         if len(mapping) == 3:
@@ -633,21 +574,7 @@ class WaveformAnalysisTests(MCPTestBase):
         print("\n--- D Latch Waveform Analysis ---")
 
         # Create D Latch circuit
-        dlatch_circuit = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "x": 0, "y": 50, "label": "D"},
-                {"id": 2, "type": "InputButton", "x": 0, "y": 100, "label": "EN"},
-                {"id": 3, "type": "DLatch", "x": 150, "y": 75, "label": "D_LATCH"},
-                {"id": 4, "type": "Led", "x": 300, "y": 60, "label": "Q"},
-                {"id": 5, "type": "Led", "x": 300, "y": 90, "label": "Q_NOT"},
-            ],
-            "connections": [
-                {"source": 1, "target": 3, "source_port": 0, "target_port": 0},  # D → DLatch.D
-                {"source": 2, "target": 3, "source_port": 0, "target_port": 1},  # EN → DLatch.EN
-                {"source": 3, "target": 4, "source_port": 0, "target_port": 0},  # DLatch.Q → LED
-                {"source": 3, "target": 5, "source_port": 1, "target_port": 0},  # DLatch.Q̄ → LED
-            ],
-        }
+        dlatch_circuit = D_LATCH_CIRCUIT
 
         mapping = await self.create_circuit_from_spec(dlatch_circuit)
         if len(mapping) == 5:
@@ -750,21 +677,7 @@ class WaveformAnalysisTests(MCPTestBase):
         print("\n--- Waveform Export Functionality Test ---")
 
         # Create D Latch circuit for export testing
-        dlatch_circuit = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "x": 0, "y": 50, "label": "D"},
-                {"id": 2, "type": "InputButton", "x": 0, "y": 100, "label": "EN"},
-                {"id": 3, "type": "DLatch", "x": 150, "y": 75, "label": "D_LATCH"},
-                {"id": 4, "type": "Led", "x": 300, "y": 60, "label": "Q"},
-                {"id": 5, "type": "Led", "x": 300, "y": 90, "label": "Q_NOT"},
-            ],
-            "connections": [
-                {"source": 1, "target": 3, "source_port": 0, "target_port": 0},  # D → DLatch.D
-                {"source": 2, "target": 3, "source_port": 0, "target_port": 1},  # EN → DLatch.EN
-                {"source": 3, "target": 4, "source_port": 0, "target_port": 0},  # DLatch.Q → LED
-                {"source": 3, "target": 5, "source_port": 1, "target_port": 0},  # DLatch.Q̄ → LED
-            ],
-        }
+        dlatch_circuit = D_LATCH_CIRCUIT
 
         mapping = await self.create_circuit_from_spec(dlatch_circuit)
         if len(mapping) == 5:

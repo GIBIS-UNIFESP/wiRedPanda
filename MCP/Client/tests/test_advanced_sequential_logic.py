@@ -13,24 +13,27 @@ MCP test implementation
 """
 
 import time
-from typing import Any, Dict, List, Union
+from typing import Any, Awaitable, Callable, Dict, List, Union
 
 from beartype import beartype
 
 # Import base infrastructure
 from tests.mcp_test_base import MCPTestBase
+from tests.mcp_test_fixtures import (
+    D_FLIP_FLOP_CIRCUIT,
+    JK_FLIP_FLOP_CIRCUIT,
+    SR_LATCH_CIRCUIT,
+    T_FLIP_FLOP_CIRCUIT,
+)
 
 
 class AdvancedSequentialLogicTests(MCPTestBase):
     """Tests for complex sequential logic elements and timing behavior"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all advanced sequential logic tests
+    CATEGORY_NAME = "ADVANCED SEQUENTIAL LOGIC"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_sequential_sr_latch_validation,
             self.test_sequential_dflipflop_validation,
             self.test_jk_flipflop_state_table_validation,
@@ -38,17 +41,6 @@ class AdvancedSequentialLogicTests(MCPTestBase):
             self.test_setup_hold_timing_validation,
             self.test_critical_path_timing_analysis,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING ADVANCED SEQUENTIAL LOGIC TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations
@@ -63,37 +55,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
 
         # Test SR Latch (Set-Reset Latch)
         print("\nTesting SR Latch...")  # SR Latch using NOR gates: Q = ~(R + ~Q), ~Q = ~(S + Q)
-        sr_latch_circuit = {
-            "elements": [
-                # Inputs
-                {"id": 1, "type": "InputButton", "x": 50, "y": 100, "label": "S"},  # Set
-                {"id": 2, "type": "InputButton", "x": 50, "y": 200, "label": "R"},  # Reset
-                {"id": 3, "type": "InputButton", "x": 50, "y": 300, "label": "EN"},  # Enable (Clock)
-                # Logic gates for SR Latch with Enable
-                {"id": 4, "type": "And", "x": 150, "y": 100, "label": "S_AND_EN"},  # S AND EN
-                {"id": 5, "type": "And", "x": 150, "y": 200, "label": "R_AND_EN"},  # R AND EN
-                {"id": 6, "type": "Nor", "x": 250, "y": 120, "label": "NOR1"},  # First NOR
-                {"id": 7, "type": "Nor", "x": 250, "y": 180, "label": "NOR2"},  # Second NOR
-                # Outputs
-                {"id": 8, "type": "Led", "x": 350, "y": 120, "label": "Q"},  # Q output
-                {"id": 9, "type": "Led", "x": 350, "y": 180, "label": "Q_NOT"},  # ~Q output
-            ],
-            "connections": [
-                # Input connections
-                {"source": 1, "target": 4, "source_port": 0, "target_port": 0},  # S -> S_AND_EN
-                {"source": 3, "target": 4, "source_port": 0, "target_port": 1},  # EN -> S_AND_EN
-                {"source": 2, "target": 5, "source_port": 0, "target_port": 0},  # R -> R_AND_EN
-                {"source": 3, "target": 5, "source_port": 0, "target_port": 1},  # EN -> R_AND_EN
-                # Cross-coupled NOR gates (SR Latch core)
-                {"source": 5, "target": 6, "source_port": 0, "target_port": 0},  # R_AND_EN -> NOR1
-                {"source": 7, "target": 6, "source_port": 0, "target_port": 1},  # NOR2 -> NOR1 (feedback)
-                {"source": 4, "target": 7, "source_port": 0, "target_port": 0},  # S_AND_EN -> NOR2
-                {"source": 6, "target": 7, "source_port": 0, "target_port": 1},  # NOR1 -> NOR2 (feedback)
-                # Output connections
-                {"source": 6, "target": 8, "source_port": 0, "target_port": 0},  # NOR1 -> Q
-                {"source": 7, "target": 9, "source_port": 0, "target_port": 0},  # NOR2 -> ~Q
-            ],
-        }
+        sr_latch_circuit = SR_LATCH_CIRCUIT
 
         mapping = await self.create_circuit_from_spec(sr_latch_circuit)
 
@@ -191,21 +153,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
             return all_passed
 
         # Use native DFlipFlop element
-        dff_circuit = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "x": 50, "y": 100, "label": "D"},  # Data
-                {"id": 2, "type": "InputButton", "x": 50, "y": 200, "label": "CLK"},  # Clock
-                {"id": 3, "type": "DFlipFlop", "x": 200, "y": 150, "label": "DFF"},  # D Flip-Flop
-                {"id": 4, "type": "Led", "x": 350, "y": 130, "label": "Q"},  # Q output
-                {"id": 5, "type": "Led", "x": 350, "y": 170, "label": "Q_NOT"},  # ~Q output
-            ],
-            "connections": [
-                {"source": 1, "target": 3, "source_port": 0, "target_port": 0},  # D -> DFF.D
-                {"source": 2, "target": 3, "source_port": 0, "target_port": 1},  # CLK -> DFF.CLK
-                {"source": 3, "target": 4, "source_port": 0, "target_port": 0},  # DFF.Q -> LED
-                {"source": 3, "target": 5, "source_port": 1, "target_port": 0},  # DFF.~Q -> LED
-            ],
-        }
+        dff_circuit = D_FLIP_FLOP_CIRCUIT
 
         # Clear the test element first
         mapping = await self.create_circuit_from_spec(dff_circuit)
@@ -281,23 +229,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         print("Testing JK flip-flop toggle functionality...")
 
         # Test: K Flip-Flop State Table Validation
-        jk_circuit_spec: Dict[str, Any] = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "label": "J", "x": 0, "y": 0},
-                {"id": 2, "type": "InputButton", "label": "K", "x": 0, "y": 100},
-                {"id": 3, "type": "InputButton", "label": "CLK", "x": 0, "y": 200},
-                {"id": 4, "type": "JKFlipFlop", "label": "JK_FF", "x": 200, "y": 100},
-                {"id": 5, "type": "Led", "label": "Q", "x": 400, "y": 50},
-                {"id": 6, "type": "Led", "label": "Q_NOT", "x": 400, "y": 150},
-            ],
-            "connections": [
-                {"source": 1, "target": 4, "source_port": 0, "target_port": 0},  # J -> JK_FF.J (port 0)
-                {"source": 2, "target": 4, "source_port": 0, "target_port": 2},  # K -> JK_FF.K (port 2)
-                {"source": 3, "target": 4, "source_port": 0, "target_port": 1},  # CLK -> JK_FF.CLK (port 1)
-                {"source": 4, "target": 5, "source_port": 0, "target_port": 0},  # JK_FF.Q -> Q
-                {"source": 4, "target": 6, "source_port": 1, "target_port": 0},  # JK_FF.Q_NOT -> Q_NOT
-            ],
-        }
+        jk_circuit_spec: Dict[str, Any] = JK_FLIP_FLOP_CIRCUIT
 
         # JK Flip-Flop State Table
         jk_state_table: List[Dict[str, Any]] = [
@@ -441,19 +373,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         print("Testing T flip-flop divide-by-2 operation...")
 
         # Test: T Flip-Flop Divide-by-2 Counter
-        t_circuit_spec: Dict[str, Any] = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "label": "T", "x": 0, "y": 0},
-                {"id": 2, "type": "InputButton", "label": "CLK", "x": 0, "y": 100},
-                {"id": 3, "type": "TFlipFlop", "label": "T_FF", "x": 200, "y": 50},
-                {"id": 4, "type": "Led", "label": "Q_OUT", "x": 400, "y": 50},
-            ],
-            "connections": [
-                {"source": 1, "target": 3, "source_port": 0, "target_port": 0},  # T -> T_FF.T (port 0)
-                {"source": 2, "target": 3, "source_port": 0, "target_port": 1},  # CLK -> T_FF.CLK (port 1)
-                {"source": 3, "target": 4, "source_port": 0, "target_port": 0},  # T_FF.Q -> Q_OUT
-            ],
-        }
+        t_circuit_spec: Dict[str, Any] = T_FLIP_FLOP_CIRCUIT
 
         element_mapping = await self.create_circuit_from_spec(t_circuit_spec)
         if element_mapping:

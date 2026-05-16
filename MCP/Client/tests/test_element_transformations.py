@@ -13,6 +13,8 @@ Tests for element transformation and configuration commands:
 MCP test implementation
 """
 
+from typing import Awaitable, Callable, List
+
 from beartype import beartype
 
 from tests.mcp_test_base import MCPTestBase
@@ -21,8 +23,10 @@ from tests.mcp_test_base import MCPTestBase
 class ElementTransformationTests(MCPTestBase):
     """Tests for element transformation operations"""
 
-    async def run_category_tests(self) -> bool:
-        tests = [
+    CATEGORY_NAME = "ELEMENT TRANSFORMATION"
+
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_rotate_element,
             self.test_flip_element,
             self.test_morph_element,
@@ -31,17 +35,6 @@ class ElementTransformationTests(MCPTestBase):
             self.test_change_output_size,
             self.test_toggle_truth_table_output,
         ]
-
-        print("\n" + "=" * 60)
-        print("RUNNING ELEMENT TRANSFORMATION TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     @beartype
     async def test_rotate_element(self) -> bool:

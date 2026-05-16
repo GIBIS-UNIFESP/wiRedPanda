@@ -9,49 +9,33 @@ Circuit specifications, truth tables, and test data for MCP tests.
 from typing import Any, Dict
 
 # ==================== BASIC LOGIC GATE CIRCUITS ====================
-# Basic logic gate circuit definitions
+# Basic two-input gate circuits — A and B drive the gate, LED reads the result.
 
-BASIC_AND_CIRCUIT = {
-    "elements": [
-        {"id": 1, "type": "InputButton", "x": 100, "y": 100, "label": "A"},
-        {"id": 2, "type": "InputButton", "x": 100, "y": 200, "label": "B"},
-        {"id": 3, "type": "And", "x": 300, "y": 150},
-        {"id": 4, "type": "Led", "x": 500, "y": 150, "label": "OUT"},
-    ],
-    "connections": [
-        {"source": 1, "target": 3, "source_port": 0, "target_port": 0},
-        {"source": 2, "target": 3, "source_port": 0, "target_port": 1},
-        {"source": 3, "target": 4, "source_port": 0, "target_port": 0},
-    ],
-}
 
-BASIC_OR_CIRCUIT = {
-    "elements": [
-        {"id": 1, "type": "InputButton", "x": 100, "y": 100, "label": "A"},
-        {"id": 2, "type": "InputButton", "x": 100, "y": 200, "label": "B"},
-        {"id": 3, "type": "Or", "x": 300, "y": 150},
-        {"id": 4, "type": "Led", "x": 500, "y": 150, "label": "OUT"},
-    ],
-    "connections": [
-        {"source": 1, "target": 3, "source_port": 0, "target_port": 0},
-        {"source": 2, "target": 3, "source_port": 0, "target_port": 1},
-        {"source": 3, "target": 4, "source_port": 0, "target_port": 0},
-    ],
-}
+def make_two_input_gate_circuit(gate_type: str) -> Dict[str, Any]:
+    """Build a circuit with A,B inputs feeding a two-input gate of the given type.
 
-BASIC_XOR_CIRCUIT = {
-    "elements": [
-        {"id": 1, "type": "InputButton", "x": 100, "y": 100, "label": "A"},
-        {"id": 2, "type": "InputButton", "x": 100, "y": 200, "label": "B"},
-        {"id": 3, "type": "Xor", "x": 300, "y": 150},
-        {"id": 4, "type": "Led", "x": 500, "y": 150, "label": "OUT"},
-    ],
-    "connections": [
-        {"source": 1, "target": 3, "source_port": 0, "target_port": 0},
-        {"source": 2, "target": 3, "source_port": 0, "target_port": 1},
-        {"source": 3, "target": 4, "source_port": 0, "target_port": 0},
-    ],
-}
+    The gate's output drives an LED. Useful for truth-table validation tests
+    that just need to swap the gate type (And, Or, Xor, Nand, ...).
+    """
+    return {
+        "elements": [
+            {"id": 1, "type": "InputButton", "x": 100, "y": 100, "label": "A"},
+            {"id": 2, "type": "InputButton", "x": 100, "y": 200, "label": "B"},
+            {"id": 3, "type": gate_type,    "x": 300, "y": 150},
+            {"id": 4, "type": "Led",         "x": 500, "y": 150, "label": "OUT"},
+        ],
+        "connections": [
+            {"source": 1, "target": 3, "source_port": 0, "target_port": 0},
+            {"source": 2, "target": 3, "source_port": 0, "target_port": 1},
+            {"source": 3, "target": 4, "source_port": 0, "target_port": 0},
+        ],
+    }
+
+
+BASIC_AND_CIRCUIT = make_two_input_gate_circuit("And")
+BASIC_OR_CIRCUIT = make_two_input_gate_circuit("Or")
+BASIC_XOR_CIRCUIT = make_two_input_gate_circuit("Xor")
 
 # ==================== SIMPLE CIRCUITS ====================
 # Simple circuit definitions
@@ -144,10 +128,12 @@ JK_FLIP_FLOP_CIRCUIT = {
         {"id": 5, "type": "Led", "label": "Q", "x": 400, "y": 50},
         {"id": 6, "type": "Led", "label": "Q_NOT", "x": 400, "y": 150},
     ],
+    # wiRedPanda's JKFlipFlop element exposes inputs in (J, CLK, K) order on
+    # ports 0, 1, 2 respectively — not the lexical J/K/CLK order.
     "connections": [
         {"source": 1, "target": 4, "source_port": 0, "target_port": 0},  # J -> JK_FF.J (port 0)
-        {"source": 2, "target": 4, "source_port": 0, "target_port": 1},  # K -> JK_FF.K (port 1)
-        {"source": 3, "target": 4, "source_port": 0, "target_port": 2},  # CLK -> JK_FF.CLK (port 2)
+        {"source": 3, "target": 4, "source_port": 0, "target_port": 1},  # CLK -> JK_FF.CLK (port 1)
+        {"source": 2, "target": 4, "source_port": 0, "target_port": 2},  # K -> JK_FF.K (port 2)
         {"source": 4, "target": 5, "source_port": 0, "target_port": 0},  # JK_FF.Q -> Q
         {"source": 4, "target": 6, "source_port": 1, "target_port": 0},  # JK_FF.~Q -> Q_NOT
     ],
@@ -203,8 +189,8 @@ SR_LATCH_CIRCUIT = {
         # Logic gates for SR Latch with Enable
         {"id": 4, "type": "And", "x": 150, "y": 100, "label": "S_AND_EN"},  # S AND EN
         {"id": 5, "type": "And", "x": 150, "y": 200, "label": "R_AND_EN"},  # R AND EN
-        {"id": 6, "type": "Nor", "x": 250, "y": 120, "label": "NOR1"},  # First NOR
-        {"id": 7, "type": "Nor", "x": 250, "y": 180, "label": "NOR2"},  # Second NOR
+        {"id": 6, "type": "Nor", "x": 250, "y": 120, "label": "NOR1"},  # First NOR (drives Q)
+        {"id": 7, "type": "Nor", "x": 250, "y": 180, "label": "NOR2"},  # Second NOR (drives Q_NOT)
         # Outputs
         {"id": 8, "type": "Led", "x": 350, "y": 120, "label": "Q"},
         {"id": 9, "type": "Led", "x": 350, "y": 180, "label": "Q_NOT"},
@@ -215,10 +201,12 @@ SR_LATCH_CIRCUIT = {
         {"source": 3, "target": 4, "source_port": 0, "target_port": 1},  # EN -> S_AND_EN
         {"source": 2, "target": 5, "source_port": 0, "target_port": 0},  # R -> R_AND_EN
         {"source": 3, "target": 5, "source_port": 0, "target_port": 1},  # EN -> R_AND_EN
-        # Cross-coupling (feedback)
-        {"source": 4, "target": 6, "source_port": 0, "target_port": 0},  # S_AND_EN -> NOR1
+        # Cross-coupled NOR gates (SR latch core).
+        # Standard convention: R reaches the NOR that drives Q (so R=1 forces Q=0),
+        # S reaches the NOR that drives Q_NOT (so S=1 forces Q=1 via Q_NOT=0).
+        {"source": 5, "target": 6, "source_port": 0, "target_port": 0},  # R_AND_EN -> NOR1
         {"source": 7, "target": 6, "source_port": 0, "target_port": 1},  # NOR2 -> NOR1 (feedback)
-        {"source": 5, "target": 7, "source_port": 0, "target_port": 0},  # R_AND_EN -> NOR2
+        {"source": 4, "target": 7, "source_port": 0, "target_port": 0},  # S_AND_EN -> NOR2
         {"source": 6, "target": 7, "source_port": 0, "target_port": 1},  # NOR1 -> NOR2 (feedback)
         # Output connections
         {"source": 6, "target": 8, "source_port": 0, "target_port": 0},  # NOR1 -> Q

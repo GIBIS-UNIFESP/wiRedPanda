@@ -14,6 +14,7 @@ Tests for basic MCP protocol functionality
 
 import asyncio
 import json
+from typing import Awaitable, Callable, List
 
 from beartype import beartype
 
@@ -27,29 +28,15 @@ from tests.mcp_test_base import MCPTestBase
 class BasicProtocolTests(MCPTestBase):
     """Tests for basic MCP protocol functionality"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all basic protocol tests
+    CATEGORY_NAME = "BASIC PROTOCOL"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_basic_protocol,
             self.test_protocol_communication,
             self.test_error_handling,
             self.test_invalid_json_handling,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING BASIC PROTOCOL TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== TEST METHODS ====================
     # Test method implementations

@@ -13,41 +13,28 @@ Tests for logic gate functionality including:
 MCP test implementation
 """
 
-from typing import Any, Dict, List
+from typing import Any, Awaitable, Callable, Dict, List
 
 from beartype import beartype
 
 # Import base infrastructure
 from tests.mcp_test_base import MCPTestBase
+from tests.mcp_test_fixtures import make_two_input_gate_circuit
 
 
 class LogicGateTests(MCPTestBase):
     """Tests for logic gate operations and truth table validation"""
 
-    async def run_category_tests(self) -> bool:
-        """Run all logic gate tests
+    CATEGORY_NAME = "LOGIC GATE"
 
-        Returns:
-            bool: True if all tests passed, False otherwise
-        """
-        tests = [
+    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+        return [
             self.test_logic_gate_and,
             self.test_logic_gate_or,
             self.test_logic_gate_xor,
             # self.test_missing_logic_gate_types,
             # self.test_waveform_not_gate_analysis,
         ]
-
-        print("\n" + "=" * 60)
-        print("🧪 RUNNING LOGIC GATE TESTS")
-        print("=" * 60)
-
-        category_success = True
-        for test in tests:
-            if not await self.run_test_method(test):
-                category_success = False
-
-        return category_success
 
     # ==================== SHARED HELPER ====================
 
@@ -60,19 +47,7 @@ class LogicGateTests(MCPTestBase):
         """Validate a 2-input logic gate against its truth table."""
         print(f"\nTesting 2-input {gate_name}...")
 
-        circuit: Dict[str, Any] = {
-            "elements": [
-                {"id": 1, "type": "InputButton", "x": 100, "y": 100, "label": "A"},
-                {"id": 2, "type": "InputButton", "x": 100, "y": 200, "label": "B"},
-                {"id": 3, "type": gate_type, "x": 300, "y": 150},
-                {"id": 4, "type": "Led", "x": 500, "y": 150, "label": "OUT"},
-            ],
-            "connections": [
-                {"source": 1, "target": 3, "source_port": 0, "target_port": 0},
-                {"source": 2, "target": 3, "source_port": 0, "target_port": 1},
-                {"source": 3, "target": 4, "source_port": 0, "target_port": 0},
-            ],
-        }
+        circuit = make_two_input_gate_circuit(gate_type)
 
         mapping = await self.create_circuit_from_spec(circuit)
         if len(mapping) != 4:
