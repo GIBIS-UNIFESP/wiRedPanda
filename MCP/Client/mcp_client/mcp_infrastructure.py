@@ -6,19 +6,23 @@ This module provides infrastructure methods for MCP (Model Context Protocol)
 testing including setup, teardown, communication, and process management.
 """
 
+from __future__ import annotations
+
 import asyncio
 import json
 import os
 import sys
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from beartype import beartype
 
-from mcp_models import MCPResponse, create_error_response
-from mcp_output import MCPOutput
-from mcp_protocols import OrganizerProtocol
-from mcp_schema_validator import validate_command, validate_response
-from wiredpanda_bridge import ProcessManager
+from .mcp_models import MCPResponse, create_error_response
+from .mcp_output import MCPOutput
+from .mcp_schema_validator import validate_command, validate_response
+from .wiredpanda_bridge import ProcessManager
+
+if TYPE_CHECKING:
+    from .mcp_organizer import MCPTestOrganizer
 
 # Fix encoding for Windows console output
 if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
@@ -47,7 +51,7 @@ class MCPInfrastructure:
     async def start_mcp(self) -> bool:
         """Start MCP process"""
         # Try to get executable from config first, then fallback to manual search
-        from mcp_test_config import config
+        from .mcp_test_config import config
 
         executable_path = None
 
@@ -57,7 +61,9 @@ class MCPInfrastructure:
         else:
             # Fallback to manual search relative to script location
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            project_root = os.path.dirname(os.path.dirname(script_dir))  # Go up from client/ to project root
+            # script_dir is MCP/Client/mcp_client/, so the wiRedPanda repo root
+            # is three levels up (mcp_client/.. = Client/, ../.. = MCP/, ../../.. = repo).
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(script_dir)))
 
             if sys.platform == "win32":
                 # Windows paths relative to project root
@@ -220,7 +226,7 @@ class MCPInfrastructure:
     async def cleanup_circuit(
         self,
         test_name: str,
-        organizer: Optional[OrganizerProtocol] = None,
+        organizer: Optional[MCPTestOrganizer] = None,
         keep_temp_files: bool = False,
         _verbose: bool = False,
     ) -> bool:
@@ -233,7 +239,7 @@ class MCPInfrastructure:
         # Handle circuit saving/cleanup based on keep_temp_files setting
         if keep_temp_files:
             # Save current circuit to test_circuits folder before closing
-            from mcp_test_config import get_temp_files_dir
+            from .mcp_test_config import get_temp_files_dir
 
             temp_dir = get_temp_files_dir()
             circuit_filename = os.path.join(temp_dir, f"{test_name}_circuit.panda")

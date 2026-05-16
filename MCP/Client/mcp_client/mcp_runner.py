@@ -11,11 +11,11 @@ from typing import Any, Optional, cast
 
 from beartype import beartype
 
-from mcp_circuit_builder import MCPCircuitBuilder
-from mcp_infrastructure import MCPInfrastructure
-from mcp_models import TestResults
-from mcp_organizer import MCPTestOrganizer
-from mcp_validation import MCPValidation
+from .mcp_circuit_builder import MCPCircuitBuilder
+from .mcp_infrastructure import MCPInfrastructure
+from .mcp_models import TestResults
+from .mcp_organizer import MCPTestOrganizer
+from .mcp_validation import MCPValidation
 
 
 class MCPTestRunner:

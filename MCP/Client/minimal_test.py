@@ -11,9 +11,9 @@ import traceback
 from beartype import beartype
 from pydantic import BaseModel, ConfigDict, Field
 
-# mcp_infrastructure already performs the Windows stdout/stderr UTF-8 reconfigure
-# on import, so no extra setup is needed here.
-from mcp_infrastructure import MCPInfrastructure
+# mcp_client.mcp_infrastructure already performs the Windows stdout/stderr UTF-8
+# reconfigure on import, so no extra setup is needed here.
+from mcp_client.mcp_infrastructure import MCPInfrastructure
 
 
 class MCPTestConfig(BaseModel):

@@ -6,13 +6,18 @@ This module provides test organization methods for MCP (Model Context Protocol)
 testing including test management, reporting, and image export.
 """
 
+from __future__ import annotations
+
 import glob
 import os
+from typing import TYPE_CHECKING
 
 from beartype import beartype
 
-from mcp_models import TestResults
-from mcp_protocols import InfrastructureProtocol
+from .mcp_models import TestResults
+
+if TYPE_CHECKING:
+    from .mcp_infrastructure import MCPInfrastructure
 
 
 class MCPTestOrganizer:
@@ -51,14 +56,14 @@ class MCPTestOrganizer:
         self.test_results.process_issues.append(issue)
         print(f"⚠️  PROCESS ISSUE: {issue}")
 
-    async def export_circuit_image(self, test_name: str, infrastructure: InfrastructureProtocol) -> None:
+    async def export_circuit_image(self, test_name: str, infrastructure: MCPInfrastructure) -> None:
         """Export circuit image with sequential numbering"""
         if not self.export_images:
             return
 
         try:
             # Use centralized configuration for image directory
-            from mcp_test_config import get_test_images_dir
+            from .mcp_test_config import get_test_images_dir
 
             images_dir = get_test_images_dir()
 
@@ -98,7 +103,7 @@ class MCPTestOrganizer:
 
         try:
             # Get temp files directory
-            from mcp_test_config import get_temp_files_dir
+            from .mcp_test_config import get_temp_files_dir
 
             temp_dir = get_temp_files_dir()
 

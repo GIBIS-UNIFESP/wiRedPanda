@@ -695,7 +695,7 @@ class WaveformAnalysisTests(MCPTestBase):
                 self.infrastructure.output.success("✅ Waveform generated for export testing")
 
                 # Use centralized configuration for export directory
-                from mcp_test_config import get_test_images_dir
+                from mcp_client.mcp_test_config import get_test_images_dir
 
                 images_dir = get_test_images_dir()
 

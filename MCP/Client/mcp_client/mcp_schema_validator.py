@@ -13,7 +13,7 @@ import jsonschema
 from beartype import beartype
 from pydantic import ValidationError
 
-from mcp_models import MCPResponse, parse_mcp_command
+from .mcp_models import MCPResponse, parse_mcp_command
 
 
 class PydanticValidationResult(TypedDict):
@@ -49,7 +49,7 @@ class ResponseValidationResult(TypedDict):
 class MCPSchemaValidator:
     """Validates MCP commands and responses against JSON schema and Pydantic models."""
 
-    def __init__(self, schema_path: str = "../schema-mcp.json"):
+    def __init__(self, schema_path: str = "../../schema-mcp.json"):
         """Initialize validator with JSON schema file."""
         self.schema_path = Path(schema_path)
         self._schema: Optional[Dict[str, Any]] = None
@@ -299,7 +299,7 @@ class _ValidatorSingleton:
     _instance: Optional["MCPSchemaValidator"] = None
 
     @classmethod
-    def get_validator(cls, schema_path: str = "../schema-mcp.json") -> MCPSchemaValidator:
+    def get_validator(cls, schema_path: str = "../../schema-mcp.json") -> MCPSchemaValidator:
         """Get or create a validator instance."""
         if cls._instance is None:
             # Find schema file relative to this script location
@@ -316,7 +316,7 @@ class _ValidatorSingleton:
 
 
 @beartype
-def get_validator(schema_path: str = "../schema-mcp.json") -> MCPSchemaValidator:
+def get_validator(schema_path: str = "../../schema-mcp.json") -> MCPSchemaValidator:
     """Get or create a global validator instance."""
     return _ValidatorSingleton.get_validator(schema_path)
 

@@ -26,21 +26,39 @@ DEP002 = [
 ]
 
 [tool.importlinter]
-# import-linter (grimp) requires every root to be a real Python package
-# (a directory with __init__.py). Our flat-layout `mcp_*.py` modules don't
-# qualify, so we can only enforce contracts against the three real packages.
-# Cross-cutting "no top-level module imports from tests/" is enforced via the
-# grep check in CI / the pre-commit script — not here.
-root_packages = ["domain", "protocol", "tests"]
+# All MCP/Client/ modules live in real packages (__init__.py-bearing
+# directories), so grimp can walk the entire import graph and enforce
+# layering across the whole client.
+root_packages = ["mcp_client", "domain", "protocol", "tests"]
 
 [[tool.importlinter.contracts]]
-name = "domain and protocol must not import from tests/"
+name = "domain and protocol must not import from tests/ or mcp_client/"
 type = "forbidden"
 source_modules = ["domain", "protocol"]
-forbidden_modules = ["tests"]
+forbidden_modules = ["tests", "mcp_client"]
 
 [[tool.importlinter.contracts]]
 name = "domain must not depend on protocol (one-way layering)"
 type = "forbidden"
 source_modules = ["domain"]
 forbidden_modules = ["protocol"]
+
+[[tool.importlinter.contracts]]
+# Data-layer modules (pure pydantic/dataclass definitions) must not pull
+# in test infrastructure, process management, or any other client sibling.
+# They may only depend on stdlib, third-party libs, and the protocol/ +
+# domain/ packages.
+name = "mcp_client data models stay free of client infrastructure"
+type = "forbidden"
+source_modules = ["mcp_client.mcp_models"]
+forbidden_modules = [
+    "mcp_client.mcp_circuit_builder",
+    "mcp_client.mcp_infrastructure",
+    "mcp_client.mcp_organizer",
+    "mcp_client.mcp_output",
+    "mcp_client.mcp_runner",
+    "mcp_client.mcp_schema_validator",
+    "mcp_client.mcp_test_config",
+    "mcp_client.mcp_validation",
+    "mcp_client.wiredpanda_bridge",
+]

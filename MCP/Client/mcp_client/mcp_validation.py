@@ -11,11 +11,11 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 from beartype import beartype
 
 # Import for runtime use
-from mcp_infrastructure import MCPInfrastructure
+from .mcp_infrastructure import MCPInfrastructure
 
 # Import pydantic models
-from mcp_models import MCPResponse, TestResults
-from mcp_organizer import MCPTestOrganizer
+from .mcp_models import MCPResponse, TestResults
+from .mcp_organizer import MCPTestOrganizer
 
 if TYPE_CHECKING:
     pass  # All imports now done at runtime
