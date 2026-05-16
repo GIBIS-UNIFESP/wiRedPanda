@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Circuit Connections Tests
 
@@ -12,7 +11,7 @@ Tests for circuit connection functionality including:
 MCP test implementation
 """
 
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -25,7 +24,7 @@ class CircuitConnectionTests(MCPTestBase):
 
     CATEGORY_NAME = "CIRCUIT CONNECTION"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_circuit_connections,
             self.test_connection_basic,

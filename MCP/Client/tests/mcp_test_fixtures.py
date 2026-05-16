@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Test Fixtures for MCP Test Suite
 
 Circuit specifications, truth tables, and test data for MCP tests.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 # ==================== BASIC LOGIC GATE CIRCUITS ====================
 # Basic two-input gate circuits — A and B drive the gate, LED reads the result.
 
 
-def make_two_input_gate_circuit(gate_type: str) -> Dict[str, Any]:
+def make_two_input_gate_circuit(gate_type: str) -> dict[str, Any]:
     """Build a circuit with A,B inputs feeding a two-input gate of the given type.
 
     The gate's output drives an LED. Useful for truth-table validation tests
@@ -299,7 +298,7 @@ ELEMENT_TYPES_TO_TEST = [
 # Functions to generate large circuit specifications
 
 
-def create_not_chain_circuit(chain_length: int) -> Dict[str, Any]:
+def create_not_chain_circuit(chain_length: int) -> dict[str, Any]:
     """Generate a circuit with a chain of NOT gates
 
     Args:

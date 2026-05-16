@@ -7,7 +7,7 @@ testing that orchestrates all the specialized helper classes.
 """
 
 import asyncio
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 from beartype import beartype
 
@@ -75,7 +75,7 @@ class MCPTestRunner:
         self.verify_connection_exists = self.validation.verify_connection_exists
 
     @property
-    def process(self) -> Optional[asyncio.subprocess.Process]:
+    def process(self) -> asyncio.subprocess.Process | None:
         """Expose process attribute"""
         return self.infrastructure.process
 
@@ -86,7 +86,7 @@ class MCPTestRunner:
 
     @staticmethod
     @beartype
-    async def run_all_tests(test_suite: Optional[Any] = None) -> bool:
+    async def run_all_tests(test_suite: Any | None = None) -> bool:
         """Run complete test suite with process management
 
         Args:

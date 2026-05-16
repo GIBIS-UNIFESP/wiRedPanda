@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Helper Functions and Decorators for MCP Test Suite
 
@@ -8,7 +7,8 @@ Common utilities to reduce code duplication and provide consistent test patterns
 
 import functools
 import time
-from typing import Any, Callable, Dict, ParamSpec, TypeVar
+from collections.abc import Callable
+from typing import Any, ParamSpec, TypeVar
 
 # Type variables for generic decorators
 P = ParamSpec("P")
@@ -56,7 +56,7 @@ def timing_test(threshold: float, test_name: str = "") -> Callable[[Callable[P, 
     return decorator
 
 
-def circuit_test(circuit_spec: Dict[str, Any], cleanup_name: str = "") -> Callable[[Callable[P, R]], Callable[P, R]]:
+def circuit_test(circuit_spec: dict[str, Any], cleanup_name: str = "") -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Decorator to auto-setup/cleanup circuits for tests
 
     Args:

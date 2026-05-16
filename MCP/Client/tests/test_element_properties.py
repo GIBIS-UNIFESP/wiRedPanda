@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Element Properties Tests
 
@@ -12,7 +11,7 @@ covering properties added in the MCP feature parity update:
 - Enhanced list_elements response fields
 """
 
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from tests.mcp_test_base import MCPTestBase
 
@@ -22,7 +21,7 @@ class ElementPropertiesTests(MCPTestBase):
 
     CATEGORY_NAME = "ELEMENT PROPERTIES"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_delay_property,
             self.test_trigger_property,

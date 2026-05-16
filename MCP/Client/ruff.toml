@@ -1,11 +1,35 @@
 line-length = 120
 extend-exclude = [".venv", "__pycache__"]
+# Python 3.10+ baseline lets UP rules safely rewrite `Optional[X]` → `X | None`
+# (PEP 604) and `List[int]` → `list[int]` (PEP 585). 3.9 is EOL.
+target-version = "py310"
 
 [lint]
 # Ruff defaults already include F (pyflakes) and a subset of E (E4/E7/E9).
 # Add the rest to fully replace flake8: full pycodestyle (E + W) and import sorting (I).
 extend-select = [
-    "E",  # pycodestyle errors (line-too-long E501, etc.)
-    "W",  # pycodestyle warnings
-    "I",  # isort-equivalent import sorting
+    "E",     # pycodestyle errors (line-too-long E501, etc.)
+    "W",     # pycodestyle warnings
+    "I",     # isort-equivalent import sorting
+    "B",     # flake8-bugbear: real bugs (mutable defaults, loop-var capture, etc.)
+    "ASYNC", # async-correctness: blocking calls in coroutines, missing awaits
+    "UP",    # pyupgrade: modernize for the target Python version
+    "SIM",   # flake8-simplify: `if x: return True else: return False` → `return bool(x)`
+    "C4",    # flake8-comprehensions: prefer comp/genexpr over list(map(...)) etc.
+    "RUF",   # ruff-specific rules incl. RUF100 (unused noqa)
+]
+ignore = [
+    # MCP/Client/ is test infrastructure throughout. Test setup, teardown, and
+    # one-shot startup checks (executable existence, file cleanup, export
+    # verification) intentionally use blocking syscalls — they run before any
+    # other coroutine is scheduled, so there is nothing to starve. Wrapping
+    # every os.path.exists / open in asyncio.to_thread would add overhead with
+    # no real benefit. ASYNC251 (blocking time.sleep) stays enabled — that one
+    # IS a real bug because it blocks the MCP subprocess's stdin reader.
+    "ASYNC230", # blocking open() in async function
+    "ASYNC240", # blocking os.path.* in async function
+    # __all__ entries are intentionally grouped by category (with section
+    # comments like "# Core classes", "# Enums") rather than alphabetized —
+    # the grouping is more navigable for human readers.
+    "RUF022",   # unsorted __all__
 ]

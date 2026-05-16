@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 MCP Test Suite Orchestrator
 
@@ -10,7 +9,6 @@ orchestrator that loads those same modules.
 """
 
 import asyncio
-from typing import List, Optional
 
 from beartype import beartype
 
@@ -50,11 +48,11 @@ class MCPTestOrchestrator:
         self.organizer = self._runner.organizer
 
         # Test categories will be loaded dynamically
-        self.categories: List[MCPTestBase] = []
+        self.categories: list[MCPTestBase] = []
         self._load_test_categories()
 
     @property
-    def process(self) -> Optional[asyncio.subprocess.Process]:
+    def process(self) -> asyncio.subprocess.Process | None:
         """Access to the underlying MCP process"""
         return self._runner.process
 

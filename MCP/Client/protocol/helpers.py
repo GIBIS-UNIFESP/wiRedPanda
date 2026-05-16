@@ -6,7 +6,7 @@ This module contains helper functions for MCP (Model Context Protocol).
 These functions handle command parsing, response creation, and protocol utilities.
 """
 
-from typing import Any, Dict, Optional, Union, cast
+from typing import Any, cast
 
 from beartype import beartype
 
@@ -51,47 +51,47 @@ from .commands import (
 from .core import MCPResponse
 
 # Union type for command parsing
-MCPCommandTypes = Union[
-    NewCircuitCommand,
-    CloseCircuitCommand,
-    GetTabCountCommand,
-    CreateElementCommand,
-    DeleteElementCommand,
-    ConnectElementsCommand,
-    DisconnectElementsCommand,
-    SimulationControlCommand,
-    SetInputValueCommand,
-    GetOutputValueCommand,
-    ListElementsCommand,
-    SaveCircuitCommand,
-    LoadCircuitCommand,
-    ExportImageCommand,
-    CreateWaveformCommand,
-    ExportWaveformCommand,
-    CreateIcCommand,
-    InstantiateIcCommand,
-    EmbedIcCommand,
-    ExtractIcCommand,
-    ListIcsCommand,
-    MoveElementCommand,
-    SetElementPropertiesCommand,
-    RotateElementCommand,
-    FlipElementCommand,
-    UpdateElementCommand,
-    ChangeInputSizeCommand,
-    ChangeOutputSizeCommand,
-    ToggleTruthTableOutputCommand,
-    MorphElementCommand,
-    SplitConnectionCommand,
-    UndoCommand,
-    RedoCommand,
-    GetUndoStackCommand,
-    GetServerInfoCommand,
-]
+MCPCommandTypes = (
+    NewCircuitCommand
+    | CloseCircuitCommand
+    | GetTabCountCommand
+    | CreateElementCommand
+    | DeleteElementCommand
+    | ConnectElementsCommand
+    | DisconnectElementsCommand
+    | SimulationControlCommand
+    | SetInputValueCommand
+    | GetOutputValueCommand
+    | ListElementsCommand
+    | SaveCircuitCommand
+    | LoadCircuitCommand
+    | ExportImageCommand
+    | CreateWaveformCommand
+    | ExportWaveformCommand
+    | CreateIcCommand
+    | InstantiateIcCommand
+    | EmbedIcCommand
+    | ExtractIcCommand
+    | ListIcsCommand
+    | MoveElementCommand
+    | SetElementPropertiesCommand
+    | RotateElementCommand
+    | FlipElementCommand
+    | UpdateElementCommand
+    | ChangeInputSizeCommand
+    | ChangeOutputSizeCommand
+    | ToggleTruthTableOutputCommand
+    | MorphElementCommand
+    | SplitConnectionCommand
+    | UndoCommand
+    | RedoCommand
+    | GetUndoStackCommand
+    | GetServerInfoCommand
+)
 
 
 @beartype
-def parse_mcp_command(data: Dict[str, Any]) -> MCPCommandTypes:
+def parse_mcp_command(data: dict[str, Any]) -> MCPCommandTypes:
     """Parse raw command data into the appropriate pydantic model"""
     command_type = data.get("method", "").lower()
 
@@ -142,7 +142,7 @@ def parse_mcp_command(data: Dict[str, Any]) -> MCPCommandTypes:
 
 
 @beartype
-def create_error_response(error: str, request_id: Optional[int] = None) -> MCPResponse:
+def create_error_response(error: str, request_id: int | None = None) -> MCPResponse:
     """Create an error MCP response (JSON-RPC 2.0 format)"""
     error_obj = {"code": -32603, "message": error}  # Internal error code
     return MCPResponse(error=error_obj, id=request_id)

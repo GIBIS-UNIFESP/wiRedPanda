@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Advanced Connection Tests
 
@@ -10,7 +9,7 @@ Tests for advanced connection and circuit lifecycle commands:
 MCP test implementation
 """
 
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -22,7 +21,7 @@ class AdvancedConnectionTests(MCPTestBase):
 
     CATEGORY_NAME = "ADVANCED CONNECTION"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_split_connection,
             self.test_close_circuit,

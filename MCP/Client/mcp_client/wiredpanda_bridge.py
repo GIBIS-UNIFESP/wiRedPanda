@@ -10,16 +10,17 @@ Enhanced with beartype runtime type validation and pydantic models.
 
 import asyncio
 import atexit
+import contextlib
 import signal
 import sys
 import threading
-from typing import Annotated, Any, Set
+from typing import Annotated, Any
 
 from beartype import beartype
 from pydantic import BaseModel, ConfigDict, Field
 
 # Export ProcessManager and ProcessConfig for use by other modules
-__all__ = ["ProcessManager", "ProcessConfig"]
+__all__ = ["ProcessConfig", "ProcessManager"]
 
 
 class ProcessConfig(BaseModel):
@@ -39,7 +40,7 @@ class ProcessManager:
     @beartype
     def __init__(self, config: ProcessConfig | None = None) -> None:
         self._config = config or ProcessConfig()
-        self._processes: Set[asyncio.subprocess.Process] = set()
+        self._processes: set[asyncio.subprocess.Process] = set()
         self._lock = threading.Lock()
         self._cleanup_registered = False
 
@@ -92,10 +93,9 @@ class ProcessManager:
             self.cleanup_all()
             sys.exit(1)
 
-        # Handle common termination signals
+        # Handle common termination signals. Some signals may not be available
+        # on all platforms (e.g. inside a non-main thread), so the registration
+        # is allowed to fail silently.
         for sig in [signal.SIGTERM, signal.SIGINT]:
-            try:
+            with contextlib.suppress(OSError, ValueError):
                 signal.signal(sig, signal_handler)
-            except (OSError, ValueError):
-                # Some signals may not be available on all platforms
-                pass

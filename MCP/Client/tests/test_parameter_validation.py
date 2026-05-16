@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Parameter Validation Tests
 
@@ -12,7 +11,8 @@ Tests for command parameter validation including:
 MCP test implementation
 """
 
-from typing import Any, Awaitable, Callable, Dict, List
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from beartype import beartype
 
@@ -25,7 +25,7 @@ class ParameterValidationTests(MCPTestBase):
 
     CATEGORY_NAME = "PARAMETER VALIDATION"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_missing_parameter_validation,
             self.test_missing_command_coverage,
@@ -113,7 +113,7 @@ class ParameterValidationTests(MCPTestBase):
 
         for test_case in commands_to_test:
             command: str = test_case["method"]  # type: ignore
-            params: Dict[str, Any] = test_case["params"]  # type: ignore
+            params: dict[str, Any] = test_case["params"]  # type: ignore
             resp = await self.send_command(command, params)
             all_passed &= await self.assert_failure(resp, f"Parameter validation for {command}")
 

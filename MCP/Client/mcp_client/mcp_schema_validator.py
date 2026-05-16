@@ -7,7 +7,7 @@ Provides comprehensive validation using both JSON Schema and Pydantic models.
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TypedDict, Union
+from typing import Any, TypedDict
 
 import jsonschema
 from beartype import beartype
@@ -20,8 +20,8 @@ class PydanticValidationResult(TypedDict):
     """Result structure for individual Pydantic validation"""
 
     valid: bool
-    model_used: Optional[str]
-    errors: List[str]
+    model_used: str | None
+    errors: list[str]
     parsed_command: Any
     command_type: str
 
@@ -30,7 +30,7 @@ class CommandValidationResult(TypedDict):
     """Result structure for comprehensive command validation"""
 
     overall_valid: bool
-    json_schema: Dict[str, Any]
+    json_schema: dict[str, Any]
     pydantic: PydanticValidationResult
     command_type: str
     validation_summary: str
@@ -40,9 +40,9 @@ class ResponseValidationResult(TypedDict):
     """Result structure for comprehensive response validation"""
 
     overall_valid: bool
-    json_schema: Dict[str, Any]
-    pydantic: Dict[str, Any]  # Individual pydantic validation result
-    expected_command: Optional[str]
+    json_schema: dict[str, Any]
+    pydantic: dict[str, Any]  # Individual pydantic validation result
+    expected_command: str | None
     validation_summary: str
 
 
@@ -52,15 +52,15 @@ class MCPSchemaValidator:
     def __init__(self, schema_path: str = "../../schema-mcp.json"):
         """Initialize validator with JSON schema file."""
         self.schema_path = Path(schema_path)
-        self._schema: Optional[Dict[str, Any]] = None
-        self._command_schemas: Optional[Dict[str, Any]] = None
-        self._response_schemas: Optional[Dict[str, Any]] = None
+        self._schema: dict[str, Any] | None = None
+        self._command_schemas: dict[str, Any] | None = None
+        self._response_schemas: dict[str, Any] | None = None
         self._load_schema()
 
     def _load_schema(self) -> None:
         """Load and parse the JSON schema file."""
         try:
-            with open(self.schema_path, "r", encoding="utf-8") as f:
+            with open(self.schema_path, encoding="utf-8") as f:
                 self._schema = json.load(f)
 
             # Log schema info for debugging
@@ -79,12 +79,12 @@ class MCPSchemaValidator:
             sys.exit(1)
 
     @beartype
-    def validate_command_json_schema(self, command_data: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_command_json_schema(self, command_data: dict[str, Any]) -> dict[str, Any]:
         """
         Validate command against JSON Schema.
         Returns validation result with success status and details.
         """
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "valid": False,
             "schema_used": None,
             "errors": [],
@@ -96,7 +96,7 @@ class MCPSchemaValidator:
         # Find the appropriate command schema
         schema_key = None
         if self._command_schemas is not None:
-            for key in self._command_schemas.keys():
+            for key in self._command_schemas:
                 if key.replace("_", "") == command_type.replace("_", ""):
                     schema_key = key
                     break
@@ -131,13 +131,13 @@ class MCPSchemaValidator:
 
     @beartype
     def validate_response_json_schema(
-        self, response_data: Dict[str, Any], expected_command: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self, response_data: dict[str, Any], expected_command: str | None = None
+    ) -> dict[str, Any]:
         """
         Validate response against JSON Schema.
         Returns validation result with success status and details.
         """
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "valid": False,
             "schema_used": None,
             "errors": [],
@@ -191,7 +191,7 @@ class MCPSchemaValidator:
 
     @staticmethod
     @beartype
-    def validate_command_pydantic(command_data: Dict[str, Any]) -> PydanticValidationResult:
+    def validate_command_pydantic(command_data: dict[str, Any]) -> PydanticValidationResult:
         """
         Validate command using Pydantic models.
         Returns validation result with success status and details.
@@ -217,18 +217,18 @@ class MCPSchemaValidator:
                         result["errors"].append(f"Pydantic validation error at {field_path}: {error['msg']}")
             else:
                 if isinstance(result["errors"], list):
-                    result["errors"].append(f"Command parsing error: {str(e)}")
+                    result["errors"].append(f"Command parsing error: {e!s}")
 
         return result
 
     @staticmethod
     @beartype
-    def validate_response_pydantic(response_data: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_response_pydantic(response_data: dict[str, Any]) -> dict[str, Any]:
         """
         Validate response using Pydantic models.
         Returns validation result with success status and details.
         """
-        result: Dict[str, Any] = {"valid": False, "model_used": "MCPResponse", "errors": [], "parsed_response": None}
+        result: dict[str, Any] = {"valid": False, "model_used": "MCPResponse", "errors": [], "parsed_response": None}
 
         try:
             parsed_response = MCPResponse(**response_data)
@@ -243,7 +243,7 @@ class MCPSchemaValidator:
         return result
 
     @beartype
-    def comprehensive_command_validation(self, command_data: Dict[str, Any]) -> CommandValidationResult:
+    def comprehensive_command_validation(self, command_data: dict[str, Any]) -> CommandValidationResult:
         """
         Perform comprehensive validation using both JSON Schema and Pydantic.
         Returns detailed validation results from both methods.
@@ -261,7 +261,7 @@ class MCPSchemaValidator:
 
     @beartype
     def comprehensive_response_validation(
-        self, response_data: Dict[str, Any], expected_command: Optional[str] = None
+        self, response_data: dict[str, Any], expected_command: str | None = None
     ) -> ResponseValidationResult:
         """
         Perform comprehensive validation using both JSON Schema and Pydantic.
@@ -281,7 +281,7 @@ class MCPSchemaValidator:
     @staticmethod
     @beartype
     def _create_validation_summary(
-        json_result: Dict[str, Any], pydantic_result: Union[PydanticValidationResult, Dict[str, Any]]
+        json_result: dict[str, Any], pydantic_result: PydanticValidationResult | dict[str, Any]
     ) -> str:
         """Create a human-readable validation summary."""
         if json_result["valid"] and pydantic_result["valid"]:
@@ -296,7 +296,7 @@ class MCPSchemaValidator:
 class _ValidatorSingleton:
     """Singleton validator instance holder."""
 
-    _instance: Optional["MCPSchemaValidator"] = None
+    _instance: "MCPSchemaValidator | None" = None
 
     @classmethod
     def get_validator(cls, schema_path: str = "../../schema-mcp.json") -> MCPSchemaValidator:
@@ -322,7 +322,7 @@ def get_validator(schema_path: str = "../../schema-mcp.json") -> MCPSchemaValida
 
 
 @beartype
-def validate_command(command_data: Dict[str, Any]) -> CommandValidationResult:
+def validate_command(command_data: dict[str, Any]) -> CommandValidationResult:
     """
     Validate command using both JSON Schema and Pydantic validation.
 
@@ -337,9 +337,7 @@ def validate_command(command_data: Dict[str, Any]) -> CommandValidationResult:
 
 
 @beartype
-def validate_response(
-    response_data: Dict[str, Any], expected_command: Optional[str] = None
-) -> ResponseValidationResult:
+def validate_response(response_data: dict[str, Any], expected_command: str | None = None) -> ResponseValidationResult:
     """
     Validate response using both JSON Schema and Pydantic validation.
 

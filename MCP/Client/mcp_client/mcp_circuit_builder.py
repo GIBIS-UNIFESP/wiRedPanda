@@ -7,7 +7,7 @@ testing including circuit construction and validation helpers.
 """
 
 import asyncio
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 from beartype import beartype
 
@@ -24,7 +24,7 @@ class MCPCircuitBuilder:
         self.validation = validation
 
     @beartype
-    async def create_circuit_from_spec(self, circuit_spec: Dict[str, Any]) -> Dict[int, int]:
+    async def create_circuit_from_spec(self, circuit_spec: dict[str, Any]) -> dict[int, int]:
         """Create a circuit from specification and return element ID mapping"""
         element_mapping = {}  # spec_id -> actual_id
 
@@ -86,7 +86,7 @@ class MCPCircuitBuilder:
 
     @beartype
     async def validate_truth_table(
-        self, inputs: List[int], outputs: List[int], truth_table: List[Dict[str, Any]], test_name: str
+        self, inputs: list[int], outputs: list[int], truth_table: list[dict[str, Any]], test_name: str
     ) -> bool:
         """Validate a circuit's truth table behavior"""
         all_passed: bool = True
@@ -115,7 +115,7 @@ class MCPCircuitBuilder:
 
     @beartype
     async def validate_sequential_state_table(
-        self, inputs: List[int], outputs: List[int], clock_id: int, state_table: List[Dict[str, Any]], test_name: str
+        self, inputs: list[int], outputs: list[int], clock_id: int, state_table: list[dict[str, Any]], test_name: str
     ) -> bool:
         """Validate sequential circuit state table behavior with clock transitions"""
         all_passed: bool = True
@@ -164,7 +164,7 @@ class MCPCircuitBuilder:
 
         return all_passed
 
-    async def _apply_input_values(self, inputs: List[int], input_values: List[Any], label: str) -> bool:
+    async def _apply_input_values(self, inputs: list[int], input_values: list[Any], label: str) -> bool:
         """Set each input element to its value; returns False if any command fails."""
         success = True
         for j, input_id in enumerate(inputs):
@@ -177,7 +177,7 @@ class MCPCircuitBuilder:
                     success = False
         return success
 
-    async def _check_output_values(self, outputs: List[int], expected_outputs: List[Any], label: str = "") -> bool:
+    async def _check_output_values(self, outputs: list[int], expected_outputs: list[Any], label: str = "") -> bool:
         """Check each output against expected; returns False on any mismatch or fetch error."""
         passed = True
         prefix = f"{label}: " if label else ""

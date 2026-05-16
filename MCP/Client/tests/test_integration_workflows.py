@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Integration Workflow Tests
 
@@ -13,7 +12,7 @@ MCP test implementation
 import asyncio
 import os
 import tempfile
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -26,7 +25,7 @@ class IntegrationWorkflowTests(MCPTestBase):
 
     CATEGORY_NAME = "INTEGRATION WORKFLOW"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_simple_workflow,
             self.test_fixed_issues,

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Wireless Node Tests
 
@@ -11,7 +10,7 @@ Tests for the WirelessMode property on Node elements:
 """
 
 import asyncio
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -23,7 +22,7 @@ class WirelessNodeTests(MCPTestBase):
 
     CATEGORY_NAME = "WIRELESS NODE"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_set_wireless_mode_none,
             self.test_set_wireless_mode_tx,

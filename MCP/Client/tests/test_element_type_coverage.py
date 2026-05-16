@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Element Type Coverage Tests
 
@@ -13,7 +12,7 @@ Tests for element type coverage and availability including:
 MCP test implementation
 """
 
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -26,7 +25,7 @@ class ElementTypeCoverageTests(MCPTestBase):
 
     CATEGORY_NAME = "ELEMENT TYPE COVERAGE"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_missing_logic_gate_types,
             self.test_missing_input_element_types,
@@ -39,7 +38,7 @@ class ElementTypeCoverageTests(MCPTestBase):
 
     async def _test_element_type_group(
         self,
-        element_types: List[str],
+        element_types: list[str],
         group_name: str,
         test_context: str,
         fail_on_error: bool = True,
@@ -56,7 +55,7 @@ class ElementTypeCoverageTests(MCPTestBase):
 
         all_passed: bool = True
         successful_creates = 0
-        failed_creates: List[str] = []
+        failed_creates: list[str] = []
 
         for i, element_type in enumerate(element_types):
             try:

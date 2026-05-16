@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 File Operations Tests
 
@@ -14,7 +13,7 @@ MCP test implementation
 
 import os
 import tempfile
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -27,7 +26,7 @@ class FileOperationTests(MCPTestBase):
 
     CATEGORY_NAME = "FILE OPERATIONS"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_file_operations,
             self.test_file_save_operations,
@@ -220,9 +219,8 @@ class FileOperationTests(MCPTestBase):
         all_passed &= await self.assert_success(resp, "Verify empty circuit before load")
         if resp.success:
             result = await self.get_response_result(resp)
-            if result and "elements" in result:
-                if len(result["elements"]) == 0:
-                    self.infrastructure.output.success("✅ Circuit confirmed empty before load")
+            if result and "elements" in result and len(result["elements"]) == 0:
+                self.infrastructure.output.success("✅ Circuit confirmed empty before load")
 
         # Test load the saved circuit
         resp = await self.send_command("load_circuit", {"filename": temp_file})

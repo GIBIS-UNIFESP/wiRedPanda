@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Basic Protocol Tests
 
@@ -14,7 +13,7 @@ Tests for basic MCP protocol functionality
 
 import asyncio
 import json
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -30,7 +29,7 @@ class BasicProtocolTests(MCPTestBase):
 
     CATEGORY_NAME = "BASIC PROTOCOL"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_basic_protocol,
             self.test_protocol_communication,
@@ -158,7 +157,7 @@ class BasicProtocolTests(MCPTestBase):
                 raise RuntimeError("MCP process not available for invalid JSON test")
 
             # Write using async methods
-            self.process.stdin.write("invalid json\n".encode("utf-8"))
+            self.process.stdin.write(b"invalid json\n")
             await self.process.stdin.drain()
 
             # Read response with timeout using async methods

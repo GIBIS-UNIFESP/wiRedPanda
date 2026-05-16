@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Base Infrastructure for MCP Test Suite
 
@@ -13,7 +12,8 @@ import asyncio
 import os
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from beartype import beartype
 
@@ -39,7 +39,7 @@ class MCPTestBase(ABC):
     CATEGORY_NAME: str = ""
 
     @abstractmethod
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         """Return the ordered list of test-method callables for this category."""
 
     @beartype
@@ -60,7 +60,7 @@ class MCPTestBase(ABC):
         self.organizer = runner.organizer
 
     @property
-    def process(self) -> Optional[asyncio.subprocess.Process]:
+    def process(self) -> asyncio.subprocess.Process | None:
         """Access to the underlying MCP process"""
         return self._runner.process
 
@@ -68,7 +68,7 @@ class MCPTestBase(ABC):
     # These delegate to the runner but provide a cleaner interface for test methods
 
     @beartype
-    async def send_command(self, command: str, parameters: Dict[str, Any]) -> MCPResponse:
+    async def send_command(self, command: str, parameters: dict[str, Any]) -> MCPResponse:
         """Send command to MCP process"""
         return await self._runner.send_command(command, parameters)
 
@@ -86,7 +86,7 @@ class MCPTestBase(ABC):
         """Assert command was expected to fail"""
         return await self._runner.assert_failure(response, test_name)
 
-    async def validate_element_creation_response(self, response: MCPResponse, test_name: str) -> Optional[int]:
+    async def validate_element_creation_response(self, response: MCPResponse, test_name: str) -> int | None:
         """Validate element creation response and return element_id"""
         return await self._runner.validate_element_creation_response(response, test_name)
 
@@ -94,7 +94,7 @@ class MCPTestBase(ABC):
         """Validate element ID is valid"""
         return await self._runner.validation.validate_element_id(element_id, test_name)
 
-    async def create_circuit_from_spec(self, circuit_spec: Dict[str, Any]) -> Dict[int, int]:
+    async def create_circuit_from_spec(self, circuit_spec: dict[str, Any]) -> dict[int, int]:
         """Create a circuit from specification and return element ID mapping"""
         return await self._runner.create_circuit_from_spec(circuit_spec)
 
@@ -114,11 +114,11 @@ class MCPTestBase(ABC):
         """Verify connection exists between elements"""
         return await self._runner.verify_connection_exists(source_id, target_id, test_name)
 
-    async def get_response_result(self, response: MCPResponse) -> Optional[Dict[str, Any]]:
+    async def get_response_result(self, response: MCPResponse) -> dict[str, Any] | None:
         """Get result data from a response (use after assert_success)"""
         return await self._runner.validation.get_response_result(response)
 
-    async def assert_success_and_get_result(self, response: MCPResponse, test_name: str) -> Optional[Dict[str, Any]]:
+    async def assert_success_and_get_result(self, response: MCPResponse, test_name: str) -> dict[str, Any] | None:
         """Assert success and return result data if successful, None if failed"""
         if await self.assert_success(response, test_name):
             return await self.get_response_result(response)
@@ -131,15 +131,15 @@ class MCPTestBase(ABC):
         y: float,
         test_name: str,
         label: str = "",
-    ) -> Optional[int]:
+    ) -> int | None:
         """Create an element and return its ID, or None on failure."""
-        params: Dict[str, Any] = {"type": elem_type, "x": x, "y": y}
+        params: dict[str, Any] = {"type": elem_type, "x": x, "y": y}
         if label:
             params["label"] = label
         resp = await self.send_command("create_element", params)
         return await self.validate_element_creation_response(resp, test_name)
 
-    async def create_simple_circuit(self, test_name: str) -> Tuple[Optional[int], Optional[int]]:
+    async def create_simple_circuit(self, test_name: str) -> tuple[int | None, int | None]:
         """Create an InputButton at (100,100) and Led at (300,100), return (input_id, output_id)."""
         input_id = await self.create_element_checked("InputButton", 100, 100, f"{test_name}: Create input")
         output_id = await self.create_element_checked("Led", 300, 100, f"{test_name}: Create output")
@@ -181,7 +181,7 @@ class MCPTestBase(ABC):
             },
         )
 
-    async def list_elements_or_none(self, test_name: str) -> Optional[List[Dict[str, Any]]]:
+    async def list_elements_or_none(self, test_name: str) -> list[dict[str, Any]] | None:
         """Send ``list_elements``, assert success, and return the elements list (or ``None``).
 
         Combines the recurring ``send_command`` → ``assert_success`` →
@@ -216,7 +216,7 @@ class MCPTestBase(ABC):
             print(f"❌ create_ic failed: {resp.error}")
         return resp
 
-    async def setup_basic_ic_circuit(self) -> Optional[Tuple[int, int, int]]:
+    async def setup_basic_ic_circuit(self) -> tuple[int, int, int] | None:
         """Build an IC-ready 3-element chain: InputButton -> Not -> Led, wired source-to-sink.
 
         Cleans up any stale ``test_ic.panda`` file, creates the three elements with
@@ -264,13 +264,13 @@ class MCPTestBase(ABC):
         return input_id, buffer_id, output_id
 
     async def validate_truth_table(
-        self, inputs: List[int], outputs: List[int], truth_table: List[Dict[str, Any]], test_name: str
+        self, inputs: list[int], outputs: list[int], truth_table: list[dict[str, Any]], test_name: str
     ) -> bool:
         """Validate truth table for logic gates"""
         return await self._runner.validate_truth_table(inputs, outputs, truth_table, test_name)
 
     async def validate_sequential_state_table(
-        self, inputs: List[int], outputs: List[int], clock_id: int, state_table: List[Dict[str, Any]], test_name: str
+        self, inputs: list[int], outputs: list[int], clock_id: int, state_table: list[dict[str, Any]], test_name: str
     ) -> bool:
         """Validate sequential circuit state table behavior with clock transitions"""
         return await self._runner.validate_sequential_state_table(inputs, outputs, clock_id, state_table, test_name)

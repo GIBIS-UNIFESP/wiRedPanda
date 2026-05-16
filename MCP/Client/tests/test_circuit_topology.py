@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Circuit Topology Tests
 
@@ -15,7 +14,8 @@ MCP test implementation
 
 import asyncio
 import time
-from typing import Any, Awaitable, Callable, Dict, List, Union
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from beartype import beartype
 
@@ -29,7 +29,7 @@ class CircuitTopologyTests(MCPTestBase):
 
     CATEGORY_NAME = "CIRCUIT TOPOLOGY"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_large_circuit_100_element_chain,
             self.test_high_fanout_circuit_20_outputs,
@@ -53,8 +53,8 @@ class CircuitTopologyTests(MCPTestBase):
         # Test: Large Logic Chain (100 NOT gates in series)
         print("\nBuilding 100-element NOT gate chain...")
 
-        large_circuit_elements: List[Dict[str, Union[int, str]]] = []
-        large_circuit_connections: List[Dict[str, int]] = []
+        large_circuit_elements: list[dict[str, int | str]] = []
+        large_circuit_connections: list[dict[str, int]] = []
 
         # Create input
         large_circuit_elements.append({"id": 1, "type": "InputButton", "label": "INPUT", "x": 0, "y": 0})
@@ -90,7 +90,7 @@ class CircuitTopologyTests(MCPTestBase):
             {"source": 101, "target": output_id, "source_port": 0, "target_port": 0}
         )  # Last NOT gate to output
 
-        large_circuit_spec: Dict[str, Any] = {
+        large_circuit_spec: dict[str, Any] = {
             "elements": large_circuit_elements,
             "connections": large_circuit_connections,
         }
@@ -121,7 +121,7 @@ class CircuitTopologyTests(MCPTestBase):
                 print("\nTesting large circuit propagation performance...")
 
                 # Test propagation through 100-gate chain
-                propagation_tests: List[Dict[str, Union[bool, float]]] = []
+                propagation_tests: list[dict[str, bool | float]] = []
 
                 for test_val in [True, False, True]:
                     prop_start = time.time()
@@ -241,10 +241,10 @@ class CircuitTopologyTests(MCPTestBase):
         # Create new circuit first# Test: High Fan-out Testing (1 input -> 20 outputs)
         print("\nTesting high fan-out circuit (1 -> 20)...")
 
-        fanout_elements: List[Dict[str, Union[int, str]]] = [
+        fanout_elements: list[dict[str, int | str]] = [
             {"id": 1, "type": "InputButton", "label": "FAN_INPUT", "x": 0, "y": 0},
         ]
-        fanout_connections: List[Dict[str, int]] = []
+        fanout_connections: list[dict[str, int]] = []
 
         # Create 20 output LEDs
         for i in range(20):
@@ -405,8 +405,9 @@ class CircuitTopologyTests(MCPTestBase):
                 }
             )
 
-            # Connect previous element to this NOT gate
-            source_id = i + 1 if i == 0 else i + 1
+            # Connect previous element (id i+1) to this NOT gate (id i+2).
+            # For i=0 that's the InputButton at id 1; for i>0 it's NOT_(i-1).
+            source_id = i + 1
             large_circuit["connections"].append(
                 {
                     "source": source_id,

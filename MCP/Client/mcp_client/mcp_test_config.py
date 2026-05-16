@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Test Configuration for MCP Test Suite
 
@@ -8,7 +7,6 @@ This avoids duplication and makes maintenance easier.
 """
 
 from pathlib import Path
-from typing import Optional
 
 
 class TestConfig:
@@ -31,7 +29,7 @@ class TestConfig:
         self.default_timeout = 300  # 5 minutes
         self.long_timeout = 900  # 15 minutes for performance tests
 
-    def _find_wiredpanda_executable(self) -> Optional[Path]:
+    def _find_wiredpanda_executable(self) -> Path | None:
         """Find the WiredPanda executable produced by any of the CMake presets.
 
         Searches each known per-preset binary directory in priority order so the

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Simulation Tests
 
@@ -14,7 +13,7 @@ MCP test implementation
 """
 
 import asyncio
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -27,7 +26,7 @@ class SimulationTests(MCPTestBase):
 
     CATEGORY_NAME = "SIMULATION"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_simulation_control,
             self.test_simulation_start_stop_operations,

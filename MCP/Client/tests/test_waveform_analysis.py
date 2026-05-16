@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Waveform Analysis Tests
 
@@ -14,9 +13,9 @@ Tests for waveform generation, timing analysis, and signal behavior including:
 MCP test implementation
 """
 
+import asyncio
 import os
-import time
-from typing import Awaitable, Callable, Dict, List, Union
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -35,7 +34,7 @@ class WaveformAnalysisTests(MCPTestBase):
 
     CATEGORY_NAME = "WAVEFORM ANALYSIS"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_waveform_generation_capability,
             self.test_waveform_timing_validation,
@@ -101,7 +100,7 @@ class WaveformAnalysisTests(MCPTestBase):
                 break
 
             # Enhanced propagation for waveform timing
-            time.sleep(0.05)
+            await asyncio.sleep(0.05)
 
             # Read output value for waveform validation
             resp = await self.send_command("get_output_value", {"element_id": output_id})
@@ -161,7 +160,7 @@ class WaveformAnalysisTests(MCPTestBase):
         output_id = mapping[2]  # Led
 
         # Collect signal values over time to simulate waveform behavior
-        waveform_data: List[Dict[str, Union[int, bool]]] = []
+        waveform_data: list[dict[str, int | bool]] = []
         test_duration: int = 10  # Test for 10 time steps
 
         for step in range(test_duration):
@@ -184,7 +183,7 @@ class WaveformAnalysisTests(MCPTestBase):
                 break
 
             # Enhanced propagation for timing accuracy
-            time.sleep(0.05)
+            await asyncio.sleep(0.05)
 
             # Read output value
             resp = await self.send_command("get_output_value", {"element_id": output_id})
@@ -271,7 +270,7 @@ class WaveformAnalysisTests(MCPTestBase):
             output_id = mapping[2]
 
             # Generate pattern data for recognition testing
-            pattern_data: List[Dict[str, Union[int, bool]]] = []
+            pattern_data: list[dict[str, int | bool]] = []
             test_steps = 8
 
             for step in range(test_steps):
@@ -288,7 +287,7 @@ class WaveformAnalysisTests(MCPTestBase):
 
                 if resp.success:
                     # Enhanced propagation timing
-                    time.sleep(0.05)
+                    await asyncio.sleep(0.05)
 
                     # Read output for pattern analysis
                     resp = await self.send_command("get_output_value", {"element_id": output_id})
@@ -296,10 +295,7 @@ class WaveformAnalysisTests(MCPTestBase):
                     all_passed &= success
                     if success:
                         result = await self.get_response_result(resp)
-                        if result:
-                            output_value = result.get("value", False)
-                        else:
-                            output_value = False
+                        output_value = result.get("value", False) if result else False
                         pattern_data.append(
                             {
                                 "step": step,
@@ -406,7 +402,7 @@ class WaveformAnalysisTests(MCPTestBase):
                 resp2 = await self.send_command("set_input_value", {"element_id": mapping[2], "value": pattern[1]})
 
                 if resp1.success and resp2.success:
-                    time.sleep(0.1)
+                    await asyncio.sleep(0.1)
 
                     # Enhanced propagation using simulation update
                     await self.send_command("simulation_control", {"action": "update"})
@@ -519,10 +515,7 @@ class WaveformAnalysisTests(MCPTestBase):
                 self.infrastructure.output.success("✅ create_waveform command executed successfully")
 
                 result = await self.get_response_result(resp)
-                if result:
-                    waveform_data = result.get("waveform_data", {})
-                else:
-                    waveform_data = {}
+                waveform_data = result.get("waveform_data", {}) if result else {}
                 if waveform_data:
                     inputs = {inp["label"]: inp["values"] for inp in waveform_data.get("inputs", [])}
                     outputs = {out["label"]: out["values"] for out in waveform_data.get("outputs", [])}
@@ -593,10 +586,7 @@ class WaveformAnalysisTests(MCPTestBase):
             all_passed &= success
             if success:
                 result = await self.get_response_result(resp)
-                if result:
-                    waveform_data = result.get("waveform_data", {})
-                else:
-                    waveform_data = {}
+                waveform_data = result.get("waveform_data", {}) if result else {}
                 if waveform_data:
                     inputs = {inp["label"]: inp["values"] for inp in waveform_data.get("inputs", [])}
                     outputs = {out["label"]: out["values"] for out in waveform_data.get("outputs", [])}
@@ -618,7 +608,7 @@ class WaveformAnalysisTests(MCPTestBase):
                         latch_behavior_correct = True
                         validation_details = []
 
-                        for step, (d, en, q) in enumerate(zip(d_values, en_values, q_values)):
+                        for step, (d, en, q) in enumerate(zip(d_values, en_values, q_values, strict=True)):
                             if step == 0:
                                 # Initial step - any state acceptable
                                 step_correct = True

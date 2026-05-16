@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Logic Gates Tests
 
@@ -13,7 +12,8 @@ Tests for logic gate functionality including:
 MCP test implementation
 """
 
-from typing import Any, Awaitable, Callable, Dict, List
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from beartype import beartype
 
@@ -27,7 +27,7 @@ class LogicGateTests(MCPTestBase):
 
     CATEGORY_NAME = "LOGIC GATE"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_logic_gate_and,
             self.test_logic_gate_or,
@@ -41,7 +41,7 @@ class LogicGateTests(MCPTestBase):
     async def _test_two_input_gate(
         self,
         gate_type: str,
-        truth_table: List[Dict[str, Any]],
+        truth_table: list[dict[str, Any]],
         gate_name: str,
     ) -> bool:
         """Validate a 2-input logic gate against its truth table."""

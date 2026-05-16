@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Element Operations Tests
 
@@ -12,7 +11,7 @@ Tests for element management functionality including:
 MCP test implementation
 """
 
-from typing import Awaitable, Callable, List, Optional
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -25,7 +24,7 @@ class ElementOperationTests(MCPTestBase):
 
     CATEGORY_NAME = "ELEMENT OPERATIONS"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_element_operations,
             self.test_element_creation,
@@ -75,8 +74,8 @@ class ElementOperationTests(MCPTestBase):
 
         # Create new circuit first
         # Test valid element creation - known working types
-        valid_element_types: List[str] = ["And", "Or", "Not", "InputButton", "Led"]
-        created_elements: List[Optional[int]] = []
+        valid_element_types: list[str] = ["And", "Or", "Not", "InputButton", "Led"]
+        created_elements: list[int | None] = []
 
         for i, elem_type in enumerate(valid_element_types):
             x, y = 100 + i * 150, 100
@@ -105,7 +104,7 @@ class ElementOperationTests(MCPTestBase):
         # Create new circuit first
         # Create test elements for listing
         test_elements = ["InputButton", "And", "Or", "Led"]
-        created_elements: List[Optional[int]] = []
+        created_elements: list[int | None] = []
 
         for i, elem_type in enumerate(test_elements):
             x, y = 100 + i * 100, 100
@@ -165,7 +164,7 @@ class ElementOperationTests(MCPTestBase):
         # Create new circuit first
         # Create test elements for deletion
         test_elements = ["InputButton", "And", "Led"]
-        created_elements: List[Optional[int]] = []
+        created_elements: list[int | None] = []
 
         for i, elem_type in enumerate(test_elements):
             x, y = 100 + i * 100, 100

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 IC Operations Tests
 
@@ -12,7 +11,7 @@ Tests for Integrated Circuit (IC) functionality including:
 MCP test implementation
 """
 
-from typing import Awaitable, Callable, List
+from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
@@ -25,7 +24,7 @@ class ICOperationTests(MCPTestBase):
 
     CATEGORY_NAME = "IC OPERATIONS"
 
-    def tests(self) -> List[Callable[[], Awaitable[bool]]]:
+    def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_ic_workflow_commands,
         ]
