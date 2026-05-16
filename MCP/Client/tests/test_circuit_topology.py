@@ -232,16 +232,16 @@ class CircuitTopologyTests(MCPTestBase):
                     print("   Impact: Large-scale digital systems unreliable")
 
                 return all_passed
-            else:
-                self.test_results.errors.append(
-                    "test_large_circuit_100_element_chain: Large circuit simulation failed to start"
-                )
-                return False
-        else:
-            print("❌ Large circuit creation failed")
-            print(f"   Elements created: {len(element_mapping) if element_mapping else 0}/102")
-            self.test_results.errors.append("test_large_circuit_100_element_chain: Circuit element creation failed")
+
+            self.test_results.errors.append(
+                "test_large_circuit_100_element_chain: Large circuit simulation failed to start"
+            )
             return False
+
+        print("❌ Large circuit creation failed")
+        print(f"   Elements created: {len(element_mapping) if element_mapping else 0}/102")
+        self.test_results.errors.append("test_large_circuit_100_element_chain: Circuit element creation failed")
+        return False
 
     @beartype
     async def test_high_fanout_circuit_20_outputs(self) -> bool:

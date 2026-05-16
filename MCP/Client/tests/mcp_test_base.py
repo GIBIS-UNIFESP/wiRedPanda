@@ -263,4 +263,3 @@ class MCPTestBase(ABC):
         Returns:
             bool: True if all tests passed, False otherwise
         """
-        pass
