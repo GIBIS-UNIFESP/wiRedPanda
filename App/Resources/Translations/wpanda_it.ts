@@ -2706,6 +2706,19 @@ Nome suggerito:</translation>
     </message>
 </context>
 <context>
+    <name>TestNotifyCatch</name>
+    <message>
+        <location filename="../../../Tests/Unit/Core/TestNotifyCatch.cpp" line="59"/>
+        <source>notify-catch test throw (no dialog)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../Tests/Unit/Core/TestNotifyCatch.cpp" line="92"/>
+        <source>notify-catch test throw (with dialog)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Text</name>
     <message>
         <location filename="../../Element/GraphicElements/Text.cpp" line="23"/>

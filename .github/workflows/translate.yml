@@ -52,7 +52,7 @@ jobs:
       - name: Run lupdate to extract strings
         run: |
           cmake -B build_translations
-          cmake --build build_translations --target lupdate
+          cmake --build build_translations --target update_translations
 
       - name: Create PR for translation updates
         run: |
