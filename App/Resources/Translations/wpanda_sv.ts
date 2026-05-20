@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">Kunde inte öppna filen för skrivning: %1</translation>
+        <translation>Kunde inte öppna filen för skrivning: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">Inte tillräckligt med stift för alla ingångselement</translation>
+        <translation>Inte tillräckligt med stift för alla ingångselement</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">Inte tillräckligt med stift för alla vridreglagepositioner</translation>
+        <translation>Inte tillräckligt med stift för alla vridreglagepositioner</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">Inte tillräckligt med stift för alla utgångselement</translation>
+        <translation>Inte tillräckligt med stift för alla utgångselement</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementtyp stöds inte: %1</translation>
+        <translation>Elementtyp stöds inte: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Utdatavariabel inte mappad för sanningstabell: %1</translation>
+        <translation>Utdatavariabel inte mappad för sanningstabell: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">Kunde inte öppna testbänksfilen: %1</translation>
+        <translation>Kunde inte öppna testbänksfilen: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>Filen är inte läsbar</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">Kunde inte läsa in ljud: %1 (%2)</translation>
+        <translation>Kunde inte läsa in ljud: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">Kretsen är tom. Lägg till ingångs- och utgångselement för att generera en vågform.</translation>
+        <translation>Kretsen är tom. Lägg till ingångs- och utgångselement för att generera en vågform.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">Kretsen har inga ingångs- eller utgångselement. Lägg till minst en ingång (t.ex. Switch) och en utgång (t.ex. LED) för att generera en vågform.</translation>
+        <translation>Kretsen har inga ingångs- eller utgångselement. Lägg till minst en ingång (t.ex. Switch) och en utgång (t.ex. LED) för att generera en vågform.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">Kretsen har inga ingångselement. Lägg till minst en ingång (t.ex. Switch, Button eller Clock) för att generera en vågform.</translation>
+        <translation>Kretsen har inga ingångselement. Lägg till minst en ingång (t.ex. Switch, Button eller Clock) för att generera en vågform.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">Kretsen har inga utgångselement. Lägg till minst en utgång (t.ex. LED eller Display) för att generera en vågform.</translation>
+        <translation>Kretsen har inga utgångselement. Lägg till minst en utgång (t.ex. LED eller Display) för att generera en vågform.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>Filen sparades framgångsrikt.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">Vågformen skulle bli för stor! Återställer zoom.</translation>
+        <translation>Vågformen skulle bli för stor! Återställer zoom.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">Inga celler valda.</translation>
+        <translation>Inga celler valda.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Fel vid öppning av fil: %1</translation>
+        <translation>Fel vid öppning av fil: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">Fel vid sparande av fil: %1</translation>
+        <translation>Fel vid sparande av fil: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>Fil laddad framgångsrikt.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">Kunde inte öppna filen för läsning: %1</translation>
+        <translation>Kunde inte öppna filen för läsning: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">Format stöds inte. Kunde inte öppna fil: %1</translation>
+        <translation>Format stöds inte. Kunde inte öppna fil: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>PDF-filer (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">Kunde inte skriva ut denna krets till PDF.</translation>
+        <translation>Kunde inte skriva ut denna krets till PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Filen &quot;%1&quot; finns inte!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
         <translation>Okänd</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">Okänd elementtyp: %1</translation>
+        <translation>Okänd elementtyp: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">Okänd typ: %1</translation>
+        <translation>Okänd typ: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
         <translation>Okänd orsak</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">Kunde inte ladda pixmap: %1 (%2)</translation>
+        <translation>Kunde inte ladda pixmap: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
         <translation>Standard</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">Strömfel vid läsning av elementegenskaper vid position %1</translation>
+        <translation>Strömfel vid läsning av elementegenskaper vid position %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">Strömfel vid läsning av utseenden vid position %1</translation>
+        <translation>Strömfel vid läsning av utseenden vid position %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">Utseendeindex %1 utanför intervallet (storlek=%2) — strömmen kan vara skadad</translation>
+        <translation>Utseendeindex %1 utanför intervallet (storlek=%2) — strömmen kan vara skadad</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
         <translation>Laddar pixmap skin-namn.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">Utseendeindex %1 utanför intervall (storlek=%2) för utseendenamn &quot;%3&quot; — strömmen kan vara skadad</translation>
+        <translation>Utseendeindex %1 utanför intervall (storlek=%2) för utseendenamn &quot;%3&quot; — strömmen kan vara skadad</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
         <translation>INTEGRERAD KRETS</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">IC-laddning: inget IC-namn i serialiserade data</translation>
+        <translation>IC-laddning: inget IC-namn i serialiserade data</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 hittades inte.</translation>
+        <translation>%1 hittades inte.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">Cirkulär IC-referens upptäckt: %1</translation>
+        <translation>Cirkulär IC-referens upptäckt: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Fel vid öppning av fil: %1</translation>
+        <translation>Fel vid öppning av fil: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">IC-migrering: kan inte öppna filen för skrivning: %1</translation>
+        <translation>IC-migrering: kan inte öppna filen för skrivning: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">IC-migrering: kunde inte slutföra den omsparade filen: %1</translation>
+        <translation>IC-migrering: kunde inte slutföra den omsparade filen: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">IC-nästningsdjupets gräns (%1) överskreds — bloben kan vara skadligt skapad</translation>
+        <translation>IC-nästningsdjupets gräns (%1) överskreds — bloben kan vara skadligt skapad</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Kunde inte öppna fil: %1</translation>
+        <translation>Kunde inte öppna fil: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Kunde inte spara fil: %1</translation>
+        <translation>Kunde inte spara fil: %1</translation>
     </message>
 </context>
 <context>
@@ -2156,12 +2206,17 @@ Du måste spara nya projekt innan du kan komma åt IC:ar och utseenden eller kö
         <translation>Byt till flik</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">Filnamn saknas.</translation>
+        <translation>Filnamn saknas.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">.panda-filen är tom.</translation>
+        <translation>.panda-filen är tom.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Föreslaget namn:</translation>
         <translation>Aktivera ljud</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">Spara filen först.</translation>
+        <translation>Spara filen först.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Föreslaget namn:</translation>
         <translation>Dra hit för att ta bort.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">Fel vid borttagning av fil: %1</translation>
+        <translation>Fel vid borttagning av fil: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Föreslaget namn:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">Strömfel vid läsning av anslutningskarta vid offset %1</translation>
+        <translation>Strömfel vid läsning av anslutningskarta vid offset %1</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">Strömfel vid läsning av anslutningsport-ID:n vid offset %1</translation>
+        <translation>Strömfel vid läsning av anslutningsport-ID:n vid offset %1</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Föreslaget namn:</translation>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">Strömfel vid läsning av antalet metadata</translation>
+        <translation>Strömfel vid läsning av antalet metadata</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Metadataantalet %1 är orimligt jämfört med återstående byte i strömmen</translation>
+        <translation>Metadataantalet %1 är orimligt jämfört med återstående byte i strömmen</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">Strömfel vid läsning av antalet blobar</translation>
+        <translation>Strömfel vid läsning av antalet blobar</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Blobantalet %1 är orimligt jämfört med återstående byte i strömmen</translation>
+        <translation>Blobantalet %1 är orimligt jämfört med återstående byte i strömmen</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">Ogiltigt filformat.</translation>
+        <translation>Ogiltigt filformat.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">Strömfel vid läsning av typtagg vid position %1: status %2</translation>
+        <translation>Strömfel vid läsning av typtagg vid position %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">Strömfel vid läsning av elementtyp vid position %1: status %2</translation>
+        <translation>Strömfel vid läsning av elementtyp vid position %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">Strömfel vid laddning av element vid position %1: status %2</translation>
+        <translation>Strömfel vid laddning av element vid position %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">Strömfel vid laddning av anslutning vid position %1: status %2</translation>
+        <translation>Strömfel vid laddning av anslutning vid position %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">Ogiltig typ. Data är möjligen korrupt.</translation>
+        <translation>Ogiltig typ. Data är möjligen korrupt.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">Kunde inte skapa versionssäkerhetskopia: %1</translation>
+        <translation>Kunde inte skapa versionssäkerhetskopia: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">Fel vid kopiering av fil: %1</translation>
+        <translation>Fel vid kopiering av fil: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Föreslaget namn:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">Ogiltiga anslutningsportar i SplitCommand konstruktor</translation>
+        <translation>Ogiltiga anslutningsportar i SplitCommand konstruktor</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">Ogiltiga grafiska element i SplitCommand konstruktor</translation>
+        <translation>Ogiltiga grafiska element i SplitCommand konstruktor</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Föreslaget namn:</translation>
         <translation>Ledningsdelning</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">Fel vid försök att göra om %1</translation>
+        <translation>Fel vid försök att göra om %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">Fel: endPort är null i SplitCommand::redo()</translation>
+        <translation>Fel: endPort är null i SplitCommand::redo()</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">Fel vid försök att ångra %1</translation>
+        <translation>Fel vid försök att ångra %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Utdatavariabel inte mappad för sanningstabell: %1</translation>
+        <translation>Utdatavariabel inte mappad för sanningstabell: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementtyp stöds inte: %1</translation>
+        <translation>Elementtyp stöds inte: %1</translation>
     </message>
 </context>
 <context>
@@ -2739,8 +2823,9 @@ Föreslaget namn:</translation>
         <translation>Växla Sanningstabell-utdata vid position: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">Kunde inte hitta sanningstabell-element!</translation>
+        <translation>Kunde inte hitta sanningstabell-element!</translation>
     </message>
 </context>
 <context>
@@ -2822,20 +2907,24 @@ Uppdatera wiRedPanda för att spara ändringar i denna fil.</translation>
         <translation>Spara fil (originalplatsen är skrivskyddad)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Fel vid öppning av fil: %1</translation>
+        <translation>Fel vid öppning av fil: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Kunde inte spara fil: %1</translation>
+        <translation>Kunde inte spara fil: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">Denna fil finns inte: %1</translation>
+        <translation>Denna fil finns inte: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Kunde inte öppna fil: %1</translation>
+        <translation>Kunde inte öppna fil: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2868,12 +2957,14 @@ En säkerhetskopia av originalfilen har skapats med namnet: %3</translation>
         <translation>Filen uppgraderades.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">Fel vid öppning av autospar-fil: %1</translation>
+        <translation>Fel vid öppning av autospar-fil: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">Kunde inte slutföra autosparfilen: %1</translation>
+        <translation>Kunde inte slutföra autosparfilen: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

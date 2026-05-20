@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">Не вдалося відкрити файл для запису: %1</translation>
+        <translation>Не вдалося відкрити файл для запису: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">Недостатньо виводів для всіх вхідних елементів</translation>
+        <translation>Недостатньо виводів для всіх вхідних елементів</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">Недостатньо виводів для всіх позицій поворотного перемикача</translation>
+        <translation>Недостатньо виводів для всіх позицій поворотного перемикача</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">Недостатньо виводів для всіх вихідних елементів</translation>
+        <translation>Недостатньо виводів для всіх вихідних елементів</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Тип елемента не підтримується: %1</translation>
+        <translation>Тип елемента не підтримується: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Вихідна змінна не зіставлена з таблицею істинності: %1</translation>
+        <translation>Вихідна змінна не зіставлена з таблицею істинності: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">Не вдалося відкрити файл тестового стенду: %1</translation>
+        <translation>Не вдалося відкрити файл тестового стенду: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>Файл нечитабельний</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">Не вдалося завантажити аудіо: %1 (%2)</translation>
+        <translation>Не вдалося завантажити аудіо: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>Симулятор beWavedDolphin</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">Схема порожня. Додайте вхідні та вихідні елементи для генерації осцилограми.</translation>
+        <translation>Схема порожня. Додайте вхідні та вихідні елементи для генерації осцилограми.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">У схемі немає вхідних або вихідних елементів. Додайте принаймні один вхід (напр. Switch) та один вихід (напр. LED) для генерації осцилограми.</translation>
+        <translation>У схемі немає вхідних або вихідних елементів. Додайте принаймні один вхід (напр. Switch) та один вихід (напр. LED) для генерації осцилограми.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">У схемі немає вхідних елементів. Додайте принаймні один вхід (напр. Switch, Button або Clock) для генерації осцилограми.</translation>
+        <translation>У схемі немає вхідних елементів. Додайте принаймні один вхід (напр. Switch, Button або Clock) для генерації осцилограми.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">У схемі немає вихідних елементів. Додайте принаймні один вихід (напр. LED або Display) для генерації осцилограми.</translation>
+        <translation>У схемі немає вихідних елементів. Додайте принаймні один вихід (напр. LED або Display) для генерації осцилограми.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>Файл успішно збережено.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">Хвильова форма буде занадто великою! Скидання масштабу.</translation>
+        <translation>Хвильова форма буде занадто великою! Скидання масштабу.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">Жодної комірки не вибрано.</translation>
+        <translation>Жодної комірки не вибрано.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Помилка відкриття файлу: %1</translation>
+        <translation>Помилка відкриття файлу: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">Помилка збереження файлу: %1</translation>
+        <translation>Помилка збереження файлу: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>Файл успішно завантажено.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">Не вдалося відкрити файл для читання: %1</translation>
+        <translation>Не вдалося відкрити файл для читання: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">Формат не підтримується. Неможливо відкрити файл: %1</translation>
+        <translation>Формат не підтримується. Неможливо відкрити файл: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>Файли PDF (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">Неможливо надрукувати цю схему в PDF.</translation>
+        <translation>Неможливо надрукувати цю схему в PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Файл &quot;%1&quot; не існує!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Гц</translation>
@@ -1143,12 +1177,14 @@ Each wireless channel must have a unique label.</source>
         <translation>Невідомо</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">Невідомий тип елемента: %1</translation>
+        <translation>Невідомий тип елемента: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">Невідомий тип: %1</translation>
+        <translation>Невідомий тип: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Each wireless channel must have a unique label.</source>
         <translation>Невідома причина</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">Не вдалося завантажити зображення: %1 (%2)</translation>
+        <translation>Не вдалося завантажити зображення: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Each wireless channel must have a unique label.</source>
         <translation>За замовчуванням</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">Помилка потоку під час читання властивостей елемента на позиції %1</translation>
+        <translation>Помилка потоку під час читання властивостей елемента на позиції %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">Помилка потоку під час читання скінів на позиції %1</translation>
+        <translation>Помилка потоку під час читання скінів на позиції %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">Індекс вигляду %1 поза діапазоном (розмір=%2) — потік може бути пошкоджений</translation>
+        <translation>Індекс вигляду %1 поза діапазоном (розмір=%2) — потік може бути пошкоджений</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Each wireless channel must have a unique label.</source>
         <translation>Завантаження назв скінів піксельних карт.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">Індекс скіна %1 за межами діапазону (розмір=%2) для назви скіна &quot;%3&quot; — потік може бути пошкоджено</translation>
+        <translation>Індекс скіна %1 за межами діапазону (розмір=%2) для назви скіна &quot;%3&quot; — потік може бути пошкоджено</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Each wireless channel must have a unique label.</source>
         <translation>ІНТЕГРОВАНА СХЕМА</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">Завантаження IC: у серіалізованих даних відсутня назва IC</translation>
+        <translation>Завантаження IC: у серіалізованих даних відсутня назва IC</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 не знайдено.</translation>
+        <translation>%1 не знайдено.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">Виявлено циклічне посилання на IC: %1</translation>
+        <translation>Виявлено циклічне посилання на IC: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Помилка відкриття файлу: %1</translation>
+        <translation>Помилка відкриття файлу: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">Міграція IC: неможливо відкрити файл для запису: %1</translation>
+        <translation>Міграція IC: неможливо відкрити файл для запису: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">Міграція IC: не вдалося зафіксувати повторно збережений файл: %1</translation>
+        <translation>Міграція IC: не вдалося зафіксувати повторно збережений файл: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">Перевищено межу глибини вкладення ІС (%1) — blob може бути зловмисно створений</translation>
+        <translation>Перевищено межу глибини вкладення ІС (%1) — blob може бути зловмисно створений</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Неможливо відкрити файл: %1</translation>
+        <translation>Неможливо відкрити файл: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Неможливо зберегти файл: %1</translation>
+        <translation>Неможливо зберегти файл: %1</translation>
     </message>
 </context>
 <context>
@@ -2231,12 +2281,17 @@ Suggested name:</source>
         <translation>Вихід</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">Відсутнє ім&apos;я файлу.</translation>
+        <translation>Відсутнє ім&apos;я файлу.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">Файл .panda порожній.</translation>
+        <translation>Файл .panda порожній.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Suggested name:</source>
         <translation>Вмикнути звук</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">Спочатку збережіть файл.</translation>
+        <translation>Спочатку збережіть файл.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Suggested name:</source>
         <translation>Перетягніть сюди для видалення.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">Помилка видалення файлу: %1</translation>
+        <translation>Помилка видалення файлу: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">Помилка потоку при читанні карти з&apos;єднань на зміщенні %1</translation>
+        <translation>Помилка потоку при читанні карти з&apos;єднань на зміщенні %1</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">Помилка потоку під час читання ID портів з’єднання на зміщенні %1</translation>
+        <translation>Помилка потоку під час читання ID портів з’єднання на зміщенні %1</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">Помилка потоку під час читання кількості метаданих</translation>
+        <translation>Помилка потоку під час читання кількості метаданих</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Кількість метаданих %1 неправдоподібна для решти байтів потоку</translation>
+        <translation>Кількість метаданих %1 неправдоподібна для решти байтів потоку</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">Помилка потоку під час читання кількості blob-об’єктів</translation>
+        <translation>Помилка потоку під час читання кількості blob-об’єктів</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Кількість blob-об’єктів %1 неправдоподібна для решти байтів потоку</translation>
+        <translation>Кількість blob-об’єктів %1 неправдоподібна для решти байтів потоку</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">Неправильний формат файлу.</translation>
+        <translation>Неправильний формат файлу.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">Помилка потоку під час читання мітки типу на позиції %1: статус %2</translation>
+        <translation>Помилка потоку під час читання мітки типу на позиції %1: статус %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">Помилка потоку під час читання типу елемента на позиції %1: статус %2</translation>
+        <translation>Помилка потоку під час читання типу елемента на позиції %1: статус %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">Помилка потоку під час завантаження елемента на позиції %1: статус %2</translation>
+        <translation>Помилка потоку під час завантаження елемента на позиції %1: статус %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">Помилка потоку під час завантаження з’єднання на позиції %1: статус %2</translation>
+        <translation>Помилка потоку під час завантаження з’єднання на позиції %1: статус %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">Неправильний тип. Дані можливо пошкоджені.</translation>
+        <translation>Неправильний тип. Дані можливо пошкоджені.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">Не вдалося створити версіоновану резервну копію: %1</translation>
+        <translation>Не вдалося створити версіоновану резервну копію: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">Помилка копіювання файлу: %1</translation>
+        <translation>Помилка копіювання файлу: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">Недійсні порти підключення у конструкторі SplitCommand</translation>
+        <translation>Недійсні порти підключення у конструкторі SplitCommand</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">Недійсні графічні елементи у конструкторі SplitCommand</translation>
+        <translation>Недійсні графічні елементи у конструкторі SplitCommand</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Suggested name:</source>
         <translation>Розділення проводу</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">Помилка при спробі повторити %1</translation>
+        <translation>Помилка при спробі повторити %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">Помилка: endPort є null у SplitCommand::redo()</translation>
+        <translation>Помилка: endPort є null у SplitCommand::redo()</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">Помилка при спробі скасувати %1</translation>
+        <translation>Помилка при спробі скасувати %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Вихідна змінна не зіставлена з таблицею істинності: %1</translation>
+        <translation>Вихідна змінна не зіставлена з таблицею істинності: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Тип елемента не підтримується: %1</translation>
+        <translation>Тип елемента не підтримується: %1</translation>
     </message>
 </context>
 <context>
@@ -2739,8 +2823,9 @@ Suggested name:</source>
         <translation>Перемкнути вихід таблиці істинності на позиції: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">Не вдалося знайти елемент таблиці істинності!</translation>
+        <translation>Не вдалося знайти елемент таблиці істинності!</translation>
     </message>
 </context>
 <context>
@@ -2822,20 +2907,24 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>Зберегти файл (початкове розташування лише для читання)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Помилка відкриття файлу: %1</translation>
+        <translation>Помилка відкриття файлу: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Неможливо зберегти файл: %1</translation>
+        <translation>Неможливо зберегти файл: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">Цей файл не існує: %1</translation>
+        <translation>Цей файл не існує: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Неможливо відкрити файл: %1</translation>
+        <translation>Неможливо відкрити файл: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2868,12 +2957,14 @@ A backup of the original file has been created with name: %3</source>
         <translation>Файл оновлено.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">Помилка відкриття файлу автозбереження: %1</translation>
+        <translation>Помилка відкриття файлу автозбереження: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">Не вдалося завершити файл автозбереження: %1</translation>
+        <translation>Не вдалося завершити файл автозбереження: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

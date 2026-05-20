@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">Datei konnte nicht zum Schreiben geöffnet werden: %1</translation>
+        <translation>Datei konnte nicht zum Schreiben geöffnet werden: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">Nicht genügend Pins für alle Eingabeelemente verfügbar</translation>
+        <translation>Nicht genügend Pins für alle Eingabeelemente verfügbar</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">Nicht genügend Pins für alle Drehschalterpositionen verfügbar</translation>
+        <translation>Nicht genügend Pins für alle Drehschalterpositionen verfügbar</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">Nicht genügend Pins für alle Ausgabeelemente verfügbar</translation>
+        <translation>Nicht genügend Pins für alle Ausgabeelemente verfügbar</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementtyp nicht unterstützt: %1</translation>
+        <translation>Elementtyp nicht unterstützt: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Ausgabevariable nicht zugeordnet für Wahrheitstabelle: %1</translation>
+        <translation>Ausgabevariable nicht zugeordnet für Wahrheitstabelle: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">Testbench-Datei konnte nicht geöffnet werden: %1</translation>
+        <translation>Testbench-Datei konnte nicht geöffnet werden: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>Datei ist nicht lesbar</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">Audio konnte nicht geladen werden: %1 (%2)</translation>
+        <translation>Audio konnte nicht geladen werden: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -374,20 +382,24 @@
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">Die Schaltung ist leer. Fügen Sie Ein- und Ausgabeelemente hinzu, um ein Signaldiagramm zu erzeugen.</translation>
+        <translation>Die Schaltung ist leer. Fügen Sie Ein- und Ausgabeelemente hinzu, um ein Signaldiagramm zu erzeugen.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">Die Schaltung hat keine Ein- oder Ausgabeelemente. Fügen Sie mindestens einen Eingang (z.&#xa0;B. Switch) und einen Ausgang (z.&#xa0;B. LED) hinzu, um ein Signaldiagramm zu erzeugen.</translation>
+        <translation>Die Schaltung hat keine Ein- oder Ausgabeelemente. Fügen Sie mindestens einen Eingang (z.&#xa0;B. Switch) und einen Ausgang (z.&#xa0;B. LED) hinzu, um ein Signaldiagramm zu erzeugen.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">Die Schaltung hat keine Eingabeelemente. Fügen Sie mindestens einen Eingang (z.&#xa0;B. Switch, Button oder Clock) hinzu, um ein Signaldiagramm zu erzeugen.</translation>
+        <translation>Die Schaltung hat keine Eingabeelemente. Fügen Sie mindestens einen Eingang (z.&#xa0;B. Switch, Button oder Clock) hinzu, um ein Signaldiagramm zu erzeugen.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">Die Schaltung hat keine Ausgabeelemente. Fügen Sie mindestens einen Ausgang (z.&#xa0;B. LED oder Display) hinzu, um ein Signaldiagramm zu erzeugen.</translation>
+        <translation>Die Schaltung hat keine Ausgabeelemente. Fügen Sie mindestens einen Ausgang (z.&#xa0;B. LED oder Display) hinzu, um ein Signaldiagramm zu erzeugen.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -432,20 +444,39 @@
         <translation>Datei erfolgreich gespeichert.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">Wellenform wäre zu groß! Zoom wird zurückgesetzt.</translation>
+        <translation>Wellenform wäre zu groß! Zoom wird zurückgesetzt.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">Keine Zellen ausgewählt.</translation>
+        <translation>Keine Zellen ausgewählt.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Fehler beim Öffnen der Datei: %1</translation>
+        <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">Fehler beim Speichern der Datei: %1</translation>
+        <translation>Fehler beim Speichern der Datei: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -463,12 +494,14 @@
         <translation>Datei erfolgreich geladen.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">Datei konnte nicht zum Lesen geöffnet werden: %1</translation>
+        <translation>Datei konnte nicht zum Lesen geöffnet werden: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">Format nicht unterstützt. Datei konnte nicht geöffnet werden: %1</translation>
+        <translation>Format nicht unterstützt. Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -486,11 +519,13 @@
         <translation>PDF-Dateien (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">Diese Schaltung konnte nicht als PDF gedruckt werden.</translation>
+        <translation>Diese Schaltung konnte nicht als PDF gedruckt werden.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Datei &quot;%1&quot; existiert nicht!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
         <translation>Unbekannt</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">Unbekannter Elementtyp: %1</translation>
+        <translation>Unbekannter Elementtyp: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">Unbekannter Typ: %1</translation>
+        <translation>Unbekannter Typ: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
         <translation>Unbekannter Grund</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">Pixmap konnte nicht geladen werden: %1 (%2)</translation>
+        <translation>Pixmap konnte nicht geladen werden: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
         <translation>Standard</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">Stream-Fehler beim Lesen der Elementeigenschaften an Position %1</translation>
+        <translation>Stream-Fehler beim Lesen der Elementeigenschaften an Position %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">Stream-Fehler beim Lesen der Skins an Position %1</translation>
+        <translation>Stream-Fehler beim Lesen der Skins an Position %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">Erscheinungsindex %1 außerhalb des Bereichs (Größe=%2) — der Datenstrom ist möglicherweise beschädigt</translation>
+        <translation>Erscheinungsindex %1 außerhalb des Bereichs (Größe=%2) — der Datenstrom ist möglicherweise beschädigt</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
         <translation>Lade Pixmap-Aussehen-Namen.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">Skin-Index %1 außerhalb des Bereichs (Größe=%2) für Skin-Name &quot;%3&quot; — Stream ist möglicherweise beschädigt</translation>
+        <translation>Skin-Index %1 außerhalb des Bereichs (Größe=%2) für Skin-Name &quot;%3&quot; — Stream ist möglicherweise beschädigt</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
         <translation>INTEGRIERTE SCHALTUNG</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">IC-Laden: kein IC-Name in den serialisierten Daten vorhanden</translation>
+        <translation>IC-Laden: kein IC-Name in den serialisierten Daten vorhanden</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 nicht gefunden.</translation>
+        <translation>%1 nicht gefunden.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">Zirkuläre IC-Referenz erkannt: %1</translation>
+        <translation>Zirkuläre IC-Referenz erkannt: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Fehler beim Öffnen der Datei: %1</translation>
+        <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">IC-Migration: Datei kann nicht zum Schreiben geöffnet werden: %1</translation>
+        <translation>IC-Migration: Datei kann nicht zum Schreiben geöffnet werden: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">IC-Migration: erneut gespeicherte Datei konnte nicht übernommen werden: %1</translation>
+        <translation>IC-Migration: erneut gespeicherte Datei konnte nicht übernommen werden: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">IC-Verschachtelungstiefenlimit (%1) überschritten — das Blob könnte böswillig erstellt sein</translation>
+        <translation>IC-Verschachtelungstiefenlimit (%1) überschritten — das Blob könnte böswillig erstellt sein</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Datei konnte nicht geöffnet werden: %1</translation>
+        <translation>Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Datei konnte nicht gespeichert werden: %1</translation>
+        <translation>Datei konnte nicht gespeichert werden: %1</translation>
     </message>
 </context>
 <context>
@@ -2231,12 +2281,17 @@ Vorgeschlagener Name:</translation>
         <translation>Beenden</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">Fehlender Dateiname.</translation>
+        <translation>Fehlender Dateiname.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">Die .panda-Datei ist leer.</translation>
+        <translation>Die .panda-Datei ist leer.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Vorgeschlagener Name:</translation>
         <translation>Laut</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">Datei zuerst speichern.</translation>
+        <translation>Datei zuerst speichern.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Vorgeschlagener Name:</translation>
         <translation>Hierher ziehen zum Entfernen.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">Fehler beim Entfernen der Datei: %1</translation>
+        <translation>Fehler beim Entfernen der Datei: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Vorgeschlagener Name:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">Stream-Fehler beim Lesen der Verbindungstabelle bei Offset %1</translation>
+        <translation>Stream-Fehler beim Lesen der Verbindungstabelle bei Offset %1</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">Stream-Fehler beim Lesen der Verbindungsport-IDs bei Offset %1</translation>
+        <translation>Stream-Fehler beim Lesen der Verbindungsport-IDs bei Offset %1</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Vorgeschlagener Name:</translation>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">Streamfehler beim Lesen der Metadaten-Anzahl</translation>
+        <translation>Streamfehler beim Lesen der Metadaten-Anzahl</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Metadaten-Anzahl %1 unplausibel für die verbleibenden Stream-Bytes</translation>
+        <translation>Metadaten-Anzahl %1 unplausibel für die verbleibenden Stream-Bytes</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">Streamfehler beim Lesen der Blob-Anzahl</translation>
+        <translation>Streamfehler beim Lesen der Blob-Anzahl</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Blob-Anzahl %1 unplausibel für die verbleibenden Stream-Bytes</translation>
+        <translation>Blob-Anzahl %1 unplausibel für die verbleibenden Stream-Bytes</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">Ungültiges Dateiformat.</translation>
+        <translation>Ungültiges Dateiformat.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">Stream-Fehler beim Lesen des Typ-Tags an Position %1: Status %2</translation>
+        <translation>Stream-Fehler beim Lesen des Typ-Tags an Position %1: Status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">Stream-Fehler beim Lesen des Elementtyps an Position %1: Status %2</translation>
+        <translation>Stream-Fehler beim Lesen des Elementtyps an Position %1: Status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">Stream-Fehler beim Laden des Elements an Position %1: Status %2</translation>
+        <translation>Stream-Fehler beim Laden des Elements an Position %1: Status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">Stream-Fehler beim Laden der Verbindung an Position %1: Status %2</translation>
+        <translation>Stream-Fehler beim Laden der Verbindung an Position %1: Status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">Ungültiger Typ. Daten sind möglicherweise beschädigt.</translation>
+        <translation>Ungültiger Typ. Daten sind möglicherweise beschädigt.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">Versionierte Sicherungskopie konnte nicht erstellt werden: %1</translation>
+        <translation>Versionierte Sicherungskopie konnte nicht erstellt werden: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">Fehler beim Kopieren der Datei: %1</translation>
+        <translation>Fehler beim Kopieren der Datei: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Vorgeschlagener Name:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">Ungültige Verbindungsports im SplitCommand-Konstruktor</translation>
+        <translation>Ungültige Verbindungsports im SplitCommand-Konstruktor</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">Ungültige grafische Elemente im SplitCommand-Konstruktor</translation>
+        <translation>Ungültige grafische Elemente im SplitCommand-Konstruktor</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Vorgeschlagener Name:</translation>
         <translation>Draht aufteilen</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">Fehler beim Versuch, %1 zu wiederholen</translation>
+        <translation>Fehler beim Versuch, %1 zu wiederholen</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">Fehler: endPort ist null in SplitCommand::redo()</translation>
+        <translation>Fehler: endPort ist null in SplitCommand::redo()</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">Fehler beim Versuch, %1 rückgängig zu machen</translation>
+        <translation>Fehler beim Versuch, %1 rückgängig zu machen</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Ausgabevariable nicht zugeordnet für Wahrheitstabelle: %1</translation>
+        <translation>Ausgabevariable nicht zugeordnet für Wahrheitstabelle: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementtyp nicht unterstützt: %1</translation>
+        <translation>Elementtyp nicht unterstützt: %1</translation>
     </message>
 </context>
 <context>
@@ -2739,8 +2823,9 @@ Vorgeschlagener Name:</translation>
         <translation>Wahrheitstabellen-Ausgabe an Position %1 umschalten</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">Wahrheitstabellen-Element konnte nicht gefunden werden!</translation>
+        <translation>Wahrheitstabellen-Element konnte nicht gefunden werden!</translation>
     </message>
 </context>
 <context>
@@ -2822,20 +2907,24 @@ Bitte aktualisieren Sie wiRedPanda, um Änderungen an dieser Datei zu speichern.
         <translation>Datei speichern (ursprünglicher Speicherort ist schreibgeschützt)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Fehler beim Öffnen der Datei: %1</translation>
+        <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Datei konnte nicht gespeichert werden: %1</translation>
+        <translation>Datei konnte nicht gespeichert werden: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">Diese Datei existiert nicht: %1</translation>
+        <translation>Diese Datei existiert nicht: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Datei konnte nicht geöffnet werden: %1</translation>
+        <translation>Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2868,12 +2957,14 @@ Eine Sicherungskopie der Originaldatei wurde erstellt unter dem Namen: %3</trans
         <translation>Datei wurde aktualisiert.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">Fehler beim Öffnen der automatisch gespeicherten Datei: %1</translation>
+        <translation>Fehler beim Öffnen der automatisch gespeicherten Datei: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">Automatische Sicherungsdatei konnte nicht übernommen werden: %1</translation>
+        <translation>Automatische Sicherungsdatei konnte nicht übernommen werden: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

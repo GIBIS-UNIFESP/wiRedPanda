@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">Kan bestand niet openen voor schrijven: %1</translation>
+        <translation>Kan bestand niet openen voor schrijven: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">Niet genoeg pinnen beschikbaar voor alle invoerelementen</translation>
+        <translation>Niet genoeg pinnen beschikbaar voor alle invoerelementen</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">Niet genoeg pinnen beschikbaar voor alle draaischakelaarposities</translation>
+        <translation>Niet genoeg pinnen beschikbaar voor alle draaischakelaarposities</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">Niet genoeg pinnen beschikbaar voor alle uitvoerelementen</translation>
+        <translation>Niet genoeg pinnen beschikbaar voor alle uitvoerelementen</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementtype niet ondersteund: %1</translation>
+        <translation>Elementtype niet ondersteund: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Uitvoervariabele niet gekoppeld aan waarheidstabel: %1</translation>
+        <translation>Uitvoervariabele niet gekoppeld aan waarheidstabel: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">Kan testbench-bestand niet openen: %1</translation>
+        <translation>Kan testbench-bestand niet openen: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>Bestand is niet leesbaar</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">Kan audio niet laden: %1 (%2)</translation>
+        <translation>Kan audio niet laden: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">Het circuit is leeg. Voeg invoer- en uitvoerelementen toe om een golfvorm te genereren.</translation>
+        <translation>Het circuit is leeg. Voeg invoer- en uitvoerelementen toe om een golfvorm te genereren.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">Het circuit heeft geen invoer- of uitvoerelementen. Voeg minimaal één invoer (bijv. Switch) en één uitvoer (bijv. LED) toe om een golfvorm te genereren.</translation>
+        <translation>Het circuit heeft geen invoer- of uitvoerelementen. Voeg minimaal één invoer (bijv. Switch) en één uitvoer (bijv. LED) toe om een golfvorm te genereren.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">Het circuit heeft geen invoerelementen. Voeg minimaal één invoer (bijv. Switch, Button of Clock) toe om een golfvorm te genereren.</translation>
+        <translation>Het circuit heeft geen invoerelementen. Voeg minimaal één invoer (bijv. Switch, Button of Clock) toe om een golfvorm te genereren.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">Het circuit heeft geen uitvoerelementen. Voeg minimaal één uitvoer (bijv. LED of Display) toe om een golfvorm te genereren.</translation>
+        <translation>Het circuit heeft geen uitvoerelementen. Voeg minimaal één uitvoer (bijv. LED of Display) toe om een golfvorm te genereren.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>Bestand succesvol opgeslagen.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">Golfvorm zou te groot zijn! Zoom wordt gereset.</translation>
+        <translation>Golfvorm zou te groot zijn! Zoom wordt gereset.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">Geen cellen geselecteerd.</translation>
+        <translation>Geen cellen geselecteerd.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Fout bij openen van bestand: %1</translation>
+        <translation>Fout bij openen van bestand: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">Fout bij opslaan van bestand: %1</translation>
+        <translation>Fout bij opslaan van bestand: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>Bestand succesvol geladen.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">Kon het bestand niet openen om te lezen: %1</translation>
+        <translation>Kon het bestand niet openen om te lezen: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">Formaat niet ondersteund. Kon bestand niet openen: %1</translation>
+        <translation>Formaat niet ondersteund. Kon bestand niet openen: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>PDF-bestanden (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">Kon deze schakeling niet naar PDF printen.</translation>
+        <translation>Kon deze schakeling niet naar PDF printen.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Bestand &quot;%1&quot; bestaat niet!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Elk draadloos kanaal moet een uniek label hebben.</translation>
         <translation>Onbekend</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">Onbekend elementtype: %1</translation>
+        <translation>Onbekend elementtype: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">Onbekend type: %1</translation>
+        <translation>Onbekend type: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Elk draadloos kanaal moet een uniek label hebben.</translation>
         <translation>Onbekende reden</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">Kon pixmap niet laden: %1 (%2)</translation>
+        <translation>Kon pixmap niet laden: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Elk draadloos kanaal moet een uniek label hebben.</translation>
         <translation>Standaard</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">Streamfout bij het lezen van elementeigenschappen op positie %1</translation>
+        <translation>Streamfout bij het lezen van elementeigenschappen op positie %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">Streamfout bij het lezen van skins op positie %1</translation>
+        <translation>Streamfout bij het lezen van skins op positie %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">Verschijningsindex %1 buiten bereik (grootte=%2) — stroom is mogelijk beschadigd</translation>
+        <translation>Verschijningsindex %1 buiten bereik (grootte=%2) — stroom is mogelijk beschadigd</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Elk draadloos kanaal moet een uniek label hebben.</translation>
         <translation>Pixmap skin namen laden.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">Skinindex %1 buiten bereik (grootte=%2) voor skinnaam &quot;%3&quot; — de stream is mogelijk beschadigd</translation>
+        <translation>Skinindex %1 buiten bereik (grootte=%2) voor skinnaam &quot;%3&quot; — de stream is mogelijk beschadigd</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Elk draadloos kanaal moet een uniek label hebben.</translation>
         <translation>GEÏNTEGREERDE SCHAKELING</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">IC laden: geen IC-naam aanwezig in de geserialiseerde gegevens</translation>
+        <translation>IC laden: geen IC-naam aanwezig in de geserialiseerde gegevens</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 niet gevonden.</translation>
+        <translation>%1 niet gevonden.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">Circulaire IC-referentie gedetecteerd: %1</translation>
+        <translation>Circulaire IC-referentie gedetecteerd: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Fout bij openen van bestand: %1</translation>
+        <translation>Fout bij openen van bestand: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">IC-migratie: kan bestand niet openen voor schrijven: %1</translation>
+        <translation>IC-migratie: kan bestand niet openen voor schrijven: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">IC-migratie: opnieuw opgeslagen bestand kan niet worden vastgelegd: %1</translation>
+        <translation>IC-migratie: opnieuw opgeslagen bestand kan niet worden vastgelegd: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">IC-nestdieptelimiet (%1) overschreden — blob is mogelijk kwaadaardig opgesteld</translation>
+        <translation>IC-nestdieptelimiet (%1) overschreden — blob is mogelijk kwaadaardig opgesteld</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Kon bestand niet openen: %1</translation>
+        <translation>Kon bestand niet openen: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Kon bestand niet opslaan: %1</translation>
+        <translation>Kon bestand niet opslaan: %1</translation>
     </message>
 </context>
 <context>
@@ -2231,12 +2281,17 @@ Voorgestelde naam:</translation>
         <translation>Afsluiten</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">Bestandsnaam ontbreekt.</translation>
+        <translation>Bestandsnaam ontbreekt.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">Het .panda-bestand is leeg.</translation>
+        <translation>Het .panda-bestand is leeg.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Voorgestelde naam:</translation>
         <translation>Geluid aan</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">Sla eerst het bestand op.</translation>
+        <translation>Sla eerst het bestand op.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Voorgestelde naam:</translation>
         <translation>Sleep hier naartoe om te verwijderen.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">Fout bij verwijderen van bestand: %1</translation>
+        <translation>Fout bij verwijderen van bestand: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Voorgestelde naam:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">Streamfout bij het lezen van de verbindingskaart op offset %1</translation>
+        <translation>Streamfout bij het lezen van de verbindingskaart op offset %1</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">Streamfout bij het lezen van verbindingspoort-ID’s op offset %1</translation>
+        <translation>Streamfout bij het lezen van verbindingspoort-ID’s op offset %1</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Voorgestelde naam:</translation>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">Streamfout bij het lezen van het aantal metadata</translation>
+        <translation>Streamfout bij het lezen van het aantal metadata</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Aantal metadata %1 onaannemelijk voor de resterende stream-bytes</translation>
+        <translation>Aantal metadata %1 onaannemelijk voor de resterende stream-bytes</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">Streamfout bij het lezen van het aantal blobs</translation>
+        <translation>Streamfout bij het lezen van het aantal blobs</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Aantal blobs %1 onaannemelijk voor de resterende stream-bytes</translation>
+        <translation>Aantal blobs %1 onaannemelijk voor de resterende stream-bytes</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">Ongeldig bestandsformaat.</translation>
+        <translation>Ongeldig bestandsformaat.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">Streamfout bij het lezen van typetag op positie %1: status %2</translation>
+        <translation>Streamfout bij het lezen van typetag op positie %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">Streamfout bij het lezen van elementtype op positie %1: status %2</translation>
+        <translation>Streamfout bij het lezen van elementtype op positie %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">Streamfout bij het laden van element op positie %1: status %2</translation>
+        <translation>Streamfout bij het laden van element op positie %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">Streamfout bij het laden van verbinding op positie %1: status %2</translation>
+        <translation>Streamfout bij het laden van verbinding op positie %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">Ongeldig type. Gegevens zijn mogelijk beschadigd.</translation>
+        <translation>Ongeldig type. Gegevens zijn mogelijk beschadigd.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">Kan geen versie-backup maken: %1</translation>
+        <translation>Kan geen versie-backup maken: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">Fout bij het kopiëren van bestand: %1</translation>
+        <translation>Fout bij het kopiëren van bestand: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Voorgestelde naam:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">Ongeldige verbindingspoorten in SplitCommand constructor</translation>
+        <translation>Ongeldige verbindingspoorten in SplitCommand constructor</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">Ongeldige grafische elementen in SplitCommand constructor</translation>
+        <translation>Ongeldige grafische elementen in SplitCommand constructor</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Voorgestelde naam:</translation>
         <translation>Draad splitsen</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">Fout bij opnieuw uitvoeren van %1</translation>
+        <translation>Fout bij opnieuw uitvoeren van %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">Fout: endPort is null in SplitCommand::redo()</translation>
+        <translation>Fout: endPort is null in SplitCommand::redo()</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">Fout bij ongedaan maken van %1</translation>
+        <translation>Fout bij ongedaan maken van %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Uitvoervariabele niet gekoppeld aan waarheidstabel: %1</translation>
+        <translation>Uitvoervariabele niet gekoppeld aan waarheidstabel: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementtype niet ondersteund: %1</translation>
+        <translation>Elementtype niet ondersteund: %1</translation>
     </message>
 </context>
 <context>
@@ -2739,8 +2823,9 @@ Voorgestelde naam:</translation>
         <translation>Schakel waarheidstabel uitvoer om op positie: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">Kon waarheidstabel element niet vinden!</translation>
+        <translation>Kon waarheidstabel element niet vinden!</translation>
     </message>
 </context>
 <context>
@@ -2822,20 +2907,24 @@ Werk wiRedPanda bij om wijzigingen in dit bestand op te slaan.</translation>
         <translation>Bestand opslaan (oorspronkelijke locatie is alleen-lezen)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Fout bij openen van bestand: %1</translation>
+        <translation>Fout bij openen van bestand: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Kon bestand niet opslaan: %1</translation>
+        <translation>Kon bestand niet opslaan: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">Dit bestand bestaat niet: %1</translation>
+        <translation>Dit bestand bestaat niet: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Kon bestand niet openen: %1</translation>
+        <translation>Kon bestand niet openen: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2868,12 +2957,14 @@ Een back-up van het oorspronkelijke bestand is aangemaakt met de naam: %3</trans
         <translation>Bestand bijgewerkt.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">Fout bij openen van automatisch opgeslagen bestand: %1</translation>
+        <translation>Fout bij openen van automatisch opgeslagen bestand: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">Kan automatische opslag-bestand niet vastleggen: %1</translation>
+        <translation>Kan automatische opslag-bestand niet vastleggen: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

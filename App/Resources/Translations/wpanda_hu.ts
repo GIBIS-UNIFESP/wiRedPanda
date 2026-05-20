@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">A fájl nem nyitható meg írásra: %1</translation>
+        <translation>A fájl nem nyitható meg írásra: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">Nincs elég láb az összes bemeneti elemhez</translation>
+        <translation>Nincs elég láb az összes bemeneti elemhez</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">Nincs elég láb az összes forgókapcsoló-álláshoz</translation>
+        <translation>Nincs elég láb az összes forgókapcsoló-álláshoz</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">Nincs elég láb az összes kimeneti elemhez</translation>
+        <translation>Nincs elég láb az összes kimeneti elemhez</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Az elem típusa nem támogatott: %1</translation>
+        <translation>Az elem típusa nem támogatott: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">A kimeneti változó nincs hozzárendelve az igazságtáblához: %1</translation>
+        <translation>A kimeneti változó nincs hozzárendelve az igazságtáblához: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">A tesztpad fájl nem nyitható meg: %1</translation>
+        <translation>A tesztpad fájl nem nyitható meg: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>A fájl nem olvasható</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">A hang nem tölthető be: %1 (%2)</translation>
+        <translation>A hang nem tölthető be: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>beWavedDolphin Szimulátor</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">Az áramkör üres. Adjon hozzá bemeneti és kimeneti elemeket a hullámforma generálásához.</translation>
+        <translation>Az áramkör üres. Adjon hozzá bemeneti és kimeneti elemeket a hullámforma generálásához.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">Az áramkörnek nincs bemeneti vagy kimeneti eleme. Adjon hozzá legalább egy bemenetet (pl. Switch) és egy kimenetet (pl. LED) a hullámforma generálásához.</translation>
+        <translation>Az áramkörnek nincs bemeneti vagy kimeneti eleme. Adjon hozzá legalább egy bemenetet (pl. Switch) és egy kimenetet (pl. LED) a hullámforma generálásához.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">Az áramkörnek nincs bemeneti eleme. Adjon hozzá legalább egy bemenetet (pl. Switch, Button vagy Clock) a hullámforma generálásához.</translation>
+        <translation>Az áramkörnek nincs bemeneti eleme. Adjon hozzá legalább egy bemenetet (pl. Switch, Button vagy Clock) a hullámforma generálásához.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">Az áramkörnek nincs kimeneti eleme. Adjon hozzá legalább egy kimenetet (pl. LED vagy Display) a hullámforma generálásához.</translation>
+        <translation>Az áramkörnek nincs kimeneti eleme. Adjon hozzá legalább egy kimenetet (pl. LED vagy Display) a hullámforma generálásához.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>Fájl sikeresen elmentve.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">A hullámforma túl nagy lenne! Zoom visszaállítása.</translation>
+        <translation>A hullámforma túl nagy lenne! Zoom visszaállítása.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">Nincsenek kiválasztott cellák.</translation>
+        <translation>Nincsenek kiválasztott cellák.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Hiba a fájl megnyitásakor: %1</translation>
+        <translation>Hiba a fájl megnyitásakor: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">Hiba a fájl mentésekor: %1</translation>
+        <translation>Hiba a fájl mentésekor: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>Fájl sikeresen betöltve.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">A fájl nem nyitható meg olvasásra: %1</translation>
+        <translation>A fájl nem nyitható meg olvasásra: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">A formátum nem támogatott. Nem sikerült megnyitni a fájlt: %1</translation>
+        <translation>A formátum nem támogatott. Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>PDF fájlok (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">Nem sikerült kinyomtatni ezt az áramkört PDF-be.</translation>
+        <translation>Nem sikerült kinyomtatni ezt az áramkört PDF-be.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>A &quot;%1&quot; fájl nem létezik!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>Ismeretlen</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">Ismeretlen elemtípus: %1</translation>
+        <translation>Ismeretlen elemtípus: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">Ismeretlen típus: %1</translation>
+        <translation>Ismeretlen típus: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>Ismeretlen ok</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">Nem sikerült betölteni a pixmap-ot: %1 (%2)</translation>
+        <translation>Nem sikerült betölteni a pixmap-ot: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>Alapértelmezett</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">Folyamhiba az elem tulajdonságainak olvasásakor a(z) %1 pozícióban</translation>
+        <translation>Folyamhiba az elem tulajdonságainak olvasásakor a(z) %1 pozícióban</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">Folyamhiba a megjelenések olvasásakor a(z) %1 pozícióban</translation>
+        <translation>Folyamhiba a megjelenések olvasásakor a(z) %1 pozícióban</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">%1 megjelenési index a tartományon kívül (méret=%2) — a folyam sérült lehet</translation>
+        <translation>%1 megjelenési index a tartományon kívül (méret=%2) — a folyam sérült lehet</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>Pixmap külső nevek betöltése.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">Megjelenés index %1 tartományon kívül (méret=%2) a(z) &quot;%3&quot; megjelenésnévnél — a folyam sérült lehet</translation>
+        <translation>Megjelenés index %1 tartományon kívül (méret=%2) a(z) &quot;%3&quot; megjelenésnévnél — a folyam sérült lehet</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <translation>INTEGRÁLT ÁRAMKÖR</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">IC betöltés: nincs IC-név a szerializált adatokban</translation>
+        <translation>IC betöltés: nincs IC-név a szerializált adatokban</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 nem található.</translation>
+        <translation>%1 nem található.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">Körkörös IC-hivatkozás észlelve: %1</translation>
+        <translation>Körkörös IC-hivatkozás észlelve: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Hiba a fájl megnyitásakor: %1</translation>
+        <translation>Hiba a fájl megnyitásakor: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">IC migráció: a fájl nem nyitható meg írásra: %1</translation>
+        <translation>IC migráció: a fájl nem nyitható meg írásra: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">IC migráció: az újramentett fájl véglegesítése sikertelen: %1</translation>
+        <translation>IC migráció: az újramentett fájl véglegesítése sikertelen: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">IC beágyazási mélységkorlátja (%1) túllépve — a blob rosszindulatúan készülhetett</translation>
+        <translation>IC beágyazási mélységkorlátja (%1) túllépve — a blob rosszindulatúan készülhetett</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Nem sikerült megnyitni a fájlt: %1</translation>
+        <translation>Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Nem sikerült menteni a fájlt: %1</translation>
+        <translation>Nem sikerült menteni a fájlt: %1</translation>
     </message>
 </context>
 <context>
@@ -2156,12 +2206,17 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
         <translation>Váltás a lapra</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">Hiányzó fájlnév.</translation>
+        <translation>Hiányzó fájlnév.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">A .panda fájl üres.</translation>
+        <translation>A .panda fájl üres.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Javasolt név:</translation>
         <translation>Hang feloldása</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">Először mentse el a fájlt.</translation>
+        <translation>Először mentse el a fájlt.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Javasolt név:</translation>
         <translation>Húzza ide az eltávolításhoz.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">Hiba a fájl törlésekor: %1</translation>
+        <translation>Hiba a fájl törlésekor: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Javasolt név:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">Adatfolyam hiba a kapcsolati térkép olvasásakor a(z) %1 eltolásnál</translation>
+        <translation>Adatfolyam hiba a kapcsolati térkép olvasásakor a(z) %1 eltolásnál</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">Folyamhiba a csatlakozási port azonosítók olvasásakor a(z) %1 eltolásnál</translation>
+        <translation>Folyamhiba a csatlakozási port azonosítók olvasásakor a(z) %1 eltolásnál</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Javasolt név:</translation>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">Folyamhiba a metaadat-darabszám olvasásakor</translation>
+        <translation>Folyamhiba a metaadat-darabszám olvasásakor</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">A metaadat-darabszám (%1) valószerűtlen a folyam fennmaradó bájtjaihoz képest</translation>
+        <translation>A metaadat-darabszám (%1) valószerűtlen a folyam fennmaradó bájtjaihoz képest</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">Folyamhiba a blob-darabszám olvasásakor</translation>
+        <translation>Folyamhiba a blob-darabszám olvasásakor</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">A blob-darabszám (%1) valószerűtlen a folyam fennmaradó bájtjaihoz képest</translation>
+        <translation>A blob-darabszám (%1) valószerűtlen a folyam fennmaradó bájtjaihoz képest</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">Érvénytelen fájlformátum.</translation>
+        <translation>Érvénytelen fájlformátum.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">Folyamhiba a típuscímke olvasásakor a(z) %1 pozícióban: állapot %2</translation>
+        <translation>Folyamhiba a típuscímke olvasásakor a(z) %1 pozícióban: állapot %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">Folyamhiba az elemtípus olvasásakor a(z) %1 pozícióban: állapot %2</translation>
+        <translation>Folyamhiba az elemtípus olvasásakor a(z) %1 pozícióban: állapot %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">Folyamhiba az elem betöltésekor a(z) %1 pozícióban: állapot %2</translation>
+        <translation>Folyamhiba az elem betöltésekor a(z) %1 pozícióban: állapot %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">Folyamhiba a kapcsolat betöltésekor a(z) %1 pozícióban: állapot %2</translation>
+        <translation>Folyamhiba a kapcsolat betöltésekor a(z) %1 pozícióban: állapot %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">Érvénytelen típus. Az adatok valószínűleg sérültek.</translation>
+        <translation>Érvénytelen típus. Az adatok valószínűleg sérültek.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">A verziókezelő biztonsági másolat létrehozása sikertelen: %1</translation>
+        <translation>A verziókezelő biztonsági másolat létrehozása sikertelen: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">Hiba a fájl másolásakor: %1</translation>
+        <translation>Hiba a fájl másolásakor: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Javasolt név:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">Érvénytelen kapcsolódási portok a SplitCommand konstruktorban</translation>
+        <translation>Érvénytelen kapcsolódási portok a SplitCommand konstruktorban</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">Érvénytelen grafikus elemek a SplitCommand konstruktorban</translation>
+        <translation>Érvénytelen grafikus elemek a SplitCommand konstruktorban</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Javasolt név:</translation>
         <translation>Vezeték szétválasztása</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">Hiba a(z) %1 újbóli végrehajtása közben</translation>
+        <translation>Hiba a(z) %1 újbóli végrehajtása közben</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">Hiba: az endPort null a SplitCommand::redo() függvényben</translation>
+        <translation>Hiba: az endPort null a SplitCommand::redo() függvényben</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">Hiba a(z) %1 visszavonása közben</translation>
+        <translation>Hiba a(z) %1 visszavonása közben</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">A kimeneti változó nincs hozzárendelve az igazságtáblához: %1</translation>
+        <translation>A kimeneti változó nincs hozzárendelve az igazságtáblához: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Az elem típusa nem támogatott: %1</translation>
+        <translation>Az elem típusa nem támogatott: %1</translation>
     </message>
 </context>
 <context>
@@ -2739,8 +2823,9 @@ Javasolt név:</translation>
         <translation>Igazságtábla kimenet váltása a(z) %1 pozícióban</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">Nem sikerült megtalálni az igazságtábla elemet!</translation>
+        <translation>Nem sikerült megtalálni az igazságtábla elemet!</translation>
     </message>
 </context>
 <context>
@@ -2822,20 +2907,24 @@ Kérjük, frissítse a wiRedPanda alkalmazást a fájl módosításainak mentés
         <translation>Fájl mentése (az eredeti hely csak olvasható)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Hiba a fájl megnyitásakor: %1</translation>
+        <translation>Hiba a fájl megnyitásakor: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Nem sikerült menteni a fájlt: %1</translation>
+        <translation>Nem sikerült menteni a fájlt: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">Ez a fájl nem létezik: %1</translation>
+        <translation>Ez a fájl nem létezik: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Nem sikerült megnyitni a fájlt: %1</translation>
+        <translation>Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2868,12 +2957,14 @@ Az eredeti fájlról biztonsági másolat készült a következő néven: %3</tr
         <translation>Fájl frissítve.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">Hiba az automatikus mentés fájl megnyitásakor: %1</translation>
+        <translation>Hiba az automatikus mentés fájl megnyitásakor: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">Nem sikerült véglegesíteni az automatikus mentés fájlját: %1</translation>
+        <translation>Nem sikerült véglegesíteni az automatikus mentés fájlját: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
