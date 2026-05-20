@@ -156,7 +156,7 @@ void BewavedDolphin::loadFromTerminal()
     const auto wordList(str.split(','));
 
     if (wordList.size() < 2) {
-        throw PANDACEPTION("");
+        throw PANDACEPTION("Invalid header: expected 'rows,cols' on the first line.");
     }
 
     int rows = wordList.at(0).toInt();
@@ -167,8 +167,8 @@ void BewavedDolphin::loadFromTerminal()
         rows = m_inputPorts;
     }
 
-    if ((cols < 2) || (cols > kMaxSimLength)) {
-        throw PANDACEPTION("");
+    if ((cols < 1) || (cols > kMaxSimLength)) {
+        throw PANDACEPTION("Invalid column count %1: must be between 1 and %2.", QString::number(cols), QString::number(kMaxSimLength));
     }
 
     setLength(cols, false);
@@ -178,7 +178,7 @@ void BewavedDolphin::loadFromTerminal()
         const auto wordList2(str.split(','));
 
         if (wordList2.size() < cols) {
-            throw PANDACEPTION("");
+            throw PANDACEPTION("Row %1 has %2 value(s) but %3 are required.", QString::number(row), QString::number(wordList2.size()), QString::number(cols));
         }
 
         for (int col = 0; col < cols; ++col) {
