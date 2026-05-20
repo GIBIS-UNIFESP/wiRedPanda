@@ -62,8 +62,6 @@ export default {
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
-  'download.linkNotAvailable': '(Link not available)',
-  'download.linkNotAvailableRelease': '(Link not available in latest release)',
   'download.otherOptions': 'Other Options',
   'download.packageManagers':
     'You can also install wiRedPanda using package managers on some Linux distributions. These packages might not always be the absolute latest version found on GitHub releases.',

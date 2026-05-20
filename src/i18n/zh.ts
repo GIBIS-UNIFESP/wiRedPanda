@@ -59,8 +59,6 @@ export default {
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
-  'download.linkNotAvailable': '（链接不可用）',
-  'download.linkNotAvailableRelease': '（最新版本中链接不可用）',
   'download.otherOptions': '其他选项',
   'download.packageManagers':
     '您也可以通过某些 Linux 发行版的包管理器安装 wiRedPanda。这些包可能并非始终是 GitHub releases 上的最新版本。',

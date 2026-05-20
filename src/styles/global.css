@@ -12,7 +12,7 @@
 
   /* Light mode background colors */
   --color-bg-light: #f0ece4;
---color-bg-card-light: rgba(255, 255, 255, 0.7);
+  --color-bg-card-light: rgba(255, 255, 255, 0.7);
 
   /* Dark mode background colors */
   --color-bg-dark: #1a1a2e;
