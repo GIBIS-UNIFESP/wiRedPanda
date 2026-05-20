@@ -46,10 +46,10 @@ export default {
   'about.title': 'About',
   'about.heading': 'About the project',
   'about.history':
-    'The project was born in 2015 with Dr. Fábio Cappabianco, Davi Morales, Lucas Lellis and Rodrigo Torres, with the aim of having a software program capable of making the subject of logic circuits easy to learn, 100% free and cross-platform. Built to be easy to use, today the software is used to teach digital circuits at UNIFESP, as well as in other university project that teaches digital logic to high school students in São José dos Campos public schools.',
+    'The project was born in 2015 with Dr. Fábio Cappabianco, Davi Morales, Lucas Lellis and Rodrigo Torres, with the aim of having a software program capable of making the subject of logic circuits easy to learn, 100% free and cross-platform. Built to be easy to use, today the software is used to teach digital circuits at UNIFESP, as well as in other university projects that teach digital logic to high school students in São José dos Campos public schools.',
   'about.campusAlt': 'Unifesp campus',
   'about.contribute':
-    "We're in active development, so if you want to report bugs or share with us new ideas, please open a discussion on GitHub! Surely we can improve the software with your help.",
+    "We're in active development, so if you want to report bugs or share new ideas with us, please open a discussion on GitHub! Surely we can improve the software with your help.",
   'about.team': 'wiRedPanda Team',
   'about.formerDevs': 'Former Developers',
 
