@@ -451,17 +451,17 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
         <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный заголовок: ожидалось &apos;rows,cols&apos; в первой строке.></translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
         <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное количество столбцов %1: должно быть от 1 до %2.></translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
         <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка %1 содержит %2 значение/значений, но требуется %3.></translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
