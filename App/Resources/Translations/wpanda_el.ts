@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Δεν ήταν δυνατό το άνοιγμα του αρχείου για εγγραφή: %1</translation>
+        <translation type="vanished">Δεν ήταν δυνατό το άνοιγμα του αρχείου για εγγραφή: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Δεν υπάρχουν αρκετές ακίδες για όλα τα στοιχεία εισόδου</translation>
+        <translation type="vanished">Δεν υπάρχουν αρκετές ακίδες για όλα τα στοιχεία εισόδου</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Δεν υπάρχουν αρκετές ακίδες για όλες τις θέσεις του περιστροφικού διακόπτη</translation>
+        <translation type="vanished">Δεν υπάρχουν αρκετές ακίδες για όλες τις θέσεις του περιστροφικού διακόπτη</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Δεν υπάρχουν αρκετές ακίδες για όλα τα στοιχεία εξόδου</translation>
+        <translation type="vanished">Δεν υπάρχουν αρκετές ακίδες για όλα τα στοιχεία εξόδου</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Τύπος στοιχείου δεν υποστηρίζεται: %1</translation>
+        <translation type="vanished">Τύπος στοιχείου δεν υποστηρίζεται: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Η μεταβλητή εξόδου δεν έχει αντιστοιχιστεί στον πίνακα αληθείας: %1</translation>
+        <translation type="vanished">Η μεταβλητή εξόδου δεν έχει αντιστοιχιστεί στον πίνακα αληθείας: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Δεν ήταν δυνατό το άνοιγμα του αρχείου δοκιμής: %1</translation>
+        <translation type="vanished">Δεν ήταν δυνατό το άνοιγμα του αρχείου δοκιμής: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Το αρχείο δεν είναι αναγνώσιμο</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Δεν ήταν δυνατή η φόρτωση του ήχου: %1 (%2)</translation>
+        <translation type="vanished">Δεν ήταν δυνατή η φόρτωση του ήχου: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>Προσομοιωτής beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Το κύκλωμα είναι κενό. Προσθέστε στοιχεία εισόδου και εξόδου για να δημιουργήσετε κυματομορφή.</translation>
+        <translation type="vanished">Το κύκλωμα είναι κενό. Προσθέστε στοιχεία εισόδου και εξόδου για να δημιουργήσετε κυματομορφή.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>Το κύκλωμα δεν έχει στοιχεία εισόδου ή εξόδου. Προσθέστε τουλάχιστον μία είσοδο (π.χ. Switch) και μία έξοδο (π.χ. LED) για να δημιουργήσετε κυματομορφή.</translation>
+        <translation type="vanished">Το κύκλωμα δεν έχει στοιχεία εισόδου ή εξόδου. Προσθέστε τουλάχιστον μία είσοδο (π.χ. Switch) και μία έξοδο (π.χ. LED) για να δημιουργήσετε κυματομορφή.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>Το κύκλωμα δεν έχει στοιχεία εισόδου. Προσθέστε τουλάχιστον μία είσοδο (π.χ. Switch, Button ή Clock) για να δημιουργήσετε κυματομορφή.</translation>
+        <translation type="vanished">Το κύκλωμα δεν έχει στοιχεία εισόδου. Προσθέστε τουλάχιστον μία είσοδο (π.χ. Switch, Button ή Clock) για να δημιουργήσετε κυματομορφή.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>Το κύκλωμα δεν έχει στοιχεία εξόδου. Προσθέστε τουλάχιστον μία έξοδο (π.χ. LED ή Display) για να δημιουργήσετε κυματομορφή.</translation>
+        <translation type="vanished">Το κύκλωμα δεν έχει στοιχεία εξόδου. Προσθέστε τουλάχιστον μία έξοδο (π.χ. LED ή Display) για να δημιουργήσετε κυματομορφή.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Επιτυχής αποθήκευση αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Η κυματομορφή θα ήταν πολύ μεγάλη! Επαναφορά μεγέθυνσης.</translation>
+        <translation type="vanished">Η κυματομορφή θα ήταν πολύ μεγάλη! Επαναφορά μεγέθυνσης.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Δεν έχουν επιλεγεί κελιά.</translation>
+        <translation type="vanished">Δεν έχουν επιλεγεί κελιά.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Σφάλμα ανοίγματος αρχείου: %1</translation>
+        <translation type="vanished">Σφάλμα ανοίγματος αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Σφάλμα αποθήκευσης αρχείου: %1</translation>
+        <translation type="vanished">Σφάλμα αποθήκευσης αρχείου: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Επιτυχής φόρτωση αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Δεν ήταν δυνατό το άνοιγμα του αρχείου για ανάγνωση: %1</translation>
+        <translation type="vanished">Δεν ήταν δυνατό το άνοιγμα του αρχείου για ανάγνωση: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Μορφή δεν υποστηρίζεται. Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
+        <translation type="vanished">Μορφή δεν υποστηρίζεται. Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>Αρχεία PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Δεν ήταν δυνατό να εκτυπωθεί αυτό το κύκλωμα σε PDF.</translation>
+        <translation type="vanished">Δεν ήταν δυνατό να εκτυπωθεί αυτό το κύκλωμα σε PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Το αρχείο &quot;%1&quot; δεν υπάρχει!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>κάτω αριστερή κάθετη</translation>
     </message>
@@ -834,6 +798,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>κάτω κεντρική κάθετη</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>κάτω αριστερή διαγώνιος</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1173,14 +1143,12 @@ Each wireless channel must have a unique label.</source>
         <translation>Άγνωστο</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Άγνωστος τύπος στοιχείου: %1</translation>
+        <translation type="vanished">Άγνωστος τύπος στοιχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Άγνωστος τύπος: %1</translation>
+        <translation type="vanished">Άγνωστος τύπος: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Each wireless channel must have a unique label.</source>
         <translation>Άγνωστος λόγος</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Δεν ήταν δυνατό να φορτωθεί το pixmap: %1 (%2)</translation>
+        <translation type="vanished">Δεν ήταν δυνατό να φορτωθεί το pixmap: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Each wireless channel must have a unique label.</source>
         <translation>Προεπιλογή</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Σφάλμα ροής κατά την ανάγνωση ιδιοτήτων στοιχείου στη θέση %1</translation>
+        <translation type="vanished">Σφάλμα ροής κατά την ανάγνωση ιδιοτήτων στοιχείου στη θέση %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Σφάλμα ροής κατά την ανάγνωση εμφανίσεων στη θέση %1</translation>
+        <translation type="vanished">Σφάλμα ροής κατά την ανάγνωση εμφανίσεων στη θέση %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Δείκτης εμφάνισης %1 εκτός εμβέλειας (μέγεθος=%2) — η ροή μπορεί να έχει αλλοιωθεί</translation>
+        <translation type="vanished">Δείκτης εμφάνισης %1 εκτός εμβέλειας (μέγεθος=%2) — η ροή μπορεί να έχει αλλοιωθεί</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Each wireless channel must have a unique label.</source>
         <translation>Φόρτωση ονομάτων εμφάνισης pixmap.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Δείκτης εμφάνισης %1 εκτός ορίων (μέγεθος=%2) για όνομα εμφάνισης &quot;%3&quot; — η ροή μπορεί να είναι κατεστραμμένη</translation>
+        <translation type="vanished">Δείκτης εμφάνισης %1 εκτός ορίων (μέγεθος=%2) για όνομα εμφάνισης &quot;%3&quot; — η ροή μπορεί να είναι κατεστραμμένη</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Each wireless channel must have a unique label.</source>
         <translation>ΟΛΟΚΛΗΡΩΜΕΝΟ ΚΥΚΛΩΜΑ</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>Φόρτωση IC: δεν υπάρχει όνομα IC στα σειριακοποιημένα δεδομένα</translation>
+        <translation type="vanished">Φόρτωση IC: δεν υπάρχει όνομα IC στα σειριακοποιημένα δεδομένα</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>Δεν βρέθηκε %1.</translation>
+        <translation type="vanished">Δεν βρέθηκε %1.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Ανιχνεύθηκε κυκλική αναφορά IC: %1</translation>
+        <translation type="vanished">Ανιχνεύθηκε κυκλική αναφορά IC: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Σφάλμα ανοίγματος αρχείου: %1</translation>
+        <translation type="vanished">Σφάλμα ανοίγματος αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>Μετεγκατάσταση IC: δεν είναι δυνατό το άνοιγμα αρχείου για εγγραφή: %1</translation>
+        <translation type="vanished">Μετεγκατάσταση IC: δεν είναι δυνατό το άνοιγμα αρχείου για εγγραφή: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>Μετεγκατάσταση IC: αποτυχία αποθήκευσης του αρχείου: %1</translation>
+        <translation type="vanished">Μετεγκατάσταση IC: αποτυχία αποθήκευσης του αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>Υπέρβαση ορίου βάθους ένθεσης IC (%1) — το blob ενδέχεται να έχει δημιουργηθεί κακόβουλα</translation>
+        <translation type="vanished">Υπέρβαση ορίου βάθους ένθεσης IC (%1) — το blob ενδέχεται να έχει δημιουργηθεί κακόβουλα</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
+        <translation type="vanished">Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Δεν ήταν δυνατό να αποθηκευτεί το αρχείο: %1</translation>
+        <translation type="vanished">Δεν ήταν δυνατό να αποθηκευτεί το αρχείο: %1</translation>
     </message>
 </context>
 <context>
@@ -2202,17 +2156,12 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
         <translation>Μετάβαση στην καρτέλα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Λείπει όνομα αρχείου.</translation>
+        <translation type="vanished">Λείπει όνομα αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>Το αρχείο .panda είναι κενό.</translation>
+        <translation type="vanished">Το αρχείο .panda είναι κενό.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Suggested name:</source>
         <translation>Αποσίγαση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Αποθηκεύστε πρώτα το αρχείο.</translation>
+        <translation type="vanished">Αποθηκεύστε πρώτα το αρχείο.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Suggested name:</source>
         <translation>Σύρετε εδώ για αφαίρεση.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Σφάλμα αφαίρεσης αρχείου: %1</translation>
+        <translation type="vanished">Σφάλμα αφαίρεσης αρχείου: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Σφάλμα ροής κατά την ανάγνωση χάρτη συνδέσεων στη θέση %1</translation>
+        <translation type="vanished">Σφάλμα ροής κατά την ανάγνωση χάρτη συνδέσεων στη θέση %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Σφάλμα ροής κατά την ανάγνωση αναγνωριστικών θυρών σύνδεσης στη θέση %1</translation>
+        <translation type="vanished">Σφάλμα ροής κατά την ανάγνωση αναγνωριστικών θυρών σύνδεσης στη θέση %1</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Σφάλμα ροής κατά την ανάγνωση του πλήθους μεταδεδομένων</translation>
+        <translation type="vanished">Σφάλμα ροής κατά την ανάγνωση του πλήθους μεταδεδομένων</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Πλήθος μεταδεδομένων %1 μη ρεαλιστικό βάσει των υπολειπόμενων byte της ροής</translation>
+        <translation type="vanished">Πλήθος μεταδεδομένων %1 μη ρεαλιστικό βάσει των υπολειπόμενων byte της ροής</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Σφάλμα ροής κατά την ανάγνωση του πλήθους blob</translation>
+        <translation type="vanished">Σφάλμα ροής κατά την ανάγνωση του πλήθους blob</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Πλήθος blob %1 μη ρεαλιστικό βάσει των υπολειπόμενων byte της ροής</translation>
+        <translation type="vanished">Πλήθος blob %1 μη ρεαλιστικό βάσει των υπολειπόμενων byte της ροής</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Μη έγκυρη μορφή αρχείου.</translation>
+        <translation type="vanished">Μη έγκυρη μορφή αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Σφάλμα ροής κατά την ανάγνωση ετικέτας τύπου στη θέση %1: κατάσταση %2</translation>
+        <translation type="vanished">Σφάλμα ροής κατά την ανάγνωση ετικέτας τύπου στη θέση %1: κατάσταση %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Σφάλμα ροής κατά την ανάγνωση τύπου στοιχείου στη θέση %1: κατάσταση %2</translation>
+        <translation type="vanished">Σφάλμα ροής κατά την ανάγνωση τύπου στοιχείου στη θέση %1: κατάσταση %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Σφάλμα ροής κατά τη φόρτωση στοιχείου στη θέση %1: κατάσταση %2</translation>
+        <translation type="vanished">Σφάλμα ροής κατά τη φόρτωση στοιχείου στη θέση %1: κατάσταση %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Σφάλμα ροής κατά τη φόρτωση σύνδεσης στη θέση %1: κατάσταση %2</translation>
+        <translation type="vanished">Σφάλμα ροής κατά τη φόρτωση σύνδεσης στη θέση %1: κατάσταση %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Μη έγκυρος τύπος. Τα δεδομένα ίσως έχουν καταστραφεί.</translation>
+        <translation type="vanished">Μη έγκυρος τύπος. Τα δεδομένα ίσως έχουν καταστραφεί.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Αποτυχία δημιουργίας αντιγράφου ασφαλείας με αρίθμηση εκδόσεων: %1</translation>
+        <translation type="vanished">Αποτυχία δημιουργίας αντιγράφου ασφαλείας με αρίθμηση εκδόσεων: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Σφάλμα κατά την αντιγραφή αρχείου: %1</translation>
+        <translation type="vanished">Σφάλμα κατά την αντιγραφή αρχείου: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>Μη έγκυρες θύρες σύνδεσης στον κατασκευαστή SplitCommand</translation>
+        <translation type="vanished">Μη έγκυρες θύρες σύνδεσης στον κατασκευαστή SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>Μη έγκυρα γραφικά στοιχεία στον κατασκευαστή SplitCommand</translation>
+        <translation type="vanished">Μη έγκυρα γραφικά στοιχεία στον κατασκευαστή SplitCommand</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Suggested name:</source>
         <translation>Διαχωρισμός σύρματος</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>Σφάλμα κατά την προσπάθεια επανάληψης %1</translation>
+        <translation type="vanished">Σφάλμα κατά την προσπάθεια επανάληψης %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Σφάλμα: το endPort είναι null στο SplitCommand::redo()</translation>
+        <translation type="vanished">Σφάλμα: το endPort είναι null στο SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>Σφάλμα κατά την προσπάθεια αναίρεσης %1</translation>
+        <translation type="vanished">Σφάλμα κατά την προσπάθεια αναίρεσης %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Η μεταβλητή εξόδου δεν έχει αντιστοιχιστεί στον πίνακα αληθείας: %1</translation>
+        <translation type="vanished">Η μεταβλητή εξόδου δεν έχει αντιστοιχιστεί στον πίνακα αληθείας: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Τύπος στοιχείου δεν υποστηρίζεται: %1</translation>
+        <translation type="vanished">Τύπος στοιχείου δεν υποστηρίζεται: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Suggested name:</source>
         <translation>Εναλλαγή Εξόδου Πίνακα Αληθείας στη θέση: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Δεν βρέθηκε στοιχείο πίνακα αληθείας!</translation>
+        <translation type="vanished">Δεν βρέθηκε στοιχείο πίνακα αληθείας!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>Αποθήκευση αρχείου (η αρχική τοποθεσία είναι μόνο για ανάγνωση)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Σφάλμα ανοίγματος αρχείου: %1</translation>
+        <translation type="vanished">Σφάλμα ανοίγματος αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Δεν ήταν δυνατό να αποθηκευτεί το αρχείο: %1</translation>
+        <translation type="vanished">Δεν ήταν δυνατό να αποθηκευτεί το αρχείο: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Αυτό το αρχείο δεν υπάρχει: %1</translation>
+        <translation type="vanished">Αυτό το αρχείο δεν υπάρχει: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
+        <translation type="vanished">Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ A backup of the original file has been created with name: %3</source>
         <translation>Το αρχείο αναβαθμίστηκε.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Σφάλμα ανοίγματος αρχείου αυτόματης αποθήκευσης: %1</translation>
+        <translation type="vanished">Σφάλμα ανοίγματος αρχείου αυτόματης αποθήκευσης: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Δεν ήταν δυνατή η οριστικοποίηση του αρχείου αυτόματης αποθήκευσης: %1</translation>
+        <translation type="vanished">Δεν ήταν δυνατή η οριστικοποίηση του αρχείου αυτόματης αποθήκευσης: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

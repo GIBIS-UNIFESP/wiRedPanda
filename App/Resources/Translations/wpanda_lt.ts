@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Nepavyko atidaryti failo rašymui: %1</translation>
+        <translation type="vanished">Nepavyko atidaryti failo rašymui: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Nepakanka kontaktų visiems įvesties elementams</translation>
+        <translation type="vanished">Nepakanka kontaktų visiems įvesties elementams</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Nepakanka kontaktų visoms sukamojo jungiklio padėtims</translation>
+        <translation type="vanished">Nepakanka kontaktų visoms sukamojo jungiklio padėtims</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Nepakanka kontaktų visiems išvesties elementams</translation>
+        <translation type="vanished">Nepakanka kontaktų visiems išvesties elementams</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Elemento tipas nepalaikomas: %1</translation>
+        <translation type="vanished">Elemento tipas nepalaikomas: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Išvesties kintamasis nesusietas su tiesos lentele: %1</translation>
+        <translation type="vanished">Išvesties kintamasis nesusietas su tiesos lentele: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Nepavyko atidaryti testavimo failo: %1</translation>
+        <translation type="vanished">Nepavyko atidaryti testavimo failo: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Failas neskaitomas</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Nepavyko įkelti garso: %1 (%2)</translation>
+        <translation type="vanished">Nepavyko įkelti garso: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>beWavedDolphin simuliatorius</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Grandinė tuščia. Pridėkite įvesties ir išvesties elementus bangos formai generuoti.</translation>
+        <translation type="vanished">Grandinė tuščia. Pridėkite įvesties ir išvesties elementus bangos formai generuoti.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>Grandinėje nėra įvesties ar išvesties elementų. Pridėkite bent vieną įvestį (pvz., Switch) ir vieną išvestį (pvz., LED) bangos formai generuoti.</translation>
+        <translation type="vanished">Grandinėje nėra įvesties ar išvesties elementų. Pridėkite bent vieną įvestį (pvz., Switch) ir vieną išvestį (pvz., LED) bangos formai generuoti.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>Grandinėje nėra įvesties elementų. Pridėkite bent vieną įvestį (pvz., Switch, Button arba Clock) bangos formai generuoti.</translation>
+        <translation type="vanished">Grandinėje nėra įvesties elementų. Pridėkite bent vieną įvestį (pvz., Switch, Button arba Clock) bangos formai generuoti.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>Grandinėje nėra išvesties elementų. Pridėkite bent vieną išvestį (pvz., LED arba Display) bangos formai generuoti.</translation>
+        <translation type="vanished">Grandinėje nėra išvesties elementų. Pridėkite bent vieną išvestį (pvz., LED arba Display) bangos formai generuoti.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Failas sėkmingai išsaugotas.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Bangų forma būtų per didelė! Atkuriamas mastelis.</translation>
+        <translation type="vanished">Bangų forma būtų per didelė! Atkuriamas mastelis.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Nepasirinkta jokių langelių.</translation>
+        <translation type="vanished">Nepasirinkta jokių langelių.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Klaida atidarant failą: %1</translation>
+        <translation type="vanished">Klaida atidarant failą: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Klaida išsaugant failą: %1</translation>
+        <translation type="vanished">Klaida išsaugant failą: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Failas sėkmingai įkeltas.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Nepavyko atidaryti failo skaitymui: %1</translation>
+        <translation type="vanished">Nepavyko atidaryti failo skaitymui: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Formatas nepalaikomas. Nepavyko atidaryti failo: %1</translation>
+        <translation type="vanished">Formatas nepalaikomas. Nepavyko atidaryti failo: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>PDF failai (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Nepavyko atspausdinti šios grandinės į PDF.</translation>
+        <translation type="vanished">Nepavyko atspausdinti šios grandinės į PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Failas &quot;%1&quot; neegzistuoja!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>apatinio kairio vertikalaus</translation>
     </message>
@@ -834,6 +798,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>apatinio vidurinio vertikalaus</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>apatinio kairio įstrizo</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1173,14 +1143,12 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>Nežinomas</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Nežinomas elemento tipas: %1</translation>
+        <translation type="vanished">Nežinomas elemento tipas: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Nežinomas tipas: %1</translation>
+        <translation type="vanished">Nežinomas tipas: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>Nežinoma priežastis</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Nepavyko įkelti pixmap: %1 (%2)</translation>
+        <translation type="vanished">Nepavyko įkelti pixmap: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>Numatytasis</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Srauto klaida skaitant elemento savybes pozicijoje %1</translation>
+        <translation type="vanished">Srauto klaida skaitant elemento savybes pozicijoje %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Srauto klaida skaitant išvaizdas pozicijoje %1</translation>
+        <translation type="vanished">Srauto klaida skaitant išvaizdas pozicijoje %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Išvaizdos indeksas %1 ne diapazone (dydis=%2) — srautas gali būti sugadintas</translation>
+        <translation type="vanished">Išvaizdos indeksas %1 ne diapazone (dydis=%2) — srautas gali būti sugadintas</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>Įkeliami pixmap išvaizdos pavadinimai.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Išvaizdos indeksas %1 už ribų (dydis=%2) išvaizdos pavadinimui &quot;%3&quot; — srautas gali būti pažeistas</translation>
+        <translation type="vanished">Išvaizdos indeksas %1 už ribų (dydis=%2) išvaizdos pavadinimui &quot;%3&quot; — srautas gali būti pažeistas</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>INTEGRUOTA MIKROSCHEMA</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>IC įkėlimas: serializuotuose duomenyse nėra IC pavadinimo</translation>
+        <translation type="vanished">IC įkėlimas: serializuotuose duomenyse nėra IC pavadinimo</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 nerastas.</translation>
+        <translation type="vanished">%1 nerastas.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Aptikta ciklinė IC nuoroda: %1</translation>
+        <translation type="vanished">Aptikta ciklinė IC nuoroda: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Klaida atidarant failą: %1</translation>
+        <translation type="vanished">Klaida atidarant failą: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>IC migracija: nepavyko atidaryti failo rašymui: %1</translation>
+        <translation type="vanished">IC migracija: nepavyko atidaryti failo rašymui: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>IC migracija: nepavyko patvirtinti iš naujo išsaugoto failo: %1</translation>
+        <translation type="vanished">IC migracija: nepavyko patvirtinti iš naujo išsaugoto failo: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>Viršyta IC įdėjimo gylio riba (%1) — blob gali būti suformuotas piktavališkai</translation>
+        <translation type="vanished">Viršyta IC įdėjimo gylio riba (%1) — blob gali būti suformuotas piktavališkai</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Nepavyko atidaryti failo: %1</translation>
+        <translation type="vanished">Nepavyko atidaryti failo: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Nepavyko išsaugoti failo: %1</translation>
+        <translation type="vanished">Nepavyko išsaugoti failo: %1</translation>
     </message>
 </context>
 <context>
@@ -2202,17 +2156,12 @@ Prieš pasiekiant IC ir išvaizdas arba paleidžiant beWavedDolphin simuliacijas
         <translation>Pereiti į kortelę</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Trūksta failo pavadinimo.</translation>
+        <translation type="vanished">Trūksta failo pavadinimo.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>.panda failas tuščias.</translation>
+        <translation type="vanished">.panda failas tuščias.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Siūlomas pavadinimas:</translation>
         <translation>Atitildyti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Pirmiausia išsaugokite failą.</translation>
+        <translation type="vanished">Pirmiausia išsaugokite failą.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Siūlomas pavadinimas:</translation>
         <translation>Nuvilkite čia, kad pašalintumėte.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Klaida šalinant failą: %1</translation>
+        <translation type="vanished">Klaida šalinant failą: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Srauto klaida skaitant jungčių žemėlapį ties poslinkiu %1</translation>
+        <translation type="vanished">Srauto klaida skaitant jungčių žemėlapį ties poslinkiu %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Srauto klaida skaitant jungties prievadų ID pozicijoje %1</translation>
+        <translation type="vanished">Srauto klaida skaitant jungties prievadų ID pozicijoje %1</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Srauto klaida skaitant metaduomenų kiekį</translation>
+        <translation type="vanished">Srauto klaida skaitant metaduomenų kiekį</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Metaduomenų kiekis %1 nepatikimas, palyginti su likusiais srauto baitais</translation>
+        <translation type="vanished">Metaduomenų kiekis %1 nepatikimas, palyginti su likusiais srauto baitais</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Srauto klaida skaitant blob kiekį</translation>
+        <translation type="vanished">Srauto klaida skaitant blob kiekį</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Blob kiekis %1 nepatikimas, palyginti su likusiais srauto baitais</translation>
+        <translation type="vanished">Blob kiekis %1 nepatikimas, palyginti su likusiais srauto baitais</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Neteisingas failo formatas.</translation>
+        <translation type="vanished">Neteisingas failo formatas.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Srauto klaida skaitant tipo žymą pozicijoje %1: būsena %2</translation>
+        <translation type="vanished">Srauto klaida skaitant tipo žymą pozicijoje %1: būsena %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Srauto klaida skaitant elemento tipą pozicijoje %1: būsena %2</translation>
+        <translation type="vanished">Srauto klaida skaitant elemento tipą pozicijoje %1: būsena %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Srauto klaida įkeliant elementą pozicijoje %1: būsena %2</translation>
+        <translation type="vanished">Srauto klaida įkeliant elementą pozicijoje %1: būsena %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Srauto klaida įkeliant jungtį pozicijoje %1: būsena %2</translation>
+        <translation type="vanished">Srauto klaida įkeliant jungtį pozicijoje %1: būsena %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Neteisingas tipas. Duomenys gali būti sugadinti.</translation>
+        <translation type="vanished">Neteisingas tipas. Duomenys gali būti sugadinti.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Nepavyko sukurti versijuotos atsarginės kopijos: %1</translation>
+        <translation type="vanished">Nepavyko sukurti versijuotos atsarginės kopijos: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Klaida kopijuojant failą: %1</translation>
+        <translation type="vanished">Klaida kopijuojant failą: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>Netinkami prisijungimo prievadai SplitCommand konstruktoriuje</translation>
+        <translation type="vanished">Netinkami prisijungimo prievadai SplitCommand konstruktoriuje</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>Netinkami grafiniai elementai SplitCommand konstruktoriuje</translation>
+        <translation type="vanished">Netinkami grafiniai elementai SplitCommand konstruktoriuje</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Siūlomas pavadinimas:</translation>
         <translation>Laido padalinimas</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>Klaida bandant pakartoti %1</translation>
+        <translation type="vanished">Klaida bandant pakartoti %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Klaida: endPort yra null SplitCommand::redo() funkcijoje</translation>
+        <translation type="vanished">Klaida: endPort yra null SplitCommand::redo() funkcijoje</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>Klaida bandant anuliuoti %1</translation>
+        <translation type="vanished">Klaida bandant anuliuoti %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Išvesties kintamasis nesusietas su tiesos lentele: %1</translation>
+        <translation type="vanished">Išvesties kintamasis nesusietas su tiesos lentele: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Elemento tipas nepalaikomas: %1</translation>
+        <translation type="vanished">Elemento tipas nepalaikomas: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Siūlomas pavadinimas:</translation>
         <translation>Perjungti Tiesos lentelės išėjimą pozicijoje: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Nepavyko rasti tiesos lentelės elemento!</translation>
+        <translation type="vanished">Nepavyko rasti tiesos lentelės elemento!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Atnaujinkite wiRedPanda, kad galėtumėte išsaugoti pakeitimus šiame faile.</t
         <translation>Įrašyti failą (pradinė vieta tik skaitymui)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Klaida atidarant failą: %1</translation>
+        <translation type="vanished">Klaida atidarant failą: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Nepavyko išsaugoti failo: %1</translation>
+        <translation type="vanished">Nepavyko išsaugoti failo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Šis failas neegzistuoja: %1</translation>
+        <translation type="vanished">Šis failas neegzistuoja: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Nepavyko atidaryti failo: %1</translation>
+        <translation type="vanished">Nepavyko atidaryti failo: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ Originalaus failo atsarginė kopija sukurta pavadinimu: %3</translation>
         <translation>Failas atnaujintas.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Klaida atidarant automatinio išsaugojimo failą: %1</translation>
+        <translation type="vanished">Klaida atidarant automatinio išsaugojimo failą: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Nepavyko patvirtinti automatinio įrašymo failo: %1</translation>
+        <translation type="vanished">Nepavyko patvirtinti automatinio įrašymo failo: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ Originalaus failo atsarginė kopija sukurta pavadinimu: %3</translation>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

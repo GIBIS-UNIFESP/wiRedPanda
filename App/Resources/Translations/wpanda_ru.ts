@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Не удалось открыть файл для записи: %1</translation>
+        <translation type="vanished">Не удалось открыть файл для записи: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Недостаточно выводов для всех входных элементов</translation>
+        <translation type="vanished">Недостаточно выводов для всех входных элементов</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Недостаточно выводов для всех позиций поворотного переключателя</translation>
+        <translation type="vanished">Недостаточно выводов для всех позиций поворотного переключателя</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Недостаточно выводов для всех выходных элементов</translation>
+        <translation type="vanished">Недостаточно выводов для всех выходных элементов</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Тип элемента не поддерживается: %1</translation>
+        <translation type="vanished">Тип элемента не поддерживается: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Выходная переменная не сопоставлена с таблицей истинности: %1</translation>
+        <translation type="vanished">Выходная переменная не сопоставлена с таблицей истинности: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Не удалось открыть файл тестового стенда: %1</translation>
+        <translation type="vanished">Не удалось открыть файл тестового стенда: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Файл не читаем</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Не удалось загрузить аудио: %1 (%2)</translation>
+        <translation type="vanished">Не удалось загрузить аудио: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>Симулятор beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Схема пуста. Добавьте входные и выходные элементы для генерации осциллограммы.</translation>
+        <translation type="vanished">Схема пуста. Добавьте входные и выходные элементы для генерации осциллограммы.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>В схеме нет входных или выходных элементов. Добавьте хотя бы один вход (напр. Switch) и один выход (напр. LED) для генерации осциллограммы.</translation>
+        <translation type="vanished">В схеме нет входных или выходных элементов. Добавьте хотя бы один вход (напр. Switch) и один выход (напр. LED) для генерации осциллограммы.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>В схеме нет входных элементов. Добавьте хотя бы один вход (напр. Switch, Button или Clock) для генерации осциллограммы.</translation>
+        <translation type="vanished">В схеме нет входных элементов. Добавьте хотя бы один вход (напр. Switch, Button или Clock) для генерации осциллограммы.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>В схеме нет выходных элементов. Добавьте хотя бы один выход (напр. LED или Display) для генерации осциллограммы.</translation>
+        <translation type="vanished">В схеме нет выходных элементов. Добавьте хотя бы один выход (напр. LED или Display) для генерации осциллограммы.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Файл успешно сохранен.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Сигнал будет слишком большим! Сброс масштаба.</translation>
+        <translation type="vanished">Сигнал будет слишком большим! Сброс масштаба.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Не выбрано ни одной ячейки.</translation>
+        <translation type="vanished">Не выбрано ни одной ячейки.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Ошибка открытия файла: %1</translation>
+        <translation type="vanished">Ошибка открытия файла: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Ошибка сохранения файла: %1</translation>
+        <translation type="vanished">Ошибка сохранения файла: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Файл успешно загружен.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Не удалось открыть файл для чтения: %1</translation>
+        <translation type="vanished">Не удалось открыть файл для чтения: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Формат не поддерживается. Не удалось открыть файл: %1</translation>
+        <translation type="vanished">Формат не поддерживается. Не удалось открыть файл: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>Файлы PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Не удалось распечатать эту схему в PDF.</translation>
+        <translation type="vanished">Не удалось распечатать эту схему в PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Файл &quot;%1&quot; не существует!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>нижний левый вертикальный</translation>
     </message>
@@ -839,6 +803,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>нижний центральный вертикальный</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>нижний левый диагональный</translation>
     </message>
 </context>
 <context>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Гц</translation>
@@ -1173,14 +1143,12 @@ Each wireless channel must have a unique label.</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Неизвестный тип элемента: %1</translation>
+        <translation type="vanished">Неизвестный тип элемента: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Неизвестный тип: %1</translation>
+        <translation type="vanished">Неизвестный тип: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Each wireless channel must have a unique label.</source>
         <translation>Неизвестная причина</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Не удалось загрузить pixmap: %1 (%2)</translation>
+        <translation type="vanished">Не удалось загрузить pixmap: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Each wireless channel must have a unique label.</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Ошибка потока при чтении свойств элемента в позиции %1</translation>
+        <translation type="vanished">Ошибка потока при чтении свойств элемента в позиции %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Ошибка потока при чтении скинов в позиции %1</translation>
+        <translation type="vanished">Ошибка потока при чтении скинов в позиции %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Индекс внешнего вида %1 вне диапазона (размер=%2) — поток может быть повреждён</translation>
+        <translation type="vanished">Индекс внешнего вида %1 вне диапазона (размер=%2) — поток может быть повреждён</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Each wireless channel must have a unique label.</source>
         <translation>Загрузка имен pixmap скинов.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Индекс скина %1 вне диапазона (размер=%2) для имени скина &quot;%3&quot; — поток может быть повреждён</translation>
+        <translation type="vanished">Индекс скина %1 вне диапазона (размер=%2) для имени скина &quot;%3&quot; — поток может быть повреждён</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Each wireless channel must have a unique label.</source>
         <translation>ИНТЕГРАЛЬНАЯ МИКРОСХЕМА</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>Загрузка ИМС: имя ИМС отсутствует в сериализованных данных</translation>
+        <translation type="vanished">Загрузка ИМС: имя ИМС отсутствует в сериализованных данных</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 не найден.</translation>
+        <translation type="vanished">%1 не найден.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Обнаружена циклическая ссылка ИМС: %1</translation>
+        <translation type="vanished">Обнаружена циклическая ссылка ИМС: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Ошибка открытия файла: %1</translation>
+        <translation type="vanished">Ошибка открытия файла: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>Миграция ИМС: не удаётся открыть файл для записи: %1</translation>
+        <translation type="vanished">Миграция ИМС: не удаётся открыть файл для записи: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>Миграция ИМС: не удалось сохранить повторно записанный файл: %1</translation>
+        <translation type="vanished">Миграция ИМС: не удалось сохранить повторно записанный файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>Превышен предел глубины вложенности ИС (%1) — большой двоичный объект может быть вредоносным</translation>
+        <translation type="vanished">Превышен предел глубины вложенности ИС (%1) — большой двоичный объект может быть вредоносным</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Не удалось открыть файл: %1</translation>
+        <translation type="vanished">Не удалось открыть файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Не удалось сохранить файл: %1</translation>
+        <translation type="vanished">Не удалось сохранить файл: %1</translation>
     </message>
 </context>
 <context>
@@ -2277,17 +2231,12 @@ Suggested name:</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Отсутствует имя файла.</translation>
+        <translation type="vanished">Отсутствует имя файла.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>Файл .panda пуст.</translation>
+        <translation type="vanished">Файл .panda пуст.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Suggested name:</source>
         <translation>Включить звук</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Сначала сохраните файл.</translation>
+        <translation type="vanished">Сначала сохраните файл.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Suggested name:</source>
         <translation>Перетащите сюда для удаления.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Ошибка удаления файла: %1</translation>
+        <translation type="vanished">Ошибка удаления файла: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Ошибка потока при чтении карты соединений на смещении %1</translation>
+        <translation type="vanished">Ошибка потока при чтении карты соединений на смещении %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Ошибка потока при чтении ID портов соединения на смещении %1</translation>
+        <translation type="vanished">Ошибка потока при чтении ID портов соединения на смещении %1</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Ошибка потока при чтении количества метаданных</translation>
+        <translation type="vanished">Ошибка потока при чтении количества метаданных</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Количество метаданных %1 неправдоподобно для оставшихся байт потока</translation>
+        <translation type="vanished">Количество метаданных %1 неправдоподобно для оставшихся байт потока</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Ошибка потока при чтении количества blob-объектов</translation>
+        <translation type="vanished">Ошибка потока при чтении количества blob-объектов</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Количество blob-объектов %1 неправдоподобно для оставшихся байт потока</translation>
+        <translation type="vanished">Количество blob-объектов %1 неправдоподобно для оставшихся байт потока</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Неверный формат файла.</translation>
+        <translation type="vanished">Неверный формат файла.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Ошибка потока при чтении тега типа в позиции %1: статус %2</translation>
+        <translation type="vanished">Ошибка потока при чтении тега типа в позиции %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Ошибка потока при чтении типа элемента в позиции %1: статус %2</translation>
+        <translation type="vanished">Ошибка потока при чтении типа элемента в позиции %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Ошибка потока при загрузке элемента в позиции %1: статус %2</translation>
+        <translation type="vanished">Ошибка потока при загрузке элемента в позиции %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Ошибка потока при загрузке соединения в позиции %1: статус %2</translation>
+        <translation type="vanished">Ошибка потока при загрузке соединения в позиции %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Неверный тип. Данные, возможно, повреждены.</translation>
+        <translation type="vanished">Неверный тип. Данные, возможно, повреждены.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Не удалось создать версионную резервную копию: %1</translation>
+        <translation type="vanished">Не удалось создать версионную резервную копию: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Ошибка копирования файла: %1</translation>
+        <translation type="vanished">Ошибка копирования файла: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>Неверные порты соединения в конструкторе SplitCommand</translation>
+        <translation type="vanished">Неверные порты соединения в конструкторе SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>Неверные графические элементы в конструкторе SplitCommand</translation>
+        <translation type="vanished">Неверные графические элементы в конструкторе SplitCommand</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Suggested name:</source>
         <translation>Разделение провода</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>Ошибка при попытке повторить %1</translation>
+        <translation type="vanished">Ошибка при попытке повторить %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Ошибка: endPort равен null в SplitCommand::redo()</translation>
+        <translation type="vanished">Ошибка: endPort равен null в SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>Ошибка при попытке отменить %1</translation>
+        <translation type="vanished">Ошибка при попытке отменить %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Выходная переменная не сопоставлена с таблицей истинности: %1</translation>
+        <translation type="vanished">Выходная переменная не сопоставлена с таблицей истинности: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Тип элемента не поддерживается: %1</translation>
+        <translation type="vanished">Тип элемента не поддерживается: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Suggested name:</source>
         <translation>Переключить выход таблицы истинности в позиции: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Не удалось найти элемент таблицы истинности!</translation>
+        <translation type="vanished">Не удалось найти элемент таблицы истинности!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>Сохранить файл (исходное расположение доступно только для чтения)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Ошибка открытия файла: %1</translation>
+        <translation type="vanished">Ошибка открытия файла: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Не удалось сохранить файл: %1</translation>
+        <translation type="vanished">Не удалось сохранить файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Этот файл не существует: %1</translation>
+        <translation type="vanished">Этот файл не существует: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Не удалось открыть файл: %1</translation>
+        <translation type="vanished">Не удалось открыть файл: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ A backup of the original file has been created with name: %3</source>
         <translation>Файл обновлён.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Ошибка открытия файла автосохранения: %1</translation>
+        <translation type="vanished">Ошибка открытия файла автосохранения: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Не удалось зафиксировать файл автосохранения: %1</translation>
+        <translation type="vanished">Не удалось зафиксировать файл автосохранения: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

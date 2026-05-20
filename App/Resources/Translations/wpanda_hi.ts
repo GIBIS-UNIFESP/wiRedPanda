@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>लिखने के लिए फ़ाइल नहीं खोली जा सकी: %1</translation>
+        <translation type="vanished">लिखने के लिए फ़ाइल नहीं खोली जा सकी: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>सभी इनपुट तत्वों के लिए पर्याप्त पिन उपलब्ध नहीं हैं</translation>
+        <translation type="vanished">सभी इनपुट तत्वों के लिए पर्याप्त पिन उपलब्ध नहीं हैं</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>रोटरी स्विच की सभी स्थितियों के लिए पर्याप्त पिन उपलब्ध नहीं हैं</translation>
+        <translation type="vanished">रोटरी स्विच की सभी स्थितियों के लिए पर्याप्त पिन उपलब्ध नहीं हैं</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>सभी आउटपुट तत्वों के लिए पर्याप्त पिन उपलब्ध नहीं हैं</translation>
+        <translation type="vanished">सभी आउटपुट तत्वों के लिए पर्याप्त पिन उपलब्ध नहीं हैं</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>तत्व प्रकार समर्थित नहीं: %1</translation>
+        <translation type="vanished">तत्व प्रकार समर्थित नहीं: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>ट्रूथ टेबल के लिए आउटपुट वेरिएबल मैप नहीं किया गया: %1</translation>
+        <translation type="vanished">ट्रूथ टेबल के लिए आउटपुट वेरिएबल मैप नहीं किया गया: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>टेस्टबेंच फ़ाइल नहीं खोली जा सकी: %1</translation>
+        <translation type="vanished">टेस्टबेंच फ़ाइल नहीं खोली जा सकी: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>फाइल पढ़ने योग्य नहीं है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>ऑडियो लोड नहीं हो सका: %1 (%2)</translation>
+        <translation type="vanished">ऑडियो लोड नहीं हो सका: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>beWavedDolphin सिमुलेटर</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>सर्किट खाली है। तरंगरूप उत्पन्न करने के लिए इनपुट और आउटपुट तत्व जोड़ें।</translation>
+        <translation type="vanished">सर्किट खाली है। तरंगरूप उत्पन्न करने के लिए इनपुट और आउटपुट तत्व जोड़ें।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>सर्किट में कोई इनपुट या आउटपुट तत्व नहीं है। तरंगरूप उत्पन्न करने के लिए कम से कम एक इनपुट (जैसे Switch) और एक आउटपुट (जैसे LED) जोड़ें।</translation>
+        <translation type="vanished">सर्किट में कोई इनपुट या आउटपुट तत्व नहीं है। तरंगरूप उत्पन्न करने के लिए कम से कम एक इनपुट (जैसे Switch) और एक आउटपुट (जैसे LED) जोड़ें।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>सर्किट में कोई इनपुट तत्व नहीं है। तरंगरूप उत्पन्न करने के लिए कम से कम एक इनपुट (जैसे Switch, Button या Clock) जोड़ें।</translation>
+        <translation type="vanished">सर्किट में कोई इनपुट तत्व नहीं है। तरंगरूप उत्पन्न करने के लिए कम से कम एक इनपुट (जैसे Switch, Button या Clock) जोड़ें।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>सर्किट में कोई आउटपुट तत्व नहीं है। तरंगरूप उत्पन्न करने के लिए कम से कम एक आउटपुट (जैसे LED या Display) जोड़ें।</translation>
+        <translation type="vanished">सर्किट में कोई आउटपुट तत्व नहीं है। तरंगरूप उत्पन्न करने के लिए कम से कम एक आउटपुट (जैसे LED या Display) जोड़ें।</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>फ़ाइल सफलतापूर्वक सेव हुई।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>तरंग रूप बहुत बड़ा होगा! जूम रीसेट कर रहे हैं।</translation>
+        <translation type="vanished">तरंग रूप बहुत बड़ा होगा! जूम रीसेट कर रहे हैं।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>कोई सेल चयनित नहीं।</translation>
+        <translation type="vanished">कोई सेल चयनित नहीं।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>फ़ाइल खोलने में त्रुटि: %1</translation>
+        <translation type="vanished">फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>फ़ाइल सहेजने में त्रुटि: %1</translation>
+        <translation type="vanished">फ़ाइल सहेजने में त्रुटि: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>फ़ाइल सफलतापूर्वक लोड हुई।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>फ़ाइल पढ़ने के लिए नहीं खोली जा सकी: %1</translation>
+        <translation type="vanished">फ़ाइल पढ़ने के लिए नहीं खोली जा सकी: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>प्रारूप समर्थित नहीं। फ़ाइल नहीं खोल सके: %1</translation>
+        <translation type="vanished">प्रारूप समर्थित नहीं। फ़ाइल नहीं खोल सके: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>PDF फ़ाइलें (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>इस सर्किट को PDF में प्रिंट नहीं कर सके।</translation>
+        <translation type="vanished">इस सर्किट को PDF में प्रिंट नहीं कर सके।</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>फ़ाइल &quot;%1&quot; मौजूद नहीं है!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>निले बायाँ लंबवत</translation>
     </message>
@@ -839,6 +803,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>निले मध्य लंबवत</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>निले बायाँ विकर्ण</translation>
     </message>
 </context>
 <context>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> हर्ट्ज</translation>
@@ -1173,14 +1143,12 @@ Each wireless channel must have a unique label.</source>
         <translation>अज्ञात</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>अज्ञात तत्व प्रकार: %1</translation>
+        <translation type="vanished">अज्ञात तत्व प्रकार: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>अज्ञात प्रकार: %1</translation>
+        <translation type="vanished">अज्ञात प्रकार: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Each wireless channel must have a unique label.</source>
         <translation>अज्ञात कारण</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>पिक्समैप लोड नहीं हो सका: %1 (%2)</translation>
+        <translation type="vanished">पिक्समैप लोड नहीं हो सका: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Each wireless channel must have a unique label.</source>
         <translation>डिफ़ॉल्ट</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>स्थिति %1 पर तत्व गुण पढ़ने में स्ट्रीम त्रुटि</translation>
+        <translation type="vanished">स्थिति %1 पर तत्व गुण पढ़ने में स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>स्थिति %1 पर स्किन पढ़ने में स्ट्रीम त्रुटि</translation>
+        <translation type="vanished">स्थिति %1 पर स्किन पढ़ने में स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>दिखावट सूचकांक %1 सीमा से बाहर (आकार=%2) — स्ट्रीम दूषित हो सकती है</translation>
+        <translation type="vanished">दिखावट सूचकांक %1 सीमा से बाहर (आकार=%2) — स्ट्रीम दूषित हो सकती है</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Each wireless channel must have a unique label.</source>
         <translation>पिक्समैप स्किन नाम लोड हो रहे हैं।</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>स्किन इंडेक्स %1 सीमा से बाहर (आकार=%2) स्किन नाम &quot;%3&quot; के लिए — स्ट्रीम दूषित हो सकती है</translation>
+        <translation type="vanished">स्किन इंडेक्स %1 सीमा से बाहर (आकार=%2) स्किन नाम &quot;%3&quot; के लिए — स्ट्रीम दूषित हो सकती है</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Each wireless channel must have a unique label.</source>
         <translation>एकीकृत परिपथ</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>IC लोड: क्रमबद्ध डेटा में IC नाम मौजूद नहीं</translation>
+        <translation type="vanished">IC लोड: क्रमबद्ध डेटा में IC नाम मौजूद नहीं</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 नहीं मिला।</translation>
+        <translation type="vanished">%1 नहीं मिला।</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>चक्रीय IC संदर्भ पाया गया: %1</translation>
+        <translation type="vanished">चक्रीय IC संदर्भ पाया गया: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>फ़ाइल खोलने में त्रुटि: %1</translation>
+        <translation type="vanished">फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>IC माइग्रेशन: लिखने के लिए फ़ाइल नहीं खोली जा सकी: %1</translation>
+        <translation type="vanished">IC माइग्रेशन: लिखने के लिए फ़ाइल नहीं खोली जा सकी: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>IC माइग्रेशन: पुनः सहेजी गई फ़ाइल को कमिट करने में विफल: %1</translation>
+        <translation type="vanished">IC माइग्रेशन: पुनः सहेजी गई फ़ाइल को कमिट करने में विफल: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>IC नेस्टिंग गहराई सीमा (%1) पार हो गई — blob दुर्भावनापूर्वक तैयार किया गया हो सकता है</translation>
+        <translation type="vanished">IC नेस्टिंग गहराई सीमा (%1) पार हो गई — blob दुर्भावनापूर्वक तैयार किया गया हो सकता है</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>फ़ाइल नहीं खोल सके: %1</translation>
+        <translation type="vanished">फ़ाइल नहीं खोल सके: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>फ़ाइल सेव नहीं हो सकी: %1</translation>
+        <translation type="vanished">फ़ाइल सेव नहीं हो सकी: %1</translation>
     </message>
 </context>
 <context>
@@ -2277,17 +2231,12 @@ Suggested name:</source>
         <translation>बाहर निकलें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>फ़ाइल नाम गुम।</translation>
+        <translation type="vanished">फ़ाइल नाम गुम।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>.panda फ़ाइल खाली है।</translation>
+        <translation type="vanished">.panda फ़ाइल खाली है।</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Suggested name:</source>
         <translation>अनम्यूट</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>पहले फ़ाइल सेव करें।</translation>
+        <translation type="vanished">पहले फ़ाइल सेव करें।</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Suggested name:</source>
         <translation>हटाने के लिए यहाँ खींचें।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>फ़ाइल हटाने में त्रुटि: %1</translation>
+        <translation type="vanished">फ़ाइल हटाने में त्रुटि: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>ऑफसेट %1 पर कनेक्शन मैप पढ़ने में स्ट्रीम त्रुटि</translation>
+        <translation type="vanished">ऑफसेट %1 पर कनेक्शन मैप पढ़ने में स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>ऑफसेट %1 पर कनेक्शन पोर्ट ID पढ़ने में स्ट्रीम त्रुटि</translation>
+        <translation type="vanished">ऑफसेट %1 पर कनेक्शन पोर्ट ID पढ़ने में स्ट्रीम त्रुटि</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>मेटाडेटा गणना पढ़ते समय स्ट्रीम त्रुटि</translation>
+        <translation type="vanished">मेटाडेटा गणना पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>शेष स्ट्रीम बाइट्स के अनुसार मेटाडेटा गणना %1 असंभाव्य है</translation>
+        <translation type="vanished">शेष स्ट्रीम बाइट्स के अनुसार मेटाडेटा गणना %1 असंभाव्य है</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>blob गणना पढ़ते समय स्ट्रीम त्रुटि</translation>
+        <translation type="vanished">blob गणना पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>शेष स्ट्रीम बाइट्स के अनुसार blob गणना %1 असंभाव्य है</translation>
+        <translation type="vanished">शेष स्ट्रीम बाइट्स के अनुसार blob गणना %1 असंभाव्य है</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>अमान्य फ़ाइल प्रारूप।</translation>
+        <translation type="vanished">अमान्य फ़ाइल प्रारूप।</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>स्थिति %1 पर टाइप टैग पढ़ने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
+        <translation type="vanished">स्थिति %1 पर टाइप टैग पढ़ने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>स्थिति %1 पर तत्व प्रकार पढ़ने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
+        <translation type="vanished">स्थिति %1 पर तत्व प्रकार पढ़ने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>स्थिति %1 पर तत्व लोड करने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
+        <translation type="vanished">स्थिति %1 पर तत्व लोड करने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>स्थिति %1 पर कनेक्शन लोड करने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
+        <translation type="vanished">स्थिति %1 पर कनेक्शन लोड करने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>अमान्य प्रकार। डेटा संभवतः दूषित है।</translation>
+        <translation type="vanished">अमान्य प्रकार। डेटा संभवतः दूषित है।</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>संस्करणित बैकअप बनाने में विफल: %1</translation>
+        <translation type="vanished">संस्करणित बैकअप बनाने में विफल: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>फ़ाइल कॉपी करने में त्रुटि: %1</translation>
+        <translation type="vanished">फ़ाइल कॉपी करने में त्रुटि: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>SplitCommand कन्स्ट्रक्टर में अमान्य कनेक्शन पोर्ट</translation>
+        <translation type="vanished">SplitCommand कन्स्ट्रक्टर में अमान्य कनेक्शन पोर्ट</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>SplitCommand कन्स्ट्रक्टर में अमान्य ग्राफिक तत्व</translation>
+        <translation type="vanished">SplitCommand कन्स्ट्रक्टर में अमान्य ग्राफिक तत्व</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Suggested name:</source>
         <translation>वायर विभाजन</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>%1 को फिर से करने में त्रुटि</translation>
+        <translation type="vanished">%1 को फिर से करने में त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>त्रुटि: SplitCommand::redo() में endPort null है</translation>
+        <translation type="vanished">त्रुटि: SplitCommand::redo() में endPort null है</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>%1 को पूर्ववत करने में त्रुटि</translation>
+        <translation type="vanished">%1 को पूर्ववत करने में त्रुटि</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>ट्रूथ टेबल के लिए आउटपुट वेरिएबल मैप नहीं किया गया: %1</translation>
+        <translation type="vanished">ट्रूथ टेबल के लिए आउटपुट वेरिएबल मैप नहीं किया गया: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>तत्व प्रकार समर्थित नहीं: %1</translation>
+        <translation type="vanished">तत्व प्रकार समर्थित नहीं: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Suggested name:</source>
         <translation>स्थिति %1 पर TruthTable आउटपुट टॉगल करें</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>सत्य तालिका तत्व नहीं मिला!</translation>
+        <translation type="vanished">सत्य तालिका तत्व नहीं मिला!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>फ़ाइल सहेजें (मूल स्थान केवल पढ़ने योग्य है)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>फ़ाइल खोलने में त्रुटि: %1</translation>
+        <translation type="vanished">फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>फ़ाइल सेव नहीं हो सकी: %1</translation>
+        <translation type="vanished">फ़ाइल सेव नहीं हो सकी: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>यह फ़ाइल मौजूद नहीं है: %1</translation>
+        <translation type="vanished">यह फ़ाइल मौजूद नहीं है: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>फ़ाइल नहीं खोल सके: %1</translation>
+        <translation type="vanished">फ़ाइल नहीं खोल सके: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ A backup of the original file has been created with name: %3</source>
         <translation>फ़ाइल अपग्रेड हो गई।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>ऑटोसेव फ़ाइल खोलने में त्रुटि: %1</translation>
+        <translation type="vanished">ऑटोसेव फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>स्वतः सहेजी गई फ़ाइल को अंतिम रूप नहीं दिया जा सका: %1</translation>
+        <translation type="vanished">स्वतः सहेजी गई फ़ाइल को अंतिम रूप नहीं दिया जा सका: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>त्रुटि: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

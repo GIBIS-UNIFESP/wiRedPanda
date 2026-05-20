@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Không thể mở tệp để ghi: %1</translation>
+        <translation type="vanished">Không thể mở tệp để ghi: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Không đủ chân cho tất cả các phần tử đầu vào</translation>
+        <translation type="vanished">Không đủ chân cho tất cả các phần tử đầu vào</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Không đủ chân cho tất cả các vị trí công tắc xoay</translation>
+        <translation type="vanished">Không đủ chân cho tất cả các vị trí công tắc xoay</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Không đủ chân cho tất cả các phần tử đầu ra</translation>
+        <translation type="vanished">Không đủ chân cho tất cả các phần tử đầu ra</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Loại phần tử không được hỗ trợ: %1</translation>
+        <translation type="vanished">Loại phần tử không được hỗ trợ: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Biến đầu ra chưa được ánh xạ cho bảng chân trị: %1</translation>
+        <translation type="vanished">Biến đầu ra chưa được ánh xạ cho bảng chân trị: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Không thể mở tệp testbench: %1</translation>
+        <translation type="vanished">Không thể mở tệp testbench: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Tập tin không thể đọc</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Không thể tải âm thanh: %1 (%2)</translation>
+        <translation type="vanished">Không thể tải âm thanh: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>Bộ mô phỏng beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Mạch trống. Thêm các phần tử đầu vào và đầu ra để tạo dạng sóng.</translation>
+        <translation type="vanished">Mạch trống. Thêm các phần tử đầu vào và đầu ra để tạo dạng sóng.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>Mạch không có phần tử đầu vào hoặc đầu ra. Thêm ít nhất một đầu vào (ví dụ: Switch) và một đầu ra (ví dụ: LED) để tạo dạng sóng.</translation>
+        <translation type="vanished">Mạch không có phần tử đầu vào hoặc đầu ra. Thêm ít nhất một đầu vào (ví dụ: Switch) và một đầu ra (ví dụ: LED) để tạo dạng sóng.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>Mạch không có phần tử đầu vào. Thêm ít nhất một đầu vào (ví dụ: Switch, Button hoặc Clock) để tạo dạng sóng.</translation>
+        <translation type="vanished">Mạch không có phần tử đầu vào. Thêm ít nhất một đầu vào (ví dụ: Switch, Button hoặc Clock) để tạo dạng sóng.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>Mạch không có phần tử đầu ra. Thêm ít nhất một đầu ra (ví dụ: LED hoặc Display) để tạo dạng sóng.</translation>
+        <translation type="vanished">Mạch không có phần tử đầu ra. Thêm ít nhất một đầu ra (ví dụ: LED hoặc Display) để tạo dạng sóng.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Lưu tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Dạng sóng sẽ quá lớn! Đang đặt lại mức phóng to.</translation>
+        <translation type="vanished">Dạng sóng sẽ quá lớn! Đang đặt lại mức phóng to.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Không có ô nào được chọn.</translation>
+        <translation type="vanished">Không có ô nào được chọn.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Lỗi khi mở tệp: %1</translation>
+        <translation type="vanished">Lỗi khi mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Lỗi khi lưu tệp: %1</translation>
+        <translation type="vanished">Lỗi khi lưu tệp: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Tải tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Không thể mở tệp để đọc: %1</translation>
+        <translation type="vanished">Không thể mở tệp để đọc: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Định dạng không được hỗ trợ. Không thể mở tệp: %1</translation>
+        <translation type="vanished">Định dạng không được hỗ trợ. Không thể mở tệp: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>Tệp PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Không thể in mạch này thành PDF.</translation>
+        <translation type="vanished">Không thể in mạch này thành PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Tệp &quot;%1&quot; không tồn tại!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>dọc dưới trái</translation>
     </message>
@@ -839,6 +803,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>dọc dưới giữa</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>chéo dưới trái</translation>
     </message>
 </context>
 <context>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1173,14 +1143,12 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>Không xác định</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Loại phần tử không xác định: %1</translation>
+        <translation type="vanished">Loại phần tử không xác định: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Loại không xác định: %1</translation>
+        <translation type="vanished">Loại không xác định: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>Lý do không xác định</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Không thể tải pixmap: %1 (%2)</translation>
+        <translation type="vanished">Không thể tải pixmap: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>Mặc định</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Lỗi luồng khi đọc thuộc tính phần tử tại vị trí %1</translation>
+        <translation type="vanished">Lỗi luồng khi đọc thuộc tính phần tử tại vị trí %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Lỗi luồng khi đọc giao diện tại vị trí %1</translation>
+        <translation type="vanished">Lỗi luồng khi đọc giao diện tại vị trí %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Chỉ mục giao diện %1 ngoài phạm vi (kích thước=%2) — luồng có thể bị hỏng</translation>
+        <translation type="vanished">Chỉ mục giao diện %1 ngoài phạm vi (kích thước=%2) — luồng có thể bị hỏng</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>Đang tải tên giao diện pixmap.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Chỉ mục giao diện %1 ngoài phạm vi (kích thước=%2) cho tên giao diện &quot;%3&quot; — luồng có thể bị hỏng</translation>
+        <translation type="vanished">Chỉ mục giao diện %1 ngoài phạm vi (kích thước=%2) cho tên giao diện &quot;%3&quot; — luồng có thể bị hỏng</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>MẠCH TÍCH HỢP</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>Tải IC: không có tên IC trong dữ liệu tuần tự hóa</translation>
+        <translation type="vanished">Tải IC: không có tên IC trong dữ liệu tuần tự hóa</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>Không tìm thấy %1.</translation>
+        <translation type="vanished">Không tìm thấy %1.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Phát hiện tham chiếu IC vòng: %1</translation>
+        <translation type="vanished">Phát hiện tham chiếu IC vòng: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Lỗi khi mở tệp: %1</translation>
+        <translation type="vanished">Lỗi khi mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>Di chuyển IC: không thể mở tệp để ghi: %1</translation>
+        <translation type="vanished">Di chuyển IC: không thể mở tệp để ghi: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>Di chuyển IC: không thể lưu lại tệp đã lưu: %1</translation>
+        <translation type="vanished">Di chuyển IC: không thể lưu lại tệp đã lưu: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>Đã vượt giới hạn độ sâu lồng nhau của IC (%1) — blob có thể được tạo độc hại</translation>
+        <translation type="vanished">Đã vượt giới hạn độ sâu lồng nhau của IC (%1) — blob có thể được tạo độc hại</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Không thể mở tệp: %1</translation>
+        <translation type="vanished">Không thể mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Không thể lưu tệp: %1</translation>
+        <translation type="vanished">Không thể lưu tệp: %1</translation>
     </message>
 </context>
 <context>
@@ -2277,17 +2231,12 @@ Tên gợi ý:</translation>
         <translation>Thoát</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Thiếu tên tệp.</translation>
+        <translation type="vanished">Thiếu tên tệp.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>Tệp .panda trống.</translation>
+        <translation type="vanished">Tệp .panda trống.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Tên gợi ý:</translation>
         <translation>Bật tiếng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Lưu tệp trước.</translation>
+        <translation type="vanished">Lưu tệp trước.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Tên gợi ý:</translation>
         <translation>Kéo vào đây để xóa.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Lỗi khi xóa tệp: %1</translation>
+        <translation type="vanished">Lỗi khi xóa tệp: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Tên gợi ý:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Lỗi luồng khi đọc bản đồ kết nối tại vị trí %1</translation>
+        <translation type="vanished">Lỗi luồng khi đọc bản đồ kết nối tại vị trí %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Lỗi luồng khi đọc ID cổng kết nối tại vị trí %1</translation>
+        <translation type="vanished">Lỗi luồng khi đọc ID cổng kết nối tại vị trí %1</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Tên gợi ý:</translation>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Lỗi luồng khi đọc số lượng siêu dữ liệu</translation>
+        <translation type="vanished">Lỗi luồng khi đọc số lượng siêu dữ liệu</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Số lượng siêu dữ liệu %1 không hợp lý so với số byte còn lại của luồng</translation>
+        <translation type="vanished">Số lượng siêu dữ liệu %1 không hợp lý so với số byte còn lại của luồng</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Lỗi luồng khi đọc số lượng blob</translation>
+        <translation type="vanished">Lỗi luồng khi đọc số lượng blob</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Số lượng blob %1 không hợp lý so với số byte còn lại của luồng</translation>
+        <translation type="vanished">Số lượng blob %1 không hợp lý so với số byte còn lại của luồng</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Định dạng tệp không hợp lệ.</translation>
+        <translation type="vanished">Định dạng tệp không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Lỗi luồng khi đọc thẻ loại tại vị trí %1: trạng thái %2</translation>
+        <translation type="vanished">Lỗi luồng khi đọc thẻ loại tại vị trí %1: trạng thái %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Lỗi luồng khi đọc loại phần tử tại vị trí %1: trạng thái %2</translation>
+        <translation type="vanished">Lỗi luồng khi đọc loại phần tử tại vị trí %1: trạng thái %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Lỗi luồng khi tải phần tử tại vị trí %1: trạng thái %2</translation>
+        <translation type="vanished">Lỗi luồng khi tải phần tử tại vị trí %1: trạng thái %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Lỗi luồng khi tải kết nối tại vị trí %1: trạng thái %2</translation>
+        <translation type="vanished">Lỗi luồng khi tải kết nối tại vị trí %1: trạng thái %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Loại không hợp lệ. Dữ liệu có thể bị hỏng.</translation>
+        <translation type="vanished">Loại không hợp lệ. Dữ liệu có thể bị hỏng.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Không thể tạo bản sao lưu có phiên bản: %1</translation>
+        <translation type="vanished">Không thể tạo bản sao lưu có phiên bản: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Lỗi sao chép tệp: %1</translation>
+        <translation type="vanished">Lỗi sao chép tệp: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Tên gợi ý:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>Cổng kết nối không hợp lệ trong constructor SplitCommand</translation>
+        <translation type="vanished">Cổng kết nối không hợp lệ trong constructor SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>Phần tử đồ họa không hợp lệ trong constructor SplitCommand</translation>
+        <translation type="vanished">Phần tử đồ họa không hợp lệ trong constructor SplitCommand</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Tên gợi ý:</translation>
         <translation>Tách dây dẫn</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>Lỗi khi thử làm lại %1</translation>
+        <translation type="vanished">Lỗi khi thử làm lại %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Lỗi: endPort là null trong SplitCommand::redo()</translation>
+        <translation type="vanished">Lỗi: endPort là null trong SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>Lỗi khi thử hoàn tác %1</translation>
+        <translation type="vanished">Lỗi khi thử hoàn tác %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Biến đầu ra chưa được ánh xạ cho bảng chân trị: %1</translation>
+        <translation type="vanished">Biến đầu ra chưa được ánh xạ cho bảng chân trị: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Loại phần tử không được hỗ trợ: %1</translation>
+        <translation type="vanished">Loại phần tử không được hỗ trợ: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Tên gợi ý:</translation>
         <translation>Chuyển đổi đầu ra Bảng chân lý tại vị trí: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Không tìm thấy phần tử bảng chân lý!</translation>
+        <translation type="vanished">Không tìm thấy phần tử bảng chân lý!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Vui lòng cập nhật wiRedPanda để lưu các thay đổi vào tệp này.</
         <translation>Lưu tệp (vị trí gốc chỉ đọc)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Lỗi khi mở tệp: %1</translation>
+        <translation type="vanished">Lỗi khi mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Không thể lưu tệp: %1</translation>
+        <translation type="vanished">Không thể lưu tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Tệp này không tồn tại: %1</translation>
+        <translation type="vanished">Tệp này không tồn tại: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Không thể mở tệp: %1</translation>
+        <translation type="vanished">Không thể mở tệp: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ Bản sao lưu của tệp gốc đã được tạo với tên: %3</translation
         <translation>Tệp đã được nâng cấp.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Lỗi khi mở tệp tự động lưu: %1</translation>
+        <translation type="vanished">Lỗi khi mở tệp tự động lưu: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Không thể xác nhận tệp tự động lưu: %1</translation>
+        <translation type="vanished">Không thể xác nhận tệp tự động lưu: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ Bản sao lưu của tệp gốc đã được tạo với tên: %3</translation
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

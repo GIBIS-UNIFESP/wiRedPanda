@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Soubor nelze otevřít pro zápis: %1</translation>
+        <translation type="vanished">Soubor nelze otevřít pro zápis: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Nedostatek pinů pro všechny vstupní prvky</translation>
+        <translation type="vanished">Nedostatek pinů pro všechny vstupní prvky</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Nedostatek pinů pro všechny pozice otočného přepínače</translation>
+        <translation type="vanished">Nedostatek pinů pro všechny pozice otočného přepínače</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Nedostatek pinů pro všechny výstupní prvky</translation>
+        <translation type="vanished">Nedostatek pinů pro všechny výstupní prvky</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Typ prvku není podporován: %1</translation>
+        <translation type="vanished">Typ prvku není podporován: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Výstupní proměnná není mapována pro pravdivostní tabulku: %1</translation>
+        <translation type="vanished">Výstupní proměnná není mapována pro pravdivostní tabulku: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Testovací soubor nelze otevřít: %1</translation>
+        <translation type="vanished">Testovací soubor nelze otevřít: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Soubor není čitelny</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Zvuk nelze načíst: %1 (%2)</translation>
+        <translation type="vanished">Zvuk nelze načíst: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>beWavedDolphin Simulátor</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Obvod je prázdný. Přidejte vstupní a výstupní prvky pro generování průběhu.</translation>
+        <translation type="vanished">Obvod je prázdný. Přidejte vstupní a výstupní prvky pro generování průběhu.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>Obvod nemá žádné vstupní ani výstupní prvky. Přidejte alespoň jeden vstup (např. Switch) a jeden výstup (např. LED) pro generování průběhu.</translation>
+        <translation type="vanished">Obvod nemá žádné vstupní ani výstupní prvky. Přidejte alespoň jeden vstup (např. Switch) a jeden výstup (např. LED) pro generování průběhu.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>Obvod nemá žádné vstupní prvky. Přidejte alespoň jeden vstup (např. Switch, Button nebo Clock) pro generování průběhu.</translation>
+        <translation type="vanished">Obvod nemá žádné vstupní prvky. Přidejte alespoň jeden vstup (např. Switch, Button nebo Clock) pro generování průběhu.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>Obvod nemá žádné výstupní prvky. Přidejte alespoň jeden výstup (např. LED nebo Display) pro generování průběhu.</translation>
+        <translation type="vanished">Obvod nemá žádné výstupní prvky. Přidejte alespoň jeden výstup (např. LED nebo Display) pro generování průběhu.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Soubor byl úspěšně uložen.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Průběh by byl příliš velký! Resetuji přiblížení.</translation>
+        <translation type="vanished">Průběh by byl příliš velký! Resetuji přiblížení.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Nejsou vybrány žádné buňky.</translation>
+        <translation type="vanished">Nejsou vybrány žádné buňky.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Chyba při otevírání souboru: %1</translation>
+        <translation type="vanished">Chyba při otevírání souboru: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Chyba při ukládání souboru: %1</translation>
+        <translation type="vanished">Chyba při ukládání souboru: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Soubor byl úspěšně načten.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Soubor nelze otevřít pro čtení: %1</translation>
+        <translation type="vanished">Soubor nelze otevřít pro čtení: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Formát není podporován. Nelze otevřít soubor: %1</translation>
+        <translation type="vanished">Formát není podporován. Nelze otevřít soubor: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>PDF soubory (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Nelze vytisknout tento obvod do PDF.</translation>
+        <translation type="vanished">Nelze vytisknout tento obvod do PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Soubor &quot;%1&quot; neexistuje!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>dolní levá vertikální</translation>
     </message>
@@ -834,6 +798,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>dolní střední vertikála</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>dolní levá diagonála</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1173,14 +1143,12 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>Neznámý</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Neznámý typ prvku: %1</translation>
+        <translation type="vanished">Neznámý typ prvku: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Neznámý typ: %1</translation>
+        <translation type="vanished">Neznámý typ: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>Neznámý důvod</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Nelze načíst pixmapu: %1 (%2)</translation>
+        <translation type="vanished">Nelze načíst pixmapu: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>Výchozí</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Chyba proudu při čtení vlastností prvku na pozici %1</translation>
+        <translation type="vanished">Chyba proudu při čtení vlastností prvku na pozici %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Chyba proudu při čtení skinů na pozici %1</translation>
+        <translation type="vanished">Chyba proudu při čtení skinů na pozici %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Index vzhledu %1 mimo rozsah (velikost=%2) — proud může být poškozen</translation>
+        <translation type="vanished">Index vzhledu %1 mimo rozsah (velikost=%2) — proud může být poškozen</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>Načítání názvů vzhledů pixmap.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Index skinu %1 mimo rozsah (velikost=%2) pro název skinu &quot;%3&quot; — proud může být poškozen</translation>
+        <translation type="vanished">Index skinu %1 mimo rozsah (velikost=%2) pro název skinu &quot;%3&quot; — proud může být poškozen</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>INTEGRÁL</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>Načtení IC: v serializovaných datech chybí název IC</translation>
+        <translation type="vanished">Načtení IC: v serializovaných datech chybí název IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 nenalezen.</translation>
+        <translation type="vanished">%1 nenalezen.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Zjištěn kruhový odkaz na IC: %1</translation>
+        <translation type="vanished">Zjištěn kruhový odkaz na IC: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Chyba při otevírání souboru: %1</translation>
+        <translation type="vanished">Chyba při otevírání souboru: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>Migrace IC: soubor nelze otevřít pro zápis: %1</translation>
+        <translation type="vanished">Migrace IC: soubor nelze otevřít pro zápis: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>Migrace IC: nepodařilo se potvrdit znovu uložený soubor: %1</translation>
+        <translation type="vanished">Migrace IC: nepodařilo se potvrdit znovu uložený soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>Překročen limit hloubky zanoření IC (%1) — blob může být škodlivě sestaven</translation>
+        <translation type="vanished">Překročen limit hloubky zanoření IC (%1) — blob může být škodlivě sestaven</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Nelze otevřít soubor: %1</translation>
+        <translation type="vanished">Nelze otevřít soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Nelze uložit soubor: %1</translation>
+        <translation type="vanished">Nelze uložit soubor: %1</translation>
     </message>
 </context>
 <context>
@@ -2202,17 +2156,12 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
         <translation>Přepnout na kartu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Chybí název souboru.</translation>
+        <translation type="vanished">Chybí název souboru.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>Soubor .panda je prázdný.</translation>
+        <translation type="vanished">Soubor .panda je prázdný.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Navrhovaný název:</translation>
         <translation>Zapnout zvuk</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Nejprve uložte soubor.</translation>
+        <translation type="vanished">Nejprve uložte soubor.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Navrhovaný název:</translation>
         <translation>Přetáhněte sem k odstranění.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Chyba při odstraňování souboru: %1</translation>
+        <translation type="vanished">Chyba při odstraňování souboru: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Navrhovaný název:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Chyba proudu při čtení mapy připojení na pozici %1</translation>
+        <translation type="vanished">Chyba proudu při čtení mapy připojení na pozici %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Chyba proudu při čtení ID portů připojení na pozici %1</translation>
+        <translation type="vanished">Chyba proudu při čtení ID portů připojení na pozici %1</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Navrhovaný název:</translation>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Chyba proudu při čtení počtu metadat</translation>
+        <translation type="vanished">Chyba proudu při čtení počtu metadat</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Počet metadat %1 nepravděpodobný vzhledem ke zbývajícím bajtům proudu</translation>
+        <translation type="vanished">Počet metadat %1 nepravděpodobný vzhledem ke zbývajícím bajtům proudu</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Chyba proudu při čtení počtu blobů</translation>
+        <translation type="vanished">Chyba proudu při čtení počtu blobů</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Počet blobů %1 nepravděpodobný vzhledem ke zbývajícím bajtům proudu</translation>
+        <translation type="vanished">Počet blobů %1 nepravděpodobný vzhledem ke zbývajícím bajtům proudu</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Neplatný formát souboru.</translation>
+        <translation type="vanished">Neplatný formát souboru.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Chyba proudu při čtení značky typu na pozici %1: stav %2</translation>
+        <translation type="vanished">Chyba proudu při čtení značky typu na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Chyba proudu při čtení typu prvku na pozici %1: stav %2</translation>
+        <translation type="vanished">Chyba proudu při čtení typu prvku na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Chyba proudu při načítání prvku na pozici %1: stav %2</translation>
+        <translation type="vanished">Chyba proudu při načítání prvku na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Chyba proudu při načítání spojení na pozici %1: stav %2</translation>
+        <translation type="vanished">Chyba proudu při načítání spojení na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Neplatný typ. Data jsou možná poškozená.</translation>
+        <translation type="vanished">Neplatný typ. Data jsou možná poškozená.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Nepodařilo se vytvořit verzovanou zálohu: %1</translation>
+        <translation type="vanished">Nepodařilo se vytvořit verzovanou zálohu: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Chyba při kopírování souboru: %1</translation>
+        <translation type="vanished">Chyba při kopírování souboru: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Navrhovaný název:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>Neplatné spojovavcí porty v konstruktoru SplitCommand</translation>
+        <translation type="vanished">Neplatné spojovavcí porty v konstruktoru SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>Neplatné grafické prvky v konstruktoru SplitCommand</translation>
+        <translation type="vanished">Neplatné grafické prvky v konstruktoru SplitCommand</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Navrhovaný název:</translation>
         <translation>Rozdělení vodiče</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>Chyba při pokusu o opakování %1</translation>
+        <translation type="vanished">Chyba při pokusu o opakování %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Chyba: endPort je null v SplitCommand::redo()</translation>
+        <translation type="vanished">Chyba: endPort je null v SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>Chyba při pokusu o vrácení %1</translation>
+        <translation type="vanished">Chyba při pokusu o vrácení %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Výstupní proměnná není mapována pro pravdivostní tabulku: %1</translation>
+        <translation type="vanished">Výstupní proměnná není mapována pro pravdivostní tabulku: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Typ prvku není podporován: %1</translation>
+        <translation type="vanished">Typ prvku není podporován: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Navrhovaný název:</translation>
         <translation>Přepnout výstup pravdivostní tabulky na pozici: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Nelze najít prvek pravdivostní tabulky!</translation>
+        <translation type="vanished">Nelze najít prvek pravdivostní tabulky!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Pro uložení změn v tomto souboru prosím aktualizujte wiRedPanda.</translatio
         <translation>Uložit soubor (původní umístění je jen pro čtení)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Chyba při otevírání souboru: %1</translation>
+        <translation type="vanished">Chyba při otevírání souboru: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Nelze uložit soubor: %1</translation>
+        <translation type="vanished">Nelze uložit soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Tento soubor neexistuje: %1</translation>
+        <translation type="vanished">Tento soubor neexistuje: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Nelze otevřít soubor: %1</translation>
+        <translation type="vanished">Nelze otevřít soubor: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ Záloha původního souboru byla vytvořena s názvem: %3</translation>
         <translation>Soubor byl aktualizován.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Chyba při otevírání souboru automatického uložení: %1</translation>
+        <translation type="vanished">Chyba při otevírání souboru automatického uložení: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Nelze potvrdit soubor automatického uložení: %1</translation>
+        <translation type="vanished">Nelze potvrdit soubor automatického uložení: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ Záloha původního souboru byla vytvořena s názvem: %3</translation>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

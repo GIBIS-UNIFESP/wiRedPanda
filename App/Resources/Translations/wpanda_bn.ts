@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>লেখার জন্য ফাইল খোলা যায়নি: %1</translation>
+        <translation type="vanished">লেখার জন্য ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>সব ইনপুট উপাদানের জন্য পর্যাপ্ত পিন নেই</translation>
+        <translation type="vanished">সব ইনপুট উপাদানের জন্য পর্যাপ্ত পিন নেই</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>রোটারি সুইচের সব অবস্থানের জন্য পর্যাপ্ত পিন নেই</translation>
+        <translation type="vanished">রোটারি সুইচের সব অবস্থানের জন্য পর্যাপ্ত পিন নেই</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>সব আউটপুট উপাদানের জন্য পর্যাপ্ত পিন নেই</translation>
+        <translation type="vanished">সব আউটপুট উপাদানের জন্য পর্যাপ্ত পিন নেই</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>উপাদানের ধরন সমর্থিত নয়: %1</translation>
+        <translation type="vanished">উপাদানের ধরন সমর্থিত নয়: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>ট্রুথ টেবিলের জন্য আউটপুট ভেরিয়েবল ম্যাপ করা হয়নি: %1</translation>
+        <translation type="vanished">ট্রুথ টেবিলের জন্য আউটপুট ভেরিয়েবল ম্যাপ করা হয়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>টেস্টবেঞ্চ ফাইল খোলা যায়নি: %1</translation>
+        <translation type="vanished">টেস্টবেঞ্চ ফাইল খোলা যায়নি: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>ফাইল পড়া যায়না</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>অডিও লোড করা যায়নি: %1 (%2)</translation>
+        <translation type="vanished">অডিও লোড করা যায়নি: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>beWavedDolphin সিমুলেটর</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>সার্কিট খালি। তরঙ্গরূপ তৈরি করতে ইনপুট এবং আউটপুট উপাদান যোগ করুন।</translation>
+        <translation type="vanished">সার্কিট খালি। তরঙ্গরূপ তৈরি করতে ইনপুট এবং আউটপুট উপাদান যোগ করুন।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>সার্কিটে কোনো ইনপুট বা আউটপুট উপাদান নেই। তরঙ্গরূপ তৈরি করতে অন্তত একটি ইনপুট (যেমন Switch) এবং একটি আউটপুট (যেমন LED) যোগ করুন।</translation>
+        <translation type="vanished">সার্কিটে কোনো ইনপুট বা আউটপুট উপাদান নেই। তরঙ্গরূপ তৈরি করতে অন্তত একটি ইনপুট (যেমন Switch) এবং একটি আউটপুট (যেমন LED) যোগ করুন।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>সার্কিটে কোনো ইনপুট উপাদান নেই। তরঙ্গরূপ তৈরি করতে অন্তত একটি ইনপুট (যেমন Switch, Button বা Clock) যোগ করুন।</translation>
+        <translation type="vanished">সার্কিটে কোনো ইনপুট উপাদান নেই। তরঙ্গরূপ তৈরি করতে অন্তত একটি ইনপুট (যেমন Switch, Button বা Clock) যোগ করুন।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>সার্কিটে কোনো আউটপুট উপাদান নেই। তরঙ্গরূপ তৈরি করতে অন্তত একটি আউটপুট (যেমন LED বা Display) যোগ করুন।</translation>
+        <translation type="vanished">সার্কিটে কোনো আউটপুট উপাদান নেই। তরঙ্গরূপ তৈরি করতে অন্তত একটি আউটপুট (যেমন LED বা Display) যোগ করুন।</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>ফাইল সফলভাবে সংরক্ষিত হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>তরঙ্গরূপ খুব বড় হবে! জুম রিসেট করা হচ্ছে।</translation>
+        <translation type="vanished">তরঙ্গরূপ খুব বড় হবে! জুম রিসেট করা হচ্ছে।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>কোনো কক্ষ নির্বাচিত নেই।</translation>
+        <translation type="vanished">কোনো কক্ষ নির্বাচিত নেই।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>ফাইল খোলতে ত্রুটি: %1</translation>
+        <translation type="vanished">ফাইল খোলতে ত্রুটি: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>ফাইল সংরক্ষণে ত্রুটি: %1</translation>
+        <translation type="vanished">ফাইল সংরক্ষণে ত্রুটি: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>ফাইল সফলভাবে লোড হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>পড়ার জন্য ফাইল খোলা যায়নি: %1</translation>
+        <translation type="vanished">পড়ার জন্য ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>ফরম্যাট সমর্থিত নয়। ফাইল খোলা যায়নি: %1</translation>
+        <translation type="vanished">ফরম্যাট সমর্থিত নয়। ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>PDF ফাইল (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>এই সার্কিটটি PDF-এ প্রিন্ট করা যায়নি।</translation>
+        <translation type="vanished">এই সার্কিটটি PDF-এ প্রিন্ট করা যায়নি।</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>ফাইল &quot;%1&quot; বিদ্যমান নেই!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>নিচের বাম উল্লম্ব</translation>
     </message>
@@ -834,6 +798,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>নিচের মধ্য উল্লম্ব</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>নিচের বাম কর্ণ</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> হার্জ</translation>
@@ -1173,14 +1143,12 @@ Each wireless channel must have a unique label.</source>
         <translation>অজানা</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>অজানা উপাদান প্রকার: %1</translation>
+        <translation type="vanished">অজানা উপাদান প্রকার: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>অজানা ধরন: %1</translation>
+        <translation type="vanished">অজানা ধরন: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Each wireless channel must have a unique label.</source>
         <translation>অজানা কারণ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>পিক্সম্যাপ লোড করা যায়নি: %1 (%2)</translation>
+        <translation type="vanished">পিক্সম্যাপ লোড করা যায়নি: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Each wireless channel must have a unique label.</source>
         <translation>ডিফল্ট</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>অবস্থান %1-এ উপাদানের বৈশিষ্ট্য পড়তে স্ট্রিম ত্রুটি</translation>
+        <translation type="vanished">অবস্থান %1-এ উপাদানের বৈশিষ্ট্য পড়তে স্ট্রিম ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>অবস্থান %1-এ স্কিন পড়তে স্ট্রিম ত্রুটি</translation>
+        <translation type="vanished">অবস্থান %1-এ স্কিন পড়তে স্ট্রিম ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>উপস্থিতি সূচক %1 পরিসরের বাইরে (আকার=%2) — স্ট্রিম দূষিত হতে পারে</translation>
+        <translation type="vanished">উপস্থিতি সূচক %1 পরিসরের বাইরে (আকার=%2) — স্ট্রিম দূষিত হতে পারে</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Each wireless channel must have a unique label.</source>
         <translation>পিক্সম্যাপ স্কিনের নাম লোড করছে।</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>স্কিন ইনডেক্স %1 সীমার বাইরে (আকার=%2) স্কিন নাম &quot;%3&quot;-এর জন্য — স্ট্রিম ক্ষতিগ্রস্ত হতে পারে</translation>
+        <translation type="vanished">স্কিন ইনডেক্স %1 সীমার বাইরে (আকার=%2) স্কিন নাম &quot;%3&quot;-এর জন্য — স্ট্রিম ক্ষতিগ্রস্ত হতে পারে</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Each wireless channel must have a unique label.</source>
         <translation>একীভূত সার্কিট</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>IC লোড: সিরিয়ালাইজড ডেটায় IC নাম নেই</translation>
+        <translation type="vanished">IC লোড: সিরিয়ালাইজড ডেটায় IC নাম নেই</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 পাওয়া যায়নি।</translation>
+        <translation type="vanished">%1 পাওয়া যায়নি।</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>চক্রাকার IC রেফারেন্স সনাক্ত হয়েছে: %1</translation>
+        <translation type="vanished">চক্রাকার IC রেফারেন্স সনাক্ত হয়েছে: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>ফাইল খোলতে ত্রুটি: %1</translation>
+        <translation type="vanished">ফাইল খোলতে ত্রুটি: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>IC মাইগ্রেশন: লেখার জন্য ফাইল খোলা যায়নি: %1</translation>
+        <translation type="vanished">IC মাইগ্রেশন: লেখার জন্য ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>IC মাইগ্রেশন: পুনরায় সংরক্ষিত ফাইল কমিট করা ব্যর্থ: %1</translation>
+        <translation type="vanished">IC মাইগ্রেশন: পুনরায় সংরক্ষিত ফাইল কমিট করা ব্যর্থ: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>IC নেস্টিং গভীরতার সীমা (%1) অতিক্রান্ত — blob ক্ষতিকরভাবে তৈরি হতে পারে</translation>
+        <translation type="vanished">IC নেস্টিং গভীরতার সীমা (%1) অতিক্রান্ত — blob ক্ষতিকরভাবে তৈরি হতে পারে</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>ফাইল খোলা যায়নি: %1</translation>
+        <translation type="vanished">ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>ফাইল সংরক্ষণ করা যায়নি: %1</translation>
+        <translation type="vanished">ফাইল সংরক্ষণ করা যায়নি: %1</translation>
     </message>
 </context>
 <context>
@@ -2202,17 +2156,12 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
         <translation>ট্যাবে যান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>ফাইলের নাম নেই।</translation>
+        <translation type="vanished">ফাইলের নাম নেই।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>.panda ফাইলটি খালি।</translation>
+        <translation type="vanished">.panda ফাইলটি খালি।</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Suggested name:</source>
         <translation>শব্দ চালু</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>প্রথমে ফাইল সংরক্ষণ করুন।</translation>
+        <translation type="vanished">প্রথমে ফাইল সংরক্ষণ করুন।</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Suggested name:</source>
         <translation>সরানোর জন্য এখানে টেনে আনুন।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>ফাইল মুছে ফেলতে ত্রুটি: %1</translation>
+        <translation type="vanished">ফাইল মুছে ফেলতে ত্রুটি: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>অফসেট %1-এ সংযোগ মানচিত্র পড়ার সময় স্ট্রিম ত্রুটি</translation>
+        <translation type="vanished">অফসেট %1-এ সংযোগ মানচিত্র পড়ার সময় স্ট্রিম ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>অফসেট %1-এ সংযোগ পোর্ট আইডি পড়তে স্ট্রিম ত্রুটি</translation>
+        <translation type="vanished">অফসেট %1-এ সংযোগ পোর্ট আইডি পড়তে স্ট্রিম ত্রুটি</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>মেটাডেটা গণনা পড়ার সময় স্ট্রিম ত্রুটি</translation>
+        <translation type="vanished">মেটাডেটা গণনা পড়ার সময় স্ট্রিম ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>অবশিষ্ট স্ট্রিম বাইটের তুলনায় মেটাডেটা গণনা %1 অসম্ভাব্য</translation>
+        <translation type="vanished">অবশিষ্ট স্ট্রিম বাইটের তুলনায় মেটাডেটা গণনা %1 অসম্ভাব্য</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>blob গণনা পড়ার সময় স্ট্রিম ত্রুটি</translation>
+        <translation type="vanished">blob গণনা পড়ার সময় স্ট্রিম ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>অবশিষ্ট স্ট্রিম বাইটের তুলনায় blob গণনা %1 অসম্ভাব্য</translation>
+        <translation type="vanished">অবশিষ্ট স্ট্রিম বাইটের তুলনায় blob গণনা %1 অসম্ভাব্য</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>অবৈধ ফাইল ফরম্যাট।</translation>
+        <translation type="vanished">অবৈধ ফাইল ফরম্যাট।</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>অবস্থান %1-এ টাইপ ট্যাগ পড়তে স্ট্রিম ত্রুটি: স্ট্যাটাস %2</translation>
+        <translation type="vanished">অবস্থান %1-এ টাইপ ট্যাগ পড়তে স্ট্রিম ত্রুটি: স্ট্যাটাস %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>অবস্থান %1-এ উপাদান প্রকার পড়তে স্ট্রিম ত্রুটি: স্ট্যাটাস %2</translation>
+        <translation type="vanished">অবস্থান %1-এ উপাদান প্রকার পড়তে স্ট্রিম ত্রুটি: স্ট্যাটাস %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>অবস্থান %1-এ উপাদান লোড করতে স্ট্রিম ত্রুটি: স্ট্যাটাস %2</translation>
+        <translation type="vanished">অবস্থান %1-এ উপাদান লোড করতে স্ট্রিম ত্রুটি: স্ট্যাটাস %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>অবস্থান %1-এ সংযোগ লোড করতে স্ট্রিম ত্রুটি: স্ট্যাটাস %2</translation>
+        <translation type="vanished">অবস্থান %1-এ সংযোগ লোড করতে স্ট্রিম ত্রুটি: স্ট্যাটাস %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>অবৈধ ধরন। ডেটা সম্ভাব্য দুষিত।</translation>
+        <translation type="vanished">অবৈধ ধরন। ডেটা সম্ভাব্য দুষিত।</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>সংস্করণযুক্ত ব্যাকআপ তৈরি ব্যর্থ: %1</translation>
+        <translation type="vanished">সংস্করণযুক্ত ব্যাকআপ তৈরি ব্যর্থ: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>ফাইল অনুলিপি করতে ত্রুটি: %1</translation>
+        <translation type="vanished">ফাইল অনুলিপি করতে ত্রুটি: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>SplitCommand কনস্ট্রাক্টরে অবৈধ সংযোগ পোর্ট</translation>
+        <translation type="vanished">SplitCommand কনস্ট্রাক্টরে অবৈধ সংযোগ পোর্ট</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>SplitCommand কনস্ট্রাক্টরে অবৈধ গ্রাফিক এলিমেন্ট</translation>
+        <translation type="vanished">SplitCommand কনস্ট্রাক্টরে অবৈধ গ্রাফিক এলিমেন্ট</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Suggested name:</source>
         <translation>তার বিভক্ত</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>%1 পুনরায় করতে ত্রুটি</translation>
+        <translation type="vanished">%1 পুনরায় করতে ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>ত্রুটি: SplitCommand::redo()-তে endPort null</translation>
+        <translation type="vanished">ত্রুটি: SplitCommand::redo()-তে endPort null</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>%1 পূর্বাবস্থায় ফিরতে ত্রুটি</translation>
+        <translation type="vanished">%1 পূর্বাবস্থায় ফিরতে ত্রুটি</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>ট্রুথ টেবিলের জন্য আউটপুট ভেরিয়েবল ম্যাপ করা হয়নি: %1</translation>
+        <translation type="vanished">ট্রুথ টেবিলের জন্য আউটপুট ভেরিয়েবল ম্যাপ করা হয়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>উপাদানের ধরন সমর্থিত নয়: %1</translation>
+        <translation type="vanished">উপাদানের ধরন সমর্থিত নয়: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Suggested name:</source>
         <translation>%1 অবস্থানে সত্যতালিকা আউটপুট টগল করুন</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>সত্যতালিকা উপাদান খুঁজে পাওয়া যায়নি!</translation>
+        <translation type="vanished">সত্যতালিকা উপাদান খুঁজে পাওয়া যায়নি!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>ফাইল সংরক্ষণ করুন (মূল অবস্থান কেবল পঠনযোগ্য)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>ফাইল খোলতে ত্রুটি: %1</translation>
+        <translation type="vanished">ফাইল খোলতে ত্রুটি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>ফাইল সংরক্ষণ করা যায়নি: %1</translation>
+        <translation type="vanished">ফাইল সংরক্ষণ করা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>এই ফাইলটি বিদ্যমান নেই: %1</translation>
+        <translation type="vanished">এই ফাইলটি বিদ্যমান নেই: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>ফাইল খোলা যায়নি: %1</translation>
+        <translation type="vanished">ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ A backup of the original file has been created with name: %3</source>
         <translation>ফাইল আপগ্রেড হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>অটোসেভ ফাইল খোলতে ত্রুটি: %1</translation>
+        <translation type="vanished">অটোসেভ ফাইল খোলতে ত্রুটি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>স্বয়ংক্রিয় সংরক্ষণ ফাইল চূড়ান্ত করা যায়নি: %1</translation>
+        <translation type="vanished">স্বয়ংক্রিয় সংরক্ষণ ফাইল চূড়ান্ত করা যায়নি: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>ত্রুটি: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

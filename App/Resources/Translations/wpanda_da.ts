@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Kunne ikke åbne filen til skrivning: %1</translation>
+        <translation type="vanished">Kunne ikke åbne filen til skrivning: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Ikke nok ben til rådighed for alle inputelementer</translation>
+        <translation type="vanished">Ikke nok ben til rådighed for alle inputelementer</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Ikke nok ben til rådighed for alle drejekontaktpositioner</translation>
+        <translation type="vanished">Ikke nok ben til rådighed for alle drejekontaktpositioner</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Ikke nok ben til rådighed for alle outputelementer</translation>
+        <translation type="vanished">Ikke nok ben til rådighed for alle outputelementer</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Elementtype ikke understøttet: %1</translation>
+        <translation type="vanished">Elementtype ikke understøttet: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Outputvariabel ikke tilknyttet sandhedstabel: %1</translation>
+        <translation type="vanished">Outputvariabel ikke tilknyttet sandhedstabel: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Kunne ikke åbne testbænkfilen: %1</translation>
+        <translation type="vanished">Kunne ikke åbne testbænkfilen: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Fil kan ikke læses</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Kunne ikke indlæse lyd: %1 (%2)</translation>
+        <translation type="vanished">Kunne ikke indlæse lyd: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>beWavedDolphin simulator</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Kredsløbet er tomt. Tilføj input- og outputelementer for at generere en bølgeform.</translation>
+        <translation type="vanished">Kredsløbet er tomt. Tilføj input- og outputelementer for at generere en bølgeform.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>Kredsløbet har ingen input- eller outputelementer. Tilføj mindst ét input (f.eks. Switch) og ét output (f.eks. LED) for at generere en bølgeform.</translation>
+        <translation type="vanished">Kredsløbet har ingen input- eller outputelementer. Tilføj mindst ét input (f.eks. Switch) og ét output (f.eks. LED) for at generere en bølgeform.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>Kredsløbet har ingen inputelementer. Tilføj mindst ét input (f.eks. Switch, Button eller Clock) for at generere en bølgeform.</translation>
+        <translation type="vanished">Kredsløbet har ingen inputelementer. Tilføj mindst ét input (f.eks. Switch, Button eller Clock) for at generere en bølgeform.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>Kredsløbet har ingen outputelementer. Tilføj mindst ét output (f.eks. LED eller Display) for at generere en bølgeform.</translation>
+        <translation type="vanished">Kredsløbet har ingen outputelementer. Tilføj mindst ét output (f.eks. LED eller Display) for at generere en bølgeform.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Fil gemt korrekt.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Bølgeform ville være for stor! Nulstiller zoom.</translation>
+        <translation type="vanished">Bølgeform ville være for stor! Nulstiller zoom.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Ingen celler valgt.</translation>
+        <translation type="vanished">Ingen celler valgt.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Fejl ved åbning af fil: %1</translation>
+        <translation type="vanished">Fejl ved åbning af fil: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Fejl ved gemning af fil: %1</translation>
+        <translation type="vanished">Fejl ved gemning af fil: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Fil indlæst korrekt.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Kunne ikke åbne filen til læsning: %1</translation>
+        <translation type="vanished">Kunne ikke åbne filen til læsning: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Format ikke understøttet. Kunne ikke åbne fil: %1</translation>
+        <translation type="vanished">Format ikke understøttet. Kunne ikke åbne fil: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>PDF-filer (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Kunne ikke udskrive dette kredsløb til PDF.</translation>
+        <translation type="vanished">Kunne ikke udskrive dette kredsløb til PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Filen &quot;%1&quot; findes ikke!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>nederste venstre lodret</translation>
     </message>
@@ -834,6 +798,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>nederste midter lodret</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>nederste venstre diagonal</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1173,14 +1143,12 @@ Hver trådløs kanal skal have en unik etiket.</translation>
         <translation>Ukendt</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Ukendt elementtype: %1</translation>
+        <translation type="vanished">Ukendt elementtype: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Ukendt type: %1</translation>
+        <translation type="vanished">Ukendt type: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Hver trådløs kanal skal have en unik etiket.</translation>
         <translation>Ukendt årsag</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Kunne ikke indlæse pixmap: %1 (%2)</translation>
+        <translation type="vanished">Kunne ikke indlæse pixmap: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Hver trådløs kanal skal have en unik etiket.</translation>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Streamfejl ved læsning af elementegenskaber ved position %1</translation>
+        <translation type="vanished">Streamfejl ved læsning af elementegenskaber ved position %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Streamfejl ved læsning af skins ved position %1</translation>
+        <translation type="vanished">Streamfejl ved læsning af skins ved position %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Udseendeindeks %1 uden for intervallet (størrelse=%2) — strømmen kan være beskadiget</translation>
+        <translation type="vanished">Udseendeindeks %1 uden for intervallet (størrelse=%2) — strømmen kan være beskadiget</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Hver trådløs kanal skal have en unik etiket.</translation>
         <translation>Indlæser pixmap-udseendenavne.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Skinindeks %1 uden for område (størrelse=%2) for skinnavn &quot;%3&quot; — strømmen kan være korrupt</translation>
+        <translation type="vanished">Skinindeks %1 uden for område (størrelse=%2) for skinnavn &quot;%3&quot; — strømmen kan være korrupt</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Hver trådløs kanal skal have en unik etiket.</translation>
         <translation>INTEGRERET KREDSLØB</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>IC-indlæsning: intet IC-navn i serialiserede data</translation>
+        <translation type="vanished">IC-indlæsning: intet IC-navn i serialiserede data</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 ikke fundet.</translation>
+        <translation type="vanished">%1 ikke fundet.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Cirkulær IC-reference fundet: %1</translation>
+        <translation type="vanished">Cirkulær IC-reference fundet: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Fejl ved åbning af fil: %1</translation>
+        <translation type="vanished">Fejl ved åbning af fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>IC-migrering: kan ikke åbne filen til skrivning: %1</translation>
+        <translation type="vanished">IC-migrering: kan ikke åbne filen til skrivning: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>IC-migrering: kunne ikke gemme den genindlæste fil: %1</translation>
+        <translation type="vanished">IC-migrering: kunne ikke gemme den genindlæste fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>IC-indlejringsdybdens grænse (%1) overskredet — bloben kan være ondsindet konstrueret</translation>
+        <translation type="vanished">IC-indlejringsdybdens grænse (%1) overskredet — bloben kan være ondsindet konstrueret</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Kunne ikke åbne fil: %1</translation>
+        <translation type="vanished">Kunne ikke åbne fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Kunne ikke gemme fil: %1</translation>
+        <translation type="vanished">Kunne ikke gemme fil: %1</translation>
     </message>
 </context>
 <context>
@@ -2202,17 +2156,12 @@ Du skal gemme nye projekter før du kan tilgå IC&apos;er og udseender eller kø
         <translation>Skift til fane</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Manglende filnavn.</translation>
+        <translation type="vanished">Manglende filnavn.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>.panda-filen er tom.</translation>
+        <translation type="vanished">.panda-filen er tom.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Foreslået navn:</translation>
         <translation>Lyd til</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Gem fil først.</translation>
+        <translation type="vanished">Gem fil først.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Foreslået navn:</translation>
         <translation>Træk hertil for at fjerne.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Fejl ved fjernelse af fil: %1</translation>
+        <translation type="vanished">Fejl ved fjernelse af fil: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Foreslået navn:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Streamfejl ved læsning af forbindelseskort ved offset %1</translation>
+        <translation type="vanished">Streamfejl ved læsning af forbindelseskort ved offset %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Streamfejl ved læsning af forbindelsesport-ID&apos;er ved offset %1</translation>
+        <translation type="vanished">Streamfejl ved læsning af forbindelsesport-ID&apos;er ved offset %1</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Foreslået navn:</translation>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Strømfejl ved læsning af antallet af metadata</translation>
+        <translation type="vanished">Strømfejl ved læsning af antallet af metadata</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Antallet af metadata %1 er urimeligt i forhold til de tilbageværende bytes i strømmen</translation>
+        <translation type="vanished">Antallet af metadata %1 er urimeligt i forhold til de tilbageværende bytes i strømmen</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Strømfejl ved læsning af antallet af blobs</translation>
+        <translation type="vanished">Strømfejl ved læsning af antallet af blobs</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Antallet af blobs %1 er urimeligt i forhold til de tilbageværende bytes i strømmen</translation>
+        <translation type="vanished">Antallet af blobs %1 er urimeligt i forhold til de tilbageværende bytes i strømmen</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Ugyldigt filformat.</translation>
+        <translation type="vanished">Ugyldigt filformat.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Streamfejl ved læsning af typetag ved position %1: status %2</translation>
+        <translation type="vanished">Streamfejl ved læsning af typetag ved position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Streamfejl ved læsning af elementtype ved position %1: status %2</translation>
+        <translation type="vanished">Streamfejl ved læsning af elementtype ved position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Streamfejl ved indlæsning af element ved position %1: status %2</translation>
+        <translation type="vanished">Streamfejl ved indlæsning af element ved position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Streamfejl ved indlæsning af forbindelse ved position %1: status %2</translation>
+        <translation type="vanished">Streamfejl ved indlæsning af forbindelse ved position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Ugyldig type. Data er muligvis beskadiget.</translation>
+        <translation type="vanished">Ugyldig type. Data er muligvis beskadiget.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Kunne ikke oprette versioneret sikkerhedskopi: %1</translation>
+        <translation type="vanished">Kunne ikke oprette versioneret sikkerhedskopi: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Fejl ved kopiering af fil: %1</translation>
+        <translation type="vanished">Fejl ved kopiering af fil: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Foreslået navn:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>Ugyldige forbindelsesporte i SplitCommand konstruktør</translation>
+        <translation type="vanished">Ugyldige forbindelsesporte i SplitCommand konstruktør</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>Ugyldige grafiske elementer i SplitCommand konstruktør</translation>
+        <translation type="vanished">Ugyldige grafiske elementer i SplitCommand konstruktør</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Foreslået navn:</translation>
         <translation>Ledningsopdeling</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>Fejl ved forsøg på at gentage %1</translation>
+        <translation type="vanished">Fejl ved forsøg på at gentage %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Fejl: endPort er null i SplitCommand::redo()</translation>
+        <translation type="vanished">Fejl: endPort er null i SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>Fejl ved forsøg på at fortryde %1</translation>
+        <translation type="vanished">Fejl ved forsøg på at fortryde %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Outputvariabel ikke tilknyttet sandhedstabel: %1</translation>
+        <translation type="vanished">Outputvariabel ikke tilknyttet sandhedstabel: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Elementtype ikke understøttet: %1</translation>
+        <translation type="vanished">Elementtype ikke understøttet: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Foreslået navn:</translation>
         <translation>Skift sandhedstabel-output på position: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Kunne ikke finde sandhedstabel-element!</translation>
+        <translation type="vanished">Kunne ikke finde sandhedstabel-element!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Opdater venligst wiRedPanda for at gemme ændringer i denne fil.</translation>
         <translation>Gem fil (oprindelig placering er skrivebeskyttet)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Fejl ved åbning af fil: %1</translation>
+        <translation type="vanished">Fejl ved åbning af fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Kunne ikke gemme fil: %1</translation>
+        <translation type="vanished">Kunne ikke gemme fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Denne fil eksisterer ikke: %1</translation>
+        <translation type="vanished">Denne fil eksisterer ikke: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Kunne ikke åbne fil: %1</translation>
+        <translation type="vanished">Kunne ikke åbne fil: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ En sikkerhedskopi af den originale fil er blevet oprettet med navnet: %3</transl
         <translation>Filen er opgraderet.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Fejl ved åbning af autogem-fil: %1</translation>
+        <translation type="vanished">Fejl ved åbning af autogem-fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Autogemt fil kunne ikke fuldføres: %1</translation>
+        <translation type="vanished">Autogemt fil kunne ikke fuldføres: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ En sikkerhedskopi af den originale fil er blevet oprettet med navnet: %3</transl
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Fejl: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>
