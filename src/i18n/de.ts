@@ -71,7 +71,7 @@ export default {
     'Für alle Versionen, einschließlich älterer und Vorabversionen, besuchen Sie',
   'download.officialGithub': 'die offizielle GitHub-Releases-Seite',
   'download.copiedToClipboard': 'In die Zwischenablage kopiert!',
-  'download.copyCommand': '{platform}-Installationsbefehl kopieren',
+  'download.copyCommand': 'Installationsbefehl für {platform} kopieren',
   'download.versionText':
     'Sie können die Binärdateien von wiRedPanda {version} hier herunterladen:',
   'download.errorFetching': 'Fehler beim Abrufen der neuesten Version: {status} {statusText}.',

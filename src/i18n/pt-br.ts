@@ -40,7 +40,7 @@ export default {
   'home.screenshot2Alt': 'Captura de tela de uma simulação de circuito lógico no wiRedPanda',
   'home.demoLabel': 'Vídeo de demonstração do wiRedPanda',
   'home.cta':
-    'Baixe o wiRedPanda agora e comece a explorar o mundo dos circuitos digitais. Experimente todos os nossos recursos e veja como podemos ajudá-lo a alcançar seus objetivos. Já em uso na Universidade Federal de São Paulo, e talvez na sua aula de circuitos digitais também!',
+    'Baixe o wiRedPanda agora e comece a explorar o mundo dos circuitos digitais. Experimente todos os nossos recursos e veja como podemos ajudá-lo a alcançar seus objetivos. Já em uso na Universidade Federal de São Paulo, e talvez na sua aula de circuitos lógicos também!',
 
   // About page
   'about.title': 'Sobre',
