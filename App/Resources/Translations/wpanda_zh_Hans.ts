@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">无法打开文件进行写入: %1</translation>
+        <translation>无法打开文件进行写入: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">可用引脚不足以连接所有输入元件</translation>
+        <translation>可用引脚不足以连接所有输入元件</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">可用引脚不足以连接旋转开关的所有位置</translation>
+        <translation>可用引脚不足以连接旋转开关的所有位置</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">可用引脚不足以连接所有输出元件</translation>
+        <translation>可用引脚不足以连接所有输出元件</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">不支持的元件类型：%1</translation>
+        <translation>不支持的元件类型：%1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">真值表的输出变量未映射: %1</translation>
+        <translation>真值表的输出变量未映射: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">无法打开测试平台文件: %1</translation>
+        <translation>无法打开测试平台文件: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>文件不可读</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">无法加载音频: %1 (%2)</translation>
+        <translation>无法加载音频: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>beWavedDolphin 仿真器</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">电路为空。添加输入和输出元件以生成波形。</translation>
+        <translation>电路为空。添加输入和输出元件以生成波形。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">电路没有输入或输出元件。添加至少一个输入（如 Switch）和一个输出（如 LED）以生成波形。</translation>
+        <translation>电路没有输入或输出元件。添加至少一个输入（如 Switch）和一个输出（如 LED）以生成波形。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">电路没有输入元件。添加至少一个输入（如 Switch、Button 或 Clock）以生成波形。</translation>
+        <translation>电路没有输入元件。添加至少一个输入（如 Switch、Button 或 Clock）以生成波形。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">电路没有输出元件。添加至少一个输出（如 LED 或 Display）以生成波形。</translation>
+        <translation>电路没有输出元件。添加至少一个输出（如 LED 或 Display）以生成波形。</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>文件保存成功。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">波形过大！重置缩放。</translation>
+        <translation>波形过大！重置缩放。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">未选择单元格。</translation>
+        <translation>未选择单元格。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">打开文件时出错：%1</translation>
+        <translation>打开文件时出错：%1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">保存文件时出错：%1</translation>
+        <translation>保存文件时出错：%1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>文件加载成功。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">无法打开文件进行读取：%1</translation>
+        <translation>无法打开文件进行读取：%1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">不支持该格式。无法打开文件：%1</translation>
+        <translation>不支持该格式。无法打开文件：%1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>PDF 文件 (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">无法将此电路导出为PDF。</translation>
+        <translation>无法将此电路导出为PDF。</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>文件 &quot;%1&quot; 不存在！</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Each wireless channel must have a unique label.</source>
         <translation>未知</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">未知元件类型: %1</translation>
+        <translation>未知元件类型: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">未知类型：%1</translation>
+        <translation>未知类型：%1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Each wireless channel must have a unique label.</source>
         <translation>未知原因</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">无法加载像素图：%1 (%2)</translation>
+        <translation>无法加载像素图：%1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Each wireless channel must have a unique label.</source>
         <translation>默认</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">在位置 %1 读取元件属性时出现流错误</translation>
+        <translation>在位置 %1 读取元件属性时出现流错误</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">在位置 %1 读取皮肤时出现流错误</translation>
+        <translation>在位置 %1 读取皮肤时出现流错误</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">外观索引 %1 超出范围（大小=%2）——数据流可能已损坏</translation>
+        <translation>外观索引 %1 超出范围（大小=%2）——数据流可能已损坏</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Each wireless channel must have a unique label.</source>
         <translation>正在加载像素图主题名称。</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">皮肤索引 %1 超出范围 (大小=%2) 皮肤名称 &quot;%3&quot; — 流可能已损坏</translation>
+        <translation>皮肤索引 %1 超出范围 (大小=%2) 皮肤名称 &quot;%3&quot; — 流可能已损坏</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Each wireless channel must have a unique label.</source>
         <translation>集成电路</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">IC 加载: 序列化数据中不存在 IC 名称</translation>
+        <translation>IC 加载: 序列化数据中不存在 IC 名称</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">找不到 %1。</translation>
+        <translation>找不到 %1。</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">检测到 IC 循环引用: %1</translation>
+        <translation>检测到 IC 循环引用: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">打开文件时出错：%1</translation>
+        <translation>打开文件时出错：%1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">IC 迁移: 无法打开文件进行写入: %1</translation>
+        <translation>IC 迁移: 无法打开文件进行写入: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">IC 迁移: 无法提交重新保存的文件: %1</translation>
+        <translation>IC 迁移: 无法提交重新保存的文件: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">已超出 IC 嵌套深度上限 (%1)——blob 可能为恶意构造</translation>
+        <translation>已超出 IC 嵌套深度上限 (%1)——blob 可能为恶意构造</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">无法打开文件：%1</translation>
+        <translation>无法打开文件：%1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">无法保存文件：%1</translation>
+        <translation>无法保存文件：%1</translation>
     </message>
 </context>
 <context>
@@ -2231,12 +2281,17 @@ Suggested name:</source>
         <translation>退出</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">缺少文件名。</translation>
+        <translation>缺少文件名。</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">.panda文件为空。</translation>
+        <translation>.panda文件为空。</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Suggested name:</source>
         <translation>取消静音</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">请先保存文件。</translation>
+        <translation>请先保存文件。</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Suggested name:</source>
         <translation>拖放到此处以删除。</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">删除文件时出错：%1</translation>
+        <translation>删除文件时出错：%1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">在偏移量 %1 处读取连接映射时出现流错误</translation>
+        <translation>在偏移量 %1 处读取连接映射时出现流错误</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">在偏移 %1 读取连接端口 ID 时出现流错误</translation>
+        <translation>在偏移 %1 读取连接端口 ID 时出现流错误</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">读取元数据计数时发生流错误</translation>
+        <translation>读取元数据计数时发生流错误</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">相对于剩余流字节数，元数据计数 %1 不合理</translation>
+        <translation>相对于剩余流字节数，元数据计数 %1 不合理</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">读取 blob 计数时发生流错误</translation>
+        <translation>读取 blob 计数时发生流错误</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">相对于剩余流字节数，blob 计数 %1 不合理</translation>
+        <translation>相对于剩余流字节数，blob 计数 %1 不合理</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">无效的文件格式。</translation>
+        <translation>无效的文件格式。</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">在位置 %1 读取类型标签时出现流错误: 状态 %2</translation>
+        <translation>在位置 %1 读取类型标签时出现流错误: 状态 %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">在位置 %1 读取元件类型时出现流错误: 状态 %2</translation>
+        <translation>在位置 %1 读取元件类型时出现流错误: 状态 %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">在位置 %1 加载元件时出现流错误: 状态 %2</translation>
+        <translation>在位置 %1 加载元件时出现流错误: 状态 %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">在位置 %1 加载连接时出现流错误: 状态 %2</translation>
+        <translation>在位置 %1 加载连接时出现流错误: 状态 %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">无效类型。数据可能已损坏。</translation>
+        <translation>无效类型。数据可能已损坏。</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">无法创建版本化备份: %1</translation>
+        <translation>无法创建版本化备份: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">复制文件时出错：%1</translation>
+        <translation>复制文件时出错：%1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">SplitCommand构造函数中的连接端口无效</translation>
+        <translation>SplitCommand构造函数中的连接端口无效</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">SplitCommand构造函数中的图形元素无效</translation>
+        <translation>SplitCommand构造函数中的图形元素无效</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Suggested name:</source>
         <translation>导线分割</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">尝试重做 %1 时出错</translation>
+        <translation>尝试重做 %1 时出错</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">错误：SplitCommand::redo()中endPort为null</translation>
+        <translation>错误：SplitCommand::redo()中endPort为null</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">尝试撤销 %1 时出错</translation>
+        <translation>尝试撤销 %1 时出错</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">真值表的输出变量未映射: %1</translation>
+        <translation>真值表的输出变量未映射: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">不支持的元件类型：%1</translation>
+        <translation>不支持的元件类型：%1</translation>
     </message>
 </context>
 <context>
@@ -2739,8 +2823,9 @@ Suggested name:</source>
         <translation>在位置 %1 切换真值表输出</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">找不到真值表元素！</translation>
+        <translation>找不到真值表元素！</translation>
     </message>
 </context>
 <context>
@@ -2822,20 +2907,24 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>保存文件（原始位置为只读）</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">打开文件时出错：%1</translation>
+        <translation>打开文件时出错：%1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">无法保存文件：%1</translation>
+        <translation>无法保存文件：%1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">此文件不存在：%1</translation>
+        <translation>此文件不存在：%1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">无法打开文件：%1</translation>
+        <translation>无法打开文件：%1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2868,12 +2957,14 @@ A backup of the original file has been created with name: %3</source>
         <translation>文件已升级。</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">打开自动保存文件时出错：%1</translation>
+        <translation>打开自动保存文件时出错：%1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">无法提交自动保存文件：%1</translation>
+        <translation>无法提交自动保存文件：%1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

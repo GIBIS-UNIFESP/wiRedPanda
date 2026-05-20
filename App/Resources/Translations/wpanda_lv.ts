@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">Nevarēja atvērt failu rakstīšanai: %1</translation>
+        <translation>Nevarēja atvērt failu rakstīšanai: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">Nepietiek kontaktu visiem ieejas elementiem</translation>
+        <translation>Nepietiek kontaktu visiem ieejas elementiem</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">Nepietiek kontaktu visām rotācijas slēdža pozīcijām</translation>
+        <translation>Nepietiek kontaktu visām rotācijas slēdža pozīcijām</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">Nepietiek kontaktu visiem izejas elementiem</translation>
+        <translation>Nepietiek kontaktu visiem izejas elementiem</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementa tips netiek atbalstīts: %1</translation>
+        <translation>Elementa tips netiek atbalstīts: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Izejas mainīgais nav saistīts ar patiesības tabulu: %1</translation>
+        <translation>Izejas mainīgais nav saistīts ar patiesības tabulu: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">Nevarēja atvērt testēšanas failu: %1</translation>
+        <translation>Nevarēja atvērt testēšanas failu: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>Fails nav lasāms</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">Nevarēja ielādēt audio: %1 (%2)</translation>
+        <translation>Nevarēja ielādēt audio: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">Ķēde ir tukša. Pievienojiet ieejas un izejas elementus, lai ģenerētu viļņformu.</translation>
+        <translation>Ķēde ir tukša. Pievienojiet ieejas un izejas elementus, lai ģenerētu viļņformu.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">Ķēdei nav ieejas vai izejas elementu. Pievienojiet vismaz vienu ieeju (piem., Switch) un vienu izeju (piem., LED), lai ģenerētu viļņformu.</translation>
+        <translation>Ķēdei nav ieejas vai izejas elementu. Pievienojiet vismaz vienu ieeju (piem., Switch) un vienu izeju (piem., LED), lai ģenerētu viļņformu.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">Ķēdei nav ieejas elementu. Pievienojiet vismaz vienu ieeju (piem., Switch, Button vai Clock), lai ģenerētu viļņformu.</translation>
+        <translation>Ķēdei nav ieejas elementu. Pievienojiet vismaz vienu ieeju (piem., Switch, Button vai Clock), lai ģenerētu viļņformu.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">Ķēdei nav izejas elementu. Pievienojiet vismaz vienu izeju (piem., LED vai Display), lai ģenerētu viļņformu.</translation>
+        <translation>Ķēdei nav izejas elementu. Pievienojiet vismaz vienu izeju (piem., LED vai Display), lai ģenerētu viļņformu.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>Fails saglabāts veiksmīgi.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">Viļņa forma būtu pārāk liela! Atiestatām mērogu.</translation>
+        <translation>Viļņa forma būtu pārāk liela! Atiestatām mērogu.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">Nav atlasītas šūnas.</translation>
+        <translation>Nav atlasītas šūnas.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Kļūda, atverot failu: %1</translation>
+        <translation>Kļūda, atverot failu: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">Kļūda, saglabājot failu: %1</translation>
+        <translation>Kļūda, saglabājot failu: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>Fails ielādēts veiksmīgi.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">Nevarēja atvērt failu lasīšanai: %1</translation>
+        <translation>Nevarēja atvērt failu lasīšanai: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">Formāts netiek atbalstīts. Neizdevās atvērt failu: %1</translation>
+        <translation>Formāts netiek atbalstīts. Neizdevās atvērt failu: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>PDF faili (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">Neizdevās drukāt šo shēmu PDF formātā.</translation>
+        <translation>Neizdevās drukāt šo shēmu PDF formātā.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Fails &quot;%1&quot; neeksistē!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Katram bezvadu kanālam jābūt unikālai etiķetei.</translation>
         <translation>Nezināms</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">Nezināms elementa tips: %1</translation>
+        <translation>Nezināms elementa tips: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">Nezināms tips: %1</translation>
+        <translation>Nezināms tips: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Katram bezvadu kanālam jābūt unikālai etiķetei.</translation>
         <translation>Nezināms iemesls</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">Neizdevās ielādēt attēlu: %1 (%2)</translation>
+        <translation>Neizdevās ielādēt attēlu: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Katram bezvadu kanālam jābūt unikālai etiķetei.</translation>
         <translation>Noklusējums</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">Plūsmas kļūda, lasot elementa īpašības pozīcijā %1</translation>
+        <translation>Plūsmas kļūda, lasot elementa īpašības pozīcijā %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">Plūsmas kļūda, lasot apvalkus pozīcijā %1</translation>
+        <translation>Plūsmas kļūda, lasot apvalkus pozīcijā %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">Izskata indekss %1 ārpus diapazona (izmērs=%2) — plūsma var būt bojāta</translation>
+        <translation>Izskata indekss %1 ārpus diapazona (izmērs=%2) — plūsma var būt bojāta</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Katram bezvadu kanālam jābūt unikālai etiķetei.</translation>
         <translation>Ielādē pikseļu kartes ādas nosaukumus.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">Apvalka indekss %1 ārpus diapazona (izmērs=%2) apvalka nosaukumam &quot;%3&quot; — plūsma var būt bojāta</translation>
+        <translation>Apvalka indekss %1 ārpus diapazona (izmērs=%2) apvalka nosaukumam &quot;%3&quot; — plūsma var būt bojāta</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Katram bezvadu kanālam jābūt unikālai etiķetei.</translation>
         <translation>INTEGRĀLĀ ĶĒDE</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">IC ielāde: serializētajos datos nav IC nosaukuma</translation>
+        <translation>IC ielāde: serializētajos datos nav IC nosaukuma</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 nav atrasts.</translation>
+        <translation>%1 nav atrasts.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">Konstatēta cikliska IC atsauce: %1</translation>
+        <translation>Konstatēta cikliska IC atsauce: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Kļūda, atverot failu: %1</translation>
+        <translation>Kļūda, atverot failu: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">IC migrācija: nevar atvērt failu rakstīšanai: %1</translation>
+        <translation>IC migrācija: nevar atvērt failu rakstīšanai: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">IC migrācija: neizdevās apstiprināt atkārtoti saglabāto failu: %1</translation>
+        <translation>IC migrācija: neizdevās apstiprināt atkārtoti saglabāto failu: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">Pārsniegts IC ligzdošanas dziļuma limits (%1) — blob var būt ļaunprātīgi izveidots</translation>
+        <translation>Pārsniegts IC ligzdošanas dziļuma limits (%1) — blob var būt ļaunprātīgi izveidots</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Neizdevās atvērt failu: %1</translation>
+        <translation>Neizdevās atvērt failu: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Neizdevās saglabāt failu: %1</translation>
+        <translation>Neizdevās saglabāt failu: %1</translation>
     </message>
 </context>
 <context>
@@ -2156,12 +2206,17 @@ Jums ir jāsaglabā jaunie projekti pirms piekļuves IC un izskatiem vai beWaved
         <translation>Pārslēgties uz cilni</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">Trūkst faila nosaukuma.</translation>
+        <translation>Trūkst faila nosaukuma.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">.panda fails ir tukšs.</translation>
+        <translation>.panda fails ir tukšs.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Ieteiktais nosaukums:</translation>
         <translation>Ar skaņu</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">Vispirms saglabājiet failu.</translation>
+        <translation>Vispirms saglabājiet failu.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Ieteiktais nosaukums:</translation>
         <translation>Velc šeit, lai noņemtu.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">Kļūda, dzēšot failu: %1</translation>
+        <translation>Kļūda, dzēšot failu: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Ieteiktais nosaukums:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">Straumes kļūda, lasot savienojumu karti nobīdē %1</translation>
+        <translation>Straumes kļūda, lasot savienojumu karti nobīdē %1</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">Plūsmas kļūda, lasot savienojuma portu ID nobīdē %1</translation>
+        <translation>Plūsmas kļūda, lasot savienojuma portu ID nobīdē %1</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Ieteiktais nosaukums:</translation>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">Plūsmas kļūda, lasot metadatu skaitu</translation>
+        <translation>Plūsmas kļūda, lasot metadatu skaitu</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Metadatu skaits %1 ir neticams attiecībā pret atlikušajiem plūsmas baitiem</translation>
+        <translation>Metadatu skaits %1 ir neticams attiecībā pret atlikušajiem plūsmas baitiem</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">Plūsmas kļūda, lasot blob skaitu</translation>
+        <translation>Plūsmas kļūda, lasot blob skaitu</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Blob skaits %1 ir neticams attiecībā pret atlikušajiem plūsmas baitiem</translation>
+        <translation>Blob skaits %1 ir neticams attiecībā pret atlikušajiem plūsmas baitiem</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">Nederīgs faila formāts.</translation>
+        <translation>Nederīgs faila formāts.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">Plūsmas kļūda, lasot tipa birku pozīcijā %1: statuss %2</translation>
+        <translation>Plūsmas kļūda, lasot tipa birku pozīcijā %1: statuss %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">Plūsmas kļūda, lasot elementa tipu pozīcijā %1: statuss %2</translation>
+        <translation>Plūsmas kļūda, lasot elementa tipu pozīcijā %1: statuss %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">Plūsmas kļūda, ielādējot elementu pozīcijā %1: statuss %2</translation>
+        <translation>Plūsmas kļūda, ielādējot elementu pozīcijā %1: statuss %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">Plūsmas kļūda, ielādējot savienojumu pozīcijā %1: statuss %2</translation>
+        <translation>Plūsmas kļūda, ielādējot savienojumu pozīcijā %1: statuss %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">Nederīgs tips. Dati, iespējams, ir bojāti.</translation>
+        <translation>Nederīgs tips. Dati, iespējams, ir bojāti.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">Neizdevās izveidot versionētu rezerves kopiju: %1</translation>
+        <translation>Neizdevās izveidot versionētu rezerves kopiju: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">Kļūda kopējot failu: %1</translation>
+        <translation>Kļūda kopējot failu: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Ieteiktais nosaukums:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">Nederīgi savienojuma porti SplitCommand konstruktorā</translation>
+        <translation>Nederīgi savienojuma porti SplitCommand konstruktorā</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">Nederīgi grafiskie elementi SplitCommand konstruktorā</translation>
+        <translation>Nederīgi grafiskie elementi SplitCommand konstruktorā</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Ieteiktais nosaukums:</translation>
         <translation>Vada sadalīšana</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">Kļūda, mēģinot atkartot %1</translation>
+        <translation>Kļūda, mēģinot atkartot %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">Kļūda: endPort ir null SplitCommand::redo() funkcijā</translation>
+        <translation>Kļūda: endPort ir null SplitCommand::redo() funkcijā</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">Kļūda, mēģinot atsaukt %1</translation>
+        <translation>Kļūda, mēģinot atsaukt %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Izejas mainīgais nav saistīts ar patiesības tabulu: %1</translation>
+        <translation>Izejas mainīgais nav saistīts ar patiesības tabulu: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementa tips netiek atbalstīts: %1</translation>
+        <translation>Elementa tips netiek atbalstīts: %1</translation>
     </message>
 </context>
 <context>
@@ -2739,8 +2823,9 @@ Ieteiktais nosaukums:</translation>
         <translation>Pārslēgt patiesības tabulas izvadi pozīcijā: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">Neizdevās atrast patīsuma tabulas elementu!</translation>
+        <translation>Neizdevās atrast patīsuma tabulas elementu!</translation>
     </message>
 </context>
 <context>
@@ -2822,20 +2907,24 @@ Lūdzu, atjauniniet wiRedPanda, lai saglabātu izmaiņas šajā failā.</transla
         <translation>Saglabāt failu (sākotnējā vieta ir tikai lasāma)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Kļūda, atverot failu: %1</translation>
+        <translation>Kļūda, atverot failu: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Neizdevās saglabāt failu: %1</translation>
+        <translation>Neizdevās saglabāt failu: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">Šis fails neeksistē: %1</translation>
+        <translation>Šis fails neeksistē: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Neizdevās atvērt failu: %1</translation>
+        <translation>Neizdevās atvērt failu: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2868,12 +2957,14 @@ Oriģinālā faila rezerves kopija izveidota ar nosaukumu: %3</translation>
         <translation>Fails ir jaunināts.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">Kļūda, atverot automatīskās saglabāšanas failu: %1</translation>
+        <translation>Kļūda, atverot automatīskās saglabāšanas failu: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">Nevarēja apstiprināt automātiskās saglabāšanas failu: %1</translation>
+        <translation>Nevarēja apstiprināt automātiskās saglabāšanas failu: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

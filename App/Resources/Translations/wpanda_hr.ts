@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">Datoteka se ne može otvoriti za pisanje: %1</translation>
+        <translation>Datoteka se ne može otvoriti za pisanje: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">Nema dovoljno pinova za sve ulazne elemente</translation>
+        <translation>Nema dovoljno pinova za sve ulazne elemente</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">Nema dovoljno pinova za sve položaje rotacijskog prekidača</translation>
+        <translation>Nema dovoljno pinova za sve položaje rotacijskog prekidača</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">Nema dovoljno pinova za sve izlazne elemente</translation>
+        <translation>Nema dovoljno pinova za sve izlazne elemente</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Tip elementa nije podržan: %1</translation>
+        <translation>Tip elementa nije podržan: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Izlazna varijabla nije mapirana za tablicu istinitosti: %1</translation>
+        <translation>Izlazna varijabla nije mapirana za tablicu istinitosti: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">Nije moguće otvoriti datoteku testne ploče: %1</translation>
+        <translation>Nije moguće otvoriti datoteku testne ploče: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>Datoteka se ne može čitati</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">Nije moguće učitati zvuk: %1 (%2)</translation>
+        <translation>Nije moguće učitati zvuk: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">Sklop je prazan. Dodajte ulazne i izlazne elemente za generiranje valnog oblika.</translation>
+        <translation>Sklop je prazan. Dodajte ulazne i izlazne elemente za generiranje valnog oblika.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">Sklop nema ulaznih ni izlaznih elemenata. Dodajte barem jedan ulaz (npr. Switch) i jedan izlaz (npr. LED) za generiranje valnog oblika.</translation>
+        <translation>Sklop nema ulaznih ni izlaznih elemenata. Dodajte barem jedan ulaz (npr. Switch) i jedan izlaz (npr. LED) za generiranje valnog oblika.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">Sklop nema ulaznih elemenata. Dodajte barem jedan ulaz (npr. Switch, Button ili Clock) za generiranje valnog oblika.</translation>
+        <translation>Sklop nema ulaznih elemenata. Dodajte barem jedan ulaz (npr. Switch, Button ili Clock) za generiranje valnog oblika.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">Sklop nema izlaznih elemenata. Dodajte barem jedan izlaz (npr. LED ili Display) za generiranje valnog oblika.</translation>
+        <translation>Sklop nema izlaznih elemenata. Dodajte barem jedan izlaz (npr. LED ili Display) za generiranje valnog oblika.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>Datoteka je uspješno spremljena.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">Valni oblik bi bio prevelik! Resetujem zumiranje.</translation>
+        <translation>Valni oblik bi bio prevelik! Resetujem zumiranje.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">Nisu odabrane ćelije.</translation>
+        <translation>Nisu odabrane ćelije.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Greška pri otvaranju datoteke: %1</translation>
+        <translation>Greška pri otvaranju datoteke: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">Greška pri spremanju datoteke: %1</translation>
+        <translation>Greška pri spremanju datoteke: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>Datoteka je uspješno učitana.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">Datoteku nije moguće otvoriti za čitanje: %1</translation>
+        <translation>Datoteku nije moguće otvoriti za čitanje: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">Format nije podržan. Nije moguće otvoriti datoteku: %1</translation>
+        <translation>Format nije podržan. Nije moguće otvoriti datoteku: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>PDF datoteke (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">Nije moguće ispisati ovaj krug u PDF.</translation>
+        <translation>Nije moguće ispisati ovaj krug u PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Datoteka &quot;%1&quot; ne postoji!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
         <translation>Nepoznato</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">Nepoznata vrsta elementa: %1</translation>
+        <translation>Nepoznata vrsta elementa: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">Nepoznati tip: %1</translation>
+        <translation>Nepoznati tip: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
         <translation>Nepoznat razlog</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">Nije moguće učitati pixmap: %1 (%2)</translation>
+        <translation>Nije moguće učitati pixmap: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
         <translation>Zadano</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">Greška toka pri čitanju svojstava elementa na poziciji %1</translation>
+        <translation>Greška toka pri čitanju svojstava elementa na poziciji %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">Greška toka pri čitanju skinova na poziciji %1</translation>
+        <translation>Greška toka pri čitanju skinova na poziciji %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">Indeks izgleda %1 izvan raspona (veličina=%2) — tok je možda oštećen</translation>
+        <translation>Indeks izgleda %1 izvan raspona (veličina=%2) — tok je možda oštećen</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
         <translation>Učitavam nazive pixmap tema.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">Indeks skina %1 izvan raspona (veličina=%2) za naziv skina &quot;%3&quot; — tok može biti oštećen</translation>
+        <translation>Indeks skina %1 izvan raspona (veličina=%2) za naziv skina &quot;%3&quot; — tok može biti oštećen</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
         <translation>INTEGRIRANI SKLOP</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">Učitavanje IC-a: naziv IC-a nije prisutan u serijaliziranim podacima</translation>
+        <translation>Učitavanje IC-a: naziv IC-a nije prisutan u serijaliziranim podacima</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 nije pronađen.</translation>
+        <translation>%1 nije pronađen.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">Otkrivena kružna IC referenca: %1</translation>
+        <translation>Otkrivena kružna IC referenca: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Greška pri otvaranju datoteke: %1</translation>
+        <translation>Greška pri otvaranju datoteke: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">Migracija IC-a: datoteka se ne može otvoriti za pisanje: %1</translation>
+        <translation>Migracija IC-a: datoteka se ne može otvoriti za pisanje: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">Migracija IC-a: spremanje ponovno pohranjene datoteke nije uspjelo: %1</translation>
+        <translation>Migracija IC-a: spremanje ponovno pohranjene datoteke nije uspjelo: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">Premašeno ograničenje dubine ugnježđivanja IC-ova (%1) — blob je možda zlonamjerno izrađen</translation>
+        <translation>Premašeno ograničenje dubine ugnježđivanja IC-ova (%1) — blob je možda zlonamjerno izrađen</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Nije moguće otvoriti datoteku: %1</translation>
+        <translation>Nije moguće otvoriti datoteku: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Nije moguće spremiti datoteku: %1</translation>
+        <translation>Nije moguće spremiti datoteku: %1</translation>
     </message>
 </context>
 <context>
@@ -2156,12 +2206,17 @@ Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja
         <translation>Prebaci na karticu</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">Nedostaje naziv datoteke.</translation>
+        <translation>Nedostaje naziv datoteke.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">.panda datoteka je prazna.</translation>
+        <translation>.panda datoteka je prazna.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Predloženi naziv:</translation>
         <translation>Uključi zvuk</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">Prvo spremi datoteku.</translation>
+        <translation>Prvo spremi datoteku.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Predloženi naziv:</translation>
         <translation>Povuci ovdje za uklanjanje.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">Greška pri uklanjanju datoteke: %1</translation>
+        <translation>Greška pri uklanjanju datoteke: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Predloženi naziv:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">Greška toka pri čitanju mape veza na pomaku %1</translation>
+        <translation>Greška toka pri čitanju mape veza na pomaku %1</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">Greška toka pri čitanju ID-ova priključaka veze na pomaku %1</translation>
+        <translation>Greška toka pri čitanju ID-ova priključaka veze na pomaku %1</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Predloženi naziv:</translation>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">Pogreška toka pri čitanju broja metapodataka</translation>
+        <translation>Pogreška toka pri čitanju broja metapodataka</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Broj metapodataka %1 nije uvjerljiv s obzirom na preostale bajtove toka</translation>
+        <translation>Broj metapodataka %1 nije uvjerljiv s obzirom na preostale bajtove toka</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">Pogreška toka pri čitanju broja blobova</translation>
+        <translation>Pogreška toka pri čitanju broja blobova</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Broj blobova %1 nije uvjerljiv s obzirom na preostale bajtove toka</translation>
+        <translation>Broj blobova %1 nije uvjerljiv s obzirom na preostale bajtove toka</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">Neispravni format datoteke.</translation>
+        <translation>Neispravni format datoteke.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">Greška toka pri čitanju oznake tipa na poziciji %1: status %2</translation>
+        <translation>Greška toka pri čitanju oznake tipa na poziciji %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">Greška toka pri čitanju tipa elementa na poziciji %1: status %2</translation>
+        <translation>Greška toka pri čitanju tipa elementa na poziciji %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">Greška toka pri učitavanju elementa na poziciji %1: status %2</translation>
+        <translation>Greška toka pri učitavanju elementa na poziciji %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">Greška toka pri učitavanju veze na poziciji %1: status %2</translation>
+        <translation>Greška toka pri učitavanju veze na poziciji %1: status %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">Neispravni tip. Podaci su možda oštećeni.</translation>
+        <translation>Neispravni tip. Podaci su možda oštećeni.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">Stvaranje verzioniranog sigurnosnog kopiranja nije uspjelo: %1</translation>
+        <translation>Stvaranje verzioniranog sigurnosnog kopiranja nije uspjelo: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">Greška pri kopiranju datoteke: %1</translation>
+        <translation>Greška pri kopiranju datoteke: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Predloženi naziv:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">Neispravni priključci za povezivanje u SplitCommand konstruktoru</translation>
+        <translation>Neispravni priključci za povezivanje u SplitCommand konstruktoru</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">Neispravni grafički elementi u SplitCommand konstruktoru</translation>
+        <translation>Neispravni grafički elementi u SplitCommand konstruktoru</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Predloženi naziv:</translation>
         <translation>Dijeljenje žice</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">Greška pri ponovnom izvršavanju %1</translation>
+        <translation>Greška pri ponovnom izvršavanju %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">Greška: endPort je null u SplitCommand::redo()</translation>
+        <translation>Greška: endPort je null u SplitCommand::redo()</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">Greška pri poništavanju %1</translation>
+        <translation>Greška pri poništavanju %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Izlazna varijabla nije mapirana za tablicu istinitosti: %1</translation>
+        <translation>Izlazna varijabla nije mapirana za tablicu istinitosti: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Tip elementa nije podržan: %1</translation>
+        <translation>Tip elementa nije podržan: %1</translation>
     </message>
 </context>
 <context>
@@ -2739,8 +2823,9 @@ Predloženi naziv:</translation>
         <translation>Prebaci izlaz tablice istinitosti na poziciji: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">Nije moguće pronaći element tablice istinitosti!</translation>
+        <translation>Nije moguće pronaći element tablice istinitosti!</translation>
     </message>
 </context>
 <context>
@@ -2822,20 +2907,24 @@ Molimo ažurirajte wiRedPanda za spremanje promjena u ovoj datoteci.</translatio
         <translation>Spremi datoteku (izvorna lokacija je samo za čitanje)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Greška pri otvaranju datoteke: %1</translation>
+        <translation>Greška pri otvaranju datoteke: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Nije moguće spremiti datoteku: %1</translation>
+        <translation>Nije moguće spremiti datoteku: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">Ova datoteka ne postoji: %1</translation>
+        <translation>Ova datoteka ne postoji: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Nije moguće otvoriti datoteku: %1</translation>
+        <translation>Nije moguće otvoriti datoteku: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2868,12 +2957,14 @@ Sigurnosna kopija izvorne datoteke stvorena je pod imenom: %3</translation>
         <translation>Datoteka je nadograđena.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">Greška pri otvaranju datoteke automatskog spremanja: %1</translation>
+        <translation>Greška pri otvaranju datoteke automatskog spremanja: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">Datoteku automatskog spremanja nije moguće potvrditi: %1</translation>
+        <translation>Datoteku automatskog spremanja nije moguće potvrditi: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
