@@ -11,6 +11,7 @@ import {
   useTranslations,
   getOtherLocales,
   getLocalePath,
+  defaultLocale,
 } from '../i18n';
 
 interface Props {
@@ -42,6 +43,7 @@ const origin = Astro.site?.origin ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={t('meta.description')} />
+    <link rel="alternate" hreflang={htmlLang} href={`${origin}${getLocalePath(Astro.url.pathname, locale)}`} />
     {
       otherLocales.map((altLocale) => (
         <link
@@ -51,6 +53,7 @@ const origin = Astro.site?.origin ?? '';
         />
       ))
     }
+    <link rel="alternate" hreflang="x-default" href={`${origin}${getLocalePath(Astro.url.pathname, defaultLocale)}`} />
     <ClientRouter />
     <title>Panda | {pageTitle}</title>
     <script is:inline>
@@ -87,13 +90,13 @@ const origin = Astro.site?.origin ?? '';
 </html>
 
 <!-- Redirect users to their locale on first visit -->
-<script is:inline>
+<script is:inline define:vars={{ siteBase: import.meta.env.BASE_URL.replace(/\/$/, '') }}>
   (function () {
     if (sessionStorage.getItem('locale-checked')) return;
     sessionStorage.setItem('locale-checked', '1');
 
     var path = window.location.pathname;
-    var base = '/wiRedPanda';
+    var base = siteBase;
     var stripped = path;
     if (base && path.indexOf(base) === 0) {
       stripped = path.slice(base.length);

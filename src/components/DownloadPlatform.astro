@@ -5,9 +5,10 @@ interface Props {
   platform: string;
   platformName: string;
   installCommand: string;
+  copyLabel: string;
 }
 
-const { platform, platformName, installCommand } = Astro.props;
+const { platform, platformName, installCommand, copyLabel } = Astro.props;
 ---
 
 <div class="flex items-center gap-4 py-3">
@@ -32,7 +33,7 @@ const { platform, platformName, installCommand } = Astro.props;
       class="copy-btn flex-shrink-0 px-3 py-2.5 border-l border-gray-200 dark:border-brand-blue/20 text-gray-400 dark:text-gray-500 hover:text-brand-light-blue dark:hover:text-brand-light-blue hover:bg-gray-200/50 dark:hover:bg-white/5 transition-colors duration-150"
       data-command={installCommand}
       data-platform={platformName}
-      aria-label={`Copy ${platformName} install command`}
+      aria-label={copyLabel}
     >
       <svg
         class="copy-icon w-4 h-4"

@@ -180,6 +180,10 @@ function isActive(href: string): boolean {
 
 <script>
   document.addEventListener('astro:page-load', () => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    document.addEventListener('astro:before-preparation', () => controller.abort(), { once: true });
+
     const header = document.getElementById('site-header');
     const btn = document.getElementById('mobile-menu-btn');
     const menu = document.getElementById('mobile-menu');
@@ -197,15 +201,19 @@ function isActive(href: string): boolean {
     }
 
     updateHeader();
-    window.addEventListener('scroll', updateHeader, { passive: true });
+    window.addEventListener('scroll', updateHeader, { passive: true, signal });
 
     // Mobile menu toggle
-    btn?.addEventListener('click', () => {
-      const isOpen = !menu?.classList.contains('hidden');
-      menu?.classList.toggle('hidden');
-      hamburgerIcon?.classList.toggle('hidden');
-      closeIcon?.classList.toggle('hidden');
-      btn.setAttribute('aria-expanded', String(!isOpen));
-    });
+    btn?.addEventListener(
+      'click',
+      () => {
+        const isOpen = !menu?.classList.contains('hidden');
+        menu?.classList.toggle('hidden');
+        hamburgerIcon?.classList.toggle('hidden');
+        closeIcon?.classList.toggle('hidden');
+        btn.setAttribute('aria-expanded', String(!isOpen));
+      },
+      { signal }
+    );
   });
 </script>

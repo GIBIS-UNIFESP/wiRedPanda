@@ -57,6 +57,10 @@ const currentFlag = localeFlags[locale];
 
 <script>
   document.addEventListener('astro:page-load', () => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    document.addEventListener('astro:before-preparation', () => controller.abort(), { once: true });
+
     document.querySelectorAll('.lang-switcher').forEach((switcher) => {
       const btn = switcher.querySelector('.lang-switcher-btn');
       const dropdown = switcher.querySelector('.lang-switcher-dropdown');
@@ -85,24 +89,36 @@ const currentFlag = localeFlags[locale];
         btn!.setAttribute('aria-expanded', 'false');
       }
 
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggle();
-      });
+      btn.addEventListener(
+        'click',
+        (e) => {
+          e.stopPropagation();
+          toggle();
+        },
+        { signal }
+      );
 
       // Close on click outside
-      document.addEventListener('click', (e) => {
-        if (!switcher.contains(e.target as Node)) {
-          close();
-        }
-      });
+      document.addEventListener(
+        'click',
+        (e) => {
+          if (!switcher.contains(e.target as Node)) {
+            close();
+          }
+        },
+        { signal }
+      );
 
       // Close on Escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          close();
-        }
-      });
+      document.addEventListener(
+        'keydown',
+        (e) => {
+          if (e.key === 'Escape') {
+            close();
+          }
+        },
+        { signal }
+      );
     });
   });
 </script>

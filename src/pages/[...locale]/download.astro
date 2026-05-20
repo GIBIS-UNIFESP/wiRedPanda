@@ -147,11 +147,13 @@ const clientTranslations = {
         platform="arch"
         platformName="Arch-based"
         installCommand={archInstallCommand}
+        copyLabel={t('download.copyCommand').replace('{platform}', 'Arch-based')}
       />
       <DownloadPlatform
         platform="debian"
         platformName="Debian-based"
         installCommand={debianInstallCommand}
+        copyLabel={t('download.copyCommand').replace('{platform}', 'Debian-based')}
       />
     </div>
 
@@ -279,11 +281,7 @@ const clientTranslations = {
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fetchLatestRelease);
-  } else {
-    fetchLatestRelease();
-  }
+  fetchLatestRelease();
 
   // Analytics tracking
   const trackDownload = (platform) => {
@@ -292,11 +290,15 @@ const clientTranslations = {
     }
   };
 
-  windowsX64El?.addEventListener('click', () => trackDownload('Windows-x64'));
-  windowsArmEl?.addEventListener('click', () => trackDownload('Windows-arm64'));
-  linuxX64El?.addEventListener('click', () => trackDownload('Linux-x64'));
-  linuxArmEl?.addEventListener('click', () => trackDownload('Linux-arm64'));
-  macosEl?.addEventListener('click', () => trackDownload('macOS'));
+  const dlController = new AbortController();
+  document.addEventListener('astro:before-preparation', () => dlController.abort(), { once: true });
+  const dlSignal = dlController.signal;
+
+  windowsX64El?.addEventListener('click', () => trackDownload('Windows-x64'), { signal: dlSignal });
+  windowsArmEl?.addEventListener('click', () => trackDownload('Windows-arm64'), { signal: dlSignal });
+  linuxX64El?.addEventListener('click', () => trackDownload('Linux-x64'), { signal: dlSignal });
+  linuxArmEl?.addEventListener('click', () => trackDownload('Linux-arm64'), { signal: dlSignal });
+  macosEl?.addEventListener('click', () => trackDownload('macOS'), { signal: dlSignal });
 </script>
 
 <style>

@@ -14,7 +14,7 @@ const letters = 'wiRedPanda'.split('');
   id="hero"
   class="h-screen flex items-center justify-center bg-bg-light dark:bg-bg-darker relative overflow-hidden"
 >
-  <!-- Protoboard backgorund -->
+  <!-- Protoboard background -->
   <div class="hero-dotgrid absolute inset-0 pointer-events-none" aria-hidden="true"></div>
 
   <div class="relative z-10 flex flex-col items-center gap-8 px-6">
@@ -92,6 +92,12 @@ const letters = 'wiRedPanda'.split('');
     animation: bounce-arrow 1.5s ease-in-out infinite;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-arrow {
+      animation: none;
+    }
+  }
+
   /* prevent FOUC */
   .hero-logo,
   .hero-letter,
@@ -124,8 +130,12 @@ const letters = 'wiRedPanda'.split('');
     var hero = document.getElementById('hero');
     if (!hero) return;
 
-    if (sessionStorage.getItem('hero-animated')) {
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var alreadyAnimated = !!sessionStorage.getItem('hero-animated');
+
+    if (alreadyAnimated || prefersReduced) {
       hero.classList.add('no-animation');
+      if (prefersReduced) sessionStorage.setItem('hero-animated', '1');
     } else {
       var header = document.getElementById('site-header');
       if (header) {
@@ -142,8 +152,13 @@ const letters = 'wiRedPanda'.split('');
     const header = document.getElementById('site-header');
     if (!hero) return;
 
-    if (hero.classList.contains('no-animation') || sessionStorage.getItem('hero-animated')) {
+    if (
+      hero.classList.contains('no-animation') ||
+      sessionStorage.getItem('hero-animated') ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
       hero.classList.add('no-animation');
+      sessionStorage.setItem('hero-animated', '1');
       return;
     }
 
