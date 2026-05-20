@@ -71,8 +71,7 @@ export default {
   'download.officialGithub': 'आधिकारिक GitHub Releases पेज',
   'download.copiedToClipboard': 'क्लिपबोर्ड पर कॉपी किया गया!',
   'download.copyCommand': '{platform} इंस्टॉल कमांड कॉपी करें',
-  'download.versionText':
-    'यहाँ आप wiRedPanda {version} के बाइनरी फ़ाइलें डाउनलोड कर सकते हैं:',
+  'download.versionText': 'यहाँ आप wiRedPanda {version} के बाइनरी फ़ाइलें डाउनलोड कर सकते हैं:',
   'download.errorFetching': 'नवीनतम रिलीज़ प्राप्त करने में त्रुटि: {status} {statusText}।',
   'download.errorNotFound': '{owner}/{repo} के लिए कोई रिलीज़ नहीं मिली।',
   'download.errorRateLimit':
@@ -88,8 +87,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'अरे!',
-  '404.message':
-    "लगता है आप कार्नो मैप के 'don't care' क्षेत्र में आ गए हैं, पर चिंता न करें!",
+  '404.message': "लगता है आप कार्नो मैप के 'don't care' क्षेत्र में आ गए हैं, पर चिंता न करें!",
   '404.submessage':
     'हमने प्रक्रिया पहले ही सरल कर दी है — बस मुख्य पृष्ठ पर वापस जाएं और सब ठीक हो जाएगा।',
   '404.backHome': 'होम पर वापस जाएं',

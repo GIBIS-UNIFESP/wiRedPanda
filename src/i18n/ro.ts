@@ -72,9 +72,9 @@ export default {
   'download.officialGithub': 'pagina oficială GitHub Releases',
   'download.copiedToClipboard': 'Copiat în clipboard!',
   'download.copyCommand': 'Copiază comanda de instalare pentru {platform}',
-  'download.versionText':
-    'Aici poți descărca fișierele binare ale wiRedPanda {version} pentru:',
-  'download.errorFetching': 'Eroare la obținerea celei mai recente versiuni: {status} {statusText}.',
+  'download.versionText': 'Aici poți descărca fișierele binare ale wiRedPanda {version} pentru:',
+  'download.errorFetching':
+    'Eroare la obținerea celei mai recente versiuni: {status} {statusText}.',
   'download.errorNotFound': 'Nu s-au găsit versiuni pentru {owner}/{repo}.',
   'download.errorRateLimit':
     'Limita de cereri a API-ului GitHub a fost probabil depășită. Te rugăm să încerci din nou mai târziu.',
@@ -89,8 +89,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'Ups!',
-  '404.message':
-    "Se pare că ai ajuns în zona 'don't care' a hărții Karnaugh, dar nu te îngrijora!",
+  '404.message': "Se pare că ai ajuns în zona 'don't care' a hărții Karnaugh, dar nu te îngrijora!",
   '404.submessage':
     'Am simplificat deja procesul — doar întoarce-te la pagina principală și totul va fi bine.',
   '404.backHome': 'Înapoi la pagina principală',

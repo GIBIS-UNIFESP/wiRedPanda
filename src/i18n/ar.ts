@@ -1,7 +1,6 @@
 export default {
   // Meta / Layout
-  'meta.description':
-    'wiRedPanda - أداة مجانية وبديهية لتعلم وتصميم الدوائر المنطقية الرقمية.',
+  'meta.description': 'wiRedPanda - أداة مجانية وبديهية لتعلم وتصميم الدوائر المنطقية الرقمية.',
 
   // Navigation
   'nav.home': 'الرئيسية',
@@ -67,16 +66,14 @@ export default {
   'download.otherOptions': 'خيارات أخرى',
   'download.packageManagers':
     'يمكنك أيضاً تثبيت wiRedPanda باستخدام مديري الحزم في بعض توزيعات Linux. قد لا تكون هذه الحزم دائماً الإصدار الأحدث المتاح على GitHub releases.',
-  'download.allReleases':
-    'لجميع الإصدارات، بما فيها الإصدارات القديمة أو التجريبية، يُرجى زيارة',
+  'download.allReleases': 'لجميع الإصدارات، بما فيها الإصدارات القديمة أو التجريبية، يُرجى زيارة',
   'download.officialGithub': 'صفحة GitHub Releases الرسمية',
   'download.copiedToClipboard': 'تم النسخ إلى الحافظة!',
   'download.copyCommand': 'نسخ أمر تثبيت {platform}',
   'download.versionText': 'يمكنك هنا تنزيل ملفات wiRedPanda الثنائية للإصدار {version} لـ:',
   'download.errorFetching': 'خطأ أثناء جلب أحدث إصدار: {status} {statusText}.',
   'download.errorNotFound': 'لم يتم العثور على إصدارات لـ {owner}/{repo}.',
-  'download.errorRateLimit':
-    'ربما تم تجاوز حد معدل طلبات API GitHub. يرجى المحاولة لاحقاً.',
+  'download.errorRateLimit': 'ربما تم تجاوز حد معدل طلبات API GitHub. يرجى المحاولة لاحقاً.',
   'download.errorConnection':
     'تعذّر الاتصال بـ GitHub API أو تحليل الاستجابة. يرجى التحقق من اتصالك بالإنترنت أو المحاولة لاحقاً.',
   'download.x86_64': 'x86_64',
@@ -88,8 +85,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'عذراً!',
-  '404.message':
-    "يبدو أنك وصلت إلى منطقة \"don't care\" في خريطة كارنو، لكن لا تقلق!",
+  '404.message': 'يبدو أنك وصلت إلى منطقة "don\'t care" في خريطة كارنو، لكن لا تقلق!',
   '404.submessage': 'لقد بسّطنا العملية بالفعل، فقط عُد إلى الصفحة الرئيسية وستكون بخير.',
   '404.backHome': 'العودة إلى الرئيسية',
 

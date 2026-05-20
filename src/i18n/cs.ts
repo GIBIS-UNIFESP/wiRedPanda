@@ -67,13 +67,11 @@ export default {
   'download.otherOptions': 'Další možnosti',
   'download.packageManagers':
     'wiRedPanda můžete nainstalovat také pomocí správců balíčků v některých distribucích Linuxu. Tyto balíčky nemusí vždy odpovídat nejnovější verzi dostupné na GitHub releases.',
-  'download.allReleases':
-    'Pro všechny verze, včetně starších nebo předběžných, navštivte',
+  'download.allReleases': 'Pro všechny verze, včetně starších nebo předběžných, navštivte',
   'download.officialGithub': 'oficiální stránku GitHub Releases',
   'download.copiedToClipboard': 'Zkopírováno do schránky!',
   'download.copyCommand': 'Kopírovat instalační příkaz pro {platform}',
-  'download.versionText':
-    'Zde si můžete stáhnout binární soubory wiRedPanda {version} pro:',
+  'download.versionText': 'Zde si můžete stáhnout binární soubory wiRedPanda {version} pro:',
   'download.errorFetching': 'Chyba při načítání nejnovější verze: {status} {statusText}.',
   'download.errorNotFound': 'Pro {owner}/{repo} nebyly nalezeny žádné verze.',
   'download.errorRateLimit':

@@ -67,17 +67,14 @@ export default {
   'download.otherOptions': 'Другие варианты',
   'download.packageManagers':
     'Вы также можете установить wiRedPanda через менеджеры пакетов некоторых дистрибутивов Linux. Эти пакеты могут не всегда соответствовать последней версии, доступной на GitHub releases.',
-  'download.allReleases':
-    'Все версии, включая более старые или предварительные, доступны на',
+  'download.allReleases': 'Все версии, включая более старые или предварительные, доступны на',
   'download.officialGithub': 'официальной странице GitHub Releases',
   'download.copiedToClipboard': 'Скопировано в буфер обмена!',
   'download.copyCommand': 'Скопировать команду установки для {platform}',
-  'download.versionText':
-    'Здесь вы можете скачать бинарные файлы wiRedPanda версии {version} для:',
+  'download.versionText': 'Здесь вы можете скачать бинарные файлы wiRedPanda версии {version} для:',
   'download.errorFetching': 'Ошибка при получении последней версии: {status} {statusText}.',
   'download.errorNotFound': 'Релизы для {owner}/{repo} не найдены.',
-  'download.errorRateLimit':
-    'Вероятно, превышен лимит запросов к API GitHub. Попробуйте позже.',
+  'download.errorRateLimit': 'Вероятно, превышен лимит запросов к API GitHub. Попробуйте позже.',
   'download.errorConnection':
     'Не удалось подключиться к API GitHub или обработать ответ. Проверьте подключение к интернету или попробуйте позже.',
   'download.x86_64': 'x86_64',
@@ -89,8 +86,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'Упс!',
-  '404.message':
-    "Похоже, вы попали в зону «безразличных состояний» карты Карно, но не волнуйтесь!",
+  '404.message': 'Похоже, вы попали в зону «безразличных состояний» карты Карно, но не волнуйтесь!',
   '404.submessage':
     'Мы уже упростили процесс — просто вернитесь на главную страницу, и всё будет в порядке.',
   '404.backHome': 'На главную',

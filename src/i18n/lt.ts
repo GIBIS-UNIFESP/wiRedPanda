@@ -67,17 +67,14 @@ export default {
   'download.otherOptions': 'Kiti pasirinkimai',
   'download.packageManagers':
     'Taip pat galite įdiegti wiRedPanda naudodami paketų tvarkytuvus kai kuriose Linux distribucijose. Šie paketai ne visada gali būti absoliučiai naujausia versija, esanti GitHub releases.',
-  'download.allReleases':
-    'Visų versijų, įskaitant senesnes ar išankstines versijas, ieškokite',
+  'download.allReleases': 'Visų versijų, įskaitant senesnes ar išankstines versijas, ieškokite',
   'download.officialGithub': 'oficialiame GitHub Releases puslapyje',
   'download.copiedToClipboard': 'Nukopijuota į iškarpinę!',
   'download.copyCommand': 'Kopijuoti {platform} diegimo komandą',
-  'download.versionText':
-    'Čia galite atsisiųsti wiRedPanda {version} dvejetainius failus:',
+  'download.versionText': 'Čia galite atsisiųsti wiRedPanda {version} dvejetainius failus:',
   'download.errorFetching': 'Klaida gaunant naujausią versiją: {status} {statusText}.',
   'download.errorNotFound': '{owner}/{repo} leidimų nerasta.',
-  'download.errorRateLimit':
-    'GitHub API užklausų limitas tikriausiai viršytas. Bandykite vėliau.',
+  'download.errorRateLimit': 'GitHub API užklausų limitas tikriausiai viršytas. Bandykite vėliau.',
   'download.errorConnection':
     'Nepavyko prisijungti prie GitHub API arba apdoroti atsakymo. Patikrinkite interneto ryšį arba bandykite vėliau.',
   'download.x86_64': 'x86_64',
@@ -89,8 +86,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'Oi!',
-  '404.message':
-    "Atrodo, kad patekote į Karno žemėlapio 'don't care' zoną, bet nesijaudinkite!",
+  '404.message': "Atrodo, kad patekote į Karno žemėlapio 'don't care' zoną, bet nesijaudinkite!",
   '404.submessage':
     'Jau supaprastinome procesą — tiesiog grįžkite į pagrindinį puslapį ir viskas bus gerai.',
   '404.backHome': 'Grįžti į pradžią',

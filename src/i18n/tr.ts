@@ -33,7 +33,7 @@ export default {
     'Devrelerinizi beWavedDolphin dalga formu simülatörüyle analiz edin, sorunları tespit edip düzeltin.',
   'home.feature.crossplatform.title': 'Çok Platformlu',
   'home.feature.crossplatform.content':
-    "Windows, macOS ve Linux için kullanılabilir; herhangi bir cihazda projeleriniz üzerinde çalışabilirsiniz.",
+    'Windows, macOS ve Linux için kullanılabilir; herhangi bir cihazda projeleriniz üzerinde çalışabilirsiniz.',
   'home.mission':
     'Teknoloji eğitiminin erişilebilir, ilgi çekici ve pratik olması gerektiğine inanıyoruz. Yazılımımız, öğrenme sürecini basitleştirmek ve gerçekten önemli olana odaklanmanızı sağlamak için geliştirilmiştir: dijital devreleri anlamak ve oluşturmak.',
   'home.screenshot1Alt': 'wiRedPanda devre editörünün ekran görüntüsü',
@@ -46,7 +46,7 @@ export default {
   'about.title': 'Hakkında',
   'about.heading': 'Proje Hakkında',
   'about.history':
-    'Proje, 2015 yılında Dr. Fábio Cappabianco, Davi Morales, Lucas Lellis ve Rodrigo Torres tarafından; mantık devrelerini öğrenmeyi kolay, %100 ücretsiz ve çok platformlu hale getirecek bir yazılım geliştirmek amacıyla başlatıldı. Kullanım kolaylığı temel alınarak oluşturulan yazılım, bugün UNIFESP\'te dijital devre eğitiminde ve São José dos Campos devlet okullarının lise öğrencilerine dijital mantık öğreten diğer üniversite projelerinde kullanılmaktadır.',
+    "Proje, 2015 yılında Dr. Fábio Cappabianco, Davi Morales, Lucas Lellis ve Rodrigo Torres tarafından; mantık devrelerini öğrenmeyi kolay, %100 ücretsiz ve çok platformlu hale getirecek bir yazılım geliştirmek amacıyla başlatıldı. Kullanım kolaylığı temel alınarak oluşturulan yazılım, bugün UNIFESP'te dijital devre eğitiminde ve São José dos Campos devlet okullarının lise öğrencilerine dijital mantık öğreten diğer üniversite projelerinde kullanılmaktadır.",
   'about.campusAlt': 'Unifesp kampüsü',
   'about.contribute':
     "Aktif geliştirme sürecindeyiz; bu nedenle hata bildirmek veya yeni fikirler paylaşmak istiyorsanız GitHub'da bir tartışma başlatın! Yardımınızla yazılımı kesinlikle geliştirebiliriz.",
@@ -67,19 +67,18 @@ export default {
   'download.otherOptions': 'Diğer Seçenekler',
   'download.packageManagers':
     "wiRedPanda'yı bazı Linux dağıtımlarında paket yöneticileri aracılığıyla da yükleyebilirsiniz. Bu paketler GitHub releases'taki en güncel sürüm olmayabilir.",
-  'download.allReleases':
-    'Eski sürümler veya ön sürümler dahil tüm sürümler için',
+  'download.allReleases': 'Eski sürümler veya ön sürümler dahil tüm sürümler için',
   'download.officialGithub': 'resmi GitHub Releases sayfasını ziyaret edin',
   'download.copiedToClipboard': 'Panoya kopyalandı!',
   'download.copyCommand': '{platform} kurulum komutunu kopyala',
   'download.versionText':
-    "wiRedPanda {version} sürümünün ikili dosyalarını buradan indirebilirsiniz:",
+    'wiRedPanda {version} sürümünün ikili dosyalarını buradan indirebilirsiniz:',
   'download.errorFetching': 'Son sürüm alınırken hata oluştu: {status} {statusText}.',
   'download.errorNotFound': '{owner}/{repo} için sürüm bulunamadı.',
   'download.errorRateLimit':
     'GitHub API istek sınırı muhtemelen aşıldı. Lütfen daha sonra tekrar deneyin.',
   'download.errorConnection':
-    'GitHub API\'ye bağlanılamadı veya yanıt işlenemedi. İnternet bağlantınızı kontrol edin veya daha sonra tekrar deneyin.',
+    "GitHub API'ye bağlanılamadı veya yanıt işlenemedi. İnternet bağlantınızı kontrol edin veya daha sonra tekrar deneyin.",
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Evrensel',
@@ -89,8 +88,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'Hay aksi!',
-  '404.message':
-    "Karnaugh haritasının 'don't care' bölgesine geldiniz ama endişelenmeyin!",
+  '404.message': "Karnaugh haritasının 'don't care' bölgesine geldiniz ama endişelenmeyin!",
   '404.submessage':
     'Süreci zaten basitleştirdik — sadece ana sayfaya geri dönün ve her şey yoluna girecek.',
   '404.backHome': 'Ana Sayfaya Dön',

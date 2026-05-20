@@ -26,8 +26,7 @@ export default {
   'home.feature.interface.title': '直觀介面',
   'home.feature.interface.content': '拖放元件、連接導線，簡單高效地建構您的電路。',
   'home.feature.analysis.title': '詳細分析',
-  'home.feature.analysis.content':
-    '使用 beWavedDolphin 波形模擬器分析您的電路，識別並修正問題。',
+  'home.feature.analysis.content': '使用 beWavedDolphin 波形模擬器分析您的電路，識別並修正問題。',
   'home.feature.crossplatform.title': '跨平台',
   'home.feature.crossplatform.content':
     '支援 Windows、macOS 和 Linux，確保您可以在任何裝置上進行專案開發。',
@@ -72,8 +71,7 @@ export default {
   'download.errorFetching': '取得最新版本時發生錯誤：{status} {statusText}。',
   'download.errorNotFound': '找不到 {owner}/{repo} 的發布版本。',
   'download.errorRateLimit': 'GitHub API 請求頻率可能已超過限制。請稍後再試。',
-  'download.errorConnection':
-    '無法連線至 GitHub API 或解析回應。請檢查您的網路連線或稍後再試。',
+  'download.errorConnection': '無法連線至 GitHub API 或解析回應。請檢查您的網路連線或稍後再試。',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': '通用版',

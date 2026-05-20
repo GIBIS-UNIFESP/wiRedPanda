@@ -67,8 +67,7 @@ export default {
   'download.otherOptions': 'گزینه‌های دیگر',
   'download.packageManagers':
     'می‌توانید wiRedPanda را با استفاده از مدیریت بسته برخی توزیع‌های Linux هم نصب کنید. این بسته‌ها ممکن است همیشه آخرین نسخه موجود در GitHub releases نباشند.',
-  'download.allReleases':
-    'برای تمام نسخه‌ها، از جمله نسخه‌های قدیمی‌تر یا پیش‌انتشار، از',
+  'download.allReleases': 'برای تمام نسخه‌ها، از جمله نسخه‌های قدیمی‌تر یا پیش‌انتشار، از',
   'download.officialGithub': 'صفحه رسمی GitHub Releases بازدید کنید',
   'download.copiedToClipboard': 'در حافظه موقت کپی شد!',
   'download.copyCommand': 'کپی دستور نصب برای {platform}',
@@ -89,8 +88,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'اوه!',
-  '404.message':
-    "به نظر می‌رسد به ناحیه 'don't care' نقشه کارنو رسیده‌اید، اما نگران نباشید!",
+  '404.message': "به نظر می‌رسد به ناحیه 'don't care' نقشه کارنو رسیده‌اید، اما نگران نباشید!",
   '404.submessage':
     'فرآیند را قبلاً ساده کرده‌ایم — فقط به صفحه اصلی برگردید و همه چیز درست می‌شود.',
   '404.backHome': 'بازگشت به خانه',

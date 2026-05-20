@@ -67,13 +67,11 @@ export default {
   'download.otherOptions': 'Muud valikud',
   'download.packageManagers':
     'Saad wiRedPanda ka installida mõne Linuxi distributsiooni paketihalduri kaudu. Need paketid ei pruugi alati olla GitHub releasesis saadaoleva absoluutse uusima versiooniga.',
-  'download.allReleases':
-    'Kõigi versioonide, sealhulgas vanemate või eelversioonide jaoks külasta',
+  'download.allReleases': 'Kõigi versioonide, sealhulgas vanemate või eelversioonide jaoks külasta',
   'download.officialGithub': 'ametlikku GitHubi väljalaselehte',
   'download.copiedToClipboard': 'Kopeeritud lõikelauale!',
   'download.copyCommand': 'Kopeeri {platform} installikäsk',
-  'download.versionText':
-    'Siit saad alla laadida wiRedPanda {version} binaarfailid järgmistele:',
+  'download.versionText': 'Siit saad alla laadida wiRedPanda {version} binaarfailid järgmistele:',
   'download.errorFetching': 'Uusima versiooni toomine ebaõnnestus: {status} {statusText}.',
   'download.errorNotFound': '{owner}/{repo} jaoks ei leitud väljalaseid.',
   'download.errorRateLimit':
@@ -89,8 +87,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'Oih!',
-  '404.message':
-    "Tundub, et sattusid Karnaugh kaardi 'don't care' alale, aga ärme muretse!",
+  '404.message': "Tundub, et sattusid Karnaugh kaardi 'don't care' alale, aga ärme muretse!",
   '404.submessage':
     'Oleme protsessi juba lihtsustanud — mine lihtsalt tagasi avalehele ja kõik saab korda.',
   '404.backHome': 'Tagasi avalehele',

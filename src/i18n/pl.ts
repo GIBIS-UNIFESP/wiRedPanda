@@ -67,13 +67,11 @@ export default {
   'download.otherOptions': 'Inne opcje',
   'download.packageManagers':
     'Możesz też zainstalować wiRedPanda przy użyciu menedżerów pakietów w niektórych dystrybucjach Linuksa. Pakiety te mogą nie zawsze być w absolutnie najnowszej wersji dostępnej na GitHub releases.',
-  'download.allReleases':
-    'Wszystkie wersje, w tym starsze lub wstępne, znajdziesz na',
+  'download.allReleases': 'Wszystkie wersje, w tym starsze lub wstępne, znajdziesz na',
   'download.officialGithub': 'oficjalnej stronie GitHub Releases',
   'download.copiedToClipboard': 'Skopiowano do schowka!',
   'download.copyCommand': 'Kopiuj polecenie instalacji dla {platform}',
-  'download.versionText':
-    'Tutaj możesz pobrać pliki binarne wiRedPanda w wersji {version} dla:',
+  'download.versionText': 'Tutaj możesz pobrać pliki binarne wiRedPanda w wersji {version} dla:',
   'download.errorFetching': 'Błąd podczas pobierania najnowszej wersji: {status} {statusText}.',
   'download.errorNotFound': 'Nie znaleziono wydań dla {owner}/{repo}.',
   'download.errorRateLimit':
@@ -90,7 +88,7 @@ export default {
   '404.title': '404',
   '404.heading': 'Ups!',
   '404.message':
-    "Wygląda na to, że trafiłeś do strefy \"don't care\" mapy Karnaugha, ale nie martw się!",
+    'Wygląda na to, że trafiłeś do strefy "don\'t care" mapy Karnaugha, ale nie martw się!',
   '404.submessage':
     'Już uprościliśmy cały proces — po prostu wróć na stronę główną i wszystko będzie dobrze.',
   '404.backHome': 'Powrót do strony głównej',

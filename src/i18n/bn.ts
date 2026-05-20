@@ -67,13 +67,11 @@ export default {
   'download.otherOptions': 'অন্যান্য বিকল্প',
   'download.packageManagers':
     'আপনি কিছু Linux ডিস্ট্রিবিউশনে প্যাকেজ ম্যানেজার ব্যবহার করেও wiRedPanda ইনস্টল করতে পারেন। এই প্যাকেজগুলি সর্বদা GitHub releases-এ পাওয়া সর্বশেষ সংস্করণ নাও হতে পারে।',
-  'download.allReleases':
-    'পুরানো বা প্রি-রিলিজ সহ সমস্ত রিলিজের জন্য, দেখুন',
+  'download.allReleases': 'পুরানো বা প্রি-রিলিজ সহ সমস্ত রিলিজের জন্য, দেখুন',
   'download.officialGithub': 'অফিসিয়াল GitHub Releases পেজ',
   'download.copiedToClipboard': 'ক্লিপবোর্ডে কপি করা হয়েছে!',
   'download.copyCommand': '{platform} ইনস্টল কমান্ড কপি করুন',
-  'download.versionText':
-    'এখানে আপনি wiRedPanda {version}-এর বাইনারি ফাইল ডাউনলোড করতে পারবেন:',
+  'download.versionText': 'এখানে আপনি wiRedPanda {version}-এর বাইনারি ফাইল ডাউনলোড করতে পারবেন:',
   'download.errorFetching': 'সর্বশেষ রিলিজ আনতে ত্রুটি: {status} {statusText}।',
   'download.errorNotFound': '{owner}/{repo}-এর জন্য কোনো রিলিজ পাওয়া যায়নি।',
   'download.errorRateLimit':

@@ -1,7 +1,6 @@
 export default {
   // Meta / Layout
-  'meta.description':
-    'wiRedPanda - כלי חינמי ואינטואיטיבי ללימוד ועיצוב מעגלים לוגיים דיגיטליים.',
+  'meta.description': 'wiRedPanda - כלי חינמי ואינטואיטיבי ללימוד ועיצוב מעגלים לוגיים דיגיטליים.',
 
   // Navigation
   'nav.home': 'דף הבית',
@@ -74,8 +73,7 @@ export default {
   'download.versionText': 'כאן תוכל להוריד את קבצי הבינארי של wiRedPanda {version} עבור:',
   'download.errorFetching': 'שגיאה באחזור הגרסה האחרונה: {status} {statusText}.',
   'download.errorNotFound': 'לא נמצאו גרסאות עבור {owner}/{repo}.',
-  'download.errorRateLimit':
-    'מגבלת בקשות ה-API של GitHub כנראה חרגה. אנא נסה שוב מאוחר יותר.',
+  'download.errorRateLimit': 'מגבלת בקשות ה-API של GitHub כנראה חרגה. אנא נסה שוב מאוחר יותר.',
   'download.errorConnection':
     'לא ניתן להתחבר ל-GitHub API או לנתח את התגובה. בדוק את חיבור האינטרנט שלך או נסה שוב מאוחר יותר.',
   'download.x86_64': 'x86_64',
@@ -87,8 +85,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'אופס!',
-  '404.message':
-    "נראה שהגעת לאזור ה-don't care של מפת קארנו, אבל אל תדאג!",
+  '404.message': "נראה שהגעת לאזור ה-don't care של מפת קארנו, אבל אל תדאג!",
   '404.submessage': 'כבר פישטנו את התהליך — פשוט חזור לדף הראשי והכל יסתדר.',
   '404.backHome': 'חזרה לדף הבית',
 

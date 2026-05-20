@@ -72,8 +72,7 @@ export default {
   'download.officialGithub': 'trang GitHub Releases chính thức',
   'download.copiedToClipboard': 'Đã sao chép vào clipboard!',
   'download.copyCommand': 'Sao chép lệnh cài đặt {platform}',
-  'download.versionText':
-    'Tại đây bạn có thể tải xuống tệp nhị phân wiRedPanda {version} cho:',
+  'download.versionText': 'Tại đây bạn có thể tải xuống tệp nhị phân wiRedPanda {version} cho:',
   'download.errorFetching': 'Lỗi khi lấy phiên bản mới nhất: {status} {statusText}.',
   'download.errorNotFound': 'Không tìm thấy bản phát hành nào cho {owner}/{repo}.',
   'download.errorRateLimit':
@@ -89,8 +88,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'Ối!',
-  '404.message':
-    "Có vẻ bạn đã đến vùng 'don't care' của bản đồ Karnaugh, nhưng đừng lo!",
+  '404.message': "Có vẻ bạn đã đến vùng 'don't care' của bản đồ Karnaugh, nhưng đừng lo!",
   '404.submessage':
     'Chúng tôi đã đơn giản hóa quy trình rồi — chỉ cần quay lại trang chính và mọi thứ sẽ ổn.',
   '404.backHome': 'Về trang chủ',

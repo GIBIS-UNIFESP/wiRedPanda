@@ -72,8 +72,7 @@ export default {
   'download.officialGithub': 'den officielle GitHub Releases-side',
   'download.copiedToClipboard': 'Kopieret til udklipsholder!',
   'download.copyCommand': 'Kopier installationskommando til {platform}',
-  'download.versionText':
-    'Her kan du downloade de binære filer for wiRedPanda {version} til:',
+  'download.versionText': 'Her kan du downloade de binære filer for wiRedPanda {version} til:',
   'download.errorFetching': 'Fejl ved hentning af den seneste version: {status} {statusText}.',
   'download.errorNotFound': 'Ingen versioner fundet for {owner}/{repo}.',
   'download.errorRateLimit':

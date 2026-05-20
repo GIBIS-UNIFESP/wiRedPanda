@@ -67,13 +67,11 @@ export default {
   'download.otherOptions': 'Opsi lainnya',
   'download.packageManagers':
     'Anda juga dapat menginstal wiRedPanda menggunakan manajer paket di beberapa distribusi Linux. Paket-paket ini mungkin tidak selalu merupakan versi terbaru yang tersedia di GitHub releases.',
-  'download.allReleases':
-    'Untuk semua rilis, termasuk versi lama atau pra-rilis, kunjungi',
+  'download.allReleases': 'Untuk semua rilis, termasuk versi lama atau pra-rilis, kunjungi',
   'download.officialGithub': 'halaman resmi GitHub Releases',
   'download.copiedToClipboard': 'Disalin ke clipboard!',
   'download.copyCommand': 'Salin perintah instalasi {platform}',
-  'download.versionText':
-    'Di sini Anda dapat mengunduh file biner wiRedPanda {version} untuk:',
+  'download.versionText': 'Di sini Anda dapat mengunduh file biner wiRedPanda {version} untuk:',
   'download.errorFetching': 'Kesalahan saat mengambil rilis terbaru: {status} {statusText}.',
   'download.errorNotFound': 'Tidak ada rilis yang ditemukan untuk {owner}/{repo}.',
   'download.errorRateLimit':
@@ -89,8 +87,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'Ups!',
-  '404.message':
-    "Sepertinya Anda sampai di area 'don't care' peta Karnaugh, tapi jangan khawatir!",
+  '404.message': "Sepertinya Anda sampai di area 'don't care' peta Karnaugh, tapi jangan khawatir!",
   '404.submessage':
     'Kami sudah menyederhanakan prosesnya — cukup kembali ke halaman utama dan semuanya akan baik-baik saja.',
   '404.backHome': 'Kembali ke Beranda',

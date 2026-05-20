@@ -72,8 +72,7 @@ export default {
   'download.officialGithub': 'oficiālā GitHub Releases lapa',
   'download.copiedToClipboard': 'Nokopēts starpliktuvē!',
   'download.copyCommand': 'Kopēt {platform} instalācijas komandu',
-  'download.versionText':
-    'Šeit varat lejupielādēt wiRedPanda {version} bināros failus:',
+  'download.versionText': 'Šeit varat lejupielādēt wiRedPanda {version} bināros failus:',
   'download.errorFetching': 'Kļūda, iegūstot jaunāko versiju: {status} {statusText}.',
   'download.errorNotFound': '{owner}/{repo} izlaidumi nav atrasti.',
   'download.errorRateLimit':

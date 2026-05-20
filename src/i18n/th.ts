@@ -23,8 +23,7 @@ export default {
     'wiRedPanda เป็นเครื่องมือที่ทรงพลังและใช้งานง่าย ออกแบบมาเพื่อช่วยนักศึกษา นักการศึกษา และผู้ที่สนใจในการเรียนรู้วงจรดิจิทัล ด้วยอินเทอร์เฟซที่เป็นมิตรกับผู้ใช้และฟีเจอร์ขั้นสูง wiRedPanda เปลี่ยนกระบวนการทำความเข้าใจและสร้างวงจรให้เป็นประสบการณ์ที่โต้ตอบได้และน่าสนใจ',
   'home.mainFeatures': 'ฟีเจอร์หลัก',
   'home.feature.simulation.title': 'จำลองแบบเรียลไทม์',
-  'home.feature.simulation.content':
-    'ดูวงจรของคุณทำงานทันทีขณะที่คุณปรับและทดลองการตั้งค่าต่างๆ',
+  'home.feature.simulation.content': 'ดูวงจรของคุณทำงานทันทีขณะที่คุณปรับและทดลองการตั้งค่าต่างๆ',
   'home.feature.interface.title': 'อินเทอร์เฟซใช้งานง่าย',
   'home.feature.interface.content':
     'ลากและวางองค์ประกอบ ต่อสาย และสร้างวงจรของคุณได้อย่างง่ายดายและมีประสิทธิภาพ',
@@ -67,17 +66,14 @@ export default {
   'download.otherOptions': 'ตัวเลือกอื่นๆ',
   'download.packageManagers':
     'คุณยังสามารถติดตั้ง wiRedPanda ผ่านตัวจัดการแพ็คเกจในบางดิสทริบิวชัน Linux ได้ แพ็คเกจเหล่านี้อาจไม่ใช่เวอร์ชันล่าสุดที่มีบน GitHub releases เสมอไป',
-  'download.allReleases':
-    'สำหรับเวอร์ชันทั้งหมด รวมถึงเวอร์ชันเก่าหรือก่อนเผยแพร่ โปรดเยี่ยมชม',
+  'download.allReleases': 'สำหรับเวอร์ชันทั้งหมด รวมถึงเวอร์ชันเก่าหรือก่อนเผยแพร่ โปรดเยี่ยมชม',
   'download.officialGithub': 'หน้า GitHub Releases อย่างเป็นทางการ',
   'download.copiedToClipboard': 'คัดลอกไปยังคลิปบอร์ดแล้ว!',
   'download.copyCommand': 'คัดลอกคำสั่งติดตั้ง {platform}',
-  'download.versionText':
-    'คุณสามารถดาวน์โหลดไฟล์ไบนารี wiRedPanda {version} ได้ที่นี่:',
+  'download.versionText': 'คุณสามารถดาวน์โหลดไฟล์ไบนารี wiRedPanda {version} ได้ที่นี่:',
   'download.errorFetching': 'เกิดข้อผิดพลาดในการดึงเวอร์ชันล่าสุด: {status} {statusText}',
   'download.errorNotFound': 'ไม่พบการเผยแพร่สำหรับ {owner}/{repo}',
-  'download.errorRateLimit':
-    'อาจเกินขีดจำกัดคำขอ GitHub API โปรดลองอีกครั้งในภายหลัง',
+  'download.errorRateLimit': 'อาจเกินขีดจำกัดคำขอ GitHub API โปรดลองอีกครั้งในภายหลัง',
   'download.errorConnection':
     'ไม่สามารถเชื่อมต่อกับ GitHub API หรือประมวลผลการตอบกลับได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตหรือลองอีกครั้งในภายหลัง',
   'download.x86_64': 'x86_64',
@@ -89,8 +85,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'อุ๊ปส์!',
-  '404.message':
-    "ดูเหมือนคุณมาถึงพื้นที่ 'don't care' ของ Karnaugh map แต่ไม่ต้องกังวล!",
+  '404.message': "ดูเหมือนคุณมาถึงพื้นที่ 'don't care' ของ Karnaugh map แต่ไม่ต้องกังวล!",
   '404.submessage':
     'เราได้ลดความซับซ้อนของกระบวนการแล้ว เพียงกลับไปที่หน้าหลักและทุกอย่างจะเป็นไปด้วยดี',
   '404.backHome': 'กลับหน้าหลัก',

@@ -67,13 +67,11 @@ export default {
   'download.otherOptions': 'Ostale mogućnosti',
   'download.packageManagers':
     'wiRedPanda možete instalirati i putem upravitelja paketa na nekim Linux distribucijama. Ti paketi možda nisu uvijek apsolutno najnovija verzija dostupna na GitHub releases.',
-  'download.allReleases':
-    'Za sva izdanja, uključujući starija ili predizdanja, posjetite',
+  'download.allReleases': 'Za sva izdanja, uključujući starija ili predizdanja, posjetite',
   'download.officialGithub': 'službenu stranicu GitHub Releases',
   'download.copiedToClipboard': 'Kopirano u međuspremnik!',
   'download.copyCommand': 'Kopiraj naredbu za instalaciju za {platform}',
-  'download.versionText':
-    'Ovdje možete preuzeti binarne datoteke wiRedPanda {version} za:',
+  'download.versionText': 'Ovdje možete preuzeti binarne datoteke wiRedPanda {version} za:',
   'download.errorFetching': 'Pogreška pri dohvaćanju najnovijeg izdanja: {status} {statusText}.',
   'download.errorNotFound': 'Nisu pronađena izdanja za {owner}/{repo}.',
   'download.errorRateLimit':
@@ -89,8 +87,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'Ups!',
-  '404.message':
-    "Čini se da ste završili u zoni 'don't care' Karnaughove karte, ali ne brinite!",
+  '404.message': "Čini se da ste završili u zoni 'don't care' Karnaughove karte, ali ne brinite!",
   '404.submessage':
     'Proces smo već pojednostavili — samo se vratite na glavnu stranicu i sve će biti u redu.',
   '404.backHome': 'Povratak na početnu stranicu',

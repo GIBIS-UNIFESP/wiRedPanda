@@ -91,8 +91,7 @@ export default {
   '404.heading': 'Ops!',
   '404.message':
     "Parece que chegou à zona dos don't care do mapa de Karnaugh, mas não se preocupe!",
-  '404.submessage':
-    'Já simplificámos o processo, basta voltar à página principal e ficará bem.',
+  '404.submessage': 'Já simplificámos o processo, basta voltar à página principal e ficará bem.',
   '404.backHome': 'Voltar ao Início',
 
   // Footer

@@ -38,7 +38,7 @@ export default {
     'Wij geloven dat technologisch onderwijs toegankelijk, boeiend en praktisch moet zijn. Onze software is ontwikkeld om het leerproces te vereenvoudigen en je te laten focussen op wat er echt toe doet: digitale circuits begrijpen en ontwerpen.',
   'home.screenshot1Alt': 'Screenshot van de wiRedPanda-circuiteditor',
   'home.screenshot2Alt': 'Screenshot van een logische circuitsimulatie in wiRedPanda',
-  'home.demoLabel': "wiRedPanda demovideo",
+  'home.demoLabel': 'wiRedPanda demovideo',
   'home.cta':
     'Download wiRedPanda nu en begin de wereld van digitale circuits te verkennen. Probeer alle functies uit en ontdek hoe we je kunnen helpen je doelen te bereiken. Al in gebruik aan de Federale Universiteit van São Paulo, en misschien ook binnenkort in jouw klas voor logische circuits!',
 
@@ -67,8 +67,7 @@ export default {
   'download.otherOptions': 'Andere opties',
   'download.packageManagers':
     'Je kunt wiRedPanda ook installeren via de pakketbeheerders van sommige Linux-distributies. Deze pakketten zijn mogelijk niet altijd de allernieuwste versie die beschikbaar is op GitHub releases.',
-  'download.allReleases':
-    'Voor alle releases, inclusief oudere versies of pre-releases, bezoek je',
+  'download.allReleases': 'Voor alle releases, inclusief oudere versies of pre-releases, bezoek je',
   'download.officialGithub': 'de officiële GitHub Releases-pagina',
   'download.copiedToClipboard': 'Gekopieerd naar klembord!',
   'download.copyCommand': 'Installatieopdracht voor {platform} kopiëren',

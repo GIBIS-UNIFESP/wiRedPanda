@@ -72,8 +72,7 @@ export default {
   'download.officialGithub': 'den officiella GitHub Releases-sidan',
   'download.copiedToClipboard': 'Kopierat till urklipp!',
   'download.copyCommand': 'Kopiera installationskommando för {platform}',
-  'download.versionText':
-    'Här kan du ladda ner binärfilerna för wiRedPanda {version} för:',
+  'download.versionText': 'Här kan du ladda ner binärfilerna för wiRedPanda {version} för:',
   'download.errorFetching': 'Fel vid hämtning av senaste version: {status} {statusText}.',
   'download.errorNotFound': 'Inga versioner hittades för {owner}/{repo}.',
   'download.errorRateLimit':
@@ -90,7 +89,7 @@ export default {
   '404.title': '404',
   '404.heading': 'Hoppsan!',
   '404.message':
-    "Det verkar som att du hamnat i \"don't care\"-området i Karnaugh-kartan, men oroa dig inte!",
+    'Det verkar som att du hamnat i "don\'t care"-området i Karnaugh-kartan, men oroa dig inte!',
   '404.submessage':
     'Vi har redan förenklat processen — gå bara tillbaka till huvudsidan så löser det sig.',
   '404.backHome': 'Tillbaka till startsidan',

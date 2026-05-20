@@ -1,7 +1,6 @@
 export default {
   // Meta / Layout
-  'meta.description':
-    'wiRedPanda - 디지털 논리 회로를 배우고 설계하기 위한 무료 직관적인 도구.',
+  'meta.description': 'wiRedPanda - 디지털 논리 회로를 배우고 설계하기 위한 무료 직관적인 도구.',
 
   // Navigation
   'nav.home': '홈',
@@ -71,8 +70,7 @@ export default {
   'download.officialGithub': '공식 GitHub Releases 페이지에서 확인하세요',
   'download.copiedToClipboard': '클립보드에 복사되었습니다!',
   'download.copyCommand': '{platform} 설치 명령어 복사',
-  'download.versionText':
-    '여기에서 wiRedPanda {version}의 바이너리 파일을 다운로드할 수 있습니다:',
+  'download.versionText': '여기에서 wiRedPanda {version}의 바이너리 파일을 다운로드할 수 있습니다:',
   'download.errorFetching': '최신 릴리즈를 불러오는 중 오류가 발생했습니다: {status} {statusText}.',
   'download.errorNotFound': '{owner}/{repo}의 릴리즈를 찾을 수 없습니다.',
   'download.errorRateLimit':
@@ -88,10 +86,8 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': '이런!',
-  '404.message':
-    "카르노 맵의 'don't care' 영역에 오신 것 같지만, 걱정하지 마세요!",
-  '404.submessage':
-    '이미 과정을 단순화해 두었습니다. 메인 페이지로 돌아가시면 됩니다.',
+  '404.message': "카르노 맵의 'don't care' 영역에 오신 것 같지만, 걱정하지 마세요!",
+  '404.submessage': '이미 과정을 단순화해 두었습니다. 메인 페이지로 돌아가시면 됩니다.',
   '404.backHome': '홈으로 돌아가기',
 
   // Footer

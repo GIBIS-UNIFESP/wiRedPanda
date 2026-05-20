@@ -89,8 +89,7 @@ export default {
   // 404 page
   '404.title': '404',
   '404.heading': 'Hoppá!',
-  '404.message':
-    "Úgy tűnik, a Karnaugh-térkép 'don't care' területére tévedtél, de ne aggódj!",
+  '404.message': "Úgy tűnik, a Karnaugh-térkép 'don't care' területére tévedtél, de ne aggódj!",
   '404.submessage':
     'Már leegyszerűsítettük a folyamatot — csak térj vissza a főoldalra, és minden rendben lesz.',
   '404.backHome': 'Vissza a főoldalra',

@@ -67,13 +67,11 @@ export default {
   'download.otherOptions': 'Ďalšie možnosti',
   'download.packageManagers':
     'wiRedPanda môžete nainštalovať aj pomocou správcov balíkov v niektorých distribúciách Linuxu. Tieto balíky nemusia vždy zodpovedať najnovšej verzii dostupnej na GitHub releases.',
-  'download.allReleases':
-    'Pre všetky verzie, vrátane starších alebo predbežných, navštívte',
+  'download.allReleases': 'Pre všetky verzie, vrátane starších alebo predbežných, navštívte',
   'download.officialGithub': 'oficiálnu stránku GitHub Releases',
   'download.copiedToClipboard': 'Skopírované do schránky!',
   'download.copyCommand': 'Kopírovať inštalačný príkaz pre {platform}',
-  'download.versionText':
-    'Tu si môžete stiahnuť binárne súbory wiRedPanda {version} pre:',
+  'download.versionText': 'Tu si môžete stiahnuť binárne súbory wiRedPanda {version} pre:',
   'download.errorFetching': 'Chyba pri načítavaní najnovšej verzie: {status} {statusText}.',
   'download.errorNotFound': 'Pre {owner}/{repo} neboli nájdené žiadne verzie.',
   'download.errorRateLimit':
