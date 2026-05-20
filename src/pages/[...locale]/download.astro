@@ -107,7 +107,7 @@ const clientTranslations = {
   </div>
 </Base>
 
-<script define:vars={{ GITHUB_REPO_OWNER, GITHUB_REPO_NAME, GITHUB_RELEASES_PAGE_URL, clientTranslations }}>
+<script is:inline define:vars={{ GITHUB_REPO_OWNER, GITHUB_REPO_NAME, GITHUB_RELEASES_PAGE_URL, clientTranslations }}>
   const releaseVersionTextEl = document.getElementById('release-version-text');
   const errorMessageContainerEl = document.getElementById('error-message-container');
   const errorTextEl = document.getElementById('error-text');
@@ -117,10 +117,6 @@ const clientTranslations = {
   const linuxX64El     = document.getElementById('linux-x64-link');
   const linuxArmEl     = document.getElementById('linux-arm64-link');
   const macosEl        = document.getElementById('macos-universal-link');
-
-  const windowsStatusEl = document.getElementById('windows-status');
-  const linuxStatusEl   = document.getElementById('linux-status');
-  const macosStatusEl   = document.getElementById('macos-status');
 
   function setChip(el, url) {
     if (url) {
