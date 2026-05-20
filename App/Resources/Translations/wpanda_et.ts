@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Faili ei saanud kirjutamiseks avada: %1</translation>
+        <translation type="vanished">Faili ei saanud kirjutamiseks avada: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Kõigi sisendelementide jaoks pole piisavalt viike</translation>
+        <translation type="vanished">Kõigi sisendelementide jaoks pole piisavalt viike</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Kõigi pöördlüliti asendite jaoks pole piisavalt viike</translation>
+        <translation type="vanished">Kõigi pöördlüliti asendite jaoks pole piisavalt viike</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Kõigi väljundelementide jaoks pole piisavalt viike</translation>
+        <translation type="vanished">Kõigi väljundelementide jaoks pole piisavalt viike</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Elemendi tüüp ei ole toetatud: %1</translation>
+        <translation type="vanished">Elemendi tüüp ei ole toetatud: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Väljundmuutuja pole tõeväärtustabelis vastendatud: %1</translation>
+        <translation type="vanished">Väljundmuutuja pole tõeväärtustabelis vastendatud: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Testpingi faili ei saanud avada: %1</translation>
+        <translation type="vanished">Testpingi faili ei saanud avada: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Fail pole loetav</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Heli laadimine ebaõnnestus: %1 (%2)</translation>
+        <translation type="vanished">Heli laadimine ebaõnnestus: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>beWavedDolphin simulaator</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Skeem on tühi. Lainekuju loomiseks lisage sisend- ja väljundelemendid.</translation>
+        <translation type="vanished">Skeem on tühi. Lainekuju loomiseks lisage sisend- ja väljundelemendid.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>Skeemil puuduvad sisend- ja väljundelemendid. Lainekuju loomiseks lisage vähemalt üks sisend (nt Switch) ja üks väljund (nt LED).</translation>
+        <translation type="vanished">Skeemil puuduvad sisend- ja väljundelemendid. Lainekuju loomiseks lisage vähemalt üks sisend (nt Switch) ja üks väljund (nt LED).</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>Skeemil puuduvad sisendelemendid. Lainekuju loomiseks lisage vähemalt üks sisend (nt Switch, Button või Clock).</translation>
+        <translation type="vanished">Skeemil puuduvad sisendelemendid. Lainekuju loomiseks lisage vähemalt üks sisend (nt Switch, Button või Clock).</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>Skeemil puuduvad väljundelemendid. Lainekuju loomiseks lisage vähemalt üks väljund (nt LED või Display).</translation>
+        <translation type="vanished">Skeemil puuduvad väljundelemendid. Lainekuju loomiseks lisage vähemalt üks väljund (nt LED või Display).</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Fail edukalt salvestatud.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Lainekuju oleks liiga suur! Lähtestan suumi.</translation>
+        <translation type="vanished">Lainekuju oleks liiga suur! Lähtestan suumi.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Ühtegi lahtrit pole valitud.</translation>
+        <translation type="vanished">Ühtegi lahtrit pole valitud.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Viga faili avamisel: %1</translation>
+        <translation type="vanished">Viga faili avamisel: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Viga faili salvestamisel: %1</translation>
+        <translation type="vanished">Viga faili salvestamisel: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Fail edukalt laaditud.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Faili ei saanud lugemiseks avada: %1</translation>
+        <translation type="vanished">Faili ei saanud lugemiseks avada: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Formaat ei ole toetatud. Ei õnnestunud avada faili: %1</translation>
+        <translation type="vanished">Formaat ei ole toetatud. Ei õnnestunud avada faili: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>PDF failid (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Ei õnnestunud seda vooluringi PDF-ina printida.</translation>
+        <translation type="vanished">Ei õnnestunud seda vooluringi PDF-ina printida.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Faili &quot;%1&quot; ei eksisteeri!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>alumine vasak vertikaalne</translation>
     </message>
@@ -834,6 +798,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>alumine keskmine vertikaalne</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>alumine vasak diagonaal</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1173,14 +1143,12 @@ Igal juhtmevaba kanalil peab olema unikaalne silt.</translation>
         <translation>Tundmatu</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Tundmatu elemendi tüüp: %1</translation>
+        <translation type="vanished">Tundmatu elemendi tüüp: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Tundmatu tüüp: %1</translation>
+        <translation type="vanished">Tundmatu tüüp: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Igal juhtmevaba kanalil peab olema unikaalne silt.</translation>
         <translation>Tundmatu põhjus</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Ei õnnestunud laadida pildifaili: %1 (%2)</translation>
+        <translation type="vanished">Ei õnnestunud laadida pildifaili: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Igal juhtmevaba kanalil peab olema unikaalne silt.</translation>
         <translation>Vaikimisi</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Voo viga elemendi omaduste lugemisel positsioonil %1</translation>
+        <translation type="vanished">Voo viga elemendi omaduste lugemisel positsioonil %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Voo viga kujunduste lugemisel positsioonil %1</translation>
+        <translation type="vanished">Voo viga kujunduste lugemisel positsioonil %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Välimuse indeks %1 vahemikust väljas (suurus=%2) — voog võib olla rikutud</translation>
+        <translation type="vanished">Välimuse indeks %1 vahemikust väljas (suurus=%2) — voog võib olla rikutud</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Igal juhtmevaba kanalil peab olema unikaalne silt.</translation>
         <translation>Laaditakse pildikaardi välimuse nimesid.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Kujunduse indeks %1 vahemikust väljas (suurus=%2) kujunduse nimega &quot;%3&quot; — voog võib olla rikutud</translation>
+        <translation type="vanished">Kujunduse indeks %1 vahemikust väljas (suurus=%2) kujunduse nimega &quot;%3&quot; — voog võib olla rikutud</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Igal juhtmevaba kanalil peab olema unikaalne silt.</translation>
         <translation>INTEGREERITUD AHEL</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>IC laadimine: serialiseeritud andmetes puudub IC nimi</translation>
+        <translation type="vanished">IC laadimine: serialiseeritud andmetes puudub IC nimi</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 ei leitud.</translation>
+        <translation type="vanished">%1 ei leitud.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Tuvastati ringviide IC-le: %1</translation>
+        <translation type="vanished">Tuvastati ringviide IC-le: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Viga faili avamisel: %1</translation>
+        <translation type="vanished">Viga faili avamisel: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>IC migratsioon: faili ei saa kirjutamiseks avada: %1</translation>
+        <translation type="vanished">IC migratsioon: faili ei saa kirjutamiseks avada: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>IC migratsioon: uuesti salvestatud faili kinnistamine ebaõnnestus: %1</translation>
+        <translation type="vanished">IC migratsioon: uuesti salvestatud faili kinnistamine ebaõnnestus: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>IC pesastamise sügavuse limiit (%1) ületatud — blob võib olla pahatahtlikult koostatud</translation>
+        <translation type="vanished">IC pesastamise sügavuse limiit (%1) ületatud — blob võib olla pahatahtlikult koostatud</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Ei õnnestunud faili avada: %1</translation>
+        <translation type="vanished">Ei õnnestunud faili avada: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Ei õnnestunud faili salvestada: %1</translation>
+        <translation type="vanished">Ei õnnestunud faili salvestada: %1</translation>
     </message>
 </context>
 <context>
@@ -2202,17 +2156,12 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
         <translation>Lülitu kaardile</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Puudub failinimi.</translation>
+        <translation type="vanished">Puudub failinimi.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>.panda fail on tühi.</translation>
+        <translation type="vanished">.panda fail on tühi.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Soovitatud nimi:</translation>
         <translation>Lülita heli sisse</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Salvesta esmalt fail.</translation>
+        <translation type="vanished">Salvesta esmalt fail.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Soovitatud nimi:</translation>
         <translation>Lohistage siia eemaldamiseks.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Viga faili eemaldamisel: %1</translation>
+        <translation type="vanished">Viga faili eemaldamisel: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Soovitatud nimi:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Voogu viga ühenduskaardi lugemisel nihkes %1</translation>
+        <translation type="vanished">Voogu viga ühenduskaardi lugemisel nihkes %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Voo viga ühenduspordi ID-de lugemisel nihkes %1</translation>
+        <translation type="vanished">Voo viga ühenduspordi ID-de lugemisel nihkes %1</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Soovitatud nimi:</translation>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Vooviga metaandmete arvu lugemisel</translation>
+        <translation type="vanished">Vooviga metaandmete arvu lugemisel</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Metaandmete arv %1 on ebausutav võrreldes voo allesjäänud baitidega</translation>
+        <translation type="vanished">Metaandmete arv %1 on ebausutav võrreldes voo allesjäänud baitidega</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Vooviga blob-ide arvu lugemisel</translation>
+        <translation type="vanished">Vooviga blob-ide arvu lugemisel</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Blob-ide arv %1 on ebausutav võrreldes voo allesjäänud baitidega</translation>
+        <translation type="vanished">Blob-ide arv %1 on ebausutav võrreldes voo allesjäänud baitidega</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Vigane failivorming.</translation>
+        <translation type="vanished">Vigane failivorming.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Voo viga tüübimärgise lugemisel positsioonil %1: olek %2</translation>
+        <translation type="vanished">Voo viga tüübimärgise lugemisel positsioonil %1: olek %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Voo viga elemendi tüübi lugemisel positsioonil %1: olek %2</translation>
+        <translation type="vanished">Voo viga elemendi tüübi lugemisel positsioonil %1: olek %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Voo viga elemendi laadimisel positsioonil %1: olek %2</translation>
+        <translation type="vanished">Voo viga elemendi laadimisel positsioonil %1: olek %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Voo viga ühenduse laadimisel positsioonil %1: olek %2</translation>
+        <translation type="vanished">Voo viga ühenduse laadimisel positsioonil %1: olek %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Vigane tüüp. Andmed on tõenäoliselt rikutud.</translation>
+        <translation type="vanished">Vigane tüüp. Andmed on tõenäoliselt rikutud.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Versioonitud varukoopia loomine ebaõnnestus: %1</translation>
+        <translation type="vanished">Versioonitud varukoopia loomine ebaõnnestus: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Viga faili kopeerimisel: %1</translation>
+        <translation type="vanished">Viga faili kopeerimisel: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Soovitatud nimi:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>Kehtetud ühenduspordid SplitCommand konstruktoris</translation>
+        <translation type="vanished">Kehtetud ühenduspordid SplitCommand konstruktoris</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>Kehtetud graafilised elemendid SplitCommand konstruktoris</translation>
+        <translation type="vanished">Kehtetud graafilised elemendid SplitCommand konstruktoris</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Soovitatud nimi:</translation>
         <translation>Juhtme jagamine</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>Viga ümbertegemisel: %1</translation>
+        <translation type="vanished">Viga ümbertegemisel: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Viga: endPort on null SplitCommand::redo() funktsioonis</translation>
+        <translation type="vanished">Viga: endPort on null SplitCommand::redo() funktsioonis</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>Viga tagasivõtmisel: %1</translation>
+        <translation type="vanished">Viga tagasivõtmisel: %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Väljundmuutuja pole tõeväärtustabelis vastendatud: %1</translation>
+        <translation type="vanished">Väljundmuutuja pole tõeväärtustabelis vastendatud: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Elemendi tüüp ei ole toetatud: %1</translation>
+        <translation type="vanished">Elemendi tüüp ei ole toetatud: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Soovitatud nimi:</translation>
         <translation>Lülita tõeväärtustabeli väljund positsioonil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Ei leidnud tõeväärtustabeli elementi!</translation>
+        <translation type="vanished">Ei leidnud tõeväärtustabeli elementi!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Palun värskendage wiRedPanda, et salvestada muudatused sellesse faili.</transla
         <translation>Salvesta fail (originaalasukoht on kirjutuskaitstud)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Viga faili avamisel: %1</translation>
+        <translation type="vanished">Viga faili avamisel: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Ei õnnestunud faili salvestada: %1</translation>
+        <translation type="vanished">Ei õnnestunud faili salvestada: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Seda faili ei eksisteeri: %1</translation>
+        <translation type="vanished">Seda faili ei eksisteeri: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Ei õnnestunud faili avada: %1</translation>
+        <translation type="vanished">Ei õnnestunud faili avada: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ Algse faili varukoopia loodi nimega: %3</translation>
         <translation>Fail on uuendatud.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Viga automaatsalvestuse faili avamisel: %1</translation>
+        <translation type="vanished">Viga automaatsalvestuse faili avamisel: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Automaatsalvestuse faili ei õnnestunud kinnitada: %1</translation>
+        <translation type="vanished">Automaatsalvestuse faili ei õnnestunud kinnitada: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ Algse faili varukoopia loodi nimega: %3</translation>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Viga: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

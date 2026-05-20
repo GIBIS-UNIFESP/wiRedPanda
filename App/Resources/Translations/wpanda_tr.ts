@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Dosya yazma için açılamadı: %1</translation>
+        <translation type="vanished">Dosya yazma için açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Tüm giriş elemanları için yeterli pin yok</translation>
+        <translation type="vanished">Tüm giriş elemanları için yeterli pin yok</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Tüm döner anahtar konumları için yeterli pin yok</translation>
+        <translation type="vanished">Tüm döner anahtar konumları için yeterli pin yok</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Tüm çıkış elemanları için yeterli pin yok</translation>
+        <translation type="vanished">Tüm çıkış elemanları için yeterli pin yok</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Öğe türü desteklenmiyor: %1</translation>
+        <translation type="vanished">Öğe türü desteklenmiyor: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Doğruluk tablosu için çıkış değişkeni eşlenmedi: %1</translation>
+        <translation type="vanished">Doğruluk tablosu için çıkış değişkeni eşlenmedi: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Test tezgahı dosyası açılamadı: %1</translation>
+        <translation type="vanished">Test tezgahı dosyası açılamadı: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Dosya okunamaz</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Ses dosyası yüklenemedi: %1 (%2)</translation>
+        <translation type="vanished">Ses dosyası yüklenemedi: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>beWavedDolphin Simülötürü</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Devre boş. Dalga formu oluşturmak için giriş ve çıkış elemanları ekleyin.</translation>
+        <translation type="vanished">Devre boş. Dalga formu oluşturmak için giriş ve çıkış elemanları ekleyin.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>Devrede giriş veya çıkış elemanı yok. Dalga formu oluşturmak için en az bir giriş (örn. Switch) ve bir çıkış (örn. LED) ekleyin.</translation>
+        <translation type="vanished">Devrede giriş veya çıkış elemanı yok. Dalga formu oluşturmak için en az bir giriş (örn. Switch) ve bir çıkış (örn. LED) ekleyin.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>Devrede giriş elemanı yok. Dalga formu oluşturmak için en az bir giriş (örn. Switch, Button veya Clock) ekleyin.</translation>
+        <translation type="vanished">Devrede giriş elemanı yok. Dalga formu oluşturmak için en az bir giriş (örn. Switch, Button veya Clock) ekleyin.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>Devrede çıkış elemanı yok. Dalga formu oluşturmak için en az bir çıkış (örn. LED veya Display) ekleyin.</translation>
+        <translation type="vanished">Devrede çıkış elemanı yok. Dalga formu oluşturmak için en az bir çıkış (örn. LED veya Display) ekleyin.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Dosya başarıyla kaydedildi.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Dalga formu çok büyük olacak! Yakınlaştırma sıfırlanıyor.</translation>
+        <translation type="vanished">Dalga formu çok büyük olacak! Yakınlaştırma sıfırlanıyor.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Hiçbir hücre seçilmedi.</translation>
+        <translation type="vanished">Hiçbir hücre seçilmedi.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Dosya açılırken hata: %1</translation>
+        <translation type="vanished">Dosya açılırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Dosya kaydedilirken hata: %1</translation>
+        <translation type="vanished">Dosya kaydedilirken hata: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Dosya başarıyla yüklendi.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Dosya okuma için açılamadı: %1</translation>
+        <translation type="vanished">Dosya okuma için açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Format desteklenmiyor. Dosya açılamadı: %1</translation>
+        <translation type="vanished">Format desteklenmiyor. Dosya açılamadı: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>PDF dosyaları (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Bu devre PDF olarak yazdırılamadı.</translation>
+        <translation type="vanished">Bu devre PDF olarak yazdırılamadı.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>&quot;%1&quot; dosyası mevcut değil!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>alt sol dikey</translation>
     </message>
@@ -839,6 +803,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>alt merkez dikey</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>alt sol çapraz</translation>
     </message>
 </context>
 <context>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1173,14 +1143,12 @@ Her kablosuz kanal benzersiz bir etikete sahip olmalıdır.</translation>
         <translation>Bilinmeyen</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Bilinmeyen eleman türü: %1</translation>
+        <translation type="vanished">Bilinmeyen eleman türü: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Bilinmeyen tür: %1</translation>
+        <translation type="vanished">Bilinmeyen tür: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Her kablosuz kanal benzersiz bir etikete sahip olmalıdır.</translation>
         <translation>Bilinmeyen neden</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Piksel haritası yüklenemedi: %1 (%2)</translation>
+        <translation type="vanished">Piksel haritası yüklenemedi: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Her kablosuz kanal benzersiz bir etikete sahip olmalıdır.</translation>
         <translation>Varsayılan</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Konum %1&apos;de eleman özellikleri okunurken akış hatası</translation>
+        <translation type="vanished">Konum %1&apos;de eleman özellikleri okunurken akış hatası</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Konum %1&apos;de görünümler okunurken akış hatası</translation>
+        <translation type="vanished">Konum %1&apos;de görünümler okunurken akış hatası</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Görünüm dizini %1 aralık dışında (boyut=%2) — akış bozulmuş olabilir</translation>
+        <translation type="vanished">Görünüm dizini %1 aralık dışında (boyut=%2) — akış bozulmuş olabilir</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Her kablosuz kanal benzersiz bir etikete sahip olmalıdır.</translation>
         <translation>Pixmap kabuğu adları yükleniyor.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Görünüm dizini %1 aralık dışında (boyut=%2) görünüm adı &quot;%3&quot; için — akış bozuk olabilir</translation>
+        <translation type="vanished">Görünüm dizini %1 aralık dışında (boyut=%2) görünüm adı &quot;%3&quot; için — akış bozuk olabilir</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Her kablosuz kanal benzersiz bir etikete sahip olmalıdır.</translation>
         <translation>ENTEGRE DEVRE</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>IC yükleme: serileştirilmiş veride IC adı bulunamadı</translation>
+        <translation type="vanished">IC yükleme: serileştirilmiş veride IC adı bulunamadı</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 bulunamadı.</translation>
+        <translation type="vanished">%1 bulunamadı.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Döngüsel IC referansı algılandı: %1</translation>
+        <translation type="vanished">Döngüsel IC referansı algılandı: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Dosya açılırken hata: %1</translation>
+        <translation type="vanished">Dosya açılırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>IC geçişi: dosya yazma için açılamıyor: %1</translation>
+        <translation type="vanished">IC geçişi: dosya yazma için açılamıyor: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>IC geçişi: yeniden kaydedilen dosya onaylanamadı: %1</translation>
+        <translation type="vanished">IC geçişi: yeniden kaydedilen dosya onaylanamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>IC iç içe geçme derinliği sınırı (%1) aşıldı — blob kötü amaçlı oluşturulmuş olabilir</translation>
+        <translation type="vanished">IC iç içe geçme derinliği sınırı (%1) aşıldı — blob kötü amaçlı oluşturulmuş olabilir</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Dosya açılamadı: %1</translation>
+        <translation type="vanished">Dosya açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Dosya kaydedilemedi: %1</translation>
+        <translation type="vanished">Dosya kaydedilemedi: %1</translation>
     </message>
 </context>
 <context>
@@ -2277,17 +2231,12 @@ Suggested name:</source>
         <translation>Çıkış</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Eksik dosya adı.</translation>
+        <translation type="vanished">Eksik dosya adı.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>.panda dosyası boş.</translation>
+        <translation type="vanished">.panda dosyası boş.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Suggested name:</source>
         <translation>Sesi aç</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Önce dosyayı kaydedin.</translation>
+        <translation type="vanished">Önce dosyayı kaydedin.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Suggested name:</source>
         <translation>Kaldırmak için buraya sürükleyin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Dosya silinirken hata: %1</translation>
+        <translation type="vanished">Dosya silinirken hata: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Bağlantı haritası okunurken %1 konumunda akış hatası</translation>
+        <translation type="vanished">Bağlantı haritası okunurken %1 konumunda akış hatası</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Konum %1&apos;de bağlantı port kimlikleri okunurken akış hatası</translation>
+        <translation type="vanished">Konum %1&apos;de bağlantı port kimlikleri okunurken akış hatası</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Üst veri sayısı okunurken akış hatası</translation>
+        <translation type="vanished">Üst veri sayısı okunurken akış hatası</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Kalan akış baytlarına göre üst veri sayısı %1 mantıksız</translation>
+        <translation type="vanished">Kalan akış baytlarına göre üst veri sayısı %1 mantıksız</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Blob sayısı okunurken akış hatası</translation>
+        <translation type="vanished">Blob sayısı okunurken akış hatası</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Kalan akış baytlarına göre blob sayısı %1 mantıksız</translation>
+        <translation type="vanished">Kalan akış baytlarına göre blob sayısı %1 mantıksız</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Geçersiz dosya formatı.</translation>
+        <translation type="vanished">Geçersiz dosya formatı.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Konum %1&apos;de tür etiketi okunurken akış hatası: durum %2</translation>
+        <translation type="vanished">Konum %1&apos;de tür etiketi okunurken akış hatası: durum %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Konum %1&apos;de eleman türü okunurken akış hatası: durum %2</translation>
+        <translation type="vanished">Konum %1&apos;de eleman türü okunurken akış hatası: durum %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Konum %1&apos;de eleman yüklenirken akış hatası: durum %2</translation>
+        <translation type="vanished">Konum %1&apos;de eleman yüklenirken akış hatası: durum %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Konum %1&apos;de bağlantı yüklenirken akış hatası: durum %2</translation>
+        <translation type="vanished">Konum %1&apos;de bağlantı yüklenirken akış hatası: durum %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Geçersiz tür. Veri muhtemelen bozuk.</translation>
+        <translation type="vanished">Geçersiz tür. Veri muhtemelen bozuk.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Sürümlü yedek oluşturulamadı: %1</translation>
+        <translation type="vanished">Sürümlü yedek oluşturulamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Dosya kopyalanırken hata oluştu: %1</translation>
+        <translation type="vanished">Dosya kopyalanırken hata oluştu: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>SplitCommand constructor&apos;ında geçersiz bağlantı portları</translation>
+        <translation type="vanished">SplitCommand constructor&apos;ında geçersiz bağlantı portları</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>SplitCommand constructor&apos;ında geçersiz grafik öğeleri</translation>
+        <translation type="vanished">SplitCommand constructor&apos;ında geçersiz grafik öğeleri</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Suggested name:</source>
         <translation>Kablo bölme</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>%1 yeniden yapılırken hata</translation>
+        <translation type="vanished">%1 yeniden yapılırken hata</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Hata: SplitCommand::redo() içinde endPort null</translation>
+        <translation type="vanished">Hata: SplitCommand::redo() içinde endPort null</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>%1 geri alınırken hata</translation>
+        <translation type="vanished">%1 geri alınırken hata</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Doğruluk tablosu için çıkış değişkeni eşlenmedi: %1</translation>
+        <translation type="vanished">Doğruluk tablosu için çıkış değişkeni eşlenmedi: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Öğe türü desteklenmiyor: %1</translation>
+        <translation type="vanished">Öğe türü desteklenmiyor: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Suggested name:</source>
         <translation>%1 pozisyonunda Doğruluk Tablosu Çıkışını değiştir</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Doğruluk tablosu öğesi bulunamadı!</translation>
+        <translation type="vanished">Doğruluk tablosu öğesi bulunamadı!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Bu dosyadaki değişiklikleri kaydetmek için lütfen wiRedPanda&apos;yı günce
         <translation>Dosyayı Kaydet (orijinal konum salt okunur)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Dosya açılırken hata: %1</translation>
+        <translation type="vanished">Dosya açılırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Dosya kaydedilemedi: %1</translation>
+        <translation type="vanished">Dosya kaydedilemedi: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Bu dosya mevcut değil: %1</translation>
+        <translation type="vanished">Bu dosya mevcut değil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Dosya açılamadı: %1</translation>
+        <translation type="vanished">Dosya açılamadı: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ Orijinal dosyanın yedeği şu adla oluşturuldu: %3</translation>
         <translation>Dosya yükseltildi.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Otomatik kaydetme dosyası açılırken hata: %1</translation>
+        <translation type="vanished">Otomatik kaydetme dosyası açılırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Otomatik kaydetme dosyası tamamlanamadı: %1</translation>
+        <translation type="vanished">Otomatik kaydetme dosyası tamamlanamadı: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ Orijinal dosyanın yedeği şu adla oluşturuldu: %3</translation>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Hata: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

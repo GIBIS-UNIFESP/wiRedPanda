@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Файлът не може да бъде отворен за запис: %1</translation>
+        <translation type="vanished">Файлът не може да бъде отворен за запис: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Няма достатъчно пинове за всички входни елементи</translation>
+        <translation type="vanished">Няма достатъчно пинове за всички входни елементи</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Няма достатъчно пинове за всички позиции на въртящия превключвател</translation>
+        <translation type="vanished">Няма достатъчно пинове за всички позиции на въртящия превключвател</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Няма достатъчно пинове за всички изходни елементи</translation>
+        <translation type="vanished">Няма достатъчно пинове за всички изходни елементи</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Типът елемент не се поддържа: %1</translation>
+        <translation type="vanished">Типът елемент не се поддържа: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Изходната променлива не е свързана с таблицата на истинност: %1</translation>
+        <translation type="vanished">Изходната променлива не е свързана с таблицата на истинност: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Файлът за тестова стенда не може да бъде отворен: %1</translation>
+        <translation type="vanished">Файлът за тестова стенда не може да бъде отворен: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Файлът не може да се чете</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Аудиото не може да бъде заредено: %1 (%2)</translation>
+        <translation type="vanished">Аудиото не може да бъде заредено: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>beWavedDolphin Симулатор</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Схемата е празна. Добавете входни и изходни елементи, за да генерирате вълнова форма.</translation>
+        <translation type="vanished">Схемата е празна. Добавете входни и изходни елементи, за да генерирате вълнова форма.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>Схемата няма входни или изходни елементи. Добавете поне един вход (напр. Switch) и един изход (напр. LED), за да генерирате вълнова форма.</translation>
+        <translation type="vanished">Схемата няма входни или изходни елементи. Добавете поне един вход (напр. Switch) и един изход (напр. LED), за да генерирате вълнова форма.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>Схемата няма входни елементи. Добавете поне един вход (напр. Switch, Button или Clock), за да генерирате вълнова форма.</translation>
+        <translation type="vanished">Схемата няма входни елементи. Добавете поне един вход (напр. Switch, Button или Clock), за да генерирате вълнова форма.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>Схемата няма изходни елементи. Добавете поне един изход (напр. LED или Display), за да генерирате вълнова форма.</translation>
+        <translation type="vanished">Схемата няма изходни елементи. Добавете поне един изход (напр. LED или Display), за да генерирате вълнова форма.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Файлът е запазен успешно.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Формата на вълната би била твърде голяма! Нулиране на мащабирането.</translation>
+        <translation type="vanished">Формата на вълната би била твърде голяма! Нулиране на мащабирането.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Няма избрани клетки.</translation>
+        <translation type="vanished">Няма избрани клетки.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Грешка при отваряне на файл: %1</translation>
+        <translation type="vanished">Грешка при отваряне на файл: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Грешка при записване на файл: %1</translation>
+        <translation type="vanished">Грешка при записване на файл: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Файлът е зареден успешно.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Файлът не може да бъде отворен за четене: %1</translation>
+        <translation type="vanished">Файлът не може да бъде отворен за четене: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Форматът не се поддържа. Не може да се отвори файлът: %1</translation>
+        <translation type="vanished">Форматът не се поддържа. Не може да се отвори файлът: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>PDF файлове (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Не може да се отпечата тази схема в PDF.</translation>
+        <translation type="vanished">Не може да се отпечата тази схема в PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Файлът &quot;%1&quot; не съществува!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>долен ляв вертикален</translation>
     </message>
@@ -834,6 +798,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>долен централен вертикален</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>долен ляв диагонал</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1173,14 +1143,12 @@ Each wireless channel must have a unique label.</source>
         <translation>Непознат</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Неизвестен тип елемент: %1</translation>
+        <translation type="vanished">Неизвестен тип елемент: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Неизвестен тип: %1</translation>
+        <translation type="vanished">Неизвестен тип: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Each wireless channel must have a unique label.</source>
         <translation>Неизвестна причина</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Не може да се зареди изображението: %1 (%2)</translation>
+        <translation type="vanished">Не може да се зареди изображението: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Each wireless channel must have a unique label.</source>
         <translation>По подразбиране</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Грешка при четене на свойствата на елемента на позиция %1</translation>
+        <translation type="vanished">Грешка при четене на свойствата на елемента на позиция %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Грешка при четене на скинове на позиция %1</translation>
+        <translation type="vanished">Грешка при четене на скинове на позиция %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Индекс на изглед %1 извън обхвата (размер=%2) — потокът може да е повреден</translation>
+        <translation type="vanished">Индекс на изглед %1 извън обхвата (размер=%2) — потокът може да е повреден</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Each wireless channel must have a unique label.</source>
         <translation>Зареждане имената на облицовките на изображенията.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Индекс на скин %1 извън обхват (размер=%2) за име на скин &quot;%3&quot; — потокът може да е повреден</translation>
+        <translation type="vanished">Индекс на скин %1 извън обхват (размер=%2) за име на скин &quot;%3&quot; — потокът може да е повреден</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Each wireless channel must have a unique label.</source>
         <translation>ИНТЕГРАЛНА СХЕМА</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>Зареждане на IC: няма име на IC в сериализираните данни</translation>
+        <translation type="vanished">Зареждане на IC: няма име на IC в сериализираните данни</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 не е намерен.</translation>
+        <translation type="vanished">%1 не е намерен.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Открита е кръгова IC препратка: %1</translation>
+        <translation type="vanished">Открита е кръгова IC препратка: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Грешка при отваряне на файл: %1</translation>
+        <translation type="vanished">Грешка при отваряне на файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>Миграция на IC: файлът не може да бъде отворен за запис: %1</translation>
+        <translation type="vanished">Миграция на IC: файлът не може да бъде отворен за запис: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>Миграция на IC: неуспешно записване на файла: %1</translation>
+        <translation type="vanished">Миграция на IC: неуспешно записване на файла: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>Превишен лимит за дълбочина на вложеност на ИС (%1) — blob може да е злонамерено създаден</translation>
+        <translation type="vanished">Превишен лимит за дълбочина на вложеност на ИС (%1) — blob може да е злонамерено създаден</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Не може да се отвори файл: %1</translation>
+        <translation type="vanished">Не може да се отвори файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Не може да се запише файл: %1</translation>
+        <translation type="vanished">Не може да се запише файл: %1</translation>
     </message>
 </context>
 <context>
@@ -2202,17 +2156,12 @@ wiRedPanda %1 ще изведе автоматично всички други .
         <translation>Превключи към раздел</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Липсва име на файл.</translation>
+        <translation type="vanished">Липсва име на файл.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>.panda файлът е празен.</translation>
+        <translation type="vanished">.panda файлът е празен.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Suggested name:</source>
         <translation>Включи звук</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Първо запазете файла.</translation>
+        <translation type="vanished">Първо запазете файла.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Suggested name:</source>
         <translation>Плъзнете тук за премахване.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Грешка при изтриване на файл: %1</translation>
+        <translation type="vanished">Грешка при изтриване на файл: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Грешка при четене на карта на връзки от потока при отместване %1</translation>
+        <translation type="vanished">Грешка при четене на карта на връзки от потока при отместване %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Грешка при четене на идентификатори на портове за свързване при отместване %1</translation>
+        <translation type="vanished">Грешка при четене на идентификатори на портове за свързване при отместване %1</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Грешка в потока при четене на броя метаданни</translation>
+        <translation type="vanished">Грешка в потока при четене на броя метаданни</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Брой метаданни %1 неправдоподобен спрямо оставащите байтове в потока</translation>
+        <translation type="vanished">Брой метаданни %1 неправдоподобен спрямо оставащите байтове в потока</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Грешка в потока при четене на броя blob</translation>
+        <translation type="vanished">Грешка в потока при четене на броя blob</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Брой blob %1 неправдоподобен спрямо оставащите байтове в потока</translation>
+        <translation type="vanished">Брой blob %1 неправдоподобен спрямо оставащите байтове в потока</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Невалиден формат на файл.</translation>
+        <translation type="vanished">Невалиден формат на файл.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Грешка при четене на етикета за тип на позиция %1: статус %2</translation>
+        <translation type="vanished">Грешка при четене на етикета за тип на позиция %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Грешка при четене на типа елемент на позиция %1: статус %2</translation>
+        <translation type="vanished">Грешка при четене на типа елемент на позиция %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Грешка при зареждане на елемент на позиция %1: статус %2</translation>
+        <translation type="vanished">Грешка при зареждане на елемент на позиция %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Грешка при зареждане на връзка на позиция %1: статус %2</translation>
+        <translation type="vanished">Грешка при зареждане на връзка на позиция %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Невалиден тип. Данните вероятно са повредени.</translation>
+        <translation type="vanished">Невалиден тип. Данните вероятно са повредени.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Неуспешно създаване на версионно архивиране: %1</translation>
+        <translation type="vanished">Неуспешно създаване на версионно архивиране: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Грешка при копиране на файла: %1</translation>
+        <translation type="vanished">Грешка при копиране на файла: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>Невалидни портове за свързване в конструктора на SplitCommand</translation>
+        <translation type="vanished">Невалидни портове за свързване в конструктора на SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>Невалидни графични елементи в конструктора на SplitCommand</translation>
+        <translation type="vanished">Невалидни графични елементи в конструктора на SplitCommand</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Suggested name:</source>
         <translation>Разделяне на проводник</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>Грешка при опит за повтаряне %1</translation>
+        <translation type="vanished">Грешка при опит за повтаряне %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Грешка: endPort е null в SplitCommand::redo()</translation>
+        <translation type="vanished">Грешка: endPort е null в SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>Грешка при опит за отмяна %1</translation>
+        <translation type="vanished">Грешка при опит за отмяна %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Изходната променлива не е свързана с таблицата на истинност: %1</translation>
+        <translation type="vanished">Изходната променлива не е свързана с таблицата на истинност: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Типът елемент не се поддържа: %1</translation>
+        <translation type="vanished">Типът елемент не се поддържа: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Suggested name:</source>
         <translation>Превключи изхода на таблицата на истинност на позиция: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Не може да се намери елемент от таблицата на истинност!</translation>
+        <translation type="vanished">Не може да се намери елемент от таблицата на истинност!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>Запиши файла (оригиналното местоположение е само за четене)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Грешка при отваряне на файл: %1</translation>
+        <translation type="vanished">Грешка при отваряне на файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Не може да се запише файл: %1</translation>
+        <translation type="vanished">Не може да се запише файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Този файл не съществува: %1</translation>
+        <translation type="vanished">Този файл не съществува: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Не може да се отвори файл: %1</translation>
+        <translation type="vanished">Не може да се отвори файл: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ A backup of the original file has been created with name: %3</source>
         <translation>Файлът е обновен.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Грешка при отваряне на автоматично запазен файл: %1</translation>
+        <translation type="vanished">Грешка при отваряне на автоматично запазен файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Файлът за автоматично запазване не може да бъде потвърден: %1</translation>
+        <translation type="vanished">Файлът за автоматично запазване не може да бъде потвърден: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>

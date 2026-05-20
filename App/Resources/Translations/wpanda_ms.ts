@@ -33,39 +33,32 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Tidak dapat membuka fail untuk penulisan: %1</translation>
+        <translation type="vanished">Tidak dapat membuka fail untuk penulisan: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation>Pin tidak mencukupi untuk semua elemen input</translation>
+        <translation type="vanished">Pin tidak mencukupi untuk semua elemen input</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation>Pin tidak mencukupi untuk semua kedudukan suis putar</translation>
+        <translation type="vanished">Pin tidak mencukupi untuk semua kedudukan suis putar</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation>Pin tidak mencukupi untuk semua elemen output</translation>
+        <translation type="vanished">Pin tidak mencukupi untuk semua elemen output</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation>Jenis elemen tidak disokong: %1</translation>
+        <translation type="vanished">Jenis elemen tidak disokong: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Pemboleh ubah output tidak dipetakan untuk JadualKebenaran: %1</translation>
+        <translation type="vanished">Pemboleh ubah output tidak dipetakan untuk JadualKebenaran: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation>Tidak dapat membuka fail testbench: %1</translation>
+        <translation type="vanished">Tidak dapat membuka fail testbench: %1</translation>
     </message>
 </context>
 <context>
@@ -87,9 +80,8 @@
         <translation>Fail tidak boleh dibaca</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation>Tidak dapat memuatkan audio: %1 (%2)</translation>
+        <translation type="vanished">Tidak dapat memuatkan audio: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -387,39 +379,20 @@
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation>Litar kosong. Tambah elemen input dan output untuk menjana bentuk gelombang.</translation>
+        <translation type="vanished">Litar kosong. Tambah elemen input dan output untuk menjana bentuk gelombang.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation>Litar tidak mempunyai elemen input atau output. Tambah sekurang-kurangnya satu input (cth. Switch) dan satu output (cth. LED) untuk menjana bentuk gelombang.</translation>
+        <translation type="vanished">Litar tidak mempunyai elemen input atau output. Tambah sekurang-kurangnya satu input (cth. Switch) dan satu output (cth. LED) untuk menjana bentuk gelombang.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation>Litar tidak mempunyai elemen input. Tambah sekurang-kurangnya satu input (cth. Switch, Button atau Clock) untuk menjana bentuk gelombang.</translation>
+        <translation type="vanished">Litar tidak mempunyai elemen input. Tambah sekurang-kurangnya satu input (cth. Switch, Button atau Clock) untuk menjana bentuk gelombang.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation>Litar tidak mempunyai elemen output. Tambah sekurang-kurangnya satu output (cth. LED atau Display) untuk menjana bentuk gelombang.</translation>
+        <translation type="vanished">Litar tidak mempunyai elemen output. Tambah sekurang-kurangnya satu output (cth. LED atau Display) untuk menjana bentuk gelombang.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -464,24 +437,20 @@
         <translation>Fail berjaya disimpan.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Bentuk gelombang akan terlalu besar! Menetapkan semula zum.</translation>
+        <translation type="vanished">Bentuk gelombang akan terlalu besar! Menetapkan semula zum.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation>Tiada sel dipilih.</translation>
+        <translation type="vanished">Tiada sel dipilih.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation>Ralat membuka fail: %1</translation>
+        <translation type="vanished">Ralat membuka fail: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation>Ralat menyimpan fail: %1</translation>
+        <translation type="vanished">Ralat menyimpan fail: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -499,14 +468,12 @@
         <translation>Fail berjaya dimuatkan.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation>Tidak dapat membuka fail untuk bacaan: %1</translation>
+        <translation type="vanished">Tidak dapat membuka fail untuk bacaan: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation>Format tidak disokong. Tidak dapat membuka fail: %1</translation>
+        <translation type="vanished">Format tidak disokong. Tidak dapat membuka fail: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -524,13 +491,11 @@
         <translation>Fail PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation>Tidak dapat mencetak litar ini ke PDF.</translation>
+        <translation type="vanished">Tidak dapat mencetak litar ini ke PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Fail &quot;%1&quot; tidak wujud!</translation>
     </message>
@@ -771,7 +736,6 @@
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower left vertical</source>
         <translation>bawah kiri menegak</translation>
     </message>
@@ -834,6 +798,11 @@
         <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower center vertical</source>
         <translation>bawah tengah menegak</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <source>lower left diagonal</source>
+        <translation>bawah kiri pepenjuru</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
@@ -1014,6 +983,7 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1173,14 +1143,12 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
         <translation>Tidak dikenali</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation>Jenis elemen tidak diketahui: %1</translation>
+        <translation type="vanished">Jenis elemen tidak diketahui: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation>Jenis tidak dikenali: %1</translation>
+        <translation type="vanished">Jenis tidak dikenali: %1</translation>
     </message>
 </context>
 <context>
@@ -1209,9 +1177,8 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
         <translation>Sebab tidak diketahui</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Tidak dapat memuatkan pixmap: %1 (%2)</translation>
+        <translation type="vanished">Tidak dapat memuatkan pixmap: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1219,19 +1186,16 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
         <translation>Lalai</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Ralat strim semasa membaca sifat elemen pada kedudukan %1</translation>
+        <translation type="vanished">Ralat strim semasa membaca sifat elemen pada kedudukan %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Ralat strim semasa membaca skin pada kedudukan %1</translation>
+        <translation type="vanished">Ralat strim semasa membaca skin pada kedudukan %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Indeks rupa %1 di luar julat (saiz=%2) — strim mungkin rosak</translation>
+        <translation type="vanished">Indeks rupa %1 di luar julat (saiz=%2) — strim mungkin rosak</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1239,9 +1203,8 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
         <translation>Memuatkan nama rupa pixmap.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Indeks skin %1 di luar julat (saiz=%2) untuk nama skin &quot;%3&quot; — strim mungkin rosak</translation>
+        <translation type="vanished">Indeks skin %1 di luar julat (saiz=%2) untuk nama skin &quot;%3&quot; — strim mungkin rosak</translation>
     </message>
 </context>
 <context>
@@ -1257,52 +1220,43 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
         <translation>LITAR BERSEPADU</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation>Muat IC: nama IC tiada dalam data bersiri</translation>
+        <translation type="vanished">Muat IC: nama IC tiada dalam data bersiri</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation>%1 tidak ditemui.</translation>
+        <translation type="vanished">%1 tidak ditemui.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation>Rujukan IC berputar dikesan: %1</translation>
+        <translation type="vanished">Rujukan IC berputar dikesan: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation>Ralat membuka fail: %1</translation>
+        <translation type="vanished">Ralat membuka fail: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>Migrasi IC: tidak dapat membuka fail untuk penulisan: %1</translation>
+        <translation type="vanished">Migrasi IC: tidak dapat membuka fail untuk penulisan: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>Migrasi IC: gagal menghantar fail yang disimpan semula: %1</translation>
+        <translation type="vanished">Migrasi IC: gagal menghantar fail yang disimpan semula: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>Had kedalaman bersarang IC (%1) dilampaui — blob mungkin dibina secara berniat jahat</translation>
+        <translation type="vanished">Had kedalaman bersarang IC (%1) dilampaui — blob mungkin dibina secara berniat jahat</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation>Tidak dapat membuka fail: %1</translation>
+        <translation type="vanished">Tidak dapat membuka fail: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation>Tidak dapat menyimpan fail: %1</translation>
+        <translation type="vanished">Tidak dapat menyimpan fail: %1</translation>
     </message>
 </context>
 <context>
@@ -2202,17 +2156,12 @@ Anda perlu menyimpan projek baharu sebelum mengakses IC dan penampilan, atau men
         <translation>Tukar ke tab</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation>Nama fail hilang.</translation>
+        <translation type="vanished">Nama fail hilang.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation>Fail .panda kosong.</translation>
+        <translation type="vanished">Fail .panda kosong.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2352,9 +2301,8 @@ Nama yang dicadangkan:</translation>
         <translation>Nyahbisu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation>Simpan fail terlebih dahulu.</translation>
+        <translation type="vanished">Simpan fail terlebih dahulu.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2373,9 +2321,8 @@ Nama yang dicadangkan:</translation>
         <translation>Seret ke sini untuk buang.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation>Ralat membuang fail: %1</translation>
+        <translation type="vanished">Ralat membuang fail: %1</translation>
     </message>
 </context>
 <context>
@@ -2483,14 +2430,12 @@ Nama yang dicadangkan:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation>Ralat strim semasa membaca peta sambungan pada ofset %1</translation>
+        <translation type="vanished">Ralat strim semasa membaca peta sambungan pada ofset %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Ralat strim semasa membaca ID port sambungan pada ofset %1</translation>
+        <translation type="vanished">Ralat strim semasa membaca ID port sambungan pada ofset %1</translation>
     </message>
 </context>
 <context>
@@ -2652,70 +2597,52 @@ Nama yang dicadangkan:</translation>
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation>Ralat strim semasa membaca kiraan metadata</translation>
+        <translation type="vanished">Ralat strim semasa membaca kiraan metadata</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation>Kiraan metadata %1 tidak munasabah berbanding baki bait strim</translation>
+        <translation type="vanished">Kiraan metadata %1 tidak munasabah berbanding baki bait strim</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation>Ralat strim semasa membaca kiraan blob</translation>
+        <translation type="vanished">Ralat strim semasa membaca kiraan blob</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation>Kiraan blob %1 tidak munasabah berbanding baki bait strim</translation>
+        <translation type="vanished">Kiraan blob %1 tidak munasabah berbanding baki bait strim</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation>Format fail tidak sah.</translation>
+        <translation type="vanished">Format fail tidak sah.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation>Ralat strim semasa membaca tag jenis pada kedudukan %1: status %2</translation>
+        <translation type="vanished">Ralat strim semasa membaca tag jenis pada kedudukan %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation>Ralat strim semasa membaca jenis elemen pada kedudukan %1: status %2</translation>
+        <translation type="vanished">Ralat strim semasa membaca jenis elemen pada kedudukan %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation>Ralat strim semasa memuatkan elemen pada kedudukan %1: status %2</translation>
+        <translation type="vanished">Ralat strim semasa memuatkan elemen pada kedudukan %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation>Ralat strim semasa memuatkan sambungan pada kedudukan %1: status %2</translation>
+        <translation type="vanished">Ralat strim semasa memuatkan sambungan pada kedudukan %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation>Jenis tidak sah. Data mungkin rosak.</translation>
+        <translation type="vanished">Jenis tidak sah. Data mungkin rosak.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation>Gagal mencipta sandaran berversi: %1</translation>
+        <translation type="vanished">Gagal mencipta sandaran berversi: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation>Ralat menyalin fail: %1</translation>
+        <translation type="vanished">Ralat menyalin fail: %1</translation>
     </message>
 </context>
 <context>
@@ -2729,14 +2656,12 @@ Nama yang dicadangkan:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation>Port sambungan tidak sah dalam pembina SplitCommand</translation>
+        <translation type="vanished">Port sambungan tidak sah dalam pembina SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation>Elemen grafik tidak sah dalam pembina SplitCommand</translation>
+        <translation type="vanished">Elemen grafik tidak sah dalam pembina SplitCommand</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2744,32 +2669,27 @@ Nama yang dicadangkan:</translation>
         <translation>Pisah wayar</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation>Ralat cuba buat semula %1</translation>
+        <translation type="vanished">Ralat cuba buat semula %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation>Ralat: endPort adalah null dalam SplitCommand::redo()</translation>
+        <translation type="vanished">Ralat: endPort adalah null dalam SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation>Ralat cuba buat asal %1</translation>
+        <translation type="vanished">Ralat cuba buat asal %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation>Pemboleh ubah output tidak dipetakan untuk JadualKebenaran: %1</translation>
+        <translation type="vanished">Pemboleh ubah output tidak dipetakan untuk JadualKebenaran: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation>Jenis elemen tidak disokong: %1</translation>
+        <translation type="vanished">Jenis elemen tidak disokong: %1</translation>
     </message>
 </context>
 <context>
@@ -2806,9 +2726,8 @@ Nama yang dicadangkan:</translation>
         <translation>Togol Output Jadual Kebenaran di kedudukan: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation>Tidak dapat menemui elemen jadual kebenaran!</translation>
+        <translation type="vanished">Tidak dapat menemui elemen jadual kebenaran!</translation>
     </message>
 </context>
 <context>
@@ -2890,24 +2809,20 @@ Sila kemas kini wiRedPanda untuk menyimpan perubahan pada fail ini.</translation
         <translation>Simpan fail (lokasi asal baca-sahaja)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation>Ralat membuka fail: %1</translation>
+        <translation type="vanished">Ralat membuka fail: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation>Tidak dapat menyimpan fail: %1</translation>
+        <translation type="vanished">Tidak dapat menyimpan fail: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation>Fail ini tidak wujud: %1</translation>
+        <translation type="vanished">Fail ini tidak wujud: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation>Tidak dapat membuka fail: %1</translation>
+        <translation type="vanished">Tidak dapat membuka fail: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2940,14 +2855,12 @@ Sandaran fail asal telah dicipta dengan nama: %3</translation>
         <translation>Fail telah dinaik taraf.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation>Ralat membuka fail autosimpan: %1</translation>
+        <translation type="vanished">Ralat membuka fail autosimpan: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation>Tidak dapat mengesahkan fail simpan automatik: %1</translation>
+        <translation type="vanished">Tidak dapat mengesahkan fail simpan automatik: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
@@ -3031,7 +2944,7 @@ Sandaran fail asal telah dicipta dengan nama: %3</translation>
     <message>
         <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ralat: </translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="303"/>
