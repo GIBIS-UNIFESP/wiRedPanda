@@ -65,6 +65,9 @@ export default {
   'download.errorNotFound': '{owner}/{repo} のリリースが見つかりませんでした。',
   'download.errorRateLimit': 'GitHub API のレート制限に達した可能性があります。しばらくしてからもう一度お試しください。',
   'download.errorConnection': 'GitHub API に接続できないか、レスポンスを解析できませんでした。ネットワーク接続を確認するか、しばらくしてからもう一度お試しください。',
+  'download.x86_64': 'x86_64',
+  'download.arm64': 'ARM64',
+  'download.universal': 'ユニバーサル',
 
   // 404 page
   '404.title': '404',

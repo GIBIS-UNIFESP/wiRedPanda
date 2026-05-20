@@ -65,6 +65,9 @@ export default {
   'download.errorNotFound': 'No se encontraron releases para {owner}/{repo}.',
   'download.errorRateLimit': 'Probablemente se excedió el límite de solicitudes de la API de GitHub. Por favor, inténtalo de nuevo más tarde.',
   'download.errorConnection': 'Error al conectar con la API de GitHub o al procesar la respuesta. Verifica tu conexión a internet o inténtalo de nuevo más tarde.',
+  'download.x86_64': 'x86_64',
+  'download.arm64': 'ARM64',
+  'download.universal': 'Universal',
 
   // 404 page
   '404.title': '404',

@@ -28,6 +28,9 @@ const clientTranslations = {
   errorNotFound: t('download.errorNotFound'),
   errorRateLimit: t('download.errorRateLimit'),
   errorConnection: t('download.errorConnection'),
+  x86_64: t('download.x86_64'),
+  arm64: t('download.arm64'),
+  universal: t('download.universal'),
 };
 ---
 
@@ -47,34 +50,30 @@ const clientTranslations = {
     </div>
 
     <div class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm p-8 mb-10 flex flex-col sm:flex-row items-center justify-around gap-8">
-      <div>
-        <a id="windows-download-link"
-          class="flex flex-col items-center gap-2 disabled-link"
-          href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true"
-        >
-          <Icon name="platforms/windows" class="platform-icon disabled-icon" />
-          <span class="text-gray-600 dark:text-gray-300">{t('download.windows')}</span>
-        </a>
+      <div class="flex flex-col items-center gap-2">
+        <Icon name="platforms/windows" class="platform-icon" />
+        <span class="text-gray-600 dark:text-gray-300">{t('download.windows')}</span>
+        <div class="flex gap-2 mt-1">
+          <a id="windows-x64-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.x86_64')}</a>
+          <a id="windows-arm64-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.arm64')}</a>
+        </div>
         <small id="windows-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">{t('download.linkNotAvailable')}</small>
       </div>
-      <div>
-        <a id="linux-download-link"
-          class="flex flex-col items-center gap-2 disabled-link"
-          href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true"
-        >
-          <Icon name="platforms/linux" class="platform-icon disabled-icon" />
-          <span class="text-gray-600 dark:text-gray-300">{t('download.linux')}</span>
-        </a>
+      <div class="flex flex-col items-center gap-2">
+        <Icon name="platforms/linux" class="platform-icon" />
+        <span class="text-gray-600 dark:text-gray-300">{t('download.linux')}</span>
+        <div class="flex gap-2 mt-1">
+          <a id="linux-x64-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.x86_64')}</a>
+          <a id="linux-arm64-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.arm64')}</a>
+        </div>
         <small id="linux-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">{t('download.linkNotAvailable')}</small>
       </div>
-      <div>
-        <a id="macos-download-link"
-          class="flex flex-col items-center gap-2 disabled-link"
-          href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true"
-        >
-          <Icon name="platforms/macos" class="platform-icon disabled-icon" />
-          <span class="text-gray-600 dark:text-gray-300">{t('download.macos')}</span>
-        </a>
+      <div class="flex flex-col items-center gap-2">
+        <Icon name="platforms/macos" class="platform-icon" />
+        <span class="text-gray-600 dark:text-gray-300">{t('download.macos')}</span>
+        <div class="flex gap-2 mt-1">
+          <a id="macos-universal-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.universal')}</a>
+        </div>
         <small id="macos-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">{t('download.linkNotAvailable')}</small>
       </div>
     </div>
@@ -113,30 +112,25 @@ const clientTranslations = {
   const errorMessageContainerEl = document.getElementById('error-message-container');
   const errorTextEl = document.getElementById('error-text');
 
-  const windowsLinkEl = document.getElementById('windows-download-link');
-  const linuxLinkEl = document.getElementById('linux-download-link');
-  const macosLinkEl = document.getElementById('macos-download-link');
+  const windowsX64El   = document.getElementById('windows-x64-link');
+  const windowsArmEl   = document.getElementById('windows-arm64-link');
+  const linuxX64El     = document.getElementById('linux-x64-link');
+  const linuxArmEl     = document.getElementById('linux-arm64-link');
+  const macosEl        = document.getElementById('macos-universal-link');
 
   const windowsStatusEl = document.getElementById('windows-status');
-  const linuxStatusEl = document.getElementById('linux-status');
-  const macosStatusEl = document.getElementById('macos-status');
+  const linuxStatusEl   = document.getElementById('linux-status');
+  const macosStatusEl   = document.getElementById('macos-status');
 
-  function setLink(element, url, statusElement) {
-    if (url && url !== '#') {
-      element.href = url;
-      element.classList.remove('disabled-link');
-      element.querySelector('.platform-icon').classList.remove('disabled-icon');
-      element.removeAttribute('aria-disabled');
-      if (statusElement) statusElement.classList.add('hidden');
+  function setChip(el, url) {
+    if (url) {
+      el.href = url;
+      el.classList.remove('disabled-chip');
+      el.removeAttribute('aria-disabled');
     } else {
-      element.href = GITHUB_RELEASES_PAGE_URL;
-      element.classList.add('disabled-link');
-      element.querySelector('.platform-icon').classList.add('disabled-icon');
-      element.setAttribute('aria-disabled', 'true');
-      if (statusElement) {
-        statusElement.textContent = clientTranslations.linkNotAvailableRelease;
-        statusElement.classList.remove('hidden');
-      }
+      el.href = GITHUB_RELEASES_PAGE_URL;
+      el.classList.add('disabled-chip');
+      el.setAttribute('aria-disabled', 'true');
     }
   }
 
@@ -144,10 +138,6 @@ const clientTranslations = {
     if (releaseVersionTextEl) releaseVersionTextEl.style.display = 'none';
     if (errorTextEl) errorTextEl.textContent = message;
     if (errorMessageContainerEl) errorMessageContainerEl.classList.remove('hidden');
-
-    setLink(windowsLinkEl, GITHUB_RELEASES_PAGE_URL, windowsStatusEl);
-    setLink(linuxLinkEl, GITHUB_RELEASES_PAGE_URL, linuxStatusEl);
-    setLink(macosLinkEl, GITHUB_RELEASES_PAGE_URL, macosStatusEl);
   }
 
   async function fetchLatestRelease() {
@@ -174,31 +164,27 @@ const clientTranslations = {
       }
       if (errorMessageContainerEl) errorMessageContainerEl.classList.add('hidden');
 
-      let windowsUrl = null;
-      let linuxUrl = null;
-      let macosUrl = null;
-
       if (latestRelease && latestRelease.assets) {
-        const windowsAsset = latestRelease.assets.find(asset =>
-          asset.name.includes("Windows") && (asset.name.endsWith(".zip") || asset.name.endsWith(".exe"))
-        );
-        const linuxAsset = latestRelease.assets.find(asset =>
-          (asset.name.includes("Ubuntu") || asset.name.includes("Linux")) && asset.name.endsWith(".AppImage")
-        );
-        const macosAsset = latestRelease.assets.find(asset =>
-          asset.name.includes("macOS") && asset.name.endsWith(".dmg")
-        );
+        const assets = latestRelease.assets;
 
-        if (windowsAsset) windowsUrl = windowsAsset.browser_download_url;
-        if (linuxAsset) linuxUrl = linuxAsset.browser_download_url;
-        if (macosAsset) macosUrl = macosAsset.browser_download_url;
+        const isWinZip  = a => a.name.includes("Windows") && (a.name.endsWith(".zip") || a.name.endsWith(".exe"));
+        const isLinuxAI = a => (a.name.includes("Ubuntu") || a.name.includes("Linux")) && a.name.endsWith(".AppImage");
+        const isMacos   = a => a.name.includes("macOS") && a.name.endsWith(".dmg");
+
+        const winX64  = assets.find(a => isWinZip(a)  && a.name.includes("x86_64"));
+        const winArm  = assets.find(a => isWinZip(a)  && a.name.includes("arm64"));
+        const linX64  = assets.find(a => isLinuxAI(a) && a.name.includes("x86_64"));
+        const linArm  = assets.find(a => isLinuxAI(a) && a.name.includes("arm64"));
+        const macos   = assets.find(a => isMacos(a));
+
+        setChip(windowsX64El, winX64?.browser_download_url ?? null);
+        setChip(windowsArmEl, winArm?.browser_download_url ?? null);
+        setChip(linuxX64El,   linX64?.browser_download_url ?? null);
+        setChip(linuxArmEl,   linArm?.browser_download_url ?? null);
+        setChip(macosEl,      macos?.browser_download_url  ?? null);
       } else {
         console.warn("Latest release found, but it contains no assets.");
       }
-
-      setLink(windowsLinkEl, windowsUrl, windowsStatusEl);
-      setLink(linuxLinkEl, linuxUrl, linuxStatusEl);
-      setLink(macosLinkEl, macosUrl, macosStatusEl);
 
     } catch (error) {
       const message = clientTranslations.errorConnection;
@@ -213,16 +199,18 @@ const clientTranslations = {
     fetchLatestRelease();
   }
 
-  // Setup analytics tracking for direct downloads
+  // Analytics tracking
   const trackDownload = (platform) => {
     if (typeof window !== 'undefined' && window.umami) {
-      window.umami.track('Download', { platform: platform });
+      window.umami.track('Download', { platform });
     }
   };
 
-  windowsLinkEl?.addEventListener('click', () => trackDownload('Windows'));
-  linuxLinkEl?.addEventListener('click', () => trackDownload('Linux'));
-  macosLinkEl?.addEventListener('click', () => trackDownload('macOS'));
+  windowsX64El?.addEventListener('click', () => trackDownload('Windows-x64'));
+  windowsArmEl?.addEventListener('click', () => trackDownload('Windows-arm64'));
+  linuxX64El?.addEventListener('click',   () => trackDownload('Linux-x64'));
+  linuxArmEl?.addEventListener('click',   () => trackDownload('Linux-arm64'));
+  macosEl?.addEventListener('click',      () => trackDownload('macOS'));
 </script>
 
 <style>
@@ -237,29 +225,25 @@ const clientTranslations = {
     color: #ddd;
   }
 
-  .platform-icon:hover:not(.disabled-icon) {
-    color: var(--color-brand-red);
+  .arch-chip {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid var(--color-brand-blue, #4a90d9);
+    color: var(--color-brand-light-blue, #5aa8f0);
+    transition: background-color 0.15s, color 0.15s;
   }
 
-  .disabled-icon {
-    color: #aaa !important;
+  .arch-chip:not(.disabled-chip):hover {
+    background-color: var(--color-brand-blue, #4a90d9);
+    color: #fff;
   }
 
-  :global(.dark) .disabled-icon {
-    color: #7a7a7a !important;
-  }
-
-  .disabled-link {
+  .disabled-chip {
     pointer-events: none;
-    opacity: 0.6;
+    opacity: 0.4;
     cursor: not-allowed;
-  }
-
-  .disabled-link .platform-icon {
-    color: #aaa !important;
-  }
-
-  :global(.dark) .disabled-link .platform-icon {
-    color: #7a7a7a !important;
   }
 </style>

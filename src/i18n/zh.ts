@@ -65,6 +65,9 @@ export default {
   'download.errorNotFound': '未找到 {owner}/{repo} 的发布版本。',
   'download.errorRateLimit': 'GitHub API 请求频率可能已超限。请稍后再试。',
   'download.errorConnection': '无法连接到 GitHub API 或解析响应。请检查您的网络连接或稍后再试。',
+  'download.x86_64': 'x86_64',
+  'download.arm64': 'ARM64',
+  'download.universal': '通用版',
 
   // 404 page
   '404.title': '404',
