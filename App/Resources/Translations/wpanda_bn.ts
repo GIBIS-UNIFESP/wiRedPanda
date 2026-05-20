@@ -451,17 +451,17 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
         <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation>অবৈধ শিরোনাম: প্রথম লাইনে &apos;rows,cols&apos; প্রত্যাশিত।></translation>
+        <translation>অবৈধ শিরোনাম: প্রথম লাইনে &apos;rows,cols&apos; প্রত্যাশিত।&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
         <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation>অবৈধ কলাম সংখ্যা %1: 1 এবং %2 এর মধ্যে হতে হবে।></translation>
+        <translation>অবৈধ কলাম সংখ্যা %1: 1 এবং %2 এর মধ্যে হতে হবে।&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
         <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation>সারি %1-এ %2 মান আছে কিন্তু %3 প্রয়োজন।></translation>
+        <translation>সারি %1-এ %2 মান আছে কিন্তু %3 প্রয়োজন।&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
@@ -1017,6 +1017,7 @@
         <translation>ভলিউম:</translation>
     </message>
     <message>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
@@ -2787,19 +2788,6 @@ Suggested name:</source>
         <location filename="../../Element/GraphicElements/TFlipFlop.cpp" line="28"/>
         <source>T-Flip-Flop</source>
         <translation>টি-ফ্লিপ-ফ্লপ</translation>
-    </message>
-</context>
-<context>
-    <name>TestNotifyCatch</name>
-    <message>
-        <location filename="../../../Tests/Unit/Core/TestNotifyCatch.cpp" line="59"/>
-        <source>notify-catch test throw (no dialog)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../Tests/Unit/Core/TestNotifyCatch.cpp" line="92"/>
-        <source>notify-catch test throw (with dialog)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

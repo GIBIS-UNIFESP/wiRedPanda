@@ -56,7 +56,7 @@ void TestNotifyCatch::guardedSlotCatchesPostedSlotThrow()
     QObject::connect(&action, &QAction::triggered, [&slotEntries]() {
         Application::guardedSlot(qApp, [&slotEntries] {
             ++slotEntries;
-            throw PANDACEPTION("notify-catch test throw (no dialog)");
+            throw PANDACEPTION_LITERAL("notify-catch test throw (no dialog)");
         });
     });
 
@@ -89,7 +89,7 @@ void TestNotifyCatch::guardedSlotCatchesPostedSlotThrowWithDialog()
     QObject::connect(&action, &QAction::triggered, [&slotEntries]() {
         Application::guardedSlot(qApp, [&slotEntries] {
             ++slotEntries;
-            throw PANDACEPTION("notify-catch test throw (with dialog)");
+            throw PANDACEPTION_LITERAL("notify-catch test throw (with dialog)");
         });
     });
 

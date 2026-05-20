@@ -440,17 +440,17 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
         <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
-        <translation>En-tête invalide : &apos;rows,cols&apos; attendu à la première ligne.></translation>
+        <translation>En-tête invalide : &apos;rows,cols&apos; attendu à la première ligne.&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
         <source>Invalid column count %1: must be between 1 and %2.</source>
-        <translation>Nombre de colonnes invalide %1 : doit être compris entre 1 et %2.></translation>
+        <translation>Nombre de colonnes invalide %1 : doit être compris entre 1 et %2.&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
         <source>Row %1 has %2 value(s) but %3 are required.</source>
-        <translation>La ligne %1 contient %2 valeur(s) mais %3 sont requises.></translation>
+        <translation>La ligne %1 contient %2 valeur(s) mais %3 sont requises.&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
@@ -1017,6 +1017,7 @@
         <translation>Volume :</translation>
     </message>
     <message>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
@@ -2787,19 +2788,6 @@ Nom suggéré&#xa0;:</translation>
         <location filename="../../Element/GraphicElements/TFlipFlop.cpp" line="28"/>
         <source>T-Flip-Flop</source>
         <translation>Bascule T</translation>
-    </message>
-</context>
-<context>
-    <name>TestNotifyCatch</name>
-    <message>
-        <location filename="../../../Tests/Unit/Core/TestNotifyCatch.cpp" line="59"/>
-        <source>notify-catch test throw (no dialog)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../Tests/Unit/Core/TestNotifyCatch.cpp" line="92"/>
-        <source>notify-catch test throw (with dialog)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
