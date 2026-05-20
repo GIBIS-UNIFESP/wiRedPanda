@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 
 import '../styles/global.css';
 
@@ -39,7 +39,7 @@ const origin = Astro.site?.origin ?? '';
     {otherLocales.map((altLocale) => (
       <link rel="alternate" hreflang={getHtmlLang(altLocale)} href={`${origin}${getLocalePath(Astro.url.pathname, altLocale)}`} />
     ))}
-    <ViewTransitions />
+    <ClientRouter />
     <title>Panda | {pageTitle}</title>
     <script is:inline>
       (function() {
