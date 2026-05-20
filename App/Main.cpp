@@ -185,6 +185,13 @@ int main(int argc, char *argv[])
 
 #ifdef Q_OS_LINUX
     g_previousMessageHandler = qInstallMessageHandler(portalQuietMessageHandler);
+
+    // When launched as an AppImage the runtime changes CWD to the squashfs mount
+    // point.  OWD holds the directory the user was actually in, so relative file
+    // paths from CLI args and file dialogs resolve correctly.
+    if (qEnvironmentVariableIsSet("APPIMAGE")) {
+        QDir::setCurrent(qEnvironmentVariable("OWD"));
+    }
 #endif
 
     Application app(argc, argv);
