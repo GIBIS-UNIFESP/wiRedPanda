@@ -387,6 +387,21 @@
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
         <translation>Litar kosong. Tambah elemen input dan output untuk menjana bentuk gelombang.</translation>
@@ -447,13 +462,6 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
         <source>Saved file successfully.</source>
         <translation>Fail berjaya disimpan.</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source></source>
-        <translation></translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
@@ -2488,7 +2496,7 @@ Nama yang dicadangkan:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="428"/>
+        <location filename="../../Main.cpp" line="435"/>
         <source>Error!</source>
         <translation>Ralat!</translation>
     </message>
@@ -2976,67 +2984,67 @@ Sandaran fail asal telah dicipta dengan nama: %3</translation>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="285"/>
+        <location filename="../../Main.cpp" line="292"/>
         <source>Circuit file to open.</source>
         <translation>Fail litar untuk dibuka.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="289"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Tahap verbosity 0 hingga 5, dilumpuhkan secara lalai.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="290"/>
+        <location filename="../../Main.cpp" line="297"/>
         <source>verbosity level</source>
         <translation>tahap verbosity</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="295"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Eksport litar ke &lt;fail-arduino&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="307"/>
+        <location filename="../../Main.cpp" line="314"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Eksport litar ke fail teks bentuk gelombang, membaca input dari terminal.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="312"/>
+        <location filename="../../Main.cpp" line="319"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Apabila digunakan dengan -c/--terminal, sekat pelaksanaan jika litar mengandungi Jadual Kebenaran.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="318"/>
+        <location filename="../../Main.cpp" line="325"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Jalankan dalam mod MCP (Model Context Protocol) untuk kawalan terprogram.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="323"/>
+        <location filename="../../Main.cpp" line="330"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Jalankan mod MCP dengan tetingkap GUI yang boleh dilihat.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="388"/>
+        <location filename="../../Main.cpp" line="395"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Ralat: Litar mengandungi elemen Jadual Kebenaran.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="433"/>
+        <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="303"/>
         <source>arduino file</source>
         <translation>fail arduino</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="301"/>
+        <location filename="../../Main.cpp" line="308"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Eksport litar ke fail teks bentuk gelombang.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="309"/>
         <source>waveform input text file</source>
         <translation>fail teks input bentuk gelombang</translation>
     </message>

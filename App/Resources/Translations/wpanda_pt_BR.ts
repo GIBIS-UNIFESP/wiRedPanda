@@ -410,13 +410,6 @@
         <translation>Arquivo salvo com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source></source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>A forma de onda seria muito grande! Redefinindo zoom.</translation>
@@ -466,6 +459,21 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>O arquivo &quot;%1&quot; não existe!</translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
@@ -2488,7 +2496,7 @@ Nome sugerido:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="428"/>
+        <location filename="../../Main.cpp" line="435"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
@@ -2976,67 +2984,67 @@ Um backup do arquivo original foi criado com o nome: %3</translation>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="285"/>
+        <location filename="../../Main.cpp" line="292"/>
         <source>Circuit file to open.</source>
         <translation>Arquivo de circuito para abrir.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="289"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Nível de verbosidade 0 a 5, desabilitado por padrão.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="290"/>
+        <location filename="../../Main.cpp" line="297"/>
         <source>verbosity level</source>
         <translation>nível de verbosidade</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="295"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Exporta o circuito para &lt;arduino-file&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="307"/>
+        <location filename="../../Main.cpp" line="314"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Exporta o circuito para um arquivo de texto de forma de onda, lendo a entrada do terminal.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="312"/>
+        <location filename="../../Main.cpp" line="319"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Quando usado com -c/--terminal, bloqueia a execução se o circuito contiver Tabelas Verdade.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="318"/>
+        <location filename="../../Main.cpp" line="325"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Executar em modo MCP (Model Context Protocol) para controle programático.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="323"/>
+        <location filename="../../Main.cpp" line="330"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Executar modo MCP com janela gráfica visível.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="388"/>
+        <location filename="../../Main.cpp" line="395"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Erro: O circuito contém elementos tabela verdade.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="433"/>
+        <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="303"/>
         <source>arduino file</source>
         <translation>arquivo arduino</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="301"/>
+        <location filename="../../Main.cpp" line="308"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Exporta o circuito para um arquivo de texto de forma de onda.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="309"/>
         <source>waveform input text file</source>
         <translation>arquivo de forma de onda textual de entrada</translation>
     </message>
