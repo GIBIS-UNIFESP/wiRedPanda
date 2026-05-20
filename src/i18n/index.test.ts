@@ -3,6 +3,7 @@ import {
   getLocaleFromUrl,
   getLocalePath,
   getHtmlLang,
+  getLocaleDir,
   useTranslations,
   getOtherLocales,
   getAllLocales,
@@ -118,9 +119,13 @@ describe('getHtmlLang', () => {
     ['pt-br', 'pt-BR'],
     ['es', 'es'],
     ['zh', 'zh-CN'],
+    ['zh-hant', 'zh-TW'],
     ['ja', 'ja'],
     ['fr', 'fr'],
     ['de', 'de'],
+    ['ar', 'ar'],
+    ['ru', 'ru'],
+    ['uk', 'uk'],
   ];
 
   for (const [locale, expected] of cases) {
@@ -128,6 +133,29 @@ describe('getHtmlLang', () => {
       expect(getHtmlLang(locale)).toBe(expected);
     });
   }
+});
+
+// ---------------------------------------------------------------------------
+
+describe('getLocaleDir', () => {
+  it('returns rtl for Arabic', () => {
+    expect(getLocaleDir('ar')).toBe('rtl');
+  });
+
+  it('returns rtl for Farsi', () => {
+    expect(getLocaleDir('fa')).toBe('rtl');
+  });
+
+  it('returns rtl for Hebrew', () => {
+    expect(getLocaleDir('he')).toBe('rtl');
+  });
+
+  it('returns ltr for all non-RTL locales', () => {
+    const ltrLocales: Locale[] = ['en', 'pt-br', 'es', 'zh', 'ja', 'fr', 'de', 'ru', 'ko', 'th'];
+    for (const locale of ltrLocales) {
+      expect(getLocaleDir(locale)).toBe('ltr');
+    }
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -181,8 +209,8 @@ describe('getOtherLocales', () => {
 // ---------------------------------------------------------------------------
 
 describe('getAllLocales', () => {
-  it('returns all 7 locales', () => {
-    expect(getAllLocales()).toHaveLength(7);
+  it('returns all 39 locales', () => {
+    expect(getAllLocales()).toHaveLength(39);
   });
 
   it('contains all expected locale codes', () => {

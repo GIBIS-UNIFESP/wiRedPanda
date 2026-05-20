@@ -8,6 +8,7 @@ import Footer from '../components/Footer.astro';
 import {
   getLocaleFromUrl,
   getHtmlLang,
+  getLocaleDir,
   useTranslations,
   getOtherLocales,
   getLocalePath,
@@ -23,11 +24,12 @@ const { pageTitle } = Astro.props;
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
 const htmlLang = getHtmlLang(locale);
+const localeDir = getLocaleDir(locale);
 const otherLocales = getOtherLocales(locale);
 const origin = Astro.site?.origin ?? '';
 ---
 
-<html lang={htmlLang}>
+<html lang={htmlLang} dir={localeDir}>
   <head>
     <meta charset="utf-8" />
     <!-- Theme init: must run before any rendering to avoid FOUC -->

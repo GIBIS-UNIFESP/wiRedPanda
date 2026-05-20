@@ -10,7 +10,13 @@ export default defineConfig({
   integrations: [icon()],
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'pt-br', 'es', 'zh', 'ja', 'fr', 'de'],
+    locales: [
+      'en', 'pt-br', 'es', 'zh', 'ja', 'fr', 'de',
+      'ar', 'bg', 'bn', 'cs', 'da', 'el', 'et', 'fa', 'fi',
+      'he', 'hi', 'hr', 'hu', 'id', 'it', 'ko', 'lt', 'lv',
+      'ms', 'nb', 'nl', 'pl', 'pt', 'ro', 'ru', 'sk', 'sv',
+      'th', 'tr', 'uk', 'vi', 'zh-hant',
+    ],
     routing: {
       prefixDefaultLocale: false,
       redirectToDefaultLocale: false,
