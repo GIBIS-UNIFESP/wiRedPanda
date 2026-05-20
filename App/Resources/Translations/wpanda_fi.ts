@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">Tiedostoa ei voitu avata kirjoittamista varten: %1</translation>
+        <translation>Tiedostoa ei voitu avata kirjoittamista varten: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">Pinnejä ei ole tarpeeksi kaikille tuloelementeille</translation>
+        <translation>Pinnejä ei ole tarpeeksi kaikille tuloelementeille</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">Pinnejä ei ole tarpeeksi kaikille kiertokytkimen asennoille</translation>
+        <translation>Pinnejä ei ole tarpeeksi kaikille kiertokytkimen asennoille</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">Pinnejä ei ole tarpeeksi kaikille lähtöelementeille</translation>
+        <translation>Pinnejä ei ole tarpeeksi kaikille lähtöelementeille</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementtityyppiä ei tueta: %1</translation>
+        <translation>Elementtityyppiä ei tueta: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Lähtömuuttujaa ei ole yhdistetty totuustauluun: %1</translation>
+        <translation>Lähtömuuttujaa ei ole yhdistetty totuustauluun: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">Testipenkitiedostoa ei voitu avata: %1</translation>
+        <translation>Testipenkitiedostoa ei voitu avata: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>Tiedostoa ei voida lukea</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">Ääntä ei voitu ladata: %1 (%2)</translation>
+        <translation>Ääntä ei voitu ladata: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>beWavedDolphin simulaattori</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">Piiri on tyhjä. Lisää tulo- ja lähtöelementtejä aaltomuodon luomiseksi.</translation>
+        <translation>Piiri on tyhjä. Lisää tulo- ja lähtöelementtejä aaltomuodon luomiseksi.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">Piirissä ei ole tulo- tai lähtöelementtejä. Lisää vähintään yksi tulo (esim. Switch) ja yksi lähtö (esim. LED) aaltomuodon luomiseksi.</translation>
+        <translation>Piirissä ei ole tulo- tai lähtöelementtejä. Lisää vähintään yksi tulo (esim. Switch) ja yksi lähtö (esim. LED) aaltomuodon luomiseksi.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">Piirissä ei ole tuloelementtejä. Lisää vähintään yksi tulo (esim. Switch, Button tai Clock) aaltomuodon luomiseksi.</translation>
+        <translation>Piirissä ei ole tuloelementtejä. Lisää vähintään yksi tulo (esim. Switch, Button tai Clock) aaltomuodon luomiseksi.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">Piirissä ei ole lähtöelementtejä. Lisää vähintään yksi lähtö (esim. LED tai Display) aaltomuodon luomiseksi.</translation>
+        <translation>Piirissä ei ole lähtöelementtejä. Lisää vähintään yksi lähtö (esim. LED tai Display) aaltomuodon luomiseksi.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>Tiedosto tallennettu onnistuneesti.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">Aaltomuoto olisi liian suuri! Nollataan zoomaus.</translation>
+        <translation>Aaltomuoto olisi liian suuri! Nollataan zoomaus.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">Ei valittuja soluja.</translation>
+        <translation>Ei valittuja soluja.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Virhe avattaessa tiedostoa: %1</translation>
+        <translation>Virhe avattaessa tiedostoa: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">Virhe tallennettaessa tiedostoa: %1</translation>
+        <translation>Virhe tallennettaessa tiedostoa: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>Tiedosto ladattu onnistuneesti.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">Tiedostoa ei voitu avata lukemista varten: %1</translation>
+        <translation>Tiedostoa ei voitu avata lukemista varten: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">Tiedostomuotoa ei tueta. Tiedostoa ei voitu avata: %1</translation>
+        <translation>Tiedostomuotoa ei tueta. Tiedostoa ei voitu avata: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>PDF-tiedostot (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">Tätä piiriä ei voitu tulostaa PDF:ksi.</translation>
+        <translation>Tätä piiriä ei voitu tulostaa PDF:ksi.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Tiedostoa &quot;%1&quot; ei ole olemassa!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
         <translation>Tuntematon</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">Tuntematon elementtityyppi: %1</translation>
+        <translation>Tuntematon elementtityyppi: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">Tuntematon tyyppi: %1</translation>
+        <translation>Tuntematon tyyppi: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
         <translation>Tuntematon syy</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">Bittikarttaa ei voitu ladata: %1 (%2)</translation>
+        <translation>Bittikarttaa ei voitu ladata: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
         <translation>Oletus</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">Virtavirhe luettaessa elementin ominaisuuksia kohdassa %1</translation>
+        <translation>Virtavirhe luettaessa elementin ominaisuuksia kohdassa %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">Virtavirhe luettaessa ulkoasuja kohdassa %1</translation>
+        <translation>Virtavirhe luettaessa ulkoasuja kohdassa %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">Ulkoasun indeksi %1 alueen ulkopuolella (koko=%2) — virta voi olla vioittunut</translation>
+        <translation>Ulkoasun indeksi %1 alueen ulkopuolella (koko=%2) — virta voi olla vioittunut</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
         <translation>Ladataan bittikarttojen ulkoasujen nimiä.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">Ulkoasuindeksi %1 alueen ulkopuolella (koko=%2) ulkoasunimelle &quot;%3&quot; — virta voi olla vioittunut</translation>
+        <translation>Ulkoasuindeksi %1 alueen ulkopuolella (koko=%2) ulkoasunimelle &quot;%3&quot; — virta voi olla vioittunut</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
         <translation>INTEGROITU PIIRI</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">IC-lataus: IC-nimeä ei ole sarjallistetuissa tiedoissa</translation>
+        <translation>IC-lataus: IC-nimeä ei ole sarjallistetuissa tiedoissa</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 ei löytynyt.</translation>
+        <translation>%1 ei löytynyt.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">Kehäviittaus IC:hen havaittu: %1</translation>
+        <translation>Kehäviittaus IC:hen havaittu: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Virhe avattaessa tiedostoa: %1</translation>
+        <translation>Virhe avattaessa tiedostoa: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">IC-siirto: tiedostoa ei voi avata kirjoittamista varten: %1</translation>
+        <translation>IC-siirto: tiedostoa ei voi avata kirjoittamista varten: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">IC-siirto: uudelleen tallennetun tiedoston viimeistely epäonnistui: %1</translation>
+        <translation>IC-siirto: uudelleen tallennetun tiedoston viimeistely epäonnistui: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">IC:n sisäkkäisyyden syvyysrajoitus (%1) ylittyi — blob saattaa olla haitallisesti laadittu</translation>
+        <translation>IC:n sisäkkäisyyden syvyysrajoitus (%1) ylittyi — blob saattaa olla haitallisesti laadittu</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Tiedostoa ei voitu avata: %1</translation>
+        <translation>Tiedostoa ei voitu avata: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Tiedostoa ei voitu tallentaa: %1</translation>
+        <translation>Tiedostoa ei voitu tallentaa: %1</translation>
     </message>
 </context>
 <context>
@@ -2156,12 +2206,17 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
         <translation>Vaihda välilehteen</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">Tiedostonimi puuttuu.</translation>
+        <translation>Tiedostonimi puuttuu.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">.panda-tiedosto on tyhjä.</translation>
+        <translation>.panda-tiedosto on tyhjä.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Ehdotettu nimi:</translation>
         <translation>Poista vaimennus</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">Tallenna tiedosto ensin.</translation>
+        <translation>Tallenna tiedosto ensin.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Ehdotettu nimi:</translation>
         <translation>Vedä tähän poistaaksesi.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">Virhe poistettaessa tiedostoa: %1</translation>
+        <translation>Virhe poistettaessa tiedostoa: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Ehdotettu nimi:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">Virtavirhe luettaessa yhteyskarttaa kohdassa %1</translation>
+        <translation>Virtavirhe luettaessa yhteyskarttaa kohdassa %1</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">Virtavirhe luettaessa yhteyden porttitunnisteita kohdassa %1</translation>
+        <translation>Virtavirhe luettaessa yhteyden porttitunnisteita kohdassa %1</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Ehdotettu nimi:</translation>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">Virtavirhe luettaessa metatietojen määrää</translation>
+        <translation>Virtavirhe luettaessa metatietojen määrää</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Metatietojen määrä %1 on epäuskottava jäljellä oleviin virtatavuihin nähden</translation>
+        <translation>Metatietojen määrä %1 on epäuskottava jäljellä oleviin virtatavuihin nähden</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">Virtavirhe luettaessa blob-määrää</translation>
+        <translation>Virtavirhe luettaessa blob-määrää</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Blob-määrä %1 on epäuskottava jäljellä oleviin virtatavuihin nähden</translation>
+        <translation>Blob-määrä %1 on epäuskottava jäljellä oleviin virtatavuihin nähden</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">Virheellinen tiedostomuoto.</translation>
+        <translation>Virheellinen tiedostomuoto.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">Virtavirhe luettaessa tyyppimerkkiä kohdassa %1: tila %2</translation>
+        <translation>Virtavirhe luettaessa tyyppimerkkiä kohdassa %1: tila %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">Virtavirhe luettaessa elementtityyppiä kohdassa %1: tila %2</translation>
+        <translation>Virtavirhe luettaessa elementtityyppiä kohdassa %1: tila %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">Virtavirhe ladattaessa elementtiä kohdassa %1: tila %2</translation>
+        <translation>Virtavirhe ladattaessa elementtiä kohdassa %1: tila %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">Virtavirhe ladattaessa yhteyttä kohdassa %1: tila %2</translation>
+        <translation>Virtavirhe ladattaessa yhteyttä kohdassa %1: tila %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">Virheellinen tyyppi. Tiedot saattavat olla vioittuneita.</translation>
+        <translation>Virheellinen tyyppi. Tiedot saattavat olla vioittuneita.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">Versioidun varmuuskopion luominen epäonnistui: %1</translation>
+        <translation>Versioidun varmuuskopion luominen epäonnistui: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">Virhe tiedoston kopioinnissa: %1</translation>
+        <translation>Virhe tiedoston kopioinnissa: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Ehdotettu nimi:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">Virheelliset yhteysportit SplitCommand-konstruktorissa</translation>
+        <translation>Virheelliset yhteysportit SplitCommand-konstruktorissa</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">Virheelliset graafiset elementit SplitCommand-konstruktorissa</translation>
+        <translation>Virheelliset graafiset elementit SplitCommand-konstruktorissa</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Ehdotettu nimi:</translation>
         <translation>Johdon jako</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">Virhe yritettäessä tehdä uudelleen %1</translation>
+        <translation>Virhe yritettäessä tehdä uudelleen %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">Virhe: endPort on null SplitCommand::redo()-funktiossa</translation>
+        <translation>Virhe: endPort on null SplitCommand::redo()-funktiossa</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">Virhe yritettäessä perua %1</translation>
+        <translation>Virhe yritettäessä perua %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Lähtömuuttujaa ei ole yhdistetty totuustauluun: %1</translation>
+        <translation>Lähtömuuttujaa ei ole yhdistetty totuustauluun: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Elementtityyppiä ei tueta: %1</translation>
+        <translation>Elementtityyppiä ei tueta: %1</translation>
     </message>
 </context>
 <context>
@@ -2726,8 +2810,9 @@ Ehdotettu nimi:</translation>
         <translation>Vaihda totuustaulun ulostulo paikassa: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">Totuustauluelementtiä ei löytynyt!</translation>
+        <translation>Totuustauluelementtiä ei löytynyt!</translation>
     </message>
 </context>
 <context>
@@ -2809,20 +2894,24 @@ Päivitä wiRedPanda tallentaaksesi muutokset tähän tiedostoon.</translation>
         <translation>Tallenna tiedosto (alkuperäinen sijainti vain luku)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Virhe avattaessa tiedostoa: %1</translation>
+        <translation>Virhe avattaessa tiedostoa: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Tiedostoa ei voitu tallentaa: %1</translation>
+        <translation>Tiedostoa ei voitu tallentaa: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">Tätä tiedostoa ei ole olemassa: %1</translation>
+        <translation>Tätä tiedostoa ei ole olemassa: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Tiedostoa ei voitu avata: %1</translation>
+        <translation>Tiedostoa ei voitu avata: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2855,12 +2944,14 @@ Alkuperäisen tiedoston varmuuskopio on luotu nimellä: %3</translation>
         <translation>Tiedosto päivitetty.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">Virhe avattaessa automaattitallennustiedostoa: %1</translation>
+        <translation>Virhe avattaessa automaattitallennustiedostoa: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">Automaattisen tallennuksen tiedostoa ei voitu vahvistaa: %1</translation>
+        <translation>Automaattisen tallennuksen tiedostoa ei voitu vahvistaa: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

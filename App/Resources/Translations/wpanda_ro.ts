@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">Fișierul nu a putut fi deschis pentru scriere: %1</translation>
+        <translation>Fișierul nu a putut fi deschis pentru scriere: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">Nu sunt suficienți pini pentru toate elementele de intrare</translation>
+        <translation>Nu sunt suficienți pini pentru toate elementele de intrare</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">Nu sunt suficienți pini pentru toate pozițiile comutatorului rotativ</translation>
+        <translation>Nu sunt suficienți pini pentru toate pozițiile comutatorului rotativ</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">Nu sunt suficienți pini pentru toate elementele de ieșire</translation>
+        <translation>Nu sunt suficienți pini pentru toate elementele de ieșire</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Tip de element nesuportat: %1</translation>
+        <translation>Tip de element nesuportat: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Variabila de ieșire nu este mapată pentru tabelul de adevăr: %1</translation>
+        <translation>Variabila de ieșire nu este mapată pentru tabelul de adevăr: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">Fișierul testbench nu a putut fi deschis: %1</translation>
+        <translation>Fișierul testbench nu a putut fi deschis: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>Fișierul nu poate fi citit</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">Nu s-a putut încărca fișierul audio: %1 (%2)</translation>
+        <translation>Nu s-a putut încărca fișierul audio: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>Simulator beWavedDolphin</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">Circuitul este gol. Adăugați elemente de intrare și ieșire pentru a genera o formă de undă.</translation>
+        <translation>Circuitul este gol. Adăugați elemente de intrare și ieșire pentru a genera o formă de undă.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">Circuitul nu are elemente de intrare sau ieșire. Adăugați cel puțin o intrare (de ex. Switch) și o ieșire (de ex. LED) pentru a genera o formă de undă.</translation>
+        <translation>Circuitul nu are elemente de intrare sau ieșire. Adăugați cel puțin o intrare (de ex. Switch) și o ieșire (de ex. LED) pentru a genera o formă de undă.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">Circuitul nu are elemente de intrare. Adăugați cel puțin o intrare (de ex. Switch, Button sau Clock) pentru a genera o formă de undă.</translation>
+        <translation>Circuitul nu are elemente de intrare. Adăugați cel puțin o intrare (de ex. Switch, Button sau Clock) pentru a genera o formă de undă.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">Circuitul nu are elemente de ieșire. Adăugați cel puțin o ieșire (de ex. LED sau Display) pentru a genera o formă de undă.</translation>
+        <translation>Circuitul nu are elemente de ieșire. Adăugați cel puțin o ieșire (de ex. LED sau Display) pentru a genera o formă de undă.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>Fișier salvat cu succes.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">Forma de undă ar fi prea mare! Se resetează zoom-ul.</translation>
+        <translation>Forma de undă ar fi prea mare! Se resetează zoom-ul.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">Nicio celulă selectată.</translation>
+        <translation>Nicio celulă selectată.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Eroare la deschiderea fișierului: %1</translation>
+        <translation>Eroare la deschiderea fișierului: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">Eroare la salvarea fișierului: %1</translation>
+        <translation>Eroare la salvarea fișierului: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>Fișier încărcat cu succes.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">Fișierul nu a putut fi deschis pentru citire: %1</translation>
+        <translation>Fișierul nu a putut fi deschis pentru citire: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">Format nesuportat. Nu s-a putut deschide fișierul: %1</translation>
+        <translation>Format nesuportat. Nu s-a putut deschide fișierul: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>Fișiere PDF (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">Nu s-a putut imprima acest circuit în PDF.</translation>
+        <translation>Nu s-a putut imprima acest circuit în PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Fișierul &quot;%1&quot; nu există!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
         <translation>Necunoscut</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">Tip de element necunoscut: %1</translation>
+        <translation>Tip de element necunoscut: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">Tip necunoscut: %1</translation>
+        <translation>Tip necunoscut: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
         <translation>Motiv necunoscut</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">Nu s-a putut încărca pixmap-ul: %1 (%2)</translation>
+        <translation>Nu s-a putut încărca pixmap-ul: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
         <translation>Implicit</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">Eroare de flux la citirea proprietăților elementului la poziția %1</translation>
+        <translation>Eroare de flux la citirea proprietăților elementului la poziția %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">Eroare de flux la citirea aspectelor la poziția %1</translation>
+        <translation>Eroare de flux la citirea aspectelor la poziția %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">Index de aspect %1 în afara intervalului (dimensiune=%2) — fluxul poate fi corupt</translation>
+        <translation>Index de aspect %1 în afara intervalului (dimensiune=%2) — fluxul poate fi corupt</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
         <translation>Se încarcă numele temelor pixmap.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">Indexul aspectului %1 în afara intervalului (dimensiune=%2) pentru numele aspectului &quot;%3&quot; — fluxul poate fi corupt</translation>
+        <translation>Indexul aspectului %1 în afara intervalului (dimensiune=%2) pentru numele aspectului &quot;%3&quot; — fluxul poate fi corupt</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
         <translation>CIRCUIT INTEGRAT</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">Încărcare IC: numele IC-ului lipsește din datele serializate</translation>
+        <translation>Încărcare IC: numele IC-ului lipsește din datele serializate</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 nu a fost găsit.</translation>
+        <translation>%1 nu a fost găsit.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">Referință circulară IC detectată: %1</translation>
+        <translation>Referință circulară IC detectată: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Eroare la deschiderea fișierului: %1</translation>
+        <translation>Eroare la deschiderea fișierului: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">Migrare IC: fișierul nu poate fi deschis pentru scriere: %1</translation>
+        <translation>Migrare IC: fișierul nu poate fi deschis pentru scriere: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">Migrare IC: nu s-a putut finaliza fișierul resalvat: %1</translation>
+        <translation>Migrare IC: nu s-a putut finaliza fișierul resalvat: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">Limita de adâncime de imbricare a CI (%1) depășită — blob-ul poate fi creat răuvoitor</translation>
+        <translation>Limita de adâncime de imbricare a CI (%1) depășită — blob-ul poate fi creat răuvoitor</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Nu s-a putut deschide fișierul: %1</translation>
+        <translation>Nu s-a putut deschide fișierul: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Nu s-a putut salva fișierul: %1</translation>
+        <translation>Nu s-a putut salva fișierul: %1</translation>
     </message>
 </context>
 <context>
@@ -2231,12 +2281,17 @@ Nume sugerat:</translation>
         <translation>Ieșire</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">Lipsește numele fișierului.</translation>
+        <translation>Lipsește numele fișierului.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">Fișierul .panda este gol.</translation>
+        <translation>Fișierul .panda este gol.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Nume sugerat:</translation>
         <translation>Activează sunetul</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">Salvează mai întâi fișierul.</translation>
+        <translation>Salvează mai întâi fișierul.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Nume sugerat:</translation>
         <translation>Trage aici pentru a elimina.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">Eroare la ștergerea fișierului: %1</translation>
+        <translation>Eroare la ștergerea fișierului: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Nume sugerat:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">Eroare de flux la citirea hărții de conexiuni la deplasamentul %1</translation>
+        <translation>Eroare de flux la citirea hărții de conexiuni la deplasamentul %1</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">Eroare de flux la citirea ID-urilor porturilor de conexiune la offsetul %1</translation>
+        <translation>Eroare de flux la citirea ID-urilor porturilor de conexiune la offsetul %1</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Nume sugerat:</translation>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">Eroare de flux la citirea numărului de metadate</translation>
+        <translation>Eroare de flux la citirea numărului de metadate</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Numărul de metadate %1 neverosimil față de octeții rămași în flux</translation>
+        <translation>Numărul de metadate %1 neverosimil față de octeții rămași în flux</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">Eroare de flux la citirea numărului de blob-uri</translation>
+        <translation>Eroare de flux la citirea numărului de blob-uri</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">Numărul de blob-uri %1 neverosimil față de octeții rămași în flux</translation>
+        <translation>Numărul de blob-uri %1 neverosimil față de octeții rămași în flux</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">Format de fișier invalid.</translation>
+        <translation>Format de fișier invalid.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">Eroare de flux la citirea etichetei de tip la poziția %1: stare %2</translation>
+        <translation>Eroare de flux la citirea etichetei de tip la poziția %1: stare %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">Eroare de flux la citirea tipului de element la poziția %1: stare %2</translation>
+        <translation>Eroare de flux la citirea tipului de element la poziția %1: stare %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">Eroare de flux la încărcarea elementului la poziția %1: stare %2</translation>
+        <translation>Eroare de flux la încărcarea elementului la poziția %1: stare %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">Eroare de flux la încărcarea conexiunii la poziția %1: stare %2</translation>
+        <translation>Eroare de flux la încărcarea conexiunii la poziția %1: stare %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">Tip invalid. Datele sunt posibil corupte.</translation>
+        <translation>Tip invalid. Datele sunt posibil corupte.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">Nu s-a putut crea copia de siguranță versionată: %1</translation>
+        <translation>Nu s-a putut crea copia de siguranță versionată: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">Eroare la copierea fișierului: %1</translation>
+        <translation>Eroare la copierea fișierului: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Nume sugerat:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">Porturi de conexiune nevalide în constructorul SplitCommand</translation>
+        <translation>Porturi de conexiune nevalide în constructorul SplitCommand</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">Elemente grafice nevalide în constructorul SplitCommand</translation>
+        <translation>Elemente grafice nevalide în constructorul SplitCommand</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Nume sugerat:</translation>
         <translation>Împărțirea firului</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">Eroare la încercarea de a reface %1</translation>
+        <translation>Eroare la încercarea de a reface %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">Eroare: endPort este null în SplitCommand::redo()</translation>
+        <translation>Eroare: endPort este null în SplitCommand::redo()</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">Eroare la încercarea de a anula %1</translation>
+        <translation>Eroare la încercarea de a anula %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">Variabila de ieșire nu este mapată pentru tabelul de adevăr: %1</translation>
+        <translation>Variabila de ieșire nu este mapată pentru tabelul de adevăr: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">Tip de element nesuportat: %1</translation>
+        <translation>Tip de element nesuportat: %1</translation>
     </message>
 </context>
 <context>
@@ -2726,8 +2810,9 @@ Nume sugerat:</translation>
         <translation>Comută ieșirea TabeluluiAdevăr la poziția: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">Nu s-a putut găsi elementul tabelul de adevăr!</translation>
+        <translation>Nu s-a putut găsi elementul tabelul de adevăr!</translation>
     </message>
 </context>
 <context>
@@ -2809,20 +2894,24 @@ Vă rugăm să actualizați wiRedPanda pentru a salva modificările în acest fi
         <translation>Salvează fișierul (locația originală este doar pentru citire)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">Eroare la deschiderea fișierului: %1</translation>
+        <translation>Eroare la deschiderea fișierului: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">Nu s-a putut salva fișierul: %1</translation>
+        <translation>Nu s-a putut salva fișierul: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">Acest fișier nu există: %1</translation>
+        <translation>Acest fișier nu există: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">Nu s-a putut deschide fișierul: %1</translation>
+        <translation>Nu s-a putut deschide fișierul: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2855,12 +2944,14 @@ O copie de siguranță a fișierului original a fost creată cu numele: %3</tran
         <translation>Fișierul a fost actualizat.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">Eroare la deschiderea fișierului de salvare automată: %1</translation>
+        <translation>Eroare la deschiderea fișierului de salvare automată: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">Nu s-a putut finaliza fișierul de salvare automată: %1</translation>
+        <translation>Nu s-a putut finaliza fișierul de salvare automată: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

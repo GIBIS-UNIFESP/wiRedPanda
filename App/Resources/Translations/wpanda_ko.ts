@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">파일을 쓰기용으로 열 수 없습니다: %1</translation>
+        <translation>파일을 쓰기용으로 열 수 없습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">모든 입력 요소에 사용할 수 있는 핀이 부족합니다</translation>
+        <translation>모든 입력 요소에 사용할 수 있는 핀이 부족합니다</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">로터리 스위치의 모든 위치에 사용할 수 있는 핀이 부족합니다</translation>
+        <translation>로터리 스위치의 모든 위치에 사용할 수 있는 핀이 부족합니다</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">모든 출력 요소에 사용할 수 있는 핀이 부족합니다</translation>
+        <translation>모든 출력 요소에 사용할 수 있는 핀이 부족합니다</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">지원되지 않는 요소 유형: %1</translation>
+        <translation>지원되지 않는 요소 유형: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">진리표에 출력 변수가 매핑되지 않았습니다: %1</translation>
+        <translation>진리표에 출력 변수가 매핑되지 않았습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">테스트벤치 파일을 열 수 없습니다: %1</translation>
+        <translation>테스트벤치 파일을 열 수 없습니다: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>파일을 읽을 수 없습니다</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">오디오를 로드할 수 없습니다: %1 (%2)</translation>
+        <translation>오디오를 로드할 수 없습니다: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>beWavedDolphin 시뮤레이터</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">회로가 비어 있습니다. 파형을 생성하려면 입력 및 출력 요소를 추가하세요.</translation>
+        <translation>회로가 비어 있습니다. 파형을 생성하려면 입력 및 출력 요소를 추가하세요.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">회로에 입력 또는 출력 요소가 없습니다. 파형을 생성하려면 최소 하나의 입력(예: Switch)과 하나의 출력(예: LED)을 추가하세요.</translation>
+        <translation>회로에 입력 또는 출력 요소가 없습니다. 파형을 생성하려면 최소 하나의 입력(예: Switch)과 하나의 출력(예: LED)을 추가하세요.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">회로에 입력 요소가 없습니다. 파형을 생성하려면 최소 하나의 입력(예: Switch, Button 또는 Clock)을 추가하세요.</translation>
+        <translation>회로에 입력 요소가 없습니다. 파형을 생성하려면 최소 하나의 입력(예: Switch, Button 또는 Clock)을 추가하세요.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">회로에 출력 요소가 없습니다. 파형을 생성하려면 최소 하나의 출력(예: LED 또는 Display)을 추가하세요.</translation>
+        <translation>회로에 출력 요소가 없습니다. 파형을 생성하려면 최소 하나의 출력(예: LED 또는 Display)을 추가하세요.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>파일이 성공적으로 저장되었습니다.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">파형이 너무 큽니다! 확대/축소를 재설정합니다.</translation>
+        <translation>파형이 너무 큽니다! 확대/축소를 재설정합니다.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">선택된 셀이 없습니다.</translation>
+        <translation>선택된 셀이 없습니다.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">파일 열기 오류: %1</translation>
+        <translation>파일 열기 오류: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">파일 저장 오류: %1</translation>
+        <translation>파일 저장 오류: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>파일이 성공적으로 로드되었습니다.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">파일을 읽기용으로 열 수 없습니다: %1</translation>
+        <translation>파일을 읽기용으로 열 수 없습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">지원되지 않는 형식입니다. 파일을 열 수 없습니다: %1</translation>
+        <translation>지원되지 않는 형식입니다. 파일을 열 수 없습니다: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>PDF 파일 (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">이 회로를 PDF로 인쇄할 수 없습니다.</translation>
+        <translation>이 회로를 PDF로 인쇄할 수 없습니다.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>파일 &quot;%1&quot;이(가) 존재하지 않습니다!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Each wireless channel must have a unique label.</source>
         <translation>알 수 없음</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">알 수 없는 요소 유형: %1</translation>
+        <translation>알 수 없는 요소 유형: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">알 수 없는 유형: %1</translation>
+        <translation>알 수 없는 유형: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Each wireless channel must have a unique label.</source>
         <translation>알 수 없는 이유</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">픽스맵을 로드할 수 없습니다: %1 (%2)</translation>
+        <translation>픽스맵을 로드할 수 없습니다: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Each wireless channel must have a unique label.</source>
         <translation>기본값</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">위치 %1에서 요소 속성 읽기 중 스트림 오류</translation>
+        <translation>위치 %1에서 요소 속성 읽기 중 스트림 오류</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">위치 %1에서 스킨 읽기 중 스트림 오류</translation>
+        <translation>위치 %1에서 스킨 읽기 중 스트림 오류</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">외관 인덱스 %1이(가) 범위를 벗어났습니다 (크기=%2) — 스트림이 손상되었을 수 있습니다</translation>
+        <translation>외관 인덱스 %1이(가) 범위를 벗어났습니다 (크기=%2) — 스트림이 손상되었을 수 있습니다</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Each wireless channel must have a unique label.</source>
         <translation>픽스맵 스킨 이름 로드 중.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">스킨 인덱스 %1이 범위를 벗어남 (크기=%2) 스킨 이름 &quot;%3&quot; — 스트림이 손상되었을 수 있습니다</translation>
+        <translation>스킨 인덱스 %1이 범위를 벗어남 (크기=%2) 스킨 이름 &quot;%3&quot; — 스트림이 손상되었을 수 있습니다</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Each wireless channel must have a unique label.</source>
         <translation>집적 회로</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">IC 로드: 직렬화된 데이터에 IC 이름이 없습니다</translation>
+        <translation>IC 로드: 직렬화된 데이터에 IC 이름이 없습니다</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1을(를) 찾을 수 없습니다.</translation>
+        <translation>%1을(를) 찾을 수 없습니다.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">순환 IC 참조가 감지되었습니다: %1</translation>
+        <translation>순환 IC 참조가 감지되었습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">파일 열기 오류: %1</translation>
+        <translation>파일 열기 오류: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">IC 마이그레이션: 파일을 쓰기용으로 열 수 없습니다: %1</translation>
+        <translation>IC 마이그레이션: 파일을 쓰기용으로 열 수 없습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">IC 마이그레이션: 다시 저장한 파일을 커밋하지 못했습니다: %1</translation>
+        <translation>IC 마이그레이션: 다시 저장한 파일을 커밋하지 못했습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">IC 중첩 깊이 한계(%1)를 초과했습니다 — blob이 악의적으로 조작되었을 수 있습니다</translation>
+        <translation>IC 중첩 깊이 한계(%1)를 초과했습니다 — blob이 악의적으로 조작되었을 수 있습니다</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">파일을 열 수 없습니다: %1</translation>
+        <translation>파일을 열 수 없습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">파일을 저장할 수 없습니다: %1</translation>
+        <translation>파일을 저장할 수 없습니다: %1</translation>
     </message>
 </context>
 <context>
@@ -2231,12 +2281,17 @@ Suggested name:</source>
         <translation>종료</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">파일 이름이 누락되었습니다.</translation>
+        <translation>파일 이름이 누락되었습니다.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">.panda 파일이 비어 있습니다.</translation>
+        <translation>.panda 파일이 비어 있습니다.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Suggested name:</source>
         <translation>음소거 해제</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">먼저 파일을 저장하세요.</translation>
+        <translation>먼저 파일을 저장하세요.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Suggested name:</source>
         <translation>제거하려면 여기로 끌어다 놓으세요.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">파일 삭제 오류: %1</translation>
+        <translation>파일 삭제 오류: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">오프셋 %1에서 연결 맵을 읽는 중 스트림 오류</translation>
+        <translation>오프셋 %1에서 연결 맵을 읽는 중 스트림 오류</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">오프셋 %1에서 연결 포트 ID 읽기 중 스트림 오류</translation>
+        <translation>오프셋 %1에서 연결 포트 ID 읽기 중 스트림 오류</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">메타데이터 개수를 읽는 중 스트림 오류</translation>
+        <translation>메타데이터 개수를 읽는 중 스트림 오류</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">남은 스트림 바이트로 볼 때 메타데이터 개수 %1은(는) 비현실적입니다</translation>
+        <translation>남은 스트림 바이트로 볼 때 메타데이터 개수 %1은(는) 비현실적입니다</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">blob 개수를 읽는 중 스트림 오류</translation>
+        <translation>blob 개수를 읽는 중 스트림 오류</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">남은 스트림 바이트로 볼 때 blob 개수 %1은(는) 비현실적입니다</translation>
+        <translation>남은 스트림 바이트로 볼 때 blob 개수 %1은(는) 비현실적입니다</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">잘못된 파일 형식입니다.</translation>
+        <translation>잘못된 파일 형식입니다.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">위치 %1에서 유형 태그 읽기 중 스트림 오류: 상태 %2</translation>
+        <translation>위치 %1에서 유형 태그 읽기 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">위치 %1에서 요소 유형 읽기 중 스트림 오류: 상태 %2</translation>
+        <translation>위치 %1에서 요소 유형 읽기 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">위치 %1에서 요소 로드 중 스트림 오류: 상태 %2</translation>
+        <translation>위치 %1에서 요소 로드 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">위치 %1에서 연결 로드 중 스트림 오류: 상태 %2</translation>
+        <translation>위치 %1에서 연결 로드 중 스트림 오류: 상태 %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">잘못된 유형입니다. 데이터가 손상되었을 가능성이 있습니다.</translation>
+        <translation>잘못된 유형입니다. 데이터가 손상되었을 가능성이 있습니다.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">버전 백업 생성에 실패했습니다: %1</translation>
+        <translation>버전 백업 생성에 실패했습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">파일 복사 오류: %1</translation>
+        <translation>파일 복사 오류: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">SplitCommand 생성자에서 유효하지 않은 연결 포트</translation>
+        <translation>SplitCommand 생성자에서 유효하지 않은 연결 포트</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">SplitCommand 생성자에서 유효하지 않은 그래픽 요소</translation>
+        <translation>SplitCommand 생성자에서 유효하지 않은 그래픽 요소</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Suggested name:</source>
         <translation>전선 분할</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">%1 다시 실행 시도 중 오류</translation>
+        <translation>%1 다시 실행 시도 중 오류</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">오류: SplitCommand::redo()에서 endPort가 null입니다</translation>
+        <translation>오류: SplitCommand::redo()에서 endPort가 null입니다</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">%1 실행 취소 시도 중 오류</translation>
+        <translation>%1 실행 취소 시도 중 오류</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">진리표에 출력 변수가 매핑되지 않았습니다: %1</translation>
+        <translation>진리표에 출력 변수가 매핑되지 않았습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">지원되지 않는 요소 유형: %1</translation>
+        <translation>지원되지 않는 요소 유형: %1</translation>
     </message>
 </context>
 <context>
@@ -2726,8 +2810,9 @@ Suggested name:</source>
         <translation>위치 %1에서 진리표 출력 토글</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">진리표 요소를 찾을 수 없습니다!</translation>
+        <translation>진리표 요소를 찾을 수 없습니다!</translation>
     </message>
 </context>
 <context>
@@ -2809,20 +2894,24 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>파일 저장 (원본 위치는 읽기 전용)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">파일 열기 오류: %1</translation>
+        <translation>파일 열기 오류: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">파일을 저장할 수 없습니다: %1</translation>
+        <translation>파일을 저장할 수 없습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">이 파일은 존재하지 않습니다: %1</translation>
+        <translation>이 파일은 존재하지 않습니다: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">파일을 열 수 없습니다: %1</translation>
+        <translation>파일을 열 수 없습니다: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2855,12 +2944,14 @@ A backup of the original file has been created with name: %3</source>
         <translation>파일이 업그레이드되었습니다.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">자동 저장 파일 열기 오류: %1</translation>
+        <translation>자동 저장 파일 열기 오류: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">자동 저장 파일을 확정할 수 없습니다: %1</translation>
+        <translation>자동 저장 파일을 확정할 수 없습니다: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">ファイルを書き込み用に開けませんでした: %1</translation>
+        <translation>ファイルを書き込み用に開けませんでした: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">すべての入力要素に十分なピンがありません</translation>
+        <translation>すべての入力要素に十分なピンがありません</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">ロータリースイッチのすべての位置に十分なピンがありません</translation>
+        <translation>ロータリースイッチのすべての位置に十分なピンがありません</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">すべての出力要素に十分なピンがありません</translation>
+        <translation>すべての出力要素に十分なピンがありません</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">エレメントタイプはサポートされていません: %1</translation>
+        <translation>エレメントタイプはサポートされていません: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">真理値表の出力変数がマッピングされていません: %1</translation>
+        <translation>真理値表の出力変数がマッピングされていません: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">テストベンチファイルを開けませんでした: %1</translation>
+        <translation>テストベンチファイルを開けませんでした: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>ファイルが読み取れません</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">オーディオを読み込めませんでした: %1 (%2)</translation>
+        <translation>オーディオを読み込めませんでした: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>beWavedDolphin シミュレーター</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">回路が空です。波形を生成するには入力要素と出力要素を追加してください。</translation>
+        <translation>回路が空です。波形を生成するには入力要素と出力要素を追加してください。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">回路に入力要素も出力要素もありません。波形を生成するには少なくとも1つの入力（例: Switch）と1つの出力（例: LED）を追加してください。</translation>
+        <translation>回路に入力要素も出力要素もありません。波形を生成するには少なくとも1つの入力（例: Switch）と1つの出力（例: LED）を追加してください。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">回路に入力要素がありません。波形を生成するには少なくとも1つの入力（例: Switch、Button、またはClock）を追加してください。</translation>
+        <translation>回路に入力要素がありません。波形を生成するには少なくとも1つの入力（例: Switch、Button、またはClock）を追加してください。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">回路に出力要素がありません。波形を生成するには少なくとも1つの出力（例: LEDまたはDisplay）を追加してください。</translation>
+        <translation>回路に出力要素がありません。波形を生成するには少なくとも1つの出力（例: LEDまたはDisplay）を追加してください。</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>ファイルを正常に保存しました。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">波形が大きすぎます！ズームをリセットします。</translation>
+        <translation>波形が大きすぎます！ズームをリセットします。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">セルが選択されていません。</translation>
+        <translation>セルが選択されていません。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">ファイルのオープンエラー: %1</translation>
+        <translation>ファイルのオープンエラー: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">ファイルの保存エラー: %1</translation>
+        <translation>ファイルの保存エラー: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>ファイルを正常に読み込みました。</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">ファイルを読み取り用に開けませんでした: %1</translation>
+        <translation>ファイルを読み取り用に開けませんでした: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">フォーマットがサポートされていません。ファイルを開けませんでした: %1</translation>
+        <translation>フォーマットがサポートされていません。ファイルを開けませんでした: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>PDFファイル (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">この回路をPDFに印刷できませんでした。</translation>
+        <translation>この回路をPDFに印刷できませんでした。</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>ファイル「%1」が存在しません！</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Each wireless channel must have a unique label.</source>
         <translation>未知</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">不明な要素タイプ: %1</translation>
+        <translation>不明な要素タイプ: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">不明なタイプ: %1</translation>
+        <translation>不明なタイプ: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Each wireless channel must have a unique label.</source>
         <translation>不明な理由</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">ピクスマップを読み込めませんでした: %1 (%2)</translation>
+        <translation>ピクスマップを読み込めませんでした: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Each wireless channel must have a unique label.</source>
         <translation>デフォルト</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">位置 %1 で要素プロパティの読み取り中にストリームエラー</translation>
+        <translation>位置 %1 で要素プロパティの読み取り中にストリームエラー</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">位置 %1 でスキンの読み取り中にストリームエラー</translation>
+        <translation>位置 %1 でスキンの読み取り中にストリームエラー</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">外観インデックス %1 が範囲外です (サイズ=%2) — ストリームが破損している可能性があります</translation>
+        <translation>外観インデックス %1 が範囲外です (サイズ=%2) — ストリームが破損している可能性があります</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Each wireless channel must have a unique label.</source>
         <translation>ピクセルマップスキン名を読み込んでいます。</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">スキンインデックス %1 が範囲外 (サイズ=%2) スキン名 &quot;%3&quot; — ストリームが破損している可能性があります</translation>
+        <translation>スキンインデックス %1 が範囲外 (サイズ=%2) スキン名 &quot;%3&quot; — ストリームが破損している可能性があります</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Each wireless channel must have a unique label.</source>
         <translation>集積回路</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">IC読み込み: シリアライズされたデータにIC名がありません</translation>
+        <translation>IC読み込み: シリアライズされたデータにIC名がありません</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1が見つかりません。</translation>
+        <translation>%1が見つかりません。</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">ICの循環参照が検出されました: %1</translation>
+        <translation>ICの循環参照が検出されました: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">ファイルのオープンエラー: %1</translation>
+        <translation>ファイルのオープンエラー: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">ICの移行: ファイルを書き込み用に開けません: %1</translation>
+        <translation>ICの移行: ファイルを書き込み用に開けません: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">ICの移行: 再保存ファイルのコミットに失敗しました: %1</translation>
+        <translation>ICの移行: 再保存ファイルのコミットに失敗しました: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">IC のネストの深さの上限 (%1) を超えました — blob は悪意を持って作成された可能性があります</translation>
+        <translation>IC のネストの深さの上限 (%1) を超えました — blob は悪意を持って作成された可能性があります</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">ファイルを開けませんでした: %1</translation>
+        <translation>ファイルを開けませんでした: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">ファイルを保存できませんでした: %1</translation>
+        <translation>ファイルを保存できませんでした: %1</translation>
     </message>
 </context>
 <context>
@@ -2231,12 +2281,17 @@ Suggested name:</source>
         <translation>終了</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">ファイル名がありません。</translation>
+        <translation>ファイル名がありません。</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">.pandaファイルが空です。</translation>
+        <translation>.pandaファイルが空です。</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Suggested name:</source>
         <translation>ミュート解除</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">まずファイルを保存してください。</translation>
+        <translation>まずファイルを保存してください。</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Suggested name:</source>
         <translation>削除するためにここにドラッグしてください。</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">ファイルの削除エラー: %1</translation>
+        <translation>ファイルの削除エラー: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">オフセット %1 で接続マップの読み取り中にストリームエラーが発生しました</translation>
+        <translation>オフセット %1 で接続マップの読み取り中にストリームエラーが発生しました</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">オフセット %1 で接続ポートIDの読み取り中にストリームエラー</translation>
+        <translation>オフセット %1 で接続ポートIDの読み取り中にストリームエラー</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">メタデータ数の読み取り中にストリームエラーが発生しました</translation>
+        <translation>メタデータ数の読み取り中にストリームエラーが発生しました</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">残りのストリームバイト数に対してメタデータ数 %1 はあり得ません</translation>
+        <translation>残りのストリームバイト数に対してメタデータ数 %1 はあり得ません</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">blob 数の読み取り中にストリームエラーが発生しました</translation>
+        <translation>blob 数の読み取り中にストリームエラーが発生しました</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">残りのストリームバイト数に対して blob 数 %1 はあり得ません</translation>
+        <translation>残りのストリームバイト数に対して blob 数 %1 はあり得ません</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">無効なファイルフォーマットです。</translation>
+        <translation>無効なファイルフォーマットです。</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">位置 %1 でタイプタグの読み取り中にストリームエラー: ステータス %2</translation>
+        <translation>位置 %1 でタイプタグの読み取り中にストリームエラー: ステータス %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">位置 %1 で要素タイプの読み取り中にストリームエラー: ステータス %2</translation>
+        <translation>位置 %1 で要素タイプの読み取り中にストリームエラー: ステータス %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">位置 %1 で要素の読み込み中にストリームエラー: ステータス %2</translation>
+        <translation>位置 %1 で要素の読み込み中にストリームエラー: ステータス %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">位置 %1 で接続の読み込み中にストリームエラー: ステータス %2</translation>
+        <translation>位置 %1 で接続の読み込み中にストリームエラー: ステータス %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">無効なタイプです。データが破損している可能性があります。</translation>
+        <translation>無効なタイプです。データが破損している可能性があります。</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">バージョン管理されたバックアップの作成に失敗しました: %1</translation>
+        <translation>バージョン管理されたバックアップの作成に失敗しました: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">ファイルのコピー中にエラーが発生しました: %1</translation>
+        <translation>ファイルのコピー中にエラーが発生しました: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">SplitCommandコンストラクタの接続ポートが無効です</translation>
+        <translation>SplitCommandコンストラクタの接続ポートが無効です</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">SplitCommandコンストラクタのグラフィック要素が無効です</translation>
+        <translation>SplitCommandコンストラクタのグラフィック要素が無効です</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Suggested name:</source>
         <translation>配線分割</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">%1のやり直し中にエラーが発生しました</translation>
+        <translation>%1のやり直し中にエラーが発生しました</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">エラー：SplitCommand::redo()でendPortがnullです</translation>
+        <translation>エラー：SplitCommand::redo()でendPortがnullです</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">%1の元に戻す中にエラーが発生しました</translation>
+        <translation>%1の元に戻す中にエラーが発生しました</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">真理値表の出力変数がマッピングされていません: %1</translation>
+        <translation>真理値表の出力変数がマッピングされていません: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">エレメントタイプはサポートされていません: %1</translation>
+        <translation>エレメントタイプはサポートされていません: %1</translation>
     </message>
 </context>
 <context>
@@ -2726,8 +2810,9 @@ Suggested name:</source>
         <translation>位置%1の真理値表出力を切り替え</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">真理値表要素が見つかりません！</translation>
+        <translation>真理値表要素が見つかりません！</translation>
     </message>
 </context>
 <context>
@@ -2809,20 +2894,24 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>ファイルを保存 (元の場所は読み取り専用です)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">ファイルのオープンエラー: %1</translation>
+        <translation>ファイルのオープンエラー: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">ファイルを保存できませんでした: %1</translation>
+        <translation>ファイルを保存できませんでした: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">このファイルは存在しません: %1</translation>
+        <translation>このファイルは存在しません: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">ファイルを開けませんでした: %1</translation>
+        <translation>ファイルを開けませんでした: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2855,12 +2944,14 @@ A backup of the original file has been created with name: %3</source>
         <translation>ファイルがアップグレードされました。</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">自動保存ファイルのオープンエラー: %1</translation>
+        <translation>自動保存ファイルのオープンエラー: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">自動保存ファイルを確定できませんでした: %1</translation>
+        <translation>自動保存ファイルを確定できませんでした: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>

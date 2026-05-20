@@ -33,32 +33,39 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="vanished">לא ניתן לפתוח את הקובץ לכתיבה: %1</translation>
+        <translation>לא ניתן לפתוח את הקובץ לכתיבה: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
         <source>Not enough pins available for all input elements</source>
-        <translation type="vanished">אין מספיק פינים עבור כל רכיבי הקלט</translation>
+        <translation>אין מספיק פינים עבור כל רכיבי הקלט</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
         <source>Not enough pins available for all rotary switch positions</source>
-        <translation type="vanished">אין מספיק פינים עבור כל מצבי המפסק הסיבובי</translation>
+        <translation>אין מספיק פינים עבור כל מצבי המפסק הסיבובי</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
         <source>Not enough pins available for all output elements</source>
-        <translation type="vanished">אין מספיק פינים עבור כל רכיבי הפלט</translation>
+        <translation>אין מספיק פינים עבור כל רכיבי הפלט</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">סוג רכיב לא נתמך: %1</translation>
+        <translation>סוג רכיב לא נתמך: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">משתנה פלט לא ממופה לטבלת אמת: %1</translation>
+        <translation>משתנה פלט לא ממופה לטבלת אמת: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
         <source>Could not open testbench file: %1</source>
-        <translation type="vanished">לא ניתן לפתוח את קובץ ספסל הבדיקה: %1</translation>
+        <translation>לא ניתן לפתוח את קובץ ספסל הבדיקה: %1</translation>
     </message>
 </context>
 <context>
@@ -80,8 +87,9 @@
         <translation>קובץ לא קריא</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
-        <translation type="vanished">לא ניתן לטעון שמע: %1 (%2)</translation>
+        <translation>לא ניתן לטעון שמע: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -379,20 +387,24 @@
         <translation>סימולטור beWavedDolphin</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
-        <translation type="vanished">המעגל ריק. הוסף רכיבי קלט ופלט כדי ליצור צורת גל.</translation>
+        <translation>המעגל ריק. הוסף רכיבי קלט ופלט כדי ליצור צורת גל.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="244"/>
         <source>The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.</source>
-        <translation type="vanished">למעגל אין רכיבי קלט או פלט. הוסף לפחות קלט אחד (למשל Switch) ופלט אחד (למשל LED) כדי ליצור צורת גל.</translation>
+        <translation>למעגל אין רכיבי קלט או פלט. הוסף לפחות קלט אחד (למשל Switch) ופלט אחד (למשל LED) כדי ליצור צורת גל.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="248"/>
         <source>The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.</source>
-        <translation type="vanished">למעגל אין רכיבי קלט. הוסף לפחות קלט אחד (למשל Switch, Button או Clock) כדי ליצור צורת גל.</translation>
+        <translation>למעגל אין רכיבי קלט. הוסף לפחות קלט אחד (למשל Switch, Button או Clock) כדי ליצור צורת גל.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="252"/>
         <source>The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.</source>
-        <translation type="vanished">למעגל אין רכיבי פלט. הוסף לפחות פלט אחד (למשל LED או Display) כדי ליצור צורת גל.</translation>
+        <translation>למעגל אין רכיבי פלט. הוסף לפחות פלט אחד (למשל LED או Display) כדי ליצור צורת גל.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
@@ -437,20 +449,39 @@
         <translation>קובץ נשמר בהצלחה.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
         <source>Waveform would be too big! Resetting zoom.</source>
-        <translation type="vanished">צורת הגל תהיה גדולה מדי! מאפס את הזום.</translation>
+        <translation>צורת הגל תהיה גדולה מדי! מאפס את הזום.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>No cells selected.</source>
-        <translation type="vanished">לא נבחרו תאים.</translation>
+        <translation>לא נבחרו תאים.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">שגיאה בפתיחת קובץ: %1</translation>
+        <translation>שגיאה בפתיחת קובץ: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
         <source>Error saving file: %1</source>
-        <translation type="vanished">שגיאה בשמירת קובץ: %1</translation>
+        <translation>שגיאה בשמירת קובץ: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
@@ -468,12 +499,14 @@
         <translation>קובץ נטען בהצלחה.</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>Could not open file for reading: %1</source>
-        <translation type="vanished">לא ניתן לפתוח את הקובץ לקריאה: %1</translation>
+        <translation>לא ניתן לפתוח את הקובץ לקריאה: %1</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
         <source>Format not supported. Could not open file: %1</source>
-        <translation type="vanished">פורמט לא נתמך. לא ניתן לפתוח קובץ: %1</translation>
+        <translation>פורמט לא נתמך. לא ניתן לפתוח קובץ: %1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
@@ -491,11 +524,13 @@
         <translation>קבצי PDF (*.pdf)</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
         <source>Could not print this circuit to PDF.</source>
-        <translation type="vanished">לא ניתן להדפיס את המעגל הזה ל-PDF.</translation>
+        <translation>לא ניתן להדפיס את המעגל הזה ל-PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>קובץ &quot;%1&quot; לא קיים!</translation>
     </message>
@@ -983,7 +1018,6 @@
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="320"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1143,12 +1177,14 @@ Each wireless channel must have a unique label.</source>
         <translation>לא ידוע</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>Unknown element type: %1</source>
-        <translation type="vanished">סוג רכיב לא ידוע: %1</translation>
+        <translation>סוג רכיב לא ידוע: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>Unknown type: %1</source>
-        <translation type="vanished">סוג לא ידוע: %1</translation>
+        <translation>סוג לא ידוע: %1</translation>
     </message>
 </context>
 <context>
@@ -1177,8 +1213,9 @@ Each wireless channel must have a unique label.</source>
         <translation>סיבה לא ידועה</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElement.cpp" line="181"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="vanished">לא ניתן לטעון תמונה: %1 (%2)</translation>
+        <translation>לא ניתן לטעון תמונה: %1 (%2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElement.cpp" line="406"/>
@@ -1186,16 +1223,19 @@ Each wireless channel must have a unique label.</source>
         <translation>ברירת מחדל</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="vanished">שגיאת זרם בקריאת מאפייני רכיב במיקום %1</translation>
+        <translation>שגיאת זרם בקריאת מאפייני רכיב במיקום %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="vanished">שגיאת זרם בקריאת מראות במיקום %1</translation>
+        <translation>שגיאת זרם בקריאת מראות במיקום %1</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="vanished">אינדקס המראה %1 מחוץ לטווח (גודל=%2) — הזרם עשוי להיות פגום</translation>
+        <translation>אינדקס המראה %1 מחוץ לטווח (גודל=%2) — הזרם עשוי להיות פגום</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
@@ -1203,8 +1243,9 @@ Each wireless channel must have a unique label.</source>
         <translation>טוען שמות עורות תמונה.</translation>
     </message>
     <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="vanished">אינדקס מראה %1 מחוץ לטווח (גודל=%2) לשם מראה &quot;%3&quot; — הזרם עלול להיות פגום</translation>
+        <translation>אינדקס מראה %1 מחוץ לטווח (גודל=%2) לשם מראה &quot;%3&quot; — הזרם עלול להיות פגום</translation>
     </message>
 </context>
 <context>
@@ -1220,43 +1261,52 @@ Each wireless channel must have a unique label.</source>
         <translation>מעגל משולב</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="225"/>
         <source>IC load: no IC name present in serialized data</source>
-        <translation type="vanished">טעינת IC: לא נמצא שם IC בנתונים המסודרים</translation>
+        <translation>טעינת IC: לא נמצא שם IC בנתונים המסודרים</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="350"/>
         <source>%1 not found.</source>
-        <translation type="vanished">%1 לא נמצא.</translation>
+        <translation>%1 לא נמצא.</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="391"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="vanished">זוהתה הפניה מעגלית ל-IC: %1</translation>
+        <translation>זוהתה הפניה מעגלית ל-IC: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="398"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">שגיאה בפתיחת קובץ: %1</translation>
+        <translation>שגיאה בפתיחת קובץ: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="452"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="vanished">הגירת IC: לא ניתן לפתוח את הקובץ לכתיבה: %1</translation>
+        <translation>הגירת IC: לא ניתן לפתוח את הקובץ לכתיבה: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="459"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="vanished">הגירת IC: שמירת הקובץ מחדש נכשלה: %1</translation>
+        <translation>הגירת IC: שמירת הקובץ מחדש נכשלה: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/IC.cpp" line="518"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="vanished">חרגת ממגבלת עומק הקינון של IC (%1) — ייתכן ש-blob הורכב בזדון</translation>
+        <translation>חרגת ממגבלת עומק הקינון של IC (%1) — ייתכן ש-blob הורכב בזדון</translation>
     </message>
 </context>
 <context>
     <name>ICRegistry</name>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">לא ניתן לפתוח קובץ: %1</translation>
+        <translation>לא ניתן לפתוח קובץ: %1</translation>
     </message>
     <message>
+        <location filename="../../Element/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">לא ניתן לשמור קובץ: %1</translation>
+        <translation>לא ניתן לשמור קובץ: %1</translation>
     </message>
 </context>
 <context>
@@ -2156,12 +2206,17 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
         <translation>עבור לכרטיסייה</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1433"/>
+        <location filename="../../UI/MainWindow.cpp" line="1462"/>
+        <location filename="../../UI/MainWindow.cpp" line="1485"/>
         <source>Missing file name.</source>
-        <translation type="vanished">חסר שם קובץ.</translation>
+        <translation>חסר שם קובץ.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1439"/>
+        <location filename="../../UI/MainWindow.cpp" line="1468"/>
         <source>The .panda file is empty.</source>
-        <translation type="vanished">קובץ ה-.panda ריק.</translation>
+        <translation>קובץ ה-.panda ריק.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1450"/>
@@ -2301,8 +2356,9 @@ Suggested name:</source>
         <translation>בטל השתקה</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="1973"/>
         <source>Save file first.</source>
-        <translation type="vanished">שמור קובץ קודם.</translation>
+        <translation>שמור קובץ קודם.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1976"/>
@@ -2321,8 +2377,9 @@ Suggested name:</source>
         <translation>גרור לכאן כדי להסיר.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="2026"/>
         <source>Error removing file: %1</source>
-        <translation type="vanished">שגיאה בהסרת קובץ: %1</translation>
+        <translation>שגיאה בהסרת קובץ: %1</translation>
     </message>
 </context>
 <context>
@@ -2430,12 +2487,14 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="vanished">שגיאת זרם בקריאת מפת החיבורים בהיסט %1</translation>
+        <translation>שגיאת זרם בקריאת מפת החיבורים בהיסט %1</translation>
     </message>
     <message>
+        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="vanished">שגיאת זרם בקריאת מזהי יציאות חיבור בהיסט %1</translation>
+        <translation>שגיאת זרם בקריאת מזהי יציאות חיבור בהיסט %1</translation>
     </message>
 </context>
 <context>
@@ -2597,52 +2656,70 @@ Suggested name:</source>
 <context>
     <name>Serialization</name>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="274"/>
         <source>Stream error reading metadata map count</source>
-        <translation type="vanished">שגיאת זרם בעת קריאת מספר המטא-נתונים</translation>
+        <translation>שגיאת זרם בעת קריאת מספר המטא-נתונים</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">מספר מטא-נתונים %1 לא סביר בהתחשב בבייטים שנותרו בזרם</translation>
+        <translation>מספר מטא-נתונים %1 לא סביר בהתחשב בבייטים שנותרו בזרם</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="294"/>
         <source>Stream error reading blob map count</source>
-        <translation type="vanished">שגיאת זרם בעת קריאת מספר ה-blob</translation>
+        <translation>שגיאת זרם בעת קריאת מספר ה-blob</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
-        <translation type="vanished">מספר blob %1 לא סביר בהתחשב בבייטים שנותרו בזרם</translation>
+        <translation>מספר blob %1 לא סביר בהתחשב בבייטים שנותרו בזרם</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="350"/>
+        <location filename="../../IO/Serialization.cpp" line="360"/>
+        <location filename="../../IO/Serialization.cpp" line="364"/>
+        <location filename="../../IO/Serialization.cpp" line="399"/>
+        <location filename="../../IO/Serialization.cpp" line="403"/>
+        <location filename="../../IO/Serialization.cpp" line="407"/>
+        <location filename="../../IO/Serialization.cpp" line="413"/>
         <source>Invalid file format.</source>
-        <translation type="vanished">פורמט קובץ לא תקין.</translation>
+        <translation>פורמט קובץ לא תקין.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="521"/>
         <source>Stream error reading type tag at position %1: status %2</source>
-        <translation type="vanished">שגיאת זרם בקריאת תגית סוג במיקום %1: מצב %2</translation>
+        <translation>שגיאת זרם בקריאת תגית סוג במיקום %1: מצב %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="533"/>
         <source>Stream error reading element type at position %1: status %2</source>
-        <translation type="vanished">שגיאת זרם בקריאת סוג רכיב במיקום %1: מצב %2</translation>
+        <translation>שגיאת זרם בקריאת סוג רכיב במיקום %1: מצב %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="545"/>
         <source>Stream error loading element at position %1: status %2</source>
-        <translation type="vanished">שגיאת זרם בטעינת רכיב במיקום %1: מצב %2</translation>
+        <translation>שגיאת זרם בטעינת רכיב במיקום %1: מצב %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="564"/>
         <source>Stream error loading connection at position %1: status %2</source>
-        <translation type="vanished">שגיאת זרם בטעינת חיבור במיקום %1: מצב %2</translation>
+        <translation>שגיאת זרם בטעינת חיבור במיקום %1: מצב %2</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="571"/>
         <source>Invalid type. Data is possibly corrupted.</source>
-        <translation type="vanished">סוג לא תקין. הנתונים עלולים להיות פגומים.</translation>
+        <translation>סוג לא תקין. הנתונים עלולים להיות פגומים.</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="624"/>
         <source>Failed to create versioned backup: %1</source>
-        <translation type="vanished">יצירת גיבוי מגרסה נכשלה: %1</translation>
+        <translation>יצירת גיבוי מגרסה נכשלה: %1</translation>
     </message>
     <message>
+        <location filename="../../IO/Serialization.cpp" line="704"/>
         <source>Error copying file: %1</source>
-        <translation type="vanished">שגיאה בהעתקת הקובץ: %1</translation>
+        <translation>שגיאה בהעתקת הקובץ: %1</translation>
     </message>
 </context>
 <context>
@@ -2656,12 +2733,14 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="513"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
-        <translation type="vanished">פורטי חיבור לא תקינים בבנאי SplitCommand</translation>
+        <translation>פורטי חיבור לא תקינים בבנאי SplitCommand</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="519"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
-        <translation type="vanished">אלמנטים גרפיים לא תקינים בבנאי SplitCommand</translation>
+        <translation>אלמנטים גרפיים לא תקינים בבנאי SplitCommand</translation>
     </message>
     <message>
         <location filename="../../Scene/Commands.cpp" line="542"/>
@@ -2669,27 +2748,32 @@ Suggested name:</source>
         <translation>פיצול חוט</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="557"/>
         <source>Error trying to redo %1</source>
-        <translation type="vanished">שגיאה בניסיון לבצע שוב %1</translation>
+        <translation>שגיאה בניסיון לבצע שוב %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
-        <translation type="vanished">שגיאה: endPort הוא null ב-SplitCommand::redo()</translation>
+        <translation>שגיאה: endPort הוא null ב-SplitCommand::redo()</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Error trying to undo %1</source>
-        <translation type="vanished">שגיאה בניסיון לבטל %1</translation>
+        <translation>שגיאה בניסיון לבטל %1</translation>
     </message>
 </context>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Output variable not mapped for TruthTable: %1</source>
-        <translation type="vanished">משתנה פלט לא ממופה לטבלת אמת: %1</translation>
+        <translation>משתנה פלט לא ממופה לטבלת אמת: %1</translation>
     </message>
     <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
         <source>Element type not supported: %1</source>
-        <translation type="vanished">סוג רכיב לא נתמך: %1</translation>
+        <translation>סוג רכיב לא נתמך: %1</translation>
     </message>
 </context>
 <context>
@@ -2726,8 +2810,9 @@ Suggested name:</source>
         <translation>הפעל/כבה פלט טבלת אמת במיקום: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Commands.cpp" line="974"/>
         <source>Could not find truthtable element!</source>
-        <translation type="vanished">לא ניתן למצוא רכיב טבלת אמת!</translation>
+        <translation>לא ניתן למצוא רכיב טבלת אמת!</translation>
     </message>
 </context>
 <context>
@@ -2809,20 +2894,24 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>שמור קובץ (המיקום המקורי הוא לקריאה בלבד)</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Error opening file: %1</source>
-        <translation type="vanished">שגיאה בפתיחת קובץ: %1</translation>
+        <translation>שגיאה בפתיחת קובץ: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="309"/>
         <source>Could not save file: %1</source>
-        <translation type="vanished">לא ניתן לשמור קובץ: %1</translation>
+        <translation>לא ניתן לשמור קובץ: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="383"/>
         <source>This file does not exist: %1</source>
-        <translation type="vanished">קובץ זה לא קיים: %1</translation>
+        <translation>קובץ זה לא קיים: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not open file: %1</source>
-        <translation type="vanished">לא ניתן לפתוח קובץ: %1</translation>
+        <translation>לא ניתן לפתוח קובץ: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="427"/>
@@ -2855,12 +2944,14 @@ A backup of the original file has been created with name: %3</source>
         <translation>הקובץ שודרג.</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="600"/>
         <source>Error opening autosave file: %1</source>
-        <translation type="vanished">שגיאה בפתיחת קובץ שמירה אוטומטית: %1</translation>
+        <translation>שגיאה בפתיחת קובץ שמירה אוטומטית: %1</translation>
     </message>
     <message>
+        <location filename="../../Scene/Workspace.cpp" line="608"/>
         <source>Could not commit autosave file: %1</source>
-        <translation type="vanished">לא ניתן לאשר את קובץ השמירה האוטומטית: %1</translation>
+        <translation>לא ניתן לאשר את קובץ השמירה האוטומטית: %1</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
