@@ -32,6 +32,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Stylelint
+        run: npm run stylelint
+
       - name: Format check
         run: npm run format:check
 

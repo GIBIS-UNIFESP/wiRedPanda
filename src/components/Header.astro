@@ -165,17 +165,16 @@ function isActive(href: string): boolean {
 
   /* Scrolled state: applied via JS */
   header.scrolled {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgb(255 255 255 / 70%);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-color: rgba(0, 0, 0, 0.08);
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+    border-color: rgb(0 0 0 / 8%);
+    box-shadow: 0 1px 8px rgb(0 0 0 / 6%);
   }
 
   :global(.dark) header.scrolled {
-    background-color: rgba(17, 17, 24, 0.75);
-    border-color: rgba(19, 64, 116, 0.3);
-    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+    background-color: rgb(17 17 24 / 75%);
+    border-color: rgb(19 64 116 / 30%);
+    box-shadow: 0 1px 12px rgb(0 0 0 / 40%);
   }
 </style>
 

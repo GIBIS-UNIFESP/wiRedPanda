@@ -12,8 +12,8 @@ const t = useTranslations(locale);
   role="switch"
   aria-checked="false"
 >
-  <span class="theme-switch__track">
-    <span class="theme-switch__knob"></span>
+  <span class="theme-switch-track">
+    <span class="theme-switch-knob"></span>
   </span>
 </button>
 
@@ -28,7 +28,7 @@ const t = useTranslations(locale);
     align-items: center;
   }
 
-  .theme-switch__track {
+  .theme-switch-track {
     position: relative;
     display: flex;
     align-items: center;
@@ -41,11 +41,11 @@ const t = useTranslations(locale);
     transition: background-color 0.25s ease;
   }
 
-  :global(.dark) .theme-switch__track {
+  :global(.dark) .theme-switch-track {
     background-color: #374151;
   }
 
-  .theme-switch__knob {
+  .theme-switch-knob {
     position: absolute;
     top: 2px;
     left: 2px;
@@ -53,11 +53,11 @@ const t = useTranslations(locale);
     height: 20px;
     border-radius: 9999px;
     background-color: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
     transition: transform 0.25s ease;
   }
 
-  :global(.dark) .theme-switch__knob {
+  :global(.dark) .theme-switch-knob {
     transform: translateX(20px);
   }
 </style>

@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap');
-
+@import 'https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap';
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -12,15 +11,15 @@
 
   /* Light mode background colors */
   --color-bg-light: #f0ece4;
-  --color-bg-card-light: rgba(255, 255, 255, 0.7);
+  --color-bg-card-light: rgb(255 255 255 / 70%);
 
   /* Dark mode background colors */
   --color-bg-dark: #1a1a2e;
   --color-bg-darker: #111118;
-  --color-bg-card: rgba(17, 17, 24, 0.6);
+  --color-bg-card: rgb(17 17 24 / 60%);
 
   /* Font family */
-  --font-sans: 'Moderustic', Helvetica, sans-serif;
+  --font-sans: 'Moderustic', 'Helvetica', sans-serif;
 }
 
 /* Base styles */
@@ -39,6 +38,7 @@
   /* Light mode defaults */
   body {
     @apply bg-bg-light text-gray-800 font-sans antialiased;
+
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -68,6 +68,7 @@
   100% {
     opacity: 1;
   }
+
   25%,
   75% {
     opacity: 0;
@@ -86,6 +87,7 @@
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(20px);
   }
@@ -99,6 +101,7 @@
     opacity: 0;
     transform: translateY(12px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -111,6 +114,7 @@
     opacity: 0;
     transform: scale(0.92);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
