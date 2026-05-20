@@ -43,6 +43,7 @@ const origin = Astro.site?.origin ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={t('meta.description')} />
+    <link rel="canonical" href={`${origin}${getLocalePath(Astro.url.pathname, locale)}`} />
     <link rel="alternate" hreflang={htmlLang} href={`${origin}${getLocalePath(Astro.url.pathname, locale)}`} />
     {
       otherLocales.map((altLocale) => (
@@ -54,6 +55,17 @@ const origin = Astro.site?.origin ?? '';
       ))
     }
     <link rel="alternate" hreflang="x-default" href={`${origin}${getLocalePath(Astro.url.pathname, defaultLocale)}`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="wiRedPanda" />
+    <meta property="og:title" content={`wiRedPanda | ${pageTitle}`} />
+    <meta property="og:description" content={t('meta.description')} />
+    <meta property="og:url" content={`${origin}${getLocalePath(Astro.url.pathname, locale)}`} />
+    <meta property="og:locale" content={htmlLang.replace('-', '_')} />
+    {
+      otherLocales.map((altLocale) => (
+        <meta property="og:locale:alternate" content={getHtmlLang(altLocale).replace('-', '_')} />
+      ))
+    }
     <ClientRouter />
     <title>Panda | {pageTitle}</title>
     <script is:inline>

@@ -183,10 +183,16 @@ const letters = 'wiRedPanda'.split('');
     const blinkInterval = 60; // ms between blink ticks
 
     let blinkTimer: ReturnType<typeof setInterval>;
+    let cancelled = false;
 
-    document.addEventListener('astro:before-preparation', () => clearInterval(blinkTimer), {
-      once: true,
-    });
+    document.addEventListener(
+      'astro:before-preparation',
+      () => {
+        cancelled = true;
+        clearInterval(blinkTimer);
+      },
+      { once: true }
+    );
 
     setTimeout(() => {
       blinkTimer = setInterval(() => {
@@ -209,6 +215,7 @@ const letters = 'wiRedPanda'.split('');
     indices.forEach((letterIdx, order) => {
       setTimeout(
         () => {
+          if (cancelled) return;
           settled[letterIdx] = true;
           letters[letterIdx]!.style.opacity = '1';
           settledCount++;

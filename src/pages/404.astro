@@ -1,20 +1,50 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getLocaleFromUrl, useTranslations, getLocalePath } from '../i18n';
+import {
+  getLocaleFromUrl,
+  useTranslations,
+  getLocalePath,
+  getAllLocales,
+  defaultLocale,
+} from '../i18n';
 
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
+
+const siteBase = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Build 404 translations for all non-default locales to pass to the client.
+// The page is always served as English by the static host, so client-side JS
+// detects the user's locale (from the URL that caused the 404, then from
+// browser language) and updates the visible text accordingly.
+const localeTranslations = Object.fromEntries(
+  getAllLocales()
+    .filter((l) => l !== defaultLocale)
+    .map((l) => {
+      const tl = useTranslations(l);
+      return [
+        l,
+        {
+          heading: tl('404.heading'),
+          message: tl('404.message'),
+          submessage: tl('404.submessage'),
+          backHome: tl('404.backHome'),
+        },
+      ];
+    })
+);
 ---
 
 <Base pageTitle={t('404.title')}>
   <div class="flex flex-col items-center justify-center min-h-[60vh] pt-20 text-center px-6">
-    <h1 class="text-6xl font-bold text-brand-red mb-4">{t('404.heading')}</h1>
+    <h1 id="err-heading" class="text-6xl font-bold text-brand-red mb-4">{t('404.heading')}</h1>
     <p class="text-gray-600 dark:text-gray-300 text-lg max-w-lg leading-relaxed">
-      {t('404.message')}
+      <span id="err-message">{t('404.message')}</span>
       <br />
-      {t('404.submessage')}
+      <span id="err-submessage">{t('404.submessage')}</span>
     </p>
     <a
+      id="err-back"
       href={getLocalePath('/', locale)}
       class="mt-8 px-6 py-3 bg-brand-blue hover:bg-brand-light-blue text-white rounded-lg font-medium transition-colors duration-200"
     >
@@ -22,3 +52,52 @@ const t = useTranslations(locale);
     </a>
   </div>
 </Base>
+
+<script is:inline define:vars={{ siteBase, localeTranslations }}>
+  (function () {
+    var path = window.location.pathname;
+    var stripped = path;
+    if (siteBase && path.indexOf(siteBase) === 0) {
+      stripped = path.slice(siteBase.length);
+    }
+
+    // Try to detect locale from the URL that triggered the 404 first,
+    // then fall back to the browser's primary language preference.
+    var locale = null;
+    var locales = Object.keys(localeTranslations);
+    for (var i = 0; i < locales.length; i++) {
+      if (stripped.indexOf('/' + locales[i]) === 0) {
+        locale = locales[i];
+        break;
+      }
+    }
+    if (!locale) {
+      var lang = (navigator.language || '').toLowerCase();
+      for (var j = 0; j < locales.length; j++) {
+        var prefix = locales[j].split('-')[0];
+        if (lang.indexOf(prefix) === 0) {
+          locale = locales[j];
+          break;
+        }
+      }
+    }
+
+    if (!locale) return; // English already rendered server-side
+
+    var tr = localeTranslations[locale];
+    if (!tr) return;
+
+    var headingEl = document.getElementById('err-heading');
+    var messageEl = document.getElementById('err-message');
+    var submessageEl = document.getElementById('err-submessage');
+    var backEl = document.getElementById('err-back');
+
+    if (headingEl) headingEl.textContent = tr.heading;
+    if (messageEl) messageEl.textContent = tr.message;
+    if (submessageEl) submessageEl.textContent = tr.submessage;
+    if (backEl) {
+      backEl.textContent = tr.backHome;
+      backEl.href = siteBase + '/' + locale + '/';
+    }
+  })();
+</script>
