@@ -29,6 +29,9 @@ jobs:
       - name: Type check
         run: NODE_OPTIONS="--max-old-space-size=4096" npm run check
 
+      - name: Test
+        run: npm test
+
       - name: Lint
         run: npm run lint
 

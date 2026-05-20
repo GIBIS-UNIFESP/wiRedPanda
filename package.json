@@ -7,6 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "stylelint": "stylelint \"src/**/*.{css,astro}\"",
@@ -33,6 +35,7 @@
     "stylelint-config-standard": "^40.0.0",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.4"
+    "typescript-eslint": "^8.59.4",
+    "vitest": "^4.1.7"
   }
 }
