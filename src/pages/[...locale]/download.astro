@@ -281,7 +281,9 @@ const clientTranslations = {
   const dlSignal = dlController.signal;
 
   windowsX64El?.addEventListener('click', () => trackDownload('Windows-x64'), { signal: dlSignal });
-  windowsArmEl?.addEventListener('click', () => trackDownload('Windows-arm64'), { signal: dlSignal });
+  windowsArmEl?.addEventListener('click', () => trackDownload('Windows-arm64'), {
+    signal: dlSignal,
+  });
   linuxX64El?.addEventListener('click', () => trackDownload('Linux-x64'), { signal: dlSignal });
   linuxArmEl?.addEventListener('click', () => trackDownload('Linux-arm64'), { signal: dlSignal });
   macosEl?.addEventListener('click', () => trackDownload('macOS'), { signal: dlSignal });

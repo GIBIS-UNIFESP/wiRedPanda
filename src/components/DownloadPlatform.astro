@@ -71,10 +71,7 @@ const { platform, platformName, installCommand, copyLabel } = Astro.props;
         const platform = (btn as HTMLElement).dataset['platform'];
         if (!command) return;
 
-        // Track copy command event with Umami
-        if (typeof window !== 'undefined' && (window as any).umami) {
-          (window as any).umami.track('Copy Install Command', { platform: platform });
-        }
+        window.umami?.track('Copy Install Command', { platform });
 
         navigator.clipboard.writeText(command).then(
           () => {

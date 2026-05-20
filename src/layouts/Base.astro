@@ -44,7 +44,11 @@ const origin = Astro.site?.origin ?? '';
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={t('meta.description')} />
     <link rel="canonical" href={`${origin}${getLocalePath(Astro.url.pathname, locale)}`} />
-    <link rel="alternate" hreflang={htmlLang} href={`${origin}${getLocalePath(Astro.url.pathname, locale)}`} />
+    <link
+      rel="alternate"
+      hreflang={htmlLang}
+      href={`${origin}${getLocalePath(Astro.url.pathname, locale)}`}
+    />
     {
       otherLocales.map((altLocale) => (
         <link
@@ -54,7 +58,11 @@ const origin = Astro.site?.origin ?? '';
         />
       ))
     }
-    <link rel="alternate" hreflang="x-default" href={`${origin}${getLocalePath(Astro.url.pathname, defaultLocale)}`} />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={`${origin}${getLocalePath(Astro.url.pathname, defaultLocale)}`}
+    />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="wiRedPanda" />
     <meta property="og:title" content={`wiRedPanda | ${pageTitle}`} />
@@ -67,7 +75,7 @@ const origin = Astro.site?.origin ?? '';
       ))
     }
     <ClientRouter />
-    <title>Panda | {pageTitle}</title>
+    <title>wiRedPanda | {pageTitle}</title>
     <script is:inline>
       (function () {
         // Fallback for custom events if DNT is active
@@ -126,7 +134,7 @@ const origin = Astro.site?.origin ?? '';
       return;
 
     // Check browser language
-    var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    var lang = (navigator.language || '').toLowerCase();
     if (lang.indexOf('pt') === 0) {
       window.location.replace(base + '/pt-br' + stripped);
     } else if (lang.indexOf('es') === 0) {
