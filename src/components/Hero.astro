@@ -184,6 +184,10 @@ const letters = 'wiRedPanda'.split('');
 
     let blinkTimer: ReturnType<typeof setInterval>;
 
+    document.addEventListener('astro:before-preparation', () => clearInterval(blinkTimer), {
+      once: true,
+    });
+
     setTimeout(() => {
       blinkTimer = setInterval(() => {
         for (let i = 0; i < letterCount; i++) {

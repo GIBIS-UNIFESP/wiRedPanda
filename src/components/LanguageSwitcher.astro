@@ -15,6 +15,7 @@ const t = useTranslations(locale);
 const otherLocales = getOtherLocales(locale);
 const currentPath = Astro.url.pathname;
 const currentFlag = localeFlags[locale];
+const dropdownId = `lang-dropdown-${Math.random().toString(36).slice(2, 7)}`;
 ---
 
 <div class="lang-switcher relative">
@@ -25,6 +26,7 @@ const currentFlag = localeFlags[locale];
     title={t('lang.switchLanguage')}
     aria-expanded="false"
     aria-haspopup="menu"
+    aria-controls={dropdownId}
   >
     <Icon name={currentFlag} class="w-5 h-5 rounded-sm" />
     <svg
@@ -39,6 +41,7 @@ const currentFlag = localeFlags[locale];
   </button>
 
   <div
+    id={dropdownId}
     class="lang-switcher-dropdown hidden absolute right-0 top-full mt-1 py-1 min-w-[140px] rounded-lg border border-gray-200 dark:border-brand-blue/30 bg-white dark:bg-bg-darker shadow-lg shadow-black/10 dark:shadow-black/40 z-50"
     role="menu"
   >

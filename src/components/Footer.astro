@@ -8,7 +8,6 @@ import gibisLogo from '../images/gibis.webp';
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
 
-const year = new Date().getFullYear();
 ---
 
 <footer class="bg-gray-100 dark:bg-bg-darker">
@@ -30,8 +29,14 @@ const year = new Date().getFullYear();
     </a>
 
     <span class="text-gray-500 dark:text-gray-400 text-sm">
-      {t('footer.copyright')} &copy; {year}
+      {t('footer.copyright')} &copy; <span id="footer-year">{new Date().getFullYear()}</span>
     </span>
+    <script is:inline>
+      (function () {
+        var el = document.getElementById('footer-year');
+        if (el) el.textContent = String(new Date().getFullYear());
+      })();
+    </script>
 
     <a
       href="https://gibis.unifesp.br/"

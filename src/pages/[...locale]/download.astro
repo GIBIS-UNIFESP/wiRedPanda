@@ -21,8 +21,6 @@ const debianInstallCommand = 'sudo apt-get install wiredpanda';
 // Pass translations to client-side script
 const clientTranslations = {
   fetching: t('download.fetching'),
-  errorHeading: t('download.errorHeading'),
-  linkNotAvailableRelease: t('download.linkNotAvailableRelease'),
   versionText: t('download.versionText'),
   errorFetching: t('download.errorFetching'),
   errorNotFound: t('download.errorNotFound'),
@@ -85,9 +83,6 @@ const clientTranslations = {
             aria-disabled="true">{t('download.arm64')}</a
           >
         </div>
-        <small id="windows-status" class="text-gray-400 dark:text-gray-500 text-xs hidden"
-          >{t('download.linkNotAvailable')}</small
-        >
       </div>
       <div class="flex flex-col items-center gap-2">
         <Icon name="platforms/linux" class="platform-icon" />
@@ -110,9 +105,6 @@ const clientTranslations = {
             aria-disabled="true">{t('download.arm64')}</a
           >
         </div>
-        <small id="linux-status" class="text-gray-400 dark:text-gray-500 text-xs hidden"
-          >{t('download.linkNotAvailable')}</small
-        >
       </div>
       <div class="flex flex-col items-center gap-2">
         <Icon name="platforms/macos" class="platform-icon" />
@@ -127,9 +119,6 @@ const clientTranslations = {
             aria-disabled="true">{t('download.universal')}</a
           >
         </div>
-        <small id="macos-status" class="text-gray-400 dark:text-gray-500 text-xs hidden"
-          >{t('download.linkNotAvailable')}</small
-        >
       </div>
     </div>
 
