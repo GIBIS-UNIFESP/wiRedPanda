@@ -281,16 +281,6 @@ include_directories(
 
 # ========= TRANSLATIONS ===========================
 
-# lupdate target — refreshes .ts files from source.  Manual invocation only;
-# unrelated to the build-time .qm compilation handled by qt_add_translations.
-if(Qt6LinguistTools_FOUND)
-    add_custom_target(lupdate
-        COMMAND Qt6::lupdate -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -I ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/App -ts ${TS_FILES} -no-obsolete
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Updating translation source files"
-    )
-endif()
-
 list(LENGTH TS_FILES TS_FILES_COUNT)
 message(STATUS "Found ${TS_FILES_COUNT} translation files:")
 foreach(ts_file ${TS_FILES})
@@ -389,9 +379,18 @@ if(Qt6LinguistTools_FOUND)
     if(Qt6_VERSION VERSION_GREATER_EQUAL "6.9.0")
         set(_merge_qt_translations MERGE_QT_TRANSLATIONS)
     endif()
+    set(_lupdate_opts)
+    if(Qt6_VERSION VERSION_GREATER_EQUAL "6.7.0")
+        set(_lupdate_opts LUPDATE_OPTIONS
+            -tr-function-alias tr+=PANDACEPTION
+            -extensions cpp,h,ui
+            -no-obsolete
+        )
+    endif()
     qt_add_translations(wiredpanda
         TS_FILES ${TS_FILES}
         ${_merge_qt_translations}
+        ${_lupdate_opts}
     )
 endif()
 

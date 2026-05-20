@@ -82,6 +82,11 @@ Advanced development features supported:
   - `ctest --preset ubsan` - Undefined Behavior Sanitizer
   - Parallel execution and output on failure are automatic via CMakeLists.txt configuration
 
+### Translations
+
+- **CRITICAL**: Always use `cmake --build --preset debug --target update_translations` to refresh `.ts` files — never call `lupdate` directly or use any other target.
+- This target passes `-tr-function-alias tr+=PANDACEPTION` so strings wrapped in the `PANDACEPTION()` macro are correctly extracted. Using any other invocation silently discards those strings.
+
 ## Project Structure
 
 - Main project file: `CMakeLists.txt`
