@@ -40,7 +40,7 @@ export default {
   'home.screenshot2Alt': 'Screenshot einer Logikschaltungssimulation in wiRedPanda',
   'home.demoLabel': 'wiRedPanda-Demovideo',
   'home.cta':
-    'Laden Sie wiRedPanda jetzt herunter und beginnen Sie, die Welt der digitalen Schaltungen zu erkunden. Entdecken Sie alle unsere Funktionen und erfahren Sie, wie wir Ihnen helfen können, Ihre Ziele zu erreichen. Bereits an der Bundesuniversität von São Paulo im Einsatz – vielleicht auch bald in Ihrem Logikschaltungs-Kurs!',
+    'Laden Sie wiRedPanda jetzt herunter und beginnen Sie, die Welt der digitalen Schaltungen zu erkunden. Entdecken Sie alle unsere Funktionen und erfahren Sie, wie wir Ihnen helfen können, Ihre Ziele zu erreichen. Bereits an der Bundesuniversität von São Paulo im Einsatz – vielleicht auch in Ihrem Logikschaltungs-Kurs!',
 
   // About page
   'about.title': 'Über uns',

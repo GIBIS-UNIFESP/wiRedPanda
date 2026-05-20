@@ -6,7 +6,7 @@ export default {
   // Navigation
   'nav.home': 'Início',
   'nav.about': 'Sobre',
-  'nav.download': 'Download',
+  'nav.download': 'Baixar',
   'nav.tryout': 'Experimente',
   'nav.github': 'GitHub',
   'nav.githubRepo': 'Repositório no GitHub',
@@ -54,7 +54,7 @@ export default {
   'about.formerDevs': 'Desenvolvedores Anteriores',
 
   // Download page
-  'download.title': 'Download',
+  'download.title': 'Baixar',
   'download.heading': 'Baixe o software',
   'download.fetching': 'Buscando informações da última versão...',
   'download.errorHeading': 'Não foi possível carregar os links de download:',
