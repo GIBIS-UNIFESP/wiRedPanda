@@ -42,21 +42,23 @@ const dropdownId = `lang-dropdown-${Math.random().toString(36).slice(2, 7)}`;
 
   <div
     id={dropdownId}
-    class="lang-switcher-dropdown hidden absolute right-0 top-full mt-1 py-1 min-w-[140px] rounded-lg border border-gray-200 dark:border-brand-blue/30 bg-white dark:bg-bg-darker shadow-lg shadow-black/10 dark:shadow-black/40 z-50"
+    class="lang-switcher-dropdown hidden absolute right-0 top-full mt-1 min-w-[280px] max-h-[70vh] overflow-y-auto rounded-lg border border-gray-200 dark:border-brand-blue/30 bg-white dark:bg-bg-darker shadow-lg shadow-black/10 dark:shadow-black/40 z-50"
     role="menu"
   >
-    {
-      otherLocales.map((altLocale: Locale) => (
-        <a
-          href={getLocalePath(currentPath, altLocale)}
-          class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors duration-150"
-          role="menuitem"
-        >
-          <Icon name={localeFlags[altLocale]} class="w-4 h-4 rounded-sm" />
-          <span>{languages[altLocale]}</span>
-        </a>
-      ))
-    }
+    <div class="grid grid-cols-2 py-1">
+      {
+        otherLocales.map((altLocale: Locale) => (
+          <a
+            href={getLocalePath(currentPath, altLocale)}
+            class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors duration-150"
+            role="menuitem"
+          >
+            <Icon name={localeFlags[altLocale]} class="w-4 h-4 rounded-full flex-shrink-0" />
+            <span class="truncate">{languages[altLocale]}</span>
+          </a>
+        ))
+      }
+    </div>
   </div>
 </div>
 
