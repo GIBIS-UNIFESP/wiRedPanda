@@ -7,6 +7,13 @@ import { defineConfig } from 'eslint/config';
 export default defineConfig(
   eslint.configs.recommended,
 
+  {
+    rules: {
+      eqeqeq: ['error', 'always'],
+      'no-console': ['error', { allow: ['error', 'warn', 'info'] }],
+    },
+  },
+
   // TypeScript files with full type-aware rules (excludes astro virtual files)
   {
     files: ['**/*.ts'],
@@ -17,6 +24,10 @@ export default defineConfig(
         project: true,
         tsconfigRootDir: import.meta.dirname,
       },
+    },
+    rules: {
+      '@typescript-eslint/switch-exhaustiveness-check': 'error',
+      '@typescript-eslint/no-shadow': 'error',
     },
   },
 

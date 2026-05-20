@@ -1,17 +1,7 @@
 {
-  "extends": "astro/tsconfigs/base",
+  "extends": "astro/tsconfigs/strictest",
   "exclude": ["public", "dist"],
   "compilerOptions": {
-    "strict": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "exactOptionalPropertyTypes": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noPropertyAccessFromIndexSignature": true
   }
 }
