@@ -72,7 +72,7 @@ export function getLocaleFromUrl(url: URL): Locale {
  */
 export function useTranslations(locale: Locale) {
   return function t(key: TranslationKey): string {
-    return translations[locale]?.[key] ?? translations[defaultLocale][key] ?? key;
+    return translations[locale][key] ?? translations[defaultLocale][key] ?? key;
   };
 }
 
@@ -120,7 +120,7 @@ export function getHtmlLang(locale: Locale): string {
     fr: 'fr',
     de: 'de',
   };
-  return map[locale] ?? 'en';
+  return map[locale];
 }
 
 /**

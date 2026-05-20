@@ -11,12 +11,12 @@ export function getStaticPaths() {
 const { locale } = Astro.props as { locale: Locale };
 const t = useTranslations(locale);
 
-const GITHUB_REPO_OWNER = "GIBIS-UNIFESP";
-const GITHUB_REPO_NAME = "wiRedPanda";
+const GITHUB_REPO_OWNER = 'GIBIS-UNIFESP';
+const GITHUB_REPO_NAME = 'wiRedPanda';
 const GITHUB_RELEASES_PAGE_URL = `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases`;
 
-const archInstallCommand = "yay -S wiredpanda";
-const debianInstallCommand = "apt-get install wiredpanda";
+const archInstallCommand = 'yay -S wiredpanda';
+const debianInstallCommand = 'apt-get install wiredpanda';
 
 // Pass translations to client-side script
 const clientTranslations = {
@@ -39,58 +39,130 @@ const clientTranslations = {
     <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">{t('download.heading')}</h2>
 
     <div id="release-info-container" class="mb-8 min-h-[50px]">
-      <p id="release-version-text" class="text-gray-600 dark:text-gray-300">{t('download.fetching')}</p>
-      <div id="error-message-container" class="hidden bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/40 rounded-xl p-4 mt-4 text-left">
+      <p id="release-version-text" class="text-gray-600 dark:text-gray-300">
+        {t('download.fetching')}
+      </p>
+      <div
+        id="error-message-container"
+        class="hidden bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/40 rounded-xl p-4 mt-4 text-left"
+      >
         <p class="text-red-600 dark:text-red-400 font-semibold">{t('download.errorHeading')}</p>
         <p id="error-text" class="text-red-500 dark:text-red-300 mt-1"></p>
         <p class="text-gray-600 dark:text-gray-300 mt-2">
-          {t('download.errorVisit')} <a href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" class="text-brand-light-blue hover:underline">{t('download.errorVisitLink')}</a> {t('download.errorVisitSuffix')}
+          {t('download.errorVisit')}
+          <a
+            href={GITHUB_RELEASES_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-brand-light-blue hover:underline">{t('download.errorVisitLink')}</a
+          >
+          {t('download.errorVisitSuffix')}
         </p>
       </div>
     </div>
 
-    <div class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm p-8 mb-10 flex flex-col sm:flex-row items-center justify-around gap-8">
+    <div
+      class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm p-8 mb-10 flex flex-col sm:flex-row items-center justify-around gap-8"
+    >
       <div class="flex flex-col items-center gap-2">
         <Icon name="platforms/windows" class="platform-icon" />
         <span class="text-gray-600 dark:text-gray-300">{t('download.windows')}</span>
         <div class="flex gap-2 mt-1">
-          <a id="windows-x64-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.x86_64')}</a>
-          <a id="windows-arm64-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.arm64')}</a>
+          <a
+            id="windows-x64-link"
+            class="arch-chip disabled-chip"
+            href={GITHUB_RELEASES_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled="true">{t('download.x86_64')}</a
+          >
+          <a
+            id="windows-arm64-link"
+            class="arch-chip disabled-chip"
+            href={GITHUB_RELEASES_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled="true">{t('download.arm64')}</a
+          >
         </div>
-        <small id="windows-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">{t('download.linkNotAvailable')}</small>
+        <small id="windows-status" class="text-gray-400 dark:text-gray-500 text-xs hidden"
+          >{t('download.linkNotAvailable')}</small
+        >
       </div>
       <div class="flex flex-col items-center gap-2">
         <Icon name="platforms/linux" class="platform-icon" />
         <span class="text-gray-600 dark:text-gray-300">{t('download.linux')}</span>
         <div class="flex gap-2 mt-1">
-          <a id="linux-x64-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.x86_64')}</a>
-          <a id="linux-arm64-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.arm64')}</a>
+          <a
+            id="linux-x64-link"
+            class="arch-chip disabled-chip"
+            href={GITHUB_RELEASES_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled="true">{t('download.x86_64')}</a
+          >
+          <a
+            id="linux-arm64-link"
+            class="arch-chip disabled-chip"
+            href={GITHUB_RELEASES_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled="true">{t('download.arm64')}</a
+          >
         </div>
-        <small id="linux-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">{t('download.linkNotAvailable')}</small>
+        <small id="linux-status" class="text-gray-400 dark:text-gray-500 text-xs hidden"
+          >{t('download.linkNotAvailable')}</small
+        >
       </div>
       <div class="flex flex-col items-center gap-2">
         <Icon name="platforms/macos" class="platform-icon" />
         <span class="text-gray-600 dark:text-gray-300">{t('download.macos')}</span>
         <div class="flex gap-2 mt-1">
-          <a id="macos-universal-link" class="arch-chip disabled-chip" href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" aria-disabled="true">{t('download.universal')}</a>
+          <a
+            id="macos-universal-link"
+            class="arch-chip disabled-chip"
+            href={GITHUB_RELEASES_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled="true">{t('download.universal')}</a
+          >
         </div>
-        <small id="macos-status" class="text-gray-400 dark:text-gray-500 text-xs hidden">{t('download.linkNotAvailable')}</small>
+        <small id="macos-status" class="text-gray-400 dark:text-gray-500 text-xs hidden"
+          >{t('download.linkNotAvailable')}</small
+        >
       </div>
     </div>
 
-    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('download.otherOptions')}</h2>
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+      {t('download.otherOptions')}
+    </h2>
     <p class="text-gray-600 dark:text-gray-300 mb-6">
       {t('download.packageManagers')}
     </p>
 
-    <div class="max-w-lg mx-auto rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm px-5 py-4 mb-8 space-y-1 divide-y divide-gray-200/60 dark:divide-brand-blue/15">
-      <DownloadPlatform platform="arch" platformName="Arch-based" installCommand={archInstallCommand} />
-      <DownloadPlatform platform="debian" platformName="Debian-based" installCommand={debianInstallCommand} />
+    <div
+      class="max-w-lg mx-auto rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm px-5 py-4 mb-8 space-y-1 divide-y divide-gray-200/60 dark:divide-brand-blue/15"
+    >
+      <DownloadPlatform
+        platform="arch"
+        platformName="Arch-based"
+        installCommand={archInstallCommand}
+      />
+      <DownloadPlatform
+        platform="debian"
+        platformName="Debian-based"
+        installCommand={debianInstallCommand}
+      />
     </div>
 
     <p class="text-gray-600 dark:text-gray-300">
       {t('download.allReleases')}
-      <a href={GITHUB_RELEASES_PAGE_URL} target="_blank" rel="noopener noreferrer" class="text-brand-light-blue hover:underline">
+      <a
+        href={GITHUB_RELEASES_PAGE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-brand-light-blue hover:underline"
+      >
         {t('download.officialGithub')}
       </a>.
     </p>
@@ -107,16 +179,24 @@ const clientTranslations = {
   </div>
 </Base>
 
-<script is:inline define:vars={{ GITHUB_REPO_OWNER, GITHUB_REPO_NAME, GITHUB_RELEASES_PAGE_URL, clientTranslations }}>
+<script
+  is:inline
+  define:vars={{
+    GITHUB_REPO_OWNER,
+    GITHUB_REPO_NAME,
+    GITHUB_RELEASES_PAGE_URL,
+    clientTranslations,
+  }}
+>
   const releaseVersionTextEl = document.getElementById('release-version-text');
   const errorMessageContainerEl = document.getElementById('error-message-container');
   const errorTextEl = document.getElementById('error-text');
 
-  const windowsX64El   = document.getElementById('windows-x64-link');
-  const windowsArmEl   = document.getElementById('windows-arm64-link');
-  const linuxX64El     = document.getElementById('linux-x64-link');
-  const linuxArmEl     = document.getElementById('linux-arm64-link');
-  const macosEl        = document.getElementById('macos-universal-link');
+  const windowsX64El = document.getElementById('windows-x64-link');
+  const windowsArmEl = document.getElementById('windows-arm64-link');
+  const linuxX64El = document.getElementById('linux-x64-link');
+  const linuxArmEl = document.getElementById('linux-arm64-link');
+  const macosEl = document.getElementById('macos-universal-link');
 
   function setChip(el, url) {
     if (url) {
@@ -138,12 +218,18 @@ const clientTranslations = {
 
   async function fetchLatestRelease() {
     try {
-      const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`);
+      const response = await fetch(
+        `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`
+      );
 
       if (!response.ok) {
-        let message = clientTranslations.errorFetching.replace('{status}', response.status).replace('{statusText}', response.statusText);
+        let message = clientTranslations.errorFetching
+          .replace('{status}', response.status)
+          .replace('{statusText}', response.statusText);
         if (response.status === 404) {
-          message = clientTranslations.errorNotFound.replace('{owner}', GITHUB_REPO_OWNER).replace('{repo}', GITHUB_REPO_NAME);
+          message = clientTranslations.errorNotFound
+            .replace('{owner}', GITHUB_REPO_OWNER)
+            .replace('{repo}', GITHUB_REPO_NAME);
         } else if (response.status === 403) {
           message = clientTranslations.errorRateLimit;
         }
@@ -153,38 +239,42 @@ const clientTranslations = {
       }
 
       const latestRelease = await response.json();
-      const releaseVersion = latestRelease.tag_name || "latest";
+      const releaseVersion = latestRelease.tag_name || 'latest';
 
       if (releaseVersionTextEl) {
-        releaseVersionTextEl.textContent = clientTranslations.versionText.replace('{version}', releaseVersion);
+        releaseVersionTextEl.textContent = clientTranslations.versionText.replace(
+          '{version}',
+          releaseVersion
+        );
       }
       if (errorMessageContainerEl) errorMessageContainerEl.classList.add('hidden');
 
       if (latestRelease && latestRelease.assets) {
         const assets = latestRelease.assets;
 
-        const isWinZip  = a => a.name.includes("Windows") && (a.name.endsWith(".zip") || a.name.endsWith(".exe"));
-        const isLinuxAI = a => (a.name.includes("Ubuntu") || a.name.includes("Linux")) && a.name.endsWith(".AppImage");
-        const isMacos   = a => a.name.includes("macOS") && a.name.endsWith(".dmg");
+        const isWinZip = (a) =>
+          a.name.includes('Windows') && (a.name.endsWith('.zip') || a.name.endsWith('.exe'));
+        const isLinuxAI = (a) =>
+          (a.name.includes('Ubuntu') || a.name.includes('Linux')) && a.name.endsWith('.AppImage');
+        const isMacos = (a) => a.name.includes('macOS') && a.name.endsWith('.dmg');
 
-        const winX64  = assets.find(a => isWinZip(a)  && a.name.includes("x86_64"));
-        const winArm  = assets.find(a => isWinZip(a)  && a.name.includes("arm64"));
-        const linX64  = assets.find(a => isLinuxAI(a) && a.name.includes("x86_64"));
-        const linArm  = assets.find(a => isLinuxAI(a) && a.name.includes("arm64"));
-        const macos   = assets.find(a => isMacos(a));
+        const winX64 = assets.find((a) => isWinZip(a) && a.name.includes('x86_64'));
+        const winArm = assets.find((a) => isWinZip(a) && a.name.includes('arm64'));
+        const linX64 = assets.find((a) => isLinuxAI(a) && a.name.includes('x86_64'));
+        const linArm = assets.find((a) => isLinuxAI(a) && a.name.includes('arm64'));
+        const macos = assets.find((a) => isMacos(a));
 
         setChip(windowsX64El, winX64?.browser_download_url ?? null);
         setChip(windowsArmEl, winArm?.browser_download_url ?? null);
-        setChip(linuxX64El,   linX64?.browser_download_url ?? null);
-        setChip(linuxArmEl,   linArm?.browser_download_url ?? null);
-        setChip(macosEl,      macos?.browser_download_url  ?? null);
+        setChip(linuxX64El, linX64?.browser_download_url ?? null);
+        setChip(linuxArmEl, linArm?.browser_download_url ?? null);
+        setChip(macosEl, macos?.browser_download_url ?? null);
       } else {
-        console.warn("Latest release found, but it contains no assets.");
+        console.warn('Latest release found, but it contains no assets.');
       }
-
     } catch (error) {
       const message = clientTranslations.errorConnection;
-      console.error("Error fetching or parsing latest release data:", error);
+      console.error('Error fetching or parsing latest release data:', error);
       showError(message);
     }
   }
@@ -204,9 +294,9 @@ const clientTranslations = {
 
   windowsX64El?.addEventListener('click', () => trackDownload('Windows-x64'));
   windowsArmEl?.addEventListener('click', () => trackDownload('Windows-arm64'));
-  linuxX64El?.addEventListener('click',   () => trackDownload('Linux-x64'));
-  linuxArmEl?.addEventListener('click',   () => trackDownload('Linux-arm64'));
-  macosEl?.addEventListener('click',      () => trackDownload('macOS'));
+  linuxX64El?.addEventListener('click', () => trackDownload('Linux-x64'));
+  linuxArmEl?.addEventListener('click', () => trackDownload('Linux-arm64'));
+  macosEl?.addEventListener('click', () => trackDownload('macOS'));
 </script>
 
 <style>
@@ -229,7 +319,9 @@ const clientTranslations = {
     font-weight: 600;
     border: 1px solid var(--color-brand-blue, #4a90d9);
     color: var(--color-brand-light-blue, #5aa8f0);
-    transition: background-color 0.15s, color 0.15s;
+    transition:
+      background-color 0.15s,
+      color 0.15s;
   }
 
   .arch-chip:not(.disabled-chip):hover {

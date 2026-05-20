@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Image } from 'astro:assets';
 import { getLocaleFromUrl, useTranslations } from '../i18n';
 
 import pandaLogo from '../images/wpanda.svg';
@@ -7,10 +7,13 @@ import pandaLogo from '../images/wpanda.svg';
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
 
-const letters = "wiRedPanda".split("");
+const letters = 'wiRedPanda'.split('');
 ---
 
-<section id="hero" class="h-screen flex items-center justify-center bg-bg-light dark:bg-bg-darker relative overflow-hidden">
+<section
+  id="hero"
+  class="h-screen flex items-center justify-center bg-bg-light dark:bg-bg-darker relative overflow-hidden"
+>
   <!-- Protoboard backgorund -->
   <div class="hero-dotgrid absolute inset-0 pointer-events-none" aria-hidden="true"></div>
 
@@ -24,14 +27,23 @@ const letters = "wiRedPanda".split("");
         class="hero-logo drop-shadow-2xl"
       />
 
-      <h1 class="hero-title text-gray-900 dark:text-white font-bold tracking-tight select-none" aria-label="wiRedPanda">
-        {letters.map((char, i) => (
-          <span class="hero-letter" data-index={i}>{char}</span>
-        ))}
+      <h1
+        class="hero-title text-gray-900 dark:text-white font-bold tracking-tight select-none"
+        aria-label="wiRedPanda"
+      >
+        {
+          letters.map((char, i) => (
+            <span class="hero-letter" data-index={i}>
+              {char}
+            </span>
+          ))
+        }
       </h1>
     </div>
 
-    <p class="hero-after text-gray-500 dark:text-gray-400 text-lg md:text-xl text-center max-w-xl leading-relaxed">
+    <p
+      class="hero-after text-gray-500 dark:text-gray-400 text-lg md:text-xl text-center max-w-xl leading-relaxed"
+    >
       {t('hero.tagline')}
     </p>
   </div>
@@ -41,8 +53,15 @@ const letters = "wiRedPanda".split("");
     class="hero-after absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-gray-400 dark:text-gray-500 hover:text-brand-light-blue dark:hover:text-brand-light-blue transition-colors duration-200"
     aria-label={t('hero.scrollDown')}
   >
-    <svg class="w-8 h-8 scroll-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+    <svg
+      class="w-8 h-8 scroll-arrow"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
     </svg>
   </a>
 </section>
@@ -169,16 +188,19 @@ const letters = "wiRedPanda".split("");
     }
 
     indices.forEach((letterIdx, order) => {
-      setTimeout(() => {
-        settled[letterIdx] = true;
-        letters[letterIdx].style.opacity = '1';
-        settledCount++;
+      setTimeout(
+        () => {
+          settled[letterIdx] = true;
+          letters[letterIdx].style.opacity = '1';
+          settledCount++;
 
-        if (settledCount === letterCount) {
-          clearInterval(blinkTimer);
-          revealAfterElements();
-        }
-      }, settleStart + order * settleGap);
+          if (settledCount === letterCount) {
+            clearInterval(blinkTimer);
+            revealAfterElements();
+          }
+        },
+        settleStart + order * settleGap
+      );
     });
 
     function revealAfterElements() {

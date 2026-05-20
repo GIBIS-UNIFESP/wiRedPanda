@@ -27,7 +27,13 @@ jobs:
         run: npm ci
 
       - name: Type check
-        run: NODE_OPTIONS="--max-old-space-size=4096" npx @astrojs/check
+        run: NODE_OPTIONS="--max-old-space-size=4096" npm run check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
 
       - name: Build and upload
         uses: withastro/action@b7d53628f8b666036b0238aadb0b984a2a489f26 # v6

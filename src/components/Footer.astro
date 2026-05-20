@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Image } from 'astro:assets';
 import { getLocaleFromUrl, useTranslations } from '../i18n';
 
 import unifespLogo from '../images/unifesp_white.png';
@@ -12,16 +12,33 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="bg-gray-100 dark:bg-bg-darker">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <a href="https://www.unifesp.br/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity duration-200">
-      <Image src={unifespLogo} alt={t('footer.unifespAlt')} width={120} class="dark:brightness-100 brightness-0" />
+  <div
+    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+  >
+    <a
+      href="https://www.unifesp.br/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="hover:opacity-80 transition-opacity duration-200"
+    >
+      <Image
+        src={unifespLogo}
+        alt={t('footer.unifespAlt')}
+        width={120}
+        class="dark:brightness-100 brightness-0"
+      />
     </a>
 
     <span class="text-gray-500 dark:text-gray-400 text-sm">
       {t('footer.copyright')} &copy; {year}
     </span>
 
-    <a href="http://gibis.unifesp.br/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity duration-200">
+    <a
+      href="http://gibis.unifesp.br/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="hover:opacity-80 transition-opacity duration-200"
+    >
       <Image src={gibisLogo} alt={t('footer.gibisAlt')} width={90} />
     </a>
   </div>

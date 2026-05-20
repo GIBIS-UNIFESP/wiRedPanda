@@ -1,9 +1,9 @@
 ---
-import { Image } from "astro:assets";
+import { Image } from 'astro:assets';
 
-import Base from "../../layouts/Base.astro";
-import Hero from "../../components/Hero.astro";
-import FeatureCard from "../../components/FeatureCard.astro";
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import FeatureCard from '../../components/FeatureCard.astro';
 import { getStaticLocalePaths, useTranslations, type Locale } from '../../i18n';
 
 import panda1 from '../../images/panda/panda1.png';
@@ -25,7 +25,9 @@ const t = useTranslations(locale);
       {t('home.intro')}
     </p>
 
-    <h2 class="text-4xl font-bold text-gray-900 dark:text-white text-center mb-12">{t('home.mainFeatures')}</h2>
+    <h2 class="text-4xl font-bold text-gray-900 dark:text-white text-center mb-12">
+      {t('home.mainFeatures')}
+    </h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-16">
       <FeatureCard
@@ -47,7 +49,12 @@ const t = useTranslations(locale);
     </div>
 
     <div class="flex justify-center mb-16">
-      <video autoplay muted loop class="w-full max-w-4xl rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 shadow-lg shadow-black/20 dark:shadow-black/40">
+      <video
+        autoplay
+        muted
+        loop
+        class="w-full max-w-4xl rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 shadow-lg shadow-black/20 dark:shadow-black/40"
+      >
         <source src={`${import.meta.env.BASE_URL}demo.mp4`} type="video/mp4" />
       </video>
     </div>

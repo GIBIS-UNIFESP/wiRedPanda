@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* Brand colors */
   --color-brand-blue: #134074;
-  --color-brand-light-blue: #2DA6F4;
-  --color-brand-red: #BD2812;
+  --color-brand-light-blue: #2da6f4;
+  --color-brand-red: #bd2812;
 
   /* Light mode background colors */
   --color-bg-light: #f0ece4;
@@ -21,7 +21,7 @@
   --color-bg-card: rgba(17, 17, 24, 0.6);
 
   /* Font family */
-  --font-sans: "Moderustic", Helvetica, sans-serif;
+  --font-sans: 'Moderustic', Helvetica, sans-serif;
 }
 
 /* Base styles */
@@ -37,7 +37,9 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
   }
 
   /* Dark mode */
@@ -65,22 +67,27 @@
   margin-left: -0.05em;
   margin-right: 0.02em;
   animation: led-flicker 3s linear both;
-  box-shadow: 0 0 8px var(--color-brand-red), 0 0 16px rgba(189, 40, 18, 0.4);
+  box-shadow:
+    0 0 8px var(--color-brand-red),
+    0 0 16px rgba(189, 40, 18, 0.4);
 }
 
 /* Nav link blink animation */
 @keyframes nav-blink {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
-  25%, 75% {
+  25%,
+  75% {
     opacity: 0;
   }
 }
 
 /* Scroll-down arrow bounce */
 @keyframes bounce-arrow {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

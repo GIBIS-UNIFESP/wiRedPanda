@@ -1,6 +1,14 @@
 ---
 import { Icon } from 'astro-icon/components';
-import { getLocaleFromUrl, getOtherLocales, getLocalePath, useTranslations, localeFlags, languages, type Locale } from '../i18n';
+import {
+  getLocaleFromUrl,
+  getOtherLocales,
+  getLocalePath,
+  useTranslations,
+  localeFlags,
+  languages,
+  type Locale,
+} from '../i18n';
 
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
@@ -19,21 +27,31 @@ const currentFlag = localeFlags[locale];
     aria-haspopup="true"
   >
     <Icon name={currentFlag} class="w-5 h-5 rounded-sm" />
-    <svg class="w-3 h-3 lang-switcher-chevron transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    <svg
+      class="w-3 h-3 lang-switcher-chevron transition-transform duration-200"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"
+      ></path>
     </svg>
   </button>
 
-  <div class="lang-switcher-dropdown hidden absolute right-0 top-full mt-1 py-1 min-w-[140px] rounded-lg border border-gray-200 dark:border-brand-blue/30 bg-white dark:bg-bg-darker shadow-lg shadow-black/10 dark:shadow-black/40 z-50">
-    {otherLocales.map((altLocale: Locale) => (
-      <a
-        href={getLocalePath(currentPath, altLocale)}
-        class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors duration-150"
-      >
-        <Icon name={localeFlags[altLocale]} class="w-4 h-4 rounded-sm" />
-        <span>{languages[altLocale]}</span>
-      </a>
-    ))}
+  <div
+    class="lang-switcher-dropdown hidden absolute right-0 top-full mt-1 py-1 min-w-[140px] rounded-lg border border-gray-200 dark:border-brand-blue/30 bg-white dark:bg-bg-darker shadow-lg shadow-black/10 dark:shadow-black/40 z-50"
+  >
+    {
+      otherLocales.map((altLocale: Locale) => (
+        <a
+          href={getLocalePath(currentPath, altLocale)}
+          class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors duration-150"
+        >
+          <Icon name={localeFlags[altLocale]} class="w-4 h-4 rounded-sm" />
+          <span>{languages[altLocale]}</span>
+        </a>
+      ))
+    }
   </div>
 </div>
 

@@ -12,12 +12,19 @@ const { platform, platformName, installCommand } = Astro.props;
 
 <div class="flex items-center gap-4 py-3">
   <div class="flex flex-col items-center w-20 flex-shrink-0">
-    <Icon name={`platforms/${platform}`} class="w-10 h-10 text-gray-500 dark:text-gray-300 hover:text-brand-red transition-colors duration-200" />
+    <Icon
+      name={`platforms/${platform}`}
+      class="w-10 h-10 text-gray-500 dark:text-gray-300 hover:text-brand-red transition-colors duration-200"
+    />
     <span class="pt-1 text-xs text-gray-500 dark:text-gray-400">{platformName}</span>
   </div>
 
-  <div class="flex items-center flex-1 min-w-0 rounded-lg bg-gray-100 dark:bg-bg-darker border border-gray-200 dark:border-brand-blue/20 overflow-hidden">
-    <code class="flex-1 min-w-0 px-4 py-2.5 text-gray-700 dark:text-gray-300 font-mono text-sm truncate select-all text-left">
+  <div
+    class="flex items-center flex-1 min-w-0 rounded-lg bg-gray-100 dark:bg-bg-darker border border-gray-200 dark:border-brand-blue/20 overflow-hidden"
+  >
+    <code
+      class="flex-1 min-w-0 px-4 py-2.5 text-gray-700 dark:text-gray-300 font-mono text-sm truncate select-all text-left"
+    >
       $ {installCommand}
     </code>
     <button
@@ -27,11 +34,29 @@ const { platform, platformName, installCommand } = Astro.props;
       data-platform={platformName}
       aria-label={`Copy ${platformName} install command`}
     >
-      <svg class="copy-icon w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+      <svg
+        class="copy-icon w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+        ></path>
       </svg>
-      <svg class="check-icon w-4 h-4 hidden text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      <svg
+        class="check-icon w-4 h-4 hidden text-green-500"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
       </svg>
     </button>
   </div>

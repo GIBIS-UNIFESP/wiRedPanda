@@ -7,7 +7,9 @@ interface Props {
 const { title, content } = Astro.props;
 ---
 
-<div class="group rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm p-6 shadow-lg transition-all duration-300 hover:shadow-brand-red/20 hover:shadow-xl hover:border-brand-red/50">
+<div
+  class="group rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm p-6 shadow-lg transition-all duration-300 hover:shadow-brand-red/20 hover:shadow-xl hover:border-brand-red/50"
+>
   <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
   <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{content}</p>
 </div>

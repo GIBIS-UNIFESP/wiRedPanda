@@ -1,11 +1,17 @@
 ---
-import { ClientRouter } from "astro:transitions";
+import { ClientRouter } from 'astro:transitions';
 
 import '../styles/global.css';
 
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { getLocaleFromUrl, getHtmlLang, useTranslations, getOtherLocales, getLocalePath } from '../i18n';
+import {
+  getLocaleFromUrl,
+  getHtmlLang,
+  useTranslations,
+  getOtherLocales,
+  getLocalePath,
+} from '../i18n';
 
 interface Props {
   pageTitle: string;
@@ -25,7 +31,7 @@ const origin = Astro.site?.origin ?? '';
     <meta charset="utf-8" />
     <!-- Theme init: must run before any rendering to avoid FOUC -->
     <script is:inline>
-      (function() {
+      (function () {
         var stored = localStorage.getItem('theme');
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         var isDark = stored === 'dark' || (!stored && prefersDark);
@@ -36,30 +42,36 @@ const origin = Astro.site?.origin ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={t('meta.description')} />
-    {otherLocales.map((altLocale) => (
-      <link rel="alternate" hreflang={getHtmlLang(altLocale)} href={`${origin}${getLocalePath(Astro.url.pathname, altLocale)}`} />
-    ))}
+    {
+      otherLocales.map((altLocale) => (
+        <link
+          rel="alternate"
+          hreflang={getHtmlLang(altLocale)}
+          href={`${origin}${getLocalePath(Astro.url.pathname, altLocale)}`}
+        />
+      ))
+    }
     <ClientRouter />
     <title>Panda | {pageTitle}</title>
     <script is:inline>
-      (function() {
+      (function () {
         // Fallback for custom events if DNT is active
-        window.umami = window.umami || { track: function() {} };
+        window.umami = window.umami || { track: function () {} };
         var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-        if (dnt !== "1" && dnt !== "yes") {
+        if (dnt !== '1' && dnt !== 'yes') {
           var script = document.createElement('script');
           script.defer = true;
           script.src = 'https://cloud.umami.is/script.js';
           script.setAttribute('data-website-id', '8cf1c01a-4505-4de2-a5ea-0facfe5a71dd');
           document.head.appendChild(script);
         } else {
-          console.info("Analytics disabled to respect Do Not Track preference.");
+          console.info('Analytics disabled to respect Do Not Track preference.');
         }
       })();
     </script>
     <!-- Preserve theme across view transitions -->
     <script is:inline>
-      document.addEventListener('astro:before-swap', function(ev) {
+      document.addEventListener('astro:before-swap', function (ev) {
         var isDark = document.documentElement.classList.contains('dark');
         ev.newDocument.documentElement.classList.toggle('dark', isDark);
       });
@@ -76,7 +88,7 @@ const origin = Astro.site?.origin ?? '';
 
 <!-- Redirect users to their locale on first visit -->
 <script is:inline>
-  (function() {
+  (function () {
     if (sessionStorage.getItem('locale-checked')) return;
     sessionStorage.setItem('locale-checked', '1');
 
@@ -88,7 +100,15 @@ const origin = Astro.site?.origin ?? '';
     }
 
     // Already on a non-default locale? Skip.
-    if (stripped.indexOf('/pt-br') === 0 || stripped.indexOf('/es') === 0 || stripped.indexOf('/zh') === 0 || stripped.indexOf('/ja') === 0 || stripped.indexOf('/fr') === 0 || stripped.indexOf('/de') === 0) return;
+    if (
+      stripped.indexOf('/pt-br') === 0 ||
+      stripped.indexOf('/es') === 0 ||
+      stripped.indexOf('/zh') === 0 ||
+      stripped.indexOf('/ja') === 0 ||
+      stripped.indexOf('/fr') === 0 ||
+      stripped.indexOf('/de') === 0
+    )
+      return;
 
     // Check browser language
     var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();

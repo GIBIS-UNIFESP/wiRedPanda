@@ -1,8 +1,8 @@
 ---
-import { Icon } from "astro-icon/components";
-import { Image } from "astro:assets";
-import ThemeToggle from "./ThemeToggle.astro";
-import LanguageSwitcher from "./LanguageSwitcher.astro";
+import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+import ThemeToggle from './ThemeToggle.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 import { getLocaleFromUrl, useTranslations, getLocalePath } from '../i18n';
 
 import pandaLogo from '../images/wpanda.svg';
@@ -46,7 +46,9 @@ function isActive(href: string): boolean {
         loading="eager"
         class="transition-transform duration-200 group-hover:scale-110"
       />
-      <span class="text-gray-800 dark:text-white font-semibold text-lg tracking-tight">wiRedPanda</span>
+      <span class="text-gray-800 dark:text-white font-semibold text-lg tracking-tight"
+        >wiRedPanda</span
+      >
     </a>
 
     <!-- Desktop Navigation -->
@@ -54,21 +56,23 @@ function isActive(href: string): boolean {
       <li>
         <LanguageSwitcher />
       </li>
-      {navLinks.map((link) => (
-        <li>
-          <a
-            href={link.href}
-            class:list={[
-              'nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200',
-              isActive(link.href)
-                ? 'text-brand-light-blue dark:text-brand-light-blue bg-black/5 dark:bg-white/5'
-                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5',
-            ]}
-          >
-            {link.label}
-          </a>
-        </li>
-      ))}
+      {
+        navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class:list={[
+                'nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200',
+                isActive(link.href)
+                  ? 'text-brand-light-blue dark:text-brand-light-blue bg-black/5 dark:bg-white/5'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5',
+              ]}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
       <li>
         <a
           href="https://github.com/GIBIS-UNIFESP/wiRedPanda"
@@ -97,31 +101,47 @@ function isActive(href: string): boolean {
         aria-expanded="false"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path id="hamburger-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <path
+            id="hamburger-icon"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
+          <path
+            id="close-icon"
+            class="hidden"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
     </div>
   </nav>
 
   <!-- Mobile Navigation -->
-  <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-brand-blue/20 bg-white/80 dark:bg-bg-darker/90 backdrop-blur-md">
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden border-t border-gray-200 dark:border-brand-blue/20 bg-white/80 dark:bg-bg-darker/90 backdrop-blur-md"
+  >
     <ul class="px-4 py-3 space-y-1">
-      {navLinks.map((link) => (
-        <li>
-          <a
-            href={link.href}
-            class:list={[
-              'nav-link block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200',
-              isActive(link.href)
-                ? 'text-brand-light-blue bg-black/5 dark:bg-white/5'
-                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5',
-            ]}
-          >
-            {link.label}
-          </a>
-        </li>
-      ))}
+      {
+        navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class:list={[
+                'nav-link block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200',
+                isActive(link.href)
+                  ? 'text-brand-light-blue bg-black/5 dark:bg-white/5'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5',
+              ]}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
       <li>
         <a
           href="https://github.com/GIBIS-UNIFESP/wiRedPanda"

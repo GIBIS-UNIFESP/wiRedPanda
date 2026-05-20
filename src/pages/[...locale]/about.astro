@@ -14,14 +14,26 @@ const { locale } = Astro.props as { locale: Locale };
 const t = useTranslations(locale);
 
 const formerDevs = [
-  'André Leiniö', 'Daniel Renato', 'Guilherme Costa', 'Gustavo Oliveira', 'Héctor Castelli', 'Ivan Borgia Dardi',
-  'Jimy Suenaga', 'Johnny Michael', 'Lucas A. R. Pinheiro', 'Lucas Shinoda', 'Rodrigo Ramires', 'Thales Koba'
+  'André Leiniö',
+  'Daniel Renato',
+  'Guilherme Costa',
+  'Gustavo Oliveira',
+  'Héctor Castelli',
+  'Ivan Borgia Dardi',
+  'Jimy Suenaga',
+  'Johnny Michael',
+  'Lucas A. R. Pinheiro',
+  'Lucas Shinoda',
+  'Rodrigo Ramires',
+  'Thales Koba',
 ];
 ---
 
 <Base pageTitle={t('about.title')}>
   <section class="max-w-4xl mx-auto px-6 pt-24 pb-16">
-    <h2 class="text-4xl font-bold text-gray-900 dark:text-white text-center mb-8">{t('about.heading')}</h2>
+    <h2 class="text-4xl font-bold text-gray-900 dark:text-white text-center mb-8">
+      {t('about.heading')}
+    </h2>
 
     <p class="text-gray-600 dark:text-gray-300 text-justify leading-relaxed mb-8">
       {t('about.history')}
@@ -41,7 +53,9 @@ const formerDevs = [
       {t('about.contribute')}
     </p>
 
-    <h3 class="text-3xl font-bold text-gray-900 dark:text-white text-center mb-6">{t('about.team')}</h3>
+    <h3 class="text-3xl font-bold text-gray-900 dark:text-white text-center mb-6">
+      {t('about.team')}
+    </h3>
     <ul class="text-center text-gray-600 dark:text-gray-300 space-y-1 mb-12">
       <li>João Pedro Oliveira</li>
       <li>Matheus Esteves</li>
@@ -50,11 +64,13 @@ const formerDevs = [
       <li>Prof. Fábio Cappabianco, Ph.D.</li>
     </ul>
 
-    <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center mb-6">{t('about.formerDevs')}</h3>
-    <ul class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-center text-gray-600 dark:text-gray-300">
-      {formerDevs.map((dev) => (
-        <li class="p-2">{dev}</li>
-      ))}
+    <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center mb-6">
+      {t('about.formerDevs')}
+    </h3>
+    <ul
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-center text-gray-600 dark:text-gray-300"
+    >
+      {formerDevs.map((dev) => <li class="p-2">{dev}</li>)}
     </ul>
   </section>
 </Base>
