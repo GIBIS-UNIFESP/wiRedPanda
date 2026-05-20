@@ -76,8 +76,8 @@ export default {
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': '通用版',
-  'download.platformArch': 'Arch-based',
-  'download.platformDebian': 'Debian-based',
+  'download.platformArch': 'Arch 系',
+  'download.platformDebian': 'Debian 系',
 
   // 404 page
   '404.title': '404',
