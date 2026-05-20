@@ -16,7 +16,7 @@ const GITHUB_REPO_NAME = 'wiRedPanda';
 const GITHUB_RELEASES_PAGE_URL = `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases`;
 
 const archInstallCommand = 'yay -S wiredpanda';
-const debianInstallCommand = 'apt-get install wiredpanda';
+const debianInstallCommand = 'sudo apt-get install wiredpanda';
 
 // Pass translations to client-side script
 const clientTranslations = {
@@ -36,7 +36,7 @@ const clientTranslations = {
 
 <Base pageTitle={t('download.title')}>
   <section class="max-w-4xl mx-auto px-6 pt-24 pb-16 text-center">
-    <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">{t('download.heading')}</h2>
+    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">{t('download.heading')}</h1>
 
     <div id="release-info-container" class="mb-8 min-h-[50px]">
       <p id="release-version-text" class="text-gray-600 dark:text-gray-300">
@@ -201,6 +201,7 @@ const clientTranslations = {
   const macosEl = document.getElementById('macos-universal-link');
 
   function setChip(el, url) {
+    if (!el) return;
     if (url) {
       el.href = url;
       el.classList.remove('disabled-chip');

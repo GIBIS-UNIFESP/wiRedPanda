@@ -31,6 +31,12 @@
     scroll-behavior: smooth;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   /* Light mode defaults */
   body {
     @apply bg-bg-light text-gray-800 font-sans antialiased;

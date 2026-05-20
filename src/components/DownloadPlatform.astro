@@ -76,31 +76,36 @@ const { platform, platformName, installCommand, copyLabel } = Astro.props;
           (window as any).umami.track('Copy Install Command', { platform: platform });
         }
 
-        navigator.clipboard.writeText(command).then(() => {
-          const copyIcon = btn.querySelector('.copy-icon');
-          const checkIcon = btn.querySelector('.check-icon');
+        navigator.clipboard.writeText(command).then(
+          () => {
+            const copyIcon = btn.querySelector('.copy-icon');
+            const checkIcon = btn.querySelector('.check-icon');
 
-          // Swap icons
-          copyIcon?.classList.add('hidden');
-          checkIcon?.classList.remove('hidden');
+            // Swap icons
+            copyIcon?.classList.add('hidden');
+            checkIcon?.classList.remove('hidden');
 
-          // Show toast
-          const toast = document.getElementById('copy-toast');
-          if (toast) {
-            toast.classList.remove('translate-y-full', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
+            // Show toast
+            const toast = document.getElementById('copy-toast');
+            if (toast) {
+              toast.classList.remove('translate-y-full', 'opacity-0');
+              toast.classList.add('translate-y-0', 'opacity-100');
+
+              setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-full', 'opacity-0');
+              }, 2000);
+            }
 
             setTimeout(() => {
-              toast.classList.remove('translate-y-0', 'opacity-100');
-              toast.classList.add('translate-y-full', 'opacity-0');
+              copyIcon?.classList.remove('hidden');
+              checkIcon?.classList.add('hidden');
             }, 2000);
+          },
+          () => {
+            // Clipboard write denied; icons remain in copy state, nothing to revert
           }
-
-          setTimeout(() => {
-            copyIcon?.classList.remove('hidden');
-            checkIcon?.classList.add('hidden');
-          }, 2000);
-        });
+        );
       });
     });
   });
