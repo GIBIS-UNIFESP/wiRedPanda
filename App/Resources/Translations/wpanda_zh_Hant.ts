@@ -387,6 +387,21 @@
         <translation>beWavedDolphin 模擬器</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
         <translation>電路為空。新增輸入和輸出元件以產生波形。</translation>
@@ -447,13 +462,6 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
         <source>Saved file successfully.</source>
         <translation>檔案儲存成功。</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source></source>
-        <translation></translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
@@ -2488,7 +2496,7 @@ Suggested name:</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="428"/>
+        <location filename="../../Main.cpp" line="435"/>
         <source>Error!</source>
         <translation>錯誤！</translation>
     </message>
@@ -2976,67 +2984,67 @@ A backup of the original file has been created with name: %3</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="285"/>
+        <location filename="../../Main.cpp" line="292"/>
         <source>Circuit file to open.</source>
         <translation>要開啟的電路檔案。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="289"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>詳細程度級別 0 到 5，預設停用。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="290"/>
+        <location filename="../../Main.cpp" line="297"/>
         <source>verbosity level</source>
         <translation>詳細程度級別</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="295"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>將電路匯出到 &lt;arduino-file&gt;。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="307"/>
+        <location filename="../../Main.cpp" line="314"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>將電路匯出到波形文字檔案，從終端讀取輸入。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="312"/>
+        <location filename="../../Main.cpp" line="319"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>與 -c/--terminal 一起使用時，如果電路包含真值表則阻止執行。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="318"/>
+        <location filename="../../Main.cpp" line="325"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>以 MCP（模型上下文協定）模式執行以進行程式化控制。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="323"/>
+        <location filename="../../Main.cpp" line="330"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>以可見的 GUI 視窗執行 MCP 模式。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="388"/>
+        <location filename="../../Main.cpp" line="395"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>錯誤：電路包含真值表元件。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="433"/>
+        <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="303"/>
         <source>arduino file</source>
         <translation>Arduino 檔案</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="301"/>
+        <location filename="../../Main.cpp" line="308"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>將電路匯出到波形文字檔案。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="309"/>
         <source>waveform input text file</source>
         <translation>波形輸入文字檔案</translation>
     </message>

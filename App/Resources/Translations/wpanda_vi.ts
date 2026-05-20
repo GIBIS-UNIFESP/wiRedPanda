@@ -387,6 +387,21 @@
         <translation>Bộ mô phỏng beWavedDolphin</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
+        <source>Invalid header: expected &apos;rows,cols&apos; on the first line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
+        <source>Invalid column count %1: must be between 1 and %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
+        <source>Row %1 has %2 value(s) but %3 are required.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="214"/>
         <source>The circuit is empty. Add input and output elements to generate a waveform.</source>
         <translation>Mạch trống. Thêm các phần tử đầu vào và đầu ra để tạo dạng sóng.</translation>
@@ -447,13 +462,6 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
         <source>Saved file successfully.</source>
         <translation>Lưu tệp thành công.</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="159"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="171"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="181"/>
-        <source></source>
-        <translation></translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
@@ -2488,7 +2496,7 @@ Tên gợi ý:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="428"/>
+        <location filename="../../Main.cpp" line="435"/>
         <source>Error!</source>
         <translation>Lỗi!</translation>
     </message>
@@ -2976,67 +2984,67 @@ Bản sao lưu của tệp gốc đã được tạo với tên: %3</translation
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="285"/>
+        <location filename="../../Main.cpp" line="292"/>
         <source>Circuit file to open.</source>
         <translation>Tệp mạch cần mở.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="289"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Mức độ chi tiết từ 0 đến 5, mặc định được tắt.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="290"/>
+        <location filename="../../Main.cpp" line="297"/>
         <source>verbosity level</source>
         <translation>mức độ chi tiết</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="295"/>
+        <location filename="../../Main.cpp" line="302"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Xuất mạch ra &lt;arduino-file&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="307"/>
+        <location filename="../../Main.cpp" line="314"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Xuất mạch ra tập tin văn bản dạng sóng, đọc đầu vào từ terminal.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="312"/>
+        <location filename="../../Main.cpp" line="319"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Khi sử dụng với -c/--terminal, chặn thực thi nếu mạch chứa Bảng chân lý.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="318"/>
+        <location filename="../../Main.cpp" line="325"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Chạy ở chế độ MCP (Model Context Protocol) để điều khiển theo chương trình.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="323"/>
+        <location filename="../../Main.cpp" line="330"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Chạy chế độ MCP với cửa sổ GUI hiển thị.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="388"/>
+        <location filename="../../Main.cpp" line="395"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Lỗi: Mạch chứa các phần tử Bảng chân lý.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="433"/>
+        <location filename="../../Main.cpp" line="440"/>
         <source>Error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="303"/>
         <source>arduino file</source>
         <translation>tệp arduino</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="301"/>
+        <location filename="../../Main.cpp" line="308"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Xuất mạch ra tập tin văn bản dạng sóng.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="309"/>
         <source>waveform input text file</source>
         <translation>tệp văn bản đầu vào dạng sóng</translation>
     </message>
