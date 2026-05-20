@@ -66,8 +66,8 @@ const { platform, platformName, installCommand } = Astro.props;
   document.addEventListener('astro:page-load', () => {
     document.querySelectorAll('.copy-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const command = (btn as HTMLElement).dataset.command;
-        const platform = (btn as HTMLElement).dataset.platform;
+        const command = (btn as HTMLElement).dataset['command'];
+        const platform = (btn as HTMLElement).dataset['platform'];
         if (!command) return;
 
         // Track copy command event with Umami

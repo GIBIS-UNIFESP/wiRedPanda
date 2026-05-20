@@ -173,7 +173,7 @@ const letters = 'wiRedPanda'.split('');
       blinkTimer = setInterval(() => {
         for (let i = 0; i < letterCount; i++) {
           if (settled[i]) continue;
-          letters[i].style.opacity = Math.random() > 0.5 ? '1' : '0';
+          letters[i]!.style.opacity = Math.random() > 0.5 ? '1' : '0';
         }
       }, blinkInterval);
     }, blinkStart);
@@ -184,14 +184,14 @@ const letters = 'wiRedPanda'.split('');
     const indices = Array.from({ length: letterCount }, (_, i) => i);
     for (let i = indices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [indices[i], indices[j]] = [indices[j], indices[i]];
+      [indices[i], indices[j]] = [indices[j]!, indices[i]!];
     }
 
     indices.forEach((letterIdx, order) => {
       setTimeout(
         () => {
           settled[letterIdx] = true;
-          letters[letterIdx].style.opacity = '1';
+          letters[letterIdx]!.style.opacity = '1';
           settledCount++;
 
           if (settledCount === letterCount) {
