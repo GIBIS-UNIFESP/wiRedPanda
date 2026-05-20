@@ -23,6 +23,15 @@ export default defineConfig(
   // Astro files with recommended rules (no type-aware rules)
   ...eslintPluginAstro.configs['flat/recommended'],
 
+  // Ban `as any` inside .astro script blocks (no-explicit-any doesn't need type info)
+  {
+    files: ['**/*.astro'],
+    plugins: { '@typescript-eslint': tseslint.plugin },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'error',
+    },
+  },
+
   eslintConfigPrettier,
 
   {
