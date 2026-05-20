@@ -56,7 +56,7 @@ export default {
   'download.heading': 'ソフトウェアのダウンロード',
   'download.fetching': '最新バージョン情報を取得中...',
   'download.errorHeading': '最新のダウンロードリンクを読み込めませんでした：',
-  'download.errorVisit': 'こちらをご覧ください',
+  'download.errorVisit': 'こちらの',
   'download.errorVisitLink': 'GitHub Releases ページ',
   'download.errorVisitSuffix': 'から直接ダウンロードしてください。',
   'download.windows': 'Windows',
@@ -65,9 +65,8 @@ export default {
   'download.otherOptions': 'その他のオプション',
   'download.packageManagers':
     '一部の Linux ディストリビューションでは、パッケージマネージャーを使用して wiRedPanda をインストールすることもできます。これらのパッケージは GitHub releases の最新バージョンとは限りません。',
-  'download.allReleases':
-    '旧バージョンやプレリリースを含むすべてのリリースは、こちらをご覧ください',
-  'download.officialGithub': 'GitHub 公式 Releases ページ',
+  'download.allReleases': '旧バージョンやプレリリースを含むすべてのリリースについては、こちらの',
+  'download.officialGithub': 'GitHub 公式 Releases ページをご覧ください',
   'download.copiedToClipboard': 'クリップボードにコピーしました！',
   'download.copyCommand': '{platform} のインストールコマンドをコピー',
   'download.versionText':
@@ -100,5 +99,5 @@ export default {
   'theme.toggle': 'ダークモード切替',
 
   // Language switcher
-  'lang.switchLanguage': '言語を切替',
+  'lang.switchLanguage': '言語を切り替える',
 } as const;
