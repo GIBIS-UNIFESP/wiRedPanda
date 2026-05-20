@@ -34,7 +34,9 @@ export default {
     'Windows、macOS、Linux に対応し、どのデバイスでもプロジェクトに取り組むことができます。',
   'home.mission':
     '私たちは、テクノロジー教育はアクセスしやすく、魅力的で、実用的であるべきだと信じています。私たちのソフトウェアは学習プロセスを簡素化し、本当に大切なこと——デジタル回路の理解と作成に集中できるよう設計されています。',
-  'home.screenshotAlt': 'wiRedPanda アプリケーションのスクリーンショット',
+  'home.screenshot1Alt': 'wiRedPanda 回路エディターのスクリーンショット',
+  'home.screenshot2Alt': 'wiRedPanda での論理回路シミュレーションのスクリーンショット',
+  'home.demoLabel': 'wiRedPanda デモ動画',
   'home.cta':
     '今すぐ wiRedPanda をダウンロードして、デジタル回路の世界を探索しましょう。すべての機能を体験し、あなたの目標達成をどのようにサポートできるかをご確認ください。サンパウロ連邦大学で使用されており、あなたの論理回路の授業でも活用できるかもしれません！',
 
@@ -79,6 +81,8 @@ export default {
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'ユニバーサル',
+  'download.platformArch': 'Arch-based',
+  'download.platformDebian': 'Debian-based',
 
   // 404 page
   '404.title': '404',

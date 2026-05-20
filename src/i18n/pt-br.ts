@@ -36,7 +36,9 @@ export default {
     'Disponível para Windows, macOS e Linux, garantindo que você possa trabalhar em seu projeto em qualquer dispositivo.',
   'home.mission':
     'Acreditamos que a educação em tecnologia deve ser acessível, envolvente e prática. Nosso software foi desenvolvido para simplificar o processo de aprendizado e permitir que você se concentre no que realmente importa: entender e criar circuitos digitais.',
-  'home.screenshotAlt': 'Captura de tela do aplicativo wiRedPanda',
+  'home.screenshot1Alt': 'Captura de tela do editor de circuitos do wiRedPanda',
+  'home.screenshot2Alt': 'Captura de tela de uma simulação de circuito lógico no wiRedPanda',
+  'home.demoLabel': 'Vídeo de demonstração do wiRedPanda',
   'home.cta':
     'Baixe o wiRedPanda agora e comece a explorar o mundo dos circuitos digitais. Experimente todos os nossos recursos e veja como podemos ajudá-lo a alcançar seus objetivos. Já em uso na Universidade Federal de São Paulo, e talvez na sua aula de circuitos digitais também!',
 
@@ -81,6 +83,8 @@ export default {
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universal',
+  'download.platformArch': 'Arch-based',
+  'download.platformDebian': 'Debian-based',
 
   // 404 page
   '404.title': '404',

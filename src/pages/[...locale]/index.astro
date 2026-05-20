@@ -53,6 +53,7 @@ const t = useTranslations(locale);
         autoplay
         muted
         loop
+        aria-label={t('home.demoLabel')}
         class="w-full max-w-4xl rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 shadow-lg shadow-black/20 dark:shadow-black/40"
       >
         <source src={`${import.meta.env.BASE_URL}demo.mp4`} type="video/mp4" />
@@ -65,7 +66,7 @@ const t = useTranslations(locale);
       </p>
       <Image
         src={panda1}
-        alt={t('home.screenshotAlt')}
+        alt={t('home.screenshot1Alt')}
         width={500}
         class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 shadow-lg shadow-black/20 dark:shadow-black/40 flex-shrink-0"
         loading="lazy"
@@ -75,7 +76,7 @@ const t = useTranslations(locale);
     <div class="flex flex-col-reverse md:flex-row items-center gap-8">
       <Image
         src={panda2}
-        alt={t('home.screenshotAlt')}
+        alt={t('home.screenshot2Alt')}
         width={500}
         class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 shadow-lg shadow-black/20 dark:shadow-black/40 flex-shrink-0"
         loading="lazy"

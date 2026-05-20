@@ -130,15 +130,15 @@ const clientTranslations = {
     >
       <DownloadPlatform
         platform="arch"
-        platformName="Arch-based"
+        platformName={t('download.platformArch')}
         installCommand={archInstallCommand}
-        copyLabel={t('download.copyCommand').replace('{platform}', 'Arch-based')}
+        copyLabel={t('download.copyCommand').replace('{platform}', t('download.platformArch'))}
       />
       <DownloadPlatform
         platform="debian"
-        platformName="Debian-based"
+        platformName={t('download.platformDebian')}
         installCommand={debianInstallCommand}
-        copyLabel={t('download.copyCommand').replace('{platform}', 'Debian-based')}
+        copyLabel={t('download.copyCommand').replace('{platform}', t('download.platformDebian'))}
       />
     </div>
 

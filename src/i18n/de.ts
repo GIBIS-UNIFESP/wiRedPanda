@@ -36,7 +36,9 @@ export default {
     'Kompatibel mit Windows, macOS und Linux – arbeiten Sie an Ihren Projekten auf jedem Gerät.',
   'home.mission':
     'Wir glauben, dass technologische Bildung zugänglich, fesselnd und praxisnah sein sollte. Unsere Software vereinfacht den Lernprozess, damit Sie sich auf das Wesentliche konzentrieren können: digitale Schaltungen verstehen und erstellen.',
-  'home.screenshotAlt': 'Screenshot der wiRedPanda-Anwendung',
+  'home.screenshot1Alt': 'Screenshot des wiRedPanda-Schaltungseditors',
+  'home.screenshot2Alt': 'Screenshot einer Logikschaltungssimulation in wiRedPanda',
+  'home.demoLabel': 'wiRedPanda-Demovideo',
   'home.cta':
     'Laden Sie wiRedPanda jetzt herunter und beginnen Sie, die Welt der digitalen Schaltungen zu erkunden. Entdecken Sie alle unsere Funktionen und erfahren Sie, wie wir Ihnen helfen können, Ihre Ziele zu erreichen. Bereits an der Bundesuniversität von São Paulo im Einsatz – vielleicht auch bald in Ihrem Logikschaltungs-Kurs!',
 
@@ -81,6 +83,8 @@ export default {
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universal',
+  'download.platformArch': 'Arch-based',
+  'download.platformDebian': 'Debian-based',
 
   // 404 page
   '404.title': '404',

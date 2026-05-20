@@ -33,7 +33,9 @@ export default {
     '支持 Windows、macOS 和 Linux，确保您可以在任何设备上进行项目开发。',
   'home.mission':
     '我们相信科技教育应当是可及的、引人入胜的和实用的。我们的软件旨在简化学习过程，让您专注于真正重要的事情：理解和创建数字电路。',
-  'home.screenshotAlt': 'wiRedPanda 应用程序截图',
+  'home.screenshot1Alt': 'wiRedPanda 电路编辑器截图',
+  'home.screenshot2Alt': 'wiRedPanda 逻辑电路仿真截图',
+  'home.demoLabel': 'wiRedPanda 演示视频',
   'home.cta':
     '立即下载 wiRedPanda，开始探索数字电路的世界。体验我们所有的功能，了解我们如何帮助您实现目标。已在圣保罗联邦大学投入使用，也许您的逻辑电路课堂也会用到它！',
 
@@ -74,6 +76,8 @@ export default {
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': '通用版',
+  'download.platformArch': 'Arch-based',
+  'download.platformDebian': 'Debian-based',
 
   // 404 page
   '404.title': '404',

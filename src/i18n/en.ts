@@ -36,7 +36,9 @@ export default {
     'Available for Windows, macOS and Linux, ensuring that you can work on your project on any device.',
   'home.mission':
     'We believe that technology education should be accessible, engaging and practical. Our software has been developed to simplify the learning process and allow you to focus on what really matters: understanding and creating digital circuits.',
-  'home.screenshotAlt': 'Screenshot of wiRedPanda application',
+  'home.screenshot1Alt': 'Screenshot of the wiRedPanda circuit editor',
+  'home.screenshot2Alt': 'Screenshot of a logic circuit simulation in wiRedPanda',
+  'home.demoLabel': 'wiRedPanda demo video',
   'home.cta':
     'Download wiRedPanda now and start exploring the world of digital circuits. Try out all our features and see how we can help you achieve your goals. Already in use at Federal University of São Paulo, and maybe in your logic circuits class too!',
 
@@ -79,6 +81,8 @@ export default {
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universal',
+  'download.platformArch': 'Arch-based',
+  'download.platformDebian': 'Debian-based',
 
   // 404 page
   '404.title': '404',
