@@ -59,9 +59,9 @@ export function getLocaleFromUrl(url: URL): Locale {
   }
 
   // Check if pathname starts with a known locale prefix
-  const segments = pathname.split('/').filter(Boolean);
-  if (segments.length > 0 && segments[0] in languages && segments[0] !== defaultLocale) {
-    return segments[0] as Locale;
+  const [first] = pathname.split('/').filter(Boolean);
+  if (first !== undefined && first in languages && first !== defaultLocale) {
+    return first as Locale;
   }
 
   return defaultLocale;
