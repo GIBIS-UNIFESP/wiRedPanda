@@ -89,7 +89,7 @@ export function getLocalePath(path: string, locale: Locale): string {
   }
   // Strip locale prefix if present
   for (const loc of Object.keys(languages)) {
-    if (loc !== defaultLocale && cleanPath.startsWith(`/${loc}`)) {
+    if (loc !== defaultLocale && (cleanPath === `/${loc}` || cleanPath.startsWith(`/${loc}/`))) {
       cleanPath = cleanPath.slice(`/${loc}`.length);
       break;
     }
@@ -115,7 +115,7 @@ export function getHtmlLang(locale: Locale): string {
     en: 'en',
     'pt-br': 'pt-BR',
     es: 'es',
-    zh: 'zh',
+    zh: 'zh-CN',
     ja: 'ja',
     fr: 'fr',
     de: 'de',

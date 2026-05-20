@@ -103,6 +103,11 @@ describe('getLocalePath', () => {
   it('normalises path without leading slash for non-default locale', () => {
     expect(getLocalePath('about', 'fr')).toBe('/fr/about');
   });
+
+  it('does not strip locale prefix from a path that merely starts with the same letters', () => {
+    // '/design' starts with '/de' but is not a locale-prefixed path
+    expect(getLocalePath('/design', 'en')).toBe('/design');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -112,7 +117,7 @@ describe('getHtmlLang', () => {
     ['en', 'en'],
     ['pt-br', 'pt-BR'],
     ['es', 'es'],
-    ['zh', 'zh'],
+    ['zh', 'zh-CN'],
     ['ja', 'ja'],
     ['fr', 'fr'],
     ['de', 'de'],
