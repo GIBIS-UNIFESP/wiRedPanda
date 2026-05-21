@@ -38,6 +38,12 @@ const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
 <html lang={htmlLang} dir={localeDir}>
   <head>
     <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap"
+    />
     <!-- Theme init: must run before any rendering to avoid FOUC -->
     <script is:inline>
       (function () {

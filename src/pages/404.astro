@@ -6,6 +6,7 @@ import {
   getLocalePath,
   getAllLocales,
   defaultLocale,
+  localeRedirectMap,
 } from '../i18n';
 
 const locale = getLocaleFromUrl(Astro.url);
@@ -53,7 +54,7 @@ const localeTranslations = Object.fromEntries(
   </div>
 </Base>
 
-<script is:inline define:vars={{ siteBase, localeTranslations }}>
+<script is:inline define:vars={{ siteBase, localeTranslations, localeRedirectMap }}>
   (function () {
     var path = window.location.pathname;
     var stripped = path;
@@ -61,22 +62,28 @@ const localeTranslations = Object.fromEntries(
       stripped = path.slice(siteBase.length);
     }
 
-    // Try to detect locale from the URL that triggered the 404 first,
-    // then fall back to the browser's primary language preference.
+    // Detect locale from the URL that triggered the 404.
+    // Require an exact match or a '/' separator so that e.g. '/design' does
+    // NOT falsely match the 'de' (German) locale prefix.
     var locale = null;
     var locales = Object.keys(localeTranslations);
     for (var i = 0; i < locales.length; i++) {
-      if (stripped.indexOf('/' + locales[i]) === 0) {
-        locale = locales[i];
+      var loc = locales[i];
+      if (stripped === '/' + loc || stripped.indexOf('/' + loc + '/') === 0) {
+        locale = loc;
         break;
       }
     }
+
+    // Fall back to browser language using the same prefix map as the main redirect
+    // so that e.g. 'zh-TW' correctly maps to 'zh-hant' rather than 'zh'.
     if (!locale) {
       var lang = (navigator.language || '').toLowerCase();
-      for (var j = 0; j < locales.length; j++) {
-        var prefix = locales[j].split('-')[0];
-        if (lang.indexOf(prefix) === 0) {
-          locale = locales[j];
+      for (var j = 0; j < localeRedirectMap.length; j++) {
+        var prefix = localeRedirectMap[j][0];
+        var target = localeRedirectMap[j][1];
+        if (lang === prefix || lang.indexOf(prefix + '-') === 0) {
+          locale = target;
           break;
         }
       }
