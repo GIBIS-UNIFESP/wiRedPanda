@@ -14,6 +14,7 @@ import {
   getLocalePath,
   defaultLocale,
   getAllLocales,
+  localeRedirectMap,
 } from '../i18n';
 import ogScreenshot from '../images/panda/panda1.png';
 
@@ -30,55 +31,8 @@ const localeDir = getLocaleDir(locale);
 const otherLocales = getOtherLocales(locale);
 const origin = Astro.site?.origin ?? '';
 
-// Data for the locale auto-redirect script
+// Data for the locale auto-redirect script (map is defined and tested in src/i18n/index.ts)
 const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
-
-// Ordered list of [browserLangPrefix, targetLocale].
-// Specific region codes must come before generic language codes so that
-// e.g. "pt-BR" matches before the generic "pt" entry.
-const localeRedirectMap: Array<[string, string]> = [
-  ['pt-br', 'pt-br'], // pt-BR  → Brazilian Portuguese
-  ['zh-tw', 'zh-hant'], // zh-TW  → Traditional Chinese
-  ['zh-hk', 'zh-hant'], // zh-HK  → Traditional Chinese
-  ['zh-mo', 'zh-hant'], // zh-MO  → Traditional Chinese
-  ['no', 'nb'], // no     → Norwegian Bokmål (generic Norwegian)
-  ['ar', 'ar'],
-  ['bg', 'bg'],
-  ['bn', 'bn'],
-  ['cs', 'cs'],
-  ['da', 'da'],
-  ['de', 'de'],
-  ['el', 'el'],
-  ['es', 'es'],
-  ['et', 'et'],
-  ['fa', 'fa'],
-  ['fi', 'fi'],
-  ['fr', 'fr'],
-  ['he', 'he'],
-  ['hi', 'hi'],
-  ['hr', 'hr'],
-  ['hu', 'hu'],
-  ['id', 'id'],
-  ['it', 'it'],
-  ['ja', 'ja'],
-  ['ko', 'ko'],
-  ['lt', 'lt'],
-  ['lv', 'lv'],
-  ['ms', 'ms'],
-  ['nb', 'nb'],
-  ['nl', 'nl'],
-  ['pl', 'pl'],
-  ['pt', 'pt'], // generic pt / pt-PT → European Portuguese
-  ['ro', 'ro'],
-  ['ru', 'ru'],
-  ['sk', 'sk'],
-  ['sv', 'sv'],
-  ['th', 'th'],
-  ['tr', 'tr'],
-  ['uk', 'uk'],
-  ['vi', 'vi'],
-  ['zh', 'zh'], // generic zh / zh-CN / zh-Hans → Simplified Chinese
-];
 ---
 
 <html lang={htmlLang} dir={localeDir}>
@@ -157,12 +111,15 @@ const localeRedirectMap: Array<[string, string]> = [
         }
       })();
     </script>
-    <!-- Preserve theme across view transitions -->
+    <!-- Preserve theme across view transitions (registered once; guard prevents accumulation) -->
     <script is:inline>
-      document.addEventListener('astro:before-swap', function (ev) {
-        var isDark = document.documentElement.classList.contains('dark');
-        ev.newDocument.documentElement.classList.toggle('dark', isDark);
-      });
+      if (!window.__themeTransitionSetup) {
+        window.__themeTransitionSetup = true;
+        document.addEventListener('astro:before-swap', function (ev) {
+          var isDark = document.documentElement.classList.contains('dark');
+          ev.newDocument.documentElement.classList.toggle('dark', isDark);
+        });
+      }
     </script>
   </head>
   <body>

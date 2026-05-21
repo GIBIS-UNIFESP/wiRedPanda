@@ -2,7 +2,7 @@
 import { Icon } from 'astro-icon/components';
 
 interface Props {
-  platform: string;
+  platform: 'arch' | 'debian';
   platformName: string;
   installCommand: string;
   copyLabel: string;
@@ -65,34 +65,42 @@ const { platform, platformName, installCommand, copyLabel } = Astro.props;
 
 <script>
   document.addEventListener('astro:page-load', () => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    document.addEventListener('astro:before-preparation', () => controller.abort(), { once: true });
+
     document.querySelectorAll('.copy-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const command = (btn as HTMLElement).dataset['command'];
-        const platform = (btn as HTMLElement).dataset['platform'];
-        if (!command) return;
+      btn.addEventListener(
+        'click',
+        () => {
+          const command = (btn as HTMLElement).dataset['command'];
+          const platform = (btn as HTMLElement).dataset['platform'];
+          if (!command) return;
 
-        window.umami?.track('Copy Install Command', { platform });
+          window.umami?.track('Copy Install Command', { platform });
 
-        navigator.clipboard.writeText(command).then(
-          () => {
-            const copyIcon = btn.querySelector('.copy-icon');
-            const checkIcon = btn.querySelector('.check-icon');
+          navigator.clipboard.writeText(command).then(
+            () => {
+              const copyIcon = btn.querySelector('.copy-icon');
+              const checkIcon = btn.querySelector('.check-icon');
 
-            copyIcon?.classList.add('hidden');
-            checkIcon?.classList.remove('hidden');
+              copyIcon?.classList.add('hidden');
+              checkIcon?.classList.remove('hidden');
 
-            window.dispatchEvent(new CustomEvent('wiredpanda:copy-success'));
+              window.dispatchEvent(new CustomEvent('wiredpanda:copy-success'));
 
-            setTimeout(() => {
-              copyIcon?.classList.remove('hidden');
-              checkIcon?.classList.add('hidden');
-            }, 2000);
-          },
-          () => {
-            // Clipboard write denied; icons remain in copy state, nothing to revert
-          }
-        );
-      });
+              setTimeout(() => {
+                copyIcon?.classList.remove('hidden');
+                checkIcon?.classList.add('hidden');
+              }, 2000);
+            },
+            () => {
+              // Clipboard write denied; icons remain in copy state, nothing to revert
+            }
+          );
+        },
+        { signal }
+      );
     });
   });
 </script>

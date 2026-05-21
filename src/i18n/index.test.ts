@@ -8,6 +8,7 @@ import {
   getOtherLocales,
   getAllLocales,
   getStaticLocalePaths,
+  localeRedirectMap,
   defaultLocale,
   languages,
   type Locale,
@@ -260,5 +261,48 @@ describe('getStaticLocalePaths', () => {
       .map((p) => p.params.locale)
       .filter((l): l is Exclude<LocaleParam, undefined> => l !== undefined);
     expect(nonDefaultParams.sort()).toEqual(nonDefaultLocales.sort());
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('localeRedirectMap', () => {
+  const targets = new Set(localeRedirectMap.map(([, locale]) => locale));
+  const prefixes = localeRedirectMap.map(([prefix]) => prefix);
+
+  it('every non-default locale is reachable as a redirect target', () => {
+    const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
+    for (const locale of nonDefaultLocales) {
+      expect(targets, `locale '${locale}' has no entry in localeRedirectMap`).toContain(locale);
+    }
+  });
+
+  it('has no duplicate browser language prefixes', () => {
+    const unique = new Set(prefixes);
+    expect(prefixes).toHaveLength(unique.size);
+  });
+
+  it('all target locales exist in the languages map', () => {
+    for (const [, target] of localeRedirectMap) {
+      expect(getAllLocales()).toContain(target);
+    }
+  });
+
+  it('the default locale is not a target', () => {
+    expect(targets).not.toContain(defaultLocale);
+  });
+
+  it('specific prefixes appear before their generic equivalents', () => {
+    // 'pt-br' must come before 'pt', and 'zh-tw' etc. before 'zh'
+    const ptBrIdx = prefixes.indexOf('pt-br');
+    const ptIdx = prefixes.indexOf('pt');
+    expect(ptBrIdx).toBeLessThan(ptIdx);
+
+    const zhTwIdx = prefixes.indexOf('zh-tw');
+    const zhIdx = prefixes.indexOf('zh');
+    expect(zhTwIdx).toBeLessThan(zhIdx);
+
+    const zhHantIdx = prefixes.indexOf('zh-hant');
+    expect(zhHantIdx).toBeLessThan(zhIdx);
   });
 });

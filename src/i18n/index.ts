@@ -172,6 +172,64 @@ export const localeFlags: Record<Locale, string> = {
 const rtlLocales = new Set<Locale>(['ar', 'fa', 'he']);
 
 /**
+ * Ordered list of [browserLangPrefix, targetLocale] pairs for the first-visit
+ * locale auto-redirect in Base.astro.
+ *
+ * Rules:
+ * - More specific prefixes (region/script codes) must come before shorter ones
+ *   so that e.g. "pt-BR" matches before the generic "pt" entry.
+ * - Every non-default locale must appear as a target at least once; the test
+ *   suite enforces this so adding a locale without updating this map fails CI.
+ */
+export const localeRedirectMap: readonly [string, Locale][] = [
+  // ── Region / script codes (specific → generic) ──────────────────────────
+  ['pt-br', 'pt-br'], // pt-BR  → Brazilian Portuguese
+  ['zh-tw', 'zh-hant'], // zh-TW  → Traditional Chinese
+  ['zh-hk', 'zh-hant'], // zh-HK  → Traditional Chinese
+  ['zh-mo', 'zh-hant'], // zh-MO  → Traditional Chinese
+  ['zh-hant', 'zh-hant'], // zh-Hant, zh-Hant-TW → Traditional Chinese
+  ['zh-hans', 'zh'], // zh-Hans, zh-Hans-CN → Simplified Chinese
+  ['no', 'nb'], // Norwegian (generic) → Bokmål
+  // ── Generic 2-letter language codes ─────────────────────────────────────
+  ['ar', 'ar'],
+  ['bg', 'bg'],
+  ['bn', 'bn'],
+  ['cs', 'cs'],
+  ['da', 'da'],
+  ['de', 'de'],
+  ['el', 'el'],
+  ['es', 'es'],
+  ['et', 'et'],
+  ['fa', 'fa'],
+  ['fi', 'fi'],
+  ['fr', 'fr'],
+  ['he', 'he'],
+  ['hi', 'hi'],
+  ['hr', 'hr'],
+  ['hu', 'hu'],
+  ['id', 'id'],
+  ['it', 'it'],
+  ['ja', 'ja'],
+  ['ko', 'ko'],
+  ['lt', 'lt'],
+  ['lv', 'lv'],
+  ['ms', 'ms'],
+  ['nb', 'nb'],
+  ['nl', 'nl'],
+  ['pl', 'pl'],
+  ['pt', 'pt'], // generic pt / pt-PT → European Portuguese
+  ['ro', 'ro'],
+  ['ru', 'ru'],
+  ['sk', 'sk'],
+  ['sv', 'sv'],
+  ['th', 'th'],
+  ['tr', 'tr'],
+  ['uk', 'uk'],
+  ['vi', 'vi'],
+  ['zh', 'zh'], // generic zh / zh-CN / zh-Hans → Simplified Chinese
+];
+
+/**
  * Extract the locale from the current URL pathname.
  * With Astro's i18n routing (prefixDefaultLocale: false),
  * English pages have no prefix, other locale pages have /{locale}/ prefix.
