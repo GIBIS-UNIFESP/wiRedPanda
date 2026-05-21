@@ -9,6 +9,14 @@ name: "wiRedPanda CodeQL — C++ experimental"
 queries:
   - uses: security-experimental
 
+query-filters:
+  # False positive: rule does not understand Qt's value-type semantics.
+  # QString, QStringList, QByteArray, and QJsonValue::toString() all produce
+  # independent value copies — no dangling reference is involved.  The rule is
+  # tagged "experimental" upstream for exactly this reason.
+  - exclude:
+      id: cpp/use-after-expired-lifetime
+
 paths-ignore:
   - Examples
   - Resources/Translations
