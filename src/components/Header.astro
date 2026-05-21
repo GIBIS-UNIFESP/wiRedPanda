@@ -54,7 +54,7 @@ function isActive(href: string): boolean {
     <!-- Desktop Navigation -->
     <ul class="hidden md:flex items-center gap-1">
       <li>
-        <LanguageSwitcher />
+        <LanguageSwitcher instanceId="desktop" />
       </li>
       {
         navLinks.map((link) => (
@@ -91,7 +91,7 @@ function isActive(href: string): boolean {
 
     <!-- Mobile: theme toggle + lang switcher + hamburger -->
     <div class="flex items-center gap-2 md:hidden">
-      <LanguageSwitcher />
+      <LanguageSwitcher instanceId="mobile" />
       <ThemeToggle />
       <button
         id="mobile-menu-btn"

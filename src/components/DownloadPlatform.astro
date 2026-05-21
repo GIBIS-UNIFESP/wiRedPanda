@@ -64,6 +64,8 @@ const { platform, platformName, installCommand, copyLabel } = Astro.props;
 </div>
 
 <script>
+  import { COPY_SUCCESS_EVENT } from '../lib/events';
+
   document.addEventListener('astro:page-load', () => {
     const controller = new AbortController();
     const { signal } = controller;
@@ -87,7 +89,7 @@ const { platform, platformName, installCommand, copyLabel } = Astro.props;
               copyIcon?.classList.add('hidden');
               checkIcon?.classList.remove('hidden');
 
-              window.dispatchEvent(new CustomEvent('wiredpanda:copy-success'));
+              window.dispatchEvent(new CustomEvent(COPY_SUCCESS_EVENT));
 
               setTimeout(() => {
                 copyIcon?.classList.remove('hidden');

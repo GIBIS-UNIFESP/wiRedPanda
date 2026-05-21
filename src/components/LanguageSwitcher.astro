@@ -10,12 +10,17 @@ import {
   type Locale,
 } from '../i18n';
 
+interface Props {
+  instanceId: string;
+}
+
+const { instanceId } = Astro.props;
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
 const otherLocales = getOtherLocales(locale);
 const currentPath = Astro.url.pathname;
 const currentFlag = localeFlags[locale];
-const dropdownId = `lang-dropdown-${Math.random().toString(36).slice(2, 7)}`;
+const dropdownId = `lang-dropdown-${instanceId}`;
 ---
 
 <div class="lang-switcher relative">

@@ -97,10 +97,11 @@ const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
         window.umami = window.umami || { track: function () {} };
         var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
         if (dnt !== '1' && dnt !== 'yes') {
-          // Guard against re-injection on SPA navigations (is:inline re-runs on each swap)
-          if (!document.getElementById('umami-script')) {
+          // window flag persists across SPA navigations (unlike a DOM element which is
+          // removed when ClientRouter diffs and replaces the <head> on each swap)
+          if (!window.__umamiLoaded) {
+            window.__umamiLoaded = true;
             var script = document.createElement('script');
-            script.id = 'umami-script';
             script.defer = true;
             script.src = 'https://cloud.umami.is/script.js';
             script.setAttribute('data-website-id', '8cf1c01a-4505-4de2-a5ea-0facfe5a71dd');
@@ -128,46 +129,45 @@ const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
       <slot />
     </main>
     <Footer />
+    <!-- Redirect users to their preferred locale on first visit -->
+    <script
+      is:inline
+      define:vars={{
+        siteBase: import.meta.env.BASE_URL.replace(/\/$/, ''),
+        nonDefaultLocales,
+        localeRedirectMap,
+      }}
+    >
+      (function () {
+        if (sessionStorage.getItem('locale-checked')) return;
+        sessionStorage.setItem('locale-checked', '1');
+
+        var path = window.location.pathname;
+        var base = siteBase;
+        var stripped = path;
+        if (base && path.indexOf(base) === 0) {
+          stripped = path.slice(base.length);
+        }
+
+        // Already on any non-default locale path? Skip redirect entirely.
+        for (var i = 0; i < nonDefaultLocales.length; i++) {
+          var loc = nonDefaultLocales[i];
+          if (stripped === '/' + loc || stripped.indexOf('/' + loc + '/') === 0) return;
+        }
+
+        // Match browser language against the redirect map (first match wins).
+        // Entries with region sub-tags (e.g. 'pt-br') appear before generic codes
+        // ('pt') so more specific matches take priority.
+        var lang = (navigator.language || '').toLowerCase();
+        for (var j = 0; j < localeRedirectMap.length; j++) {
+          var prefix = localeRedirectMap[j][0];
+          var target = localeRedirectMap[j][1];
+          if (lang === prefix || lang.indexOf(prefix + '-') === 0) {
+            window.location.replace(base + '/' + target + stripped);
+            return;
+          }
+        }
+      })();
+    </script>
   </body>
 </html>
-
-<!-- Redirect users to their preferred locale on first visit -->
-<script
-  is:inline
-  define:vars={{
-    siteBase: import.meta.env.BASE_URL.replace(/\/$/, ''),
-    nonDefaultLocales,
-    localeRedirectMap,
-  }}
->
-  (function () {
-    if (sessionStorage.getItem('locale-checked')) return;
-    sessionStorage.setItem('locale-checked', '1');
-
-    var path = window.location.pathname;
-    var base = siteBase;
-    var stripped = path;
-    if (base && path.indexOf(base) === 0) {
-      stripped = path.slice(base.length);
-    }
-
-    // Already on any non-default locale path? Skip redirect entirely.
-    for (var i = 0; i < nonDefaultLocales.length; i++) {
-      var loc = nonDefaultLocales[i];
-      if (stripped === '/' + loc || stripped.indexOf('/' + loc + '/') === 0) return;
-    }
-
-    // Match browser language against the redirect map (first match wins).
-    // Entries with region sub-tags (e.g. 'pt-br') appear before generic codes
-    // ('pt') so more specific matches take priority.
-    var lang = (navigator.language || '').toLowerCase();
-    for (var j = 0; j < localeRedirectMap.length; j++) {
-      var prefix = localeRedirectMap[j][0];
-      var target = localeRedirectMap[j][1];
-      if (lang === prefix || lang.indexOf(prefix + '-') === 0) {
-        window.location.replace(base + '/' + target + stripped);
-        return;
-      }
-    }
-  })();
-</script>
