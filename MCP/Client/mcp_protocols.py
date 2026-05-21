@@ -16,10 +16,12 @@ from mcp_models import MCPResponse
 class InfrastructureProtocol(Protocol):
     """Subset of MCPInfrastructure needed by MCPTestOrganizer."""
 
-    async def send_command(self, command: str, parameters: Dict[str, Any], timeout: float = 10.0) -> MCPResponse: ...
+    async def send_command(self, command: str, parameters: Dict[str, Any], timeout: float = 10.0) -> MCPResponse:
+        pass
 
 
 class OrganizerProtocol(Protocol):
     """Subset of MCPTestOrganizer needed by MCPInfrastructure."""
 
-    async def export_circuit_image(self, test_name: str, infrastructure: InfrastructureProtocol) -> None: ...
+    async def export_circuit_image(self, test_name: str, infrastructure: InfrastructureProtocol) -> None:
+        pass
