@@ -236,50 +236,15 @@ export function getLocalePath(path: string, locale: Locale): string {
 
 /**
  * Get the HTML lang attribute value for a locale.
+ * Most locale keys map directly to a BCP 47 tag; only three need remapping.
  */
 export function getHtmlLang(locale: Locale): string {
-  const map: Record<Locale, string> = {
-    en: 'en',
+  const overrides: Partial<Record<Locale, string>> = {
     'pt-br': 'pt-BR',
-    es: 'es',
     zh: 'zh-CN',
-    ja: 'ja',
-    fr: 'fr',
-    de: 'de',
-    ar: 'ar',
-    bg: 'bg',
-    bn: 'bn',
-    cs: 'cs',
-    da: 'da',
-    el: 'el',
-    et: 'et',
-    fa: 'fa',
-    fi: 'fi',
-    he: 'he',
-    hi: 'hi',
-    hr: 'hr',
-    hu: 'hu',
-    id: 'id',
-    it: 'it',
-    ko: 'ko',
-    lt: 'lt',
-    lv: 'lv',
-    ms: 'ms',
-    nb: 'nb',
-    nl: 'nl',
-    pl: 'pl',
-    pt: 'pt',
-    ro: 'ro',
-    ru: 'ru',
-    sk: 'sk',
-    sv: 'sv',
-    th: 'th',
-    tr: 'tr',
-    uk: 'uk',
-    vi: 'vi',
     'zh-hant': 'zh-TW',
   };
-  return map[locale];
+  return overrides[locale] ?? locale;
 }
 
 /**

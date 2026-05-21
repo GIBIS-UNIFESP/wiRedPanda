@@ -17,18 +17,24 @@ const GITHUB_RELEASES_PAGE_URL = `https://github.com/${GITHUB_REPO_OWNER}/${GITH
 
 const archInstallCommand = 'yay -S wiredpanda';
 const debianInstallCommand = 'sudo apt-get install wiredpanda';
-
-// Pass translations to client-side script
-const clientTranslations = {
-  versionText: t('download.versionText'),
-  errorFetching: t('download.errorFetching'),
-  errorNotFound: t('download.errorNotFound'),
-  errorRateLimit: t('download.errorRateLimit'),
-  errorConnection: t('download.errorConnection'),
-};
 ---
 
 <Base pageTitle={t('download.title')}>
+  <!-- Config for client-side script (avoids define:vars / is:inline) -->
+  <div
+    id="download-config"
+    hidden
+    data-owner={GITHUB_REPO_OWNER}
+    data-repo={GITHUB_REPO_NAME}
+    data-releases-url={GITHUB_RELEASES_PAGE_URL}
+    data-tr-version={t('download.versionText')}
+    data-tr-error-fetching={t('download.errorFetching')}
+    data-tr-error-not-found={t('download.errorNotFound')}
+    data-tr-error-rate-limit={t('download.errorRateLimit')}
+    data-tr-error-connection={t('download.errorConnection')}
+  >
+  </div>
+
   <section class="max-w-4xl mx-auto px-6 pt-24 pb-16 text-center">
     <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">{t('download.heading')}</h1>
 
@@ -155,7 +161,7 @@ const clientTranslations = {
     </p>
   </section>
 
-  <!-- Copy toast -->
+  <!-- Copy toast (shown by wiredpanda:copy-success event) -->
   <div
     id="copy-toast"
     class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-full opacity-0 z-50 pointer-events-none px-4 py-2.5 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-medium shadow-lg transition-all duration-300 ease-out"
@@ -166,127 +172,136 @@ const clientTranslations = {
   </div>
 </Base>
 
-<script
-  is:inline
-  define:vars={{
-    GITHUB_REPO_OWNER,
-    GITHUB_REPO_NAME,
-    GITHUB_RELEASES_PAGE_URL,
-    clientTranslations,
-  }}
->
-  const releaseVersionTextEl = document.getElementById('release-version-text');
-  const errorMessageContainerEl = document.getElementById('error-message-container');
-  const errorTextEl = document.getElementById('error-text');
+<script>
+  import { parseReleaseAssets } from '../../lib/release-assets';
 
-  const windowsX64El = document.getElementById('windows-x64-link');
-  const windowsArmEl = document.getElementById('windows-arm64-link');
-  const linuxX64El = document.getElementById('linux-x64-link');
-  const linuxArmEl = document.getElementById('linux-arm64-link');
-  const macosEl = document.getElementById('macos-universal-link');
+  document.addEventListener('astro:page-load', () => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    document.addEventListener('astro:before-preparation', () => controller.abort(), { once: true });
 
-  function setChip(el, url) {
-    if (!el) return;
-    if (url) {
-      el.href = url;
-      el.classList.remove('disabled-chip');
-      el.removeAttribute('aria-disabled');
-    } else {
-      el.href = GITHUB_RELEASES_PAGE_URL;
-      el.classList.add('disabled-chip');
-      el.setAttribute('aria-disabled', 'true');
-    }
-  }
+    const config = document.getElementById('download-config') as HTMLElement | null;
+    if (!config) return;
 
-  function showError(message) {
-    if (releaseVersionTextEl) releaseVersionTextEl.style.display = 'none';
-    if (errorTextEl) errorTextEl.textContent = message;
-    if (errorMessageContainerEl) errorMessageContainerEl.classList.remove('hidden');
-  }
+    const owner = config.dataset['owner'] ?? '';
+    const repo = config.dataset['repo'] ?? '';
+    const releasesUrl = config.dataset['releasesUrl'] ?? '';
+    const translations = {
+      versionText: config.dataset['trVersion'] ?? '',
+      errorFetching: config.dataset['trErrorFetching'] ?? '',
+      errorNotFound: config.dataset['trErrorNotFound'] ?? '',
+      errorRateLimit: config.dataset['trErrorRateLimit'] ?? '',
+      errorConnection: config.dataset['trErrorConnection'] ?? '',
+    };
 
-  async function fetchLatestRelease() {
-    try {
-      const response = await fetch(
-        `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`
-      );
+    const releaseVersionTextEl = document.getElementById('release-version-text');
+    const errorMessageContainerEl = document.getElementById('error-message-container');
+    const errorTextEl = document.getElementById('error-text');
 
-      if (!response.ok) {
-        let message = clientTranslations.errorFetching
-          .replace('{status}', response.status)
-          .replace('{statusText}', response.statusText);
-        if (response.status === 404) {
-          message = clientTranslations.errorNotFound
-            .replace('{owner}', GITHUB_REPO_OWNER)
-            .replace('{repo}', GITHUB_REPO_NAME);
-        } else if (response.status === 403) {
-          message = clientTranslations.errorRateLimit;
-        }
-        console.error(message);
-        showError(message);
-        return;
-      }
+    const windowsX64El = document.getElementById('windows-x64-link');
+    const windowsArmEl = document.getElementById('windows-arm64-link');
+    const linuxX64El = document.getElementById('linux-x64-link');
+    const linuxArmEl = document.getElementById('linux-arm64-link');
+    const macosEl = document.getElementById('macos-universal-link');
 
-      const latestRelease = await response.json();
-      const releaseVersion = latestRelease.tag_name || 'latest';
-
-      if (releaseVersionTextEl) {
-        releaseVersionTextEl.textContent = clientTranslations.versionText.replace(
-          '{version}',
-          releaseVersion
-        );
-      }
-      if (errorMessageContainerEl) errorMessageContainerEl.classList.add('hidden');
-
-      if (latestRelease && latestRelease.assets) {
-        const assets = latestRelease.assets;
-
-        const isWinZip = (a) =>
-          a.name.includes('Windows') && (a.name.endsWith('.zip') || a.name.endsWith('.exe'));
-        const isLinuxAI = (a) =>
-          (a.name.includes('Ubuntu') || a.name.includes('Linux')) && a.name.endsWith('.AppImage');
-        const isMacos = (a) => a.name.includes('macOS') && a.name.endsWith('.dmg');
-
-        const winX64 = assets.find((a) => isWinZip(a) && a.name.includes('x86_64'));
-        const winArm = assets.find((a) => isWinZip(a) && a.name.includes('arm64'));
-        const linX64 = assets.find((a) => isLinuxAI(a) && a.name.includes('x86_64'));
-        const linArm = assets.find((a) => isLinuxAI(a) && a.name.includes('arm64'));
-        const macos = assets.find((a) => isMacos(a));
-
-        setChip(windowsX64El, winX64?.browser_download_url ?? null);
-        setChip(windowsArmEl, winArm?.browser_download_url ?? null);
-        setChip(linuxX64El, linX64?.browser_download_url ?? null);
-        setChip(linuxArmEl, linArm?.browser_download_url ?? null);
-        setChip(macosEl, macos?.browser_download_url ?? null);
+    function setChip(el: HTMLElement | null, url: string | null) {
+      if (!el) return;
+      if (url) {
+        (el as HTMLAnchorElement).href = url;
+        el.classList.remove('disabled-chip');
+        el.removeAttribute('aria-disabled');
       } else {
-        console.warn('Latest release found, but it contains no assets.');
+        (el as HTMLAnchorElement).href = releasesUrl;
+        el.classList.add('disabled-chip');
+        el.setAttribute('aria-disabled', 'true');
       }
-    } catch (error) {
-      const message = clientTranslations.errorConnection;
-      console.error('Error fetching or parsing latest release data:', error);
-      showError(message);
     }
-  }
 
-  fetchLatestRelease();
-
-  // Analytics tracking
-  const trackDownload = (platform) => {
-    if (typeof window !== 'undefined' && window.umami) {
-      window.umami.track('Download', { platform });
+    function showError(message: string) {
+      if (releaseVersionTextEl) releaseVersionTextEl.style.display = 'none';
+      if (errorTextEl) errorTextEl.textContent = message;
+      if (errorMessageContainerEl) errorMessageContainerEl.classList.remove('hidden');
     }
-  };
 
-  const dlController = new AbortController();
-  document.addEventListener('astro:before-preparation', () => dlController.abort(), { once: true });
-  const dlSignal = dlController.signal;
+    async function fetchLatestRelease() {
+      try {
+        const response = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/releases/latest`
+        );
 
-  windowsX64El?.addEventListener('click', () => trackDownload('Windows-x64'), { signal: dlSignal });
-  windowsArmEl?.addEventListener('click', () => trackDownload('Windows-arm64'), {
-    signal: dlSignal,
+        if (!response.ok) {
+          let message = translations.errorFetching
+            .replace('{status}', String(response.status))
+            .replace('{statusText}', response.statusText);
+          if (response.status === 404) {
+            message = translations.errorNotFound.replace('{owner}', owner).replace('{repo}', repo);
+          } else if (response.status === 403) {
+            message = translations.errorRateLimit;
+          }
+          console.error(message);
+          showError(message);
+          return;
+        }
+
+        const latestRelease = (await response.json()) as {
+          tag_name?: string;
+          assets?: { name: string; browser_download_url: string }[];
+        };
+        const releaseVersion = latestRelease.tag_name ?? 'latest';
+
+        if (releaseVersionTextEl) {
+          releaseVersionTextEl.textContent = translations.versionText.replace(
+            '{version}',
+            releaseVersion
+          );
+        }
+        if (errorMessageContainerEl) errorMessageContainerEl.classList.add('hidden');
+
+        if (latestRelease.assets) {
+          const parsed = parseReleaseAssets(latestRelease.assets);
+          setChip(windowsX64El, parsed.windowsX64?.browser_download_url ?? null);
+          setChip(windowsArmEl, parsed.windowsArm64?.browser_download_url ?? null);
+          setChip(linuxX64El, parsed.linuxX64?.browser_download_url ?? null);
+          setChip(linuxArmEl, parsed.linuxArm64?.browser_download_url ?? null);
+          setChip(macosEl, parsed.macosUniversal?.browser_download_url ?? null);
+        } else {
+          console.warn('Latest release found, but it contains no assets.');
+        }
+      } catch (error) {
+        console.error('Error fetching or parsing latest release data:', error);
+        showError(translations.errorConnection);
+      }
+    }
+
+    void fetchLatestRelease();
+
+    // Show copy-toast when DownloadPlatform signals a successful copy
+    window.addEventListener(
+      'wiredpanda:copy-success',
+      () => {
+        const toast = document.getElementById('copy-toast');
+        if (!toast) return;
+        toast.classList.remove('translate-y-full', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        setTimeout(() => {
+          toast.classList.remove('translate-y-0', 'opacity-100');
+          toast.classList.add('translate-y-full', 'opacity-0');
+        }, 2000);
+      },
+      { signal }
+    );
+
+    // Analytics: track download clicks
+    function trackDownload(platform: string) {
+      window.umami?.track('Download', { platform });
+    }
+
+    windowsX64El?.addEventListener('click', () => trackDownload('Windows-x64'), { signal });
+    windowsArmEl?.addEventListener('click', () => trackDownload('Windows-arm64'), { signal });
+    linuxX64El?.addEventListener('click', () => trackDownload('Linux-x64'), { signal });
+    linuxArmEl?.addEventListener('click', () => trackDownload('Linux-arm64'), { signal });
+    macosEl?.addEventListener('click', () => trackDownload('macOS'), { signal });
   });
-  linuxX64El?.addEventListener('click', () => trackDownload('Linux-x64'), { signal: dlSignal });
-  linuxArmEl?.addEventListener('click', () => trackDownload('Linux-arm64'), { signal: dlSignal });
-  macosEl?.addEventListener('click', () => trackDownload('macOS'), { signal: dlSignal });
 </script>
 
 <style>
@@ -319,9 +334,9 @@ const clientTranslations = {
     color: #fff;
   }
 
+  /* Loading state: click still works (goes to releases page as fallback) */
   .disabled-chip {
-    pointer-events: none;
     opacity: 0.4;
-    cursor: not-allowed;
+    cursor: default;
   }
 </style>

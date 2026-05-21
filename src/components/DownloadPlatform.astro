@@ -78,21 +78,10 @@ const { platform, platformName, installCommand, copyLabel } = Astro.props;
             const copyIcon = btn.querySelector('.copy-icon');
             const checkIcon = btn.querySelector('.check-icon');
 
-            // Swap icons
             copyIcon?.classList.add('hidden');
             checkIcon?.classList.remove('hidden');
 
-            // Show toast
-            const toast = document.getElementById('copy-toast');
-            if (toast) {
-              toast.classList.remove('translate-y-full', 'opacity-0');
-              toast.classList.add('translate-y-0', 'opacity-100');
-
-              setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-full', 'opacity-0');
-              }, 2000);
-            }
+            window.dispatchEvent(new CustomEvent('wiredpanda:copy-success'));
 
             setTimeout(() => {
               copyIcon?.classList.remove('hidden');

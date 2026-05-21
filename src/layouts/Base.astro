@@ -13,7 +13,9 @@ import {
   getOtherLocales,
   getLocalePath,
   defaultLocale,
+  getAllLocales,
 } from '../i18n';
+import ogScreenshot from '../images/panda/panda1.png';
 
 interface Props {
   pageTitle: string;
@@ -27,6 +29,56 @@ const htmlLang = getHtmlLang(locale);
 const localeDir = getLocaleDir(locale);
 const otherLocales = getOtherLocales(locale);
 const origin = Astro.site?.origin ?? '';
+
+// Data for the locale auto-redirect script
+const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
+
+// Ordered list of [browserLangPrefix, targetLocale].
+// Specific region codes must come before generic language codes so that
+// e.g. "pt-BR" matches before the generic "pt" entry.
+const localeRedirectMap: Array<[string, string]> = [
+  ['pt-br', 'pt-br'], // pt-BR  → Brazilian Portuguese
+  ['zh-tw', 'zh-hant'], // zh-TW  → Traditional Chinese
+  ['zh-hk', 'zh-hant'], // zh-HK  → Traditional Chinese
+  ['zh-mo', 'zh-hant'], // zh-MO  → Traditional Chinese
+  ['no', 'nb'], // no     → Norwegian Bokmål (generic Norwegian)
+  ['ar', 'ar'],
+  ['bg', 'bg'],
+  ['bn', 'bn'],
+  ['cs', 'cs'],
+  ['da', 'da'],
+  ['de', 'de'],
+  ['el', 'el'],
+  ['es', 'es'],
+  ['et', 'et'],
+  ['fa', 'fa'],
+  ['fi', 'fi'],
+  ['fr', 'fr'],
+  ['he', 'he'],
+  ['hi', 'hi'],
+  ['hr', 'hr'],
+  ['hu', 'hu'],
+  ['id', 'id'],
+  ['it', 'it'],
+  ['ja', 'ja'],
+  ['ko', 'ko'],
+  ['lt', 'lt'],
+  ['lv', 'lv'],
+  ['ms', 'ms'],
+  ['nb', 'nb'],
+  ['nl', 'nl'],
+  ['pl', 'pl'],
+  ['pt', 'pt'], // generic pt / pt-PT → European Portuguese
+  ['ro', 'ro'],
+  ['ru', 'ru'],
+  ['sk', 'sk'],
+  ['sv', 'sv'],
+  ['th', 'th'],
+  ['tr', 'tr'],
+  ['uk', 'uk'],
+  ['vi', 'vi'],
+  ['zh', 'zh'], // generic zh / zh-CN / zh-Hans → Simplified Chinese
+];
 ---
 
 <html lang={htmlLang} dir={localeDir}>
@@ -70,25 +122,36 @@ const origin = Astro.site?.origin ?? '';
     <meta property="og:title" content={`wiRedPanda | ${pageTitle}`} />
     <meta property="og:description" content={t('meta.description')} />
     <meta property="og:url" content={`${origin}${getLocalePath(Astro.url.pathname, locale)}`} />
+    <meta property="og:image" content={`${origin}${ogScreenshot.src}`} />
+    <meta property="og:image:width" content={String(ogScreenshot.width)} />
+    <meta property="og:image:height" content={String(ogScreenshot.height)} />
     <meta property="og:locale" content={htmlLang.replace('-', '_')} />
     {
       otherLocales.map((altLocale) => (
         <meta property="og:locale:alternate" content={getHtmlLang(altLocale).replace('-', '_')} />
       ))
     }
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`wiRedPanda | ${pageTitle}`} />
+    <meta name="twitter:description" content={t('meta.description')} />
+    <meta name="twitter:image" content={`${origin}${ogScreenshot.src}`} />
     <ClientRouter />
     <title>wiRedPanda | {pageTitle}</title>
     <script is:inline>
       (function () {
-        // Fallback for custom events if DNT is active
+        // Fallback for custom events if DNT is active or script is blocked
         window.umami = window.umami || { track: function () {} };
         var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
         if (dnt !== '1' && dnt !== 'yes') {
-          var script = document.createElement('script');
-          script.defer = true;
-          script.src = 'https://cloud.umami.is/script.js';
-          script.setAttribute('data-website-id', '8cf1c01a-4505-4de2-a5ea-0facfe5a71dd');
-          document.head.appendChild(script);
+          // Guard against re-injection on SPA navigations (is:inline re-runs on each swap)
+          if (!document.getElementById('umami-script')) {
+            var script = document.createElement('script');
+            script.id = 'umami-script';
+            script.defer = true;
+            script.src = 'https://cloud.umami.is/script.js';
+            script.setAttribute('data-website-id', '8cf1c01a-4505-4de2-a5ea-0facfe5a71dd');
+            document.head.appendChild(script);
+          }
         } else {
           console.info('Analytics disabled to respect Do Not Track preference.');
         }
@@ -111,8 +174,15 @@ const origin = Astro.site?.origin ?? '';
   </body>
 </html>
 
-<!-- Redirect users to their locale on first visit -->
-<script is:inline define:vars={{ siteBase: import.meta.env.BASE_URL.replace(/\/$/, '') }}>
+<!-- Redirect users to their preferred locale on first visit -->
+<script
+  is:inline
+  define:vars={{
+    siteBase: import.meta.env.BASE_URL.replace(/\/$/, ''),
+    nonDefaultLocales,
+    localeRedirectMap,
+  }}
+>
   (function () {
     if (sessionStorage.getItem('locale-checked')) return;
     sessionStorage.setItem('locale-checked', '1');
@@ -124,31 +194,23 @@ const origin = Astro.site?.origin ?? '';
       stripped = path.slice(base.length);
     }
 
-    // Already on a non-default locale? Skip.
-    if (
-      stripped.indexOf('/pt-br') === 0 ||
-      stripped.indexOf('/es') === 0 ||
-      stripped.indexOf('/zh') === 0 ||
-      stripped.indexOf('/ja') === 0 ||
-      stripped.indexOf('/fr') === 0 ||
-      stripped.indexOf('/de') === 0
-    )
-      return;
+    // Already on any non-default locale path? Skip redirect entirely.
+    for (var i = 0; i < nonDefaultLocales.length; i++) {
+      var loc = nonDefaultLocales[i];
+      if (stripped === '/' + loc || stripped.indexOf('/' + loc + '/') === 0) return;
+    }
 
-    // Check browser language
+    // Match browser language against the redirect map (first match wins).
+    // Entries with region sub-tags (e.g. 'pt-br') appear before generic codes
+    // ('pt') so more specific matches take priority.
     var lang = (navigator.language || '').toLowerCase();
-    if (lang.indexOf('pt') === 0) {
-      window.location.replace(base + '/pt-br' + stripped);
-    } else if (lang.indexOf('es') === 0) {
-      window.location.replace(base + '/es' + stripped);
-    } else if (lang.indexOf('zh') === 0) {
-      window.location.replace(base + '/zh' + stripped);
-    } else if (lang.indexOf('ja') === 0) {
-      window.location.replace(base + '/ja' + stripped);
-    } else if (lang.indexOf('fr') === 0) {
-      window.location.replace(base + '/fr' + stripped);
-    } else if (lang.indexOf('de') === 0) {
-      window.location.replace(base + '/de' + stripped);
+    for (var j = 0; j < localeRedirectMap.length; j++) {
+      var prefix = localeRedirectMap[j][0];
+      var target = localeRedirectMap[j][1];
+      if (lang === prefix || lang.indexOf(prefix + '-') === 0) {
+        window.location.replace(base + '/' + target + stripped);
+        return;
+      }
     }
   })();
 </script>

@@ -63,7 +63,11 @@ const t = useTranslations(locale);
 </style>
 
 <script>
-  function setupThemeToggle() {
+  document.addEventListener('astro:page-load', () => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    document.addEventListener('astro:before-preparation', () => controller.abort(), { once: true });
+
     const btns = document.querySelectorAll<HTMLButtonElement>('.theme-switch');
 
     function updateAria() {
@@ -74,13 +78,15 @@ const t = useTranslations(locale);
     updateAria();
 
     btns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const isDark = document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        updateAria();
-      });
+      btn.addEventListener(
+        'click',
+        () => {
+          const isDark = document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+          updateAria();
+        },
+        { signal }
+      );
     });
-  }
-
-  document.addEventListener('astro:page-load', setupThemeToggle);
+  });
 </script>
