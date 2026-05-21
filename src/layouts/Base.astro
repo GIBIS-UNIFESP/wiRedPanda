@@ -38,13 +38,14 @@ const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
 <html lang={htmlLang} dir={localeDir}>
   <head>
     <meta charset="utf-8" />
+    <!-- Preconnect hints are non-blocking; starting the connection here lets the
+         font CSS and woff2 files begin loading as early as possible. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap"
-    />
-    <!-- Theme init: must run before any rendering to avoid FOUC -->
+    <!-- Theme init: must run before any rendering to avoid FOUC.
+         Placed BEFORE the font stylesheet so that a slow fonts.googleapis.com
+         response cannot block this script (a pending CSS load before an inline
+         script defers its execution per the HTML spec). -->
     <script is:inline>
       (function () {
         var stored = localStorage.getItem('theme');
@@ -53,6 +54,10 @@ const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
         document.documentElement.classList.toggle('dark', isDark);
       })();
     </script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap"
+    />
     <link rel="icon" type="image/x-icon" href={`${import.meta.env.BASE_URL}wpanda.ico`} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
