@@ -10,16 +10,14 @@ import asyncio
 import json
 import os
 import sys
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import Any, Dict, Optional
 
 from beartype import beartype
 from mcp_models import MCPResponse, create_error_response
 from mcp_output import MCPOutput
+from mcp_protocols import OrganizerProtocol
 from mcp_schema_validator import validate_command, validate_response
 from wiredpanda_bridge import ProcessManager
-
-if TYPE_CHECKING:
-    from mcp_organizer import MCPTestOrganizer
 
 # Fix encoding for Windows console output
 if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
@@ -221,7 +219,7 @@ class MCPInfrastructure:
     async def cleanup_circuit(
         self,
         test_name: str,
-        organizer: Optional["MCPTestOrganizer"] = None,
+        organizer: Optional[OrganizerProtocol] = None,
         keep_temp_files: bool = False,
         _verbose: bool = False,
     ) -> bool:

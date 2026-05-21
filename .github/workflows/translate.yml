@@ -108,10 +108,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-          # For PRs, checkout the PR branch from the correct repository
-          repository: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
       - name: Install Qt
         uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
@@ -268,8 +264,15 @@ jobs:
 
             🌐 Weblate integration update"
 
-            git push origin HEAD:${{ github.head_ref }}
-            echo "✅ Weblate changes processed"
+            # GITHUB_TOKEN has write access only to the base repo, not to an
+            # external fork.  Weblate always submits from its own fork, so skip
+            # the push there — Weblate syncs its fork independently.
+            if [[ "${{ github.event.pull_request.head.repo.full_name }}" == "${{ github.repository }}" ]]; then
+              git push origin HEAD:${{ github.head_ref }}
+              echo "✅ Weblate changes processed"
+            else
+              echo "ℹ️ Fork PR: cleanup committed locally; skipping push (GITHUB_TOKEN has no write access to the fork)"
+            fi
           else
             echo "ℹ️ No further cleanup needed"
           fi

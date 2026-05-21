@@ -8,13 +8,10 @@ testing including test management, reporting, and image export.
 
 import glob
 import os
-from typing import TYPE_CHECKING
 
 from beartype import beartype
 from mcp_models import TestResults
-
-if TYPE_CHECKING:
-    from mcp_infrastructure import MCPInfrastructure
+from mcp_protocols import InfrastructureProtocol
 
 
 class MCPTestOrganizer:
@@ -53,7 +50,7 @@ class MCPTestOrganizer:
         self.test_results.process_issues.append(issue)
         print(f"⚠️  PROCESS ISSUE: {issue}")
 
-    async def export_circuit_image(self, test_name: str, infrastructure: "MCPInfrastructure") -> None:
+    async def export_circuit_image(self, test_name: str, infrastructure: InfrastructureProtocol) -> None:
         """Export circuit image with sequential numbering"""
         if not self.export_images:
             return
