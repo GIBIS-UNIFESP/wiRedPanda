@@ -387,6 +387,7 @@ if(Qt6LinguistTools_FOUND)
             -no-obsolete
         )
     endif()
+    set(QT_NO_MISSING_CATALOG_LANGUAGE_WARNING ON)
     qt_add_translations(wiredpanda
         TS_FILES ${TS_FILES}
         ${_merge_qt_translations}
