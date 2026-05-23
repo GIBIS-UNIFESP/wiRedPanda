@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="871"/>
+        <location filename="../../Scene/Commands.cpp" line="867"/>
         <source>Change input size to %1</source>
         <translation>Vaihda sisääntulon koko arvoon %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="872"/>
+        <location filename="../../Scene/Commands.cpp" line="868"/>
         <source>Change output size to %1</source>
         <translation>Vaihda ulostulon koko arvoon %1</translation>
     </message>
@@ -641,7 +641,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="311"/>
+        <location filename="../../Scene/Commands.cpp" line="307"/>
         <source>Delete %1 elements</source>
         <translation>Poista %1 elementtiä</translation>
     </message>
@@ -1190,7 +1190,7 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="810"/>
+        <location filename="../../Scene/Commands.cpp" line="806"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Käännä %1 elementtiä akselilla %2</translation>
     </message>
@@ -2385,7 +2385,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="639"/>
+        <location filename="../../Scene/Commands.cpp" line="635"/>
         <source>Morph %1 elements to %2</source>
         <translation>Muunna %1 elementtiä muotoon %2</translation>
     </message>
@@ -2393,7 +2393,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="404"/>
+        <location filename="../../Scene/Commands.cpp" line="400"/>
         <source>Move elements</source>
         <translation>Siirrä elementtejä</translation>
     </message>
@@ -2586,7 +2586,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1024"/>
+        <location filename="../../Scene/Commands.cpp" line="1020"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Rekisteröi blob &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1043"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Poista blob &quot;%1&quot;</translation>
     </message>
@@ -2602,7 +2602,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="336"/>
+        <location filename="../../Scene/Commands.cpp" line="332"/>
         <source>Rotate %1 degrees</source>
         <translation>Kierrä %1 astetta</translation>
     </message>
@@ -2733,32 +2733,32 @@ Ehdotettu nimi:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
+        <location filename="../../Scene/Commands.cpp" line="509"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Virheelliset yhteysportit SplitCommand-konstruktorissa</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
+        <location filename="../../Scene/Commands.cpp" line="515"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Virheelliset graafiset elementit SplitCommand-konstruktorissa</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="542"/>
+        <location filename="../../Scene/Commands.cpp" line="538"/>
         <source>Wire split</source>
         <translation>Johdon jako</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
+        <location filename="../../Scene/Commands.cpp" line="553"/>
         <source>Error trying to redo %1</source>
         <translation>Virhe yritettäessä tehdä uudelleen %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
+        <location filename="../../Scene/Commands.cpp" line="576"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Virhe: endPort on null SplitCommand::redo()-funktiossa</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
+        <location filename="../../Scene/Commands.cpp" line="605"/>
         <source>Error trying to undo %1</source>
         <translation>Virhe yritettäessä perua %1</translation>
     </message>
@@ -2805,12 +2805,12 @@ Ehdotettu nimi:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="961"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Vaihda totuustaulun ulostulo paikassa: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
+        <location filename="../../Scene/Commands.cpp" line="970"/>
         <source>Could not find truthtable element!</source>
         <translation>Totuustauluelementtiä ei löytynyt!</translation>
     </message>
@@ -2844,7 +2844,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1080"/>
+        <location filename="../../Scene/Commands.cpp" line="1076"/>
         <source>Update %1 IC blobs</source>
         <translation>Päivitä %1 IC-blobit</translation>
     </message>
@@ -2852,7 +2852,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="444"/>
+        <location filename="../../Scene/Commands.cpp" line="440"/>
         <source>Update %1 elements</source>
         <translation>Päivitä %1 elementtiä</translation>
     </message>

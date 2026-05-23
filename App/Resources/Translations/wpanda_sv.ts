@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="871"/>
+        <location filename="../../Scene/Commands.cpp" line="867"/>
         <source>Change input size to %1</source>
         <translation>Ändra ingångsstorlek till %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="872"/>
+        <location filename="../../Scene/Commands.cpp" line="868"/>
         <source>Change output size to %1</source>
         <translation>Ändra utgångsstorlek till %1</translation>
     </message>
@@ -641,7 +641,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="311"/>
+        <location filename="../../Scene/Commands.cpp" line="307"/>
         <source>Delete %1 elements</source>
         <translation>Ta bort %1 element</translation>
     </message>
@@ -1190,7 +1190,7 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="810"/>
+        <location filename="../../Scene/Commands.cpp" line="806"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Vänd %1 element i axel %2</translation>
     </message>
@@ -2385,7 +2385,7 @@ Föreslaget namn:</translation>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="639"/>
+        <location filename="../../Scene/Commands.cpp" line="635"/>
         <source>Morph %1 elements to %2</source>
         <translation>Förvandla %1 element till %2</translation>
     </message>
@@ -2393,7 +2393,7 @@ Föreslaget namn:</translation>
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="404"/>
+        <location filename="../../Scene/Commands.cpp" line="400"/>
         <source>Move elements</source>
         <translation>Flytta element</translation>
     </message>
@@ -2586,7 +2586,7 @@ Föreslaget namn:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1024"/>
+        <location filename="../../Scene/Commands.cpp" line="1020"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrera blob &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Föreslaget namn:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1043"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Ta bort blob &quot;%1&quot;</translation>
     </message>
@@ -2602,7 +2602,7 @@ Föreslaget namn:</translation>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="336"/>
+        <location filename="../../Scene/Commands.cpp" line="332"/>
         <source>Rotate %1 degrees</source>
         <translation>Rotera %1 grader</translation>
     </message>
@@ -2733,32 +2733,32 @@ Föreslaget namn:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
+        <location filename="../../Scene/Commands.cpp" line="509"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Ogiltiga anslutningsportar i SplitCommand konstruktor</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
+        <location filename="../../Scene/Commands.cpp" line="515"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Ogiltiga grafiska element i SplitCommand konstruktor</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="542"/>
+        <location filename="../../Scene/Commands.cpp" line="538"/>
         <source>Wire split</source>
         <translation>Ledningsdelning</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
+        <location filename="../../Scene/Commands.cpp" line="553"/>
         <source>Error trying to redo %1</source>
         <translation>Fel vid försök att göra om %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
+        <location filename="../../Scene/Commands.cpp" line="576"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Fel: endPort är null i SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
+        <location filename="../../Scene/Commands.cpp" line="605"/>
         <source>Error trying to undo %1</source>
         <translation>Fel vid försök att ångra %1</translation>
     </message>
@@ -2805,12 +2805,12 @@ Föreslaget namn:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="961"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Växla Sanningstabell-utdata vid position: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
+        <location filename="../../Scene/Commands.cpp" line="970"/>
         <source>Could not find truthtable element!</source>
         <translation>Kunde inte hitta sanningstabell-element!</translation>
     </message>
@@ -2844,7 +2844,7 @@ Föreslaget namn:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1080"/>
+        <location filename="../../Scene/Commands.cpp" line="1076"/>
         <source>Update %1 IC blobs</source>
         <translation>Uppdatera %1 IC-blobbar</translation>
     </message>
@@ -2852,7 +2852,7 @@ Föreslaget namn:</translation>
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="444"/>
+        <location filename="../../Scene/Commands.cpp" line="440"/>
         <source>Update %1 elements</source>
         <translation>Uppdatera %1 element</translation>
     </message>

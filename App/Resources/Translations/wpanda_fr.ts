@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="871"/>
+        <location filename="../../Scene/Commands.cpp" line="867"/>
         <source>Change input size to %1</source>
         <translation>Changer la taille d&apos;entrée à %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="872"/>
+        <location filename="../../Scene/Commands.cpp" line="868"/>
         <source>Change output size to %1</source>
         <translation>Changer la taille de sortie à %1</translation>
     </message>
@@ -641,7 +641,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="311"/>
+        <location filename="../../Scene/Commands.cpp" line="307"/>
         <source>Delete %1 elements</source>
         <translation>Supprimer %1 éléments</translation>
     </message>
@@ -1190,7 +1190,7 @@ Chaque canal sans fil doit avoir un label unique.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="810"/>
+        <location filename="../../Scene/Commands.cpp" line="806"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Retourner %1 éléments dans l&apos;axe %2</translation>
     </message>
@@ -2385,7 +2385,7 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="639"/>
+        <location filename="../../Scene/Commands.cpp" line="635"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformer %1 éléments en %2</translation>
     </message>
@@ -2393,7 +2393,7 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="404"/>
+        <location filename="../../Scene/Commands.cpp" line="400"/>
         <source>Move elements</source>
         <translation>Déplacer les éléments</translation>
     </message>
@@ -2586,7 +2586,7 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1024"/>
+        <location filename="../../Scene/Commands.cpp" line="1020"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Enregistrer le blob &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1043"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Supprimer le blob « %1 »</translation>
     </message>
@@ -2602,7 +2602,7 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="336"/>
+        <location filename="../../Scene/Commands.cpp" line="332"/>
         <source>Rotate %1 degrees</source>
         <translation>Pivoter de %1 degrés</translation>
     </message>
@@ -2733,32 +2733,32 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
+        <location filename="../../Scene/Commands.cpp" line="509"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Ports de connexion invalides dans le constructeur SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
+        <location filename="../../Scene/Commands.cpp" line="515"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Éléments graphiques invalides dans le constructeur SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="542"/>
+        <location filename="../../Scene/Commands.cpp" line="538"/>
         <source>Wire split</source>
         <translation>Division de fil</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
+        <location filename="../../Scene/Commands.cpp" line="553"/>
         <source>Error trying to redo %1</source>
         <translation>Erreur lors de la tentative de refaire %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
+        <location filename="../../Scene/Commands.cpp" line="576"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Erreur : endPort est null dans SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
+        <location filename="../../Scene/Commands.cpp" line="605"/>
         <source>Error trying to undo %1</source>
         <translation>Erreur lors de la tentative d&apos;annuler %1</translation>
     </message>
@@ -2805,12 +2805,12 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="961"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Basculer la sortie de la table de vérité à la position : %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
+        <location filename="../../Scene/Commands.cpp" line="970"/>
         <source>Could not find truthtable element!</source>
         <translation>Impossible de trouver l&apos;élément de table de vérité !</translation>
     </message>
@@ -2844,7 +2844,7 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1080"/>
+        <location filename="../../Scene/Commands.cpp" line="1076"/>
         <source>Update %1 IC blobs</source>
         <translation>Mettre à jour %1 blobs CI</translation>
     </message>
@@ -2852,7 +2852,7 @@ Nom suggéré&#xa0;:</translation>
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="444"/>
+        <location filename="../../Scene/Commands.cpp" line="440"/>
         <source>Update %1 elements</source>
         <translation>Mettre à jour %1 éléments</translation>
     </message>
