@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="871"/>
+        <location filename="../../Scene/Commands.cpp" line="867"/>
         <source>Change input size to %1</source>
         <translation>Bemenet méretének megváltoztatása %1-re</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="872"/>
+        <location filename="../../Scene/Commands.cpp" line="868"/>
         <source>Change output size to %1</source>
         <translation>Kimenet méretének megváltoztatása %1-re</translation>
     </message>
@@ -641,7 +641,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="311"/>
+        <location filename="../../Scene/Commands.cpp" line="307"/>
         <source>Delete %1 elements</source>
         <translation>%1 elem törlése</translation>
     </message>
@@ -1190,7 +1190,7 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="810"/>
+        <location filename="../../Scene/Commands.cpp" line="806"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%1 elem tükrözése %2 tengely mentén</translation>
     </message>
@@ -2385,7 +2385,7 @@ Javasolt név:</translation>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="639"/>
+        <location filename="../../Scene/Commands.cpp" line="635"/>
         <source>Morph %1 elements to %2</source>
         <translation>%1 elem átalakítása %2-re</translation>
     </message>
@@ -2393,7 +2393,7 @@ Javasolt név:</translation>
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="404"/>
+        <location filename="../../Scene/Commands.cpp" line="400"/>
         <source>Move elements</source>
         <translation>Elemek mozgatása</translation>
     </message>
@@ -2586,7 +2586,7 @@ Javasolt név:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1024"/>
+        <location filename="../../Scene/Commands.cpp" line="1020"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Blob regisztrálása: &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Javasolt név:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1043"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>„%1” blob eltávolítása</translation>
     </message>
@@ -2602,7 +2602,7 @@ Javasolt név:</translation>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="336"/>
+        <location filename="../../Scene/Commands.cpp" line="332"/>
         <source>Rotate %1 degrees</source>
         <translation>%1 fokos forgatás</translation>
     </message>
@@ -2733,32 +2733,32 @@ Javasolt név:</translation>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
+        <location filename="../../Scene/Commands.cpp" line="509"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Érvénytelen kapcsolódási portok a SplitCommand konstruktorban</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
+        <location filename="../../Scene/Commands.cpp" line="515"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Érvénytelen grafikus elemek a SplitCommand konstruktorban</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="542"/>
+        <location filename="../../Scene/Commands.cpp" line="538"/>
         <source>Wire split</source>
         <translation>Vezeték szétválasztása</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
+        <location filename="../../Scene/Commands.cpp" line="553"/>
         <source>Error trying to redo %1</source>
         <translation>Hiba a(z) %1 újbóli végrehajtása közben</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
+        <location filename="../../Scene/Commands.cpp" line="576"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Hiba: az endPort null a SplitCommand::redo() függvényben</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
+        <location filename="../../Scene/Commands.cpp" line="605"/>
         <source>Error trying to undo %1</source>
         <translation>Hiba a(z) %1 visszavonása közben</translation>
     </message>
@@ -2805,12 +2805,12 @@ Javasolt név:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="961"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Igazságtábla kimenet váltása a(z) %1 pozícióban</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
+        <location filename="../../Scene/Commands.cpp" line="970"/>
         <source>Could not find truthtable element!</source>
         <translation>Nem sikerült megtalálni az igazságtábla elemet!</translation>
     </message>
@@ -2844,7 +2844,7 @@ Javasolt név:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1080"/>
+        <location filename="../../Scene/Commands.cpp" line="1076"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 IC blob frissítése</translation>
     </message>
@@ -2852,7 +2852,7 @@ Javasolt név:</translation>
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="444"/>
+        <location filename="../../Scene/Commands.cpp" line="440"/>
         <source>Update %1 elements</source>
         <translation>%1 elem frissítése</translation>
     </message>

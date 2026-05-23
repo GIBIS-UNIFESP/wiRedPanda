@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="871"/>
+        <location filename="../../Scene/Commands.cpp" line="867"/>
         <source>Change input size to %1</source>
         <translation>इनपुट आकार %1 में बदलें</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="872"/>
+        <location filename="../../Scene/Commands.cpp" line="868"/>
         <source>Change output size to %1</source>
         <translation>आउटपुट आकार को %1 में बदलें</translation>
     </message>
@@ -641,7 +641,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="311"/>
+        <location filename="../../Scene/Commands.cpp" line="307"/>
         <source>Delete %1 elements</source>
         <translation>%1 तत्व डिलीट करें</translation>
     </message>
@@ -1190,7 +1190,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="810"/>
+        <location filename="../../Scene/Commands.cpp" line="806"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>अक्ष %2 में %1 तत्वों को फ़्लिप करें</translation>
     </message>
@@ -2385,7 +2385,7 @@ Suggested name:</source>
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="639"/>
+        <location filename="../../Scene/Commands.cpp" line="635"/>
         <source>Morph %1 elements to %2</source>
         <translation>%1 तत्वों को %2 में मोर्फ</translation>
     </message>
@@ -2393,7 +2393,7 @@ Suggested name:</source>
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="404"/>
+        <location filename="../../Scene/Commands.cpp" line="400"/>
         <source>Move elements</source>
         <translation>तत्व स्थानांतरित करें</translation>
     </message>
@@ -2586,7 +2586,7 @@ Suggested name:</source>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1024"/>
+        <location filename="../../Scene/Commands.cpp" line="1020"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>ब्लॉब पंजीकृत करें &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Suggested name:</source>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1043"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>blob &quot;%1&quot; हटाएँ</translation>
     </message>
@@ -2602,7 +2602,7 @@ Suggested name:</source>
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="336"/>
+        <location filename="../../Scene/Commands.cpp" line="332"/>
         <source>Rotate %1 degrees</source>
         <translation>%1 डिग्री रोटेट करें</translation>
     </message>
@@ -2733,32 +2733,32 @@ Suggested name:</source>
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="513"/>
+        <location filename="../../Scene/Commands.cpp" line="509"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>SplitCommand कन्स्ट्रक्टर में अमान्य कनेक्शन पोर्ट</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="519"/>
+        <location filename="../../Scene/Commands.cpp" line="515"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>SplitCommand कन्स्ट्रक्टर में अमान्य ग्राफिक तत्व</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="542"/>
+        <location filename="../../Scene/Commands.cpp" line="538"/>
         <source>Wire split</source>
         <translation>वायर विभाजन</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="557"/>
+        <location filename="../../Scene/Commands.cpp" line="553"/>
         <source>Error trying to redo %1</source>
         <translation>%1 को फिर से करने में त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="580"/>
+        <location filename="../../Scene/Commands.cpp" line="576"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>त्रुटि: SplitCommand::redo() में endPort null है</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="609"/>
+        <location filename="../../Scene/Commands.cpp" line="605"/>
         <source>Error trying to undo %1</source>
         <translation>%1 को पूर्ववत करने में त्रुटि</translation>
     </message>
@@ -2805,12 +2805,12 @@ Suggested name:</source>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="961"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>स्थिति %1 पर TruthTable आउटपुट टॉगल करें</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="974"/>
+        <location filename="../../Scene/Commands.cpp" line="970"/>
         <source>Could not find truthtable element!</source>
         <translation>सत्य तालिका तत्व नहीं मिला!</translation>
     </message>
@@ -2844,7 +2844,7 @@ Suggested name:</source>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1080"/>
+        <location filename="../../Scene/Commands.cpp" line="1076"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 IC ब्लॉब अपडेट करें</translation>
     </message>
@@ -2852,7 +2852,7 @@ Suggested name:</source>
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="444"/>
+        <location filename="../../Scene/Commands.cpp" line="440"/>
         <source>Update %1 elements</source>
         <translation>%1 तत्व अपडेट करें</translation>
     </message>
