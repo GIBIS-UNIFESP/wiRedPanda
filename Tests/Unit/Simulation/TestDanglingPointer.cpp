@@ -315,6 +315,58 @@ void TestDanglingPointer::hardening_deleteEditedConnectionMustUseSimulationBlock
              "the in-progress wire ever ended up in Simulation::m_connections.");
 }
 
+// WIREDPANDA-JD — Simulation::initialize() must exclude in-progress wires
+// (connections with only one port set). Without this filter, a re-initialize
+// while a wire is being drawn adds the in-progress wire to m_connections.
+// A subsequent cancel (deleteEditedConnection) frees it without rebuilding,
+// leaving a dangling pointer that crashes on the next simulation tick.
+void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
+{
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *sim = scene->simulation();
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->addItem(conn);
+
+    sim->initialize();
+    QVERIFY(sim->m_initialized);
+    QCOMPARE(sim->m_connections.size(), 1);
+    QCOMPARE(sim->m_connections.first(), conn);
+
+    // Simulate ConnectionManager::startFromOutput: create an in-progress wire
+    // with only startPort set (no endPort — the user is still dragging it).
+    auto *inProgressWire = new QNEConnection();
+    inProgressWire->setStartPort(sw->outputPort());
+    scene->addItem(inProgressWire);
+
+    // Re-initialize (simulates any command that calls setCircuitUpdateRequired
+    // while the user is drawing a wire — e.g. undo/redo, IC hot-reload).
+    sim->initialize();
+
+    // The in-progress wire must NOT appear in m_connections. Pre-fix,
+    // initialize() adds all QNEConnections unconditionally, so this
+    // assertion fails: m_connections.size() == 2.
+    QVERIFY2(sim->m_connections.size() == 1,
+             qPrintable(QString("initialize() picked up an in-progress wire "
+                                "(no endPort) into m_connections: expected 1, "
+                                "got %1")
+                            .arg(sim->m_connections.size())));
+
+    QVERIFY(!sim->m_connections.contains(inProgressWire));
+
+    // Clean up the in-progress wire
+    scene->removeItem(inProgressWire);
+    delete inProgressWire;
+}
+
 // ==========================================================================
 // Crash-triggering tests — these SIGSEGV pre-fix. Kept at the end so they
 // don't prevent the assertion tests above from reporting.
@@ -444,6 +496,50 @@ void TestDanglingPointer::integration_simulationTickAfterResetMustNotCrash()
     ic->m_sortedInternalElements.insert(mid, nullptr);
 
     ws.scene()->simulation()->update();
+    QVERIFY(true);
+}
+
+// WIREDPANDA-JD — full crash reproduction. An in-progress wire (startPort
+// only, no endPort) is added to the scene. A re-initialize picks it up
+// into Simulation::m_connections. The wire is then deleted (simulating
+// cancel/deleteEditedConnection), leaving a dangling pointer.  The next
+// update() dereferences the freed memory — SIGSEGV pre-fix.
+void TestDanglingPointer::jd_cancelledWireMustNotLeaveDanglingPointer()
+{
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *sim = scene->simulation();
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->addItem(conn);
+
+    sim->initialize();
+    QVERIFY(sim->m_initialized);
+    sim->setVisualThrottleEnabled(false);
+
+    // Add an in-progress wire (startPort only) to the scene.
+    auto *inProgressWire = new QNEConnection();
+    inProgressWire->setStartPort(sw->outputPort());
+    scene->addItem(inProgressWire);
+
+    // Re-initialize — picks up the in-progress wire into m_connections.
+    sim->initialize();
+
+    // Delete the in-progress wire (mirrors deleteEditedConnection's bare delete).
+    scene->removeItem(inProgressWire);
+    delete inProgressWire;
+
+    // Pre-fix: m_connections now holds a dangling pointer to freed memory.
+    // The next update() iterates m_connections, reads connection->startPort()
+    // from the freed object, and crashes with EXCEPTION_ACCESS_VIOLATION_READ.
+    sim->update();
     QVERIFY(true);
 }
 

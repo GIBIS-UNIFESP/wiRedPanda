@@ -59,6 +59,13 @@ private slots:
     /// Source-level check, same shape as bug6.
     void hardening_deleteEditedConnectionMustUseSimulationBlocker();
 
+    /// WIREDPANDA-JD — Simulation::initialize() must skip in-progress
+    /// wires (connections without both startPort and endPort). Without
+    /// this filter, a re-initialize while a wire is being drawn adds
+    /// it to m_connections; a subsequent cancel/delete leaves a dangling
+    /// pointer that crashes on the next simulation tick.
+    void jd_initializeMustSkipIncompleteConnections();
+
     // --- Crash-triggering tests (process dies pre-fix) ---------------
 
     /// Bug 8 — iterativeSettle() iterates without null checks.
@@ -91,5 +98,11 @@ private slots:
     /// at freed memory — the upstream necessary condition for the
     /// FH/EW/G1/GP/HC paint-time _purecall family.
     void hcDrainConnectionsMustCleanRegistry();
+
+    /// WIREDPANDA-JD — full crash reproduction. An in-progress wire
+    /// (startPort only) enters m_connections via initialize(), is then
+    /// deleted without rebuilding the simulation, and the next update()
+    /// dereferences the dangling pointer.
+    void jd_cancelledWireMustNotLeaveDanglingPointer();
 };
 
