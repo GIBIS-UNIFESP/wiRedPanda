@@ -50,13 +50,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, windows-2025-vs2026]
-        qt: [6.2.4, 6.5.3, 6.8.3, 6.9.3]
+        qt: [6.8.3, 6.9.3]
         cmake_args: ['']
         include:
           - { os: ubuntu-24.04, qt: '6.9.3', cmake_args: '-DENABLE_UNITY=OFF -DENABLE_PCH=OFF' }
           - { os: ubuntu-24.04, qt: '6.9.3', cmake_args: '-DUNITY_BUILD_BATCH_SIZE=1000' }
-          - { os: macos-15, qt: '6.2.4', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
-          - { os: macos-15, qt: '6.5.3', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
           - { os: macos-15, qt: '6.8.3', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
           - { os: macos-26, qt: '6.9.3', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
           - { os: ubuntu-24.04-arm, qt: '6.9.3', cmake_args: '', qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
