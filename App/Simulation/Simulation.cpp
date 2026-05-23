@@ -294,7 +294,7 @@ bool Simulation::initialize()
 
         if (item->type() == QNEConnection::Type) {
             auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
-            if (connection) {
+            if (connection && connection->startPort() && connection->endPort()) {
                 m_connections.append(connection);
             }
         }

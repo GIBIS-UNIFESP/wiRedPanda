@@ -303,10 +303,6 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
     : QUndoCommand(parent)
     , m_scene(scene)
 {
-    SimulationBlocker blocker(m_scene->simulation());
-    // Unlike AddItemsCommand, the constructor only captures IDs — it does NOT delete yet.
-    // Deletion happens in redo() so that QUndoStack::push() triggers the first delete,
-    // keeping the constructor side-effect-free for safe exception handling.
     const auto items_ = CommandUtils::loadList(items, m_ids, m_otherIds);
     setText(tr("Delete %1 elements").arg(items_.size()));
 }
