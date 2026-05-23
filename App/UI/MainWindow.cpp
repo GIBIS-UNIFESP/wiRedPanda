@@ -995,7 +995,7 @@ void MainWindow::on_actionAboutQt_triggered()
 
 void MainWindow::on_actionReportTranslationError_triggered()
 {
-    Application::guardedSlot(this, [this] {
+    Application::guardedSlot(this, [] {
         QDesktopServices::openUrl(QUrl("https://hosted.weblate.org/projects/wiredpanda/wiredpanda"));
     });
 }
