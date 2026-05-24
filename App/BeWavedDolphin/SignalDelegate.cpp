@@ -12,20 +12,57 @@ SignalDelegate::SignalDelegate(QObject *parent)
     loadPixmaps();
 }
 
+namespace {
+
+QPixmap createWaveformPixmap(const bool isHigh, const bool hasEdge, const QColor &color)
+{
+    constexpr int kWidth  = 100;
+    constexpr int kHeight = 38;
+    constexpr qreal kYScale = static_cast<qreal>(kHeight) / 30.0;
+
+    QPixmap pixmap(kWidth, kHeight);
+    pixmap.fill(Qt::transparent);
+
+    QPainter painter(&pixmap);
+    painter.setRenderHint(QPainter::Antialiasing, false);
+
+    QColor shadow(color);
+    shadow.setAlphaF(0.5);
+
+    if (isHigh) {
+        painter.fillRect(QRectF(0, 12.0 * kYScale, kWidth, 18.0 * kYScale), shadow);
+    } else if (hasEdge) {
+        painter.fillRect(QRectF(0, 22.0 * kYScale, kWidth, 8.0 * kYScale), shadow);
+    } else {
+        painter.fillRect(QRectF(0, 24.0 * kYScale, kWidth, 6.0 * kYScale), shadow);
+    }
+
+    const qreal lineY = (isHigh ? 8.0 : 20.0) * kYScale;
+    painter.fillRect(QRectF(0, lineY, kWidth, 4.0 * kYScale), color);
+
+    if (hasEdge) {
+        painter.fillRect(QRectF(0, 8.0 * kYScale, 4.0, 16.0 * kYScale), color);
+    }
+
+    return pixmap;
+}
+
+} // anonymous namespace
+
 void SignalDelegate::loadPixmaps()
 {
-    // Pre-render waveform segment SVGs to pixmaps once at startup.
-    // Green = output rows, Blue = input rows. 100x38 is the baseline cell size;
-    // paint() stretches these pixmaps to fill the actual cell at render time.
-    m_lowGreen     = QPixmap(":/Interface/Dolphin/low_green.svg").scaled(100, 38);
-    m_highGreen    = QPixmap(":/Interface/Dolphin/high_green.svg").scaled(100, 38);
-    m_fallingGreen = QPixmap(":/Interface/Dolphin/falling_green.svg").scaled(100, 38);
-    m_risingGreen  = QPixmap(":/Interface/Dolphin/rising_green.svg").scaled(100, 38);
+    const QColor green(0x00, 0x80, 0x00);
+    const QColor blue(0x75, 0x8E, 0xFF);
 
-    m_lowBlue     = QPixmap(":/Interface/Dolphin/low_blue.svg").scaled(100, 38);
-    m_highBlue    = QPixmap(":/Interface/Dolphin/high_blue.svg").scaled(100, 38);
-    m_fallingBlue = QPixmap(":/Interface/Dolphin/falling_blue.svg").scaled(100, 38);
-    m_risingBlue  = QPixmap(":/Interface/Dolphin/rising_blue.svg").scaled(100, 38);
+    m_lowGreen     = createWaveformPixmap(false, false, green);
+    m_highGreen    = createWaveformPixmap(true,  false, green);
+    m_risingGreen  = createWaveformPixmap(true,  true,  green);
+    m_fallingGreen = createWaveformPixmap(false, true,  green);
+
+    m_lowBlue      = createWaveformPixmap(false, false, blue);
+    m_highBlue     = createWaveformPixmap(true,  false, blue);
+    m_risingBlue   = createWaveformPixmap(true,  true,  blue);
+    m_fallingBlue  = createWaveformPixmap(false, true,  blue);
 }
 
 QPixmap SignalDelegate::pixmapFor(const int value, const bool isInput, const bool hasPrev, const int prevValue) const
