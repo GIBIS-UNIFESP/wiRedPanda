@@ -262,6 +262,8 @@ private:
     void on_actionFullscreen_triggered();
     void on_actionGates_triggered(const bool checked);
     void on_actionLabelsUnderIcons_triggered(const bool checked);
+    void on_actionOrthogonalWires_triggered(const bool checked);
+    void on_actionOrganizeWires_triggered();
     void on_actionMute_triggered(const bool checked);
     void on_actionNew_triggered();
     void on_actionOpen_triggered();

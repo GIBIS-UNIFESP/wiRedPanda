@@ -154,6 +154,11 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionLabelsUnderIcons = new QAction(MainWindow);
     actionLabelsUnderIcons->setObjectName("actionLabelsUnderIcons");
     actionLabelsUnderIcons->setCheckable(true);
+    actionOrthogonalWires = new QAction(MainWindow);
+    actionOrthogonalWires->setObjectName("actionOrthogonalWires");
+    actionOrthogonalWires->setCheckable(true);
+    actionOrganizeWires = new QAction(MainWindow);
+    actionOrganizeWires->setObjectName("actionOrganizeWires");
     actionAboutThisVersion = new QAction(MainWindow);
     actionAboutThisVersion->setObjectName("actionAboutThisVersion");
     actionRestart = new QAction(MainWindow);
@@ -676,6 +681,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addAction(menuTheme->menuAction());
     menuView->addAction(actionFullscreen);
     menuView->addAction(actionLabelsUnderIcons);
+    menuView->addAction(actionOrthogonalWires);
+    menuEdit->addAction(actionOrganizeWires);
     menuTheme->addAction(actionSystemTheme);
     menuTheme->addAction(actionLightTheme);
     menuTheme->addAction(actionDarkTheme);
@@ -771,6 +778,8 @@ void MainWindowUi::retranslateUi()
     actionMute->setStatusTip(QCoreApplication::translate("MainWindow", "Mute/unmute circuit buzzers"));
     actionMute->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+M"));
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
+    actionOrthogonalWires->setText(QCoreApplication::translate("MainWindow", "Orthogonal wires"));
+    actionOrganizeWires->setText(QCoreApplication::translate("MainWindow", "Organize wires"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));
     actionRestart->setToolTip(QCoreApplication::translate("MainWindow", "Restart simulation."));
