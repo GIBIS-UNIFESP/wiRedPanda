@@ -1009,6 +1009,48 @@ QList<UpdateBlobCommand::ConnectionInfo> UpdateBlobCommand::captureConnections(c
     return connections;
 }
 
+// --- RouteWiresCommand ---
+
+RouteWiresCommand::RouteWiresCommand(const QVector<Entry> &entries, Scene *scene, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_entries(entries)
+    , m_scene(scene)
+{
+    setText(tr("Organize wires"));
+}
+
+void RouteWiresCommand::redo()
+{
+    apply(true);
+}
+
+void RouteWiresCommand::undo()
+{
+    apply(false);
+}
+
+void RouteWiresCommand::apply(bool useNew)
+{
+    for (const auto &entry : m_entries) {
+        auto *conn = CommandUtils::findConn(m_scene, entry.connectionId);
+        if (!conn) {
+            continue;
+        }
+
+        if (useNew) {
+            conn->setWireMode(WireMode::Orthogonal);
+            conn->setWaypoints(entry.newWaypoints);
+        } else {
+            conn->setWireMode(entry.oldMode);
+            conn->setWaypoints(entry.oldWaypoints);
+        }
+
+        conn->updatePosFromPorts();
+    }
+
+    m_scene->setAutosaveRequired();
+}
+
 // --- RegisterBlobCommand ---
 
 RegisterBlobCommand::RegisterBlobCommand(const QString &blobName, const QByteArray &data, Scene *scene, QUndoCommand *parent)
