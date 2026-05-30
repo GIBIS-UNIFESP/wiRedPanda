@@ -192,30 +192,45 @@ if(EMSCRIPTEN)
     message(STATUS "WebAssembly build detected - Adding ASYNCIFY and optimization flags")
 endif()
 
-# FetchContent for external dependencies
-include(FetchContent)
+# External dependencies: nlohmann/json and json-schema-validator.
+#
+# By default these are fetched and built from source via FetchContent. Set
+# WIREDPANDA_USE_SYSTEM_JSON=ON to link against the libraries provided by the
+# system instead (e.g. Debian's nlohmann-json3-dev and
+# nlohmann-json-schema-validator-dev). This is required by distribution build
+# environments that forbid network access during the build. See issue #404.
+option(WIREDPANDA_USE_SYSTEM_JSON "Use system nlohmann/json and json-schema-validator instead of fetching them" OFF)
 
-# nlohmann/json for JSON schema validation
-FetchContent_Declare(
-    json
-    GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG v3.12.0
-    GIT_SHALLOW TRUE
-)
-FetchContent_MakeAvailable(json)
+if(WIREDPANDA_USE_SYSTEM_JSON)
+    find_package(nlohmann_json REQUIRED)
+    find_package(nlohmann_json_schema_validator REQUIRED)
+    message(STATUS "Using system nlohmann/json and json-schema-validator")
+else()
+    # FetchContent for external dependencies
+    include(FetchContent)
 
-# JSON Schema Validator for nlohmann/json
-FetchContent_Declare(
-    json-schema-validator
-    GIT_REPOSITORY https://github.com/pboettch/json-schema-validator.git
-    GIT_TAG 2.4.0
-    GIT_SHALLOW TRUE
-)
-FetchContent_MakeAvailable(json-schema-validator)
+    # nlohmann/json for JSON schema validation
+    FetchContent_Declare(
+        json
+        GIT_REPOSITORY https://github.com/nlohmann/json.git
+        GIT_TAG v3.12.0
+        GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(json)
 
-# Suppress warnings from json-schema-validator (third-party code)
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(nlohmann_json_schema_validator PRIVATE -w)
+    # JSON Schema Validator for nlohmann/json
+    FetchContent_Declare(
+        json-schema-validator
+        GIT_REPOSITORY https://github.com/pboettch/json-schema-validator.git
+        GIT_TAG 2.4.0
+        GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(json-schema-validator)
+
+    # Suppress warnings from json-schema-validator (third-party code)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(nlohmann_json_schema_validator PRIVATE -w)
+    endif()
 endif()
 
 include(CMakeSources.cmake)
@@ -331,13 +346,21 @@ endfunction()
 # ========= LIB ===================================
 
 add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
-target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator)
+# Use the namespaced json-schema-validator target: it is exported by both the
+# fetched build and the installed system package, whereas the unqualified
+# `nlohmann_json_schema_validator` name only exists in the fetched build.
+target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator::validator)
 
-# Treat external dependencies as system headers to suppress clazy warnings
-target_include_directories(wiredpanda_lib SYSTEM PUBLIC
-    ${CMAKE_BINARY_DIR}/_deps/json-src/include
-    ${CMAKE_BINARY_DIR}/_deps/json-schema-validator-src/src
-)
+# Treat external dependencies as system headers to suppress clazy warnings.
+# For system libraries the include directories already arrive as SYSTEM via the
+# imported targets' INTERFACE_INCLUDE_DIRECTORIES, so this only applies to the
+# fetched sources.
+if(NOT WIREDPANDA_USE_SYSTEM_JSON)
+    target_include_directories(wiredpanda_lib SYSTEM PUBLIC
+        ${CMAKE_BINARY_DIR}/_deps/json-src/include
+        ${CMAKE_BINARY_DIR}/_deps/json-schema-validator-src/src
+    )
+endif()
 
 option(ENABLE_PCH "Enable precompiled headers for faster compilation" ON)
 if(ENABLE_PCH)
