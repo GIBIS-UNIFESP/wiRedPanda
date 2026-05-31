@@ -950,7 +950,7 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
     const int firstRow = sectionFirstRow(ranges);
     const int firstCol = sectionFirstColumn(ranges);
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-    stream << itemList.size();
+    stream << static_cast<qint64>(itemList.size());
 
     for (const auto &item : itemList) {
         const int data_ = m_model->index(item.row(), item.column()).data().toInt();
