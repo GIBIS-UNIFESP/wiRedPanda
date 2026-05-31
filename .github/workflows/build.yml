@@ -131,12 +131,104 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         name: build-logs-${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
+        # CMake 3.26+ writes CMakeConfigureLog.yaml (the old CMakeOutput.log /
+        # CMakeError.log no longer exist); compile errors stream to the step log.
         path: |
           build-release/CMakeCache.txt
-          build-release/CMakeFiles/CMakeOutput.log
-          build-release/CMakeFiles/CMakeError.log
+          build-release/CMakeFiles/CMakeConfigureLog.yaml
         retention-days: 7
 
     - name: MCP Integration Test
       run: |
         python3 MCP/Client/run_tests.py
+
+# =================================
+
+  # 32-bit (i386) coverage. Qt ships no 32-bit Linux binaries (neither the
+  # official installer nor aqtinstall / install-qt-action), and Ubuntu dropped
+  # Qt6 for i386 — only Debian still packages it. So we build inside a Debian
+  # i386 container using distro Qt; i386 runs natively on the amd64 runner
+  # kernel (no qemu). Checkout runs on the host because GitHub's Node is amd64
+  # and won't execute in an i386 userland; only the build + test run in the
+  # container. This guards against 32-bit-only regressions like #406, which the
+  # main matrix can't catch.
+  build-linux-32bit:
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    name: debian-i386 Qt6 (32-bit)
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: ccache
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/ccache-i386
+        key: i386-ccache-${{ github.sha }}
+        restore-keys: i386-ccache-
+
+    # qt6-svg-plugins provides the SVG image-format plugin (loaded at runtime by
+    # QPixmap); it is NOT pulled in by qt6-svg-dev and the suite aborts without
+    # it. qt6-image-formats-plugins mirrors the qtimageformats module the matrix
+    # installs. Tests run as a non-root user so the filesystem-permission tests
+    # behave like a normal build (root bypasses permission bits). GUI tests are
+    # excluded (-LE gui) to match the other CI jobs; the offscreen platform still
+    # applies to the non-GUI tests that instantiate a QApplication.
+    - name: Build & test in Debian i386 container
+      timeout-minutes: 20
+      run: |
+        # Build dir and ccache live on the host (under $RUNNER_TEMP) and are
+        # bind-mounted into the container: the build dir so artifacts survive the
+        # --rm container for failure upload, the ccache dir so actions/cache (the
+        # step above) persists it across runs. CMake auto-detects ccache as the
+        # compiler launcher; same CCACHE_SLOPPINESS as the matrix job for unity/PCH.
+        WORK_DIR="$RUNNER_TEMP/work-i386"
+        CACHE_DIR="$RUNNER_TEMP/ccache-i386"
+        mkdir -p "$WORK_DIR" "$CACHE_DIR"
+        docker run --rm -i \
+          -v "$PWD":/src \
+          -v "$WORK_DIR":/work \
+          -v "$CACHE_DIR":/ccache \
+          i386/debian:trixie bash -s <<'EOF'
+        set -eu
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get update -qq
+        apt-get install -y --no-install-recommends \
+          build-essential cmake ninja-build ccache pkg-config git ca-certificates \
+          qt6-base-dev qt6-multimedia-dev qt6-svg-dev qt6-svg-plugins \
+          qt6-image-formats-plugins libgl1-mesa-dev libglu1-mesa-dev
+        # Run as a non-root user that OWNS the checkout (matches /src's uid), like
+        # the other CI jobs do: some tests write into the source tree (e.g. TestIC
+        # saves into the examples dir), and non-root keeps the permission tests
+        # (TestWorkspace) honest.
+        useradd -o -u "$(stat -c %u /src)" -m builder
+        chown builder /work /ccache
+        su builder -c '
+          set -eu
+          export CCACHE_DIR=/ccache
+          export CCACHE_SLOPPINESS=pch_defines,time_macros,include_file_ctime,include_file_mtime
+          git config --global --add safe.directory /src
+          cmake -S /src -B /work -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build /work
+          cd /work
+          export QT_QPA_PLATFORM=offscreen QT_FORCE_STDERR_LOGGING=1
+          ctest -V -j$(nproc) -LE gui
+        '
+        EOF
+
+    - name: Upload build artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: build-logs-debian-i386
+        # CMake 3.26+ writes CMakeConfigureLog.yaml (the old CMakeOutput.log /
+        # CMakeError.log no longer exist); compile errors stream to the step log.
+        path: |
+          ${{ runner.temp }}/work-i386/CMakeCache.txt
+          ${{ runner.temp }}/work-i386/CMakeFiles/CMakeConfigureLog.yaml
+        retention-days: 7
