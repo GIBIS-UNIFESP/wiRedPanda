@@ -32,7 +32,7 @@ jobs:
         modules: qtmultimedia qtimageformats
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
+      uses: hendrikmuhs/ccache-action@9e72c68cf32eb51fa30568928aca57ff79155270 # main
       with:
         key: coverage-${{ runner.os }}
 

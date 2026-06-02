@@ -102,7 +102,7 @@ jobs:
         arch: ${{ matrix.qt_arch }}
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@13c5b28e4a76834446e40f66722377da0514d5a0 # main
+      uses: hendrikmuhs/ccache-action@9e72c68cf32eb51fa30568928aca57ff79155270 # main
       with:
         key: ${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
 
