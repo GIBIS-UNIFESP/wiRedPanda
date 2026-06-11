@@ -821,3 +821,42 @@ void TestCommands::testUpdateCommand()
     undoStack->redo();
     QCOMPARE(andGate->label(), newLabel);
 }
+
+void TestCommands::testToggleTruthTableOutputCommandBounds()
+{
+    // Regression test (F17): the command is the model boundary shared by the
+    // UI and the MCP server, and undo() == redo(). The truth-table key holds
+    // exactly 2048 bits; toggleBit on any position outside [0, 2048) is an
+    // out-of-bounds heap write in release builds. Out-of-range positions must
+    // throw instead.
+    //
+    // The throws are exercised by calling redo() directly rather than via
+    // QUndoStack::redo() — same macOS arm64 unwind limitation documented in
+    // testSplitCommandRedoThrowsBeforeAllocation.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *truthTable = new TruthTable();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{truthTable}, scene));
+
+    // A valid position toggles normally (and undo toggles it back).
+    scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, 5, scene));
+    QVERIFY(truthTable->key().at(5));
+    scene->undoStack()->undo();
+    QVERIFY(!truthTable->key().at(5));
+
+    const auto expectThrow = [&](const int position) {
+        ToggleTruthTableOutputCommand command(truthTable, position, scene);
+        bool threw = false;
+        try {
+            command.redo();
+        } catch (const std::exception &) {
+            threw = true;
+        }
+        QVERIFY2(threw, qPrintable(QString("position %1 did not throw").arg(position)));
+    };
+
+    expectThrow(2048);
+    expectThrow(99999);
+    expectThrow(-1);
+}
