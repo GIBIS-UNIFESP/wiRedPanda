@@ -13,80 +13,6 @@
 #include <QVector>
 
 /**
- * \brief Iterative depth-first priority calculation for directed graphs.
- *
- * Assigns each node a priority equal to its longest path to a sink plus one.
- * Detects feedback loops internally to break cycles during traversal.
- *
- * \param elements       All nodes to process.
- * \param successors     Adjacency list (node -> its successors).
- * \param outPriorities  Output map filled with computed priorities.
- */
-template<typename T>
-void calculatePriorities(
-    const QVector<T *> &elements,
-    const QHash<T *, QVector<T *>> &successors,
-    QHash<T *, int> &outPriorities)
-{
-    QStack<T *> stack;
-    QSet<T *> inStack;
-
-    for (auto *element : elements) {
-        if (outPriorities.contains(element)) {
-            continue;
-        }
-
-        stack.push(element);
-        inStack.insert(element);
-
-        while (!stack.isEmpty()) {
-            auto *current = stack.top();
-
-            if (outPriorities.contains(current)) {
-                stack.pop();
-                inStack.remove(current);
-                continue;
-            }
-
-            bool allProcessed = true;
-            int maxSuccessorPriority = 0;
-            bool hasFeedbackLoop = false;
-
-            const auto it = successors.find(current);
-            if (it != successors.end()) {
-                for (auto *successor : *it) {
-                    if (!outPriorities.contains(successor)) {
-                        if (!inStack.contains(successor)) {
-                            stack.push(successor);
-                            inStack.insert(successor);
-                            allProcessed = false;
-                        } else {
-                            hasFeedbackLoop = true;
-                        }
-                    } else {
-                        maxSuccessorPriority = qMax(maxSuccessorPriority, outPriorities.value(successor));
-                    }
-                }
-            }
-
-            // Assign priority when all successors are computed, OR when a
-            // feedback loop is detected.  The early assignment on feedback is
-            // intentional: it gives feedback-loop nodes a *lower* priority
-            // (based only on already-computed successors) so the simulation
-            // processes them *after* their non-cyclic inputs.  Because
-            // LogicElement::updateLogic() reads live predecessor outputs,
-            // processing feedback nodes late ensures they see fresh values
-            // from the current iteration rather than stale ones.
-            if (allProcessed || hasFeedbackLoop) {
-                outPriorities[current] = maxSuccessorPriority + 1;
-                stack.pop();
-                inStack.remove(current);
-            }
-        }
-    }
-}
-
-/**
  * \brief Finds all nodes that participate in feedback loops (cycles).
  *
  * Uses Tarjan's iterative SCC algorithm.  Every node belonging to a
@@ -180,4 +106,177 @@ QSet<T *> findFeedbackNodes(
     }
 
     return feedbackNodes;
+}
+
+namespace PrioritiesInternal {
+
+/**
+ * \brief Legacy iterative DFS priority calculation, used for cyclic graphs only.
+ *
+ * Treats any successor that is pending on the explicit stack as a feedback
+ * edge and assigns the current node early, from already-computed successors
+ * only.  On cycle-free graphs this mis-classifies pending *siblings* as
+ * feedback and produces iteration-order-dependent priorities (see
+ * calculatePriorities below for the correct DAG path).  On cyclic graphs the
+ * resulting order is what the simulation's iterative settling and the
+ * gate-built latch circuits (SR/JK/D master-slave ICs) were built around:
+ * zero-delay latch races have no graph-derivable "correct" evaluation order,
+ * and changing the order flips which stable state a latch settles into from
+ * an undetermined start.  Keep this path byte-for-byte stable unless the
+ * settling semantics are redesigned.
+ */
+template<typename T>
+void legacyCalculatePriorities(
+    const QVector<T *> &elements,
+    const QHash<T *, QVector<T *>> &successors,
+    QHash<T *, int> &outPriorities)
+{
+    QStack<T *> stack;
+    QSet<T *> inStack;
+
+    for (auto *element : elements) {
+        if (outPriorities.contains(element)) {
+            continue;
+        }
+
+        stack.push(element);
+        inStack.insert(element);
+
+        while (!stack.isEmpty()) {
+            auto *current = stack.top();
+
+            if (outPriorities.contains(current)) {
+                stack.pop();
+                inStack.remove(current);
+                continue;
+            }
+
+            bool allProcessed = true;
+            int maxSuccessorPriority = 0;
+            bool hasFeedbackLoop = false;
+
+            const auto it = successors.find(current);
+            if (it != successors.end()) {
+                for (auto *successor : *it) {
+                    if (!outPriorities.contains(successor)) {
+                        if (!inStack.contains(successor)) {
+                            stack.push(successor);
+                            inStack.insert(successor);
+                            allProcessed = false;
+                        } else {
+                            hasFeedbackLoop = true;
+                        }
+                    } else {
+                        maxSuccessorPriority = qMax(maxSuccessorPriority, outPriorities.value(successor));
+                    }
+                }
+            }
+
+            // Assign priority when all successors are computed, OR when a
+            // feedback loop is detected.  The early assignment on feedback is
+            // intentional: it gives feedback-loop nodes a *lower* priority
+            // (based only on already-computed successors) so the simulation
+            // processes them *after* their non-cyclic inputs.  Because
+            // LogicElement::updateLogic() reads live predecessor outputs,
+            // processing feedback nodes late ensures they see fresh values
+            // from the current iteration rather than stale ones.
+            if (allProcessed || hasFeedbackLoop) {
+                outPriorities[current] = maxSuccessorPriority + 1;
+                stack.pop();
+                inStack.remove(current);
+            }
+        }
+    }
+}
+
+} // namespace PrioritiesInternal
+
+/**
+ * \brief Priority calculation for directed graphs.
+ *
+ * Assigns each node a priority equal to its longest path to a sink plus one;
+ * higher priority evaluates first (sources before sinks), so every element
+ * sees up-to-date predecessor outputs within a single simulation pass.
+ *
+ * Cycle-free graphs use an iterative DFS with proper post-order assignment:
+ * a node's priority is computed only after *all* of its successors have
+ * theirs, which makes priorities deterministic and independent of the
+ * iteration order of \p elements.  (The previous implementation mistook
+ * pending DFS siblings for feedback edges and could order a consumer at or
+ * above its producer on plain DAGs — and a pure DAG runs the non-settling
+ * fast path, so nothing masked the mis-order; an edge-triggered flip-flop
+ * could latch a stale value permanently.)
+ *
+ * Cyclic graphs keep the legacy ordering (see
+ * PrioritiesInternal::legacyCalculatePriorities): their single-pass order is
+ * not load-bearing for correctness because the simulation switches to
+ * iterative settling over *all* elements whenever feedback is present, and
+ * the legacy order is what the gate-built latch circuits settle correctly
+ * under.
+ *
+ * \param elements       All nodes to process.
+ * \param successors     Adjacency list (node -> its successors).
+ * \param outPriorities  Output map filled with computed priorities.
+ */
+template<typename T>
+void calculatePriorities(
+    const QVector<T *> &elements,
+    const QHash<T *, QVector<T *>> &successors,
+    QHash<T *, int> &outPriorities)
+{
+    if (!findFeedbackNodes(elements, successors).isEmpty()) {
+        PrioritiesInternal::legacyCalculatePriorities(elements, successors, outPriorities);
+        return;
+    }
+
+    // Cycle-free: two-phase iterative DFS (expand, then assign in post-order).
+    // On first visit a node pushes its unfinished successors and stays on the
+    // stack; when it surfaces again every successor pushed above it has been
+    // assigned (guaranteed acyclic), so its own priority is final.  A node
+    // reached from several parents may sit on the stack more than once — the
+    // duplicate pops in O(1) via the priority check — keeping the whole pass
+    // linear in nodes + edges.
+    QSet<T *> expanded;
+
+    for (auto *element : elements) {
+        if (outPriorities.contains(element)) {
+            continue;
+        }
+
+        QStack<T *> stack;
+        stack.push(element);
+
+        while (!stack.isEmpty()) {
+            auto *current = stack.top();
+
+            if (outPriorities.contains(current)) {
+                stack.pop();
+                continue;
+            }
+
+            const auto it = successors.constFind(current);
+
+            if (!expanded.contains(current)) {
+                expanded.insert(current);
+                if (it != successors.constEnd()) {
+                    for (auto *successor : *it) {
+                        if (!outPriorities.contains(successor)) {
+                            stack.push(successor);
+                        }
+                    }
+                }
+                continue;
+            }
+
+            int maxSuccessorPriority = 0;
+            if (it != successors.constEnd()) {
+                for (auto *successor : *it) {
+                    maxSuccessorPriority = qMax(maxSuccessorPriority, outPriorities.value(successor));
+                }
+            }
+
+            outPriorities[current] = maxSuccessorPriority + 1;
+            stack.pop();
+        }
+    }
 }
