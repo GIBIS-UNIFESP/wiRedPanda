@@ -199,6 +199,17 @@ void Demux::updateLogic()
     }
 
     const int selectValue = decodeSelectValue(1, numSelectLines);
+
+    // Mirror Mux: a select value that addresses no output (possible whenever
+    // the output count is not a power of two) is indeterminate routing — all
+    // outputs become Unknown instead of silently dropping the data.
+    if (selectValue >= outputSize()) {
+        for (int i = 0; i < outputSize(); i++) {
+            setOutputValue(i, Status::Unknown);
+        }
+        return;
+    }
+
     for (int i = 0; i < outputSize(); i++) {
         setOutputValue(i, (i == selectValue) ? data : Status::Inactive);
     }
