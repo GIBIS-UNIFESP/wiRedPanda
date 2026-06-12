@@ -1,0 +1,122 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Fresh distro build
+
+# Builds wiRedPanda from a *clean* distro image using only the packages the docs
+# tell users to apt-install. Its job is to catch package drift -- a Qt
+# dependency getting renamed or dropped from the apt repos (as libqt6svg6-dev
+# was) -- and to keep cmake_minimum_required honest. The main build.yml installs
+# a pinned Qt via aqtinstall on pre-provisioned runners, so it can detect
+# neither of those.
+on:
+  schedule:
+    # Mondays 07:00 UTC, staggered an hour after the CodeQL weekly run.
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    # Run immediately when the documented dependencies, the CMake floor, or this
+    # workflow itself change, so a bad edit is caught in the PR -- not next week.
+    paths:
+      - .github/workflows/fresh-deps.yml
+      - BUILD.md
+      - BUILD_es.md
+      - BUILD_pt_BR.md
+      - CONTRIBUTING.md
+      - DEVELOPER_GUIDE.md
+      - CMakeLists.txt
+      - CMakePresets.json
+
+concurrency:
+  group: fresh-deps-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Build on stock distro images with exactly the documented apt packages.
+  distro:
+    name: fresh ${{ matrix.image }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.image }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - ubuntu:24.04
+          - debian:trixie
+
+    steps:
+      - name: Install toolchain + checkout plumbing
+        run: |
+          set -eu
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y cmake ninja-build git ca-certificates
+
+      - name: Install the documented Qt dependencies (drift tripwire)
+        # The exact `apt install` line from BUILD.md's Debian/Ubuntu section. If
+        # any of these package names is renamed or removed, this step fails loud.
+        run: |
+          set -eu
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get install -y build-essential qt6-base-dev qt6-multimedia-dev qt6-svg-dev
+
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Configure & build (documented preset flow)
+        # On ubuntu:24.04 this proves the project builds on stock apt CMake (3.28)
+        # after the duplicate-link fix; debian:trixie exercises a newer CMake (3.31).
+        run: |
+          set -eu
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          cmake --preset release
+          cmake --build --preset release
+
+      - name: Smoke-run the binary headless
+        run: |
+          set -eu
+          export QT_QPA_PLATFORM=offscreen
+          ./build-release/wiredpanda --version
+
+  # Build at the project's declared cmake_minimum_required to keep it honest.
+  minimum-cmake:
+    name: minimum CMake (3.27)
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    container: ubuntu:24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Install Qt + pin CMake to the declared minimum
+        # Keep this version in sync with cmake_minimum_required in CMakeLists.txt.
+        # If the project stops configuring/building here, the declared floor is a
+        # lie -- raise it to the lowest version this job passes at.
+        run: |
+          set -eu
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y build-essential ninja-build git ca-certificates python3-pip \
+            qt6-base-dev qt6-multimedia-dev qt6-svg-dev
+          python3 -m pip install --break-system-packages 'cmake==3.27.*'
+          cmake --version
+          cmake --version | head -1 | grep -q ' 3\.27\.' || { echo "ERROR: expected pinned CMake 3.27.x"; exit 1; }
+
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Configure & build at the declared minimum CMake
+        run: |
+          set -eu
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          cmake --preset release
+          cmake --build --preset release
