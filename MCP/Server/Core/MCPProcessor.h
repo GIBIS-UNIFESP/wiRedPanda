@@ -20,16 +20,21 @@ class ElementHandler;
 class FileHandler;
 class MCPValidator;
 class MainWindow;
+class QSocketNotifier;
 class ServerInfoHandler;
 class SimulationHandler;
 class ThemeHandler;
 
+#ifdef Q_OS_WIN
 /**
  * \class StdinReader
- * \brief Background thread for non-blocking stdin reading
+ * \brief Background thread for blocking stdin reading (Windows only).
  *
- * Reads stdin in a dedicated thread and emits signals when data is available.
- * This replaces the 1ms polling timer with true event-driven I/O.
+ * Windows console/pipe stdin cannot be watched by QSocketNotifier, so on
+ * Windows a dedicated thread blocks in std::getline and emits a line at a
+ * time. On stop, MCPProcessor closes the stdin handle to unblock the parked
+ * read so run() returns cleanly (no QThread::terminate()). POSIX uses a
+ * main-thread QSocketNotifier instead and does not build this class.
  */
 class StdinReader : public QThread
 {
@@ -48,14 +53,16 @@ signals:
 private:
     volatile bool m_stopRequested = false;
 };
+#endif
 
 /**
  * \class MCPProcessor
  * \brief Model Context Protocol processor for wiRedPanda
  *
  * Provides simple, elegant programmatic control of circuit design and simulation
- * through stdin/stdout JSON command processing. Uses QTimer-based polling for
- * reliable cross-platform stdin processing.
+ * through stdin/stdout JSON command processing. stdin is read event-driven: a
+ * main-thread QSocketNotifier on POSIX, a dedicated StdinReader thread on
+ * Windows. A closed stdin (EOF) shuts the processor down cleanly.
  */
 class MCPProcessor : public QObject
 {
@@ -70,6 +77,10 @@ public:
 
 private slots:
     void processIncomingData(const QString &line);
+#ifndef Q_OS_WIN
+    /// QSocketNotifier::activated handler: drains stdin, dispatches whole lines.
+    void onStdinReadable();
+#endif
 
 private:
     void processCommand(const QString &line);
@@ -77,9 +88,13 @@ private:
 
     MainWindow *m_mainWindow;
     std::unique_ptr<MCPValidator> m_validator;
-    QTextStream m_stdin;
     QTextStream m_stdout;
-    StdinReader *m_stdinReader;
+#ifdef Q_OS_WIN
+    StdinReader *m_stdinReader = nullptr;
+#else
+    QSocketNotifier *m_stdinNotifier = nullptr;
+    QByteArray m_stdinBuffer;
+#endif
 
     // Specialized handlers for different command domains
     std::unique_ptr<ServerInfoHandler> m_serverInfoHandler;

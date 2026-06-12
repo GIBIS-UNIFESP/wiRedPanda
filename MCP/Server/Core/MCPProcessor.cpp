@@ -23,11 +23,18 @@
 #include "MCP/Server/Handlers/SimulationHandler.h"
 #include "MCP/Server/Handlers/ThemeHandler.h"
 
-#ifdef _WIN32
-#define fileno _fileno
+#ifdef Q_OS_WIN
+#  include <windows.h>
+#else
+#  include <cerrno>
+#  include <fcntl.h>
+#  include <unistd.h>
+
+#  include <QSocketNotifier>
 #endif
 
-// StdinReader implementation
+#ifdef Q_OS_WIN
+// StdinReader implementation (Windows only — see header).
 StdinReader::StdinReader(QObject *parent)
     : QThread(parent)
 {
@@ -40,24 +47,22 @@ void StdinReader::requestStop()
 
 void StdinReader::run()
 {
+    // Blocks in getline; MCPProcessor::stopProcessing closes the stdin handle
+    // to unblock it, so the loop exits on EOF without QThread::terminate().
     std::string line;
     while (!m_stopRequested && std::getline(std::cin, line)) {
         if (!line.empty()) {
             emit dataReceived(QString::fromStdString(line));
         }
-
-        // Small yield to allow graceful shutdown
-        QThread::msleep(1);
     }
 }
+#endif
 
 MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     : QObject(parent)
     , m_mainWindow(mainWindow)
     , m_validator(std::make_unique<MCPValidator>(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json")))
-    , m_stdin(stdin)
     , m_stdout(stdout)
-    , m_stdinReader(new StdinReader(this))
     , m_serverInfoHandler(std::make_unique<ServerInfoHandler>(mainWindow, m_validator.get()))
     , m_fileHandler(std::make_unique<FileHandler>(mainWindow, m_validator.get()))
     , m_elementHandler(std::make_unique<ElementHandler>(mainWindow, m_validator.get()))
@@ -96,9 +101,6 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     addRoutes(m_themeHandler.get(), {
         "get_theme", "set_theme", "get_effective_theme"
     });
-
-    // Set up event-driven stdin reading
-    connect(m_stdinReader, &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData);
 }
 
 MCPProcessor::~MCPProcessor()
@@ -109,21 +111,87 @@ MCPProcessor::~MCPProcessor()
 
 void MCPProcessor::startProcessing()
 {
-    // Start processing without sending automatic messages - follow MCP protocol
+    // Start processing without sending automatic messages - follow MCP protocol.
+#ifdef Q_OS_WIN
+    m_stdinReader = new StdinReader(this);
+    connect(m_stdinReader, &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData);
+    // EOF (client closed stdin) ends the thread — shut the processor down too.
+    connect(m_stdinReader, &StdinReader::finished, qApp, &QCoreApplication::quit);
     m_stdinReader->start();
+#else
+    // Event-driven, no thread: watch stdin in the main event loop. The fd is
+    // made non-blocking so onStdinReadable() can drain it without ever parking.
+    const int fd = ::fileno(stdin);
+    const int flags = ::fcntl(fd, F_GETFL, 0);
+    if (flags != -1) {
+        ::fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+    }
+    m_stdinNotifier = new QSocketNotifier(fd, QSocketNotifier::Read, this);
+    connect(m_stdinNotifier, &QSocketNotifier::activated, this, &MCPProcessor::onStdinReadable);
+    m_stdinNotifier->setEnabled(true);
+#endif
 }
 
 void MCPProcessor::stopProcessing()
 {
-    if (m_stdinReader->isRunning()) {
+#ifdef Q_OS_WIN
+    if (m_stdinReader && m_stdinReader->isRunning()) {
         m_stdinReader->requestStop();
-        if (!m_stdinReader->wait(3000)) {
-            // Force terminate if graceful shutdown fails
-            m_stdinReader->terminate();
-            m_stdinReader->wait(1000);
+        // Close the stdin handle to unblock the thread parked in getline so it
+        // returns on EOF — no QThread::terminate() (which leaks locks/state).
+        CloseHandle(GetStdHandle(STD_INPUT_HANDLE));
+        m_stdinReader->wait();
+    }
+#else
+    if (m_stdinNotifier) {
+        m_stdinNotifier->setEnabled(false);
+    }
+#endif
+}
+
+#ifndef Q_OS_WIN
+void MCPProcessor::onStdinReadable()
+{
+    char buffer[4096];
+    for (;;) {
+        const ssize_t bytesRead = ::read(::fileno(stdin), buffer, sizeof(buffer));
+
+        if (bytesRead > 0) {
+            m_stdinBuffer.append(buffer, static_cast<qsizetype>(bytesRead));
+            qsizetype newline;
+            while ((newline = m_stdinBuffer.indexOf('\n')) != -1) {
+                const QByteArray lineBytes = m_stdinBuffer.left(newline);
+                m_stdinBuffer.remove(0, newline + 1);
+                processIncomingData(QString::fromUtf8(lineBytes));
+            }
+            continue; // drain whatever else is buffered before yielding
         }
+
+        if (bytesRead == 0) {
+            // EOF: the client closed stdin — shut the processor down cleanly.
+            m_stdinNotifier->setEnabled(false);
+            QCoreApplication::quit();
+            return;
+        }
+
+        // bytesRead < 0
+#if defined(EWOULDBLOCK) && (EWOULDBLOCK != EAGAIN)
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+#else
+        if (errno == EAGAIN) { // EWOULDBLOCK == EAGAIN on this platform
+#endif
+            return; // no more data right now; wait for the next activation
+        }
+        if (errno == EINTR) {
+            continue; // interrupted by a signal; retry
+        }
+        // Unrecoverable read error: stop watching and quit.
+        m_stdinNotifier->setEnabled(false);
+        QCoreApplication::quit();
+        return;
     }
 }
+#endif
 
 void MCPProcessor::processIncomingData(const QString &line)
 {
