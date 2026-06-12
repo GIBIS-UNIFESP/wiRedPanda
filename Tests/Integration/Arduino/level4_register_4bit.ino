@@ -116,27 +116,35 @@ bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_7 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_8 = LOW;
 // End IC: BusMux_LoadHold
 bool aux_level4_register_4bit_0_d_flip_flop_8_0_q = LOW;
+bool aux_level4_register_4bit_0_d_flip_flop_8_0_q_next = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_8_0_q_inclk = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_8_0_q_last = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_8_1_q = HIGH;
+bool aux_level4_register_4bit_0_d_flip_flop_8_1_q_next = HIGH;
 bool aux_level4_register_4bit_0_d_flip_flop_8_1_q_inclk = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_8_1_q_last = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_9_0_q = LOW;
+bool aux_level4_register_4bit_0_d_flip_flop_9_0_q_next = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_9_0_q_inclk = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_9_0_q_last = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_9_1_q = HIGH;
+bool aux_level4_register_4bit_0_d_flip_flop_9_1_q_next = HIGH;
 bool aux_level4_register_4bit_0_d_flip_flop_9_1_q_inclk = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_9_1_q_last = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_10_0_q = LOW;
+bool aux_level4_register_4bit_0_d_flip_flop_10_0_q_next = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_10_0_q_inclk = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_10_0_q_last = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_10_1_q = HIGH;
+bool aux_level4_register_4bit_0_d_flip_flop_10_1_q_next = HIGH;
 bool aux_level4_register_4bit_0_d_flip_flop_10_1_q_inclk = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_10_1_q_last = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_11_0_q = LOW;
+bool aux_level4_register_4bit_0_d_flip_flop_11_0_q_next = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_11_0_q_inclk = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_11_0_q_last = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_11_1_q = HIGH;
+bool aux_level4_register_4bit_0_d_flip_flop_11_1_q_next = HIGH;
 bool aux_level4_register_4bit_0_d_flip_flop_11_1_q_inclk = LOW;
 bool aux_level4_register_4bit_0_d_flip_flop_11_1_q_last = LOW;
 bool aux_level4_register_4bit_0_node_12 = LOW;
@@ -153,6 +161,8 @@ bool aux_ic_input_level4_register_4bit_0_4 = LOW;
 bool aux_ic_input_level4_register_4bit_0_5 = LOW;
 bool aux_ic_input_level4_register_4bit_0_6 = LOW;
 // End IC: LEVEL4_REGISTER_4BIT
+
+bool g_sample = true;
 
 void setup() {
     pinMode(input_switch1, INPUT);
@@ -187,53 +197,61 @@ void computeLogic() {
     aux_level4_register_4bit_0_node_6 = aux_ic_input_level4_register_4bit_0_6;
     aux_level4_register_4bit_0_not_16 = !aux_level4_register_4bit_0_node_2;
     //D FlipFlop
+    if (g_sample) {
     if (aux_level4_register_4bit_0_node_0 && !aux_level4_register_4bit_0_d_flip_flop_8_0_q_inclk) { 
-        aux_level4_register_4bit_0_d_flip_flop_8_0_q = aux_level4_register_4bit_0_d_flip_flop_8_0_q_last;
-        aux_level4_register_4bit_0_d_flip_flop_8_1_q = !aux_level4_register_4bit_0_d_flip_flop_8_0_q_last;
+        aux_level4_register_4bit_0_d_flip_flop_8_0_q_next = aux_level4_register_4bit_0_d_flip_flop_8_0_q_last;
+        aux_level4_register_4bit_0_d_flip_flop_8_1_q_next = !aux_level4_register_4bit_0_d_flip_flop_8_0_q_last;
     }
     if (!HIGH || !aux_level4_register_4bit_0_not_16) { 
-        aux_level4_register_4bit_0_d_flip_flop_8_0_q = !HIGH; //Preset
-        aux_level4_register_4bit_0_d_flip_flop_8_1_q = !aux_level4_register_4bit_0_not_16; //Clear
+        aux_level4_register_4bit_0_d_flip_flop_8_0_q_next = !HIGH; //Preset
+        aux_level4_register_4bit_0_d_flip_flop_8_1_q_next = !aux_level4_register_4bit_0_not_16; //Clear
     }
     aux_level4_register_4bit_0_d_flip_flop_8_0_q_inclk = aux_level4_register_4bit_0_node_0;
+        aux_level4_register_4bit_0_d_flip_flop_8_0_q_last = aux_level4_register_4bit_0_busmux_loadhold_7_out0;
+    }
     //End of D FlipFlop
-    aux_level4_register_4bit_0_d_flip_flop_8_0_q_last = aux_level4_register_4bit_0_busmux_loadhold_7_out0;
     //D FlipFlop
+    if (g_sample) {
     if (aux_level4_register_4bit_0_node_0 && !aux_level4_register_4bit_0_d_flip_flop_9_0_q_inclk) { 
-        aux_level4_register_4bit_0_d_flip_flop_9_0_q = aux_level4_register_4bit_0_d_flip_flop_9_0_q_last;
-        aux_level4_register_4bit_0_d_flip_flop_9_1_q = !aux_level4_register_4bit_0_d_flip_flop_9_0_q_last;
+        aux_level4_register_4bit_0_d_flip_flop_9_0_q_next = aux_level4_register_4bit_0_d_flip_flop_9_0_q_last;
+        aux_level4_register_4bit_0_d_flip_flop_9_1_q_next = !aux_level4_register_4bit_0_d_flip_flop_9_0_q_last;
     }
     if (!HIGH || !aux_level4_register_4bit_0_not_16) { 
-        aux_level4_register_4bit_0_d_flip_flop_9_0_q = !HIGH; //Preset
-        aux_level4_register_4bit_0_d_flip_flop_9_1_q = !aux_level4_register_4bit_0_not_16; //Clear
+        aux_level4_register_4bit_0_d_flip_flop_9_0_q_next = !HIGH; //Preset
+        aux_level4_register_4bit_0_d_flip_flop_9_1_q_next = !aux_level4_register_4bit_0_not_16; //Clear
     }
     aux_level4_register_4bit_0_d_flip_flop_9_0_q_inclk = aux_level4_register_4bit_0_node_0;
+        aux_level4_register_4bit_0_d_flip_flop_9_0_q_last = aux_level4_register_4bit_0_busmux_loadhold_7_out1_1;
+    }
     //End of D FlipFlop
-    aux_level4_register_4bit_0_d_flip_flop_9_0_q_last = aux_level4_register_4bit_0_busmux_loadhold_7_out1_1;
     //D FlipFlop
+    if (g_sample) {
     if (aux_level4_register_4bit_0_node_0 && !aux_level4_register_4bit_0_d_flip_flop_10_0_q_inclk) { 
-        aux_level4_register_4bit_0_d_flip_flop_10_0_q = aux_level4_register_4bit_0_d_flip_flop_10_0_q_last;
-        aux_level4_register_4bit_0_d_flip_flop_10_1_q = !aux_level4_register_4bit_0_d_flip_flop_10_0_q_last;
+        aux_level4_register_4bit_0_d_flip_flop_10_0_q_next = aux_level4_register_4bit_0_d_flip_flop_10_0_q_last;
+        aux_level4_register_4bit_0_d_flip_flop_10_1_q_next = !aux_level4_register_4bit_0_d_flip_flop_10_0_q_last;
     }
     if (!HIGH || !aux_level4_register_4bit_0_not_16) { 
-        aux_level4_register_4bit_0_d_flip_flop_10_0_q = !HIGH; //Preset
-        aux_level4_register_4bit_0_d_flip_flop_10_1_q = !aux_level4_register_4bit_0_not_16; //Clear
+        aux_level4_register_4bit_0_d_flip_flop_10_0_q_next = !HIGH; //Preset
+        aux_level4_register_4bit_0_d_flip_flop_10_1_q_next = !aux_level4_register_4bit_0_not_16; //Clear
     }
     aux_level4_register_4bit_0_d_flip_flop_10_0_q_inclk = aux_level4_register_4bit_0_node_0;
+        aux_level4_register_4bit_0_d_flip_flop_10_0_q_last = aux_level4_register_4bit_0_busmux_loadhold_7_out2_2;
+    }
     //End of D FlipFlop
-    aux_level4_register_4bit_0_d_flip_flop_10_0_q_last = aux_level4_register_4bit_0_busmux_loadhold_7_out2_2;
     //D FlipFlop
+    if (g_sample) {
     if (aux_level4_register_4bit_0_node_0 && !aux_level4_register_4bit_0_d_flip_flop_11_0_q_inclk) { 
-        aux_level4_register_4bit_0_d_flip_flop_11_0_q = aux_level4_register_4bit_0_d_flip_flop_11_0_q_last;
-        aux_level4_register_4bit_0_d_flip_flop_11_1_q = !aux_level4_register_4bit_0_d_flip_flop_11_0_q_last;
+        aux_level4_register_4bit_0_d_flip_flop_11_0_q_next = aux_level4_register_4bit_0_d_flip_flop_11_0_q_last;
+        aux_level4_register_4bit_0_d_flip_flop_11_1_q_next = !aux_level4_register_4bit_0_d_flip_flop_11_0_q_last;
     }
     if (!HIGH || !aux_level4_register_4bit_0_not_16) { 
-        aux_level4_register_4bit_0_d_flip_flop_11_0_q = !HIGH; //Preset
-        aux_level4_register_4bit_0_d_flip_flop_11_1_q = !aux_level4_register_4bit_0_not_16; //Clear
+        aux_level4_register_4bit_0_d_flip_flop_11_0_q_next = !HIGH; //Preset
+        aux_level4_register_4bit_0_d_flip_flop_11_1_q_next = !aux_level4_register_4bit_0_not_16; //Clear
     }
     aux_level4_register_4bit_0_d_flip_flop_11_0_q_inclk = aux_level4_register_4bit_0_node_0;
+        aux_level4_register_4bit_0_d_flip_flop_11_0_q_last = aux_level4_register_4bit_0_busmux_loadhold_7_out3_3;
+    }
     //End of D FlipFlop
-    aux_level4_register_4bit_0_d_flip_flop_11_0_q_last = aux_level4_register_4bit_0_busmux_loadhold_7_out3_3;
     aux_level4_register_4bit_0_not_17 = !aux_level4_register_4bit_0_node_1;
     // IC: BusMux_LoadHold
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_0 = aux_level4_register_4bit_0_node_3;
@@ -350,6 +368,17 @@ void computeLogic() {
     // End IC: LEVEL4_REGISTER_4BIT
 }
 
+void commitFlipFlops() {
+    aux_level4_register_4bit_0_d_flip_flop_8_0_q = aux_level4_register_4bit_0_d_flip_flop_8_0_q_next;
+    aux_level4_register_4bit_0_d_flip_flop_8_1_q = aux_level4_register_4bit_0_d_flip_flop_8_1_q_next;
+    aux_level4_register_4bit_0_d_flip_flop_9_0_q = aux_level4_register_4bit_0_d_flip_flop_9_0_q_next;
+    aux_level4_register_4bit_0_d_flip_flop_9_1_q = aux_level4_register_4bit_0_d_flip_flop_9_1_q_next;
+    aux_level4_register_4bit_0_d_flip_flop_10_0_q = aux_level4_register_4bit_0_d_flip_flop_10_0_q_next;
+    aux_level4_register_4bit_0_d_flip_flop_10_1_q = aux_level4_register_4bit_0_d_flip_flop_10_1_q_next;
+    aux_level4_register_4bit_0_d_flip_flop_11_0_q = aux_level4_register_4bit_0_d_flip_flop_11_0_q_next;
+    aux_level4_register_4bit_0_d_flip_flop_11_1_q = aux_level4_register_4bit_0_d_flip_flop_11_1_q_next;
+}
+
 void loop() {
     // Reading input data //.
     input_switch1_val = digitalRead(input_switch1);
@@ -362,7 +391,11 @@ void loop() {
 
     // Updating clocks. //
 
-    computeLogic();
+    g_sample = true;
+    for (int s = 0; s < 10; s++) { computeLogic(); }
+    commitFlipFlops();
+    g_sample = false;
+    for (int s = 0; s < 10; s++) { computeLogic(); }
 
     // Writing output data. //
     digitalWrite(led1_1, aux_level4_register_4bit_0_q0);

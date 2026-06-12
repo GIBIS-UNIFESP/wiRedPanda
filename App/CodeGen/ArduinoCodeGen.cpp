@@ -136,6 +136,7 @@ void ArduinoCodeGen::generate()
 {
     try {
         m_txInputPorts = Scene::wirelessTxInputPorts(m_elements);
+        m_hasSequential = hasNativeMemory(m_elements);
 
         int requiredInputPins = 0;
         int requiredOutputPins = 0;
@@ -169,8 +170,16 @@ void ArduinoCodeGen::generate()
         declareInputs();
         declareOutputs();
         declareAuxVariables();
+        if (m_hasSequential) {
+            // Phase flag for the non-blocking tick driver: flip-flops sample only
+            // while true; the post-commit re-settle runs with it false.
+            m_stream << "bool g_sample = true;" << Qt::endl << Qt::endl;
+        }
         setup();
         emitComputeLogicFunction();
+        if (m_hasSequential) {
+            emitCommitFlipFlops();
+        }
         loop();
     } catch (...) {
         m_file.close();
@@ -378,6 +387,11 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                 m_declaredVariables.append(varName2);
             }
 
+            // Staging variable for non-blocking sequential commit (see emitTickDriver).
+            if (elm->elementGroup() == ElementGroup::Memory) {
+                m_stream << "bool " << varName2 << "_next = " << highLow(port->defaultValue()) << ";" << Qt::endl;
+            }
+
             switch (elm->elementType()) {
             case ElementType::Clock: {
                 if (!isBox) {
@@ -422,6 +436,16 @@ void ArduinoCodeGen::declareSequentialStateRec(const QVector<GraphicElement *> &
         if (outputs.isEmpty()) {
             continue;
         }
+        // Staging variables for non-blocking sequential commit, one per output.
+        if (elm->elementGroup() == ElementGroup::Memory) {
+            for (auto *port : outputs) {
+                const QString v = m_varMap.value(port);
+                if (!v.isEmpty()) {
+                    m_stream << "bool " << v << "_next = " << highLow(port->defaultValue()) << ";" << Qt::endl;
+                }
+            }
+        }
+
         const QString varName = m_varMap.value(outputs.constFirst());
         if (varName.isEmpty()) {
             continue;
@@ -450,6 +474,68 @@ void ArduinoCodeGen::declareSequentialStateRec(const QVector<GraphicElement *> &
     }
 }
 
+bool ArduinoCodeGen::hasNativeMemory(const QVector<GraphicElement *> &elements)
+{
+    for (auto *elm : elements) {
+        if (elm->elementGroup() == ElementGroup::Memory) {
+            return true;
+        }
+        if (elm->elementType() == ElementType::IC) {
+            if (auto *ic = qobject_cast<IC *>(elm)) {
+                if (hasNativeMemory(ic->internalElements())) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void ArduinoCodeGen::emitCommitFlipFlopsRec(const QVector<GraphicElement *> &elements)
+{
+    for (auto *elm : elements) {
+        if (elm->elementType() == ElementType::IC) {
+            if (auto *ic = qobject_cast<IC *>(elm)) {
+                emitCommitFlipFlopsRec(ic->internalElements());
+            }
+            continue;
+        }
+        if (elm->elementGroup() != ElementGroup::Memory) {
+            continue;
+        }
+        for (auto *port : elm->outputs()) {
+            const QString varName = m_varMap.value(port);
+            if (!varName.isEmpty()) {
+                m_stream << "    " << varName << " = " << varName << "_next;" << Qt::endl;
+            }
+        }
+    }
+}
+
+void ArduinoCodeGen::emitCommitFlipFlops()
+{
+    m_stream << "void commitFlipFlops() {" << Qt::endl;
+    emitCommitFlipFlopsRec(m_elements);
+    m_stream << "}" << Qt::endl << Qt::endl;
+}
+
+void ArduinoCodeGen::emitTickDriver()
+{
+    // One simulation tick. Sequential sketches mirror the engine's non-blocking
+    // semantics: settle combinational logic while flip-flops sample into staging
+    // (_next) reading pre-edge state, commit all flip-flops at once, then settle
+    // again so combinational outputs reflect the new committed state.
+    if (m_hasSequential) {
+        m_stream << "    g_sample = true;" << Qt::endl;
+        m_stream << "    for (int s = 0; s < " << Simulation::kMaxSettleIterations << "; s++) { computeLogic(); }" << Qt::endl;
+        m_stream << "    commitFlipFlops();" << Qt::endl;
+        m_stream << "    g_sample = false;" << Qt::endl;
+        m_stream << "    for (int s = 0; s < " << Simulation::kMaxSettleIterations << "; s++) { computeLogic(); }" << Qt::endl;
+    } else {
+        m_stream << "    computeLogic();" << Qt::endl;
+    }
+}
+
 void ArduinoCodeGen::declareAuxVariables()
 {
     m_stream << "/* ====== Aux. Variables ====== */" << Qt::endl;
@@ -468,29 +554,44 @@ void ArduinoCodeGen::declareAuxVariables()
 
 void ArduinoCodeGen::emitFlipFlopBlock(GraphicElement *elm, const QString &typeName, const QString &firstOut,
                                        const QString &secondOut, int clockInputIndex, int presetInputIndex,
-                                       int clearInputIndex, const std::function<void()> &normalLogic)
+                                       int clearInputIndex, const std::function<void()> &edgeLogic,
+                                       const std::function<void()> &stateEpilogue)
 {
     QString clk = otherPortName(elm->inputPort(clockInputIndex));
     QString inclk = firstOut + "_inclk";
+    QString firstOutNext = firstOut + "_next";
+    QString secondOutNext = secondOut + "_next";
 
     m_stream << QString("    //%1 FlipFlop").arg(typeName) << Qt::endl;
+    // Sample only during the settle phase (g_sample); the post-commit re-settle
+    // re-evaluates combinational logic without re-clocking. Outputs are staged to
+    // <out>_next and published together by commitFlipFlops() — non-blocking
+    // semantics so gated clocks read pre-edge state, matching the engine.
+    m_stream << QString("    if (g_sample) {") << Qt::endl;
     m_stream << QString("    if (%1 && !%2) { ").arg(clk, inclk) << Qt::endl;
 
-    // Call the type-specific normal logic (passed as lambda)
-    normalLogic();
+    // Type-specific edge behavior (writes the _next staging variables).
+    edgeLogic();
 
     m_stream << QString("    }") << Qt::endl;
 
-    // Preset/Clear logic (common to all edge-triggered flip-flops)
+    // Preset/Clear logic (common to all edge-triggered flip-flops), staged.
     QString prst = otherPortName(elm->inputPort(presetInputIndex));
     QString clr = otherPortName(elm->inputPort(clearInputIndex));
     m_stream << QString("    if (!%1 || !%2) { ").arg(prst, clr) << Qt::endl;
-    m_stream << QString("        %1 = !%2; //Preset").arg(firstOut, prst) << Qt::endl;
-    m_stream << QString("        %1 = !%2; //Clear").arg(secondOut, clr) << Qt::endl;
+    m_stream << QString("        %1 = !%2; //Preset").arg(firstOutNext, prst) << Qt::endl;
+    m_stream << QString("        %1 = !%2; //Clear").arg(secondOutNext, clr) << Qt::endl;
     m_stream << QString("    }") << Qt::endl;
 
-    // Clock update
+    // Clock-level update for edge detection.
     m_stream << "    " << inclk << " = " << clk << ";" << Qt::endl;
+
+    // Per-sample epilogue (e.g. the one-tick data latch for D/T flip-flops).
+    if (stateEpilogue) {
+        stateEpilogue();
+    }
+
+    m_stream << QString("    }") << Qt::endl; // end if (g_sample)
     m_stream << QString("    //End of %1 FlipFlop").arg(typeName) << Qt::endl;
 }
 
@@ -596,13 +697,18 @@ void ArduinoCodeGen::emitDFlipFlop(GraphicElement *elm, const QString &firstOut)
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
     QString secondOut = m_varMap.value(outputPort1);
+    QString firstOutNext = firstOut + "_next";
+    QString secondOutNext = secondOut + "_next";
     QString data = otherPortName(elm->inputPort(0));
     QString last = firstOut + "_last";
-    emitFlipFlopBlock(elm, "D", firstOut, secondOut, /*clk*/1, /*preset*/2, /*clear*/3, [this, &last, &firstOut, &secondOut]() {
-        m_stream << QString("        %1 = %2;").arg(firstOut, last) << Qt::endl;
-        m_stream << QString("        %1 = !%2;").arg(secondOut, last) << Qt::endl;
-    });
-    m_stream << "    " << last << " = " << data << ";" << Qt::endl;
+    emitFlipFlopBlock(elm, "D", firstOut, secondOut, /*clk*/1, /*preset*/2, /*clear*/3,
+        [this, &last, &firstOutNext, &secondOutNext]() {
+            m_stream << QString("        %1 = %2;").arg(firstOutNext, last) << Qt::endl;
+            m_stream << QString("        %1 = !%2;").arg(secondOutNext, last) << Qt::endl;
+        },
+        [this, &last, &data]() {
+            m_stream << "        " << last << " = " << data << ";" << Qt::endl;
+        });
 }
 
 void ArduinoCodeGen::emitDLatch(GraphicElement *elm, const QString &firstOut)
@@ -610,12 +716,16 @@ void ArduinoCodeGen::emitDLatch(GraphicElement *elm, const QString &firstOut)
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
     QString secondOut = m_varMap.value(outputPort1);
+    QString firstOutNext = firstOut + "_next";
+    QString secondOutNext = secondOut + "_next";
     QString data = otherPortName(elm->inputPort(0));
     QString clk = otherPortName(elm->inputPort(1));
     m_stream << QString("    //D Latch") << Qt::endl;
+    m_stream << QString("    if (g_sample) {") << Qt::endl;
     m_stream << QString("    if (%1) { ").arg(clk) << Qt::endl;
-    m_stream << QString("        %1 = %2;").arg(firstOut, data) << Qt::endl;
-    m_stream << QString("        %1 = !%2;").arg(secondOut, data) << Qt::endl;
+    m_stream << QString("        %1 = %2;").arg(firstOutNext, data) << Qt::endl;
+    m_stream << QString("        %1 = !%2;").arg(secondOutNext, data) << Qt::endl;
+    m_stream << QString("    }") << Qt::endl;
     m_stream << QString("    }") << Qt::endl;
     m_stream << QString("    //End of D Latch") << Qt::endl;
 }
@@ -625,21 +735,24 @@ void ArduinoCodeGen::emitJKFlipFlop(GraphicElement *elm, const QString &firstOut
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
     QString secondOut = m_varMap.value(outputPort1);
+    QString firstOutNext = firstOut + "_next";
+    QString secondOutNext = secondOut + "_next";
     QString j = otherPortName(elm->inputPort(0));
     QString k = otherPortName(elm->inputPort(2));
-    emitFlipFlopBlock(elm, "JK", firstOut, secondOut, /*clk*/1, /*preset*/3, /*clear*/4, [this, &j, &k, &firstOut, &secondOut]() {
-        m_stream << QString("        if (%1 && %2) { ").arg(j, k) << Qt::endl;
-        m_stream << QString("            bool aux = %1;").arg(firstOut) << Qt::endl;
-        m_stream << QString("            %1 = %2;").arg(firstOut, secondOut) << Qt::endl;
-        m_stream << QString("            %1 = aux;").arg(secondOut) << Qt::endl;
-        m_stream << QString("        } else if (%1) {").arg(j) << Qt::endl;
-        m_stream << QString("            %1 = 1;").arg(firstOut) << Qt::endl;
-        m_stream << QString("            %1 = 0;").arg(secondOut) << Qt::endl;
-        m_stream << QString("        } else if (%1) {").arg(k) << Qt::endl;
-        m_stream << QString("            %1 = 0;").arg(firstOut) << Qt::endl;
-        m_stream << QString("            %1 = 1;").arg(secondOut) << Qt::endl;
-        m_stream << QString("        }") << Qt::endl;
-    });
+    emitFlipFlopBlock(elm, "JK", firstOut, secondOut, /*clk*/1, /*preset*/3, /*clear*/4,
+        [this, &j, &k, &firstOut, &secondOut, &firstOutNext, &secondOutNext]() {
+            m_stream << QString("        if (%1 && %2) { ").arg(j, k) << Qt::endl;
+            m_stream << QString("            bool aux = %1;").arg(firstOut) << Qt::endl;
+            m_stream << QString("            %1 = %2;").arg(firstOutNext, secondOut) << Qt::endl;
+            m_stream << QString("            %1 = aux;").arg(secondOutNext) << Qt::endl;
+            m_stream << QString("        } else if (%1) {").arg(j) << Qt::endl;
+            m_stream << QString("            %1 = 1;").arg(firstOutNext) << Qt::endl;
+            m_stream << QString("            %1 = 0;").arg(secondOutNext) << Qt::endl;
+            m_stream << QString("        } else if (%1) {").arg(k) << Qt::endl;
+            m_stream << QString("            %1 = 0;").arg(firstOutNext) << Qt::endl;
+            m_stream << QString("            %1 = 1;").arg(secondOutNext) << Qt::endl;
+            m_stream << QString("        }") << Qt::endl;
+        });
 }
 
 void ArduinoCodeGen::emitSRFlipFlop(GraphicElement *elm, const QString &firstOut)
@@ -647,17 +760,20 @@ void ArduinoCodeGen::emitSRFlipFlop(GraphicElement *elm, const QString &firstOut
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
     QString secondOut = m_varMap.value(outputPort1);
+    QString firstOutNext = firstOut + "_next";
+    QString secondOutNext = secondOut + "_next";
     QString s = otherPortName(elm->inputPort(0));
     QString r = otherPortName(elm->inputPort(2));
-    emitFlipFlopBlock(elm, "SR", firstOut, secondOut, /*clk*/1, /*preset*/3, /*clear*/4, [this, &s, &r, &firstOut, &secondOut]() {
-        m_stream << QString("        if (%1 && %2) { ").arg(s, r) << Qt::endl;
-        m_stream << QString("            %1 = 1;").arg(firstOut) << Qt::endl;
-        m_stream << QString("            %1 = 1;").arg(secondOut) << Qt::endl;
-        m_stream << QString("        } else if (%1 != %2) {").arg(s, r) << Qt::endl;
-        m_stream << QString("            %1 = %2;").arg(firstOut, s) << Qt::endl;
-        m_stream << QString("            %1 = %2;").arg(secondOut, r) << Qt::endl;
-        m_stream << QString("        }") << Qt::endl;
-    });
+    emitFlipFlopBlock(elm, "SR", firstOut, secondOut, /*clk*/1, /*preset*/3, /*clear*/4,
+        [this, &s, &r, &firstOutNext, &secondOutNext]() {
+            m_stream << QString("        if (%1 && %2) { ").arg(s, r) << Qt::endl;
+            m_stream << QString("            %1 = 1;").arg(firstOutNext) << Qt::endl;
+            m_stream << QString("            %1 = 1;").arg(secondOutNext) << Qt::endl;
+            m_stream << QString("        } else if (%1 != %2) {").arg(s, r) << Qt::endl;
+            m_stream << QString("            %1 = %2;").arg(firstOutNext, s) << Qt::endl;
+            m_stream << QString("            %1 = %2;").arg(secondOutNext, r) << Qt::endl;
+            m_stream << QString("        }") << Qt::endl;
+        });
 }
 
 void ArduinoCodeGen::emitTFlipFlop(GraphicElement *elm, const QString &firstOut)
@@ -665,13 +781,17 @@ void ArduinoCodeGen::emitTFlipFlop(GraphicElement *elm, const QString &firstOut)
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
     QString secondOut = m_varMap.value(outputPort1);
+    QString firstOutNext = firstOut + "_next";
+    QString secondOutNext = secondOut + "_next";
     QString t = otherPortName(elm->inputPort(0));
-    emitFlipFlopBlock(elm, "T", firstOut, secondOut, /*clk*/1, /*preset*/2, /*clear*/3, [this, &t, &firstOut, &secondOut]() {
-        m_stream << QString("        if (%1) { ").arg(t) << Qt::endl;
-        m_stream << QString("            %1 = !%1;").arg(firstOut) << Qt::endl;
-        m_stream << QString("            %1 = !%2;").arg(secondOut, firstOut) << Qt::endl;
-        m_stream << QString("        }") << Qt::endl;
-    });
+    emitFlipFlopBlock(elm, "T", firstOut, secondOut, /*clk*/1, /*preset*/2, /*clear*/3,
+        [this, &t, &firstOut, &firstOutNext, &secondOutNext]() {
+            // Toggle reading the pre-edge Q: Q' = !Q, ~Q' = Q (old).
+            m_stream << QString("        if (%1) { ").arg(t) << Qt::endl;
+            m_stream << QString("            %1 = !%2;").arg(firstOutNext, firstOut) << Qt::endl;
+            m_stream << QString("            %1 = %2;").arg(secondOutNext, firstOut) << Qt::endl;
+            m_stream << QString("        }") << Qt::endl;
+        });
 }
 
 void ArduinoCodeGen::emitSRLatch(GraphicElement *elm, const QString &firstOut)
@@ -679,18 +799,22 @@ void ArduinoCodeGen::emitSRLatch(GraphicElement *elm, const QString &firstOut)
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
     QString secondOut = m_varMap.value(outputPort1);
+    QString firstOutNext = firstOut + "_next";
+    QString secondOutNext = secondOut + "_next";
     QString s = otherPortName(elm->inputPort(0));
     QString r = otherPortName(elm->inputPort(1));
     m_stream << QString("    //SR Latch") << Qt::endl;
+    m_stream << QString("    if (g_sample) {") << Qt::endl;
     m_stream << QString("    if (%1 && %2) { ").arg(s, r) << Qt::endl;
-    m_stream << QString("        %1 = LOW;").arg(firstOut) << Qt::endl;
-    m_stream << QString("        %1 = LOW;").arg(secondOut) << Qt::endl;
+    m_stream << QString("        %1 = LOW;").arg(firstOutNext) << Qt::endl;
+    m_stream << QString("        %1 = LOW;").arg(secondOutNext) << Qt::endl;
     m_stream << QString("    } else if (%1) { ").arg(s) << Qt::endl;
-    m_stream << QString("        %1 = HIGH;").arg(firstOut) << Qt::endl;
-    m_stream << QString("        %1 = LOW;").arg(secondOut) << Qt::endl;
+    m_stream << QString("        %1 = HIGH;").arg(firstOutNext) << Qt::endl;
+    m_stream << QString("        %1 = LOW;").arg(secondOutNext) << Qt::endl;
     m_stream << QString("    } else if (%1) { ").arg(r) << Qt::endl;
-    m_stream << QString("        %1 = LOW;").arg(firstOut) << Qt::endl;
-    m_stream << QString("        %1 = HIGH;").arg(secondOut) << Qt::endl;
+    m_stream << QString("        %1 = LOW;").arg(firstOutNext) << Qt::endl;
+    m_stream << QString("        %1 = HIGH;").arg(secondOutNext) << Qt::endl;
+    m_stream << QString("    }") << Qt::endl;
     m_stream << QString("    }") << Qt::endl;
     m_stream << QString("    //End of SR Latch") << Qt::endl;
 }
@@ -1001,7 +1125,7 @@ void ArduinoCodeGen::loop()
         }
     }
     m_stream << Qt::endl;
-    m_stream << "    computeLogic();" << Qt::endl;
+    emitTickDriver();
     m_stream << Qt::endl;
     m_stream << "    // Writing output data. //" << Qt::endl;
     for (const auto &pin : std::as_const(m_outputMap)) {
@@ -1035,6 +1159,7 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
 
     QIODevice *savedDevice = m_stream.device();
     m_stream.setDevice(&tbFile);
+    m_hasSequential = hasNativeMemory(m_elements);
 
     try {
         m_stream << "// ============================================================ //" << Qt::endl;
@@ -1068,10 +1193,16 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
         // inside ICs — computeLogic() recurses into them, so their _inclk/_last
         // state must be declared at every depth (not just top level).
         declareSequentialStateRec(m_elements, /*topLevel*/ true);
+        if (m_hasSequential) {
+            m_stream << "bool g_sample = true;" << Qt::endl;
+        }
         m_stream << Qt::endl;
 
         // computeLogic() function — identical to production sketch
         emitComputeLogicFunction();
+        if (m_hasSequential) {
+            emitCommitFlipFlops();
+        }
 
         // Build the list of output variable names (what feeds each output pin)
         QStringList outputVarNames;
@@ -1120,12 +1251,23 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
         for (int j = 0; j < numInputs; ++j) {
             m_stream << "        " << m_inputMap.at(j).m_varName << "_val = VECTORS[t].in[" << j << "];" << Qt::endl;
         }
-        // Settle feedback to a fixed point before checking — gate-built latches
-        // need several passes to propagate, exactly as Simulation::iterativeSettle
-        // does for the reference truth table (same bound, so they agree).
-        // Combinational circuits converge on the first pass.
-        m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
-                 << "; s++) { computeLogic(); }" << Qt::endl;
+        // One simulation tick. For sequential circuits this mirrors the engine's
+        // non-blocking commit: settle while flip-flops sample into _next (reading
+        // pre-edge state), commit all at once, then re-settle so combinational
+        // outputs reflect the new state. Combinational/gate-built circuits just
+        // settle to a fixed point (same bound as Simulation::iterativeSettle).
+        if (m_hasSequential) {
+            m_stream << "        g_sample = true;" << Qt::endl;
+            m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
+                     << "; s++) { computeLogic(); }" << Qt::endl;
+            m_stream << "        commitFlipFlops();" << Qt::endl;
+            m_stream << "        g_sample = false;" << Qt::endl;
+            m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
+                     << "; s++) { computeLogic(); }" << Qt::endl;
+        } else {
+            m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
+                     << "; s++) { computeLogic(); }" << Qt::endl;
+        }
         m_stream << "        bool pass = true;" << Qt::endl;
         for (int k = 0; k < numOutputs; ++k) {
             m_stream << "        pass = pass && (" << outputVarNames.at(k) << " == VECTORS[t].out[" << k << "]);" << Qt::endl;

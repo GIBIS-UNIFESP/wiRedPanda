@@ -29,7 +29,9 @@ private:
     void testArduinoExportHelper(const QString &icFile);
     static bool validateWithArduinoCli(const QString &inoFile);
     static bool simulateWithSimavr(const QString &elfFile, int durationMs);
-    static bool runTestbench(const QString &tbInoPath, int timeoutMs = 30000);
+    static bool runTestbench(const QString &tbInoPath, int timeoutMs = 30000,
+                             const QString &fqbn = QStringLiteral("arduino:avr:uno"),
+                             const QString &simavrMcu = QStringLiteral("atmega328p"));
 
     static QString s_cliCachePath;
 
@@ -181,6 +183,10 @@ private slots:
     void testArduinoExportRippleAdder4Bit();
     void testArduinoExportRegister4Bit();
     void testArduinoExportBinaryCounter4Bit();
+
+    // Sequential (clocked) functional validation for hierarchical native-flip-flop
+    // circuits — drives a clock sequence and checks the sketch against the engine.
+    void testArduinoSequentialMultiCycleCpu8Bit();
 
     // Unit tests for codegen utilities
     void testReservedKeywordSanitization();
