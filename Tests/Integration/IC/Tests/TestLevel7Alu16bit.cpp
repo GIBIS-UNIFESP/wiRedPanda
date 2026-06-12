@@ -120,6 +120,14 @@ void TestLevel7ALU16Bit::testALU16Bit_data()
 
     QTest::newRow("xor_0xFFFF_0x00FF") << 0xFFFF << 0x00FF << 4 << 0xFF00;
     QTest::newRow("xor_0x1234_0x5678") << 0x1234 << 0x5678 << 4 << 0x444C;
+
+    // Cross-byte shift propagation (F61: the byte halves used to shift
+    // independently with zero fill, losing A[7] -> Result[8] on SHL and
+    // A[8] -> Result[7] on SHR)
+    QTest::newRow("shl_cross_byte_0x0080") << 0x0080 << 0x0000 << 6 << 0x0100;
+    QTest::newRow("shl_0x4321") << 0x4321 << 0x0000 << 6 << 0x8642;
+    QTest::newRow("shr_cross_byte_0x0100") << 0x0100 << 0x0000 << 7 << 0x0080;
+    QTest::newRow("shr_0x8642") << 0x8642 << 0x0000 << 7 << 0x4321;
 }
 
 void TestLevel7ALU16Bit::testALU16Bit()

@@ -14,6 +14,8 @@ Inputs:
   CarryIn (ADD chain carry-in; defaults 0 when unconnected)
   SubCarryIn (SUB chain carry-in; defaults 1 — the two's-complement +1 —
               when unconnected, so standalone SUB works; chain it for 16-bit)
+  ShrIn (SHR bit-7 fill; defaults 0 — chain the neighbor's A[0] for 16-bit; F61)
+  ShlIn (SHL bit-0 fill; defaults 0 — chain the neighbor's A[7] for 16-bit; F61)
 
 Operations (OpCode mapping):
   000: ADD (A + B)
@@ -205,32 +207,40 @@ class ALU8BitBuilder(ICBuilderBase):
         # Shift taps (F31: these two lists were name-swapped; the op-decode
         # select was swapped the same way, so behavior was already correct —
         # the names now state what each list holds).
-        # SHR (A >> 1): Result[i] = A[i+1], top bit fills with 0.
+        # Boundary fill ports (F61): the fills used to be internal GND
+        # constants, so 16-bit SHL/SHR lost the bit crossing the byte
+        # boundary. Exposed as saved-off input switches (the F26 carry-port
+        # mechanism): standalone behavior is unchanged (fill = 0), and a
+        # 16-bit ALU chains them from its own operand bits.
+
+        # SHR (A >> 1): Result[i] = A[i+1], top bit fills from ShrIn.
+        shrin_id = await self.create_element("InputSwitch", input_a_x_start + (10 * HORIZONTAL_GATE_SPACING), 250.0, "ShrIn")
+        if shrin_id is None:
+            return False
+
         shr_results = []
         shl_y = not_y + VERTICAL_STAGE_SPACING
         for i in range(8):
             if i < 7:
                 shr_results.append(a_inputs[i + 1])
             else:
-                gnd_id = await self.create_element("InputGnd", input_a_x_start + (i * HORIZONTAL_GATE_SPACING), shl_y, "GND_SHR")
-                if gnd_id is None:
-                    return False
-                shr_results.append(gnd_id)
+                shr_results.append(shrin_id)
 
-        await self.log("  ✓ Created shift right taps (A >> 1)")
+        await self.log("  ✓ Created shift right taps (A >> 1, fill = ShrIn)")
 
-        # SHL (A << 1): Result[i] = A[i-1], bottom bit fills with 0.
+        # SHL (A << 1): Result[i] = A[i-1], bottom bit fills from ShlIn.
+        shlin_id = await self.create_element("InputSwitch", input_a_x_start + (11 * HORIZONTAL_GATE_SPACING), 250.0, "ShlIn")
+        if shlin_id is None:
+            return False
+
         shl_results = []
         for i in range(8):
             if i > 0:
                 shl_results.append(a_inputs[i - 1])
             else:
-                gnd_id = await self.create_element("InputGnd", input_a_x_start + (i * HORIZONTAL_GATE_SPACING), shl_y + VERTICAL_STAGE_SPACING, "GND_SHL")
-                if gnd_id is None:
-                    return False
-                shl_results.append(gnd_id)
+                shl_results.append(shlin_id)
 
-        await self.log("  ✓ Created shift left taps (A << 1)")
+        await self.log("  ✓ Created shift left taps (A << 1, fill = ShlIn)")
 
         # Need to extend selector to 8-way instead of 5-way
         # For now, create additional mux layer to handle operations 5-7

@@ -183,8 +183,8 @@ void TestLevel6ALU8Bit::testALU8BitStructure() {
 
     QVERIFY(f.ic != nullptr);
 
-    // A[8] + B[8] + OpCode[3] + CarryIn + SubCarryIn (F26)
-    QCOMPARE(f.ic->inputSize(), 21);
+    // A[8] + B[8] + OpCode[3] + CarryIn + SubCarryIn (F26) + ShrIn + ShlIn (F61)
+    QCOMPARE(f.ic->inputSize(), 23);
     // Result[8] + Zero + Negative + Carry + SubCarryOut (F26)
     QCOMPARE(f.ic->outputSize(), 12);
 }
