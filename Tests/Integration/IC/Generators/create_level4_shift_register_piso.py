@@ -185,9 +185,13 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
             if not await self.connect(gnd_id, shift_mux_ic_id, target_port_label=f"In0[{i}]"):
                 return False
 
-            # Connect In1[i] to shiftIn[i] (Q[i+1] for i<3, otherwise unconnected/0)
+            # Connect In1[i] to shiftIn[i]: Q[i+1] for i<3; the MSB shifts in
+            # an explicit constant 0 (F34 — was an implicit unconnected default)
             if i < 3:
                 if not await self.connect(dff_ids[i + 1], shift_mux_ic_id, source_port_label="Q", target_port_label=f"In1[{i}]"):
+                    return False
+            else:
+                if not await self.connect(gnd_id, shift_mux_ic_id, target_port_label=f"In1[{i}]"):
                     return False
 
         # Connect Sel to NOT_LOAD (select signal)

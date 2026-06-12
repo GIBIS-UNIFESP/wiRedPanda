@@ -110,8 +110,16 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         if not await self.connect(vcc_id, adder_id, target_port_label="B[0]"):
             return False
 
-        # B[1-7] are left unconnected (default to 0, which is correct)
-        await self.log("  ✓ Connected adder B[0] = InputVcc (constant 1)")
+        # Explicit constant 0 on B[1..7] (F34 — was an implicit unconnected default)
+        gnd_id = await self.create_element("InputGnd", ctrl_x + (3 * HORIZONTAL_GATE_SPACING), 50.0 + (3 * VERTICAL_STAGE_SPACING), "GND_Const0")
+        if gnd_id is None:
+            return False
+
+        for i in range(1, 8):
+            if not await self.connect(gnd_id, adder_id, target_port_label=f"B[{i}]"):
+                return False
+
+        await self.log("  ✓ Connected adder B[0] = InputVcc (constant 1), B[1..7] = GND")
         await self.log("  ✓ Setting up cascaded mux logic for load/inc/hold priority")
 
         # Mux1: Select between hold (PC) and increment (PC+1) based on inc AND NOT(load)

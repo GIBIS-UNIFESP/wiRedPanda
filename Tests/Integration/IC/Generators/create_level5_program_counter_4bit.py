@@ -180,6 +180,15 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if not await self.connect(vcc_id, adder_id, target_port_label="B[0]"):
             return False
 
+        # Explicit constant 0 on B[1..3] (F34 — was an implicit unconnected default)
+        gnd_id = await self.create_element("InputGnd", input_x + (2 * HORIZONTAL_GATE_SPACING), 360.0, "GND_Const0")
+        if gnd_id is None:
+            return False
+
+        for i in range(1, 4):
+            if not await self.connect(gnd_id, adder_id, target_port_label=f"B[{i}]"):
+                return False
+
         await self.log("  ✓ Connected adder inputs for PC + 1 computation")
 
         # Create output LEDs for pc[0-3] (current program counter value)

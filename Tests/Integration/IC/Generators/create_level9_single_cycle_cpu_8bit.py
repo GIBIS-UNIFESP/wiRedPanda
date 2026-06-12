@@ -240,11 +240,8 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         if not await self.connect(prog_write_id, fetch_id, target_port_label="ProgWrite"):
             return False
 
-        # Clock to other stages
-        if not await self.connect(clock_id, decode_id, target_port_label="Clock"):
-            return False
-        if not await self.connect(clock_id, execute_id, target_port_label="Clock"):
-            return False
+        # Clock to the clocked stages (decode/execute are combinational and
+        # no longer expose a Clock port — F33)
         if not await self.connect(clock_id, memory_id, target_port_label="Clock"):
             return False
         if not await self.connect(clock_id, regfile_id, target_port_label="Clock"):

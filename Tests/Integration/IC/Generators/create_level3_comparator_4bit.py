@@ -27,7 +27,16 @@ from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 
 
 class Comparator4BitBuilder(ICBuilderBase):
-    """Builder for 4-bit Comparator IC"""
+    """Builder for 4-bit Comparator IC
+
+    Parameterized by output name (F32): the level-3 and level-4 comparator
+    fixtures are the same circuit, so create_level4_comparator_4bit.py
+    reuses this builder instead of duplicating it.
+    """
+
+    def __init__(self, mcp, verbose=True, output_name="level3_comparator_4bit"):
+        super().__init__(mcp, verbose=verbose)
+        self.output_name = output_name
 
     async def create(self) -> bool:
         """Create the 4-bit Comparator IC"""
@@ -248,7 +257,7 @@ class Comparator4BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created output LEDs")
 
         # Save circuit as IC
-        output_file = str(IC_COMPONENTS_DIR / "level3_comparator_4bit.panda")
+        output_file = str(IC_COMPONENTS_DIR / f"{self.output_name}.panda")
         if not await self.save_circuit(output_file):
             return False
 

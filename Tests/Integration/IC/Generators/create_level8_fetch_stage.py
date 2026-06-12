@@ -195,13 +195,8 @@ class FetchStageBuilder(ICBuilderBase):
         if not await self.connect(pc_inc_id, pc_id, target_port_label="Inc"):
             return False
 
-        # PC needs WriteEnable=1 always for normal operation
-        vcc_id = await self.create_element("InputVcc", control_x + HORIZONTAL_GATE_SPACING, input_y, "WriteEn")
-        if vcc_id is None:
-            return False
-
-        if not await self.connect(vcc_id, pc_id, target_port_label="WriteEnable"):
-            return False
+        # (F26: the PC derives its own write enable internally — the Vcc that
+        # used to feed a dead WriteEnable port was removed.)
 
         await self.log("  ✓ Connected PC inputs")
 
