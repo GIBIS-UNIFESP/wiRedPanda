@@ -11,4 +11,6 @@ class TestWaveform : public QObject
 
 private slots:
     void testDisplay4Bits();
+    void testRestoreInputsAfterSweep();
+    void testSignalRowEnumerationMatchesModel();
 };

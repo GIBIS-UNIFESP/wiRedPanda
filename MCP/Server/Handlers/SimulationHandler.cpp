@@ -131,23 +131,23 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
 
         bewavedDolphin->setLength(duration, false);
 
-        if (!inputPatterns.isEmpty()) {
-            const auto inputElements = bewavedDolphin->getInputElements();
+        // The waveform model holds one row per *port*, not per element — a
+        // multi-port input (rotary) spans several rows labelled "label[k]".
+        // Use the dolphin's canonical row enumeration for both pattern
+        // targeting and readback so MCP and GUI can never disagree on rows.
+        const QStringList inputRows = bewavedDolphin->inputRowLabels();
+        const QStringList outputRows = bewavedDolphin->outputRowLabels();
 
+        if (!inputPatterns.isEmpty()) {
             for (auto it = inputPatterns.begin(); it != inputPatterns.end(); ++it) {
                 QString inputLabel = it.key();
                 QJsonArray pattern = it.value().toArray();
 
-                int rowIndex = -1;
-                for (int i = 0; i < inputElements.size(); ++i) {
-                    if (inputElements[i]->label() == inputLabel) {
-                        rowIndex = i;
-                        break;
-                    }
-                }
+                const int rowIndex = static_cast<int>(inputRows.indexOf(inputLabel));
 
                 if (rowIndex == -1) {
-                    return createErrorResponse(QString("Input element with label '%1' not found").arg(inputLabel),
+                    return createErrorResponse(QString("Input signal '%1' not found (available rows: %2)")
+                                                   .arg(inputLabel, inputRows.join(", ")),
                                                requestId, JsonRpcError::ElementNotFound);
                 }
 
@@ -175,13 +175,11 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
         QJsonArray inputData;
         QJsonArray outputData;
 
-        const auto inputs = bewavedDolphin->getInputElements();
-        const auto outputs = bewavedDolphin->getOutputElements();
         const auto model = bewavedDolphin->getModel();
 
-        for (int row = 0; row < inputs.size(); ++row) {
+        for (int row = 0; row < inputRows.size(); ++row) {
             QJsonObject inputSignal;
-            inputSignal["label"] = inputs[row]->label();
+            inputSignal["label"] = inputRows.at(row);
             inputSignal["type"] = "input";
 
             QJsonArray values;
@@ -192,13 +190,13 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
             inputData.append(inputSignal);
         }
 
-        for (int row = 0; row < outputs.size(); ++row) {
+        for (int row = 0; row < outputRows.size(); ++row) {
             QJsonObject outputSignal;
-            outputSignal["label"] = outputs[row]->label();
+            outputSignal["label"] = outputRows.at(row);
             outputSignal["type"] = "output";
 
             QJsonArray values;
-            int outputRowIndex = static_cast<int>(inputs.size()) + row;
+            const int outputRowIndex = static_cast<int>(inputRows.size()) + row;
             for (int col = 0; col < duration; ++col) {
                 values.append(model->index(outputRowIndex, col).data().toInt());
             }

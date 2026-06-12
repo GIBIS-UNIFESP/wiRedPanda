@@ -121,6 +121,20 @@ public:
     /// Returns the current simulation length (number of columns).
     int getLength() const { return m_length; }
 
+    /**
+     * \brief Canonical per-row labels for the waveform model's input rows.
+     * \details The model holds one row per input element *output port* (not
+     * per element): a multi-port input such as a rotary contributes one row
+     * per port, labelled "label[k]". Anything that addresses model rows (the
+     * MCP create_waveform handler, exports) must use this enumeration —
+     * element indices do not line up with rows.
+     */
+    QStringList inputRowLabels() const;
+
+    /// Canonical per-row labels for the output rows (one per output element
+    /// *input port*), starting at model row inputRowLabels().size().
+    QStringList outputRowLabels() const;
+
 protected:
     // --- Qt event overrides ---
 

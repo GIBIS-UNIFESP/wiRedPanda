@@ -325,53 +325,60 @@ void BewavedDolphin::on_tableView_selectionChanged()
     m_externalScene->view()->update();
 }
 
+/// Builds the "label" / "label[k]" row label for one port of an element.
+static QString signalRowLabel(const GraphicElement *element, const int port, const int portCount)
+{
+    QString label = element->label();
+
+    // Fall back to the element type name when the user hasn't given it a label
+    if (label.isEmpty()) {
+        label = ElementFactory::translatedName(element->elementType());
+    }
+
+    // Multi-port elements (bus inputs, multi-bit displays) get indexed labels
+    return (portCount > 1) ? label + "[" + QString::number(port) + "]" : label;
+}
+
+QStringList BewavedDolphin::inputRowLabels() const
+{
+    QStringList labels;
+    for (const auto *input : m_inputs) {
+        for (int port = 0; port < input->outputSize(); ++port) {
+            labels.append(signalRowLabel(input, port, input->outputSize()));
+        }
+    }
+    return labels;
+}
+
+QStringList BewavedDolphin::outputRowLabels() const
+{
+    QStringList labels;
+    for (const auto *output : m_outputs) {
+        for (int port = 0; port < output->inputSize(); ++port) {
+            labels.append(signalRowLabel(output, port, output->inputSize()));
+        }
+    }
+    return labels;
+}
+
 void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLabels)
 {
+    inputLabels.append(inputRowLabels());
+
+    // Snapshot the live port state before the simulation sweep overwrites it
     QVector<Status> oldValues(m_inputPorts);
     int oldIndex = 0;
-
     for (auto *input : std::as_const(m_inputs)) {
-        QString label = input->label();
-
-        // Fall back to the element type name when the user hasn't given it a label
-        if (label.isEmpty()) {
-            label = ElementFactory::translatedName(input->elementType());
-        }
-
         for (int port = 0; port < input->outputSize(); ++port) {
-            // Multi-port inputs (e.g. bus inputs) get indexed labels like "A[0]", "A[1]"
-            if (input->outputSize() > 1) {
-                inputLabels.append(label + "[" + QString::number(port) + "]");
-            } else {
-                inputLabels.append(label);
-            }
-
-            // Snapshot the live port state before the simulation sweep overwrites it
             oldValues[oldIndex] = input->outputPort(port)->status();
             ++oldIndex;
         }
     }
+    m_oldInputValues = oldValues;
 
     qCDebug(zero) << "Getting the name of the outputs. If no label is given, element type is used as a name.";
 
-    for (auto *output : std::as_const(m_outputs)) {
-        QString label = output->label();
-
-        if (label.isEmpty()) {
-            label = ElementFactory::translatedName(output->elementType());
-        }
-
-        // Outputs with multiple input ports (e.g. multi-bit displays) get indexed labels
-        for (int port = 0; port < output->inputSize(); ++port) {
-            if (output->inputSize() > 1) {
-                outputLabels.append(label + "[" + QString::number(port) + "]");
-            } else {
-                outputLabels.append(label);
-            }
-        }
-    }
-
-    m_oldInputValues = oldValues;
+    outputLabels.append(outputRowLabels());
 }
 
 void BewavedDolphin::run()
@@ -430,21 +437,27 @@ void BewavedDolphin::restoreInputs()
 {
     qCDebug(zero) << "Restoring old values to inputs, prior to simulation.";
 
-    // Uses m_oldInputValues captured at loadSignals() time. Note that index maps to
-    // the element level, not the port level — multi-port inputs share the same saved value.
-    for (int index = 0; index < m_inputs.size(); ++index) {
-        auto *input = m_inputs.at(index);
+    // m_oldInputValues was captured per *port* by loadSignals(); consume it
+    // with the same walk. A multi-port input (rotary) selects exactly one
+    // port — restore it by activating the port that was saved as Active —
+    // while single-port inputs simply take their saved level.
+    int oldIndex = 0;
+
+    for (auto *input : std::as_const(m_inputs)) {
         if (!input) {
             continue;
         }
-        for (int port = 0; port < input->outputSize(); ++port) {
-            const bool oldValue = static_cast<bool>(m_oldInputValues.at(index));
 
-            if (input->outputSize() > 1) {
-                input->setOn(oldValue, port);
-            } else {
-                input->setOn(oldValue);
+        if (input->outputSize() > 1) {
+            for (int port = 0; port < input->outputSize(); ++port) {
+                if (m_oldInputValues.at(oldIndex) == Status::Active) {
+                    input->setOn(true, port);
+                }
+                ++oldIndex;
             }
+        } else {
+            input->setOn(m_oldInputValues.at(oldIndex) == Status::Active);
+            ++oldIndex;
         }
     }
 }
