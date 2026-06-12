@@ -148,6 +148,11 @@ private:
     void updateWithIterativeSettling();
     void sortSimElements(const QVector<GraphicElement *> &elements);
 
+    /// Recursively appends every ElementGroup::Memory element in \a elements
+    /// (descending into ICs) to m_sequentialElements. These get non-blocking
+    /// (deferred) output commits so synchronous logic matches SystemVerilog.
+    void collectSequentialElements(const QVector<GraphicElement *> &elements);
+
     // --- Members: Timer & element lists ---
 
     QTimer m_timer;
@@ -175,6 +180,10 @@ private:
     // --- Members: Direct simulation graph ---
 
     QVector<GraphicElement *> m_sortedElements;
+    /// All synchronous sequential elements (flip-flops, latches) across the whole
+    /// hierarchy, including those nested inside ICs. Bracketed each tick with
+    /// beginDeferredCommit()/commitDeferredOutputs() for non-blocking semantics.
+    QVector<GraphicElement *> m_sequentialElements;
     QHash<const GraphicElement *, int> m_simPriorities;
     QSet<const GraphicElement *> m_simFeedbackNodes;
     bool m_simHasFeedbackElements = false;

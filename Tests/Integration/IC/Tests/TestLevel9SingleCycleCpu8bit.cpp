@@ -149,6 +149,11 @@ struct CPUFixture {
         setMultiBitInput(progAddr, addr);
         setMultiBitInput(progData, instrByte);
         progWrite->setOn(true);
+        // Settle address/data/write-enable to the memory cell's D input before the
+        // clock edge: the cells are edge-triggered D flip-flops, so the write data
+        // must meet setup time (be stable one tick before the rising edge). This
+        // matches the established memory-write idiom (e.g. TestLevel8MemoryStage).
+        sim->update();
         clockCycle(sim, clk);
         progWrite->setOn(false);
     }
@@ -159,6 +164,9 @@ struct CPUFixture {
         setMultiBitInput(regProgAddr, regIdx);
         setMultiBitInput(regProgData, value);
         regProgWrite->setOn(true);
+        // Settle data/write-enable before the clock edge (setup time): the register
+        // cells are edge-triggered D flip-flops. See programInstruction().
+        sim->update();
         clockCycle(sim, clk);
         regProgWrite->setOn(false);
     }

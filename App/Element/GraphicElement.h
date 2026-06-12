@@ -350,6 +350,17 @@ public:
      */
     virtual void updateLogic();
 
+    /**
+     * \brief Re-evaluates combinational outputs after the synchronous sequential
+     * commit, propagating just-committed flip-flop/latch state to downstream
+     * logic and IC output boundaries within the same tick.
+     * \details Called only on non-sequential elements (the simulation skips
+     * ElementGroup::Memory so their edge state is not disturbed). The default
+     * recomputes via updateLogic(); IC overrides it to recurse through its
+     * internals while skipping its own sequential elements.
+     */
+    virtual void resettleCombinational() { updateLogic(); }
+
     /// Returns the four-state signal value on simulation output port \a index.
     inline Status outputValue(const int index = 0) const
     {
@@ -364,6 +375,12 @@ public:
     inline void setOutputValue(const int index, const Status value)
     {
         if (index >= m_simOutputValues.size()) { return; }
+        if (m_simDeferCommit) {
+            // Synchronous sequential element mid-tick: stage the value so peers
+            // still read the old output. commitDeferredOutputs() publishes it.
+            m_simStagedOutputs[index] = value;
+            return;
+        }
         if (m_simOutputValues[index] != value) { m_simOutputChanged = true; }
         m_simOutputValues[index] = value;
     }
@@ -386,6 +403,27 @@ public:
 
     /// Clears the simulation output-changed flag.
     void clearOutputChanged() { m_simOutputChanged = false; }
+
+    /// Begins a deferred (non-blocking) output commit window: seeds the staging
+    /// buffer with the current outputs and routes subsequent setOutputValue()
+    /// writes to it, so peers keep reading the pre-tick value. Used by the
+    /// simulation to give synchronous sequential elements (flip-flops, latches)
+    /// SystemVerilog-style non-blocking semantics.
+    void beginDeferredCommit()
+    {
+        m_simStagedOutputs = m_simOutputValues;
+        m_simDeferCommit = true;
+    }
+
+    /// Ends the deferred-commit window and publishes the staged outputs through
+    /// the normal change-detecting path so visuals refresh correctly.
+    void commitDeferredOutputs()
+    {
+        m_simDeferCommit = false;
+        for (int i = 0; i < m_simStagedOutputs.size() && i < m_simOutputValues.size(); ++i) {
+            setOutputValue(i, m_simStagedOutputs.at(i));
+        }
+    }
 
     /// Allocates simulation I/O vectors with \a inputs inputs and \a outputs outputs.
     void initSimulationVectors(const int inputCount, const int outputCount);
@@ -438,7 +476,13 @@ public:
     const QVector<Status> &simInputs() const { return m_simInputValues; }
 
     /// Read-only view of the current simulation output values.
-    const QVector<Status> &simOutputs() const { return m_simOutputValues; }
+    /// During a deferred-commit window this returns the element's own staged
+    /// (in-progress) outputs, so a sequential element re-evaluated multiple times
+    /// within one tick (e.g. by iterativeSettle on a feedback IC) sees the value
+    /// it already staged this tick rather than its stale committed output — its
+    /// hold path then preserves an edge result instead of overwriting it. Other
+    /// elements still read this element's pre-tick value via outputValue().
+    const QVector<Status> &simOutputs() const { return m_simDeferCommit ? m_simStagedOutputs : m_simOutputValues; }
 
     // --- Theme ---
 
@@ -683,7 +727,13 @@ private:
     QVector<SimInputConnection> m_simInputConnections;
     QVector<Status> m_simInputValues;
     QVector<Status> m_simOutputValues;
+    /// Staging buffer for non-blocking (synchronous) sequential commit. While
+    /// m_simDeferCommit is true, setOutputValue() writes here instead of the
+    /// live outputs so other elements keep reading the pre-tick value until
+    /// commitDeferredOutputs() publishes the whole snapshot at once.
+    QVector<Status> m_simStagedOutputs;
     bool m_simOutputChanged = false;
+    bool m_simDeferCommit = false;
 
     // --- Members: Trigger & Label ---
 

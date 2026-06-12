@@ -1101,6 +1101,8 @@ void GraphicElement::initSimulationVectors(const int inputCount, const int outpu
     m_simInputConnections.fill({}, inputCount);
     m_simInputValues.fill(Status::Inactive, inputCount);
     m_simOutputValues.resize(outputCount);
+    m_simStagedOutputs.resize(outputCount);
+    m_simDeferCommit = false;
     // Initialize outputs from port default statuses when they're explicitly set
     // (e.g., flip-flop Q'=Active), otherwise default to Inactive.
     // Using Inactive (not Unknown) ensures gate-level feedback loops can settle.
