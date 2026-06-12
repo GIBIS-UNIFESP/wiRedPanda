@@ -18,7 +18,7 @@ On distros such as Arch Linux, Gentoo, Manjaro, Debian, etc., Qt 6.2+ can be ins
 * Debian/Ubuntu
 
 ```bash
-sudo apt install build-essential qt6-base-dev qt6-multimedia-dev libqt6svg6-dev
+sudo apt install build-essential qt6-base-dev qt6-multimedia-dev qt6-svg-dev
 ```
 
 * Arch Linux-based

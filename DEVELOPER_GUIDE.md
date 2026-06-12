@@ -118,7 +118,7 @@ See [BUILD.md](BUILD.md) for platform-specific instructions. The short version:
 
 ```bash
 sudo apt install build-essential cmake ninja-build \
-    qt6-base-dev qt6-multimedia-dev libqt6svg6-dev \
+    qt6-base-dev qt6-multimedia-dev qt6-svg-dev \
     ccache mold
 ```
 
