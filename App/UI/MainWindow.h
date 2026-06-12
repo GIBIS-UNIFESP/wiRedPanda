@@ -38,6 +38,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    friend class TestMainWindowGui;
+
 public:
     // --- Lifecycle ---
 

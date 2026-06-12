@@ -1115,10 +1115,12 @@ bool MainWindow::hasModifiedFiles()
         }
 
         // An autosave file that is still in the list has not been explicitly
-        // saved by the user yet and should be treated as modified.
-        const QString fileName = workspace->fileInfo().fileName();
+        // saved by the user yet and should be treated as modified. The list
+        // stores absolute paths (see WorkSpace::autosave), so compare the
+        // workspace's absolute path — not its basename.
+        const QString filePath = workspace->fileInfo().absoluteFilePath();
 
-        if (!fileName.isEmpty() && autosaves.contains(fileName)) {
+        if (!filePath.isEmpty() && autosaves.contains(filePath)) {
             return true;
         }
     }
