@@ -181,11 +181,11 @@ void computeLogic() {
     aux_level4_register_4bit_0_node_2 = aux_ic_input_level4_register_4bit_0_2;
     aux_level4_register_4bit_0_node_0 = aux_ic_input_level4_register_4bit_0_0;
     aux_level4_register_4bit_0_node_1 = aux_ic_input_level4_register_4bit_0_1;
-    aux_level4_register_4bit_0_not_16 = !aux_level4_register_4bit_0_node_2;
     aux_level4_register_4bit_0_node_3 = aux_ic_input_level4_register_4bit_0_3;
     aux_level4_register_4bit_0_node_4 = aux_ic_input_level4_register_4bit_0_4;
     aux_level4_register_4bit_0_node_5 = aux_ic_input_level4_register_4bit_0_5;
     aux_level4_register_4bit_0_node_6 = aux_ic_input_level4_register_4bit_0_6;
+    aux_level4_register_4bit_0_not_16 = !aux_level4_register_4bit_0_node_2;
     //D FlipFlop
     if (aux_level4_register_4bit_0_node_0 && !aux_level4_register_4bit_0_d_flip_flop_8_0_q_inclk) { 
         aux_level4_register_4bit_0_d_flip_flop_8_0_q = aux_level4_register_4bit_0_d_flip_flop_8_0_q_last;

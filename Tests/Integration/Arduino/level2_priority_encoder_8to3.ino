@@ -117,12 +117,13 @@ void computeLogic() {
     aux_level2_priority_encoder_8to3_0_node_5 = aux_ic_input_level2_priority_encoder_8to3_0_5;
     aux_level2_priority_encoder_8to3_0_node_6 = aux_ic_input_level2_priority_encoder_8to3_0_6;
     aux_level2_priority_encoder_8to3_0_node_7 = aux_ic_input_level2_priority_encoder_8to3_0_7;
+    aux_level2_priority_encoder_8to3_0_node_1 = aux_ic_input_level2_priority_encoder_8to3_0_1;
+    aux_level2_priority_encoder_8to3_0_node_0 = aux_ic_input_level2_priority_encoder_8to3_0_0;
     aux_level2_priority_encoder_8to3_0_or_9 = aux_level2_priority_encoder_8to3_0_node_7 || aux_level2_priority_encoder_8to3_0_node_6;
     aux_level2_priority_encoder_8to3_0_or_10 = aux_level2_priority_encoder_8to3_0_node_7 || aux_level2_priority_encoder_8to3_0_node_6 || aux_level2_priority_encoder_8to3_0_node_5;
     aux_level2_priority_encoder_8to3_0_or_11 = aux_level2_priority_encoder_8to3_0_node_7 || aux_level2_priority_encoder_8to3_0_node_6 || aux_level2_priority_encoder_8to3_0_node_5 || aux_level2_priority_encoder_8to3_0_node_4;
     aux_level2_priority_encoder_8to3_0_or_12 = aux_level2_priority_encoder_8to3_0_node_7 || aux_level2_priority_encoder_8to3_0_node_6 || aux_level2_priority_encoder_8to3_0_node_5 || aux_level2_priority_encoder_8to3_0_node_4 || aux_level2_priority_encoder_8to3_0_node_3;
     aux_level2_priority_encoder_8to3_0_or_13 = aux_level2_priority_encoder_8to3_0_node_7 || aux_level2_priority_encoder_8to3_0_node_6 || aux_level2_priority_encoder_8to3_0_node_5 || aux_level2_priority_encoder_8to3_0_node_4 || aux_level2_priority_encoder_8to3_0_node_3 || aux_level2_priority_encoder_8to3_0_node_2;
-    aux_level2_priority_encoder_8to3_0_node_1 = aux_ic_input_level2_priority_encoder_8to3_0_1;
     aux_level2_priority_encoder_8to3_0_not_8 = !aux_level2_priority_encoder_8to3_0_node_7;
     aux_level2_priority_encoder_8to3_0_not_15 = !aux_level2_priority_encoder_8to3_0_or_9;
     aux_level2_priority_encoder_8to3_0_not_16 = !aux_level2_priority_encoder_8to3_0_or_10;
@@ -142,7 +143,6 @@ void computeLogic() {
     aux_level2_priority_encoder_8to3_0_or_32 = aux_level2_priority_encoder_8to3_0_and_21 || aux_level2_priority_encoder_8to3_0_node_7;
     aux_level2_priority_encoder_8to3_0_or_34 = aux_level2_priority_encoder_8to3_0_and_26 || aux_level2_priority_encoder_8to3_0_and_24;
     aux_level2_priority_encoder_8to3_0_or_35 = aux_level2_priority_encoder_8to3_0_and_22 || aux_level2_priority_encoder_8to3_0_node_7;
-    aux_level2_priority_encoder_8to3_0_node_0 = aux_ic_input_level2_priority_encoder_8to3_0_0;
     aux_level2_priority_encoder_8to3_0_not_20 = !aux_level2_priority_encoder_8to3_0_or_14;
     aux_level2_priority_encoder_8to3_0_or_30 = aux_level2_priority_encoder_8to3_0_or_28 || aux_level2_priority_encoder_8to3_0_or_29;
     aux_level2_priority_encoder_8to3_0_or_33 = aux_level2_priority_encoder_8to3_0_or_31 || aux_level2_priority_encoder_8to3_0_or_32;

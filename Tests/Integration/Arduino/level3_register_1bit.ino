@@ -66,8 +66,8 @@ void computeLogic() {
     aux_level3_register_1bit_0_node_2 = aux_ic_input_level3_register_1bit_0_2;
     aux_level3_register_1bit_0_node_0 = aux_ic_input_level3_register_1bit_0_0;
     aux_level3_register_1bit_0_node_3 = aux_ic_input_level3_register_1bit_0_3;
-    aux_level3_register_1bit_0_not_5 = !aux_level3_register_1bit_0_node_2;
     aux_level3_register_1bit_0_node_1 = aux_ic_input_level3_register_1bit_0_1;
+    aux_level3_register_1bit_0_not_5 = !aux_level3_register_1bit_0_node_2;
     aux_level3_register_1bit_0_not_4 = !aux_level3_register_1bit_0_node_3;
     //Multiplexer
     if ((aux_level3_register_1bit_0_not_5) == 0) {

@@ -3,9 +3,11 @@
 
 #include "App/CodeGen/ArduinoCodeGen.h"
 
+#include <algorithm>
 #include <functional>
 
 #include <QRegularExpression>
+#include <QSet>
 
 #include "App/CodeGen/CodeGenUtils.h"
 #include "App/Core/Common.h"
@@ -18,6 +20,7 @@
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/Simulation.h"
 
 ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
     : m_file(fileName)
@@ -479,7 +482,23 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
             if (!ic->internalElements().isEmpty()) {
                 IC *previousIC = m_currentIC;
                 m_currentIC = ic;
-                assignVariablesRec(Scene::sortByTopology(ic->internalElements()));
+                // Emit boundary input nodes before the rest so downstream gates
+                // never read a stale input on the first settle pass. The
+                // topological sort can place a boundary input after a consumer
+                // when the IC has feedback (its priorities take the legacy
+                // path), and a stale read transiently flips bistable latches —
+                // wrong, and divergent from the simulation, which excludes
+                // boundary inputs from its settle (IC::initializeSimulation).
+                QSet<GraphicElement *> boundaryInputs;
+                for (auto *port : ic->internalInputs()) {
+                    if (auto *boundaryElement = port->graphicElement()) {
+                        boundaryInputs.insert(boundaryElement);
+                    }
+                }
+                auto sortedInternal = Scene::sortByTopology(ic->internalElements());
+                std::stable_partition(sortedInternal.begin(), sortedInternal.end(),
+                    [&boundaryInputs](GraphicElement *e) { return boundaryInputs.contains(e); });
+                assignVariablesRec(sortedInternal);
                 m_currentIC = previousIC;
             }
 
@@ -1080,7 +1099,12 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
         for (int j = 0; j < numInputs; ++j) {
             m_stream << "        " << m_inputMap.at(j).m_varName << "_val = VECTORS[t].in[" << j << "];" << Qt::endl;
         }
-        m_stream << "        computeLogic();" << Qt::endl;
+        // Settle feedback to a fixed point before checking — gate-built latches
+        // need several passes to propagate, exactly as Simulation::iterativeSettle
+        // does for the reference truth table (same bound, so they agree).
+        // Combinational circuits converge on the first pass.
+        m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
+                 << "; s++) { computeLogic(); }" << Qt::endl;
         m_stream << "        bool pass = true;" << Qt::endl;
         for (int k = 0; k < numOutputs; ++k) {
             m_stream << "        pass = pass && (" << outputVarNames.at(k) << " == VECTORS[t].out[" << k << "]);" << Qt::endl;

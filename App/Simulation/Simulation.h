@@ -125,9 +125,14 @@ public:
     static SortResult topologicalSort(const QVector<GraphicElement *> &elements,
                                       const QHash<GraphicElement *, QVector<GraphicElement *>> &successors);
 
+    /// Iteration cap for settling feedback circuits to a fixed point. Shared
+    /// with the Arduino testbench generator (ArduinoCodeGen::generateTestbench)
+    /// so the reference and the emitted testbench settle to the same bound.
+    static constexpr int kMaxSettleIterations = 10;
+
     /// Runs updateLogic() iteratively on \a elements until outputs converge or \a maxIterations is reached.
     /// \return \c true if the circuit converged.
-    static bool iterativeSettle(const QVector<GraphicElement *> &elements, int maxIterations = 10);
+    static bool iterativeSettle(const QVector<GraphicElement *> &elements, int maxIterations = kMaxSettleIterations);
 
 signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.

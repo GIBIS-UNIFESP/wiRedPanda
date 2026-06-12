@@ -119,6 +119,10 @@ void computeLogic() {
     aux_level3_comparator_4bit_0_node_4 = aux_ic_input_level3_comparator_4bit_0_4;
     aux_level3_comparator_4bit_0_node_1 = aux_ic_input_level3_comparator_4bit_0_1;
     aux_level3_comparator_4bit_0_node_5 = aux_ic_input_level3_comparator_4bit_0_5;
+    aux_level3_comparator_4bit_0_node_2 = aux_ic_input_level3_comparator_4bit_0_2;
+    aux_level3_comparator_4bit_0_node_6 = aux_ic_input_level3_comparator_4bit_0_6;
+    aux_level3_comparator_4bit_0_node_3 = aux_ic_input_level3_comparator_4bit_0_3;
+    aux_level3_comparator_4bit_0_node_7 = aux_ic_input_level3_comparator_4bit_0_7;
     aux_level3_comparator_4bit_0_not_8 = !aux_level3_comparator_4bit_0_node_0;
     aux_level3_comparator_4bit_0_not_9 = !aux_level3_comparator_4bit_0_node_4;
     aux_level3_comparator_4bit_0_not_10 = !aux_level3_comparator_4bit_0_node_1;
@@ -126,8 +130,6 @@ void computeLogic() {
     aux_level3_comparator_4bit_0_and_17 = aux_level3_comparator_4bit_0_node_0 && aux_level3_comparator_4bit_0_not_9;
     aux_level3_comparator_4bit_0_and_18 = aux_level3_comparator_4bit_0_not_8 && aux_level3_comparator_4bit_0_node_4;
     aux_level3_comparator_4bit_0_xnor_19 = !(aux_level3_comparator_4bit_0_node_1 ^ aux_level3_comparator_4bit_0_node_5);
-    aux_level3_comparator_4bit_0_node_2 = aux_ic_input_level3_comparator_4bit_0_2;
-    aux_level3_comparator_4bit_0_node_6 = aux_ic_input_level3_comparator_4bit_0_6;
     aux_level3_comparator_4bit_0_and_20 = aux_level3_comparator_4bit_0_node_1 && aux_level3_comparator_4bit_0_not_11;
     aux_level3_comparator_4bit_0_and_21 = aux_level3_comparator_4bit_0_not_10 && aux_level3_comparator_4bit_0_node_5;
     aux_level3_comparator_4bit_0_and_29 = aux_level3_comparator_4bit_0_xnor_19 && aux_level3_comparator_4bit_0_and_17;
@@ -137,8 +139,6 @@ void computeLogic() {
     aux_level3_comparator_4bit_0_xnor_22 = !(aux_level3_comparator_4bit_0_node_2 ^ aux_level3_comparator_4bit_0_node_6);
     aux_level3_comparator_4bit_0_or_30 = aux_level3_comparator_4bit_0_and_20 || aux_level3_comparator_4bit_0_and_29;
     aux_level3_comparator_4bit_0_or_32 = aux_level3_comparator_4bit_0_and_21 || aux_level3_comparator_4bit_0_and_31;
-    aux_level3_comparator_4bit_0_node_3 = aux_ic_input_level3_comparator_4bit_0_3;
-    aux_level3_comparator_4bit_0_node_7 = aux_ic_input_level3_comparator_4bit_0_7;
     aux_level3_comparator_4bit_0_and_23 = aux_level3_comparator_4bit_0_node_2 && aux_level3_comparator_4bit_0_not_13;
     aux_level3_comparator_4bit_0_and_24 = aux_level3_comparator_4bit_0_not_12 && aux_level3_comparator_4bit_0_node_6;
     aux_level3_comparator_4bit_0_and_33 = aux_level3_comparator_4bit_0_xnor_22 && aux_level3_comparator_4bit_0_or_30;
