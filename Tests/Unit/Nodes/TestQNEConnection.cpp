@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Nodes/TestQNEConnection.h"
 
+#include "App/Core/Application.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Nodes/QNEConnection.h"

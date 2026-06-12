@@ -31,6 +31,10 @@ component_management:
       name: Tests
       paths:
         - Tests/**
+    - component_id: mcp_server
+      name: MCP Server
+      paths:
+        - MCP/Server/**
 
 ignore:
   - "**/moc_*.cpp"
@@ -38,7 +42,7 @@ ignore:
   - "**/ui_*.h"
   - "**/*_autogen/**"
   - "build/**"
-  - "MCP/**"
+  - "MCP/Client/**"
   - "third-party/**"
   - "App/Resources/**"
   - ".devcontainer/**"
