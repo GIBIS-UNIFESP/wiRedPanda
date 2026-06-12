@@ -26,7 +26,7 @@ from pathlib import Path
 project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(project_root / "MCP" / "Client"))
 
-from mcp_infrastructure import MCPInfrastructure  # noqa: E402
+from mcp_client.mcp_infrastructure import MCPInfrastructure  # noqa: E402
 
 FIXTURES_DIR = project_root / "Tests" / "Fixtures"
 
