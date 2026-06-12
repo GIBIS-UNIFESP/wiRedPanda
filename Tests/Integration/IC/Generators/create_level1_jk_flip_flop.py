@@ -15,7 +15,9 @@ Circuit (textbook pulse-triggered master-slave JK, 7476-style — F55):
   combinational race (the old circuit fed the master back its own outputs,
   leaving the J=K=1 master with no stable state).
 - Slave latch transfers the master state while Clock=0: Q changes on the
-  FALLING edge (end of the clock pulse).
+  FALLING edge (end of the clock pulse). NOTE: this is the opposite polarity
+  from the RISING-edge D flip-flop in this library — mind the edge when
+  composing the two into counters/registers.
 - When J=1, K=0: Set Q=1
 - When J=0, K=1: Reset Q=0
 - When J=1, K=1: Toggle Q
@@ -132,18 +134,22 @@ class JKFlipFlopBuilder(ICBuilderBase):
         if not_clear_id is None:
             return False
 
-        # OR gate for S (slave_gate_r OR NOT(clear))
-        # When Clear=0: NOT(0)=1 -> OR forces slave NOR Q input high -> Q=0
-        or_s_id = await self.create_element(
-            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 2), "or_s")
-        if or_s_id is None:
+        # Slave reset-side OR (slave_gate_r OR NOT(clear)) -> drives the Q NOR.
+        # When Clear=0: NOT(0)=1 -> OR forces slave NOR Q input high -> Q=0.
+        # (F63: this gate performs the Reset function, so it is labelled "or_r"
+        # to match the master pair and the D-FF convention — was mislabelled "or_s".)
+        or_r_id = await self.create_element(
+            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 2), "or_r")
+        if or_r_id is None:
             return False
 
-        # OR gate for R (slave_gate_s OR NOT(preset))
-        # When Preset=0: NOT(0)=1 -> OR forces slave NOR Q_bar input high -> Q_bar=0 -> Q=1
-        or_r_id = await self.create_element(
-            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 3), "or_r")
-        if or_r_id is None:
+        # Slave set-side OR (slave_gate_s OR NOT(preset)) -> drives the Q_bar NOR.
+        # When Preset=0: NOT(0)=1 -> OR forces slave NOR Q_bar input high -> Q_bar=0 -> Q=1.
+        # (F63: this gate performs the Set function, so it is labelled "or_s" —
+        # was mislabelled "or_r".)
+        or_s_id = await self.create_element(
+            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 3), "or_s")
+        if or_s_id is None:
             return False
 
         # Master-side injection (F56-consistent): force BOTH latches on
@@ -311,36 +317,36 @@ class JKFlipFlopBuilder(ICBuilderBase):
 
         # ========== Preset/Clear OR Gate Injection into Slave Latch ==========
 
-        # Connect slave gate R to OR S gate (input 0)
-        # Normal path: slave gate R drives slave NOR Q via OR S
-        if not await self.connect(slave_gate_r_id, or_s_id):
+        # Connect slave gate R to OR R gate (input 0)
+        # Normal path: slave gate R drives slave NOR Q via the reset-side OR
+        if not await self.connect(slave_gate_r_id, or_r_id):
             return False
 
-        # Connect NOT Clear to OR S gate (input 1)
+        # Connect NOT Clear to OR R gate (input 1)
         # When Clear=0: NOT(0)=1 -> OR=1 -> slave NOR Q forced low -> Q=0
-        if not await self.connect(not_clear_id, or_s_id, target_port=1):
+        if not await self.connect(not_clear_id, or_r_id, target_port=1):
             return False
 
-        # Connect OR S to slave NOR Q port 0 (replaces direct slave gate R connection)
-        if not await self.connect(or_s_id, slave_nor_q_id):
+        # Connect OR R to slave NOR Q port 0 (replaces direct slave gate R connection)
+        if not await self.connect(or_r_id, slave_nor_q_id):
             return False
 
         # Connect slave NOR Q_bar to slave NOR Q port 1 (feedback)
         if not await self.connect(slave_nor_qbar_id, slave_nor_q_id, target_port=1):
             return False
 
-        # Connect slave gate S to OR R gate (input 0)
-        # Normal path: slave gate S drives slave NOR Q_bar via OR R
-        if not await self.connect(slave_gate_s_id, or_r_id):
+        # Connect slave gate S to OR S gate (input 0)
+        # Normal path: slave gate S drives slave NOR Q_bar via the set-side OR
+        if not await self.connect(slave_gate_s_id, or_s_id):
             return False
 
-        # Connect NOT Preset to OR R gate (input 1)
+        # Connect NOT Preset to OR S gate (input 1)
         # When Preset=0: NOT(0)=1 -> OR=1 -> slave NOR Q_bar forced low -> Q_bar=0 -> Q=1
-        if not await self.connect(not_preset_id, or_r_id, target_port=1):
+        if not await self.connect(not_preset_id, or_s_id, target_port=1):
             return False
 
-        # Connect OR R to slave NOR Q_bar port 0 (replaces direct slave gate S connection)
-        if not await self.connect(or_r_id, slave_nor_qbar_id):
+        # Connect OR S to slave NOR Q_bar port 0 (replaces direct slave gate S connection)
+        if not await self.connect(or_s_id, slave_nor_qbar_id):
             return False
 
         # Connect slave NOR Q to slave NOR Q_bar port 1 (feedback)

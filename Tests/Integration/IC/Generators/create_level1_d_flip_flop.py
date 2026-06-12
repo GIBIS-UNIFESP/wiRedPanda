@@ -8,24 +8,31 @@ Create D Flip-Flop IC with Preset and Clear
 Inputs: D (Data), Clock, Preset (active LOW), Clear (active LOW)
 Outputs: Q, Q_bar
 
-Circuit:
-- Master-Slave configuration using two D latches
-- Master latch active on clock low
-- Slave latch active on clock high
-- Ensures output changes only on clock edge
-- Preset/Clear override normal operation (asynchronous)
+Circuit (gate-level master-slave, built from primitives — not "D Latch" parts):
+- Master is a gated SR latch transparent while Clock=LOW; slave is a gated SR
+  latch transparent while Clock=HIGH. The pair captures D on the RISING edge
+  (slave opens and copies what the master grabbed during the low phase).
+- D is steered into S/R via AND gates gated by the clock level; the slave's R
+  path reuses the master's own Qm_bar output (a true complement), so no slave
+  NOT(Qm) gate is needed.
+- Preset/Clear override normal operation (asynchronous), injected into BOTH
+  latches so they work under any clock level (F56).
 
-Implementation:
-- 1 NOT gate (invert clock for master/slave control)
-- 2 NOT gates (invert Preset and Clear for OR logic)
-- 4 OR gates (inject Preset/Clear into BOTH latches' S/R — 7474 forces
-  master and slave, so async controls work under any clock level; F56)
-- 2 D Latches (master and slave)
+Implementation (gate inventory):
+- 3 NOT gates: invert Clock, Preset, Clear.
+- 1 NOT gate: master D_bar (master_not_d).
+- Master: 2 AND (D*clk', D_bar*clk' -> S/R), 2 NOR (cross-coupled core).
+- Slave:  2 AND (Qm*clk, Qm_bar*clk -> S/R), 2 NOR (cross-coupled core).
+- 4 OR gates: inject NOT(Preset)/NOT(Clear) into the S/R of BOTH latches
+  (master_or_s/master_or_r + or_s/or_r) — a 7474 forces master and slave, so
+  async controls survive any clock level and the forced value holds on release
+  (F56).
 
 D Flip-Flop behavior:
-- Output changes on rising edge of clock
-- Input D sampled and captured on clock edge
-- Output stable during clock cycle
+- RISING-edge triggered: Q captures D on the clock's rising edge.
+  (Note: the JK flip-flop in this library is FALLING-edge — mind the polarity
+  when composing the two.)
+- Output stable during the rest of the clock cycle.
 - Preset (active LOW): Forces Q=1, Q_bar=0
 - Clear (active LOW): Forces Q=0, Q_bar=1
 
@@ -158,12 +165,12 @@ class DFlipFlopBuilder(ICBuilderBase):
         if master_and2_id is None:
             return False
 
-        # Master NOR1: (S, Q_bar) -> Qm
+        # Master NOR1: (R, Qm_bar) -> Qm (R forces Qm=0; F62: was mislabelled "S")
         master_nor1_id = await self.create_element("Nor", master_nor_x, top_y, "master_nor_q")
         if master_nor1_id is None:
             return False
 
-        # Master NOR2: (R, Q) -> Qm_bar
+        # Master NOR2: (S, Qm) -> Qm_bar (S forces Qm_bar=0; F62: was mislabelled "R")
         master_nor2_id = await self.create_element("Nor", master_nor_x, bottom_y, "master_nor_qbar")
         if master_nor2_id is None:
             return False
@@ -184,12 +191,12 @@ class DFlipFlopBuilder(ICBuilderBase):
         if slave_and2_id is None:
             return False
 
-        # Slave NOR1: (S, Q_bar) -> Q
+        # Slave NOR1: (R, Q_bar) -> Q (R forces Q=0; F62: was mislabelled "S")
         slave_nor1_id = await self.create_element("Nor", slave_nor_x, top_y, "slave_nor_q")
         if slave_nor1_id is None:
             return False
 
-        # Slave NOR2: (R, Q) -> Q_bar
+        # Slave NOR2: (S, Q) -> Q_bar (S forces Q_bar=0; F62: was mislabelled "R")
         slave_nor2_id = await self.create_element("Nor", slave_nor_x, bottom_y, "slave_nor_qbar")
         if slave_nor2_id is None:
             return False
