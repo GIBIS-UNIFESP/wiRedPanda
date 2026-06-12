@@ -240,6 +240,22 @@ static QVector<SeqTestStep> collectSequentialVectors(
         clockPulseDFF();
         recordCheck(steps, switches, leds, "Init Q=0");
 
+        // --- Edge-polarity discriminator (F68) ---
+        // The D-FF gate IC is master-LOW / slave-HIGH → RISING-edge: D (tracked
+        // by the master while clock=LOW) transfers to Q when the clock goes
+        // HIGH. So checking Q *while the clock is HIGH* must already show the
+        // captured value — a falling-edge model would still show the old Q here.
+        // This pins the rising edge (mirror of the JK falling-edge check).
+        switches[0]->setOn(true);   // d=1
+        for (int u = 0; u < 20; ++u) sim->update();
+        recordSetup(steps, switches, "Edge test setup D=1 (Q=0)");
+        switches[1]->setOn(true);   // clock HIGH (rising edge captures D)
+        for (int u = 0; u < 20; ++u) sim->update();
+        recordCheck(steps, switches, leds, "Edge test: Q=1 already at clock HIGH (rising-edge)");
+        switches[1]->setOn(false);  // clock LOW
+        for (int u = 0; u < 20; ++u) sim->update();
+        recordCheck(steps, switches, leds, "Edge test: Q holds 1 after clock LOW");
+
         // D=1, clock pulse → capture Q=1
         switches[0]->setOn(true);   // d=1
         for (int u = 0; u < 20; ++u) sim->update();
@@ -303,6 +319,23 @@ static QVector<SeqTestStep> collectSequentialVectors(
         recordSetup(steps, switches, "Init reset J=0 K=1");
         clockPulseJK();
         recordCheck(steps, switches, leds, "Init reset Q=0");
+
+        // --- Edge-polarity discriminator (F68) ---
+        // The gate IC is a master-slave (7476) JK: FALLING-edge. With Q=0 and
+        // J=1,K=0, raising the clock must NOT change Q yet — the master captures
+        // but the slave holds until the falling edge. Checking outputs *while the
+        // clock is HIGH* discriminates the edge: a rising-edge SV model would
+        // already show Q=1 here, so this step fails if the exporter emits the
+        // wrong clock edge for the JK template.
+        switches[0]->setOn(true);   // j=1
+        switches[1]->setOn(false);  // k=0
+        recordSetup(steps, switches, "Edge test setup J=1 K=0 (Q=0)");
+        switches[2]->setOn(true);   // clock HIGH (master captures; slave holds)
+        sim->update();
+        recordCheck(steps, switches, leds, "Edge test: Q still 0 while clock HIGH");
+        switches[2]->setOn(false);  // clock LOW (falling edge: slave transfers)
+        sim->update();
+        recordCheck(steps, switches, leds, "Edge test: Q=1 after falling edge");
 
         // Set: J=1, K=0, clock pulse → Q=1
         switches[0]->setOn(true);   // j=1

@@ -17,7 +17,7 @@ module level1_jk_flip_flop_ic (
         q = 1'b1;
         q_bar = 1'b0;
     end
-    always @(posedge clock or negedge preset or negedge clear)
+    always @(negedge clock or negedge preset or negedge clear)
     begin
         if (~preset)
         begin

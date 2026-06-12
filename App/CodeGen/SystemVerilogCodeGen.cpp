@@ -272,6 +272,14 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
 
 // Match IC port signature against known sequential element patterns.
 // Returns the matching ElementType, or Unknown if no match.
+//
+// NOTE: recognition is by port signature ALONE — any gate-built IC with these
+// input/output names gets the matching behavioral model regardless of its
+// internal gate netlist (which is discarded). The shipped level-1 ICs are built
+// to match: the JK is a master-slave 7476 (falling-edge → negedge template) and
+// the D-FF is master-low (rising-edge → posedge template). A user IC that
+// reused a signature but implemented a different edge/behavior would be
+// mis-modelled here; emitting the gates structurally would be the general fix.
 ElementType SystemVerilogCodeGen::detectSequentialICType(const ICModuleInfo &info)
 {
     const auto &in = info.inputNames;
@@ -561,7 +569,19 @@ bool SystemVerilogCodeGen::emitBehavioralICModule(ICModuleInfo &info)
         const QString &clk = in[2];
         const QString &prst = in[3];
         const QString &clr = in[4];
-        m_stream << "    always @(posedge " << clk << " or negedge " << prst << " or negedge " << clr << ")" << Qt::endl;
+        // FALLING-edge (negedge): the gate-built JK IC this template stands in
+        // for is a master-slave (7476-style) flip-flop — the master is
+        // transparent while clock=HIGH and the slave transfers on the falling
+        // edge, so Q updates at the END of the clock pulse. This matches the
+        // wiRedPanda engine and the structural Arduino export (F67). Do NOT
+        // change to posedge: that was the original bug — it made the SV export
+        // simulate on the opposite edge from the actual circuit. (The D-FF
+        // template below is posedge because its gate circuit is master-LOW →
+        // rising-edge; the two parts genuinely differ, like a real 7476 vs
+        // 7474.) Note this model is an idealized edge-triggered JK: it does not
+        // reproduce master-slave "1's-catching", which is acceptable for clean
+        // synchronous (J/K-stable-per-cycle) use.
+        m_stream << "    always @(negedge " << clk << " or negedge " << prst << " or negedge " << clr << ")" << Qt::endl;
         m_stream << "    begin" << Qt::endl;
         m_stream << "        if (~" << prst << ")" << Qt::endl;
         m_stream << "        begin" << Qt::endl;
