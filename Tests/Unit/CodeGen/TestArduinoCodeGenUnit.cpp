@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/CodeGen/TestArduinoCodeGenUnit.h"
 
+#include <QRegularExpression>
 #include <QTemporaryDir>
 
 #include "App/CodeGen/ArduinoCodeGen.h"
@@ -13,6 +14,7 @@
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
+#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -165,4 +167,47 @@ void TestArduinoCodeGenUnit::testEmptyScene()
     QString content = file.readAll();
 
     QVERIFY(content.contains("void setup()"));
+}
+
+void TestArduinoCodeGenUnit::testTruthTableMultiOutput()
+{
+    // Regression test (F19): only output 0 of a multi-output TruthTable was
+    // emitted — outputs 1..N silently held their initial value in the sketch.
+    // Output k must read key bits 256*k + row.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    auto *sw1 = new InputSwitch;
+    auto *sw2 = new InputSwitch;
+    auto *tt = new TruthTable;
+    tt->setOutputSize(2);
+    auto *led0 = new Led;
+    auto *led1 = new Led;
+
+    builder.add(sw1, sw2, tt, led0, led1);
+    builder.connect(sw1, 0, tt, 0);
+    builder.connect(sw2, 0, tt, 1);
+    builder.connect(tt, 0, led0, 0);
+    builder.connect(tt, 1, led1, 0);
+
+    // Output 0 = AND (row 3 only), output 1 = OR (rows 1..3).
+    tt->key().setBit(3, true);
+    tt->key().setBit(256 + 1, true);
+    tt->key().setBit(256 + 2, true);
+    tt->key().setBit(256 + 3, true);
+
+    QTemporaryDir dir;
+    QString path = dir.path() + "/tt_multi.ino";
+    ArduinoCodeGen codegen(path, arduinoSceneElements(workspace.scene()));
+    codegen.generate();
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    const QString content = file.readAll();
+
+    // Two emitted chains; rows 1 and 2 are HIGH only for the OR output,
+    // row 3 for both.
+    QCOMPARE(content.count("//TruthTable\n"), 2); // one begin marker per output
+    QCOMPARE(content.count(QRegularExpression("== 1\\) \\{\\n        \\S+ = HIGH;")), 1);
+    QCOMPARE(content.count(QRegularExpression("== 3\\) \\{\\n        \\S+ = HIGH;")), 2);
 }

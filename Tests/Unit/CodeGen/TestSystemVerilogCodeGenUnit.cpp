@@ -3,16 +3,19 @@
 
 #include "Tests/Unit/CodeGen/TestSystemVerilogCodeGenUnit.h"
 
+#include <QRegularExpression>
 #include <QTemporaryDir>
 
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Demux.h"
+#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
+#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -216,4 +219,97 @@ void TestSystemVerilogCodeGenUnit::testEmptyScene()
     QVERIFY(content.contains("module"));
     QVERIFY(codegen.inputMap().isEmpty());
     QVERIFY(codegen.outputMap().isEmpty());
+}
+
+void TestSystemVerilogCodeGenUnit::testUnwritablePathThrows()
+{
+    // Regression test (F22): the constructor used to return silently when the
+    // file could not be opened; generate() then streamed into a device-less
+    // QTextStream and the UI reported success with no file written.
+    bool threw = false;
+    try {
+        SystemVerilogCodeGen codegen("/nonexistent-dir/does/not/exist.sv", {});
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY(threw);
+}
+
+void TestSystemVerilogCodeGenUnit::testTruthTableMultiOutput()
+{
+    // Regression test (F19): only output 0 of a multi-output TruthTable was
+    // emitted — outputs 1..N silently held their initial value in generated
+    // code. Output k must read key bits 256*k + row.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    auto *sw1 = new InputSwitch;
+    auto *sw2 = new InputSwitch;
+    auto *tt = new TruthTable;
+    tt->setOutputSize(2);
+    auto *led0 = new Led;
+    auto *led1 = new Led;
+
+    builder.add(sw1, sw2, tt, led0, led1);
+    builder.connect(sw1, 0, tt, 0);
+    builder.connect(sw2, 0, tt, 1);
+    builder.connect(tt, 0, led0, 0);
+    builder.connect(tt, 1, led1, 0);
+
+    // Output 0 = AND (row 3 only), output 1 = OR (rows 1..3).
+    tt->key().setBit(3, true);
+    tt->key().setBit(256 + 1, true);
+    tt->key().setBit(256 + 2, true);
+    tt->key().setBit(256 + 3, true);
+
+    QTemporaryDir dir;
+    QString path = dir.path() + "/tt_multi.sv";
+    SystemVerilogCodeGen codegen(path, sceneElements(workspace.scene()));
+    codegen.generate();
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    const QString content = file.readAll();
+
+    // Two emitted blocks, with the per-output truth values: row 01 is true
+    // only for the OR output; row 11 is true for both.
+    QCOMPARE(content.count("//TruthTable\n"), 2); // one begin marker per output
+    QCOMPARE(content.count(QRegularExpression("2'b01: \\S+ = 1'b1;")), 1);
+    QCOMPARE(content.count(QRegularExpression("2'b11: \\S+ = 1'b1;")), 2);
+    QCOMPARE(content.count(QRegularExpression("2'b00: \\S+ = 1'b0;")), 2);
+}
+
+void TestSystemVerilogCodeGenUnit::testRotaryInputsDeclared()
+{
+    // Regression test (F23): rotary outputs received aux wire declarations
+    // with no driver — the module floated (z) wherever a rotary fed logic.
+    // Each rotary position is a one-hot module input now.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    auto *rotary = new InputRotary;
+    rotary->setOutputSize(4);
+    rotary->setLabel("rot");
+    QVector<Led *> leds(4);
+    builder.add(rotary);
+    for (int i = 0; i < 4; ++i) {
+        leds[i] = new Led;
+        builder.add(leds[i]);
+        builder.connect(rotary, i, leds[i], 0);
+    }
+
+    QTemporaryDir dir;
+    QString path = dir.path() + "/rotary.sv";
+    SystemVerilogCodeGen codegen(path, sceneElements(workspace.scene()));
+    codegen.generate();
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    const QString content = file.readAll();
+
+    for (int i = 0; i < 4; ++i) {
+        QVERIFY2(content.contains(QRegularExpression(QString("input \\S*_rot_%1").arg(i))),
+                 qPrintable(QString("missing module input for rotary position %1").arg(i)));
+    }
+    QVERIFY2(!content.contains("aux_"), "rotary must not leave undriven aux wires");
 }
