@@ -169,11 +169,10 @@ class DFlipFlopBuilder(ICBuilderBase):
             return False
 
         # ========== Slave Latch Components ==========
-
-        # Slave NOT gate to invert Qm
-        slave_not_id = await self.create_element("Not", slave_not_x, top_y, "slave_not_qm")
-        if slave_not_id is None:
-            return False
+        # The slave's R path uses the master's own Qm_bar output
+        # (master_nor2) directly — no separate NOT(Qm) gate, since the master
+        # latch already produces the complement and there is no slave→master
+        # feedback to disturb its settle.
 
         # Slave AND1: Qm AND Clock -> S
         slave_and1_id = await self.create_element("And", slave_and_x, top_y, "slave_and_s")
@@ -261,10 +260,6 @@ class DFlipFlopBuilder(ICBuilderBase):
 
         # ========== Connect Slave Latch ==========
 
-        # Connect master NOR1 to slave NOT
-        if not await self.connect(master_nor1_id, slave_not_id):
-            return False
-
         # Connect master NOR1 to slave AND1
         if not await self.connect(master_nor1_id, slave_and1_id):
             return False
@@ -273,8 +268,8 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(input_clk_id, slave_and1_id, target_port=1):
             return False
 
-        # Connect slave NOT to slave AND2
-        if not await self.connect(slave_not_id, slave_and2_id):
+        # Connect master NOR2 (Qm_bar) directly to slave AND2
+        if not await self.connect(master_nor2_id, slave_and2_id):
             return False
 
         # Connect Clock to slave AND2
