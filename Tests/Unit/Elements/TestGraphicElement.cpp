@@ -8,6 +8,7 @@
 #include <QStyleOptionGraphicsItem>
 
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -15,6 +16,8 @@
 #include "App/Element/GraphicElements/Text.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
+
+using TestUtils::pixmapHasInk;
 
 void TestGraphicElement::testElementPaintSelection()
 {
@@ -52,8 +55,11 @@ void TestGraphicElement::testElementAppearance()
 
 void TestGraphicElement::testElementTooltip()
 {
-    And andGate;
-    QVERIFY(true);
+    // Port tooltips are the port names (QNEPort::setName sets both)
+    DFlipFlop flipFlop;
+    QCOMPARE(flipFlop.inputPort(0)->toolTip(), QString("Data"));
+    QCOMPARE(flipFlop.inputPort(1)->toolTip(), QString("Clock"));
+    QCOMPARE(flipFlop.outputPort(0)->toolTip(), QString("Q"));
 }
 
 void TestGraphicElement::testElementDoubleClick()
@@ -101,7 +107,7 @@ void TestGraphicElement::testDisplay14Paint()
     disp->paint(&painter, &option, nullptr);
     painter.end();
 
-    QVERIFY(true);
+    QVERIFY(pixmapHasInk(pixmap));
 }
 
 void TestGraphicElement::testDisplay16Paint()
@@ -123,5 +129,5 @@ void TestGraphicElement::testDisplay16Paint()
     disp->paint(&painter, &option, nullptr);
     painter.end();
 
-    QVERIFY(true);
+    QVERIFY(pixmapHasInk(pixmap));
 }

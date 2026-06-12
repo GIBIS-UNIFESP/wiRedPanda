@@ -4,6 +4,10 @@
 #include "Tests/Unit/Simulation/TestSimulation.h"
 
 #include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Nor.h"
+#include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
@@ -19,39 +23,83 @@ void TestSimulationUnit::testSimulationWithNoElements()
 
 void TestSimulationUnit::testAddRemoveClockDuringSimulation()
 {
-    // Test: Clock elements can be added/removed during simulation
+    // Clock elements can be added and removed across re-initializations
     WorkSpace workspace;
-    Simulation sim(workspace.scene());
+    auto *sim = workspace.scene()->simulation();
 
-    Clock clock;
-    workspace.scene()->addItem(&clock);
+    auto *clock = new Clock;
+    auto *led = new Led;
+    workspace.scene()->addItem(clock);
+    workspace.scene()->addItem(led);
+    QVERIFY(sim->initialize());
+    sim->update();
 
-    // Should handle dynamic clock addition
-    QVERIFY(true);
+    workspace.scene()->removeItem(clock);
+    delete clock;
+
+    // The simulation must re-initialize and tick cleanly without the clock
+    QVERIFY(sim->initialize());
+    sim->update();
 }
 
 void TestSimulationUnit::testFeedbackLoopDetection()
 {
-    // Test: Simulation detects combinational feedback loops
+    // A cross-coupled NOR pair (SR latch) is a feedback loop; a free-standing
+    // input is not
     WorkSpace workspace;
-    Simulation sim(workspace.scene());
+    auto *sim = workspace.scene()->simulation();
 
-    // Feedback detection should work
-    QVERIFY(true);
+    auto *nor1 = new Nor;
+    auto *nor2 = new Nor;
+    auto *input = new InputSwitch;
+    workspace.scene()->addItem(nor1);
+    workspace.scene()->addItem(nor2);
+    workspace.scene()->addItem(input);
+
+    auto connect = [&workspace](GraphicElement *from, GraphicElement *to, int toPort) {
+        auto *conn = new QNEConnection;
+        conn->setStartPort(from->outputPort());
+        conn->setEndPort(to->inputPort(toPort));
+        workspace.scene()->addItem(conn);
+    };
+    connect(nor1, nor2, 0);
+    connect(nor2, nor1, 0);
+    connect(input, nor1, 1);
+
+    QVERIFY(sim->initialize());
+
+    QVERIFY(sim->isInFeedbackLoop(nor1));
+    QVERIFY(sim->isInFeedbackLoop(nor2));
+    QVERIFY(!sim->isInFeedbackLoop(input));
 }
 
 void TestSimulationUnit::testElementRemovalMidSimulation()
 {
-    // Test: Elements can be removed during simulation
+    // Elements can be removed mid-run; the simulation keeps ticking
     WorkSpace workspace;
-    Simulation sim(workspace.scene());
+    auto *sim = workspace.scene()->simulation();
 
-    Clock clock;
-    workspace.scene()->addItem(&clock);
-    workspace.scene()->removeItem(&clock);
+    auto *input = new InputSwitch;
+    auto *led = new Led;
+    workspace.scene()->addItem(input);
+    workspace.scene()->addItem(led);
 
-    // Should handle mid-simulation removal
-    QVERIFY(true);
+    auto *conn = new QNEConnection;
+    conn->setStartPort(input->outputPort());
+    conn->setEndPort(led->inputPort());
+    workspace.scene()->addItem(conn);
+
+    QVERIFY(sim->initialize());
+    input->setOn(true);
+    sim->update();
+    QVERIFY(TestUtils::getInputStatus(led));
+
+    // Remove the source mid-simulation (deleting it also detaches the wire)
+    workspace.scene()->removeItem(input);
+    delete input;
+
+    QVERIFY(sim->initialize());
+    sim->update();
 }
 
 void TestSimulationUnit::testSimulationStartStopNoBreadcrumbsB22()

@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <QApplication>
+#include <QPixmap>
 #include <QTest>
 
 #include "App/Core/Common.h"
@@ -208,6 +209,11 @@ void initSrc(GraphicElement &elm);
  * @brief Initialize an element for direct-logic testing using its own port counts
  */
 void initElm(GraphicElement &elm);
+
+/**
+ * @brief True if any pixel of @a pixmap has non-zero alpha (i.e. paint() drew something)
+ */
+bool pixmapHasInk(const QPixmap &pixmap);
 
 } // namespace TestUtils
 

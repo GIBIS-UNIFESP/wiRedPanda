@@ -354,6 +354,10 @@ class WaveformAnalysisTests(MCPTestBase):
                     print(f"📋 Pattern recognition consistency: {consistency_rate:.1f}%")
                     print("   Analysis: Pattern recognition challenges detected")
                     print("   Impact: Complex waveform patterns may be unreliable")
+                    self.record_limitation(
+                        "test_waveform_pattern_recognition",
+                        f"pattern consistency {consistency_rate:.1f}% (expected >=80%)",
+                    )
             else:
                 print("❌ Insufficient pattern data for recognition analysis")
                 print("   Expected: At least 6 data points for pattern analysis")

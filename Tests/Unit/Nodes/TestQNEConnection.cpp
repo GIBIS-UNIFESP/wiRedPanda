@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Nodes/TestQNEConnection.h"
 
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "Tests/Common/TestUtils.h"
@@ -58,10 +60,17 @@ void TestQNEConnection::testConnectionSelection()
 
 void TestQNEConnection::testConnectionDestruction()
 {
-    {
-        QNEConnection connection;
-        connection.setStartPos({10, 20});
-        connection.setEndPos({30, 40});
-    }
-    QVERIFY(true);
+    // Destroying a connection must detach it from both ports
+    InputSwitch source;
+    Led sink;
+
+    auto *connection = new QNEConnection;
+    connection->setStartPort(source.outputPort());
+    connection->setEndPort(sink.inputPort());
+    QCOMPARE(source.outputPort()->connections().size(), 1);
+    QCOMPARE(sink.inputPort()->connections().size(), 1);
+
+    delete connection;
+    QCOMPARE(source.outputPort()->connections().size(), 0);
+    QCOMPARE(sink.inputPort()->connections().size(), 0);
 }

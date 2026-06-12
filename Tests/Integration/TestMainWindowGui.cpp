@@ -2690,11 +2690,17 @@ void TestMainWindowGui::testAboutThisVersionDialog()
     auto *action = window->findChild<QAction *>("actionAboutThisVersion");
     QVERIFY2(action, "actionAboutThisVersion not found");
 
-    autoCloseNextMessageBox();
+    // Auto-close the dialog and record that it actually appeared
+    bool dialogSeen = false;
+    QTimer::singleShot(0, [&dialogSeen] {
+        if (auto *msgBox = qobject_cast<QMessageBox *>(QApplication::activeModalWidget())) {
+            dialogSeen = true;
+            msgBox->accept();
+        }
+    });
     action->trigger();
 
-    // If we reached here without blocking, the dialog was auto-closed successfully
-    QVERIFY(true);
+    QVERIFY2(dialogSeen, "About This Version dialog did not appear");
 }
 
 void TestMainWindowGui::testOpenExample()

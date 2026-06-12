@@ -178,6 +178,19 @@ void clockToggle(Simulation *simulation, InputSwitch *clk)
     clk->setOn(!clk->isOn());
     simulation->update();
 }
+
+bool pixmapHasInk(const QPixmap &pixmap)
+{
+    const QImage image = pixmap.toImage();
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            if (qAlpha(image.pixel(x, y)) != 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 } // namespace TestUtils
 
 // CircuitBuilder implementation

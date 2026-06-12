@@ -160,6 +160,10 @@ class SequentialTests(MCPTestBase):
             print("   Analysis: Clock domain crossing not working correctly")
             print("   Impact: Multi-clock systems unreliable")
             print("   Documentation: See .claude/WIREDPANDA_LIMITATIONS.md #5")
+            self.record_limitation(
+                "test_multi_clock_dual_domain_systems",
+                f"clock-domain sync deviation {actual_deviation:.1f}% (expected <={expected_max_deviation:.1f}%)",
+            )
         else:
             self.infrastructure.output.success("✅ Multi-clock synchronization working correctly")
 
@@ -259,6 +263,10 @@ class SequentialTests(MCPTestBase):
             print("   Expected: Output should maintain previous state when clock disabled")
             print("   Analysis: Clock gating or flip-flop state retention issues")
             print("   Impact: Clock domain control unreliable")
+            self.record_limitation(
+                "test_multi_clock_gating_control",
+                f"state not held when clock disabled (enabled={enabled_output}, disabled={disabled_output})",
+            )
 
         return all_passed
 

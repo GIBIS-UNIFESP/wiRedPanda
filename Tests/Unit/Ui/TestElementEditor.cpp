@@ -3,8 +3,12 @@
 
 #include "Tests/Unit/Ui/TestElementEditor.h"
 
+#include <QComboBox>
+#include <QLineEdit>
+
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
@@ -14,18 +18,39 @@ void TestElementEditor::testCreation()
 {
     WorkSpace workspace;
     ElementEditor editor(&workspace);
-    QVERIFY(true);
+
+    // The editor builds its UI in the constructor — the core fields must exist
+    QVERIFY(editor.findChild<QLineEdit *>("lineEditElementLabel") != nullptr);
+    QVERIFY(editor.findChild<QComboBox *>("comboBoxColor") != nullptr);
+    QVERIFY(editor.findChild<QComboBox *>("comboBoxInputSize") != nullptr);
+    QVERIFY(editor.findChild<QComboBox *>("comboBoxOutputSize") != nullptr);
 }
 
 void TestElementEditor::testSetScene()
 {
     WorkSpace workspace;
+    // InputSwitch is labelable (hasLabel metadata); plain gates are not
+    auto *input = new InputSwitch;
+    input->setLabel("mySwitch");
+    workspace.scene()->addItem(input);
+
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // Set to nullptr to exercise disconnect path
+    auto *labelEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    QVERIFY(labelEdit != nullptr);
+
+    // While connected, selecting an element populates the label field
+    input->setSelected(true);
+    QCOMPARE(labelEdit->text(), QString("mySwitch"));
+
+    // Set to nullptr to exercise the disconnect path: scene selection changes
+    // must no longer reach the editor
     editor.setScene(nullptr);
-    QVERIFY(true);
+    labelEdit->setText("untouched");
+    workspace.scene()->clearSelection();
+    input->setSelected(true);
+    QCOMPARE(labelEdit->text(), QString("untouched"));
 }
 
 void TestElementEditor::testRetranslateUi()
@@ -33,19 +58,36 @@ void TestElementEditor::testRetranslateUi()
     WorkSpace workspace;
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
+
     editor.retranslateUi();
-    QVERIFY(true);
+
+    // retranslateUi rebuilds the color combo with translated names — it must
+    // come back populated
+    auto *colorBox = editor.findChild<QComboBox *>("comboBoxColor");
+    QVERIFY(colorBox != nullptr);
+    QVERIFY(colorBox->count() > 0);
 }
 
 void TestElementEditor::testSetCurrentElementsEmpty()
 {
     WorkSpace workspace;
+    auto *input = new InputSwitch;
+    input->setLabel("mySwitch");
+    workspace.scene()->addItem(input);
+
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // Empty selection — triggers selectionChanged with no elements
+    auto *labelEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    QVERIFY(labelEdit != nullptr);
+
+    input->setSelected(true);
+    QCOMPARE(labelEdit->text(), QString("mySwitch"));
+
+    // Empty selection hides the editor and clears the label field
     workspace.scene()->clearSelection();
-    QVERIFY(true);
+    QCOMPARE(labelEdit->text(), QString());
+    QVERIFY(editor.isHidden());
 }
 
 void TestElementEditor::testSetCurrentElementsGate()
@@ -57,10 +99,15 @@ void TestElementEditor::testSetCurrentElementsGate()
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // Select the gate — triggers selectionChanged with input-count UI
+    // Select the gate — the input-size combo reflects the gate's port range
     workspace.scene()->clearSelection();
     andGate->setSelected(true);
-    QVERIFY(true);
+
+    auto *inputSizeBox = editor.findChild<QComboBox *>("comboBoxInputSize");
+    QVERIFY(inputSizeBox != nullptr);
+    QVERIFY(inputSizeBox->isEnabled());
+    QVERIFY(inputSizeBox->count() > 0);
+    QCOMPARE(inputSizeBox->currentText().toInt(), andGate->inputSize());
 }
 
 void TestElementEditor::testSetCurrentElementsLed()
@@ -72,10 +119,15 @@ void TestElementEditor::testSetCurrentElementsLed()
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // Select LED — triggers selectionChanged with color combo UI
+    // Select LED — the color combo is active and reflects the LED's color
     workspace.scene()->clearSelection();
     led->setSelected(true);
-    QVERIFY(true);
+
+    auto *colorBox = editor.findChild<QComboBox *>("comboBoxColor");
+    QVERIFY(colorBox != nullptr);
+    QVERIFY(colorBox->isEnabled());
+    QVERIFY(colorBox->count() > 0);
+    QCOMPARE(colorBox->currentData().toString(), led->color());
 }
 
 void TestElementEditor::testFillColorComboBox()
@@ -84,9 +136,17 @@ void TestElementEditor::testFillColorComboBox()
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // fillColorComboBox rebuilds the color dropdown
+    auto *colorBox = editor.findChild<QComboBox *>("comboBoxColor");
+    QVERIFY(colorBox != nullptr);
+
+    // fillColorComboBox rebuilds the dropdown — repeated calls keep a stable,
+    // non-empty entry list (no duplicate accumulation)
     editor.fillColorComboBox();
-    QVERIFY(true);
+    const int count = colorBox->count();
+    QVERIFY(count > 0);
+
+    editor.fillColorComboBox();
+    QCOMPARE(colorBox->count(), count);
 }
 
 void TestElementEditor::testSelectionDoesNotPushPortSizeCommandB21()

@@ -7,12 +7,12 @@
 
 void TestElementPalette::testPaletteSearch()
 {
-    // ElementPalette requires MainWindowUi — not available in unit tests
-    QVERIFY(true);
+    QSKIP("ElementPalette requires MainWindowUi; palette search is covered by "
+          "TestMainWindowGui (lineEditSearch focus/filter tests)");
 }
 
 void TestElementPalette::testPaletteRebuild()
 {
-    // ElementPalette requires MainWindowUi — not available in unit tests
-    QVERIFY(true);
+    QSKIP("ElementPalette requires MainWindowUi; palette population is covered by "
+          "TestMainWindowGui::testDragElementFromPalette");
 }

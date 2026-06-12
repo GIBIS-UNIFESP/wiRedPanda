@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Ui/TestCircuitExporter.h"
 
+#include <QImage>
 #include <QTemporaryDir>
 
 #include "App/Scene/Workspace.h"
@@ -17,7 +18,10 @@ void TestCircuitExporter::testExporterCreation()
     QVERIFY(dir.isValid());
     QString path = dir.path() + "/test.png";
     CircuitExporter::renderToImage(workspace.scene(), path);
-    QVERIFY(true);
+
+    // The export must produce a loadable image file
+    QVERIFY(QFile::exists(path));
+    QVERIFY(!QImage(path).isNull());
 }
 
 void TestCircuitExporter::testRenderToImageThrowsOnInvalidPath()

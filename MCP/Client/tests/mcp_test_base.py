@@ -106,6 +106,15 @@ class MCPTestBase(ABC):
         """Set test context for image export"""
         self._runner.set_test_context(test_name)
 
+    def record_limitation(self, test_name: str, message: str) -> None:
+        """Record a documented engine limitation (monitored, not enforced).
+
+        Soft-assert sites that print a limitation diagnostic and still pass
+        must also call this so the orchestrator summary reports the case
+        under its own LIMITATION status instead of folding it into PASS (F30).
+        """
+        self.test_results.known_issues.append(f"{test_name}: {message}")
+
     async def cleanup_circuit(self, test_name: str) -> bool:
         """Cleanup circuit after test completion"""
         return await self._runner.cleanup_circuit(test_name)

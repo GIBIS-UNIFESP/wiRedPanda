@@ -8,26 +8,21 @@
 
 void TestUpdateChecker::testUpdateAvailable()
 {
-    // Test: UpdateChecker can detect when update is available
-    UpdateChecker checker;
-
-    // Create checker object - should not crash (construction reaching here is the assertion)
+    QSKIP("UpdateChecker::onReplyFinished is private and takes a live "
+          "QNetworkReply; testing the update-available path needs reply "
+          "injection the class does not expose");
 }
 
 void TestUpdateChecker::testNoUpdate()
 {
-    // Test: UpdateChecker handles case where no update is available
-    UpdateChecker checker;
-
-    // Verify object is valid
-    QVERIFY(true);
+    QSKIP("UpdateChecker::onReplyFinished is private and takes a live "
+          "QNetworkReply; testing the no-update path needs reply injection "
+          "the class does not expose");
 }
 
 void TestUpdateChecker::testNetworkError()
 {
-    // Test: UpdateChecker handles network errors gracefully
-    UpdateChecker checker;
-
-    // Should not crash on network error
-    QVERIFY(true);
+    QSKIP("UpdateChecker::onReplyFinished is private and takes a live "
+          "QNetworkReply; testing the network-error path needs reply "
+          "injection the class does not expose");
 }

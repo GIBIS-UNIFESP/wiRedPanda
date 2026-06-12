@@ -3,25 +3,61 @@
 
 #include "Tests/Unit/Elements/TestMux.h"
 
+#include <QPainter>
+#include <QPixmap>
+#include <QStyleOptionGraphicsItem>
+
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestMux::testMuxInputSize()
 {
+    // F28: was three near-identical constructor checks; this one asserts the
+    // structural contract and the others assert behavior
     WorkSpace workspace;
     auto *mux = new Mux;
     workspace.scene()->addItem(mux);
-    QVERIFY(mux->inputSize() > 0);
+
+    QCOMPARE(mux->elementType(), ElementType::Mux);
+    QCOMPARE(mux->inputSize(), 3); // In0 + In1 + S0
+    QCOMPARE(mux->outputSize(), 1);
+    QCOMPARE(mux->minInputSize(), 3);
+    QCOMPARE(mux->maxInputSize(), 11);
 }
 
 void TestMux::testMuxSelection()
 {
+    // In-range selection routes the chosen data input to the output
     WorkSpace workspace;
-    auto *mux = new Mux;
-    workspace.scene()->addItem(mux);
-    QVERIFY(mux->inputSize() > 0);
+    CircuitBuilder builder(workspace.scene());
+
+    auto *in0 = new InputSwitch();
+    auto *in1 = new InputSwitch();
+    auto *sel = new InputSwitch();
+    auto *mux = new Mux();
+    auto *led = new Led();
+    builder.add(in0, in1, sel, mux, led);
+
+    builder.connect(in0, 0, mux, "In0");
+    builder.connect(in1, 0, mux, "In1");
+    builder.connect(sel, 0, mux, "S0");
+    builder.connect(mux, 0, led, 0);
+
+    auto *sim = builder.initSimulation();
+
+    in0->setOn(false);
+    in1->setOn(true);
+
+    sel->setOn(false); // S0 = 0 selects In0 (off)
+    sim->update();
+    QVERIFY(!TestUtils::getInputStatus(led));
+
+    sel->setOn(true); // S0 = 1 selects In1 (on)
+    sim->update();
+    QVERIFY(TestUtils::getInputStatus(led));
 }
 
 void TestMux::testMuxPainting()
@@ -29,7 +65,15 @@ void TestMux::testMuxPainting()
     WorkSpace workspace;
     auto *mux = new Mux;
     workspace.scene()->addItem(mux);
-    QCOMPARE(mux->elementType(), ElementType::Mux);
+
+    QPixmap pixmap(128, 128);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QStyleOptionGraphicsItem option;
+    mux->paint(&painter, &option, nullptr);
+    painter.end();
+
+    QVERIFY(TestUtils::pixmapHasInk(pixmap));
 }
 
 void TestMux::testMuxOutOfRangeSelect_data()

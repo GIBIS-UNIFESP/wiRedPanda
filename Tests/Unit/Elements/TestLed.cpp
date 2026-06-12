@@ -514,11 +514,23 @@ void TestLED::testSetAppearanceDefault()
     Led led;
     led.setColor("Red");
 
+    auto savedState = [&led]() {
+        QByteArray data;
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        led.save(stream);
+        return data;
+    };
+
     // Restore default appearance
     led.setAppearance(true, {});
-    QVERIFY(true);
+    const QByteArray defaultData = savedState();
 
-    // Set custom appearance (non-existent file is fine — just stores the path)
+    // Set custom appearance (non-existent file is fine — just stores the
+    // path); it becomes part of the persisted element state
     led.setAppearance(false, "/tmp/custom_led.png");
-    QVERIFY(true);
+    QVERIFY(savedState() != defaultData);
+
+    // Restoring the default appearance restores the original persisted state
+    led.setAppearance(true, {});
+    QCOMPARE(savedState(), defaultData);
 }

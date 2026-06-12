@@ -284,17 +284,10 @@ void TestWorkspaceFileops::testLoadCorruptedFileHandling()
 
     WorkSpace workspace;
 
-    // Attempt to load corrupted file
-    try {
-        workspace.load(filePath);
-        // If load succeeds, that's acceptable (may have error recovery)
-    } catch (const Pandaception &) {
-        // Exception is acceptable for corrupted data
-    } catch (const std::exception &) {
-        // Exception is acceptable for corrupted data
-    }
-
-    // Either exception or graceful recovery is acceptable for corrupted data
+    // A file that is not a .panda stream must be rejected with a Pandaception
+    // (F28: previously any outcome — including silently loading garbage —
+    // passed this test)
+    QVERIFY_EXCEPTION_THROWN(workspace.load(filePath), Pandaception);
 }
 
 void TestWorkspaceFileops::testLoadEmptyCircuit()
@@ -441,26 +434,29 @@ void TestWorkspaceFileops::testFilePathPreservedAfterLoad()
 
 void TestWorkspaceFileops::testFileExtensionPandaAppend()
 {
-    // Test that file paths with .panda extension are recognized
+    // Saving to an extensionless path must append .panda (F28: previously
+    // asserted on a string the test itself built, not on the workspace)
     WorkSpace workspace;
 
-    QString pathWithExt = m_tempDir.path() + "/test.panda";
-    // Just verify the path would contain .panda
-    QVERIFY2(pathWithExt.endsWith(".panda"), "File path should have .panda extension");
+    const QString bareName = m_tempDir.path() + "/append_test";
+    workspace.save(bareName);
+
+    QCOMPARE(workspace.fileInfo().absoluteFilePath(), bareName + ".panda");
+    QVERIFY(QFile::exists(bareName + ".panda"));
+    QVERIFY(!QFile::exists(bareName));
 }
 
 void TestWorkspaceFileops::testFileExtensionNoDuplicate()
 {
-    // Test that .panda extension logic doesn't duplicate
+    // Saving to a path that already ends in .panda must not double it
     WorkSpace workspace;
 
-    QString pathWithExt = m_tempDir.path() + "/test.panda";
-    QString pathDouble = pathWithExt + ".panda";
+    const QString fullName = m_tempDir.path() + "/no_dup_test.panda";
+    workspace.save(fullName);
 
-    // Verify they're different
-    QVERIFY2(pathWithExt != pathDouble, "Path should not be duplicated");
-    // Verify the doubled path would be wrong
-    QVERIFY2(!pathWithExt.endsWith(".panda.panda"), "File path should not have double extension");
+    QCOMPARE(workspace.fileInfo().absoluteFilePath(), fullName);
+    QVERIFY(QFile::exists(fullName));
+    QVERIFY(!QFile::exists(fullName + ".panda"));
 }
 
 void TestWorkspaceFileops::testDolphinFileNameStorage()

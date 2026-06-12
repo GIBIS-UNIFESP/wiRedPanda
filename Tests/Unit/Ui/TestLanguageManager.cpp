@@ -8,6 +8,7 @@
 #include <QLibraryInfo>
 #include <QTranslator>
 
+#include "App/Core/Settings.h"
 #include "App/UI/LanguageManager.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -20,9 +21,17 @@ void TestLanguageManager::testAvailableLanguages()
 
 void TestLanguageManager::testSetLanguage()
 {
+    const QString previousLanguage = Settings::language();
+
+    // loadTranslation persists the chosen language; an empty code is ignored
     LanguageManager manager;
-    manager.loadTranslation("en");
-    QVERIFY(true);
+    manager.loadTranslation("pt_BR");
+    QCOMPARE(Settings::language(), QString("pt_BR"));
+
+    manager.loadTranslation("");
+    QCOMPARE(Settings::language(), QString("pt_BR"));
+
+    manager.loadTranslation(previousLanguage.isEmpty() ? QStringLiteral("en") : previousLanguage);
 }
 
 void TestLanguageManager::testQtTranslationsPathExists()

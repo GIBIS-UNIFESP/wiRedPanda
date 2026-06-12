@@ -48,9 +48,15 @@ void TestGraphicsView::testFastMode()
     WorkSpace workspace;
     GraphicsView *view = workspace.view();
 
+    // Fast mode trades rendering quality for frame rate by disabling the
+    // expensive render hints
     view->setFastMode(true);
+    QVERIFY(!view->renderHints().testFlag(QPainter::Antialiasing));
+    QVERIFY(!view->renderHints().testFlag(QPainter::SmoothPixmapTransform));
+
     view->setFastMode(false);
-    QVERIFY(true);
+    QVERIFY(view->renderHints().testFlag(QPainter::Antialiasing));
+    QVERIFY(view->renderHints().testFlag(QPainter::SmoothPixmapTransform));
 }
 
 void TestGraphicsView::testDragModeToggle()

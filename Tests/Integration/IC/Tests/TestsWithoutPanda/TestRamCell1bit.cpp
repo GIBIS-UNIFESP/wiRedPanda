@@ -3,7 +3,6 @@
 
 #include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestRamCell1bit.h"
 
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -19,7 +18,6 @@ using TestUtils::clockCycle;
 struct RamCellFixture {
     WorkSpace ws;
     InputSwitch dataIn, writeEnable, clock;
-    And writeControlGate;
     Mux cellDataMux;
     DFlipFlop storage;
     Led dataOut;
@@ -29,16 +27,14 @@ struct RamCellFixture {
     {
         CircuitBuilder builder(ws.scene());
         builder.add(&dataIn, &writeEnable, &clock, &dataOut);
-        builder.add(&writeControlGate, &cellDataMux, &storage);
+        builder.add(&cellDataMux, &storage);
 
-        // Stage 1: Write control gate (both inputs tied to WE)
-        builder.connect(&writeEnable, 0, &writeControlGate, 0);
-        builder.connect(&writeEnable, 0, &writeControlGate, 1);
-
-        // Stage 2: Data mux — hold (Q) when WE=0, write (dataIn) when WE=1
-        builder.connect(&storage, 0, &cellDataMux, 0);           // Q (hold when WE=0)
-        builder.connect(&dataIn, 0, &cellDataMux, 1);            // dataIn (write when WE=1)
-        builder.connect(&writeControlGate, 0, &cellDataMux, 2);  // select = WE
+        // Data mux — hold (Q) when WE=0, write (dataIn) when WE=1.
+        // (F29: a copy-pasted AND(WE, WE) no-op gate used to sit between
+        // WE and the select line; WE drives the select directly.)
+        builder.connect(&storage, 0, &cellDataMux, 0);  // Q (hold when WE=0)
+        builder.connect(&dataIn, 0, &cellDataMux, 1);   // dataIn (write when WE=1)
+        builder.connect(&writeEnable, 0, &cellDataMux, 2); // select = WE
 
         builder.connect(&cellDataMux, 0, &storage, 0);
         builder.connect(&clock, 0, &storage, 1);

@@ -137,7 +137,14 @@ void TestDolphinSerializer::testEmptyModelBinary()
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
     DolphinSerializer::saveBinary(stream, &model, 0);
-    QVERIFY(true);
+
+    // The zero-row payload must still carry the dimensions and round-trip
+    QVERIFY(!data.isEmpty());
+    QDataStream readStream(&data, QIODevice::ReadOnly);
+    const auto loaded = DolphinSerializer::loadBinary(readStream, 8);
+    QCOMPARE(loaded.inputPorts, 0);
+    QCOMPARE(loaded.columns, 4);
+    QVERIFY(loaded.values.isEmpty());
 }
 
 void TestDolphinSerializer::testEmptyModelCSV()
@@ -156,17 +163,11 @@ void TestDolphinSerializer::testEmptyModelCSV()
 
 void TestDolphinSerializer::testCorruptedDataHandling()
 {
+    // ASCII garbage decodes as a huge qint64 column count, which loadBinary
+    // must reject (valid range is 2..2048)
     QByteArray corrupt("This is corrupted binary data !!!");
     QDataStream stream(&corrupt, QIODevice::ReadOnly);
-    bool caught = false;
-    try {
-        DolphinSerializer::loadBinary(stream, 1);
-    } catch (...) {
-        caught = true;
-    }
-    // Either throws or returns degenerate data — both acceptable
-    QVERIFY(true);
-    Q_UNUSED(caught);
+    QVERIFY_EXCEPTION_THROWN(DolphinSerializer::loadBinary(stream, 1), std::exception);
 }
 
 void TestDolphinSerializer::testLoadBinaryRejectsNegativeRows()

@@ -270,6 +270,7 @@ class MCPTestOrchestrator:
                 print(f"Total Tests:    {self.test_results.total}")
                 print(f"Passed:         {self.test_results.passed}")
                 print(f"Failed:         {self.test_results.failed}")
+                print(f"Limitations:    {len(self.test_results.known_issues)}")
 
                 if self.test_results.total > 0:
                     success_rate = self.test_results.passed / self.test_results.total * 100
@@ -283,6 +284,13 @@ class MCPTestOrchestrator:
                     print("=" * 60)
                     for error in self.test_results.errors:
                         print(f"• {error}")
+
+                if self.test_results.known_issues:
+                    print("\n" + "=" * 60)
+                    print("📋 LIMITATIONS (documented engine limits — monitored, not enforced)")
+                    print("=" * 60)
+                    for issue in self.test_results.known_issues:
+                        print(f"• {issue}")
 
                 return category_success
 

@@ -11,6 +11,8 @@
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
+using TestUtils::pixmapHasInk;
+
 void TestDisplay7::testDisplay7ColorSetting()
 {
     Display7 display;
@@ -69,5 +71,5 @@ void TestDisplay7::testDisplay7Paint()
     disp->paint(&painter, &option, nullptr);
     painter.end();
 
-    QVERIFY(true);
+    QVERIFY(pixmapHasInk(pixmap));
 }
