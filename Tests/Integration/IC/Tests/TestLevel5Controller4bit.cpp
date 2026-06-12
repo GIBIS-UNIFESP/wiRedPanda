@@ -101,14 +101,15 @@ void TestLevel5Controller4Bit::testController4Bit_data()
     QTest::newRow("opcode 0x7 (ALU OR, register write)")
         << 0b0111;
 
-    // Range 0x8-0xB (10xx): ALU + memory write
-    QTest::newRow("opcode 0x8 (ALU ADD, memory write)")
+    // Range 0x8-0xB (10xx): ALU + register + memory write
+    // (ctrl[2] = opcode[3] OR opcode[2] — memory ops also write back)
+    QTest::newRow("opcode 0x8 (ALU ADD, register + memory write)")
         << 0b1000;
-    QTest::newRow("opcode 0x9 (ALU SUB, memory write)")
+    QTest::newRow("opcode 0x9 (ALU SUB, register + memory write)")
         << 0b1001;
-    QTest::newRow("opcode 0xA (ALU AND, memory write)")
+    QTest::newRow("opcode 0xA (ALU AND, register + memory write)")
         << 0b1010;
-    QTest::newRow("opcode 0xB (ALU OR, memory write)")
+    QTest::newRow("opcode 0xB (ALU OR, register + memory write)")
         << 0b1011;
 
     // Range 0xC-0xF (11xx): ALU + register + memory write

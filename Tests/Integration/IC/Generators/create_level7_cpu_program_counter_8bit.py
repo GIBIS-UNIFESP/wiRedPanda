@@ -110,9 +110,6 @@ class ProgramCounter7BitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Connected all control and data inputs to PC IC")
 
-        # Note: WriteEnable is handled internally by Level 6 PC (load OR inc)
-        # It's exposed here for CPU interface compatibility but not used
-
         # Create output LEDs and connect to PC outputs
         output_x = data_input_x
         output_y = pc_y + (3 * VERTICAL_STAGE_SPACING)

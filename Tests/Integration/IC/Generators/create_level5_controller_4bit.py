@@ -21,8 +21,8 @@ Control Mapping (by opcode range):
     - register_write = 0, memory_write = 0
   0x4-0x7 (01xx): ALU with register write enabled
     - register_write = 1, memory_write = 0
-  0x8-0xB (10xx): ALU with memory write enabled
-    - register_write = 0, memory_write = 1
+  0x8-0xB (10xx): ALU with register and memory write
+    - register_write = 1, memory_write = 1 (memory ops also write back)
   0xC-0xF (11xx): ALU with register and memory write
     - register_write = 1, memory_write = 1
 

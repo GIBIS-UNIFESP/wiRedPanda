@@ -78,7 +78,6 @@ class RAM8x8Builder(ICBuilderBase):
         await self.log("  ✓ Created WriteEnable and Clock inputs")
 
         # Instantiate 8 RAM 8×1 modules (one for each data bit)
-        # This creates a 256×1 by 8 parallel structure for 256×8 total
         ram_ics = []
         ram_x = input_x + (10 * HORIZONTAL_GATE_SPACING)
         for bit_idx in range(8):

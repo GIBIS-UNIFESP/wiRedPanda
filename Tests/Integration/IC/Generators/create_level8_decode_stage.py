@@ -78,7 +78,6 @@ class DecodeStageBuilder(ICBuilderBase):
             opcode_inputs.append(opcode_id)
         await self.log("  ✓ Created 5 opcode inputs")
 
-        # ---- Create clock input ----
         control_x = input_x + (6 * HORIZONTAL_GATE_SPACING)
 
         # ---- Create combinational logic for control signals ----

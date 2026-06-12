@@ -23,8 +23,9 @@ Implementation:
 - 4 NOT gates (invert each Q output)
 - 2 AND gates (carry chain: carry1=Q0&Q1, carry2=carry1&Q2)
 - 3 NOT gates (invert carries for XOR)
-- 8 AND gates (4 bits × 2 for XOR: each bit = (NOT Qi AND carryIn) OR (Qi AND NOT carryIn))
-- 4 OR gates (XOR results)
+- 6 AND gates (bits 1-3 × 2 for XOR: each bit = (NOT Qi AND carryIn) OR (Qi AND NOT carryIn);
+  bit 0 is just NOT Q0, no XOR gates)
+- 3 OR gates (XOR results, bits 1-3)
 
 Increment Logic:
 - Bit 0: D0 = NOT Q0 (always toggle)
@@ -93,10 +94,13 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
                 return False
             not_carry_ids.append(not_id)
 
-        # Create XOR AND gates (stage 4)
-        xor_and_ids = []
+        # Create XOR AND gates (stage 4) — bits 1-3 only: bit 0 is a plain
+        # NOT(Q0) with no XOR decomposition (F59: the bit-0 gates used to be
+        # created and left dead). Index 0 stays as a placeholder so the
+        # wiring below can keep addressing gates by bit number.
+        xor_and_ids: list = [None]
         xor_and_x = not_carry_x + HORIZONTAL_GATE_SPACING
-        for i in range(4):
+        for i in range(1, 4):
             bit_ands = []
             for j in range(2):
                 and_id = await self.create_element("And", xor_and_x + (j * HORIZONTAL_GATE_SPACING), 100.0 + (i * VERTICAL_STAGE_SPACING), f"and_xor{i}_{j}")
@@ -105,10 +109,10 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
                 bit_ands.append(and_id)
             xor_and_ids.append(bit_ands)
 
-        # Create XOR OR gates (stage 5)
-        xor_or_ids = []
+        # Create XOR OR gates (stage 5) — bits 1-3 only, same reason
+        xor_or_ids: list = [None]
         xor_or_x = xor_and_x + (2 * HORIZONTAL_GATE_SPACING)
-        for i in range(4):
+        for i in range(1, 4):
             or_id = await self.create_element("Or", xor_or_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"or_xor{i}")
             if or_id is None:
                 return False

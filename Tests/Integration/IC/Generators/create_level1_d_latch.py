@@ -90,7 +90,7 @@ class DLatchBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created NOR1 gate (id={nor1_id})")
 
-        # NOR2: (R, Q_out) -> Q_bar
+        # NOR2: (S, Q_out) -> Q_bar
         nor2_id = await self.create_element("Nor", nor_x, bottom_y, "nor_qbar")
         if nor2_id is None:
             return False
