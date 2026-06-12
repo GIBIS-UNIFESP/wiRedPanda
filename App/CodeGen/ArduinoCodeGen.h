@@ -147,6 +147,11 @@ private:
     void declareAuxVariables();
     /// Recursive helper: emits auxiliary variable declarations for \a elements.
     void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox, const QString &icPrefix);
+    /// Recursive helper: emits the per-element sequential state variables
+    /// (_inclk/_last for flip-flops, _elapsed/_interval for top-level clocks),
+    /// descending into ICs. The testbench's computeLogic() recurses into nested
+    /// flip-flops, so their state must be declared at every depth.
+    void declareSequentialStateRec(const QVector<GraphicElement *> &elements, bool topLevel);
     void declareInputs();
     /// Emits `pinMode(OUTPUT)` calls and variable declarations for circuit outputs.
     void declareOutputs();
