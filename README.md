@@ -22,7 +22,7 @@ Compiled binaries for Windows, Linux and macOS are available on the [releases pa
 
 **Requirements**:
 
-- CMake 3.16+
+- CMake 3.27+
 - Qt 6.2+ (with Multimedia, Svg modules)
 - C++ compiler with C++20 support
 - Ninja build system:

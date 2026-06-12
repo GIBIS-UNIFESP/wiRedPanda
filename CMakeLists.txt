@@ -1,12 +1,9 @@
-cmake_minimum_required(VERSION 3.27)
+# Minimum 3.27: $<COMPILE_ONLY> on the test helper libs below needs it. The
+# ...3.31 upper bound keeps policy defaults current on newer CMake, so CMP0156
+# (link-line de-duplication) still defaults to NEW on CMake >= 3.29 with no
+# explicit cmake_policy(SET) needed.
+cmake_minimum_required(VERSION 3.27...3.31)
 set(CMAKE_POLICY_VERSION_MINIMUM 3.16) # for nlohmann/json
-
-# CMP0156 (3.27+): de-duplicate libraries on the link line using the new
-# algorithm. NEW collapses transitive PUBLIC links of the same archive (e.g.
-# wiredpanda_lib reaching test_wiredpanda via test_utils AND memory_helpers AND
-# the WHOLE_ARCHIVE genex) into a single reference, which kills the macOS
-# "ld: warning: ignoring duplicate libraries" noise.
-cmake_policy(SET CMP0156 NEW)
 project(wiredpanda VERSION 5.1.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -535,12 +532,18 @@ enable_testing()
 
 # Test utilities library (shared helpers for all tests)
 add_library(test_utils STATIC ${TEST_UTILS_SOURCES} ${TEST_UTILS_HEADERS})
-target_link_libraries(test_utils PUBLIC wiredpanda_lib)
+# Headers only: every test executable whole-archives wiredpanda_lib itself
+# (link_wiredpanda_whole_archive), so re-linking it here would put the archive on
+# the link line a second time and, with a different link feature, collide with
+# WHOLE_ARCHIVE on CMake < 3.29 ("already occurred with feature WHOLE_ARCHIVE").
+# $<COMPILE_ONLY> propagates wiredpanda_lib's include/define/feature usage
+# requirements without adding it to the link.
+target_link_libraries(test_utils PUBLIC "$<COMPILE_ONLY:wiredpanda_lib>")
 target_compile_definitions(test_utils PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
 
 # Helper library for shared circuit builders (register file, memory tests)
 add_library(memory_helpers STATIC ${MEMORY_HELPERS_SOURCES} ${MEMORY_HELPERS_HEADERS})
-target_link_libraries(memory_helpers PUBLIC wiredpanda_lib test_utils)
+target_link_libraries(memory_helpers PUBLIC "$<COMPILE_ONLY:wiredpanda_lib>" test_utils)
 
 # ---- Single consolidated test executable ----
 # All test classes in one binary; CTest registers per-class entries.

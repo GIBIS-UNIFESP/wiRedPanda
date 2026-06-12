@@ -22,7 +22,7 @@ Los binarios compilados para Windows, Linux y macOS están disponibles en la [p�
 
 **Requisitos**:
 
-- CMake 3.16+
+- CMake 3.27+
 - Qt 6.2+ (con módulos Multimedia, Svg)
 - Compilador C++ con soporte para C++20
 - Sistema de compilación Ninja:

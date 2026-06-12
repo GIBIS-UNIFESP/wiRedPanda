@@ -99,7 +99,7 @@ cmake --build --preset release
 ### General Requirements
 
 - **C++ Standard**: C++20
-- **Build System**: CMake 3.16+ with Ninja generator (auto-selected)
+- **Build System**: CMake 3.27+ with Ninja generator (auto-selected)
 - **Trailing Newlines**: All source files must end with a trailing newline
 - **Line Trimming**: Remove trailing whitespace from all lines
 - **File Types**: Apply style to `.cpp`, `.h`, `.cmake`, `CMakeLists.txt`, etc.

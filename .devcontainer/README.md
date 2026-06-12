@@ -19,7 +19,7 @@ This directory contains the configuration for a streamlined containerized develo
 ## 🛠️ What's Included
 
 ### Development Tools
-- **Build System**: CMake 3.22+ with Ninja generator
+- **Build System**: CMake 3.27+ with Ninja generator
 - **Compiler**: GCC 11+ with C++20 support
 - **Qt Framework**: Qt 6.2+ with core, widgets, multimedia, SVG modules
 - **Performance**: Mold linker and ccache for faster builds

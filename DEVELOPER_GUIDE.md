@@ -76,7 +76,7 @@ The project is maintained by [GIBIS-UNIFESP](https://github.com/GIBIS-UNIFESP) a
 |------------------|--------------------------------------|
 | Language         | C++20                                |
 | UI Framework     | Qt 6.2+                              |
-| Build System     | CMake 3.16+ with Ninja               |
+| Build System     | CMake 3.27+ with Ninja               |
 | Tests            | Qt Test Framework + CTest            |
 | CI/CD            | GitHub Actions                       |
 | Crash Reporting  | Sentry (Crashpad/Breakpad)           |
