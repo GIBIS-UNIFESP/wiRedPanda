@@ -30,6 +30,8 @@ public:
     explicit GraphicElementInput(ElementType type, QGraphicsItem *parent = nullptr)
         : GraphicElement(type, parent) {}
 
+    virtual ~GraphicElementInput() = default;
+
     // --- State Queries ---
 
     /// Returns \c true if the element is locked against user interaction.

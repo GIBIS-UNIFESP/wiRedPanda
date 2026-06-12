@@ -46,6 +46,8 @@ public:
     GraphicsView *view();
     /// Returns the Scene embedded in this workspace.
     Scene *scene();
+    /// Returns the Scene embedded in this workspace (const overload).
+    const Scene *scene() const;
 
     /// Returns the embedded Simulation.
     Simulation *simulation();
@@ -53,7 +55,7 @@ public:
     // --- File Operations ---
 
     /// Returns the file info for the currently open circuit file.
-    QFileInfo fileInfo();
+    QFileInfo fileInfo() const;
     /// Loads a circuit from the file at \a fileName.
     void load(const QString &fileName);
     /// Loads a circuit from \a stream using the given format \a version and optional \a contextDir.
@@ -91,7 +93,7 @@ public:
     // --- Waveform Integration ---
 
     /// Returns the path of the associated BeWavedDolphin waveform file.
-    QString dolphinFileName();
+    QString dolphinFileName() const;
     /// Sets the associated BeWavedDolphin waveform file path to \a fileName.
     void setDolphinFileName(const QString &fileName);
 

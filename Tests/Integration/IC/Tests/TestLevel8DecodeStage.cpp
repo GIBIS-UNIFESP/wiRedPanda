@@ -15,7 +15,7 @@
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct DecodeStageFixture {
@@ -132,9 +132,9 @@ void TestLevel8DecodeStage::testDecodeStage()
     f.sim->update();
 
     QCOMPARE(f.readALUOp(), expectedALUOp);
-    QCOMPARE(getInputStatus(f.regwriteLed), expectedRegWrite);
-    QCOMPARE(getInputStatus(f.memreadLed), expectedMemRead);
-    QCOMPARE(getInputStatus(f.memwriteLed), expectedMemWrite);
+    QCOMPARE(inputStatus(f.regwriteLed), expectedRegWrite);
+    QCOMPARE(inputStatus(f.memreadLed), expectedMemRead);
+    QCOMPARE(inputStatus(f.memwriteLed), expectedMemWrite);
 }
 
 void TestLevel8DecodeStage::testDecodeStageStructure()

@@ -11,7 +11,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct PriorityEncoder8to3Fixture {
@@ -110,9 +110,9 @@ void TestLevel2PriorityEncoder8To3::test8to3PriorityEncoder()
     }
     f.sim->update();
 
-    bool bit0 = getInputStatus(f.outLeds[0]);
-    bool bit1 = getInputStatus(f.outLeds[1]);
-    bool bit2 = getInputStatus(f.outLeds[2]);
+    bool bit0 = inputStatus(f.outLeds[0]);
+    bool bit1 = inputStatus(f.outLeds[1]);
+    bool bit2 = inputStatus(f.outLeds[2]);
 
     int actualOutput = (static_cast<int>(bit2) << 2) | (static_cast<int>(bit1) << 1) | static_cast<int>(bit0);
 

@@ -380,7 +380,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                         break;
                     }
                     m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
-                    m_stream << "int " << varName2 << "_interval = " << qMax(1, static_cast<int>(1000.0 / clk->frequency())) << ";" << Qt::endl;
+                    m_stream << "int " << varName2 << "_interval = " << (std::max)(1, static_cast<int>(1000.0 / clk->frequency())) << ";" << Qt::endl;
                 }
                 break;
             }
@@ -395,7 +395,36 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                 m_stream << "bool " << varName2 << "_inclk = LOW;" << Qt::endl;
                 break;
             }
-            default:
+            // No state variables needed — explicit list enables -Wswitch for new types.
+            case ElementType::And:
+            case ElementType::AudioBox:
+            case ElementType::Buzzer:
+            case ElementType::DLatch:
+            case ElementType::Demux:
+            case ElementType::Display7:
+            case ElementType::Display14:
+            case ElementType::Display16:
+            case ElementType::IC:
+            case ElementType::InputButton:
+            case ElementType::InputGnd:
+            case ElementType::InputRotary:
+            case ElementType::InputSwitch:
+            case ElementType::InputVcc:
+            case ElementType::JKLatch:
+            case ElementType::Led:
+            case ElementType::Line:
+            case ElementType::Mux:
+            case ElementType::Nand:
+            case ElementType::Node:
+            case ElementType::Nor:
+            case ElementType::Not:
+            case ElementType::Or:
+            case ElementType::SRLatch:
+            case ElementType::Text:
+            case ElementType::TruthTable:
+            case ElementType::Unknown:
+            case ElementType::Xnor:
+            case ElementType::Xor:
                 break;
             }
         }
@@ -522,7 +551,25 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
         case ElementType::Xnor:
         case ElementType::Not:
         case ElementType::Node: assignLogicOperator(elm); break;
-        default:                throw PANDACEPTION("Element type not supported: %1", elm->objectName());
+        // Unsupported types: throw so -Wswitch flags any future ElementType not handled here.
+        case ElementType::AudioBox:
+        case ElementType::Buzzer:
+        case ElementType::Clock:
+        case ElementType::Display7:
+        case ElementType::Display14:
+        case ElementType::Display16:
+        case ElementType::IC:
+        case ElementType::InputButton:
+        case ElementType::InputGnd:
+        case ElementType::InputRotary:
+        case ElementType::InputSwitch:
+        case ElementType::InputVcc:
+        case ElementType::JKLatch:
+        case ElementType::Led:
+        case ElementType::Line:
+        case ElementType::Text:
+        case ElementType::Unknown:
+            throw PANDACEPTION("Element type not supported: %1", elm->objectName());
         }
     }
 }
@@ -734,7 +781,7 @@ void ArduinoCodeGen::emitTruthTable(GraphicElement *elm)
     m_stream << QString("    //End TruthTable") << Qt::endl;
 }
 
-QVector<ArduinoBoardConfig> ArduinoCodeGen::getAvailableBoards()
+QVector<ArduinoBoardConfig> ArduinoCodeGen::availableBoards() const
 {
     static const QVector<ArduinoBoardConfig> boards = []() {
         QVector<ArduinoBoardConfig> b;
@@ -778,7 +825,7 @@ QVector<ArduinoBoardConfig> ArduinoCodeGen::getAvailableBoards()
 
 ArduinoBoardConfig ArduinoCodeGen::selectBoard(int requiredPins)
 {
-    const auto boards = getAvailableBoards();
+    const auto boards = availableBoards();
     for (const auto &board : boards) {
         if (board.maxPins() >= requiredPins) {
             return board;
@@ -861,7 +908,33 @@ void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
         }
         return;
     }
-    default:
+    // Non-logic-gate types: fall through to common gate-emission code below.
+    case ElementType::AudioBox:
+    case ElementType::Buzzer:
+    case ElementType::Clock:
+    case ElementType::DFlipFlop:
+    case ElementType::DLatch:
+    case ElementType::Demux:
+    case ElementType::Display7:
+    case ElementType::Display14:
+    case ElementType::Display16:
+    case ElementType::IC:
+    case ElementType::InputButton:
+    case ElementType::InputGnd:
+    case ElementType::InputRotary:
+    case ElementType::InputSwitch:
+    case ElementType::InputVcc:
+    case ElementType::JKFlipFlop:
+    case ElementType::JKLatch:
+    case ElementType::Led:
+    case ElementType::Line:
+    case ElementType::Mux:
+    case ElementType::SRFlipFlop:
+    case ElementType::SRLatch:
+    case ElementType::TFlipFlop:
+    case ElementType::Text:
+    case ElementType::TruthTable:
+    case ElementType::Unknown:
         break;
     }
     if (elm->outputs().size() == 1) {
@@ -1014,7 +1087,35 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
             case ElementType::JKFlipFlop:
                 m_stream << "bool " << varName << "_inclk = LOW;" << Qt::endl;
                 break;
-            default:
+            case ElementType::And:
+            case ElementType::AudioBox:
+            case ElementType::Buzzer:
+            case ElementType::DLatch:
+            case ElementType::Demux:
+            case ElementType::Display7:
+            case ElementType::Display14:
+            case ElementType::Display16:
+            case ElementType::IC:
+            case ElementType::InputButton:
+            case ElementType::InputGnd:
+            case ElementType::InputRotary:
+            case ElementType::InputSwitch:
+            case ElementType::InputVcc:
+            case ElementType::JKLatch:
+            case ElementType::Led:
+            case ElementType::Line:
+            case ElementType::Mux:
+            case ElementType::Nand:
+            case ElementType::Node:
+            case ElementType::Nor:
+            case ElementType::Not:
+            case ElementType::Or:
+            case ElementType::SRLatch:
+            case ElementType::Text:
+            case ElementType::TruthTable:
+            case ElementType::Unknown:
+            case ElementType::Xnor:
+            case ElementType::Xor:
                 break;
             }
         }
@@ -1040,12 +1141,12 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
 
         m_stream << "/* ====== Test Vectors ====== */" << Qt::endl;
         m_stream << "struct TestVec {" << Qt::endl;
-        m_stream << "    bool in[" << qMax(1, numInputs) << "];" << Qt::endl;
-        m_stream << "    bool out[" << qMax(1, numOutputs) << "];" << Qt::endl;
+        m_stream << "    bool in[" << (std::max)(1, numInputs) << "];" << Qt::endl;
+        m_stream << "    bool out[" << (std::max)(1, numOutputs) << "];" << Qt::endl;
         m_stream << "};" << Qt::endl;
         m_stream << Qt::endl;
         m_stream << "const int NUM_TESTS = " << numTests << ";" << Qt::endl;
-        m_stream << "const TestVec VECTORS[" << qMax(1, numTests) << "] = {" << Qt::endl;
+        m_stream << "const TestVec VECTORS[" << (std::max)(1, numTests) << "] = {" << Qt::endl;
         for (const auto &v : vectors) {
             m_stream << "    {{";
             for (int j = 0; j < v.inputs.size(); ++j) {

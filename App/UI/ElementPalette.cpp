@@ -30,7 +30,7 @@ void ElementPalette::populate()
 {
     setupTabIcons();
 
-    const int ioTabIndex = getTabIndex("io");
+    const int ioTabIndex = tabIndex("io");
     if (ioTabIndex != -1) {
         m_ui->tabElements->setCurrentIndex(ioTabIndex);
     } else {
@@ -139,7 +139,7 @@ void ElementPalette::retranslateLabels()
 
 void ElementPalette::updateTheme()
 {
-    const int memoryTabIndex = getTabIndex("memory");
+    const int memoryTabIndex = tabIndex("memory");
     if (memoryTabIndex != -1) {
         m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
     }
@@ -154,7 +154,7 @@ void ElementPalette::onSearchTextChanged(const QString &text)
 {
     m_ui->scrollAreaWidgetContents_Search->layout()->removeItem(m_ui->verticalSpacer_Search);
 
-    const int searchTabIndex = getTabIndex("search");
+    const int searchTabIndex = tabIndex("search");
 
     if (text.isEmpty()) {
         // Restore the normal tab bar and return to the tab the user was on before typing.
@@ -177,14 +177,20 @@ void ElementPalette::onSearchTextChanged(const QString &text)
             m_ui->tabElements->setTabEnabled(searchTabIndex, true);
         }
 
+        // Single tree traversal — reused for all three filter passes.
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
         // First pass: match by object name (e.g. "label_and") — prioritises exact type hits.
-        QRegularExpression regex1(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
-        auto searchResults = m_ui->scrollArea_Search->findChildren<ElementLabel *>(regex1);
-
+        const QRegularExpression regex1(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
         // Second pass: match by human-readable translated element name.
-        QRegularExpression regex2(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
+        const QRegularExpression regex2(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
+
+        QList<ElementLabel *> searchResults;
+        for (auto *item : allItems) {
+            if (regex1.match(item->objectName()).hasMatch()) {
+                searchResults.append(item);
+            }
+        }
         for (auto *item : allItems) {
             if (regex2.match(item->name()).hasMatch() && !searchResults.contains(item)) {
                 searchResults.append(item);
@@ -192,10 +198,9 @@ void ElementPalette::onSearchTextChanged(const QString &text)
         }
 
         // Third pass: also search IC file names (all share object name "label_ic").
-        const auto ics = m_ui->scrollArea_Search->findChildren<ElementLabel *>("label_ic");
-        for (auto *ic : ics) {
-            if (regex2.match(ic->icFileName()).hasMatch()) {
-                searchResults.append(ic);
+        for (auto *item : allItems) {
+            if (item->objectName() == QLatin1String("label_ic") && regex2.match(item->icFileName()).hasMatch()) {
+                searchResults.append(item);
             }
         }
 
@@ -244,13 +249,13 @@ void ElementPalette::populateMenu(QSpacerItem *spacer, const QStringList &names,
 void ElementPalette::setupTabIcons()
 {
     // Lookup by object name so reordering tabs in the UI doesn't break icon assignment.
-    const int ioTabIndex            = getTabIndex("io");
-    const int gatesTabIndex         = getTabIndex("gates");
-    const int combinationalTabIndex = getTabIndex("combinational");
-    const int memoryTabIndex        = getTabIndex("memory");
-    const int icTabIndex            = getTabIndex("ic");
-    const int miscTabIndex          = getTabIndex("misc");
-    const int searchTabIndex        = getTabIndex("search");
+    const int ioTabIndex            = tabIndex("io");
+    const int gatesTabIndex         = tabIndex("gates");
+    const int combinationalTabIndex = tabIndex("combinational");
+    const int memoryTabIndex        = tabIndex("memory");
+    const int icTabIndex            = tabIndex("ic");
+    const int miscTabIndex          = tabIndex("misc");
+    const int searchTabIndex        = tabIndex("search");
 
     if (ioTabIndex != -1)            m_ui->tabElements->setTabIcon(ioTabIndex,            QIcon(":/Components/Input/buttonOff.svg"));
     if (gatesTabIndex != -1)         m_ui->tabElements->setTabIcon(gatesTabIndex,          QIcon(":/Components/Logic/xor.svg"));
@@ -262,7 +267,7 @@ void ElementPalette::setupTabIcons()
     if (searchTabIndex != -1)        m_ui->tabElements->setTabEnabled(searchTabIndex, false);
 }
 
-int ElementPalette::getTabIndex(const QString &objectName) const
+int ElementPalette::tabIndex(const QString &objectName) const
 {
     for (int i = 0; i < m_ui->tabElements->count(); ++i) {
         QWidget *tabWidget = m_ui->tabElements->widget(i);

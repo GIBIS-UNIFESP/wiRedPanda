@@ -230,8 +230,8 @@ void TestAudioBox::testLoadVersionOld()
     auto audioBox2 = std::make_unique<AudioBox>();
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, FormatRev::current, {}};
+    QHash<quint64, QNEPort *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, {}};
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded correctly
@@ -252,8 +252,8 @@ void TestAudioBox::testLoadVersionNew()
     auto audioBox2 = std::make_unique<AudioBox>();
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, FormatRev::current, {}};
+    QHash<quint64, QNEPort *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, {}};
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded

@@ -128,11 +128,11 @@ void TestSceneState::testItemAtEmptyPosition()
     // Query at element position should find it
     QList<QGraphicsItem *> itemsAtElement = scene.items(QPointF(100, 100));
     // Should find the element we just added
-    QVERIFY2(itemsAtElement.count() >= 1, "Scene should return items at element position");
+    QVERIFY2(itemsAtElement.size() >= 1, "Scene should return items at element position");
 
     // Query at empty position should return fewer/no circuit items
     QList<QGraphicsItem *> itemsAtEmpty = scene.items(QPointF(500, 500));
-    QVERIFY2(itemsAtEmpty.count() < itemsAtElement.count() || itemsAtEmpty.isEmpty(),
+    QVERIFY2(itemsAtEmpty.size() < itemsAtElement.size() || itemsAtEmpty.isEmpty(),
             "Empty position should return no circuit elements");
 }
 

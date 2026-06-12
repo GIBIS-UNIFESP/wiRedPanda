@@ -409,7 +409,7 @@ void TestLED::testLoadColorOldVersion()
 
         // Verify scene contains elements (LEDs from old format)
         auto items = scene->items();
-        QVERIFY2(items.count() > 0, "Loaded file should contain elements");
+        QVERIFY2(items.size() > 0, "Loaded file should contain elements");
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load backward compatibility file: %1").arg(e.what())));
     }
@@ -429,8 +429,8 @@ void TestLED::testLoadColorNewVersion()
     auto led2 = std::make_unique<Led>();
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    QHash<quint64, QNEPort *> portMap;
+    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
 
     led2->load(loadStream, context);
 
@@ -454,10 +454,10 @@ void TestLED::testLoadColorDefault()
     // Create minimal data (empty or just headers)
     QByteArray data;
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     // Load with version < 1.1 - should return early, leaving color unchanged
     led.setColor("Blue");
-    SerializationContext contextOld{portMap, QVersionNumber(1, 0), {}};
+    SerializationContext contextOld = {portMap, QVersionNumber(1, 0), {}};
     led.load(loadStream, contextOld);
 
     // Color should remain "Blue" because very old version returns early without loading

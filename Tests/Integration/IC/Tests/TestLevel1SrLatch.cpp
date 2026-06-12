@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct SrLatchFixture {
@@ -87,30 +87,30 @@ void TestLevel1SRLatch::testSRLatchSequential()
     f.setIn->setOn(false);
     f.resetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 after reset
+    QCOMPARE(inputStatus(f.ledQ), false);  // Q=0 after reset
 
     // Step 2: Release reset, verify hold (Q should stay 0)
     f.resetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 held
+    QCOMPARE(inputStatus(f.ledQ), false);  // Q=0 held
 
     // Step 3: Set the latch to Q=1
     f.setIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q=1 after set
+    QCOMPARE(inputStatus(f.ledQ), true);   // Q=1 after set
 
     // Step 4: Release set, verify hold (Q should stay 1)
     f.setIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q=1 held
+    QCOMPARE(inputStatus(f.ledQ), true);   // Q=1 held
 
     // Step 5: Reset again to verify we can change state
     f.resetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 after reset
+    QCOMPARE(inputStatus(f.ledQ), false);  // Q=0 after reset
 
     // Step 6: Release reset, verify hold again
     f.resetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 held
+    QCOMPARE(inputStatus(f.ledQ), false);  // Q=0 held
 }

@@ -3,6 +3,7 @@
 
 #include "App/Scene/Commands.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include <QCoreApplication>
@@ -189,7 +190,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = scene->deserializationContext(portMap, version);
 
     for (auto *elm : CommandUtils::findElements(scene, otherIds)) {
@@ -470,7 +471,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
 
     for (auto *elm : elements) {
@@ -815,10 +816,10 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
 
     for (auto *item : items) {
         m_positions.append(item->pos());
-        xmin = qMin(xmin, item->pos().rx());
-        ymin = qMin(ymin, item->pos().ry());
-        xmax = qMax(xmax, item->pos().rx());
-        ymax = qMax(ymax, item->pos().ry());
+        xmin = (std::min)(xmin, item->pos().rx());
+        ymin = (std::min)(ymin, item->pos().ry());
+        xmax = (std::max)(xmax, item->pos().rx());
+        ymax = (std::max)(ymax, item->pos().ry());
     }
 
     m_minPos = QPointF(xmin, ymin);
@@ -929,7 +930,7 @@ void ChangePortSizeCommand::undo()
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
 
     for (auto *elm : serializationOrder) {
@@ -1122,7 +1123,7 @@ void UpdateBlobCommand::loadData(QByteArray &itemData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
 
     for (auto *elm : elements) {

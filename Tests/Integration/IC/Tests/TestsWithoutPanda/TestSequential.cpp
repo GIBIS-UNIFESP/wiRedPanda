@@ -16,7 +16,7 @@
 
 using TestUtils::clockCycle;
 using TestUtils::clockToggle;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
 
@@ -499,8 +499,8 @@ void TestSequential::testSimpleStateMachine()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #1: Verify initial state is IDLE (Q=0)
-    int initialQ = getInputStatus(stateLed);
-    int initialQnot = getInputStatus(stateNotLed);
+    int initialQ = inputStatus(stateLed);
+    int initialQnot = inputStatus(stateNotLed);
 
     if (initialQ != 0) {
         QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(initialQ)));
@@ -515,15 +515,15 @@ void TestSequential::testSimpleStateMachine()
     triggerSwitch->setOn(trigger);
     simulation->update();
 
-    int readBeforeClock = getInputStatus(stateLed);
+    int readBeforeClock = inputStatus(stateLed);
     QCOMPARE(readBeforeClock, 0);
 
     // Complete clock pulse (rising edge captures D, falling edge completes)
     clockCycle(simulation, clockSwitch);
 
     // Verify final state
-    int finalQ = getInputStatus(stateLed);
-    int finalQnot = getInputStatus(stateNotLed);
+    int finalQ = inputStatus(stateLed);
+    int finalQnot = inputStatus(stateNotLed);
 
     // Verify Q value matches expected
     QCOMPARE(finalQ, expectedState);
@@ -577,7 +577,7 @@ void TestSequential::testFsmStateTransitions()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #2: Verify initial state is IDLE (Q=0)
-    int initialQ = getInputStatus(stateLed);
+    int initialQ = inputStatus(stateLed);
 
     if (initialQ != 0) {
         QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(initialQ)));
@@ -601,7 +601,7 @@ void TestSequential::testFsmStateTransitions()
         simulation->update();
 
         // FIX: Don't QCOMPARE here - collect violations instead
-        int readBefore = getInputStatus(stateLed);
+        int readBefore = inputStatus(stateLed);
 
         if (readBefore != static_cast<int>(currentState)) {
             preClockViolations++;
@@ -615,7 +615,7 @@ void TestSequential::testFsmStateTransitions()
 
             // After clock, state should be what was on D (trigger input)
             bool newState = triggers[t];
-            int readState = getInputStatus(stateLed);
+            int readState = inputStatus(stateLed);
 
             if (readState != static_cast<int>(newState)) {
                 postClockViolations++;
@@ -664,8 +664,8 @@ void TestSequential::testFsmTimingEdgeCases()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #2: Verify initial state is IDLE (Q=0)
-    int initialQ = getInputStatus(stateLed);
-    int initialQnot = getInputStatus(stateNotLed);
+    int initialQ = inputStatus(stateLed);
+    int initialQnot = inputStatus(stateNotLed);
 
     if (initialQ != 0) {
         QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(initialQ)));
@@ -689,7 +689,7 @@ void TestSequential::testFsmTimingEdgeCases()
         // Setup phase: Allow D input to stabilize before clock
         simulation->update();
 
-        int readBefore = getInputStatus(stateLed);
+        int readBefore = inputStatus(stateLed);
 
         if (readBefore != static_cast<int>(currentState)) {
             preClockViolations++;
@@ -704,7 +704,7 @@ void TestSequential::testFsmTimingEdgeCases()
         simulation->update();
 
         bool newState = triggerValue;
-        int readAfter = getInputStatus(stateLed);
+        int readAfter = inputStatus(stateLed);
 
         if (readAfter != static_cast<int>(newState)) {
             postClockViolations++;
@@ -754,8 +754,8 @@ void TestSequential::testFsmExtendedSequences()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #2: Verify initial state is IDLE (Q=0)
-    int initialQ = getInputStatus(stateLed);
-    int initialQnot = getInputStatus(stateNotLed);
+    int initialQ = inputStatus(stateLed);
+    int initialQnot = inputStatus(stateNotLed);
 
     if (initialQ != 0) {
         QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(initialQ)));
@@ -773,7 +773,7 @@ void TestSequential::testFsmExtendedSequences()
     QVector<int> stateTrace;
     stateTrace.append(currentState);
 
-    for (int cycle = 0; cycle < triggerSequence.length(); ++cycle) {
+    for (int cycle = 0; cycle < triggerSequence.size(); ++cycle) {
         bool triggerValue = triggerSequence[cycle];
 
         triggerSwitch->setOn(triggerValue);
@@ -781,7 +781,7 @@ void TestSequential::testFsmExtendedSequences()
         // Setup phase: Allow D input to stabilize before clock
         simulation->update();
 
-        int readBefore = getInputStatus(stateLed);
+        int readBefore = inputStatus(stateLed);
 
         if (readBefore != static_cast<int>(currentState)) {
             preClockViolations++;
@@ -797,7 +797,7 @@ void TestSequential::testFsmExtendedSequences()
 
         // Expected next state: what's on trigger (captured on rising edge)
         bool expectedNextState = triggerValue;
-        int readAfter = getInputStatus(stateLed);
+        int readAfter = inputStatus(stateLed);
 
         if (readAfter != static_cast<int>(expectedNextState)) {
             postClockViolations++;
@@ -851,15 +851,15 @@ void TestSequential::testFsmQnotComplementarity()
     QStringList violationDetails;
 
     // Verify initial state
-    int Q = getInputStatus(stateLed);
-    int Qnot = getInputStatus(stateNotLed);
+    int Q = inputStatus(stateLed);
+    int Qnot = inputStatus(stateNotLed);
 
     if (Q != (Qnot == 0 ? 1 : 0)) {
         complementViolations++;
         violationDetails.append("Initial state: Q_not not complement of Q");
     }
 
-    for (int cycle = 0; cycle < triggerSequence.length(); ++cycle) {
+    for (int cycle = 0; cycle < triggerSequence.size(); ++cycle) {
         bool triggerValue = triggerSequence[cycle];
         triggerSwitch->setOn(triggerValue);
 
@@ -871,8 +871,8 @@ void TestSequential::testFsmQnotComplementarity()
         simulation->update();
 
         // Verify Q and Q_not are complementary
-        Q = getInputStatus(stateLed);
-        Qnot = getInputStatus(stateNotLed);
+        Q = inputStatus(stateLed);
+        Qnot = inputStatus(stateNotLed);
 
         if (Q != (Qnot == 0 ? 1 : 0)) {
             complementViolations++;
@@ -913,7 +913,7 @@ void TestSequential::testFsmLongSequenceStability()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // Verify initial state
-    int initialQ = getInputStatus(stateLed);
+    int initialQ = inputStatus(stateLed);
     if (initialQ != 0) {
         QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1").arg(initialQ)));
     }
@@ -934,8 +934,8 @@ void TestSequential::testFsmLongSequenceStability()
         clockCycle(simulation, clockSwitch);
         simulation->update();
 
-        int Q = getInputStatus(stateLed);
-        int Qnot = getInputStatus(stateNotLed);
+        int Q = inputStatus(stateLed);
+        int Qnot = inputStatus(stateNotLed);
         int expectedQ = triggerValue;
 
         // Check state correctness
@@ -989,27 +989,27 @@ void TestSequential::testFsmStateLock()
     clockCycle(simulation, clockSwitch);
     simulation->update();
 
-    int Q_after_set = getInputStatus(stateLed);
+    int Q_after_set = inputStatus(stateLed);
     QCOMPARE(Q_after_set, 1);
 
     triggerSwitch->setOn(false);
     simulation->update();
 
     // NO CLOCK - just settle
-    int Q_before_clock = getInputStatus(stateLed);
+    int Q_before_clock = inputStatus(stateLed);
     QCOMPARE(Q_before_clock, 1);  // Q locked at 1 because we haven't clocked yet
 
     // Complete clock pulse
     clockCycle(simulation, clockSwitch);
     simulation->update();
 
-    int Q_after_clock = getInputStatus(stateLed);
+    int Q_after_clock = inputStatus(stateLed);
     QCOMPARE(Q_after_clock, 0);
 
     triggerSwitch->setOn(true);  // Change trigger back to 1
     simulation->update();
 
-    int Q_no_clock = getInputStatus(stateLed);
+    int Q_no_clock = inputStatus(stateLed);
     QCOMPARE(Q_no_clock, 0);  // Q still locked at 0
 }
 
@@ -1054,7 +1054,7 @@ void TestSequential::testFsmRapidClockNoSettle()
         // Complete clock pulse (minimal settle)
         clockCycle(simulation, clockSwitch);
 
-        int Q = getInputStatus(stateLed);
+        int Q = inputStatus(stateLed);
         int expectedQ = triggerValue;
 
         if (Q != expectedQ) {
@@ -1099,7 +1099,7 @@ void TestSequential::testFsmTriggerDuringClock()
     triggerSwitch->setOn(initialTrigger);
     simulation->update();
 
-    int Q_before_clock = getInputStatus(stateLed);
+    int Q_before_clock = inputStatus(stateLed);
     QCOMPARE(Q_before_clock, 0);
 
     // Rising edge - captures trigger value at this moment
@@ -1113,7 +1113,7 @@ void TestSequential::testFsmTriggerDuringClock()
     clockToggle(simulation, clockSwitch);  // HIGH -> LOW
     simulation->update();
 
-    int Q_after_clock = getInputStatus(stateLed);
+    int Q_after_clock = inputStatus(stateLed);
 
     // The Q should have captured initialTrigger on the rising edge,
     // NOT the triggerDuringClock (which changed during/after rising edge)
@@ -1166,8 +1166,8 @@ void TestSequential::testFsmLongTermStability()
         clockCycle(simulation, clockSwitch);
         simulation->update();
 
-        int Q = getInputStatus(stateLed);
-        int Qnot = getInputStatus(stateNotLed);
+        int Q = inputStatus(stateLed);
+        int Qnot = inputStatus(stateNotLed);
         int expectedQ = triggerValue;
 
         if (Q != expectedQ) {
@@ -1233,7 +1233,7 @@ void TestSequential::testTFlipFlopToggle()
     simulation->update();
 
     // Read initial Q state (should be inactive/0 by default)
-    bool initialQ = getInputStatus(&ledQ);
+    bool initialQ = inputStatus(&ledQ);
 
     // Set T input value and stabilize
     tSwitch.setOn(tInput);
@@ -1242,8 +1242,8 @@ void TestSequential::testTFlipFlopToggle()
     // Apply clock pulse (rising edge triggers state change)
     clockCycle(simulation, &clockSwitch);
 
-    bool qAfterClock = getInputStatus(&ledQ);
-    bool qNotAfterClock = getInputStatus(&ledQnot);
+    bool qAfterClock = inputStatus(&ledQ);
+    bool qNotAfterClock = inputStatus(&ledQnot);
 
     if (expectedToggle) {
         // T=1: Q should toggle from initial state
@@ -1322,8 +1322,8 @@ void TestSequential::testSRFlipFlopSetReset()
     // Clock pulse to latch the state
     clockCycle(simulation, &clockSwitch);
 
-    bool qResult = getInputStatus(&ledQ);
-    bool qNotResult = getInputStatus(&ledQnot);
+    bool qResult = inputStatus(&ledQ);
+    bool qNotResult = inputStatus(&ledQnot);
 
     // Verify result
     QCOMPARE(qResult, expectedQ);

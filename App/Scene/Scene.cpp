@@ -153,7 +153,7 @@ int Scene::lastId() const
 
 void Scene::setLastId(const int newLastId)
 {
-    m_lastId = qMax(m_lastId, newLastId);
+    m_lastId = (std::max)(m_lastId, newLastId);
 }
 
 int Scene::nextId()
@@ -196,9 +196,9 @@ void Scene::unregisterItem(ItemWithId *item)
     Q_ASSERT(!m_elementRegistry.contains(item->id()));
 }
 
-SerializationContext Scene::deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version)
+SerializationContext Scene::deserializationContext(QHash<quint64, QNEPort *> &portMap, const QVersionNumber &version)
 {
-    SerializationContext context{portMap, version, contextDir()};
+    SerializationContext context = {portMap, version, contextDir()};
     context.blobRegistry = &m_icRegistry.blobMapRef();
     return context;
 }
@@ -313,8 +313,9 @@ QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elemen
             for (auto *conn : port->connections()) {
                 if (auto *endPort = conn->endPort()) {
                     if (auto *successor = endPort->graphicElement()) {
-                        if (!successors[elm].contains(successor)) {
-                            successors[elm].append(successor);
+                        auto &vec = successors[elm];
+                        if (!vec.contains(successor)) {
+                            vec.append(successor);
                         }
                     }
                 }
@@ -345,7 +346,7 @@ QHash<QString, QNEInputPort *> Scene::wirelessTxInputPorts(const QVector<Graphic
     return txMap;
 }
 
-const QVector<QNEConnection *> Scene::connections()
+const QVector<QNEConnection *> Scene::connections() const
 {
     const auto items_ = items();
     QVector<QNEConnection *> conns;
@@ -374,7 +375,7 @@ const QList<GraphicElement *> Scene::selectedElements() const
     return elements_;
 }
 
-QGraphicsItem *Scene::itemAt(const QPointF pos)
+QGraphicsItem *Scene::itemAt(const QPointF pos) const
 {
     auto items_ = items(pos);
     // Also check a small surrounding rectangle so port hit-testing works when
@@ -405,7 +406,7 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
     return nullptr;
 }
 
-QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos)
+QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos) const
 {
     // 9×9 pixel hit area (4px margin around the exact point) compensates for the
     // small visual size of ports and makes them easier to click precisely
@@ -801,7 +802,7 @@ void Scene::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
     QPointF ctr;    stream >> ctr;
     offset = event->scenePos() - offset;
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = deserializationContext(portMap, version);
     const auto itemList = Serialization::deserialize(stream, context);
 

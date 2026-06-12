@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Decoder3to8Fixture {
@@ -105,6 +105,6 @@ void TestLevel2Decoder3To8::test3to8Decoder()
 
     for (int i = 0; i < 8; ++i) {
         bool expected = (i == expectedActive);
-        QCOMPARE(getInputStatus(f.ledOut[i]), expected);
+        QCOMPARE(inputStatus(f.ledOut[i]), expected);
     }
 }

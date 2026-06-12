@@ -11,7 +11,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct AluSelector5wayFixture {
@@ -125,7 +125,7 @@ void TestLevel3ALUSelector5Way::testALUSelector5way()
 
         f.sim->update();
 
-        bool result = getInputStatus(f.output, 0);
+        bool result = inputStatus(f.output, 0);
 
         QCOMPARE(result, static_cast<bool>(test.expected));
     }

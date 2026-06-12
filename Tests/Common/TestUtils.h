@@ -104,7 +104,7 @@ void deleteAll(Container &container)
  * @param port Port index (default 0)
  * @return true if port status is Active
  */
-bool getInputStatus(GraphicElement *elm, int port = 0);
+bool inputStatus(GraphicElement *elm, int port = 0);
 
 /**
  * @brief Helper to get output status as bool
@@ -112,7 +112,7 @@ bool getInputStatus(GraphicElement *elm, int port = 0);
  * @param port Port index (default 0)
  * @return true if port status is Active
  */
-bool getOutputStatus(GraphicElement *elm, int port = 0);
+bool outputStatus(GraphicElement *elm, int port = 0);
 
 /**
  * @brief Count the number of connections in a scene
@@ -126,7 +126,7 @@ int countConnections(Scene *scene);
  * @param scene Scene to get connections from
  * @return List of all QNEConnection items in the scene
  */
-QList<QNEConnection *> getConnections(Scene *scene);
+QList<QNEConnection *> sceneConnections(Scene *scene);
 
 /**
  * @brief Set multiple input bits from an integer value
@@ -160,7 +160,7 @@ inline int readMultiBitOutput(const QVector<T *> &elements, int port = 0)
         if (!elements[i]) {
             qFatal("FATAL ERROR in readMultiBitOutput(): Element at index %d is nullptr", i);
         }
-        if (getInputStatus(static_cast<GraphicElement *>(elements[i]), port)) {
+        if (inputStatus(static_cast<GraphicElement *>(elements[i]), port)) {
             result |= (1 << i);
         }
     }
@@ -313,18 +313,18 @@ private:
      */
     struct InputPortTraits
     {
-        static int getCount(GraphicElement *elm);
-        static class QNEPort *getPort(GraphicElement *elm, int idx);
-        static const char *getPortType();
-        static const char *getNoPortsMessage();
+        static int count(GraphicElement *elm);
+        static class QNEPort *port(GraphicElement *elm, int idx);
+        static const char *portType();
+        static const char *noPortsMessage();
     };
 
     struct OutputPortTraits
     {
-        static int getCount(GraphicElement *elm);
-        static class QNEPort *getPort(GraphicElement *elm, int idx);
-        static const char *getPortType();
-        static const char *getNoPortsMessage();
+        static int count(GraphicElement *elm);
+        static class QNEPort *port(GraphicElement *elm, int idx);
+        static const char *portType();
+        static const char *noPortsMessage();
     };
 
     /**
@@ -332,14 +332,14 @@ private:
      * @tparam PortTraits Traits specifying input or output port access
      */
     template<typename PortTraits>
-    int getPortByLabelImpl(GraphicElement *element, const QString &label);
+    int portByLabelImpl(GraphicElement *element, const QString &label);
 
     /**
      * @brief Generic implementation for getting available ports list
      * @tparam PortTraits Traits specifying input or output port access
      */
     template<typename PortTraits>
-    QString getAvailablePortsImpl(GraphicElement *element) const;
+    QString availablePortsImpl(GraphicElement *element) const;
 
     /**
      * @brief Find input port index by label (for IC elements)
@@ -348,7 +348,7 @@ private:
      * @return Port index (0-based)
      * @throws std::runtime_error if port not found
      */
-    int getInputPortByLabel(GraphicElement *element, const QString &label);
+    int inputPortByLabel(GraphicElement *element, const QString &label);
 
     /**
      * @brief Find output port index by label (for IC elements)
@@ -357,19 +357,19 @@ private:
      * @return Port index (0-based)
      * @throws std::runtime_error if port not found
      */
-    int getOutputPortByLabel(GraphicElement *element, const QString &label);
+    int outputPortByLabel(GraphicElement *element, const QString &label);
 
     /**
      * @brief Get list of available input ports as formatted string for error messages
      * @param element The IC element
      * @return Formatted string of [index] label pairs
      */
-    QString getAvailableInputPorts(GraphicElement *element) const;
+    QString availableInputPorts(GraphicElement *element) const;
 
     /**
      * @brief Get list of available output ports as formatted string for error messages
      * @param element The IC element
      * @return Formatted string of [index] label pairs
      */
-    QString getAvailableOutputPorts(GraphicElement *element) const;
+    QString availableOutputPorts(GraphicElement *element) const;
 };

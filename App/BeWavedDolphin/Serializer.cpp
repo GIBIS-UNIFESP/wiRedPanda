@@ -35,6 +35,7 @@ WaveformData loadBinary(QDataStream &stream, const int maxInputPorts)
         throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer", "Invalid number of rows.");
     }
     if (rows > maxInputPorts) {
+        qCWarning(zero) << "DolphinSerializer: truncating waveform from" << rows << "rows to maximum" << maxInputPorts;
         rows = maxInputPorts;
     }
 
@@ -94,7 +95,9 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
     if (rows < 0) {
         throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer", "Invalid number of rows.");
     }
+
     if (rows > maxInputPorts) {
+        qCWarning(zero) << "DolphinSerializer: truncating waveform from" << rows << "rows to maximum" << maxInputPorts;
         rows = maxInputPorts;
     }
 
@@ -118,10 +121,20 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
     data.values.resize(static_cast<qsizetype>(rows) * cols);
 
     // CSV values are stored row-major: index = 2 + row*cols + col
+    // Values must be 0 or 1; clamp anything else and warn once so corrupt
+    // files are diagnosed without flooding the log per-cell.
+    bool hadInvalidValues = false;
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
-            data.values[row * cols + col] = wordList.at(2 + col + row * cols).toInt();
+            const int raw = wordList.at(2 + col + row * cols).toInt();
+            if (raw != 0 && raw != 1) {
+                hadInvalidValues = true;
+            }
+            data.values[row * cols + col] = (raw == 1) ? 1 : 0;
         }
+    }
+    if (hadInvalidValues) {
+        qCWarning(zero) << "DolphinSerializer: CSV contained non-binary cell values — clamped to 0/1";
     }
 
     return data;

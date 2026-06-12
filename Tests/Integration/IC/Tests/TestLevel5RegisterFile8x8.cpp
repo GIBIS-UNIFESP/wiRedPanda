@@ -13,7 +13,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -104,7 +104,7 @@ struct RegFile8x8Fixture {
         sim->update();
         int value = 0;
         for (int bit = 0; bit < 8; ++bit) {
-            if (getInputStatus(readData[bit])) {
+            if (inputStatus(readData[bit])) {
                 value |= (1 << bit);
             }
         }

@@ -4,6 +4,7 @@
 #include "MCP/Server/Core/MCPValidator.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QJsonArray>
@@ -23,6 +24,7 @@ bool MCPValidator::loadSchema(const QString &schemaPath)
 {
     m_schemaPath = schemaPath;
     m_schemaLoaded = false;
+    m_validatorCache.clear();
 
     QFile schemaFile(schemaPath);
     if (!schemaFile.open(QIODevice::ReadOnly)) {
@@ -68,17 +70,17 @@ bool MCPValidator::isSchemaLoaded() const
     return m_schemaLoaded;
 }
 
-QString MCPValidator::getSchemaPath() const
+QString MCPValidator::schemaPath() const
 {
     return m_schemaPath;
 }
 
-ValidationResult MCPValidator::validateCommand(const QJsonObject &command)
+ValidationResult MCPValidator::validateCommand(const QJsonObject &command) const
 {
     return validateCommand(qjsonToNlohmann(command));
 }
 
-ValidationResult MCPValidator::validateCommand(const json &command)
+ValidationResult MCPValidator::validateCommand(const json &command) const
 {
     if (!m_schemaLoaded) {
         return ValidationResult(false, "Schema not loaded");
@@ -101,15 +103,15 @@ ValidationResult MCPValidator::validateCommand(const json &command)
     }
 
     // Validate against the command schema using native validator
-    return validateAgainstSchema(command, commandSchema, commandType);
+    return validateAgainstSchema(command, commandSchema, "request:" + commandType);
 }
 
-ValidationResult MCPValidator::validateResponse(const QJsonObject &response, const QString &expectedCommand)
+ValidationResult MCPValidator::validateResponse(const QJsonObject &response, const QString &expectedCommand) const
 {
     return validateResponse(qjsonToNlohmann(response), expectedCommand);
 }
 
-ValidationResult MCPValidator::validateResponse(const json &response, const QString &expectedCommand)
+ValidationResult MCPValidator::validateResponse(const json &response, const QString &expectedCommand) const
 {
     if (!m_schemaLoaded) {
         return ValidationResult(false, "Schema not loaded");
@@ -123,7 +125,7 @@ ValidationResult MCPValidator::validateResponse(const json &response, const QStr
         return ValidationResult(false, "CommandResponse schema not found in definitions");
     }
 
-    ValidationResult baseResult = validateAgainstSchema(response, baseResponseSchema, expectedCommand);
+    ValidationResult baseResult = validateAgainstSchema(response, baseResponseSchema, "response:base");
     if (!baseResult.isValid) {
         return ValidationResult(false,
             QString("Base response validation failed: %1").arg(baseResult.errorMessage),
@@ -134,7 +136,7 @@ ValidationResult MCPValidator::validateResponse(const json &response, const QStr
     if (!expectedCommand.isEmpty()) {
         json responseSchema = findResponseSchema(expectedCommand);
         if (!responseSchema.is_null()) {
-            ValidationResult specificResult = validateAgainstSchema(response, responseSchema, expectedCommand);
+            ValidationResult specificResult = validateAgainstSchema(response, responseSchema, "response:" + expectedCommand);
             if (!specificResult.isValid) {
                 return ValidationResult(false,
                     QString("Specific response validation failed: %1").arg(specificResult.errorMessage),
@@ -147,27 +149,24 @@ ValidationResult MCPValidator::validateResponse(const json &response, const QStr
     return ValidationResult(true, "", "base_response", expectedCommand);
 }
 
-ValidationResult MCPValidator::validateAgainstSchema(const json &data, const json &schema, const QString &commandType)
+ValidationResult MCPValidator::validateAgainstSchema(const json &data, const json &schema, const QString &commandType) const
 {
     try {
-        // Use the main validator which has access to all definitions for $ref resolution
         if (m_validator) {
-            // For schema references that may contain $ref, we need to create a complete schema
-            json fullSchema = schema;
-
-            // If this is a sub-schema without definitions but contains $ref,
-            // we need to include the definitions section
-            if (schema.contains("properties") && m_schema.contains("definitions")) {
-                fullSchema["definitions"] = m_schema["definitions"];
-                fullSchema["$schema"] = m_schema["$schema"];
+            const std::string cacheKey = commandType.toStdString();
+            auto it = m_validatorCache.find(cacheKey);
+            if (it == m_validatorCache.end()) {
+                json fullSchema = schema;
+                if (schema.contains("properties") && m_schema.contains("definitions")) {
+                    fullSchema["definitions"] = m_schema["definitions"];
+                    fullSchema["$schema"] = m_schema["$schema"];
+                }
+                json_validator compiled;
+                compiled.set_root_schema(fullSchema);
+                auto [inserted, _] = m_validatorCache.emplace(cacheKey, std::move(compiled));
+                it = inserted;
             }
-
-            // Create a temporary validator with the full schema context
-            json_validator validator;
-            validator.set_root_schema(fullSchema);
-
-            // This throws on validation failure with detailed error messages
-            validator.validate(data);
+            it->second.validate(data);
         }
 
         return ValidationResult(true, "", "", commandType);
@@ -181,7 +180,7 @@ ValidationResult MCPValidator::validateAgainstSchema(const json &data, const jso
     }
 }
 
-json MCPValidator::findCommandSchema(const QString &commandName)
+json MCPValidator::findCommandSchema(const QString &commandName) const
 {
     if (!m_commandSchemas.is_null() && m_commandSchemas.contains(commandName.toStdString())) {
         json schema = m_commandSchemas[commandName.toStdString()];
@@ -203,7 +202,7 @@ json MCPValidator::findCommandSchema(const QString &commandName)
     return json();
 }
 
-json MCPValidator::findResponseSchema(const QString &commandName)
+json MCPValidator::findResponseSchema(const QString &commandName) const
 {
     if (!m_responseSchemas.is_null() && m_responseSchemas.contains(commandName.toStdString())) {
         json schema = m_responseSchemas[commandName.toStdString()];
@@ -242,12 +241,21 @@ json MCPValidator::qjsonToNlohmann(const QJsonObject &qjson)
 {
     QJsonDocument doc(qjson);
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
-    return json::parse(jsonData.toStdString());
+    try {
+        return json::parse(jsonData.toStdString());
+    } catch (const json::parse_error &e) {
+        throw std::runtime_error(std::string("qjsonToNlohmann: JSON parse error: ") + e.what());
+    }
 }
 
 QJsonObject MCPValidator::nlohmannToQJson(const json &nlohmannJson)
 {
     std::string jsonString = nlohmannJson.dump();
-    QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString));
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(QByteArray::fromStdString(jsonString), &parseError);
+    if (parseError.error != QJsonParseError::NoError || doc.isNull()) {
+        qWarning() << "nlohmannToQJson: failed to parse JSON:" << parseError.errorString();
+        return {};
+    }
     return doc.object();
 }

@@ -100,16 +100,16 @@ void TestLogicGates::testAndGateBehavior()
 
     // Test AND truth table
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 0 AND 0 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 0 AND 0 = 0
 
     sw1.setOn(false); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 0 AND 1 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 0 AND 1 = 0
 
     sw1.setOn(true); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 1 AND 0 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 1 AND 0 = 0
 
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 1 AND 1 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 1 AND 1 = 1
 }
 
 void TestLogicGates::testOrGateBehavior()
@@ -130,16 +130,16 @@ void TestLogicGates::testOrGateBehavior()
 
     // Test OR truth table
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 0 OR 0 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 0 OR 0 = 0
 
     sw1.setOn(false); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 0 OR 1 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 0 OR 1 = 1
 
     sw1.setOn(true); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 1 OR 0 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 1 OR 0 = 1
 
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 1 OR 1 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 1 OR 1 = 1
 }
 
 void TestLogicGates::testNotGateBehavior()
@@ -159,10 +159,10 @@ void TestLogicGates::testNotGateBehavior()
 
     // Test NOT behavior
     sw.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // NOT 0 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // NOT 0 = 1
 
     sw.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // NOT 1 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // NOT 1 = 0
 }
 
 void TestLogicGates::testNandGateBehavior()
@@ -183,16 +183,16 @@ void TestLogicGates::testNandGateBehavior()
 
     // Test NAND truth table
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 0 NAND 0 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 0 NAND 0 = 1
 
     sw1.setOn(false); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 0 NAND 1 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 0 NAND 1 = 1
 
     sw1.setOn(true); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 1 NAND 0 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 1 NAND 0 = 1
 
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 1 NAND 1 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 1 NAND 1 = 0
 }
 
 void TestLogicGates::testNorGateBehavior()
@@ -213,16 +213,16 @@ void TestLogicGates::testNorGateBehavior()
 
     // Test NOR truth table
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 0 NOR 0 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 0 NOR 0 = 1
 
     sw1.setOn(false); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 0 NOR 1 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 0 NOR 1 = 0
 
     sw1.setOn(true); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 1 NOR 0 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 1 NOR 0 = 0
 
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 1 NOR 1 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 1 NOR 1 = 0
 }
 
 void TestLogicGates::testXorGateBehavior()
@@ -243,16 +243,16 @@ void TestLogicGates::testXorGateBehavior()
 
     // Test XOR truth table
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 0 XOR 0 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 0 XOR 0 = 0
 
     sw1.setOn(false); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 0 XOR 1 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 0 XOR 1 = 1
 
     sw1.setOn(true); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 1 XOR 0 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 1 XOR 0 = 1
 
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 1 XOR 1 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 1 XOR 1 = 0
 }
 
 void TestLogicGates::testXnorGateBehavior()
@@ -273,14 +273,14 @@ void TestLogicGates::testXnorGateBehavior()
 
     // Test XNOR truth table
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 0 XNOR 0 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 0 XNOR 0 = 1
 
     sw1.setOn(false); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 0 XNOR 1 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 0 XNOR 1 = 0
 
     sw1.setOn(true); sw2.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);  // 1 XNOR 0 = 0
+    QCOMPARE(TestUtils::inputStatus(&led), false);  // 1 XNOR 0 = 0
 
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);   // 1 XNOR 1 = 1
+    QCOMPARE(TestUtils::inputStatus(&led), true);   // 1 XNOR 1 = 1
 }

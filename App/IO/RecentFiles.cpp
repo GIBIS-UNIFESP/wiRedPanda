@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QFileInfo>
+#include <QThread>
 
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
@@ -22,11 +23,12 @@ RecentFiles::RecentFiles(QObject *parent)
             m_files.removeAll(filePath);
             emit recentFilesUpdated();
         }
-    });
+    }, Qt::QueuedConnection);
 }
 
 void RecentFiles::addRecentFile(const QString &filePath)
 {
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
     qCDebug(three) << "Setting recent file to: " << filePath;
 
     if (!QFile(filePath).exists()) {
@@ -51,6 +53,7 @@ void RecentFiles::addRecentFile(const QString &filePath)
 
 QStringList RecentFiles::recentFiles()
 {
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
     // Walk with an index rather than an iterator so we can remove stale entries
     // in-place without invalidating the loop; the file-system watcher covers
     // deletions at runtime, but files may have disappeared while the app was

@@ -14,7 +14,7 @@
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::clockCycle;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct StackPointer8bitFixture {
@@ -133,7 +133,7 @@ void TestLevel6StackPointer8Bit::testStackPointer()
 
     int readValue = 0;
     for (int i = 0; i < 8; ++i) {
-        if (getInputStatus(f.sp[i])) {
+        if (inputStatus(f.sp[i])) {
             readValue |= (1 << i);
         }
     }

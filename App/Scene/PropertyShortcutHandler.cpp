@@ -69,7 +69,28 @@ void PropertyShortcutHandler::adjustMainProperty(int dir)
                 element->setColor(dir < 0 ? element->previousColor() : element->nextColor());
             break;
 
-        default: // Not implemented
+        // Elements with no adjustable main property — no-op so -Wswitch
+        // catches any future ElementType values added to the enum.
+        case ElementType::AudioBox:
+        case ElementType::DFlipFlop:
+        case ElementType::DLatch:
+        case ElementType::Demux:
+        case ElementType::IC:
+        case ElementType::InputButton:
+        case ElementType::InputGnd:
+        case ElementType::InputSwitch:
+        case ElementType::InputVcc:
+        case ElementType::JKFlipFlop:
+        case ElementType::JKLatch:
+        case ElementType::Line:
+        case ElementType::Mux:
+        case ElementType::Node:
+        case ElementType::Not:
+        case ElementType::SRFlipFlop:
+        case ElementType::SRLatch:
+        case ElementType::TFlipFlop:
+        case ElementType::Text:
+        case ElementType::Unknown:
             break;
         }
 
@@ -106,7 +127,39 @@ void PropertyShortcutHandler::adjustSecondaryProperty(int dir)
                 element->setColor(dir < 0 ? element->previousColor() : element->nextColor());
             break;
 
-        default:
+        // Elements with no adjustable secondary property — no-op.
+        case ElementType::And:
+        case ElementType::AudioBox:
+        case ElementType::Buzzer:
+        case ElementType::Clock:
+        case ElementType::DFlipFlop:
+        case ElementType::DLatch:
+        case ElementType::Demux:
+        case ElementType::Display7:
+        case ElementType::Display14:
+        case ElementType::Display16:
+        case ElementType::IC:
+        case ElementType::InputButton:
+        case ElementType::InputGnd:
+        case ElementType::InputRotary:
+        case ElementType::InputSwitch:
+        case ElementType::InputVcc:
+        case ElementType::JKFlipFlop:
+        case ElementType::JKLatch:
+        case ElementType::Line:
+        case ElementType::Mux:
+        case ElementType::Nand:
+        case ElementType::Node:
+        case ElementType::Nor:
+        case ElementType::Not:
+        case ElementType::Or:
+        case ElementType::SRFlipFlop:
+        case ElementType::SRLatch:
+        case ElementType::TFlipFlop:
+        case ElementType::Text:
+        case ElementType::Unknown:
+        case ElementType::Xnor:
+        case ElementType::Xor:
             break;
         }
 

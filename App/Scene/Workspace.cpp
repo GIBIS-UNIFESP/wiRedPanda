@@ -3,6 +3,8 @@
 
 #include "App/Scene/Workspace.h"
 
+#include <algorithm>
+
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QSaveFile>
@@ -108,6 +110,11 @@ Scene *WorkSpace::scene()
     return &m_scene;
 }
 
+const Scene *WorkSpace::scene() const
+{
+    return &m_scene;
+}
+
 GraphicsView *WorkSpace::view()
 {
     return &m_view;
@@ -123,7 +130,7 @@ bool WorkSpace::isFromNewerVersion() const
     return !m_loadedVersion.isNull() && m_loadedVersion > FormatRev::current;
 }
 
-QFileInfo WorkSpace::fileInfo()
+QFileInfo WorkSpace::fileInfo() const
 {
     return m_fileInfo;
 }
@@ -461,7 +468,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         m_scene.icRegistry()->setBlob(it.key(), it.value());
     }
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     if (!contextDir.isEmpty()) {
         m_scene.setContextDir(contextDir);
     }
@@ -476,7 +483,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         // Track the highest element ID seen so that newly created elements
         // will receive IDs that don't collide with those just loaded
         if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
-            m_lastId = qMax(m_lastId, ge->id());
+            m_lastId = (std::max)(m_lastId, ge->id());
         }
     }
 
@@ -492,7 +499,7 @@ void WorkSpace::setDolphinFileName(const QString &fileName)
     m_dolphinFileName = fileName;
 }
 
-QString WorkSpace::dolphinFileName()
+QString WorkSpace::dolphinFileName() const
 {
     return m_dolphinFileName;
 }
@@ -656,7 +663,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
         m_scene.icRegistry()->setBlob(it.key(), it.value());
     }
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene.deserializationContext(portMap, preamble.version);
     context.contextDir = parentContextDir;
     const auto items = Serialization::deserialize(stream, context);
@@ -665,7 +672,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
         m_scene.addItem(item);
 
         if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
-            m_lastId = qMax(m_lastId, ge->id());
+            m_lastId = (std::max)(m_lastId, ge->id());
         }
     }
 

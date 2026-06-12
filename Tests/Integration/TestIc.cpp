@@ -341,33 +341,33 @@ void TestIC::testICStatusPropagation()
     // Test 1: Set switch OFF and verify output
     inputSwitch.setOn(false);
     sim->update();
-    bool ledStateWhenSwitchOff = TestUtils::getInputStatus(&outputLed);
+    bool ledStateWhenSwitchOff = TestUtils::inputStatus(&outputLed);
 
     // Test 2: Set switch ON and verify output changes
     inputSwitch.setOn(true);
     sim->update();
-    bool ledStateWhenSwitchOn = TestUtils::getInputStatus(&outputLed);
+    bool ledStateWhenSwitchOn = TestUtils::inputStatus(&outputLed);
 
     // The key test: verify status actually propagated and produced defined output states
     // Both states should be valid (either true or false, not undefined)
-    QVERIFY2(TestUtils::getInputStatus(&outputLed) == ledStateWhenSwitchOn,
+    QVERIFY2(TestUtils::inputStatus(&outputLed) == ledStateWhenSwitchOn,
              "Output LED should maintain consistent state after switch ON");
 
     // Test 3: Toggle back to OFF and verify it changes again
     inputSwitch.setOn(false);
     sim->update();
-    bool ledStateSecondOff = TestUtils::getInputStatus(&outputLed);
+    bool ledStateSecondOff = TestUtils::inputStatus(&outputLed);
     QCOMPARE(ledStateSecondOff, ledStateWhenSwitchOff);
 
     // Test 4: With only 1 of 5 IC inputs connected, the IC produces deterministic
     // outputs from its internal master-slave flip-flop circuitry. The exact values
     // depend on the IC's internal gate-level behavior with 4-state domination rules.
     // Verify outputs are stable across repeated updates (no oscillation).
-    const bool q0 = TestUtils::getOutputStatus(ic, 0);
-    const bool q1 = TestUtils::getOutputStatus(ic, 1);
+    const bool q0 = TestUtils::outputStatus(ic, 0);
+    const bool q1 = TestUtils::outputStatus(ic, 1);
     sim->update();
-    QCOMPARE(TestUtils::getOutputStatus(ic, 0), q0);
-    QCOMPARE(TestUtils::getOutputStatus(ic, 1), q1);
+    QCOMPARE(TestUtils::outputStatus(ic, 0), q0);
+    QCOMPARE(TestUtils::outputStatus(ic, 1), q1);
 }
 
 void TestIC::testICRequiredPorts()
@@ -748,7 +748,7 @@ static int countConnectedElementsViaWorkspace(const QString &filePath)
         ws.load(filePath);
 
         QSet<GraphicElement *> connectedElements;
-        for (auto *conn : TestUtils::getConnections(ws.scene())) {
+        for (auto *conn : TestUtils::sceneConnections(ws.scene())) {
             if (conn->startPort() && conn->startPort()->graphicElement()) {
                 connectedElements.insert(conn->startPort()->graphicElement());
             }

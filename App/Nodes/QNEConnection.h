@@ -41,7 +41,10 @@ public:
     /// Constructs an unconnected wire.
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
     ~QNEConnection() override;
-    QNEConnection(const QNEConnection &other) : QNEConnection(other.parentItem()) {}
+    QNEConnection(const QNEConnection &) = delete;
+    QNEConnection(QNEConnection &&) = delete;
+    QNEConnection &operator=(const QNEConnection &) = delete;
+    QNEConnection &operator=(QNEConnection &&) = delete;
 
     // --- Port / Endpoint Access ---
 
@@ -133,7 +136,5 @@ private:
     Status m_status = Status::Unknown;
     bool m_highLight = false;
 };
-
-Q_DECLARE_METATYPE(QNEConnection)
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn);

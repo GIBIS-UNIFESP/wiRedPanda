@@ -85,26 +85,26 @@ QString systemVerilogExpectedDir()
     return QString(QUOTE(CURRENTDIR)) + "/Integration/SystemVerilog/";
 }
 
-bool getInputStatus(GraphicElement *elm, int port)
+bool inputStatus(GraphicElement *elm, int port)
 {
     auto *inputPort = elm->inputPort(port);
     if (!inputPort) {
-        qFatal("FATAL ERROR in getInputStatus():\n"
+        qFatal("FATAL ERROR in inputStatus():\n"
                "  Attempted to read input port %d from element %s\n"
                "  Element type: %s\n"
                "  Element has ZERO input ports!\n"
                "  This element may only have OUTPUT ports (e.g., InputSwitch)\n"
-               "  Use getOutputStatus() to read output ports, or read downstream elements to verify signal propagation.",
+               "  Use outputStatus() to read output ports, or read downstream elements to verify signal propagation.",
                port, qPrintable(elm->objectName()), elm->metaObject()->className());
     }
     return inputPort->status() == Status::Active;
 }
 
-bool getOutputStatus(GraphicElement *elm, int port)
+bool outputStatus(GraphicElement *elm, int port)
 {
     auto *outputPort = elm->outputPort(port);
     if (!outputPort) {
-        qFatal("FATAL ERROR in getOutputStatus():\n"
+        qFatal("FATAL ERROR in outputStatus():\n"
                "  Attempted to read output port %d from element %s\n"
                "  Element type: %s\n"
                "  Element has no output port at this index!\n"
@@ -126,7 +126,7 @@ int countConnections(Scene *scene)
     return count;
 }
 
-QList<QNEConnection *> getConnections(Scene *scene)
+QList<QNEConnection *> sceneConnections(Scene *scene)
 {
     QList<QNEConnection *> connections;
     auto items = scene->items();
@@ -187,57 +187,57 @@ CircuitBuilder::CircuitBuilder(Scene *scene)
 }
 
 // Trait implementations
-int CircuitBuilder::InputPortTraits::getCount(GraphicElement *elm)
+int CircuitBuilder::InputPortTraits::count(GraphicElement *elm)
 {
     return elm->inputSize();
 }
 
-QNEPort *CircuitBuilder::InputPortTraits::getPort(GraphicElement *elm, int idx)
+QNEPort *CircuitBuilder::InputPortTraits::port(GraphicElement *elm, int idx)
 {
     return elm->inputPort(idx);
 }
 
-const char *CircuitBuilder::InputPortTraits::getPortType()
+const char *CircuitBuilder::InputPortTraits::portType()
 {
     return "input";
 }
 
-const char *CircuitBuilder::InputPortTraits::getNoPortsMessage()
+const char *CircuitBuilder::InputPortTraits::noPortsMessage()
 {
     return "[No input ports available]";
 }
 
-int CircuitBuilder::OutputPortTraits::getCount(GraphicElement *elm)
+int CircuitBuilder::OutputPortTraits::count(GraphicElement *elm)
 {
     return elm->outputSize();
 }
 
-QNEPort *CircuitBuilder::OutputPortTraits::getPort(GraphicElement *elm, int idx)
+QNEPort *CircuitBuilder::OutputPortTraits::port(GraphicElement *elm, int idx)
 {
     return elm->outputPort(idx);
 }
 
-const char *CircuitBuilder::OutputPortTraits::getPortType()
+const char *CircuitBuilder::OutputPortTraits::portType()
 {
     return "output";
 }
 
-const char *CircuitBuilder::OutputPortTraits::getNoPortsMessage()
+const char *CircuitBuilder::OutputPortTraits::noPortsMessage()
 {
     return "[No output ports available]";
 }
 
 // Generic template implementations
 template<typename PortTraits>
-int CircuitBuilder::getPortByLabelImpl(GraphicElement *element, const QString &label)
+int CircuitBuilder::portByLabelImpl(GraphicElement *element, const QString &label)
 {
     if (!element) {
         qFatal("FATAL ERROR in CircuitBuilder::getPortByLabel(): Element is nullptr");
     }
 
-    int portCount = PortTraits::getCount(element);
+    int portCount = PortTraits::count(element);
     for (int i = 0; i < portCount; ++i) {
-        auto *port = PortTraits::getPort(element, i);
+        auto *port = PortTraits::port(element, i);
         if (port && port->name() == label) {
             return i;
         }
@@ -247,31 +247,31 @@ int CircuitBuilder::getPortByLabelImpl(GraphicElement *element, const QString &l
         "FATAL ERROR in CircuitBuilder::getPortByLabel():\n"
         "  %1 port '%2' not found on element '%3'\n"
         "  Available %1 ports:\n    %4"
-    ).arg(PortTraits::getPortType(),
+    ).arg(PortTraits::portType(),
           label,
           element->objectName(),
-          getAvailablePortsImpl<PortTraits>(element));
+          availablePortsImpl<PortTraits>(element));
 
     qFatal("%s", qPrintable(errorMsg));
     return -1;
 }
 
 template<typename PortTraits>
-QString CircuitBuilder::getAvailablePortsImpl(GraphicElement *element) const
+QString CircuitBuilder::availablePortsImpl(GraphicElement *element) const
 {
     if (!element) {
         return "ERROR: Element is nullptr";
     }
 
     QStringList ports;
-    int portCount = PortTraits::getCount(element);
+    int portCount = PortTraits::count(element);
 
     if (portCount == 0) {
-        return PortTraits::getNoPortsMessage();
+        return PortTraits::noPortsMessage();
     }
 
     for (int i = 0; i < portCount; ++i) {
-        auto *port = PortTraits::getPort(element, i);
+        auto *port = PortTraits::port(element, i);
         if (port) {
             QString portName = port->name().isEmpty() ? "(unnamed)" : port->name();
             ports.append(QString("[%1] %2").arg(i).arg(portName));
@@ -360,44 +360,44 @@ Simulation *CircuitBuilder::initSimulation()
     return sim;
 }
 
-int CircuitBuilder::getInputPortByLabel(GraphicElement *element, const QString &label)
+int CircuitBuilder::inputPortByLabel(GraphicElement *element, const QString &label)
 {
-    return getPortByLabelImpl<InputPortTraits>(element, label);
+    return portByLabelImpl<InputPortTraits>(element, label);
 }
 
-int CircuitBuilder::getOutputPortByLabel(GraphicElement *element, const QString &label)
+int CircuitBuilder::outputPortByLabel(GraphicElement *element, const QString &label)
 {
-    return getPortByLabelImpl<OutputPortTraits>(element, label);
+    return portByLabelImpl<OutputPortTraits>(element, label);
 }
 
-QString CircuitBuilder::getAvailableInputPorts(GraphicElement *element) const
+QString CircuitBuilder::availableInputPorts(GraphicElement *element) const
 {
-    return getAvailablePortsImpl<InputPortTraits>(element);
+    return availablePortsImpl<InputPortTraits>(element);
 }
 
-QString CircuitBuilder::getAvailableOutputPorts(GraphicElement *element) const
+QString CircuitBuilder::availableOutputPorts(GraphicElement *element) const
 {
-    return getAvailablePortsImpl<OutputPortTraits>(element);
+    return availablePortsImpl<OutputPortTraits>(element);
 }
 
 QNEConnection *CircuitBuilder::connect(GraphicElement *from, const QString &fromLabel,
                                         GraphicElement *to, int toPort)
 {
-    int fromPort = getOutputPortByLabel(from, fromLabel);
+    int fromPort = outputPortByLabel(from, fromLabel);
     return connect(from, fromPort, to, toPort);
 }
 
 QNEConnection *CircuitBuilder::connect(GraphicElement *from, int fromPort,
                                         GraphicElement *to, const QString &toLabel)
 {
-    int toPortIndex = getInputPortByLabel(to, toLabel);
+    int toPortIndex = inputPortByLabel(to, toLabel);
     return connect(from, fromPort, to, toPortIndex);
 }
 
 QNEConnection *CircuitBuilder::connect(GraphicElement *from, const QString &fromLabel,
                                         GraphicElement *to, const QString &toLabel)
 {
-    int fromPort = getOutputPortByLabel(from, fromLabel);
-    int toPort = getInputPortByLabel(to, toLabel);
+    int fromPort = outputPortByLabel(from, fromLabel);
+    int toPort = inputPortByLabel(to, toLabel);
     return connect(from, fromPort, to, toPort);
 }

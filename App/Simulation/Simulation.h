@@ -140,7 +140,7 @@ private:
 
     static void updatePort(QNEInputPort *port);
     static void updatePort(QNEOutputPort *port);
-    void updateWithIterativeSettling();
+    void updateWithIterativeSettling(const QVector<GraphicElement *> &elements);
     void sortSimElements(const QVector<GraphicElement *> &elements);
 
     // --- Members: Timer & element lists ---

@@ -38,6 +38,7 @@ static const QFont &labelFont()
 /// Cache decoded pixmaps by resolved path so each image is loaded from disk only once.
 static QHash<QString, QPixmap> &pixmapCache()
 {
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
     static QHash<QString, QPixmap> cache;
     return cache;
 }
@@ -194,7 +195,7 @@ const QVector<QNEOutputPort *> &GraphicElement::outputs() const
     return m_outputPorts;
 }
 
-QNEInputPort *GraphicElement::inputPort(const int index)
+QNEInputPort *GraphicElement::inputPort(const int index) const
 {
     if (index < 0 || index >= m_inputPorts.size()) {
         return nullptr;
@@ -202,7 +203,7 @@ QNEInputPort *GraphicElement::inputPort(const int index)
     return m_inputPorts.at(index);
 }
 
-QNEOutputPort *GraphicElement::outputPort(const int index)
+QNEOutputPort *GraphicElement::outputPort(const int index) const
 {
     if (index < 0 || index >= m_outputPorts.size()) {
         return nullptr;
@@ -400,7 +401,7 @@ void GraphicElement::setAppearanceAt(const int index, const QString &fileName)
     setPixmap(index);
 }
 
-QList<QPair<int, QString>> GraphicElement::appearanceStates() const
+QList<std::pair<int, QString>> GraphicElement::appearanceStates() const
 {
     // Default: single appearance at index 0
     return {{0, tr("Default")}};

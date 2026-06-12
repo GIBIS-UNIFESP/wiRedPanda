@@ -11,6 +11,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
@@ -161,7 +162,7 @@ void TestInputElements::testInputSwitchLoadOldVersion()
     auto inputSwitch2 = std::unique_ptr<InputSwitch>(new InputSwitch());
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     // For versions < 4.1, loadOldFormat reads positional fields.  The saved data
     // is in QMap format, so readBoundedString rejects the map-count bytes as an
     // oversized string → PANDACEPTION is the expected result of this format mismatch.
@@ -192,8 +193,8 @@ void TestInputElements::testInputSwitchLoadNewVersion()
     auto inputSwitch2 = std::unique_ptr<InputSwitch>(new InputSwitch());
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    QHash<quint64, QNEPort *> portMap;
+    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
 
     inputSwitch2->load(loadStream, context);
 
@@ -377,7 +378,7 @@ void TestInputElements::testInputButtonLoadOldVersion()
     auto inputButton2 = std::unique_ptr<InputButton>(new InputButton());
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     // Save wrote QMap format; loadOldFormat reads positional fields → format mismatch.
     // readBoundedString rejects the map-count bytes as an oversized string → throws.
     SerializationContext context{portMap, QVersionNumber(3, 5), {}};
@@ -406,8 +407,8 @@ void TestInputElements::testInputButtonLoadNewVersion()
     auto inputButton2 = std::unique_ptr<InputButton>(new InputButton());
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, QVersionNumber(4, 1), {}};
+    QHash<quint64, QNEPort *> portMap;
+    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
 
     inputButton2->load(loadStream, context);
 

@@ -211,8 +211,8 @@ void TestBuzzer::testLoadVersionNew()
     auto buzzer2 = std::make_unique<Buzzer>();
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, FormatRev::current, {}};
+    QHash<quint64, QNEPort *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, {}};
 
     buzzer2->load(loadStream, context);
 

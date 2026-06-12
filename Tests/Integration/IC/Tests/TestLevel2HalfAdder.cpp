@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct HalfAdderFixture {
@@ -99,6 +99,6 @@ void TestLevel2HalfAdder::testHalfAdder()
     f.swB->setOn(inputB);
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.ledSum), expectedSum);
-    QCOMPARE(getInputStatus(f.ledCarry), expectedCarry);
+    QCOMPARE(inputStatus(f.ledSum), expectedSum);
+    QCOMPARE(inputStatus(f.ledCarry), expectedCarry);
 }

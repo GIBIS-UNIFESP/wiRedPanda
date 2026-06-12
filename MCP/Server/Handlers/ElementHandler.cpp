@@ -20,7 +20,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 
-ElementHandler::ElementHandler(MainWindow *mainWindow, MCPValidator *validator)
+ElementHandler::ElementHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {
 }
@@ -91,7 +91,7 @@ QJsonObject ElementHandler::handleCreateElement(const QJsonObject &params, const
                                    requestId, JsonRpcError::ValidationError);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -142,12 +142,12 @@ QJsonObject ElementHandler::handleDeleteElement(const QJsonObject &params, const
     }
 
     QString errorMsg;
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -160,7 +160,7 @@ QJsonObject ElementHandler::handleDeleteElement(const QJsonObject &params, const
 
 QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonValue &requestId)
 {
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -231,12 +231,12 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
     const int x = qRound(params.value("x").toDouble() / snap) * snap;
     const int y = qRound(params.value("y").toDouble() / snap) * snap;
 
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -275,7 +275,7 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     }
 
     QString errorMsg;
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
@@ -284,6 +284,45 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     if (params.contains("input_size") || params.contains("output_size")) {
         return createErrorResponse("Use change_input_size / change_output_size commands to change port counts",
                                    requestId, JsonRpcError::ValidationError);
+    }
+
+    // Validate numeric properties before any mutation (D-020).
+    if (params.contains("frequency")) {
+        if (!validateNumeric(params.value("frequency"), "frequency", errorMsg)) {
+            return createErrorResponse(errorMsg, requestId);
+        }
+        if (params.value("frequency").toDouble() <= 0) {
+            return createErrorResponse("Parameter 'frequency' must be a positive value", requestId);
+        }
+    }
+    if (params.contains("rotation") && !validateNumeric(params.value("rotation"), "rotation", errorMsg)) {
+        return createErrorResponse(errorMsg, requestId);
+    }
+    if (params.contains("delay")) {
+        if (!validateNumeric(params.value("delay"), "delay", errorMsg)) {
+            return createErrorResponse(errorMsg, requestId);
+        }
+        if (params.value("delay").toDouble() < 0) {
+            return createErrorResponse("Parameter 'delay' must be non-negative", requestId);
+        }
+    }
+    if (params.contains("volume")) {
+        if (!validateNumeric(params.value("volume"), "volume", errorMsg)) {
+            return createErrorResponse(errorMsg, requestId);
+        }
+        const double vol = params.value("volume").toDouble();
+        if (vol < 0.0 || vol > 1.0) {
+            return createErrorResponse("Parameter 'volume' must be between 0.0 and 1.0", requestId);
+        }
+    }
+    if (params.contains("wireless_mode") && !validateNonNegativeInteger(params.value("wireless_mode"), "wireless_mode", errorMsg)) {
+        return createErrorResponse(errorMsg, requestId);
+    }
+
+    // Retrieve scene early so that mutations are not applied if the scene is unavailable (D-032).
+    Scene *scene = currentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
     }
 
     // Snapshot current state before any mutation so UpdateCommand can restore it on undo.
@@ -443,16 +482,13 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     // delete into a single undo macro so both are undone together.
     if (!newProperties.isEmpty()) {
         const bool needsMacro = !wirelessConnsToDelete.isEmpty();
-        auto *scene = getCurrentScene();
-        if (scene) {
-            if (needsMacro) {
-                scene->undoStack()->beginMacro(QStringLiteral("Change wireless mode"));
-            }
-            scene->receiveCommand(new UpdateCommand({element}, oldData, scene));
-            if (needsMacro) {
-                scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, scene));
-                scene->undoStack()->endMacro();
-            }
+        if (needsMacro) {
+            scene->undoStack()->beginMacro(QStringLiteral("Change wireless mode"));
+        }
+        scene->receiveCommand(new UpdateCommand({element}, oldData, scene));
+        if (needsMacro) {
+            scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, scene));
+            scene->undoStack()->endMacro();
         }
     }
 
@@ -469,7 +505,7 @@ QJsonObject ElementHandler::handleSetInputValue(const QJsonObject &params, const
     }
 
     QString errorMsg;
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
@@ -479,7 +515,7 @@ QJsonObject ElementHandler::handleSetInputValue(const QJsonObject &params, const
     if (inputElement) {
         inputElement->setOn(value);
 
-        Scene *scene = getCurrentScene();
+        Scene *scene = currentScene();
         if (scene && scene->simulation()) {
             scene->simulation()->update();
         }
@@ -497,7 +533,7 @@ QJsonObject ElementHandler::handleGetOutputValue(const QJsonObject &params, cons
     }
 
     QString errorMsg;
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
@@ -549,7 +585,7 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
     }
     int angle = params.value("angle").toInt();
 
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
@@ -559,7 +595,7 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
                                    requestId, JsonRpcError::ValidationError);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -592,12 +628,12 @@ QJsonObject ElementHandler::handleFlipElement(const QJsonObject &params, const Q
                                    requestId, JsonRpcError::ValidationError);
     }
 
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -640,7 +676,7 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
     }
     const int newSize = params.value("size").toInt();
 
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
@@ -651,7 +687,7 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
                                    requestId, JsonRpcError::ValidationError);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -677,7 +713,7 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
     }
     const int newSize = params.value("size").toInt();
 
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
@@ -688,7 +724,7 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
                                    requestId, JsonRpcError::ValidationError);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -714,7 +750,7 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
     }
     const int position = params.value("position").toInt();
 
-    auto *element = getValidatedElement(params, "element_id", errorMsg);
+    auto *element = validatedElement(params, "element_id", errorMsg);
     if (!element) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
@@ -725,7 +761,7 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
                                    requestId, JsonRpcError::ValidationError);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -770,6 +806,11 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
                                    requestId, JsonRpcError::ValidationError);
     }
 
+    Scene *scene = currentScene();
+    if (!scene) {
+        return createErrorResponse("No active circuit scene available", requestId);
+    }
+
     // Collect elements to morph
     QList<GraphicElement *> elementsToMorph;
     for (const QJsonValue &idValue : std::as_const(elementIdsArray)) {
@@ -782,7 +823,7 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
             return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
         }
 
-        auto *item = getCurrentScene()->itemById(elementId);
+        auto *item = scene->itemById(elementId);
         auto *element = dynamic_cast<GraphicElement *>(item);
         if (!element) {
             return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId),
@@ -790,11 +831,6 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
         }
 
         elementsToMorph.append(element);
-    }
-
-    Scene *scene = getCurrentScene();
-    if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     // Capture IDs before morph — element pointers become invalid after receiveCommand.

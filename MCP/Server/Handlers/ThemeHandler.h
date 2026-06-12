@@ -3,13 +3,14 @@
 
 #pragma once
 
+#include "App/Core/ThemeManager.h"
 #include "MCP/Server/Handlers/BaseHandler.h"
 
 /// Handler for theme management commands
 class ThemeHandler : public BaseHandler
 {
 public:
-    explicit ThemeHandler(MainWindow *mainWindow, MCPValidator *validator);
+    explicit ThemeHandler(MainWindow *mainWindow, const MCPValidator *validator);
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
 
@@ -18,5 +19,5 @@ private:
     QJsonObject handleSetTheme(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleGetEffectiveTheme(const QJsonObject &params, const QJsonValue &requestId);
 
-    QString themeToString(int theme) const;
+    QString themeToString(Theme theme) const;
 };

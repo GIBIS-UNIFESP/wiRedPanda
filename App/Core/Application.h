@@ -82,6 +82,9 @@ public:
     void setMainWindow(MainWindow *mainWindow);
 
     /// When false, suppresses informational dialogs (e.g. version-mismatch warnings).
+    /// \note Written exactly once during startup (before QApplication::exec()) and then
+    ///       only read. Do not modify after exec() — the simulation timer callback reads
+    ///       it without synchronisation.
     inline static bool interactiveMode = true;
 
     /// When true, old-format files are automatically backed up and re-saved in the current

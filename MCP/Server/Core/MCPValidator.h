@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <unordered_map>
 
 #include <nlohmann/json-schema.hpp>
 #include <nlohmann/json.hpp>
@@ -50,34 +51,37 @@ public:
     ~MCPValidator();
 
     // Core validation methods
-    ValidationResult validateCommand(const QJsonObject &command);
-    ValidationResult validateCommand(const json &command);
-    ValidationResult validateResponse(const QJsonObject &response, const QString &expectedCommand = QString());
-    ValidationResult validateResponse(const json &response, const QString &expectedCommand = QString());
+    ValidationResult validateCommand(const QJsonObject &command) const;
+    ValidationResult validateCommand(const json &command) const;
+    ValidationResult validateResponse(const QJsonObject &response, const QString &expectedCommand = QString()) const;
+    ValidationResult validateResponse(const json &response, const QString &expectedCommand = QString()) const;
 
     // Schema management
-    bool loadSchema(const QString &schemaPath);
     bool isSchemaLoaded() const;
-    QString getSchemaPath() const;
+    QString schemaPath() const;
 
     // Utility methods
     static json qjsonToNlohmann(const QJsonObject &qjson);
     static QJsonObject nlohmannToQJson(const json &nlohmannJson);
 
     // Schema introspection (used by describe_command)
-    json findCommandSchema(const QString &commandName);
-    json findResponseSchema(const QString &commandName);
+    json findCommandSchema(const QString &commandName) const;
+    json findResponseSchema(const QString &commandName) const;
 
 private:
     // Internal validation methods
-    ValidationResult validateAgainstSchema(const json &data, const json &schema, const QString &commandType);
-    QString extractErrorPath(const QString &errorMsg);
+    ValidationResult validateAgainstSchema(const json &data, const json &schema, const QString &commandType) const;
+    static QString extractErrorPath(const QString &errorMsg);
+
+    bool loadSchema(const QString &schemaPath);
 
     // Member variables
     json m_schema;
     json m_commandSchemas;
     json m_responseSchemas;
     std::unique_ptr<json_validator> m_validator;
+    /// Per-command-type compiled schema validators — populated on first use, cleared on schema reload.
+    mutable std::unordered_map<std::string, json_validator> m_validatorCache;
     QString m_schemaPath;
     bool m_schemaLoaded = false;
 };

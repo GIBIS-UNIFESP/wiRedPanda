@@ -5,7 +5,7 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
 
 // ============================================================
@@ -114,7 +114,7 @@ void TestCPUDecoders::testInstructionDecoder4to16()
         // Read 16-bit output
         int result = 0;
         for (int i = 0; i < 16; i++) {
-            if (TestUtils::getInputStatus(decodedOutput[i], 0)) {
+            if (TestUtils::inputStatus(decodedOutput[i], 0)) {
                 result |= (1 << i);
             }
         }

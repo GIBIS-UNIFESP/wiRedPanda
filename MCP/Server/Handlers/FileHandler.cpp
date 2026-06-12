@@ -17,7 +17,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 
-FileHandler::FileHandler(MainWindow *mainWindow, MCPValidator *validator)
+FileHandler::FileHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {
 }
@@ -105,7 +105,7 @@ QJsonObject FileHandler::handleNewCircuit(const QJsonObject &, const QJsonValue 
     return tryCommand([&]() -> QJsonObject {
         m_mainWindow->createNewTab();
 
-        Scene *scene = getCurrentScene();
+        Scene *scene = currentScene();
         if (scene && scene->simulation()) {
             scene->simulation()->stop();
         }
@@ -130,7 +130,7 @@ QJsonObject FileHandler::handleCloseCircuit(const QJsonObject &, const QJsonValu
             return createErrorResponse("No tabs to close", requestId, JsonRpcError::OperationFailed);
         }
 
-        Scene *scene = getCurrentScene();
+        Scene *scene = currentScene();
         if (scene && scene->simulation()) {
             scene->simulation()->stop();
         }
@@ -185,7 +185,7 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
     QString format = params.value("format").toString().toLower();
     int padding = params.value("padding").toInt(20);
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -211,13 +211,19 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
             generator.setDescription("Circuit exported from wiRedPanda");
 
             QPainter painter(&generator);
+            if (!painter.isActive()) {
+                return createErrorResponse("Failed to open SVG file for writing", requestId);
+            }
             scene->render(&painter, QRectF(), sceneRect);
             painter.end();
+            const QFileInfo svgInfo(filename);
+            if (!svgInfo.exists() || svgInfo.size() == 0) {
+                return createErrorResponse("SVG export failed: file was not written", requestId, JsonRpcError::FileError);
+            }
         } else if (format == "pdf") {
             QPdfWriter pdfWriter(filename);
             pdfWriter.setTitle("wiRedPanda Circuit");
             pdfWriter.setCreator("wiRedPanda");
-            // Map scene pixels 1:1 to PDF points (72 DPI) and size the page to the bounding box.
             pdfWriter.setResolution(72);
             pdfWriter.setPageSize(QPageSize(sceneRect.size(), QPageSize::Point));
             pdfWriter.setPageMargins(QMarginsF(0, 0, 0, 0));

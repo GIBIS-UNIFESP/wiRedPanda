@@ -56,7 +56,7 @@ public:
     // --- Drag support ---
 
     /// Creates and returns the MIME data payload used for drag-and-drop.
-    QMimeData *mimeData();
+    QMimeData *mimeData() const;
 
     /// Initiates a drag operation carrying this label's element type.
     void startDrag();

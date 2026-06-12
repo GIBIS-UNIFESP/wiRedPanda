@@ -1080,7 +1080,7 @@ void TestSerialization::testExtremelyLongLabels()
     for (int i = 0; i < 2000; i++) {
         longLabel.append("0123456789");
     }
-    QCOMPARE(longLabel.length(), 20000);
+    QCOMPARE(longLabel.size(), 20000);
 
     andGate->setLabel(longLabel);
     workspace1.scene()->addItem(andGate);
@@ -1092,7 +1092,7 @@ void TestSerialization::testExtremelyLongLabels()
 
     // Verify long label preserved
     auto *loaded = workspace2.scene()->elements().first();
-    QCOMPARE(loaded->label().length(), 20000);
+    QCOMPARE(loaded->label().size(), 20000);
     QCOMPARE(loaded->label(), longLabel);
 }
 

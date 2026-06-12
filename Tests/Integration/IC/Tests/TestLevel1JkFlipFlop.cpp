@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 // ============================================================
@@ -79,8 +79,8 @@ struct JkFlipFlopFixture {
         sim->update();
     }
 
-    bool q() { return getInputStatus(ledQ); }
-    bool qBar() { return getInputStatus(ledQBar); }
+    bool q() { return inputStatus(ledQ); }
+    bool qBar() { return inputStatus(ledQBar); }
 
     void resetToKnownState()
     {

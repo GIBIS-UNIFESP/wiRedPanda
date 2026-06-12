@@ -232,9 +232,9 @@ void TestDanglingPointer::bug6_topologyCommandsMustUseSimulationBlocker()
         const qsizetype start = match.capturedEnd() - 1; // at the `{`
         int depth = 0;
         for (qsizetype i = start; i < source.size(); ++i) {
-            const QChar c = source.at(i);
-            if (c == '{') ++depth;
-            else if (c == '}') {
+            const char16_t c = source.at(i).unicode();
+            if (c == u'{') ++depth;
+            else if (c == u'}') {
                 --depth;
                 if (depth == 0) return source.mid(start, i - start + 1);
             }
@@ -454,9 +454,9 @@ void TestDanglingPointer::bug7_icRegistryFileChangedMustNotLeaveDanglingPointers
     int depth = 0;
     qsizetype bodyEnd = -1;
     for (qsizetype i = bodyStart; i < source.size(); ++i) {
-        const QChar c = source.at(i);
-        if (c == '{') ++depth;
-        else if (c == '}') {
+        const char16_t c = source.at(i).unicode();
+        if (c == u'{') ++depth;
+        else if (c == u'}') {
             --depth;
             if (depth == 0) { bodyEnd = i; break; }
         }

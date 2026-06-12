@@ -42,10 +42,14 @@ public:
     /// Constructs the port with optional \a parent item.
     explicit QNEPort(QGraphicsItem *parent = nullptr);
 
+    virtual ~QNEPort() = default;
+
     // --- Element Access ---
 
-    /// Returns the graphic element that owns this port.
-    GraphicElement *graphicElement() const { return m_graphicElement; }
+    /// Returns a mutable pointer to the graphic element that owns this port.
+    GraphicElement *graphicElement() { return m_graphicElement; }
+    /// Returns a read-only pointer to the graphic element that owns this port.
+    const GraphicElement *graphicElement() const { return m_graphicElement; }
 
     // --- Identity & Status ---
 
@@ -192,7 +196,10 @@ public:
     /// Constructs an input port attached to \a parent.
     explicit QNEInputPort(QGraphicsItem *parent = nullptr);
     ~QNEInputPort() override;
-    QNEInputPort(const QNEInputPort &other) : QNEInputPort(other.parentItem()) {}
+    QNEInputPort(const QNEInputPort &) = delete;
+    QNEInputPort(QNEInputPort &&) = delete;
+    QNEInputPort &operator=(const QNEInputPort &) = delete;
+    QNEInputPort &operator=(QNEInputPort &&) = delete;
 
     // --- Type Queries ---
 
@@ -213,8 +220,6 @@ public:
     /// \reimp
     void updateTheme() override;
 };
-
-Q_DECLARE_METATYPE(QNEInputPort)
 
 /**
  * \class QNEOutputPort
@@ -229,7 +234,10 @@ public:
     /// Constructs an output port attached to \a parent.
     explicit QNEOutputPort(QGraphicsItem *parent = nullptr);
     ~QNEOutputPort() override;
-    QNEOutputPort(const QNEOutputPort &other) : QNEOutputPort(other.parentItem()) {}
+    QNEOutputPort(const QNEOutputPort &) = delete;
+    QNEOutputPort(QNEOutputPort &&) = delete;
+    QNEOutputPort &operator=(const QNEOutputPort &) = delete;
+    QNEOutputPort &operator=(QNEOutputPort &&) = delete;
 
     // --- Type Queries ---
 
@@ -251,4 +259,3 @@ public:
     void updateTheme() override;
 };
 
-Q_DECLARE_METATYPE(QNEOutputPort)

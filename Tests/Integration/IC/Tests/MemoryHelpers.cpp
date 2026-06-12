@@ -13,7 +13,7 @@
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::clockCycle;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
 

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include <QBitArray>
 #include <QGraphicsItem>
 #include <QKeySequence>
@@ -49,6 +51,7 @@ class QWidget;
 class GraphicElement : public QGraphicsObject, public ItemWithId
 {
     Q_OBJECT
+    Q_DISABLE_COPY_MOVE(GraphicElement)
 public:
     // --- Type Info ---
 
@@ -61,6 +64,8 @@ public:
 
     /// Constructs a graphic element of the given \a type, fetching all properties from the metadata registry.
     explicit GraphicElement(ElementType type, QGraphicsItem *parent = nullptr);
+
+    virtual ~GraphicElement() = default;
 
     // --- External file dependencies ---
 
@@ -119,10 +124,10 @@ public:
     // --- Port Access ---
 
     /// Returns the input port at \a index (default 0).
-    QNEInputPort *inputPort(const int index = 0);
+    QNEInputPort *inputPort(const int index = 0) const;
 
     /// Returns the output port at \a index (default 0).
-    QNEOutputPort *outputPort(const int index = 0);
+    QNEOutputPort *outputPort(const int index = 0) const;
 
     /// Returns a const reference to the vector of all input ports.
     const QVector<QNEInputPort *> &inputs() const;
@@ -280,7 +285,7 @@ public:
      * Each pair is (appearance list index, human-readable state description).
      * Override in subclasses with multi-state appearances (e.g., Led).
      */
-    virtual QList<QPair<int, QString>> appearanceStates() const;
+    virtual QList<std::pair<int, QString>> appearanceStates() const;
 
     /// Loads and applies the pixmap located at \a pixmapPath.
     void setPixmap(const QString &pixmapPath);
@@ -573,7 +578,7 @@ private:
     void setPortSize(const int size, const bool isInput);
 
     /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
-    static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
+    static void removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap);
 
     /// Shared implementation for simUpdateInputs() and simUpdateInputsAllowUnknown().
     bool simUpdateInputsImpl(const bool allowUnknown);
@@ -680,8 +685,6 @@ private:
     quint64 m_minOutputSize = 0;
     quint64 m_maxOutputSize = 0;
 };
-
-Q_DECLARE_METATYPE(GraphicElement)
 
 /// Stream insertion operator that serializes \a item to \a stream via GraphicElement::save().
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item);

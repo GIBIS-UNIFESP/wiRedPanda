@@ -13,7 +13,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -170,7 +170,7 @@ void TestLevel6StackMemoryInterface::testStackMemoryInterface()
     // Read the final address
     int finalAddress = 0;
     for (int i = 0; i < 8; ++i) {
-        if (getInputStatus(f.finalAddrLeds[i])) {
+        if (inputStatus(f.finalAddrLeds[i])) {
             finalAddress |= (1 << i);
         }
     }

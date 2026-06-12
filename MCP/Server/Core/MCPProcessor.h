@@ -3,16 +3,14 @@
 
 #pragma once
 
+#include <atomic>
 #include <memory>
 
-#include <QBuffer>
 #include <QHash>
-#include <QJsonDocument>
 #include <QJsonObject>
 #include <QObject>
 #include <QTextStream>
 #include <QThread>
-#include <QTimer>
 
 class BaseHandler;
 class ConnectionHandler;
@@ -46,7 +44,7 @@ signals:
     void dataReceived(const QString &line);
 
 private:
-    volatile bool m_stopRequested = false;
+    std::atomic<bool> m_stopRequested{false};
 };
 
 /**
@@ -77,9 +75,8 @@ private:
 
     MainWindow *m_mainWindow;
     std::unique_ptr<MCPValidator> m_validator;
-    QTextStream m_stdin;
     QTextStream m_stdout;
-    StdinReader *m_stdinReader;
+    std::unique_ptr<StdinReader> m_stdinReader;
 
     // Specialized handlers for different command domains
     std::unique_ptr<ServerInfoHandler> m_serverInfoHandler;

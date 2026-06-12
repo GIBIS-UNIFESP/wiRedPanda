@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Scene/TestSceneUndoredo.h"
 
+#include <utility>
+
 #include <QDataStream>
 #include <QGraphicsSceneMouseEvent>
 #include <QSignalSpy>
@@ -2126,7 +2128,7 @@ void TestSceneUndoredo::testDeleteUndoSimulationCorrectness()
     auto *sim = ws.simulation();
     sim->initialize();
 
-    const QVector<QPair<QPair<bool, bool>, bool>> table = {
+    const QVector<std::pair<std::pair<bool, bool>, bool>> table = {
         {{false, false}, false},
         {{false, true},  false},
         {{true,  false}, false},
@@ -2137,6 +2139,6 @@ void TestSceneUndoredo::testDeleteUndoSimulationCorrectness()
         swA->setOn(row.first.first);
         swB->setOn(row.first.second);
         sim->update();
-        QCOMPARE(TestUtils::getInputStatus(led), row.second);
+        QCOMPARE(TestUtils::inputStatus(led), row.second);
     }
 }

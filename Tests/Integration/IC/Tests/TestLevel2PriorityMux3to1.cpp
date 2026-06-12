@@ -11,7 +11,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct PriorityMux3to1Fixture {
@@ -116,7 +116,7 @@ void TestLevel2PriorityMUX3To1::testPriorityMux3to1()
 
         f.sim->update();
 
-        bool result = getInputStatus(f.output, 0);
+        bool result = inputStatus(f.output, 0);
 
         QCOMPARE(result, static_cast<bool>(test.expected));
     }

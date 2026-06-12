@@ -12,7 +12,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 
 struct FullAdder1bitFixture {
     std::unique_ptr<WorkSpace> workspace;
@@ -112,8 +112,8 @@ void TestLevel2FullAdder1Bit::testFullAdder()
     f.carryIn->setOn(inputCin);
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.sum), expectedSum);
-    QCOMPARE(getInputStatus(f.carryOut), expectedCout);
+    QCOMPARE(inputStatus(f.sum), expectedSum);
+    QCOMPARE(inputStatus(f.carryOut), expectedCout);
 }
 
 // ============================================================

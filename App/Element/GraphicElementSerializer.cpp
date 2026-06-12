@@ -494,10 +494,9 @@ void GraphicElement::removeSurplusInputs(const quint64 inputSize_, Serialization
     // (e.g. default constructor creates minInputSize ports).  Trim the excess from the end,
     // but never go below minInputSize to avoid leaving an unusable element.
     while ((inputSize() > static_cast<int>(inputSize_)) && (inputSize_ >= m_minInputSize)) {
-        auto *deletedPort = m_inputPorts.constLast();
+        auto *deletedPort = m_inputPorts.takeLast();
         removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
-        m_inputPorts.removeLast();
     }
 }
 
@@ -505,14 +504,13 @@ void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, Serializati
 {
     // Same trimming logic as removeSurplusInputs, applied to output ports
     while ((outputSize() > static_cast<int>(outputSize_)) && (outputSize_ >= m_minOutputSize)) {
-        auto *deletedPort = m_outputPorts.constLast();
+        auto *deletedPort = m_outputPorts.takeLast();
         removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
-        m_outputPorts.removeLast();
     }
 }
 
-void GraphicElement::removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap)
+void GraphicElement::removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap)
 {
     for (auto it = portMap.begin(); it != portMap.end();) {
         if (it.value() == deletedPort) {

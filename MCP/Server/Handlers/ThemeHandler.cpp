@@ -5,7 +5,7 @@
 
 #include "App/Core/ThemeManager.h"
 
-ThemeHandler::ThemeHandler(MainWindow *mainWindow, MCPValidator *validator)
+ThemeHandler::ThemeHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {
 }
@@ -27,12 +27,16 @@ QJsonObject ThemeHandler::handleCommand(const QString &command, const QJsonObjec
 QJsonObject ThemeHandler::handleGetTheme(const QJsonObject &, const QJsonValue &requestId)
 {
     QJsonObject result;
-    result["theme"] = themeToString(static_cast<int>(ThemeManager::theme()));
+    result["theme"] = themeToString(ThemeManager::theme());
     return createSuccessResponse(result, requestId);
 }
 
 QJsonObject ThemeHandler::handleSetTheme(const QJsonObject &params, const QJsonValue &requestId)
 {
+    if (!validateParameters(params, {"theme"})) {
+        return createErrorResponse("Missing required parameter: theme", requestId);
+    }
+
     const QString themeStr = params["theme"].toString().toLower();
     Theme theme;
 
@@ -50,27 +54,26 @@ QJsonObject ThemeHandler::handleSetTheme(const QJsonObject &params, const QJsonV
     ThemeManager::setTheme(theme);
 
     QJsonObject result;
-    result["theme"] = themeToString(static_cast<int>(theme));
+    result["theme"] = themeToString(theme);
     return createSuccessResponse(result, requestId);
 }
 
 QJsonObject ThemeHandler::handleGetEffectiveTheme(const QJsonObject &, const QJsonValue &requestId)
 {
     QJsonObject result;
-    result["effective_theme"] = themeToString(static_cast<int>(ThemeManager::effectiveTheme()));
+    result["effective_theme"] = themeToString(ThemeManager::effectiveTheme());
     return createSuccessResponse(result, requestId);
 }
 
-QString ThemeHandler::themeToString(int theme) const
+QString ThemeHandler::themeToString(Theme theme) const
 {
-    switch (static_cast<Theme>(theme)) {
+    switch (theme) {
     case Theme::Light:
         return "light";
     case Theme::Dark:
         return "dark";
     case Theme::System:
         return "system";
-    default:
-        return "unknown";
     }
+    Q_UNREACHABLE();
 }

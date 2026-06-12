@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include <QElapsedTimer>
 #include <QGraphicsScene>
 #include <QHash>
@@ -160,7 +162,7 @@ public:
     // --- Hit-testing ---
 
     /// Returns the topmost item at \a pos, prioritising ports over elements.
-    QGraphicsItem *itemAt(QPointF pos);
+    QGraphicsItem *itemAt(QPointF pos) const;
 
     /// Returns the last known mouse position in scene coordinates.
     [[nodiscard]] QPointF mousePos() const { return m_mousePos; }
@@ -244,7 +246,7 @@ public:
     ICRegistry *icRegistry() { return &m_icRegistry; }
 
     /// Creates a deserialization context with the scene's contextDir and blob registry.
-    SerializationContext deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version);
+    SerializationContext deserializationContext(QHash<quint64, QNEPort *> &portMap, const QVersionNumber &version);
 
     // --- Autosave ---
 
@@ -324,8 +326,8 @@ private:
     /// Handles a clone drag (Ctrl+drag of an existing selection).
     void handleCloneDrag(QGraphicsSceneDragDropEvent *event);
 
-    QList<QGraphicsItem *> itemsAt(const QPointF pos);
-    const QVector<QNEConnection *> connections();
+    QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
+    const QVector<QNEConnection *> connections() const;
     void checkUpdateRequest();
     void contextMenu(const QPoint screenPos);
     void updateUndoText(const QString &text);
@@ -355,7 +357,7 @@ private:
 
     // Per-scene element registry (must be declared before m_selectionRect so it is
     // initialized before the Scene constructor calls addItem(&m_selectionRect))
-    QMap<int, ItemWithId *> m_elementRegistry;
+    QHash<int, ItemWithId *> m_elementRegistry;
     int m_lastId = 0;
 
     // Rendering
@@ -370,7 +372,7 @@ private:
     /// position. QPointer auto-clears if the element is destroyed mid-drag
     /// (e.g. user presses Delete while holding the mouse), preventing a
     /// dangling-pointer dereference in mouseReleaseEvent.
-    QList<QPair<QPointer<GraphicElement>, QPointF>> m_dragSnapshot;
+    QList<std::pair<QPointer<GraphicElement>, QPointF>> m_dragSnapshot;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
     bool m_handlingMouseMove = false;
@@ -379,20 +381,20 @@ private:
     QString m_contextDir;
 
     // IC definition registry (caches definitions, manages file watching)
-    ICRegistry m_icRegistry{this};
+    ICRegistry m_icRegistry = ICRegistry(this);
 
     // Autosave
     bool m_autosaveRequired = false;
 
     // Connection editing (delegated to ConnectionManager)
-    ConnectionManager m_connectionManager{this};
+    ConnectionManager m_connectionManager = ConnectionManager(this);
 
     // Clipboard operations (delegated to ClipboardManager)
-    ClipboardManager m_clipboardManager{this};
+    ClipboardManager m_clipboardManager = ClipboardManager(this);
 
     // Property shortcut dispatch (delegated to PropertyShortcutHandler)
-    PropertyShortcutHandler m_propertyShortcutHandler{this};
+    PropertyShortcutHandler m_propertyShortcutHandler = PropertyShortcutHandler(this);
 
     // Visibility control (delegated to VisibilityManager)
-    VisibilityManager m_visibilityManager{this};
+    VisibilityManager m_visibilityManager = VisibilityManager(this);
 };

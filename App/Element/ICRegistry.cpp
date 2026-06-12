@@ -25,15 +25,21 @@ ICRegistry::ICRegistry(Scene *scene)
     , m_scene(scene)
 {
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged,
-            this, &ICRegistry::onFileChanged);
+            this, &ICRegistry::onFileChanged,
+            Qt::QueuedConnection);
 }
 
 const QByteArray &ICRegistry::cachedFileBytes(const QString &filePath)
 {
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
     if (!m_fileCache.contains(filePath)) {
         QFile file(filePath);
         if (file.open(QIODevice::ReadOnly)) {
             m_fileCache[filePath] = file.readAll();
+        } else {
+            qCWarning(zero) << "ICRegistry: cannot open IC file:" << filePath;
+            static const QByteArray empty;
+            return empty;
         }
     }
     return m_fileCache[filePath];
@@ -316,7 +322,7 @@ void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const
     QByteArray data(snapshot);
     QDataStream stream(&data, QIODevice::ReadOnly);
     const auto version = Serialization::readPandaHeader(stream);
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto ctx = scene->deserializationContext(portMap, version);
     for (auto *elm : elements) {
         elm->load(stream, ctx);
@@ -372,6 +378,8 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
 
             QFile file(fi.absoluteFilePath());
             if (!file.open(QIODevice::ReadOnly)) {
+                qCWarning(zero) << "makeBlobSelfContained: cannot open dependency" << fi.absoluteFilePath()
+                                << "for blob" << name << "— blob will be incomplete.";
                 continue;
             }
             QByteArray fileBytes = file.readAll();
