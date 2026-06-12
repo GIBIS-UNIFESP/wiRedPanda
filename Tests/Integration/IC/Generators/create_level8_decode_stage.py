@@ -18,7 +18,10 @@ Outputs:
   RegWrite (register write enable)
   MemRead (memory read enable)
   MemWrite (memory write enable)
-  InstrDecodedLines[0..31] (optional: one-hot instruction decode)
+  InstrDecodedLines[0..31] (one-hot instruction decode: exactly one line
+    active per 5-bit opcode — level2_decoder_4to16 on OpCode[0..3], gated
+    by OpCode[4]/NOT(OpCode[4]), the hierarchical pattern of the 8-bit
+    instruction decoder. Documented since the start, implemented now.)
 
 Instruction Set:
   000 (0): ADD - Add two registers
@@ -166,6 +169,50 @@ class DecodeStageBuilder(ICBuilderBase):
             return False
 
         await self.log("  ✓ Created control signal outputs")
+
+        # ---- One-hot instruction decode: InstrDecodedLines[0..31] ----
+        # Documented from the start, never built. Hierarchical decode:
+        # level2_decoder_4to16 on OpCode[0..3] -> 16 lines, each ANDed with
+        # NOT(OpCode[4]) (lines 0-15) or OpCode[4] (lines 16-31).
+        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_4to16")):
+
+            return False
+
+        decoder_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_4to16"), input_x + HORIZONTAL_GATE_SPACING, input_y + (2 * VERTICAL_STAGE_SPACING), "Decoder4to16")
+        if decoder_id is None:
+            return False
+
+        for i in range(4):
+            if not await self.connect(opcode_inputs[i], decoder_id, target_port_label=f"addr[{i}]"):
+                return False
+
+        # The RegWrite NOT gate already computes NOT(OpCode[4]) — reuse it.
+        onehot_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
+        onehot_y = input_y + (2 * VERTICAL_STAGE_SPACING)
+        for line in range(32):
+            low_idx = line & 0xF
+            gate_x = onehot_x + ((line % 8) * HORIZONTAL_GATE_SPACING / 2)
+            gate_y = onehot_y + ((line // 8) * VERTICAL_STAGE_SPACING / 2)
+
+            and_id = await self.create_element("And", gate_x, gate_y, f"line_and{line}")
+            if and_id is None:
+                return False
+
+            if not await self.connect(decoder_id, and_id, source_port_label=f"out[{low_idx}]"):
+                return False
+
+            high_source = opcode_inputs[4] if line >= 16 else regwrite_not_id
+            if not await self.connect(high_source, and_id, target_port=1):
+                return False
+
+            led_id = await self.create_element("Led", gate_x, gate_y + 30.0, f"InstrDecodedLines[{line}]")
+            if led_id is None:
+                return False
+
+            if not await self.connect(and_id, led_id):
+                return False
+
+        await self.log("  ✓ Created 32 one-hot instruction decode lines")
 
         output_file = str(IC_COMPONENTS_DIR / "level8_decode_stage.panda")
         if not await self.save_circuit(output_file):

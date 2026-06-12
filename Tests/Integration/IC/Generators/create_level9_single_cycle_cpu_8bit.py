@@ -247,6 +247,11 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         if not await self.connect(clock_id, regfile_id, target_port_label="Clock"):
             return False
 
+        # Reset clears the data memory too (F54 — the memory stage's Reset
+        # used to be dead; the CPU now drives it)
+        if not await self.connect(reset_id, memory_id, target_port_label="Reset"):
+            return False
+
         await self.log("  ✓ Connected Clock, Reset, and programming inputs")
 
         # ==== CONNECT FETCH → DECODE (using raw unregistered instruction) ====

@@ -255,6 +255,11 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         if not await self.connect(reset_id, fetch_id, target_port_label="Reset"):
             return False
 
+        # Reset clears the data memory too (F54 — the memory stage's Reset
+        # used to be dead; the CPU now drives it)
+        if not await self.connect(reset_id, memory_id, target_port_label="Reset"):
+            return False
+
         await self.log("  ✓ Connected Reset signals")
 
         # ---- Connect Fetch to Decode (OpCode pass-through) ----

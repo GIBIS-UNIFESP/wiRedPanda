@@ -18,4 +18,5 @@ private slots:
     void testDecodeStage();
 
     void testDecodeStageStructure();
+    void testInstrDecodedLinesOneHot();
 };
