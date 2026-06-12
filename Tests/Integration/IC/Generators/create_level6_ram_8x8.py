@@ -3,12 +3,16 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
-Create 256×8 RAM IC
+Create 8×8 RAM IC
 
-Implements a 256-address, 8-bit word RAM by composing 8 single-bit RAMs.
+Implements an 8-word, 8-bit-wide RAM by composing 8 single-bit RAMs.
+(F26: formerly named "256×8" while only ever wiring 3 address bits — a true
+256×8 needs 2048 flip-flops, which is infeasible to simulate at this scale.
+The name now matches the actual capacity; consumers treat the unused high
+address bits as partial decode.)
 
 Inputs:
-  Address[0..7] (8-bit address: selects one of 256 cells)
+  Address[0..2] (3-bit address: selects one of 8 words)
   DataIn[0..7] (8-bit data to write)
   WriteEnable (Write control signal)
   Clock (Clock signal for synchronous write)
@@ -17,17 +21,13 @@ Outputs:
   DataOut[0..7] (8-bit data read from selected address)
 
 Architecture:
-  - Instantiate level4_ram_8x1 (or extended version for 256×1) 8 times
+  - Instantiate level4_ram_8x1 8 times
   - One RAM instance for each data bit
   - All share the same address, write enable, and clock
   - Each outputs one bit of the result
 
-Note: This implementation composes smaller RAM units. Due to the large
-number of storage elements (2048 flip-flops for a full implementation),
-we compose the design to match available component hierarchy.
-
 Usage:
-    python create_level6_ram_256x8.py
+    python create_level6_ram_8x8.py
 """
 
 import asyncio
@@ -36,12 +36,12 @@ from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 
 
-class RAM256x8Builder(ICBuilderBase):
-    """Builder for 256×8 RAM IC"""
+class RAM8x8Builder(ICBuilderBase):
+    """Builder for 8×8 RAM IC"""
 
     async def create(self) -> bool:
-        """Create the 256×8 RAM IC"""
-        await self.begin_build('256×8 RAM')
+        """Create the 8×8 RAM IC"""
+        await self.begin_build('8×8 RAM')
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -49,14 +49,14 @@ class RAM256x8Builder(ICBuilderBase):
         # Input positions
         input_x = 50.0
 
-        # Create Address inputs (8-bit)
+        # Create Address inputs (3-bit: 8 words)
         address_inputs = []
-        for i in range(8):
+        for i in range(3):
             addr_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"Address[{i}]")
             if addr_id is None:
                 return False
             address_inputs.append(addr_id)
-        await self.log("  ✓ Created 8 Address inputs")
+        await self.log("  ✓ Created 3 Address inputs")
 
         # Create DataIn inputs (8-bit)
         data_in_inputs = []
@@ -92,11 +92,7 @@ class RAM256x8Builder(ICBuilderBase):
             ram_ics.append(ram_id)
         await self.log("  ✓ Instantiated 8 RAM 8×1 modules")
 
-        # Connect address inputs to all RAM modules
-        # Note: level4_ram_8x1 uses Address[0-2] for 8 locations
-        # For 256 addresses, we would need Address[0-7]
-        # This creates a simplified version using the 8×1 RAM structure
-        # In a real 256×8 RAM, each bit would have its own 256×1 RAM
+        # Connect the 3 address bits to all RAM modules (8 words each)
         for bit_idx, ram_id in enumerate(ram_ics):
             # Connect address bits (using available address lines)
             for addr_bit in range(3):  # 8x1 RAM uses 3 address bits
@@ -128,19 +124,18 @@ class RAM256x8Builder(ICBuilderBase):
                 return False
         await self.log("  ✓ Created 8 DataOut outputs and connected to RAM modules")
 
-        output_file = str(IC_COMPONENTS_DIR / "level6_ram_256x8.panda")
+        output_file = str(IC_COMPONENTS_DIR / "level6_ram_8x8.panda")
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 256×8 RAM IC ({self.element_count} elements, {self.connection_count} connections)")
-        await self.log(f"   Note: Uses level4_ram_8x1 as building blocks (simplified version)")
+        await self.log(f"✅ Successfully created 8×8 RAM IC ({self.element_count} elements, {self.connection_count} connections)")
         await self.log(f"   Saved to: {output_file}")
         return True
 
 
 async def build(mcp) -> bool:
     """Entry point for the builder"""
-    builder = RAM256x8Builder(mcp, verbose=True)
+    builder = RAM8x8Builder(mcp, verbose=True)
     return await builder.create()
 
 
@@ -148,7 +143,7 @@ if __name__ == "__main__":
     import sys
     import traceback
     try:
-        exit_code = asyncio.run(run_ic_builder(build, "256x8 RAM IC"))
+        exit_code = asyncio.run(run_ic_builder(build, "8x8 RAM IC"))
         sys.exit(exit_code)
     except Exception as e:
         print(f"Error: {e}")

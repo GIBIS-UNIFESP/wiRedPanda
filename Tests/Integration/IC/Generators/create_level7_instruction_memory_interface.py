@@ -80,18 +80,20 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Created clock input")
 
-        # Instantiate 256×8 RAM for instruction memory
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ram_256x8")):
+        # Instantiate 8×8 RAM for instruction memory
+        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ram_8x8")):
 
             return False
 
-        ram_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_ram_256x8"), input_x + (4 * HORIZONTAL_GATE_SPACING), 250.0, "InstructionMemory")
+        ram_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_ram_8x8"), input_x + (4 * HORIZONTAL_GATE_SPACING), 250.0, "InstructionMemory")
         if ram_id is None:
             return False
-        await self.log("  ✓ Instantiated 256×8 RAM for instruction memory")
+        await self.log("  ✓ Instantiated 8×8 RAM for instruction memory")
 
-        # Connect address inputs to RAM
-        for i in range(8):
+        # Connect the low address bits to the RAM. The interface keeps a full
+        # 8-bit address bus for the CPU; the backing memory holds 8 words, so
+        # the high bits are partial decode (addresses alias modulo 8).
+        for i in range(3):
             if not await self.connect(address_inputs[i], ram_id, target_port_label=f"Address[{i}]"):
                 return False
 

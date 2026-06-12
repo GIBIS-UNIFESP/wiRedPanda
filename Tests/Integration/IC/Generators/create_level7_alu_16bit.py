@@ -140,6 +140,17 @@ class ALU16bitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Connected ALUOp to both ALUs")
 
+        # ---- Chain the carries between the halves (F26) ----
+        # The low half keeps its unconnected defaults (CarryIn=0,
+        # SubCarryIn=1); the high half continues both chains, making 16-bit
+        # ADD and SUB correct across the byte boundary.
+        if not await self.connect(alu_low_id, alu_high_id, source_port_label="Carry", target_port_label="CarryIn"):
+            return False
+        if not await self.connect(alu_low_id, alu_high_id, source_port_label="SubCarryOut", target_port_label="SubCarryIn"):
+            return False
+
+        await self.log("  ✓ Chained ADD and SUB carries between the byte halves")
+
         # ---- Create output LEDs ----
         # Result[0-15]
         for i in range(16):
@@ -158,26 +169,26 @@ class ALU16bitBuilder(ICBuilderBase):
         await self.log("  ✓ Created Result outputs")
 
         # ---- Create flag outputs ----
-        # Zero flag (true if all result bits are 0)
-        # Proper 16-bit Zero: NOR of low ALU Zero and high ALU Zero
+        # Zero flag: the 16-bit result is zero iff BOTH halves are zero —
+        # AND of the per-half Zero flags (F26: this was a NOR, which asserted
+        # exactly when both halves were non-zero).
         zero_id = await self.create_element("Led", output_x + HORIZONTAL_GATE_SPACING, 100.0, "Zero")
         if zero_id is None:
             return False
 
-        # NOR gate to combine Zero flags from both ALUs
-        zero_nor_id = await self.create_element("Nor", output_x + (2 * HORIZONTAL_GATE_SPACING), 100.0, "Zero_NOR")
-        if zero_nor_id is None:
+        zero_and_id = await self.create_element("And", output_x + (2 * HORIZONTAL_GATE_SPACING), 100.0, "Zero_AND")
+        if zero_and_id is None:
             return False
 
-        # Connect both ALUs' Zero flags to NOR gate
-        if not await self.connect(alu_low_id, zero_nor_id, source_port_label="Zero"):
+        # Connect both ALUs' Zero flags to the AND gate
+        if not await self.connect(alu_low_id, zero_and_id, source_port_label="Zero"):
             return False
 
-        if not await self.connect(alu_high_id, zero_nor_id, source_port_label="Zero", target_port=1):
+        if not await self.connect(alu_high_id, zero_and_id, source_port_label="Zero", target_port=1):
             return False
 
-        # Connect NOR output to Zero LED
-        if not await self.connect(zero_nor_id, zero_id):
+        # Connect AND output to Zero LED
+        if not await self.connect(zero_and_id, zero_id):
             return False
 
         # Sign flag (MSB of result, from high ALU's Negative output)

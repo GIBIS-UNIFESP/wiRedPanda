@@ -11,6 +11,9 @@ Inputs:
   A[0..7] (8 bits, operand A)
   B[0..7] (8 bits, operand B)
   OpCode[0..2] (3 bits, operation selector)
+  CarryIn (ADD chain carry-in; defaults 0 when unconnected)
+  SubCarryIn (SUB chain carry-in; defaults 1 — the two's-complement +1 —
+              when unconnected, so standalone SUB works; chain it for 16-bit)
 
 Operations (OpCode mapping):
   000: ADD (A + B)
@@ -24,9 +27,10 @@ Operations (OpCode mapping):
 
 Outputs:
   Result[0..7] (8 bits, operation result)
-  Zero (1 if result == 0)
-  Negative (1 if result[7] == 1)
-  Carry (carry-out from high nibble ALU)
+  Zero (1 if the final result == 0 — valid for every operation)
+  Negative (final result[7])
+  Carry (ADD chain carry-out)
+  SubCarryOut (SUB chain carry-out, for 16-bit cascading)
 
 Architecture (per bit):
   - Instantiate level4_ripple_alu_4bit twice to compute operations 0-3 (ADD/SUB/AND/OR)
@@ -128,22 +132,29 @@ class ALU8BitBuilder(ICBuilderBase):
                 if not await self.connect(src, tgt_alu, target_port_label=f"B[{i}]"):
                     return False
 
-        # Create ground for low ALU CarryIn (no carry-in for 8-bit ADD)
-        ground_id = await self.create_element("InputGnd", input_a_x_start + (8 * HORIZONTAL_GATE_SPACING), 250.0, "GND_CarryIn")
-        if ground_id is None:
+        # Carry-in ports (F26): exposed as boundary inputs so two 8-bit ALUs
+        # can be chained into a 16-bit one. The saved switch state is the
+        # default for unconnected IC inputs, so standalone behavior is
+        # unchanged: CarryIn defaults off (0) and SubCarryIn defaults ON (the
+        # +1 for two's complement SUB).
+        carryin_id = await self.create_element("InputSwitch", input_a_x_start + (8 * HORIZONTAL_GATE_SPACING), 250.0, "CarryIn")
+        if carryin_id is None:
             return False
 
-        # Create Vcc for low ALU SubCarryIn (the +1 for two's complement SUB)
-        vcc_sub_id = await self.create_element("InputVcc", input_a_x_start + (9 * HORIZONTAL_GATE_SPACING), 250.0, "VCC_SubCarryIn")
-        if vcc_sub_id is None:
+        subcarryin_id = await self.create_element("InputSwitch", input_a_x_start + (9 * HORIZONTAL_GATE_SPACING), 250.0, "SubCarryIn")
+        if subcarryin_id is None:
+            return False
+        set_sub = await self.mcp.send_command("set_input_value", {"element_id": subcarryin_id, "value": True})
+        if not set_sub.success:
+            self.log_error("Failed to default SubCarryIn high")
             return False
 
-        # Connect ground to low ALU CarryIn (ADD carry chain starts at 0)
-        if not await self.connect(ground_id, alu_low, target_port_label="CarryIn"):
+        # Connect CarryIn to low ALU CarryIn (ADD carry chain starts here)
+        if not await self.connect(carryin_id, alu_low, target_port_label="CarryIn"):
             return False
 
-        # Connect Vcc to low ALU SubCarryIn (SUB carry chain starts at 1 for two's complement)
-        if not await self.connect(vcc_sub_id, alu_low, target_port_label="SubCarryIn"):
+        # Connect SubCarryIn to low ALU SubCarryIn (SUB carry chain starts here)
+        if not await self.connect(subcarryin_id, alu_low, target_port_label="SubCarryIn"):
             return False
 
         # Connect low ALU CarryOut to high ALU CarryIn for ADD carry propagation
@@ -191,36 +202,35 @@ class ALU8BitBuilder(ICBuilderBase):
 
         # Note: AND and OR operations are already provided by level4_ripple_alu_4bit
 
-        # Create shift left results (A << 1): Connect A[i] to Result_SHL[i+1], last bit is 0
-        shl_results = []
+        # Shift taps (F31: these two lists were name-swapped; the op-decode
+        # select was swapped the same way, so behavior was already correct —
+        # the names now state what each list holds).
+        # SHR (A >> 1): Result[i] = A[i+1], top bit fills with 0.
+        shr_results = []
         shl_y = not_y + VERTICAL_STAGE_SPACING
         for i in range(8):
             if i < 7:
-                # Result[i] = A[i+1] for SHL
-                shl_results.append(a_inputs[i + 1])
+                shr_results.append(a_inputs[i + 1])
             else:
-                # Result[7] = 0 for SHL (constant 0)
-                gnd_id = await self.create_element("InputGnd", input_a_x_start + (i * HORIZONTAL_GATE_SPACING), shl_y, f"GND_SHL")
-                if gnd_id is None:
-                    return False
-                shl_results.append(gnd_id)
-
-        await self.log("  ✓ Created shift left logic (A << 1)")
-
-        # Create shift right results (A >> 1): Connect A[i] to Result_SHR[i-1], bit 7 is 0
-        shr_results = []
-        for i in range(8):
-            if i > 0:
-                # Result[i] = A[i-1] for SHR
-                shr_results.append(a_inputs[i - 1])
-            else:
-                # Result[0] = 0 for SHR (constant 0)
-                gnd_id = await self.create_element("InputGnd", input_a_x_start + (i * HORIZONTAL_GATE_SPACING), shl_y + VERTICAL_STAGE_SPACING, f"GND_SHR")
+                gnd_id = await self.create_element("InputGnd", input_a_x_start + (i * HORIZONTAL_GATE_SPACING), shl_y, "GND_SHR")
                 if gnd_id is None:
                     return False
                 shr_results.append(gnd_id)
 
-        await self.log("  ✓ Created shift right logic (A >> 1)")
+        await self.log("  ✓ Created shift right taps (A >> 1)")
+
+        # SHL (A << 1): Result[i] = A[i-1], bottom bit fills with 0.
+        shl_results = []
+        for i in range(8):
+            if i > 0:
+                shl_results.append(a_inputs[i - 1])
+            else:
+                gnd_id = await self.create_element("InputGnd", input_a_x_start + (i * HORIZONTAL_GATE_SPACING), shl_y + VERTICAL_STAGE_SPACING, "GND_SHL")
+                if gnd_id is None:
+                    return False
+                shl_results.append(gnd_id)
+
+        await self.log("  ✓ Created shift left taps (A << 1)")
 
         # Need to extend selector to 8-way instead of 5-way
         # For now, create additional mux layer to handle operations 5-7
@@ -277,46 +287,15 @@ class ALU8BitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated 8 5-way selectors for operations 0-4")
 
-        # Create 3-to-1 mux layer to select among: (5way_output, NOT output, SHL output, SHR output, SHL output)
-        # OpCode[2:0] mapping: 000-100: handled by 5way, 101: NOT, 110: SHL, 111: SHR
-        # Use OpCode[2:1] for secondary selection: 00-10 (5way), 01 (NOT), 10 (SHL), 11 (SHR)
-
-        mux_8way_outputs = []
-        result_outputs = []
+        # Final selection happens in the Mux1/Mux2/Mux3 cascade below.
+        # (F26: a dead "Mux8way" layer used to sit here — 8 muxes with data
+        # wired but no select and no consumer.)
         mux_8way_y = selector_y + VERTICAL_STAGE_SPACING
-
-        for i in range(8):
-            # Create mux to select between 5way output and extended operations (NOT, SHL, SHR)
-            mux_id = await self.create_element("Mux", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y, f"Mux8way[{i}]")
-            if mux_id is None:
-                return False
-            mux_8way_outputs.append(mux_id)
-
-            # Port 0: 5-way selector output (for OpCode 0-4)
-            if not await self.connect(selector_5way_outputs[i], mux_id, source_port_label="out", target_port_label="In0"):
-                return False
-
-            # Port 1: NOT output (for OpCode 101)
-            if not await self.connect(not_results[i], mux_id, target_port_label="In1"):
-                return False
-
-            # Port 2 (select): This mux needs 3 bits to handle 8 operations
-            # Use OpCode[1:0] but need 3 bits total - create logic for bit selection
-            # For simplicity, create 2 muxes: first selects 0-3, second selects 4-7
-            # Actually, just use the first 2 opcode bits for extended ops
-
-        # Actually, the simplest approach is to just create one large mux per bit with 8 inputs
-        # But Mux element may not support that. Let me use cascaded muxes instead.
-        # For now, create a simpler version with just the basic operations + NOT + shift
-
-        # Create final output mux that selects among all 8 operations
-        # Use 3-bit OpCode to select from 8 possibilities
-        # Since we only have 2-input muxes, cascade them: select0-3 first, then select4-7, then combine
 
         # For operations 0-4: Use the 5way selector
         # For operation 5 (NOT): Use NOT gates
-        # For operation 6 (SHL): Use shift left wiring
-        # For operation 7 (SHR): Use shift right wiring
+        # For operation 6 (SHL): Use shift left taps
+        # For operation 7 (SHR): Use shift right taps
 
         # Create OpCode decoders for operations 5, 6, 7
         # Op5: OpCode[2] AND NOT(OpCode[1]) AND OpCode[0] (detects 101)
@@ -405,6 +384,7 @@ class ALU8BitBuilder(ICBuilderBase):
 
         # Create cascade of muxes to select from 8 operations
         result_outputs = []
+        final_result_muxes = []  # Mux3 outputs — the true per-bit results, used by the flags
 
         for i in range(8):
             # ========== Mux1: Select between 5-way output and NOT result ==========
@@ -431,15 +411,16 @@ class ALU8BitBuilder(ICBuilderBase):
             if mux2_id is None:
                 return False
 
-            # Mux2 In0: SHL result (selected when OpCode[1]=0, i.e., OpCode==110)
-            if not await self.connect(shl_results[i], mux2_id, target_port_label="In0"):
+            # Mux2 In0: SHR result — reached for op 7 (op6 detector low, mux3
+            # still routes here via the op6-or-op7 OR).
+            if not await self.connect(shr_results[i], mux2_id, target_port_label="In0"):
                 return False
 
-            # Mux2 In1: SHR result (selected when OpCode[1]=1, i.e., OpCode==111)
-            if not await self.connect(shr_results[i], mux2_id, target_port_label="In1"):
+            # Mux2 In1: SHL result — selected when the op6 detector is high.
+            if not await self.connect(shl_results[i], mux2_id, target_port_label="In1"):
                 return False
 
-            # Mux2 Select: Op6 detector (0 for SHL/Op6, 1 for SHR/Op7)
+            # Mux2 Select: Op6 detector (1 for SHL/Op6, 0 for SHR/Op7)
             if not await self.connect(op6_and2_id, mux2_id, target_port_label="S0"):
                 return False
 
@@ -475,6 +456,8 @@ class ALU8BitBuilder(ICBuilderBase):
             if not await self.connect(or_id, mux3_id, target_port_label="S0"):
                 return False
 
+            final_result_muxes.append(mux3_id)
+
             # ========== Create result output LED ==========
             led_id = await self.create_element("Led", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y + VERTICAL_STAGE_SPACING, f"Result[{i}]")
             if led_id is None:
@@ -502,11 +485,13 @@ class ALU8BitBuilder(ICBuilderBase):
             self.log_error(f"Failed to set input_size=8 for Zero NOR: {set_size.error}")
             return False
 
-        # Connect all selector outputs to NOR
+        # Connect the FINAL per-bit results to the NOR (F26: this used to tap
+        # the 5-way selector outputs, so for NOT/SHL/SHR the flag reflected
+        # A XOR B instead of the actual result).
         for i in range(8):
-            if not await self.connect(selector_ids[i], zero_nor_id, source_port_label="out", target_port=i):
+            if not await self.connect(final_result_muxes[i], zero_nor_id, source_port_label="Out", target_port=i):
                 return False
-        await self.log("  ✓ Created Zero flag (8-input NOR)")
+        await self.log("  ✓ Created Zero flag (8-input NOR over the final results)")
 
         # Create Zero flag LED
         zero_led_id = await self.create_element("Led", selector_x + HORIZONTAL_GATE_SPACING, selector_y + (2 * VERTICAL_STAGE_SPACING), "Zero")
@@ -525,8 +510,9 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created Negative LED (id={negative_led_id})")
 
-        await self.log(f"  🔍 Connecting Selector[7] output to Negative LED")
-        if not await self.connect(selector_ids[7], negative_led_id, source_port_label="out"):
+        await self.log(f"  🔍 Connecting final Result[7] to Negative LED")
+        # F26: tap the final result bit, not the 5-way selector output.
+        if not await self.connect(final_result_muxes[7], negative_led_id, source_port_label="Out"):
             return False
 
         await self.log("  ✓ Created Negative flag")
@@ -543,6 +529,16 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         await self.log("  ✓ Created Carry flag")
+
+        # SubCarryOut (F26): exposes the SUB chain's carry so two 8-bit ALUs
+        # can be cascaded into a 16-bit subtractor.
+        subcarry_led_id = await self.create_element("Led", selector_x + (4 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "SubCarryOut")
+        if subcarry_led_id is None:
+            return False
+        if not await self.connect(alu_high, subcarry_led_id, source_port_label="SubCarryOut"):
+            return False
+
+        await self.log("  ✓ Created SubCarryOut")
 
         # Save circuit as IC
         output_file = str(IC_COMPONENTS_DIR / "level6_alu_8bit.panda")
