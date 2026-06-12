@@ -188,3 +188,38 @@ void TestLevel1DFlipFlop::testAsyncPresetClearUnderClockHigh()
     QCOMPARE(getInputStatus(f.ledQ), false);
     QCOMPARE(getInputStatus(f.ledQBar), true);
 }
+
+// Asserting Preset AND Clear simultaneously is the documented "don't" input. It
+// is deterministic here, not undefined: both async paths drive their injection
+// ORs HIGH, forcing both slave NORs LOW -> Q=Q_bar=0. This pins that defined
+// contention output and confirms a clean resolution when one control is
+// released (the surviving control wins).
+void TestLevel1DFlipFlop::testPresetClearBothAsserted()
+{
+    auto &f = *s_level1DFlipFlop;
+
+    // Idle clock; assert both Preset=0 and Clear=0
+    f.dataIn->setOn(false);
+    f.clockIn->setOn(false);
+    f.presetIn->setOn(false);
+    f.clearIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);     // both forced low
+    QCOMPARE(getInputStatus(f.ledQBar), false);
+
+    // Release Clear (Preset still asserted): Preset wins -> Q=1
+    f.clearIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), true);
+    QCOMPARE(getInputStatus(f.ledQBar), false);
+
+    // Re-assert both, then release Preset: Clear wins -> Q=0
+    f.clearIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+    QCOMPARE(getInputStatus(f.ledQBar), false);
+    f.presetIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+    QCOMPARE(getInputStatus(f.ledQBar), true);
+}
