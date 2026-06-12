@@ -18,4 +18,5 @@ private slots:
     void testMemoryStage();
 
     void testMemoryStageStructure();
+    void testMemoryStageReset();
 };

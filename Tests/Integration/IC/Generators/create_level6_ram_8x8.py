@@ -16,6 +16,8 @@ Inputs:
   DataIn[0..7] (8-bit data to write)
   WriteEnable (Write control signal)
   Clock (Clock signal for synchronous write)
+  Reset (async clear of all words, active HIGH — fans out to the
+         bit-slice RAMs; F54)
 
 Outputs:
   DataOut[0..7] (8-bit data read from selected address)
@@ -75,7 +77,11 @@ class RAM8x8Builder(ICBuilderBase):
         clk_id = await self.create_element("InputSwitch", input_x + (8 * HORIZONTAL_GATE_SPACING), 100.0 + (2 * VERTICAL_STAGE_SPACING), "Clock")
         if clk_id is None:
             return False
-        await self.log("  ✓ Created WriteEnable and Clock inputs")
+
+        reset_id = await self.create_element("InputSwitch", input_x + (8 * HORIZONTAL_GATE_SPACING), 100.0 + (3 * VERTICAL_STAGE_SPACING), "Reset")
+        if reset_id is None:
+            return False
+        await self.log("  ✓ Created WriteEnable, Clock and Reset inputs")
 
         # Instantiate 8 RAM 8×1 modules (one for each data bit)
         ram_ics = []
@@ -108,6 +114,10 @@ class RAM8x8Builder(ICBuilderBase):
 
             # Connect clock
             if not await self.connect(clk_id, ram_id, target_port_label="Clock"):
+                return False
+
+            # Connect reset (async clear — F54)
+            if not await self.connect(reset_id, ram_id, target_port_label="Reset"):
                 return False
         await self.log("  ✓ Connected control signals to RAM modules")
 

@@ -110,6 +110,15 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
         # Connect clock to RAM (for synchronization)
         if not await self.connect(clock_id, ram_id, target_port_label="Clock"):
             return False
+
+        # Program memory survives reset by design: tie the RAM's Reset (F54)
+        # to an explicit constant 0 (F34 convention — self-documenting).
+        gnd_id = await self.create_element("InputGnd", input_x + (3 * HORIZONTAL_GATE_SPACING), 250.0, "GND_NoReset")
+        if gnd_id is None:
+            return False
+
+        if not await self.connect(gnd_id, ram_id, target_port_label="Reset"):
+            return False
         await self.log("  ✓ Connected address, data, write enable, and clock to RAM")
 
         # Create instruction output LEDs (8-bit)

@@ -25,6 +25,7 @@ struct Ram8x8Fixture {
     QVector<InputSwitch *> dataInInputs;
     InputSwitch *we = nullptr;
     InputSwitch *clk = nullptr;
+    InputSwitch *reset = nullptr;
     QVector<Led *> dataOutOutputs;
     Simulation *sim = nullptr;
 
@@ -58,6 +59,10 @@ struct Ram8x8Fixture {
         builder.add(clk);
         clk->setLabel("Clock");
 
+        reset = new InputSwitch();
+        builder.add(reset);
+        reset->setLabel("Reset");
+
         for (int i = 0; i < 8; i++) {
             auto *led = new Led();
             builder.add(led);
@@ -73,6 +78,7 @@ struct Ram8x8Fixture {
         }
         builder.connect(we, 0, ic, "WriteEnable");
         builder.connect(clk, 0, ic, "Clock");
+        builder.connect(reset, 0, ic, "Reset");
 
         for (int i = 0; i < 8; i++) {
             builder.connect(ic, QString("DataOut[%1]").arg(i), dataOutOutputs[i], 0);
@@ -163,6 +169,35 @@ void TestLevel6RAM8X8::testRAMStructure()
 
     QVERIFY(f.ic != nullptr);
 
-    QCOMPARE(f.ic->inputSize(), 13);
+    // 3 address + 8 data + WriteEnable + Clock + Reset (F54)
+    QCOMPARE(f.ic->inputSize(), 14);
     QCOMPARE(f.ic->outputSize(), 8);
+}
+
+// Reset clears every word asynchronously (F54)
+void TestLevel6RAM8X8::testRAMReset()
+{
+    auto &f = *s_level6Ram8x8;
+
+    // Write 0xC3 to word 5
+    setMultiBitInput(f.addressInputs, 5);
+    setMultiBitInput(f.dataInInputs, 0xC3);
+    f.we->setOn(true);
+    f.reset->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+
+    f.we->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0xC3);
+
+    // Assert Reset: the word clears without a clock edge
+    f.reset->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x00);
+
+    // Release: stays cleared
+    f.reset->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x00);
 }

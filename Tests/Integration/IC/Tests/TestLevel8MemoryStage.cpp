@@ -148,3 +148,37 @@ void TestLevel8MemoryStage::testMemoryStageStructure()
     QCOMPARE(f.ic->inputSize(), 28);
     QCOMPARE(f.ic->outputSize(), 8);
 }
+
+// Reset clears the backing memory (F54: the Reset input used to be dead —
+// created and documented but wired to nothing). Implemented as an async
+// clear down the RAM stack (the ram_8x1 cells' ~Clear).
+void TestLevel8MemoryStage::testMemoryStageReset()
+{
+    auto &f = *s_level8MemoryStage;
+
+    // Write 0x5A to address 3
+    setMultiBitInput(f.addressInputs, 0x03);
+    setMultiBitInput(f.datainInputs, 0x5A);
+    setMultiBitInput(f.resultInputs, 0x00);
+    f.memread->setOn(false);
+    f.memwrite->setOn(true);
+    f.reset->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+
+    // Read it back
+    f.memwrite->setOn(false);
+    f.memread->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x5A);
+
+    // Assert Reset: the stored word must clear (async, no clock needed)
+    f.reset->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x00);
+
+    // Release Reset: memory stays cleared
+    f.reset->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x00);
+}

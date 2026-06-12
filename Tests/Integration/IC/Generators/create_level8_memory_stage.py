@@ -14,7 +14,7 @@ Inputs:
   MemRead (memory read enable signal)
   MemWrite (memory write enable signal)
   Clock (synchronization signal)
-  Reset (reset signal)
+  Reset (async clear of the backing memory, active HIGH — F54)
 
 Outputs:
   DataOut[0..7] (8-bit output: memory read data or pass-through result)
@@ -142,6 +142,12 @@ class MemoryStageBuilder(ICBuilderBase):
 
         # ---- Connect MemWrite to RAM WriteEnable ----
         if not await self.connect(memwrite_id, ram_id, target_port_label="WriteEnable"):
+            return False
+
+        # ---- Connect Reset to RAM Reset (async memory clear — F54) ----
+        # (This input used to be dead: created and documented but wired to
+        # nothing.)
+        if not await self.connect(reset_id, ram_id, target_port_label="Reset"):
             return False
 
         await self.log("  ✓ Connected RAM inputs")

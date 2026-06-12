@@ -223,6 +223,16 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
             if not await self.connect(inputs[ctrl_name], ram_id, target_port_label=ram_label):
                 return False
 
+        # Stack contents survive SP_Reset by design (only the pointer
+        # resets): tie the RAM's Reset (F54) to an explicit constant 0
+        # (F34 convention — self-documenting).
+        gnd_id = await self.create_element("InputGnd", 750.0, 500.0, "GND_NoReset")
+        if gnd_id is None:
+            return False
+
+        if not await self.connect(gnd_id, ram_id, target_port_label="Reset"):
+            return False
+
         await self.log(f"✓ Made {self.connection_count} connections")
 
         # Save the IC
