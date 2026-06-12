@@ -14,4 +14,7 @@ private slots:
 
     void testPortTooltip();
     void testPortHoverState();
+
+    // Regression: F18 — setInputs must keep index() == vector position
+    void testSetInputsReindexesPorts();
 };

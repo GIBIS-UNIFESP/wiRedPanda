@@ -392,6 +392,18 @@ QVector<QNEPort *> GraphicElement::allPorts() const
 void GraphicElement::setInputs(const QVector<QNEInputPort *> &inputs)
 {
     m_inputPorts = inputs;
+
+    // Keep index() == vector position: QNEConnection::save() derives
+    // connection serial IDs from port->index() while GraphicElement::save()
+    // numbers ports by position. A caller that permutes the vector (the
+    // Display7 legacy pin remap) would otherwise cross-wire the pins on the
+    // next save/load round trip. Load-time connection resolution is pointer-
+    // keyed, so re-indexing here is safe.
+    for (int i = 0; i < m_inputPorts.size(); ++i) {
+        if (auto *port = m_inputPorts.at(i)) {
+            port->setIndex(i);
+        }
+    }
 }
 
 QPointF GraphicElement::pixmapCenter() const
