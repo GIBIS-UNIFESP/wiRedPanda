@@ -90,6 +90,7 @@ endmodule
 module level4_register_4bit_ic (
     input clk,
     input en,
+    input reset,
     input d0,
     input d1,
     input d2,
@@ -114,6 +115,7 @@ reg aux_d_flip_flop_4_1_q = 1'b1;
 reg aux_d_flip_flop_5_0_q = 1'b0;
 reg aux_d_flip_flop_5_1_q = 1'b1;
 wire aux_not_6;
+wire aux_not_7;
 
 // Internal logic
 level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
@@ -125,41 +127,74 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     .in11(aux_d_flip_flop_3_0_q),
     .in12(aux_d_flip_flop_4_0_q),
     .in13(aux_d_flip_flop_5_0_q),
-    .sel(aux_not_6),
+    .sel(aux_not_7),
     .out0(w_level4_bus_mux_4bit_inst_1_out0),
     .out1(w_level4_bus_mux_4bit_inst_1_out1),
     .out2(w_level4_bus_mux_4bit_inst_1_out2),
     .out3(w_level4_bus_mux_4bit_inst_1_out3)
 );
     //D FlipFlop
-    always @(posedge clk)
+    always @(posedge clk or negedge aux_not_6)
     begin
+        if (~aux_not_6)
+        begin
+            aux_d_flip_flop_2_0_q <= 1'b0;
+            aux_d_flip_flop_2_1_q <= 1'b1;
+        end
+        else
+        begin
             aux_d_flip_flop_2_0_q <= w_level4_bus_mux_4bit_inst_1_out0;
             aux_d_flip_flop_2_1_q <= ~w_level4_bus_mux_4bit_inst_1_out0;
+        end
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk)
+    always @(posedge clk or negedge aux_not_6)
     begin
+        if (~aux_not_6)
+        begin
+            aux_d_flip_flop_3_0_q <= 1'b0;
+            aux_d_flip_flop_3_1_q <= 1'b1;
+        end
+        else
+        begin
             aux_d_flip_flop_3_0_q <= w_level4_bus_mux_4bit_inst_1_out1;
             aux_d_flip_flop_3_1_q <= ~w_level4_bus_mux_4bit_inst_1_out1;
+        end
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk)
+    always @(posedge clk or negedge aux_not_6)
     begin
+        if (~aux_not_6)
+        begin
+            aux_d_flip_flop_4_0_q <= 1'b0;
+            aux_d_flip_flop_4_1_q <= 1'b1;
+        end
+        else
+        begin
             aux_d_flip_flop_4_0_q <= w_level4_bus_mux_4bit_inst_1_out2;
             aux_d_flip_flop_4_1_q <= ~w_level4_bus_mux_4bit_inst_1_out2;
+        end
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk)
+    always @(posedge clk or negedge aux_not_6)
     begin
+        if (~aux_not_6)
+        begin
+            aux_d_flip_flop_5_0_q <= 1'b0;
+            aux_d_flip_flop_5_1_q <= 1'b1;
+        end
+        else
+        begin
             aux_d_flip_flop_5_0_q <= w_level4_bus_mux_4bit_inst_1_out3;
             aux_d_flip_flop_5_1_q <= ~w_level4_bus_mux_4bit_inst_1_out3;
+        end
     end
     //End of D FlipFlop
-assign aux_not_6 = ~en;
+assign aux_not_6 = ~reset;
+assign aux_not_7 = ~en;
 
 assign q0 = aux_d_flip_flop_2_0_q;
 assign q1 = aux_d_flip_flop_3_0_q;
@@ -175,12 +210,13 @@ input input_switch3,
 input input_switch4,
 input input_switch5,
 input input_switch6,
+input input_switch7,
 
 /* ========= Outputs ========== */
-output led8_1,
 output led9_1,
 output led10_1,
-output led11_1
+output led11_1,
+output led12_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL4_REGISTER_4BIT (level4_register_4bit_ic)
@@ -194,10 +230,11 @@ wire w_level4_register_4bit_ic_inst_1_q3;
 level4_register_4bit_ic level4_register_4bit_ic_inst_1 (
     .clk(input_switch1),
     .en(input_switch2),
-    .d0(input_switch3),
-    .d1(input_switch4),
-    .d2(input_switch5),
-    .d3(input_switch6),
+    .reset(input_switch3),
+    .d0(input_switch4),
+    .d1(input_switch5),
+    .d2(input_switch6),
+    .d3(input_switch7),
     .q0(w_level4_register_4bit_ic_inst_1_q0),
     .q1(w_level4_register_4bit_ic_inst_1_q1),
     .q2(w_level4_register_4bit_ic_inst_1_q2),
@@ -205,8 +242,8 @@ level4_register_4bit_ic level4_register_4bit_ic_inst_1 (
 );
 
 // Writing output data. //
-assign led8_1 = w_level4_register_4bit_ic_inst_1_q0;
-assign led9_1 = w_level4_register_4bit_ic_inst_1_q1;
-assign led10_1 = w_level4_register_4bit_ic_inst_1_q2;
-assign led11_1 = w_level4_register_4bit_ic_inst_1_q3;
+assign led9_1 = w_level4_register_4bit_ic_inst_1_q0;
+assign led10_1 = w_level4_register_4bit_ic_inst_1_q1;
+assign led11_1 = w_level4_register_4bit_ic_inst_1_q2;
+assign led12_1 = w_level4_register_4bit_ic_inst_1_q3;
 endmodule

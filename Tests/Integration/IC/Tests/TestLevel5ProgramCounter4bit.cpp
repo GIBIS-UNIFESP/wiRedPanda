@@ -149,3 +149,66 @@ void TestLevel5ProgramCounter4Bit::testProgramCounter4BitStructure()
     QCOMPARE(f.ic->inputSize(), 8);
     QCOMPARE(f.ic->outputSize(), 8);
 }
+
+// Reset must force PC to 0 (F52: the reset input used to be dead — created
+// and documented but wired to nothing). The register clears asynchronously
+// (~Clear path), mirroring the 8-bit PC family.
+void TestLevel5ProgramCounter4Bit::testProgramCounter4BitReset()
+{
+    auto &f = *s_level5ProgramCounter4bit;
+
+    // Load a non-zero value
+    setMultiBitInput(f.loadValueInputs, 0x9);
+    f.load->setOn(true);
+    f.inc->setOn(false);
+    f.reset->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(f.readPC(), 0x9);
+
+    // Assert reset: PC must clear to 0 without needing a clock edge
+    f.load->setOn(false);
+    f.reset->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readPC(), 0x0);
+
+    // Reset dominates a simultaneous load
+    setMultiBitInput(f.loadValueInputs, 0xF);
+    f.load->setOn(true);
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(f.readPC(), 0x0);
+
+    // Release reset: PC stays at 0 and normal operation resumes
+    f.reset->setOn(false);
+    f.load->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readPC(), 0x0);
+
+    f.inc->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(f.readPC(), 0x1);
+}
+
+// load must beat inc when both are asserted ("Priority: load > increment >
+// hold" — F52: the old mux order gave increment priority).
+void TestLevel5ProgramCounter4Bit::testProgramCounter4BitLoadBeatsInc()
+{
+    auto &f = *s_level5ProgramCounter4bit;
+
+    // Establish PC = 0x3
+    setMultiBitInput(f.loadValueInputs, 0x3);
+    f.load->setOn(true);
+    f.inc->setOn(false);
+    f.reset->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(f.readPC(), 0x3);
+
+    // Assert load AND inc together: the load value must win
+    setMultiBitInput(f.loadValueInputs, 0x7);
+    f.inc->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(f.readPC(), 0x7);
+}
