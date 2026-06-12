@@ -8,21 +8,31 @@ Create JK Flip-Flop IC with Preset and Clear
 Inputs: J (Set), K (Reset), Clock, Preset (active LOW), Clear (active LOW)
 Outputs: Q, Q_bar
 
-Circuit:
-- Master-Slave configuration with feedback logic
-- Feedback gates allow JK control with state-dependent behavior
+Circuit (textbook pulse-triggered master-slave JK, 7476-style — F55):
+- Master latch is transparent while Clock=1 and takes its J/K feedback from
+  the SLAVE outputs (S_m = J AND Q_bar_slave, R_m = K AND Q_slave), which are
+  locked during the high phase — so J=K=1 is a clean toggle with no
+  combinational race (the old circuit fed the master back its own outputs,
+  leaving the J=K=1 master with no stable state).
+- Slave latch transfers the master state while Clock=0: Q changes on the
+  FALLING edge (end of the clock pulse).
 - When J=1, K=0: Set Q=1
 - When J=0, K=1: Reset Q=0
-- When J=1, K=1: Toggle Q (J AND Q_bar drives S, K AND Q drives R)
+- When J=1, K=1: Toggle Q
 - When J=0, K=0: Hold Q
-- Preset/Clear override normal operation (asynchronous)
+- Preset/Clear override normal operation (asynchronous), injected into BOTH
+  latches (matches the F56 D flip-flop fix) so they work under any clock
+  level and the forced value survives release.
+- Classic master-slave caveat (textbook "1's catching"): J/K pulses during
+  the clock-high phase are caught by the master; Q itself only changes on
+  the falling edge.
 
 Implementation:
-- 2 AND gates for J/Q_bar feedback
-- 2 AND gates for K/Q feedback
+- 2 AND gates for J/K with slave feedback
+- 4 AND gates for clock gating (master pair on CLK, slave pair on NOT CLK)
 - Clock control via NOT gate
 - Master-slave SR latch cores
-- Preset/Clear via OR gate injection into slave latch
+- Preset/Clear via OR gate injection into both latches
 
 JK Flip-Flop truth table:
 J K | Action
@@ -218,6 +228,32 @@ class JKFlipFlopBuilder(ICBuilderBase):
         or_r_id = or_r_response.result.get('element_id') if or_r_response.result else None
         self.element_count += 1
 
+        # Master-side injection (F56-consistent): force BOTH latches on
+        # Preset/Clear so async controls work under any clock level.
+        master_or_s_response = await self.mcp.send_command("create_element", {
+            "type": "Or",
+            "x": master_gate_x + (HORIZONTAL_GATE_SPACING / 2),
+            "y": row1_y + (VERTICAL_STAGE_SPACING * 2),
+            "label": "master_or_s"
+        })
+        if not master_or_s_response or not master_or_s_response.success:
+            print("❌ Failed to create master OR S gate")
+            return False
+        master_or_s_id = master_or_s_response.result.get('element_id') if master_or_s_response.result else None
+        self.element_count += 1
+
+        master_or_r_response = await self.mcp.send_command("create_element", {
+            "type": "Or",
+            "x": master_gate_x + (HORIZONTAL_GATE_SPACING / 2),
+            "y": row1_y + (VERTICAL_STAGE_SPACING * 3),
+            "label": "master_or_r"
+        })
+        if not master_or_r_response or not master_or_r_response.success:
+            print("❌ Failed to create master OR R gate")
+            return False
+        master_or_r_id = master_or_r_response.result.get('element_id') if master_or_r_response.result else None
+        self.element_count += 1
+
         # Connect Preset to NOT gate
         conn = await self.mcp.send_command("connect_elements", {
             "source_id": input_preset_id,
@@ -320,32 +356,9 @@ class JKFlipFlopBuilder(ICBuilderBase):
         master_nor_qbar_id = master_nor_qbar_response.result.get('element_id') if master_nor_qbar_response.result else None
         self.element_count += 1
 
-        # ========== Slave Stage - Feedback Logic ==========
-
-        # Slave feedback AND gates
-        slave_and_s_response = await self.mcp.send_command("create_element", {
-            "type": "And",
-            "x": slave_and_x,
-            "y": row1_y,
-            "label": "slave_and_s"
-        })
-        if not slave_and_s_response or not slave_and_s_response.success:
-            print("❌ Failed to create slave AND S")
-            return False
-        slave_and_s_id = slave_and_s_response.result.get('element_id') if slave_and_s_response.result else None
-        self.element_count += 1
-
-        slave_and_r_response = await self.mcp.send_command("create_element", {
-            "type": "And",
-            "x": slave_and_x,
-            "y": row2_y,
-            "label": "slave_and_r"
-        })
-        if not slave_and_r_response or not slave_and_r_response.success:
-            print("❌ Failed to create slave AND R")
-            return False
-        slave_and_r_id = slave_and_r_response.result.get('element_id') if slave_and_r_response.result else None
-        self.element_count += 1
+        # ========== Slave Stage ==========
+        # (F55: the old slave_and_s/slave_and_r J/K-gated transfer gates are
+        # gone — a textbook slave just transfers the master state.)
 
         # Slave gate AND gates
         slave_gate_s_response = await self.mcp.send_command("create_element", {
@@ -449,18 +462,6 @@ class JKFlipFlopBuilder(ICBuilderBase):
             return False
         self.connection_count += 1
 
-        # Connect J to slave AND S
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_j_id,
-            "source_port": 0,
-            "target_id": slave_and_s_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect J to slave AND S")
-            return False
-        self.connection_count += 1
-
         # Connect K to master AND R
         conn = await self.mcp.send_command("connect_elements", {
             "source_id": input_k_id,
@@ -470,18 +471,6 @@ class JKFlipFlopBuilder(ICBuilderBase):
         })
         if not conn or not conn.success:
             print("❌ Failed to connect K to master AND R")
-            return False
-        self.connection_count += 1
-
-        # Connect K to slave AND R
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_k_id,
-            "source_port": 0,
-            "target_id": slave_and_r_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect K to slave AND R")
             return False
         self.connection_count += 1
 
@@ -497,15 +486,16 @@ class JKFlipFlopBuilder(ICBuilderBase):
             return False
         self.connection_count += 1
 
-        # Connect NOT Clock to master gate S port 1 (active when CLK=0)
+        # Connect Clock to master gate S port 1 (master transparent when
+        # CLK=1 — classic pulse-triggered MS-JK; F55)
         conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_clk_id,
+            "source_id": input_clk_id,
             "source_port": 0,
             "target_id": master_gate_s_id,
             "target_port": 1
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect NOT Clock to master gate S")
+            print("❌ Failed to connect Clock to master gate S")
             return False
         self.connection_count += 1
 
@@ -521,27 +511,50 @@ class JKFlipFlopBuilder(ICBuilderBase):
             return False
         self.connection_count += 1
 
-        # Connect NOT Clock to master gate R port 1
+        # Connect Clock to master gate R port 1
         conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_clk_id,
+            "source_id": input_clk_id,
             "source_port": 0,
             "target_id": master_gate_r_id,
             "target_port": 1
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect NOT Clock to master gate R")
+            print("❌ Failed to connect Clock to master gate R")
             return False
         self.connection_count += 1
 
-        # Connect master gate R to master NOR Q port 0 (R to Q-producing NOR)
+        # Master R path: OR(gated reset path, NOT(Clear)) into the Q-producing
+        # NOR — Clear forces the master low too (F56-consistent)
         conn = await self.mcp.send_command("connect_elements", {
             "source_id": master_gate_r_id,
+            "source_port": 0,
+            "target_id": master_or_r_id,
+            "target_port": 0
+        })
+        if not conn or not conn.success:
+            print("❌ Failed to connect master gate R to master OR R")
+            return False
+        self.connection_count += 1
+
+        conn = await self.mcp.send_command("connect_elements", {
+            "source_id": not_clear_id,
+            "source_port": 0,
+            "target_id": master_or_r_id,
+            "target_port": 1
+        })
+        if not conn or not conn.success:
+            print("❌ Failed to connect NOT Clear to master OR R")
+            return False
+        self.connection_count += 1
+
+        conn = await self.mcp.send_command("connect_elements", {
+            "source_id": master_or_r_id,
             "source_port": 0,
             "target_id": master_nor_q_id,
             "target_port": 0
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect master gate R to master NOR Q")
+            print("❌ Failed to connect master OR R to master NOR Q")
             return False
         self.connection_count += 1
 
@@ -557,15 +570,38 @@ class JKFlipFlopBuilder(ICBuilderBase):
             return False
         self.connection_count += 1
 
-        # Connect master gate S to master NOR Q_bar port 0 (S to Q_bar-producing NOR)
+        # Master S path: OR(gated set path, NOT(Preset)) into the
+        # Q_bar-producing NOR — Preset forces the master high too (F56)
         conn = await self.mcp.send_command("connect_elements", {
             "source_id": master_gate_s_id,
+            "source_port": 0,
+            "target_id": master_or_s_id,
+            "target_port": 0
+        })
+        if not conn or not conn.success:
+            print("❌ Failed to connect master gate S to master OR S")
+            return False
+        self.connection_count += 1
+
+        conn = await self.mcp.send_command("connect_elements", {
+            "source_id": not_preset_id,
+            "source_port": 0,
+            "target_id": master_or_s_id,
+            "target_port": 1
+        })
+        if not conn or not conn.success:
+            print("❌ Failed to connect NOT Preset to master OR S")
+            return False
+        self.connection_count += 1
+
+        conn = await self.mcp.send_command("connect_elements", {
+            "source_id": master_or_s_id,
             "source_port": 0,
             "target_id": master_nor_qbar_id,
             "target_port": 0
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect master gate S to master NOR Q_bar")
+            print("❌ Failed to connect master OR S to master NOR Q_bar")
             return False
         self.connection_count += 1
 
@@ -582,76 +618,54 @@ class JKFlipFlopBuilder(ICBuilderBase):
         self.connection_count += 1
 
         # ========== Connect Slave Stage via Master Outputs ==========
+        # The slave just transfers the master state while CLK=0 (F55):
+        #   S_slave = Qm AND NOT(CLK), R_slave = Q_bar_m AND NOT(CLK)
 
-        # Connect master NOR Q_bar to slave AND S (for feedback when CLK=1)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_nor_qbar_id,
-            "source_port": 0,
-            "target_id": slave_and_s_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master NOR Q_bar to slave AND S")
-            return False
-        self.connection_count += 1
-
-        # Connect master NOR Q to slave AND R (for feedback when CLK=1)
+        # Connect master NOR Q to slave gate S port 0 (transfer Qm)
         conn = await self.mcp.send_command("connect_elements", {
             "source_id": master_nor_q_id,
             "source_port": 0,
-            "target_id": slave_and_r_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master NOR Q to slave AND R")
-            return False
-        self.connection_count += 1
-
-        # Connect slave AND S to slave gate S port 0
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_and_s_id,
-            "source_port": 0,
             "target_id": slave_gate_s_id,
             "target_port": 0
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect slave AND S to slave gate S")
+            print("❌ Failed to connect master NOR Q to slave gate S")
             return False
         self.connection_count += 1
 
-        # Connect Clock to slave gate S port 1 (active when CLK=1)
+        # Connect NOT Clock to slave gate S port 1 (slave open when CLK=0)
         conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_clk_id,
+            "source_id": not_clk_id,
             "source_port": 0,
             "target_id": slave_gate_s_id,
             "target_port": 1
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect Clock to slave gate S")
+            print("❌ Failed to connect NOT Clock to slave gate S")
             return False
         self.connection_count += 1
 
-        # Connect slave AND R to slave gate R port 0
+        # Connect master NOR Q_bar to slave gate R port 0 (transfer Q_bar_m)
         conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_and_r_id,
+            "source_id": master_nor_qbar_id,
             "source_port": 0,
             "target_id": slave_gate_r_id,
             "target_port": 0
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect slave AND R to slave gate R")
+            print("❌ Failed to connect master NOR Q_bar to slave gate R")
             return False
         self.connection_count += 1
 
-        # Connect Clock to slave gate R port 1
+        # Connect NOT Clock to slave gate R port 1
         conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_clk_id,
+            "source_id": not_clk_id,
             "source_port": 0,
             "target_id": slave_gate_r_id,
             "target_port": 1
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect Clock to slave gate R")
+            print("❌ Failed to connect NOT Clock to slave gate R")
             return False
         self.connection_count += 1
 
@@ -758,28 +772,30 @@ class JKFlipFlopBuilder(ICBuilderBase):
         self.connection_count += 1
 
         # ========== Connect Final Feedback ==========
+        # Textbook JK feedback comes from the SLAVE outputs (locked while the
+        # master is transparent), so J=K=1 toggles without a race (F55).
 
-        # Connect master NOR Q_bar to master AND S port 1 (master uses its own Q_bar for feedback)
+        # Connect slave NOR Q_bar to master AND S port 1
         conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_nor_qbar_id,
+            "source_id": slave_nor_qbar_id,
             "source_port": 0,
             "target_id": master_and_s_id,
             "target_port": 1
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect master NOR Q_bar to master AND S")
+            print("❌ Failed to connect slave NOR Q_bar to master AND S")
             return False
         self.connection_count += 1
 
-        # Connect master NOR Q to master AND R port 1 (master uses its own Q for feedback)
+        # Connect slave NOR Q to master AND R port 1
         conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_nor_q_id,
+            "source_id": slave_nor_q_id,
             "source_port": 0,
             "target_id": master_and_r_id,
             "target_port": 1
         })
         if not conn or not conn.success:
-            print("❌ Failed to connect master NOR Q to master AND R")
+            print("❌ Failed to connect slave NOR Q to master AND R")
             return False
         self.connection_count += 1
 

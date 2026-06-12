@@ -18,7 +18,8 @@ Circuit:
 Implementation:
 - 1 NOT gate (invert clock for master/slave control)
 - 2 NOT gates (invert Preset and Clear for OR logic)
-- 2 OR gates (combine Preset/Clear with S/R signals)
+- 4 OR gates (inject Preset/Clear into BOTH latches' S/R — 7474 forces
+  master and slave, so async controls work under any clock level; F56)
 - 2 D Latches (master and slave)
 
 D Flip-Flop behavior:
@@ -120,6 +121,18 @@ class DFlipFlopBuilder(ICBuilderBase):
         if or_s_id is None:
             return False
 
+        # Master-side injection (F56): a 7474 forces BOTH latches. Without
+        # these, asserting Preset/Clear while Clock=1 contends with the open
+        # slave's data path (master holding the opposite value drives the
+        # invalid Q=Q_bar=0 state, and the forced level is lost on release).
+        master_or_r_id = await self.create_element("Or", master_not_x, bottom_y + (4 * VERTICAL_STAGE_SPACING), "master_or_r")
+        if master_or_r_id is None:
+            return False
+
+        master_or_s_id = await self.create_element("Or", master_not_x, bottom_y + (5 * VERTICAL_STAGE_SPACING), "master_or_s")
+        if master_or_s_id is None:
+            return False
+
         # Connect Preset to NOT gate
         if not await self.connect(input_preset_id, not_preset_id):
             return False
@@ -218,16 +231,28 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(not_id, master_and2_id, target_port=1):
             return False
 
-        # Connect master AND2 to master NOR1 (R to NOR1)
-        if not await self.connect(master_and2_id, master_nor1_id):
+        # Master R path: OR(data reset path, NOT(Clear)) into the Q NOR (F56)
+        if not await self.connect(master_and2_id, master_or_r_id):
+            return False
+
+        if not await self.connect(not_clear_id, master_or_r_id, target_port=1):
+            return False
+
+        if not await self.connect(master_or_r_id, master_nor1_id):
             return False
 
         # Connect master NOR2 to master NOR1 (feedback)
         if not await self.connect(master_nor2_id, master_nor1_id, target_port=1):
             return False
 
-        # Connect master AND1 to master NOR2 (S to NOR2)
-        if not await self.connect(master_and1_id, master_nor2_id):
+        # Master S path: OR(data set path, NOT(Preset)) into the Q_bar NOR (F56)
+        if not await self.connect(master_and1_id, master_or_s_id):
+            return False
+
+        if not await self.connect(not_preset_id, master_or_s_id, target_port=1):
+            return False
+
+        if not await self.connect(master_or_s_id, master_nor2_id):
             return False
 
         # Connect master NOR1 to master NOR2 (feedback)
