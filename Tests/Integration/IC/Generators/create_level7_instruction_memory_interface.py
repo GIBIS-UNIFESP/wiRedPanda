@@ -17,7 +17,8 @@ Outputs:
   Instruction[0..7] (8-bit instruction fetched from memory)
 
 Architecture:
-  - Instantiates level6_ram_256x8 as instruction memory
+  - Instantiates level6_ram_8x8 as instruction memory (8 words; the
+    8-bit Address bus is partially decoded — only Address[0..2] select)
   - Asynchronous read: instruction available immediately based on address
   - Write port exposed for external programming of instruction memory
   - Simple wrapper for clean CPU interface

@@ -735,7 +735,7 @@ add_test(NAME TestLevel5RegisterFile8X8 COMMAND test_wiredpanda TestLevel5Regist
 add_test(NAME TestLevel5UpDownCounter4Bit COMMAND test_wiredpanda TestLevel5UpDownCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6ALU8Bit COMMAND test_wiredpanda TestLevel6ALU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6ProgramCounter8BitArithmetic COMMAND test_wiredpanda TestLevel6ProgramCounter8BitArithmetic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel6RAM256X8 COMMAND test_wiredpanda TestLevel6RAM256X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6RAM8X8 COMMAND test_wiredpanda TestLevel6RAM8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6Register8Bit COMMAND test_wiredpanda TestLevel6Register8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6RegisterFile8X8 COMMAND test_wiredpanda TestLevel6RegisterFile8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6RippleAdder8Bit COMMAND test_wiredpanda TestLevel6RippleAdder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -849,7 +849,7 @@ foreach(TEST TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel
         TestLevel5ClockGatedDecoder TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit 
         TestLevel5LoadableCounter4Bit TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit 
         TestLevel5RegisterFile4X4 TestLevel5RegisterFile8X8 TestLevel5UpDownCounter4Bit 
-        TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM256X8 
+        TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM8X8
         TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit 
         TestLevel6StackMemoryInterface TestLevel6StackPointer8Bit TestLevel7ALU16Bit 
         TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit TestLevel7ExecutionDatapath 
@@ -936,7 +936,7 @@ set(ALL_TESTS
     TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit TestLevel5LoadableCounter4Bit
     TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit TestLevel5RegisterFile4X4
     TestLevel5RegisterFile8X8 TestLevel6StackMemoryInterface TestLevel5UpDownCounter4Bit
-    TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM256X8
+    TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM8X8
     TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit
     TestLevel6StackPointer8Bit
     TestLevel7ALU16Bit TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit

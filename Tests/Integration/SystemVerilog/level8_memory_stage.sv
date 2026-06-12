@@ -323,16 +323,11 @@ level2_mux_8to1 level2_mux_8to1_inst_26 (
 assign dataout = w_level2_mux_8to1_inst_26_p_output;
 endmodule
 
-// Module for RAM (generated from level6_ram_256x8.panda)
-module level6_ram_256x8 (
+// Module for RAM (generated from level6_ram_8x8.panda)
+module level6_ram_8x8 (
     input address0,
     input address1,
     input address2,
-    input address3,
-    input address4,
-    input address5,
-    input address6,
-    input address7,
     input datain0,
     input datain1,
     input datain2,
@@ -494,15 +489,15 @@ module level8_memory_stage_ic (
     output dataout7
 );
 
-// IC instance: RAM (level6_ram_256x8)
-wire w_level6_ram_256x8_inst_1_dataout0;
-wire w_level6_ram_256x8_inst_1_dataout1;
-wire w_level6_ram_256x8_inst_1_dataout2;
-wire w_level6_ram_256x8_inst_1_dataout3;
-wire w_level6_ram_256x8_inst_1_dataout4;
-wire w_level6_ram_256x8_inst_1_dataout5;
-wire w_level6_ram_256x8_inst_1_dataout6;
-wire w_level6_ram_256x8_inst_1_dataout7;
+// IC instance: RAM (level6_ram_8x8)
+wire w_level6_ram_8x8_inst_1_dataout0;
+wire w_level6_ram_8x8_inst_1_dataout1;
+wire w_level6_ram_8x8_inst_1_dataout2;
+wire w_level6_ram_8x8_inst_1_dataout3;
+wire w_level6_ram_8x8_inst_1_dataout4;
+wire w_level6_ram_8x8_inst_1_dataout5;
+wire w_level6_ram_8x8_inst_1_dataout6;
+wire w_level6_ram_8x8_inst_1_dataout7;
 reg aux_mux_2 = 1'b0;
 reg aux_mux_3 = 1'b0;
 reg aux_mux_4 = 1'b0;
@@ -513,15 +508,10 @@ reg aux_mux_8 = 1'b0;
 reg aux_mux_9 = 1'b0;
 
 // Internal logic
-level6_ram_256x8 level6_ram_256x8_inst_1 (
+level6_ram_8x8 level6_ram_8x8_inst_1 (
     .address0(address0),
     .address1(address1),
     .address2(address2),
-    .address3(address3),
-    .address4(address4),
-    .address5(address5),
-    .address6(address6),
-    .address7(address7),
     .datain0(datain0),
     .datain1(datain1),
     .datain2(datain2),
@@ -532,21 +522,21 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     .datain7(datain7),
     .writeenable(memwrite),
     .clock(clock),
-    .dataout0(w_level6_ram_256x8_inst_1_dataout0),
-    .dataout1(w_level6_ram_256x8_inst_1_dataout1),
-    .dataout2(w_level6_ram_256x8_inst_1_dataout2),
-    .dataout3(w_level6_ram_256x8_inst_1_dataout3),
-    .dataout4(w_level6_ram_256x8_inst_1_dataout4),
-    .dataout5(w_level6_ram_256x8_inst_1_dataout5),
-    .dataout6(w_level6_ram_256x8_inst_1_dataout6),
-    .dataout7(w_level6_ram_256x8_inst_1_dataout7)
+    .dataout0(w_level6_ram_8x8_inst_1_dataout0),
+    .dataout1(w_level6_ram_8x8_inst_1_dataout1),
+    .dataout2(w_level6_ram_8x8_inst_1_dataout2),
+    .dataout3(w_level6_ram_8x8_inst_1_dataout3),
+    .dataout4(w_level6_ram_8x8_inst_1_dataout4),
+    .dataout5(w_level6_ram_8x8_inst_1_dataout5),
+    .dataout6(w_level6_ram_8x8_inst_1_dataout6),
+    .dataout7(w_level6_ram_8x8_inst_1_dataout7)
 );
     //Multiplexer
     always @(*)
     begin
         case({memread})
             1'd0: aux_mux_2 = result0;
-            1'd1: aux_mux_2 = w_level6_ram_256x8_inst_1_dataout0;
+            1'd1: aux_mux_2 = w_level6_ram_8x8_inst_1_dataout0;
             default: aux_mux_2 = 1'b0;
         endcase
     end
@@ -556,7 +546,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_3 = result1;
-            1'd1: aux_mux_3 = w_level6_ram_256x8_inst_1_dataout1;
+            1'd1: aux_mux_3 = w_level6_ram_8x8_inst_1_dataout1;
             default: aux_mux_3 = 1'b0;
         endcase
     end
@@ -566,7 +556,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_4 = result2;
-            1'd1: aux_mux_4 = w_level6_ram_256x8_inst_1_dataout2;
+            1'd1: aux_mux_4 = w_level6_ram_8x8_inst_1_dataout2;
             default: aux_mux_4 = 1'b0;
         endcase
     end
@@ -576,7 +566,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_5 = result3;
-            1'd1: aux_mux_5 = w_level6_ram_256x8_inst_1_dataout3;
+            1'd1: aux_mux_5 = w_level6_ram_8x8_inst_1_dataout3;
             default: aux_mux_5 = 1'b0;
         endcase
     end
@@ -586,7 +576,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_6 = result4;
-            1'd1: aux_mux_6 = w_level6_ram_256x8_inst_1_dataout4;
+            1'd1: aux_mux_6 = w_level6_ram_8x8_inst_1_dataout4;
             default: aux_mux_6 = 1'b0;
         endcase
     end
@@ -596,7 +586,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_7 = result5;
-            1'd1: aux_mux_7 = w_level6_ram_256x8_inst_1_dataout5;
+            1'd1: aux_mux_7 = w_level6_ram_8x8_inst_1_dataout5;
             default: aux_mux_7 = 1'b0;
         endcase
     end
@@ -606,7 +596,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_8 = result6;
-            1'd1: aux_mux_8 = w_level6_ram_256x8_inst_1_dataout6;
+            1'd1: aux_mux_8 = w_level6_ram_8x8_inst_1_dataout6;
             default: aux_mux_8 = 1'b0;
         endcase
     end
@@ -616,7 +606,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_9 = result7;
-            1'd1: aux_mux_9 = w_level6_ram_256x8_inst_1_dataout7;
+            1'd1: aux_mux_9 = w_level6_ram_8x8_inst_1_dataout7;
             default: aux_mux_9 = 1'b0;
         endcase
     end

@@ -26,7 +26,6 @@ struct CpuPC8bitFixture {
     InputSwitch *load = nullptr;
     InputSwitch *inc = nullptr;
     InputSwitch *reset = nullptr;
-    InputSwitch *writeEnable = nullptr;
     QVector<Led *> addressOutputs;
     Simulation *sim = nullptr;
 
@@ -61,10 +60,6 @@ struct CpuPC8bitFixture {
         builder.add(reset);
         reset->setLabel("Reset");
 
-        writeEnable = new InputSwitch();
-        builder.add(writeEnable);
-        writeEnable->setLabel("WriteEnable");
-
         for (int i = 0; i < 8; i++) {
             auto *addr = new Led();
             builder.add(addr);
@@ -79,7 +74,6 @@ struct CpuPC8bitFixture {
         builder.connect(load, 0, ic, "Load");
         builder.connect(inc, 0, ic, "Inc");
         builder.connect(reset, 0, ic, "Reset");
-        builder.connect(writeEnable, 0, ic, "WriteEnable");
 
         for (int i = 0; i < 8; i++) {
             builder.connect(ic, QString("Address[%1]").arg(i), addressOutputs[i], 0);
@@ -123,7 +117,6 @@ void TestLevel7CPUProgramCounter8Bit::testProgramCounter8Bit() {
     // Test 1: Load address 0x42
     setMultiBitInput(f.dataInputs, 0x42);
     f.load->setOn(true);
-    f.writeEnable->setOn(true);
     f.reset->setOn(false);
 
     f.sim->update();
@@ -155,6 +148,8 @@ void TestLevel7CPUProgramCounter8Bit::testProgramCounter8BitStructure() {
 
     QVERIFY(f.ic != nullptr);
 
-    QCOMPARE(f.ic->inputSize(), 13);
+    // Data[8] + Clock + Load + Inc + Reset (F26: the dangling WriteEnable
+    // input was removed — the level-6 PC derives write enable internally)
+    QCOMPARE(f.ic->inputSize(), 12);
     QCOMPARE(f.ic->outputSize(), 8);
 }

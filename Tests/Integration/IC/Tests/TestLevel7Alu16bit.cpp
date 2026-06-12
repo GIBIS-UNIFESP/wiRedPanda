@@ -102,6 +102,16 @@ void TestLevel7ALU16Bit::testALU16Bit_data()
     QTest::newRow("add_0x1000_0x2000") << 0x1000 << 0x2000 << 0 << 0x3000;
     QTest::newRow("add_0x0100_0x0200") << 0x0100 << 0x0200 << 0 << 0x0300;
 
+    // Cross-byte carry propagation (F26: the byte halves' carry chains are
+    // now connected, so a low-byte carry reaches the high byte)
+    QTest::newRow("add_carry_0x00FF_0x0001") << 0x00FF << 0x0001 << 0 << 0x0100;
+    QTest::newRow("add_carry_0x80FF_0x0101") << 0x80FF << 0x0101 << 0 << 0x8200;
+
+    // Cross-byte borrow propagation in SUB (A - B, two's complement)
+    QTest::newRow("sub_0x0300_0x0001") << 0x0300 << 0x0001 << 1 << 0x02FF;
+    QTest::newRow("sub_0x1234_0x0234") << 0x1234 << 0x0234 << 1 << 0x1000;
+    QTest::newRow("sub_same_is_zero") << 0x4242 << 0x4242 << 1 << 0x0000;
+
     QTest::newRow("and_0xFFFF_0x00FF") << 0xFFFF << 0x00FF << 2 << 0x00FF;
     QTest::newRow("and_0x1234_0x5678") << 0x1234 << 0x5678 << 2 << 0x1230;
 

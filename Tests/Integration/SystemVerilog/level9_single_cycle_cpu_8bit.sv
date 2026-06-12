@@ -886,6 +886,8 @@ module level6_alu_8bit (
     input b5,
     input b6,
     input b7,
+    input carryin,
+    input subcarryin,
     output result0,
     output result1,
     output zero,
@@ -894,6 +896,7 @@ module level6_alu_8bit (
     output result3,
     output carry,
     output result4,
+    output subcarryout,
     output result5,
     output result6,
     output result7
@@ -937,87 +940,79 @@ wire w_level4_ripple_alu_4bit_inst_2_result_or2;
 wire w_level4_ripple_alu_4bit_inst_2_result_or3;
 wire w_level4_ripple_alu_4bit_inst_2_carryout;
 wire w_level4_ripple_alu_4bit_inst_2_subcarryout;
+wire aux_xor_3;
+wire aux_xor_4;
 wire aux_xor_5;
 wire aux_xor_6;
 wire aux_xor_7;
 wire aux_xor_8;
 wire aux_xor_9;
 wire aux_xor_10;
-wire aux_xor_11;
-wire aux_xor_12;
+wire aux_not_11;
+wire aux_not_12;
 wire aux_not_13;
 wire aux_not_14;
 wire aux_not_15;
 wire aux_not_16;
 wire aux_not_17;
 wire aux_not_18;
-wire aux_not_19;
-wire aux_not_20;
 // IC instance: Selector5way[0] (level3_alu_selector_5way)
-wire w_level3_alu_selector_5way_inst_23_out;
+wire w_level3_alu_selector_5way_inst_21_out;
 // IC instance: Selector5way[1] (level3_alu_selector_5way)
-wire w_level3_alu_selector_5way_inst_24_out;
+wire w_level3_alu_selector_5way_inst_22_out;
 // IC instance: Selector5way[2] (level3_alu_selector_5way)
-wire w_level3_alu_selector_5way_inst_25_out;
+wire w_level3_alu_selector_5way_inst_23_out;
 // IC instance: Selector5way[3] (level3_alu_selector_5way)
-wire w_level3_alu_selector_5way_inst_26_out;
+wire w_level3_alu_selector_5way_inst_24_out;
 // IC instance: Selector5way[4] (level3_alu_selector_5way)
-wire w_level3_alu_selector_5way_inst_27_out;
+wire w_level3_alu_selector_5way_inst_25_out;
 // IC instance: Selector5way[5] (level3_alu_selector_5way)
-wire w_level3_alu_selector_5way_inst_28_out;
+wire w_level3_alu_selector_5way_inst_26_out;
 // IC instance: Selector5way[6] (level3_alu_selector_5way)
-wire w_level3_alu_selector_5way_inst_29_out;
+wire w_level3_alu_selector_5way_inst_27_out;
 // IC instance: Selector5way[7] (level3_alu_selector_5way)
-wire w_level3_alu_selector_5way_inst_30_out;
-reg aux_mux_31 = 1'b0;
-reg aux_mux_32 = 1'b0;
-reg aux_mux_33 = 1'b0;
-reg aux_mux_34 = 1'b0;
-reg aux_mux_35 = 1'b0;
-reg aux_mux_36 = 1'b0;
+wire w_level3_alu_selector_5way_inst_28_out;
+wire aux_not_29;
+wire aux_not_30;
+wire aux_and_31;
+wire aux_and_32;
+wire aux_and_33;
+wire aux_and_34;
+wire aux_and_35;
+wire aux_and_36;
 reg aux_mux_37 = 1'b0;
 reg aux_mux_38 = 1'b0;
-wire aux_not_39;
-wire aux_not_40;
-wire aux_and_41;
-wire aux_and_42;
-wire aux_and_43;
-wire aux_and_44;
-wire aux_and_45;
-wire aux_and_46;
+reg aux_mux_39 = 1'b0;
+wire aux_or_40;
+reg aux_mux_41 = 1'b0;
+reg aux_mux_42 = 1'b0;
+reg aux_mux_43 = 1'b0;
+wire aux_or_44;
+reg aux_mux_45 = 1'b0;
+reg aux_mux_46 = 1'b0;
 reg aux_mux_47 = 1'b0;
-reg aux_mux_48 = 1'b0;
+wire aux_or_48;
 reg aux_mux_49 = 1'b0;
-wire aux_or_50;
+reg aux_mux_50 = 1'b0;
 reg aux_mux_51 = 1'b0;
-reg aux_mux_52 = 1'b0;
+wire aux_or_52;
 reg aux_mux_53 = 1'b0;
-wire aux_or_54;
+reg aux_mux_54 = 1'b0;
 reg aux_mux_55 = 1'b0;
-reg aux_mux_56 = 1'b0;
+wire aux_or_56;
 reg aux_mux_57 = 1'b0;
-wire aux_or_58;
+reg aux_mux_58 = 1'b0;
 reg aux_mux_59 = 1'b0;
-reg aux_mux_60 = 1'b0;
+wire aux_or_60;
 reg aux_mux_61 = 1'b0;
-wire aux_or_62;
+reg aux_mux_62 = 1'b0;
 reg aux_mux_63 = 1'b0;
-reg aux_mux_64 = 1'b0;
+wire aux_or_64;
 reg aux_mux_65 = 1'b0;
-wire aux_or_66;
+reg aux_mux_66 = 1'b0;
 reg aux_mux_67 = 1'b0;
-reg aux_mux_68 = 1'b0;
-reg aux_mux_69 = 1'b0;
-wire aux_or_70;
-reg aux_mux_71 = 1'b0;
-reg aux_mux_72 = 1'b0;
-reg aux_mux_73 = 1'b0;
-wire aux_or_74;
-reg aux_mux_75 = 1'b0;
-reg aux_mux_76 = 1'b0;
-reg aux_mux_77 = 1'b0;
-wire aux_or_78;
-wire aux_nor_79;
+wire aux_or_68;
+wire aux_nor_69;
 
 // Internal logic
 level4_ripple_alu_4bit level4_ripple_alu_4bit_inst_1 (
@@ -1029,8 +1024,8 @@ level4_ripple_alu_4bit level4_ripple_alu_4bit_inst_1 (
     .b1(b1),
     .b2(b2),
     .b3(b3),
-    .carryin(1'b0),
-    .subcarryin(1'b1),
+    .carryin(carryin),
+    .subcarryin(subcarryin),
     .result_add0(w_level4_ripple_alu_4bit_inst_1_result_add0),
     .result_add1(w_level4_ripple_alu_4bit_inst_1_result_add1),
     .result_add2(w_level4_ripple_alu_4bit_inst_1_result_add2),
@@ -1080,27 +1075,49 @@ level4_ripple_alu_4bit level4_ripple_alu_4bit_inst_2 (
     .carryout(w_level4_ripple_alu_4bit_inst_2_carryout),
     .subcarryout(w_level4_ripple_alu_4bit_inst_2_subcarryout)
 );
-assign aux_xor_5 = (a0 ^ b0);
-assign aux_xor_6 = (a1 ^ b1);
-assign aux_xor_7 = (a2 ^ b2);
-assign aux_xor_8 = (a3 ^ b3);
-assign aux_xor_9 = (a4 ^ b4);
-assign aux_xor_10 = (a5 ^ b5);
-assign aux_xor_11 = (a6 ^ b6);
-assign aux_xor_12 = (a7 ^ b7);
-assign aux_not_13 = ~a0;
-assign aux_not_14 = ~a1;
-assign aux_not_15 = ~a2;
-assign aux_not_16 = ~a3;
-assign aux_not_17 = ~a4;
-assign aux_not_18 = ~a5;
-assign aux_not_19 = ~a6;
-assign aux_not_20 = ~a7;
-level3_alu_selector_5way level3_alu_selector_5way_inst_23 (
+assign aux_xor_3 = (a0 ^ b0);
+assign aux_xor_4 = (a1 ^ b1);
+assign aux_xor_5 = (a2 ^ b2);
+assign aux_xor_6 = (a3 ^ b3);
+assign aux_xor_7 = (a4 ^ b4);
+assign aux_xor_8 = (a5 ^ b5);
+assign aux_xor_9 = (a6 ^ b6);
+assign aux_xor_10 = (a7 ^ b7);
+assign aux_not_11 = ~a0;
+assign aux_not_12 = ~a1;
+assign aux_not_13 = ~a2;
+assign aux_not_14 = ~a3;
+assign aux_not_15 = ~a4;
+assign aux_not_16 = ~a5;
+assign aux_not_17 = ~a6;
+assign aux_not_18 = ~a7;
+level3_alu_selector_5way level3_alu_selector_5way_inst_21 (
     .result0(w_level4_ripple_alu_4bit_inst_1_result_add0),
     .result1(w_level4_ripple_alu_4bit_inst_1_result_sub0),
     .result2(w_level4_ripple_alu_4bit_inst_1_result_and0),
     .result3(w_level4_ripple_alu_4bit_inst_1_result_or0),
+    .result4(aux_xor_3),
+    .op0(opcode0),
+    .op1(opcode1),
+    .op2(opcode2),
+    .out(w_level3_alu_selector_5way_inst_21_out)
+);
+level3_alu_selector_5way level3_alu_selector_5way_inst_22 (
+    .result0(w_level4_ripple_alu_4bit_inst_1_result_add1),
+    .result1(w_level4_ripple_alu_4bit_inst_1_result_sub1),
+    .result2(w_level4_ripple_alu_4bit_inst_1_result_and1),
+    .result3(w_level4_ripple_alu_4bit_inst_1_result_or1),
+    .result4(aux_xor_4),
+    .op0(opcode0),
+    .op1(opcode1),
+    .op2(opcode2),
+    .out(w_level3_alu_selector_5way_inst_22_out)
+);
+level3_alu_selector_5way level3_alu_selector_5way_inst_23 (
+    .result0(w_level4_ripple_alu_4bit_inst_1_result_add2),
+    .result1(w_level4_ripple_alu_4bit_inst_1_result_sub2),
+    .result2(w_level4_ripple_alu_4bit_inst_1_result_and2),
+    .result3(w_level4_ripple_alu_4bit_inst_1_result_or2),
     .result4(aux_xor_5),
     .op0(opcode0),
     .op1(opcode1),
@@ -1108,10 +1125,10 @@ level3_alu_selector_5way level3_alu_selector_5way_inst_23 (
     .out(w_level3_alu_selector_5way_inst_23_out)
 );
 level3_alu_selector_5way level3_alu_selector_5way_inst_24 (
-    .result0(w_level4_ripple_alu_4bit_inst_1_result_add1),
-    .result1(w_level4_ripple_alu_4bit_inst_1_result_sub1),
-    .result2(w_level4_ripple_alu_4bit_inst_1_result_and1),
-    .result3(w_level4_ripple_alu_4bit_inst_1_result_or1),
+    .result0(w_level4_ripple_alu_4bit_inst_1_result_add3),
+    .result1(w_level4_ripple_alu_4bit_inst_1_result_sub3),
+    .result2(w_level4_ripple_alu_4bit_inst_1_result_and3),
+    .result3(w_level4_ripple_alu_4bit_inst_1_result_or3),
     .result4(aux_xor_6),
     .op0(opcode0),
     .op1(opcode1),
@@ -1119,10 +1136,10 @@ level3_alu_selector_5way level3_alu_selector_5way_inst_24 (
     .out(w_level3_alu_selector_5way_inst_24_out)
 );
 level3_alu_selector_5way level3_alu_selector_5way_inst_25 (
-    .result0(w_level4_ripple_alu_4bit_inst_1_result_add2),
-    .result1(w_level4_ripple_alu_4bit_inst_1_result_sub2),
-    .result2(w_level4_ripple_alu_4bit_inst_1_result_and2),
-    .result3(w_level4_ripple_alu_4bit_inst_1_result_or2),
+    .result0(w_level4_ripple_alu_4bit_inst_2_result_add0),
+    .result1(w_level4_ripple_alu_4bit_inst_2_result_sub0),
+    .result2(w_level4_ripple_alu_4bit_inst_2_result_and0),
+    .result3(w_level4_ripple_alu_4bit_inst_2_result_or0),
     .result4(aux_xor_7),
     .op0(opcode0),
     .op1(opcode1),
@@ -1130,10 +1147,10 @@ level3_alu_selector_5way level3_alu_selector_5way_inst_25 (
     .out(w_level3_alu_selector_5way_inst_25_out)
 );
 level3_alu_selector_5way level3_alu_selector_5way_inst_26 (
-    .result0(w_level4_ripple_alu_4bit_inst_1_result_add3),
-    .result1(w_level4_ripple_alu_4bit_inst_1_result_sub3),
-    .result2(w_level4_ripple_alu_4bit_inst_1_result_and3),
-    .result3(w_level4_ripple_alu_4bit_inst_1_result_or3),
+    .result0(w_level4_ripple_alu_4bit_inst_2_result_add1),
+    .result1(w_level4_ripple_alu_4bit_inst_2_result_sub1),
+    .result2(w_level4_ripple_alu_4bit_inst_2_result_and1),
+    .result3(w_level4_ripple_alu_4bit_inst_2_result_or1),
     .result4(aux_xor_8),
     .op0(opcode0),
     .op1(opcode1),
@@ -1141,10 +1158,10 @@ level3_alu_selector_5way level3_alu_selector_5way_inst_26 (
     .out(w_level3_alu_selector_5way_inst_26_out)
 );
 level3_alu_selector_5way level3_alu_selector_5way_inst_27 (
-    .result0(w_level4_ripple_alu_4bit_inst_2_result_add0),
-    .result1(w_level4_ripple_alu_4bit_inst_2_result_sub0),
-    .result2(w_level4_ripple_alu_4bit_inst_2_result_and0),
-    .result3(w_level4_ripple_alu_4bit_inst_2_result_or0),
+    .result0(w_level4_ripple_alu_4bit_inst_2_result_add2),
+    .result1(w_level4_ripple_alu_4bit_inst_2_result_sub2),
+    .result2(w_level4_ripple_alu_4bit_inst_2_result_and2),
+    .result3(w_level4_ripple_alu_4bit_inst_2_result_or2),
     .result4(aux_xor_9),
     .op0(opcode0),
     .op1(opcode1),
@@ -1152,104 +1169,30 @@ level3_alu_selector_5way level3_alu_selector_5way_inst_27 (
     .out(w_level3_alu_selector_5way_inst_27_out)
 );
 level3_alu_selector_5way level3_alu_selector_5way_inst_28 (
-    .result0(w_level4_ripple_alu_4bit_inst_2_result_add1),
-    .result1(w_level4_ripple_alu_4bit_inst_2_result_sub1),
-    .result2(w_level4_ripple_alu_4bit_inst_2_result_and1),
-    .result3(w_level4_ripple_alu_4bit_inst_2_result_or1),
+    .result0(w_level4_ripple_alu_4bit_inst_2_result_add3),
+    .result1(w_level4_ripple_alu_4bit_inst_2_result_sub3),
+    .result2(w_level4_ripple_alu_4bit_inst_2_result_and3),
+    .result3(w_level4_ripple_alu_4bit_inst_2_result_or3),
     .result4(aux_xor_10),
     .op0(opcode0),
     .op1(opcode1),
     .op2(opcode2),
     .out(w_level3_alu_selector_5way_inst_28_out)
 );
-level3_alu_selector_5way level3_alu_selector_5way_inst_29 (
-    .result0(w_level4_ripple_alu_4bit_inst_2_result_add2),
-    .result1(w_level4_ripple_alu_4bit_inst_2_result_sub2),
-    .result2(w_level4_ripple_alu_4bit_inst_2_result_and2),
-    .result3(w_level4_ripple_alu_4bit_inst_2_result_or2),
-    .result4(aux_xor_11),
-    .op0(opcode0),
-    .op1(opcode1),
-    .op2(opcode2),
-    .out(w_level3_alu_selector_5way_inst_29_out)
-);
-level3_alu_selector_5way level3_alu_selector_5way_inst_30 (
-    .result0(w_level4_ripple_alu_4bit_inst_2_result_add3),
-    .result1(w_level4_ripple_alu_4bit_inst_2_result_sub3),
-    .result2(w_level4_ripple_alu_4bit_inst_2_result_and3),
-    .result3(w_level4_ripple_alu_4bit_inst_2_result_or3),
-    .result4(aux_xor_12),
-    .op0(opcode0),
-    .op1(opcode1),
-    .op2(opcode2),
-    .out(w_level3_alu_selector_5way_inst_30_out)
-);
+assign aux_not_29 = ~opcode1;
+assign aux_not_30 = ~opcode0;
+assign aux_and_31 = (opcode2 & aux_not_29);
+assign aux_and_32 = (aux_and_31 & opcode0);
+assign aux_and_33 = (opcode2 & opcode1);
+assign aux_and_34 = (aux_and_33 & aux_not_30);
+assign aux_and_35 = (opcode2 & opcode1);
+assign aux_and_36 = (aux_and_35 & opcode0);
     //Multiplexer
     always @(*)
     begin
-        case({1'b0})
-            1'd0: aux_mux_31 = w_level3_alu_selector_5way_inst_23_out;
-            1'd1: aux_mux_31 = aux_not_13;
-            default: aux_mux_31 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({1'b0})
-            1'd0: aux_mux_32 = w_level3_alu_selector_5way_inst_24_out;
-            1'd1: aux_mux_32 = aux_not_14;
-            default: aux_mux_32 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({1'b0})
-            1'd0: aux_mux_33 = w_level3_alu_selector_5way_inst_25_out;
-            1'd1: aux_mux_33 = aux_not_15;
-            default: aux_mux_33 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({1'b0})
-            1'd0: aux_mux_34 = w_level3_alu_selector_5way_inst_26_out;
-            1'd1: aux_mux_34 = aux_not_16;
-            default: aux_mux_34 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({1'b0})
-            1'd0: aux_mux_35 = w_level3_alu_selector_5way_inst_27_out;
-            1'd1: aux_mux_35 = aux_not_17;
-            default: aux_mux_35 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({1'b0})
-            1'd0: aux_mux_36 = w_level3_alu_selector_5way_inst_28_out;
-            1'd1: aux_mux_36 = aux_not_18;
-            default: aux_mux_36 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({1'b0})
-            1'd0: aux_mux_37 = w_level3_alu_selector_5way_inst_29_out;
-            1'd1: aux_mux_37 = aux_not_19;
+        case({aux_and_32})
+            1'd0: aux_mux_37 = w_level3_alu_selector_5way_inst_21_out;
+            1'd1: aux_mux_37 = aux_not_11;
             default: aux_mux_37 = 1'b0;
         endcase
     end
@@ -1257,294 +1200,262 @@ level3_alu_selector_5way level3_alu_selector_5way_inst_30 (
     //Multiplexer
     always @(*)
     begin
-        case({1'b0})
-            1'd0: aux_mux_38 = w_level3_alu_selector_5way_inst_30_out;
-            1'd1: aux_mux_38 = aux_not_20;
+        case({aux_and_34})
+            1'd0: aux_mux_38 = a1;
+            1'd1: aux_mux_38 = 1'b0;
             default: aux_mux_38 = 1'b0;
         endcase
     end
     //End of Multiplexer
-assign aux_not_39 = ~opcode1;
-assign aux_not_40 = ~opcode0;
-assign aux_and_41 = (opcode2 & aux_not_39);
-assign aux_and_42 = (aux_and_41 & opcode0);
-assign aux_and_43 = (opcode2 & opcode1);
-assign aux_and_44 = (aux_and_43 & aux_not_40);
-assign aux_and_45 = (opcode2 & opcode1);
-assign aux_and_46 = (aux_and_45 & opcode0);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_42})
-            1'd0: aux_mux_47 = w_level3_alu_selector_5way_inst_23_out;
-            1'd1: aux_mux_47 = aux_not_13;
+        case({aux_or_40})
+            1'd0: aux_mux_39 = aux_mux_37;
+            1'd1: aux_mux_39 = aux_mux_38;
+            default: aux_mux_39 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+assign aux_or_40 = (aux_and_34 | aux_and_36);
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_and_32})
+            1'd0: aux_mux_41 = w_level3_alu_selector_5way_inst_22_out;
+            1'd1: aux_mux_41 = aux_not_12;
+            default: aux_mux_41 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_and_34})
+            1'd0: aux_mux_42 = a2;
+            1'd1: aux_mux_42 = a0;
+            default: aux_mux_42 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_44})
+            1'd0: aux_mux_43 = aux_mux_41;
+            1'd1: aux_mux_43 = aux_mux_42;
+            default: aux_mux_43 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+assign aux_or_44 = (aux_and_34 | aux_and_36);
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_and_32})
+            1'd0: aux_mux_45 = w_level3_alu_selector_5way_inst_23_out;
+            1'd1: aux_mux_45 = aux_not_13;
+            default: aux_mux_45 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_and_34})
+            1'd0: aux_mux_46 = a3;
+            1'd1: aux_mux_46 = a1;
+            default: aux_mux_46 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_48})
+            1'd0: aux_mux_47 = aux_mux_45;
+            1'd1: aux_mux_47 = aux_mux_46;
             default: aux_mux_47 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_or_48 = (aux_and_34 | aux_and_36);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_44})
-            1'd0: aux_mux_48 = a1;
-            1'd1: aux_mux_48 = 1'b0;
-            default: aux_mux_48 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_or_50})
-            1'd0: aux_mux_49 = aux_mux_47;
-            1'd1: aux_mux_49 = aux_mux_48;
+        case({aux_and_32})
+            1'd0: aux_mux_49 = w_level3_alu_selector_5way_inst_24_out;
+            1'd1: aux_mux_49 = aux_not_14;
             default: aux_mux_49 = 1'b0;
         endcase
     end
     //End of Multiplexer
-assign aux_or_50 = (aux_and_44 | aux_and_46);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_42})
-            1'd0: aux_mux_51 = w_level3_alu_selector_5way_inst_24_out;
-            1'd1: aux_mux_51 = aux_not_14;
+        case({aux_and_34})
+            1'd0: aux_mux_50 = a4;
+            1'd1: aux_mux_50 = a2;
+            default: aux_mux_50 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_52})
+            1'd0: aux_mux_51 = aux_mux_49;
+            1'd1: aux_mux_51 = aux_mux_50;
             default: aux_mux_51 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_or_52 = (aux_and_34 | aux_and_36);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_44})
-            1'd0: aux_mux_52 = a2;
-            1'd1: aux_mux_52 = a0;
-            default: aux_mux_52 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_or_54})
-            1'd0: aux_mux_53 = aux_mux_51;
-            1'd1: aux_mux_53 = aux_mux_52;
+        case({aux_and_32})
+            1'd0: aux_mux_53 = w_level3_alu_selector_5way_inst_25_out;
+            1'd1: aux_mux_53 = aux_not_15;
             default: aux_mux_53 = 1'b0;
         endcase
     end
     //End of Multiplexer
-assign aux_or_54 = (aux_and_44 | aux_and_46);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_42})
-            1'd0: aux_mux_55 = w_level3_alu_selector_5way_inst_25_out;
-            1'd1: aux_mux_55 = aux_not_15;
+        case({aux_and_34})
+            1'd0: aux_mux_54 = a5;
+            1'd1: aux_mux_54 = a3;
+            default: aux_mux_54 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_56})
+            1'd0: aux_mux_55 = aux_mux_53;
+            1'd1: aux_mux_55 = aux_mux_54;
             default: aux_mux_55 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_or_56 = (aux_and_34 | aux_and_36);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_44})
-            1'd0: aux_mux_56 = a3;
-            1'd1: aux_mux_56 = a1;
-            default: aux_mux_56 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_or_58})
-            1'd0: aux_mux_57 = aux_mux_55;
-            1'd1: aux_mux_57 = aux_mux_56;
+        case({aux_and_32})
+            1'd0: aux_mux_57 = w_level3_alu_selector_5way_inst_26_out;
+            1'd1: aux_mux_57 = aux_not_16;
             default: aux_mux_57 = 1'b0;
         endcase
     end
     //End of Multiplexer
-assign aux_or_58 = (aux_and_44 | aux_and_46);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_42})
-            1'd0: aux_mux_59 = w_level3_alu_selector_5way_inst_26_out;
-            1'd1: aux_mux_59 = aux_not_16;
+        case({aux_and_34})
+            1'd0: aux_mux_58 = a6;
+            1'd1: aux_mux_58 = a4;
+            default: aux_mux_58 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_60})
+            1'd0: aux_mux_59 = aux_mux_57;
+            1'd1: aux_mux_59 = aux_mux_58;
             default: aux_mux_59 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_or_60 = (aux_and_34 | aux_and_36);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_44})
-            1'd0: aux_mux_60 = a4;
-            1'd1: aux_mux_60 = a2;
-            default: aux_mux_60 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_or_62})
-            1'd0: aux_mux_61 = aux_mux_59;
-            1'd1: aux_mux_61 = aux_mux_60;
+        case({aux_and_32})
+            1'd0: aux_mux_61 = w_level3_alu_selector_5way_inst_27_out;
+            1'd1: aux_mux_61 = aux_not_17;
             default: aux_mux_61 = 1'b0;
         endcase
     end
     //End of Multiplexer
-assign aux_or_62 = (aux_and_44 | aux_and_46);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_42})
-            1'd0: aux_mux_63 = w_level3_alu_selector_5way_inst_27_out;
-            1'd1: aux_mux_63 = aux_not_17;
+        case({aux_and_34})
+            1'd0: aux_mux_62 = a7;
+            1'd1: aux_mux_62 = a5;
+            default: aux_mux_62 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_64})
+            1'd0: aux_mux_63 = aux_mux_61;
+            1'd1: aux_mux_63 = aux_mux_62;
             default: aux_mux_63 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_or_64 = (aux_and_34 | aux_and_36);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_44})
-            1'd0: aux_mux_64 = a5;
-            1'd1: aux_mux_64 = a3;
-            default: aux_mux_64 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_or_66})
-            1'd0: aux_mux_65 = aux_mux_63;
-            1'd1: aux_mux_65 = aux_mux_64;
+        case({aux_and_32})
+            1'd0: aux_mux_65 = w_level3_alu_selector_5way_inst_28_out;
+            1'd1: aux_mux_65 = aux_not_18;
             default: aux_mux_65 = 1'b0;
         endcase
     end
     //End of Multiplexer
-assign aux_or_66 = (aux_and_44 | aux_and_46);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_42})
-            1'd0: aux_mux_67 = w_level3_alu_selector_5way_inst_28_out;
-            1'd1: aux_mux_67 = aux_not_18;
+        case({aux_and_34})
+            1'd0: aux_mux_66 = 1'b0;
+            1'd1: aux_mux_66 = a6;
+            default: aux_mux_66 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_68})
+            1'd0: aux_mux_67 = aux_mux_65;
+            1'd1: aux_mux_67 = aux_mux_66;
             default: aux_mux_67 = 1'b0;
         endcase
     end
     //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_44})
-            1'd0: aux_mux_68 = a6;
-            1'd1: aux_mux_68 = a4;
-            default: aux_mux_68 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_or_70})
-            1'd0: aux_mux_69 = aux_mux_67;
-            1'd1: aux_mux_69 = aux_mux_68;
-            default: aux_mux_69 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-assign aux_or_70 = (aux_and_44 | aux_and_46);
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_42})
-            1'd0: aux_mux_71 = w_level3_alu_selector_5way_inst_29_out;
-            1'd1: aux_mux_71 = aux_not_19;
-            default: aux_mux_71 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_44})
-            1'd0: aux_mux_72 = a7;
-            1'd1: aux_mux_72 = a5;
-            default: aux_mux_72 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_or_74})
-            1'd0: aux_mux_73 = aux_mux_71;
-            1'd1: aux_mux_73 = aux_mux_72;
-            default: aux_mux_73 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-assign aux_or_74 = (aux_and_44 | aux_and_46);
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_42})
-            1'd0: aux_mux_75 = w_level3_alu_selector_5way_inst_30_out;
-            1'd1: aux_mux_75 = aux_not_20;
-            default: aux_mux_75 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_44})
-            1'd0: aux_mux_76 = 1'b0;
-            1'd1: aux_mux_76 = a6;
-            default: aux_mux_76 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_or_78})
-            1'd0: aux_mux_77 = aux_mux_75;
-            1'd1: aux_mux_77 = aux_mux_76;
-            default: aux_mux_77 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-assign aux_or_78 = (aux_and_44 | aux_and_46);
-assign aux_nor_79 = ~(w_level3_alu_selector_5way_inst_23_out | w_level3_alu_selector_5way_inst_24_out | w_level3_alu_selector_5way_inst_25_out | w_level3_alu_selector_5way_inst_26_out | w_level3_alu_selector_5way_inst_27_out | w_level3_alu_selector_5way_inst_28_out | w_level3_alu_selector_5way_inst_29_out | w_level3_alu_selector_5way_inst_30_out);
+assign aux_or_68 = (aux_and_34 | aux_and_36);
+assign aux_nor_69 = ~(aux_mux_39 | aux_mux_43 | aux_mux_47 | aux_mux_51 | aux_mux_55 | aux_mux_59 | aux_mux_63 | aux_mux_67);
 
-assign result0 = aux_mux_49;
-assign result1 = aux_mux_53;
-assign zero = aux_nor_79;
-assign result2 = aux_mux_57;
-assign negative = w_level3_alu_selector_5way_inst_30_out;
-assign result3 = aux_mux_61;
+assign result0 = aux_mux_39;
+assign result1 = aux_mux_43;
+assign zero = aux_nor_69;
+assign result2 = aux_mux_47;
+assign negative = aux_mux_67;
+assign result3 = aux_mux_51;
 assign carry = w_level4_ripple_alu_4bit_inst_2_carryout;
-assign result4 = aux_mux_65;
-assign result5 = aux_mux_69;
-assign result6 = aux_mux_73;
-assign result7 = aux_mux_77;
+assign result4 = aux_mux_55;
+assign subcarryout = w_level4_ripple_alu_4bit_inst_2_subcarryout;
+assign result5 = aux_mux_59;
+assign result6 = aux_mux_63;
+assign result7 = aux_mux_67;
 endmodule
 
-// Module for InstructionMemory (generated from level6_ram_256x8.panda)
-module level6_ram_256x8 (
+// Module for InstructionMemory (generated from level6_ram_8x8.panda)
+module level6_ram_8x8 (
     input address0,
     input address1,
     input address2,
-    input address3,
-    input address4,
-    input address5,
-    input address6,
-    input address7,
     input datain0,
     input datain1,
     input datain2,
@@ -3606,6 +3517,7 @@ wire w_level6_alu_8bit_inst_1_negative;
 wire w_level6_alu_8bit_inst_1_result3;
 wire w_level6_alu_8bit_inst_1_carry;
 wire w_level6_alu_8bit_inst_1_result4;
+wire w_level6_alu_8bit_inst_1_subcarryout;
 wire w_level6_alu_8bit_inst_1_result5;
 wire w_level6_alu_8bit_inst_1_result6;
 wire w_level6_alu_8bit_inst_1_result7;
@@ -3638,6 +3550,8 @@ level6_alu_8bit level6_alu_8bit_inst_1 (
     .b5(operandb5),
     .b6(operandb6),
     .b7(operandb7),
+    .carryin(1'b0),
+    .subcarryin(1'b1),
     .result0(w_level6_alu_8bit_inst_1_result0),
     .result1(w_level6_alu_8bit_inst_1_result1),
     .zero(w_level6_alu_8bit_inst_1_zero),
@@ -3646,6 +3560,7 @@ level6_alu_8bit level6_alu_8bit_inst_1 (
     .result3(w_level6_alu_8bit_inst_1_result3),
     .carry(w_level6_alu_8bit_inst_1_carry),
     .result4(w_level6_alu_8bit_inst_1_result4),
+    .subcarryout(w_level6_alu_8bit_inst_1_subcarryout),
     .result5(w_level6_alu_8bit_inst_1_result5),
     .result6(w_level6_alu_8bit_inst_1_result6),
     .result7(w_level6_alu_8bit_inst_1_result7)
@@ -3700,26 +3615,21 @@ module level7_instruction_memory_interface (
     output instruction7
 );
 
-// IC instance: InstructionMemory (level6_ram_256x8)
-wire w_level6_ram_256x8_inst_1_dataout0;
-wire w_level6_ram_256x8_inst_1_dataout1;
-wire w_level6_ram_256x8_inst_1_dataout2;
-wire w_level6_ram_256x8_inst_1_dataout3;
-wire w_level6_ram_256x8_inst_1_dataout4;
-wire w_level6_ram_256x8_inst_1_dataout5;
-wire w_level6_ram_256x8_inst_1_dataout6;
-wire w_level6_ram_256x8_inst_1_dataout7;
+// IC instance: InstructionMemory (level6_ram_8x8)
+wire w_level6_ram_8x8_inst_1_dataout0;
+wire w_level6_ram_8x8_inst_1_dataout1;
+wire w_level6_ram_8x8_inst_1_dataout2;
+wire w_level6_ram_8x8_inst_1_dataout3;
+wire w_level6_ram_8x8_inst_1_dataout4;
+wire w_level6_ram_8x8_inst_1_dataout5;
+wire w_level6_ram_8x8_inst_1_dataout6;
+wire w_level6_ram_8x8_inst_1_dataout7;
 
 // Internal logic
-level6_ram_256x8 level6_ram_256x8_inst_1 (
+level6_ram_8x8 level6_ram_8x8_inst_1 (
     .address0(address0),
     .address1(address1),
     .address2(address2),
-    .address3(address3),
-    .address4(address4),
-    .address5(address5),
-    .address6(address6),
-    .address7(address7),
     .datain0(datain0),
     .datain1(datain1),
     .datain2(datain2),
@@ -3730,24 +3640,24 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     .datain7(datain7),
     .writeenable(writeenable),
     .clock(clock),
-    .dataout0(w_level6_ram_256x8_inst_1_dataout0),
-    .dataout1(w_level6_ram_256x8_inst_1_dataout1),
-    .dataout2(w_level6_ram_256x8_inst_1_dataout2),
-    .dataout3(w_level6_ram_256x8_inst_1_dataout3),
-    .dataout4(w_level6_ram_256x8_inst_1_dataout4),
-    .dataout5(w_level6_ram_256x8_inst_1_dataout5),
-    .dataout6(w_level6_ram_256x8_inst_1_dataout6),
-    .dataout7(w_level6_ram_256x8_inst_1_dataout7)
+    .dataout0(w_level6_ram_8x8_inst_1_dataout0),
+    .dataout1(w_level6_ram_8x8_inst_1_dataout1),
+    .dataout2(w_level6_ram_8x8_inst_1_dataout2),
+    .dataout3(w_level6_ram_8x8_inst_1_dataout3),
+    .dataout4(w_level6_ram_8x8_inst_1_dataout4),
+    .dataout5(w_level6_ram_8x8_inst_1_dataout5),
+    .dataout6(w_level6_ram_8x8_inst_1_dataout6),
+    .dataout7(w_level6_ram_8x8_inst_1_dataout7)
 );
 
-assign instruction0 = w_level6_ram_256x8_inst_1_dataout0;
-assign instruction1 = w_level6_ram_256x8_inst_1_dataout1;
-assign instruction2 = w_level6_ram_256x8_inst_1_dataout2;
-assign instruction3 = w_level6_ram_256x8_inst_1_dataout3;
-assign instruction4 = w_level6_ram_256x8_inst_1_dataout4;
-assign instruction5 = w_level6_ram_256x8_inst_1_dataout5;
-assign instruction6 = w_level6_ram_256x8_inst_1_dataout6;
-assign instruction7 = w_level6_ram_256x8_inst_1_dataout7;
+assign instruction0 = w_level6_ram_8x8_inst_1_dataout0;
+assign instruction1 = w_level6_ram_8x8_inst_1_dataout1;
+assign instruction2 = w_level6_ram_8x8_inst_1_dataout2;
+assign instruction3 = w_level6_ram_8x8_inst_1_dataout3;
+assign instruction4 = w_level6_ram_8x8_inst_1_dataout4;
+assign instruction5 = w_level6_ram_8x8_inst_1_dataout5;
+assign instruction6 = w_level6_ram_8x8_inst_1_dataout6;
+assign instruction7 = w_level6_ram_8x8_inst_1_dataout7;
 endmodule
 
 // Module for InstrReg (generated from level7_instruction_register_8bit.panda)
@@ -3839,8 +3749,6 @@ module level8_decode_stage (
     input opcode2,
     input opcode3,
     input opcode4,
-    input clock,
-    input reset,
     output aluop0,
     output regwrite,
     output memread,
@@ -3879,7 +3787,6 @@ module level8_execute_stage (
     input operanda6,
     input operanda7,
     input aluop0,
-    input clock,
     input operandb0,
     input operandb1,
     input operandb2,
@@ -3889,7 +3796,6 @@ module level8_execute_stage (
     input operandb6,
     input operandb7,
     input aluop1,
-    input reset,
     input aluop2,
     output result0,
     output zero,
@@ -4000,15 +3906,15 @@ module level8_memory_stage (
     output dataout7
 );
 
-// IC instance: RAM (level6_ram_256x8)
-wire w_level6_ram_256x8_inst_1_dataout0;
-wire w_level6_ram_256x8_inst_1_dataout1;
-wire w_level6_ram_256x8_inst_1_dataout2;
-wire w_level6_ram_256x8_inst_1_dataout3;
-wire w_level6_ram_256x8_inst_1_dataout4;
-wire w_level6_ram_256x8_inst_1_dataout5;
-wire w_level6_ram_256x8_inst_1_dataout6;
-wire w_level6_ram_256x8_inst_1_dataout7;
+// IC instance: RAM (level6_ram_8x8)
+wire w_level6_ram_8x8_inst_1_dataout0;
+wire w_level6_ram_8x8_inst_1_dataout1;
+wire w_level6_ram_8x8_inst_1_dataout2;
+wire w_level6_ram_8x8_inst_1_dataout3;
+wire w_level6_ram_8x8_inst_1_dataout4;
+wire w_level6_ram_8x8_inst_1_dataout5;
+wire w_level6_ram_8x8_inst_1_dataout6;
+wire w_level6_ram_8x8_inst_1_dataout7;
 reg aux_mux_2 = 1'b0;
 reg aux_mux_3 = 1'b0;
 reg aux_mux_4 = 1'b0;
@@ -4019,15 +3925,10 @@ reg aux_mux_8 = 1'b0;
 reg aux_mux_9 = 1'b0;
 
 // Internal logic
-level6_ram_256x8 level6_ram_256x8_inst_1 (
+level6_ram_8x8 level6_ram_8x8_inst_1 (
     .address0(address0),
     .address1(address1),
     .address2(address2),
-    .address3(address3),
-    .address4(address4),
-    .address5(address5),
-    .address6(address6),
-    .address7(address7),
     .datain0(datain0),
     .datain1(datain1),
     .datain2(datain2),
@@ -4038,21 +3939,21 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     .datain7(datain7),
     .writeenable(memwrite),
     .clock(clock),
-    .dataout0(w_level6_ram_256x8_inst_1_dataout0),
-    .dataout1(w_level6_ram_256x8_inst_1_dataout1),
-    .dataout2(w_level6_ram_256x8_inst_1_dataout2),
-    .dataout3(w_level6_ram_256x8_inst_1_dataout3),
-    .dataout4(w_level6_ram_256x8_inst_1_dataout4),
-    .dataout5(w_level6_ram_256x8_inst_1_dataout5),
-    .dataout6(w_level6_ram_256x8_inst_1_dataout6),
-    .dataout7(w_level6_ram_256x8_inst_1_dataout7)
+    .dataout0(w_level6_ram_8x8_inst_1_dataout0),
+    .dataout1(w_level6_ram_8x8_inst_1_dataout1),
+    .dataout2(w_level6_ram_8x8_inst_1_dataout2),
+    .dataout3(w_level6_ram_8x8_inst_1_dataout3),
+    .dataout4(w_level6_ram_8x8_inst_1_dataout4),
+    .dataout5(w_level6_ram_8x8_inst_1_dataout5),
+    .dataout6(w_level6_ram_8x8_inst_1_dataout6),
+    .dataout7(w_level6_ram_8x8_inst_1_dataout7)
 );
     //Multiplexer
     always @(*)
     begin
         case({memread})
             1'd0: aux_mux_2 = result0;
-            1'd1: aux_mux_2 = w_level6_ram_256x8_inst_1_dataout0;
+            1'd1: aux_mux_2 = w_level6_ram_8x8_inst_1_dataout0;
             default: aux_mux_2 = 1'b0;
         endcase
     end
@@ -4062,7 +3963,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_3 = result1;
-            1'd1: aux_mux_3 = w_level6_ram_256x8_inst_1_dataout1;
+            1'd1: aux_mux_3 = w_level6_ram_8x8_inst_1_dataout1;
             default: aux_mux_3 = 1'b0;
         endcase
     end
@@ -4072,7 +3973,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_4 = result2;
-            1'd1: aux_mux_4 = w_level6_ram_256x8_inst_1_dataout2;
+            1'd1: aux_mux_4 = w_level6_ram_8x8_inst_1_dataout2;
             default: aux_mux_4 = 1'b0;
         endcase
     end
@@ -4082,7 +3983,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_5 = result3;
-            1'd1: aux_mux_5 = w_level6_ram_256x8_inst_1_dataout3;
+            1'd1: aux_mux_5 = w_level6_ram_8x8_inst_1_dataout3;
             default: aux_mux_5 = 1'b0;
         endcase
     end
@@ -4092,7 +3993,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_6 = result4;
-            1'd1: aux_mux_6 = w_level6_ram_256x8_inst_1_dataout4;
+            1'd1: aux_mux_6 = w_level6_ram_8x8_inst_1_dataout4;
             default: aux_mux_6 = 1'b0;
         endcase
     end
@@ -4102,7 +4003,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_7 = result5;
-            1'd1: aux_mux_7 = w_level6_ram_256x8_inst_1_dataout5;
+            1'd1: aux_mux_7 = w_level6_ram_8x8_inst_1_dataout5;
             default: aux_mux_7 = 1'b0;
         endcase
     end
@@ -4112,7 +4013,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_8 = result6;
-            1'd1: aux_mux_8 = w_level6_ram_256x8_inst_1_dataout6;
+            1'd1: aux_mux_8 = w_level6_ram_8x8_inst_1_dataout6;
             default: aux_mux_8 = 1'b0;
         endcase
     end
@@ -4122,7 +4023,7 @@ level6_ram_256x8 level6_ram_256x8_inst_1 (
     begin
         case({memread})
             1'd0: aux_mux_9 = result7;
-            1'd1: aux_mux_9 = w_level6_ram_256x8_inst_1_dataout7;
+            1'd1: aux_mux_9 = w_level6_ram_8x8_inst_1_dataout7;
             default: aux_mux_9 = 1'b0;
         endcase
     end
@@ -4189,9 +4090,8 @@ wire w_level6_ripple_adder_8bit_inst_2_sum5;
 wire w_level6_ripple_adder_8bit_inst_2_sum6;
 wire w_level6_ripple_adder_8bit_inst_2_sum7;
 wire w_level6_ripple_adder_8bit_inst_2_carryout;
-wire aux_not_4;
-wire aux_and_5;
-reg aux_mux_6 = 1'b0;
+wire aux_not_5;
+wire aux_and_6;
 reg aux_mux_7 = 1'b0;
 reg aux_mux_8 = 1'b0;
 reg aux_mux_9 = 1'b0;
@@ -4207,21 +4107,22 @@ reg aux_mux_18 = 1'b0;
 reg aux_mux_19 = 1'b0;
 reg aux_mux_20 = 1'b0;
 reg aux_mux_21 = 1'b0;
-wire aux_or_22;
+reg aux_mux_22 = 1'b0;
+wire aux_or_23;
 
 // Internal logic
 level6_register_8bit level6_register_8bit_inst_1 (
-    .data0(aux_mux_14),
+    .data0(aux_mux_15),
     .clock(clock),
-    .data1(aux_mux_15),
-    .writeenable(aux_or_22),
-    .data2(aux_mux_16),
+    .data1(aux_mux_16),
+    .writeenable(aux_or_23),
+    .data2(aux_mux_17),
     .reset(reset),
-    .data3(aux_mux_17),
-    .data4(aux_mux_18),
-    .data5(aux_mux_19),
-    .data6(aux_mux_20),
-    .data7(aux_mux_21),
+    .data3(aux_mux_18),
+    .data4(aux_mux_19),
+    .data5(aux_mux_20),
+    .data6(aux_mux_21),
+    .data7(aux_mux_22),
     .q0(w_level6_register_8bit_inst_1_q0),
     .q1(w_level6_register_8bit_inst_1_q1),
     .q2(w_level6_register_8bit_inst_1_q2),
@@ -4259,24 +4160,14 @@ level6_ripple_adder_8bit level6_ripple_adder_8bit_inst_2 (
     .sum7(w_level6_ripple_adder_8bit_inst_2_sum7),
     .carryout(w_level6_ripple_adder_8bit_inst_2_carryout)
 );
-assign aux_not_4 = ~load;
-assign aux_and_5 = (inc & aux_not_4);
+assign aux_not_5 = ~load;
+assign aux_and_6 = (inc & aux_not_5);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_6 = w_level6_register_8bit_inst_1_q0;
-            1'd1: aux_mux_6 = w_level6_ripple_adder_8bit_inst_2_sum0;
-            default: aux_mux_6 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_5})
-            1'd0: aux_mux_7 = w_level6_register_8bit_inst_1_q1;
-            1'd1: aux_mux_7 = w_level6_ripple_adder_8bit_inst_2_sum1;
+        case({aux_and_6})
+            1'd0: aux_mux_7 = w_level6_register_8bit_inst_1_q0;
+            1'd1: aux_mux_7 = w_level6_ripple_adder_8bit_inst_2_sum0;
             default: aux_mux_7 = 1'b0;
         endcase
     end
@@ -4284,9 +4175,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_8 = w_level6_register_8bit_inst_1_q2;
-            1'd1: aux_mux_8 = w_level6_ripple_adder_8bit_inst_2_sum2;
+        case({aux_and_6})
+            1'd0: aux_mux_8 = w_level6_register_8bit_inst_1_q1;
+            1'd1: aux_mux_8 = w_level6_ripple_adder_8bit_inst_2_sum1;
             default: aux_mux_8 = 1'b0;
         endcase
     end
@@ -4294,9 +4185,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_9 = w_level6_register_8bit_inst_1_q3;
-            1'd1: aux_mux_9 = w_level6_ripple_adder_8bit_inst_2_sum3;
+        case({aux_and_6})
+            1'd0: aux_mux_9 = w_level6_register_8bit_inst_1_q2;
+            1'd1: aux_mux_9 = w_level6_ripple_adder_8bit_inst_2_sum2;
             default: aux_mux_9 = 1'b0;
         endcase
     end
@@ -4304,9 +4195,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_10 = w_level6_register_8bit_inst_1_q4;
-            1'd1: aux_mux_10 = w_level6_ripple_adder_8bit_inst_2_sum4;
+        case({aux_and_6})
+            1'd0: aux_mux_10 = w_level6_register_8bit_inst_1_q3;
+            1'd1: aux_mux_10 = w_level6_ripple_adder_8bit_inst_2_sum3;
             default: aux_mux_10 = 1'b0;
         endcase
     end
@@ -4314,9 +4205,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_11 = w_level6_register_8bit_inst_1_q5;
-            1'd1: aux_mux_11 = w_level6_ripple_adder_8bit_inst_2_sum5;
+        case({aux_and_6})
+            1'd0: aux_mux_11 = w_level6_register_8bit_inst_1_q4;
+            1'd1: aux_mux_11 = w_level6_ripple_adder_8bit_inst_2_sum4;
             default: aux_mux_11 = 1'b0;
         endcase
     end
@@ -4324,9 +4215,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_12 = w_level6_register_8bit_inst_1_q6;
-            1'd1: aux_mux_12 = w_level6_ripple_adder_8bit_inst_2_sum6;
+        case({aux_and_6})
+            1'd0: aux_mux_12 = w_level6_register_8bit_inst_1_q5;
+            1'd1: aux_mux_12 = w_level6_ripple_adder_8bit_inst_2_sum5;
             default: aux_mux_12 = 1'b0;
         endcase
     end
@@ -4334,9 +4225,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_13 = w_level6_register_8bit_inst_1_q7;
-            1'd1: aux_mux_13 = w_level6_ripple_adder_8bit_inst_2_sum7;
+        case({aux_and_6})
+            1'd0: aux_mux_13 = w_level6_register_8bit_inst_1_q6;
+            1'd1: aux_mux_13 = w_level6_ripple_adder_8bit_inst_2_sum6;
             default: aux_mux_13 = 1'b0;
         endcase
     end
@@ -4344,9 +4235,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({load})
-            1'd0: aux_mux_14 = aux_mux_6;
-            1'd1: aux_mux_14 = loadvalue0;
+        case({aux_and_6})
+            1'd0: aux_mux_14 = w_level6_register_8bit_inst_1_q7;
+            1'd1: aux_mux_14 = w_level6_ripple_adder_8bit_inst_2_sum7;
             default: aux_mux_14 = 1'b0;
         endcase
     end
@@ -4356,7 +4247,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_15 = aux_mux_7;
-            1'd1: aux_mux_15 = loadvalue1;
+            1'd1: aux_mux_15 = loadvalue0;
             default: aux_mux_15 = 1'b0;
         endcase
     end
@@ -4366,7 +4257,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_16 = aux_mux_8;
-            1'd1: aux_mux_16 = loadvalue2;
+            1'd1: aux_mux_16 = loadvalue1;
             default: aux_mux_16 = 1'b0;
         endcase
     end
@@ -4376,7 +4267,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_17 = aux_mux_9;
-            1'd1: aux_mux_17 = loadvalue3;
+            1'd1: aux_mux_17 = loadvalue2;
             default: aux_mux_17 = 1'b0;
         endcase
     end
@@ -4386,7 +4277,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_18 = aux_mux_10;
-            1'd1: aux_mux_18 = loadvalue4;
+            1'd1: aux_mux_18 = loadvalue3;
             default: aux_mux_18 = 1'b0;
         endcase
     end
@@ -4396,7 +4287,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_19 = aux_mux_11;
-            1'd1: aux_mux_19 = loadvalue5;
+            1'd1: aux_mux_19 = loadvalue4;
             default: aux_mux_19 = 1'b0;
         endcase
     end
@@ -4406,7 +4297,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_20 = aux_mux_12;
-            1'd1: aux_mux_20 = loadvalue6;
+            1'd1: aux_mux_20 = loadvalue5;
             default: aux_mux_20 = 1'b0;
         endcase
     end
@@ -4416,12 +4307,22 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_21 = aux_mux_13;
-            1'd1: aux_mux_21 = loadvalue7;
+            1'd1: aux_mux_21 = loadvalue6;
             default: aux_mux_21 = 1'b0;
         endcase
     end
     //End of Multiplexer
-assign aux_or_22 = (load | inc);
+    //Multiplexer
+    always @(*)
+    begin
+        case({load})
+            1'd0: aux_mux_22 = aux_mux_14;
+            1'd1: aux_mux_22 = loadvalue7;
+            default: aux_mux_22 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+assign aux_or_23 = (load | inc);
 
 assign pc0 = w_level6_register_8bit_inst_1_q0;
 assign pc_plus_10 = w_level6_ripple_adder_8bit_inst_2_sum0;
@@ -4455,7 +4356,6 @@ module level7_cpu_program_counter_8bit (
     input load,
     input inc,
     input reset,
-    input writeenable,
     output address0,
     output address1,
     output address2,
@@ -4651,7 +4551,6 @@ level7_cpu_program_counter_8bit level7_cpu_program_counter_8bit_inst_1 (
     .load(pcload),
     .inc(pcinc),
     .reset(reset),
-    .writeenable(1'b1),
     .address0(w_level7_cpu_program_counter_8bit_inst_1_address0),
     .address1(w_level7_cpu_program_counter_8bit_inst_1_address1),
     .address2(w_level7_cpu_program_counter_8bit_inst_1_address2),
@@ -5007,8 +4906,6 @@ level8_decode_stage level8_decode_stage_inst_2 (
     .opcode2(w_level8_fetch_stage_inst_1_rawinstr5),
     .opcode3(w_level8_fetch_stage_inst_1_rawinstr6),
     .opcode4(w_level8_fetch_stage_inst_1_rawinstr7),
-    .clock(clock),
-    .reset(1'b0),
     .aluop0(w_level8_decode_stage_inst_2_aluop0),
     .regwrite(w_level8_decode_stage_inst_2_regwrite),
     .memread(w_level8_decode_stage_inst_2_memread),
@@ -5026,7 +4923,6 @@ level8_execute_stage level8_execute_stage_inst_3 (
     .operanda6(w_level6_register_file_8x8_inst_5_read_data16),
     .operanda7(w_level6_register_file_8x8_inst_5_read_data17),
     .aluop0(w_level8_decode_stage_inst_2_aluop0),
-    .clock(clock),
     .operandb0(w_level6_register_file_8x8_inst_5_read_data20),
     .operandb1(w_level6_register_file_8x8_inst_5_read_data21),
     .operandb2(w_level6_register_file_8x8_inst_5_read_data22),
@@ -5036,7 +4932,6 @@ level8_execute_stage level8_execute_stage_inst_3 (
     .operandb6(w_level6_register_file_8x8_inst_5_read_data26),
     .operandb7(w_level6_register_file_8x8_inst_5_read_data27),
     .aluop1(w_level8_decode_stage_inst_2_aluop1),
-    .reset(1'b0),
     .aluop2(w_level8_decode_stage_inst_2_aluop2),
     .result0(w_level8_execute_stage_inst_3_result0),
     .zero(w_level8_execute_stage_inst_3_zero),

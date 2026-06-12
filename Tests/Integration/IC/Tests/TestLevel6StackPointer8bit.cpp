@@ -25,7 +25,6 @@ struct StackPointer8bitFixture {
     InputSwitch *load = nullptr;
     InputSwitch *push = nullptr;
     InputSwitch *pop = nullptr;
-    InputSwitch *enable = nullptr;
     InputSwitch *loadVal[8] = {};
     Led *sp[8] = {};
     Simulation *sim = nullptr;
@@ -42,9 +41,8 @@ struct StackPointer8bitFixture {
         load = new InputSwitch();
         push = new InputSwitch();
         pop = new InputSwitch();
-        enable = new InputSwitch();
 
-        builder.add(clk, reset, load, push, pop, enable, ic);
+        builder.add(clk, reset, load, push, pop, ic);
 
         for (int i = 0; i < 8; ++i) {
             loadVal[i] = new InputSwitch();
@@ -57,7 +55,6 @@ struct StackPointer8bitFixture {
         builder.connect(load, 0, ic, "Load");
         builder.connect(push, 0, ic, "Push");
         builder.connect(pop, 0, ic, "Pop");
-        builder.connect(enable, 0, ic, "Enable");
 
         for (int i = 0; i < 8; ++i) {
             builder.connect(loadVal[i], 0, ic, QString("LoadValue[%1]").arg(i));
@@ -71,6 +68,18 @@ struct StackPointer8bitFixture {
 };
 
 static std::unique_ptr<StackPointer8bitFixture> s_level6StackPtr8bit;
+
+static int readSP()
+{
+    auto &f = *s_level6StackPtr8bit;
+    int value = 0;
+    for (int i = 0; i < 8; ++i) {
+        if (getInputStatus(f.sp[i])) {
+            value |= (1 << i);
+        }
+    }
+    return value;
+}
 
 void TestLevel6StackPointer8Bit::initTestCase()
 {
@@ -115,13 +124,11 @@ void TestLevel6StackPointer8Bit::testStackPointer()
     f.load->setOn(false);
     f.push->setOn(false);
     f.pop->setOn(false);
-    f.enable->setOn(false);
     f.sim->update();
 
     // Load phase
     f.reset->setOn(false);
     f.load->setOn(true);
-    f.enable->setOn(true);
 
     for (int i = 0; i < 8; ++i) {
         f.loadVal[i]->setOn((loadValue >> i) & 1);
@@ -131,12 +138,70 @@ void TestLevel6StackPointer8Bit::testStackPointer()
 
     clockCycle(f.sim, f.clk);
 
-    int readValue = 0;
-    for (int i = 0; i < 8; ++i) {
-        if (getInputStatus(f.sp[i])) {
-            readValue |= (1 << i);
-        }
-    }
+    QCOMPARE(readSP(), expectedValue);
+}
 
-    QCOMPARE(readValue, expectedValue);
+void TestLevel6StackPointer8Bit::testStackPointerPushPop()
+{
+    auto &f = *s_level6StackPtr8bit;
+
+    // Initialization: load 0x10 into SP
+    f.clk->setOn(false);
+    f.reset->setOn(false);
+    f.push->setOn(false);
+    f.pop->setOn(false);
+    f.load->setOn(true);
+    for (int i = 0; i < 8; ++i) {
+        f.loadVal[i]->setOn((0x10 >> i) & 1);
+    }
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0x10);
+
+    // Push decrements SP (stack grows down): 0x10 -> 0x0F -> 0x0E
+    f.load->setOn(false);
+    f.push->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0x0F);
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0x0E);
+
+    // Pop increments SP: 0x0E -> 0x0F
+    f.push->setOn(false);
+    f.pop->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0x0F);
+
+    // Hold: with no control active, SP keeps its value across clocks
+    f.pop->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0x0F);
+}
+
+void TestLevel6StackPointer8Bit::testStackPointerReset()
+{
+    auto &f = *s_level6StackPtr8bit;
+
+    // Load a known value first
+    f.clk->setOn(false);
+    f.reset->setOn(false);
+    f.push->setOn(false);
+    f.pop->setOn(false);
+    f.load->setOn(true);
+    for (int i = 0; i < 8; ++i) {
+        f.loadVal[i]->setOn((0x42 >> i) & 1);
+    }
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0x42);
+
+    // Reset has the highest priority (even with Load still asserted) and
+    // initializes the stack pointer to 0xFF (top of descending stack)
+    f.reset->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0xFF);
 }

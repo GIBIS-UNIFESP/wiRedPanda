@@ -323,16 +323,11 @@ level2_mux_8to1 level2_mux_8to1_inst_26 (
 assign dataout = w_level2_mux_8to1_inst_26_p_output;
 endmodule
 
-// Module for LEVEL6_RAM_256X8 (generated from level6_ram_256x8.panda)
-module level6_ram_256x8_ic (
+// Module for LEVEL6_RAM_8X8 (generated from level6_ram_8x8.panda)
+module level6_ram_8x8_ic (
     input address0,
     input address1,
     input address2,
-    input address3,
-    input address4,
-    input address5,
-    input address6,
-    input address7,
     input datain0,
     input datain1,
     input datain2,
@@ -454,7 +449,7 @@ assign dataout6 = w_level4_ram_8x1_inst_7_dataout;
 assign dataout7 = w_level4_ram_8x1_inst_8_dataout;
 endmodule
 
-module level6_ram_256x8 (
+module level6_ram_8x8 (
 /* ========= Inputs ========== */
 input input_switch1,
 input input_switch2,
@@ -469,71 +464,61 @@ input input_switch10,
 input input_switch11,
 input input_switch12,
 input input_switch13,
-input input_switch14,
-input input_switch15,
-input input_switch16,
-input input_switch17,
-input input_switch18,
 
 /* ========= Outputs ========== */
+output led15_1,
+output led16_1,
+output led17_1,
+output led18_1,
+output led19_1,
 output led20_1,
 output led21_1,
-output led22_1,
-output led23_1,
-output led24_1,
-output led25_1,
-output led26_1,
-output led27_1
+output led22_1
 );
 /* ====== Aux. Variables ====== */
-// IC instance: LEVEL6_RAM_256X8 (level6_ram_256x8_ic)
-wire w_level6_ram_256x8_ic_inst_1_dataout0;
-wire w_level6_ram_256x8_ic_inst_1_dataout1;
-wire w_level6_ram_256x8_ic_inst_1_dataout2;
-wire w_level6_ram_256x8_ic_inst_1_dataout3;
-wire w_level6_ram_256x8_ic_inst_1_dataout4;
-wire w_level6_ram_256x8_ic_inst_1_dataout5;
-wire w_level6_ram_256x8_ic_inst_1_dataout6;
-wire w_level6_ram_256x8_ic_inst_1_dataout7;
+// IC instance: LEVEL6_RAM_8X8 (level6_ram_8x8_ic)
+wire w_level6_ram_8x8_ic_inst_1_dataout0;
+wire w_level6_ram_8x8_ic_inst_1_dataout1;
+wire w_level6_ram_8x8_ic_inst_1_dataout2;
+wire w_level6_ram_8x8_ic_inst_1_dataout3;
+wire w_level6_ram_8x8_ic_inst_1_dataout4;
+wire w_level6_ram_8x8_ic_inst_1_dataout5;
+wire w_level6_ram_8x8_ic_inst_1_dataout6;
+wire w_level6_ram_8x8_ic_inst_1_dataout7;
 
 
 // Assigning aux variables. //
-level6_ram_256x8_ic level6_ram_256x8_ic_inst_1 (
+level6_ram_8x8_ic level6_ram_8x8_ic_inst_1 (
     .address0(input_switch1),
     .address1(input_switch2),
     .address2(input_switch3),
-    .address3(input_switch4),
-    .address4(input_switch5),
-    .address5(input_switch6),
-    .address6(input_switch7),
-    .address7(input_switch8),
-    .datain0(input_switch9),
-    .datain1(input_switch10),
-    .datain2(input_switch11),
-    .datain3(input_switch12),
-    .datain4(input_switch13),
-    .datain5(input_switch14),
-    .datain6(input_switch15),
-    .datain7(input_switch16),
-    .writeenable(input_switch17),
-    .clock(input_switch18),
-    .dataout0(w_level6_ram_256x8_ic_inst_1_dataout0),
-    .dataout1(w_level6_ram_256x8_ic_inst_1_dataout1),
-    .dataout2(w_level6_ram_256x8_ic_inst_1_dataout2),
-    .dataout3(w_level6_ram_256x8_ic_inst_1_dataout3),
-    .dataout4(w_level6_ram_256x8_ic_inst_1_dataout4),
-    .dataout5(w_level6_ram_256x8_ic_inst_1_dataout5),
-    .dataout6(w_level6_ram_256x8_ic_inst_1_dataout6),
-    .dataout7(w_level6_ram_256x8_ic_inst_1_dataout7)
+    .datain0(input_switch4),
+    .datain1(input_switch5),
+    .datain2(input_switch6),
+    .datain3(input_switch7),
+    .datain4(input_switch8),
+    .datain5(input_switch9),
+    .datain6(input_switch10),
+    .datain7(input_switch11),
+    .writeenable(input_switch12),
+    .clock(input_switch13),
+    .dataout0(w_level6_ram_8x8_ic_inst_1_dataout0),
+    .dataout1(w_level6_ram_8x8_ic_inst_1_dataout1),
+    .dataout2(w_level6_ram_8x8_ic_inst_1_dataout2),
+    .dataout3(w_level6_ram_8x8_ic_inst_1_dataout3),
+    .dataout4(w_level6_ram_8x8_ic_inst_1_dataout4),
+    .dataout5(w_level6_ram_8x8_ic_inst_1_dataout5),
+    .dataout6(w_level6_ram_8x8_ic_inst_1_dataout6),
+    .dataout7(w_level6_ram_8x8_ic_inst_1_dataout7)
 );
 
 // Writing output data. //
-assign led20_1 = w_level6_ram_256x8_ic_inst_1_dataout0;
-assign led21_1 = w_level6_ram_256x8_ic_inst_1_dataout1;
-assign led22_1 = w_level6_ram_256x8_ic_inst_1_dataout2;
-assign led23_1 = w_level6_ram_256x8_ic_inst_1_dataout3;
-assign led24_1 = w_level6_ram_256x8_ic_inst_1_dataout4;
-assign led25_1 = w_level6_ram_256x8_ic_inst_1_dataout5;
-assign led26_1 = w_level6_ram_256x8_ic_inst_1_dataout6;
-assign led27_1 = w_level6_ram_256x8_ic_inst_1_dataout7;
+assign led15_1 = w_level6_ram_8x8_ic_inst_1_dataout0;
+assign led16_1 = w_level6_ram_8x8_ic_inst_1_dataout1;
+assign led17_1 = w_level6_ram_8x8_ic_inst_1_dataout2;
+assign led18_1 = w_level6_ram_8x8_ic_inst_1_dataout3;
+assign led19_1 = w_level6_ram_8x8_ic_inst_1_dataout4;
+assign led20_1 = w_level6_ram_8x8_ic_inst_1_dataout5;
+assign led21_1 = w_level6_ram_8x8_ic_inst_1_dataout6;
+assign led22_1 = w_level6_ram_8x8_ic_inst_1_dataout7;
 endmodule

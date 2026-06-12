@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-class TestLevel6RAM256X8 : public QObject
+class TestLevel6RAM8X8 : public QObject
 {
     Q_OBJECT
 
@@ -14,8 +14,8 @@ private slots:
     void cleanupTestCase();
     void cleanup();
 
-    void testRAM256x8_data();
-    void testRAM256x8();
+    void testRAM8x8_data();
+    void testRAM8x8();
 
     void testRAMStructure();
 };
