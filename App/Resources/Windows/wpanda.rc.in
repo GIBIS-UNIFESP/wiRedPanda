@@ -1,12 +1,16 @@
 #include <windows.h>
 
-// Application icon
-IDI_APPLICATION ICON "../Assets/Logos/wpanda.ico"
+// Configured by CMake (see the WIN32 block in CMakeLists.txt) so the version
+// metadata always matches project(VERSION ...). Do not edit the generated
+// wpanda.rc in the build tree; edit this template.
+
+// Application icon (absolute path: the generated file lives in the build tree)
+IDI_APPLICATION ICON "@CMAKE_SOURCE_DIR@/App/Resources/Assets/Logos/wpanda.ico"
 
 // Version information
 1 VERSIONINFO
-FILEVERSION 4,3,0,0
-PRODUCTVERSION 4,3,0,0
+FILEVERSION @PROJECT_VERSION_MAJOR@,@PROJECT_VERSION_MINOR@,@PROJECT_VERSION_PATCH@,0
+PRODUCTVERSION @PROJECT_VERSION_MAJOR@,@PROJECT_VERSION_MINOR@,@PROJECT_VERSION_PATCH@,0
 FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 FILEFLAGS 0x0L
 FILEOS VOS_NT_WINDOWS32
@@ -19,12 +23,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "GIBIS-UNIFESP"
             VALUE "FileDescription", "wiRedPanda - Logic Circuit Simulator"
-            VALUE "FileVersion", "4.3.0.0"
+            VALUE "FileVersion", "@PROJECT_VERSION@.0"
             VALUE "InternalName", "wiredpanda"
             VALUE "LegalCopyright", "GIBIS-UNIFESP and the wiRedPanda contributors"
             VALUE "OriginalFilename", "wiredpanda.exe"
             VALUE "ProductName", "wiRedPanda - Logic Circuit Simulator"
-            VALUE "ProductVersion", "4.3.0.0"
+            VALUE "ProductVersion", "@PROJECT_VERSION@.0"
         END
     END
     BLOCK "VarFileInfo"

@@ -481,9 +481,18 @@ if(ENABLE_PCH)
     target_precompile_headers(wiredpanda REUSE_FROM wiredpanda_lib)
 endif()
 
+# Windows VERSIONINFO is configured from the template on every platform so
+# template breakage surfaces in any CI run, not just Windows builds. The
+# target's VERSION property does not emit VERSIONINFO — the .rc is what
+# Explorer, installers, and crash-report symbolication read.
+configure_file(
+    "${CMAKE_SOURCE_DIR}/App/Resources/Windows/wpanda.rc.in"
+    "${CMAKE_BINARY_DIR}/wpanda.rc"
+    @ONLY
+)
+
 if(WIN32)
     set(WINDOWS_APP_NAME "wiRedPanda - Logic Circuit Simulator")
-    set(RC_FILE "${CMAKE_SOURCE_DIR}/App/Resources/Windows/wpanda.rc")
 
     set_target_properties(wiredpanda PROPERTIES
         WIN32_EXECUTABLE ON
@@ -498,9 +507,7 @@ if(WIN32)
         PRODUCT_NAME "wiRedPanda - Logic Circuit Simulator"
     )
 
-    if(EXISTS ${RC_FILE})
-        target_sources(wiredpanda PRIVATE ${RC_FILE})
-    endif()
+    target_sources(wiredpanda PRIVATE "${CMAKE_BINARY_DIR}/wpanda.rc")
 endif()
 
 # ========= INSTALLATION =============================
