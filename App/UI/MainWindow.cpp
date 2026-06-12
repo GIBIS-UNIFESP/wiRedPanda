@@ -2009,7 +2009,14 @@ void MainWindow::removeICFile(const QString &icFileName)
 
     QList<QGraphicsItem *> toDelete;
     for (auto *element : m_currentTab->scene()->elements()) {
-        if (element->elementType() == ElementType::IC && element->label().append(".panda").toLower() == icFileName) {
+        if (element->elementType() != ElementType::IC) {
+            continue;
+        }
+        // Match by the IC's backing file, not by label (F43): the user can
+        // rename the label freely, which previously left renamed instances
+        // referencing a file that was about to be deleted.
+        const auto *ic = qobject_cast<IC *>(element);
+        if (ic && !ic->isEmbedded() && QFileInfo(ic->file()).fileName().toLower() == icFileName.toLower()) {
             toDelete.append(element);
         }
     }

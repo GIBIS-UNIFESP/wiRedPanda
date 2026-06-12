@@ -124,6 +124,9 @@ public:
     const QVector<GraphicElement *> elements() const;
     /// Returns all graphic elements within \a rect.
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
+    /// Returns all graphic elements without the topological sort — for hot
+    /// paths (key triggers, mute) that don't care about evaluation order.
+    const QVector<GraphicElement *> unsortedElements() const;
     /// Returns \a elements sorted in topological dependency order (inputs first).
     static QVector<GraphicElement *> sortByTopology(QVector<GraphicElement *> elements);
     /**
