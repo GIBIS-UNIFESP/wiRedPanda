@@ -365,6 +365,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     Comment::setVerbosity(-1);
     Application::interactiveMode = false;
+    Application::renderingEnabled = false;
     Application::migrationEnabled = false;
 
     g_fuzzer_argc = *argc;
