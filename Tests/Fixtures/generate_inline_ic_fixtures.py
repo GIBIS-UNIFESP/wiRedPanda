@@ -448,7 +448,7 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
         print(f"  FAIL instantiate chain_b inline: {ic_nand.message}")
         return False
     print(f"  Embedded NAND: blobName={ic_nand.result.get('blobName')}")
-    print(f"    (chain_b blob contains chain_c, recursively flattened)")
+    print("    (chain_b blob contains chain_c, recursively flattened)")
 
     # Create input switches and LED
     inp_a = await mcp.send_command("create_element", {

@@ -120,8 +120,9 @@ void TestElementFactory::testTextToType_data()
     QTest::newRow("Mux") << "Mux" << static_cast<int>(ElementType::Mux);
     QTest::newRow("Demux") << "Demux" << static_cast<int>(ElementType::Demux);
     QTest::newRow("Node") << "Node" << static_cast<int>(ElementType::Node);
-    // Invalid - keyToValue returns -1 for invalid keys
-    QTest::newRow("Invalid") << "NonexistentType" << -1;
+    // Invalid input maps to Unknown (F9) so callers' `== Unknown` checks
+    // catch it — keyToValue's raw -1 is not a valid ElementType.
+    QTest::newRow("Invalid") << "NonexistentType" << static_cast<int>(ElementType::Unknown);
 }
 
 void TestElementFactory::testTextToType()

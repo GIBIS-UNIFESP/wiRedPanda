@@ -51,6 +51,12 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
         return;
     }
 
+    // A successful, parseable reply IS the daily check — record it here, not
+    // when a dialog is shown: with no newer release (the common case) the
+    // date was never written and the API was hit on every launch. Network
+    // failures above intentionally don't record, so the check retries.
+    Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
+
     const QString tagName = doc.object().value("tag_name").toString();
     const QVersionNumber latest = QVersionNumber::fromString(tagName).normalized();
     if (latest.isNull() || latest <= AppVersion::current) {

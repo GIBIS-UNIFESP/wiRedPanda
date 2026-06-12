@@ -10,6 +10,7 @@
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Commands.h"
+#include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 
 ConnectionHandler::ConnectionHandler(MainWindow *mainWindow, MCPValidator *validator)
@@ -68,14 +69,28 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
         return createErrorResponse("Invalid port specification", requestId, JsonRpcError::PortNotFound);
     }
 
+    auto *startPort = dynamic_cast<QNEOutputPort *>(outputPort);
+    auto *endPort = dynamic_cast<QNEInputPort *>(inputPort);
+
+    // Enforce the same rules the UI applies on wire drop (F21): no duplicate
+    // connections, no second driver on an occupied input, no wires onto
+    // wireless Tx/Rx ports. Without this, MCP could build circuits the UI
+    // forbids (the simulator degrades them to Error status).
+    if (!ConnectionManager::isConnectionAllowed(startPort, endPort)) {
+        return createErrorResponse(QString("Connection from element %1 port %2 to element %3 port %4 is not allowed "
+                                           "(duplicate, occupied input, or wireless port)")
+                                       .arg(sourceElement->id()).arg(sourcePort).arg(targetElement->id()).arg(targetPort),
+                                   requestId, JsonRpcError::ValidationError);
+    }
+
     Scene *scene = getCurrentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
     auto *connection = new QNEConnection();
-    connection->setStartPort(dynamic_cast<QNEOutputPort *>(outputPort));
-    connection->setEndPort(dynamic_cast<QNEInputPort *>(inputPort));
+    connection->setStartPort(startPort);
+    connection->setEndPort(endPort);
     connection->updatePath();
 
     try {

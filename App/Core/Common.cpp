@@ -14,18 +14,15 @@ void Comment::setVerbosity(const int verbosity)
 {
     QString rules;
 
-    // Fall-through cascade: each case disables that level and all finer ones.
-    // verbosity=5 → nothing disabled (all categories active);
-    // verbosity=0 → all six categories disabled (silence everything);
-    // negative / default → also disables all (used for production builds).
-    switch (verbosity) {
-    default:                         [[fallthrough]];
-    case 0:  rules += "0 = false\n"; [[fallthrough]];
-    case 1:  rules += "1 = false\n"; [[fallthrough]];
-    case 2:  rules += "2 = false\n"; [[fallthrough]];
-    case 3:  rules += "3 = false\n"; [[fallthrough]];
-    case 4:  rules += "4 = false\n"; [[fallthrough]];
-    case 5:  rules += "5 = false\n";
+    // Category i carries detail level i (0 = coarsest). A given verbosity
+    // enables categories 0..verbosity-1; verbosity 5 means "everything"
+    // (category five included — the old fall-through cascade appended
+    // "5 = false" in every case, so category five was unreachable). Values
+    // above 5 behave like 5; negative / 0 (the production default) disable
+    // all output.
+    for (int i = 0; i <= 5; ++i) {
+        const bool enabled = (i < 5) ? (verbosity > i) : (verbosity >= 5);
+        rules += QString("%1 = %2\n").arg(i).arg(enabled ? "true" : "false");
     }
 
     QLoggingCategory::setFilterRules(rules);

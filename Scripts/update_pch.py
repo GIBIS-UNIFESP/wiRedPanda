@@ -150,7 +150,7 @@ def main():
     missing = all_includes - current_pch
     unused = current_pch - all_includes
 
-    print(f"\nQt includes analysis:")
+    print("\nQt includes analysis:")
     print(f"Total unique Qt includes used: {len(all_includes)}")
     print(f"Current PCH includes: {len(current_pch)}")
 
@@ -169,7 +169,7 @@ def main():
         return
 
     if update_pch_file(pch_path, all_includes):
-        print(f"\nPCH updated successfully.")
+        print("\nPCH updated successfully.")
         print(f"  Total includes: {len(all_includes)}")
         if missing:
             print(f"  Added: {len(missing)}")

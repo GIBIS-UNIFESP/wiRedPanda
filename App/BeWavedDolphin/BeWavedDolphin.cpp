@@ -927,9 +927,11 @@ void BewavedDolphin::on_actionAutoCrop_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Auto crop"));
-        // Crop (or extend) the simulation to exactly the full truth table size for the
-        // current number of input elements, then re-run to refresh output rows
-        setLength(static_cast<int>(std::pow(2, m_inputs.length())), true);
+        // Crop (or extend) the simulation to exactly the full truth table
+        // size. The table has one row per input *port* (m_inputPorts) — a
+        // multi-port input (rotary) contributes several — matching the
+        // combinational-mode sizing in on_actionCombinational_triggered.
+        setLength(static_cast<int>((std::min)(static_cast<double>(kMaxSimLength), std::pow(2, m_inputPorts))), true);
     });
 }
 

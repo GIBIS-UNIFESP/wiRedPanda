@@ -352,27 +352,35 @@ int main(int argc, char *argv[])
         const QString inputFile = args.empty() ? QString() : QDir::current().absoluteFilePath(args.at(0));
 
         if (const QString arduFile = parser.value(arduinoFileOption); !arduFile.isEmpty()) {
-            if (!inputFile.isEmpty()) {
-                Application::interactiveMode = false;
-                MainWindow window;
-                window.loadPandaFile(inputFile);
-                window.exportToArduino(arduFile);
+            if (inputFile.isEmpty()) {
+                QTextStream(stderr) << QCoreApplication::translate("main", "Error: no input circuit file given.") << '\n';
+                return 1;
             }
+            Application::interactiveMode = false;
+            MainWindow window;
+            window.loadPandaFile(inputFile);
+            window.exportToArduino(arduFile);
             return 0;
         }
 
         if (const QString wfFile = parser.value(waveformFileOption); !wfFile.isEmpty()) {
-            if (!inputFile.isEmpty()) {
-                Application::interactiveMode = false;
-                MainWindow window;
-                window.loadPandaFile(inputFile);
-                window.exportToWaveFormFile(wfFile);
+            if (inputFile.isEmpty()) {
+                QTextStream(stderr) << QCoreApplication::translate("main", "Error: no input circuit file given.") << '\n';
+                return 1;
             }
+            Application::interactiveMode = false;
+            MainWindow window;
+            window.loadPandaFile(inputFile);
+            window.exportToWaveFormFile(wfFile);
             return 0;
         }
 
         if (const bool isTerminal = parser.isSet(terminalFileOption); isTerminal) {
-            if (!inputFile.isEmpty()) {
+            if (inputFile.isEmpty()) {
+                QTextStream(stderr) << QCoreApplication::translate("main", "Error: no input circuit file given.") << '\n';
+                return 1;
+            }
+            {
                 Application::interactiveMode = false;
                 MainWindow window;
                 window.loadPandaFile(inputFile);

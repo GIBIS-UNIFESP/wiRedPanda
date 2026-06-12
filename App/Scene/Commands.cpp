@@ -820,7 +820,9 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
         return;
     }
 
-    setText(tr("Flip %1 elements in axis %2").arg(items.size(), axis));
+    // Chained .arg: the single-call (value, fieldWidth) overload never
+    // substituted %2.
+    setText(tr("Flip %1 elements in axis %2").arg(items.size()).arg(axis));
     m_positions.reserve(items.size());
 
     // Compute the bounding box of all selected elements so redo() can mirror

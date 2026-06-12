@@ -557,16 +557,14 @@ void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &down
         Settings::setUpdateCheckSkippedVersion(latestVersion);
     }
 
+    // The check date is recorded by UpdateChecker::onReplyFinished — the
+    // single writer — so no dialog outcome needs to touch it here.
     if (accepted) {
         if (hasDirectDownload) {
             downloadUpdate(latestVersion, downloadUrl);
         } else {
             QDesktopServices::openUrl(releaseUrl);
-            Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
         }
-    } else {
-        /// User closed dialog without taking action — still record the check
-        Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
     }
 }
 
@@ -616,7 +614,6 @@ void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
         file.close();
         reply->deleteLater();
 
-        Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
         QMessageBox::information(this, tr("Download Complete"),
             tr("wiRedPanda has been downloaded to:\n%1").arg(savePath));
     });

@@ -535,7 +535,7 @@ def main():
                 print(f"Fixed: {filepath.relative_to(root)}")
             processed_count += 1
 
-    print(f"\n--- Summary ---")
+    print("\n--- Summary ---")
     print(f"Files checked:    {len(cpp_files)}")
     print(f"Files processed:  {processed_count}")
 

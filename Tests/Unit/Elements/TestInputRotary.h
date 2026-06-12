@@ -47,4 +47,7 @@ private slots:
 
     // Basic InputRotary test (migrated from testelements)
     void testInputRotary();
+
+    // Regression: F13 — negative positions (from file) clamp to port 0
+    void testSetOnNegativePortClamps();
 };
