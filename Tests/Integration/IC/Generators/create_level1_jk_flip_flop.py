@@ -50,7 +50,6 @@ Usage:
 """
 
 import asyncio
-import sys
 
 from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import (
@@ -64,10 +63,7 @@ class JKFlipFlopBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the JK Flip-Flop IC"""
-        self.error_context.set_context("JK Flip-Flop")
-        await self.log("🔧 Creating JKFlipFlop IC...")
-        self.element_count = 0
-        self.connection_count = 0
+        await self.begin_build("JK Flip-Flop")
 
         # Create new circuit
         if not await self.create_new_circuit():
@@ -91,739 +87,287 @@ class JKFlipFlopBuilder(ICBuilderBase):
         clear_y = preset_y + VERTICAL_STAGE_SPACING  # Fifth row for Clear input
 
         # Create input switches for J, K, Clock, Preset, and Clear
-        input_j_response = await self.mcp.send_command("create_element", {
-            "type": "InputSwitch",
-            "x": input_x,
-            "y": row1_y,
-            "label": "J"
-        })
-        if not input_j_response or not input_j_response.success:
-            print("❌ Failed to create input J")
+        input_j_id = await self.create_element("InputSwitch", input_x, row1_y, "J")
+        if input_j_id is None:
             return False
-        input_j_id = input_j_response.result.get('element_id') if input_j_response.result else None
-        self.element_count += 1
         await self.log(f"  ✓ Created input J (id={input_j_id})")
 
-        input_k_response = await self.mcp.send_command("create_element", {
-            "type": "InputSwitch",
-            "x": input_x,
-            "y": row2_y,
-            "label": "K"
-        })
-        if not input_k_response or not input_k_response.success:
-            print("❌ Failed to create input K")
+        input_k_id = await self.create_element("InputSwitch", input_x, row2_y, "K")
+        if input_k_id is None:
             return False
-        input_k_id = input_k_response.result.get('element_id') if input_k_response.result else None
-        self.element_count += 1
         await self.log(f"  ✓ Created input K (id={input_k_id})")
 
-        input_clk_response = await self.mcp.send_command("create_element", {
-            "type": "InputSwitch",
-            "x": input_x,
-            "y": clock_y,
-            "label": "Clock"
-        })
-        if not input_clk_response or not input_clk_response.success:
-            print("❌ Failed to create input Clock")
+        input_clk_id = await self.create_element("InputSwitch", input_x, clock_y, "Clock")
+        if input_clk_id is None:
             return False
-        input_clk_id = input_clk_response.result.get('element_id') if input_clk_response.result else None
-        self.element_count += 1
         await self.log(f"  ✓ Created input Clock (id={input_clk_id})")
 
         # Create PRESET input (active LOW)
-        input_preset_response = await self.mcp.send_command("create_element", {
-            "type": "InputSwitch",
-            "x": input_x,
-            "y": preset_y,
-            "label": "Preset"
-        })
-        if not input_preset_response or not input_preset_response.success:
-            print("❌ Failed to create input Preset")
+        input_preset_id = await self.create_element("InputSwitch", input_x, preset_y, "Preset")
+        if input_preset_id is None:
             return False
-        input_preset_id = input_preset_response.result.get('element_id') if input_preset_response.result else None
-        self.element_count += 1
         await self.log(f"  ✓ Created input Preset (id={input_preset_id})")
 
         # Create CLEAR input (active LOW)
-        input_clear_response = await self.mcp.send_command("create_element", {
-            "type": "InputSwitch",
-            "x": input_x,
-            "y": clear_y,
-            "label": "Clear"
-        })
-        if not input_clear_response or not input_clear_response.success:
-            print("❌ Failed to create input Clear")
+        input_clear_id = await self.create_element("InputSwitch", input_x, clear_y, "Clear")
+        if input_clear_id is None:
             return False
-        input_clear_id = input_clear_response.result.get('element_id') if input_clear_response.result else None
-        self.element_count += 1
         await self.log(f"  ✓ Created input Clear (id={input_clear_id})")
 
         # Create NOT gate for clock inversion
-        not_clk_response = await self.mcp.send_command("create_element", {
-            "type": "Not",
-            "x": not_clk_x,
-            "y": clock_y,
-            "label": "not_clk"
-        })
-        if not not_clk_response or not not_clk_response.success:
-            print("❌ Failed to create NOT Clock gate")
+        not_clk_id = await self.create_element("Not", not_clk_x, clock_y, "not_clk")
+        if not_clk_id is None:
             return False
-        not_clk_id = not_clk_response.result.get('element_id') if not_clk_response.result else None
-        self.element_count += 1
         await self.log(f"  ✓ Created NOT Clock gate (id={not_clk_id})")
 
         # ========== Preset/Clear Control Logic ==========
 
         # NOT gate to invert Preset
-        not_preset_response = await self.mcp.send_command("create_element", {
-            "type": "Not",
-            "x": not_clk_x,
-            "y": preset_y,
-            "label": "not_preset"
-        })
-        if not not_preset_response or not not_preset_response.success:
-            print("❌ Failed to create NOT Preset gate")
+        not_preset_id = await self.create_element("Not", not_clk_x, preset_y, "not_preset")
+        if not_preset_id is None:
             return False
-        not_preset_id = not_preset_response.result.get('element_id') if not_preset_response.result else None
-        self.element_count += 1
 
         # NOT gate to invert Clear
-        not_clear_response = await self.mcp.send_command("create_element", {
-            "type": "Not",
-            "x": not_clk_x,
-            "y": clear_y,
-            "label": "not_clear"
-        })
-        if not not_clear_response or not not_clear_response.success:
-            print("❌ Failed to create NOT Clear gate")
+        not_clear_id = await self.create_element("Not", not_clk_x, clear_y, "not_clear")
+        if not_clear_id is None:
             return False
-        not_clear_id = not_clear_response.result.get('element_id') if not_clear_response.result else None
-        self.element_count += 1
 
         # OR gate for S (slave_gate_r OR NOT(clear))
         # When Clear=0: NOT(0)=1 -> OR forces slave NOR Q input high -> Q=0
-        or_s_response = await self.mcp.send_command("create_element", {
-            "type": "Or",
-            "x": slave_gate_x + (HORIZONTAL_GATE_SPACING / 2),
-            "y": row1_y + (VERTICAL_STAGE_SPACING * 2),
-            "label": "or_s"
-        })
-        if not or_s_response or not or_s_response.success:
-            print("❌ Failed to create OR S gate")
+        or_s_id = await self.create_element(
+            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 2), "or_s")
+        if or_s_id is None:
             return False
-        or_s_id = or_s_response.result.get('element_id') if or_s_response.result else None
-        self.element_count += 1
 
         # OR gate for R (slave_gate_s OR NOT(preset))
         # When Preset=0: NOT(0)=1 -> OR forces slave NOR Q_bar input high -> Q_bar=0 -> Q=1
-        or_r_response = await self.mcp.send_command("create_element", {
-            "type": "Or",
-            "x": slave_gate_x + (HORIZONTAL_GATE_SPACING / 2),
-            "y": row1_y + (VERTICAL_STAGE_SPACING * 3),
-            "label": "or_r"
-        })
-        if not or_r_response or not or_r_response.success:
-            print("❌ Failed to create OR R gate")
+        or_r_id = await self.create_element(
+            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 3), "or_r")
+        if or_r_id is None:
             return False
-        or_r_id = or_r_response.result.get('element_id') if or_r_response.result else None
-        self.element_count += 1
 
         # Master-side injection (F56-consistent): force BOTH latches on
         # Preset/Clear so async controls work under any clock level.
-        master_or_s_response = await self.mcp.send_command("create_element", {
-            "type": "Or",
-            "x": master_gate_x + (HORIZONTAL_GATE_SPACING / 2),
-            "y": row1_y + (VERTICAL_STAGE_SPACING * 2),
-            "label": "master_or_s"
-        })
-        if not master_or_s_response or not master_or_s_response.success:
-            print("❌ Failed to create master OR S gate")
+        master_or_s_id = await self.create_element(
+            "Or", master_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 2), "master_or_s")
+        if master_or_s_id is None:
             return False
-        master_or_s_id = master_or_s_response.result.get('element_id') if master_or_s_response.result else None
-        self.element_count += 1
 
-        master_or_r_response = await self.mcp.send_command("create_element", {
-            "type": "Or",
-            "x": master_gate_x + (HORIZONTAL_GATE_SPACING / 2),
-            "y": row1_y + (VERTICAL_STAGE_SPACING * 3),
-            "label": "master_or_r"
-        })
-        if not master_or_r_response or not master_or_r_response.success:
-            print("❌ Failed to create master OR R gate")
+        master_or_r_id = await self.create_element(
+            "Or", master_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 3), "master_or_r")
+        if master_or_r_id is None:
             return False
-        master_or_r_id = master_or_r_response.result.get('element_id') if master_or_r_response.result else None
-        self.element_count += 1
 
         # Connect Preset to NOT gate
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_preset_id,
-            "source_port": 0,
-            "target_id": not_preset_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect Preset to NOT gate")
+        if not await self.connect(input_preset_id, not_preset_id):
             return False
-        self.connection_count += 1
 
         # Connect Clear to NOT gate
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_clear_id,
-            "source_port": 0,
-            "target_id": not_clear_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect Clear to NOT gate")
+        if not await self.connect(input_clear_id, not_clear_id):
             return False
-        self.connection_count += 1
 
         # ========== Master Stage - Feedback Logic ==========
 
         # AND gate: J AND Q_bar (for setting via feedback) - will be connected later
-        master_and_s_response = await self.mcp.send_command("create_element", {
-            "type": "And",
-            "x": master_and_x,
-            "y": row1_y,
-            "label": "master_and_s"
-        })
-        if not master_and_s_response or not master_and_s_response.success:
-            print("❌ Failed to create master AND S gate")
+        master_and_s_id = await self.create_element("And", master_and_x, row1_y, "master_and_s")
+        if master_and_s_id is None:
             return False
-        master_and_s_id = master_and_s_response.result.get('element_id') if master_and_s_response.result else None
-        self.element_count += 1
 
         # AND gate: K AND Q (for resetting via feedback) - will be connected later
-        master_and_r_response = await self.mcp.send_command("create_element", {
-            "type": "And",
-            "x": master_and_x,
-            "y": row2_y,
-            "label": "master_and_r"
-        })
-        if not master_and_r_response or not master_and_r_response.success:
-            print("❌ Failed to create master AND R gate")
+        master_and_r_id = await self.create_element("And", master_and_x, row2_y, "master_and_r")
+        if master_and_r_id is None:
             return False
-        master_and_r_id = master_and_r_response.result.get('element_id') if master_and_r_response.result else None
-        self.element_count += 1
 
         # AND gates for clock gating
-        master_gate_s_response = await self.mcp.send_command("create_element", {
-            "type": "And",
-            "x": master_gate_x,
-            "y": row1_y,
-            "label": "master_gate_s"
-        })
-        if not master_gate_s_response or not master_gate_s_response.success:
-            print("❌ Failed to create master gate S")
+        master_gate_s_id = await self.create_element("And", master_gate_x, row1_y, "master_gate_s")
+        if master_gate_s_id is None:
             return False
-        master_gate_s_id = master_gate_s_response.result.get('element_id') if master_gate_s_response.result else None
-        self.element_count += 1
 
-        master_gate_r_response = await self.mcp.send_command("create_element", {
-            "type": "And",
-            "x": master_gate_x,
-            "y": row2_y,
-            "label": "master_gate_r"
-        })
-        if not master_gate_r_response or not master_gate_r_response.success:
-            print("❌ Failed to create master gate R")
+        master_gate_r_id = await self.create_element("And", master_gate_x, row2_y, "master_gate_r")
+        if master_gate_r_id is None:
             return False
-        master_gate_r_id = master_gate_r_response.result.get('element_id') if master_gate_r_response.result else None
-        self.element_count += 1
 
         # Master SR Latch NOR gates
-        master_nor_q_response = await self.mcp.send_command("create_element", {
-            "type": "Nor",
-            "x": master_nor_x,
-            "y": row1_y,
-            "label": "master_nor_q"
-        })
-        if not master_nor_q_response or not master_nor_q_response.success:
-            print("❌ Failed to create master NOR Q")
+        master_nor_q_id = await self.create_element("Nor", master_nor_x, row1_y, "master_nor_q")
+        if master_nor_q_id is None:
             return False
-        master_nor_q_id = master_nor_q_response.result.get('element_id') if master_nor_q_response.result else None
-        self.element_count += 1
 
-        master_nor_qbar_response = await self.mcp.send_command("create_element", {
-            "type": "Nor",
-            "x": master_nor_x,
-            "y": row2_y,
-            "label": "master_nor_qbar"
-        })
-        if not master_nor_qbar_response or not master_nor_qbar_response.success:
-            print("❌ Failed to create master NOR Q_bar")
+        master_nor_qbar_id = await self.create_element("Nor", master_nor_x, row2_y, "master_nor_qbar")
+        if master_nor_qbar_id is None:
             return False
-        master_nor_qbar_id = master_nor_qbar_response.result.get('element_id') if master_nor_qbar_response.result else None
-        self.element_count += 1
 
         # ========== Slave Stage ==========
         # (F55: the old slave_and_s/slave_and_r J/K-gated transfer gates are
         # gone — a textbook slave just transfers the master state.)
 
         # Slave gate AND gates
-        slave_gate_s_response = await self.mcp.send_command("create_element", {
-            "type": "And",
-            "x": slave_gate_x,
-            "y": row1_y,
-            "label": "slave_gate_s"
-        })
-        if not slave_gate_s_response or not slave_gate_s_response.success:
-            print("❌ Failed to create slave gate S")
+        slave_gate_s_id = await self.create_element("And", slave_gate_x, row1_y, "slave_gate_s")
+        if slave_gate_s_id is None:
             return False
-        slave_gate_s_id = slave_gate_s_response.result.get('element_id') if slave_gate_s_response.result else None
-        self.element_count += 1
 
-        slave_gate_r_response = await self.mcp.send_command("create_element", {
-            "type": "And",
-            "x": slave_gate_x,
-            "y": row2_y,
-            "label": "slave_gate_r"
-        })
-        if not slave_gate_r_response or not slave_gate_r_response.success:
-            print("❌ Failed to create slave gate R")
+        slave_gate_r_id = await self.create_element("And", slave_gate_x, row2_y, "slave_gate_r")
+        if slave_gate_r_id is None:
             return False
-        slave_gate_r_id = slave_gate_r_response.result.get('element_id') if slave_gate_r_response.result else None
-        self.element_count += 1
 
         # Slave SR Latch NOR gates
-        slave_nor_q_response = await self.mcp.send_command("create_element", {
-            "type": "Nor",
-            "x": slave_nor_x,
-            "y": row1_y,
-            "label": "slave_nor_q"
-        })
-        if not slave_nor_q_response or not slave_nor_q_response.success:
-            print("❌ Failed to create slave NOR Q")
+        slave_nor_q_id = await self.create_element("Nor", slave_nor_x, row1_y, "slave_nor_q")
+        if slave_nor_q_id is None:
             return False
-        slave_nor_q_id = slave_nor_q_response.result.get('element_id') if slave_nor_q_response.result else None
-        self.element_count += 1
 
-        slave_nor_qbar_response = await self.mcp.send_command("create_element", {
-            "type": "Nor",
-            "x": slave_nor_x,
-            "y": row2_y,
-            "label": "slave_nor_qbar"
-        })
-        if not slave_nor_qbar_response or not slave_nor_qbar_response.success:
-            print("❌ Failed to create slave NOR Q_bar")
+        slave_nor_qbar_id = await self.create_element("Nor", slave_nor_x, row2_y, "slave_nor_qbar")
+        if slave_nor_qbar_id is None:
             return False
-        slave_nor_qbar_id = slave_nor_qbar_response.result.get('element_id') if slave_nor_qbar_response.result else None
-        self.element_count += 1
 
         # Create output LEDs
-        q_response = await self.mcp.send_command("create_element", {
-            "type": "Led",
-            "x": output_x,
-            "y": row1_y,
-            "label": "Q"
-        })
-        if not q_response or not q_response.success:
-            print("❌ Failed to create Q LED")
+        q_id = await self.create_element("Led", output_x, row1_y, "Q")
+        if q_id is None:
             return False
-        q_id = q_response.result.get('element_id') if q_response.result else None
-        self.element_count += 1
 
-        qbar_response = await self.mcp.send_command("create_element", {
-            "type": "Led",
-            "x": output_x,
-            "y": row2_y,
-            "label": "Q_bar"
-        })
-        if not qbar_response or not qbar_response.success:
-            print("❌ Failed to create Q_bar LED")
+        qbar_id = await self.create_element("Led", output_x, row2_y, "Q_bar")
+        if qbar_id is None:
             return False
-        qbar_id = qbar_response.result.get('element_id') if qbar_response.result else None
-        self.element_count += 1
 
         # ========== Connect Clock Inversion ==========
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_clk_id,
-            "source_port": 0,
-            "target_id": not_clk_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect Clock to NOT")
+        if not await self.connect(input_clk_id, not_clk_id):
             return False
-        self.connection_count += 1
 
         # ========== Connect Master Stage ==========
 
         # Connect J to master AND S
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_j_id,
-            "source_port": 0,
-            "target_id": master_and_s_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect J to master AND S")
+        if not await self.connect(input_j_id, master_and_s_id):
             return False
-        self.connection_count += 1
 
         # Connect K to master AND R
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_k_id,
-            "source_port": 0,
-            "target_id": master_and_r_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect K to master AND R")
+        if not await self.connect(input_k_id, master_and_r_id):
             return False
-        self.connection_count += 1
 
         # Connect master AND S to master gate S port 0
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_and_s_id,
-            "source_port": 0,
-            "target_id": master_gate_s_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master AND S to master gate S")
+        if not await self.connect(master_and_s_id, master_gate_s_id):
             return False
-        self.connection_count += 1
 
         # Connect Clock to master gate S port 1 (master transparent when
         # CLK=1 — classic pulse-triggered MS-JK; F55)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_clk_id,
-            "source_port": 0,
-            "target_id": master_gate_s_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect Clock to master gate S")
+        if not await self.connect(input_clk_id, master_gate_s_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # Connect master AND R to master gate R port 0
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_and_r_id,
-            "source_port": 0,
-            "target_id": master_gate_r_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master AND R to master gate R")
+        if not await self.connect(master_and_r_id, master_gate_r_id):
             return False
-        self.connection_count += 1
 
         # Connect Clock to master gate R port 1
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": input_clk_id,
-            "source_port": 0,
-            "target_id": master_gate_r_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect Clock to master gate R")
+        if not await self.connect(input_clk_id, master_gate_r_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # Master R path: OR(gated reset path, NOT(Clear)) into the Q-producing
         # NOR — Clear forces the master low too (F56-consistent)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_gate_r_id,
-            "source_port": 0,
-            "target_id": master_or_r_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master gate R to master OR R")
+        if not await self.connect(master_gate_r_id, master_or_r_id):
             return False
-        self.connection_count += 1
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_clear_id,
-            "source_port": 0,
-            "target_id": master_or_r_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect NOT Clear to master OR R")
+        if not await self.connect(not_clear_id, master_or_r_id, target_port=1):
             return False
-        self.connection_count += 1
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_or_r_id,
-            "source_port": 0,
-            "target_id": master_nor_q_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master OR R to master NOR Q")
+        if not await self.connect(master_or_r_id, master_nor_q_id):
             return False
-        self.connection_count += 1
 
         # Connect master NOR Q_bar to master NOR Q port 1 (feedback)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_nor_qbar_id,
-            "source_port": 0,
-            "target_id": master_nor_q_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master NOR Q_bar to master NOR Q")
+        if not await self.connect(master_nor_qbar_id, master_nor_q_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # Master S path: OR(gated set path, NOT(Preset)) into the
         # Q_bar-producing NOR — Preset forces the master high too (F56)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_gate_s_id,
-            "source_port": 0,
-            "target_id": master_or_s_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master gate S to master OR S")
+        if not await self.connect(master_gate_s_id, master_or_s_id):
             return False
-        self.connection_count += 1
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_preset_id,
-            "source_port": 0,
-            "target_id": master_or_s_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect NOT Preset to master OR S")
+        if not await self.connect(not_preset_id, master_or_s_id, target_port=1):
             return False
-        self.connection_count += 1
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_or_s_id,
-            "source_port": 0,
-            "target_id": master_nor_qbar_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master OR S to master NOR Q_bar")
+        if not await self.connect(master_or_s_id, master_nor_qbar_id):
             return False
-        self.connection_count += 1
 
         # Connect master NOR Q to master NOR Q_bar port 1 (feedback)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_nor_q_id,
-            "source_port": 0,
-            "target_id": master_nor_qbar_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master NOR Q to master NOR Q_bar")
+        if not await self.connect(master_nor_q_id, master_nor_qbar_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # ========== Connect Slave Stage via Master Outputs ==========
         # The slave just transfers the master state while CLK=0 (F55):
         #   S_slave = Qm AND NOT(CLK), R_slave = Q_bar_m AND NOT(CLK)
 
         # Connect master NOR Q to slave gate S port 0 (transfer Qm)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_nor_q_id,
-            "source_port": 0,
-            "target_id": slave_gate_s_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master NOR Q to slave gate S")
+        if not await self.connect(master_nor_q_id, slave_gate_s_id):
             return False
-        self.connection_count += 1
 
         # Connect NOT Clock to slave gate S port 1 (slave open when CLK=0)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_clk_id,
-            "source_port": 0,
-            "target_id": slave_gate_s_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect NOT Clock to slave gate S")
+        if not await self.connect(not_clk_id, slave_gate_s_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # Connect master NOR Q_bar to slave gate R port 0 (transfer Q_bar_m)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": master_nor_qbar_id,
-            "source_port": 0,
-            "target_id": slave_gate_r_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect master NOR Q_bar to slave gate R")
+        if not await self.connect(master_nor_qbar_id, slave_gate_r_id):
             return False
-        self.connection_count += 1
 
         # Connect NOT Clock to slave gate R port 1
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_clk_id,
-            "source_port": 0,
-            "target_id": slave_gate_r_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect NOT Clock to slave gate R")
+        if not await self.connect(not_clk_id, slave_gate_r_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # ========== Preset/Clear OR Gate Injection into Slave Latch ==========
 
         # Connect slave gate R to OR S gate (input 0)
         # Normal path: slave gate R drives slave NOR Q via OR S
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_gate_r_id,
-            "source_port": 0,
-            "target_id": or_s_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect slave gate R to OR S")
+        if not await self.connect(slave_gate_r_id, or_s_id):
             return False
-        self.connection_count += 1
 
         # Connect NOT Clear to OR S gate (input 1)
         # When Clear=0: NOT(0)=1 -> OR=1 -> slave NOR Q forced low -> Q=0
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_clear_id,
-            "source_port": 0,
-            "target_id": or_s_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect NOT Clear to OR S")
+        if not await self.connect(not_clear_id, or_s_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # Connect OR S to slave NOR Q port 0 (replaces direct slave gate R connection)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": or_s_id,
-            "source_port": 0,
-            "target_id": slave_nor_q_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect OR S to slave NOR Q")
+        if not await self.connect(or_s_id, slave_nor_q_id):
             return False
-        self.connection_count += 1
 
         # Connect slave NOR Q_bar to slave NOR Q port 1 (feedback)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_nor_qbar_id,
-            "source_port": 0,
-            "target_id": slave_nor_q_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect slave NOR Q_bar to slave NOR Q")
+        if not await self.connect(slave_nor_qbar_id, slave_nor_q_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # Connect slave gate S to OR R gate (input 0)
         # Normal path: slave gate S drives slave NOR Q_bar via OR R
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_gate_s_id,
-            "source_port": 0,
-            "target_id": or_r_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect slave gate S to OR R")
+        if not await self.connect(slave_gate_s_id, or_r_id):
             return False
-        self.connection_count += 1
 
         # Connect NOT Preset to OR R gate (input 1)
         # When Preset=0: NOT(0)=1 -> OR=1 -> slave NOR Q_bar forced low -> Q_bar=0 -> Q=1
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_preset_id,
-            "source_port": 0,
-            "target_id": or_r_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect NOT Preset to OR R")
+        if not await self.connect(not_preset_id, or_r_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # Connect OR R to slave NOR Q_bar port 0 (replaces direct slave gate S connection)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": or_r_id,
-            "source_port": 0,
-            "target_id": slave_nor_qbar_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect OR R to slave NOR Q_bar")
+        if not await self.connect(or_r_id, slave_nor_qbar_id):
             return False
-        self.connection_count += 1
 
         # Connect slave NOR Q to slave NOR Q_bar port 1 (feedback)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_nor_q_id,
-            "source_port": 0,
-            "target_id": slave_nor_qbar_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect slave NOR Q to slave NOR Q_bar")
+        if not await self.connect(slave_nor_q_id, slave_nor_qbar_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # ========== Connect Final Feedback ==========
         # Textbook JK feedback comes from the SLAVE outputs (locked while the
         # master is transparent), so J=K=1 toggles without a race (F55).
 
         # Connect slave NOR Q_bar to master AND S port 1
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_nor_qbar_id,
-            "source_port": 0,
-            "target_id": master_and_s_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect slave NOR Q_bar to master AND S")
+        if not await self.connect(slave_nor_qbar_id, master_and_s_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # Connect slave NOR Q to master AND R port 1
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_nor_q_id,
-            "source_port": 0,
-            "target_id": master_and_r_id,
-            "target_port": 1
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect slave NOR Q to master AND R")
+        if not await self.connect(slave_nor_q_id, master_and_r_id, target_port=1):
             return False
-        self.connection_count += 1
 
         # ========== Connect Outputs ==========
 
         # Connect slave NOR Q to Q LED
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_nor_q_id,
-            "source_port": 0,
-            "target_id": q_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect slave NOR Q to Q LED")
+        if not await self.connect(slave_nor_q_id, q_id):
             return False
-        self.connection_count += 1
 
         # Connect slave NOR Q_bar to Q_bar LED
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": slave_nor_qbar_id,
-            "source_port": 0,
-            "target_id": qbar_id,
-            "target_port": 0
-        })
-        if not conn or not conn.success:
-            print("❌ Failed to connect slave NOR Q_bar to Q_bar LED")
+        if not await self.connect(slave_nor_qbar_id, qbar_id):
             return False
-        self.connection_count += 1
 
         # Save circuit as IC
         output_file = str(IC_COMPONENTS_DIR / "level1_jk_flip_flop.panda")
@@ -842,5 +386,6 @@ async def build(mcp) -> bool:
 
 
 if __name__ == "__main__":
+    import sys
     exit_code = asyncio.run(run_ic_builder(build, "JK Flip-Flop IC"))
     sys.exit(exit_code)
