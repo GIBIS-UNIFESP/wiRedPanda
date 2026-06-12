@@ -5,37 +5,45 @@
 """
 Create 16-bit Fetch Stage IC
 
-Implements the fetch stage for a 16-bit RISC CPU pipeline.
+Implements the fetch stage for a 16-bit RISC CPU pipeline, mirroring the
+level8_fetch_stage architecture (F53: this stage used to have a dead
+InstrLoad input and no instruction register, no programming interface, and
+its decoded fields were emitted MSB-first against the project-wide
+LSB-first convention).
 
 Inputs:
   Clock (synchronization signal)
-  Reset (reset program counter to 0)
+  Reset (reset program counter and instruction register to 0)
   PCLoad (enable loading new PC value)
   PCInc (increment program counter)
-  InstrLoad (enable loading instruction into register)
+  InstrLoad (enable loading the fetched word into the instruction register)
   PCData[0..7] (value to load into PC when PCLoad=1)
+  ProgAddr[0..7] (address for programming instruction memory)
+  ProgData[0..15] (16-bit word to write into instruction memory)
+  ProgWrite (enable writing to instruction memory)
 
 Outputs:
   PC[0..7] (program counter for memory addressing)
-  Instruction[0..15] (16-bit instruction word)
-  OpCode[0..4] (bits [15:11] - 5-bit operation code)
-  DestReg[0..3] (bits [10:6] - 5-bit destination register)
-  SrcBits[0..5] (bits [5:0] - 6-bit source/immediate bits)
+  Instruction[0..15] (registered 16-bit instruction word, from the IR)
+  RawInstr[0..15] (unregistered word straight from memory — zero-delay
+                   consumers such as single-cycle CPUs use this)
+  OpCode[0..4]  = Instruction[11..15] (index 0 = field LSB)
+  DestReg[0..4] = Instruction[6..10]  (index 0 = field LSB)
+  SrcBits[0..5] = Instruction[0..5]   (index 0 = field LSB)
 
 Architecture:
-  Composes two Level 7 instruction memory interfaces to fetch 16-bit word:
-  1. Low byte fetch (Instruction[0..7])  at PC address
-  2. High byte fetch (Instruction[8..15]) at PC address
-  Both driven by the same PC from a shared program counter.
-
-Data Flow:
-  PC → InstrMem[0] Address → Instr[0..7]
-  PC → InstrMem[1] Address → Instr[8..15]
+  1. level7_cpu_program_counter_8bit — PC with load/increment/reset
+  2. level4_bus_mux_8bit — selects PC address (ProgWrite=0) or ProgAddr
+     (ProgWrite=1), the level8_fetch_stage pattern
+  3. 2× level7_instruction_memory_interface — low byte (Instruction[0..7])
+     and high byte (Instruction[8..15]) at the muxed address
+  4. 2× level6_register_8bit — the 16-bit instruction register
+     (WriteEnable=InstrLoad, Reset=Reset)
 
 16-bit Instruction Format:
   Bits [15:11] = OpCode (5 bits, 32 operations)
-  Bits [10:6] = DestReg (5 bits, 32 registers addressable)
-  Bits [5:0] = SrcBits (6 bits, 64 source/immediate modes)
+  Bits [10:6]  = DestReg (5 bits, 32 registers addressable)
+  Bits [5:0]   = SrcBits (6 bits, 64 source/immediate modes)
 
 Usage:
     python create_level9_fetch_stage_16bit.py
@@ -84,15 +92,38 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created control signals")
 
+        # ---- Create programming interface inputs (F53: previously absent —
+        # the instruction memory could never be loaded, so the field-decode
+        # tests were vacuous) ----
+        prog_y = control_y + VERTICAL_STAGE_SPACING
+
+        prog_addr_inputs = []
+        for i in range(8):
+            elem_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), prog_y, f"ProgAddr[{i}]")
+            if elem_id is None:
+                return False
+            prog_addr_inputs.append(elem_id)
+
+        prog_data_inputs = []
+        for i in range(16):
+            elem_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING / 2), prog_y + (VERTICAL_STAGE_SPACING / 2), f"ProgData[{i}]")
+            if elem_id is None:
+                return False
+            prog_data_inputs.append(elem_id)
+
+        prog_write_id = await self.create_element("InputSwitch", input_x + (9 * HORIZONTAL_GATE_SPACING), prog_y, "ProgWrite")
+        if prog_write_id is None:
+            return False
+
+        await self.log("  ✓ Created programming interface inputs")
+
         # ---- Instantiate Program Counter ----
         pc_x = 250.0
         pc_y = 100.0
 
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_cpu_program_counter_8bit")):
 
-
             return False
-
 
         pc_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_cpu_program_counter_8bit"), pc_x, pc_y, "PC")
         if pc_id is None:
@@ -118,6 +149,25 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated Program Counter")
 
+        # ---- Address mux: PC (fetch) vs ProgAddr (programming) ----
+        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_8bit")):
+
+            return False
+
+        addr_mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_8bit"), 350.0, 100.0, "AddrMux")
+        if addr_mux_id is None:
+            return False
+
+        for i in range(8):
+            if not await self.connect(pc_id, addr_mux_id, source_port_label=f"Address[{i}]", target_port_label=f"In0[{i}]"):
+                return False
+            if not await self.connect(prog_addr_inputs[i], addr_mux_id, target_port_label=f"In1[{i}]"):
+                return False
+        if not await self.connect(prog_write_id, addr_mux_id, target_port_label="Sel"):
+            return False
+
+        await self.log("  ✓ Instantiated Address Mux (PC vs ProgAddr)")
+
         # ---- Instantiate two Instruction Memory interfaces (low and high bytes) ----
         instr_mem_x = 450.0
         instr_mem_low_y = 100.0
@@ -125,66 +175,103 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface")):
 
-
             return False
-
 
         instr_mem_low_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface"), instr_mem_x, instr_mem_low_y, "InstrMem_Low")
         if instr_mem_low_id is None:
             return False
 
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface")):
-
-
-            return False
-
-
         instr_mem_high_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface"), instr_mem_x, instr_mem_high_y, "InstrMem_High")
         if instr_mem_high_id is None:
             return False
 
-        # Connect PC output to both instruction memory address inputs
+        # Muxed address into both instruction memories
         for i in range(8):
-            if not await self.connect(pc_id, instr_mem_low_id, source_port_label=f"Address[{i}]", target_port_label=f"Address[{i}]"):
+            if not await self.connect(addr_mux_id, instr_mem_low_id, source_port_label=f"Out[{i}]", target_port_label=f"Address[{i}]"):
                 return False
 
-            if not await self.connect(pc_id, instr_mem_high_id, source_port_label=f"Address[{i}]", target_port_label=f"Address[{i}]"):
+            if not await self.connect(addr_mux_id, instr_mem_high_id, source_port_label=f"Out[{i}]", target_port_label=f"Address[{i}]"):
                 return False
 
-        await self.log("  ✓ Instantiated instruction memory interfaces")
+        # Programming data and write enable
+        for i in range(8):
+            if not await self.connect(prog_data_inputs[i], instr_mem_low_id, target_port_label=f"DataIn[{i}]"):
+                return False
+            if not await self.connect(prog_data_inputs[8 + i], instr_mem_high_id, target_port_label=f"DataIn[{i}]"):
+                return False
 
-        # Connect Clock to instruction memory interfaces
+        if not await self.connect(prog_write_id, instr_mem_low_id, target_port_label="WriteEnable"):
+            return False
+        if not await self.connect(prog_write_id, instr_mem_high_id, target_port_label="WriteEnable"):
+            return False
+
+        # Clock to instruction memory interfaces
         if not await self.connect(control_signals["Clock"], instr_mem_low_id, target_port_label="Clock"):
             return False
 
         if not await self.connect(control_signals["Clock"], instr_mem_high_id, target_port_label="Clock"):
             return False
 
-        await self.log("  ✓ Connected Clock to instruction memories")
+        await self.log("  ✓ Instantiated and wired instruction memory interfaces")
 
-        # ---- Create Output: 16-bit Instruction ----
-        # Low byte (Instruction[0..7]) from low memory
-        # High byte (Instruction[8..15]) from high memory
-        output_x = 700.0
+        # ---- Instruction Register: 2× level6_register_8bit (F53: InstrLoad
+        # used to be a dead input — there was no IR to load) ----
+        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_register_8bit")):
+
+            return False
+
+        ir_low_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_register_8bit"), 600.0, 100.0, "IR_Low")
+        if ir_low_id is None:
+            return False
+
+        ir_high_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_register_8bit"), 600.0, 250.0, "IR_High")
+        if ir_high_id is None:
+            return False
+
+        for ir_id, mem_id in ((ir_low_id, instr_mem_low_id), (ir_high_id, instr_mem_high_id)):
+            for i in range(8):
+                if not await self.connect(mem_id, ir_id, source_port_label=f"Instruction[{i}]", target_port_label=f"Data[{i}]"):
+                    return False
+
+            if not await self.connect(control_signals["Clock"], ir_id, target_port_label="Clock"):
+                return False
+
+            if not await self.connect(control_signals["InstrLoad"], ir_id, target_port_label="WriteEnable"):
+                return False
+
+            if not await self.connect(control_signals["Reset"], ir_id, target_port_label="Reset"):
+                return False
+
+        await self.log("  ✓ Instantiated and wired the 16-bit instruction register")
+
+        # ---- Create Output: registered 16-bit Instruction ----
+        output_x = 750.0
         output_y = 100.0
 
-        instr_output_leds = []
-        instr_mem_connections = []  # Store (mem_id, port) tuples for direct field extraction
-
         for i in range(16):
-            mem_source = instr_mem_low_id if i < 8 else instr_mem_high_id
-            mem_port = f"Instruction[{i % 8}]"
-            instr_mem_connections.append((mem_source, mem_port, i))
+            ir_source = ir_low_id if i < 8 else ir_high_id
 
             led_id = await self.create_element("Led", output_x, output_y + (i * 30), f"Instruction[{i}]")
             if led_id is None:
                 return False
-            instr_output_leds.append(led_id)
 
-            if not await self.connect(mem_source, led_id, source_port_label=mem_port):
+            if not await self.connect(ir_source, led_id, source_port_label=f"Q[{i % 8}]"):
                 return False
 
-        await self.log("  ✓ Created 16-bit Instruction outputs")
+        await self.log("  ✓ Created 16-bit Instruction outputs (registered)")
+
+        # ---- Create Output: RawInstr (unregistered, straight from memory) ----
+        for i in range(16):
+            mem_source = instr_mem_low_id if i < 8 else instr_mem_high_id
+
+            led_id = await self.create_element("Led", output_x + (HORIZONTAL_GATE_SPACING / 2), output_y + (i * 30), f"RawInstr[{i}]")
+            if led_id is None:
+                return False
+
+            if not await self.connect(mem_source, led_id, source_port_label=f"Instruction[{i % 8}]"):
+                return False
+
+        await self.log("  ✓ Created RawInstr outputs (unregistered)")
 
         # ---- Create Output: PC (for external use) ----
         for i in range(8):
@@ -197,51 +284,52 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created PC outputs")
 
-        # ---- Create Instruction Decode Outputs ----
-        # Connect directly from instruction memory outputs
-        # OpCode[0..4] = Instruction[15:11]
-        # DestReg[0..4] = Instruction[10:6]
-        # SrcBits[0..5] = Instruction[5:0]
-
+        # ---- Create Instruction Decode Outputs (registered, LSB-first) ----
+        # F53: these used to be emitted MSB-first (OpCode[0]=Instruction[15]),
+        # against the project-wide index-0-is-LSB convention (the 8-bit IR
+        # maps OpCode[0]=Q[3], the field LSB).
+        # OpCode[i]  = Instruction[11+i]
+        # DestReg[i] = Instruction[6+i]
+        # SrcBits[i] = Instruction[i]
         decode_x = output_x + (2 * HORIZONTAL_GATE_SPACING)
 
-        # OpCode (bits 15-11)
+        def ir_source_for(instr_bit: int):
+            return (ir_low_id if instr_bit < 8 else ir_high_id), f"Q[{instr_bit % 8}]"
+
+        # OpCode (bits 11..15, LSB-first)
         for i in range(5):
-            instr_bit = 15 - i  # 15, 14, 13, 12, 11
-            mem_source, mem_port, _ = instr_mem_connections[instr_bit]
+            source_id, port = ir_source_for(11 + i)
 
             led_id = await self.create_element("Led", decode_x, output_y + (i * 30), f"OpCode[{i}]")
             if led_id is None:
                 return False
 
-            if not await self.connect(mem_source, led_id, source_port_label=mem_port):
+            if not await self.connect(source_id, led_id, source_port_label=port):
                 return False
 
-        # DestReg (bits 10-6)
+        # DestReg (bits 6..10, LSB-first)
         for i in range(5):
-            instr_bit = 10 - i  # 10, 9, 8, 7, 6
-            mem_source, mem_port, _ = instr_mem_connections[instr_bit]
+            source_id, port = ir_source_for(6 + i)
 
             led_id = await self.create_element("Led", decode_x + HORIZONTAL_GATE_SPACING, output_y + (i * 30), f"DestReg[{i}]")
             if led_id is None:
                 return False
 
-            if not await self.connect(mem_source, led_id, source_port_label=mem_port):
+            if not await self.connect(source_id, led_id, source_port_label=port):
                 return False
 
-        # SrcBits (bits 5-0)
+        # SrcBits (bits 0..5, LSB-first)
         for i in range(6):
-            instr_bit = 5 - i  # 5, 4, 3, 2, 1, 0
-            mem_source, mem_port, _ = instr_mem_connections[instr_bit]
+            source_id, port = ir_source_for(i)
 
             led_id = await self.create_element("Led", decode_x + (2 * HORIZONTAL_GATE_SPACING), output_y + (i * 30), f"SrcBits[{i}]")
             if led_id is None:
                 return False
 
-            if not await self.connect(mem_source, led_id, source_port_label=mem_port):
+            if not await self.connect(source_id, led_id, source_port_label=port):
                 return False
 
-        await self.log("  ✓ Created instruction decode outputs")
+        await self.log("  ✓ Created instruction decode outputs (LSB-first)")
 
         output_file = str(IC_COMPONENTS_DIR / "level9_fetch_stage_16bit.panda")
         if not await self.save_circuit(output_file):

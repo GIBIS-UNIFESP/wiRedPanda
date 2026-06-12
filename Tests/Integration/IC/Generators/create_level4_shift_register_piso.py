@@ -5,7 +5,8 @@
 """
 Create Parallel-In Serial-Out (PISO) Shift Register IC
 
-Inputs: CLK (Clock), LOAD (Load Control), D[0:3] (Parallel Load Data)
+Inputs: CLK (Clock), LOAD (Load Control), D[0:3] (Parallel Load Data),
+        SIN (Serial Input — shifts into the MSB; defaults off = zero fill)
 Outputs: SOUT (Serial Output)
 
 Circuit:
@@ -16,9 +17,11 @@ Circuit:
 
 PISO Shift Register behavior:
 - When LOAD=1: Parallel data loaded into all FFs on clock rising edge
-- When LOAD=0: Register shifts right, MSB feeds in from external source (not connected),
+- When LOAD=0: Register shifts right, MSB feeds in from the SIN input
+  (previously documented as "external source (not connected)" — now a real
+  port; saved off, so the default is still zero fill),
   LSB (FF[0]) shifts out as serial output
-- Shift chain: FF[3] → FF[2] → FF[1] → FF[0] → serialOut
+- Shift chain: SIN → FF[3] → FF[2] → FF[1] → FF[0] → serialOut
 
 Implementation:
 - 4 D Flip-Flops (DFlipFlop)
@@ -78,6 +81,11 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         if load_id is None:
             return False
         await self.log(f"  ✓ Created input LOAD (id={load_id})")
+
+        sin_id = await self.create_element("InputSwitch", input_x, input_y_load + 30.0, "SIN")
+        if sin_id is None:
+            return False
+        await self.log(f"  ✓ Created input SIN (id={sin_id})")
 
         # Create data inputs (4-bit)
         data_in_ids = []
@@ -186,12 +194,13 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
                 return False
 
             # Connect In1[i] to shiftIn[i]: Q[i+1] for i<3; the MSB shifts in
-            # an explicit constant 0 (F34 — was an implicit unconnected default)
+            # the SIN serial input (saved off, so the default is the old
+            # zero fill — previously an explicit GND, F34)
             if i < 3:
                 if not await self.connect(dff_ids[i + 1], shift_mux_ic_id, source_port_label="Q", target_port_label=f"In1[{i}]"):
                     return False
             else:
-                if not await self.connect(gnd_id, shift_mux_ic_id, target_port_label=f"In1[{i}]"):
+                if not await self.connect(sin_id, shift_mux_ic_id, target_port_label=f"In1[{i}]"):
                     return False
 
         # Connect Sel to NOT_LOAD (select signal)

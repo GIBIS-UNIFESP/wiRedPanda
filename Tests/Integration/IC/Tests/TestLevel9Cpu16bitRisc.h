@@ -22,4 +22,6 @@ private slots:
     void testOpCodeInValidRange();
     void testResultRegisterReadable();
     void testInstrOpCodeFieldConsistency();
+    void testCPUComputesOnDecodedFields_data();
+    void testCPUComputesOnDecodedFields();
 };

@@ -20,7 +20,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct ShiftRegisterPisoFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr, *load = nullptr;
+    InputSwitch *clk = nullptr, *load = nullptr, *sin = nullptr;
     InputSwitch *dataIn[4] = {};
     Led *serialOut = nullptr;
     Simulation *sim = nullptr;
@@ -32,13 +32,15 @@ struct ShiftRegisterPisoFixture {
 
         clk = new InputSwitch();
         load = new InputSwitch();
-        builder.add(clk, load);
+        sin = new InputSwitch();
+        builder.add(clk, load, sin);
 
         ic = loadBuildingBlockIC("level4_shift_register_piso.panda");
         builder.add(ic);
 
         builder.connect(clk, 0, ic, "CLK");
         builder.connect(load, 0, ic, "LOAD");
+        builder.connect(sin, 0, ic, "SIN");
 
         for (int i = 0; i < 4; ++i) {
             dataIn[i] = new InputSwitch();
@@ -124,4 +126,38 @@ void TestLevel4ShiftRegisterPISO::testShiftRegisterPISO()
         QCOMPARE(currentBit, expectedSerialOutput[bitPos]);
         clockCycle(f.sim, f.clk);
     }
+}
+
+// SIN feeds the MSB during shifts (previously documented as "external
+// source (not connected)" — now a real port; off = the old zero fill).
+void TestLevel4ShiftRegisterPISO::testSerialInput()
+{
+    auto &f = *s_level4ShiftRegisterPiso;
+
+    // Load 0000
+    f.clk->setOn(false);
+    f.load->setOn(true);
+    f.sin->setOn(false);
+    for (int i = 0; i < 4; ++i) {
+        f.dataIn[i]->setOn(false);
+    }
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+
+    // Shift with SIN=1: the 1 enters at FF3 and reaches SOUT (FF0) after
+    // four shifts
+    f.load->setOn(false);
+    f.sin->setOn(true);
+    f.sim->update();
+
+    for (int i = 0; i < 3; ++i) {
+        clockCycle(f.sim, f.clk);
+        QCOMPARE(getInputStatus(f.serialOut), false);
+    }
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(getInputStatus(f.serialOut), true);
+
+    // With SIN held high, the register fills with 1s — SOUT stays high
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(getInputStatus(f.serialOut), true);
 }

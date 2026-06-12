@@ -123,6 +123,7 @@ endmodule
 module level4_shift_register_piso_ic (
     input clk,
     input load,
+    input sin,
     input d0,
     input d1,
     input d2,
@@ -219,7 +220,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_7 (
     .in10(w_level1_d_flip_flop_inst_3_q),
     .in11(w_level1_d_flip_flop_inst_4_q),
     .in12(w_level1_d_flip_flop_inst_5_q),
-    .in13(1'b0),
+    .in13(sin),
     .sel(aux_not_1),
     .out0(w_level4_bus_mux_4bit_inst_7_out0),
     .out1(w_level4_bus_mux_4bit_inst_7_out1),
@@ -262,9 +263,10 @@ input input_switch3,
 input input_switch4,
 input input_switch5,
 input input_switch6,
+input input_switch7,
 
 /* ========= Outputs ========== */
-output led8_1
+output led9_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL4_SHIFT_REGISTER_PISO (level4_shift_register_piso_ic)
@@ -275,13 +277,14 @@ wire w_level4_shift_register_piso_ic_inst_1_sout;
 level4_shift_register_piso_ic level4_shift_register_piso_ic_inst_1 (
     .clk(input_switch1),
     .load(input_switch2),
-    .d0(input_switch3),
-    .d1(input_switch4),
-    .d2(input_switch5),
-    .d3(input_switch6),
+    .sin(input_switch3),
+    .d0(input_switch4),
+    .d1(input_switch5),
+    .d2(input_switch6),
+    .d3(input_switch7),
     .sout(w_level4_shift_register_piso_ic_inst_1_sout)
 );
 
 // Writing output data. //
-assign led8_1 = w_level4_shift_register_piso_ic_inst_1_sout;
+assign led9_1 = w_level4_shift_register_piso_ic_inst_1_sout;
 endmodule

@@ -23,6 +23,9 @@ struct Cpu16bitRiscFixture {
     IC *ic = nullptr;
     InputSwitch *clk = nullptr;
     InputSwitch *reset = nullptr;
+    InputSwitch *progAddr[8] = {};
+    InputSwitch *progData[16] = {};
+    InputSwitch *progWrite = nullptr;
     QVector<Led *> pcLeds;
     QVector<Led *> resultLeds;
     QVector<Led *> instrLeds;
@@ -39,6 +42,13 @@ struct Cpu16bitRiscFixture {
 
         clk = new InputSwitch(); builder.add(clk);
         reset = new InputSwitch(); builder.add(reset);
+        progWrite = new InputSwitch(); builder.add(progWrite);
+        for (int i = 0; i < 8; i++) {
+            progAddr[i] = new InputSwitch(); builder.add(progAddr[i]);
+        }
+        for (int i = 0; i < 16; i++) {
+            progData[i] = new InputSwitch(); builder.add(progData[i]);
+        }
 
         for (int i = 0; i < 8; i++) {
             auto *p = new Led(); builder.add(p); pcLeds.append(p);
@@ -53,13 +63,16 @@ struct Cpu16bitRiscFixture {
 
         builder.connect(clk, 0, ic, "Clock");
         builder.connect(reset, 0, ic, "Reset");
+        builder.connect(progWrite, 0, ic, "ProgWrite");
 
         for (int i = 0; i < 8; i++) {
             builder.connect(ic, QString("PC[%1]").arg(i), pcLeds[i], 0);
+            builder.connect(progAddr[i], 0, ic, QString("ProgAddr[%1]").arg(i));
         }
         for (int i = 0; i < 16; i++) {
             builder.connect(ic, QString("Result[%1]").arg(i), resultLeds[i], 0);
             builder.connect(ic, QString("Instr[%1]").arg(i), instrLeds[i], 0);
+            builder.connect(progData[i], 0, ic, QString("ProgData[%1]").arg(i));
         }
         for (int i = 0; i < 5; i++) {
             builder.connect(ic, QString("OpCode[%1]").arg(i), opcodeLeds[i], 0);
@@ -80,6 +93,22 @@ struct Cpu16bitRiscFixture {
         reset->setOn(true);
         sim->update();
         reset->setOn(false);
+        sim->update();
+    }
+
+    // Write a 16-bit instruction word at the given program memory address
+    void programWord(int address, int word)
+    {
+        for (int i = 0; i < 8; ++i) {
+            progAddr[i]->setOn((address >> i) & 1);
+        }
+        for (int i = 0; i < 16; ++i) {
+            progData[i]->setOn((word >> i) & 1);
+        }
+        progWrite->setOn(true);
+        sim->update();
+        clockCycle(sim, clk);
+        progWrite->setOn(false);
         sim->update();
     }
 };
@@ -109,7 +138,8 @@ void TestLevel9CPU16BitRISC::testCPUStructure()
 {
     auto &f = *s_level9Cpu16bitRisc;
     QVERIFY(f.ic != nullptr);
-    QCOMPARE(f.ic->inputSize(), 2);
+    // Clock + Reset + ProgAddr[8] + ProgData[16] + ProgWrite (F53)
+    QCOMPARE(f.ic->inputSize(), 27);
     QCOMPARE(f.ic->outputSize(), 45);
 }
 
@@ -203,6 +233,12 @@ void TestLevel9CPU16BitRISC::testInstrOpCodeFieldConsistency()
 
     f.resetCpu();
 
+    // Program distinct opcodes so the consistency check is not vacuous
+    for (int addr = 0; addr < 5; ++addr) {
+        f.programWord(addr, ((addr + 3) << 11) | (addr << 6) | addr);
+    }
+    f.resetCpu();
+
     for (int cycle = 0; cycle < 5; ++cycle) {
         clockCycle(f.sim, f.clk);
 
@@ -212,4 +248,43 @@ void TestLevel9CPU16BitRISC::testInstrOpCodeFieldConsistency()
         int expectedOpCode = (instrWord >> 11) & 0x1F;
         QCOMPARE(opcode, expectedOpCode);
     }
+}
+
+// Program real instructions and verify the ALU computes on the decoded
+// fields (F53: the fields used to reach the ALU bit-reversed, and with no
+// programming interface this was untestable — memory was always blank).
+// Word layout: [15:11]=OpCode, [10:6]=DestReg, [5:0]=SrcBits.
+// The ALU computes ALUOp(SrcBits, DestReg) with ALUOp = OpCode's low 3 bits:
+// 000 ADD, 001 SUB, 010 AND, 011 OR, 100 XOR.
+void TestLevel9CPU16BitRISC::testCPUComputesOnDecodedFields_data()
+{
+    QTest::addColumn<int>("opcode");
+    QTest::addColumn<int>("destReg");
+    QTest::addColumn<int>("srcBits");
+    QTest::addColumn<int>("expectedResult");
+
+    QTest::newRow("add_9_plus_5") << 0 << 5 << 9 << 14;
+    QTest::newRow("add_63_plus_31") << 0 << 31 << 63 << 94;
+    QTest::newRow("sub_9_minus_5") << 1 << 5 << 9 << 4;
+    QTest::newRow("and_0x2A_0x0A") << 2 << 0x0A << 0x2A << 0x0A;
+    QTest::newRow("or_0x15_0x0A") << 3 << 0x0A << 0x15 << 0x1F;
+    QTest::newRow("xor_0x3F_0x15") << 4 << 0x15 << 0x3F << 0x2A;
+}
+
+void TestLevel9CPU16BitRISC::testCPUComputesOnDecodedFields()
+{
+    QFETCH(int, opcode);
+    QFETCH(int, destReg);
+    QFETCH(int, srcBits);
+    QFETCH(int, expectedResult);
+
+    auto &f = *s_level9Cpu16bitRisc;
+
+    f.resetCpu();
+    f.programWord(0x00, (opcode << 11) | (destReg << 6) | srcBits);
+    f.resetCpu();
+
+    // PC=0 after reset; the single-cycle datapath decodes RawInstr
+    // combinationally — the result is valid without a clock edge.
+    QCOMPARE(f.readResult(), expectedResult);
 }

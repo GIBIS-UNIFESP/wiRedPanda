@@ -14,12 +14,15 @@ Implements a true 16-bit RISC (Reduced Instruction Set Computer) CPU:
 Inputs:
   Clock (synchronization signal)
   Reset (initialize program counter to 0)
+  ProgAddr[0..7] (instruction memory programming address — F53)
+  ProgData[0..15] (16-bit instruction word to program)
+  ProgWrite (instruction memory write enable)
 
 Outputs:
   PC[0..7] (program counter for memory addressing)
   Result[0..15] (16-bit ALU result)
-  Instr[0..15] (16-bit instruction word)
-  OpCode[0..4] (5-bit operation code)
+  Instr[0..15] (registered 16-bit instruction word)
+  OpCode[0..4] (5-bit operation code, LSB-first)
 
 16-bit Instruction Format:
   Bits [15:11] = OpCode (5 bits, 32 operations)
@@ -27,10 +30,13 @@ Outputs:
   Bits [5:0] = SrcBits (6 bits, 64 source/immediate)
 
 Architecture:
-  - 16-bit Fetch stage: Outputs 16-bit instruction with decoded fields
-  - 16-bit ALU computing OpCode[0..2](SrcBits, DestReg): OperandA =
-    zero-extended SrcBits, OperandB = zero-extended DestReg
-  - 16-bit program counter and data paths
+  - 16-bit Fetch stage with programming port and instruction register
+    (InstrLoad held high; the CPU decodes from RawInstr for zero-delay
+    single-cycle execution, the level9_single_cycle pattern — F53)
+  - 16-bit ALU computing ALUOp(SrcBits, DestReg): OperandA = zero-extended
+    SrcBits (RawInstr[0..5]), OperandB = zero-extended DestReg
+    (RawInstr[6..10]), ALUOp = RawInstr[11..13] — all LSB-first
+  - PCLoad/PCData tied to explicit GND (no jumps; F34 convention)
 
 RISC Characteristics:
   - Load/Store architecture
@@ -67,12 +73,37 @@ class CPU16BitRISCBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created Clock and Reset inputs")
 
-        # ---- Create Vcc for control signals ----
+        # ---- Create Vcc/Gnd for control signals ----
         vcc_id = await self.create_element("InputVcc", 150.0, 50.0, "Vcc")
         if vcc_id is None:
             return False
 
-        await self.log("  ✓ Created Vcc for control signals")
+        gnd_id = await self.create_element("InputGnd", 200.0, 50.0, "Gnd")
+        if gnd_id is None:
+            return False
+
+        await self.log("  ✓ Created Vcc and Gnd for control signals")
+
+        # ---- Create instruction memory programming inputs (F53) ----
+        prog_addr_inputs = []
+        for i in range(8):
+            elem_id = await self.create_element("InputSwitch", 50.0 + (i * 40.0), 100.0, f"ProgAddr[{i}]")
+            if elem_id is None:
+                return False
+            prog_addr_inputs.append(elem_id)
+
+        prog_data_inputs = []
+        for i in range(16):
+            elem_id = await self.create_element("InputSwitch", 50.0 + (i * 20.0), 140.0, f"ProgData[{i}]")
+            if elem_id is None:
+                return False
+            prog_data_inputs.append(elem_id)
+
+        prog_write_id = await self.create_element("InputSwitch", 400.0, 100.0, "ProgWrite")
+        if prog_write_id is None:
+            return False
+
+        await self.log("  ✓ Created programming interface inputs")
 
         # ---- Instantiate 16-bit Fetch Stage ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level9_fetch_stage_16bit")):
@@ -90,11 +121,34 @@ class CPU16BitRISCBuilder(ICBuilderBase):
         if not await self.connect(reset_id, fetch_id, target_port_label="Reset"):
             return False
 
-        # Default control signals
+        # Default control signals: free-running fetch (PCInc=1, InstrLoad=1),
+        # no jumps (PCLoad/PCData = explicit GND, F34 convention)
         if not await self.connect(vcc_id, fetch_id, target_port_label="PCInc"):
             return False
 
-        await self.log("  ✓ Instantiated 16-bit Fetch stage")
+        if not await self.connect(vcc_id, fetch_id, target_port_label="InstrLoad"):
+            return False
+
+        if not await self.connect(gnd_id, fetch_id, target_port_label="PCLoad"):
+            return False
+
+        for i in range(8):
+            if not await self.connect(gnd_id, fetch_id, target_port_label=f"PCData[{i}]"):
+                return False
+
+        # Programming interface pass-through
+        for i in range(8):
+            if not await self.connect(prog_addr_inputs[i], fetch_id, target_port_label=f"ProgAddr[{i}]"):
+                return False
+
+        for i in range(16):
+            if not await self.connect(prog_data_inputs[i], fetch_id, target_port_label=f"ProgData[{i}]"):
+                return False
+
+        if not await self.connect(prog_write_id, fetch_id, target_port_label="ProgWrite"):
+            return False
+
+        await self.log("  ✓ Instantiated and wired 16-bit Fetch stage")
 
         # ---- Instantiate 16-bit ALU ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_alu_16bit")):
@@ -107,24 +161,28 @@ class CPU16BitRISCBuilder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated 16-bit ALU")
 
-        # ---- Wire fetch instruction fields into the ALU (F26) ----
-        # OperandA = zero-extended SrcBits (6 bits), OperandB = zero-extended
-        # DestReg (5 bits), ALUOp = OpCode[0..2]. The unconnected high
-        # OperandA/OperandB bits default to the ALU IC's saved-off switches
-        # (0), giving the zero extension implicitly.
+        # ---- Wire fetch instruction fields into the ALU (F26, F53) ----
+        # Single-cycle decode uses the UNREGISTERED RawInstr word (the
+        # level9_single_cycle pattern — the IR's registered fields would add
+        # a cycle of latency). Fields are LSB-first per project convention:
+        #   OperandA = zero-extended SrcBits = RawInstr[0..5]
+        #   OperandB = zero-extended DestReg = RawInstr[6..10]
+        #   ALUOp    = low 3 bits of OpCode = RawInstr[11..13]
+        # The unconnected high OperandA/OperandB bits default to the ALU
+        # IC's saved-off switches (0), giving the zero extension implicitly.
         for i in range(6):
-            if not await self.connect(fetch_id, alu_id, source_port_label=f"SrcBits[{i}]", target_port_label=f"OperandA[{i}]"):
+            if not await self.connect(fetch_id, alu_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"OperandA[{i}]"):
                 return False
 
         for i in range(5):
-            if not await self.connect(fetch_id, alu_id, source_port_label=f"DestReg[{i}]", target_port_label=f"OperandB[{i}]"):
+            if not await self.connect(fetch_id, alu_id, source_port_label=f"RawInstr[{6 + i}]", target_port_label=f"OperandB[{i}]"):
                 return False
 
         for i in range(3):
-            if not await self.connect(fetch_id, alu_id, source_port_label=f"OpCode[{i}]", target_port_label=f"ALUOp[{i}]"):
+            if not await self.connect(fetch_id, alu_id, source_port_label=f"RawInstr[{11 + i}]", target_port_label=f"ALUOp[{i}]"):
                 return False
 
-        await self.log("  ✓ Wired instruction fields to ALU operands")
+        await self.log("  ✓ Wired RawInstr fields to ALU operands (LSB-first)")
 
         # ---- Create Output: PC ----
         for i in range(8):
