@@ -90,19 +90,15 @@
         <file>Memory/Dark/D-flipflop.svg</file>
         <file>Memory/Dark/D-latch.svg</file>
         <file>Memory/Dark/JK-flipflop.svg</file>
-        <file>Memory/Dark/JK-latch.svg</file>
         <file>Memory/Dark/SR-flipflop.svg</file>
         <file>Memory/Dark/SR-latch.svg</file>
         <file>Memory/Dark/T-flipflop.svg</file>
-        <file>Memory/Dark/T-latch.svg</file>
         <file>Memory/Light/D-flipflop.svg</file>
         <file>Memory/Light/D-latch.svg</file>
         <file>Memory/Light/JK-flipflop.svg</file>
-        <file>Memory/Light/JK-latch.svg</file>
         <file>Memory/Light/SR-flipflop.svg</file>
         <file>Memory/Light/SR-latch.svg</file>
         <file>Memory/Light/T-flipflop.svg</file>
-        <file>Memory/Light/T-latch.svg</file>
 
         <!-- Misc Components -->
         <file>Misc/line.svg</file>

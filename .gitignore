@@ -184,3 +184,6 @@ slow-unit-*
 MCP/Client/temp/
 MCP/Client/.venv/
 MCP/temp/
+
+# aqtinstall (Qt installer) log dropped in the working directory
+aqtinstall.log

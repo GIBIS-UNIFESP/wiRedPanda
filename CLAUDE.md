@@ -92,7 +92,7 @@ Advanced development features supported:
 - Main project file: `CMakeLists.txt`
 - App code: `App/` directory
 - Tests: `Tests/` directory with comprehensive test suite
-- Test executable: single unified `test_wiredpanda` binary with 132 test classes (run via `ctest --preset debug`)
+- Test executable: single unified `test_wiredpanda` binary with 176 test classes (run via `ctest --preset debug`)
 
 ## Digital Logic Simulation
 
@@ -128,16 +128,20 @@ Advanced development features supported:
 ### Code Evidence
 
 ```cpp
-// Fixed 1ms simulation cycle
+// Fixed 1ms simulation cycle (App/Simulation/Simulation.cpp)
 m_timer.setInterval(1ms);
 
-// Immediate combinational logic (LogicAnd)
-const auto result = std::accumulate(inputs, true, std::bit_and<>());
-setOutputValue(result);  // Zero delay
+// Immediate combinational logic with 4-state Status (And::updateLogic)
+if (!simUpdateInputsAllowUnknown()) {
+    return;
+}
+setOutputValue(StatusOps::statusAndAll(simInputs()));  // Zero delay
 
-// Real-time clock timing
+// Real-time clock timing (Clock::updateOutputs) — advance by exactly one
+// half-period so accumulated drift doesn't skew the frequency
 if (elapsed > m_interval) {
-    setOn(!m_isOn);  // Toggle based on frequency
+    m_startTime += m_interval;
+    setOn(!m_isOn);
 }
 ```
 
@@ -185,7 +189,7 @@ The simulation accurately represents **ideal digital logic behavior** while deli
 
 ## Development Container
 
-- **Ubuntu 22.04 LTS** based development environment
+- **Ubuntu 24.04 LTS** based development environment
 - **Location**: `.devcontainer/` directory with full configuration
 - **Features**:
   - Qt 6.2+ development environment

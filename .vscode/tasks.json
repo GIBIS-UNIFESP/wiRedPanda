@@ -41,7 +41,7 @@
         {
             "label": "Run Tests",
             "type": "shell",
-            "command": "./build/test",
+            "command": "./build/test_wiredpanda",
             "group": "test",
             "dependsOn": "Build",
             "problemMatcher": [],
