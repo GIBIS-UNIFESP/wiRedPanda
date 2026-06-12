@@ -590,7 +590,7 @@ void Scene::contextMenu(const QPoint screenPos)
         auto *pasteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/paste.svg")), tr("Paste"));
         const auto *mimeData = QApplication::clipboard()->mimeData();
 
-        if (mimeData->hasFormat(MimeType::ClipboardLegacy)) {
+        if (ClipboardManager::canPaste(mimeData)) {
             connect(pasteAction, &QAction::triggered, this, &Scene::pasteAction);
         } else {
             pasteAction->setEnabled(false);

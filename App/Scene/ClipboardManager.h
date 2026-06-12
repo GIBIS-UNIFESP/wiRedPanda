@@ -13,6 +13,7 @@
 #include <QVersionNumber>
 
 class QGraphicsItem;
+class QMimeData;
 class Scene;
 
 /**
@@ -36,6 +37,14 @@ public:
 
     /// Pastes items from the system clipboard into the scene.
     void paste();
+
+    /**
+     * \brief Returns whether \a mimeData carries circuit data paste() accepts.
+     * \details Single source of truth for paste gating (context menu, future
+     * action enabling): paste() reads both the current and the legacy mime
+     * format, so any gate that checks only one of them silently drifts.
+     */
+    static bool canPaste(const QMimeData *mimeData);
 
     /// Initiates a clone-drag (Ctrl+drag) of the current selection.
     void cloneDrag(const QPointF &mousePos);
