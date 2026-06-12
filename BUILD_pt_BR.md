@@ -18,7 +18,7 @@ Em distribuições como Arch Linux, Gentoo, Manjaro, Debian, etc., o Qt 6.2+ pod
 * Debian/Ubuntu
 
 ```bash
-sudo apt install build-essential qt6-base-dev qt6-multimedia-dev libqt6svg6-dev
+sudo apt install build-essential qt6-base-dev qt6-multimedia-dev qt6-svg-dev
 ```
 
 * Baseado em Arch Linux
