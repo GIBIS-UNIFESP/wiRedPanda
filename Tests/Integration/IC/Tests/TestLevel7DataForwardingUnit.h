@@ -17,5 +17,14 @@ private slots:
     void testDataForwardingUnit_data();
     void testDataForwardingUnit();
 
+    // Per-bit lane isolation through the selected mux lane: a one-hot input must
+    // forward to a one-hot output (input side), and a one-cold input must leave
+    // exactly that output bit low (output side) — proving the 8 per-bit muxes
+    // are independent with no bit-to-bit cross-wiring.
+    void testInputPortIsolation_data();
+    void testInputPortIsolation();
+    void testOutputPortIsolation_data();
+    void testOutputPortIsolation();
+
     void testDataForwardingUnitStructure();
 };

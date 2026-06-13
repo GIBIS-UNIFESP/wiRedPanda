@@ -130,6 +130,61 @@ void TestLevel7DataForwardingUnit::testDataForwardingUnit()
     QCOMPARE(f.readOutput(), expectedOutput);
 }
 
+void TestLevel7DataForwardingUnit::testInputPortIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("input_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel7DataForwardingUnit::testInputPortIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level7DataFwd;
+
+    // Route lane A (select = 00); a one-hot on DataA must forward to a one-hot
+    // output at the same position, with the other three lanes held at 0.
+    setMultiBitInput(f.dataAInputs, 1 << bitPosition);
+    setMultiBitInput(f.dataBInputs, 0x00);
+    setMultiBitInput(f.dataCInputs, 0x00);
+    setMultiBitInput(f.dataDInputs, 0x00);
+    setMultiBitInput(f.selectInputs, 0);
+
+    f.sim->update();
+
+    QCOMPARE(f.readOutput(), 1 << bitPosition);
+}
+
+void TestLevel7DataForwardingUnit::testOutputPortIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("output_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel7DataForwardingUnit::testOutputPortIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level7DataFwd;
+
+    // Complementary check: a one-cold DataA (all bits high except bitPosition)
+    // must leave exactly that output bit low — each output bit is driven only by
+    // its own mux.
+    setMultiBitInput(f.dataAInputs, 0xFF ^ (1 << bitPosition));
+    setMultiBitInput(f.dataBInputs, 0x00);
+    setMultiBitInput(f.dataCInputs, 0x00);
+    setMultiBitInput(f.dataDInputs, 0x00);
+    setMultiBitInput(f.selectInputs, 0);
+
+    f.sim->update();
+
+    QCOMPARE(f.readOutput(), 0xFF ^ (1 << bitPosition));
+}
+
 void TestLevel7DataForwardingUnit::testDataForwardingUnitStructure()
 {
     auto &f = *s_level7DataFwd;
