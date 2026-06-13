@@ -102,12 +102,15 @@ void TestLevel4BinaryCounter4Bit::testBinaryCounter()
     f.clk->setOn(false);
     f.sim->update();
 
+    // This counter has no reset; its master-slave flip-flops need one warm-up
+    // rising edge to latch the initial state into the count path. That first
+    // edge settles the count to 0 without incrementing — so after it, each
+    // clockCycle increments by exactly one and the loop count equals the count.
+    clockCycle(f.sim, f.clk);
+
     for (int cycle = 0; cycle < numCycles; ++cycle) {
         clockCycle(f.sim, f.clk);
     }
-
-    // Extra clock cycle to allow IC outputs to fully propagate
-    clockCycle(f.sim, f.clk);
 
     int result = readMultiBitOutput(QVector<GraphicElement *>({
         f.counterOut[0], f.counterOut[1], f.counterOut[2], f.counterOut[3]
