@@ -54,10 +54,44 @@ assign q = aux_nor_15;
 assign q_bar = aux_nor_16;
 endmodule
 
+// Module for hold_mux0 (generated from level2_mux_2to1.panda)
+module level2_mux_2to1 (
+    input data0,
+    input data1,
+    input sel0,
+    input enable,
+    output p_output
+);
+
+reg aux_mux_1 = 1'b0;
+wire aux_and_2;
+
+// Internal logic
+    //Multiplexer
+    always @(*)
+    begin
+        case({sel0})
+            1'd0: aux_mux_1 = data0;
+            1'd1: aux_mux_1 = data1;
+            default: aux_mux_1 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
+
+assign p_output = aux_and_2;
+endmodule
+
 // Module for LEVEL4_JOHNSON_COUNTER_4BIT (generated from level4_johnson_counter_4bit.panda)
 module level4_johnson_counter_4bit_ic (
+    input load,
+    input countenable,
     input clk,
+    input data0,
+    input data1,
     input preset,
+    input data2,
+    input data3,
     output q0,
     output q1,
     output q2,
@@ -76,11 +110,27 @@ wire w_level1_d_flip_flop_inst_3_q_bar;
 // IC instance: FF3 (level1_d_flip_flop)
 wire w_level1_d_flip_flop_inst_4_q;
 wire w_level1_d_flip_flop_inst_4_q_bar;
-wire aux_not_5;
+// IC instance: hold_mux0 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_6_p_output;
+// IC instance: load_mux0 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_7_p_output;
+// IC instance: hold_mux1 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_8_p_output;
+// IC instance: load_mux1 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_9_p_output;
+// IC instance: hold_mux2 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_10_p_output;
+// IC instance: load_mux2 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_11_p_output;
+// IC instance: hold_mux3 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_12_p_output;
+// IC instance: load_mux3 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_13_p_output;
+wire aux_not_14;
 
 // Internal logic
 level1_d_flip_flop level1_d_flip_flop_inst_1 (
-    .d(aux_not_5),
+    .d(w_level2_mux_2to1_inst_7_p_output),
     .clock(clk),
     .preset(preset),
     .clear(1'b1),
@@ -88,7 +138,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_1 (
     .q_bar(w_level1_d_flip_flop_inst_1_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_2 (
-    .d(w_level1_d_flip_flop_inst_1_q),
+    .d(w_level2_mux_2to1_inst_9_p_output),
     .clock(clk),
     .preset(1'b1),
     .clear(preset),
@@ -96,7 +146,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_2 (
     .q_bar(w_level1_d_flip_flop_inst_2_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_3 (
-    .d(w_level1_d_flip_flop_inst_2_q),
+    .d(w_level2_mux_2to1_inst_11_p_output),
     .clock(clk),
     .preset(1'b1),
     .clear(preset),
@@ -104,14 +154,70 @@ level1_d_flip_flop level1_d_flip_flop_inst_3 (
     .q_bar(w_level1_d_flip_flop_inst_3_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_4 (
-    .d(w_level1_d_flip_flop_inst_3_q),
+    .d(w_level2_mux_2to1_inst_13_p_output),
     .clock(clk),
     .preset(1'b1),
     .clear(preset),
     .q(w_level1_d_flip_flop_inst_4_q),
     .q_bar(w_level1_d_flip_flop_inst_4_q_bar)
 );
-assign aux_not_5 = ~w_level1_d_flip_flop_inst_4_q;
+level2_mux_2to1 level2_mux_2to1_inst_6 (
+    .data0(w_level1_d_flip_flop_inst_1_q),
+    .data1(aux_not_14),
+    .sel0(countenable),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_6_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_7 (
+    .data0(w_level2_mux_2to1_inst_6_p_output),
+    .data1(data0),
+    .sel0(load),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_7_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_8 (
+    .data0(w_level1_d_flip_flop_inst_2_q),
+    .data1(w_level1_d_flip_flop_inst_1_q),
+    .sel0(countenable),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_8_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_9 (
+    .data0(w_level2_mux_2to1_inst_8_p_output),
+    .data1(data1),
+    .sel0(load),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_9_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_10 (
+    .data0(w_level1_d_flip_flop_inst_3_q),
+    .data1(w_level1_d_flip_flop_inst_2_q),
+    .sel0(countenable),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_10_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_11 (
+    .data0(w_level2_mux_2to1_inst_10_p_output),
+    .data1(data2),
+    .sel0(load),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_11_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_12 (
+    .data0(w_level1_d_flip_flop_inst_4_q),
+    .data1(w_level1_d_flip_flop_inst_3_q),
+    .sel0(countenable),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_12_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_13 (
+    .data0(w_level2_mux_2to1_inst_12_p_output),
+    .data1(data3),
+    .sel0(load),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_13_p_output)
+);
+assign aux_not_14 = ~w_level1_d_flip_flop_inst_4_q;
 
 assign q0 = w_level1_d_flip_flop_inst_1_q;
 assign q1 = w_level1_d_flip_flop_inst_2_q;
@@ -123,12 +229,18 @@ module level4_johnson_counter_4bit (
 /* ========= Inputs ========== */
 input input_switch1,
 input input_switch2,
+input input_switch3,
+input input_switch4,
+input input_switch5,
+input input_switch6,
+input input_switch7,
+input input_switch8,
 
 /* ========= Outputs ========== */
-output led4_1,
-output led5_1,
-output led6_1,
-output led7_1
+output led10_1,
+output led11_1,
+output led12_1,
+output led13_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL4_JOHNSON_COUNTER_4BIT (level4_johnson_counter_4bit_ic)
@@ -140,8 +252,14 @@ wire w_level4_johnson_counter_4bit_ic_inst_1_q3;
 
 // Assigning aux variables. //
 level4_johnson_counter_4bit_ic level4_johnson_counter_4bit_ic_inst_1 (
-    .clk(input_switch1),
-    .preset(input_switch2),
+    .load(input_switch1),
+    .countenable(input_switch2),
+    .clk(input_switch3),
+    .data0(input_switch4),
+    .data1(input_switch5),
+    .preset(input_switch6),
+    .data2(input_switch7),
+    .data3(input_switch8),
     .q0(w_level4_johnson_counter_4bit_ic_inst_1_q0),
     .q1(w_level4_johnson_counter_4bit_ic_inst_1_q1),
     .q2(w_level4_johnson_counter_4bit_ic_inst_1_q2),
@@ -149,8 +267,8 @@ level4_johnson_counter_4bit_ic level4_johnson_counter_4bit_ic_inst_1 (
 );
 
 // Writing output data. //
-assign led4_1 = w_level4_johnson_counter_4bit_ic_inst_1_q0;
-assign led5_1 = w_level4_johnson_counter_4bit_ic_inst_1_q1;
-assign led6_1 = w_level4_johnson_counter_4bit_ic_inst_1_q2;
-assign led7_1 = w_level4_johnson_counter_4bit_ic_inst_1_q3;
+assign led10_1 = w_level4_johnson_counter_4bit_ic_inst_1_q0;
+assign led11_1 = w_level4_johnson_counter_4bit_ic_inst_1_q1;
+assign led12_1 = w_level4_johnson_counter_4bit_ic_inst_1_q2;
+assign led13_1 = w_level4_johnson_counter_4bit_ic_inst_1_q3;
 endmodule

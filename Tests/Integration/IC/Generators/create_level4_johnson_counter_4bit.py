@@ -5,7 +5,10 @@
 """
 Create 4-bit Johnson Counter IC (Twisted Ring Counter)
 
-Inputs: CLK (Clock), PRESET (Preset/Initialize signal - active LOW)
+Inputs:
+  - CLK (Clock), PRESET (Preset/Initialize signal - active LOW)
+  - CountEnable (active-HIGH; low = hold), Load (active-HIGH; synchronous parallel
+    load), Data[0:3] (value captured when Load=1)
 Outputs: Q[0:3] (Counter Output)
 
 Circuit:
@@ -60,6 +63,22 @@ class JohnsonCounterBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created input PRESET")
 
+        # Control inputs (active-HIGH): CountEnable holds the value when low;
+        # Load synchronously captures Data[0-3] on the next edge. Tie CountEnable
+        # high and Load low for the normal twisted-ring sequence.
+        ce_id = await self.create_element("InputSwitch", input_x, 40.0, "CountEnable")
+        if ce_id is None:
+            return False
+        load_id = await self.create_element("InputSwitch", input_x, 0.0, "Load")
+        if load_id is None:
+            return False
+        data_in_ids = []
+        for i in range(4):
+            d_id = await self.create_element("InputSwitch", input_x, 160.0 + (i * 30.0), f"Data[{i}]")
+            if d_id is None:
+                return False
+            data_in_ids.append(d_id)
+
         # Create D flip-flops (4-bit) using level1_d_flip_flop IC
         dff_ids = []
         dff_x = input_x + HORIZONTAL_GATE_SPACING
@@ -69,6 +88,44 @@ class JohnsonCounterBuilder(ICBuilderBase):
                 return False
             dff_ids.append(ff_id)
             await self.log(f"  ✓ Instantiated level1_d_flip_flop {i}")
+
+        # Vcc to hold the mux Enables active (StaticInput -> no IC boundary port)
+        mux_vcc_id = await self.create_element("InputVcc", input_x, 220.0, "MuxVcc")
+        if mux_vcc_id is None:
+            return False
+
+        # D-input mux chain per bit (same pattern as the binary counter):
+        #   hold_mux_i = mux(CE, Q_i,            shift_in_i)   CE=0 hold, =1 shift
+        #   load_mux_i = mux(LD, hold_mux_i.Out, Data_i)       LD=1 parallel load
+        #   FF_i.D = load_mux_i.Out
+        # The cascade/feedback wiring below feeds each hold_mux's Data[1].
+        hold_mux_ids = []
+        mux_x = input_x + 0.5 * HORIZONTAL_GATE_SPACING
+        for i in range(4):
+            hm = await self.instantiate_ic("level2_mux_2to1", mux_x, 220.0 + (i * 30.0), f"hold_mux{i}")
+            if hm is None:
+                return False
+            hold_mux_ids.append(hm)
+            if not await self.connect(dff_ids[i], hm, source_port_label="Q", target_port_label="Data[0]"):
+                return False
+            if not await self.connect(ce_id, hm, target_port_label="Sel[0]"):
+                return False
+            if not await self.connect(mux_vcc_id, hm, target_port_label="Enable"):
+                return False
+
+            lm = await self.instantiate_ic("level2_mux_2to1", mux_x + HORIZONTAL_GATE_SPACING, 225.0 + (i * 30.0), f"load_mux{i}")
+            if lm is None:
+                return False
+            if not await self.connect(hm, lm, source_port_label="Output", target_port_label="Data[0]"):
+                return False
+            if not await self.connect(data_in_ids[i], lm, target_port_label="Data[1]"):
+                return False
+            if not await self.connect(load_id, lm, target_port_label="Sel[0]"):
+                return False
+            if not await self.connect(mux_vcc_id, lm, target_port_label="Enable"):
+                return False
+            if not await self.connect(lm, dff_ids[i], source_port_label="Output", target_port_label="D"):
+                return False
 
         # Create NOT gate for twisted feedback
         not_id = await self.create_element("Not", dff_x + (3 * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, "not_q3")
@@ -91,18 +148,18 @@ class JohnsonCounterBuilder(ICBuilderBase):
             if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
                 return False
 
-        # ========== Connect cascade path ==========
+        # ========== Connect cascade path (into the hold-mux shift input) ==========
         for i in range(3):
-            # Q[i] → D[i+1]
-            if not await self.connect(dff_ids[i], dff_ids[i + 1], source_port_label="Q", target_port_label="D"):
+            # Q[i] → hold_mux[i+1].Data[1] (the "shift" input)
+            if not await self.connect(dff_ids[i], hold_mux_ids[i + 1], source_port_label="Q", target_port_label="Data[1]"):
                 return False
 
         # ========== Connect twisted feedback path ==========
-        # Q[3] → NOT → D[0]
+        # Q[3] → NOT → hold_mux[0].Data[1]
         if not await self.connect(dff_ids[3], not_id, source_port_label="Q"):
             return False
 
-        if not await self.connect(not_id, dff_ids[0], target_port_label="D"):
+        if not await self.connect(not_id, hold_mux_ids[0], target_port_label="Data[1]"):
             return False
 
         # ========== Connect FF outputs to LEDs ==========
