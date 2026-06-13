@@ -54,30 +54,23 @@ assign out6 = aux_and_10;
 assign out7 = aux_and_11;
 endmodule
 
-// Module for FA[0] (generated from level2_full_adder_1bit.panda)
-module level2_full_adder_1bit (
+// Module for HA1 (generated from level2_half_adder.panda)
+module level2_half_adder (
     input a,
     input b,
-    input cin,
     output sum,
-    output cout
+    output carry
 );
 
 wire aux_xor_1;
 wire aux_and_2;
-wire aux_xor_3;
-wire aux_and_4;
-wire aux_or_5;
 
 // Internal logic
 assign aux_xor_1 = (a ^ b);
 assign aux_and_2 = (a & b);
-assign aux_xor_3 = (aux_xor_1 ^ cin);
-assign aux_and_4 = (aux_xor_1 & cin);
-assign aux_or_5 = (aux_and_2 | aux_and_4);
 
-assign sum = aux_xor_3;
-assign cout = aux_or_5;
+assign sum = aux_xor_1;
+assign carry = aux_and_2;
 endmodule
 
 // Module for Mux[0] (generated from level2_mux_2to1.panda)
@@ -886,130 +879,6 @@ assign q6 = w_level3_register_1bit_inst_7_q;
 assign q7 = w_level3_register_1bit_inst_8_q;
 endmodule
 
-// Module for Adder8bit (generated from level6_ripple_adder_8bit.panda)
-module level6_ripple_adder_8bit (
-    input a0,
-    input b0,
-    input carryin,
-    input a1,
-    input b1,
-    input a2,
-    input b2,
-    input a3,
-    input b3,
-    input a4,
-    input b4,
-    input a5,
-    input b5,
-    input a6,
-    input b6,
-    input a7,
-    input b7,
-    output sum0,
-    output sum1,
-    output sum2,
-    output sum3,
-    output sum4,
-    output sum5,
-    output sum6,
-    output sum7,
-    output carryout
-);
-
-// IC instance: FA[0] (level2_full_adder_1bit)
-wire w_level2_full_adder_1bit_inst_1_sum;
-wire w_level2_full_adder_1bit_inst_1_cout;
-// IC instance: FA[1] (level2_full_adder_1bit)
-wire w_level2_full_adder_1bit_inst_2_sum;
-wire w_level2_full_adder_1bit_inst_2_cout;
-// IC instance: FA[2] (level2_full_adder_1bit)
-wire w_level2_full_adder_1bit_inst_3_sum;
-wire w_level2_full_adder_1bit_inst_3_cout;
-// IC instance: FA[3] (level2_full_adder_1bit)
-wire w_level2_full_adder_1bit_inst_4_sum;
-wire w_level2_full_adder_1bit_inst_4_cout;
-// IC instance: FA[4] (level2_full_adder_1bit)
-wire w_level2_full_adder_1bit_inst_5_sum;
-wire w_level2_full_adder_1bit_inst_5_cout;
-// IC instance: FA[5] (level2_full_adder_1bit)
-wire w_level2_full_adder_1bit_inst_6_sum;
-wire w_level2_full_adder_1bit_inst_6_cout;
-// IC instance: FA[6] (level2_full_adder_1bit)
-wire w_level2_full_adder_1bit_inst_7_sum;
-wire w_level2_full_adder_1bit_inst_7_cout;
-// IC instance: FA[7] (level2_full_adder_1bit)
-wire w_level2_full_adder_1bit_inst_8_sum;
-wire w_level2_full_adder_1bit_inst_8_cout;
-
-// Internal logic
-level2_full_adder_1bit level2_full_adder_1bit_inst_1 (
-    .a(a0),
-    .b(b0),
-    .cin(carryin),
-    .sum(w_level2_full_adder_1bit_inst_1_sum),
-    .cout(w_level2_full_adder_1bit_inst_1_cout)
-);
-level2_full_adder_1bit level2_full_adder_1bit_inst_2 (
-    .a(a1),
-    .b(b1),
-    .cin(w_level2_full_adder_1bit_inst_1_cout),
-    .sum(w_level2_full_adder_1bit_inst_2_sum),
-    .cout(w_level2_full_adder_1bit_inst_2_cout)
-);
-level2_full_adder_1bit level2_full_adder_1bit_inst_3 (
-    .a(a2),
-    .b(b2),
-    .cin(w_level2_full_adder_1bit_inst_2_cout),
-    .sum(w_level2_full_adder_1bit_inst_3_sum),
-    .cout(w_level2_full_adder_1bit_inst_3_cout)
-);
-level2_full_adder_1bit level2_full_adder_1bit_inst_4 (
-    .a(a3),
-    .b(b3),
-    .cin(w_level2_full_adder_1bit_inst_3_cout),
-    .sum(w_level2_full_adder_1bit_inst_4_sum),
-    .cout(w_level2_full_adder_1bit_inst_4_cout)
-);
-level2_full_adder_1bit level2_full_adder_1bit_inst_5 (
-    .a(a4),
-    .b(b4),
-    .cin(w_level2_full_adder_1bit_inst_4_cout),
-    .sum(w_level2_full_adder_1bit_inst_5_sum),
-    .cout(w_level2_full_adder_1bit_inst_5_cout)
-);
-level2_full_adder_1bit level2_full_adder_1bit_inst_6 (
-    .a(a5),
-    .b(b5),
-    .cin(w_level2_full_adder_1bit_inst_5_cout),
-    .sum(w_level2_full_adder_1bit_inst_6_sum),
-    .cout(w_level2_full_adder_1bit_inst_6_cout)
-);
-level2_full_adder_1bit level2_full_adder_1bit_inst_7 (
-    .a(a6),
-    .b(b6),
-    .cin(w_level2_full_adder_1bit_inst_6_cout),
-    .sum(w_level2_full_adder_1bit_inst_7_sum),
-    .cout(w_level2_full_adder_1bit_inst_7_cout)
-);
-level2_full_adder_1bit level2_full_adder_1bit_inst_8 (
-    .a(a7),
-    .b(b7),
-    .cin(w_level2_full_adder_1bit_inst_7_cout),
-    .sum(w_level2_full_adder_1bit_inst_8_sum),
-    .cout(w_level2_full_adder_1bit_inst_8_cout)
-);
-
-assign sum0 = w_level2_full_adder_1bit_inst_1_sum;
-assign sum1 = w_level2_full_adder_1bit_inst_2_sum;
-assign sum2 = w_level2_full_adder_1bit_inst_3_sum;
-assign sum3 = w_level2_full_adder_1bit_inst_4_sum;
-assign sum4 = w_level2_full_adder_1bit_inst_5_sum;
-assign sum5 = w_level2_full_adder_1bit_inst_6_sum;
-assign sum6 = w_level2_full_adder_1bit_inst_7_sum;
-assign sum7 = w_level2_full_adder_1bit_inst_8_sum;
-assign carryout = w_level2_full_adder_1bit_inst_8_cout;
-endmodule
-
 // Module for InstrMem (generated from level7_instruction_memory_interface.panda)
 module level7_instruction_memory_interface (
     input address0,
@@ -1166,6 +1035,166 @@ assign opcode4 = w_level6_register_8bit_inst_1_q7;
 assign registeraddr0 = w_level6_register_8bit_inst_1_q0;
 assign registeraddr1 = w_level6_register_8bit_inst_1_q1;
 assign registeraddr2 = w_level6_register_8bit_inst_1_q2;
+endmodule
+
+// Module for FA[0] (generated from level2_full_adder_1bit.panda)
+module level2_full_adder_1bit (
+    input a,
+    input b,
+    input cin,
+    output sum,
+    output cout
+);
+
+// IC instance: HA1 (level2_half_adder)
+wire w_level2_half_adder_inst_1_sum;
+wire w_level2_half_adder_inst_1_carry;
+// IC instance: HA2 (level2_half_adder)
+wire w_level2_half_adder_inst_2_sum;
+wire w_level2_half_adder_inst_2_carry;
+wire aux_or_3;
+
+// Internal logic
+level2_half_adder level2_half_adder_inst_1 (
+    .a(a),
+    .b(b),
+    .sum(w_level2_half_adder_inst_1_sum),
+    .carry(w_level2_half_adder_inst_1_carry)
+);
+level2_half_adder level2_half_adder_inst_2 (
+    .a(w_level2_half_adder_inst_1_sum),
+    .b(cin),
+    .sum(w_level2_half_adder_inst_2_sum),
+    .carry(w_level2_half_adder_inst_2_carry)
+);
+assign aux_or_3 = (w_level2_half_adder_inst_1_carry | w_level2_half_adder_inst_2_carry);
+
+assign sum = w_level2_half_adder_inst_2_sum;
+assign cout = aux_or_3;
+endmodule
+
+// Module for Adder8bit (generated from level6_ripple_adder_8bit.panda)
+module level6_ripple_adder_8bit (
+    input a0,
+    input b0,
+    input carryin,
+    input a1,
+    input b1,
+    input a2,
+    input b2,
+    input a3,
+    input b3,
+    input a4,
+    input b4,
+    input a5,
+    input b5,
+    input a6,
+    input b6,
+    input a7,
+    input b7,
+    output sum0,
+    output sum1,
+    output sum2,
+    output sum3,
+    output sum4,
+    output sum5,
+    output sum6,
+    output sum7,
+    output carryout
+);
+
+// IC instance: FA[0] (level2_full_adder_1bit)
+wire w_level2_full_adder_1bit_inst_1_sum;
+wire w_level2_full_adder_1bit_inst_1_cout;
+// IC instance: FA[1] (level2_full_adder_1bit)
+wire w_level2_full_adder_1bit_inst_2_sum;
+wire w_level2_full_adder_1bit_inst_2_cout;
+// IC instance: FA[2] (level2_full_adder_1bit)
+wire w_level2_full_adder_1bit_inst_3_sum;
+wire w_level2_full_adder_1bit_inst_3_cout;
+// IC instance: FA[3] (level2_full_adder_1bit)
+wire w_level2_full_adder_1bit_inst_4_sum;
+wire w_level2_full_adder_1bit_inst_4_cout;
+// IC instance: FA[4] (level2_full_adder_1bit)
+wire w_level2_full_adder_1bit_inst_5_sum;
+wire w_level2_full_adder_1bit_inst_5_cout;
+// IC instance: FA[5] (level2_full_adder_1bit)
+wire w_level2_full_adder_1bit_inst_6_sum;
+wire w_level2_full_adder_1bit_inst_6_cout;
+// IC instance: FA[6] (level2_full_adder_1bit)
+wire w_level2_full_adder_1bit_inst_7_sum;
+wire w_level2_full_adder_1bit_inst_7_cout;
+// IC instance: FA[7] (level2_full_adder_1bit)
+wire w_level2_full_adder_1bit_inst_8_sum;
+wire w_level2_full_adder_1bit_inst_8_cout;
+
+// Internal logic
+level2_full_adder_1bit level2_full_adder_1bit_inst_1 (
+    .a(a0),
+    .b(b0),
+    .cin(carryin),
+    .sum(w_level2_full_adder_1bit_inst_1_sum),
+    .cout(w_level2_full_adder_1bit_inst_1_cout)
+);
+level2_full_adder_1bit level2_full_adder_1bit_inst_2 (
+    .a(a1),
+    .b(b1),
+    .cin(w_level2_full_adder_1bit_inst_1_cout),
+    .sum(w_level2_full_adder_1bit_inst_2_sum),
+    .cout(w_level2_full_adder_1bit_inst_2_cout)
+);
+level2_full_adder_1bit level2_full_adder_1bit_inst_3 (
+    .a(a2),
+    .b(b2),
+    .cin(w_level2_full_adder_1bit_inst_2_cout),
+    .sum(w_level2_full_adder_1bit_inst_3_sum),
+    .cout(w_level2_full_adder_1bit_inst_3_cout)
+);
+level2_full_adder_1bit level2_full_adder_1bit_inst_4 (
+    .a(a3),
+    .b(b3),
+    .cin(w_level2_full_adder_1bit_inst_3_cout),
+    .sum(w_level2_full_adder_1bit_inst_4_sum),
+    .cout(w_level2_full_adder_1bit_inst_4_cout)
+);
+level2_full_adder_1bit level2_full_adder_1bit_inst_5 (
+    .a(a4),
+    .b(b4),
+    .cin(w_level2_full_adder_1bit_inst_4_cout),
+    .sum(w_level2_full_adder_1bit_inst_5_sum),
+    .cout(w_level2_full_adder_1bit_inst_5_cout)
+);
+level2_full_adder_1bit level2_full_adder_1bit_inst_6 (
+    .a(a5),
+    .b(b5),
+    .cin(w_level2_full_adder_1bit_inst_5_cout),
+    .sum(w_level2_full_adder_1bit_inst_6_sum),
+    .cout(w_level2_full_adder_1bit_inst_6_cout)
+);
+level2_full_adder_1bit level2_full_adder_1bit_inst_7 (
+    .a(a6),
+    .b(b6),
+    .cin(w_level2_full_adder_1bit_inst_6_cout),
+    .sum(w_level2_full_adder_1bit_inst_7_sum),
+    .cout(w_level2_full_adder_1bit_inst_7_cout)
+);
+level2_full_adder_1bit level2_full_adder_1bit_inst_8 (
+    .a(a7),
+    .b(b7),
+    .cin(w_level2_full_adder_1bit_inst_7_cout),
+    .sum(w_level2_full_adder_1bit_inst_8_sum),
+    .cout(w_level2_full_adder_1bit_inst_8_cout)
+);
+
+assign sum0 = w_level2_full_adder_1bit_inst_1_sum;
+assign sum1 = w_level2_full_adder_1bit_inst_2_sum;
+assign sum2 = w_level2_full_adder_1bit_inst_3_sum;
+assign sum3 = w_level2_full_adder_1bit_inst_4_sum;
+assign sum4 = w_level2_full_adder_1bit_inst_5_sum;
+assign sum5 = w_level2_full_adder_1bit_inst_6_sum;
+assign sum6 = w_level2_full_adder_1bit_inst_7_sum;
+assign sum7 = w_level2_full_adder_1bit_inst_8_sum;
+assign carryout = w_level2_full_adder_1bit_inst_8_cout;
 endmodule
 
 // Module for PC (generated from level6_program_counter_8bit_arithmetic.panda)

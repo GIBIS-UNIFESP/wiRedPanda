@@ -105,30 +105,23 @@ assign out6 = aux_and_10;
 assign out7 = aux_and_11;
 endmodule
 
-// Module for FA[0] (generated from level2_full_adder_1bit.panda)
-module level2_full_adder_1bit (
+// Module for HA1 (generated from level2_half_adder.panda)
+module level2_half_adder (
     input a,
     input b,
-    input cin,
     output sum,
-    output cout
+    output carry
 );
 
 wire aux_xor_1;
 wire aux_and_2;
-wire aux_xor_3;
-wire aux_and_4;
-wire aux_or_5;
 
 // Internal logic
 assign aux_xor_1 = (a ^ b);
 assign aux_and_2 = (a & b);
-assign aux_xor_3 = (aux_xor_1 ^ cin);
-assign aux_and_4 = (aux_xor_1 & cin);
-assign aux_or_5 = (aux_and_2 | aux_and_4);
 
-assign sum = aux_xor_3;
-assign cout = aux_or_5;
+assign sum = aux_xor_1;
+assign carry = aux_and_2;
 endmodule
 
 // Module for AddrMux[0] (generated from level2_mux_2to1.panda)
@@ -659,6 +652,42 @@ assign dataout4 = w_level4_ram_8x1_inst_5_dataout;
 assign dataout5 = w_level4_ram_8x1_inst_6_dataout;
 assign dataout6 = w_level4_ram_8x1_inst_7_dataout;
 assign dataout7 = w_level4_ram_8x1_inst_8_dataout;
+endmodule
+
+// Module for FA[0] (generated from level2_full_adder_1bit.panda)
+module level2_full_adder_1bit (
+    input a,
+    input b,
+    input cin,
+    output sum,
+    output cout
+);
+
+// IC instance: HA1 (level2_half_adder)
+wire w_level2_half_adder_inst_1_sum;
+wire w_level2_half_adder_inst_1_carry;
+// IC instance: HA2 (level2_half_adder)
+wire w_level2_half_adder_inst_2_sum;
+wire w_level2_half_adder_inst_2_carry;
+wire aux_or_3;
+
+// Internal logic
+level2_half_adder level2_half_adder_inst_1 (
+    .a(a),
+    .b(b),
+    .sum(w_level2_half_adder_inst_1_sum),
+    .carry(w_level2_half_adder_inst_1_carry)
+);
+level2_half_adder level2_half_adder_inst_2 (
+    .a(w_level2_half_adder_inst_1_sum),
+    .b(cin),
+    .sum(w_level2_half_adder_inst_2_sum),
+    .carry(w_level2_half_adder_inst_2_carry)
+);
+assign aux_or_3 = (w_level2_half_adder_inst_1_carry | w_level2_half_adder_inst_2_carry);
+
+assign sum = w_level2_half_adder_inst_2_sum;
+assign cout = aux_or_3;
 endmodule
 
 // Module for Adder (generated from level6_ripple_adder_8bit.panda)

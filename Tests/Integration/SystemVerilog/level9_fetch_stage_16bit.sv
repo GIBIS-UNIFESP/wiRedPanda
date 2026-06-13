@@ -54,30 +54,23 @@ assign out6 = aux_and_10;
 assign out7 = aux_and_11;
 endmodule
 
-// Module for FA[0] (generated from level2_full_adder_1bit.panda)
-module level2_full_adder_1bit (
+// Module for HA1 (generated from level2_half_adder.panda)
+module level2_half_adder (
     input a,
     input b,
-    input cin,
     output sum,
-    output cout
+    output carry
 );
 
 wire aux_xor_1;
 wire aux_and_2;
-wire aux_xor_3;
-wire aux_and_4;
-wire aux_or_5;
 
 // Internal logic
 assign aux_xor_1 = (a ^ b);
 assign aux_and_2 = (a & b);
-assign aux_xor_3 = (aux_xor_1 ^ cin);
-assign aux_and_4 = (aux_xor_1 & cin);
-assign aux_or_5 = (aux_and_2 | aux_and_4);
 
-assign sum = aux_xor_3;
-assign cout = aux_or_5;
+assign sum = aux_xor_1;
+assign carry = aux_and_2;
 endmodule
 
 // Module for Mux[0] (generated from level2_mux_2to1.panda)
@@ -886,6 +879,118 @@ assign q6 = w_level3_register_1bit_inst_7_q;
 assign q7 = w_level3_register_1bit_inst_8_q;
 endmodule
 
+// Module for InstrMem_Low (generated from level7_instruction_memory_interface.panda)
+module level7_instruction_memory_interface (
+    input address0,
+    input address1,
+    input address2,
+    input address3,
+    input address4,
+    input address5,
+    input address6,
+    input address7,
+    input clock,
+    input datain0,
+    input datain1,
+    input datain2,
+    input datain3,
+    input datain4,
+    input datain5,
+    input datain6,
+    input datain7,
+    input writeenable,
+    output instruction0,
+    output instruction1,
+    output instruction2,
+    output instruction3,
+    output instruction4,
+    output instruction5,
+    output instruction6,
+    output instruction7
+);
+
+// IC instance: InstructionMemory (level6_ram_8x8)
+wire w_level6_ram_8x8_inst_1_dataout0;
+wire w_level6_ram_8x8_inst_1_dataout1;
+wire w_level6_ram_8x8_inst_1_dataout2;
+wire w_level6_ram_8x8_inst_1_dataout3;
+wire w_level6_ram_8x8_inst_1_dataout4;
+wire w_level6_ram_8x8_inst_1_dataout5;
+wire w_level6_ram_8x8_inst_1_dataout6;
+wire w_level6_ram_8x8_inst_1_dataout7;
+
+// Internal logic
+level6_ram_8x8 level6_ram_8x8_inst_1 (
+    .address0(address0),
+    .address1(address1),
+    .address2(address2),
+    .datain0(datain0),
+    .datain1(datain1),
+    .datain2(datain2),
+    .datain3(datain3),
+    .datain4(datain4),
+    .datain5(datain5),
+    .datain6(datain6),
+    .datain7(datain7),
+    .writeenable(writeenable),
+    .clock(clock),
+    .reset(1'b0),
+    .dataout0(w_level6_ram_8x8_inst_1_dataout0),
+    .dataout1(w_level6_ram_8x8_inst_1_dataout1),
+    .dataout2(w_level6_ram_8x8_inst_1_dataout2),
+    .dataout3(w_level6_ram_8x8_inst_1_dataout3),
+    .dataout4(w_level6_ram_8x8_inst_1_dataout4),
+    .dataout5(w_level6_ram_8x8_inst_1_dataout5),
+    .dataout6(w_level6_ram_8x8_inst_1_dataout6),
+    .dataout7(w_level6_ram_8x8_inst_1_dataout7)
+);
+
+assign instruction0 = w_level6_ram_8x8_inst_1_dataout0;
+assign instruction1 = w_level6_ram_8x8_inst_1_dataout1;
+assign instruction2 = w_level6_ram_8x8_inst_1_dataout2;
+assign instruction3 = w_level6_ram_8x8_inst_1_dataout3;
+assign instruction4 = w_level6_ram_8x8_inst_1_dataout4;
+assign instruction5 = w_level6_ram_8x8_inst_1_dataout5;
+assign instruction6 = w_level6_ram_8x8_inst_1_dataout6;
+assign instruction7 = w_level6_ram_8x8_inst_1_dataout7;
+endmodule
+
+// Module for FA[0] (generated from level2_full_adder_1bit.panda)
+module level2_full_adder_1bit (
+    input a,
+    input b,
+    input cin,
+    output sum,
+    output cout
+);
+
+// IC instance: HA1 (level2_half_adder)
+wire w_level2_half_adder_inst_1_sum;
+wire w_level2_half_adder_inst_1_carry;
+// IC instance: HA2 (level2_half_adder)
+wire w_level2_half_adder_inst_2_sum;
+wire w_level2_half_adder_inst_2_carry;
+wire aux_or_3;
+
+// Internal logic
+level2_half_adder level2_half_adder_inst_1 (
+    .a(a),
+    .b(b),
+    .sum(w_level2_half_adder_inst_1_sum),
+    .carry(w_level2_half_adder_inst_1_carry)
+);
+level2_half_adder level2_half_adder_inst_2 (
+    .a(w_level2_half_adder_inst_1_sum),
+    .b(cin),
+    .sum(w_level2_half_adder_inst_2_sum),
+    .carry(w_level2_half_adder_inst_2_carry)
+);
+assign aux_or_3 = (w_level2_half_adder_inst_1_carry | w_level2_half_adder_inst_2_carry);
+
+assign sum = w_level2_half_adder_inst_2_sum;
+assign cout = aux_or_3;
+endmodule
+
 // Module for Adder8bit (generated from level6_ripple_adder_8bit.panda)
 module level6_ripple_adder_8bit (
     input a0,
@@ -1008,82 +1113,6 @@ assign sum5 = w_level2_full_adder_1bit_inst_6_sum;
 assign sum6 = w_level2_full_adder_1bit_inst_7_sum;
 assign sum7 = w_level2_full_adder_1bit_inst_8_sum;
 assign carryout = w_level2_full_adder_1bit_inst_8_cout;
-endmodule
-
-// Module for InstrMem_Low (generated from level7_instruction_memory_interface.panda)
-module level7_instruction_memory_interface (
-    input address0,
-    input address1,
-    input address2,
-    input address3,
-    input address4,
-    input address5,
-    input address6,
-    input address7,
-    input clock,
-    input datain0,
-    input datain1,
-    input datain2,
-    input datain3,
-    input datain4,
-    input datain5,
-    input datain6,
-    input datain7,
-    input writeenable,
-    output instruction0,
-    output instruction1,
-    output instruction2,
-    output instruction3,
-    output instruction4,
-    output instruction5,
-    output instruction6,
-    output instruction7
-);
-
-// IC instance: InstructionMemory (level6_ram_8x8)
-wire w_level6_ram_8x8_inst_1_dataout0;
-wire w_level6_ram_8x8_inst_1_dataout1;
-wire w_level6_ram_8x8_inst_1_dataout2;
-wire w_level6_ram_8x8_inst_1_dataout3;
-wire w_level6_ram_8x8_inst_1_dataout4;
-wire w_level6_ram_8x8_inst_1_dataout5;
-wire w_level6_ram_8x8_inst_1_dataout6;
-wire w_level6_ram_8x8_inst_1_dataout7;
-
-// Internal logic
-level6_ram_8x8 level6_ram_8x8_inst_1 (
-    .address0(address0),
-    .address1(address1),
-    .address2(address2),
-    .datain0(datain0),
-    .datain1(datain1),
-    .datain2(datain2),
-    .datain3(datain3),
-    .datain4(datain4),
-    .datain5(datain5),
-    .datain6(datain6),
-    .datain7(datain7),
-    .writeenable(writeenable),
-    .clock(clock),
-    .reset(1'b0),
-    .dataout0(w_level6_ram_8x8_inst_1_dataout0),
-    .dataout1(w_level6_ram_8x8_inst_1_dataout1),
-    .dataout2(w_level6_ram_8x8_inst_1_dataout2),
-    .dataout3(w_level6_ram_8x8_inst_1_dataout3),
-    .dataout4(w_level6_ram_8x8_inst_1_dataout4),
-    .dataout5(w_level6_ram_8x8_inst_1_dataout5),
-    .dataout6(w_level6_ram_8x8_inst_1_dataout6),
-    .dataout7(w_level6_ram_8x8_inst_1_dataout7)
-);
-
-assign instruction0 = w_level6_ram_8x8_inst_1_dataout0;
-assign instruction1 = w_level6_ram_8x8_inst_1_dataout1;
-assign instruction2 = w_level6_ram_8x8_inst_1_dataout2;
-assign instruction3 = w_level6_ram_8x8_inst_1_dataout3;
-assign instruction4 = w_level6_ram_8x8_inst_1_dataout4;
-assign instruction5 = w_level6_ram_8x8_inst_1_dataout5;
-assign instruction6 = w_level6_ram_8x8_inst_1_dataout6;
-assign instruction7 = w_level6_ram_8x8_inst_1_dataout7;
 endmodule
 
 // Module for PC (generated from level6_program_counter_8bit_arithmetic.panda)

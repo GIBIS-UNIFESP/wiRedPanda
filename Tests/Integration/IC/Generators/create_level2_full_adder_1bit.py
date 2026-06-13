@@ -70,29 +70,17 @@ class FullAdderBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created input Cin (id={input_cin_id})")
 
-        # Create XOR1 gate (A XOR B -> s1)
-        xor1_id = await self.create_element("Xor", stage1_x, top_y, "xor1")
-        if xor1_id is None:
+        # Instantiate two half-adders (textbook full-adder decomposition):
+        # HA1(A,B) -> (Sum=s1, Carry=c1); HA2(s1,Cin) -> (Sum, Carry=c2).
+        ha1_id = await self.instantiate_ic("level2_half_adder", stage1_x, top_y, "HA1")
+        if ha1_id is None:
             return False
-        await self.log(f"  ✓ Created XOR1 gate (id={xor1_id})")
+        await self.log(f"  ✓ Instantiated half-adder HA1 (id={ha1_id})")
 
-        # Create AND1 gate (A AND B -> c1)
-        and1_id = await self.create_element("And", stage1_x, mid_y, "and1")
-        if and1_id is None:
+        ha2_id = await self.instantiate_ic("level2_half_adder", stage2_x, top_y, "HA2")
+        if ha2_id is None:
             return False
-        await self.log(f"  ✓ Created AND1 gate (id={and1_id})")
-
-        # Create XOR2 gate (s1 XOR Cin -> Sum)
-        xor2_id = await self.create_element("Xor", stage2_x, top_y, "xor2")
-        if xor2_id is None:
-            return False
-        await self.log(f"  ✓ Created XOR2 gate (id={xor2_id})")
-
-        # Create AND2 gate (s1 AND Cin -> c2)
-        and2_id = await self.create_element("And", stage2_x, mid_y, "and2")
-        if and2_id is None:
-            return False
-        await self.log(f"  ✓ Created AND2 gate (id={and2_id})")
+        await self.log(f"  ✓ Instantiated half-adder HA2 (id={ha2_id})")
 
         # Create OR gate (c1 OR c2 -> Cout)
         or_id = await self.create_element("Or", or_x, mid_y, "or_cout")
@@ -111,56 +99,38 @@ class FullAdderBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created Cout output (id={cout_id})")
 
-        # ========== Connect HA1: A XOR B -> s1, A AND B -> c1 ==========
+        # ========== Connect HA1: A, B -> (Sum=s1, Carry=c1) ==========
 
-        # Connect A to XOR1 port 0
-        if not await self.connect(input_a_id, xor1_id):
+        if not await self.connect(input_a_id, ha1_id, target_port_label="A"):
             return False
 
-        # Connect B to XOR1 port 1
-        if not await self.connect(input_b_id, xor1_id, target_port=1):
+        if not await self.connect(input_b_id, ha1_id, target_port_label="B"):
             return False
 
-        # Connect A to AND1 port 0
-        if not await self.connect(input_a_id, and1_id):
+        # ========== Connect HA2: s1, Cin -> (Sum, Carry=c2) ==========
+
+        # HA1 Sum (s1) drives HA2 A
+        if not await self.connect(ha1_id, ha2_id, source_port_label="Sum", target_port_label="A"):
             return False
 
-        # Connect B to AND1 port 1
-        if not await self.connect(input_b_id, and1_id, target_port=1):
+        # Cin drives HA2 B
+        if not await self.connect(input_cin_id, ha2_id, target_port_label="B"):
             return False
 
-        # ========== Connect HA2: s1 XOR Cin -> Sum, s1 AND Cin -> c2 ==========
+        # ========== Carry propagation: c1 OR c2 -> Cout ==========
 
-        # Connect XOR1 output to XOR2 port 0
-        if not await self.connect(xor1_id, xor2_id):
+        # HA1 Carry (c1) to OR port 0
+        if not await self.connect(ha1_id, or_id, source_port_label="Carry", target_port=0):
             return False
 
-        # Connect Cin to XOR2 port 1
-        if not await self.connect(input_cin_id, xor2_id, target_port=1):
-            return False
-
-        # Connect XOR1 output to AND2 port 0
-        if not await self.connect(xor1_id, and2_id):
-            return False
-
-        # Connect Cin to AND2 port 1
-        if not await self.connect(input_cin_id, and2_id, target_port=1):
-            return False
-
-        # ========== Connect Carry propagation: c1 OR c2 -> Cout ==========
-
-        # Connect AND1 output to OR port 0
-        if not await self.connect(and1_id, or_id):
-            return False
-
-        # Connect AND2 output to OR port 1
-        if not await self.connect(and2_id, or_id, target_port=1):
+        # HA2 Carry (c2) to OR port 1
+        if not await self.connect(ha2_id, or_id, source_port_label="Carry", target_port=1):
             return False
 
         # ========== Connect outputs ==========
 
-        # Connect XOR2 output to Sum LED
-        if not await self.connect(xor2_id, sum_id):
+        # Connect HA2 Sum output to Sum LED
+        if not await self.connect(ha2_id, sum_id, source_port_label="Sum"):
             return False
 
         # Connect OR output to Cout LED

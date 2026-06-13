@@ -54,30 +54,23 @@ assign q = aux_nor_15;
 assign q_bar = aux_nor_16;
 endmodule
 
-// Module for FA[0] (generated from level2_full_adder_1bit.panda)
-module level2_full_adder_1bit (
+// Module for HA1 (generated from level2_half_adder.panda)
+module level2_half_adder (
     input a,
     input b,
-    input cin,
     output sum,
-    output cout
+    output carry
 );
 
 wire aux_xor_1;
 wire aux_and_2;
-wire aux_xor_3;
-wire aux_and_4;
-wire aux_or_5;
 
 // Internal logic
 assign aux_xor_1 = (a ^ b);
 assign aux_and_2 = (a & b);
-assign aux_xor_3 = (aux_xor_1 ^ cin);
-assign aux_and_4 = (aux_xor_1 & cin);
-assign aux_or_5 = (aux_and_2 | aux_and_4);
 
-assign sum = aux_xor_3;
-assign cout = aux_or_5;
+assign sum = aux_xor_1;
+assign carry = aux_and_2;
 endmodule
 
 // Module for SPMux[0] (generated from level2_priority_mux_3to1.panda)
@@ -119,6 +112,42 @@ wire aux_and_3;
 assign aux_and_3 = (aux_mux_2 & enable);
 
 assign out = aux_and_3;
+endmodule
+
+// Module for FA[0] (generated from level2_full_adder_1bit.panda)
+module level2_full_adder_1bit (
+    input a,
+    input b,
+    input cin,
+    output sum,
+    output cout
+);
+
+// IC instance: HA1 (level2_half_adder)
+wire w_level2_half_adder_inst_1_sum;
+wire w_level2_half_adder_inst_1_carry;
+// IC instance: HA2 (level2_half_adder)
+wire w_level2_half_adder_inst_2_sum;
+wire w_level2_half_adder_inst_2_carry;
+wire aux_or_3;
+
+// Internal logic
+level2_half_adder level2_half_adder_inst_1 (
+    .a(a),
+    .b(b),
+    .sum(w_level2_half_adder_inst_1_sum),
+    .carry(w_level2_half_adder_inst_1_carry)
+);
+level2_half_adder level2_half_adder_inst_2 (
+    .a(w_level2_half_adder_inst_1_sum),
+    .b(cin),
+    .sum(w_level2_half_adder_inst_2_sum),
+    .carry(w_level2_half_adder_inst_2_carry)
+);
+assign aux_or_3 = (w_level2_half_adder_inst_1_carry | w_level2_half_adder_inst_2_carry);
+
+assign sum = w_level2_half_adder_inst_2_sum;
+assign cout = aux_or_3;
 endmodule
 
 // Module for Adder (generated from level6_ripple_adder_8bit.panda)

@@ -57,13 +57,33 @@ bool aux_level4_ripple_adder_4bit_0_fa0_9_cout_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa0_9_node_0 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa0_9_node_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa0_9_node_2 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa0_9_xor_3 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa0_9_and_4 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa0_9_xor_5 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa0_9_and_6 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa0_9_or_7 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa0_9_node_8 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa0_9_node_9 = LOW;
+// IC: HA1
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_sum = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_carry_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_0 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_xor_2 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_and_3 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_4 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_5 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha1_3_0 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha1_3_1 = LOW;
+// End IC: HA1
+// IC: HA2
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_sum = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_carry_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_0 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_xor_2 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_and_3 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_4 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_5 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha2_4_0 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha2_4_1 = LOW;
+// End IC: HA2
+bool aux_level4_ripple_adder_4bit_0_fa0_9_or_5 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_node_6 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa0_9_node_7 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_0 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_1 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_2 = LOW;
@@ -74,13 +94,33 @@ bool aux_level4_ripple_adder_4bit_0_fa1_10_cout_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa1_10_node_0 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa1_10_node_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa1_10_node_2 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa1_10_xor_3 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa1_10_and_4 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa1_10_xor_5 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa1_10_and_6 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa1_10_or_7 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa1_10_node_8 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa1_10_node_9 = LOW;
+// IC: HA1
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_sum = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_carry_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_0 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_xor_2 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_and_3 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_4 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_5 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha1_3_0 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha1_3_1 = LOW;
+// End IC: HA1
+// IC: HA2
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_sum = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_carry_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_0 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_xor_2 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_and_3 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_4 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_5 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha2_4_0 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha2_4_1 = LOW;
+// End IC: HA2
+bool aux_level4_ripple_adder_4bit_0_fa1_10_or_5 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_node_6 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa1_10_node_7 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_0 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_1 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_2 = LOW;
@@ -91,13 +131,33 @@ bool aux_level4_ripple_adder_4bit_0_fa2_11_cout_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa2_11_node_0 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa2_11_node_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa2_11_node_2 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa2_11_xor_3 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa2_11_and_4 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa2_11_xor_5 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa2_11_and_6 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa2_11_or_7 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa2_11_node_8 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa2_11_node_9 = LOW;
+// IC: HA1
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_sum = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_carry_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_0 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_xor_2 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_and_3 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_4 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_5 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha1_3_0 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha1_3_1 = LOW;
+// End IC: HA1
+// IC: HA2
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_sum = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_carry_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_0 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_xor_2 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_and_3 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_4 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_5 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha2_4_0 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha2_4_1 = LOW;
+// End IC: HA2
+bool aux_level4_ripple_adder_4bit_0_fa2_11_or_5 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_node_6 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa2_11_node_7 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_0 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_1 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_2 = LOW;
@@ -108,13 +168,33 @@ bool aux_level4_ripple_adder_4bit_0_fa3_12_cout_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa3_12_node_0 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa3_12_node_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_fa3_12_node_2 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa3_12_xor_3 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa3_12_and_4 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa3_12_xor_5 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa3_12_and_6 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa3_12_or_7 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa3_12_node_8 = LOW;
-bool aux_level4_ripple_adder_4bit_0_fa3_12_node_9 = LOW;
+// IC: HA1
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_sum = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_carry_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_0 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_xor_2 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_and_3 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_4 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_5 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha1_3_0 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha1_3_1 = LOW;
+// End IC: HA1
+// IC: HA2
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_sum = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_carry_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_0 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_1 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_xor_2 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_and_3 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_4 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_5 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha2_4_0 = LOW;
+bool aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha2_4_1 = LOW;
+// End IC: HA2
+bool aux_level4_ripple_adder_4bit_0_fa3_12_or_5 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_node_6 = LOW;
+bool aux_level4_ripple_adder_4bit_0_fa3_12_node_7 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_0 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_1 = LOW;
 bool aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_2 = LOW;
@@ -180,15 +260,35 @@ void computeLogic() {
     aux_level4_ripple_adder_4bit_0_fa0_9_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_0;
     aux_level4_ripple_adder_4bit_0_fa0_9_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_1;
     aux_level4_ripple_adder_4bit_0_fa0_9_node_2 = aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_2;
-    aux_level4_ripple_adder_4bit_0_fa0_9_xor_3 = aux_level4_ripple_adder_4bit_0_fa0_9_node_0 ^ aux_level4_ripple_adder_4bit_0_fa0_9_node_1;
-    aux_level4_ripple_adder_4bit_0_fa0_9_and_4 = aux_level4_ripple_adder_4bit_0_fa0_9_node_0 && aux_level4_ripple_adder_4bit_0_fa0_9_node_1;
-    aux_level4_ripple_adder_4bit_0_fa0_9_and_6 = aux_level4_ripple_adder_4bit_0_fa0_9_xor_3 && aux_level4_ripple_adder_4bit_0_fa0_9_node_2;
-    aux_level4_ripple_adder_4bit_0_fa0_9_xor_5 = aux_level4_ripple_adder_4bit_0_fa0_9_xor_3 ^ aux_level4_ripple_adder_4bit_0_fa0_9_node_2;
-    aux_level4_ripple_adder_4bit_0_fa0_9_or_7 = aux_level4_ripple_adder_4bit_0_fa0_9_and_4 || aux_level4_ripple_adder_4bit_0_fa0_9_and_6;
-    aux_level4_ripple_adder_4bit_0_fa0_9_node_8 = aux_level4_ripple_adder_4bit_0_fa0_9_xor_5;
-    aux_level4_ripple_adder_4bit_0_fa0_9_node_9 = aux_level4_ripple_adder_4bit_0_fa0_9_or_7;
-    aux_level4_ripple_adder_4bit_0_fa0_9_sum = aux_level4_ripple_adder_4bit_0_fa0_9_node_8;
-    aux_level4_ripple_adder_4bit_0_fa0_9_cout_1 = aux_level4_ripple_adder_4bit_0_fa0_9_node_9;
+    // IC: HA1
+    aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha1_3_0 = aux_level4_ripple_adder_4bit_0_fa0_9_node_0;
+    aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha1_3_1 = aux_level4_ripple_adder_4bit_0_fa0_9_node_1;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha1_3_0;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha1_3_1;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_xor_2 = aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_0 ^ aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_1;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_and_3 = aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_0 && aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_1;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_4 = aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_xor_2;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_5 = aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_and_3;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_sum = aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_4;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_carry_1 = aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_node_5;
+    // End IC: HA1
+    // IC: HA2
+    aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha2_4_0 = aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_sum;
+    aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha2_4_1 = aux_level4_ripple_adder_4bit_0_fa0_9_node_2;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha2_4_0;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_ha2_4_1;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_xor_2 = aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_0 ^ aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_1;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_and_3 = aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_0 && aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_1;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_4 = aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_xor_2;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_5 = aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_and_3;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_sum = aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_4;
+    aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_carry_1 = aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_node_5;
+    // End IC: HA2
+    aux_level4_ripple_adder_4bit_0_fa0_9_or_5 = aux_level4_ripple_adder_4bit_0_fa0_9_ha1_3_carry_1 || aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_carry_1;
+    aux_level4_ripple_adder_4bit_0_fa0_9_node_6 = aux_level4_ripple_adder_4bit_0_fa0_9_ha2_4_sum;
+    aux_level4_ripple_adder_4bit_0_fa0_9_node_7 = aux_level4_ripple_adder_4bit_0_fa0_9_or_5;
+    aux_level4_ripple_adder_4bit_0_fa0_9_sum = aux_level4_ripple_adder_4bit_0_fa0_9_node_6;
+    aux_level4_ripple_adder_4bit_0_fa0_9_cout_1 = aux_level4_ripple_adder_4bit_0_fa0_9_node_7;
     // End IC: FA[0]
     // IC: FA[1]
     aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_0 = aux_level4_ripple_adder_4bit_0_node_1;
@@ -197,15 +297,35 @@ void computeLogic() {
     aux_level4_ripple_adder_4bit_0_fa1_10_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_0;
     aux_level4_ripple_adder_4bit_0_fa1_10_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_1;
     aux_level4_ripple_adder_4bit_0_fa1_10_node_2 = aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_2;
-    aux_level4_ripple_adder_4bit_0_fa1_10_xor_3 = aux_level4_ripple_adder_4bit_0_fa1_10_node_0 ^ aux_level4_ripple_adder_4bit_0_fa1_10_node_1;
-    aux_level4_ripple_adder_4bit_0_fa1_10_and_4 = aux_level4_ripple_adder_4bit_0_fa1_10_node_0 && aux_level4_ripple_adder_4bit_0_fa1_10_node_1;
-    aux_level4_ripple_adder_4bit_0_fa1_10_and_6 = aux_level4_ripple_adder_4bit_0_fa1_10_xor_3 && aux_level4_ripple_adder_4bit_0_fa1_10_node_2;
-    aux_level4_ripple_adder_4bit_0_fa1_10_xor_5 = aux_level4_ripple_adder_4bit_0_fa1_10_xor_3 ^ aux_level4_ripple_adder_4bit_0_fa1_10_node_2;
-    aux_level4_ripple_adder_4bit_0_fa1_10_or_7 = aux_level4_ripple_adder_4bit_0_fa1_10_and_4 || aux_level4_ripple_adder_4bit_0_fa1_10_and_6;
-    aux_level4_ripple_adder_4bit_0_fa1_10_node_8 = aux_level4_ripple_adder_4bit_0_fa1_10_xor_5;
-    aux_level4_ripple_adder_4bit_0_fa1_10_node_9 = aux_level4_ripple_adder_4bit_0_fa1_10_or_7;
-    aux_level4_ripple_adder_4bit_0_fa1_10_sum = aux_level4_ripple_adder_4bit_0_fa1_10_node_8;
-    aux_level4_ripple_adder_4bit_0_fa1_10_cout_1 = aux_level4_ripple_adder_4bit_0_fa1_10_node_9;
+    // IC: HA1
+    aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha1_3_0 = aux_level4_ripple_adder_4bit_0_fa1_10_node_0;
+    aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha1_3_1 = aux_level4_ripple_adder_4bit_0_fa1_10_node_1;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha1_3_0;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha1_3_1;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_xor_2 = aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_0 ^ aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_1;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_and_3 = aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_0 && aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_1;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_4 = aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_xor_2;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_5 = aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_and_3;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_sum = aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_4;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_carry_1 = aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_node_5;
+    // End IC: HA1
+    // IC: HA2
+    aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha2_4_0 = aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_sum;
+    aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha2_4_1 = aux_level4_ripple_adder_4bit_0_fa1_10_node_2;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha2_4_0;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa1_10_ha2_4_1;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_xor_2 = aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_0 ^ aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_1;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_and_3 = aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_0 && aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_1;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_4 = aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_xor_2;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_5 = aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_and_3;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_sum = aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_4;
+    aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_carry_1 = aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_node_5;
+    // End IC: HA2
+    aux_level4_ripple_adder_4bit_0_fa1_10_or_5 = aux_level4_ripple_adder_4bit_0_fa1_10_ha1_3_carry_1 || aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_carry_1;
+    aux_level4_ripple_adder_4bit_0_fa1_10_node_6 = aux_level4_ripple_adder_4bit_0_fa1_10_ha2_4_sum;
+    aux_level4_ripple_adder_4bit_0_fa1_10_node_7 = aux_level4_ripple_adder_4bit_0_fa1_10_or_5;
+    aux_level4_ripple_adder_4bit_0_fa1_10_sum = aux_level4_ripple_adder_4bit_0_fa1_10_node_6;
+    aux_level4_ripple_adder_4bit_0_fa1_10_cout_1 = aux_level4_ripple_adder_4bit_0_fa1_10_node_7;
     // End IC: FA[1]
     // IC: FA[2]
     aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_0 = aux_level4_ripple_adder_4bit_0_node_2;
@@ -214,15 +334,35 @@ void computeLogic() {
     aux_level4_ripple_adder_4bit_0_fa2_11_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_0;
     aux_level4_ripple_adder_4bit_0_fa2_11_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_1;
     aux_level4_ripple_adder_4bit_0_fa2_11_node_2 = aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_2;
-    aux_level4_ripple_adder_4bit_0_fa2_11_xor_3 = aux_level4_ripple_adder_4bit_0_fa2_11_node_0 ^ aux_level4_ripple_adder_4bit_0_fa2_11_node_1;
-    aux_level4_ripple_adder_4bit_0_fa2_11_and_4 = aux_level4_ripple_adder_4bit_0_fa2_11_node_0 && aux_level4_ripple_adder_4bit_0_fa2_11_node_1;
-    aux_level4_ripple_adder_4bit_0_fa2_11_and_6 = aux_level4_ripple_adder_4bit_0_fa2_11_xor_3 && aux_level4_ripple_adder_4bit_0_fa2_11_node_2;
-    aux_level4_ripple_adder_4bit_0_fa2_11_xor_5 = aux_level4_ripple_adder_4bit_0_fa2_11_xor_3 ^ aux_level4_ripple_adder_4bit_0_fa2_11_node_2;
-    aux_level4_ripple_adder_4bit_0_fa2_11_or_7 = aux_level4_ripple_adder_4bit_0_fa2_11_and_4 || aux_level4_ripple_adder_4bit_0_fa2_11_and_6;
-    aux_level4_ripple_adder_4bit_0_fa2_11_node_8 = aux_level4_ripple_adder_4bit_0_fa2_11_xor_5;
-    aux_level4_ripple_adder_4bit_0_fa2_11_node_9 = aux_level4_ripple_adder_4bit_0_fa2_11_or_7;
-    aux_level4_ripple_adder_4bit_0_fa2_11_sum = aux_level4_ripple_adder_4bit_0_fa2_11_node_8;
-    aux_level4_ripple_adder_4bit_0_fa2_11_cout_1 = aux_level4_ripple_adder_4bit_0_fa2_11_node_9;
+    // IC: HA1
+    aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha1_3_0 = aux_level4_ripple_adder_4bit_0_fa2_11_node_0;
+    aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha1_3_1 = aux_level4_ripple_adder_4bit_0_fa2_11_node_1;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha1_3_0;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha1_3_1;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_xor_2 = aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_0 ^ aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_1;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_and_3 = aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_0 && aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_1;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_4 = aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_xor_2;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_5 = aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_and_3;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_sum = aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_4;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_carry_1 = aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_node_5;
+    // End IC: HA1
+    // IC: HA2
+    aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha2_4_0 = aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_sum;
+    aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha2_4_1 = aux_level4_ripple_adder_4bit_0_fa2_11_node_2;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha2_4_0;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa2_11_ha2_4_1;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_xor_2 = aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_0 ^ aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_1;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_and_3 = aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_0 && aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_1;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_4 = aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_xor_2;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_5 = aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_and_3;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_sum = aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_4;
+    aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_carry_1 = aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_node_5;
+    // End IC: HA2
+    aux_level4_ripple_adder_4bit_0_fa2_11_or_5 = aux_level4_ripple_adder_4bit_0_fa2_11_ha1_3_carry_1 || aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_carry_1;
+    aux_level4_ripple_adder_4bit_0_fa2_11_node_6 = aux_level4_ripple_adder_4bit_0_fa2_11_ha2_4_sum;
+    aux_level4_ripple_adder_4bit_0_fa2_11_node_7 = aux_level4_ripple_adder_4bit_0_fa2_11_or_5;
+    aux_level4_ripple_adder_4bit_0_fa2_11_sum = aux_level4_ripple_adder_4bit_0_fa2_11_node_6;
+    aux_level4_ripple_adder_4bit_0_fa2_11_cout_1 = aux_level4_ripple_adder_4bit_0_fa2_11_node_7;
     // End IC: FA[2]
     // IC: FA[3]
     aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_0 = aux_level4_ripple_adder_4bit_0_node_3;
@@ -231,15 +371,35 @@ void computeLogic() {
     aux_level4_ripple_adder_4bit_0_fa3_12_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_0;
     aux_level4_ripple_adder_4bit_0_fa3_12_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_1;
     aux_level4_ripple_adder_4bit_0_fa3_12_node_2 = aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_2;
-    aux_level4_ripple_adder_4bit_0_fa3_12_xor_3 = aux_level4_ripple_adder_4bit_0_fa3_12_node_0 ^ aux_level4_ripple_adder_4bit_0_fa3_12_node_1;
-    aux_level4_ripple_adder_4bit_0_fa3_12_and_4 = aux_level4_ripple_adder_4bit_0_fa3_12_node_0 && aux_level4_ripple_adder_4bit_0_fa3_12_node_1;
-    aux_level4_ripple_adder_4bit_0_fa3_12_and_6 = aux_level4_ripple_adder_4bit_0_fa3_12_xor_3 && aux_level4_ripple_adder_4bit_0_fa3_12_node_2;
-    aux_level4_ripple_adder_4bit_0_fa3_12_xor_5 = aux_level4_ripple_adder_4bit_0_fa3_12_xor_3 ^ aux_level4_ripple_adder_4bit_0_fa3_12_node_2;
-    aux_level4_ripple_adder_4bit_0_fa3_12_or_7 = aux_level4_ripple_adder_4bit_0_fa3_12_and_4 || aux_level4_ripple_adder_4bit_0_fa3_12_and_6;
-    aux_level4_ripple_adder_4bit_0_fa3_12_node_8 = aux_level4_ripple_adder_4bit_0_fa3_12_xor_5;
-    aux_level4_ripple_adder_4bit_0_fa3_12_node_9 = aux_level4_ripple_adder_4bit_0_fa3_12_or_7;
-    aux_level4_ripple_adder_4bit_0_fa3_12_sum = aux_level4_ripple_adder_4bit_0_fa3_12_node_8;
-    aux_level4_ripple_adder_4bit_0_fa3_12_cout_1 = aux_level4_ripple_adder_4bit_0_fa3_12_node_9;
+    // IC: HA1
+    aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha1_3_0 = aux_level4_ripple_adder_4bit_0_fa3_12_node_0;
+    aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha1_3_1 = aux_level4_ripple_adder_4bit_0_fa3_12_node_1;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha1_3_0;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha1_3_1;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_xor_2 = aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_0 ^ aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_1;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_and_3 = aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_0 && aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_1;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_4 = aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_xor_2;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_5 = aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_and_3;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_sum = aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_4;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_carry_1 = aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_node_5;
+    // End IC: HA1
+    // IC: HA2
+    aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha2_4_0 = aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_sum;
+    aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha2_4_1 = aux_level4_ripple_adder_4bit_0_fa3_12_node_2;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha2_4_0;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_fa3_12_ha2_4_1;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_xor_2 = aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_0 ^ aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_1;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_and_3 = aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_0 && aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_1;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_4 = aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_xor_2;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_5 = aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_and_3;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_sum = aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_4;
+    aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_carry_1 = aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_node_5;
+    // End IC: HA2
+    aux_level4_ripple_adder_4bit_0_fa3_12_or_5 = aux_level4_ripple_adder_4bit_0_fa3_12_ha1_3_carry_1 || aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_carry_1;
+    aux_level4_ripple_adder_4bit_0_fa3_12_node_6 = aux_level4_ripple_adder_4bit_0_fa3_12_ha2_4_sum;
+    aux_level4_ripple_adder_4bit_0_fa3_12_node_7 = aux_level4_ripple_adder_4bit_0_fa3_12_or_5;
+    aux_level4_ripple_adder_4bit_0_fa3_12_sum = aux_level4_ripple_adder_4bit_0_fa3_12_node_6;
+    aux_level4_ripple_adder_4bit_0_fa3_12_cout_1 = aux_level4_ripple_adder_4bit_0_fa3_12_node_7;
     // End IC: FA[3]
     aux_level4_ripple_adder_4bit_0_node_13 = aux_level4_ripple_adder_4bit_0_fa0_9_sum;
     aux_level4_ripple_adder_4bit_0_node_14 = aux_level4_ripple_adder_4bit_0_fa1_10_sum;
