@@ -41,6 +41,7 @@ private slots:
     void testSignFlag();
 
     void testMultipleInstructions();
+    void testInstructionOutput();
 
     void testISA_STORE();
     void testISA_LOAD();

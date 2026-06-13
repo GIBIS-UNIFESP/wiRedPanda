@@ -269,6 +269,16 @@ void TestLevel9CPU16BitRISC::testCPUComputesOnDecodedFields_data()
     QTest::newRow("and_0x2A_0x0A") << 2 << 0x0A << 0x2A << 0x0A;
     QTest::newRow("or_0x15_0x0A") << 3 << 0x0A << 0x15 << 0x1F;
     QTest::newRow("xor_0x3F_0x15") << 4 << 0x15 << 0x3F << 0x2A;
+
+    // Unary ops (DestReg ignored). The 16-bit ALU computes on OperandA =
+    // zero-extended SrcBits: NOT is the full 16-bit complement; SHL/SHR fill
+    // with 0 (verified against the level-7 ALU semantics).
+    QTest::newRow("not_0x3F") << 5 << 0 << 0x3F << 0xFFC0;
+    QTest::newRow("not_0x00") << 5 << 0 << 0x00 << 0xFFFF;
+    QTest::newRow("shl_0x3F") << 6 << 0 << 0x3F << 0x7E;
+    QTest::newRow("shl_0x01") << 6 << 0 << 0x01 << 0x02;
+    QTest::newRow("shr_0x3E") << 7 << 0 << 0x3E << 0x1F;
+    QTest::newRow("shr_0x08") << 7 << 0 << 0x08 << 0x04;
 }
 
 void TestLevel9CPU16BitRISC::testCPUComputesOnDecodedFields()

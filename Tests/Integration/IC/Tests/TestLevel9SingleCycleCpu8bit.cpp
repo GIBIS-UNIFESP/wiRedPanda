@@ -580,6 +580,27 @@ void TestLevel9SingleCycleCPU8Bit::testMultipleInstructions()
 }
 
 // ---------------------------------------------------------------------------
+// Instruction output: the registered Instruction[0-7] port reflects the word
+// fetched at the current PC (the fixture exposed readInstruction() but no test
+// asserted it).
+// ---------------------------------------------------------------------------
+
+void TestLevel9SingleCycleCPU8Bit::testInstructionOutput()
+{
+    auto &f = *s_cpu;
+    f.sim->restart();
+    f.sim->update();
+
+    const int instr = encodeInstruction(XOR, 3);
+    f.programInstruction(0, instr);
+    f.resetCPU();
+    clockCycle(f.sim, f.clk);   // latch the fetched word into the instruction register
+    f.sim->update();
+
+    QCOMPARE(f.readInstruction(), instr);
+}
+
+// ---------------------------------------------------------------------------
 // STORE test: write R0 to data memory, verify by LOADing it back
 // ---------------------------------------------------------------------------
 
