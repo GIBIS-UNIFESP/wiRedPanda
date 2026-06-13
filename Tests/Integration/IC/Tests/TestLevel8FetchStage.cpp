@@ -382,6 +382,31 @@ void TestLevel8FetchStage::testReset()
     f.pcInc->setOn(false);
 }
 
+// With every control input low (PCLoad/PCInc/InstrLoad/ProgWrite = 0) a clock
+// edge must be a no-op: both the program counter and the latched instruction
+// hold. The level-7 PC/IR hold paths are tested individually (F74), but the
+// integrated stage was never checked for spurious clocking.
+void TestLevel8FetchStage::testHold()
+{
+    FetchStageFixture f;
+    QVERIFY(f.build());
+
+    // Establish known state: instruction 0xB5 at PC 0x05
+    f.program(0x05, 0xB5);
+    f.setPC(0x05);
+    f.latch();
+    QCOMPARE(f.readPC(), 0x05);
+    QCOMPARE(f.readInstr(), 0xB5);
+
+    // All controls already low after the helpers; pulse the clock repeatedly and
+    // confirm neither the PC nor the registered instruction changes.
+    for (int i = 0; i < 3; ++i) {
+        f.pulse();
+        QCOMPARE(f.readPC(), 0x05);
+        QCOMPARE(f.readInstr(), 0xB5);
+    }
+}
+
 void TestLevel8FetchStage::testPCDataBitIsolation_data()
 {
     QTest::addColumn<int>("bitPosition");
