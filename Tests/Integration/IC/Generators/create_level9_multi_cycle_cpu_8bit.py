@@ -88,9 +88,9 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         await self.log("  ✓ Created Clock and Reset inputs")
 
         # ---- Create instruction memory programming inputs ----
-        # Tests hold Reset (which freezes the cycle counter at phase 0, so the
-        # fetch stage's gated clock passes the full clock) and pulse the clock to
-        # write instruction memory at ProgAddr.
+        # Tests hold Reset (freezing the cycle counter at phase 0, so Phase 3 is
+        # low and no spurious write-back occurs) and pulse the main clock to
+        # write instruction memory at ProgAddr through ProgWrite.
         prog_x = 50.0
         prog_y = control_y + 600.0
 

@@ -2707,15 +2707,33 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
         return;
     }
     builder.add(ic);
-    QCOMPARE(ic->inputSize(), 2); // input 0 = Clock, input 1 = Reset
+    // F80 added a programming interface (ProgAddr/ProgData/ProgWrite plus
+    // RegProgAddr/RegProgData/RegProgWrite), so the CPU now exposes 31 inputs.
+    QCOMPARE(ic->inputSize(), 31);
 
-    InputSwitch *clk = nullptr;
-    InputSwitch *rst = nullptr;
-    for (int i = 0; i < ic->inputSize(); ++i) {
+    // Drive Clock and Reset (by port label, robust to input ordering); hold the
+    // whole programming interface inactive so the CPU free-runs a blank program.
+    // This test checks Arduino-codegen vs engine equivalence over a clock
+    // sequence, not ISA behaviour, so a blank program still exercises the full
+    // datapath (cycle counter, fetch/decode/execute/memory, clock-enables).
+    auto *clk = new InputSwitch();
+    auto *rst = new InputSwitch();
+    builder.add(clk);
+    builder.add(rst);
+    builder.connect(clk, 0, ic, "Clock");
+    builder.connect(rst, 0, ic, "Reset");
+
+    QStringList progLabels;
+    for (int i = 0; i < 8; ++i) progLabels << QString("ProgAddr[%1]").arg(i);
+    for (int i = 0; i < 8; ++i) progLabels << QString("ProgData[%1]").arg(i);
+    progLabels << QStringLiteral("ProgWrite");
+    for (int i = 0; i < 3; ++i) progLabels << QString("RegProgAddr[%1]").arg(i);
+    for (int i = 0; i < 8; ++i) progLabels << QString("RegProgData[%1]").arg(i);
+    progLabels << QStringLiteral("RegProgWrite");
+    for (const auto &lbl : std::as_const(progLabels)) {
         auto *sw = new InputSwitch();
         builder.add(sw);
-        builder.connect(sw, 0, ic, i);
-        (i == 0 ? clk : rst) = sw;
+        builder.connect(sw, 0, ic, lbl);  // held low (inactive)
     }
     QVector<Led *> leds;
     for (int i = 0; i < ic->outputSize(); ++i) {
@@ -2740,7 +2758,7 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
             }
         }
     }
-    QCOMPARE(scanInputs.size(), 2);
+    QCOMPARE(scanInputs.size(), 31);
     QCOMPARE(scanOutputs.size(), ic->outputSize());
 
     Simulation *sim = builder.initSimulation();
@@ -2755,7 +2773,8 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
         ArduinoCodeGen::TestVector v;
         v.inputs.reserve(scanInputs.size());
         for (auto *sw : std::as_const(scanInputs)) {
-            v.inputs.append(sw == clk ? clkOn : rstOn);
+            // Clock/Reset take the stepped values; programming inputs stay low.
+            v.inputs.append(sw == clk ? clkOn : (sw == rst ? rstOn : false));
         }
         v.outputs.reserve(scanOutputs.size());
         for (auto *led : std::as_const(scanOutputs)) {
@@ -2808,7 +2827,8 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
     const bool ok = runTestbench(tbPath, /*timeoutMs*/ 90000,
                                  QStringLiteral("arduino:avr:mega"), QStringLiteral("atmega2560"));
     QVERIFY2(ok, "Arduino sketch diverged from the engine over the clock sequence "
-                 "(blocking computeLogic vs. non-blocking engine on gated clocks)");
+                 "(the multi-cycle CPU uses clock-enables, not gated clocks, so the "
+                 "blocking codegen and the engine must stay in agreement)");
 }
 
 // ============================================================================
