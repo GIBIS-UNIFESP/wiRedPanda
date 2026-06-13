@@ -106,11 +106,7 @@ class CPU16BitRISCBuilder(ICBuilderBase):
         await self.log("  ✓ Created programming interface inputs")
 
         # ---- Instantiate 16-bit Fetch Stage ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level9_fetch_stage_16bit")):
-
-            return False
-
-        fetch_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level9_fetch_stage_16bit"), 300.0, 100.0, "Fetch_16bit")
+        fetch_id = await self.instantiate_ic("level9_fetch_stage_16bit", 300.0, 100.0, "Fetch_16bit")
         if fetch_id is None:
             return False
 
@@ -151,11 +147,7 @@ class CPU16BitRISCBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated and wired 16-bit Fetch stage")
 
         # ---- Instantiate 16-bit ALU ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_alu_16bit")):
-
-            return False
-
-        alu_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_alu_16bit"), 650.0, 100.0, "ALU_16bit")
+        alu_id = await self.instantiate_ic("level7_alu_16bit", 650.0, 100.0, "ALU_16bit")
         if alu_id is None:
             return False
 

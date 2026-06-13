@@ -85,49 +85,29 @@ class BarrelShifter4bitBuilder(ICBuilderBase):
 
         # ============ LEFT SHIFT PATH ============
         # Stage 1: Shift by 0 or 1 (left) - using bus_mux_4bit
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
-            return False
-
-        left_stage1_mux_ic = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), input_x_start + HORIZONTAL_GATE_SPACING, left_stage1_y, "BusMux_Left_S1")
+        left_stage1_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage1_y, "BusMux_Left_S1")
         if left_stage1_mux_ic is None:
             return False
 
         # Stage 2: Shift by 0 or 2 (left) - using bus_mux_4bit
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
-            return False
-
-        left_stage2_mux_ic = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), input_x_start + HORIZONTAL_GATE_SPACING, left_stage2_y, "BusMux_Left_S2")
+        left_stage2_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage2_y, "BusMux_Left_S2")
         if left_stage2_mux_ic is None:
             return False
 
         # ============ RIGHT SHIFT PATH ============
         # Stage 1: Shift by 0 or 1 (right) - using bus_mux_4bit
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
-            return False
-
-        right_stage1_mux_ic = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), input_x_start + HORIZONTAL_GATE_SPACING, right_stage1_y, "BusMux_Right_S1")
+        right_stage1_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage1_y, "BusMux_Right_S1")
         if right_stage1_mux_ic is None:
             return False
 
         # Stage 2: Shift by 0 or 2 (right) - using bus_mux_4bit
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
-            return False
-
-        right_stage2_mux_ic = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), input_x_start + HORIZONTAL_GATE_SPACING, right_stage2_y, "BusMux_Right_S2")
+        right_stage2_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage2_y, "BusMux_Right_S2")
         if right_stage2_mux_ic is None:
             return False
 
         # ============ DIRECTION SELECTOR ============
         # Final selector: Left or Right shift path - using bus_mux_4bit
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
-            return False
-
-        direction_mux_ic = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), output_x, direction_y, "BusMux_Direction")
+        direction_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", output_x, direction_y, "BusMux_Direction")
         if direction_mux_ic is None:
             return False
 

@@ -121,11 +121,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
         pc_x = 250.0
         pc_y = 100.0
 
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_cpu_program_counter_8bit")):
-
-            return False
-
-        pc_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_cpu_program_counter_8bit"), pc_x, pc_y, "PC")
+        pc_id = await self.instantiate_ic("level7_cpu_program_counter_8bit", pc_x, pc_y, "PC")
         if pc_id is None:
             return False
 
@@ -150,11 +146,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated Program Counter")
 
         # ---- Address mux: PC (fetch) vs ProgAddr (programming) ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_8bit")):
-
-            return False
-
-        addr_mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_8bit"), 350.0, 100.0, "AddrMux")
+        addr_mux_id = await self.instantiate_ic("level4_bus_mux_8bit", 350.0, 100.0, "AddrMux")
         if addr_mux_id is None:
             return False
 
@@ -173,15 +165,11 @@ class FetchStage16bitBuilder(ICBuilderBase):
         instr_mem_low_y = 100.0
         instr_mem_high_y = 250.0
 
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface")):
-
-            return False
-
-        instr_mem_low_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface"), instr_mem_x, instr_mem_low_y, "InstrMem_Low")
+        instr_mem_low_id = await self.instantiate_ic("level7_instruction_memory_interface", instr_mem_x, instr_mem_low_y, "InstrMem_Low")
         if instr_mem_low_id is None:
             return False
 
-        instr_mem_high_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface"), instr_mem_x, instr_mem_high_y, "InstrMem_High")
+        instr_mem_high_id = await self.instantiate_ic("level7_instruction_memory_interface", instr_mem_x, instr_mem_high_y, "InstrMem_High")
         if instr_mem_high_id is None:
             return False
 
@@ -216,15 +204,11 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         # ---- Instruction Register: 2× level6_register_8bit (F53: InstrLoad
         # used to be a dead input — there was no IR to load) ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_register_8bit")):
-
-            return False
-
-        ir_low_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_register_8bit"), 600.0, 100.0, "IR_Low")
+        ir_low_id = await self.instantiate_ic("level6_register_8bit", 600.0, 100.0, "IR_Low")
         if ir_low_id is None:
             return False
 
-        ir_high_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_register_8bit"), 600.0, 250.0, "IR_High")
+        ir_high_id = await self.instantiate_ic("level6_register_8bit", 600.0, 250.0, "IR_High")
         if ir_high_id is None:
             return False
 

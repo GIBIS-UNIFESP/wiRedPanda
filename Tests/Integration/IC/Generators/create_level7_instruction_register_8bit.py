@@ -71,11 +71,7 @@ class InstructionRegister8BitBuilder(ICBuilderBase):
         register_y = control_input_y + (4 * VERTICAL_STAGE_SPACING)
 
         # ---- Instantiate 8-bit Register for instruction storage ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_register_8bit")):
-
-            return False
-
-        instr_register = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_register_8bit"), register_x, register_y, "InstructionReg")
+        instr_register = await self.instantiate_ic("level6_register_8bit", register_x, register_y, "InstructionReg")
         if instr_register is None:
             return False
         await self.log("  ✓ Instantiated 8-bit Register for instruction storage")

@@ -68,11 +68,7 @@ class BusMux4BitBuilder(ICBuilderBase):
         mux_x = input_x + ((bit_width + 1) * HORIZONTAL_GATE_SPACING)
 
         for i in range(4):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_mux_2to1")):
-
-                return False
-
-            mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_mux_2to1"), mux_x + (i * HORIZONTAL_GATE_SPACING), in0_y + VERTICAL_STAGE_SPACING, f"Mux[{i}]")
+            mux_id = await self.instantiate_ic("level2_mux_2to1", mux_x + (i * HORIZONTAL_GATE_SPACING), in0_y + VERTICAL_STAGE_SPACING, f"Mux[{i}]")
             if mux_id is None:
                 return False
             mux_ic_ids.append(mux_id)

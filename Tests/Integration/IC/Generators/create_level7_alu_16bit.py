@@ -92,20 +92,12 @@ class ALU16bitBuilder(ICBuilderBase):
 
         # ---- Instantiate two 8-bit ALUs ----
         # Low byte ALU (bits 0-7)
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_alu_8bit")):
-
-            return False
-
-        alu_low_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_alu_8bit"), alu_low_x, 150.0, "ALU_Low")
+        alu_low_id = await self.instantiate_ic("level6_alu_8bit", alu_low_x, 150.0, "ALU_Low")
         if alu_low_id is None:
             return False
 
         # High byte ALU (bits 8-15)
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_alu_8bit")):
-
-            return False
-
-        alu_high_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_alu_8bit"), alu_high_x, 150.0, "ALU_High")
+        alu_high_id = await self.instantiate_ic("level6_alu_8bit", alu_high_x, 150.0, "ALU_High")
         if alu_high_id is None:
             return False
 

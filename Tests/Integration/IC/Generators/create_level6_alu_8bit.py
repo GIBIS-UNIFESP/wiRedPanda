@@ -103,23 +103,11 @@ class ALU8BitBuilder(ICBuilderBase):
         alu_high_x = alu_low_x + HORIZONTAL_GATE_SPACING
         alu_y = 250.0
 
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit")):
-
-
-            return False
-
-
-        alu_low = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit"), alu_low_x, alu_y, "ALU_Low")
+        alu_low = await self.instantiate_ic("level4_ripple_alu_4bit", alu_low_x, alu_y, "ALU_Low")
         if alu_low is None:
             return False
 
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit")):
-
-
-            return False
-
-
-        alu_high = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit"), alu_high_x, alu_y, "ALU_High")
+        alu_high = await self.instantiate_ic("level4_ripple_alu_4bit", alu_high_x, alu_y, "ALU_High")
         if alu_high is None:
             return False
         await self.log("  ✓ Instantiated 4-bit ALUs for operations 0-3")
@@ -254,11 +242,7 @@ class ALU8BitBuilder(ICBuilderBase):
 
         for i in range(8):
             # Instantiate selector for this bit (handles operations 0-4)
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level3_alu_selector_5way")):
-
-                return False
-
-            selector_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level3_alu_selector_5way"), selector_x + i * HORIZONTAL_GATE_SPACING, selector_y, f"Selector5way[{i}]")
+            selector_id = await self.instantiate_ic("level3_alu_selector_5way", selector_x + i * HORIZONTAL_GATE_SPACING, selector_y, f"Selector5way[{i}]")
             if selector_id is None:
                 return False
             selector_ids.append(selector_id)

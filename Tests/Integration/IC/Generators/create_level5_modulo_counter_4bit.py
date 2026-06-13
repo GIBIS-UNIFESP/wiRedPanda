@@ -114,11 +114,7 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
 
         # ========== COMPARATOR IC ==========
         comparator_x = xor_or_x + HORIZONTAL_GATE_SPACING
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level3_comparator_4bit_equality")):
-
-            return False
-
-        comparator_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level3_comparator_4bit_equality"), comparator_x, 100.0, "Comparator")
+        comparator_id = await self.instantiate_ic("level3_comparator_4bit_equality", comparator_x, 100.0, "Comparator")
         if comparator_id is None:
             return False
         await self.log("  Instantiated 4-bit Equality Comparator IC")
@@ -143,11 +139,7 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
         dff_ids = []
         dff_x = gate_and_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level1_d_flip_flop")):
-
-                return False
-
-            ff_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}")
+            ff_id = await self.instantiate_ic("level1_d_flip_flop", dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}")
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)

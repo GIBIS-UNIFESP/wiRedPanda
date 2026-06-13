@@ -100,23 +100,13 @@ class ALU4bitBuilder(ICBuilderBase):
             return False
 
         # Load FullAdder4bit IC for ADD operation
-        adder_ic_name = str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit")
-        if not self.check_dependency(adder_ic_name):
-
-            return False
-
-        adder_id = await self.instantiate_ic(adder_ic_name, adder_x, adder_y, "Adder")
+        adder_id = await self.instantiate_ic("level4_ripple_adder_4bit", adder_x, adder_y, "Adder")
         if adder_id is None:
             return False
 
         # Load FullAdder4bit IC for SUB operation (with inverted B inputs)
         # Subtraction = A - B = A + (~B + 1) = A + ~B + 1, so we invert B and add
-        subtractor_ic_name = str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit")
-        if not self.check_dependency(subtractor_ic_name):
-
-            return False
-
-        subtractor_id = await self.instantiate_ic(subtractor_ic_name, adder_x, subtractor_y, "Subtractor (Adder with ~B)")
+        subtractor_id = await self.instantiate_ic("level4_ripple_adder_4bit", adder_x, subtractor_y, "Subtractor (Adder with ~B)")
         if subtractor_id is None:
             return False
 
@@ -132,11 +122,7 @@ class ALU4bitBuilder(ICBuilderBase):
         # Mux(GND, B[i], A[i]) = A[i] AND B[i]
         and_gates = []
         for i in range(4):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_mux_2to1")):
-
-                return False
-
-            mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_mux_2to1"), adder_x + i * dense_spacing, and_or_y, f"mux_and[{i}]")
+            mux_id = await self.instantiate_ic("level2_mux_2to1", adder_x + i * dense_spacing, and_or_y, f"mux_and[{i}]")
             if mux_id is None:
                 return False
             and_gates.append(mux_id)
@@ -145,11 +131,7 @@ class ALU4bitBuilder(ICBuilderBase):
         # Mux(A[i], VCC, B[i]) = A[i] OR B[i]
         or_gates = []
         for i in range(4):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_mux_2to1")):
-
-                return False
-
-            mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_mux_2to1"), adder_x + i * dense_spacing, and_or_y + VERTICAL_STAGE_SPACING, f"mux_or[{i}]")
+            mux_id = await self.instantiate_ic("level2_mux_2to1", adder_x + i * dense_spacing, and_or_y + VERTICAL_STAGE_SPACING, f"mux_or[{i}]")
             if mux_id is None:
                 return False
             or_gates.append(mux_id)

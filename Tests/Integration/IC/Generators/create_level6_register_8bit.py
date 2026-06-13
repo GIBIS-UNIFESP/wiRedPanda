@@ -67,11 +67,7 @@ class Register8BitBuilder(ICBuilderBase):
         reg_x = ctrl_x + HORIZONTAL_GATE_SPACING
         reg_y = 100.0
         for bit in range(8):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level3_register_1bit")):
-
-                return False
-
-            reg_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level3_register_1bit"), reg_x + bit * HORIZONTAL_GATE_SPACING, reg_y, f"Reg[{bit}]")
+            reg_id = await self.instantiate_ic("level3_register_1bit", reg_x + bit * HORIZONTAL_GATE_SPACING, reg_y, f"Reg[{bit}]")
             if reg_id is None:
                 return False
             registers.append(reg_id)

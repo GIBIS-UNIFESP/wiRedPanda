@@ -51,11 +51,7 @@ class InstructionDecoder4BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created 4 instruction inputs")
 
         # Instantiate level2_decoder_4to16
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_4to16")):
-
-            return False
-
-        decoder_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_4to16"), input_x + (2 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16")
+        decoder_id = await self.instantiate_ic("level2_decoder_4to16", input_x + (2 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16")
         if decoder_id is None:
             return False
         await self.log("  ✓ Instantiated 4-to-16 Decoder")

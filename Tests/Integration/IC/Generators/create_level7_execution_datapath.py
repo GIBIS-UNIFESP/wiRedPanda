@@ -79,11 +79,7 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         await self.log("  ✓ Created 3 OpCode inputs")
 
         # Instantiate 8-bit ALU
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_alu_8bit")):
-
-            return False
-
-        alu_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_alu_8bit"), input_x + (6 * HORIZONTAL_GATE_SPACING), 250.0, "ALU_8bit")
+        alu_id = await self.instantiate_ic("level6_alu_8bit", input_x + (6 * HORIZONTAL_GATE_SPACING), 250.0, "ALU_8bit")
         if alu_id is None:
             return False
         await self.log("  ✓ Instantiated 8-bit ALU")

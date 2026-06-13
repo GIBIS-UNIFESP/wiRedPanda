@@ -174,11 +174,7 @@ class DecodeStageBuilder(ICBuilderBase):
         # Documented from the start, never built. Hierarchical decode:
         # level2_decoder_4to16 on OpCode[0..3] -> 16 lines, each ANDed with
         # NOT(OpCode[4]) (lines 0-15) or OpCode[4] (lines 16-31).
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_4to16")):
-
-            return False
-
-        decoder_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_4to16"), input_x + HORIZONTAL_GATE_SPACING, input_y + (2 * VERTICAL_STAGE_SPACING), "Decoder4to16")
+        decoder_id = await self.instantiate_ic("level2_decoder_4to16", input_x + HORIZONTAL_GATE_SPACING, input_y + (2 * VERTICAL_STAGE_SPACING), "Decoder4to16")
         if decoder_id is None:
             return False
 

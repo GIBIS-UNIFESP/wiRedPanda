@@ -119,11 +119,7 @@ class RegisterFile8x8Builder(ICBuilderBase):
 
         # ========== Instantiate Write Decoder IC ==========
         decoder_x = input_x_start + HORIZONTAL_GATE_SPACING * 4
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_3to8")):
-
-            return False
-
-        decoder_ic = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_3to8"), decoder_x, write_addr_y, "Write_Decoder")
+        decoder_ic = await self.instantiate_ic("level2_decoder_3to8", decoder_x, write_addr_y, "Write_Decoder")
         if decoder_ic is None:
             return False
 

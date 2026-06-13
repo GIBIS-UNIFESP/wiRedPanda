@@ -69,11 +69,7 @@ class BusMux8BitBuilder(ICBuilderBase):
         num_bus_muxes = 2
 
         for block_idx in range(num_bus_muxes):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
-                return False
-
-            mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), mux_x + (block_idx * HORIZONTAL_GATE_SPACING), in0_y + VERTICAL_STAGE_SPACING, f"BusMux[{block_idx*4}-{block_idx*4+3}]")
+            mux_id = await self.instantiate_ic("level4_bus_mux_4bit", mux_x + (block_idx * HORIZONTAL_GATE_SPACING), in0_y + VERTICAL_STAGE_SPACING, f"BusMux[{block_idx*4}-{block_idx*4+3}]")
             if mux_id is None:
                 return False
             mux_ic_ids.append(mux_id)

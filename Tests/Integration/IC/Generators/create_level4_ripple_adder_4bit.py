@@ -83,11 +83,7 @@ class FullAdder4bitBuilder(ICBuilderBase):
         fa_y = 100.0
 
         for bit in range(4):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_full_adder_1bit")):
-
-                return False
-
-            fa_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_full_adder_1bit"), fa_x + (bit * HORIZONTAL_GATE_SPACING * 1.5), fa_y + (bit * VERTICAL_STAGE_SPACING * 0.3), f"FA[{bit}]")
+            fa_id = await self.instantiate_ic("level2_full_adder_1bit", fa_x + (bit * HORIZONTAL_GATE_SPACING * 1.5), fa_y + (bit * VERTICAL_STAGE_SPACING * 0.3), f"FA[{bit}]")
             if fa_id is None:
                 return False
             full_adders.append(fa_id)

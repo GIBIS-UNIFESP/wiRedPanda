@@ -105,11 +105,7 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         # Create D flip-flops (4-bit) using level1_d_flip_flop IC
         dff_ids = []
         for i in range(4):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level1_d_flip_flop")):
-
-                return False
-
-            ff_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), dff_x, dff_y_base + (i * bit_spacing), f"FF{i}")
+            ff_id = await self.instantiate_ic("level1_d_flip_flop", dff_x, dff_y_base + (i * bit_spacing), f"FF{i}")
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -117,22 +113,14 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
 
         # Instantiate load path Bus Mux 4-bit IC
         # BusMux(GND, D[0-3], LOAD) = LOAD AND D[0-3]
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
-            return False
-
-        load_mux_ic_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), load_gate_x, load_gate_y_base, "BusMux_Load")
+        load_mux_ic_id = await self.instantiate_ic("level4_bus_mux_4bit", load_gate_x, load_gate_y_base, "BusMux_Load")
         if load_mux_ic_id is None:
             return False
         await self.log(f"  ✓ Instantiated load path Bus Multiplexer IC (id={load_mux_ic_id})")
 
         # Instantiate shift path Bus Mux 4-bit IC
         # BusMux(GND, shiftIn[0-3], NOT_LOAD) = NOT_LOAD AND shiftIn[0-3]
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
-            return False
-
-        shift_mux_ic_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), shift_gate_x, shift_gate_y_base, "BusMux_Shift")
+        shift_mux_ic_id = await self.instantiate_ic("level4_bus_mux_4bit", shift_gate_x, shift_gate_y_base, "BusMux_Shift")
         if shift_mux_ic_id is None:
             return False
         await self.log(f"  ✓ Instantiated shift path Bus Multiplexer IC (id={shift_mux_ic_id})")
@@ -142,11 +130,7 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         # Actually, for load/shift selection, use a Mux2to1: Mux(shift, load, LOAD) = (NOT LOAD AND shift) OR (LOAD AND load)
         select_gate_ids = []
         for i in range(4):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_mux_2to1")):
-
-                return False
-
-            mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_mux_2to1"), select_gate_x, select_gate_y_base + (i * bit_spacing), f"mux_sel{i}")
+            mux_id = await self.instantiate_ic("level2_mux_2to1", select_gate_x, select_gate_y_base + (i * bit_spacing), f"mux_sel{i}")
             if mux_id is None:
                 return False
             select_gate_ids.append(mux_id)

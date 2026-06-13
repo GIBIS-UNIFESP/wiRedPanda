@@ -66,21 +66,13 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
 
         # Instantiate two 4-to-16 decoders for hierarchical decoding
         # Decoder 1: bits [3:0] → 16 outputs (low nibble)
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_4to16")):
-
-            return False
-
-        decoder1_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_4to16"), input_x + (2 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16_low")
+        decoder1_id = await self.instantiate_ic("level2_decoder_4to16", input_x + (2 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16_low")
         if decoder1_id is None:
             return False
         await self.log("  ✓ Instantiated decoder for low nibble [3:0]")
 
         # Decoder 2: bits [7:4] → 16 outputs (high nibble)
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_4to16")):
-
-            return False
-
-        decoder2_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_4to16"), input_x + (6 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16_high")
+        decoder2_id = await self.instantiate_ic("level2_decoder_4to16", input_x + (6 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16_high")
         if decoder2_id is None:
             return False
         await self.log("  ✓ Instantiated decoder for high nibble [7:4]")

@@ -127,11 +127,7 @@ class RegisterFile4x4Builder(ICBuilderBase):
         await self.log("  ✓ Created output LEDs")
 
         # ========== Instantiate Write Decoder IC ==========
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_2to4")):
-
-            return False
-
-        decoder_ic = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_2to4"), decoder_x, write_addr_y, "Write_Decoder")
+        decoder_ic = await self.instantiate_ic("level2_decoder_2to4", decoder_x, write_addr_y, "Write_Decoder")
         if decoder_ic is None:
             return False
 
