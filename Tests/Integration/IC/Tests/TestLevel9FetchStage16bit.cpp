@@ -304,6 +304,25 @@ void TestLevel9FetchStage16Bit::testInstructionFieldsDecoded()
     QCOMPARE(f.readOpCode(), 0x15);
     QCOMPARE(f.readDestReg(), 0x0A);
     QCOMPARE(f.readSrcBits(), 0x2A);
+
+    // A byte-ASYMMETRIC word catches a low/high byte-lane swap between the two
+    // instruction_memory_interface lanes — 0xAAAA above is byte-symmetric, so a
+    // swap would be invisible. 0x1234 = low byte 0x34, high byte 0x12 ->
+    // OpCode 0x02, DestReg 0x08, SrcBits 0x34.
+    constexpr int WORD2 = 0x1234;
+    f.programWord(0x00, WORD2);
+    QCOMPARE(f.readRawInstr(), WORD2);
+
+    f.instrLoad->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.instrLoad->setOn(false);
+    f.sim->update();
+
+    QCOMPARE(f.readInstr(), WORD2);
+    QCOMPARE(f.readOpCode(), 0x02);
+    QCOMPARE(f.readDestReg(), 0x08);
+    QCOMPARE(f.readSrcBits(), 0x34);
 }
 
 // The instruction register holds its word while InstrLoad=0 and loads the
