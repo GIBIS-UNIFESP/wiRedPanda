@@ -5,7 +5,8 @@
 """
 Create 8-bit Single-Cycle CPU IC
 
-Implements a complete 8-bit single-cycle CPU with 4 pipeline stages integrated:
+Implements a complete 8-bit single-cycle CPU with 4 combinational datapath
+stages integrated (no pipeline — one instruction completes per clock):
 - Fetch Stage: Instruction retrieval and program counter management
 - Decode Stage: Opcode to control signal conversion
 - Execute Stage: ALU operations with 8 supported operations
@@ -128,7 +129,7 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created register file programming inputs")
 
-        # ---- Instantiate pipeline stages ----
+        # ---- Instantiate datapath stages ----
         fetch_id = await self.instantiate_ic("level8_fetch_stage", stage_x_offsets[0], stage_y, "Fetch")
         if fetch_id is None:
             return False
@@ -170,7 +171,7 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
             write_addr_mux_ids.append(mux_id)
 
         # Write enable logic: (RegWrite AND NOT(ProgWrite) AND NOT(Reset)) OR RegProgWrite
-        # This prevents the normal pipeline from writing registers during programming or reset
+        # This prevents the normal datapath from writing registers during programming or reset
         prog_not_id = await self.create_element("Not", 500.0, reg_file_y - 200.0, "ProgWriteNOT")
         if prog_not_id is None:
             return False
