@@ -113,6 +113,12 @@ void TestLevel8DecodeStage::testDecodeStage_data()
     QTest::newRow("STORE (0x18)") << 0x18 << 0 << false << false << true;
     QTest::newRow("LOAD-ALUOp5 (0x15)") << 0x15 << 5 << false << true << false;
     QTest::newRow("STORE-ALUOp7 (0x1F)") << 0x1F << 7 << false << false << true;
+
+    // OpCode[4:3] = 01 quadrant (0x08-0x0F): OpCode[4]=0 so RegWrite=1 and no
+    // memory op (these decode as register-writing ALU ops). This quadrant was
+    // the one untested combination of the MemRead/MemWrite control space.
+    QTest::newRow("ALU-reg 0x0A (ALUOp2)") << 0x0A << 2 << true << false << false;
+    QTest::newRow("ALU-reg 0x0F (ALUOp7)") << 0x0F << 7 << true << false << false;
 }
 
 void TestLevel8DecodeStage::testDecodeStage()

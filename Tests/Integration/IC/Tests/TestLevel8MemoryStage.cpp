@@ -182,3 +182,43 @@ void TestLevel8MemoryStage::testMemoryStageReset()
     f.sim->update();
     QCOMPARE(f.readDataOut(), 0x00);
 }
+
+// Distinct words must be stored at distinct addresses and read back
+// independently — the existing tests only ever round-trip a single address, so a
+// bug aliasing all addresses to one word would pass. Also asserts the documented
+// partial decode (only Address[0:2] reach the 8-word RAM; high bits alias mod 8).
+void TestLevel8MemoryStage::testMultiAddressStorage()
+{
+    auto &f = *s_level8MemoryStage;
+
+    auto writeAt = [&](int addr, int data) {
+        setMultiBitInput(f.addressInputs, addr);
+        setMultiBitInput(f.datainInputs, data);
+        setMultiBitInput(f.resultInputs, 0x00);
+        f.memread->setOn(false);
+        f.memwrite->setOn(true);
+        f.sim->update();
+        clockCycle(f.sim, f.clk);
+        f.memwrite->setOn(false);
+        f.sim->update();
+    };
+    auto readAt = [&](int addr) {
+        setMultiBitInput(f.addressInputs, addr);
+        f.memread->setOn(true);
+        f.sim->update();
+        int v = f.readDataOut();
+        f.memread->setOn(false);
+        f.sim->update();
+        return v;
+    };
+
+    writeAt(0x02, 0x11);
+    writeAt(0x05, 0x22);
+
+    // Each address holds its own word
+    QCOMPARE(readAt(0x02), 0x11);
+    QCOMPARE(readAt(0x05), 0x22);
+
+    // Partial decode: Address[3..7] are ignored, so 0x0A (= 0x02 + 8) aliases 0x02
+    QCOMPARE(readAt(0x0A), 0x11);
+}
