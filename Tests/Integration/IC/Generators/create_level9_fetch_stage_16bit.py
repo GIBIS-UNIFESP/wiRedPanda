@@ -5,7 +5,7 @@
 """
 Create 16-bit Fetch Stage IC
 
-Implements the fetch stage for a 16-bit RISC CPU pipeline, mirroring the
+Implements the fetch stage for the 16-bit RISC CPU, mirroring the
 level8_fetch_stage architecture (F53: this stage used to have a dead
 InstrLoad input and no instruction register, no programming interface, and
 its decoded fields were emitted MSB-first against the project-wide
