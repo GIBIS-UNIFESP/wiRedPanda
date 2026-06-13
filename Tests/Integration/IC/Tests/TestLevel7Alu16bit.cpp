@@ -121,6 +121,11 @@ void TestLevel7ALU16Bit::testALU16Bit_data()
     QTest::newRow("xor_0xFFFF_0x00FF") << 0xFFFF << 0x00FF << 4 << 0xFF00;
     QTest::newRow("xor_0x1234_0x5678") << 0x1234 << 0x5678 << 4 << 0x444C;
 
+    // NOT (op 5): ~A, B ignored. Each half NOTs its own byte independently, so
+    // there is no cross-byte interaction — but the op was untested at 16-bit.
+    QTest::newRow("not_0xAAAA") << 0xAAAA << 0x0000 << 5 << 0x5555;
+    QTest::newRow("not_0x0000") << 0x0000 << 0x0000 << 5 << 0xFFFF;
+
     // Cross-byte shift propagation (F61: the byte halves used to shift
     // independently with zero fill, losing A[7] -> Result[8] on SHL and
     // A[8] -> Result[7] on SHR)
@@ -157,4 +162,57 @@ void TestLevel7ALU16Bit::testALU16Bit()
     }
 
     QCOMPARE(actualResult & 0xFFFF, expectedResult & 0xFFFF);
+}
+
+void TestLevel7ALU16Bit::testFlags16Bit_data()
+{
+    QTest::addColumn<int>("opA");
+    QTest::addColumn<int>("opB");
+    QTest::addColumn<int>("aluOp");
+    QTest::addColumn<bool>("expectedZero");
+    QTest::addColumn<bool>("expectedSign");
+    QTest::addColumn<bool>("expectedCarry");
+
+    // Zero asserts only when BOTH byte halves are zero (F26: AND of the per-half
+    // Zero flags). A high-byte-only zero must NOT raise the 16-bit Zero flag.
+    // (Carry is wired from the high ALU's ADD carry-out, so it is meaningful only
+    // for ADD and reads 0 during SUB.)
+    QTest::newRow("sub_equal_is_zero")  << 0x4242 << 0x4242 << 1 << true  << false << false;
+    QTest::newRow("add_low_only_zero")  << 0x0100 << 0x0000 << 0 << false << false << false;
+    QTest::newRow("add_high_only_zero") << 0x0001 << 0x0000 << 0 << false << false << false;
+
+    // Sign = Result[15] (high half's Negative).
+    QTest::newRow("add_sign_set")  << 0x8000 << 0x0000 << 0 << false << true  << false;
+    QTest::newRow("add_sign_clear") << 0x7FFF << 0x0000 << 0 << false << false << false;
+
+    // Carry = carry-out of bit 15 (high half), proving the low->high carry chain
+    // reaches the top of the word.
+    QTest::newRow("add_carry_out")  << 0xFFFF << 0x0001 << 0 << true  << false << true;
+    QTest::newRow("add_no_carry")   << 0x0001 << 0x0001 << 0 << false << false << false;
+}
+
+void TestLevel7ALU16Bit::testFlags16Bit()
+{
+    QFETCH(int, opA);
+    QFETCH(int, opB);
+    QFETCH(int, aluOp);
+    QFETCH(bool, expectedZero);
+    QFETCH(bool, expectedSign);
+    QFETCH(bool, expectedCarry);
+
+    auto &f = *s_level7Alu16bit;
+
+    for (int i = 0; i < 16; ++i) {
+        f.opAIn[i]->setOn((opA >> i) & 1);
+        f.opBIn[i]->setOn((opB >> i) & 1);
+    }
+    for (int i = 0; i < 3; ++i) {
+        f.opIn[i]->setOn((aluOp >> i) & 1);
+    }
+
+    f.sim->update();
+
+    QCOMPARE(getInputStatus(f.zeroFlag), expectedZero);
+    QCOMPARE(getInputStatus(f.signFlag), expectedSign);
+    QCOMPARE(getInputStatus(f.carryFlag), expectedCarry);
 }
