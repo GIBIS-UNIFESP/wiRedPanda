@@ -16,6 +16,7 @@ struct Comparator4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *swA[4] = {}, *swB[4] = {};
+    InputSwitch *swGtIn = nullptr, *swEqIn = nullptr, *swLtIn = nullptr;
     Led *ledGreater = nullptr, *ledEqual = nullptr, *ledLess = nullptr;
     Simulation *sim = nullptr;
 
@@ -32,6 +33,10 @@ struct Comparator4bitFixture {
             swB[i] = new InputSwitch();
             builder.add(swA[i], swB[i]);
         }
+        swGtIn = new InputSwitch();
+        swEqIn = new InputSwitch();
+        swLtIn = new InputSwitch();
+        builder.add(swGtIn, swEqIn, swLtIn);
 
         ledGreater = new Led();
         ledEqual = new Led();
@@ -42,6 +47,9 @@ struct Comparator4bitFixture {
             builder.connect(swA[i], 0, ic, QString("A[%1]").arg(i));
             builder.connect(swB[i], 0, ic, QString("B[%1]").arg(i));
         }
+        builder.connect(swGtIn, 0, ic, "GreaterIn");
+        builder.connect(swEqIn, 0, ic, "EqualIn");
+        builder.connect(swLtIn, 0, ic, "LessIn");
         builder.connect(ic, "Greater", ledGreater, 0);
         builder.connect(ic, "Equal", ledEqual, 0);
         builder.connect(ic, "Less", ledLess, 0);
@@ -49,6 +57,14 @@ struct Comparator4bitFixture {
         sim = builder.initSimulation();
         sim->update();
         return true;
+    }
+
+    // 74LS85 standalone tie-off: EqualIn high, GreaterIn/LessIn low.
+    void tieStandalone()
+    {
+        swGtIn->setOn(false);
+        swEqIn->setOn(true);
+        swLtIn->setOn(false);
     }
 };
 
@@ -105,6 +121,7 @@ void TestLevel3Comparator4Bit::testComparator4Bit()
 
     auto &f = *s_level3Comparator4bit;
 
+    f.tieStandalone();
     for (int i = 0; i < 4; ++i) {
         f.swA[i]->setOn((valueA >> i) & 1);
         f.swB[i]->setOn((valueB >> i) & 1);
@@ -114,4 +131,60 @@ void TestLevel3Comparator4Bit::testComparator4Bit()
     QCOMPARE(getInputStatus(f.ledGreater), expectedGreater);
     QCOMPARE(getInputStatus(f.ledEqual), expectedEqual);
     QCOMPARE(getInputStatus(f.ledLess), expectedLess);
+}
+
+// 74LS85 cascade behaviour: when the two nibbles are EQUAL the result follows
+// the cascade inputs (this is how the more-significant stage defers to the
+// less-significant one); when they DIFFER the local comparison dominates and
+// the cascade inputs are ignored.
+void TestLevel3Comparator4Bit::testComparator4BitCascade()
+{
+    auto &f = *s_level3Comparator4bit;
+
+    auto setAB = [&](int a, int b) {
+        for (int i = 0; i < 4; ++i) {
+            f.swA[i]->setOn((a >> i) & 1);
+            f.swB[i]->setOn((b >> i) & 1);
+        }
+    };
+    auto setCascade = [&](bool gt, bool eq, bool lt) {
+        f.swGtIn->setOn(gt);
+        f.swEqIn->setOn(eq);
+        f.swLtIn->setOn(lt);
+    };
+
+    // Equal nibbles (5 == 5): output mirrors whichever cascade input is asserted.
+    setAB(5, 5);
+    setCascade(true, false, false);   // lower stage said A>B
+    f.sim->update();
+    QVERIFY(getInputStatus(f.ledGreater));
+    QVERIFY(!getInputStatus(f.ledEqual));
+    QVERIFY(!getInputStatus(f.ledLess));
+
+    setCascade(false, true, false);   // lower stage said A==B
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.ledGreater));
+    QVERIFY(getInputStatus(f.ledEqual));
+    QVERIFY(!getInputStatus(f.ledLess));
+
+    setCascade(false, false, true);   // lower stage said A<B
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.ledGreater));
+    QVERIFY(!getInputStatus(f.ledEqual));
+    QVERIFY(getInputStatus(f.ledLess));
+
+    // Unequal nibbles: local comparison wins regardless of the cascade inputs.
+    setAB(9, 4);                       // A > B locally
+    setCascade(false, false, true);    // lower stage says A<B — must be ignored
+    f.sim->update();
+    QVERIFY(getInputStatus(f.ledGreater));
+    QVERIFY(!getInputStatus(f.ledEqual));
+    QVERIFY(!getInputStatus(f.ledLess));
+
+    setAB(4, 9);                       // A < B locally
+    setCascade(true, false, false);    // lower stage says A>B — must be ignored
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.ledGreater));
+    QVERIFY(!getInputStatus(f.ledEqual));
+    QVERIFY(getInputStatus(f.ledLess));
 }

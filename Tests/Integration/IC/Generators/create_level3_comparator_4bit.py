@@ -7,7 +7,11 @@ Create 4-bit Comparator IC
 
 Compares two 4-bit values A and B using cascading magnitude comparison.
 
-Inputs: A[0-3], B[0-3] (two 4-bit values)
+Inputs:
+  - A[0-3], B[0-3] (two 4-bit values)
+  - GreaterIn, EqualIn, LessIn (74LS85 cascade inputs): tie EqualIn high and
+    GreaterIn/LessIn low for standalone use; for an 8-bit comparison feed the
+    less-significant comparator's Greater/Equal/Less here.
 Outputs: Greater, Equal, Less (exactly one asserted)
 
 Architecture:
@@ -15,6 +19,8 @@ Architecture:
   - 8 AND gates for greater/less conditions per bit
   - 4 cascade AND gates for equality propagation
   - OR gates to combine comparison results
+  - 74LS85 cascade final stage: Greater = local OR (allEqual AND GreaterIn),
+    Less = local OR (allEqual AND LessIn), Equal = allEqual AND EqualIn
 
 Usage:
     python create_level3_comparator_4bit.py
@@ -52,7 +58,8 @@ class Comparator4BitBuilder(ICBuilderBase):
         and_x = not_x + HORIZONTAL_GATE_SPACING
         cascade_x = and_x + HORIZONTAL_GATE_SPACING
         or_x = cascade_x + HORIZONTAL_GATE_SPACING
-        output_x = or_x + HORIZONTAL_GATE_SPACING
+        final_x = or_x + HORIZONTAL_GATE_SPACING
+        output_x = final_x + HORIZONTAL_GATE_SPACING
 
         # ========== Create Input Switches ==========
         a_inputs = []
@@ -70,6 +77,21 @@ class Comparator4BitBuilder(ICBuilderBase):
             b_inputs.append(b_id)
 
         await self.log(f"  ✓ Created inputs (A[0-3], B[0-3])")
+
+        # ========== Cascade Inputs (74LS85-style chaining) ==========
+        # For standalone use, tie EqualIn high and GreaterIn/LessIn low; for an
+        # 8-bit comparison, feed the less-significant comparator's outputs here.
+        gt_in = await self.create_element("InputSwitch", input_x, 100.0 + 8 * VERTICAL_STAGE_SPACING, "GreaterIn")
+        if gt_in is None:
+            return False
+        eq_in = await self.create_element("InputSwitch", input_x, 100.0 + 9 * VERTICAL_STAGE_SPACING, "EqualIn")
+        if eq_in is None:
+            return False
+        lt_in = await self.create_element("InputSwitch", input_x, 100.0 + 10 * VERTICAL_STAGE_SPACING, "LessIn")
+        if lt_in is None:
+            return False
+
+        await self.log(f"  ✓ Created cascade inputs (GreaterIn, EqualIn, LessIn)")
 
         # ========== Create NOT Gates ==========
         not_a = []
@@ -232,26 +254,73 @@ class Comparator4BitBuilder(ICBuilderBase):
 
         await self.log(f"  ✓ Created cascade OR gates with proper comparison logic")
 
+        # ========== Cascade Final Stage (74LS85) ==========
+        # eq_all = and_equal (all four bit-pairs equal):
+        #   Greater = local-greater OR (eq_all AND GreaterIn)
+        #   Less    = local-less    OR (eq_all AND LessIn)
+        #   Equal   = eq_all AND EqualIn
+        eq_gt_and = await self.create_element("And", final_x, 100.0 + 2 * VERTICAL_STAGE_SPACING, "eqAndGtIn")
+        if eq_gt_and is None:
+            return False
+        if not await self.connect(and_equal, eq_gt_and):
+            return False
+        if not await self.connect(gt_in, eq_gt_and, target_port=1):
+            return False
+
+        greater_final = await self.create_element("Or", final_x, 100.0 + 3 * VERTICAL_STAGE_SPACING, "greaterFinal")
+        if greater_final is None:
+            return False
+        if not await self.connect(cascade_greater[3], greater_final):
+            return False
+        if not await self.connect(eq_gt_and, greater_final, target_port=1):
+            return False
+
+        equal_final = await self.create_element("And", final_x, 100.0 + 5 * VERTICAL_STAGE_SPACING, "equalFinal")
+        if equal_final is None:
+            return False
+        if not await self.connect(and_equal, equal_final):
+            return False
+        if not await self.connect(eq_in, equal_final, target_port=1):
+            return False
+
+        eq_lt_and = await self.create_element("And", final_x, 100.0 + 6 * VERTICAL_STAGE_SPACING, "eqAndLtIn")
+        if eq_lt_and is None:
+            return False
+        if not await self.connect(and_equal, eq_lt_and):
+            return False
+        if not await self.connect(lt_in, eq_lt_and, target_port=1):
+            return False
+
+        less_final = await self.create_element("Or", final_x, 100.0 + 7 * VERTICAL_STAGE_SPACING, "lessFinal")
+        if less_final is None:
+            return False
+        if not await self.connect(cascade_less[3], less_final):
+            return False
+        if not await self.connect(eq_lt_and, less_final, target_port=1):
+            return False
+
+        await self.log("  ✓ Created cascade final stage")
+
         # ========== Create Output LEDs ==========
         greater_led = await self.create_element("Led", output_x, 100.0 + 3 * VERTICAL_STAGE_SPACING, "Greater")
         if greater_led is None:
             return False
 
-        if not await self.connect(cascade_greater[3], greater_led):
+        if not await self.connect(greater_final, greater_led):
             return False
 
         equal_led = await self.create_element("Led", output_x, 100.0 + 5 * VERTICAL_STAGE_SPACING, "Equal")
         if equal_led is None:
             return False
 
-        if not await self.connect(and_equal, equal_led):
+        if not await self.connect(equal_final, equal_led):
             return False
 
         less_led = await self.create_element("Led", output_x, 100.0 + 7 * VERTICAL_STAGE_SPACING, "Less")
         if less_led is None:
             return False
 
-        if not await self.connect(cascade_less[3], less_led):
+        if not await self.connect(less_final, less_led):
             return False
 
         await self.log("  ✓ Created output LEDs")
