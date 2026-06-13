@@ -17,8 +17,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct ParityCheckerFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *swD[4] = {};
-    InputSwitch *swP = nullptr;
+    InputSwitch *swData[8] = {};
     Led *ledResult = nullptr;
     Simulation *sim = nullptr;
 
@@ -27,21 +26,21 @@ struct ParityCheckerFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        for (int i = 0; i < 4; ++i) {
-            swD[i] = new InputSwitch();
-            builder.add(swD[i]);
+        for (int i = 0; i < 8; ++i) {
+            swData[i] = new InputSwitch();
+            builder.add(swData[i]);
         }
-        swP = new InputSwitch();
         ledResult = new Led();
-        builder.add(swP, ledResult);
+        builder.add(ledResult);
 
         ic = loadBuildingBlockIC("level2_parity_checker.panda");
         builder.add(ic);
 
-        for (int i = 0; i < 4; ++i) {
-            builder.connect(swD[i], 0, ic, QString("data[%1]").arg(i));
+        // Drive every data input — the IC is an 8-bit XOR tree, so leaving any
+        // input dangling would only "pass" by relying on unconnected-port = 0.
+        for (int i = 0; i < 8; ++i) {
+            builder.connect(swData[i], 0, ic, QString("data[%1]").arg(i));
         }
-        builder.connect(swP, 0, ic, "data[4]");
         builder.connect(ic, "parity", ledResult, 0);
 
         sim = builder.initSimulation();
@@ -73,47 +72,41 @@ void TestLevel2ParityChecker::cleanup()
 
 void TestLevel2ParityChecker::testOddParityChecker_data()
 {
-    QTest::addColumn<int>("dataInput");    // 4 data bits (D0-D3)
-    QTest::addColumn<int>("parityBit");    // 1 parity bit
-    QTest::addColumn<int>("expectedResult"); // 1 = valid odd parity, 0 = error detected
+    QTest::addColumn<int>("dataByte");       // all 8 data bits (data[0..7])
+    QTest::addColumn<int>("expectedResult"); // 1 when the byte has ODD parity
 
-    // Valid odd parity cases: total 1's should be ODD
-    // Data: 0000, Parity: 1 (total = 1 one = ODD) ✓
-    QTest::newRow("0000 + P1 = valid") << 0x0 << 1 << 1;
-    // Data: 0001, Parity: 0 (total = 1 one = ODD) ✓
-    QTest::newRow("0001 + P0 = valid") << 0x1 << 0 << 1;
-    // Data: 0011, Parity: 0 (total = 2 ones = EVEN) ✗ (but with parity → 2 = error)
-    QTest::newRow("0011 + P0 = error") << 0x3 << 0 << 0;
-    // Data: 0011, Parity: 1 (total = 3 ones = ODD) ✓
-    QTest::newRow("0011 + P1 = valid") << 0x3 << 1 << 1;
-    // Data: 0101, Parity: 1 (total = 3 ones = ODD) ✓
-    QTest::newRow("0101 + P1 = valid") << 0x5 << 1 << 1;
-    // Data: 0111, Parity: 0 (total = 3 ones = ODD) ✓
-    QTest::newRow("0111 + P0 = valid") << 0x7 << 0 << 1;
-    // Data: 1111, Parity: 1 (total = 5 ones = ODD) ✓
-    QTest::newRow("1111 + P1 = valid") << 0xF << 1 << 1;
-    // Data: 1111, Parity: 0 (total = 4 ones = EVEN) ✗
-    QTest::newRow("1111 + P0 = error") << 0xF << 0 << 0;
-    // Data: 0000, Parity: 0 (total = 0 ones = EVEN) ✗
-    QTest::newRow("0000 + P0 = error") << 0x0 << 0 << 0;
-    // Data: 1001, Parity: 0 (total = 2 ones = EVEN) ✗
-    QTest::newRow("1001 + P0 = error") << 0x9 << 0 << 0;
-    // Data: 1010, Parity: 1 (total = 3 ones = ODD) ✓
-    QTest::newRow("1010 + P1 = valid") << 0xA << 1 << 1;
+    // The IC XORs all 8 inputs: output = 1 iff the byte has an odd number of 1s.
+    // Cases below walk every single bit (so data[5..7] are genuinely exercised)
+    // plus all-zero / all-one / mixed odd/even-weight bytes.
+    QTest::newRow("0x00 (0 ones) = even")  << 0x00 << 0;
+    QTest::newRow("0x01 (bit0) = odd")     << 0x01 << 1;
+    QTest::newRow("0x02 (bit1) = odd")     << 0x02 << 1;
+    QTest::newRow("0x04 (bit2) = odd")     << 0x04 << 1;
+    QTest::newRow("0x08 (bit3) = odd")     << 0x08 << 1;
+    QTest::newRow("0x10 (bit4) = odd")     << 0x10 << 1;
+    QTest::newRow("0x20 (bit5) = odd")     << 0x20 << 1;
+    QTest::newRow("0x40 (bit6) = odd")     << 0x40 << 1;
+    QTest::newRow("0x80 (bit7) = odd")     << 0x80 << 1;
+    QTest::newRow("0xFF (8 ones) = even")  << 0xFF << 0;
+    QTest::newRow("0x7F (7 ones) = odd")   << 0x7F << 1;
+    QTest::newRow("0xE0 (bits5-7) = odd")  << 0xE0 << 1;  // all three high bits
+    QTest::newRow("0xC0 (bits6-7) = even") << 0xC0 << 0;
+    QTest::newRow("0xAA (4 ones) = even")  << 0xAA << 0;  // bits 1,3,5,7
+    QTest::newRow("0x55 (4 ones) = even")  << 0x55 << 0;  // bits 0,2,4,6
+    QTest::newRow("0x81 (bits0,7) = even") << 0x81 << 0;
+    QTest::newRow("0xB3 (5 ones) = odd")   << 0xB3 << 1;
 }
 
 void TestLevel2ParityChecker::testOddParityChecker()
 {
-    QFETCH(int, dataInput);
-    QFETCH(int, parityBit);
+    QFETCH(int, dataByte);
     QFETCH(int, expectedResult);
 
     auto &f = *s_level2ParityChecker;
 
-    for (int i = 0; i < 4; ++i) {
-        f.swD[i]->setOn(static_cast<bool>(dataInput & (1 << i)));
+    for (int i = 0; i < 8; ++i) {
+        f.swData[i]->setOn(static_cast<bool>(dataByte & (1 << i)));
     }
-    f.swP->setOn(static_cast<bool>(parityBit));
     f.sim->update();
 
     QCOMPARE(getInputStatus(f.ledResult) ? 1 : 0, expectedResult);
