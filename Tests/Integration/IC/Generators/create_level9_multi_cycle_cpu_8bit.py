@@ -13,7 +13,14 @@ Implements an 8-bit multi-cycle CPU that sequences through execution phases:
 
 Inputs:
   Clock (main system clock)
-  Reset (initialize to fetch cycle)
+  Reset (initialize to fetch cycle; held high during programming to freeze
+         the cycle counter at phase 0)
+  ProgAddr[0-7] (instruction memory programming address)
+  ProgData[0-7] (instruction memory programming data)
+  ProgWrite (instruction memory write enable)
+  RegProgAddr[0-2] (register file programming address)
+  RegProgData[0-7] (register file programming data)
+  RegProgWrite (register file programming write enable)
 
 Outputs:
   PC[0-7] (program counter value)
@@ -24,12 +31,17 @@ Outputs:
 Architecture:
   - 2-bit cycle counter for 4-cycle execution sequence
   - Each stage instantiated separately; decode/execute are purely
-    combinational (no clock), only fetch/memory/regfile are clocked,
-    each gated to its own phase of the cycle counter
-  - Register file provides operands (Read_Addr2 = RawInstr[0..2]);
-    execute stage computes on them; memory stage is addressed by
-    RawInstr[0..2]; write-back to the register file is gated by
-    AND(RegWrite, Phase3)
+    combinational (no clock). Fetch/memory/regfile all run on the MAIN
+    clock with phase-gated ENABLES (clock-enable, not gated clocks): the
+    fetch PCInc/InstrLoad are gated by Phase 0 and the memory MemWrite by
+    Phase 3, so a single clock drives every register
+  - Register file provides operands (Read_Addr2 = Instruction[0..2], the
+    REGISTERED instruction so addressing stays valid after PCInc advances
+    PC during the fetch phase); execute stage computes on them; memory
+    stage is addressed by Instruction[0..2]; write-back to the register
+    file is enabled by OR(AND(RegWrite, Phase3), RegProgWrite)
+  - Programming muxes let tests pre-load instruction memory (via ProgWrite)
+    and registers (via RegProgWrite) while Reset holds the counter at phase 0
 
 Execution Flow:
   Cycle 0 (Fetch): PC → Address, fetch instruction from memory
