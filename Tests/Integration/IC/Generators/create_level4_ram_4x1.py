@@ -10,6 +10,7 @@ Inputs:
   - DataIn: 1-bit data input
   - WriteEnable: Write control signal
   - Clock: Clock signal for synchronous write
+  - Reset: async clear of all cells (active-high; matches level4_ram_8x1)
 
 Outputs:
   - DataOut: 1-bit data output
@@ -80,6 +81,19 @@ class RAM4x1Builder(ICBuilderBase):
         if clock_id is None:
             return False
         await self.log("  ✓ Created Clock")
+
+        # Reset input (async clear of all cells — matches level4_ram_8x1 F54)
+        reset_id = await self.create_element("InputSwitch", 50.0 + (address_bits + 3) * HORIZONTAL_GATE_SPACING, input_y, "Reset")
+        if reset_id is None:
+            return False
+        await self.log("  ✓ Created Reset")
+
+        not_reset_id = await self.create_element("Not", 50.0 + (address_bits + 4) * HORIZONTAL_GATE_SPACING, input_y, "NOT_Reset")
+        if not_reset_id is None:
+            return False
+
+        if not await self.connect(reset_id, not_reset_id):
+            return False
 
         # ========== Create Storage DFlipFlops and Data MUX Gates ==========
         storage_ffs = []
@@ -166,6 +180,10 @@ class RAM4x1Builder(ICBuilderBase):
 
             # Connect Clock to DFlipFlop
             if not await self.connect(clock_id, storage_ffs[i], target_port_label="Clock"):
+                return False
+
+            # Connect inverted Reset to the cell's async ~Clear (matches ram_8x1 F54)
+            if not await self.connect(not_reset_id, storage_ffs[i], target_port_label="~Clear"):
                 return False
 
             # Connect DFlipFlop Q output to read multiplexer input
