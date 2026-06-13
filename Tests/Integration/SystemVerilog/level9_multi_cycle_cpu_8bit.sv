@@ -5009,6 +5009,35 @@ endmodule
 module level9_multi_cycle_cpu_8bit_ic (
     input clock,
     input reset,
+    input progaddr0,
+    input progaddr1,
+    input progaddr2,
+    input progaddr3,
+    input progaddr4,
+    input progaddr5,
+    input progaddr6,
+    input progaddr7,
+    input progwrite,
+    input progdata0,
+    input progdata1,
+    input progdata2,
+    input progdata3,
+    input progdata4,
+    input progdata5,
+    input progdata6,
+    input progdata7,
+    input regprogaddr0,
+    input regprogaddr1,
+    input regprogaddr2,
+    input regprogwrite,
+    input regprogdata0,
+    input regprogdata1,
+    input regprogdata2,
+    input regprogdata3,
+    input regprogdata4,
+    input regprogdata5,
+    input regprogdata6,
+    input regprogdata7,
     output cyclecounter0,
     output pc0,
     output cyclecounter1,
@@ -5042,157 +5071,168 @@ reg aux_d_flip_flop_1_1_q = 1'b1;
 reg aux_d_flip_flop_2_0_q = 1'b0;
 reg aux_d_flip_flop_2_1_q = 1'b1;
 // IC instance: Fetch (level8_fetch_stage)
-wire w_level8_fetch_stage_inst_5_pc0;
-wire w_level8_fetch_stage_inst_5_instruction0;
-wire w_level8_fetch_stage_inst_5_opcode0;
-wire w_level8_fetch_stage_inst_5_registeraddr0;
-wire w_level8_fetch_stage_inst_5_rawinstr0;
-wire w_level8_fetch_stage_inst_5_pc1;
-wire w_level8_fetch_stage_inst_5_instruction1;
-wire w_level8_fetch_stage_inst_5_opcode1;
-wire w_level8_fetch_stage_inst_5_registeraddr1;
-wire w_level8_fetch_stage_inst_5_rawinstr1;
-wire w_level8_fetch_stage_inst_5_pc2;
-wire w_level8_fetch_stage_inst_5_instruction2;
-wire w_level8_fetch_stage_inst_5_opcode2;
-wire w_level8_fetch_stage_inst_5_registeraddr2;
-wire w_level8_fetch_stage_inst_5_rawinstr2;
-wire w_level8_fetch_stage_inst_5_pc3;
-wire w_level8_fetch_stage_inst_5_instruction3;
-wire w_level8_fetch_stage_inst_5_opcode3;
-wire w_level8_fetch_stage_inst_5_rawinstr3;
-wire w_level8_fetch_stage_inst_5_pc4;
-wire w_level8_fetch_stage_inst_5_instruction4;
-wire w_level8_fetch_stage_inst_5_opcode4;
-wire w_level8_fetch_stage_inst_5_rawinstr4;
-wire w_level8_fetch_stage_inst_5_pc5;
-wire w_level8_fetch_stage_inst_5_instruction5;
-wire w_level8_fetch_stage_inst_5_rawinstr5;
-wire w_level8_fetch_stage_inst_5_pc6;
-wire w_level8_fetch_stage_inst_5_instruction6;
-wire w_level8_fetch_stage_inst_5_rawinstr6;
-wire w_level8_fetch_stage_inst_5_pc7;
-wire w_level8_fetch_stage_inst_5_instruction7;
-wire w_level8_fetch_stage_inst_5_rawinstr7;
+wire w_level8_fetch_stage_inst_4_pc0;
+wire w_level8_fetch_stage_inst_4_instruction0;
+wire w_level8_fetch_stage_inst_4_opcode0;
+wire w_level8_fetch_stage_inst_4_registeraddr0;
+wire w_level8_fetch_stage_inst_4_rawinstr0;
+wire w_level8_fetch_stage_inst_4_pc1;
+wire w_level8_fetch_stage_inst_4_instruction1;
+wire w_level8_fetch_stage_inst_4_opcode1;
+wire w_level8_fetch_stage_inst_4_registeraddr1;
+wire w_level8_fetch_stage_inst_4_rawinstr1;
+wire w_level8_fetch_stage_inst_4_pc2;
+wire w_level8_fetch_stage_inst_4_instruction2;
+wire w_level8_fetch_stage_inst_4_opcode2;
+wire w_level8_fetch_stage_inst_4_registeraddr2;
+wire w_level8_fetch_stage_inst_4_rawinstr2;
+wire w_level8_fetch_stage_inst_4_pc3;
+wire w_level8_fetch_stage_inst_4_instruction3;
+wire w_level8_fetch_stage_inst_4_opcode3;
+wire w_level8_fetch_stage_inst_4_rawinstr3;
+wire w_level8_fetch_stage_inst_4_pc4;
+wire w_level8_fetch_stage_inst_4_instruction4;
+wire w_level8_fetch_stage_inst_4_opcode4;
+wire w_level8_fetch_stage_inst_4_rawinstr4;
+wire w_level8_fetch_stage_inst_4_pc5;
+wire w_level8_fetch_stage_inst_4_instruction5;
+wire w_level8_fetch_stage_inst_4_rawinstr5;
+wire w_level8_fetch_stage_inst_4_pc6;
+wire w_level8_fetch_stage_inst_4_instruction6;
+wire w_level8_fetch_stage_inst_4_rawinstr6;
+wire w_level8_fetch_stage_inst_4_pc7;
+wire w_level8_fetch_stage_inst_4_instruction7;
+wire w_level8_fetch_stage_inst_4_rawinstr7;
 // IC instance: Decode (level8_decode_stage)
-wire w_level8_decode_stage_inst_6_aluop0;
-wire w_level8_decode_stage_inst_6_regwrite;
-wire w_level8_decode_stage_inst_6_memread;
-wire w_level8_decode_stage_inst_6_memwrite;
-wire w_level8_decode_stage_inst_6_aluop1;
-wire w_level8_decode_stage_inst_6_aluop2;
-wire w_level8_decode_stage_inst_6_instrdecodedlines0;
-wire w_level8_decode_stage_inst_6_instrdecodedlines1;
-wire w_level8_decode_stage_inst_6_instrdecodedlines2;
-wire w_level8_decode_stage_inst_6_instrdecodedlines3;
-wire w_level8_decode_stage_inst_6_instrdecodedlines4;
-wire w_level8_decode_stage_inst_6_instrdecodedlines5;
-wire w_level8_decode_stage_inst_6_instrdecodedlines6;
-wire w_level8_decode_stage_inst_6_instrdecodedlines7;
-wire w_level8_decode_stage_inst_6_instrdecodedlines8;
-wire w_level8_decode_stage_inst_6_instrdecodedlines9;
-wire w_level8_decode_stage_inst_6_instrdecodedlines10;
-wire w_level8_decode_stage_inst_6_instrdecodedlines11;
-wire w_level8_decode_stage_inst_6_instrdecodedlines12;
-wire w_level8_decode_stage_inst_6_instrdecodedlines13;
-wire w_level8_decode_stage_inst_6_instrdecodedlines14;
-wire w_level8_decode_stage_inst_6_instrdecodedlines15;
-wire w_level8_decode_stage_inst_6_instrdecodedlines16;
-wire w_level8_decode_stage_inst_6_instrdecodedlines17;
-wire w_level8_decode_stage_inst_6_instrdecodedlines18;
-wire w_level8_decode_stage_inst_6_instrdecodedlines19;
-wire w_level8_decode_stage_inst_6_instrdecodedlines20;
-wire w_level8_decode_stage_inst_6_instrdecodedlines21;
-wire w_level8_decode_stage_inst_6_instrdecodedlines22;
-wire w_level8_decode_stage_inst_6_instrdecodedlines23;
-wire w_level8_decode_stage_inst_6_instrdecodedlines24;
-wire w_level8_decode_stage_inst_6_instrdecodedlines25;
-wire w_level8_decode_stage_inst_6_instrdecodedlines26;
-wire w_level8_decode_stage_inst_6_instrdecodedlines27;
-wire w_level8_decode_stage_inst_6_instrdecodedlines28;
-wire w_level8_decode_stage_inst_6_instrdecodedlines29;
-wire w_level8_decode_stage_inst_6_instrdecodedlines30;
-wire w_level8_decode_stage_inst_6_instrdecodedlines31;
+wire w_level8_decode_stage_inst_5_aluop0;
+wire w_level8_decode_stage_inst_5_regwrite;
+wire w_level8_decode_stage_inst_5_memread;
+wire w_level8_decode_stage_inst_5_memwrite;
+wire w_level8_decode_stage_inst_5_aluop1;
+wire w_level8_decode_stage_inst_5_aluop2;
+wire w_level8_decode_stage_inst_5_instrdecodedlines0;
+wire w_level8_decode_stage_inst_5_instrdecodedlines1;
+wire w_level8_decode_stage_inst_5_instrdecodedlines2;
+wire w_level8_decode_stage_inst_5_instrdecodedlines3;
+wire w_level8_decode_stage_inst_5_instrdecodedlines4;
+wire w_level8_decode_stage_inst_5_instrdecodedlines5;
+wire w_level8_decode_stage_inst_5_instrdecodedlines6;
+wire w_level8_decode_stage_inst_5_instrdecodedlines7;
+wire w_level8_decode_stage_inst_5_instrdecodedlines8;
+wire w_level8_decode_stage_inst_5_instrdecodedlines9;
+wire w_level8_decode_stage_inst_5_instrdecodedlines10;
+wire w_level8_decode_stage_inst_5_instrdecodedlines11;
+wire w_level8_decode_stage_inst_5_instrdecodedlines12;
+wire w_level8_decode_stage_inst_5_instrdecodedlines13;
+wire w_level8_decode_stage_inst_5_instrdecodedlines14;
+wire w_level8_decode_stage_inst_5_instrdecodedlines15;
+wire w_level8_decode_stage_inst_5_instrdecodedlines16;
+wire w_level8_decode_stage_inst_5_instrdecodedlines17;
+wire w_level8_decode_stage_inst_5_instrdecodedlines18;
+wire w_level8_decode_stage_inst_5_instrdecodedlines19;
+wire w_level8_decode_stage_inst_5_instrdecodedlines20;
+wire w_level8_decode_stage_inst_5_instrdecodedlines21;
+wire w_level8_decode_stage_inst_5_instrdecodedlines22;
+wire w_level8_decode_stage_inst_5_instrdecodedlines23;
+wire w_level8_decode_stage_inst_5_instrdecodedlines24;
+wire w_level8_decode_stage_inst_5_instrdecodedlines25;
+wire w_level8_decode_stage_inst_5_instrdecodedlines26;
+wire w_level8_decode_stage_inst_5_instrdecodedlines27;
+wire w_level8_decode_stage_inst_5_instrdecodedlines28;
+wire w_level8_decode_stage_inst_5_instrdecodedlines29;
+wire w_level8_decode_stage_inst_5_instrdecodedlines30;
+wire w_level8_decode_stage_inst_5_instrdecodedlines31;
 // IC instance: Execute (level8_execute_stage)
-wire w_level8_execute_stage_inst_7_result0;
-wire w_level8_execute_stage_inst_7_zero;
-wire w_level8_execute_stage_inst_7_result1;
-wire w_level8_execute_stage_inst_7_sign;
-wire w_level8_execute_stage_inst_7_result2;
-wire w_level8_execute_stage_inst_7_result3;
-wire w_level8_execute_stage_inst_7_result4;
-wire w_level8_execute_stage_inst_7_result5;
-wire w_level8_execute_stage_inst_7_result6;
-wire w_level8_execute_stage_inst_7_result7;
+wire w_level8_execute_stage_inst_6_result0;
+wire w_level8_execute_stage_inst_6_zero;
+wire w_level8_execute_stage_inst_6_result1;
+wire w_level8_execute_stage_inst_6_sign;
+wire w_level8_execute_stage_inst_6_result2;
+wire w_level8_execute_stage_inst_6_result3;
+wire w_level8_execute_stage_inst_6_result4;
+wire w_level8_execute_stage_inst_6_result5;
+wire w_level8_execute_stage_inst_6_result6;
+wire w_level8_execute_stage_inst_6_result7;
 // IC instance: Memory (level8_memory_stage)
-wire w_level8_memory_stage_inst_8_dataout0;
-wire w_level8_memory_stage_inst_8_dataout1;
-wire w_level8_memory_stage_inst_8_dataout2;
-wire w_level8_memory_stage_inst_8_dataout3;
-wire w_level8_memory_stage_inst_8_dataout4;
-wire w_level8_memory_stage_inst_8_dataout5;
-wire w_level8_memory_stage_inst_8_dataout6;
-wire w_level8_memory_stage_inst_8_dataout7;
+wire w_level8_memory_stage_inst_7_dataout0;
+wire w_level8_memory_stage_inst_7_dataout1;
+wire w_level8_memory_stage_inst_7_dataout2;
+wire w_level8_memory_stage_inst_7_dataout3;
+wire w_level8_memory_stage_inst_7_dataout4;
+wire w_level8_memory_stage_inst_7_dataout5;
+wire w_level8_memory_stage_inst_7_dataout6;
+wire w_level8_memory_stage_inst_7_dataout7;
 // IC instance: RegFile (level6_register_file_8x8)
-wire w_level6_register_file_8x8_inst_9_read_data10;
-wire w_level6_register_file_8x8_inst_9_read_data11;
-wire w_level6_register_file_8x8_inst_9_read_data12;
-wire w_level6_register_file_8x8_inst_9_read_data13;
-wire w_level6_register_file_8x8_inst_9_read_data14;
-wire w_level6_register_file_8x8_inst_9_read_data15;
-wire w_level6_register_file_8x8_inst_9_read_data16;
-wire w_level6_register_file_8x8_inst_9_read_data17;
-wire w_level6_register_file_8x8_inst_9_read_data20;
-wire w_level6_register_file_8x8_inst_9_read_data21;
-wire w_level6_register_file_8x8_inst_9_read_data22;
-wire w_level6_register_file_8x8_inst_9_read_data23;
-wire w_level6_register_file_8x8_inst_9_read_data24;
-wire w_level6_register_file_8x8_inst_9_read_data25;
-wire w_level6_register_file_8x8_inst_9_read_data26;
-wire w_level6_register_file_8x8_inst_9_read_data27;
-wire aux_not_10;
-wire aux_not_11;
-wire aux_and_12;
-wire aux_and_13;
-wire aux_and_14;
+wire w_level6_register_file_8x8_inst_8_read_data10;
+wire w_level6_register_file_8x8_inst_8_read_data11;
+wire w_level6_register_file_8x8_inst_8_read_data12;
+wire w_level6_register_file_8x8_inst_8_read_data13;
+wire w_level6_register_file_8x8_inst_8_read_data14;
+wire w_level6_register_file_8x8_inst_8_read_data15;
+wire w_level6_register_file_8x8_inst_8_read_data16;
+wire w_level6_register_file_8x8_inst_8_read_data17;
+wire w_level6_register_file_8x8_inst_8_read_data20;
+wire w_level6_register_file_8x8_inst_8_read_data21;
+wire w_level6_register_file_8x8_inst_8_read_data22;
+wire w_level6_register_file_8x8_inst_8_read_data23;
+wire w_level6_register_file_8x8_inst_8_read_data24;
+wire w_level6_register_file_8x8_inst_8_read_data25;
+wire w_level6_register_file_8x8_inst_8_read_data26;
+wire w_level6_register_file_8x8_inst_8_read_data27;
+// IC instance: WriteDataMux (level4_bus_mux_8bit)
+wire w_level4_bus_mux_8bit_inst_9_out0;
+wire w_level4_bus_mux_8bit_inst_9_out1;
+wire w_level4_bus_mux_8bit_inst_9_out2;
+wire w_level4_bus_mux_8bit_inst_9_out3;
+wire w_level4_bus_mux_8bit_inst_9_out4;
+wire w_level4_bus_mux_8bit_inst_9_out5;
+wire w_level4_bus_mux_8bit_inst_9_out6;
+wire w_level4_bus_mux_8bit_inst_9_out7;
+reg aux_mux_10 = 1'b0;
+reg aux_mux_11 = 1'b0;
+reg aux_mux_12 = 1'b0;
+wire aux_not_13;
+wire aux_not_14;
 wire aux_and_15;
-wire aux_not_16;
-wire aux_and_17;
+wire aux_and_16;
+wire aux_not_17;
 wire aux_and_18;
-wire aux_xor_19;
+wire aux_and_19;
+wire aux_or_20;
+wire aux_xor_21;
 
 // Internal logic
     //D FlipFlop
-    always @(posedge clock or negedge aux_not_16)
+    always @(posedge clock or negedge aux_not_17)
     begin
-        if (~aux_not_16)
+        if (~aux_not_17)
         begin
             aux_d_flip_flop_1_0_q <= 1'b0;
             aux_d_flip_flop_1_1_q <= 1'b1;
         end
         else
         begin
-            aux_d_flip_flop_1_0_q <= aux_not_10;
-            aux_d_flip_flop_1_1_q <= ~aux_not_10;
+            aux_d_flip_flop_1_0_q <= aux_not_13;
+            aux_d_flip_flop_1_1_q <= ~aux_not_13;
         end
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clock or negedge aux_not_16)
+    always @(posedge clock or negedge aux_not_17)
     begin
-        if (~aux_not_16)
+        if (~aux_not_17)
         begin
             aux_d_flip_flop_2_0_q <= 1'b0;
             aux_d_flip_flop_2_1_q <= 1'b1;
         end
         else
         begin
-            aux_d_flip_flop_2_0_q <= aux_xor_19;
-            aux_d_flip_flop_2_1_q <= ~aux_xor_19;
+            aux_d_flip_flop_2_0_q <= aux_xor_21;
+            aux_d_flip_flop_2_1_q <= ~aux_xor_21;
         end
     end
     //End of D FlipFlop
-level8_fetch_stage level8_fetch_stage_inst_5 (
+level8_fetch_stage level8_fetch_stage_inst_4 (
     .pcdata0(1'b0),
     .pcdata1(1'b0),
     .pcdata2(1'b0),
@@ -5201,283 +5241,368 @@ level8_fetch_stage level8_fetch_stage_inst_5 (
     .pcdata5(1'b0),
     .pcdata6(1'b0),
     .pcdata7(1'b0),
-    .clock(aux_and_12),
+    .clock(clock),
     .reset(reset),
     .pcload(1'b0),
-    .pcinc(1'b1),
-    .instrload(1'b1),
-    .progaddr0(1'b0),
-    .progaddr1(1'b0),
-    .progaddr2(1'b0),
-    .progaddr3(1'b0),
-    .progaddr4(1'b0),
-    .progaddr5(1'b0),
-    .progaddr6(1'b0),
-    .progaddr7(1'b0),
-    .progwrite(1'b0),
-    .progdata0(1'b0),
-    .progdata1(1'b0),
-    .progdata2(1'b0),
-    .progdata3(1'b0),
-    .progdata4(1'b0),
-    .progdata5(1'b0),
-    .progdata6(1'b0),
-    .progdata7(1'b0),
-    .pc0(w_level8_fetch_stage_inst_5_pc0),
-    .instruction0(w_level8_fetch_stage_inst_5_instruction0),
-    .opcode0(w_level8_fetch_stage_inst_5_opcode0),
-    .registeraddr0(w_level8_fetch_stage_inst_5_registeraddr0),
-    .rawinstr0(w_level8_fetch_stage_inst_5_rawinstr0),
-    .pc1(w_level8_fetch_stage_inst_5_pc1),
-    .instruction1(w_level8_fetch_stage_inst_5_instruction1),
-    .opcode1(w_level8_fetch_stage_inst_5_opcode1),
-    .registeraddr1(w_level8_fetch_stage_inst_5_registeraddr1),
-    .rawinstr1(w_level8_fetch_stage_inst_5_rawinstr1),
-    .pc2(w_level8_fetch_stage_inst_5_pc2),
-    .instruction2(w_level8_fetch_stage_inst_5_instruction2),
-    .opcode2(w_level8_fetch_stage_inst_5_opcode2),
-    .registeraddr2(w_level8_fetch_stage_inst_5_registeraddr2),
-    .rawinstr2(w_level8_fetch_stage_inst_5_rawinstr2),
-    .pc3(w_level8_fetch_stage_inst_5_pc3),
-    .instruction3(w_level8_fetch_stage_inst_5_instruction3),
-    .opcode3(w_level8_fetch_stage_inst_5_opcode3),
-    .rawinstr3(w_level8_fetch_stage_inst_5_rawinstr3),
-    .pc4(w_level8_fetch_stage_inst_5_pc4),
-    .instruction4(w_level8_fetch_stage_inst_5_instruction4),
-    .opcode4(w_level8_fetch_stage_inst_5_opcode4),
-    .rawinstr4(w_level8_fetch_stage_inst_5_rawinstr4),
-    .pc5(w_level8_fetch_stage_inst_5_pc5),
-    .instruction5(w_level8_fetch_stage_inst_5_instruction5),
-    .rawinstr5(w_level8_fetch_stage_inst_5_rawinstr5),
-    .pc6(w_level8_fetch_stage_inst_5_pc6),
-    .instruction6(w_level8_fetch_stage_inst_5_instruction6),
-    .rawinstr6(w_level8_fetch_stage_inst_5_rawinstr6),
-    .pc7(w_level8_fetch_stage_inst_5_pc7),
-    .instruction7(w_level8_fetch_stage_inst_5_instruction7),
-    .rawinstr7(w_level8_fetch_stage_inst_5_rawinstr7)
+    .pcinc(aux_and_15),
+    .instrload(aux_and_15),
+    .progaddr0(progaddr0),
+    .progaddr1(progaddr1),
+    .progaddr2(progaddr2),
+    .progaddr3(progaddr3),
+    .progaddr4(progaddr4),
+    .progaddr5(progaddr5),
+    .progaddr6(progaddr6),
+    .progaddr7(progaddr7),
+    .progwrite(progwrite),
+    .progdata0(progdata0),
+    .progdata1(progdata1),
+    .progdata2(progdata2),
+    .progdata3(progdata3),
+    .progdata4(progdata4),
+    .progdata5(progdata5),
+    .progdata6(progdata6),
+    .progdata7(progdata7),
+    .pc0(w_level8_fetch_stage_inst_4_pc0),
+    .instruction0(w_level8_fetch_stage_inst_4_instruction0),
+    .opcode0(w_level8_fetch_stage_inst_4_opcode0),
+    .registeraddr0(w_level8_fetch_stage_inst_4_registeraddr0),
+    .rawinstr0(w_level8_fetch_stage_inst_4_rawinstr0),
+    .pc1(w_level8_fetch_stage_inst_4_pc1),
+    .instruction1(w_level8_fetch_stage_inst_4_instruction1),
+    .opcode1(w_level8_fetch_stage_inst_4_opcode1),
+    .registeraddr1(w_level8_fetch_stage_inst_4_registeraddr1),
+    .rawinstr1(w_level8_fetch_stage_inst_4_rawinstr1),
+    .pc2(w_level8_fetch_stage_inst_4_pc2),
+    .instruction2(w_level8_fetch_stage_inst_4_instruction2),
+    .opcode2(w_level8_fetch_stage_inst_4_opcode2),
+    .registeraddr2(w_level8_fetch_stage_inst_4_registeraddr2),
+    .rawinstr2(w_level8_fetch_stage_inst_4_rawinstr2),
+    .pc3(w_level8_fetch_stage_inst_4_pc3),
+    .instruction3(w_level8_fetch_stage_inst_4_instruction3),
+    .opcode3(w_level8_fetch_stage_inst_4_opcode3),
+    .rawinstr3(w_level8_fetch_stage_inst_4_rawinstr3),
+    .pc4(w_level8_fetch_stage_inst_4_pc4),
+    .instruction4(w_level8_fetch_stage_inst_4_instruction4),
+    .opcode4(w_level8_fetch_stage_inst_4_opcode4),
+    .rawinstr4(w_level8_fetch_stage_inst_4_rawinstr4),
+    .pc5(w_level8_fetch_stage_inst_4_pc5),
+    .instruction5(w_level8_fetch_stage_inst_4_instruction5),
+    .rawinstr5(w_level8_fetch_stage_inst_4_rawinstr5),
+    .pc6(w_level8_fetch_stage_inst_4_pc6),
+    .instruction6(w_level8_fetch_stage_inst_4_instruction6),
+    .rawinstr6(w_level8_fetch_stage_inst_4_rawinstr6),
+    .pc7(w_level8_fetch_stage_inst_4_pc7),
+    .instruction7(w_level8_fetch_stage_inst_4_instruction7),
+    .rawinstr7(w_level8_fetch_stage_inst_4_rawinstr7)
 );
-level8_decode_stage level8_decode_stage_inst_6 (
-    .opcode0(w_level8_fetch_stage_inst_5_opcode0),
-    .opcode1(w_level8_fetch_stage_inst_5_opcode1),
-    .opcode2(w_level8_fetch_stage_inst_5_opcode2),
-    .opcode3(w_level8_fetch_stage_inst_5_opcode3),
-    .opcode4(w_level8_fetch_stage_inst_5_opcode4),
-    .aluop0(w_level8_decode_stage_inst_6_aluop0),
-    .regwrite(w_level8_decode_stage_inst_6_regwrite),
-    .memread(w_level8_decode_stage_inst_6_memread),
-    .memwrite(w_level8_decode_stage_inst_6_memwrite),
-    .aluop1(w_level8_decode_stage_inst_6_aluop1),
-    .aluop2(w_level8_decode_stage_inst_6_aluop2),
-    .instrdecodedlines0(w_level8_decode_stage_inst_6_instrdecodedlines0),
-    .instrdecodedlines1(w_level8_decode_stage_inst_6_instrdecodedlines1),
-    .instrdecodedlines2(w_level8_decode_stage_inst_6_instrdecodedlines2),
-    .instrdecodedlines3(w_level8_decode_stage_inst_6_instrdecodedlines3),
-    .instrdecodedlines4(w_level8_decode_stage_inst_6_instrdecodedlines4),
-    .instrdecodedlines5(w_level8_decode_stage_inst_6_instrdecodedlines5),
-    .instrdecodedlines6(w_level8_decode_stage_inst_6_instrdecodedlines6),
-    .instrdecodedlines7(w_level8_decode_stage_inst_6_instrdecodedlines7),
-    .instrdecodedlines8(w_level8_decode_stage_inst_6_instrdecodedlines8),
-    .instrdecodedlines9(w_level8_decode_stage_inst_6_instrdecodedlines9),
-    .instrdecodedlines10(w_level8_decode_stage_inst_6_instrdecodedlines10),
-    .instrdecodedlines11(w_level8_decode_stage_inst_6_instrdecodedlines11),
-    .instrdecodedlines12(w_level8_decode_stage_inst_6_instrdecodedlines12),
-    .instrdecodedlines13(w_level8_decode_stage_inst_6_instrdecodedlines13),
-    .instrdecodedlines14(w_level8_decode_stage_inst_6_instrdecodedlines14),
-    .instrdecodedlines15(w_level8_decode_stage_inst_6_instrdecodedlines15),
-    .instrdecodedlines16(w_level8_decode_stage_inst_6_instrdecodedlines16),
-    .instrdecodedlines17(w_level8_decode_stage_inst_6_instrdecodedlines17),
-    .instrdecodedlines18(w_level8_decode_stage_inst_6_instrdecodedlines18),
-    .instrdecodedlines19(w_level8_decode_stage_inst_6_instrdecodedlines19),
-    .instrdecodedlines20(w_level8_decode_stage_inst_6_instrdecodedlines20),
-    .instrdecodedlines21(w_level8_decode_stage_inst_6_instrdecodedlines21),
-    .instrdecodedlines22(w_level8_decode_stage_inst_6_instrdecodedlines22),
-    .instrdecodedlines23(w_level8_decode_stage_inst_6_instrdecodedlines23),
-    .instrdecodedlines24(w_level8_decode_stage_inst_6_instrdecodedlines24),
-    .instrdecodedlines25(w_level8_decode_stage_inst_6_instrdecodedlines25),
-    .instrdecodedlines26(w_level8_decode_stage_inst_6_instrdecodedlines26),
-    .instrdecodedlines27(w_level8_decode_stage_inst_6_instrdecodedlines27),
-    .instrdecodedlines28(w_level8_decode_stage_inst_6_instrdecodedlines28),
-    .instrdecodedlines29(w_level8_decode_stage_inst_6_instrdecodedlines29),
-    .instrdecodedlines30(w_level8_decode_stage_inst_6_instrdecodedlines30),
-    .instrdecodedlines31(w_level8_decode_stage_inst_6_instrdecodedlines31)
+level8_decode_stage level8_decode_stage_inst_5 (
+    .opcode0(w_level8_fetch_stage_inst_4_opcode0),
+    .opcode1(w_level8_fetch_stage_inst_4_opcode1),
+    .opcode2(w_level8_fetch_stage_inst_4_opcode2),
+    .opcode3(w_level8_fetch_stage_inst_4_opcode3),
+    .opcode4(w_level8_fetch_stage_inst_4_opcode4),
+    .aluop0(w_level8_decode_stage_inst_5_aluop0),
+    .regwrite(w_level8_decode_stage_inst_5_regwrite),
+    .memread(w_level8_decode_stage_inst_5_memread),
+    .memwrite(w_level8_decode_stage_inst_5_memwrite),
+    .aluop1(w_level8_decode_stage_inst_5_aluop1),
+    .aluop2(w_level8_decode_stage_inst_5_aluop2),
+    .instrdecodedlines0(w_level8_decode_stage_inst_5_instrdecodedlines0),
+    .instrdecodedlines1(w_level8_decode_stage_inst_5_instrdecodedlines1),
+    .instrdecodedlines2(w_level8_decode_stage_inst_5_instrdecodedlines2),
+    .instrdecodedlines3(w_level8_decode_stage_inst_5_instrdecodedlines3),
+    .instrdecodedlines4(w_level8_decode_stage_inst_5_instrdecodedlines4),
+    .instrdecodedlines5(w_level8_decode_stage_inst_5_instrdecodedlines5),
+    .instrdecodedlines6(w_level8_decode_stage_inst_5_instrdecodedlines6),
+    .instrdecodedlines7(w_level8_decode_stage_inst_5_instrdecodedlines7),
+    .instrdecodedlines8(w_level8_decode_stage_inst_5_instrdecodedlines8),
+    .instrdecodedlines9(w_level8_decode_stage_inst_5_instrdecodedlines9),
+    .instrdecodedlines10(w_level8_decode_stage_inst_5_instrdecodedlines10),
+    .instrdecodedlines11(w_level8_decode_stage_inst_5_instrdecodedlines11),
+    .instrdecodedlines12(w_level8_decode_stage_inst_5_instrdecodedlines12),
+    .instrdecodedlines13(w_level8_decode_stage_inst_5_instrdecodedlines13),
+    .instrdecodedlines14(w_level8_decode_stage_inst_5_instrdecodedlines14),
+    .instrdecodedlines15(w_level8_decode_stage_inst_5_instrdecodedlines15),
+    .instrdecodedlines16(w_level8_decode_stage_inst_5_instrdecodedlines16),
+    .instrdecodedlines17(w_level8_decode_stage_inst_5_instrdecodedlines17),
+    .instrdecodedlines18(w_level8_decode_stage_inst_5_instrdecodedlines18),
+    .instrdecodedlines19(w_level8_decode_stage_inst_5_instrdecodedlines19),
+    .instrdecodedlines20(w_level8_decode_stage_inst_5_instrdecodedlines20),
+    .instrdecodedlines21(w_level8_decode_stage_inst_5_instrdecodedlines21),
+    .instrdecodedlines22(w_level8_decode_stage_inst_5_instrdecodedlines22),
+    .instrdecodedlines23(w_level8_decode_stage_inst_5_instrdecodedlines23),
+    .instrdecodedlines24(w_level8_decode_stage_inst_5_instrdecodedlines24),
+    .instrdecodedlines25(w_level8_decode_stage_inst_5_instrdecodedlines25),
+    .instrdecodedlines26(w_level8_decode_stage_inst_5_instrdecodedlines26),
+    .instrdecodedlines27(w_level8_decode_stage_inst_5_instrdecodedlines27),
+    .instrdecodedlines28(w_level8_decode_stage_inst_5_instrdecodedlines28),
+    .instrdecodedlines29(w_level8_decode_stage_inst_5_instrdecodedlines29),
+    .instrdecodedlines30(w_level8_decode_stage_inst_5_instrdecodedlines30),
+    .instrdecodedlines31(w_level8_decode_stage_inst_5_instrdecodedlines31)
 );
-level8_execute_stage level8_execute_stage_inst_7 (
-    .operanda0(w_level6_register_file_8x8_inst_9_read_data10),
-    .operanda1(w_level6_register_file_8x8_inst_9_read_data11),
-    .operanda2(w_level6_register_file_8x8_inst_9_read_data12),
-    .operanda3(w_level6_register_file_8x8_inst_9_read_data13),
-    .operanda4(w_level6_register_file_8x8_inst_9_read_data14),
-    .operanda5(w_level6_register_file_8x8_inst_9_read_data15),
-    .operanda6(w_level6_register_file_8x8_inst_9_read_data16),
-    .operanda7(w_level6_register_file_8x8_inst_9_read_data17),
-    .aluop0(w_level8_decode_stage_inst_6_aluop0),
-    .operandb0(w_level6_register_file_8x8_inst_9_read_data20),
-    .operandb1(w_level6_register_file_8x8_inst_9_read_data21),
-    .operandb2(w_level6_register_file_8x8_inst_9_read_data22),
-    .operandb3(w_level6_register_file_8x8_inst_9_read_data23),
-    .operandb4(w_level6_register_file_8x8_inst_9_read_data24),
-    .operandb5(w_level6_register_file_8x8_inst_9_read_data25),
-    .operandb6(w_level6_register_file_8x8_inst_9_read_data26),
-    .operandb7(w_level6_register_file_8x8_inst_9_read_data27),
-    .aluop1(w_level8_decode_stage_inst_6_aluop1),
-    .aluop2(w_level8_decode_stage_inst_6_aluop2),
-    .result0(w_level8_execute_stage_inst_7_result0),
-    .zero(w_level8_execute_stage_inst_7_zero),
-    .result1(w_level8_execute_stage_inst_7_result1),
-    .sign(w_level8_execute_stage_inst_7_sign),
-    .result2(w_level8_execute_stage_inst_7_result2),
-    .result3(w_level8_execute_stage_inst_7_result3),
-    .result4(w_level8_execute_stage_inst_7_result4),
-    .result5(w_level8_execute_stage_inst_7_result5),
-    .result6(w_level8_execute_stage_inst_7_result6),
-    .result7(w_level8_execute_stage_inst_7_result7)
+level8_execute_stage level8_execute_stage_inst_6 (
+    .operanda0(w_level6_register_file_8x8_inst_8_read_data10),
+    .operanda1(w_level6_register_file_8x8_inst_8_read_data11),
+    .operanda2(w_level6_register_file_8x8_inst_8_read_data12),
+    .operanda3(w_level6_register_file_8x8_inst_8_read_data13),
+    .operanda4(w_level6_register_file_8x8_inst_8_read_data14),
+    .operanda5(w_level6_register_file_8x8_inst_8_read_data15),
+    .operanda6(w_level6_register_file_8x8_inst_8_read_data16),
+    .operanda7(w_level6_register_file_8x8_inst_8_read_data17),
+    .aluop0(w_level8_decode_stage_inst_5_aluop0),
+    .operandb0(w_level6_register_file_8x8_inst_8_read_data20),
+    .operandb1(w_level6_register_file_8x8_inst_8_read_data21),
+    .operandb2(w_level6_register_file_8x8_inst_8_read_data22),
+    .operandb3(w_level6_register_file_8x8_inst_8_read_data23),
+    .operandb4(w_level6_register_file_8x8_inst_8_read_data24),
+    .operandb5(w_level6_register_file_8x8_inst_8_read_data25),
+    .operandb6(w_level6_register_file_8x8_inst_8_read_data26),
+    .operandb7(w_level6_register_file_8x8_inst_8_read_data27),
+    .aluop1(w_level8_decode_stage_inst_5_aluop1),
+    .aluop2(w_level8_decode_stage_inst_5_aluop2),
+    .result0(w_level8_execute_stage_inst_6_result0),
+    .zero(w_level8_execute_stage_inst_6_zero),
+    .result1(w_level8_execute_stage_inst_6_result1),
+    .sign(w_level8_execute_stage_inst_6_sign),
+    .result2(w_level8_execute_stage_inst_6_result2),
+    .result3(w_level8_execute_stage_inst_6_result3),
+    .result4(w_level8_execute_stage_inst_6_result4),
+    .result5(w_level8_execute_stage_inst_6_result5),
+    .result6(w_level8_execute_stage_inst_6_result6),
+    .result7(w_level8_execute_stage_inst_6_result7)
 );
-level8_memory_stage level8_memory_stage_inst_8 (
-    .address0(w_level8_fetch_stage_inst_5_rawinstr0),
-    .address1(w_level8_fetch_stage_inst_5_rawinstr1),
-    .address2(w_level8_fetch_stage_inst_5_rawinstr2),
+level8_memory_stage level8_memory_stage_inst_7 (
+    .address0(w_level8_fetch_stage_inst_4_instruction0),
+    .address1(w_level8_fetch_stage_inst_4_instruction1),
+    .address2(w_level8_fetch_stage_inst_4_instruction2),
     .address3(1'b0),
     .address4(1'b0),
     .address5(1'b0),
     .address6(1'b0),
     .address7(1'b0),
-    .memread(w_level8_decode_stage_inst_6_memread),
-    .datain0(w_level6_register_file_8x8_inst_9_read_data10),
-    .datain1(w_level6_register_file_8x8_inst_9_read_data11),
-    .datain2(w_level6_register_file_8x8_inst_9_read_data12),
-    .datain3(w_level6_register_file_8x8_inst_9_read_data13),
-    .datain4(w_level6_register_file_8x8_inst_9_read_data14),
-    .datain5(w_level6_register_file_8x8_inst_9_read_data15),
-    .datain6(w_level6_register_file_8x8_inst_9_read_data16),
-    .datain7(w_level6_register_file_8x8_inst_9_read_data17),
-    .memwrite(w_level8_decode_stage_inst_6_memwrite),
-    .result0(w_level8_execute_stage_inst_7_result0),
-    .result1(w_level8_execute_stage_inst_7_result1),
-    .result2(w_level8_execute_stage_inst_7_result2),
-    .result3(w_level8_execute_stage_inst_7_result3),
-    .result4(w_level8_execute_stage_inst_7_result4),
-    .result5(w_level8_execute_stage_inst_7_result5),
-    .result6(w_level8_execute_stage_inst_7_result6),
-    .result7(w_level8_execute_stage_inst_7_result7),
-    .clock(aux_and_15),
+    .memread(w_level8_decode_stage_inst_5_memread),
+    .datain0(w_level6_register_file_8x8_inst_8_read_data10),
+    .datain1(w_level6_register_file_8x8_inst_8_read_data11),
+    .datain2(w_level6_register_file_8x8_inst_8_read_data12),
+    .datain3(w_level6_register_file_8x8_inst_8_read_data13),
+    .datain4(w_level6_register_file_8x8_inst_8_read_data14),
+    .datain5(w_level6_register_file_8x8_inst_8_read_data15),
+    .datain6(w_level6_register_file_8x8_inst_8_read_data16),
+    .datain7(w_level6_register_file_8x8_inst_8_read_data17),
+    .memwrite(aux_and_18),
+    .result0(w_level8_execute_stage_inst_6_result0),
+    .result1(w_level8_execute_stage_inst_6_result1),
+    .result2(w_level8_execute_stage_inst_6_result2),
+    .result3(w_level8_execute_stage_inst_6_result3),
+    .result4(w_level8_execute_stage_inst_6_result4),
+    .result5(w_level8_execute_stage_inst_6_result5),
+    .result6(w_level8_execute_stage_inst_6_result6),
+    .result7(w_level8_execute_stage_inst_6_result7),
+    .clock(clock),
     .reset(reset),
-    .dataout0(w_level8_memory_stage_inst_8_dataout0),
-    .dataout1(w_level8_memory_stage_inst_8_dataout1),
-    .dataout2(w_level8_memory_stage_inst_8_dataout2),
-    .dataout3(w_level8_memory_stage_inst_8_dataout3),
-    .dataout4(w_level8_memory_stage_inst_8_dataout4),
-    .dataout5(w_level8_memory_stage_inst_8_dataout5),
-    .dataout6(w_level8_memory_stage_inst_8_dataout6),
-    .dataout7(w_level8_memory_stage_inst_8_dataout7)
+    .dataout0(w_level8_memory_stage_inst_7_dataout0),
+    .dataout1(w_level8_memory_stage_inst_7_dataout1),
+    .dataout2(w_level8_memory_stage_inst_7_dataout2),
+    .dataout3(w_level8_memory_stage_inst_7_dataout3),
+    .dataout4(w_level8_memory_stage_inst_7_dataout4),
+    .dataout5(w_level8_memory_stage_inst_7_dataout5),
+    .dataout6(w_level8_memory_stage_inst_7_dataout6),
+    .dataout7(w_level8_memory_stage_inst_7_dataout7)
 );
-level6_register_file_8x8 level6_register_file_8x8_inst_9 (
-    .write_addr0(1'b0),
-    .write_addr1(1'b0),
-    .write_addr2(1'b0),
+level6_register_file_8x8 level6_register_file_8x8_inst_8 (
+    .write_addr0(aux_mux_10),
+    .write_addr1(aux_mux_11),
+    .write_addr2(aux_mux_12),
     .read_addr10(1'b0),
     .read_addr11(1'b0),
     .read_addr12(1'b0),
-    .read_addr20(w_level8_fetch_stage_inst_5_rawinstr0),
-    .read_addr21(w_level8_fetch_stage_inst_5_rawinstr1),
-    .read_addr22(w_level8_fetch_stage_inst_5_rawinstr2),
-    .data_in0(w_level8_memory_stage_inst_8_dataout0),
-    .data_in1(w_level8_memory_stage_inst_8_dataout1),
-    .data_in2(w_level8_memory_stage_inst_8_dataout2),
-    .data_in3(w_level8_memory_stage_inst_8_dataout3),
-    .data_in4(w_level8_memory_stage_inst_8_dataout4),
-    .data_in5(w_level8_memory_stage_inst_8_dataout5),
-    .data_in6(w_level8_memory_stage_inst_8_dataout6),
-    .data_in7(w_level8_memory_stage_inst_8_dataout7),
-    .write_enable(aux_and_18),
+    .read_addr20(w_level8_fetch_stage_inst_4_instruction0),
+    .read_addr21(w_level8_fetch_stage_inst_4_instruction1),
+    .read_addr22(w_level8_fetch_stage_inst_4_instruction2),
+    .data_in0(w_level4_bus_mux_8bit_inst_9_out0),
+    .data_in1(w_level4_bus_mux_8bit_inst_9_out1),
+    .data_in2(w_level4_bus_mux_8bit_inst_9_out2),
+    .data_in3(w_level4_bus_mux_8bit_inst_9_out3),
+    .data_in4(w_level4_bus_mux_8bit_inst_9_out4),
+    .data_in5(w_level4_bus_mux_8bit_inst_9_out5),
+    .data_in6(w_level4_bus_mux_8bit_inst_9_out6),
+    .data_in7(w_level4_bus_mux_8bit_inst_9_out7),
+    .write_enable(aux_or_20),
     .clock(clock),
-    .read_data10(w_level6_register_file_8x8_inst_9_read_data10),
-    .read_data11(w_level6_register_file_8x8_inst_9_read_data11),
-    .read_data12(w_level6_register_file_8x8_inst_9_read_data12),
-    .read_data13(w_level6_register_file_8x8_inst_9_read_data13),
-    .read_data14(w_level6_register_file_8x8_inst_9_read_data14),
-    .read_data15(w_level6_register_file_8x8_inst_9_read_data15),
-    .read_data16(w_level6_register_file_8x8_inst_9_read_data16),
-    .read_data17(w_level6_register_file_8x8_inst_9_read_data17),
-    .read_data20(w_level6_register_file_8x8_inst_9_read_data20),
-    .read_data21(w_level6_register_file_8x8_inst_9_read_data21),
-    .read_data22(w_level6_register_file_8x8_inst_9_read_data22),
-    .read_data23(w_level6_register_file_8x8_inst_9_read_data23),
-    .read_data24(w_level6_register_file_8x8_inst_9_read_data24),
-    .read_data25(w_level6_register_file_8x8_inst_9_read_data25),
-    .read_data26(w_level6_register_file_8x8_inst_9_read_data26),
-    .read_data27(w_level6_register_file_8x8_inst_9_read_data27)
+    .read_data10(w_level6_register_file_8x8_inst_8_read_data10),
+    .read_data11(w_level6_register_file_8x8_inst_8_read_data11),
+    .read_data12(w_level6_register_file_8x8_inst_8_read_data12),
+    .read_data13(w_level6_register_file_8x8_inst_8_read_data13),
+    .read_data14(w_level6_register_file_8x8_inst_8_read_data14),
+    .read_data15(w_level6_register_file_8x8_inst_8_read_data15),
+    .read_data16(w_level6_register_file_8x8_inst_8_read_data16),
+    .read_data17(w_level6_register_file_8x8_inst_8_read_data17),
+    .read_data20(w_level6_register_file_8x8_inst_8_read_data20),
+    .read_data21(w_level6_register_file_8x8_inst_8_read_data21),
+    .read_data22(w_level6_register_file_8x8_inst_8_read_data22),
+    .read_data23(w_level6_register_file_8x8_inst_8_read_data23),
+    .read_data24(w_level6_register_file_8x8_inst_8_read_data24),
+    .read_data25(w_level6_register_file_8x8_inst_8_read_data25),
+    .read_data26(w_level6_register_file_8x8_inst_8_read_data26),
+    .read_data27(w_level6_register_file_8x8_inst_8_read_data27)
 );
-assign aux_not_10 = ~aux_d_flip_flop_1_0_q;
-assign aux_not_11 = ~aux_d_flip_flop_2_0_q;
-assign aux_and_12 = (clock & aux_not_11 & aux_not_10);
-assign aux_and_13 = (clock & aux_not_11 & aux_d_flip_flop_1_0_q);
-assign aux_and_14 = (clock & aux_d_flip_flop_2_0_q & aux_not_10);
-assign aux_and_15 = (clock & aux_d_flip_flop_2_0_q & aux_d_flip_flop_1_0_q);
-assign aux_not_16 = ~reset;
-assign aux_and_17 = (aux_d_flip_flop_2_0_q & aux_d_flip_flop_1_0_q);
-assign aux_and_18 = (w_level8_decode_stage_inst_6_regwrite & aux_and_17);
-assign aux_xor_19 = (aux_d_flip_flop_1_0_q ^ aux_d_flip_flop_2_0_q);
+level4_bus_mux_8bit level4_bus_mux_8bit_inst_9 (
+    .in00(w_level8_memory_stage_inst_7_dataout0),
+    .in01(w_level8_memory_stage_inst_7_dataout1),
+    .in02(w_level8_memory_stage_inst_7_dataout2),
+    .in03(w_level8_memory_stage_inst_7_dataout3),
+    .in04(w_level8_memory_stage_inst_7_dataout4),
+    .in05(w_level8_memory_stage_inst_7_dataout5),
+    .in06(w_level8_memory_stage_inst_7_dataout6),
+    .in07(w_level8_memory_stage_inst_7_dataout7),
+    .in10(regprogdata0),
+    .in11(regprogdata1),
+    .in12(regprogdata2),
+    .in13(regprogdata3),
+    .in14(regprogdata4),
+    .in15(regprogdata5),
+    .in16(regprogdata6),
+    .in17(regprogdata7),
+    .sel(regprogwrite),
+    .out0(w_level4_bus_mux_8bit_inst_9_out0),
+    .out1(w_level4_bus_mux_8bit_inst_9_out1),
+    .out2(w_level4_bus_mux_8bit_inst_9_out2),
+    .out3(w_level4_bus_mux_8bit_inst_9_out3),
+    .out4(w_level4_bus_mux_8bit_inst_9_out4),
+    .out5(w_level4_bus_mux_8bit_inst_9_out5),
+    .out6(w_level4_bus_mux_8bit_inst_9_out6),
+    .out7(w_level4_bus_mux_8bit_inst_9_out7)
+);
+    //Multiplexer
+    always @(*)
+    begin
+        case({regprogwrite})
+            1'd0: aux_mux_10 = 1'b0;
+            1'd1: aux_mux_10 = regprogaddr0;
+            default: aux_mux_10 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({regprogwrite})
+            1'd0: aux_mux_11 = 1'b0;
+            1'd1: aux_mux_11 = regprogaddr1;
+            default: aux_mux_11 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({regprogwrite})
+            1'd0: aux_mux_12 = 1'b0;
+            1'd1: aux_mux_12 = regprogaddr2;
+            default: aux_mux_12 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+assign aux_not_13 = ~aux_d_flip_flop_1_0_q;
+assign aux_not_14 = ~aux_d_flip_flop_2_0_q;
+assign aux_and_15 = (aux_not_14 & aux_not_13);
+assign aux_and_16 = (aux_d_flip_flop_2_0_q & aux_d_flip_flop_1_0_q);
+assign aux_not_17 = ~reset;
+assign aux_and_18 = (w_level8_decode_stage_inst_5_memwrite & aux_and_16);
+assign aux_and_19 = (w_level8_decode_stage_inst_5_regwrite & aux_and_16);
+assign aux_or_20 = (aux_and_19 | regprogwrite);
+assign aux_xor_21 = (aux_d_flip_flop_1_0_q ^ aux_d_flip_flop_2_0_q);
 
 assign cyclecounter0 = aux_d_flip_flop_1_0_q;
-assign pc0 = w_level8_fetch_stage_inst_5_pc0;
+assign pc0 = w_level8_fetch_stage_inst_4_pc0;
 assign cyclecounter1 = aux_d_flip_flop_2_0_q;
-assign instruction0 = w_level8_fetch_stage_inst_5_instruction0;
-assign pc1 = w_level8_fetch_stage_inst_5_pc1;
-assign instruction1 = w_level8_fetch_stage_inst_5_instruction1;
-assign pc2 = w_level8_fetch_stage_inst_5_pc2;
-assign instruction2 = w_level8_fetch_stage_inst_5_instruction2;
-assign pc3 = w_level8_fetch_stage_inst_5_pc3;
-assign instruction3 = w_level8_fetch_stage_inst_5_instruction3;
-assign pc4 = w_level8_fetch_stage_inst_5_pc4;
-assign instruction4 = w_level8_fetch_stage_inst_5_instruction4;
-assign pc5 = w_level8_fetch_stage_inst_5_pc5;
-assign instruction5 = w_level8_fetch_stage_inst_5_instruction5;
-assign pc6 = w_level8_fetch_stage_inst_5_pc6;
-assign instruction6 = w_level8_fetch_stage_inst_5_instruction6;
-assign pc7 = w_level8_fetch_stage_inst_5_pc7;
-assign instruction7 = w_level8_fetch_stage_inst_5_instruction7;
-assign result0 = w_level8_memory_stage_inst_8_dataout0;
-assign result1 = w_level8_memory_stage_inst_8_dataout1;
-assign result2 = w_level8_memory_stage_inst_8_dataout2;
-assign result3 = w_level8_memory_stage_inst_8_dataout3;
-assign result4 = w_level8_memory_stage_inst_8_dataout4;
-assign result5 = w_level8_memory_stage_inst_8_dataout5;
-assign result6 = w_level8_memory_stage_inst_8_dataout6;
-assign result7 = w_level8_memory_stage_inst_8_dataout7;
+assign instruction0 = w_level8_fetch_stage_inst_4_instruction0;
+assign pc1 = w_level8_fetch_stage_inst_4_pc1;
+assign instruction1 = w_level8_fetch_stage_inst_4_instruction1;
+assign pc2 = w_level8_fetch_stage_inst_4_pc2;
+assign instruction2 = w_level8_fetch_stage_inst_4_instruction2;
+assign pc3 = w_level8_fetch_stage_inst_4_pc3;
+assign instruction3 = w_level8_fetch_stage_inst_4_instruction3;
+assign pc4 = w_level8_fetch_stage_inst_4_pc4;
+assign instruction4 = w_level8_fetch_stage_inst_4_instruction4;
+assign pc5 = w_level8_fetch_stage_inst_4_pc5;
+assign instruction5 = w_level8_fetch_stage_inst_4_instruction5;
+assign pc6 = w_level8_fetch_stage_inst_4_pc6;
+assign instruction6 = w_level8_fetch_stage_inst_4_instruction6;
+assign pc7 = w_level8_fetch_stage_inst_4_pc7;
+assign instruction7 = w_level8_fetch_stage_inst_4_instruction7;
+assign result0 = w_level8_memory_stage_inst_7_dataout0;
+assign result1 = w_level8_memory_stage_inst_7_dataout1;
+assign result2 = w_level8_memory_stage_inst_7_dataout2;
+assign result3 = w_level8_memory_stage_inst_7_dataout3;
+assign result4 = w_level8_memory_stage_inst_7_dataout4;
+assign result5 = w_level8_memory_stage_inst_7_dataout5;
+assign result6 = w_level8_memory_stage_inst_7_dataout6;
+assign result7 = w_level8_memory_stage_inst_7_dataout7;
 endmodule
 
 module level9_multi_cycle_cpu_8bit (
 /* ========= Inputs ========== */
 input input_switch1,
 input input_switch2,
+input input_switch3,
+input input_switch4,
+input input_switch5,
+input input_switch6,
+input input_switch7,
+input input_switch8,
+input input_switch9,
+input input_switch10,
+input input_switch11,
+input input_switch12,
+input input_switch13,
+input input_switch14,
+input input_switch15,
+input input_switch16,
+input input_switch17,
+input input_switch18,
+input input_switch19,
+input input_switch20,
+input input_switch21,
+input input_switch22,
+input input_switch23,
+input input_switch24,
+input input_switch25,
+input input_switch26,
+input input_switch27,
+input input_switch28,
+input input_switch29,
+input input_switch30,
+input input_switch31,
 
 /* ========= Outputs ========== */
-output led4_1,
-output led5_1,
-output led6_1,
-output led7_1,
-output led8_1,
-output led9_1,
-output led10_1,
-output led11_1,
-output led12_1,
-output led13_1,
-output led14_1,
-output led15_1,
-output led16_1,
-output led17_1,
-output led18_1,
-output led19_1,
-output led20_1,
-output led21_1,
-output led22_1,
-output led23_1,
-output led24_1,
-output led25_1,
-output led26_1,
-output led27_1,
-output led28_1,
-output led29_1
+output led33_1,
+output led34_1,
+output led35_1,
+output led36_1,
+output led37_1,
+output led38_1,
+output led39_1,
+output led40_1,
+output led41_1,
+output led42_1,
+output led43_1,
+output led44_1,
+output led45_1,
+output led46_1,
+output led47_1,
+output led48_1,
+output led49_1,
+output led50_1,
+output led51_1,
+output led52_1,
+output led53_1,
+output led54_1,
+output led55_1,
+output led56_1,
+output led57_1,
+output led58_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL9_MULTI_CYCLE_CPU_8BIT (level9_multi_cycle_cpu_8bit_ic)
@@ -5513,6 +5638,35 @@ wire w_level9_multi_cycle_cpu_8bit_ic_inst_1_result7;
 level9_multi_cycle_cpu_8bit_ic level9_multi_cycle_cpu_8bit_ic_inst_1 (
     .clock(input_switch1),
     .reset(input_switch2),
+    .progaddr0(input_switch3),
+    .progaddr1(input_switch4),
+    .progaddr2(input_switch5),
+    .progaddr3(input_switch6),
+    .progaddr4(input_switch7),
+    .progaddr5(input_switch8),
+    .progaddr6(input_switch9),
+    .progaddr7(input_switch10),
+    .progwrite(input_switch11),
+    .progdata0(input_switch12),
+    .progdata1(input_switch13),
+    .progdata2(input_switch14),
+    .progdata3(input_switch15),
+    .progdata4(input_switch16),
+    .progdata5(input_switch17),
+    .progdata6(input_switch18),
+    .progdata7(input_switch19),
+    .regprogaddr0(input_switch20),
+    .regprogaddr1(input_switch21),
+    .regprogaddr2(input_switch22),
+    .regprogwrite(input_switch23),
+    .regprogdata0(input_switch24),
+    .regprogdata1(input_switch25),
+    .regprogdata2(input_switch26),
+    .regprogdata3(input_switch27),
+    .regprogdata4(input_switch28),
+    .regprogdata5(input_switch29),
+    .regprogdata6(input_switch30),
+    .regprogdata7(input_switch31),
     .cyclecounter0(w_level9_multi_cycle_cpu_8bit_ic_inst_1_cyclecounter0),
     .pc0(w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc0),
     .cyclecounter1(w_level9_multi_cycle_cpu_8bit_ic_inst_1_cyclecounter1),
@@ -5542,30 +5696,30 @@ level9_multi_cycle_cpu_8bit_ic level9_multi_cycle_cpu_8bit_ic_inst_1 (
 );
 
 // Writing output data. //
-assign led4_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_cyclecounter0;
-assign led5_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc0;
-assign led6_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_cyclecounter1;
-assign led7_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction0;
-assign led8_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc1;
-assign led9_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction1;
-assign led10_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc2;
-assign led11_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction2;
-assign led12_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc3;
-assign led13_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction3;
-assign led14_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc4;
-assign led15_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction4;
-assign led16_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc5;
-assign led17_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction5;
-assign led18_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc6;
-assign led19_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction6;
-assign led20_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc7;
-assign led21_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction7;
-assign led22_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result0;
-assign led23_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result1;
-assign led24_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result2;
-assign led25_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result3;
-assign led26_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result4;
-assign led27_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result5;
-assign led28_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result6;
-assign led29_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result7;
+assign led33_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_cyclecounter0;
+assign led34_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc0;
+assign led35_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_cyclecounter1;
+assign led36_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction0;
+assign led37_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc1;
+assign led38_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction1;
+assign led39_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc2;
+assign led40_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction2;
+assign led41_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc3;
+assign led42_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction3;
+assign led43_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc4;
+assign led44_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction4;
+assign led45_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc5;
+assign led46_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction5;
+assign led47_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc6;
+assign led48_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction6;
+assign led49_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_pc7;
+assign led50_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_instruction7;
+assign led51_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result0;
+assign led52_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result1;
+assign led53_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result2;
+assign led54_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result3;
+assign led55_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result4;
+assign led56_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result5;
+assign led57_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result6;
+assign led58_1 = w_level9_multi_cycle_cpu_8bit_ic_inst_1_result7;
 endmodule

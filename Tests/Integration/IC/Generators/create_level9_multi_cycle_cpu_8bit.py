@@ -75,6 +75,56 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created Clock and Reset inputs")
 
+        # ---- Create instruction memory programming inputs ----
+        # Tests hold Reset (which freezes the cycle counter at phase 0, so the
+        # fetch stage's gated clock passes the full clock) and pulse the clock to
+        # write instruction memory at ProgAddr.
+        prog_x = 50.0
+        prog_y = control_y + 600.0
+
+        prog_addr_inputs = []
+        for i in range(8):
+            pid = await self.create_element("InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), prog_y, f"ProgAddr[{i}]")
+            if pid is None:
+                return False
+            prog_addr_inputs.append(pid)
+
+        prog_data_inputs = []
+        for i in range(8):
+            pid = await self.create_element("InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), prog_y + 50.0, f"ProgData[{i}]")
+            if pid is None:
+                return False
+            prog_data_inputs.append(pid)
+
+        prog_write_id = await self.create_element("InputSwitch", prog_x + (8 * HORIZONTAL_GATE_SPACING), prog_y, "ProgWrite")
+        if prog_write_id is None:
+            return False
+
+        await self.log("  ✓ Created instruction memory programming inputs")
+
+        # ---- Create register file programming inputs ----
+        reg_prog_y = prog_y + 150.0
+
+        reg_prog_addr_inputs = []
+        for i in range(3):
+            pid = await self.create_element("InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), reg_prog_y, f"RegProgAddr[{i}]")
+            if pid is None:
+                return False
+            reg_prog_addr_inputs.append(pid)
+
+        reg_prog_data_inputs = []
+        for i in range(8):
+            pid = await self.create_element("InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), reg_prog_y + 50.0, f"RegProgData[{i}]")
+            if pid is None:
+                return False
+            reg_prog_data_inputs.append(pid)
+
+        reg_prog_write_id = await self.create_element("InputSwitch", prog_x + (8 * HORIZONTAL_GATE_SPACING), reg_prog_y, "RegProgWrite")
+        if reg_prog_write_id is None:
+            return False
+
+        await self.log("  ✓ Created register file programming inputs")
+
         # ---- Create 2-bit Cycle Counter (using 2 D flip-flops) ----
         # This counter sequences through 4 cycles: 00->01->10->11->00
         counter_ids = []
@@ -86,16 +136,12 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created 2-bit cycle counter")
 
-        # ---- Create Vcc and Gnd for default control signals ----
-        vcc_id = await self.create_element("InputVcc", 100.0, stage_y - 50.0, "Vcc")
-        if vcc_id is None:
-            return False
-
+        # ---- Create Gnd for default control signals (held-low inputs / mux In0) ----
         gnd_id = await self.create_element("InputGnd", 150.0, stage_y - 50.0, "Gnd")
         if gnd_id is None:
             return False
 
-        await self.log("  ✓ Created Vcc and Gnd for control signals")
+        await self.log("  ✓ Created Gnd for control signals")
 
         # ---- Instantiate Fetch Stage ----
         fetch_id = await self.instantiate_ic("level8_fetch_stage", stage_x_offsets[0], stage_y, "Fetch")
@@ -127,6 +173,22 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Instantiated Register File")
 
+        # ---- Instantiate register file programming muxes (mirrors single-cycle) ----
+        # Write data mux: In0=Memory DataOut (normal writeback), In1=RegProgData
+        write_data_mux_id = await self.instantiate_ic("level4_bus_mux_8bit", 425.0, reg_file_y - 150.0, "WriteDataMux")
+        if write_data_mux_id is None:
+            return False
+
+        # Write address muxes (3 individual Mux elements for the 3-bit address)
+        write_addr_mux_ids = []
+        for i in range(3):
+            mux_id = await self.create_element("Mux", 350.0 + (i * HORIZONTAL_GATE_SPACING), reg_file_y - 150.0, f"WriteAddrMux{i}")
+            if mux_id is None:
+                return False
+            write_addr_mux_ids.append(mux_id)
+
+        await self.log("  ✓ Instantiated register file programming muxes")
+
         # ---- Connect Clock to cycle counter flip-flops ----
         for i, ff_id in enumerate(counter_ids):
             if not await self.connect(clock_id, ff_id, target_port_label="Clock"):
@@ -134,87 +196,57 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         await self.log("  ✓ Connected Clock to cycle counter")
 
-        # ---- Create clock gating logic for each stage ----
-        # For proper multi-cycle operation, each stage gets clock only on its designated cycle:
-        # Cycle 0 (Fetch):   00 -> NOT Q1 AND NOT Q0
-        # Cycle 1 (Decode):  01 -> NOT Q1 AND Q0
-        # Cycle 2 (Execute): 10 -> Q1 AND NOT Q0
-        # Cycle 3 (Memory):  11 -> Q1 AND Q0
+        # ---- Phase-decode enables (clock-ENABLE design, not clock gating) ----
+        # Every sequential element runs on the MAIN clock; per-phase enables decide
+        # when each stage updates. Gating the clock itself (Clock AND phase) would
+        # glitch as the cycle counter transitions while the clock is high, and an
+        # event-driven SystemVerilog export latches those glitches as spurious
+        # edges — diverging from the cycle-based engine (e.g. an extra PC
+        # increment). Clock enables are glitch-free: the enable is just a D-side
+        # signal sampled at the (single, real) clock edge.
 
-        # Create NOT gates for counter bits
+        # Counter-bit inverters (also feed the FF0 toggle further below).
         not_q0_id = await self.create_element("Not", 200.0, counter_y, "NotQ0")
         if not_q0_id is None:
             return False
-
         not_q1_id = await self.create_element("Not", 250.0, counter_y, "NotQ1")
         if not_q1_id is None:
             return False
-
-        # Connect counter outputs to NOT gates
         if not await self.connect(counter_ids[0], not_q0_id, source_port_label="Q"):
             return False
-
         if not await self.connect(counter_ids[1], not_q1_id, source_port_label="Q"):
             return False
 
-        await self.log("  ✓ Created clock gate inverters")
+        # Phase 0 (Fetch) enable = NOT Q1 AND NOT Q0
+        phase0_id = await self.create_element("And", 300.0, counter_y, "Phase0")
+        if phase0_id is None:
+            return False
+        if not await self.connect(not_q1_id, phase0_id, target_port=0):
+            return False
+        if not await self.connect(not_q0_id, phase0_id, target_port=1):
+            return False
 
-        # ---- Create 3-input AND gates for clock gating ----
-        # Gate0 (Fetch):   Clock AND NOT Q1 AND NOT Q0
-        # Gate1 (Decode):  Clock AND NOT Q1 AND Q0
-        # Gate2 (Execute): Clock AND Q1 AND NOT Q0
-        # Gate3 (Memory):  Clock AND Q1 AND Q0
+        # Phase 3 (Memory write / register write-back) enable = Q1 AND Q0
+        phase3_id = await self.create_element("And", 340.0, counter_y, "Phase3")
+        if phase3_id is None:
+            return False
+        if not await self.connect(counter_ids[1], phase3_id, source_port_label="Q", target_port=0):
+            return False
+        if not await self.connect(counter_ids[0], phase3_id, source_port_label="Q", target_port=1):
+            return False
 
-        gated_clocks = []
-        gate_configs = [
-            # (stage_name, input1, input2, input3, use_q_port_for_in2, use_q_port_for_in3)
-            ("Fetch", clock_id, not_q1_id, not_q0_id, False, False),
-            ("Decode", clock_id, not_q1_id, counter_ids[0], False, True),
-            ("Execute", clock_id, counter_ids[1], not_q0_id, True, False),
-            ("Memory", clock_id, counter_ids[1], counter_ids[0], True, True),
-        ]
+        await self.log("  ✓ Created phase-decode enables (Phase0, Phase3)")
 
-        for i, (label, in1, in2, in3, use_q_for_in2, use_q_for_in3) in enumerate(gate_configs):
-            # Create AND gate
-            and_id = await self.create_element("And", 300.0 + (i * 80.0), counter_y, f"Gate{label}")
-            if and_id is None:
-                return False
-            gated_clocks.append(and_id)
-
-            # Set AND gate to 3 inputs
-            set_size = await self.mcp.send_command("change_input_size", {
-                "element_id": and_id,
-                "size": 3
-            })
-            if not set_size.success:
-                self.log_error(f"Failed to set input_size=3 for {label} AND gate: {set_size.error}")
+        # ---- All clocked stages run on the main clock (no gated clocks) ----
+        # Decode/execute are combinational (no Clock port — F33). Fetch only
+        # latches/increments when its enables are high (Phase 0); memory only
+        # writes when MemWrite is high (gated by Phase 3 below); the register file
+        # writes only when its Write_Enable is high.
+        for stage_id in (fetch_id, memory_id, regfile_id):
+            if not await self.connect(clock_id, stage_id, target_port_label="Clock"):
                 return False
 
-            # Connect three inputs to 3-input AND (ports 0, 1, 2)
-            for port_num, (input_id, use_q_port) in enumerate([(in1, False), (in2, use_q_for_in2), (in3, use_q_for_in3)]):
-                if use_q_port:
-                    if not await self.connect(input_id, and_id, source_port_label="Q", target_port=port_num):
-                        return False
-                else:
-                    if not await self.connect(input_id, and_id, target_port=port_num):
-                        return False
-
-        await self.log("  ✓ Created 3-input clock gate AND gates")
-
-        # ---- Connect gated clocks to the clocked stages ----
-        # Decode and execute are combinational (no Clock port — F33); fetch
-        # latches on the cycle-0 gated clock and memory writes on cycle 3.
-        stage_info = [
-            (fetch_id, "Fetch", gated_clocks[0]),
-            (memory_id, "Memory", gated_clocks[3]),
-            (regfile_id, "RegFile", clock_id)  # Register file gets main clock for synchronous write
-        ]
-
-        for stage_id, _, clock_source in stage_info:
-            if not await self.connect(clock_source, stage_id, target_port_label="Clock"):
-                return False
-
-        await self.log("  ✓ Connected gated clocks to pipeline stages")
+        await self.log("  ✓ Connected main clock to fetch, memory, and register file")
 
         # ---- Create NOT gate to invert reset signal (Clear is active-low) ----
         reset_not_id = await self.create_element("Not", 100.0, counter_y + 50.0, "ResetNot")
@@ -265,40 +297,73 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         if not await self.connect(decode_id, memory_id, source_port_label="MemRead", target_port_label="MemRead"):
             return False
 
-        if not await self.connect(decode_id, memory_id, source_port_label="MemWrite", target_port_label="MemWrite"):
+        # MemWrite is gated by Phase 3: the memory stage runs on the main clock
+        # now, so the phase restriction moves from the clock to the write enable
+        # — the data memory only writes during the memory phase. (MemRead stays
+        # ungated: reads are combinational and select the output mux every cycle.)
+        memwrite_gate_id = await self.create_element("And", 880.0, stage_y, "MemWriteGate")
+        if memwrite_gate_id is None:
+            return False
+        if not await self.connect(decode_id, memwrite_gate_id, source_port_label="MemWrite", target_port=0):
+            return False
+        if not await self.connect(phase3_id, memwrite_gate_id, target_port=1):
+            return False
+        if not await self.connect(memwrite_gate_id, memory_id, target_port_label="MemWrite"):
             return False
 
         await self.log("  ✓ Connected Execute to Memory")
 
-        # ---- Connect default control signals ----
-        # Fetch stage controls. InstrLoad is held high (F26: it was tied to
-        # GND, so the instruction register could never load) — the fetch
-        # stage's gated cycle-0 clock confines the actual latching to the
-        # fetch phase.
-        if not await self.connect(vcc_id, fetch_id, target_port_label="PCInc"):
+        # ---- Connect fetch stage control enables ----
+        # PCInc and InstrLoad are gated by Phase 0: the fetch stage runs on the
+        # main clock, so it advances the PC and latches the instruction register
+        # only during the fetch phase (clock-enable, replacing the old gated
+        # clock). During programming the test holds Reset, which clears the fetch
+        # PC/IR regardless of these enables.
+        if not await self.connect(phase0_id, fetch_id, target_port_label="PCInc"):
             return False
-        if not await self.connect(vcc_id, fetch_id, target_port_label="InstrLoad"):
+        if not await self.connect(phase0_id, fetch_id, target_port_label="InstrLoad"):
             return False
 
-        for port in ["PCLoad", "ProgWrite"]:
-            if not await self.connect(gnd_id, fetch_id, target_port_label=port):
+        # PCLoad held low (no jumps); PCData unused. ProgWrite/ProgAddr/ProgData
+        # are real programming inputs: tests hold Reset (clearing the fetch PC/IR)
+        # and pulse the main clock to load instruction memory through ProgWrite.
+        if not await self.connect(gnd_id, fetch_id, target_port_label="PCLoad"):
+            return False
+        for i in range(8):
+            if not await self.connect(gnd_id, fetch_id, target_port_label=f"PCData[{i}]"):
                 return False
 
-        # PCData, ProgAddr, ProgData default to 0 (must be connected to avoid floating inputs)
+        if not await self.connect(prog_write_id, fetch_id, target_port_label="ProgWrite"):
+            return False
         for i in range(8):
-            for port_prefix in ["PCData", "ProgAddr", "ProgData"]:
-                if not await self.connect(gnd_id, fetch_id, target_port_label=f"{port_prefix}[{i}]"):
-                    return False
+            if not await self.connect(prog_addr_inputs[i], fetch_id, target_port_label=f"ProgAddr[{i}]"):
+                return False
+            if not await self.connect(prog_data_inputs[i], fetch_id, target_port_label=f"ProgData[{i}]"):
+                return False
 
         # ---- Register file datapath (F26: previously unconnected) ----
-        # Accumulator model matching the single-cycle CPU: OperandA reads R0,
-        # OperandB reads Register[RawInstr[2:0]], results write back to R0.
+        # Accumulator model: OperandA reads R0, OperandB reads
+        # Register[Instruction[2:0]], results write back to R0. The operand
+        # address comes from the REGISTERED instruction (not RawInstr): in the
+        # multi-cycle design PCInc advances PC during the fetch phase, so by the
+        # execute phase RawInstr already points at the next instruction. Decode
+        # uses the registered OpCode, so operand/memory addressing must match.
         for i in range(3):
             if not await self.connect(gnd_id, regfile_id, target_port_label=f"Read_Addr1[{i}]"):
                 return False
-            if not await self.connect(fetch_id, regfile_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"Read_Addr2[{i}]"):
+            if not await self.connect(fetch_id, regfile_id, source_port_label=f"Instruction[{i}]", target_port_label=f"Read_Addr2[{i}]"):
                 return False
-            if not await self.connect(gnd_id, regfile_id, target_port_label=f"Write_Addr[{i}]"):
+
+        # Write address mux: In0=GND (normal: write R0 accumulator),
+        # In1=RegProgAddr, Sel=RegProgWrite → regfile Write_Addr
+        for i in range(3):
+            if not await self.connect(gnd_id, write_addr_mux_ids[i], target_port=0):
+                return False
+            if not await self.connect(reg_prog_addr_inputs[i], write_addr_mux_ids[i], target_port=1):
+                return False
+            if not await self.connect(reg_prog_write_id, write_addr_mux_ids[i], target_port=2):
+                return False
+            if not await self.connect(write_addr_mux_ids[i], regfile_id, target_port_label=f"Write_Addr[{i}]"):
                 return False
 
         for i in range(8):
@@ -307,10 +372,11 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
             if not await self.connect(regfile_id, execute_id, source_port_label=f"Read_Data2[{i}]", target_port_label=f"OperandB[{i}]"):
                 return False
 
-        # Memory address comes from the instruction's register field; data to
-        # store is the accumulator (Read_Data1).
+        # Memory address comes from the REGISTERED instruction's register field
+        # (same reasoning as Read_Addr2 above); data to store is the accumulator
+        # (Read_Data1).
         for i in range(3):
-            if not await self.connect(fetch_id, memory_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"Address[{i}]"):
+            if not await self.connect(fetch_id, memory_id, source_port_label=f"Instruction[{i}]", target_port_label=f"Address[{i}]"):
                 return False
         for i in range(3, 8):
             if not await self.connect(gnd_id, memory_id, target_port_label=f"Address[{i}]"):
@@ -319,21 +385,21 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
             if not await self.connect(regfile_id, memory_id, source_port_label=f"Read_Data1[{i}]", target_port_label=f"DataIn[{i}]"):
                 return False
 
-        # Writeback: memory stage output (memory data or ALU pass-through)
-        # into R0, enabled only in the write-back phase (cycle 3) when the
-        # decoded instruction writes a register.
+        # Writeback path through the write-data mux: In0=Memory DataOut (normal
+        # write-back into R0 in the memory phase), In1=RegProgData (programming),
+        # Sel=RegProgWrite → regfile Data_In.
         for i in range(8):
-            if not await self.connect(memory_id, regfile_id, source_port_label=f"DataOut[{i}]", target_port_label=f"Data_In[{i}]"):
+            if not await self.connect(memory_id, write_data_mux_id, source_port_label=f"DataOut[{i}]", target_port_label=f"In0[{i}]"):
+                return False
+            if not await self.connect(reg_prog_data_inputs[i], write_data_mux_id, target_port_label=f"In1[{i}]"):
+                return False
+        if not await self.connect(reg_prog_write_id, write_data_mux_id, target_port_label="Sel"):
+            return False
+        for i in range(8):
+            if not await self.connect(write_data_mux_id, regfile_id, source_port_label=f"Out[{i}]", target_port_label=f"Data_In[{i}]"):
                 return False
 
-        phase3_id = await self.create_element("And", 380.0, counter_y, "Phase3")
-        if phase3_id is None:
-            return False
-        if not await self.connect(counter_ids[1], phase3_id, source_port_label="Q"):
-            return False
-        if not await self.connect(counter_ids[0], phase3_id, source_port_label="Q", target_port=1):
-            return False
-
+        # phase3_id (Q1 AND Q0) was created with the phase-decode enables above.
         we_and_id = await self.create_element("And", 420.0, counter_y, "WriteBackEnable")
         if we_and_id is None:
             return False
@@ -341,7 +407,18 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
             return False
         if not await self.connect(phase3_id, we_and_id, target_port=1):
             return False
-        if not await self.connect(we_and_id, regfile_id, target_port_label="Write_Enable"):
+
+        # Write enable = normal write-back OR register programming. During
+        # programming the test holds Reset (counter frozen at phase 0 → Phase3=0),
+        # so the normal AND term is gated off and only RegProgWrite drives writes.
+        we_or_id = await self.create_element("Or", 460.0, counter_y, "WriteEnableOR")
+        if we_or_id is None:
+            return False
+        if not await self.connect(we_and_id, we_or_id, target_port=0):
+            return False
+        if not await self.connect(reg_prog_write_id, we_or_id, target_port=1):
+            return False
+        if not await self.connect(we_or_id, regfile_id, target_port_label="Write_Enable"):
             return False
 
         await self.log("  ✓ Connected datapath and control signals")
