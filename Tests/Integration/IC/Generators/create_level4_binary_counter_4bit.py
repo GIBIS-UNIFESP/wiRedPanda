@@ -5,8 +5,17 @@
 """
 Create 4-bit Binary Counter IC
 
-Inputs: CLK (Clock)
+Inputs:
+  - CLK (Clock)
+  - CountEnable, Load, Clear (74161-style controls, all active-HIGH)
+  - Data[0:3] (parallel-load value, captured on the next edge when Load=1)
 Outputs: Q[0:3] (Counter Output, 0-15)
+
+74161-style controls (all active-HIGH; tie CountEnable high, Load/Clear low for a
+free-running counter):
+  - Clear=1: asynchronously zeroes the counter
+  - Load=1: synchronously loads Data[0:3] on the next rising edge
+  - CountEnable=0: holds the current value (pause); =1 counts
 
 Circuit:
 - 4 D flip-flops for counter state (4-bit value)
@@ -60,6 +69,27 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         if clk_id is None:
             return False
         await self.log(f"  ✓ Created input CLK")
+
+        # 74161-style control inputs (all active-HIGH):
+        #   CountEnable : when low the counter holds its value
+        #   Load        : synchronous parallel load of Data[0-3] on the next edge
+        #   Clear       : asynchronous clear to 0
+        # Tie CountEnable high (and Load/Clear low) for a free-running counter.
+        ce_id = await self.create_element("InputSwitch", input_x, 60.0, "CountEnable")
+        if ce_id is None:
+            return False
+        load_id = await self.create_element("InputSwitch", input_x, 20.0, "Load")
+        if load_id is None:
+            return False
+        clear_id = await self.create_element("InputSwitch", input_x, -20.0, "Clear")
+        if clear_id is None:
+            return False
+        data_in_ids = []
+        for i in range(4):
+            d_id = await self.create_element("InputSwitch", input_x - 40.0, 100.0 + (i * VERTICAL_STAGE_SPACING), f"Data[{i}]")
+            if d_id is None:
+                return False
+            data_in_ids.append(d_id)
 
         # Create Vcc element for Preset/Clear inactive state
         vcc_id = await self.create_element("InputVcc", input_x, 140.0, "Vcc")
@@ -128,6 +158,41 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             dff_ids.append(ff_id)
             await self.log(f"  ✓ Instantiated D Flip-Flop IC {i}")
 
+        # D-input mux chain per bit:
+        #   hold_mux_i = mux(CE,  Q_i,            next_i)   CE=0 -> hold, CE=1 -> count
+        #   load_mux_i = mux(LD,  hold_mux_i.Out, Data_i)   LD=1 -> parallel load
+        #   FF_i.D = load_mux_i.Out
+        # The bit logic below feeds each hold_mux's Data[1] (the "count" input).
+        hold_mux_ids = []
+        mux_x = xor_or_x + 0.5 * HORIZONTAL_GATE_SPACING
+        load_mux_x = xor_or_x + 0.75 * HORIZONTAL_GATE_SPACING
+        for i in range(4):
+            m = await self.instantiate_ic("level2_mux_2to1", mux_x, 110.0 + (i * VERTICAL_STAGE_SPACING), f"hold_mux{i}")
+            if m is None:
+                return False
+            hold_mux_ids.append(m)
+            if not await self.connect(dff_ids[i], m, source_port_label="Q", target_port_label="Data[0]"):
+                return False
+            if not await self.connect(ce_id, m, target_port_label="Sel[0]"):
+                return False
+            if not await self.connect(vcc_id, m, target_port_label="Enable"):
+                return False
+
+            # Synchronous load mux: select external Data when Load is high
+            lm = await self.instantiate_ic("level2_mux_2to1", load_mux_x, 115.0 + (i * VERTICAL_STAGE_SPACING), f"load_mux{i}")
+            if lm is None:
+                return False
+            if not await self.connect(m, lm, source_port_label="Output", target_port_label="Data[0]"):
+                return False
+            if not await self.connect(data_in_ids[i], lm, target_port_label="Data[1]"):
+                return False
+            if not await self.connect(load_id, lm, target_port_label="Sel[0]"):
+                return False
+            if not await self.connect(vcc_id, lm, target_port_label="Enable"):
+                return False
+            if not await self.connect(lm, dff_ids[i], source_port_label="Output", target_port_label="D"):
+                return False
+
         # Create output LEDs (stage 7)
         output_led_ids = []
         output_x = dff_x + HORIZONTAL_GATE_SPACING
@@ -143,14 +208,22 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
                 return False
 
-        # ========== Connect Preset and Clear to inactive state (Vcc) ==========
+        # ========== Connect Preset (inactive) and asynchronous Clear ==========
+        # Preset is unused -> tied high (active-LOW inactive). The Clear input is
+        # active-HIGH; invert it so Clear=1 drives the FFs' active-LOW Clear,
+        # asynchronously zeroing the counter.
+        clear_not = await self.create_element("Not", input_x + HORIZONTAL_GATE_SPACING, -20.0, "clear_not")
+        if clear_not is None:
+            return False
+        if not await self.connect(clear_id, clear_not):
+            return False
         for i in range(4):
-            # Connect Preset to Vcc (active-LOW, so Vcc=1 keeps it inactive)
+            # Preset to Vcc (active-LOW, so Vcc=1 keeps it inactive)
             if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
                 return False
 
-            # Connect Clear to Vcc (active-LOW, so Vcc=1 keeps it inactive)
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Clear"):
+            # Clear from NOT(Clear input): Clear input high -> FF Clear low -> zero
+            if not await self.connect(clear_not, dff_ids[i], target_port_label="Clear"):
                 return False
 
         # ========== Connect FF outputs to LEDs and NOT gates ==========
@@ -193,8 +266,8 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
 
         # ========== Build XOR logic for each bit ==========
 
-        # Bit 0: D0 = NOT Q0
-        if not await self.connect(not_q_ids[0], dff_ids[0], target_port_label="D"):
+        # Bit 0: count input = NOT Q0 (toggle)
+        if not await self.connect(not_q_ids[0], hold_mux_ids[0], target_port_label="Data[1]"):
             return False
 
         # Bit 1: D1 = Q1 XOR Q0 = (NOT Q1 AND Q0) OR (Q1 AND NOT Q0)
@@ -219,7 +292,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         if not await self.connect(xor_and_ids[1][1], xor_or_ids[1], target_port=1):
             return False
 
-        if not await self.connect(xor_or_ids[1], dff_ids[1], target_port_label="D"):
+        if not await self.connect(xor_or_ids[1], hold_mux_ids[1], target_port_label="Data[1]"):
             return False
 
         # Bit 2: D2 = Q2 XOR (Q0 AND Q1) = (NOT Q2 AND carry1) OR (Q2 AND NOT carry1)
@@ -244,7 +317,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         if not await self.connect(xor_and_ids[2][1], xor_or_ids[2], target_port=1):
             return False
 
-        if not await self.connect(xor_or_ids[2], dff_ids[2], target_port_label="D"):
+        if not await self.connect(xor_or_ids[2], hold_mux_ids[2], target_port_label="Data[1]"):
             return False
 
         # Bit 3: D3 = Q3 XOR (Q0 AND Q1 AND Q2) = (NOT Q3 AND carry2) OR (Q3 AND NOT carry2)
@@ -269,7 +342,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         if not await self.connect(xor_and_ids[3][1], xor_or_ids[3], target_port=1):
             return False
 
-        if not await self.connect(xor_or_ids[3], dff_ids[3], target_port_label="D"):
+        if not await self.connect(xor_or_ids[3], hold_mux_ids[3], target_port_label="Data[1]"):
             return False
 
         # Save circuit as IC

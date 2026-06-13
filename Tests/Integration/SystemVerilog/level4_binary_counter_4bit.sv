@@ -54,9 +54,44 @@ assign q = aux_nor_15;
 assign q_bar = aux_nor_16;
 endmodule
 
+// Module for hold_mux0 (generated from level2_mux_2to1.panda)
+module level2_mux_2to1 (
+    input data0,
+    input data1,
+    input sel0,
+    input enable,
+    output p_output
+);
+
+reg aux_mux_1 = 1'b0;
+wire aux_and_2;
+
+// Internal logic
+    //Multiplexer
+    always @(*)
+    begin
+        case({sel0})
+            1'd0: aux_mux_1 = data0;
+            1'd1: aux_mux_1 = data1;
+            default: aux_mux_1 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
+
+assign p_output = aux_and_2;
+endmodule
+
 // Module for LEVEL4_BINARY_COUNTER_4BIT (generated from level4_binary_counter_4bit.panda)
 module level4_binary_counter_4bit_ic (
+    input clear,
+    input load,
+    input countenable,
+    input data0,
     input clk,
+    input data1,
+    input data2,
+    input data3,
     output q0,
     output q1,
     output q2,
@@ -93,6 +128,23 @@ wire w_level1_d_flip_flop_inst_22_q_bar;
 // IC instance: FF3 (level1_d_flip_flop)
 wire w_level1_d_flip_flop_inst_23_q;
 wire w_level1_d_flip_flop_inst_23_q_bar;
+// IC instance: hold_mux0 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_24_p_output;
+// IC instance: load_mux0 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_25_p_output;
+// IC instance: hold_mux1 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_26_p_output;
+// IC instance: load_mux1 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_27_p_output;
+// IC instance: hold_mux2 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_28_p_output;
+// IC instance: load_mux2 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_29_p_output;
+// IC instance: hold_mux3 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_30_p_output;
+// IC instance: load_mux3 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_31_p_output;
+wire aux_not_32;
 
 // Internal logic
 assign aux_not_2 = ~w_level1_d_flip_flop_inst_20_q;
@@ -114,37 +166,94 @@ assign aux_or_17 = (aux_and_11 | aux_and_12);
 assign aux_or_18 = (aux_and_13 | aux_and_14);
 assign aux_or_19 = (aux_and_15 | aux_and_16);
 level1_d_flip_flop level1_d_flip_flop_inst_20 (
-    .d(aux_not_2),
+    .d(w_level2_mux_2to1_inst_25_p_output),
     .clock(clk),
     .preset(1'b1),
-    .clear(1'b1),
+    .clear(aux_not_32),
     .q(w_level1_d_flip_flop_inst_20_q),
     .q_bar(w_level1_d_flip_flop_inst_20_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_21 (
-    .d(aux_or_17),
+    .d(w_level2_mux_2to1_inst_27_p_output),
     .clock(clk),
     .preset(1'b1),
-    .clear(1'b1),
+    .clear(aux_not_32),
     .q(w_level1_d_flip_flop_inst_21_q),
     .q_bar(w_level1_d_flip_flop_inst_21_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_22 (
-    .d(aux_or_18),
+    .d(w_level2_mux_2to1_inst_29_p_output),
     .clock(clk),
     .preset(1'b1),
-    .clear(1'b1),
+    .clear(aux_not_32),
     .q(w_level1_d_flip_flop_inst_22_q),
     .q_bar(w_level1_d_flip_flop_inst_22_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_23 (
-    .d(aux_or_19),
+    .d(w_level2_mux_2to1_inst_31_p_output),
     .clock(clk),
     .preset(1'b1),
-    .clear(1'b1),
+    .clear(aux_not_32),
     .q(w_level1_d_flip_flop_inst_23_q),
     .q_bar(w_level1_d_flip_flop_inst_23_q_bar)
 );
+level2_mux_2to1 level2_mux_2to1_inst_24 (
+    .data0(w_level1_d_flip_flop_inst_20_q),
+    .data1(aux_not_2),
+    .sel0(countenable),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_24_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_25 (
+    .data0(w_level2_mux_2to1_inst_24_p_output),
+    .data1(data0),
+    .sel0(load),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_25_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_26 (
+    .data0(w_level1_d_flip_flop_inst_21_q),
+    .data1(aux_or_17),
+    .sel0(countenable),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_26_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_27 (
+    .data0(w_level2_mux_2to1_inst_26_p_output),
+    .data1(data1),
+    .sel0(load),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_27_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_28 (
+    .data0(w_level1_d_flip_flop_inst_22_q),
+    .data1(aux_or_18),
+    .sel0(countenable),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_28_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_29 (
+    .data0(w_level2_mux_2to1_inst_28_p_output),
+    .data1(data2),
+    .sel0(load),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_29_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_30 (
+    .data0(w_level1_d_flip_flop_inst_23_q),
+    .data1(aux_or_19),
+    .sel0(countenable),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_30_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_31 (
+    .data0(w_level2_mux_2to1_inst_30_p_output),
+    .data1(data3),
+    .sel0(load),
+    .enable(1'b1),
+    .p_output(w_level2_mux_2to1_inst_31_p_output)
+);
+assign aux_not_32 = ~clear;
 
 assign q0 = w_level1_d_flip_flop_inst_20_q;
 assign q1 = w_level1_d_flip_flop_inst_21_q;
@@ -155,12 +264,19 @@ endmodule
 module level4_binary_counter_4bit (
 /* ========= Inputs ========== */
 input input_switch1,
+input input_switch2,
+input input_switch3,
+input input_switch4,
+input input_switch5,
+input input_switch6,
+input input_switch7,
+input input_switch8,
 
 /* ========= Outputs ========== */
-output led3_1,
-output led4_1,
-output led5_1,
-output led6_1
+output led10_1,
+output led11_1,
+output led12_1,
+output led13_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL4_BINARY_COUNTER_4BIT (level4_binary_counter_4bit_ic)
@@ -172,7 +288,14 @@ wire w_level4_binary_counter_4bit_ic_inst_1_q3;
 
 // Assigning aux variables. //
 level4_binary_counter_4bit_ic level4_binary_counter_4bit_ic_inst_1 (
-    .clk(input_switch1),
+    .clear(input_switch1),
+    .load(input_switch2),
+    .countenable(input_switch3),
+    .data0(input_switch4),
+    .clk(input_switch5),
+    .data1(input_switch6),
+    .data2(input_switch7),
+    .data3(input_switch8),
     .q0(w_level4_binary_counter_4bit_ic_inst_1_q0),
     .q1(w_level4_binary_counter_4bit_ic_inst_1_q1),
     .q2(w_level4_binary_counter_4bit_ic_inst_1_q2),
@@ -180,8 +303,8 @@ level4_binary_counter_4bit_ic level4_binary_counter_4bit_ic_inst_1 (
 );
 
 // Writing output data. //
-assign led3_1 = w_level4_binary_counter_4bit_ic_inst_1_q0;
-assign led4_1 = w_level4_binary_counter_4bit_ic_inst_1_q1;
-assign led5_1 = w_level4_binary_counter_4bit_ic_inst_1_q2;
-assign led6_1 = w_level4_binary_counter_4bit_ic_inst_1_q3;
+assign led10_1 = w_level4_binary_counter_4bit_ic_inst_1_q0;
+assign led11_1 = w_level4_binary_counter_4bit_ic_inst_1_q1;
+assign led12_1 = w_level4_binary_counter_4bit_ic_inst_1_q2;
+assign led13_1 = w_level4_binary_counter_4bit_ic_inst_1_q3;
 endmodule
