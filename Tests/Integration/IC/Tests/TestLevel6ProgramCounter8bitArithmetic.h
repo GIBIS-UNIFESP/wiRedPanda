@@ -15,4 +15,5 @@ private slots:
 
     // Functional Tests
     void testProgramCounter8BitWithPCPlus1();
+    void testReset();
 };
