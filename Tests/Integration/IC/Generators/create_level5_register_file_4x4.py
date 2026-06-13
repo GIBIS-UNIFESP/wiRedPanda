@@ -141,23 +141,13 @@ class RegisterFile4x4Builder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated write decoder IC")
 
-        # ========== Create Write Gates ==========
-        write_gates = []
-        for reg_idx in range(num_registers):
-            gate_id = await self.create_element("And", write_gates_x + (reg_idx % 2) * HORIZONTAL_GATE_SPACING * 0.7, write_addr_y + (reg_idx // 2) * VERTICAL_STAGE_SPACING * 0.6, f"writeGate[{reg_idx}]")
-            if gate_id is None:
-                return False
-            write_gates.append(gate_id)
+        # Drive the decoder's active-high enable with Write_Enable: a register is
+        # selected only while writing. This folds away the per-register write-gate
+        # AND stage — decoder.out[i] now already carries (addr==i AND Write_Enable).
+        if not await self.connect(write_enable, decoder_ic, target_port_label="enable"):
+            return False
 
-            # Connect decoder output[reg_idx] to AND input 0
-            if not await self.connect(decoder_ic, gate_id, source_port_label=f"out[{reg_idx}]"):
-                return False
-
-            # Connect write_enable to AND input 1
-            if not await self.connect(write_enable, gate_id, target_port=1):
-                return False
-
-        await self.log("  ✓ Created write gates")
+        await self.log("  ✓ Gated write decoder with Write_Enable")
 
         # ========== Create Storage Array ==========
         array_spacing = 50.0
@@ -202,8 +192,8 @@ class RegisterFile4x4Builder(ICBuilderBase):
                 if not await self.connect(data_in[bit_idx], mux_id, target_port_label="In1"):
                     return False
 
-                # Write control: write_gate to Mux select (0=hold, 1=load)
-                if not await self.connect(write_gates[reg_idx], mux_id, target_port_label="S0"):
+                # Write control: gated decoder output to Mux select (0=hold, 1=load)
+                if not await self.connect(decoder_ic, mux_id, source_port_label=f"out[{reg_idx}]", target_port_label="S0"):
                     return False
 
                 # Mux output to flip-flop Data input

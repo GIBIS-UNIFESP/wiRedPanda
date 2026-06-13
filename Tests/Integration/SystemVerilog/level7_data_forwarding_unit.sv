@@ -11,10 +11,12 @@ module level2_mux_4to1 (
     input data3,
     input sel0,
     input sel1,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -29,8 +31,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for LEVEL7_DATA_FORWARDING_UNIT (generated from level7_data_forwarding_unit.panda)
@@ -80,104 +83,112 @@ module level7_data_forwarding_unit_ic (
 );
 
 // IC instance: Mux4to1_0 (level2_mux_4to1)
-wire w_level2_mux_4to1_inst_1_p_output;
-// IC instance: Mux4to1_1 (level2_mux_4to1)
 wire w_level2_mux_4to1_inst_2_p_output;
-// IC instance: Mux4to1_2 (level2_mux_4to1)
+// IC instance: Mux4to1_1 (level2_mux_4to1)
 wire w_level2_mux_4to1_inst_3_p_output;
-// IC instance: Mux4to1_3 (level2_mux_4to1)
+// IC instance: Mux4to1_2 (level2_mux_4to1)
 wire w_level2_mux_4to1_inst_4_p_output;
-// IC instance: Mux4to1_4 (level2_mux_4to1)
+// IC instance: Mux4to1_3 (level2_mux_4to1)
 wire w_level2_mux_4to1_inst_5_p_output;
-// IC instance: Mux4to1_5 (level2_mux_4to1)
+// IC instance: Mux4to1_4 (level2_mux_4to1)
 wire w_level2_mux_4to1_inst_6_p_output;
-// IC instance: Mux4to1_6 (level2_mux_4to1)
+// IC instance: Mux4to1_5 (level2_mux_4to1)
 wire w_level2_mux_4to1_inst_7_p_output;
-// IC instance: Mux4to1_7 (level2_mux_4to1)
+// IC instance: Mux4to1_6 (level2_mux_4to1)
 wire w_level2_mux_4to1_inst_8_p_output;
+// IC instance: Mux4to1_7 (level2_mux_4to1)
+wire w_level2_mux_4to1_inst_9_p_output;
 
 // Internal logic
-level2_mux_4to1 level2_mux_4to1_inst_1 (
+level2_mux_4to1 level2_mux_4to1_inst_2 (
     .data0(dataa0),
     .data1(datab0),
     .data2(datac0),
     .data3(datad0),
     .sel0(select0),
     .sel1(select1),
-    .p_output(w_level2_mux_4to1_inst_1_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_4to1_inst_2_p_output)
 );
-level2_mux_4to1 level2_mux_4to1_inst_2 (
+level2_mux_4to1 level2_mux_4to1_inst_3 (
     .data0(dataa1),
     .data1(datab1),
     .data2(datac1),
     .data3(datad1),
     .sel0(select0),
     .sel1(select1),
-    .p_output(w_level2_mux_4to1_inst_2_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_4to1_inst_3_p_output)
 );
-level2_mux_4to1 level2_mux_4to1_inst_3 (
+level2_mux_4to1 level2_mux_4to1_inst_4 (
     .data0(dataa2),
     .data1(datab2),
     .data2(datac2),
     .data3(datad2),
     .sel0(select0),
     .sel1(select1),
-    .p_output(w_level2_mux_4to1_inst_3_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_4to1_inst_4_p_output)
 );
-level2_mux_4to1 level2_mux_4to1_inst_4 (
+level2_mux_4to1 level2_mux_4to1_inst_5 (
     .data0(dataa3),
     .data1(datab3),
     .data2(datac3),
     .data3(datad3),
     .sel0(select0),
     .sel1(select1),
-    .p_output(w_level2_mux_4to1_inst_4_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_4to1_inst_5_p_output)
 );
-level2_mux_4to1 level2_mux_4to1_inst_5 (
+level2_mux_4to1 level2_mux_4to1_inst_6 (
     .data0(dataa4),
     .data1(datab4),
     .data2(datac4),
     .data3(datad4),
     .sel0(select0),
     .sel1(select1),
-    .p_output(w_level2_mux_4to1_inst_5_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_4to1_inst_6_p_output)
 );
-level2_mux_4to1 level2_mux_4to1_inst_6 (
+level2_mux_4to1 level2_mux_4to1_inst_7 (
     .data0(dataa5),
     .data1(datab5),
     .data2(datac5),
     .data3(datad5),
     .sel0(select0),
     .sel1(select1),
-    .p_output(w_level2_mux_4to1_inst_6_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_4to1_inst_7_p_output)
 );
-level2_mux_4to1 level2_mux_4to1_inst_7 (
+level2_mux_4to1 level2_mux_4to1_inst_8 (
     .data0(dataa6),
     .data1(datab6),
     .data2(datac6),
     .data3(datad6),
     .sel0(select0),
     .sel1(select1),
-    .p_output(w_level2_mux_4to1_inst_7_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_4to1_inst_8_p_output)
 );
-level2_mux_4to1 level2_mux_4to1_inst_8 (
+level2_mux_4to1 level2_mux_4to1_inst_9 (
     .data0(dataa7),
     .data1(datab7),
     .data2(datac7),
     .data3(datad7),
     .sel0(select0),
     .sel1(select1),
-    .p_output(w_level2_mux_4to1_inst_8_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_4to1_inst_9_p_output)
 );
 
-assign forwardeddata0 = w_level2_mux_4to1_inst_1_p_output;
-assign forwardeddata1 = w_level2_mux_4to1_inst_2_p_output;
-assign forwardeddata2 = w_level2_mux_4to1_inst_3_p_output;
-assign forwardeddata3 = w_level2_mux_4to1_inst_4_p_output;
-assign forwardeddata4 = w_level2_mux_4to1_inst_5_p_output;
-assign forwardeddata5 = w_level2_mux_4to1_inst_6_p_output;
-assign forwardeddata6 = w_level2_mux_4to1_inst_7_p_output;
-assign forwardeddata7 = w_level2_mux_4to1_inst_8_p_output;
+assign forwardeddata0 = w_level2_mux_4to1_inst_2_p_output;
+assign forwardeddata1 = w_level2_mux_4to1_inst_3_p_output;
+assign forwardeddata2 = w_level2_mux_4to1_inst_4_p_output;
+assign forwardeddata3 = w_level2_mux_4to1_inst_5_p_output;
+assign forwardeddata4 = w_level2_mux_4to1_inst_6_p_output;
+assign forwardeddata5 = w_level2_mux_4to1_inst_7_p_output;
+assign forwardeddata6 = w_level2_mux_4to1_inst_8_p_output;
+assign forwardeddata7 = w_level2_mux_4to1_inst_9_p_output;
 endmodule
 
 module level7_data_forwarding_unit (

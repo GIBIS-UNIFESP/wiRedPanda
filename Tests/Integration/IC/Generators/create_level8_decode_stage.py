@@ -186,6 +186,14 @@ class DecodeStageBuilder(ICBuilderBase):
             if not await self.connect(opcode_inputs[i], decoder_id, target_port_label=f"addr[{i}]"):
                 return False
 
+        # The 5th opcode bit is applied per-line below, so the decoder always
+        # decodes the low nibble: tie its enable high.
+        decoder_vcc_id = await self.create_element("InputVcc", input_x, input_y + VERTICAL_STAGE_SPACING, "Enable_Vcc")
+        if decoder_vcc_id is None:
+            return False
+        if not await self.connect(decoder_vcc_id, decoder_id, target_port_label="enable"):
+            return False
+
         # The RegWrite NOT gate already computes NOT(OpCode[4]) — reuse it.
         onehot_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
         onehot_y = input_y + (2 * VERTICAL_STAGE_SPACING)

@@ -5,14 +5,15 @@
 """
 Create 4-to-16 Decoder IC
 
-Inputs: addr[0], addr[1], addr[2], addr[3]
+Inputs: addr[0], addr[1], addr[2], addr[3], enable
 Outputs: out[0] to out[15]
 
 Circuit:
 - 4 NOT gates (invert address bits)
-- 16 AND gates (4-input, one-hot encoding)
-  - Each AND combines 4 inputs (direct or inverted)
+- 16 AND gates (5-input, one-hot encoding)
+  - Each AND combines 4 address inputs (direct or inverted) plus enable
   - For output i: bit pattern of i determines which inputs to use
+  - enable=1 -> normal decode; enable=0 -> all outputs 0 (gating/cascade)
 
 Usage:
     python3 create_level2_decoder_4to16.py
@@ -53,6 +54,12 @@ class Decoder4to16Builder(ICBuilderBase):
             addr_inputs.append(addr_id)
             await self.log(f"  ✓ Created addr[{i}]")
 
+        # Create active-high enable input: out[i] = (addr==i) AND enable
+        enable_id = await self.create_element("InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "enable")
+        if enable_id is None:
+            return False
+        await self.log("  ✓ Created enable")
+
         # Create NOT gates for inverted address bits
         not_gates = []
         for i in range(width):
@@ -77,13 +84,13 @@ class Decoder4to16Builder(ICBuilderBase):
                 return False
             and_gates.append(gate_id)
 
-            # Set AND gate to 4-input size
+            # Set AND gate to (width+1)-input size: width address bits + enable
             set_props = await self.mcp.send_command("change_input_size", {
                 "element_id": gate_id,
-                "size": width
+                "size": width + 1
             })
             if not set_props.success:
-                self.log_error(f"Failed to set input_size={width} for AND gate {i}")
+                self.log_error(f"Failed to set input_size={width + 1} for AND gate {i}")
                 return False
 
             # Determine which inputs to use based on binary pattern of i
@@ -95,6 +102,10 @@ class Decoder4to16Builder(ICBuilderBase):
 
                 if not await self.connect(source_id, gate_id, target_port=bit_pos):
                     return False
+
+            # Connect enable to the high port
+            if not await self.connect(enable_id, gate_id, target_port=width):
+                return False
 
             # Create output LED
             led_id = await self.create_element("Led", output_x + (i % 4) * HORIZONTAL_GATE_SPACING, 100.0 + (i // 4) * VERTICAL_STAGE_SPACING, f"out[{i}]")

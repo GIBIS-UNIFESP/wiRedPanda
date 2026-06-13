@@ -6,13 +6,19 @@
 Create Priority Encoder 8-to-3 IC (with priority: 7 > 6 > ... > 0)
 
 Inputs: data[0..7] (8 data input bits)
-Outputs: addr[0..2] (3-bit binary output of highest priority active input)
+Outputs:
+  - addr[0..2]: 3-bit binary index of the highest-priority active input
+  - valid: group-select (74148 GS) = OR(data[0..7]); 1 iff any input is active
 
 Circuit Logic:
 - Uses cascaded inhibit signals to ensure only the highest priority input is encoded
 - inhibit[i] = NOT(OR of all higher priority inputs)
 - selected[i] = data[i] AND inhibit[i] (only true if i is the highest priority active input)
 - addr bits encode the selected input using combinational logic
+- valid disambiguates addr=000: "input 0 active" (valid=1) vs "idle" (valid=0),
+  which is what makes this encoder safe to compose. selected[0] is therefore not
+  built — index 0 contributes no addr bit, and "any input active" is valid, not
+  selected[0].
 
 Usage:
     python3 create_level2_priority_encoder_8to3.py
@@ -101,9 +107,10 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         # Create remaining OR gates with increasing input counts
         # or_chain[5] = 3-input OR(data[7], data[6], data[5])
         # or_chain[4] = 4-input OR(data[7], data[6], data[5], data[4])
-        # ... down to OR(data[7..1]), which feeds inhibit0. An OR of all
-        # eight bits is never needed (F58: it used to be built and left dead).
-        for i in range(5, 0, -1):
+        # ... down to OR(data[7..2]), which feeds inhibit1. inhibit0/selected[0]
+        # are not built (index 0 contributes no addr bit; "any active" = valid),
+        # so OR(data[7..1]) and OR of all eight bits are never needed.
+        for i in range(5, 1, -1):
             num_inputs = 8 - i  # Number of data inputs to OR together
 
             or_gate = await self.create_element("Or", or_chain_x + (7-i)*15.0, or_chain_y, f"or_{7}_to_{i}")
@@ -135,8 +142,8 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         # inhibit[6] already created above
         inhibits[6] = inhibit6
 
-        # Create inhibit gates for 0-5
-        for i in range(5, -1, -1):
+        # Create inhibit gates for 1-5 (inhibit0 is unused: selected[0] isn't built)
+        for i in range(5, 0, -1):
             inhibit_gate = await self.create_element("Not", inhibit_x, inhibit_base_y + (5-i)*inhibit_spacing, f"inhibit{i}")
             if inhibit_gate is None:
                 return False
@@ -152,7 +159,9 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         selected: list[int | None] = [None] * 8
         selected[7] = data_inputs[7]  # data[7] doesn't need AND gate (no inhibition)
 
-        for i in range(6, -1, -1):
+        # selected[0] is intentionally omitted: index 0 sets no addr bit, and the
+        # "input 0 active vs idle" distinction is carried by the valid output.
+        for i in range(6, 0, -1):
             sel_gate = await self.create_element("And", selected_x, selected_base_y + (6-i)*selected_spacing, f"sel{i}")
             if sel_gate is None:
                 return False
@@ -254,9 +263,25 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         if not await self.connect(or_addr0_57, addr0_final, target_port=1):
             return False
 
+        # Group-select / valid output (74148 GS): valid = OR(data[0..7]).
+        # 1 iff any input is active; disambiguates addr=000 (input 0 vs idle).
+        valid_or = await self.create_element("Or", addr_or_final_x, output_base_y + (7 * VERTICAL_STAGE_SPACING), "valid_or")
+        if valid_or is None:
+            return False
+        set_props = await self.mcp.send_command("change_input_size", {
+            "element_id": valid_or,
+            "size": 8
+        })
+        if not set_props.success:
+            self.log_error("Failed to set input_size=8 for valid OR gate")
+            return False
+        for i in range(8):
+            if not await self.connect(data_inputs[i], valid_or, target_port=i):
+                return False
+
         await self.log("  Created output encoding logic")
 
-        # Create output LEDs for the three address bits
+        # Create output LEDs for the three address bits plus the valid output
         output_leds = []
         for i in range(3):
             led_id = await self.create_element("Led", output_x, output_base_y + i * addr_output_spacing, f"addr[{i}]")
@@ -264,11 +289,19 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
                 return False
             output_leds.append(led_id)
 
+        valid_led = await self.create_element("Led", output_x, output_base_y + 3 * addr_output_spacing, "valid")
+        if valid_led is None:
+            return False
+
         # Connect address outputs to LEDs
         addr_outputs = [addr0_final, addr1_final, addr2_final]
         for i, led_id in enumerate(output_leds):
             if not await self.connect(addr_outputs[i], led_id):
                 return False
+
+        # Connect valid output
+        if not await self.connect(valid_or, valid_led):
+            return False
 
         await self.log("  Created and connected output LEDs")
 

@@ -215,6 +215,11 @@ inline std::unique_ptr<WorkSpace> buildInstructionDecoder4to16(InputSwitch* opco
         builder.connect(opcode[i], 0, decoder, QString("addr[%1]").arg(i));
     }
 
+    // The decoder has an active-high enable: hold it high so it always decodes.
+    auto *decoderEnable = new InputVcc();
+    builder.add(decoderEnable);
+    builder.connect(decoderEnable, 0, decoder, "enable");
+
     // Connect decoder outputs to LEDs (semantic port labels)
     for (int i = 0; i < 16; i++) {
         builder.connect(decoder, QString("out[%1]").arg(i), decodedOpcode[i], 0);
@@ -782,7 +787,8 @@ inline std::unique_ptr<WorkSpace> buildDecoder3to8Debug(InputSwitch* addr[3],
     }
 
     // Verify IC has correct port counts
-    if (decoder->inputSize() != 3 || decoder->outputSize() != 8) {
+    // 3 address inputs + 1 enable, 8 one-hot outputs.
+    if (decoder->inputSize() != 4 || decoder->outputSize() != 8) {
         throw std::runtime_error(QString("Decoder IC has incorrect port counts: %1 inputs, %2 outputs")
                                 .arg(decoder->inputSize())
                                 .arg(decoder->outputSize())
@@ -794,6 +800,11 @@ inline std::unique_ptr<WorkSpace> buildDecoder3to8Debug(InputSwitch* addr[3],
         builder.add(addr[i]);
         builder.connect(addr[i], 0, decoder, QString("addr[%1]").arg(i));
     }
+
+    // The decoder has an active-high enable: hold it high so it always decodes.
+    auto *decoderEnable = new InputVcc();
+    builder.add(decoderEnable);
+    builder.connect(decoderEnable, 0, decoder, "enable");
 
     // Connect IC outputs to external LEDs using semantic port labels
     for (int i = 0; i < 8; i++) {
@@ -1165,6 +1176,10 @@ inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
         return mux;
     };
 
+    // The 8:1 muxes have an active-high enable: hold it high so reads always pass.
+    auto *readMuxEnable = new InputVcc();
+    builder.add(readMuxEnable);
+
     // Create level-0 muxes: 8 per data bit (64 total)
     for (int b = 0; b < 8; b++) {
         QVector<IC *> bitMuxes;
@@ -1172,6 +1187,7 @@ inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
             IC *mux = loadMux8to1(QString("L0 bit%1 group%2").arg(b).arg(g));
             bitMuxes.append(mux);
             builder.add(mux);
+            builder.connect(readMuxEnable, 0, mux, "Enable");
         }
         readMuxesL0.append(bitMuxes);
     }
@@ -1181,6 +1197,7 @@ inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
         IC *mux = loadMux8to1(QString("L1 bit%1").arg(b));
         readMuxesL1.append(mux);
         builder.add(mux);
+        builder.connect(readMuxEnable, 0, mux, "Enable");
     }
 
     // Add all elements to scene

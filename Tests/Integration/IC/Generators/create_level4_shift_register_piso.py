@@ -150,6 +150,14 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
                 return False
             select_gate_ids.append(mux_id)
 
+        # The load/shift select muxes are always active: tie their enables high.
+        sel_mux_vcc = await self.create_element("InputVcc", select_gate_x - HORIZONTAL_GATE_SPACING, select_gate_y_base, "Enable_Vcc")
+        if sel_mux_vcc is None:
+            return False
+        for mux_element_id in select_gate_ids:
+            if not await self.connect(sel_mux_vcc, mux_element_id, target_port_label="Enable"):
+                return False
+
         # Create serial output LED
         sout_id = await self.create_element("Led", sout_x, sout_y, "SOUT")
         if sout_id is None:

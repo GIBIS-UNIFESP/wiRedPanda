@@ -12,13 +12,14 @@ Inputs:
   - Data[0] to Data[3]: 4 data input bits
 
 Outputs:
-  - Parity: 1-bit parity output
+  - Parity: odd-parity output (1 when the number of 1-bits is odd)
+  - Even: complementary even-parity output (= NOT Parity), 74180-style
 
 Architecture:
   - Binary tree of XOR gates (2 stages)
   - Stage 1: 2 XOR gates (pairs)
   - Stage 2: 1 XOR gate (final)
-  - Output LED
+  - Odd output LED + NOT gate feeding the complementary Even output LED
 
 Usage:
     python3 create_level2_parity_generator.py
@@ -88,13 +89,27 @@ class ParityGeneratorBuilder(ICBuilderBase):
         # Final parity output (should be single XOR gate)
         parity_xor_id = current_stage[0]
 
-        # Create output LED
+        # Create odd-parity output LED (Parity = XOR of all bits = 1 iff odd #1s)
         parity_led = await self.create_element("Led", output_x, 100.0 + (width // 2) * VERTICAL_STAGE_SPACING, "Parity")
         if parity_led is None:
             return False
 
-        # Connect final XOR to output LED
+        # Connect final XOR to odd-parity LED
         if not await self.connect(parity_xor_id, parity_led):
+            return False
+
+        # Complementary even-parity output (74180-style): Even = NOT(Parity)
+        even_y = 100.0 + ((width // 2) + 1) * VERTICAL_STAGE_SPACING
+        even_not = await self.create_element("Not", output_x - HORIZONTAL_GATE_SPACING, even_y, "even_not")
+        if even_not is None:
+            return False
+        if not await self.connect(parity_xor_id, even_not):
+            return False
+
+        even_led = await self.create_element("Led", output_x, even_y, "Even")
+        if even_led is None:
+            return False
+        if not await self.connect(even_not, even_led):
             return False
 
         # Save circuit as IC

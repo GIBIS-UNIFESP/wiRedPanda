@@ -17,6 +17,7 @@ struct ParityGeneratorFixture {
     IC *ic = nullptr;
     InputSwitch *dataInputs[4] = {};
     Led *parityOutput = nullptr;
+    Led *evenOutput = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -30,6 +31,8 @@ struct ParityGeneratorFixture {
         }
         parityOutput = new Led();
         builder.add(parityOutput);
+        evenOutput = new Led();
+        builder.add(evenOutput);
 
         ic = loadBuildingBlockIC("level2_parity_generator.panda");
         builder.add(ic);
@@ -38,6 +41,7 @@ struct ParityGeneratorFixture {
             builder.connect(dataInputs[i], 0, ic, QString("Data[%1]").arg(i));
         }
         builder.connect(ic, "Parity", parityOutput, 0);
+        builder.connect(ic, "Even", evenOutput, 0);
 
         sim = builder.initSimulation();
         sim->update();
@@ -75,8 +79,8 @@ void TestLevel2ParityGenerator::testParityGenerator_data()
     QTest::addColumn<int>("dataValue");
     QTest::addColumn<bool>("expectedParity");
 
-    // Test all 16 possible 4-bit values
-    // Parity = XOR of all bits (even parity: 1 if odd number of 1s, 0 if even)
+    // Test all 16 possible 4-bit values.
+    // Parity = XOR of all bits = odd parity (1 when the number of 1-bits is odd).
 
     QTest::newRow("0000 (0 ones) → parity 0") << 0x0 << false;      // Even number of 1s
     QTest::newRow("0001 (1 ones) → parity 1") << 0x1 << true;       // Odd number of 1s
@@ -109,4 +113,6 @@ void TestLevel2ParityGenerator::testParityGenerator()
     f.sim->update();
 
     QCOMPARE(getInputStatus(f.parityOutput), expectedParity);
+    // Complementary even-parity output must always be the inverse of odd parity.
+    QCOMPARE(getInputStatus(f.evenOutput), !expectedParity);
 }

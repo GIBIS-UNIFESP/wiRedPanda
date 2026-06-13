@@ -98,6 +98,10 @@ class DataForwardingUnitBuilder(ICBuilderBase):
 
         # Create 4-to-1 multiplexers for each bit using level2_mux_4to1 IC (8 total)
         output_x = input_x + (12 * HORIZONTAL_GATE_SPACING)
+        # The forwarding muxes are always active: one shared enable tied high.
+        enable_vcc_id = await self.create_element("InputVcc", input_x, 200.0, "Enable_Vcc")
+        if enable_vcc_id is None:
+            return False
         mux_ids = []
         for bit_idx in range(8):
             # Instantiate level2_mux_4to1 IC for this bit
@@ -132,6 +136,10 @@ class DataForwardingUnitBuilder(ICBuilderBase):
 
             # Connect Select[1] to Mux Sel[1] input
             if not await self.connect(select_inputs[1], mux_id, target_port_label="Sel[1]"):
+                return False
+
+            # Enable always high (forwarding is unconditional)
+            if not await self.connect(enable_vcc_id, mux_id, target_port_label="Enable"):
                 return False
 
             # Create output LED

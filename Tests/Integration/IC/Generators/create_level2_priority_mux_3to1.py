@@ -5,16 +5,17 @@
 """
 Create 3-way Priority Multiplexer IC (1-bit)
 
-Inputs: data0, data1, data2 (3 data inputs), sel0, sel1 (2 select signals)
+Inputs: data0, data1, data2 (3 data inputs), sel0, sel1 (2 select signals), enable
 Output: out
 
 Priority: sel0 > sel1
-Logic: sel0 ? data0 : (sel1 ? data1 : data2)
+Logic: enable ? (sel0 ? data0 : (sel1 ? data1 : data2)) : 0
 
 Circuit:
 - 2 cascaded 2:1 multiplexers implementing priority logic
 - Stage 1: mux(data1, data2, sel1) -> intermediate
-- Stage 2: mux(data0, intermediate, sel0) -> out
+- Stage 2: mux(data0, intermediate, sel0) -> selected
+- Active-high enable ANDed onto the output: out = selected AND enable
 
 Usage:
     python3 create_level2_priority_mux_3to1.py
@@ -112,16 +113,33 @@ class PriorityMux3to1Builder(ICBuilderBase):
 
         await self.log("  Created stage 2: mux(data0, stage1, sel0)")
 
+        # Create active-high enable input: out = selected AND enable
+        enable_id = await self.create_element("InputSwitch", sel_input_x, sel_input_y + 2 * VERTICAL_STAGE_SPACING, "enable")
+        if enable_id is None:
+            return False
+        await self.log(f"  Created enable (id={enable_id})")
+
+        # AND-gate the priority-mux output with enable: disabled -> 0
+        and_x = stage2_mux_x + HORIZONTAL_GATE_SPACING
+        enable_and = await self.create_element("And", and_x, data_input_y, "enable_and")
+        if enable_and is None:
+            return False
+        if not await self.connect(stage2_mux, enable_and, source_port_label="Out", target_port=0):
+            return False
+        if not await self.connect(enable_id, enable_and, target_port=1):
+            return False
+        await self.log("  Created enable gate")
+
         # Create output LED
-        output_x = stage2_mux_x + HORIZONTAL_GATE_SPACING
+        output_x = and_x + HORIZONTAL_GATE_SPACING
         output_y = data_input_y
 
         output_led = await self.create_element("Led", output_x, output_y, "out")
         if output_led is None:
             return False
 
-        # Connect stage2 output to LED
-        if not await self.connect(stage2_mux, output_led, source_port_label="Out"):
+        # Connect enable gate output to LED
+        if not await self.connect(enable_and, output_led):
             return False
 
         # Save circuit as IC

@@ -19,6 +19,7 @@ struct PriorityMux3to1Fixture {
     IC *ic = nullptr;
     InputSwitch *data[3] = {};
     InputSwitch *sel[2] = {};
+    InputSwitch *enable = nullptr;
     Led *output = nullptr;
     Simulation *sim = nullptr;
 
@@ -35,6 +36,8 @@ struct PriorityMux3to1Fixture {
             sel[i] = new InputSwitch();
             builder.add(sel[i]);
         }
+        enable = new InputSwitch();
+        builder.add(enable);
         output = new Led();
         builder.add(output);
 
@@ -47,6 +50,7 @@ struct PriorityMux3to1Fixture {
         for (int i = 0; i < 2; ++i) {
             builder.connect(sel[i], 0, ic, QString("sel%1").arg(i));
         }
+        builder.connect(enable, 0, ic, "enable");
         builder.connect(ic, "out", output, 0);
 
         sim = builder.initSimulation();
@@ -76,48 +80,57 @@ void TestLevel2PriorityMUX3To1::cleanup()
     }
 }
 
+// Truth table for the 3-way priority multiplexer.
+// Logic: out = enable ? (sel0 ? data0 : (sel1 ? data1 : data2)) : 0
+void TestLevel2PriorityMUX3To1::testPriorityMux3to1_data()
+{
+    QTest::addColumn<bool>("sel0");
+    QTest::addColumn<bool>("sel1");
+    QTest::addColumn<bool>("data0");
+    QTest::addColumn<bool>("data1");
+    QTest::addColumn<bool>("data2");
+    QTest::addColumn<bool>("enabled");
+    QTest::addColumn<bool>("expected");
+
+    // sel0=0, sel1=0 → output = data2
+    QTest::newRow("sel00 data2=0 -> 0") << false << false << false << false << false << true << false;
+    QTest::newRow("sel00 data2=1 -> 1") << false << false << true << true << true << true << true;
+    QTest::newRow("sel00 data2=1 (ignore d0,d1)") << false << false << false << false << true << true << true;
+
+    // sel0=0, sel1=1 → output = data1
+    QTest::newRow("sel01 data1=0 -> 0") << false << true << false << false << false << true << false;
+    QTest::newRow("sel01 data1=1 -> 1") << false << true << false << true << false << true << true;
+    QTest::newRow("sel01 data1=1 (ignore d2)") << false << true << true << true << false << true << true;
+
+    // sel0=1 → output = data0 (highest priority)
+    QTest::newRow("sel1x data0=0 (ignore rest)") << true << false << false << false << false << true << false;
+    QTest::newRow("sel1x data0=1 (ignore rest)") << true << false << true << false << false << true << true;
+    QTest::newRow("sel11 data0=1 (sel0 wins)") << true << true << true << false << false << true << true;
+
+    // enable=0 forces the output low regardless of select/data.
+    QTest::newRow("disabled sel1 data0=1 -> 0") << true << false << true << false << false << false << false;
+    QTest::newRow("disabled sel00 data2=1 -> 0") << false << false << true << true << true << false << false;
+}
+
 void TestLevel2PriorityMUX3To1::testPriorityMux3to1()
 {
+    QFETCH(bool, sel0);
+    QFETCH(bool, sel1);
+    QFETCH(bool, data0);
+    QFETCH(bool, data1);
+    QFETCH(bool, data2);
+    QFETCH(bool, enabled);
+    QFETCH(bool, expected);
+
     auto &f = *s_level2PriorityMux3to1;
 
-    // Test truth table for 3-way priority multiplexer
-    // Logic: output = sel0 ? data0 : (sel1 ? data1 : data2)
+    f.data[0]->setOn(data0);
+    f.data[1]->setOn(data1);
+    f.data[2]->setOn(data2);
+    f.sel[0]->setOn(sel0);
+    f.sel[1]->setOn(sel1);
+    f.enable->setOn(enabled);
+    f.sim->update();
 
-    struct TestCase {
-        int sel0, sel1, data0, data1, data2, expected;
-        const char *name;
-    };
-
-    TestCase tests[] = {
-        // sel0=0, sel1=0 → output = data2
-        {0, 0, 0, 0, 0, 0, "sel0=0, sel1=0, data2=0 → 0"},
-        {0, 0, 1, 1, 1, 1, "sel0=0, sel1=0, data2=1 → 1"},
-        {0, 0, 0, 0, 1, 1, "sel0=0, sel1=0, data2=1 (ignore data0, data1) → 1"},
-
-        // sel0=0, sel1=1 → output = data1
-        {0, 1, 0, 0, 0, 0, "sel0=0, sel1=1, data1=0 → 0"},
-        {0, 1, 0, 1, 0, 1, "sel0=0, sel1=1, data1=1 → 1"},
-        {0, 1, 1, 1, 0, 1, "sel0=0, sel1=1, data1=1 (ignore data2) → 1"},
-
-        // sel0=1 → output = data0 (highest priority)
-        {1, 0, 0, 0, 0, 0, "sel0=1, data0=0 (ignore sel1, data1, data2) → 0"},
-        {1, 0, 1, 0, 0, 1, "sel0=1, data0=1 (ignore sel1, data1, data2) → 1"},
-        {1, 1, 1, 0, 0, 1, "sel0=1, data0=1 (sel0 overrides sel1) → 1"},
-    };
-
-    for (int testIdx = 0; testIdx < 9; ++testIdx) {
-        const auto &test = tests[testIdx];
-
-        f.data[0]->setOn(test.data0);
-        f.data[1]->setOn(test.data1);
-        f.data[2]->setOn(test.data2);
-        f.sel[0]->setOn(test.sel0);
-        f.sel[1]->setOn(test.sel1);
-
-        f.sim->update();
-
-        bool result = getInputStatus(f.output, 0);
-
-        QCOMPARE(result, static_cast<bool>(test.expected));
-    }
+    QCOMPARE(getInputStatus(f.output, 0), expected);
 }

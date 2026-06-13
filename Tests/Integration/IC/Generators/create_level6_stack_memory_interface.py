@@ -126,6 +126,14 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
                 return False
             address_muxes.append(element_id)
 
+        # Address muxes are always active: tie every embedded mux's enable high.
+        addr_mux_vcc = await self.create_element("InputVcc", mux_x, 150.0, "Enable_Vcc")
+        if addr_mux_vcc is None:
+            return False
+        for mux_element_id in address_muxes:
+            if not await self.connect(addr_mux_vcc, mux_element_id, target_port_label="Enable"):
+                return False
+
         # Create output LEDs for outputs
         await self.log("📦 Creating output LEDs...")
         outputs = {}

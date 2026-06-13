@@ -64,9 +64,12 @@ bool aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_1 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_2 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_mux_3 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_4 = LOW;
+bool aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_and_5 = LOW;
+bool aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_6 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_0 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_1 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_2 = LOW;
+bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_3 = LOW;
 // End IC: Mux[0]
 // IC: Mux[1]
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_output = LOW;
@@ -75,9 +78,12 @@ bool aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_1 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_2 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_mux_3 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_4 = LOW;
+bool aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_and_5 = LOW;
+bool aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_6 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_0 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_1 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_2 = LOW;
+bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_3 = LOW;
 // End IC: Mux[1]
 // IC: Mux[2]
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_output = LOW;
@@ -86,9 +92,12 @@ bool aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_1 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_2 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_mux_3 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_4 = LOW;
+bool aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_and_5 = LOW;
+bool aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_6 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_0 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_1 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_2 = LOW;
+bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_3 = LOW;
 // End IC: Mux[2]
 // IC: Mux[3]
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_output = LOW;
@@ -97,14 +106,17 @@ bool aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_1 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_2 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_mux_3 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_4 = LOW;
+bool aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_and_5 = LOW;
+bool aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_6 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_0 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_1 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_2 = LOW;
+bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_3 = LOW;
 // End IC: Mux[3]
-bool aux_level4_register_4bit_0_busmux_loadhold_7_node_13 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_node_14 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_node_15 = LOW;
 bool aux_level4_register_4bit_0_busmux_loadhold_7_node_16 = LOW;
+bool aux_level4_register_4bit_0_busmux_loadhold_7_node_17 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_0 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_1 = LOW;
 bool aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_2 = LOW;
@@ -276,9 +288,11 @@ void computeLogic() {
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_0 = aux_level4_register_4bit_0_busmux_loadhold_7_node_0;
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_1 = aux_level4_register_4bit_0_busmux_loadhold_7_node_4;
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_2 = aux_level4_register_4bit_0_busmux_loadhold_7_node_8;
+    aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_3 = HIGH;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_0 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_0;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_1 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_1;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_2 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_2;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_4 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux0_9_3;
     //Multiplexer
     if ((aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_2) == 0) {
         aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_mux_3 = aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_0;
@@ -288,16 +302,19 @@ void computeLogic() {
         aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_mux_3 = LOW;
     }
     //End of Multiplexer
-    aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_4 = aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_mux_3;
-    aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_output = aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_4;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_and_5 = aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_mux_3 && aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_4;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_6 = aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_and_5;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_output = aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_node_6;
     // End IC: Mux[0]
     // IC: Mux[1]
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_0 = aux_level4_register_4bit_0_busmux_loadhold_7_node_1;
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_1 = aux_level4_register_4bit_0_busmux_loadhold_7_node_5;
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_2 = aux_level4_register_4bit_0_busmux_loadhold_7_node_8;
+    aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_3 = HIGH;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_0 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_0;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_1 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_1;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_2 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_2;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_4 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux1_10_3;
     //Multiplexer
     if ((aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_2) == 0) {
         aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_mux_3 = aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_0;
@@ -307,16 +324,19 @@ void computeLogic() {
         aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_mux_3 = LOW;
     }
     //End of Multiplexer
-    aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_4 = aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_mux_3;
-    aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_output = aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_4;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_and_5 = aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_mux_3 && aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_4;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_6 = aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_and_5;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_output = aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_node_6;
     // End IC: Mux[1]
     // IC: Mux[2]
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_0 = aux_level4_register_4bit_0_busmux_loadhold_7_node_2;
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_1 = aux_level4_register_4bit_0_busmux_loadhold_7_node_6;
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_2 = aux_level4_register_4bit_0_busmux_loadhold_7_node_8;
+    aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_3 = HIGH;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_0 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_0;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_1 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_1;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_2 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_2;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_4 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux2_11_3;
     //Multiplexer
     if ((aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_2) == 0) {
         aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_mux_3 = aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_0;
@@ -326,16 +346,19 @@ void computeLogic() {
         aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_mux_3 = LOW;
     }
     //End of Multiplexer
-    aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_4 = aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_mux_3;
-    aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_output = aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_4;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_and_5 = aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_mux_3 && aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_4;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_6 = aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_and_5;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_output = aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_node_6;
     // End IC: Mux[2]
     // IC: Mux[3]
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_0 = aux_level4_register_4bit_0_busmux_loadhold_7_node_3;
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_1 = aux_level4_register_4bit_0_busmux_loadhold_7_node_7;
     aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_2 = aux_level4_register_4bit_0_busmux_loadhold_7_node_8;
+    aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_3 = HIGH;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_0 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_0;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_1 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_1;
     aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_2 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_2;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_4 = aux_ic_input_level4_register_4bit_0_busmux_loadhold_7_mux3_12_3;
     //Multiplexer
     if ((aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_2) == 0) {
         aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_mux_3 = aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_0;
@@ -345,17 +368,18 @@ void computeLogic() {
         aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_mux_3 = LOW;
     }
     //End of Multiplexer
-    aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_4 = aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_mux_3;
-    aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_output = aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_4;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_and_5 = aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_mux_3 && aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_4;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_6 = aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_and_5;
+    aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_output = aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_node_6;
     // End IC: Mux[3]
-    aux_level4_register_4bit_0_busmux_loadhold_7_node_13 = aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_output;
-    aux_level4_register_4bit_0_busmux_loadhold_7_node_14 = aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_output;
-    aux_level4_register_4bit_0_busmux_loadhold_7_node_15 = aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_output;
-    aux_level4_register_4bit_0_busmux_loadhold_7_node_16 = aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_output;
-    aux_level4_register_4bit_0_busmux_loadhold_7_out0 = aux_level4_register_4bit_0_busmux_loadhold_7_node_13;
-    aux_level4_register_4bit_0_busmux_loadhold_7_out1_1 = aux_level4_register_4bit_0_busmux_loadhold_7_node_14;
-    aux_level4_register_4bit_0_busmux_loadhold_7_out2_2 = aux_level4_register_4bit_0_busmux_loadhold_7_node_15;
-    aux_level4_register_4bit_0_busmux_loadhold_7_out3_3 = aux_level4_register_4bit_0_busmux_loadhold_7_node_16;
+    aux_level4_register_4bit_0_busmux_loadhold_7_node_14 = aux_level4_register_4bit_0_busmux_loadhold_7_mux0_9_output;
+    aux_level4_register_4bit_0_busmux_loadhold_7_node_15 = aux_level4_register_4bit_0_busmux_loadhold_7_mux1_10_output;
+    aux_level4_register_4bit_0_busmux_loadhold_7_node_16 = aux_level4_register_4bit_0_busmux_loadhold_7_mux2_11_output;
+    aux_level4_register_4bit_0_busmux_loadhold_7_node_17 = aux_level4_register_4bit_0_busmux_loadhold_7_mux3_12_output;
+    aux_level4_register_4bit_0_busmux_loadhold_7_out0 = aux_level4_register_4bit_0_busmux_loadhold_7_node_14;
+    aux_level4_register_4bit_0_busmux_loadhold_7_out1_1 = aux_level4_register_4bit_0_busmux_loadhold_7_node_15;
+    aux_level4_register_4bit_0_busmux_loadhold_7_out2_2 = aux_level4_register_4bit_0_busmux_loadhold_7_node_16;
+    aux_level4_register_4bit_0_busmux_loadhold_7_out3_3 = aux_level4_register_4bit_0_busmux_loadhold_7_node_17;
     // End IC: BusMux_LoadHold
     aux_level4_register_4bit_0_node_12 = aux_level4_register_4bit_0_d_flip_flop_8_0_q;
     aux_level4_register_4bit_0_node_13 = aux_level4_register_4bit_0_d_flip_flop_9_0_q;

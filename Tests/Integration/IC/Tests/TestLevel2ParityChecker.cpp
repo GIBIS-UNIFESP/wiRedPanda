@@ -19,6 +19,7 @@ struct ParityCheckerFixture {
     IC *ic = nullptr;
     InputSwitch *swData[8] = {};
     Led *ledResult = nullptr;
+    Led *ledEven = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -32,6 +33,8 @@ struct ParityCheckerFixture {
         }
         ledResult = new Led();
         builder.add(ledResult);
+        ledEven = new Led();
+        builder.add(ledEven);
 
         ic = loadBuildingBlockIC("level2_parity_checker.panda");
         builder.add(ic);
@@ -42,6 +45,7 @@ struct ParityCheckerFixture {
             builder.connect(swData[i], 0, ic, QString("data[%1]").arg(i));
         }
         builder.connect(ic, "parity", ledResult, 0);
+        builder.connect(ic, "even", ledEven, 0);
 
         sim = builder.initSimulation();
         sim->update();
@@ -110,4 +114,6 @@ void TestLevel2ParityChecker::testOddParityChecker()
     f.sim->update();
 
     QCOMPARE(getInputStatus(f.ledResult) ? 1 : 0, expectedResult);
+    // Complementary even-parity output must always be the inverse of odd parity.
+    QCOMPARE(getInputStatus(f.ledEven) ? 1 : 0, expectedResult ? 0 : 1);
 }

@@ -34,10 +34,12 @@ module level2_mux_2to1 (
     input data0,
     input data1,
     input sel0,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -50,8 +52,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for Selector5way[0] (generated from level3_alu_selector_5way.panda)
@@ -291,48 +294,56 @@ level2_mux_2to1 level2_mux_2to1_inst_9 (
     .data0(1'b0),
     .data1(b0),
     .sel0(a0),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_9_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_10 (
     .data0(1'b0),
     .data1(b1),
     .sel0(a1),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_10_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_11 (
     .data0(1'b0),
     .data1(b2),
     .sel0(a2),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_11_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_12 (
     .data0(1'b0),
     .data1(b3),
     .sel0(a3),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_12_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_13 (
     .data0(a0),
     .data1(1'b1),
     .sel0(b0),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_13_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_14 (
     .data0(a1),
     .data1(1'b1),
     .sel0(b1),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_14_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_15 (
     .data0(a2),
     .data1(1'b1),
     .sel0(b2),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_15_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_16 (
     .data0(a3),
     .data1(1'b1),
     .sel0(b3),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_16_p_output)
 );
 

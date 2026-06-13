@@ -18,6 +18,7 @@ struct Decoder2to4Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *addressBits[2] = {};
+    InputSwitch *enable = nullptr;
     Led *outputs[4] = {};
     Simulation *sim = nullptr;
 
@@ -30,6 +31,8 @@ struct Decoder2to4Fixture {
             addressBits[i] = new InputSwitch();
             builder.add(addressBits[i]);
         }
+        enable = new InputSwitch();
+        builder.add(enable);
         for (int i = 0; i < 4; ++i) {
             outputs[i] = new Led();
             builder.add(outputs[i]);
@@ -40,6 +43,7 @@ struct Decoder2to4Fixture {
 
         builder.connect(addressBits[0], 0, ic, "addr[0]");
         builder.connect(addressBits[1], 0, ic, "addr[1]");
+        builder.connect(enable, 0, ic, "enable");
         for (int i = 0; i < 4; ++i) {
             builder.connect(ic, QString("out[%1]").arg(i), outputs[i], 0);
         }
@@ -78,32 +82,31 @@ void TestLevel2Decoder2To4::cleanup()
 void TestLevel2Decoder2To4::testAddressDecoder2to4_data()
 {
     QTest::addColumn<int>("addressValue");
-    QTest::addColumn<int>("expectedActiveOutput");
+    QTest::addColumn<bool>("enabled");
+    QTest::addColumn<int>("expectedActiveOutput"); // -1 = none active
 
-    // Test 1: Address 00 → Output 0 active
-    QTest::newRow("address_00") << 0 << 0;
+    // enable=1: address N activates output N
+    QTest::newRow("en address_00") << 0 << true << 0;
+    QTest::newRow("en address_01") << 1 << true << 1;
+    QTest::newRow("en address_10") << 2 << true << 2;
+    QTest::newRow("en address_11") << 3 << true << 3;
 
-    // Test 2: Address 01 → Output 1 active
-    QTest::newRow("address_01") << 1 << 1;
-
-    // Test 3: Address 10 → Output 2 active
-    QTest::newRow("address_10") << 2 << 2;
-
-    // Test 4: Address 11 → Output 3 active
-    QTest::newRow("address_11") << 3 << 3;
+    // enable=0: every output forced low, regardless of address
+    QTest::newRow("dis address_00") << 0 << false << -1;
+    QTest::newRow("dis address_01") << 1 << false << -1;
+    QTest::newRow("dis address_10") << 2 << false << -1;
+    QTest::newRow("dis address_11") << 3 << false << -1;
 }
 
 void TestLevel2Decoder2To4::testAddressDecoder2to4()
 {
     QFETCH(int, addressValue);
+    QFETCH(bool, enabled);
     QFETCH(int, expectedActiveOutput);
 
     auto &f = *s_level2Decoder2to4;
 
-    f.addressBits[0]->setOff();
-    f.addressBits[1]->setOff();
-    f.sim->update();
-
+    f.enable->setOn(enabled);
     f.addressBits[0]->setOn((addressValue >> 0) & 1);
     f.addressBits[1]->setOn((addressValue >> 1) & 1);
     f.sim->update();
@@ -117,6 +120,7 @@ void TestLevel2Decoder2To4::testAddressDecoder2to4()
 void TestLevel2Decoder2To4::testSequentialScan()
 {
     auto &f = *s_level2Decoder2to4;
+    f.enable->setOn(true);
 
     for (int addr = 0; addr < 4; addr++) {
         f.addressBits[0]->setOn((addr >> 0) & 1);
@@ -139,6 +143,7 @@ void TestLevel2Decoder2To4::testSequentialScan()
 void TestLevel2Decoder2To4::testMutualExclusivity()
 {
     auto &f = *s_level2Decoder2to4;
+    f.enable->setOn(true);
 
     for (int addr = 0; addr < 4; addr++) {
         f.addressBits[0]->setOn((addr >> 0) & 1);

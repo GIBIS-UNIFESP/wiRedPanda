@@ -134,27 +134,16 @@ class RegisterFile8x8Builder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated write decoder IC (level2_decoder_3to8)")
 
-        # ========== Create Write Gates (AND gates) ==========
-        write_gates = []
-        gates_x = decoder_x + HORIZONTAL_GATE_SPACING * 2
-        for reg_idx in range(num_registers):
-            gate_id = await self.create_element("And", gates_x + ((reg_idx % 4) * HORIZONTAL_GATE_SPACING * 0.5), write_addr_y + ((reg_idx // 4) * VERTICAL_STAGE_SPACING * 0.5), f"writeGate[{reg_idx}]")
-            if gate_id is None:
-                return False
-            write_gates.append(gate_id)
+        # Drive the decoder's active-high enable with Write_Enable: a register is
+        # selected only while writing. This folds away the per-register write-gate
+        # AND stage — decoder.out[i] now already carries (addr==i AND Write_Enable).
+        if not await self.connect(write_enable, decoder_ic, target_port_label="enable"):
+            return False
 
-            # Connect decoder output[reg_idx] to AND input 0 (register select)
-            if not await self.connect(decoder_ic, gate_id, source_port_label=f"out[{reg_idx}]"):
-                return False
-
-            # Connect write enable to AND input 1 (write control)
-            if not await self.connect(write_enable, gate_id, target_port=1):
-                return False
-
-        await self.log("  ✓ Created write gates (AND gates)")
+        await self.log("  ✓ Gated write decoder with Write_Enable")
 
         # ========== Create Storage Array with Hold Muxes ==========
-        array_x = gates_x + HORIZONTAL_GATE_SPACING * 3
+        array_x = decoder_x + HORIZONTAL_GATE_SPACING * 5
         storage = []
         hold_muxes = []
 
@@ -199,8 +188,8 @@ class RegisterFile8x8Builder(ICBuilderBase):
                 if not await self.connect(data_in[bit_idx], mux_id, target_port_label="In1"):
                     return False
 
-                # S0: Write gate (selects In1 when writing, In0 when holding)
-                if not await self.connect(write_gates[reg_idx], mux_id, target_port_label="S0"):
+                # S0: gated decoder output (selects In1 when writing, In0 when holding)
+                if not await self.connect(decoder_ic, mux_id, source_port_label=f"out[{reg_idx}]", target_port_label="S0"):
                     return False
 
                 # Mux output to flip-flop Data input

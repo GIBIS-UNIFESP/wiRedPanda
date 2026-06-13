@@ -66,6 +66,13 @@ class InstructionDecoder4BitBuilder(ICBuilderBase):
                 return False
         await self.log("  ✓ Connected instruction inputs to decoder")
 
+        # The decoder always decodes here (no gating): tie its enable high.
+        vcc_id = await self.create_element("InputVcc", input_x + HORIZONTAL_GATE_SPACING, 150.0, "Enable_Vcc")
+        if vcc_id is None:
+            return False
+        if not await self.connect(vcc_id, decoder_id, target_port_label="enable"):
+            return False
+
         # Create output LEDs for each instruction line (16 total)
         output_x = input_x + (4 * HORIZONTAL_GATE_SPACING)
         for i in range(16):

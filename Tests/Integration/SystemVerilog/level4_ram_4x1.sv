@@ -7,6 +7,7 @@
 module level2_decoder_2to4 (
     input addr0,
     input addr1,
+    input enable,
     output out0,
     output out1,
     output out2,
@@ -23,10 +24,10 @@ wire aux_and_6;
 // Internal logic
 assign aux_not_1 = ~addr0;
 assign aux_not_2 = ~addr1;
-assign aux_and_3 = (aux_not_1 & aux_not_2);
-assign aux_and_4 = (addr0 & aux_not_2);
-assign aux_and_5 = (aux_not_1 & addr1);
-assign aux_and_6 = (addr0 & addr1);
+assign aux_and_3 = (aux_not_1 & aux_not_2 & enable);
+assign aux_and_4 = (addr0 & aux_not_2 & enable);
+assign aux_and_5 = (aux_not_1 & addr1 & enable);
+assign aux_and_6 = (addr0 & addr1 & enable);
 
 assign out0 = aux_and_3;
 assign out1 = aux_and_4;
@@ -42,10 +43,12 @@ module level2_mux_4to1 (
     input data3,
     input sel0,
     input sel1,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -60,8 +63,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for LEVEL4_RAM_4X1 (generated from level4_ram_4x1.panda)
@@ -74,39 +78,65 @@ module level4_ram_4x1_ic (
     output dataout
 );
 
-wire aux_and_1;
-wire aux_and_2;
-wire aux_and_3;
-wire aux_and_4;
+reg aux_mux_1 = 1'b0;
+reg aux_d_flip_flop_2_0_q = 1'b0;
+reg aux_d_flip_flop_2_1_q = 1'b1;
+reg aux_mux_3 = 1'b0;
+reg aux_d_flip_flop_4_0_q = 1'b0;
+reg aux_d_flip_flop_4_1_q = 1'b1;
 reg aux_mux_5 = 1'b0;
 reg aux_d_flip_flop_6_0_q = 1'b0;
 reg aux_d_flip_flop_6_1_q = 1'b1;
 reg aux_mux_7 = 1'b0;
 reg aux_d_flip_flop_8_0_q = 1'b0;
 reg aux_d_flip_flop_8_1_q = 1'b1;
-reg aux_mux_9 = 1'b0;
-reg aux_d_flip_flop_10_0_q = 1'b0;
-reg aux_d_flip_flop_10_1_q = 1'b1;
-reg aux_mux_11 = 1'b0;
-reg aux_d_flip_flop_12_0_q = 1'b0;
-reg aux_d_flip_flop_12_1_q = 1'b1;
 // IC instance: AddrDecoder (level2_decoder_2to4)
-wire w_level2_decoder_2to4_inst_13_out0;
-wire w_level2_decoder_2to4_inst_13_out1;
-wire w_level2_decoder_2to4_inst_13_out2;
-wire w_level2_decoder_2to4_inst_13_out3;
+wire w_level2_decoder_2to4_inst_9_out0;
+wire w_level2_decoder_2to4_inst_9_out1;
+wire w_level2_decoder_2to4_inst_9_out2;
+wire w_level2_decoder_2to4_inst_9_out3;
 // IC instance: ReadMux (level2_mux_4to1)
-wire w_level2_mux_4to1_inst_14_p_output;
+wire w_level2_mux_4to1_inst_10_p_output;
 
 // Internal logic
-assign aux_and_1 = (w_level2_decoder_2to4_inst_13_out0 & writeenable);
-assign aux_and_2 = (w_level2_decoder_2to4_inst_13_out1 & writeenable);
-assign aux_and_3 = (w_level2_decoder_2to4_inst_13_out2 & writeenable);
-assign aux_and_4 = (w_level2_decoder_2to4_inst_13_out3 & writeenable);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_1})
+        case({w_level2_decoder_2to4_inst_9_out0})
+            1'd0: aux_mux_1 = aux_d_flip_flop_2_0_q;
+            1'd1: aux_mux_1 = datain;
+            default: aux_mux_1 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //D FlipFlop
+    always @(posedge clock)
+    begin
+            aux_d_flip_flop_2_0_q <= aux_mux_1;
+            aux_d_flip_flop_2_1_q <= ~aux_mux_1;
+    end
+    //End of D FlipFlop
+    //Multiplexer
+    always @(*)
+    begin
+        case({w_level2_decoder_2to4_inst_9_out1})
+            1'd0: aux_mux_3 = aux_d_flip_flop_4_0_q;
+            1'd1: aux_mux_3 = datain;
+            default: aux_mux_3 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //D FlipFlop
+    always @(posedge clock)
+    begin
+            aux_d_flip_flop_4_0_q <= aux_mux_3;
+            aux_d_flip_flop_4_1_q <= ~aux_mux_3;
+    end
+    //End of D FlipFlop
+    //Multiplexer
+    always @(*)
+    begin
+        case({w_level2_decoder_2to4_inst_9_out2})
             1'd0: aux_mux_5 = aux_d_flip_flop_6_0_q;
             1'd1: aux_mux_5 = datain;
             default: aux_mux_5 = 1'b0;
@@ -123,7 +153,7 @@ assign aux_and_4 = (w_level2_decoder_2to4_inst_13_out3 & writeenable);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_2})
+        case({w_level2_decoder_2to4_inst_9_out3})
             1'd0: aux_mux_7 = aux_d_flip_flop_8_0_q;
             1'd1: aux_mux_7 = datain;
             default: aux_mux_7 = 1'b0;
@@ -137,59 +167,27 @@ assign aux_and_4 = (w_level2_decoder_2to4_inst_13_out3 & writeenable);
             aux_d_flip_flop_8_1_q <= ~aux_mux_7;
     end
     //End of D FlipFlop
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_3})
-            1'd0: aux_mux_9 = aux_d_flip_flop_10_0_q;
-            1'd1: aux_mux_9 = datain;
-            default: aux_mux_9 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //D FlipFlop
-    always @(posedge clock)
-    begin
-            aux_d_flip_flop_10_0_q <= aux_mux_9;
-            aux_d_flip_flop_10_1_q <= ~aux_mux_9;
-    end
-    //End of D FlipFlop
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_4})
-            1'd0: aux_mux_11 = aux_d_flip_flop_12_0_q;
-            1'd1: aux_mux_11 = datain;
-            default: aux_mux_11 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //D FlipFlop
-    always @(posedge clock)
-    begin
-            aux_d_flip_flop_12_0_q <= aux_mux_11;
-            aux_d_flip_flop_12_1_q <= ~aux_mux_11;
-    end
-    //End of D FlipFlop
-level2_decoder_2to4 level2_decoder_2to4_inst_13 (
+level2_decoder_2to4 level2_decoder_2to4_inst_9 (
     .addr0(address0),
     .addr1(address1),
-    .out0(w_level2_decoder_2to4_inst_13_out0),
-    .out1(w_level2_decoder_2to4_inst_13_out1),
-    .out2(w_level2_decoder_2to4_inst_13_out2),
-    .out3(w_level2_decoder_2to4_inst_13_out3)
+    .enable(writeenable),
+    .out0(w_level2_decoder_2to4_inst_9_out0),
+    .out1(w_level2_decoder_2to4_inst_9_out1),
+    .out2(w_level2_decoder_2to4_inst_9_out2),
+    .out3(w_level2_decoder_2to4_inst_9_out3)
 );
-level2_mux_4to1 level2_mux_4to1_inst_14 (
-    .data0(aux_d_flip_flop_6_0_q),
-    .data1(aux_d_flip_flop_8_0_q),
-    .data2(aux_d_flip_flop_10_0_q),
-    .data3(aux_d_flip_flop_12_0_q),
+level2_mux_4to1 level2_mux_4to1_inst_10 (
+    .data0(aux_d_flip_flop_2_0_q),
+    .data1(aux_d_flip_flop_4_0_q),
+    .data2(aux_d_flip_flop_6_0_q),
+    .data3(aux_d_flip_flop_8_0_q),
     .sel0(address0),
     .sel1(address1),
-    .p_output(w_level2_mux_4to1_inst_14_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_4to1_inst_10_p_output)
 );
 
-assign dataout = w_level2_mux_4to1_inst_14_p_output;
+assign dataout = w_level2_mux_4to1_inst_10_p_output;
 endmodule
 
 module level4_ram_4x1 (

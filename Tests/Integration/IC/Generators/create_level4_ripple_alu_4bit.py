@@ -154,6 +154,12 @@ class ALU4bitBuilder(ICBuilderBase):
                 return False
             or_gates.append(mux_id)
 
+        # The AND/OR muxes are pure combinational selects: tie their enables high
+        # (reuse the existing Vcc).
+        for mux_element_id in and_gates + or_gates:
+            if not await self.connect(vcc_id, mux_element_id, target_port_label="Enable"):
+                return False
+
         # Create output LEDs for all 4 operations (16 total)
         result_add_outputs = []
         result_sub_outputs = []

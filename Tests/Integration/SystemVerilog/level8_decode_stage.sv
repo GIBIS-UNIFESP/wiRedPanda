@@ -9,6 +9,7 @@ module level2_decoder_4to16 (
     input addr1,
     input addr2,
     input addr3,
+    input enable,
     output out0,
     output out1,
     output out2,
@@ -53,22 +54,22 @@ assign aux_not_1 = ~addr0;
 assign aux_not_2 = ~addr1;
 assign aux_not_3 = ~addr2;
 assign aux_not_4 = ~addr3;
-assign aux_and_5 = (aux_not_1 & aux_not_2 & aux_not_3 & aux_not_4);
-assign aux_and_6 = (addr0 & aux_not_2 & aux_not_3 & aux_not_4);
-assign aux_and_7 = (aux_not_1 & addr1 & aux_not_3 & aux_not_4);
-assign aux_and_8 = (addr0 & addr1 & aux_not_3 & aux_not_4);
-assign aux_and_9 = (aux_not_1 & aux_not_2 & addr2 & aux_not_4);
-assign aux_and_10 = (addr0 & aux_not_2 & addr2 & aux_not_4);
-assign aux_and_11 = (aux_not_1 & addr1 & addr2 & aux_not_4);
-assign aux_and_12 = (addr0 & addr1 & addr2 & aux_not_4);
-assign aux_and_13 = (aux_not_1 & aux_not_2 & aux_not_3 & addr3);
-assign aux_and_14 = (addr0 & aux_not_2 & aux_not_3 & addr3);
-assign aux_and_15 = (aux_not_1 & addr1 & aux_not_3 & addr3);
-assign aux_and_16 = (addr0 & addr1 & aux_not_3 & addr3);
-assign aux_and_17 = (aux_not_1 & aux_not_2 & addr2 & addr3);
-assign aux_and_18 = (addr0 & aux_not_2 & addr2 & addr3);
-assign aux_and_19 = (aux_not_1 & addr1 & addr2 & addr3);
-assign aux_and_20 = (addr0 & addr1 & addr2 & addr3);
+assign aux_and_5 = (aux_not_1 & aux_not_2 & aux_not_3 & aux_not_4 & enable);
+assign aux_and_6 = (addr0 & aux_not_2 & aux_not_3 & aux_not_4 & enable);
+assign aux_and_7 = (aux_not_1 & addr1 & aux_not_3 & aux_not_4 & enable);
+assign aux_and_8 = (addr0 & addr1 & aux_not_3 & aux_not_4 & enable);
+assign aux_and_9 = (aux_not_1 & aux_not_2 & addr2 & aux_not_4 & enable);
+assign aux_and_10 = (addr0 & aux_not_2 & addr2 & aux_not_4 & enable);
+assign aux_and_11 = (aux_not_1 & addr1 & addr2 & aux_not_4 & enable);
+assign aux_and_12 = (addr0 & addr1 & addr2 & aux_not_4 & enable);
+assign aux_and_13 = (aux_not_1 & aux_not_2 & aux_not_3 & addr3 & enable);
+assign aux_and_14 = (addr0 & aux_not_2 & aux_not_3 & addr3 & enable);
+assign aux_and_15 = (aux_not_1 & addr1 & aux_not_3 & addr3 & enable);
+assign aux_and_16 = (addr0 & addr1 & aux_not_3 & addr3 & enable);
+assign aux_and_17 = (aux_not_1 & aux_not_2 & addr2 & addr3 & enable);
+assign aux_and_18 = (addr0 & aux_not_2 & addr2 & addr3 & enable);
+assign aux_and_19 = (aux_not_1 & addr1 & addr2 & addr3 & enable);
+assign aux_and_20 = (addr0 & addr1 & addr2 & addr3 & enable);
 
 assign out0 = aux_and_5;
 assign out1 = aux_and_6;
@@ -156,7 +157,6 @@ wire w_level2_decoder_4to16_inst_5_out12;
 wire w_level2_decoder_4to16_inst_5_out13;
 wire w_level2_decoder_4to16_inst_5_out14;
 wire w_level2_decoder_4to16_inst_5_out15;
-wire aux_and_6;
 wire aux_and_7;
 wire aux_and_8;
 wire aux_and_9;
@@ -188,6 +188,7 @@ wire aux_and_34;
 wire aux_and_35;
 wire aux_and_36;
 wire aux_and_37;
+wire aux_and_38;
 
 // Internal logic
 assign aux_not_1 = ~opcode4;
@@ -199,6 +200,7 @@ level2_decoder_4to16 level2_decoder_4to16_inst_5 (
     .addr1(opcode1),
     .addr2(opcode2),
     .addr3(opcode3),
+    .enable(1'b1),
     .out0(w_level2_decoder_4to16_inst_5_out0),
     .out1(w_level2_decoder_4to16_inst_5_out1),
     .out2(w_level2_decoder_4to16_inst_5_out2),
@@ -216,38 +218,38 @@ level2_decoder_4to16 level2_decoder_4to16_inst_5 (
     .out14(w_level2_decoder_4to16_inst_5_out14),
     .out15(w_level2_decoder_4to16_inst_5_out15)
 );
-assign aux_and_6 = (w_level2_decoder_4to16_inst_5_out0 & aux_not_1);
-assign aux_and_7 = (w_level2_decoder_4to16_inst_5_out1 & aux_not_1);
-assign aux_and_8 = (w_level2_decoder_4to16_inst_5_out2 & aux_not_1);
-assign aux_and_9 = (w_level2_decoder_4to16_inst_5_out3 & aux_not_1);
-assign aux_and_10 = (w_level2_decoder_4to16_inst_5_out4 & aux_not_1);
-assign aux_and_11 = (w_level2_decoder_4to16_inst_5_out5 & aux_not_1);
-assign aux_and_12 = (w_level2_decoder_4to16_inst_5_out6 & aux_not_1);
-assign aux_and_13 = (w_level2_decoder_4to16_inst_5_out7 & aux_not_1);
-assign aux_and_14 = (w_level2_decoder_4to16_inst_5_out8 & aux_not_1);
-assign aux_and_15 = (w_level2_decoder_4to16_inst_5_out9 & aux_not_1);
-assign aux_and_16 = (w_level2_decoder_4to16_inst_5_out10 & aux_not_1);
-assign aux_and_17 = (w_level2_decoder_4to16_inst_5_out11 & aux_not_1);
-assign aux_and_18 = (w_level2_decoder_4to16_inst_5_out12 & aux_not_1);
-assign aux_and_19 = (w_level2_decoder_4to16_inst_5_out13 & aux_not_1);
-assign aux_and_20 = (w_level2_decoder_4to16_inst_5_out14 & aux_not_1);
-assign aux_and_21 = (w_level2_decoder_4to16_inst_5_out15 & aux_not_1);
-assign aux_and_22 = (w_level2_decoder_4to16_inst_5_out0 & opcode4);
-assign aux_and_23 = (w_level2_decoder_4to16_inst_5_out1 & opcode4);
-assign aux_and_24 = (w_level2_decoder_4to16_inst_5_out2 & opcode4);
-assign aux_and_25 = (w_level2_decoder_4to16_inst_5_out3 & opcode4);
-assign aux_and_26 = (w_level2_decoder_4to16_inst_5_out4 & opcode4);
-assign aux_and_27 = (w_level2_decoder_4to16_inst_5_out5 & opcode4);
-assign aux_and_28 = (w_level2_decoder_4to16_inst_5_out6 & opcode4);
-assign aux_and_29 = (w_level2_decoder_4to16_inst_5_out7 & opcode4);
-assign aux_and_30 = (w_level2_decoder_4to16_inst_5_out8 & opcode4);
-assign aux_and_31 = (w_level2_decoder_4to16_inst_5_out9 & opcode4);
-assign aux_and_32 = (w_level2_decoder_4to16_inst_5_out10 & opcode4);
-assign aux_and_33 = (w_level2_decoder_4to16_inst_5_out11 & opcode4);
-assign aux_and_34 = (w_level2_decoder_4to16_inst_5_out12 & opcode4);
-assign aux_and_35 = (w_level2_decoder_4to16_inst_5_out13 & opcode4);
-assign aux_and_36 = (w_level2_decoder_4to16_inst_5_out14 & opcode4);
-assign aux_and_37 = (w_level2_decoder_4to16_inst_5_out15 & opcode4);
+assign aux_and_7 = (w_level2_decoder_4to16_inst_5_out0 & aux_not_1);
+assign aux_and_8 = (w_level2_decoder_4to16_inst_5_out1 & aux_not_1);
+assign aux_and_9 = (w_level2_decoder_4to16_inst_5_out2 & aux_not_1);
+assign aux_and_10 = (w_level2_decoder_4to16_inst_5_out3 & aux_not_1);
+assign aux_and_11 = (w_level2_decoder_4to16_inst_5_out4 & aux_not_1);
+assign aux_and_12 = (w_level2_decoder_4to16_inst_5_out5 & aux_not_1);
+assign aux_and_13 = (w_level2_decoder_4to16_inst_5_out6 & aux_not_1);
+assign aux_and_14 = (w_level2_decoder_4to16_inst_5_out7 & aux_not_1);
+assign aux_and_15 = (w_level2_decoder_4to16_inst_5_out8 & aux_not_1);
+assign aux_and_16 = (w_level2_decoder_4to16_inst_5_out9 & aux_not_1);
+assign aux_and_17 = (w_level2_decoder_4to16_inst_5_out10 & aux_not_1);
+assign aux_and_18 = (w_level2_decoder_4to16_inst_5_out11 & aux_not_1);
+assign aux_and_19 = (w_level2_decoder_4to16_inst_5_out12 & aux_not_1);
+assign aux_and_20 = (w_level2_decoder_4to16_inst_5_out13 & aux_not_1);
+assign aux_and_21 = (w_level2_decoder_4to16_inst_5_out14 & aux_not_1);
+assign aux_and_22 = (w_level2_decoder_4to16_inst_5_out15 & aux_not_1);
+assign aux_and_23 = (w_level2_decoder_4to16_inst_5_out0 & opcode4);
+assign aux_and_24 = (w_level2_decoder_4to16_inst_5_out1 & opcode4);
+assign aux_and_25 = (w_level2_decoder_4to16_inst_5_out2 & opcode4);
+assign aux_and_26 = (w_level2_decoder_4to16_inst_5_out3 & opcode4);
+assign aux_and_27 = (w_level2_decoder_4to16_inst_5_out4 & opcode4);
+assign aux_and_28 = (w_level2_decoder_4to16_inst_5_out5 & opcode4);
+assign aux_and_29 = (w_level2_decoder_4to16_inst_5_out6 & opcode4);
+assign aux_and_30 = (w_level2_decoder_4to16_inst_5_out7 & opcode4);
+assign aux_and_31 = (w_level2_decoder_4to16_inst_5_out8 & opcode4);
+assign aux_and_32 = (w_level2_decoder_4to16_inst_5_out9 & opcode4);
+assign aux_and_33 = (w_level2_decoder_4to16_inst_5_out10 & opcode4);
+assign aux_and_34 = (w_level2_decoder_4to16_inst_5_out11 & opcode4);
+assign aux_and_35 = (w_level2_decoder_4to16_inst_5_out12 & opcode4);
+assign aux_and_36 = (w_level2_decoder_4to16_inst_5_out13 & opcode4);
+assign aux_and_37 = (w_level2_decoder_4to16_inst_5_out14 & opcode4);
+assign aux_and_38 = (w_level2_decoder_4to16_inst_5_out15 & opcode4);
 
 assign aluop0 = opcode0;
 assign regwrite = aux_not_1;
@@ -255,38 +257,38 @@ assign memread = aux_and_3;
 assign memwrite = aux_and_4;
 assign aluop1 = opcode1;
 assign aluop2 = opcode2;
-assign instrdecodedlines0 = aux_and_6;
-assign instrdecodedlines1 = aux_and_7;
-assign instrdecodedlines2 = aux_and_8;
-assign instrdecodedlines3 = aux_and_9;
-assign instrdecodedlines4 = aux_and_10;
-assign instrdecodedlines5 = aux_and_11;
-assign instrdecodedlines6 = aux_and_12;
-assign instrdecodedlines7 = aux_and_13;
-assign instrdecodedlines8 = aux_and_14;
-assign instrdecodedlines9 = aux_and_15;
-assign instrdecodedlines10 = aux_and_16;
-assign instrdecodedlines11 = aux_and_17;
-assign instrdecodedlines12 = aux_and_18;
-assign instrdecodedlines13 = aux_and_19;
-assign instrdecodedlines14 = aux_and_20;
-assign instrdecodedlines15 = aux_and_21;
-assign instrdecodedlines16 = aux_and_22;
-assign instrdecodedlines17 = aux_and_23;
-assign instrdecodedlines18 = aux_and_24;
-assign instrdecodedlines19 = aux_and_25;
-assign instrdecodedlines20 = aux_and_26;
-assign instrdecodedlines21 = aux_and_27;
-assign instrdecodedlines22 = aux_and_28;
-assign instrdecodedlines23 = aux_and_29;
-assign instrdecodedlines24 = aux_and_30;
-assign instrdecodedlines25 = aux_and_31;
-assign instrdecodedlines26 = aux_and_32;
-assign instrdecodedlines27 = aux_and_33;
-assign instrdecodedlines28 = aux_and_34;
-assign instrdecodedlines29 = aux_and_35;
-assign instrdecodedlines30 = aux_and_36;
-assign instrdecodedlines31 = aux_and_37;
+assign instrdecodedlines0 = aux_and_7;
+assign instrdecodedlines1 = aux_and_8;
+assign instrdecodedlines2 = aux_and_9;
+assign instrdecodedlines3 = aux_and_10;
+assign instrdecodedlines4 = aux_and_11;
+assign instrdecodedlines5 = aux_and_12;
+assign instrdecodedlines6 = aux_and_13;
+assign instrdecodedlines7 = aux_and_14;
+assign instrdecodedlines8 = aux_and_15;
+assign instrdecodedlines9 = aux_and_16;
+assign instrdecodedlines10 = aux_and_17;
+assign instrdecodedlines11 = aux_and_18;
+assign instrdecodedlines12 = aux_and_19;
+assign instrdecodedlines13 = aux_and_20;
+assign instrdecodedlines14 = aux_and_21;
+assign instrdecodedlines15 = aux_and_22;
+assign instrdecodedlines16 = aux_and_23;
+assign instrdecodedlines17 = aux_and_24;
+assign instrdecodedlines18 = aux_and_25;
+assign instrdecodedlines19 = aux_and_26;
+assign instrdecodedlines20 = aux_and_27;
+assign instrdecodedlines21 = aux_and_28;
+assign instrdecodedlines22 = aux_and_29;
+assign instrdecodedlines23 = aux_and_30;
+assign instrdecodedlines24 = aux_and_31;
+assign instrdecodedlines25 = aux_and_32;
+assign instrdecodedlines26 = aux_and_33;
+assign instrdecodedlines27 = aux_and_34;
+assign instrdecodedlines28 = aux_and_35;
+assign instrdecodedlines29 = aux_and_36;
+assign instrdecodedlines30 = aux_and_37;
+assign instrdecodedlines31 = aux_and_38;
 endmodule
 
 module level8_decode_stage (

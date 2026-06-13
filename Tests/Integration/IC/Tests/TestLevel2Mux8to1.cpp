@@ -19,6 +19,7 @@ struct Mux8to1Fixture {
     IC *ic = nullptr;
     InputSwitch *inputs[8] = {};
     InputSwitch *selectBit[3] = {};
+    InputSwitch *enable = nullptr;
     Led *output = nullptr;
     Simulation *sim = nullptr;
 
@@ -29,13 +30,14 @@ struct Mux8to1Fixture {
 
         for (int i = 0; i < 8; ++i) {
             inputs[i] = new InputSwitch();
-            inputs[i]->setOn(i % 2 == 0);
             builder.add(inputs[i]);
         }
         for (int i = 0; i < 3; ++i) {
             selectBit[i] = new InputSwitch();
             builder.add(selectBit[i]);
         }
+        enable = new InputSwitch();
+        builder.add(enable);
         output = new Led();
         builder.add(output);
 
@@ -48,6 +50,7 @@ struct Mux8to1Fixture {
         for (int i = 0; i < 3; ++i) {
             builder.connect(selectBit[i], 0, ic, QString("Sel[%1]").arg(i));
         }
+        builder.connect(enable, 0, ic, "Enable");
         builder.connect(ic, "Output", output, 0);
 
         sim = builder.initSimulation();
@@ -83,27 +86,39 @@ void TestLevel2MUX8To1::cleanup()
 
 void TestLevel2MUX8To1::testMultiplexer8to1_data()
 {
-    QTest::addColumn<int>("selectValue");
+    QTest::addColumn<int>("select");
+    QTest::addColumn<bool>("x");       // value driven onto the selected line
+    QTest::addColumn<bool>("enabled");
 
-    for (int i = 0; i < 8; i++) {
-        QTest::newRow(qPrintable(QString("select_%1").arg(i))) << i;
+    // For each select line, drive that line = X and ALL OTHERS = ~X (enable=1).
+    // Output must equal X — proves the line routes AND that no other line leaks.
+    for (int s = 0; s < 8; ++s) {
+        QTest::newRow(qPrintable(QString("sel %1, x=0").arg(s))) << s << false << true;
+        QTest::newRow(qPrintable(QString("sel %1, x=1").arg(s))) << s << true << true;
+    }
+    // enable=0 (strobe): output forced 0 regardless of the selected line value.
+    for (int s = 0; s < 8; ++s) {
+        QTest::newRow(qPrintable(QString("sel %1, disabled").arg(s))) << s << true << false;
     }
 }
 
 void TestLevel2MUX8To1::testMultiplexer8to1()
 {
-    QFETCH(int, selectValue);
+    QFETCH(int, select);
+    QFETCH(bool, x);
+    QFETCH(bool, enabled);
 
     auto &f = *s_level2Mux8to1;
 
     for (int i = 0; i < 8; ++i) {
-        f.inputs[i]->setOn(i % 2 == 0);
+        f.inputs[i]->setOn(i == select ? x : !x);
     }
     for (int i = 0; i < 3; ++i) {
-        f.selectBit[i]->setOn((selectValue >> i) & 1);
+        f.selectBit[i]->setOn((select >> i) & 1);
     }
+    f.enable->setOn(enabled);
     f.sim->update();
 
-    bool expectedOutput = f.inputs[selectValue]->isOn();
-    QCOMPARE(getInputStatus(f.output), expectedOutput);
+    const bool expected = enabled ? x : false;
+    QCOMPARE(getInputStatus(f.output), expected);
 }

@@ -2309,7 +2309,11 @@ bool TestArduino::runTestbench(const QString &tbInoPath, int timeoutMs, const QS
     if (!compile.waitForFinished(120000) || compile.exitCode() != 0) {
         const QString compileOut = QString::fromUtf8(compile.readAllStandardOutput());
         if (compileOut.contains("data section exceeds") || compileOut.contains("Not enough memory")
-            || compileOut.contains("text section exceeds") || compileOut.contains("Sketch too big")) {
+            || compileOut.contains("text section exceeds") || compileOut.contains("Sketch too big")
+            || compileOut.contains("size of array")) {
+            // The last case is the exhaustive VECTORS[1<<N] truth table overflowing
+            // the AVR's static-array limit (hit at N >= 12 inputs, e.g. the 8:1 mux
+            // once it gained an enable). Verilator validates these without the limit.
             qInfo() << "Testbench skipped — too large for target board (" << fqbn << "):" << tbInoPath;
             return true;
         }

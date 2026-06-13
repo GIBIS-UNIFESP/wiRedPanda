@@ -16,6 +16,7 @@ struct Decoder4to16Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *swAddr[4] = {};
+    InputSwitch *enable = nullptr;
     Led *ledOut[16] = {};
     Simulation *sim = nullptr;
 
@@ -28,6 +29,8 @@ struct Decoder4to16Fixture {
             swAddr[i] = new InputSwitch();
             builder.add(swAddr[i]);
         }
+        enable = new InputSwitch();
+        builder.add(enable);
         for (int i = 0; i < 16; ++i) {
             ledOut[i] = new Led();
             builder.add(ledOut[i]);
@@ -39,6 +42,7 @@ struct Decoder4to16Fixture {
         for (int i = 0; i < 4; ++i) {
             builder.connect(swAddr[i], 0, ic, QString("addr[%1]").arg(i));
         }
+        builder.connect(enable, 0, ic, "enable");
         for (int i = 0; i < 16; ++i) {
             builder.connect(ic, QString("out[%1]").arg(i), ledOut[i], 0);
         }
@@ -81,21 +85,28 @@ void TestLevel2Decoder4To16::cleanup()
 void TestLevel2Decoder4To16::test4to16Decoder_data()
 {
     QTest::addColumn<int>("address");
-    QTest::addColumn<int>("expectedActive");
+    QTest::addColumn<bool>("enabled");
+    QTest::addColumn<int>("expectedActive"); // -1 = none active
 
-    // For address N, output N should be active (1), others inactive (0)
+    // enable=1: address N activates output N
     for (int i = 0; i < 16; ++i) {
-        QTest::newRow(QString("address %1").arg(i).toLatin1().data()) << i << i;
+        QTest::newRow(qPrintable(QString("en address %1").arg(i))) << i << true << i;
+    }
+    // enable=0: every output forced low, regardless of address
+    for (int i = 0; i < 16; ++i) {
+        QTest::newRow(qPrintable(QString("dis address %1").arg(i))) << i << false << -1;
     }
 }
 
 void TestLevel2Decoder4To16::test4to16Decoder()
 {
     QFETCH(int, address);
+    QFETCH(bool, enabled);
     QFETCH(int, expectedActive);
 
     auto &f = *s_level2Decoder4to16;
 
+    f.enable->setOn(enabled);
     for (int i = 0; i < 4; ++i) {
         f.swAddr[i]->setOn((address >> i) & 1);
     }
@@ -130,6 +141,7 @@ void TestLevel2Decoder4To16::test4to16DecoderMaxAddress()
 
     auto &f = *s_level2Decoder4to16;
 
+    f.enable->setOn(true);
     for (int i = 0; i < 4; ++i) {
         f.swAddr[i]->setOn((address >> i) & 1);
     }

@@ -81,16 +81,6 @@ class RAM4x1Builder(ICBuilderBase):
             return False
         await self.log("  ✓ Created Clock")
 
-        # ========== Create Write Control AND Gates ==========
-        write_control_ands = []
-        for i in range(num_cells):
-            gate_id = await self.create_element("And", write_control_x, 100.0 + i * gate_spacing, f"write_ctrl[{i}]")
-            if gate_id is None:
-                return False
-            write_control_ands.append(gate_id)
-
-        await self.log(f"  ✓ Created {num_cells} write control AND gates")
-
         # ========== Create Storage DFlipFlops and Data MUX Gates ==========
         storage_ffs = []
         data_mux_gates = []
@@ -132,6 +122,12 @@ class RAM4x1Builder(ICBuilderBase):
             if not await self.connect(address_inputs[i], decoder_ic, target_port_label=f"addr[{i}]"):
                 return False
 
+        # Gate the write decoder with WriteEnable: a cell is selected for write
+        # only while WriteEnable is high. Folds away the per-cell write_ctrl ANDs;
+        # decoder.out[i] now already carries (addr==i AND WriteEnable).
+        if not await self.connect(write_en_id, decoder_ic, target_port_label="enable"):
+            return False
+
         # ========== Create Multiplexer IC Instance ==========
         mux_ic_name = str(IC_COMPONENTS_DIR / "level2_mux_4to1")
         if not self.check_dependency(mux_ic_name):
@@ -143,15 +139,12 @@ class RAM4x1Builder(ICBuilderBase):
             return False
         await self.log("  ✓ Loaded multiplexer IC")
 
-        # ========== Connect Write Control ==========
-        for i in range(num_cells):
-            # Decoder output for cell i enables write to cell i
-            if not await self.connect(decoder_ic, write_control_ands[i], source_port_label=f"out[{i}]"):
-                return False
-
-            # WriteEnable signal AND with address decoder (write only if both asserted)
-            if not await self.connect(write_en_id, write_control_ands[i], target_port=1):
-                return False
+        # Reads are asynchronous: the read mux is always enabled (tie enable high).
+        read_vcc_id = await self.create_element("InputVcc", 450.0, 300.0, "ReadEnable_Vcc")
+        if read_vcc_id is None:
+            return False
+        if not await self.connect(read_vcc_id, read_mux_ic, target_port_label="Enable"):
+            return False
 
         # ========== Connect Data Path ==========
         for i in range(num_cells):
@@ -163,8 +156,8 @@ class RAM4x1Builder(ICBuilderBase):
             if not await self.connect(data_in_id, data_mux_gates[i], target_port_label="In1"):
                 return False
 
-            # Write control signal -> MUX select (0=hold, 1=write)
-            if not await self.connect(write_control_ands[i], data_mux_gates[i], target_port_label="S0"):
+            # Write control: gated decoder output -> MUX select (0=hold, 1=write)
+            if not await self.connect(decoder_ic, data_mux_gates[i], source_port_label=f"out[{i}]", target_port_label="S0"):
                 return False
 
             # MUX output -> FF Data input

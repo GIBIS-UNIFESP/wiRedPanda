@@ -15,7 +15,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Mux2to1Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *in0 = nullptr, *in1 = nullptr, *select = nullptr;
+    InputSwitch *in0 = nullptr, *in1 = nullptr, *select = nullptr, *enable = nullptr;
     Led *output = nullptr;
     Simulation *sim = nullptr;
 
@@ -27,9 +27,10 @@ struct Mux2to1Fixture {
         in0 = new InputSwitch();
         in1 = new InputSwitch();
         select = new InputSwitch();
+        enable = new InputSwitch();
         output = new Led();
 
-        builder.add(in0, in1, select, output);
+        builder.add(in0, in1, select, enable, output);
 
         ic = loadBuildingBlockIC("level2_mux_2to1.panda");
         builder.add(ic);
@@ -37,6 +38,7 @@ struct Mux2to1Fixture {
         builder.connect(in0, 0, ic, "Data[0]");
         builder.connect(in1, 0, ic, "Data[1]");
         builder.connect(select, 0, ic, "Sel[0]");
+        builder.connect(enable, 0, ic, "Enable");
         builder.connect(ic, "Output", output, 0);
 
         sim = builder.initSimulation();
@@ -75,22 +77,23 @@ void TestLevel2MUX2To1::testMux2to1_data()
     QTest::addColumn<bool>("in0Value");
     QTest::addColumn<bool>("in1Value");
     QTest::addColumn<bool>("selectValue");
+    QTest::addColumn<bool>("enabled");
     QTest::addColumn<bool>("expectedOutput");
 
-    // Test cases: All combinations of 2 inputs and 1 select bit
-    // When Sel=0, output In0; when Sel=1, output In1
+    // Full truth table over both data lines and the select bit, enable=1.
+    // When Sel=0, output In0; when Sel=1, output In1.
+    QTest::newRow("In0=0, In1=0, Sel=0") << false << false << false << true << false;
+    QTest::newRow("In0=0, In1=1, Sel=0") << false << true << false << true << false;
+    QTest::newRow("In0=1, In1=0, Sel=0") << true << false << false << true << true;
+    QTest::newRow("In0=1, In1=1, Sel=0") << true << true << false << true << true;
+    QTest::newRow("In0=0, In1=0, Sel=1") << false << false << true << true << false;
+    QTest::newRow("In0=0, In1=1, Sel=1") << false << true << true << true << true;
+    QTest::newRow("In0=1, In1=0, Sel=1") << true << false << true << true << false;
+    QTest::newRow("In0=1, In1=1, Sel=1") << true << true << true << true << true;
 
-    // Sel=0 cases (select In0)
-    QTest::newRow("In0=0, In1=0, Sel=0") << false << false << false << false;
-    QTest::newRow("In0=0, In1=1, Sel=0") << false << true << false << false;
-    QTest::newRow("In0=1, In1=0, Sel=0") << true << false << false << true;
-    QTest::newRow("In0=1, In1=1, Sel=0") << true << true << false << true;
-
-    // Sel=1 cases (select In1)
-    QTest::newRow("In0=0, In1=0, Sel=1") << false << false << true << false;
-    QTest::newRow("In0=0, In1=1, Sel=1") << false << true << true << true;
-    QTest::newRow("In0=1, In1=0, Sel=1") << true << false << true << false;
-    QTest::newRow("In0=1, In1=1, Sel=1") << true << true << true << true;
+    // enable=0 (strobe): output forced 0 even when the selected line is 1.
+    QTest::newRow("disabled, Sel=0, In0=1") << true << true << false << false << false;
+    QTest::newRow("disabled, Sel=1, In1=1") << true << true << true << false << false;
 }
 
 void TestLevel2MUX2To1::testMux2to1()
@@ -98,6 +101,7 @@ void TestLevel2MUX2To1::testMux2to1()
     QFETCH(bool, in0Value);
     QFETCH(bool, in1Value);
     QFETCH(bool, selectValue);
+    QFETCH(bool, enabled);
     QFETCH(bool, expectedOutput);
 
     auto &f = *s_level2Mux2to1;
@@ -105,6 +109,7 @@ void TestLevel2MUX2To1::testMux2to1()
     f.in0->setOn(in0Value);
     f.in1->setOn(in1Value);
     f.select->setOn(selectValue);
+    f.enable->setOn(enabled);
     f.sim->update();
 
     QCOMPARE(getInputStatus(f.output), expectedOutput);

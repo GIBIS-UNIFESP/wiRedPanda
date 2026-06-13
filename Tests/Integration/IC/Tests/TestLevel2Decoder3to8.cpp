@@ -16,6 +16,7 @@ struct Decoder3to8Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *swAddr[3] = {};
+    InputSwitch *enable = nullptr;
     Led *ledOut[8] = {};
     Simulation *sim = nullptr;
 
@@ -28,6 +29,8 @@ struct Decoder3to8Fixture {
             swAddr[i] = new InputSwitch();
             builder.add(swAddr[i]);
         }
+        enable = new InputSwitch();
+        builder.add(enable);
         for (int i = 0; i < 8; ++i) {
             ledOut[i] = new Led();
             builder.add(ledOut[i]);
@@ -39,6 +42,7 @@ struct Decoder3to8Fixture {
         builder.connect(swAddr[0], 0, ic, "addr[0]");
         builder.connect(swAddr[1], 0, ic, "addr[1]");
         builder.connect(swAddr[2], 0, ic, "addr[2]");
+        builder.connect(enable, 0, ic, "enable");
 
         for (int i = 0; i < 8; ++i) {
             builder.connect(ic, QString("out[%1]").arg(i), ledOut[i], 0);
@@ -78,26 +82,28 @@ void TestLevel2Decoder3To8::cleanup()
 void TestLevel2Decoder3To8::test3to8Decoder_data()
 {
     QTest::addColumn<int>("address");
-    QTest::addColumn<int>("expectedActive");
+    QTest::addColumn<bool>("enabled");
+    QTest::addColumn<int>("expectedActive"); // -1 = none active
 
-    // For address N, output N should be active (1), others inactive (0)
-    QTest::newRow("address 0") << 0 << 0;
-    QTest::newRow("address 1") << 1 << 1;
-    QTest::newRow("address 2") << 2 << 2;
-    QTest::newRow("address 3") << 3 << 3;
-    QTest::newRow("address 4") << 4 << 4;
-    QTest::newRow("address 5") << 5 << 5;
-    QTest::newRow("address 6") << 6 << 6;
-    QTest::newRow("address 7") << 7 << 7;
+    // enable=1: address N activates output N
+    for (int a = 0; a < 8; ++a) {
+        QTest::newRow(qPrintable(QString("en address %1").arg(a))) << a << true << a;
+    }
+    // enable=0: every output forced low, regardless of address
+    for (int a = 0; a < 8; ++a) {
+        QTest::newRow(qPrintable(QString("dis address %1").arg(a))) << a << false << -1;
+    }
 }
 
 void TestLevel2Decoder3To8::test3to8Decoder()
 {
     QFETCH(int, address);
+    QFETCH(bool, enabled);
     QFETCH(int, expectedActive);
 
     auto &f = *s_level2Decoder3to8;
 
+    f.enable->setOn(enabled);
     for (int i = 0; i < 3; ++i) {
         f.swAddr[i]->setOn((address >> i) & 1);
     }

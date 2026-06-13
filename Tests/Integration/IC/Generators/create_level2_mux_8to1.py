@@ -5,11 +5,13 @@
 """
 Create 8-to-1 Multiplexer IC using a single Mux primitive
 
-Inputs: Data[0..7], Sel[0..2]
+Inputs: Data[0..7], Sel[0..2], Enable
 Output: Output
 
 Architecture:
 - Single Mux element with inputSize=11 (8 data + 3 select)
+- Active-high enable (strobe) ANDed onto the output: Output = mux_out AND Enable
+  (Enable=0 forces Output=0, matching the 74151 strobe)
 
 Usage:
     python3 create_level2_mux_8to1.py
@@ -88,17 +90,34 @@ class Multiplexer8to1Builder(ICBuilderBase):
                 return False
             await self.log(f"  ✓ Connected Sel[{i}] to Mux (S{i})")
 
+        # Create active-high enable input (strobe): Output = mux_out AND Enable
+        enable_id = await self.create_element("InputSwitch", input_x, input_y + 2 * VERTICAL_STAGE_SPACING, "Enable")
+        if enable_id is None:
+            return False
+        await self.log(f"  ✓ Created Enable (id={enable_id})")
+
+        # AND-gate the Mux output with enable: disabled -> 0
+        and_x = mux_x + HORIZONTAL_GATE_SPACING
+        enable_and = await self.create_element("And", and_x, mux_y, "enable_and")
+        if enable_and is None:
+            return False
+        if not await self.connect(mux_id, enable_and, source_port_label="Out", target_port=0):
+            return False
+        if not await self.connect(enable_id, enable_and, target_port=1):
+            return False
+        await self.log(f"  ✓ Created enable gate")
+
         # Create output LED
-        output_x = mux_x + HORIZONTAL_GATE_SPACING
+        output_x = and_x + HORIZONTAL_GATE_SPACING
         output_id = await self.create_element("Led", output_x, mux_y, "Output")
         if output_id is None:
             return False
         await self.log(f"  ✓ Created output LED (id={output_id})")
 
-        # Connect Mux output to LED
-        if not await self.connect(mux_id, output_id, source_port_label="Out"):
+        # Connect enable gate output to LED
+        if not await self.connect(enable_and, output_id):
             return False
-        await self.log(f"  ✓ Connected Mux output to LED")
+        await self.log(f"  ✓ Connected output to LED")
 
         # Save circuit as IC
         output_file = str(IC_COMPONENTS_DIR / "level2_mux_8to1.panda")

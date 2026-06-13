@@ -97,6 +97,15 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
                 return False
         await self.log("  ✓ Connected high nibble to decoder 2")
 
+        # Both decoders always decode (combined by the AND matrix below): tie enables high.
+        vcc_id = await self.create_element("InputVcc", input_x, 150.0, "Enable_Vcc")
+        if vcc_id is None:
+            return False
+        if not await self.connect(vcc_id, decoder1_id, target_port_label="enable"):
+            return False
+        if not await self.connect(vcc_id, decoder2_id, target_port_label="enable"):
+            return False
+
         # Create 256 2-input AND gates to combine decoder outputs
         # AND gate for instruction N uses outputs from decoder2[N>>4] and decoder1[N&0xF]
         and_y_base = 350.0

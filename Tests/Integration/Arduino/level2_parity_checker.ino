@@ -3,7 +3,7 @@
 // ==================================================================== //
 //
 // Target Board: Arduino UNO R3/R4
-// Pin Usage: 9/18 pins
+// Pin Usage: 10/18 pins
 //
 
 
@@ -20,6 +20,7 @@ const int input_switch8 = 3;
 
 /* ========= Outputs ========== */
 const int led1_1 = 4;
+const int led2_1 = 5;
 
 /* ====== Aux. Variables ====== */
 bool input_switch1_val = LOW;
@@ -32,6 +33,7 @@ bool input_switch7_val = LOW;
 bool input_switch8_val = LOW;
 // IC: LEVEL2_PARITY_CHECKER
 bool aux_level2_parity_checker_0_parity = LOW;
+bool aux_level2_parity_checker_0_even_1 = LOW;
 bool aux_level2_parity_checker_0_node_0 = LOW;
 bool aux_level2_parity_checker_0_node_1 = LOW;
 bool aux_level2_parity_checker_0_node_2 = LOW;
@@ -48,6 +50,8 @@ bool aux_level2_parity_checker_0_xor_12 = LOW;
 bool aux_level2_parity_checker_0_xor_13 = LOW;
 bool aux_level2_parity_checker_0_xor_14 = LOW;
 bool aux_level2_parity_checker_0_node_15 = LOW;
+bool aux_level2_parity_checker_0_not_16 = LOW;
+bool aux_level2_parity_checker_0_node_17 = LOW;
 bool aux_ic_input_level2_parity_checker_0_0 = LOW;
 bool aux_ic_input_level2_parity_checker_0_1 = LOW;
 bool aux_ic_input_level2_parity_checker_0_2 = LOW;
@@ -68,6 +72,7 @@ void setup() {
     pinMode(input_switch7, INPUT);
     pinMode(input_switch8, INPUT);
     pinMode(led1_1, OUTPUT);
+    pinMode(led2_1, OUTPUT);
 }
 
 void computeLogic() {
@@ -96,8 +101,11 @@ void computeLogic() {
     aux_level2_parity_checker_0_xor_12 = aux_level2_parity_checker_0_xor_8 ^ aux_level2_parity_checker_0_xor_9;
     aux_level2_parity_checker_0_xor_13 = aux_level2_parity_checker_0_xor_10 ^ aux_level2_parity_checker_0_xor_11;
     aux_level2_parity_checker_0_xor_14 = aux_level2_parity_checker_0_xor_12 ^ aux_level2_parity_checker_0_xor_13;
+    aux_level2_parity_checker_0_not_16 = !aux_level2_parity_checker_0_xor_14;
     aux_level2_parity_checker_0_node_15 = aux_level2_parity_checker_0_xor_14;
+    aux_level2_parity_checker_0_node_17 = aux_level2_parity_checker_0_not_16;
     aux_level2_parity_checker_0_parity = aux_level2_parity_checker_0_node_15;
+    aux_level2_parity_checker_0_even_1 = aux_level2_parity_checker_0_node_17;
     // End IC: LEVEL2_PARITY_CHECKER
 }
 
@@ -118,4 +126,5 @@ void loop() {
 
     // Writing output data. //
     digitalWrite(led1_1, aux_level2_parity_checker_0_parity);
+    digitalWrite(led2_1, aux_level2_parity_checker_0_even_1);
 }

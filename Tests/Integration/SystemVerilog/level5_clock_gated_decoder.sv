@@ -8,6 +8,7 @@ module level2_decoder_3to8 (
     input addr0,
     input addr1,
     input addr2,
+    input enable,
     output out0,
     output out1,
     output out2,
@@ -34,14 +35,14 @@ wire aux_and_11;
 assign aux_not_1 = ~addr0;
 assign aux_not_2 = ~addr1;
 assign aux_not_3 = ~addr2;
-assign aux_and_4 = (aux_not_1 & aux_not_2 & aux_not_3);
-assign aux_and_5 = (addr0 & aux_not_2 & aux_not_3);
-assign aux_and_6 = (aux_not_1 & addr1 & aux_not_3);
-assign aux_and_7 = (addr0 & addr1 & aux_not_3);
-assign aux_and_8 = (aux_not_1 & aux_not_2 & addr2);
-assign aux_and_9 = (addr0 & aux_not_2 & addr2);
-assign aux_and_10 = (aux_not_1 & addr1 & addr2);
-assign aux_and_11 = (addr0 & addr1 & addr2);
+assign aux_and_4 = (aux_not_1 & aux_not_2 & aux_not_3 & enable);
+assign aux_and_5 = (addr0 & aux_not_2 & aux_not_3 & enable);
+assign aux_and_6 = (aux_not_1 & addr1 & aux_not_3 & enable);
+assign aux_and_7 = (addr0 & addr1 & aux_not_3 & enable);
+assign aux_and_8 = (aux_not_1 & aux_not_2 & addr2 & enable);
+assign aux_and_9 = (addr0 & aux_not_2 & addr2 & enable);
+assign aux_and_10 = (aux_not_1 & addr1 & addr2 & enable);
+assign aux_and_11 = (addr0 & addr1 & addr2 & enable);
 
 assign out0 = aux_and_4;
 assign out1 = aux_and_5;
@@ -80,27 +81,13 @@ wire w_level2_decoder_3to8_inst_1_out5;
 wire w_level2_decoder_3to8_inst_1_out6;
 wire w_level2_decoder_3to8_inst_1_out7;
 wire aux_and_2;
-wire aux_and_3;
-wire aux_and_4;
-wire aux_and_5;
-wire aux_and_6;
-wire aux_and_7;
-wire aux_and_8;
-wire aux_and_9;
-wire aux_and_10;
-wire aux_and_11;
-wire aux_and_12;
-wire aux_and_13;
-wire aux_and_14;
-wire aux_and_15;
-wire aux_and_16;
-wire aux_and_17;
 
 // Internal logic
 level2_decoder_3to8 level2_decoder_3to8_inst_1 (
     .addr0(addr0),
     .addr1(addr1),
     .addr2(addr2),
+    .enable(aux_and_2),
     .out0(w_level2_decoder_3to8_inst_1_out0),
     .out1(w_level2_decoder_3to8_inst_1_out1),
     .out2(w_level2_decoder_3to8_inst_1_out2),
@@ -110,31 +97,16 @@ level2_decoder_3to8 level2_decoder_3to8_inst_1 (
     .out6(w_level2_decoder_3to8_inst_1_out6),
     .out7(w_level2_decoder_3to8_inst_1_out7)
 );
-assign aux_and_2 = (w_level2_decoder_3to8_inst_1_out0 & clock);
-assign aux_and_3 = (w_level2_decoder_3to8_inst_1_out1 & clock);
-assign aux_and_4 = (w_level2_decoder_3to8_inst_1_out2 & clock);
-assign aux_and_5 = (w_level2_decoder_3to8_inst_1_out3 & clock);
-assign aux_and_6 = (w_level2_decoder_3to8_inst_1_out4 & clock);
-assign aux_and_7 = (w_level2_decoder_3to8_inst_1_out5 & clock);
-assign aux_and_8 = (w_level2_decoder_3to8_inst_1_out6 & clock);
-assign aux_and_9 = (w_level2_decoder_3to8_inst_1_out7 & clock);
-assign aux_and_10 = (aux_and_2 & writeenable);
-assign aux_and_11 = (aux_and_3 & writeenable);
-assign aux_and_12 = (aux_and_4 & writeenable);
-assign aux_and_13 = (aux_and_5 & writeenable);
-assign aux_and_14 = (aux_and_6 & writeenable);
-assign aux_and_15 = (aux_and_7 & writeenable);
-assign aux_and_16 = (aux_and_8 & writeenable);
-assign aux_and_17 = (aux_and_9 & writeenable);
+assign aux_and_2 = (clock & writeenable);
 
-assign out0 = aux_and_10;
-assign out1 = aux_and_11;
-assign out2 = aux_and_12;
-assign out3 = aux_and_13;
-assign out4 = aux_and_14;
-assign out5 = aux_and_15;
-assign out6 = aux_and_16;
-assign out7 = aux_and_17;
+assign out0 = w_level2_decoder_3to8_inst_1_out0;
+assign out1 = w_level2_decoder_3to8_inst_1_out1;
+assign out2 = w_level2_decoder_3to8_inst_1_out2;
+assign out3 = w_level2_decoder_3to8_inst_1_out3;
+assign out4 = w_level2_decoder_3to8_inst_1_out4;
+assign out5 = w_level2_decoder_3to8_inst_1_out5;
+assign out6 = w_level2_decoder_3to8_inst_1_out6;
+assign out7 = w_level2_decoder_3to8_inst_1_out7;
 endmodule
 
 module level5_clock_gated_decoder (

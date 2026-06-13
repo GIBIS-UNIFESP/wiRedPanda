@@ -8,10 +8,12 @@ module level2_mux_2to1_ic (
     input data0,
     input data1,
     input sel0,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -24,8 +26,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 module level2_mux_2to1 (
@@ -33,9 +36,10 @@ module level2_mux_2to1 (
 input input_switch1,
 input input_switch2,
 input input_switch3,
+input input_switch4,
 
 /* ========= Outputs ========== */
-output led5_1
+output led6_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL2_MUX_2TO1 (level2_mux_2to1_ic)
@@ -47,9 +51,10 @@ level2_mux_2to1_ic level2_mux_2to1_ic_inst_1 (
     .data0(input_switch1),
     .data1(input_switch2),
     .sel0(input_switch3),
+    .enable(input_switch4),
     .p_output(w_level2_mux_2to1_ic_inst_1_p_output)
 );
 
 // Writing output data. //
-assign led5_1 = w_level2_mux_2to1_ic_inst_1_p_output;
+assign led6_1 = w_level2_mux_2to1_ic_inst_1_p_output;
 endmodule

@@ -92,6 +92,14 @@ class BusMux4BitBuilder(ICBuilderBase):
             if not await self.connect(sel_id, mux_ic_ids[i], target_port_label="Sel[0]"):
                 return False
 
+        # The bus mux is always active: tie every embedded mux's enable high.
+        enable_vcc_id = await self.create_element("InputVcc", mux_x, in0_y, "Enable_Vcc")
+        if enable_vcc_id is None:
+            return False
+        for i in range(4):
+            if not await self.connect(enable_vcc_id, mux_ic_ids[i], target_port_label="Enable"):
+                return False
+
         # Create output LEDs
         output_led_ids = []
         output_x = mux_x + (5 * HORIZONTAL_GATE_SPACING)

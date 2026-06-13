@@ -59,6 +59,7 @@ module level2_decoder_3to8 (
     input addr0,
     input addr1,
     input addr2,
+    input enable,
     output out0,
     output out1,
     output out2,
@@ -85,14 +86,14 @@ wire aux_and_11;
 assign aux_not_1 = ~addr0;
 assign aux_not_2 = ~addr1;
 assign aux_not_3 = ~addr2;
-assign aux_and_4 = (aux_not_1 & aux_not_2 & aux_not_3);
-assign aux_and_5 = (addr0 & aux_not_2 & aux_not_3);
-assign aux_and_6 = (aux_not_1 & addr1 & aux_not_3);
-assign aux_and_7 = (addr0 & addr1 & aux_not_3);
-assign aux_and_8 = (aux_not_1 & aux_not_2 & addr2);
-assign aux_and_9 = (addr0 & aux_not_2 & addr2);
-assign aux_and_10 = (aux_not_1 & addr1 & addr2);
-assign aux_and_11 = (addr0 & addr1 & addr2);
+assign aux_and_4 = (aux_not_1 & aux_not_2 & aux_not_3 & enable);
+assign aux_and_5 = (addr0 & aux_not_2 & aux_not_3 & enable);
+assign aux_and_6 = (aux_not_1 & addr1 & aux_not_3 & enable);
+assign aux_and_7 = (addr0 & addr1 & aux_not_3 & enable);
+assign aux_and_8 = (aux_not_1 & aux_not_2 & addr2 & enable);
+assign aux_and_9 = (addr0 & aux_not_2 & addr2 & enable);
+assign aux_and_10 = (aux_not_1 & addr1 & addr2 & enable);
+assign aux_and_11 = (addr0 & addr1 & addr2 & enable);
 
 assign out0 = aux_and_4;
 assign out1 = aux_and_5;
@@ -135,10 +136,12 @@ module level2_mux_2to1 (
     input data0,
     input data1,
     input sel0,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -151,8 +154,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for ReadMux (generated from level2_mux_8to1.panda)
@@ -168,10 +172,12 @@ module level2_mux_8to1 (
     input sel0,
     input sel1,
     input sel2,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -190,8 +196,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for SPMux[0] (generated from level2_priority_mux_3to1.panda)
@@ -201,11 +208,13 @@ module level2_priority_mux_3to1 (
     input data1,
     input sel1,
     input data2,
+    input enable,
     output out
 );
 
 reg aux_mux_1 = 1'b0;
 reg aux_mux_2 = 1'b0;
+wire aux_and_3;
 
 // Internal logic
     //Multiplexer
@@ -228,8 +237,9 @@ reg aux_mux_2 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_3 = (aux_mux_2 & enable);
 
-assign out = aux_mux_2;
+assign out = aux_and_3;
 endmodule
 
 // Module for RAM_Bit0 (generated from level4_ram_8x1.panda)
@@ -245,14 +255,18 @@ module level4_ram_8x1 (
 );
 
 wire aux_not_1;
-wire aux_and_2;
-wire aux_and_3;
-wire aux_and_4;
-wire aux_and_5;
-wire aux_and_6;
-wire aux_and_7;
-wire aux_and_8;
-wire aux_and_9;
+reg aux_mux_2 = 1'b0;
+reg aux_d_flip_flop_3_0_q = 1'b0;
+reg aux_d_flip_flop_3_1_q = 1'b1;
+reg aux_mux_4 = 1'b0;
+reg aux_d_flip_flop_5_0_q = 1'b0;
+reg aux_d_flip_flop_5_1_q = 1'b1;
+reg aux_mux_6 = 1'b0;
+reg aux_d_flip_flop_7_0_q = 1'b0;
+reg aux_d_flip_flop_7_1_q = 1'b1;
+reg aux_mux_8 = 1'b0;
+reg aux_d_flip_flop_9_0_q = 1'b0;
+reg aux_d_flip_flop_9_1_q = 1'b1;
 reg aux_mux_10 = 1'b0;
 reg aux_d_flip_flop_11_0_q = 1'b0;
 reg aux_d_flip_flop_11_1_q = 1'b1;
@@ -265,44 +279,124 @@ reg aux_d_flip_flop_15_1_q = 1'b1;
 reg aux_mux_16 = 1'b0;
 reg aux_d_flip_flop_17_0_q = 1'b0;
 reg aux_d_flip_flop_17_1_q = 1'b1;
-reg aux_mux_18 = 1'b0;
-reg aux_d_flip_flop_19_0_q = 1'b0;
-reg aux_d_flip_flop_19_1_q = 1'b1;
-reg aux_mux_20 = 1'b0;
-reg aux_d_flip_flop_21_0_q = 1'b0;
-reg aux_d_flip_flop_21_1_q = 1'b1;
-reg aux_mux_22 = 1'b0;
-reg aux_d_flip_flop_23_0_q = 1'b0;
-reg aux_d_flip_flop_23_1_q = 1'b1;
-reg aux_mux_24 = 1'b0;
-reg aux_d_flip_flop_25_0_q = 1'b0;
-reg aux_d_flip_flop_25_1_q = 1'b1;
 // IC instance: AddrDecoder (level2_decoder_3to8)
-wire w_level2_decoder_3to8_inst_26_out0;
-wire w_level2_decoder_3to8_inst_26_out1;
-wire w_level2_decoder_3to8_inst_26_out2;
-wire w_level2_decoder_3to8_inst_26_out3;
-wire w_level2_decoder_3to8_inst_26_out4;
-wire w_level2_decoder_3to8_inst_26_out5;
-wire w_level2_decoder_3to8_inst_26_out6;
-wire w_level2_decoder_3to8_inst_26_out7;
+wire w_level2_decoder_3to8_inst_18_out0;
+wire w_level2_decoder_3to8_inst_18_out1;
+wire w_level2_decoder_3to8_inst_18_out2;
+wire w_level2_decoder_3to8_inst_18_out3;
+wire w_level2_decoder_3to8_inst_18_out4;
+wire w_level2_decoder_3to8_inst_18_out5;
+wire w_level2_decoder_3to8_inst_18_out6;
+wire w_level2_decoder_3to8_inst_18_out7;
 // IC instance: ReadMux (level2_mux_8to1)
-wire w_level2_mux_8to1_inst_27_p_output;
+wire w_level2_mux_8to1_inst_19_p_output;
 
 // Internal logic
 assign aux_not_1 = ~reset;
-assign aux_and_2 = (w_level2_decoder_3to8_inst_26_out0 & writeenable);
-assign aux_and_3 = (w_level2_decoder_3to8_inst_26_out1 & writeenable);
-assign aux_and_4 = (w_level2_decoder_3to8_inst_26_out2 & writeenable);
-assign aux_and_5 = (w_level2_decoder_3to8_inst_26_out3 & writeenable);
-assign aux_and_6 = (w_level2_decoder_3to8_inst_26_out4 & writeenable);
-assign aux_and_7 = (w_level2_decoder_3to8_inst_26_out5 & writeenable);
-assign aux_and_8 = (w_level2_decoder_3to8_inst_26_out6 & writeenable);
-assign aux_and_9 = (w_level2_decoder_3to8_inst_26_out7 & writeenable);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_2})
+        case({w_level2_decoder_3to8_inst_18_out0})
+            1'd0: aux_mux_2 = aux_d_flip_flop_3_0_q;
+            1'd1: aux_mux_2 = datain;
+            default: aux_mux_2 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //D FlipFlop
+    always @(posedge clock or negedge aux_not_1)
+    begin
+        if (~aux_not_1)
+        begin
+            aux_d_flip_flop_3_0_q <= 1'b0;
+            aux_d_flip_flop_3_1_q <= 1'b1;
+        end
+        else
+        begin
+            aux_d_flip_flop_3_0_q <= aux_mux_2;
+            aux_d_flip_flop_3_1_q <= ~aux_mux_2;
+        end
+    end
+    //End of D FlipFlop
+    //Multiplexer
+    always @(*)
+    begin
+        case({w_level2_decoder_3to8_inst_18_out1})
+            1'd0: aux_mux_4 = aux_d_flip_flop_5_0_q;
+            1'd1: aux_mux_4 = datain;
+            default: aux_mux_4 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //D FlipFlop
+    always @(posedge clock or negedge aux_not_1)
+    begin
+        if (~aux_not_1)
+        begin
+            aux_d_flip_flop_5_0_q <= 1'b0;
+            aux_d_flip_flop_5_1_q <= 1'b1;
+        end
+        else
+        begin
+            aux_d_flip_flop_5_0_q <= aux_mux_4;
+            aux_d_flip_flop_5_1_q <= ~aux_mux_4;
+        end
+    end
+    //End of D FlipFlop
+    //Multiplexer
+    always @(*)
+    begin
+        case({w_level2_decoder_3to8_inst_18_out2})
+            1'd0: aux_mux_6 = aux_d_flip_flop_7_0_q;
+            1'd1: aux_mux_6 = datain;
+            default: aux_mux_6 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //D FlipFlop
+    always @(posedge clock or negedge aux_not_1)
+    begin
+        if (~aux_not_1)
+        begin
+            aux_d_flip_flop_7_0_q <= 1'b0;
+            aux_d_flip_flop_7_1_q <= 1'b1;
+        end
+        else
+        begin
+            aux_d_flip_flop_7_0_q <= aux_mux_6;
+            aux_d_flip_flop_7_1_q <= ~aux_mux_6;
+        end
+    end
+    //End of D FlipFlop
+    //Multiplexer
+    always @(*)
+    begin
+        case({w_level2_decoder_3to8_inst_18_out3})
+            1'd0: aux_mux_8 = aux_d_flip_flop_9_0_q;
+            1'd1: aux_mux_8 = datain;
+            default: aux_mux_8 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //D FlipFlop
+    always @(posedge clock or negedge aux_not_1)
+    begin
+        if (~aux_not_1)
+        begin
+            aux_d_flip_flop_9_0_q <= 1'b0;
+            aux_d_flip_flop_9_1_q <= 1'b1;
+        end
+        else
+        begin
+            aux_d_flip_flop_9_0_q <= aux_mux_8;
+            aux_d_flip_flop_9_1_q <= ~aux_mux_8;
+        end
+    end
+    //End of D FlipFlop
+    //Multiplexer
+    always @(*)
+    begin
+        case({w_level2_decoder_3to8_inst_18_out4})
             1'd0: aux_mux_10 = aux_d_flip_flop_11_0_q;
             1'd1: aux_mux_10 = datain;
             default: aux_mux_10 = 1'b0;
@@ -327,7 +421,7 @@ assign aux_and_9 = (w_level2_decoder_3to8_inst_26_out7 & writeenable);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_3})
+        case({w_level2_decoder_3to8_inst_18_out5})
             1'd0: aux_mux_12 = aux_d_flip_flop_13_0_q;
             1'd1: aux_mux_12 = datain;
             default: aux_mux_12 = 1'b0;
@@ -352,7 +446,7 @@ assign aux_and_9 = (w_level2_decoder_3to8_inst_26_out7 & writeenable);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_4})
+        case({w_level2_decoder_3to8_inst_18_out6})
             1'd0: aux_mux_14 = aux_d_flip_flop_15_0_q;
             1'd1: aux_mux_14 = datain;
             default: aux_mux_14 = 1'b0;
@@ -377,7 +471,7 @@ assign aux_and_9 = (w_level2_decoder_3to8_inst_26_out7 & writeenable);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
+        case({w_level2_decoder_3to8_inst_18_out7})
             1'd0: aux_mux_16 = aux_d_flip_flop_17_0_q;
             1'd1: aux_mux_16 = datain;
             default: aux_mux_16 = 1'b0;
@@ -399,135 +493,37 @@ assign aux_and_9 = (w_level2_decoder_3to8_inst_26_out7 & writeenable);
         end
     end
     //End of D FlipFlop
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_6})
-            1'd0: aux_mux_18 = aux_d_flip_flop_19_0_q;
-            1'd1: aux_mux_18 = datain;
-            default: aux_mux_18 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //D FlipFlop
-    always @(posedge clock or negedge aux_not_1)
-    begin
-        if (~aux_not_1)
-        begin
-            aux_d_flip_flop_19_0_q <= 1'b0;
-            aux_d_flip_flop_19_1_q <= 1'b1;
-        end
-        else
-        begin
-            aux_d_flip_flop_19_0_q <= aux_mux_18;
-            aux_d_flip_flop_19_1_q <= ~aux_mux_18;
-        end
-    end
-    //End of D FlipFlop
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_7})
-            1'd0: aux_mux_20 = aux_d_flip_flop_21_0_q;
-            1'd1: aux_mux_20 = datain;
-            default: aux_mux_20 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //D FlipFlop
-    always @(posedge clock or negedge aux_not_1)
-    begin
-        if (~aux_not_1)
-        begin
-            aux_d_flip_flop_21_0_q <= 1'b0;
-            aux_d_flip_flop_21_1_q <= 1'b1;
-        end
-        else
-        begin
-            aux_d_flip_flop_21_0_q <= aux_mux_20;
-            aux_d_flip_flop_21_1_q <= ~aux_mux_20;
-        end
-    end
-    //End of D FlipFlop
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_8})
-            1'd0: aux_mux_22 = aux_d_flip_flop_23_0_q;
-            1'd1: aux_mux_22 = datain;
-            default: aux_mux_22 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //D FlipFlop
-    always @(posedge clock or negedge aux_not_1)
-    begin
-        if (~aux_not_1)
-        begin
-            aux_d_flip_flop_23_0_q <= 1'b0;
-            aux_d_flip_flop_23_1_q <= 1'b1;
-        end
-        else
-        begin
-            aux_d_flip_flop_23_0_q <= aux_mux_22;
-            aux_d_flip_flop_23_1_q <= ~aux_mux_22;
-        end
-    end
-    //End of D FlipFlop
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_9})
-            1'd0: aux_mux_24 = aux_d_flip_flop_25_0_q;
-            1'd1: aux_mux_24 = datain;
-            default: aux_mux_24 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //D FlipFlop
-    always @(posedge clock or negedge aux_not_1)
-    begin
-        if (~aux_not_1)
-        begin
-            aux_d_flip_flop_25_0_q <= 1'b0;
-            aux_d_flip_flop_25_1_q <= 1'b1;
-        end
-        else
-        begin
-            aux_d_flip_flop_25_0_q <= aux_mux_24;
-            aux_d_flip_flop_25_1_q <= ~aux_mux_24;
-        end
-    end
-    //End of D FlipFlop
-level2_decoder_3to8 level2_decoder_3to8_inst_26 (
+level2_decoder_3to8 level2_decoder_3to8_inst_18 (
     .addr0(address0),
     .addr1(address1),
     .addr2(address2),
-    .out0(w_level2_decoder_3to8_inst_26_out0),
-    .out1(w_level2_decoder_3to8_inst_26_out1),
-    .out2(w_level2_decoder_3to8_inst_26_out2),
-    .out3(w_level2_decoder_3to8_inst_26_out3),
-    .out4(w_level2_decoder_3to8_inst_26_out4),
-    .out5(w_level2_decoder_3to8_inst_26_out5),
-    .out6(w_level2_decoder_3to8_inst_26_out6),
-    .out7(w_level2_decoder_3to8_inst_26_out7)
+    .enable(writeenable),
+    .out0(w_level2_decoder_3to8_inst_18_out0),
+    .out1(w_level2_decoder_3to8_inst_18_out1),
+    .out2(w_level2_decoder_3to8_inst_18_out2),
+    .out3(w_level2_decoder_3to8_inst_18_out3),
+    .out4(w_level2_decoder_3to8_inst_18_out4),
+    .out5(w_level2_decoder_3to8_inst_18_out5),
+    .out6(w_level2_decoder_3to8_inst_18_out6),
+    .out7(w_level2_decoder_3to8_inst_18_out7)
 );
-level2_mux_8to1 level2_mux_8to1_inst_27 (
-    .data0(aux_d_flip_flop_11_0_q),
-    .data1(aux_d_flip_flop_13_0_q),
-    .data2(aux_d_flip_flop_15_0_q),
-    .data3(aux_d_flip_flop_17_0_q),
-    .data4(aux_d_flip_flop_19_0_q),
-    .data5(aux_d_flip_flop_21_0_q),
-    .data6(aux_d_flip_flop_23_0_q),
-    .data7(aux_d_flip_flop_25_0_q),
+level2_mux_8to1 level2_mux_8to1_inst_19 (
+    .data0(aux_d_flip_flop_3_0_q),
+    .data1(aux_d_flip_flop_5_0_q),
+    .data2(aux_d_flip_flop_7_0_q),
+    .data3(aux_d_flip_flop_9_0_q),
+    .data4(aux_d_flip_flop_11_0_q),
+    .data5(aux_d_flip_flop_13_0_q),
+    .data6(aux_d_flip_flop_15_0_q),
+    .data7(aux_d_flip_flop_17_0_q),
     .sel0(address0),
     .sel1(address1),
     .sel2(address2),
-    .p_output(w_level2_mux_8to1_inst_27_p_output)
+    .enable(1'b1),
+    .p_output(w_level2_mux_8to1_inst_19_p_output)
 );
 
-assign dataout = w_level2_mux_8to1_inst_27_p_output;
+assign dataout = w_level2_mux_8to1_inst_19_p_output;
 endmodule
 
 // Module for StackRAM (generated from level6_ram_8x8.panda)
@@ -864,8 +860,7 @@ wire w_level2_priority_mux_3to1_inst_23_out;
 wire w_level2_priority_mux_3to1_inst_24_out;
 // IC instance: SPMux[7] (level2_priority_mux_3to1)
 wire w_level2_priority_mux_3to1_inst_25_out;
-wire aux_or_26;
-reg aux_mux_27 = 1'b0;
+wire aux_or_27;
 reg aux_mux_28 = 1'b0;
 reg aux_mux_29 = 1'b0;
 reg aux_mux_30 = 1'b0;
@@ -873,11 +868,12 @@ reg aux_mux_31 = 1'b0;
 reg aux_mux_32 = 1'b0;
 reg aux_mux_33 = 1'b0;
 reg aux_mux_34 = 1'b0;
+reg aux_mux_35 = 1'b0;
 
 // Internal logic
 level6_ripple_adder_8bit level6_ripple_adder_8bit_inst_1 (
     .a0(w_level1_d_flip_flop_inst_2_q),
-    .b0(aux_or_26),
+    .b0(aux_or_27),
     .carryin(1'b0),
     .a1(w_level1_d_flip_flop_inst_3_q),
     .b1(push),
@@ -972,7 +968,8 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_18 (
     .sel0(reset),
     .data1(loadvalue0),
     .sel1(load),
-    .data2(aux_mux_27),
+    .data2(aux_mux_28),
+    .enable(1'b1),
     .out(w_level2_priority_mux_3to1_inst_18_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_19 (
@@ -980,7 +977,8 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_19 (
     .sel0(reset),
     .data1(loadvalue1),
     .sel1(load),
-    .data2(aux_mux_28),
+    .data2(aux_mux_29),
+    .enable(1'b1),
     .out(w_level2_priority_mux_3to1_inst_19_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_20 (
@@ -988,7 +986,8 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_20 (
     .sel0(reset),
     .data1(loadvalue2),
     .sel1(load),
-    .data2(aux_mux_29),
+    .data2(aux_mux_30),
+    .enable(1'b1),
     .out(w_level2_priority_mux_3to1_inst_20_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_21 (
@@ -996,7 +995,8 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_21 (
     .sel0(reset),
     .data1(loadvalue3),
     .sel1(load),
-    .data2(aux_mux_30),
+    .data2(aux_mux_31),
+    .enable(1'b1),
     .out(w_level2_priority_mux_3to1_inst_21_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_22 (
@@ -1004,7 +1004,8 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_22 (
     .sel0(reset),
     .data1(loadvalue4),
     .sel1(load),
-    .data2(aux_mux_31),
+    .data2(aux_mux_32),
+    .enable(1'b1),
     .out(w_level2_priority_mux_3to1_inst_22_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_23 (
@@ -1012,7 +1013,8 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_23 (
     .sel0(reset),
     .data1(loadvalue5),
     .sel1(load),
-    .data2(aux_mux_32),
+    .data2(aux_mux_33),
+    .enable(1'b1),
     .out(w_level2_priority_mux_3to1_inst_23_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_24 (
@@ -1020,7 +1022,8 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_24 (
     .sel0(reset),
     .data1(loadvalue6),
     .sel1(load),
-    .data2(aux_mux_33),
+    .data2(aux_mux_34),
+    .enable(1'b1),
     .out(w_level2_priority_mux_3to1_inst_24_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_25 (
@@ -1028,26 +1031,17 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_25 (
     .sel0(reset),
     .data1(loadvalue7),
     .sel1(load),
-    .data2(aux_mux_34),
+    .data2(aux_mux_35),
+    .enable(1'b1),
     .out(w_level2_priority_mux_3to1_inst_25_out)
 );
-assign aux_or_26 = (push | pop);
+assign aux_or_27 = (push | pop);
     //Multiplexer
     always @(*)
     begin
-        case({aux_or_26})
-            1'd0: aux_mux_27 = w_level1_d_flip_flop_inst_2_q;
-            1'd1: aux_mux_27 = w_level6_ripple_adder_8bit_inst_1_sum0;
-            default: aux_mux_27 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_or_26})
-            1'd0: aux_mux_28 = w_level1_d_flip_flop_inst_3_q;
-            1'd1: aux_mux_28 = w_level6_ripple_adder_8bit_inst_1_sum1;
+        case({aux_or_27})
+            1'd0: aux_mux_28 = w_level1_d_flip_flop_inst_2_q;
+            1'd1: aux_mux_28 = w_level6_ripple_adder_8bit_inst_1_sum0;
             default: aux_mux_28 = 1'b0;
         endcase
     end
@@ -1055,9 +1049,9 @@ assign aux_or_26 = (push | pop);
     //Multiplexer
     always @(*)
     begin
-        case({aux_or_26})
-            1'd0: aux_mux_29 = w_level1_d_flip_flop_inst_4_q;
-            1'd1: aux_mux_29 = w_level6_ripple_adder_8bit_inst_1_sum2;
+        case({aux_or_27})
+            1'd0: aux_mux_29 = w_level1_d_flip_flop_inst_3_q;
+            1'd1: aux_mux_29 = w_level6_ripple_adder_8bit_inst_1_sum1;
             default: aux_mux_29 = 1'b0;
         endcase
     end
@@ -1065,9 +1059,9 @@ assign aux_or_26 = (push | pop);
     //Multiplexer
     always @(*)
     begin
-        case({aux_or_26})
-            1'd0: aux_mux_30 = w_level1_d_flip_flop_inst_5_q;
-            1'd1: aux_mux_30 = w_level6_ripple_adder_8bit_inst_1_sum3;
+        case({aux_or_27})
+            1'd0: aux_mux_30 = w_level1_d_flip_flop_inst_4_q;
+            1'd1: aux_mux_30 = w_level6_ripple_adder_8bit_inst_1_sum2;
             default: aux_mux_30 = 1'b0;
         endcase
     end
@@ -1075,9 +1069,9 @@ assign aux_or_26 = (push | pop);
     //Multiplexer
     always @(*)
     begin
-        case({aux_or_26})
-            1'd0: aux_mux_31 = w_level1_d_flip_flop_inst_6_q;
-            1'd1: aux_mux_31 = w_level6_ripple_adder_8bit_inst_1_sum4;
+        case({aux_or_27})
+            1'd0: aux_mux_31 = w_level1_d_flip_flop_inst_5_q;
+            1'd1: aux_mux_31 = w_level6_ripple_adder_8bit_inst_1_sum3;
             default: aux_mux_31 = 1'b0;
         endcase
     end
@@ -1085,9 +1079,9 @@ assign aux_or_26 = (push | pop);
     //Multiplexer
     always @(*)
     begin
-        case({aux_or_26})
-            1'd0: aux_mux_32 = w_level1_d_flip_flop_inst_7_q;
-            1'd1: aux_mux_32 = w_level6_ripple_adder_8bit_inst_1_sum5;
+        case({aux_or_27})
+            1'd0: aux_mux_32 = w_level1_d_flip_flop_inst_6_q;
+            1'd1: aux_mux_32 = w_level6_ripple_adder_8bit_inst_1_sum4;
             default: aux_mux_32 = 1'b0;
         endcase
     end
@@ -1095,9 +1089,9 @@ assign aux_or_26 = (push | pop);
     //Multiplexer
     always @(*)
     begin
-        case({aux_or_26})
-            1'd0: aux_mux_33 = w_level1_d_flip_flop_inst_8_q;
-            1'd1: aux_mux_33 = w_level6_ripple_adder_8bit_inst_1_sum6;
+        case({aux_or_27})
+            1'd0: aux_mux_33 = w_level1_d_flip_flop_inst_7_q;
+            1'd1: aux_mux_33 = w_level6_ripple_adder_8bit_inst_1_sum5;
             default: aux_mux_33 = 1'b0;
         endcase
     end
@@ -1105,10 +1099,20 @@ assign aux_or_26 = (push | pop);
     //Multiplexer
     always @(*)
     begin
-        case({aux_or_26})
-            1'd0: aux_mux_34 = w_level1_d_flip_flop_inst_9_q;
-            1'd1: aux_mux_34 = w_level6_ripple_adder_8bit_inst_1_sum7;
+        case({aux_or_27})
+            1'd0: aux_mux_34 = w_level1_d_flip_flop_inst_8_q;
+            1'd1: aux_mux_34 = w_level6_ripple_adder_8bit_inst_1_sum6;
             default: aux_mux_34 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_27})
+            1'd0: aux_mux_35 = w_level1_d_flip_flop_inst_9_q;
+            1'd1: aux_mux_35 = w_level6_ripple_adder_8bit_inst_1_sum7;
+            default: aux_mux_35 = 1'b0;
         endcase
     end
     //End of Multiplexer
@@ -1269,48 +1273,56 @@ level2_mux_2to1 level2_mux_2to1_inst_3 (
     .data0(address0),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp0),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_3_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_4 (
     .data0(address1),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp1),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_4_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_5 (
     .data0(address2),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp2),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_5_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_6 (
     .data0(address3),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp3),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_6_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_7 (
     .data0(address4),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp4),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_7_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_8 (
     .data0(address5),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp5),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_8_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_9 (
     .data0(address6),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp6),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_9_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_10 (
     .data0(address7),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp7),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_10_p_output)
 );
 

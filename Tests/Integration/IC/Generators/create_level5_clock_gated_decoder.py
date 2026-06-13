@@ -17,10 +17,10 @@ Outputs:
   - out0, out1, out2, out3, out4, out5, out6, out7 (8 one-hot outputs)
 
 Architecture:
-  - NOT gates to create address complements
-  - AND gates for 3-to-8 decoder logic
-  - AND gates combining decoder output with clock for gating
-  - AND gates combining gated output with writeEnable for final control
+  - level2_decoder_3to8 IC (now has an active-high enable)
+  - 1 AND gate: clock AND writeEnable, driven into the decoder's enable
+  - out[i] = decode[i] AND clock AND writeEnable, taken straight off the decoder
+    (the decoder's enable makes a separate external gating stage redundant)
 
 Usage:
     python3 create_level5_clock_gated_decoder.py
@@ -89,43 +89,24 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated level2_decoder_3to8 IC with address connections")
 
-        # ========== Create Gating AND Gates (decoder output AND clock) ==========
-        gating_gates = []
-        for i in range(8):
-            gating_id = await self.create_element("And", gating_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6, addr_y + (i // 4) * VERTICAL_STAGE_SPACING, f"gating_and{i}")
-            if gating_id is None:
-                return False
-            gating_gates.append(gating_id)
+        # ========== Gate the decoder via its enable (clock AND writeEnable) ==========
+        # The decoder now has an active-high enable, so out[i] = decode[i] AND
+        # enable. Driving enable = clock AND writeEnable yields
+        # out[i] = decode[i] AND clock AND writeEnable directly — the 16 external
+        # gating/output AND gates this used to need are redundant.
+        gate_id = await self.create_element("And", gating_gates_x, control_y, "clock_we_gate")
+        if gate_id is None:
+            return False
+        if not await self.connect(clock_id, gate_id, target_port=0):
+            return False
+        if not await self.connect(write_enable_id, gate_id, target_port=1):
+            return False
+        if not await self.connect(gate_id, decoder_id, target_port_label="enable"):
+            return False
 
-            # Connect decoder IC output to gating AND port 0
-            if not await self.connect(decoder_id, gating_id, source_port_label=f"out[{i}]"):
-                return False
+        await self.log("  ✓ Gated decoder enable with clock AND writeEnable")
 
-            # Connect clock to gating AND port 1
-            if not await self.connect(clock_id, gating_id, target_port=1):
-                return False
-
-        await self.log("  ✓ Created 8 gating AND gates (clock control)")
-
-        # ========== Create Output ANDs for WriteEnable Control ==========
-        output_gates = []
-        for i in range(8):
-            output_id = await self.create_element("And", output_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6, addr_y + (i // 4) * VERTICAL_STAGE_SPACING, f"output_and{i}")
-            if output_id is None:
-                return False
-            output_gates.append(output_id)
-
-            # Connect gating AND output to output AND port 0
-            if not await self.connect(gating_gates[i], output_id):
-                return False
-
-            # Connect writeEnable to output AND port 1
-            if not await self.connect(write_enable_id, output_id, target_port=1):
-                return False
-
-        await self.log("  ✓ Created 8 output AND gates (writeEnable control)")
-
-        # ========== Create Output LEDs ==========
+        # ========== Create Output LEDs (straight off the gated decoder) ==========
         output_leds = []
         for i in range(8):
             led_id = await self.create_element("Led", output_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6, addr_y + (i // 4) * VERTICAL_STAGE_SPACING, f"out{i}")
@@ -133,8 +114,8 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
                 return False
             output_leds.append(led_id)
 
-            # Connect output AND to LED
-            if not await self.connect(output_gates[i], led_id):
+            # Connect decoder output directly to LED
+            if not await self.connect(decoder_id, led_id, source_port_label=f"out[{i}]"):
                 return False
 
         await self.log("  ✓ Created 8 output LEDs")

@@ -119,6 +119,14 @@ class StackPointer8BitBuilder(ICBuilderBase):
                 return False
             priority_muxes.append(element_id)
 
+        # The SP update muxes are always active: tie every embedded mux enable high.
+        sp_mux_vcc = await self.create_element("InputVcc", mux_x, 150.0, "Enable_Vcc")
+        if sp_mux_vcc is None:
+            return False
+        for mux_element_id in priority_muxes:
+            if not await self.connect(sp_mux_vcc, mux_element_id, target_port_label="enable"):
+                return False
+
         # Create 8 output LEDs for SP value
         sp_outputs = []
         out_x = 1250.0

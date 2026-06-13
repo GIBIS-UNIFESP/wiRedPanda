@@ -3,7 +3,7 @@
 // ==================================================================== //
 //
 // Target Board: Arduino UNO R3/R4
-// Pin Usage: 11/18 pins
+// Pin Usage: 12/18 pins
 //
 
 
@@ -22,6 +22,7 @@ const int input_switch8 = 3;
 const int led1_1 = 4;
 const int led2_1 = 5;
 const int led3_1 = 6;
+const int led4_1 = 7;
 
 /* ====== Aux. Variables ====== */
 bool input_switch1_val = LOW;
@@ -36,6 +37,7 @@ bool input_switch8_val = LOW;
 bool aux_level2_priority_encoder_8to3_0_addr0 = LOW;
 bool aux_level2_priority_encoder_8to3_0_addr1_1 = LOW;
 bool aux_level2_priority_encoder_8to3_0_addr2_2 = LOW;
+bool aux_level2_priority_encoder_8to3_0_valid_3 = LOW;
 bool aux_level2_priority_encoder_8to3_0_node_0 = LOW;
 bool aux_level2_priority_encoder_8to3_0_node_1 = LOW;
 bool aux_level2_priority_encoder_8to3_0_node_2 = LOW;
@@ -50,20 +52,20 @@ bool aux_level2_priority_encoder_8to3_0_or_10 = LOW;
 bool aux_level2_priority_encoder_8to3_0_or_11 = LOW;
 bool aux_level2_priority_encoder_8to3_0_or_12 = LOW;
 bool aux_level2_priority_encoder_8to3_0_or_13 = LOW;
-bool aux_level2_priority_encoder_8to3_0_or_14 = LOW;
+bool aux_level2_priority_encoder_8to3_0_not_14 = LOW;
 bool aux_level2_priority_encoder_8to3_0_not_15 = LOW;
 bool aux_level2_priority_encoder_8to3_0_not_16 = LOW;
 bool aux_level2_priority_encoder_8to3_0_not_17 = LOW;
 bool aux_level2_priority_encoder_8to3_0_not_18 = LOW;
-bool aux_level2_priority_encoder_8to3_0_not_19 = LOW;
-bool aux_level2_priority_encoder_8to3_0_not_20 = LOW;
+bool aux_level2_priority_encoder_8to3_0_and_19 = LOW;
+bool aux_level2_priority_encoder_8to3_0_and_20 = LOW;
 bool aux_level2_priority_encoder_8to3_0_and_21 = LOW;
 bool aux_level2_priority_encoder_8to3_0_and_22 = LOW;
 bool aux_level2_priority_encoder_8to3_0_and_23 = LOW;
 bool aux_level2_priority_encoder_8to3_0_and_24 = LOW;
-bool aux_level2_priority_encoder_8to3_0_and_25 = LOW;
-bool aux_level2_priority_encoder_8to3_0_and_26 = LOW;
-bool aux_level2_priority_encoder_8to3_0_and_27 = LOW;
+bool aux_level2_priority_encoder_8to3_0_or_25 = LOW;
+bool aux_level2_priority_encoder_8to3_0_or_26 = LOW;
+bool aux_level2_priority_encoder_8to3_0_or_27 = LOW;
 bool aux_level2_priority_encoder_8to3_0_or_28 = LOW;
 bool aux_level2_priority_encoder_8to3_0_or_29 = LOW;
 bool aux_level2_priority_encoder_8to3_0_or_30 = LOW;
@@ -71,11 +73,10 @@ bool aux_level2_priority_encoder_8to3_0_or_31 = LOW;
 bool aux_level2_priority_encoder_8to3_0_or_32 = LOW;
 bool aux_level2_priority_encoder_8to3_0_or_33 = LOW;
 bool aux_level2_priority_encoder_8to3_0_or_34 = LOW;
-bool aux_level2_priority_encoder_8to3_0_or_35 = LOW;
-bool aux_level2_priority_encoder_8to3_0_or_36 = LOW;
+bool aux_level2_priority_encoder_8to3_0_node_35 = LOW;
+bool aux_level2_priority_encoder_8to3_0_node_36 = LOW;
 bool aux_level2_priority_encoder_8to3_0_node_37 = LOW;
 bool aux_level2_priority_encoder_8to3_0_node_38 = LOW;
-bool aux_level2_priority_encoder_8to3_0_node_39 = LOW;
 bool aux_ic_input_level2_priority_encoder_8to3_0_0 = LOW;
 bool aux_ic_input_level2_priority_encoder_8to3_0_1 = LOW;
 bool aux_ic_input_level2_priority_encoder_8to3_0_2 = LOW;
@@ -98,6 +99,7 @@ void setup() {
     pinMode(led1_1, OUTPUT);
     pinMode(led2_1, OUTPUT);
     pinMode(led3_1, OUTPUT);
+    pinMode(led4_1, OUTPUT);
 }
 
 void computeLogic() {
@@ -125,35 +127,35 @@ void computeLogic() {
     aux_level2_priority_encoder_8to3_0_or_12 = aux_level2_priority_encoder_8to3_0_node_7 || aux_level2_priority_encoder_8to3_0_node_6 || aux_level2_priority_encoder_8to3_0_node_5 || aux_level2_priority_encoder_8to3_0_node_4 || aux_level2_priority_encoder_8to3_0_node_3;
     aux_level2_priority_encoder_8to3_0_or_13 = aux_level2_priority_encoder_8to3_0_node_7 || aux_level2_priority_encoder_8to3_0_node_6 || aux_level2_priority_encoder_8to3_0_node_5 || aux_level2_priority_encoder_8to3_0_node_4 || aux_level2_priority_encoder_8to3_0_node_3 || aux_level2_priority_encoder_8to3_0_node_2;
     aux_level2_priority_encoder_8to3_0_not_8 = !aux_level2_priority_encoder_8to3_0_node_7;
-    aux_level2_priority_encoder_8to3_0_not_15 = !aux_level2_priority_encoder_8to3_0_or_9;
-    aux_level2_priority_encoder_8to3_0_not_16 = !aux_level2_priority_encoder_8to3_0_or_10;
-    aux_level2_priority_encoder_8to3_0_not_17 = !aux_level2_priority_encoder_8to3_0_or_11;
-    aux_level2_priority_encoder_8to3_0_not_18 = !aux_level2_priority_encoder_8to3_0_or_12;
-    aux_level2_priority_encoder_8to3_0_not_19 = !aux_level2_priority_encoder_8to3_0_or_13;
-    aux_level2_priority_encoder_8to3_0_and_21 = aux_level2_priority_encoder_8to3_0_node_6 && aux_level2_priority_encoder_8to3_0_not_8;
-    aux_level2_priority_encoder_8to3_0_and_22 = aux_level2_priority_encoder_8to3_0_node_5 && aux_level2_priority_encoder_8to3_0_not_15;
-    aux_level2_priority_encoder_8to3_0_and_23 = aux_level2_priority_encoder_8to3_0_node_4 && aux_level2_priority_encoder_8to3_0_not_16;
-    aux_level2_priority_encoder_8to3_0_and_24 = aux_level2_priority_encoder_8to3_0_node_3 && aux_level2_priority_encoder_8to3_0_not_17;
-    aux_level2_priority_encoder_8to3_0_and_25 = aux_level2_priority_encoder_8to3_0_node_2 && aux_level2_priority_encoder_8to3_0_not_18;
-    aux_level2_priority_encoder_8to3_0_and_26 = aux_level2_priority_encoder_8to3_0_node_1 && aux_level2_priority_encoder_8to3_0_not_19;
-    aux_level2_priority_encoder_8to3_0_or_14 = aux_level2_priority_encoder_8to3_0_node_7 || aux_level2_priority_encoder_8to3_0_node_6 || aux_level2_priority_encoder_8to3_0_node_5 || aux_level2_priority_encoder_8to3_0_node_4 || aux_level2_priority_encoder_8to3_0_node_3 || aux_level2_priority_encoder_8to3_0_node_2 || aux_level2_priority_encoder_8to3_0_node_1;
+    aux_level2_priority_encoder_8to3_0_not_14 = !aux_level2_priority_encoder_8to3_0_or_9;
+    aux_level2_priority_encoder_8to3_0_not_15 = !aux_level2_priority_encoder_8to3_0_or_10;
+    aux_level2_priority_encoder_8to3_0_not_16 = !aux_level2_priority_encoder_8to3_0_or_11;
+    aux_level2_priority_encoder_8to3_0_not_17 = !aux_level2_priority_encoder_8to3_0_or_12;
+    aux_level2_priority_encoder_8to3_0_not_18 = !aux_level2_priority_encoder_8to3_0_or_13;
+    aux_level2_priority_encoder_8to3_0_and_19 = aux_level2_priority_encoder_8to3_0_node_6 && aux_level2_priority_encoder_8to3_0_not_8;
+    aux_level2_priority_encoder_8to3_0_and_20 = aux_level2_priority_encoder_8to3_0_node_5 && aux_level2_priority_encoder_8to3_0_not_14;
+    aux_level2_priority_encoder_8to3_0_and_21 = aux_level2_priority_encoder_8to3_0_node_4 && aux_level2_priority_encoder_8to3_0_not_15;
+    aux_level2_priority_encoder_8to3_0_and_22 = aux_level2_priority_encoder_8to3_0_node_3 && aux_level2_priority_encoder_8to3_0_not_16;
+    aux_level2_priority_encoder_8to3_0_and_23 = aux_level2_priority_encoder_8to3_0_node_2 && aux_level2_priority_encoder_8to3_0_not_17;
+    aux_level2_priority_encoder_8to3_0_and_24 = aux_level2_priority_encoder_8to3_0_node_1 && aux_level2_priority_encoder_8to3_0_not_18;
+    aux_level2_priority_encoder_8to3_0_or_25 = aux_level2_priority_encoder_8to3_0_and_21 || aux_level2_priority_encoder_8to3_0_and_20;
+    aux_level2_priority_encoder_8to3_0_or_26 = aux_level2_priority_encoder_8to3_0_and_19 || aux_level2_priority_encoder_8to3_0_node_7;
     aux_level2_priority_encoder_8to3_0_or_28 = aux_level2_priority_encoder_8to3_0_and_23 || aux_level2_priority_encoder_8to3_0_and_22;
-    aux_level2_priority_encoder_8to3_0_or_29 = aux_level2_priority_encoder_8to3_0_and_21 || aux_level2_priority_encoder_8to3_0_node_7;
-    aux_level2_priority_encoder_8to3_0_or_31 = aux_level2_priority_encoder_8to3_0_and_25 || aux_level2_priority_encoder_8to3_0_and_24;
-    aux_level2_priority_encoder_8to3_0_or_32 = aux_level2_priority_encoder_8to3_0_and_21 || aux_level2_priority_encoder_8to3_0_node_7;
-    aux_level2_priority_encoder_8to3_0_or_34 = aux_level2_priority_encoder_8to3_0_and_26 || aux_level2_priority_encoder_8to3_0_and_24;
-    aux_level2_priority_encoder_8to3_0_or_35 = aux_level2_priority_encoder_8to3_0_and_22 || aux_level2_priority_encoder_8to3_0_node_7;
-    aux_level2_priority_encoder_8to3_0_not_20 = !aux_level2_priority_encoder_8to3_0_or_14;
+    aux_level2_priority_encoder_8to3_0_or_29 = aux_level2_priority_encoder_8to3_0_and_19 || aux_level2_priority_encoder_8to3_0_node_7;
+    aux_level2_priority_encoder_8to3_0_or_31 = aux_level2_priority_encoder_8to3_0_and_24 || aux_level2_priority_encoder_8to3_0_and_22;
+    aux_level2_priority_encoder_8to3_0_or_32 = aux_level2_priority_encoder_8to3_0_and_20 || aux_level2_priority_encoder_8to3_0_node_7;
+    aux_level2_priority_encoder_8to3_0_or_27 = aux_level2_priority_encoder_8to3_0_or_25 || aux_level2_priority_encoder_8to3_0_or_26;
     aux_level2_priority_encoder_8to3_0_or_30 = aux_level2_priority_encoder_8to3_0_or_28 || aux_level2_priority_encoder_8to3_0_or_29;
     aux_level2_priority_encoder_8to3_0_or_33 = aux_level2_priority_encoder_8to3_0_or_31 || aux_level2_priority_encoder_8to3_0_or_32;
-    aux_level2_priority_encoder_8to3_0_or_36 = aux_level2_priority_encoder_8to3_0_or_34 || aux_level2_priority_encoder_8to3_0_or_35;
-    aux_level2_priority_encoder_8to3_0_and_27 = aux_level2_priority_encoder_8to3_0_node_0 && aux_level2_priority_encoder_8to3_0_not_20;
-    aux_level2_priority_encoder_8to3_0_node_37 = aux_level2_priority_encoder_8to3_0_or_36;
-    aux_level2_priority_encoder_8to3_0_node_38 = aux_level2_priority_encoder_8to3_0_or_33;
-    aux_level2_priority_encoder_8to3_0_node_39 = aux_level2_priority_encoder_8to3_0_or_30;
-    aux_level2_priority_encoder_8to3_0_addr0 = aux_level2_priority_encoder_8to3_0_node_37;
-    aux_level2_priority_encoder_8to3_0_addr1_1 = aux_level2_priority_encoder_8to3_0_node_38;
-    aux_level2_priority_encoder_8to3_0_addr2_2 = aux_level2_priority_encoder_8to3_0_node_39;
+    aux_level2_priority_encoder_8to3_0_or_34 = aux_level2_priority_encoder_8to3_0_node_0 || aux_level2_priority_encoder_8to3_0_node_1 || aux_level2_priority_encoder_8to3_0_node_2 || aux_level2_priority_encoder_8to3_0_node_3 || aux_level2_priority_encoder_8to3_0_node_4 || aux_level2_priority_encoder_8to3_0_node_5 || aux_level2_priority_encoder_8to3_0_node_6 || aux_level2_priority_encoder_8to3_0_node_7;
+    aux_level2_priority_encoder_8to3_0_node_35 = aux_level2_priority_encoder_8to3_0_or_33;
+    aux_level2_priority_encoder_8to3_0_node_36 = aux_level2_priority_encoder_8to3_0_or_30;
+    aux_level2_priority_encoder_8to3_0_node_37 = aux_level2_priority_encoder_8to3_0_or_27;
+    aux_level2_priority_encoder_8to3_0_node_38 = aux_level2_priority_encoder_8to3_0_or_34;
+    aux_level2_priority_encoder_8to3_0_addr0 = aux_level2_priority_encoder_8to3_0_node_35;
+    aux_level2_priority_encoder_8to3_0_addr1_1 = aux_level2_priority_encoder_8to3_0_node_36;
+    aux_level2_priority_encoder_8to3_0_addr2_2 = aux_level2_priority_encoder_8to3_0_node_37;
+    aux_level2_priority_encoder_8to3_0_valid_3 = aux_level2_priority_encoder_8to3_0_node_38;
     // End IC: LEVEL2_PRIORITY_ENCODER_8TO3
 }
 
@@ -176,4 +178,5 @@ void loop() {
     digitalWrite(led1_1, aux_level2_priority_encoder_8to3_0_addr0);
     digitalWrite(led2_1, aux_level2_priority_encoder_8to3_0_addr1_1);
     digitalWrite(led3_1, aux_level2_priority_encoder_8to3_0_addr2_2);
+    digitalWrite(led4_1, aux_level2_priority_encoder_8to3_0_valid_3);
 }
