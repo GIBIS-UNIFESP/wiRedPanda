@@ -14,6 +14,7 @@
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::clockCycle;
+using TestUtils::getInputStatus;
 using TestUtils::readMultiBitOutput;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -123,4 +124,32 @@ void TestLevel5ModuloCounter4Bit::testModuloCounter()
     }
 
     QCOMPARE(f.readValue(), expectedPattern & 0xF);
+}
+
+// The Overflow output (= comparator Equal = "next value would reach Modulo")
+// must be asserted exactly when the count holds Modulo-1, the cycle before the
+// wrap, and clear at every other count. Walk two full mod-5 periods and check
+// the invariant at each step — robust to the counter's warm-up offset since it
+// correlates Overflow against the actually-observed count.
+void TestLevel5ModuloCounter4Bit::testOverflow()
+{
+    auto &f = *s_level5ModuloCounter4bit;
+
+    const int modulo = 5;
+    for (int i = 0; i < 4; ++i) {
+        f.moduloIn[i]->setOn((modulo >> i) & 1);
+    }
+    f.sim->update();
+    f.resetCounter();
+
+    bool sawTerminalCount = false;
+    for (int step = 0; step < 12; ++step) {
+        const int q = f.readValue();
+        const bool overflow = getInputStatus(f.overflowOut);
+        QCOMPARE(overflow, q == modulo - 1);
+        sawTerminalCount = sawTerminalCount || overflow;
+        clockCycle(f.sim, f.clk);
+    }
+    // Sanity: across two periods the terminal-count pulse must have occurred.
+    QVERIFY(sawTerminalCount);
 }
