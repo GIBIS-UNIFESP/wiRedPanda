@@ -9,7 +9,8 @@ Implements a true 16-bit RISC (Reduced Instruction Set Computer) CPU:
 - 16-bit instruction word with 5-bit opcode
 - 16-bit ALU with full arithmetic/logic operations
 - 16-bit program counter and data paths
-- Pipeline-based execution with 4-stage pipeline
+- Single-cycle execution: combinational decode straight from the fetched
+  instruction word (no pipeline; the level9_single_cycle pattern)
 
 Inputs:
   Clock (synchronization signal)
