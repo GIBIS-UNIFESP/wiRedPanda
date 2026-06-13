@@ -16,6 +16,7 @@ private slots:
     // Functional Tests
     void testProgramCounter8Bit();
     void testIncrement();
+    void testHold();
 
     // Structure Tests
     void testProgramCounter8BitStructure();

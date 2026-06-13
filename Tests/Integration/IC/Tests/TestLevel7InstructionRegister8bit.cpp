@@ -148,6 +148,36 @@ void TestLevel7InstructionRegister8Bit::testInstructionRegister8Bit() {
     QCOMPARE(f.readInstr(), CPUTestUtils::PATTERN_ALL_ZEROS);
 }
 
+// With Load low the underlying register's WriteEnable is 0, so the latched
+// instruction (and its decoded OpCode/RegisterAddr slices) must survive clock
+// edges even as the Data bus changes. Only load/load/reset were covered before.
+void TestLevel7InstructionRegister8Bit::testHold() {
+    auto &f = *s_level7InstrReg8bit;
+
+    // Latch a known instruction
+    setMultiBitInput(f.dataInputs, 0xB5);
+    f.load->setOn(true);
+    f.reset->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    f.sim->update();
+    QCOMPARE(f.readInstr(), 0xB5);
+
+    // Drop load: the instruction and its slices hold across clock edges while
+    // Data changes underneath
+    f.load->setOn(false);
+    for (int i = 0; i < 3; ++i) {
+        f.clock->setOn(false);
+        setMultiBitInput(f.dataInputs, 0x4A);
+        f.sim->update();
+        clockCycle(f.sim, f.clock);
+        f.sim->update();
+        QCOMPARE(f.readInstr(), 0xB5);
+        QCOMPARE(f.readOpCode(), 22);
+        QCOMPARE(f.readRegAddr(), 5);
+    }
+}
+
 void TestLevel7InstructionRegister8Bit::testInstructionRegister8BitStructure() {
     auto &f = *s_level7InstrReg8bit;
 
