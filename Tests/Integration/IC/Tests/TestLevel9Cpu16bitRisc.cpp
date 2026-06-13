@@ -191,40 +191,45 @@ void TestLevel9CPU16BitRISC::testInstrWordVisible()
 {
     auto &f = *s_level9Cpu16bitRisc;
 
+    // Program a distinctive, byte-asymmetric instruction word and confirm the
+    // registered Instruction output reflects exactly what was stored (this also
+    // exercises the two-byte-lane instruction memory: low byte 0x34, high 0x12).
+    // No other test checks readInstr() against a programmed word.
     f.resetCpu();
-    clockCycle(f.sim, f.clk);
+    f.programWord(0x00, 0x1234);
+    f.resetCpu();
+    clockCycle(f.sim, f.clk);   // latch imem[0] into the instruction register
 
-    int instr = f.readInstr();
-    QVERIFY2(instr >= 0 && instr <= 65535,
-        qPrintable(QString("Instruction word %1 out of 16-bit range [0,65535]").arg(instr)));
+    QCOMPARE(f.readInstr(), 0x1234);
 }
 
 void TestLevel9CPU16BitRISC::testOpCodeInValidRange()
 {
     auto &f = *s_level9Cpu16bitRisc;
 
+    // Program a real instruction whose OpCode field is the maximum 5-bit value
+    // and confirm the decoded OpCode output matches it.
+    constexpr int OPCODE = 0x1F;
     f.resetCpu();
+    f.programWord(0x00, (OPCODE << 11) | (0x0A << 6) | 0x15);
+    f.resetCpu();
+    clockCycle(f.sim, f.clk);   // OpCode is decoded from the registered instruction
 
-    for (int cycle = 0; cycle < 5; cycle++) {
-        clockCycle(f.sim, f.clk);
-        int opcode = f.readOpCode();
-        QVERIFY2(opcode >= 0 && opcode <= 31,
-            qPrintable(QString("Cycle %1: OpCode %2 out of 5-bit range [0,31]").arg(cycle).arg(opcode)));
-    }
+    QCOMPARE(f.readOpCode(), OPCODE);
 }
 
 void TestLevel9CPU16BitRISC::testResultRegisterReadable()
 {
     auto &f = *s_level9Cpu16bitRisc;
 
+    // Program a real SUB instruction and confirm the ALU result output:
+    // OperandA = SrcBits = 0x20, OperandB = DestReg = 0x05, SUB -> 0x1B.
+    f.resetCpu();
+    f.programWord(0x00, (1 << 11) | (0x05 << 6) | 0x20);
     f.resetCpu();
 
-    for (int cycle = 0; cycle < 5; ++cycle) {
-        clockCycle(f.sim, f.clk);
-        int result = f.readResult();
-        QVERIFY2(result >= 0 && result <= 65535,
-            qPrintable(QString("Cycle %1: Result %2 out of 16-bit range [0,65535]").arg(cycle).arg(result)));
-    }
+    // Single-cycle decode is combinational from RawInstr — valid without a clock.
+    QCOMPARE(f.readResult(), 0x1B);
 }
 
 void TestLevel9CPU16BitRISC::testInstrOpCodeFieldConsistency()
