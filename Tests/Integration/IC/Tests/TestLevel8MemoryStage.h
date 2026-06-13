@@ -20,4 +20,11 @@ private slots:
     void testMemoryStageStructure();
     void testMemoryStageReset();
     void testMultiAddressStorage();
+
+    // Per-bit lane isolation on the two data paths: Result -> DataOut passthrough,
+    // and DataIn -> memory -> DataOut storage.
+    void testResultPassthroughBitIsolation_data();
+    void testResultPassthroughBitIsolation();
+    void testStoredDataBitIsolation_data();
+    void testStoredDataBitIsolation();
 };

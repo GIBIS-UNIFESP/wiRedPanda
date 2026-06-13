@@ -382,6 +382,52 @@ void TestLevel8FetchStage::testReset()
     f.pcInc->setOn(false);
 }
 
+void TestLevel8FetchStage::testPCDataBitIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("pc_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel8FetchStage::testPCDataBitIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    FetchStageFixture f;
+    QVERIFY(f.build());
+
+    // A one-hot PCData must load to a one-hot PC at the same position.
+    f.setPC(1 << bitPosition);
+    QCOMPARE(f.readPC(), 1 << bitPosition);
+}
+
+void TestLevel8FetchStage::testInstructionBitIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("instr_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel8FetchStage::testInstructionBitIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    FetchStageFixture f;
+    QVERIFY(f.build());
+
+    // A one-hot instruction must round-trip one-hot through both the async read
+    // (RawInstr) and the registered output (Instruction) — no bit-lane
+    // cross-wiring across the program/memory/register path.
+    f.program(0x04, 1 << bitPosition);
+    f.setPC(0x04);
+    QCOMPARE(f.readRaw(), 1 << bitPosition);
+
+    f.latch();
+    QCOMPARE(f.readInstr(), 1 << bitPosition);
+}
+
 void TestLevel8FetchStage::testFetchStageStructure()
 {
     auto workspace = std::make_unique<WorkSpace>();

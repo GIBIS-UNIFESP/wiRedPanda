@@ -222,3 +222,60 @@ void TestLevel8MemoryStage::testMultiAddressStorage()
     // Partial decode: Address[3..7] are ignored, so 0x0A (= 0x02 + 8) aliases 0x02
     QCOMPARE(readAt(0x0A), 0x11);
 }
+
+void TestLevel8MemoryStage::testResultPassthroughBitIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("result_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel8MemoryStage::testResultPassthroughBitIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level8MemoryStage;
+
+    // Passthrough mode (MemRead=0, MemWrite=0): a one-hot Result must appear as a
+    // one-hot DataOut at the same position — no bit-lane cross-wiring in the
+    // output mux's In0 path.
+    f.memread->setOn(false);
+    f.memwrite->setOn(false);
+    setMultiBitInput(f.resultInputs, 1 << bitPosition);
+    f.sim->update();
+
+    QCOMPARE(f.readDataOut(), 1 << bitPosition);
+}
+
+void TestLevel8MemoryStage::testStoredDataBitIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("data_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel8MemoryStage::testStoredDataBitIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level8MemoryStage;
+
+    // Store a one-hot DataIn, then read it back: the word must round-trip as a
+    // one-hot DataOut — proving DataIn[i] -> memory -> DataOut[i] with no
+    // cross-wiring through the RAM and read mux.
+    setMultiBitInput(f.addressInputs, 0x04);
+    setMultiBitInput(f.datainInputs, 1 << bitPosition);
+    setMultiBitInput(f.resultInputs, 0x00);
+    f.memread->setOn(false);
+    f.memwrite->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.memwrite->setOn(false);
+
+    f.memread->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 1 << bitPosition);
+    f.memread->setOn(false);
+}

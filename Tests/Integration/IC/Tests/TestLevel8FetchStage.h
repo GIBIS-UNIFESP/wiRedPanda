@@ -23,5 +23,12 @@ private slots:
     void testPCIncrement();
     void testReset();
 
+    // Per-bit lane isolation on the two data paths: PCData -> PC, and
+    // ProgData -> memory -> RawInstr/Instruction.
+    void testPCDataBitIsolation_data();
+    void testPCDataBitIsolation();
+    void testInstructionBitIsolation_data();
+    void testInstructionBitIsolation();
+
     void testFetchStageStructure();
 };
