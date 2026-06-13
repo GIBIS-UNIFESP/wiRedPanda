@@ -48,7 +48,7 @@ Preset (active LOW): Forces Q=1, Q_bar=0
 Clear (active LOW): Forces Q=0, Q_bar=1
 
 Usage:
-    python create_jk_flip_flop.py
+    python3 create_level1_jk_flip_flop.py
 """
 
 import asyncio
@@ -393,5 +393,11 @@ async def build(mcp) -> bool:
 
 if __name__ == "__main__":
     import sys
-    exit_code = asyncio.run(run_ic_builder(build, "JK Flip-Flop IC"))
-    sys.exit(exit_code)
+    import traceback
+    try:
+        exit_code = asyncio.run(run_ic_builder(build, "JK Flip-Flop IC"))
+        sys.exit(exit_code)
+    except Exception as e:
+        print(f"Error: {e}")
+        traceback.print_exc()
+        sys.exit(1)

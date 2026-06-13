@@ -17,7 +17,7 @@ Circuit:
   - S=1, R=1 -> Invalid (both outputs go low)
 
 Usage:
-    python create_sr_latch.py
+    python3 create_level1_sr_latch.py
 """
 
 import asyncio
