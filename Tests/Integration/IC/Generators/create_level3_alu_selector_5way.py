@@ -69,18 +69,24 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         # Level 2: One 2:1 mux to reduce 2 inputs to 1
         # Result selected: opcode[2:0] determines which of 5 inputs (only need 5 of 8 possible positions)
 
-        # Level 1: Mux between result0/result1 using op0
-        l1_mux1 = await self.create_element("Mux", level1_x, input_y + VERTICAL_STAGE_SPACING, "l1_mux1")
+        # Shared Vcc to hold every mux Enable active. InputVcc is a StaticInput
+        # (internal element), so tying Enable to it adds no IC boundary port.
+        vcc_id = await self.create_element("InputVcc", input_x, input_y + (3 * VERTICAL_STAGE_SPACING), "Vcc")
+        if vcc_id is None:
+            return False
+
+        # Level 1: 2:1 mux between result0/result1 using op0
+        l1_mux1 = await self.instantiate_ic("level2_mux_2to1", level1_x, input_y + VERTICAL_STAGE_SPACING, "l1_mux1")
         if l1_mux1 is None:
             return False
 
-        # Level 1: Mux between result2/result3 using op0
-        l1_mux2 = await self.create_element("Mux", level1_x, input_y + (2 * VERTICAL_STAGE_SPACING), "l1_mux2")
+        # Level 1: 2:1 mux between result2/result3 using op0
+        l1_mux2 = await self.instantiate_ic("level2_mux_2to1", level1_x, input_y + (2 * VERTICAL_STAGE_SPACING), "l1_mux2")
         if l1_mux2 is None:
             return False
 
         # Connect level 1 muxes
-        port_labels = ["In0", "In1"]
+        port_labels = ["Data[0]", "Data[1]"]
         for source_id, result_idx, mux_id, port in [
             (result_inputs[0], 0, l1_mux1, 0),  # result0 to l1_mux1 In0
             (result_inputs[1], 1, l1_mux1, 1),  # result1 to l1_mux1 In1
@@ -90,44 +96,52 @@ class ALUSelector5wayBuilder(ICBuilderBase):
             if not await self.connect(source_id, mux_id, target_port_label=port_labels[port]):
                 return False
 
-        # Connect op0 to both level 1 muxes select line
+        # Connect op0 to both level 1 muxes select line; tie their Enable high
         for mux_id in [l1_mux1, l1_mux2]:
-            if not await self.connect(op_inputs[0], mux_id, target_port_label="S0"):
+            if not await self.connect(op_inputs[0], mux_id, target_port_label="Sel[0]"):
+                return False
+            if not await self.connect(vcc_id, mux_id, target_port_label="Enable"):
                 return False
 
         await self.log("  Created level 1: two 2:1 muxes")
 
         # Level 2: Mux between l1_mux1, l1_mux2, result4 (need special logic for 5 inputs)
         # Use cascaded structure: first select between l1_mux1 and l1_mux2 using op1
-        l2_mux1 = await self.create_element("Mux", level2_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l2_mux1")
+        l2_mux1 = await self.instantiate_ic("level2_mux_2to1", level2_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l2_mux1")
         if l2_mux1 is None:
             return False
 
         # Connect l1 mux outputs to l2_mux1
-        if not await self.connect(l1_mux1, l2_mux1, source_port_label="Out", target_port_label="In0"):
+        if not await self.connect(l1_mux1, l2_mux1, source_port_label="Output", target_port_label="Data[0]"):
             return False
 
-        if not await self.connect(l1_mux2, l2_mux1, source_port_label="Out", target_port_label="In1"):
+        if not await self.connect(l1_mux2, l2_mux1, source_port_label="Output", target_port_label="Data[1]"):
             return False
 
-        if not await self.connect(op_inputs[1], l2_mux1, target_port_label="S0"):
+        if not await self.connect(op_inputs[1], l2_mux1, target_port_label="Sel[0]"):
+            return False
+
+        if not await self.connect(vcc_id, l2_mux1, target_port_label="Enable"):
             return False
 
         await self.log("  Created level 2: select between 4-input results")
 
         # Level 3: Mux between l2_mux1 and result4 using op2
-        l3_mux = await self.create_element("Mux", level3_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l3_mux")
+        l3_mux = await self.instantiate_ic("level2_mux_2to1", level3_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l3_mux")
         if l3_mux is None:
             return False
 
         # Connect final level
-        if not await self.connect(l2_mux1, l3_mux, source_port_label="Out", target_port_label="In0"):
+        if not await self.connect(l2_mux1, l3_mux, source_port_label="Output", target_port_label="Data[0]"):
             return False
 
-        if not await self.connect(result_inputs[4], l3_mux, target_port_label="In1"):
+        if not await self.connect(result_inputs[4], l3_mux, target_port_label="Data[1]"):
             return False
 
-        if not await self.connect(op_inputs[2], l3_mux, target_port_label="S0"):
+        if not await self.connect(op_inputs[2], l3_mux, target_port_label="Sel[0]"):
+            return False
+
+        if not await self.connect(vcc_id, l3_mux, target_port_label="Enable"):
             return False
 
         await self.log("  Created level 3: final 2:1 mux for result4")
@@ -138,7 +152,7 @@ class ALUSelector5wayBuilder(ICBuilderBase):
             return False
 
         # Connect final output
-        if not await self.connect(l3_mux, output_led, source_port_label="Out"):
+        if not await self.connect(l3_mux, output_led, source_port_label="Output"):
             return False
 
         await self.log("  Created output LED")
