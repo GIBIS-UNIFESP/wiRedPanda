@@ -107,13 +107,19 @@ void TestLevel3ALUSelector5Way::testALUSelector5way()
         {1, 1, 0, {0, 0, 0, 1, 0}, 1, "sel=011 → in[3]=1"},
         {0, 0, 1, {0, 0, 0, 0, 1}, 1, "sel=100 → in[4]=1"},
 
+        // op2=1 makes op0/op1 don't-care: every 1xx opcode must route in[4]
+        {1, 0, 1, {0, 0, 0, 0, 1}, 1, "sel=101 → in[4]=1"},
+        {0, 1, 1, {0, 0, 0, 0, 1}, 1, "sel=110 → in[4]=1"},
+        {1, 1, 1, {0, 0, 0, 0, 1}, 1, "sel=111 → in[4]=1"},
+        {1, 1, 1, {1, 1, 1, 1, 0}, 0, "sel=111 → in[4]=0 (others high)"},
+
         // Test with 0 values
         {0, 0, 0, {0, 1, 1, 1, 1}, 0, "sel=000 → in[0]=0"},
         {1, 0, 0, {1, 0, 1, 1, 1}, 0, "sel=001 → in[1]=0"},
         {0, 1, 0, {1, 1, 0, 1, 1}, 0, "sel=010 → in[2]=0"},
     };
 
-    for (int testIdx = 0; testIdx < 8; ++testIdx) {
+    for (size_t testIdx = 0; testIdx < std::size(tests); ++testIdx) {
         const auto &test = tests[testIdx];
 
         for (int i = 0; i < 5; i++) {
