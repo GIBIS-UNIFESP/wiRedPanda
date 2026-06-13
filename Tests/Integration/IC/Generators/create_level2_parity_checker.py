@@ -22,7 +22,7 @@ Architecture:
   - Output LED
 
 Usage:
-    python create_level2_parity_checker.py
+    python3 create_level2_parity_checker.py
 """
 
 import asyncio

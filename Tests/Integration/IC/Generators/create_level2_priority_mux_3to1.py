@@ -17,7 +17,7 @@ Circuit:
 - Stage 2: mux(data0, intermediate, sel0) -> out
 
 Usage:
-    python create_priority_mux_3to1.py
+    python3 create_level2_priority_mux_3to1.py
 """
 
 import asyncio

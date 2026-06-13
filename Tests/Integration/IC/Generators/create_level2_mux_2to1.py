@@ -12,7 +12,7 @@ Architecture:
 - Single Mux element with inputSize=3 (2 data + 1 select)
 
 Usage:
-    python create_level2_mux_2to1.py
+    python3 create_level2_mux_2to1.py
 """
 
 import asyncio

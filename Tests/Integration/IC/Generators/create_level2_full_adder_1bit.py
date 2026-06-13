@@ -19,7 +19,7 @@ Logic:
 - Cout = c1 OR c2
 
 Usage:
-    python create_full_adder.py
+    python3 create_level2_full_adder_1bit.py
 """
 
 import asyncio

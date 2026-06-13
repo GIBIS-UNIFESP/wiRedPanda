@@ -15,7 +15,7 @@ Circuit:
   - For output i: bit pattern of i determines which inputs to use
 
 Usage:
-    python create_level2_decoder_3to8.py
+    python3 create_level2_decoder_3to8.py
 """
 
 import asyncio

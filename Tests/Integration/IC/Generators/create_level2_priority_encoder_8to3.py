@@ -15,7 +15,7 @@ Circuit Logic:
 - addr bits encode the selected input using combinational logic
 
 Usage:
-    python create_priority_encoder_8to3.py
+    python3 create_level2_priority_encoder_8to3.py
 """
 
 import asyncio
@@ -182,11 +182,10 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         addr2_gate = await self.create_element("Or", addr_or_x, output_base_y, "addr2")
         if addr2_gate is None:
             return False
-        for idx, sel_src in enumerate([sel4, sel5]):
-            if idx >= 2:
-                break  # OR gate has only 2 inputs
-            if not await self.connect(sel_src, addr2_gate, target_port=idx):
-                return False
+        if not await self.connect(sel4, addr2_gate):
+            return False
+        if not await self.connect(sel5, addr2_gate, target_port=1):
+            return False
 
         # Need more OR gates for addr[2] = selected[4] OR selected[5] OR selected[6] OR selected[7]
         or_addr2_56 = await self.create_element("Or", addr_or_x, output_base_y + (1.5 * VERTICAL_STAGE_SPACING), "or_addr2_56")
