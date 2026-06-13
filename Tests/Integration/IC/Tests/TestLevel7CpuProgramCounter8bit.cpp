@@ -143,6 +143,38 @@ void TestLevel7CPUProgramCounter8Bit::testProgramCounter8Bit() {
     QCOMPARE(f.readAddress(), CPUTestUtils::PATTERN_ALL_ZEROS);
 }
 
+// Inc is the program counter's primary function but the test above only
+// exercises load/load/reset. The level-7 wrapper feeds Inc into the level-6 PC's
+// write-enable = OR(Load, Inc); verify successive clocked increments here.
+void TestLevel7CPUProgramCounter8Bit::testIncrement() {
+    auto &f = *s_level7CpuPC8bit;
+
+    // Seed a known value via load
+    setMultiBitInput(f.dataInputs, 0x10);
+    f.load->setOn(true);
+    f.inc->setOn(false);
+    f.reset->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    f.sim->update();
+    QCOMPARE(f.readAddress(), 0x10);
+
+    // Drop load, raise inc: each clock advances the count by one
+    f.clock->setOn(false);
+    f.load->setOn(false);
+    f.inc->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    f.sim->update();
+    QCOMPARE(f.readAddress(), 0x11);
+
+    f.clock->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    f.sim->update();
+    QCOMPARE(f.readAddress(), 0x12);
+}
+
 void TestLevel7CPUProgramCounter8Bit::testProgramCounter8BitStructure() {
     auto &f = *s_level7CpuPC8bit;
 
