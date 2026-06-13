@@ -13,10 +13,12 @@ module level2_priority_encoder_8to3_ic (
     input data5,
     input data6,
     input data7,
+    input ei,
     output addr0,
     output addr1,
     output addr2,
-    output valid
+    output valid,
+    output eo
 );
 
 wire aux_not_1;
@@ -46,6 +48,12 @@ wire aux_or_24;
 wire aux_or_25;
 wire aux_or_26;
 wire aux_or_27;
+wire aux_and_28;
+wire aux_and_29;
+wire aux_and_30;
+wire aux_and_31;
+wire aux_not_32;
+wire aux_and_33;
 
 // Internal logic
 assign aux_not_1 = ~data7;
@@ -75,11 +83,18 @@ assign aux_or_24 = (aux_and_17 | aux_and_15);
 assign aux_or_25 = (aux_and_13 | data7);
 assign aux_or_26 = (aux_or_24 | aux_or_25);
 assign aux_or_27 = (data0 | data1 | data2 | data3 | data4 | data5 | data6 | data7);
+assign aux_and_28 = (aux_or_26 & ei);
+assign aux_and_29 = (aux_or_23 & ei);
+assign aux_and_30 = (aux_or_20 & ei);
+assign aux_and_31 = (aux_or_27 & ei);
+assign aux_not_32 = ~aux_or_27;
+assign aux_and_33 = (ei & aux_not_32);
 
-assign addr0 = aux_or_26;
-assign addr1 = aux_or_23;
-assign addr2 = aux_or_20;
-assign valid = aux_or_27;
+assign addr0 = aux_and_28;
+assign addr1 = aux_and_29;
+assign addr2 = aux_and_30;
+assign valid = aux_and_31;
+assign eo = aux_and_33;
 endmodule
 
 module level2_priority_encoder_8to3 (
@@ -92,12 +107,14 @@ input input_switch5,
 input input_switch6,
 input input_switch7,
 input input_switch8,
+input input_switch9,
 
 /* ========= Outputs ========== */
-output led10_1,
 output led11_1,
 output led12_1,
-output led13_1
+output led13_1,
+output led14_1,
+output led15_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL2_PRIORITY_ENCODER_8TO3 (level2_priority_encoder_8to3_ic)
@@ -105,6 +122,7 @@ wire w_level2_priority_encoder_8to3_ic_inst_1_addr0;
 wire w_level2_priority_encoder_8to3_ic_inst_1_addr1;
 wire w_level2_priority_encoder_8to3_ic_inst_1_addr2;
 wire w_level2_priority_encoder_8to3_ic_inst_1_valid;
+wire w_level2_priority_encoder_8to3_ic_inst_1_eo;
 
 
 // Assigning aux variables. //
@@ -117,15 +135,18 @@ level2_priority_encoder_8to3_ic level2_priority_encoder_8to3_ic_inst_1 (
     .data5(input_switch6),
     .data6(input_switch7),
     .data7(input_switch8),
+    .ei(input_switch9),
     .addr0(w_level2_priority_encoder_8to3_ic_inst_1_addr0),
     .addr1(w_level2_priority_encoder_8to3_ic_inst_1_addr1),
     .addr2(w_level2_priority_encoder_8to3_ic_inst_1_addr2),
-    .valid(w_level2_priority_encoder_8to3_ic_inst_1_valid)
+    .valid(w_level2_priority_encoder_8to3_ic_inst_1_valid),
+    .eo(w_level2_priority_encoder_8to3_ic_inst_1_eo)
 );
 
 // Writing output data. //
-assign led10_1 = w_level2_priority_encoder_8to3_ic_inst_1_addr0;
-assign led11_1 = w_level2_priority_encoder_8to3_ic_inst_1_addr1;
-assign led12_1 = w_level2_priority_encoder_8to3_ic_inst_1_addr2;
-assign led13_1 = w_level2_priority_encoder_8to3_ic_inst_1_valid;
+assign led11_1 = w_level2_priority_encoder_8to3_ic_inst_1_addr0;
+assign led12_1 = w_level2_priority_encoder_8to3_ic_inst_1_addr1;
+assign led13_1 = w_level2_priority_encoder_8to3_ic_inst_1_addr2;
+assign led14_1 = w_level2_priority_encoder_8to3_ic_inst_1_valid;
+assign led15_1 = w_level2_priority_encoder_8to3_ic_inst_1_eo;
 endmodule

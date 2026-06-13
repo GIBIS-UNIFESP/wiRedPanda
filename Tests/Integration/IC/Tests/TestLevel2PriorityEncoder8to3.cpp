@@ -18,8 +18,10 @@ struct PriorityEncoder8to3Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *inputs[8] = {};
+    InputSwitch *ei = nullptr;
     Led *outLeds[3] = {};
     Led *validLed = nullptr;
+    Led *eoLed = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -31,12 +33,15 @@ struct PriorityEncoder8to3Fixture {
             inputs[i] = new InputSwitch();
             builder.add(inputs[i]);
         }
+        ei = new InputSwitch();
+        builder.add(ei);
         for (int i = 0; i < 3; ++i) {
             outLeds[i] = new Led();
             builder.add(outLeds[i]);
         }
         validLed = new Led();
-        builder.add(validLed);
+        eoLed = new Led();
+        builder.add(validLed, eoLed);
 
         ic = loadBuildingBlockIC("level2_priority_encoder_8to3.panda");
         builder.add(ic);
@@ -44,10 +49,12 @@ struct PriorityEncoder8to3Fixture {
         for (int i = 0; i < 8; ++i) {
             builder.connect(inputs[i], 0, ic, QString("data[%1]").arg(i));
         }
+        builder.connect(ei, 0, ic, "EI");
         for (int i = 0; i < 3; ++i) {
             builder.connect(ic, QString("addr[%1]").arg(i), outLeds[i], 0);
         }
         builder.connect(ic, "valid", validLed, 0);
+        builder.connect(ic, "EO", eoLed, 0);
 
         sim = builder.initSimulation();
         sim->update();
@@ -115,6 +122,7 @@ void TestLevel2PriorityEncoder8To3::test8to3PriorityEncoder()
 
     auto &f = *s_level2PriorityEncoder8to3;
 
+    f.ei->setOn(true);   // enable for standalone operation
     for (int i = 0; i < 8; ++i) {
         f.inputs[i]->setOn((inputMask >> i) & 1);
     }
@@ -128,4 +136,44 @@ void TestLevel2PriorityEncoder8To3::test8to3PriorityEncoder()
 
     QCOMPARE(actualOutput, expectedOutput);
     QCOMPARE(getInputStatus(f.validLed), expectedValid);
+}
+
+// 74148 EI/EO semantics: EI disables all outputs; EO = EI AND no-input-active
+// (it propagates the enable to the next, lower-priority encoder in a chain).
+void TestLevel2PriorityEncoder8To3::testEnableInputOutput()
+{
+    auto &f = *s_level2PriorityEncoder8to3;
+
+    auto readAddr = [&] {
+        return (static_cast<int>(getInputStatus(f.outLeds[2])) << 2)
+             | (static_cast<int>(getInputStatus(f.outLeds[1])) << 1)
+             | static_cast<int>(getInputStatus(f.outLeds[0]));
+    };
+
+    // Disabled (EI=0): every output forced inactive regardless of data.
+    f.ei->setOn(false);
+    for (int i = 0; i < 8; ++i) {
+        f.inputs[i]->setOn(true);
+    }
+    f.sim->update();
+    QCOMPARE(readAddr(), 0);
+    QVERIFY(!getInputStatus(f.validLed));
+    QVERIFY(!getInputStatus(f.eoLed));   // EO inactive while disabled
+
+    // Enabled, no input active: valid=0, EO=1 (pass enable down the chain).
+    f.ei->setOn(true);
+    for (int i = 0; i < 8; ++i) {
+        f.inputs[i]->setOn(false);
+    }
+    f.sim->update();
+    QCOMPARE(readAddr(), 0);
+    QVERIFY(!getInputStatus(f.validLed));
+    QVERIFY(getInputStatus(f.eoLed));    // EO asserts: nothing here, enable the next stage
+
+    // Enabled, an input active: valid=1, EO=0 (this stage claimed the request).
+    f.inputs[5]->setOn(true);
+    f.sim->update();
+    QCOMPARE(readAddr(), 5);
+    QVERIFY(getInputStatus(f.validLed));
+    QVERIFY(!getInputStatus(f.eoLed));
 }
