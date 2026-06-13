@@ -24,11 +24,12 @@ PISO Shift Register behavior:
 - Shift chain: SIN → FF[3] → FF[2] → FF[1] → FF[0] → serialOut
 
 Implementation:
-- 4 D Flip-Flops (DFlipFlop)
-- 4 AND gates (load path: LOAD AND D[i])
-- 4 AND gates (shift path: NOT LOAD AND FF[i+1])
-- 4 OR gates (multiplex: loadGate OR shiftGate)
+- 4 level1_d_flip_flop ICs (state storage)
+- 1 level4_bus_mux_4bit IC (load path: Sel=LOAD selects D[i] vs 0)
+- 1 level4_bus_mux_4bit IC (shift path: Sel=NOT LOAD selects shiftIn[i] vs 0)
+- 4 level2_mux_2to1 ICs (per-bit select: Sel=LOAD picks load vs shift result)
 - 1 NOT gate (invert LOAD signal)
+- InputGnd / InputVcc for the constant mux inputs and select-mux enables
 
 Usage:
     python create_shift_register_piso.py
