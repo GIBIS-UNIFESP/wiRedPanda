@@ -374,6 +374,32 @@ void TestLevel9MultiCycleCPU8Bit::testALUExecution()
     QCOMPARE(f.readResult(), expectedResult);
 }
 
+// Drive an ALU operand from a high register (R3/R5/R6/R7) so the high
+// register-address bit (Instruction[2] -> register file Read_Addr2[2]) is
+// exercised — the ISA test above only ever addresses R1.
+void TestLevel9MultiCycleCPU8Bit::testHighRegisterOperand()
+{
+    auto &f = *s_level9MultiCycleCpu;
+
+    const int regs[] = {3, 5, 6, 7};
+    for (int reg : regs) {
+        f.sim->restart();
+        f.sim->update();
+
+        const int operandB = 0x10 + reg;
+        f.beginProgramming();
+        f.programRegister(reg, operandB);
+        f.programRegister(0, 0x10);
+        f.programInstruction(0x00, encodeInstruction(ADD, reg));
+        f.run();
+
+        clockCycle(f.sim, f.clk);   // latch IR; ALU result combinational
+        QVERIFY2(f.readResult() == (0x10 + operandB),
+            qPrintable(QString("ADD R%1: expected 0x%2, got 0x%3")
+                .arg(reg).arg(0x10 + operandB, 0, 16).arg(f.readResult(), 0, 16)));
+    }
+}
+
 // A 3-instruction program threading the accumulator through the register
 // write-back path: R0 = ((R0+R1)-R2) & R1.
 void TestLevel9MultiCycleCPU8Bit::testMultipleInstructions()

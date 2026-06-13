@@ -580,6 +580,34 @@ void TestLevel9SingleCycleCPU8Bit::testMultipleInstructions()
 }
 
 // ---------------------------------------------------------------------------
+// High register operands: the ISA tests only ever address R1/R2, so the high
+// register-address bit (instruction bit 2 -> RawInstr[2] -> register file
+// Read_Addr2[2]) was never exercised. Drive operands from R3/R5/R6/R7 so a
+// stuck or miswired high address bit would be caught.
+// ---------------------------------------------------------------------------
+
+void TestLevel9SingleCycleCPU8Bit::testHighRegisterOperand()
+{
+    auto &f = *s_cpu;
+
+    const int regs[] = {3, 5, 6, 7};
+    for (int reg : regs) {
+        f.sim->restart();
+        f.sim->update();
+
+        const int operandB = 0x10 + reg;   // distinct per register
+        f.programRegister(reg, operandB);
+        f.programRegister(0, 0x10);         // R0 accumulator
+        f.programInstruction(0, encodeInstruction(ADD, reg));
+        f.resetCPU();
+
+        QVERIFY2(f.readResult() == (0x10 + operandB),
+            qPrintable(QString("ADD R%1: expected 0x%2, got 0x%3")
+                .arg(reg).arg(0x10 + operandB, 0, 16).arg(f.readResult(), 0, 16)));
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Instruction output: the registered Instruction[0-7] port reflects the word
 // fetched at the current PC (the fixture exposed readInstruction() but no test
 // asserted it).
