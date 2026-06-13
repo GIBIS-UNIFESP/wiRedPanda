@@ -12,6 +12,7 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QHash>
+#include <QSet>
 #include <QTextStream>
 #include <QVector>
 
@@ -64,7 +65,6 @@ struct ICModuleInfo {
     QVector<QString> inputNames;               ///< Port names for the module's inputs.
     QVector<QString> outputNames;              ///< Port names for the module's outputs.
     IC *prototypeIC = nullptr;                 ///< Representative IC element (used to inspect sub-circuit).
-    ElementType detectedType = ElementType::Unknown; ///< Detected sequential element type, if any.
     bool generated = false;                    ///< True once the module body has been emitted.
 };
 
@@ -124,6 +124,11 @@ private:
     void declareAuxVariables();
     /// Recursive helper: emits auxiliary variable declarations for \a elements.
     void declareAuxVariablesRec(const QVector<GraphicElement *> &elements);
+    /// Returns the internal gate elements that sit on a combinational feedback
+    /// loop (cross-coupled latches). These are emitted as `reg` + `always @(*)`
+    /// with a seed value so SystemVerilog settles them instead of x-locking, and
+    /// the region is wrapped in a Verilator UNOPTFLAT lint waiver.
+    static QSet<GraphicElement *> findFeedbackElements(const QVector<GraphicElement *> &elements);
     /// Emits top-level `input` port declarations.
     void declareInputs();
     /// Emits top-level `output` port declarations.
@@ -144,10 +149,6 @@ private:
     void generateICModules();
     /// Generates the module body for a single IC type described by \a info.
     void generateSingleICModule(ICModuleInfo &info);
-    /// Attempts to emit a behavioral (inlined) module for simple single-element ICs.
-    bool emitBehavioralICModule(ICModuleInfo &info);
-    /// Inspects \a info's sub-circuit to detect if it wraps a single sequential element type.
-    static ElementType detectSequentialICType(const ICModuleInfo &info);
 
     // --- Combinational Logic ---
 
@@ -176,4 +177,5 @@ private:
     const QVector<GraphicElement *> m_elements; ///< Topologically sorted circuit elements.
     bool m_generatingICModule = false;         ///< True while emitting an IC sub-module body.
     int m_globalCounter = 1;                   ///< Monotonic counter for unique signal names.
+    QSet<GraphicElement *> m_feedbackElements; ///< Internal gates on a combinational feedback loop, for the IC module currently being emitted.
 };

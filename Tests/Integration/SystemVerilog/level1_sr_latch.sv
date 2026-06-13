@@ -3,30 +3,25 @@
 // ==================================================================== //
 
 
-// Behavioral module for level1_sr_latch_ic (generated from level1_sr_latch.panda)
+// Module for LEVEL1_SR_LATCH (generated from level1_sr_latch.panda)
 module level1_sr_latch_ic (
     input s,
     input r,
-    output reg q,
-    output reg q_bar
+    output q,
+    output q_bar
 );
-    initial begin
-        q = 1'b1;
-        q_bar = 1'b0;
-    end
-    always_latch
-    begin
-        if (s && r)
-        begin
-            q = 1'b0;
-            q_bar = 1'b0;
-        end
-        else if (s != r)
-        begin
-            q = s;
-            q_bar = r;
-        end
-    end
+
+/* verilator lint_off UNOPTFLAT */ // intentional latch feedback
+reg aux_nor_1 = 1'b0;
+reg aux_nor_2 = 1'b0;
+
+// Internal logic
+always @(*) aux_nor_1 = ~(r | aux_nor_2);
+always @(*) aux_nor_2 = ~(s | aux_nor_1);
+/* verilator lint_on UNOPTFLAT */
+
+assign q = aux_nor_1;
+assign q_bar = aux_nor_2;
 endmodule
 
 module level1_sr_latch (

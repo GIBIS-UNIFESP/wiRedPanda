@@ -3,51 +3,58 @@
 // ==================================================================== //
 
 
-// Behavioral module for level1_jk_flip_flop_ic (generated from level1_jk_flip_flop.panda)
+// Module for LEVEL1_JK_FLIP_FLOP (generated from level1_jk_flip_flop.panda)
 module level1_jk_flip_flop_ic (
     input j,
     input k,
     input clock,
     input preset,
     input clear,
-    output reg q,
-    output reg q_bar
+    output q,
+    output q_bar
 );
-    initial begin
-        q = 1'b1;
-        q_bar = 1'b0;
-    end
-    always @(negedge clock or negedge preset or negedge clear)
-    begin
-        if (~preset)
-        begin
-            q <= 1'b1;
-            q_bar <= 1'b0;
-        end
-        else if (~clear)
-        begin
-            q <= 1'b0;
-            q_bar <= 1'b1;
-        end
-        else
-        begin
-            if (j && k)
-            begin
-                q <= q_bar;
-                q_bar <= q;
-            end
-            else if (j && ~k)
-            begin
-                q <= 1'b1;
-                q_bar <= 1'b0;
-            end
-            else if (~j && k)
-            begin
-                q <= 1'b0;
-                q_bar <= 1'b1;
-            end
-        end
-    end
+
+/* verilator lint_off UNOPTFLAT */ // intentional latch feedback
+wire aux_not_1;
+wire aux_not_2;
+wire aux_not_3;
+reg aux_or_4 = 1'b0;
+reg aux_or_5 = 1'b0;
+reg aux_or_6 = 1'b0;
+reg aux_or_7 = 1'b0;
+reg aux_and_8 = 1'b0;
+reg aux_and_9 = 1'b0;
+reg aux_and_10 = 1'b0;
+reg aux_and_11 = 1'b0;
+reg aux_nor_12 = 1'b0;
+reg aux_nor_13 = 1'b0;
+reg aux_and_14 = 1'b0;
+reg aux_and_15 = 1'b0;
+reg aux_nor_16 = 1'b0;
+reg aux_nor_17 = 1'b0;
+
+// Internal logic
+assign aux_not_1 = ~clock;
+assign aux_not_2 = ~preset;
+assign aux_not_3 = ~clear;
+always @(*) aux_or_4 = (aux_and_15 | aux_not_3);
+always @(*) aux_or_5 = (aux_and_14 | aux_not_2);
+always @(*) aux_or_6 = (aux_and_10 | aux_not_2);
+always @(*) aux_or_7 = (aux_and_11 | aux_not_3);
+always @(*) aux_and_8 = (j & aux_nor_17);
+always @(*) aux_and_9 = (k & aux_nor_16);
+always @(*) aux_and_10 = (aux_and_8 & clock);
+always @(*) aux_and_11 = (aux_and_9 & clock);
+always @(*) aux_nor_12 = ~(aux_or_7 | aux_nor_13);
+always @(*) aux_nor_13 = ~(aux_or_6 | aux_nor_12);
+always @(*) aux_and_14 = (aux_nor_12 & aux_not_1);
+always @(*) aux_and_15 = (aux_nor_13 & aux_not_1);
+always @(*) aux_nor_16 = ~(aux_or_4 | aux_nor_17);
+always @(*) aux_nor_17 = ~(aux_or_5 | aux_nor_16);
+/* verilator lint_on UNOPTFLAT */
+
+assign q = aux_nor_16;
+assign q_bar = aux_nor_17;
 endmodule
 
 module level1_jk_flip_flop (
