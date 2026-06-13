@@ -3,7 +3,7 @@
 // ==================================================================== //
 //
 // Target Board: Arduino UNO R3/R4
-// Pin Usage: 10/18 pins
+// Pin Usage: 11/18 pins
 //
 
 
@@ -17,10 +17,11 @@ const int input_switch5 = A4;
 const int input_switch6 = A5;
 const int input_switch7 = 2;
 const int input_switch8 = 3;
+const int input_switch9 = 4;
 
 /* ========= Outputs ========== */
-const int led1_1 = 4;
-const int led2_1 = 5;
+const int led1_1 = 5;
+const int led2_1 = 6;
 
 /* ====== Aux. Variables ====== */
 bool input_switch1_val = LOW;
@@ -31,6 +32,7 @@ bool input_switch5_val = LOW;
 bool input_switch6_val = LOW;
 bool input_switch7_val = LOW;
 bool input_switch8_val = LOW;
+bool input_switch9_val = LOW;
 // IC: LEVEL2_PARITY_CHECKER
 bool aux_level2_parity_checker_0_parity = LOW;
 bool aux_level2_parity_checker_0_even_1 = LOW;
@@ -50,8 +52,10 @@ bool aux_level2_parity_checker_0_xor_12 = LOW;
 bool aux_level2_parity_checker_0_xor_13 = LOW;
 bool aux_level2_parity_checker_0_xor_14 = LOW;
 bool aux_level2_parity_checker_0_node_15 = LOW;
-bool aux_level2_parity_checker_0_not_16 = LOW;
+bool aux_level2_parity_checker_0_xor_16 = LOW;
 bool aux_level2_parity_checker_0_node_17 = LOW;
+bool aux_level2_parity_checker_0_not_18 = LOW;
+bool aux_level2_parity_checker_0_node_19 = LOW;
 bool aux_ic_input_level2_parity_checker_0_0 = LOW;
 bool aux_ic_input_level2_parity_checker_0_1 = LOW;
 bool aux_ic_input_level2_parity_checker_0_2 = LOW;
@@ -60,6 +64,7 @@ bool aux_ic_input_level2_parity_checker_0_4 = LOW;
 bool aux_ic_input_level2_parity_checker_0_5 = LOW;
 bool aux_ic_input_level2_parity_checker_0_6 = LOW;
 bool aux_ic_input_level2_parity_checker_0_7 = LOW;
+bool aux_ic_input_level2_parity_checker_0_8 = LOW;
 // End IC: LEVEL2_PARITY_CHECKER
 
 void setup() {
@@ -71,6 +76,7 @@ void setup() {
     pinMode(input_switch6, INPUT);
     pinMode(input_switch7, INPUT);
     pinMode(input_switch8, INPUT);
+    pinMode(input_switch9, INPUT);
     pinMode(led1_1, OUTPUT);
     pinMode(led2_1, OUTPUT);
 }
@@ -86,6 +92,7 @@ void computeLogic() {
     aux_ic_input_level2_parity_checker_0_5 = input_switch6_val;
     aux_ic_input_level2_parity_checker_0_6 = input_switch7_val;
     aux_ic_input_level2_parity_checker_0_7 = input_switch8_val;
+    aux_ic_input_level2_parity_checker_0_8 = input_switch9_val;
     aux_level2_parity_checker_0_node_0 = aux_ic_input_level2_parity_checker_0_0;
     aux_level2_parity_checker_0_node_1 = aux_ic_input_level2_parity_checker_0_1;
     aux_level2_parity_checker_0_node_2 = aux_ic_input_level2_parity_checker_0_2;
@@ -94,6 +101,7 @@ void computeLogic() {
     aux_level2_parity_checker_0_node_5 = aux_ic_input_level2_parity_checker_0_5;
     aux_level2_parity_checker_0_node_6 = aux_ic_input_level2_parity_checker_0_6;
     aux_level2_parity_checker_0_node_7 = aux_ic_input_level2_parity_checker_0_7;
+    aux_level2_parity_checker_0_node_15 = aux_ic_input_level2_parity_checker_0_8;
     aux_level2_parity_checker_0_xor_8 = aux_level2_parity_checker_0_node_0 ^ aux_level2_parity_checker_0_node_1;
     aux_level2_parity_checker_0_xor_9 = aux_level2_parity_checker_0_node_2 ^ aux_level2_parity_checker_0_node_3;
     aux_level2_parity_checker_0_xor_10 = aux_level2_parity_checker_0_node_4 ^ aux_level2_parity_checker_0_node_5;
@@ -101,11 +109,12 @@ void computeLogic() {
     aux_level2_parity_checker_0_xor_12 = aux_level2_parity_checker_0_xor_8 ^ aux_level2_parity_checker_0_xor_9;
     aux_level2_parity_checker_0_xor_13 = aux_level2_parity_checker_0_xor_10 ^ aux_level2_parity_checker_0_xor_11;
     aux_level2_parity_checker_0_xor_14 = aux_level2_parity_checker_0_xor_12 ^ aux_level2_parity_checker_0_xor_13;
-    aux_level2_parity_checker_0_not_16 = !aux_level2_parity_checker_0_xor_14;
-    aux_level2_parity_checker_0_node_15 = aux_level2_parity_checker_0_xor_14;
-    aux_level2_parity_checker_0_node_17 = aux_level2_parity_checker_0_not_16;
-    aux_level2_parity_checker_0_parity = aux_level2_parity_checker_0_node_15;
-    aux_level2_parity_checker_0_even_1 = aux_level2_parity_checker_0_node_17;
+    aux_level2_parity_checker_0_xor_16 = aux_level2_parity_checker_0_xor_14 ^ aux_level2_parity_checker_0_node_15;
+    aux_level2_parity_checker_0_not_18 = !aux_level2_parity_checker_0_xor_16;
+    aux_level2_parity_checker_0_node_17 = aux_level2_parity_checker_0_xor_16;
+    aux_level2_parity_checker_0_node_19 = aux_level2_parity_checker_0_not_18;
+    aux_level2_parity_checker_0_parity = aux_level2_parity_checker_0_node_17;
+    aux_level2_parity_checker_0_even_1 = aux_level2_parity_checker_0_node_19;
     // End IC: LEVEL2_PARITY_CHECKER
 }
 
@@ -119,6 +128,7 @@ void loop() {
     input_switch6_val = digitalRead(input_switch6);
     input_switch7_val = digitalRead(input_switch7);
     input_switch8_val = digitalRead(input_switch8);
+    input_switch9_val = digitalRead(input_switch9);
 
     // Updating clocks. //
 

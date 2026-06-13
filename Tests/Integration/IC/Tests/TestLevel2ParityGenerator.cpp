@@ -16,6 +16,7 @@ struct ParityGeneratorFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *dataInputs[4] = {};
+    InputSwitch *cascadeIn = nullptr;
     Led *parityOutput = nullptr;
     Led *evenOutput = nullptr;
     Simulation *sim = nullptr;
@@ -29,6 +30,8 @@ struct ParityGeneratorFixture {
             dataInputs[i] = new InputSwitch();
             builder.add(dataInputs[i]);
         }
+        cascadeIn = new InputSwitch();
+        builder.add(cascadeIn);
         parityOutput = new Led();
         builder.add(parityOutput);
         evenOutput = new Led();
@@ -40,6 +43,7 @@ struct ParityGeneratorFixture {
         for (int i = 0; i < 4; ++i) {
             builder.connect(dataInputs[i], 0, ic, QString("Data[%1]").arg(i));
         }
+        builder.connect(cascadeIn, 0, ic, "CascadeIn");
         builder.connect(ic, "Parity", parityOutput, 0);
         builder.connect(ic, "Even", evenOutput, 0);
 
@@ -107,6 +111,7 @@ void TestLevel2ParityGenerator::testParityGenerator()
 
     auto &f = *s_level2ParityGenerator;
 
+    f.cascadeIn->setOn(false);   // standalone: cascade input is a no-op
     for (int i = 0; i < 4; ++i) {
         f.dataInputs[i]->setOn((dataValue >> i) & 1);
     }
@@ -115,4 +120,39 @@ void TestLevel2ParityGenerator::testParityGenerator()
     QCOMPARE(getInputStatus(f.parityOutput), expectedParity);
     // Complementary even-parity output must always be the inverse of odd parity.
     QCOMPARE(getInputStatus(f.evenOutput), !expectedParity);
+}
+
+// 74180-style cascade input: CascadeIn is XORed into the parity. Asserting it
+// flips the result, which is how two blocks chain to cover more bits (the
+// less-significant block's Parity feeds this block's CascadeIn).
+void TestLevel2ParityGenerator::testParityCascadeIn()
+{
+    auto &f = *s_level2ParityGenerator;
+
+    // data = 0x1 has odd parity (1). CascadeIn=0 keeps it odd; CascadeIn=1 makes
+    // the combined parity even (as if a 5th set bit were present).
+    f.dataInputs[0]->setOn(true);
+    f.dataInputs[1]->setOn(false);
+    f.dataInputs[2]->setOn(false);
+    f.dataInputs[3]->setOn(false);
+
+    f.cascadeIn->setOn(false);
+    f.sim->update();
+    QVERIFY(getInputStatus(f.parityOutput));
+    QVERIFY(!getInputStatus(f.evenOutput));
+
+    f.cascadeIn->setOn(true);
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.parityOutput));
+    QVERIFY(getInputStatus(f.evenOutput));
+
+    // data = 0x3 has even parity (0). CascadeIn=1 flips it to odd.
+    f.dataInputs[1]->setOn(true);   // data now 0b0011
+    f.cascadeIn->setOn(false);
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.parityOutput));
+
+    f.cascadeIn->setOn(true);
+    f.sim->update();
+    QVERIFY(getInputStatus(f.parityOutput));
 }

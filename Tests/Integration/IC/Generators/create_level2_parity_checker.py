@@ -11,8 +11,10 @@ Output is 1 when the total number of 1-bits is odd (valid odd parity).
 Inputs:
   - data[0] to data[7]: 8 input bits (data + parity bit)
 
+  - CascadeIn: 74180-style cascade input, XORed into the parity. Tie low for
+    standalone use; chain blocks to check parity across more than 8 bits.
 Outputs:
-  - parity: odd-parity check result (1 = odd number of 1-bits)
+  - parity: odd-parity check result (1 = odd number of 1-bits), incl. CascadeIn
   - even: complementary even-parity output (= NOT parity), 74180-style
 
 Architecture:
@@ -88,7 +90,23 @@ class ParityCheckerBuilder(ICBuilderBase):
             stage_x += HORIZONTAL_GATE_SPACING
 
         # Final parity output (should be single XOR gate)
-        parity_xor_id = current_stage[0]
+        tree_parity_id = current_stage[0]
+
+        # Cascade input (74180-style): XOR a chained parity bit from a
+        # less-significant block into this block's parity. Tied low (the default)
+        # it is a no-op, so a single block behaves exactly as before; chain blocks
+        # to check parity across more than 8 bits.
+        cascade_in = await self.create_element("InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "CascadeIn")
+        if cascade_in is None:
+            return False
+        cascade_xor = await self.create_element("Xor", stage_x, 100.0 + (width // 2) * VERTICAL_STAGE_SPACING, "cascade_xor")
+        if cascade_xor is None:
+            return False
+        if not await self.connect(tree_parity_id, cascade_xor):
+            return False
+        if not await self.connect(cascade_in, cascade_xor, target_port=1):
+            return False
+        parity_xor_id = cascade_xor   # output LEDs read the cascaded parity
 
         # Create odd-parity output LED (parity = XOR of all bits = 1 iff odd #1s)
         parity_led = await self.create_element("Led", output_x, 100.0 + (width // 2) * VERTICAL_STAGE_SPACING, "parity")

@@ -18,6 +18,7 @@ struct ParityCheckerFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *swData[8] = {};
+    InputSwitch *cascadeIn = nullptr;
     Led *ledResult = nullptr;
     Led *ledEven = nullptr;
     Simulation *sim = nullptr;
@@ -31,6 +32,8 @@ struct ParityCheckerFixture {
             swData[i] = new InputSwitch();
             builder.add(swData[i]);
         }
+        cascadeIn = new InputSwitch();
+        builder.add(cascadeIn);
         ledResult = new Led();
         builder.add(ledResult);
         ledEven = new Led();
@@ -44,6 +47,7 @@ struct ParityCheckerFixture {
         for (int i = 0; i < 8; ++i) {
             builder.connect(swData[i], 0, ic, QString("data[%1]").arg(i));
         }
+        builder.connect(cascadeIn, 0, ic, "CascadeIn");
         builder.connect(ic, "parity", ledResult, 0);
         builder.connect(ic, "even", ledEven, 0);
 
@@ -108,6 +112,7 @@ void TestLevel2ParityChecker::testOddParityChecker()
 
     auto &f = *s_level2ParityChecker;
 
+    f.cascadeIn->setOn(false);   // standalone: cascade input is a no-op
     for (int i = 0; i < 8; ++i) {
         f.swData[i]->setOn(static_cast<bool>(dataByte & (1 << i)));
     }
@@ -116,4 +121,38 @@ void TestLevel2ParityChecker::testOddParityChecker()
     QCOMPARE(getInputStatus(f.ledResult) ? 1 : 0, expectedResult);
     // Complementary even-parity output must always be the inverse of odd parity.
     QCOMPARE(getInputStatus(f.ledEven) ? 1 : 0, expectedResult ? 0 : 1);
+}
+
+// 74180-style cascade input: CascadeIn is XORed into the parity, so chaining a
+// second block (its parity -> this CascadeIn) checks parity across >8 bits.
+void TestLevel2ParityChecker::testParityCascadeIn()
+{
+    auto &f = *s_level2ParityChecker;
+
+    // 0xE0 has odd parity (3 ones). CascadeIn=1 flips the combined parity even.
+    for (int i = 0; i < 8; ++i) {
+        f.swData[i]->setOn(static_cast<bool>(0xE0 & (1 << i)));
+    }
+
+    f.cascadeIn->setOn(false);
+    f.sim->update();
+    QVERIFY(getInputStatus(f.ledResult));
+    QVERIFY(!getInputStatus(f.ledEven));
+
+    f.cascadeIn->setOn(true);
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.ledResult));
+    QVERIFY(getInputStatus(f.ledEven));
+
+    // 0xC0 has even parity (2 ones). CascadeIn=1 flips it to odd.
+    for (int i = 0; i < 8; ++i) {
+        f.swData[i]->setOn(static_cast<bool>(0xC0 & (1 << i)));
+    }
+    f.cascadeIn->setOn(false);
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.ledResult));
+
+    f.cascadeIn->setOn(true);
+    f.sim->update();
+    QVERIFY(getInputStatus(f.ledResult));
 }
