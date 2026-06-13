@@ -115,63 +115,10 @@ class ExecutionDatapathBuilder(ICBuilderBase):
                 return False
         await self.log("  ✓ Created 8 Result output LEDs")
 
-        # Create NOR gates for Zero flag (8 inputs → 1 output)
-        # Zero flag is 1 when result is 0 (all bits are 0)
-        nor_gates = []
-        nor_x = output_x + HORIZONTAL_GATE_SPACING
-        for i in range(0, 8, 2):
-            nor_id = await self.create_element("Nor", nor_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"NOR_{i}")
-            if nor_id is None:
-                return False
-            if not nor_id:
-                self.log_error(f"Failed to get ID for NOR_{i}")
-                return False
-            nor_gates.append(nor_id)
-
-            # Connect result bits to NOR gate
-            if not await self.connect(alu_id, nor_id, source_port_label=f"Result[{i}]"):
-                return False
-
-            if not await self.connect(alu_id, nor_id, source_port_label=f"Result[{i+1}]", target_port=1):
-                return False
-        await self.log("  ✓ Created NOR gates for Zero flag detection")
-
-        # Create AND gates to combine NOR results (cascaded for multi-input)
-        # First level: AND(NOR[0], NOR[2]) and AND(NOR[4], NOR[6])
-        and_gates = []
-        and_x = nor_x + HORIZONTAL_GATE_SPACING
-        for i in range(0, 4, 2):
-            and_id = await self.create_element("And", and_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"AND_{i}")
-            if and_id is None:
-                return False
-            if not and_id:
-                self.log_error(f"Failed to get ID for AND_{i}")
-                return False
-            and_gates.append(and_id)
-
-            # Connect NOR outputs to this AND
-            if not await self.connect(nor_gates[i//2], and_id):
-                return False
-
-            if not await self.connect(nor_gates[i//2 + 2], and_id, target_port=1):
-                return False
-        await self.log("  ✓ Created first-level AND gates for Zero flag")
-
-        # Create final AND gate to combine the two first-level AND results
-        final_and_id = await self.create_element("And", and_x + HORIZONTAL_GATE_SPACING, 250.0, "ZeroFlag_Final_AND")
-        if final_and_id is None:
-            return False
-        if not final_and_id:
-            self.log_error("Failed to get ID for final AND gate")
-            return False
-
-        # Connect first-level AND outputs to final AND (ports 0, 1 for 2-input AND)
-        for i, and_id in enumerate(and_gates):
-            if not await self.connect(and_id, final_and_id, target_port=i):
-                return False
-        await self.log("  ✓ Created final AND gate for Zero flag")
-
-        # Create Zero flag output LED
+        # Zero flag: reuse the embedded ALU's own Zero output rather than
+        # rebuilding it from the result bits. level6_alu_8bit already computes
+        # Zero internally, so the previous NOR/AND reduction tree (4× Nor → 2×
+        # And → 1 And) was redundant — collapse it to a single wire.
         zero_led_id = await self.create_element("Led", output_x + (2 * HORIZONTAL_GATE_SPACING), 250.0, "Zero")
         if zero_led_id is None:
             return False
@@ -179,9 +126,10 @@ class ExecutionDatapathBuilder(ICBuilderBase):
             self.log_error("Failed to get ID for Zero flag LED")
             return False
 
-        # Connect Zero flag to LED
-        if not await self.connect(final_and_id, zero_led_id):
+        # Connect the ALU's Zero flag straight to the LED
+        if not await self.connect(alu_id, zero_led_id, source_port_label="Zero"):
             return False
+        await self.log("  ✓ Wired ALU Zero flag to LED")
 
         # Create Sign flag output LED (MSB of result)
         sign_led_id = await self.create_element("Led", output_x + (2 * HORIZONTAL_GATE_SPACING), 250.0 + VERTICAL_STAGE_SPACING, "Sign")

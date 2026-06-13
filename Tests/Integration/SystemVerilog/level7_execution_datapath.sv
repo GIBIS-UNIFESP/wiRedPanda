@@ -1001,13 +1001,6 @@ wire w_level6_alu_8bit_inst_1_subcarryout;
 wire w_level6_alu_8bit_inst_1_result5;
 wire w_level6_alu_8bit_inst_1_result6;
 wire w_level6_alu_8bit_inst_1_result7;
-wire aux_nor_2;
-wire aux_nor_3;
-wire aux_nor_4;
-wire aux_nor_5;
-wire aux_and_6;
-wire aux_and_7;
-wire aux_and_8;
 
 // Internal logic
 level6_alu_8bit level6_alu_8bit_inst_1 (
@@ -1047,16 +1040,9 @@ level6_alu_8bit level6_alu_8bit_inst_1 (
     .result6(w_level6_alu_8bit_inst_1_result6),
     .result7(w_level6_alu_8bit_inst_1_result7)
 );
-assign aux_nor_2 = ~(w_level6_alu_8bit_inst_1_result0 | w_level6_alu_8bit_inst_1_result1);
-assign aux_nor_3 = ~(w_level6_alu_8bit_inst_1_result2 | w_level6_alu_8bit_inst_1_result3);
-assign aux_nor_4 = ~(w_level6_alu_8bit_inst_1_result4 | w_level6_alu_8bit_inst_1_result5);
-assign aux_nor_5 = ~(w_level6_alu_8bit_inst_1_result6 | w_level6_alu_8bit_inst_1_result7);
-assign aux_and_6 = (aux_nor_2 & aux_nor_4);
-assign aux_and_7 = (aux_nor_3 & aux_nor_5);
-assign aux_and_8 = (aux_and_6 & aux_and_7);
 
 assign result0 = w_level6_alu_8bit_inst_1_result0;
-assign zero = aux_and_8;
+assign zero = w_level6_alu_8bit_inst_1_zero;
 assign result1 = w_level6_alu_8bit_inst_1_result1;
 assign result2 = w_level6_alu_8bit_inst_1_result2;
 assign sign = w_level6_alu_8bit_inst_1_result7;
