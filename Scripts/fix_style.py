@@ -128,9 +128,11 @@ def parse_include_section_with_ifdef(lines, start_idx):
         stripped = line.strip()
         if stripped.startswith("#ifdef") or (stripped.startswith("#if ") and "defined" in stripped):
             # Pre-scan to find #endif and check if block contains any includes
+            # and whether it has #else/#elif branches.
             j = i + 1
             depth = 1
             has_includes = False
+            has_else = False
             while j < n and depth > 0:
                 s = lines[j].strip()
                 if s.startswith("#ifdef") or s.startswith("#if "):
@@ -139,12 +141,22 @@ def parse_include_section_with_ifdef(lines, start_idx):
                     depth -= 1
                     if depth == 0:
                         break
+                elif s.startswith("#else") or s.startswith("#elif"):
+                    has_else = True
                 if depth > 0 and classify_include(lines[j])[0]:
                     has_includes = True
                 j += 1
 
             # If the block contains no includes, treat it as end-of-section
             if not has_includes:
+                return i, entries, trailing_blocks
+
+            # If the block has #else/#elif branches, its includes live in
+            # mutually-exclusive arms and must not be merged under one condition
+            # (doing so mis-attributes e.g. the #else POSIX headers to the #ifdef
+            # Q_OS_WIN arm). We can't safely reorder across the branches, so
+            # preserve the whole block verbatim by ending the include section here.
+            if has_else:
                 return i, entries, trailing_blocks
 
             # Block has includes — process it
