@@ -284,6 +284,13 @@ void TestLevel9CPU16BitRISC::testCPUComputesOnDecodedFields_data()
     QTest::newRow("shl_0x01") << 6 << 0 << 0x01 << 0x02;
     QTest::newRow("shr_0x3E") << 7 << 0 << 0x3E << 0x1F;
     QTest::newRow("shr_0x08") << 7 << 0 << 0x08 << 0x04;
+
+    // OpCode[4:3] (instruction bits [15:14]) are unwired to the ALU op, which
+    // taps only OpCode's low 3 bits (instruction bits [13:11]). Set those high
+    // bits and confirm the result still follows the low 3 bits — i.e. the ALU
+    // ignores them (an accidental extra wire would change the result).
+    QTest::newRow("high_opcode_alias_add") << 0x18 << 5 << 9    << 14;     // low3=000 ADD, == add_9_plus_5
+    QTest::newRow("high_opcode_alias_shr") << 0x1F << 0 << 0x3E << 0x1F;   // low3=111 SHR, == shr_0x3E
 }
 
 void TestLevel9CPU16BitRISC::testCPUComputesOnDecodedFields()
