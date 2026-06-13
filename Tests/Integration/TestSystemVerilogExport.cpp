@@ -102,415 +102,9 @@ static PortRoles detectPortRoles(IC *ic)
     return roles;
 }
 
-struct SeqTestStep {
-    QVector<int> inputBits;    // input values for this step
-    QVector<int> expectedOut;  // expected output values (empty = don't check)
-    QString comment;           // description for testbench comments
-};
-
-static void setInputAndSettle(const QVector<InputSwitch *> &switches, Simulation *sim, int index, int value)
-{
-    switches[index]->setOn(value != 0);
-    for (int i = 0; i < 20; ++i) {
-        sim->update();
-    }
-}
-
-static QVector<int> readOutputs(const QVector<Led *> &leds)
-{
-    QVector<int> result;
-    result.reserve(leds.size());
-    for (auto *led : leds) {
-        result.append(TestUtils::getInputStatus(led, 0) ? 1 : 0);
-    }
-    return result;
-}
-
-static QVector<int> captureInputs(const QVector<InputSwitch *> &switches)
-{
-    QVector<int> bits;
-    bits.reserve(switches.size());
-    for (auto *sw : switches) {
-        bits.append(sw->isOn() ? 1 : 0);
-    }
-    return bits;
-}
-
-// Record a step that checks outputs
-static void recordCheck(QVector<SeqTestStep> &steps, const QVector<InputSwitch *> &switches,
-                         const QVector<Led *> &leds, const QString &comment = {})
-{
-    steps.append({captureInputs(switches), readOutputs(leds), comment});
-}
-
-// Record a setup step (no output check — just drives inputs for transitions)
-static void recordSetup(QVector<SeqTestStep> &steps, const QVector<InputSwitch *> &switches,
-                         const QString &comment = {})
-{
-    steps.append({captureInputs(switches), {}, comment});
-}
-
-static QVector<SeqTestStep> collectSequentialVectors(
-    SequentialICType seqType,
-    const QVector<InputSwitch *> &switches,
-    const QVector<Led *> &leds,
-    Simulation *sim)
-{
-    QVector<SeqTestStep> steps;
-
-    auto setInput = [&](int index, int value) {
-        setInputAndSettle(switches, sim, index, value);
-    };
-
-    switch (seqType) {
-    case SequentialICType::SRLatch: {
-        // inputs: [0]=s, [1]=r
-        // Step: Set (s=1, r=0)
-        setInput(0, 1);
-        setInput(1, 0);
-        recordCheck(steps, switches, leds, "Set");
-
-        // Step: Hold (s=0, r=0)
-        setInput(0, 0);
-        recordCheck(steps, switches, leds, "Hold after set");
-
-        // Step: Reset (s=0, r=1)
-        setInput(1, 1);
-        recordCheck(steps, switches, leds, "Reset");
-
-        // Step: Hold (s=0, r=0)
-        setInput(1, 0);
-        recordCheck(steps, switches, leds, "Hold after reset");
-
-        // Step: Forbidden (s=1, r=1)
-        setInput(0, 1);
-        setInput(1, 1);
-        recordCheck(steps, switches, leds, "Forbidden");
-        break;
-    }
-
-    case SequentialICType::DLatch: {
-        // inputs: [0]=d, [1]=enable
-        // Enable=1, D=0 → transparent
-        setInput(1, 1);
-        setInput(0, 0);
-        recordCheck(steps, switches, leds, "Transparent D=0");
-
-        // Enable=1, D=1 → transparent
-        setInput(0, 1);
-        recordCheck(steps, switches, leds, "Transparent D=1");
-
-        // Enable=0, D=0 → hold
-        setInput(1, 0);
-        setInput(0, 0);
-        recordCheck(steps, switches, leds, "Hold after D=1");
-
-        // Enable=0, D=1 → hold
-        setInput(0, 1);
-        recordCheck(steps, switches, leds, "Hold D changes ignored");
-
-        // Enable=1, D=0 → transparent again
-        setInput(1, 1);
-        setInput(0, 0);
-        recordCheck(steps, switches, leds, "Transparent D=0 again");
-        break;
-    }
-
-    case SequentialICType::DFlipFlop: {
-        // inputs: [0]=d, [1]=clock, [2]=preset, [3]=clear
-        // Gate-level master-slave: clock HIGH captures master, LOW latches slave.
-
-        auto clockPulseDFF = [&]() {
-            switches[1]->setOn(true);   // clock HIGH
-            for (int u = 0; u < 20; ++u) sim->update();
-            recordSetup(steps, switches, "Clock HIGH");
-            switches[1]->setOn(false);  // clock LOW
-            for (int u = 0; u < 20; ++u) sim->update();
-        };
-
-        // Initialize: preset=1, clear=1, clock=0, d=0
-        switches[0]->setOn(false);  // d=0
-        switches[1]->setOn(false);  // clock=0
-        switches[2]->setOn(true);   // preset=1 (inactive)
-        switches[3]->setOn(true);   // clear=1 (inactive)
-        for (int u = 0; u < 20; ++u) sim->update();
-
-        // D=0, clock pulse → initial state Q=0
-        recordSetup(steps, switches, "Init D=0 clock=0");
-        clockPulseDFF();
-        recordCheck(steps, switches, leds, "Init Q=0");
-
-        // --- Edge-polarity discriminator (F68) ---
-        // The D-FF gate IC is master-LOW / slave-HIGH → RISING-edge: D (tracked
-        // by the master while clock=LOW) transfers to Q when the clock goes
-        // HIGH. So checking Q *while the clock is HIGH* must already show the
-        // captured value — a falling-edge model would still show the old Q here.
-        // This pins the rising edge (mirror of the JK falling-edge check).
-        switches[0]->setOn(true);   // d=1
-        for (int u = 0; u < 20; ++u) sim->update();
-        recordSetup(steps, switches, "Edge test setup D=1 (Q=0)");
-        switches[1]->setOn(true);   // clock HIGH (rising edge captures D)
-        for (int u = 0; u < 20; ++u) sim->update();
-        recordCheck(steps, switches, leds, "Edge test: Q=1 already at clock HIGH (rising-edge)");
-        switches[1]->setOn(false);  // clock LOW
-        for (int u = 0; u < 20; ++u) sim->update();
-        recordCheck(steps, switches, leds, "Edge test: Q holds 1 after clock LOW");
-
-        // D=1, clock pulse → capture Q=1
-        switches[0]->setOn(true);   // d=1
-        for (int u = 0; u < 20; ++u) sim->update();
-        recordSetup(steps, switches, "Setup D=1");
-        clockPulseDFF();
-        recordCheck(steps, switches, leds, "Capture D=1");
-
-        // D=0, clock pulse → capture Q=0
-        switches[0]->setOn(false);  // d=0
-        for (int u = 0; u < 20; ++u) sim->update();
-        recordSetup(steps, switches, "Setup D=0");
-        clockPulseDFF();
-        recordCheck(steps, switches, leds, "Capture D=0");
-
-        // Async preset: preset=0 → Q=1
-        switches[2]->setOn(false);
-        for (int u = 0; u < 20; ++u) sim->update();
-        recordCheck(steps, switches, leds, "Async preset");
-
-        // Release preset, D=0, clock pulse → Q=0
-        switches[2]->setOn(true);
-        switches[0]->setOn(false);
-        for (int u = 0; u < 20; ++u) sim->update();
-        recordSetup(steps, switches, "Setup D=0 after preset");
-        clockPulseDFF();
-        recordCheck(steps, switches, leds, "Capture D=0 after preset");
-
-        // Async clear: clear=0 → Q=0
-        switches[3]->setOn(false);
-        for (int u = 0; u < 20; ++u) sim->update();
-        recordCheck(steps, switches, leds, "Async clear");
-        break;
-    }
-
-    case SequentialICType::JKFlipFlop: {
-        // inputs: [0]=j, [1]=k, [2]=clock, [3]=preset, [4]=clear
-        // Gate-level master-slave: clock HIGH captures in master, LOW latches slave.
-        // Following unit test pattern: minimal sim->update() per step.
-
-        // Helper: clock pulse matching the working unit test pattern.
-        // Records both the rising edge (setup) and falling edge states.
-        auto clockPulseJK = [&]() {
-            switches[2]->setOn(true);   // clock HIGH
-            sim->update();
-            recordSetup(steps, switches, "Clock HIGH");
-            switches[2]->setOn(false);  // clock LOW
-            sim->update();
-        };
-
-        // Initialize: preset=1, clear=1, clock=0, j=0, k=0
-        switches[0]->setOn(false);
-        switches[1]->setOn(false);
-        switches[2]->setOn(false);
-        switches[3]->setOn(true);
-        switches[4]->setOn(true);
-        sim->update();
-
-        // Reset to known state: J=0, K=1, clock pulse → Q=0
-        switches[0]->setOn(false);  // j=0
-        switches[1]->setOn(true);   // k=1
-        recordSetup(steps, switches, "Init reset J=0 K=1");
-        clockPulseJK();
-        recordCheck(steps, switches, leds, "Init reset Q=0");
-
-        // --- Edge-polarity discriminator (F68) ---
-        // The gate IC is a master-slave (7476) JK: FALLING-edge. With Q=0 and
-        // J=1,K=0, raising the clock must NOT change Q yet — the master captures
-        // but the slave holds until the falling edge. Checking outputs *while the
-        // clock is HIGH* discriminates the edge: a rising-edge SV model would
-        // already show Q=1 here, so this step fails if the exporter emits the
-        // wrong clock edge for the JK template.
-        switches[0]->setOn(true);   // j=1
-        switches[1]->setOn(false);  // k=0
-        recordSetup(steps, switches, "Edge test setup J=1 K=0 (Q=0)");
-        switches[2]->setOn(true);   // clock HIGH (master captures; slave holds)
-        sim->update();
-        recordCheck(steps, switches, leds, "Edge test: Q still 0 while clock HIGH");
-        switches[2]->setOn(false);  // clock LOW (falling edge: slave transfers)
-        sim->update();
-        recordCheck(steps, switches, leds, "Edge test: Q=1 after falling edge");
-
-        // Set: J=1, K=0, clock pulse → Q=1
-        switches[0]->setOn(true);   // j=1
-        switches[1]->setOn(false);  // k=0
-        recordSetup(steps, switches, "Setup J=1 K=0");
-        clockPulseJK();
-        recordCheck(steps, switches, leds, "Set J=1 K=0");
-
-        // Reset: J=0, K=1, clock pulse → Q=0
-        switches[0]->setOn(false);  // j=0
-        switches[1]->setOn(true);   // k=1
-        recordSetup(steps, switches, "Setup J=0 K=1");
-        clockPulseJK();
-        recordCheck(steps, switches, leds, "Reset J=0 K=1");
-
-        // Toggle: J=1, K=1, clock pulse → Q=1
-        switches[0]->setOn(true);   // j=1
-        switches[1]->setOn(true);   // k=1
-        recordSetup(steps, switches, "Setup J=1 K=1");
-        clockPulseJK();
-        recordCheck(steps, switches, leds, "Toggle J=1 K=1");
-
-        // Toggle again: J=1, K=1, clock pulse → Q=0
-        recordSetup(steps, switches, "Setup toggle again");
-        clockPulseJK();
-        recordCheck(steps, switches, leds, "Toggle again");
-
-        // Hold: J=0, K=0, clock pulse → Q=0
-        switches[0]->setOn(false);  // j=0
-        switches[1]->setOn(false);  // k=0
-        recordSetup(steps, switches, "Setup J=0 K=0");
-        clockPulseJK();
-        recordCheck(steps, switches, leds, "Hold J=0 K=0");
-
-        // Async preset: preset=0 → Q=1
-        switches[3]->setOn(false);
-        sim->update();
-        recordCheck(steps, switches, leds, "Async preset");
-        break;
-    }
-
-    default:
-        break;
-    }
-
-    return steps;
-}
-
-static QVector<SeqTestStep> collectGenericSequentialVectors(
-    const PortRoles &roles,
-    const QVector<InputSwitch *> &switches,
-    const QVector<Led *> &leds,
-    Simulation *sim)
-{
-    QVector<SeqTestStep> steps;
-    const int clockIdx = roles.clockIdx;
-
-    // Helper: settle simulation
-    auto settle = [&]() {
-        for (int u = 0; u < 20; ++u) sim->update();
-    };
-
-    // Helper: clock pulse (HIGH + settle + LOW + settle)
-    // Both phases are recorded so the testbench generates proper 0→1→0 transitions.
-    auto clockPulse = [&]() {
-        switches[clockIdx]->setOn(true);
-        settle();
-        recordSetup(steps, switches, "Clock HIGH");
-        switches[clockIdx]->setOn(false);
-        settle();
-        recordSetup(steps, switches, "Clock LOW");
-    };
-
-    // Initialize: all inputs to 0
-    for (auto *sw : switches) {
-        sw->setOn(false);
-    }
-    settle();
-
-    // Phase 1: establish known state
-    if (roles.resetIdx >= 0) {
-        // Assert active-HIGH reset, pulse clock twice, deassert, pulse once
-        switches[roles.resetIdx]->setOn(true);
-        settle();
-        clockPulse();
-        clockPulse();
-        switches[roles.resetIdx]->setOn(false);
-        settle();
-        recordSetup(steps, switches, "Reset deasserted");
-        clockPulse();
-    } else if (roles.presetIdx >= 0) {
-        // Active-LOW preset: assert (LOW), pulse, deassert (HIGH), pulse
-        switches[roles.presetIdx]->setOn(false); // already 0, but explicit
-        settle();
-        clockPulse();
-        switches[roles.presetIdx]->setOn(true);
-        settle();
-        recordSetup(steps, switches, "Preset deasserted");
-        clockPulse();
-    } else {
-        // No reset/preset: flush with clock pulses
-        for (int f = 0; f < 4; ++f) {
-            clockPulse();
-        }
-    }
-
-    // Record initial output state
-    recordCheck(steps, switches, leds, "Initial state after reset");
-
-    // Phase 2: sweep data patterns with clock
-    const int numDataBits = static_cast<int>(roles.dataIdxs.size());
-    QVector<int> patterns;
-
-    if (numDataBits == 0) {
-        // No data bits (e.g., counter with just clock+reset) — just clock several times
-        for (int c = 0; c < 8; ++c) {
-            recordSetup(steps, switches, QString("Clock cycle %1").arg(c));
-            clockPulse();
-            recordCheck(steps, switches, leds, QString("After clock %1").arg(c));
-        }
-    } else {
-        if (numDataBits <= 8) {
-            // Exhaustive
-            for (int v = 0; v < (1 << numDataBits); ++v) {
-                patterns << v;
-            }
-        } else {
-            // Sampled: 0, all-1s, walking-1s, random fill to 32
-            patterns << 0 << ((1 << numDataBits) - 1);
-            for (int i = 0; i < numDataBits; ++i) {
-                patterns << (1 << i);
-            }
-            while (patterns.size() < 32) {
-                patterns << QRandomGenerator::global()->bounded(1 << numDataBits);
-            }
-        }
-
-        // Enable write if applicable
-        auto enableWrite = [&]() {
-            if (roles.weIdx >= 0) switches[roles.weIdx]->setOn(true);
-            if (roles.loadIdx >= 0) switches[roles.loadIdx]->setOn(true);
-            if (roles.enableIdx >= 0) switches[roles.enableIdx]->setOn(true);
-        };
-        auto disableWrite = [&]() {
-            if (roles.weIdx >= 0) switches[roles.weIdx]->setOn(false);
-            if (roles.loadIdx >= 0) switches[roles.loadIdx]->setOn(false);
-        };
-
-        for (int p = 0; p < patterns.size(); ++p) {
-            const int pattern = patterns[p];
-
-            // Set data inputs
-            for (int b = 0; b < numDataBits; ++b) {
-                switches[roles.dataIdxs[b]]->setOn((pattern >> b) & 1);
-            }
-            enableWrite();
-            settle();
-
-            recordSetup(steps, switches, QString("Setup pattern %1").arg(p));
-            clockPulse();
-            recordCheck(steps, switches, leds, QString("Pattern %1").arg(p));
-
-            // Hold test: deassert write, clock, verify outputs stay
-            if (roles.weIdx >= 0 || roles.loadIdx >= 0) {
-                disableWrite();
-                settle();
-                recordSetup(steps, switches, QString("Hold test %1").arg(p));
-                clockPulse();
-                recordCheck(steps, switches, leds, QString("Hold verify %1").arg(p));
-            }
-        }
-    }
-
-    return steps;
-}
+// Seeded-random differential stimulus parameters (deterministic across runs).
+static constexpr quint32 kDiffSeed = 0x5EEDC0DEU;
+static constexpr int kDiffSteps = 48;
 
 void TestSystemVerilogExport::initTestCase()
 {
@@ -820,14 +414,31 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
         const auto &outputPins = generator.outputMap();
         const QString &modName = generator.moduleName();
 
-        // Collect sequential test vectors (Level 1 dedicated or generic)
-        QVector<SeqTestStep> seqSteps;
-        if (seqType != SequentialICType::None) {
-            seqSteps = collectSequentialVectors(seqType, switches, leds, sim);
-        } else {
-            PortRoles roles = detectPortRoles(ic);
-            if (roles.clockIdx >= 0) {
-                seqSteps = collectGenericSequentialVectors(roles, switches, leds, sim);
+        // Sequential stimulus: seeded-random differential vectors driven through
+        // the engine oracle (replaces the old hand-written per-type tables). The
+        // clock (if any) is pulsed with a mid-pulse sample, which makes the check
+        // edge-polarity sensitive. A circuit is sequential if it is a recognised
+        // latch or exposes a clock.
+        QVector<TestUtils::DiffStep> seqSteps;
+        // Active-low async controls (preset/clear) held inactive throughout the
+        // differential run: two of them low is the forbidden state, whose
+        // metastable release is undefined and resolves differently in the engine
+        // vs a faithful gate-level export — so the check stays out of it. The
+        // testbench's t=0 init must hold these HIGH too, else SV starts inside
+        // the forbidden state while the engine never does.
+        QVector<int> holdInactive;
+        {
+            const PortRoles roles = detectPortRoles(ic);
+            const bool isSequential = (seqType != SequentialICType::None) || (roles.clockIdx >= 0);
+            if (isSequential) {
+                for (int i = 0; i < ic->inputSize(); ++i) {
+                    const QString nm = ic->inputPort(i)->name().toLower().trimmed();
+                    if (nm == "preset" || nm == "clear") {
+                        holdInactive.append(i);
+                    }
+                }
+                seqSteps = TestUtils::generateDifferentialVectors(
+                    switches, leds, sim, roles.clockIdx, holdInactive, kDiffSeed, kDiffSteps);
             }
         }
 
@@ -863,11 +474,13 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
                 tb << "    initial begin\n";
                 tb << "        errors = 0;\n";
 
-                // Initialize all inputs to 0 at time 0 to prevent x→1 being seen as
-                // a spurious posedge in SystemVerilog (wiRedPanda inputs start at 0).
+                // Initialize inputs at t=0 to prevent x→1 being seen as a spurious
+                // posedge. Held async controls (preset/clear) start HIGH (inactive)
+                // to match the engine — otherwise SV would power on in the
+                // forbidden state and resolve differently from the oracle.
                 tb << "        ";
-                for (const auto &pin : inputPins) {
-                    tb << pin.m_varName << " = 0; ";
+                for (int i = 0; i < inputPins.size(); ++i) {
+                    tb << inputPins[i].m_varName << " = " << (holdInactive.contains(i) ? 1 : 0) << "; ";
                 }
                 tb << "#10;\n\n";
 
@@ -875,11 +488,6 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
                 for (int s = 0; s < seqSteps.size(); ++s) {
                     const auto &step = seqSteps[s];
                     const bool isCheck = !step.expectedOut.isEmpty();
-
-                    // Comment
-                    if (!step.comment.isEmpty()) {
-                        tb << "        // " << step.comment << "\n";
-                    }
 
                     // Set all inputs for this step
                     tb << "        ";
@@ -904,8 +512,8 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
                             expectedArgs << QString::number(step.expectedOut[o]);
                             gotArgs << outputPins[o].m_varName;
                         }
-                        tb << "            $display(\"FAIL step " << s << " ("
-                           << step.comment << "): expected " << fmtParts.join(" ")
+                        tb << "            $display(\"FAIL step " << s
+                           << ": expected " << fmtParts.join(" ")
                            << " got " << fmtParts.join(" ") << "\",\n";
                         tb << "                " << expectedArgs.join(", ") << ", "
                            << gotArgs.join(", ") << ");\n";

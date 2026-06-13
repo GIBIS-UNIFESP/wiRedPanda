@@ -15,6 +15,7 @@
 #include "App/Scene/Workspace.h"
 
 class InputSwitch;
+class Led;
 class QNEConnection;
 class Simulation;
 
@@ -214,6 +215,58 @@ void initElm(GraphicElement &elm);
  * @brief True if any pixel of @a pixmap has non-zero alpha (i.e. paint() drew something)
  */
 bool pixmapHasInk(const QPixmap &pixmap);
+
+/**
+ * @brief One step of an engine-differential test vector: the inputs driven and
+ *        the outputs the wiRedPanda engine produced (the oracle).
+ */
+struct DiffStep {
+    QVector<int> inputBits;   ///< Value driven on each input switch (caller order).
+    QVector<int> expectedOut; ///< Engine output on each LED (caller order) — the reference.
+};
+
+/**
+ * @brief Seeded-random differential stimulus driven through the engine oracle.
+ *
+ * Backend-agnostic: the returned steps feed either the SystemVerilog (iverilog)
+ * or Arduino (simavr) testbench, which must reproduce @c expectedOut for every
+ * step. Deterministic for a given @a seed (uses a local QRandomGenerator, not the
+ * global one).
+ *
+ * For clocked circuits (@a clockIdx >= 0) each step randomizes the non-clock
+ * inputs while the clock is LOW, then pulses the clock, sampling the engine three
+ * times: with the new data (clock LOW), at the rising edge (clock HIGH, mid-pulse
+ * — deterministically exercises clock-edge polarity), and at the falling edge
+ * (clock LOW). The engine is settled to a fixed point before each sample. For
+ * latches (@a clockIdx < 0) each step randomizes all inputs and samples once.
+ *
+ * Inputs listed in @a asyncLowIdx are treated as active-low async controls
+ * (preset/clear). A cross-coupled flip-flop powers on into a free-running
+ * bistable state the engine and a faithful gate-level export resolve oppositely,
+ * so the run opens with a RECORDED reset preamble: assert ALL async controls
+ * (the input events drive the export's seeded latch off its metastable (0,0)
+ * point — a single assert can't, and a clock pulse there only corrupts it), then
+ * release all but one, leaving one control asserted to force a defined state both
+ * agree on. During random stimulus at most ONE of them is asserted per step —
+ * never the forbidden both-low contention, whose release is undefined. The
+ * synchronous data path (where edge polarity matters) is fully exercised.
+ *
+ * @param switches     Input switches (the IC's inputs, in codegen order).
+ * @param leds         Output LEDs (the IC's outputs, in codegen order).
+ * @param sim          Initialised simulation to drive.
+ * @param clockIdx     Index of the clock input in @a switches, or -1 if none.
+ * @param asyncLowIdx  Indices of active-low async controls (preset/clear).
+ * @param seed         RNG seed for reproducibility.
+ * @param numSteps     Number of stimulus steps (each clocked step emits three samples).
+ */
+QVector<DiffStep> generateDifferentialVectors(
+    const QVector<InputSwitch *> &switches,
+    const QVector<Led *> &leds,
+    Simulation *sim,
+    int clockIdx,
+    const QVector<int> &asyncLowIdx,
+    quint32 seed,
+    int numSteps);
 
 } // namespace TestUtils
 
