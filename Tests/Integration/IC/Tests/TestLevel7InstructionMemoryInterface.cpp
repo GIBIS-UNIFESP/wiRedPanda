@@ -14,6 +14,7 @@
 
 using TestUtils::setMultiBitInput;
 using TestUtils::readMultiBitOutput;
+using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 void TestLevel7InstructionMemoryInterface::initTestCase()
@@ -108,6 +109,85 @@ void TestLevel7InstructionMemoryInterface::testInstructionMemoryInterface()
 
     // Verify instruction matches expected
     QCOMPARE(instruction, expectedInstruction);
+}
+
+// The read-only test above only sees uninitialized memory (all 0x00) and never
+// wires DataIn/WriteEnable, so the write port — the whole reason the interface
+// exposes one — went unexercised. Program two words through the write port, then
+// read each back, and confirm the documented partial-decode aliasing (only
+// Address[0..2] reach the 8-word RAM, so addresses repeat modulo 8).
+void TestLevel7InstructionMemoryInterface::testInstructionMemoryWriteRead()
+{
+    auto workspace = std::make_unique<WorkSpace>();
+    CircuitBuilder builder(workspace->scene());
+
+    QVector<InputSwitch *> address_inputs;
+    QVector<InputSwitch *> data_inputs;
+    for (int i = 0; i < 8; i++) {
+        auto *addr = new InputSwitch();
+        builder.add(addr);
+        address_inputs.append(addr);
+
+        auto *data = new InputSwitch();
+        builder.add(data);
+        data_inputs.append(data);
+    }
+
+    InputSwitch *writeEnable = new InputSwitch();
+    builder.add(writeEnable);
+
+    InputSwitch *clk = new InputSwitch();
+    builder.add(clk);
+
+    IC *imem = loadBuildingBlockIC("level7_instruction_memory_interface.panda");
+    builder.add(imem);
+
+    QVector<Led *> instr_leds;
+    for (int i = 0; i < 8; i++) {
+        auto *led = new Led();
+        builder.add(led);
+        instr_leds.append(led);
+    }
+
+    for (int i = 0; i < 8; i++) {
+        builder.connect(address_inputs[i], 0, imem, QString("Address[%1]").arg(i));
+        builder.connect(data_inputs[i], 0, imem, QString("DataIn[%1]").arg(i));
+        builder.connect(imem, QString("Instruction[%1]").arg(i), instr_leds[i], 0);
+    }
+    builder.connect(writeEnable, 0, imem, "WriteEnable");
+    builder.connect(clk, 0, imem, "Clock");
+
+    Simulation *sim = builder.initSimulation();
+    sim->update();
+
+    auto readAt = [&](int address) {
+        setMultiBitInput(address_inputs, address);
+        sim->update();
+        return readMultiBitOutput(QVector<GraphicElement *>(instr_leds.begin(), instr_leds.end()), 0);
+    };
+
+    auto writeWord = [&](int address, int value) {
+        setMultiBitInput(address_inputs, address);
+        setMultiBitInput(data_inputs, value);
+        writeEnable->setOn(true);
+        sim->update();
+        clockCycle(sim, clk);
+        writeEnable->setOn(false);
+        sim->update();
+    };
+
+    // Program two distinct words at two distinct low addresses
+    writeWord(0x02, 0xAB);
+    writeWord(0x05, 0xCD);
+
+    // Each reads back independently — proving the write port stores and the
+    // async read returns the addressed word
+    QCOMPARE(readAt(0x02), 0xAB);
+    QCOMPARE(readAt(0x05), 0xCD);
+
+    // Partial decode: Address[3..7] are ignored, so 0x0A (= 0x02 + 8) aliases
+    // the word written at 0x02
+    QCOMPARE(readAt(0x0A), 0xAB);
 }
 
 void TestLevel7InstructionMemoryInterface::testInstructionMemoryInterfaceStructure()
