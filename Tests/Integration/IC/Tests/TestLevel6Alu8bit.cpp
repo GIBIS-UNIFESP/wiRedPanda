@@ -26,6 +26,7 @@ struct Alu8bitFixture {
     QVector<Led *> resultOutputs;
     Led *zeroFlag = nullptr;
     Led *negativeFlag = nullptr;
+    Led *carryFlag = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -70,6 +71,10 @@ struct Alu8bitFixture {
         builder.add(negativeFlag);
         negativeFlag->setLabel("Negative");
 
+        carryFlag = new Led();
+        builder.add(carryFlag);
+        carryFlag->setLabel("Carry");
+
         for (int i = 0; i < 8; i++) {
             builder.connect(aInputs[i], 0, ic, QString("A[%1]").arg(i));
             builder.connect(bInputs[i], 0, ic, QString("B[%1]").arg(i));
@@ -83,6 +88,7 @@ struct Alu8bitFixture {
         }
         builder.connect(ic, "Zero", zeroFlag, 0);
         builder.connect(ic, "Negative", negativeFlag, 0);
+        builder.connect(ic, "Carry", carryFlag, 0);
 
         sim = builder.initSimulation();
         sim->update();
@@ -259,5 +265,60 @@ void TestLevel6ALU8Bit::testALU8BitOutputPortIsolation()
         bool expected = (i == bitPosition);
 
         QCOMPARE(bit_result, expected);
+    }
+}
+
+// ADD and SUB exercise the carry/borrow chain across the 4-bit nibble boundary
+// (the whole point of composing two ripple_alu_4bit halves), and the
+// Zero/Negative/Carry flags. None of this was previously covered -- the
+// operation test only ran AND/OR/XOR/NOT/SHL/SHR. CarryIn defaults to 0 and
+// SubCarryIn to 1 (the two's-complement +1), so ADD = A+B and SUB = A-B.
+void TestLevel6ALU8Bit::testArithmetic_data()
+{
+    QTest::addColumn<int>("opcode");
+    QTest::addColumn<int>("a");
+    QTest::addColumn<int>("b");
+    QTest::addColumn<int>("expectedResult");
+    QTest::addColumn<bool>("expectedZero");
+    QTest::addColumn<bool>("expectedNegative");
+    QTest::addColumn<int>("expectedCarry");  // -1 = do not check (SUB uses the parallel ADD carry)
+
+    // ADD (opcode 0): Result = A + B; Carry = unsigned overflow out of bit 7.
+    QTest::newRow("ADD nibble-carry 0x0F+0x01=0x10") << 0 << 0x0F << 0x01 << 0x10 << false << false << 0;
+    QTest::newRow("ADD 0x08+0x08=0x10")              << 0 << 0x08 << 0x08 << 0x10 << false << false << 0;
+    QTest::newRow("ADD overflow 0xFF+0x01=0x00")     << 0 << 0xFF << 0x01 << 0x00 << true  << false << 1;
+    QTest::newRow("ADD negative 0x7F+0x01=0x80")     << 0 << 0x7F << 0x01 << 0x80 << false << true  << 0;
+    QTest::newRow("ADD zero 0x00+0x00=0x00")         << 0 << 0x00 << 0x00 << 0x00 << true  << false << 0;
+    QTest::newRow("ADD 0x3C+0x14=0x50")              << 0 << 0x3C << 0x14 << 0x50 << false << false << 0;
+
+    // SUB (opcode 1): Result = A - B via two's complement (SubCarryIn=1 default).
+    QTest::newRow("SUB nibble-borrow 0x10-0x01=0x0F") << 1 << 0x10 << 0x01 << 0x0F << false << false << -1;
+    QTest::newRow("SUB underflow 0x00-0x01=0xFF")     << 1 << 0x00 << 0x01 << 0xFF << false << true  << -1;
+    QTest::newRow("SUB zero 0x05-0x05=0x00")          << 1 << 0x05 << 0x05 << 0x00 << true  << false << -1;
+    QTest::newRow("SUB 0x80-0x01=0x7F")               << 1 << 0x80 << 0x01 << 0x7F << false << false << -1;
+}
+
+void TestLevel6ALU8Bit::testArithmetic()
+{
+    QFETCH(int, opcode);
+    QFETCH(int, a);
+    QFETCH(int, b);
+    QFETCH(int, expectedResult);
+    QFETCH(bool, expectedZero);
+    QFETCH(bool, expectedNegative);
+    QFETCH(int, expectedCarry);
+
+    auto &f = *s_level6Alu8bit;
+
+    setMultiBitInput(f.aInputs, a);
+    setMultiBitInput(f.bInputs, b);
+    f.setOpCode(opcode);
+    f.sim->update();
+
+    QCOMPARE(f.readResult(), expectedResult);
+    QCOMPARE(getInputStatus(f.zeroFlag), expectedZero);
+    QCOMPARE(getInputStatus(f.negativeFlag), expectedNegative);
+    if (expectedCarry >= 0) {
+        QCOMPARE(getInputStatus(f.carryFlag), expectedCarry != 0);
     }
 }
