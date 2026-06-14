@@ -10,6 +10,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# We use C++20 the language, but not C++20 modules. With the policy max raised to
+# 3.31 above (for CMP0156), CMP0155 also defaults to NEW, which turns on per-source
+# module-dependency scanning (the ninja "CXX.dd" dyndep step). That scanning is pure
+# overhead here and, worse, defeats unity builds — scanned sources are compiled
+# individually instead of being batched. Turn it off explicitly: no modules, no scan.
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+
 # Enable RPATH for development builds with custom Qt installations
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
