@@ -4,6 +4,7 @@
 #include "App/Element/GraphicElement.h"
 
 #include <cmath>
+#include <memory>
 
 #include <QCoreApplication>
 #include <QDir>
@@ -247,6 +248,8 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     }
 }
 
+GraphicElement::~GraphicElement() = default;
+
 ElementType GraphicElement::elementType() const
 {
     return m_elementType;
@@ -430,9 +433,21 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->restore();
     }
 
-    // Pixmap origin is always (0,0) in item coordinates; the transform origin
-    // (centre of the pixmap) is set separately via setTransformOriginPoint().
-    painter->drawPixmap(QPoint(0, 0), pixmap());
+    // Draw the body from vector data (crisp at any zoom) when the appearance is an SVG; fall back to
+    // the rasterised pixmap for raster (PNG/JPG) appearances. DeviceCoordinateCache re-renders this
+    // per zoom level, so the SVG stays sharp instead of scaling a fixed-size bitmap.
+    if (m_svgRenderer && m_svgRenderer->isValid()) {
+        painter->save();
+        painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                                QPainter::SmoothPixmapTransform, true);
+        // Render into the SVG's native box at the origin — the same 0,0..defaultSize the raster occupied.
+        m_svgRenderer->render(painter, QRectF(QPointF(0, 0), QSizeF(m_svgRenderer->defaultSize())));
+        painter->restore();
+    } else {
+        // Pixmap origin is always (0,0) in item coordinates; the transform origin
+        // (centre of the pixmap) is set separately via setTransformOriginPoint().
+        painter->drawPixmap(QPoint(0, 0), pixmap());
+    }
 }
 
 void GraphicElement::addPort(const QString &name, const bool isOutput)
@@ -578,7 +593,36 @@ void GraphicElement::applyPixmapOrientation()
     } else {
         m_pixmap = m_basePixmap;
     }
+    rebuildSvgRenderer();
     update();
+}
+
+void GraphicElement::rebuildSvgRenderer()
+{
+    // paint() draws this vector renderer so SVG elements stay crisp at any zoom; raster (PNG/JPG)
+    // appearances leave it null and fall back to drawing the rasterised m_pixmap.
+    if (!m_resolvedPixmapPath.endsWith(QLatin1String(".svg"), Qt::CaseInsensitive)) {
+        m_svgRenderer.reset();
+        return;
+    }
+
+    QFile file(m_resolvedPixmapPath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        m_svgRenderer.reset();
+        return;
+    }
+    QByteArray svg = file.readAll();
+
+    // Counter-orient each <text> while rotated/flipped so pin labels stay upright — the same
+    // correction orientedSvgPixmap() bakes into the rasterised variant. Gated on rotatesGraphic()
+    // because a non-rotatable element never transforms its graphic, so its text stays as authored.
+    const bool oriented = rotatesGraphic() && (m_flippedX || m_flippedY || (m_angle != 0.0));
+    if (oriented && svg.contains("<text")) {
+        svg = orientSvgTextNodes(svg, m_angle, m_flippedX, m_flippedY);
+    }
+
+    auto renderer = std::make_unique<QSvgRenderer>(svg);
+    m_svgRenderer = renderer->isValid() ? std::move(renderer) : nullptr;
 }
 
 void GraphicElement::setAppearance(const bool defaultAppearance, const QString &fileName)
