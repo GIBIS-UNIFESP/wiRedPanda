@@ -3,6 +3,7 @@
 
 #include "App/Element/ICPreviewPopup.h"
 
+#include <QFrame>
 #include <QGuiApplication>
 #include <QScreen>
 #include <QVBoxLayout>
@@ -19,26 +20,46 @@ ICPreviewPopup::ICPreviewPopup(QWidget *parent)
     auto *layout = new QVBoxLayout(this);
     layout->setContentsMargins(4, 4, 4, 4);
 
-    m_imageLabel = new QLabel(this);
+    // Inset frame holds both the filename caption and the preview image, so the
+    // name reads against the same framed background as the rendered circuit
+    // rather than floating on the popup chrome outside the frame.
+    auto *frame = new QFrame(this);
+    frame->setObjectName(QStringLiteral("previewFrame"));
+    auto *frameLayout = new QVBoxLayout(frame);
+    frameLayout->setContentsMargins(6, 6, 6, 6);
+    frameLayout->setSpacing(4);
+
+    m_titleLabel = new QLabel(frame);
+    m_titleLabel->setObjectName(QStringLiteral("title"));
+    m_titleLabel->setAlignment(Qt::AlignCenter);
+    frameLayout->addWidget(m_titleLabel);
+
+    m_imageLabel = new QLabel(frame);
     m_imageLabel->setObjectName(QStringLiteral("preview"));
     m_imageLabel->setAlignment(Qt::AlignCenter);
-    layout->addWidget(m_imageLabel);
+    frameLayout->addWidget(m_imageLabel);
 
-    // Outer popup chrome + an inset frame around the preview pixmap so the
-    // rendered circuit reads as a framed image rather than floating content.
-    // The QLabel selector is scoped by objectName so future labels added to
-    // the popup don't silently inherit the inset frame styling.
+    layout->addWidget(frame);
+
+    // Outer popup chrome + an inset frame around the caption and pixmap so the
+    // content reads as a single framed card rather than floating content.
+    // Selectors are scoped by objectName so the inner labels don't inherit the
+    // frame's border/background.
     setStyleSheet(
         "ICPreviewPopup {"
         "  background-color: rgba(30, 30, 30, 230);"
         "  border: 1px solid rgba(120, 120, 120, 180);"
         "  border-radius: 6px;"
         "}"
-        "QLabel#preview {"
+        "QFrame#previewFrame {"
         "  border: 1px solid rgba(170, 170, 170, 200);"
         "  border-radius: 3px;"
-        "  padding: 6px;"
         "  background-color: rgba(15, 15, 15, 200);"
+        "}"
+        "QLabel#title {"
+        "  color: rgba(230, 230, 230, 235);"
+        "  font-weight: bold;"
+        "  padding: 2px 4px;"
         "}"
     );
 
@@ -77,15 +98,28 @@ void ICPreviewPopup::executeShow()
         return;
     }
 
-    // The pixmap is the single source of truth: it's null when the IC was
-    // empty or oversized at load time, or when generation otherwise failed.
+    // The popup carries the IC's name (formerly a separate Qt tooltip) plus the
+    // rendered preview. The pixmap is null when the IC was empty or oversized at
+    // load time, or when generation failed — in that case we still show the name.
+    const QString title = m_pendingIC->displayName();
     const QPixmap &preview = m_pendingIC->previewPixmap();
-    if (preview.isNull()) {
+
+    if (title.isEmpty() && preview.isNull()) {
         hide();
         return;
     }
 
-    m_imageLabel->setPixmap(preview);
+    m_titleLabel->setText(title);
+    m_titleLabel->setVisible(!title.isEmpty());
+
+    if (preview.isNull()) {
+        m_imageLabel->clear();
+        m_imageLabel->hide();
+    } else {
+        m_imageLabel->setPixmap(preview);
+        m_imageLabel->show();
+    }
+
     adjustSize();
 
     // Position slightly offset from the cursor, then clamp to the available

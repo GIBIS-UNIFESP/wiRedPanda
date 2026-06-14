@@ -78,6 +78,7 @@ protected:
 private:
     void executeShow();
 
+    QLabel *m_titleLabel;   ///< Filename/blob-name caption shown above the preview image.
     QLabel *m_imageLabel;
     QTimer m_hideTimer;
     QTimer m_showTimer;

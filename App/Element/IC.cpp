@@ -365,7 +365,10 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
         if (!cached.isEmpty()) {
             deserializeAndLoad(cached, fileInfo.absolutePath());
             m_file = fileInfo.absoluteFilePath();
-            setToolTip(fileInfo.fileName());
+            // No Qt tooltip: the filename is shown in the hover preview popup
+            // (see ICPreviewPopup) so the two don't overlap. Clear the base
+            // class's translated-name tooltip set at construction.
+            setToolTip(QString());
             if (label().isEmpty()) {
                 setLabel(fileInfo.baseName().toUpper());
             }
@@ -380,7 +383,8 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     // without ever leaving m_sortedInternalElements pointing at freed elements.
     loadFileDirectly(fileInfo);
     m_file = fileInfo.absoluteFilePath();
-    setToolTip(fileInfo.fileName());
+    // Name is carried by the hover preview popup, not a Qt tooltip — see above.
+    setToolTip(QString());
 
     qCDebug(zero) << "Finished reading IC.";
 }
@@ -550,9 +554,9 @@ void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
     deserializeAndLoad(blob, contextDir);
     m_file.clear(); // switching to blob-backed, no file association
 
-    if (!m_blobName.isEmpty()) {
-        setToolTip(m_blobName);
-    }
+    // Name is carried by the hover preview popup, not a Qt tooltip; clear the
+    // base class's translated-name tooltip so no bubble fights the preview.
+    setToolTip(QString());
 
     qCDebug(zero) << "Finished loading IC from blob.";
 }
@@ -631,6 +635,14 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 }
 
 // --- Hover preview ---
+
+QString IC::displayName() const
+{
+    if (!m_blobName.isEmpty()) {
+        return m_blobName;
+    }
+    return m_file.isEmpty() ? QString() : QFileInfo(m_file).fileName();
+}
 
 bool IC::isCursorOverPort(const QPointF &localPos) const
 {
