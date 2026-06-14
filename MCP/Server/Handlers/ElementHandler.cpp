@@ -328,7 +328,7 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         element->setFrequency(newFreq);
     }
 
-    if (params.contains("rotation") && element->rotatesGraphic()) {
+    if (params.contains("rotation")) {
         qreal oldRotation = element->rotation();
         qreal newRotation = params.value("rotation").toDouble();
 
@@ -554,11 +554,8 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
-    if (!element->rotatesGraphic()) {
-        return createErrorResponse(QString("Element %1 is not rotatable").arg(element->id()),
-                                   requestId, JsonRpcError::ValidationError);
-    }
-
+    // Fixed-graphic elements (inputs/outputs/displays) rotate by repositioning their ports,
+    // exactly as the GUI does — so rotation is valid for every element here.
     Scene *scene = getCurrentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);

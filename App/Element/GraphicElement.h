@@ -305,8 +305,9 @@ public:
     /// icon stays fixed and only the ports reposition around the centre (the element still rotates).
     bool rotatesGraphic() const;
 
-    /// Rotates all ports by \a angle degrees around the element centre.
-    void rotatePorts(const qreal angle);
+    /// Re-applies the combined rotation + flip orientation to every port. Used by non-rotatable
+    /// elements, which keep their pixmap fixed and move only their ports around the centre.
+    void rotatePorts();
 
     // --- Flip / Mirror ---
 
@@ -558,6 +559,12 @@ private:
 
     /// Recomputes the QGraphicsItem transform from the current flip flags.
     void applyFlipTransform();
+
+    /// Orients \a port for the current rotation + flip state (used by non-rotatable elements,
+    /// which keep their pixmap fixed). Applies Rotate(centre, m_angle) then Flip about the
+    /// pixmap centre to the port, so the port moves to the mirrored/rotated side while the
+    /// element graphic stays upright. Recomputed from the flags each call, so it is involutive.
+    void applyPortOrientation(QNEPort *port);
 
     // --- Port Management Helpers ---
 

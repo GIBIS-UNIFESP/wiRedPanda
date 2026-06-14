@@ -328,16 +328,38 @@ void GraphicElement::setRotation(const qreal angle)
     // Rotatable elements rotate the entire QGraphicsItem (pixmap + ports move together).
     // Non-rotatable elements (inputs/outputs) keep the pixmap fixed and only spin ports
     // around the element centre so connections track the correct positions.
-    rotatesGraphic() ? QGraphicsItem::setRotation(m_angle) : rotatePorts(m_angle);
+    rotatesGraphic() ? QGraphicsItem::setRotation(m_angle) : rotatePorts();
 }
 
-void GraphicElement::rotatePorts(const qreal angle)
+void GraphicElement::rotatePorts()
 {
     for (auto *port : allPorts()) {
-        port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
-        port->setRotation(angle);
-        port->updateConnections();
+        applyPortOrientation(port);
     }
+}
+
+void GraphicElement::applyPortOrientation(QNEPort *port)
+{
+    // Non-rotatable elements keep their pixmap fixed and instead transform each port about the
+    // pixmap centre, so the port moves to the rotated/mirrored side while the graphic stays
+    // upright. The single combined transform encodes both rotation and the flip flags, so all
+    // three triggers (updatePortsProperties, setRotation, setFlippedX/Y) produce the same result.
+    port->setRotation(0);
+    port->setTransformOriginPoint(QPointF());
+
+    // pixmapCenter() expressed in the port's local frame. port->pos() is the port's base
+    // position — flip and rotation use the transform and never move pos — so this is stable
+    // and independent of any transform already on the port (keeps the operation involutive).
+    const QPointF origin = pixmapCenter() - port->pos();
+
+    QTransform t;
+    t.translate(origin.x(), origin.y());
+    t.rotate(m_angle);
+    t.scale(m_flippedX ? -1 : 1, m_flippedY ? -1 : 1);
+    t.translate(-origin.x(), -origin.y());
+    port->setTransform(t);
+
+    port->updateConnections();
 }
 
 qreal GraphicElement::rotation() const
@@ -359,6 +381,14 @@ void GraphicElement::setFlippedY(const bool flipped)
 
 void GraphicElement::applyFlipTransform()
 {
+    // Non-rotatable elements (inputs/outputs) keep their pixmap fixed and mirror only their
+    // ports — exactly as rotation does for them — so a flipped pushbutton/display never renders
+    // its graphic reversed. rotatePorts() re-applies the combined rotation+flip orientation.
+    if (!rotatesGraphic()) {
+        rotatePorts();
+        return;
+    }
+
     if (!m_flippedX && !m_flippedY) {
         setTransform(QTransform());
         return;
@@ -422,18 +452,13 @@ void GraphicElement::updatePortsProperties()
         for (auto *port : std::as_const(m_inputPorts)) {
             qCDebug(five) << "Setting input at " << 0 << ", " << y;
 
-            // Non-rotatable elements (e.g. inputs) spin their ports in place rather than rotating
-            // the whole item, so reset port rotation before applying the current element angle
-            if (!rotatesGraphic()) {
-                port->setRotation(0);
-            }
-
             // Inputs are pinned to the left edge (x=0) of the 64 px body
             port->setPos(0, y);
 
+            // Non-rotatable elements keep the pixmap fixed and orient their ports in place,
+            // applying the current rotation and flip about the element centre.
             if (!rotatesGraphic()) {
-                port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
-                port->setRotation(m_angle);
+                applyPortOrientation(port);
             }
 
             // Ports are spaced 2*step (16 px) apart so they align with the
@@ -448,16 +473,13 @@ void GraphicElement::updatePortsProperties()
         for (auto *port : std::as_const(m_outputPorts)) {
             qCDebug(five) << "Setting output at " << 64 << ", " << y;
 
-            if (!rotatesGraphic()) {
-                port->setRotation(0);
-            }
-
             // Outputs are pinned to the right edge (x=64) of the 64 px body
             port->setPos(64, y);
 
+            // Non-rotatable elements keep the pixmap fixed and orient their ports in place,
+            // applying the current rotation and flip about the element centre.
             if (!rotatesGraphic()) {
-                port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
-                port->setRotation(m_angle);
+                applyPortOrientation(port);
             }
 
             y += step * 2;

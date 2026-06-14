@@ -42,7 +42,7 @@ class NegativeCaseTests(MCPTestBase):
 
     @beartype
     async def test_rotate_invalid_element(self) -> bool:
-        """Test rotate with nonexistent element and non-rotatable elements"""
+        """Test rotate with a nonexistent element and missing parameters"""
         print("\n=== Rotate Invalid Element Test ===")
         self.set_test_context("test_rotate_invalid_element")
 

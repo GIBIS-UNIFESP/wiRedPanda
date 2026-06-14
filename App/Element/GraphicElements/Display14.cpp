@@ -114,6 +114,10 @@ void Display14::updatePortsProperties()
         port->setRequired(false);
         port->setDefaultStatus(Status::Inactive);
     }
+
+    // This override doesn't chain to the base updatePortsProperties(), so re-apply the current
+    // rotation/flip orientation to the freshly-positioned ports (keeps flip working on displays).
+    rotatePorts();
 }
 
 void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

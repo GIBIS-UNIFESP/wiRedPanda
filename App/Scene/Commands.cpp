@@ -863,14 +863,12 @@ void FlipCommand::redo()
 
         elm->setPos(pos);
 
-        // Toggle the element's mirror flag for the appropriate axis.
-        // This applies a QTransform-based scale(-1) around the pixmap centre,
-        // producing a true single-axis reflection (unlike rotation, which
-        // flips both axes at once). Toggling is an involution, so undo == redo.
-        if (elm->rotatesGraphic()) {
-            (m_axis == 0) ? elm->setFlippedX(!elm->isFlippedX())
-                          : elm->setFlippedY(!elm->isFlippedY());
-        }
+        // Toggle the element's mirror flag for the appropriate axis. Rotatable elements get a
+        // true single-axis reflection of the whole item (scale(-1) about the pixmap centre);
+        // non-rotatable input/output elements mirror only their ports, keeping the graphic
+        // upright. Toggling is an involution, so undo == redo.
+        (m_axis == 0) ? elm->setFlippedX(!elm->isFlippedX())
+                      : elm->setFlippedY(!elm->isFlippedY());
     }
 
     m_scene->setAutosaveRequired();
