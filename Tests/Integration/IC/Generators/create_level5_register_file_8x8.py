@@ -39,8 +39,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class RegisterFile8x8Builder(ICBuilderBase):
@@ -123,7 +123,7 @@ class RegisterFile8x8Builder(ICBuilderBase):
         if clock is None:
             return False
 
-        await self.log(f"  ✓ Created all inputs (3+3+3+8+2 = 19 inputs)")
+        await self.log("  ✓ Created all inputs (3+3+3+8+2 = 19 inputs)")
 
         # ========== Instantiate Write Decoder IC ==========
         decoder_x = input_x_start + HORIZONTAL_GATE_SPACING * 4
@@ -328,7 +328,7 @@ class RegisterFile8x8Builder(ICBuilderBase):
         await self.log(
             f"✅ Successfully created 8×8 Register File IC ({self.element_count} elements, {self.connection_count} connections)"
         )
-        await self.log(f"   Architecture: 8 registers × 8 bits, dual-read single-write with hold muxes")
+        await self.log("   Architecture: 8 registers × 8 bits, dual-read single-write with hold muxes")
         await self.log(f"   Saved to: {output_file}")
         return True
 

@@ -25,9 +25,8 @@ If root_dir is not provided, uses the git repository root (or script's parent di
 import re
 import subprocess
 import sys
-from pathlib import Path
 from dataclasses import dataclass
-from typing import Optional, List
+from pathlib import Path
 
 
 @dataclass
@@ -37,7 +36,7 @@ class IncludeEntry:
     kind: str  # 'related', 'stdlib', 'qt', 'project'
     header: str  # The include path/name
     line: str  # The raw #include line
-    condition: Optional[str] = None  # E.g., "Q_OS_WIN", "HAVE_SENTRY", etc.
+    condition: str | None = None  # E.g., "Q_OS_WIN", "HAVE_SENTRY", etc.
 
 
 def find_repo_root():
@@ -111,8 +110,8 @@ def parse_include_section_with_ifdef(lines, start_idx):
     """
     i = start_idx
     n = len(lines)
-    entries: List[IncludeEntry] = []
-    trailing_blocks: List[tuple] = []
+    entries: list[IncludeEntry] = []
+    trailing_blocks: list[tuple] = []
 
     while i < n:
         line = lines[i]
@@ -259,7 +258,7 @@ def is_header_file(filepath):
     return str(filepath).endswith(".h")
 
 
-def detect_violations(entries: List[IncludeEntry], is_cpp, filepath, original_lines, end_idx):
+def detect_violations(entries: list[IncludeEntry], is_cpp, filepath, original_lines, end_idx):
     """Detect include ordering violations."""
     violations = []
 
@@ -300,7 +299,7 @@ def detect_violations(entries: List[IncludeEntry], is_cpp, filepath, original_li
     return violations
 
 
-def format_includes_from_entries(entries: List[IncludeEntry], is_cpp, filepath):
+def format_includes_from_entries(entries: list[IncludeEntry], is_cpp, filepath):
     """
     Format includes from IncludeEntry list in correct order.
     Preserves #ifdef conditions and separates mixed-type conditional blocks.
@@ -383,7 +382,7 @@ def format_includes_from_entries(entries: List[IncludeEntry], is_cpp, filepath):
 def fix_includes_in_file(filepath, verbose=False, force=False):
     """Fix includes in a single file."""
     try:
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             lines = f.readlines()
     except Exception as e:
         print(f"Error reading {filepath}: {e}")

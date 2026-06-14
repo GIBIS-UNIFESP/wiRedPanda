@@ -28,8 +28,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ClockGatedDecoderBuilder(ICBuilderBase):
@@ -75,7 +75,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         if write_enable_id is None:
             return False
 
-        await self.log(f"  ✓ Created all inputs (3 address + 2 control)")
+        await self.log("  ✓ Created all inputs (3 address + 2 control)")
 
         # ========== Instantiate 3-to-8 Decoder IC ==========
         decoder_id = await self.instantiate_ic("level2_decoder_3to8", decoder_gates_x, addr_y, "Decoder_3to8")
@@ -133,8 +133,8 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         await self.log(
             f"✅ Successfully created 3-to-8 Clock-Gated Decoder IC ({self.element_count} elements, {self.connection_count} connections)"
         )
-        await self.log(f"   Inputs: addr0, addr1, addr2, clock, writeEnable")
-        await self.log(f"   Outputs: out0..out7 (8 one-hot)")
+        await self.log("   Inputs: addr0, addr1, addr2, clock, writeEnable")
+        await self.log("   Outputs: out0..out7 (8 one-hot)")
         await self.log(f"   Saved to: {output_file}")
         return True
 

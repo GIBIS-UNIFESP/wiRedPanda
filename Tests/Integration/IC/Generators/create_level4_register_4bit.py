@@ -37,8 +37,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class RegisterBuilder(ICBuilderBase):
@@ -169,7 +169,7 @@ class RegisterBuilder(ICBuilderBase):
         # Connect NOT gate output to mux Sel
         if not await self.connect(not_gate_id, mux_ic_id, target_port_label="Sel"):
             return False
-        await self.log(f"  ✓ Connected EN → NOT → Mux Sel")
+        await self.log("  ✓ Connected EN → NOT → Mux Sel")
 
         # Save circuit as IC
         output_file = str(IC_COMPONENTS_DIR / "level4_register_4bit.panda")

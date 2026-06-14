@@ -34,8 +34,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class RingCounterBuilder(ICBuilderBase):
@@ -54,12 +54,12 @@ class RingCounterBuilder(ICBuilderBase):
         clk_id = await self.create_element("InputSwitch", input_x, 100.0, "CLK")
         if clk_id is None:
             return False
-        await self.log(f"  ✓ Created input CLK")
+        await self.log("  ✓ Created input CLK")
 
         init_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "Init")
         if init_id is None:
             return False
-        await self.log(f"  ✓ Created input Init")
+        await self.log("  ✓ Created input Init")
 
         # Control inputs (active-HIGH): CountEnable holds the value when low;
         # Load synchronously captures Data[0-3] on the next edge. Tie CountEnable
@@ -169,7 +169,7 @@ class RingCounterBuilder(ICBuilderBase):
         )
         if gnd_id is None:
             return False
-        await self.log(f"  ✓ Created Gnd element")
+        await self.log("  ✓ Created Gnd element")
 
         # ========== Connect Gnd/Init to Preset/Clear pins ==========
         for i in range(1, 4):

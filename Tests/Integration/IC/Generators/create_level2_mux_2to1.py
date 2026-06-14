@@ -19,8 +19,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class Multiplexer2to1Builder(ICBuilderBase):
@@ -84,7 +84,7 @@ class Multiplexer2to1Builder(ICBuilderBase):
         # Connect select input to Mux
         if not await self.connect(select_inputs[0], mux_id, target_port_label="S0"):
             return False
-        await self.log(f"  ✓ Connected Sel[0] to Mux (S0)")
+        await self.log("  ✓ Connected Sel[0] to Mux (S0)")
 
         # Create active-high enable input (strobe): Output = mux_out AND Enable
         enable_id = await self.create_element("InputSwitch", input_x, input_y + 2 * VERTICAL_STAGE_SPACING, "Enable")
@@ -101,7 +101,7 @@ class Multiplexer2to1Builder(ICBuilderBase):
             return False
         if not await self.connect(enable_id, enable_and, target_port=1):
             return False
-        await self.log(f"  ✓ Created enable gate")
+        await self.log("  ✓ Created enable gate")
 
         # Create output LED
         output_x = and_x + HORIZONTAL_GATE_SPACING
@@ -113,7 +113,7 @@ class Multiplexer2to1Builder(ICBuilderBase):
         # Connect enable gate output to LED
         if not await self.connect(enable_and, output_id):
             return False
-        await self.log(f"  ✓ Connected output to LED")
+        await self.log("  ✓ Connected output to LED")
 
         # Save circuit as IC
         output_file = str(IC_COMPONENTS_DIR / "level2_mux_2to1.panda")

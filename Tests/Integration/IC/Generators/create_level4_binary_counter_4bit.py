@@ -48,8 +48,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class BinaryCounter4BitBuilder(ICBuilderBase):
@@ -68,7 +68,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         clk_id = await self.create_element("InputSwitch", input_x, 100.0, "CLK")
         if clk_id is None:
             return False
-        await self.log(f"  ✓ Created input CLK")
+        await self.log("  ✓ Created input CLK")
 
         # 74161-style control inputs (all active-HIGH):
         #   CountEnable : when low the counter holds its value
@@ -100,7 +100,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         gnd_id = await self.create_element("InputGnd", input_x, 170.0, "Gnd")
         if gnd_id is None:
             return False
-        await self.log(f"  ✓ Created Vcc (mux enables) and Gnd (inactive Preset)")
+        await self.log("  ✓ Created Vcc (mux enables) and Gnd (inactive Preset)")
 
         # Create NOT gates for each Q output (stage 1)
         not_q_ids = []

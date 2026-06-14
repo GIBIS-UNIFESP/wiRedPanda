@@ -28,8 +28,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class Comparator4BitBuilder(ICBuilderBase):
@@ -78,7 +78,7 @@ class Comparator4BitBuilder(ICBuilderBase):
                 return False
             b_inputs.append(b_id)
 
-        await self.log(f"  ✓ Created inputs (A[0-3], B[0-3])")
+        await self.log("  ✓ Created inputs (A[0-3], B[0-3])")
 
         # ========== Cascade Inputs (74LS85-style chaining) ==========
         # For standalone use, tie EqualIn high and GreaterIn/LessIn low; for an
@@ -93,7 +93,7 @@ class Comparator4BitBuilder(ICBuilderBase):
         if lt_in is None:
             return False
 
-        await self.log(f"  ✓ Created cascade inputs (GreaterIn, EqualIn, LessIn)")
+        await self.log("  ✓ Created cascade inputs (GreaterIn, EqualIn, LessIn)")
 
         # ========== Create NOT Gates ==========
         not_a = []
@@ -117,7 +117,7 @@ class Comparator4BitBuilder(ICBuilderBase):
             if not await self.connect(b_inputs[i], not_b_id):
                 return False
 
-        await self.log(f"  ✓ Created NOT gates")
+        await self.log("  ✓ Created NOT gates")
 
         # ========== Create Comparison Gates (XNOR, AND Greater, AND Less) ==========
         xnor_gates = []
@@ -168,7 +168,7 @@ class Comparator4BitBuilder(ICBuilderBase):
             if not await self.connect(b_inputs[i], and_l_id, target_port=1):
                 return False
 
-        await self.log(f"  ✓ Created comparison gates (XNOR, AND Greater, AND Less)")
+        await self.log("  ✓ Created comparison gates (XNOR, AND Greater, AND Less)")
 
         # ========== Create Cascade AND Gates for Equality ==========
         # OPTIMIZED: Single 4-input AND gate instead of cascading
@@ -189,7 +189,7 @@ class Comparator4BitBuilder(ICBuilderBase):
             if not await self.connect(xnor_gates[i], and_equal, target_port=i):
                 return False
 
-        await self.log(f"  ✓ Created equality cascade (4-input AND)")
+        await self.log("  ✓ Created equality cascade (4-input AND)")
 
         # ========== Create Cascade Logic: OR gates combining comparison with equality cascade ==========
         # For proper magnitude comparison:
@@ -279,7 +279,7 @@ class Comparator4BitBuilder(ICBuilderBase):
             if not await self.connect(and_casc_l_id, or_casc_l_id, target_port=1):
                 return False
 
-        await self.log(f"  ✓ Created cascade OR gates with proper comparison logic")
+        await self.log("  ✓ Created cascade OR gates with proper comparison logic")
 
         # ========== Cascade Final Stage (74LS85) ==========
         # eq_all = and_equal (all four bit-pairs equal):

@@ -26,8 +26,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ProgramCounter8bitBuilder(ICBuilderBase):
@@ -274,7 +274,7 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
             f"✅ Successfully created 8-bit Program Counter IC ({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
-        await self.log(f"   Outputs: pc[0-7], pc_plus_1[0-7]")
+        await self.log("   Outputs: pc[0-7], pc_plus_1[0-7]")
         return True
 
 

@@ -51,7 +51,8 @@ Usage:
 """
 
 import asyncio
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
+
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class CPU16BitRISCBuilder(ICBuilderBase):
@@ -234,7 +235,7 @@ class CPU16BitRISCBuilder(ICBuilderBase):
         await self.log(
             f"✅ Successfully created 16-bit RISC CPU IC ({self.element_count} elements, {self.connection_count} connections)"
         )
-        await self.log(f"   Architecture: 16-bit Fetch + 16-bit ALU")
+        await self.log("   Architecture: 16-bit Fetch + 16-bit ALU")
         await self.log(f"   Saved to: {output_file}")
         return True
 

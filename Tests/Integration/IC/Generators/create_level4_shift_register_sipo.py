@@ -31,8 +31,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ShiftRegisterSIPOBuilder(ICBuilderBase):
@@ -51,12 +51,12 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
         clk_id = await self.create_element("InputSwitch", input_x, 100.0, "CLK")
         if clk_id is None:
             return False
-        await self.log(f"  ✓ Created input CLK")
+        await self.log("  ✓ Created input CLK")
 
         sin_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "SIN")
         if sin_id is None:
             return False
-        await self.log(f"  ✓ Created input SIN")
+        await self.log("  ✓ Created input SIN")
 
         # Create D flip-flops (4-bit) using level1_d_flip_flop IC
         dff_ids = []
@@ -107,7 +107,7 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
         )
         if gnd_id is None:
             return False
-        await self.log(f"  ✓ Created Gnd element")
+        await self.log("  ✓ Created Gnd element")
 
         # ========== Connect Gnd to all Preset/Clear pins ==========
         for i in range(4):

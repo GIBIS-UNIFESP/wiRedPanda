@@ -42,8 +42,9 @@ Usage:
 """
 
 import asyncio
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
+
 from element_spacing import HORIZONTAL_GATE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ALU16bitBuilder(ICBuilderBase):

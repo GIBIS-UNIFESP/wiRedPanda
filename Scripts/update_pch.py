@@ -17,7 +17,6 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-
 SOURCE_EXTENSIONS = {".cpp", ".h", ".hpp", ".cc", ".cxx"}
 EXCLUDE_DIRS = {".git", ".venv", ".github", ".vscode", ".idea", "_deps", "cmake", "Scripts"}
 

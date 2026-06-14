@@ -49,8 +49,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ALU8BitBuilder(ICBuilderBase):
@@ -550,7 +550,7 @@ class ALU8BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created Zero flag")
 
         # Create Negative flag (Result[7])
-        await self.log(f"  🔍 Creating Negative flag from Result[7]")
+        await self.log("  🔍 Creating Negative flag from Result[7]")
         negative_led_id = await self.create_element(
             "Led", selector_x + (2 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "Negative"
         )
@@ -558,7 +558,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created Negative LED (id={negative_led_id})")
 
-        await self.log(f"  🔍 Connecting final Result[7] to Negative LED")
+        await self.log("  🔍 Connecting final Result[7] to Negative LED")
         # F26: tap the final result bit, not the 5-way selector output.
         if not await self.connect(final_result_muxes[7], negative_led_id, source_port_label="Out"):
             return False
@@ -566,7 +566,7 @@ class ALU8BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created Negative flag")
 
         # Create Carry flag (CarryOut from high ALU)
-        await self.log(f"  🔍 Creating Carry flag from high ALU CarryOut")
+        await self.log("  🔍 Creating Carry flag from high ALU CarryOut")
         carry_led_id = await self.create_element(
             "Led", selector_x + (3 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "Carry"
         )
@@ -574,7 +574,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created Carry LED (id={carry_led_id})")
 
-        await self.log(f"  🔍 Connecting high ALU CarryOut to Carry LED")
+        await self.log("  🔍 Connecting high ALU CarryOut to Carry LED")
         if not await self.connect(alu_high, carry_led_id, source_port_label="CarryOut"):
             return False
 
@@ -596,13 +596,13 @@ class ALU8BitBuilder(ICBuilderBase):
         output_file = str(IC_COMPONENTS_DIR / "level6_alu_8bit.panda")
         await self.log(f"  🔍 Saving circuit to {output_file}")
         if not await self.save_circuit(output_file):
-            self.log_error(f"Failed to save circuit")
+            self.log_error("Failed to save circuit")
             return False
 
         await self.log(
             f"✅ Successfully created 8-bit ALU IC ({self.element_count} elements, {self.connection_count} connections)"
         )
-        await self.log(f"   Architecture: 2× level4_ripple_alu_4bit + 8× XOR + 8× NOT + 8× level3_alu_selector_5way")
+        await self.log("   Architecture: 2× level4_ripple_alu_4bit + 8× XOR + 8× NOT + 8× level3_alu_selector_5way")
         await self.log(f"   Saved to: {output_file}")
         return True
 
