@@ -4,6 +4,8 @@
 #include "Tests/Unit/Commands/TestCommands.h"
 
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/AudioBox.h"
+#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
@@ -402,6 +404,65 @@ void TestCommands::testMorphCommand()
     undoStack->redo();
     QCOMPARE(scene->elements().size(), 1);
     QCOMPARE(scene->elements().first()->elementType(), ElementType::Or);
+}
+
+void TestCommands::testMorphPreservesFlip()
+{
+    // Regression: morphing an element dropped its mirror state (and audio/volume/delay).
+    // The flip flags must carry across the morph and survive the undo round-trip.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    auto *andGate = new And();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
+
+    andGate->setFlippedX(true);
+    QVERIFY(andGate->isFlippedX());
+    QVERIFY(!andGate->isFlippedY());
+
+    // Morph And -> Or: the mirror state must be transferred to the new element.
+    scene->receiveCommand(new MorphCommand(scene->elements().toList(), ElementType::Or, scene));
+    auto *morphed = scene->elements().first();
+    QCOMPARE(morphed->elementType(), ElementType::Or);
+    QVERIFY2(morphed->isFlippedX(), "Morph must preserve the horizontal flip state");
+    QVERIFY(!morphed->isFlippedY());
+
+    // Undo must restore a still-flipped And.
+    undoStack->undo();
+    auto *restored = scene->elements().first();
+    QCOMPARE(restored->elementType(), ElementType::And);
+    QVERIFY2(restored->isFlippedX(), "Undo of morph must restore the original flip state");
+}
+
+void TestCommands::testMorphPreservesVolume()
+{
+    // The same MorphCommand fix also carries audio/volume/delay (guarded by capability checks).
+    // Volume is the morph-reachable case: Buzzer and AudioBox both have it and are 1-in/0-out, so a
+    // Buzzer -> AudioBox morph must transfer the volume and restore it on undo. (Audio and delay
+    // are not reachable here — no two current element types share hasAudio()/hasDelay().)
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    // Use a non-default volume (the default is 0.5) so this genuinely proves the carry-over rather
+    // than both elements coincidentally sharing the default.
+    auto *buzzer = new Buzzer();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{buzzer}, scene));
+    QVERIFY(buzzer->hasVolume());
+    buzzer->setVolume(0.25F);
+
+    scene->receiveCommand(new MorphCommand(scene->elements().toList(), ElementType::AudioBox, scene));
+    auto *morphed = scene->elements().first();
+    QCOMPARE(morphed->elementType(), ElementType::AudioBox);
+    QVERIFY(morphed->hasVolume());
+    QCOMPARE(morphed->volume(), 0.25F);
+
+    // Undo restores the Buzzer with its volume intact.
+    undoStack->undo();
+    auto *restored = scene->elements().first();
+    QCOMPARE(restored->elementType(), ElementType::Buzzer);
+    QCOMPARE(restored->volume(), 0.25F);
 }
 
 void TestCommands::testSplitCommandRedoThrowsBeforeAllocation()

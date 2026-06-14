@@ -24,6 +24,8 @@ private slots:
     void testChangeInputSizeCommand();
     void testChangeOutputSizeCommand();
     void testMorphCommand();
+    void testMorphPreservesFlip();
+    void testMorphPreservesVolume();
     void testUpdateCommand();
 
     // Connection commands
