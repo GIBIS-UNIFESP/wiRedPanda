@@ -219,7 +219,7 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated register file programming muxes")
 
         # ---- Connect Clock to cycle counter flip-flops ----
-        for i, ff_id in enumerate(counter_ids):
+        for ff_id in counter_ids:
             if not await self.connect(clock_id, ff_id, target_port_label="Clock"):
                 return False
 
@@ -288,7 +288,7 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         # ---- Connect Reset signals ----
         # Reset both cycle counter flip-flops using ~Clear port (active-low)
-        for i, ff_id in enumerate(counter_ids):
+        for ff_id in counter_ids:
             if not await self.connect(reset_not_id, ff_id, target_port_label="~Clear"):
                 return False
 

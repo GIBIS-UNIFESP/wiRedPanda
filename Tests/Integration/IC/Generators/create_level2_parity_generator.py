@@ -85,9 +85,10 @@ class ParityGeneratorBuilder(ICBuilderBase):
                 # Connect inputs to this XOR gate
                 for port_idx in range(2):
                     input_idx = pair_idx + port_idx
-                    if input_idx < len(current_stage):
-                        if not await self.connect(current_stage[input_idx], xor_id, target_port=port_idx):
-                            return False
+                    if input_idx < len(current_stage) and not await self.connect(
+                        current_stage[input_idx], xor_id, target_port=port_idx
+                    ):
+                        return False
 
             await self.log(f"  ✓ Created stage {stage_num}: {len(next_stage)} XOR gates")
 

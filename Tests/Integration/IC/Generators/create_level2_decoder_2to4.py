@@ -96,10 +96,7 @@ class Decoder2to4Builder(ICBuilderBase):
 
             # Determine which inputs to use based on binary pattern of i
             for bit_pos in range(width):
-                if (i & (1 << bit_pos)) != 0:
-                    source_id = addr_inputs[bit_pos]
-                else:
-                    source_id = not_gates[bit_pos]
+                source_id = addr_inputs[bit_pos] if (i & (1 << bit_pos)) != 0 else not_gates[bit_pos]
 
                 if not await self.connect(source_id, gate_id, target_port=bit_pos):
                     return False

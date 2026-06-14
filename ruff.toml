@@ -23,6 +23,18 @@ extend-select = [
     "C4",    # flake8-comprehensions: prefer comp/genexpr over list(map(...)) etc.
     "RUF",   # ruff-specific rules incl. RUF100 (unused noqa)
 ]
+ignore = [
+    # These generators and fixture scripts are one-shot build tooling: each is a
+    # standalone async entry point that spawns the wiRedPanda MCP server, drives
+    # it, and exits. Their startup guards (checking a prerequisite .panda exists
+    # before driving the server) use blocking pathlib/os.path calls that run
+    # before any other coroutine is scheduled — there is nothing to starve, so
+    # wrapping them in asyncio.to_thread would add ceremony with no benefit. This
+    # mirrors the identical, documented decision in MCP/Client/ruff.toml.
+    # ASYNC251 (blocking time.sleep) stays enabled — that one IS a real bug.
+    "ASYNC230", # blocking open() in async function
+    "ASYNC240", # blocking os.path / pathlib method in async function
+]
 
 [lint.per-file-ignores]
 # The IC generator docstrings deliberately use typographic glyphs that carry

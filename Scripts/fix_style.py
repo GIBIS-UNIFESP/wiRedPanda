@@ -57,9 +57,7 @@ def should_exclude_dir(dirname):
         return True
     if dirname.startswith("."):
         return True
-    if dirname.lower().startswith("build"):
-        return True
-    return False
+    return dirname.lower().startswith("build")
 
 
 def classify_include(line):
@@ -368,9 +366,8 @@ def format_includes_from_entries(entries: list[IncludeEntry], is_cpp, filepath):
             result.append("#endif")
 
         # Add blank line after this group if not the last group
-        if idx < len(kinds_to_output) - 1:
-            if result and result[-1] != "":
-                result.append("")
+        if idx < len(kinds_to_output) - 1 and result and result[-1] != "":
+            result.append("")
 
     # Remove trailing blank lines
     while result and result[-1] == "":

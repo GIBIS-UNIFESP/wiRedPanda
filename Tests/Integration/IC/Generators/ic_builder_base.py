@@ -36,7 +36,7 @@ except ImportError:
             f"Cannot locate the mcp_client package under {_mcp_client}\n"
             f"Expected structure: .../MCP/Client/mcp_client/mcp_infrastructure.py\n"
             f"Set PYTHONPATH manually: export PYTHONPATH={_mcp_client}:$PYTHONPATH"
-        )
+        ) from None
     sys.path.insert(0, str(_mcp_client))
     del _mcp_client, _mcp_root
     from mcp_client.mcp_infrastructure import MCPInfrastructure

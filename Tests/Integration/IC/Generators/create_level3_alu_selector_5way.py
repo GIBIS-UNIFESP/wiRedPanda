@@ -93,7 +93,7 @@ class ALUSelector5wayBuilder(ICBuilderBase):
 
         # Connect level 1 muxes
         port_labels = ["Data[0]", "Data[1]"]
-        for source_id, result_idx, mux_id, port in [
+        for source_id, _result_idx, mux_id, port in [
             (result_inputs[0], 0, l1_mux1, 0),  # result0 to l1_mux1 In0
             (result_inputs[1], 1, l1_mux1, 1),  # result1 to l1_mux1 In1
             (result_inputs[2], 2, l1_mux2, 0),  # result2 to l1_mux2 In0

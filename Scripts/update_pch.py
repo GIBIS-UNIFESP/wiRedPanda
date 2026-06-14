@@ -34,9 +34,7 @@ def should_exclude_dir(dirname):
         return True
     if dirname.startswith("."):
         return True
-    if dirname.lower().startswith("build"):
-        return True
-    return False
+    return dirname.lower().startswith("build")
 
 
 def find_source_files(root):

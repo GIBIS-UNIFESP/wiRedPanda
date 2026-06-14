@@ -329,7 +329,7 @@ class GeneratorRunner:
         # Successful generators
         if success_count > 0 and self.verbose:
             print(f"\n✅ Successful Generators ({success_count}):")
-            for script, (success, message) in sorted(self.results.items()):
+            for script, (success, _message) in sorted(self.results.items()):
                 if success:
                     print(f"   • {script}")
 

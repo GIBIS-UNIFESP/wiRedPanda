@@ -233,9 +233,8 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
             # Address Mux output → RAM address[i]. The backing memory holds
             # 8 words; only the low 3 bits address it (partial decode — the
             # full 8-bit selected address is still exposed on FinalAddress).
-            if i < 3:
-                if not await self.connect(address_muxes[i], ram_id, target_port_label=f"Address[{i}]"):
-                    return False
+            if i < 3 and not await self.connect(address_muxes[i], ram_id, target_port_label=f"Address[{i}]"):
+                return False
 
             # Address Mux output → Output FinalAddress[i]
             if not await self.connect(address_muxes[i], outputs[f"FinalAddress[{i}]"]):
