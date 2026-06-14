@@ -1,10 +1,8 @@
 <svg width="1000" height="700" viewBox="-2100 -1470 4200 2940" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <g id="G">
-      <clipPath id="g">
-        <path d="m-31.5 0v-70h63v70zm31.5-47v12h31.5v-12z"/>
-      </clipPath>
-      <use clip-path="url(#g)" xlink:href="#O"/>
+      <!-- G: O-ring with arm notch baked as arcs; Qt's QSvgRenderer ignores clip-path -->
+      <path d="M31.5,-35A31.5,35 0 1 1 29.591,-47L15.506,-47A18.5,22 0 1 0 18.5,-35L31.5,-35Z"/>
       <path d="M5-35H31.5V-25H5z"/>
       <path d="m21.5-35h10v35h-10z"/>
     </g>
@@ -45,13 +43,11 @@
     <path id="P" d="m-31.5 0h13v-26h28a22 22 0 0 0 0-44h-40zm13-39h27a9 9 0 0 0 0-18h-27z" fill-rule="evenodd"/>
     <path id="S" d="m-15.75-22c0 7 6.75 10.5 16.75 10.5s14.74-3.25 14.75-7.75c0-14.25-46.75-5.25-46.5-30.25 0.25-21.5 24.75-20.5 33.75-20.5s26 4 25.75 21.25h-15.25c0-7.5-7-10.25-15-10.25-7.75 0-13.25 1.25-13.25 8.5-0.25 11.75 46.25 4 46.25 28.75 0 18.25-18 21.75-31.5 21.75-11.5 0-31.55-4.5-31.5-22z"/>
   </defs>
-  <clipPath id="B">
-    <circle r="735"/>
-  </clipPath>
   <path d="m-2100-1470h4200v2940h-4200z" fill="#009440"/>
   <path d="M -1743,0 0,1113 1743,0 0,-1113 Z" fill="#ffcb00"/>
   <circle r="735" fill="#302681"/>
-  <path d="m-2205 1470a1785 1785 0 0 1 3570 0h-105a1680 1680 0 1 0-3360 0z" clip-path="url(#B)" fill="#fff"/>
+  <!-- "Ordem e Progresso" band: celestial-band annulus clipped to the blue disc, baked as arcs; Qt's QSvgRenderer ignores clip-path -->
+  <path d="M727.788,102.946 A1785,1785 0 0 0 -672.398,-297.147 A735,735 0 0 0 -711.581,-184.684 A1680,1680 0 0 1 701.665,219.405 A735,735 0 0 0 727.788,102.946 Z" fill="#fff"/>
   <g transform="translate(-420,1470)" fill="#009440">
     <use transform="rotate(-7)" y="-1697.5" xlink:href="#O"/>
     <use transform="rotate(-4)" y="-1697.5" xlink:href="#R"/>
