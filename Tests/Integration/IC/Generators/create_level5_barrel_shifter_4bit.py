@@ -58,7 +58,9 @@ class BarrelShifter4bitBuilder(ICBuilderBase):
         # Create input switches for Data[0-3]
         data_inputs = []
         for i in range(4):
-            data_id = await self.create_element("InputSwitch", input_x_start + i * dense_spacing, data_input_y, f"Data[{i}]")
+            data_id = await self.create_element(
+                "InputSwitch", input_x_start + i * dense_spacing, data_input_y, f"Data[{i}]"
+            )
             if data_id is None:
                 return False
             data_inputs.append(data_id)
@@ -69,39 +71,53 @@ class BarrelShifter4bitBuilder(ICBuilderBase):
             return False
 
         # Create input for ShiftAmount[1]
-        shift_amount_1_id = await self.create_element("InputSwitch", shift_input_x, shift_input_y + VERTICAL_STAGE_SPACING, "ShiftAmount[1]")
+        shift_amount_1_id = await self.create_element(
+            "InputSwitch", shift_input_x, shift_input_y + VERTICAL_STAGE_SPACING, "ShiftAmount[1]"
+        )
         if shift_amount_1_id is None:
             return False
 
         # Create input for ShiftDirection (0=left, 1=right)
-        shift_direction_id = await self.create_element("InputSwitch", shift_input_x, shift_input_y + VERTICAL_STAGE_SPACING * 1.5, "ShiftDirection")
+        shift_direction_id = await self.create_element(
+            "InputSwitch", shift_input_x, shift_input_y + VERTICAL_STAGE_SPACING * 1.5, "ShiftDirection"
+        )
         if shift_direction_id is None:
             return False
 
         # Create ground input (always 0) for zero-fill
-        ground_id = await self.create_element("InputGnd", input_x_start, shift_input_y + VERTICAL_STAGE_SPACING * 1.5, "Ground")
+        ground_id = await self.create_element(
+            "InputGnd", input_x_start, shift_input_y + VERTICAL_STAGE_SPACING * 1.5, "Ground"
+        )
         if ground_id is None:
             return False
 
         # ============ LEFT SHIFT PATH ============
         # Stage 1: Shift by 0 or 1 (left) - using bus_mux_4bit
-        left_stage1_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage1_y, "BusMux_Left_S1")
+        left_stage1_mux_ic = await self.instantiate_ic(
+            "level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage1_y, "BusMux_Left_S1"
+        )
         if left_stage1_mux_ic is None:
             return False
 
         # Stage 2: Shift by 0 or 2 (left) - using bus_mux_4bit
-        left_stage2_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage2_y, "BusMux_Left_S2")
+        left_stage2_mux_ic = await self.instantiate_ic(
+            "level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage2_y, "BusMux_Left_S2"
+        )
         if left_stage2_mux_ic is None:
             return False
 
         # ============ RIGHT SHIFT PATH ============
         # Stage 1: Shift by 0 or 1 (right) - using bus_mux_4bit
-        right_stage1_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage1_y, "BusMux_Right_S1")
+        right_stage1_mux_ic = await self.instantiate_ic(
+            "level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage1_y, "BusMux_Right_S1"
+        )
         if right_stage1_mux_ic is None:
             return False
 
         # Stage 2: Shift by 0 or 2 (right) - using bus_mux_4bit
-        right_stage2_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage2_y, "BusMux_Right_S2")
+        right_stage2_mux_ic = await self.instantiate_ic(
+            "level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage2_y, "BusMux_Right_S2"
+        )
         if right_stage2_mux_ic is None:
             return False
 
@@ -114,7 +130,9 @@ class BarrelShifter4bitBuilder(ICBuilderBase):
         # Create output LEDs for ShiftedData[0-3]
         output_leds = []
         for i in range(4):
-            led_id = await self.create_element("Led", output_x + HORIZONTAL_GATE_SPACING + i * dense_spacing, direction_y, f"ShiftedData[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x + HORIZONTAL_GATE_SPACING + i * dense_spacing, direction_y, f"ShiftedData[{i}]"
+            )
             if led_id is None:
                 return False
             output_leds.append(led_id)
@@ -142,12 +160,19 @@ class BarrelShifter4bitBuilder(ICBuilderBase):
         # Left Stage 2: Shift by 2 left using bus_mux_4bit (cascaded on stage 1 output)
         for i in range(4):
             # In0[i]: pass through from stage 1
-            if not await self.connect(left_stage1_mux_ic, left_stage2_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"):
+            if not await self.connect(
+                left_stage1_mux_ic, left_stage2_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"
+            ):
                 return False
 
             # In1[i]: shifted by 2 or zero
             if i >= 2:
-                if not await self.connect(left_stage1_mux_ic, left_stage2_mux_ic, source_port_label=f"Out[{i - 2}]", target_port_label=f"In1[{i}]"):
+                if not await self.connect(
+                    left_stage1_mux_ic,
+                    left_stage2_mux_ic,
+                    source_port_label=f"Out[{i - 2}]",
+                    target_port_label=f"In1[{i}]",
+                ):
                     return False
             else:
                 if not await self.connect(ground_id, left_stage2_mux_ic, target_port_label=f"In1[{i}]"):
@@ -180,12 +205,19 @@ class BarrelShifter4bitBuilder(ICBuilderBase):
         # Right Stage 2: Shift by 2 right using bus_mux_4bit (cascaded on stage 1 output)
         for i in range(4):
             # In0[i]: pass through from stage 1
-            if not await self.connect(right_stage1_mux_ic, right_stage2_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"):
+            if not await self.connect(
+                right_stage1_mux_ic, right_stage2_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"
+            ):
                 return False
 
             # In1[i]: shifted by 2 or zero
             if i < 2:
-                if not await self.connect(right_stage1_mux_ic, right_stage2_mux_ic, source_port_label=f"Out[{i + 2}]", target_port_label=f"In1[{i}]"):
+                if not await self.connect(
+                    right_stage1_mux_ic,
+                    right_stage2_mux_ic,
+                    source_port_label=f"Out[{i + 2}]",
+                    target_port_label=f"In1[{i}]",
+                ):
                     return False
             else:
                 if not await self.connect(ground_id, right_stage2_mux_ic, target_port_label=f"In1[{i}]"):
@@ -200,11 +232,15 @@ class BarrelShifter4bitBuilder(ICBuilderBase):
         # In0: left path, In1: right path, Sel: ShiftDirection (0=left, 1=right)
         for i in range(4):
             # In0[i]: left path output
-            if not await self.connect(left_stage2_mux_ic, direction_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"):
+            if not await self.connect(
+                left_stage2_mux_ic, direction_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"
+            ):
                 return False
 
             # In1[i]: right path output
-            if not await self.connect(right_stage2_mux_ic, direction_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In1[{i}]"):
+            if not await self.connect(
+                right_stage2_mux_ic, direction_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In1[{i}]"
+            ):
                 return False
 
         # Select: ShiftDirection
@@ -221,7 +257,9 @@ class BarrelShifter4bitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 4-bit Barrel Shifter IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 4-bit Barrel Shifter IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -235,6 +273,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Barrel Shifter 4-bit IC"))
         sys.exit(exit_code)

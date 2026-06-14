@@ -41,7 +41,9 @@ class Adder8BitBuilder(ICBuilderBase):
         a_inputs = []
         input_a_x = 50.0
         for i in range(8):
-            element_id = await self.create_element("InputSwitch", input_a_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"A[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", input_a_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"A[{i}]"
+            )
             if element_id is None:
                 return False
             a_inputs.append(element_id)
@@ -50,7 +52,9 @@ class Adder8BitBuilder(ICBuilderBase):
         b_inputs = []
         input_b_x = input_a_x + HORIZONTAL_GATE_SPACING
         for i in range(8):
-            element_id = await self.create_element("InputSwitch", input_b_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"B[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", input_b_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"B[{i}]"
+            )
             if element_id is None:
                 return False
             b_inputs.append(element_id)
@@ -69,7 +73,9 @@ class Adder8BitBuilder(ICBuilderBase):
 
         for bit in range(8):
             # Instantiate 1-bit Full Adder IC from file
-            fa_id = await self.instantiate_ic("level2_full_adder_1bit", fa_x + bit * HORIZONTAL_GATE_SPACING, fa_y, f"FA[{bit}]")
+            fa_id = await self.instantiate_ic(
+                "level2_full_adder_1bit", fa_x + bit * HORIZONTAL_GATE_SPACING, fa_y, f"FA[{bit}]"
+            )
             if fa_id is None:
                 return False
             full_adders.append(fa_id)
@@ -88,14 +94,18 @@ class Adder8BitBuilder(ICBuilderBase):
                 if not await self.connect(carry_in, fa_id, target_port_label="Cin"):
                     return False
             else:
-                if not await self.connect(full_adders[bit - 1], fa_id, source_port_label="Cout", target_port_label="Cin"):
+                if not await self.connect(
+                    full_adders[bit - 1], fa_id, source_port_label="Cout", target_port_label="Cin"
+                ):
                     return False
 
         await self.log("  ✓ Created and chained 8 Full Adders with ripple carry")
 
         # Create output LEDs for Sum bits
         for bit in range(8):
-            sum_led = await self.create_element("Led", fa_x + bit * HORIZONTAL_GATE_SPACING, fa_y + VERTICAL_STAGE_SPACING, f"Sum[{bit}]")
+            sum_led = await self.create_element(
+                "Led", fa_x + bit * HORIZONTAL_GATE_SPACING, fa_y + VERTICAL_STAGE_SPACING, f"Sum[{bit}]"
+            )
             if sum_led is None:
                 return False
 
@@ -103,7 +113,9 @@ class Adder8BitBuilder(ICBuilderBase):
                 return False
 
         # Create output LED for final CarryOut
-        carry_out_led = await self.create_element("Led", fa_x + (7 * HORIZONTAL_GATE_SPACING), fa_y + 2 * VERTICAL_STAGE_SPACING, "CarryOut")
+        carry_out_led = await self.create_element(
+            "Led", fa_x + (7 * HORIZONTAL_GATE_SPACING), fa_y + 2 * VERTICAL_STAGE_SPACING, "CarryOut"
+        )
         if carry_out_led is None:
             return False
 
@@ -116,7 +128,9 @@ class Adder8BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 8-bit Adder IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 8-bit Adder IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -130,6 +144,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "8-bit Adder IC"))
         sys.exit(exit_code)

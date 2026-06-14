@@ -34,7 +34,7 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 4-bit Modulo-N Counter IC"""
-        await self.begin_build('4-bit Modulo-N Counter')
+        await self.begin_build("4-bit Modulo-N Counter")
         if not await self.create_new_circuit():
             return False
 
@@ -48,7 +48,9 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
         # Create Modulo inputs (4-bit)
         modulo_ids = []
         for i in range(4):
-            modulo_id = await self.create_element("InputSwitch", input_x, 100.0 + ((i + 1) * VERTICAL_STAGE_SPACING), f"Modulo[{i}]")
+            modulo_id = await self.create_element(
+                "InputSwitch", input_x, 100.0 + ((i + 1) * VERTICAL_STAGE_SPACING), f"Modulo[{i}]"
+            )
             if modulo_id is None:
                 return False
             modulo_ids.append(modulo_id)
@@ -87,7 +89,9 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
         not_carry_ids = []
         not_carry_x = carry_x + HORIZONTAL_GATE_SPACING
         for i in range(3):
-            not_id = await self.create_element("Not", not_carry_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"not_carry{i}")
+            not_id = await self.create_element(
+                "Not", not_carry_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"not_carry{i}"
+            )
             if not_id is None:
                 return False
             not_carry_ids.append(not_id)
@@ -98,7 +102,12 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
         for i in range(4):
             bit_ands = []
             for j in range(2):
-                and_id = await self.create_element("And", xor_and_x + (j * HORIZONTAL_GATE_SPACING), 100.0 + (i * VERTICAL_STAGE_SPACING), f"and_xor{i}_{j}")
+                and_id = await self.create_element(
+                    "And",
+                    xor_and_x + (j * HORIZONTAL_GATE_SPACING),
+                    100.0 + (i * VERTICAL_STAGE_SPACING),
+                    f"and_xor{i}_{j}",
+                )
                 if and_id is None:
                     return False
                 bit_ands.append(and_id)
@@ -142,7 +151,9 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
         dff_ids = []
         dff_x = gate_and_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            ff_id = await self.instantiate_ic("level1_d_flip_flop", dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}")
+            ff_id = await self.instantiate_ic(
+                "level1_d_flip_flop", dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}"
+            )
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -340,7 +351,9 @@ class ModuloCounter4BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"Successfully created 4-bit Modulo Counter IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"Successfully created 4-bit Modulo Counter IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -354,6 +367,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Modulo Counter IC"))
         sys.exit(exit_code)

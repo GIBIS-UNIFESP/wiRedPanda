@@ -33,7 +33,7 @@ class InstructionDecoder4BitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 4-bit Instruction Decoder IC"""
-        await self.begin_build('4-bit Instruction Decoder')
+        await self.begin_build("4-bit Instruction Decoder")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -44,14 +44,18 @@ class InstructionDecoder4BitBuilder(ICBuilderBase):
         # Create instruction input switches (4-bit opcode)
         instr_inputs = []
         for i in range(4):
-            instr_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"instr[{i}]")
+            instr_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"instr[{i}]"
+            )
             if instr_id is None:
                 return False
             instr_inputs.append(instr_id)
         await self.log("  ✓ Created 4 instruction inputs")
 
         # Instantiate level2_decoder_4to16
-        decoder_id = await self.instantiate_ic("level2_decoder_4to16", input_x + (2 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16")
+        decoder_id = await self.instantiate_ic(
+            "level2_decoder_4to16", input_x + (2 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16"
+        )
         if decoder_id is None:
             return False
         await self.log("  ✓ Instantiated 4-to-16 Decoder")
@@ -85,7 +89,9 @@ class InstructionDecoder4BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 4-bit Instruction Decoder IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 4-bit Instruction Decoder IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -99,6 +105,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Instruction Decoder IC"))
         sys.exit(exit_code)

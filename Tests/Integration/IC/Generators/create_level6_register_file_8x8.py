@@ -44,6 +44,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Register File 8×8 IC (Level 6)"))
         sys.exit(exit_code)

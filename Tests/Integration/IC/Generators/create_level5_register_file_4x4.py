@@ -68,7 +68,9 @@ class RegisterFile4x4Builder(ICBuilderBase):
         # Write address
         write_addr = []
         for i in range(address_bits):
-            elem_id = await self.create_element("InputSwitch", input_x_start + i * dense_spacing, write_addr_y, f"Write_Addr[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x_start + i * dense_spacing, write_addr_y, f"Write_Addr[{i}]"
+            )
             if elem_id is None:
                 return False
             write_addr.append(elem_id)
@@ -76,7 +78,9 @@ class RegisterFile4x4Builder(ICBuilderBase):
         # Read address 1
         read_addr_1 = []
         for i in range(address_bits):
-            elem_id = await self.create_element("InputSwitch", input_x_start + i * dense_spacing, read_addr1_y, f"Read_Addr1[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x_start + i * dense_spacing, read_addr1_y, f"Read_Addr1[{i}]"
+            )
             if elem_id is None:
                 return False
             read_addr_1.append(elem_id)
@@ -84,7 +88,9 @@ class RegisterFile4x4Builder(ICBuilderBase):
         # Read address 2
         read_addr_2 = []
         for i in range(address_bits):
-            elem_id = await self.create_element("InputSwitch", input_x_start + i * dense_spacing, read_addr2_y, f"Read_Addr2[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x_start + i * dense_spacing, read_addr2_y, f"Read_Addr2[{i}]"
+            )
             if elem_id is None:
                 return False
             read_addr_2.append(elem_id)
@@ -92,7 +98,9 @@ class RegisterFile4x4Builder(ICBuilderBase):
         # Data input
         data_in = []
         for i in range(data_width):
-            elem_id = await self.create_element("InputSwitch", input_x_start + i * dense_spacing, data_in_y, f"Data_In[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x_start + i * dense_spacing, data_in_y, f"Data_In[{i}]"
+            )
             if elem_id is None:
                 return False
             data_in.append(elem_id)
@@ -155,7 +163,12 @@ class RegisterFile4x4Builder(ICBuilderBase):
             mux_row = []
 
             for bit_idx in range(data_width):
-                ff_id = await self.create_element("DFlipFlop", storage_x + bit_idx * array_spacing, write_addr_y + reg_idx * VERTICAL_STAGE_SPACING * 0.7, f"storage[{reg_idx}][{bit_idx}]")
+                ff_id = await self.create_element(
+                    "DFlipFlop",
+                    storage_x + bit_idx * array_spacing,
+                    write_addr_y + reg_idx * VERTICAL_STAGE_SPACING * 0.7,
+                    f"storage[{reg_idx}][{bit_idx}]",
+                )
                 if ff_id is None:
                     return False
                 storage_row.append(ff_id)
@@ -167,15 +180,17 @@ class RegisterFile4x4Builder(ICBuilderBase):
             storage.append(storage_row)
 
             for bit_idx in range(data_width):
-                mux_id = await self.create_element("Mux", storage_x - HORIZONTAL_GATE_SPACING + bit_idx * array_spacing, write_addr_y + reg_idx * VERTICAL_STAGE_SPACING * 0.7, f"holdMux[{reg_idx}][{bit_idx}]")
+                mux_id = await self.create_element(
+                    "Mux",
+                    storage_x - HORIZONTAL_GATE_SPACING + bit_idx * array_spacing,
+                    write_addr_y + reg_idx * VERTICAL_STAGE_SPACING * 0.7,
+                    f"holdMux[{reg_idx}][{bit_idx}]",
+                )
                 if mux_id is None:
                     return False
                 mux_row.append(mux_id)
 
-                set_props = await self.mcp.send_command("change_input_size", {
-                    "element_id": mux_id,
-                    "size": 3
-                })
+                set_props = await self.mcp.send_command("change_input_size", {"element_id": mux_id, "size": 3})
                 if not set_props.success:
                     self.log_error(f"Failed to set holdMux[{reg_idx}][{bit_idx}] input_size")
                     return False
@@ -189,7 +204,9 @@ class RegisterFile4x4Builder(ICBuilderBase):
                     return False
 
                 # Write control: gated decoder output to Mux select (0=hold, 1=load)
-                if not await self.connect(decoder_ic, mux_id, source_port_label=f"out[{reg_idx}]", target_port_label="S0"):
+                if not await self.connect(
+                    decoder_ic, mux_id, source_port_label=f"out[{reg_idx}]", target_port_label="S0"
+                ):
                     return False
 
                 # Mux output to flip-flop Data input
@@ -205,14 +222,15 @@ class RegisterFile4x4Builder(ICBuilderBase):
 
         for bit_idx in range(data_width):
             # Read multiplexer 1
-            read_mux1_id = await self.create_element("Mux", read_mux_x, read_addr1_y + bit_idx * read_mux_spacing, f"readMux1[{bit_idx}]")
+            read_mux1_id = await self.create_element(
+                "Mux", read_mux_x, read_addr1_y + bit_idx * read_mux_spacing, f"readMux1[{bit_idx}]"
+            )
             if read_mux1_id is None:
                 return False
 
-            set_props = await self.mcp.send_command("change_input_size", {
-                "element_id": read_mux1_id,
-                "size": num_registers + address_bits
-            })
+            set_props = await self.mcp.send_command(
+                "change_input_size", {"element_id": read_mux1_id, "size": num_registers + address_bits}
+            )
             if not set_props.success:
                 self.log_error(f"Failed to set readMux1[{bit_idx}] input_size")
                 return False
@@ -229,14 +247,18 @@ class RegisterFile4x4Builder(ICBuilderBase):
                 return False
 
             # Read multiplexer 2
-            read_mux2_id = await self.create_element("Mux", read_mux_x + HORIZONTAL_GATE_SPACING, read_addr1_y + bit_idx * read_mux_spacing, f"readMux2[{bit_idx}]")
+            read_mux2_id = await self.create_element(
+                "Mux",
+                read_mux_x + HORIZONTAL_GATE_SPACING,
+                read_addr1_y + bit_idx * read_mux_spacing,
+                f"readMux2[{bit_idx}]",
+            )
             if read_mux2_id is None:
                 return False
 
-            set_props = await self.mcp.send_command("change_input_size", {
-                "element_id": read_mux2_id,
-                "size": num_registers + address_bits
-            })
+            set_props = await self.mcp.send_command(
+                "change_input_size", {"element_id": read_mux2_id, "size": num_registers + address_bits}
+            )
             if not set_props.success:
                 self.log_error(f"Failed to set readMux2[{bit_idx}] input_size")
                 return False
@@ -259,7 +281,9 @@ class RegisterFile4x4Builder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created RegisterFile 4×4 IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created RegisterFile 4×4 IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -273,6 +297,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Register File 4×4 IC"))
         sys.exit(exit_code)

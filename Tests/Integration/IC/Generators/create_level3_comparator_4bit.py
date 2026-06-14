@@ -71,7 +71,9 @@ class Comparator4BitBuilder(ICBuilderBase):
 
         b_inputs = []
         for i in range(4):
-            b_id = await self.create_element("InputSwitch", input_x, 100.0 + (4 + i) * VERTICAL_STAGE_SPACING, f"B[{i}]")
+            b_id = await self.create_element(
+                "InputSwitch", input_x, 100.0 + (4 + i) * VERTICAL_STAGE_SPACING, f"B[{i}]"
+            )
             if b_id is None:
                 return False
             b_inputs.append(b_id)
@@ -124,7 +126,9 @@ class Comparator4BitBuilder(ICBuilderBase):
 
         for i in range(4):
             # XNOR: A[i] XNOR B[i]
-            xnor_id = await self.create_element("Xnor", and_x + i * HORIZONTAL_GATE_SPACING, 100.0 + i * VERTICAL_STAGE_SPACING, f"xnor[{i}]")
+            xnor_id = await self.create_element(
+                "Xnor", and_x + i * HORIZONTAL_GATE_SPACING, 100.0 + i * VERTICAL_STAGE_SPACING, f"xnor[{i}]"
+            )
             if xnor_id is None:
                 return False
             xnor_gates.append(xnor_id)
@@ -137,7 +141,9 @@ class Comparator4BitBuilder(ICBuilderBase):
                 return False
 
             # AND: A[i] AND NOT B[i] (A greater)
-            and_g_id = await self.create_element("And", and_x + i * HORIZONTAL_GATE_SPACING, 100.0 + (4 + i) * VERTICAL_STAGE_SPACING, f"andGreater[{i}]")
+            and_g_id = await self.create_element(
+                "And", and_x + i * HORIZONTAL_GATE_SPACING, 100.0 + (4 + i) * VERTICAL_STAGE_SPACING, f"andGreater[{i}]"
+            )
             if and_g_id is None:
                 return False
             and_greater.append(and_g_id)
@@ -149,7 +155,9 @@ class Comparator4BitBuilder(ICBuilderBase):
                 return False
 
             # AND: NOT A[i] AND B[i] (A less)
-            and_l_id = await self.create_element("And", and_x + i * HORIZONTAL_GATE_SPACING, 100.0 + (8 + i) * VERTICAL_STAGE_SPACING, f"andLess[{i}]")
+            and_l_id = await self.create_element(
+                "And", and_x + i * HORIZONTAL_GATE_SPACING, 100.0 + (8 + i) * VERTICAL_STAGE_SPACING, f"andLess[{i}]"
+            )
             if and_l_id is None:
                 return False
             and_less.append(and_l_id)
@@ -164,15 +172,14 @@ class Comparator4BitBuilder(ICBuilderBase):
 
         # ========== Create Cascade AND Gates for Equality ==========
         # OPTIMIZED: Single 4-input AND gate instead of cascading
-        and_equal = await self.create_element("And", cascade_x + HORIZONTAL_GATE_SPACING, 100.0 + VERTICAL_STAGE_SPACING, "andEqual")
+        and_equal = await self.create_element(
+            "And", cascade_x + HORIZONTAL_GATE_SPACING, 100.0 + VERTICAL_STAGE_SPACING, "andEqual"
+        )
         if and_equal is None:
             return False
 
         # Set AND gate to 4-input size
-        set_props = await self.mcp.send_command("change_input_size", {
-            "element_id": and_equal,
-            "size": 4
-        })
+        set_props = await self.mcp.send_command("change_input_size", {"element_id": and_equal, "size": 4})
         if not set_props.success:
             self.log_error("Failed to set input_size=4 for equality AND gate")
             return False
@@ -199,7 +206,12 @@ class Comparator4BitBuilder(ICBuilderBase):
         # Levels 1-3: Create cascade with OR gates and intermediate AND gates
         for i in range(1, 4):
             # For each level, create an AND gate: XNOR[i] AND cascade[i-1]
-            and_casc_g_id = await self.create_element("And", cascade_x + (i % 2) * HORIZONTAL_GATE_SPACING, 100.0 + (4 + (i // 2)) * VERTICAL_STAGE_SPACING, f"andCascadeGreater[{i}]")
+            and_casc_g_id = await self.create_element(
+                "And",
+                cascade_x + (i % 2) * HORIZONTAL_GATE_SPACING,
+                100.0 + (4 + (i // 2)) * VERTICAL_STAGE_SPACING,
+                f"andCascadeGreater[{i}]",
+            )
             if and_casc_g_id is None:
                 return False
 
@@ -212,7 +224,12 @@ class Comparator4BitBuilder(ICBuilderBase):
                 return False
 
             # Create OR gate: andGreater[i] OR andCascadeGreater[i]
-            or_casc_g_id = await self.create_element("Or", or_x + (i % 2) * HORIZONTAL_GATE_SPACING, 100.0 + (4 + (i // 2)) * VERTICAL_STAGE_SPACING, f"orCascadeGreater[{i}]")
+            or_casc_g_id = await self.create_element(
+                "Or",
+                or_x + (i % 2) * HORIZONTAL_GATE_SPACING,
+                100.0 + (4 + (i // 2)) * VERTICAL_STAGE_SPACING,
+                f"orCascadeGreater[{i}]",
+            )
             if or_casc_g_id is None:
                 return False
             cascade_greater.append(or_casc_g_id)
@@ -226,7 +243,12 @@ class Comparator4BitBuilder(ICBuilderBase):
                 return False
 
             # Same for Less
-            and_casc_l_id = await self.create_element("And", cascade_x + (i % 2) * HORIZONTAL_GATE_SPACING, 100.0 + (6 + (i // 2)) * VERTICAL_STAGE_SPACING, f"andCascadeLess[{i}]")
+            and_casc_l_id = await self.create_element(
+                "And",
+                cascade_x + (i % 2) * HORIZONTAL_GATE_SPACING,
+                100.0 + (6 + (i // 2)) * VERTICAL_STAGE_SPACING,
+                f"andCascadeLess[{i}]",
+            )
             if and_casc_l_id is None:
                 return False
 
@@ -239,7 +261,12 @@ class Comparator4BitBuilder(ICBuilderBase):
                 return False
 
             # Create OR gate: andLess[i] OR andCascadeLess[i]
-            or_casc_l_id = await self.create_element("Or", or_x + (i % 2) * HORIZONTAL_GATE_SPACING, 100.0 + (6 + (i // 2)) * VERTICAL_STAGE_SPACING, f"orCascadeLess[{i}]")
+            or_casc_l_id = await self.create_element(
+                "Or",
+                or_x + (i % 2) * HORIZONTAL_GATE_SPACING,
+                100.0 + (6 + (i // 2)) * VERTICAL_STAGE_SPACING,
+                f"orCascadeLess[{i}]",
+            )
             if or_casc_l_id is None:
                 return False
             cascade_less.append(or_casc_l_id)
@@ -330,7 +357,9 @@ class Comparator4BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Comparator4Bit IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Comparator4Bit IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -344,6 +373,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Comparator 4-bit IC"))
         sys.exit(exit_code)

@@ -35,7 +35,7 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 8-bit Program Counter IC"""
-        await self.begin_build('Program Counter 8-bit')
+        await self.begin_build("Program Counter 8-bit")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -46,7 +46,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Create LoadValue[0-7] inputs
         load_value_inputs = []
         for i in range(8):
-            lv_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"LoadValue[{i}]")
+            lv_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"LoadValue[{i}]"
+            )
             if lv_id is None:
                 return False
             load_value_inputs.append(lv_id)
@@ -74,13 +76,17 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         await self.log("  ✓ Created load, inc, reset, clock control inputs")
 
         # Instantiate 8-bit Register IC
-        register_id = await self.instantiate_ic("level6_register_8bit", ctrl_x + HORIZONTAL_GATE_SPACING, 100.0, "Register8bit")
+        register_id = await self.instantiate_ic(
+            "level6_register_8bit", ctrl_x + HORIZONTAL_GATE_SPACING, 100.0, "Register8bit"
+        )
         if register_id is None:
             return False
         await self.log("  ✓ Instantiated 8-bit Register IC")
 
         # Instantiate 8-bit Adder IC (for PC + 1)
-        adder_id = await self.instantiate_ic("level6_ripple_adder_8bit", ctrl_x + (2 * HORIZONTAL_GATE_SPACING), 100.0, "Adder8bit")
+        adder_id = await self.instantiate_ic(
+            "level6_ripple_adder_8bit", ctrl_x + (2 * HORIZONTAL_GATE_SPACING), 100.0, "Adder8bit"
+        )
         if adder_id is None:
             return False
         await self.log("  ✓ Instantiated 8-bit Adder IC")
@@ -94,7 +100,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # B[0] should be 1, B[1-7] should be 0
         # Create using InputVcc (constant high/1) element
 
-        vcc_id = await self.create_element("InputVcc", ctrl_x + (3 * HORIZONTAL_GATE_SPACING), 50.0 + (2 * VERTICAL_STAGE_SPACING), "VCC_Const1")
+        vcc_id = await self.create_element(
+            "InputVcc", ctrl_x + (3 * HORIZONTAL_GATE_SPACING), 50.0 + (2 * VERTICAL_STAGE_SPACING), "VCC_Const1"
+        )
         if vcc_id is None:
             return False
 
@@ -103,7 +111,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
             return False
 
         # Explicit constant 0 on B[1..7] (F34 — was an implicit unconnected default)
-        gnd_id = await self.create_element("InputGnd", ctrl_x + (3 * HORIZONTAL_GATE_SPACING), 50.0 + (3 * VERTICAL_STAGE_SPACING), "GND_Const0")
+        gnd_id = await self.create_element(
+            "InputGnd", ctrl_x + (3 * HORIZONTAL_GATE_SPACING), 50.0 + (3 * VERTICAL_STAGE_SPACING), "GND_Const0"
+        )
         if gnd_id is None:
             return False
 
@@ -123,7 +133,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
             return False
 
         # Create AND(inc, NOT(load)) gate
-        and_inc_id = await self.create_element("And", ctrl_x + (3.5 * HORIZONTAL_GATE_SPACING), 350.0 + VERTICAL_STAGE_SPACING, "AndIncNotLoad")
+        and_inc_id = await self.create_element(
+            "And", ctrl_x + (3.5 * HORIZONTAL_GATE_SPACING), 350.0 + VERTICAL_STAGE_SPACING, "AndIncNotLoad"
+        )
         if and_inc_id is None:
             return False
 
@@ -143,7 +155,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Controlled by AND(inc, NOT load)
         mux1_gates = []
         for i in range(8):
-            mux1_id = await self.create_element("Mux", ctrl_x + (3.7 * HORIZONTAL_GATE_SPACING), 200.0 + i * VERTICAL_STAGE_SPACING, f"Mux1[{i}]")
+            mux1_id = await self.create_element(
+                "Mux", ctrl_x + (3.7 * HORIZONTAL_GATE_SPACING), 200.0 + i * VERTICAL_STAGE_SPACING, f"Mux1[{i}]"
+            )
             if mux1_id is None:
                 return False
             mux1_gates.append(mux1_id)
@@ -166,7 +180,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Controlled by load
         mux2_gates = []
         for i in range(8):
-            mux2_id = await self.create_element("Mux", ctrl_x + (3.9 * HORIZONTAL_GATE_SPACING), 200.0 + i * VERTICAL_STAGE_SPACING, f"Mux2[{i}]")
+            mux2_id = await self.create_element(
+                "Mux", ctrl_x + (3.9 * HORIZONTAL_GATE_SPACING), 200.0 + i * VERTICAL_STAGE_SPACING, f"Mux2[{i}]"
+            )
             if mux2_id is None:
                 return False
             mux2_gates.append(mux2_id)
@@ -201,7 +217,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
             return False
 
         # WriteEnable: OR(load, inc) - write on clock edge when either load or inc is asserted
-        we_or_id = await self.create_element("Or", ctrl_x + (3.2 * HORIZONTAL_GATE_SPACING), 50.0 + (3 * VERTICAL_STAGE_SPACING), "WriteEnable_OR")
+        we_or_id = await self.create_element(
+            "Or", ctrl_x + (3.2 * HORIZONTAL_GATE_SPACING), 50.0 + (3 * VERTICAL_STAGE_SPACING), "WriteEnable_OR"
+        )
         if we_or_id is None:
             return False
 
@@ -235,7 +253,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Create output LEDs for pc_plus_1 (adder Sum output = PC + 1)
         pc_plus_1_x = output_x + HORIZONTAL_GATE_SPACING
         for i in range(8):
-            pc_plus_1_led = await self.create_element("Led", pc_plus_1_x, 100.0 + i * VERTICAL_STAGE_SPACING, f"pc_plus_1[{i}]")
+            pc_plus_1_led = await self.create_element(
+                "Led", pc_plus_1_x, 100.0 + i * VERTICAL_STAGE_SPACING, f"pc_plus_1[{i}]"
+            )
             if pc_plus_1_led is None:
                 return False
 
@@ -250,7 +270,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 8-bit Program Counter IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 8-bit Program Counter IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         await self.log(f"   Outputs: pc[0-7], pc_plus_1[0-7]")
         return True
@@ -265,6 +287,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "8-bit Program Counter IC"))
         sys.exit(exit_code)

@@ -34,11 +34,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
+
 def discover_generators(generators_dir: Path) -> List[str]:
     """Dynamically discover all generator scripts matching create_level*.py pattern"""
     pattern = "create_level*.py"
     generators = sorted([f.name for f in generators_dir.glob(pattern)])
     return generators
+
 
 def extract_component_names(script_path: Path) -> List[str]:
     """Extract all output component names from a generator script.
@@ -53,26 +55,21 @@ def extract_component_names(script_path: Path) -> List[str]:
         content = script_path.read_text()
 
         # Look for literal string: output_file = ... / "component.panda"
-        match = re.search(
-            r'output_file\s*=\s*(?:str\()?\s*[^"]*?[/\\]\s*["\']([^"\']+)\.panda["\']',
-            content
-        )
+        match = re.search(r'output_file\s*=\s*(?:str\()?\s*[^"]*?[/\\]\s*["\']([^"\']+)\.panda["\']', content)
         if match:
             return [match.group(1)]
 
         # Look for simple string without .panda extension
-        match = re.search(
-            r'output_file\s*=\s*str\([^)]*[/\\]\s*["\']([^"\']+)["\']', content
-        )
+        match = re.search(r'output_file\s*=\s*str\([^)]*[/\\]\s*["\']([^"\']+)["\']', content)
         if match:
             return [match.group(1)]
 
         # Fallback to script name
-        match = re.match(r'create_(.+?)\.py$', script_path.name)
+        match = re.match(r"create_(.+?)\.py$", script_path.name)
         return [match.group(1)] if match else []
     except OSError as e:
         print(f"⚠️  Could not read {script_path.name}: {e}")
-        match = re.match(r'create_(.+?)\.py$', script_path.name)
+        match = re.match(r"create_(.+?)\.py$", script_path.name)
         return [match.group(1)] if match else []
 
 
@@ -88,13 +85,13 @@ def extract_dependencies(script_path: Path) -> Set[str]:
     try:
         content = script_path.read_text()
         # Remove comments and docstrings to avoid false matches
-        lines = content.split('\n')
+        lines = content.split("\n")
         code_lines = []
         in_multiline_string = False
         for line in lines:
             # Skip pure comment lines
             stripped = line.lstrip()
-            if stripped.startswith('#'):
+            if stripped.startswith("#"):
                 continue
             # Toggle multiline string state (basic detection)
             if '"""' in line or "'''" in line:
@@ -103,10 +100,10 @@ def extract_dependencies(script_path: Path) -> Set[str]:
             if not in_multiline_string:
                 code_lines.append(line)
 
-        code_content = '\n'.join(code_lines)
+        code_content = "\n".join(code_lines)
         # Find all level[0-9]_component patterns, excluding variable assignments (levelN_name = ...)
         # Use negative lookbehind to exclude patterns preceded by assignment
-        matches = re.findall(r'(?<![a-z_=\s])level\d+_[a-z_0-9]+(?!\s*=)(?!\w)', code_content)
+        matches = re.findall(r"(?<![a-z_=\s])level\d+_[a-z_0-9]+(?!\s*=)(?!\w)", code_content)
         for match in matches:
             # Skip the script's own output components
             if match not in output_components:
@@ -117,7 +114,9 @@ def extract_dependencies(script_path: Path) -> Set[str]:
     return dependencies
 
 
-def build_dependency_graph(generators_dir: Path, generator_scripts: List[str]) -> Tuple[Dict[str, Set[str]], Dict[str, str]]:
+def build_dependency_graph(
+    generators_dir: Path, generator_scripts: List[str]
+) -> Tuple[Dict[str, Set[str]], Dict[str, str]]:
     """Build a dependency graph of generators.
 
     Returns:
@@ -138,7 +137,10 @@ def build_dependency_graph(generators_dir: Path, generator_scripts: List[str]) -
 
     return dep_graph, component_to_gen
 
-def topological_sort(generators: List[str], dependency_graph: Dict[str, Set[str]], component_to_gen: Dict[str, str]) -> List[str]:
+
+def topological_sort(
+    generators: List[str], dependency_graph: Dict[str, Set[str]], component_to_gen: Dict[str, str]
+) -> List[str]:
     """Topologically sort generators based on dependencies.
 
     Uses Kahn's algorithm to produce a valid execution order.
@@ -187,7 +189,7 @@ def topological_sort(generators: List[str], dependency_graph: Dict[str, Set[str]
     if missing_deps:
         print("⚠️  Missing dependencies detected:")
         for gen in sorted(missing_deps.keys()):
-            missing_list = ', '.join(sorted(missing_deps[gen]))
+            missing_list = ", ".join(sorted(missing_deps[gen]))
             print(f"   • {gen} depends on: {missing_list}")
         raise RuntimeError(f"Cannot proceed: {len(missing_deps)} generator(s) have unmet dependencies")
 
@@ -239,9 +241,7 @@ class GeneratorRunner:
             # generator scripts can import mcp_infrastructure without sys.path hacks.
             mcp_client = str(self.generators_dir.parent.parent.parent.parent / "MCP" / "Client")
             env = os.environ.copy()
-            env["PYTHONPATH"] = os.pathsep.join(
-                filter(None, [mcp_client, env.get("PYTHONPATH", "")])
-            )
+            env["PYTHONPATH"] = os.pathsep.join(filter(None, [mcp_client, env.get("PYTHONPATH", "")]))
 
             # Run the generator script
             result = await asyncio.to_thread(
@@ -258,8 +258,8 @@ class GeneratorRunner:
                 return True, "Success"
             else:
                 # Extract error message - take last 3 lines for context
-                error_lines = result.stderr.strip().split('\n')
-                error_msg = ' | '.join(error_lines[-3:]) if error_lines else "Unknown error"
+                error_lines = result.stderr.strip().split("\n")
+                error_msg = " | ".join(error_lines[-3:]) if error_lines else "Unknown error"
                 return False, f"Exit code {result.returncode}: {error_msg}"
 
         except subprocess.TimeoutExpired:
@@ -298,9 +298,9 @@ class GeneratorRunner:
 
     def print_summary(self):
         """Print summary of results"""
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print("RESULTS SUMMARY")
-        print("="*80)
+        print("=" * 80)
 
         success_count = sum(1 for success, _ in self.results.values() if success)
         failure_count = len(self.results) - success_count
@@ -311,13 +311,13 @@ class GeneratorRunner:
         print(f"   Total Generators:  {total}")
         print(f"   ✅ Successful:     {success_count}")
         print(f"   ❌ Failed:         {failure_count}")
-        print(f"   Success Rate:      {success_count/total*100:.1f}%")
+        print(f"   Success Rate:      {success_count / total * 100:.1f}%")
 
         if self.start_time and self.end_time:
             duration = (self.end_time - self.start_time).total_seconds()
             print(f"   Duration:          {duration:.1f}s")
             if total > 0:
-                print(f"   Avg per Generator: {duration/total:.1f}s")
+                print(f"   Avg per Generator: {duration / total:.1f}s")
 
         # Failed generators
         if failure_count > 0:
@@ -334,7 +334,7 @@ class GeneratorRunner:
                 if success:
                     print(f"   • {script}")
 
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
 
         # Exit code
         if failure_count == 0:
@@ -387,7 +387,9 @@ async def main():
 
     parser = argparse.ArgumentParser(description="Run all IC generator scripts")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
-    parser.add_argument("--timeout", "-t", type=int, default=120, help="Timeout in seconds per generator (default: 120)")
+    parser.add_argument(
+        "--timeout", "-t", type=int, default=120, help="Timeout in seconds per generator (default: 120)"
+    )
     args = parser.parse_args()
 
     runner = GeneratorRunner(verbose=args.verbose, timeout=args.timeout)

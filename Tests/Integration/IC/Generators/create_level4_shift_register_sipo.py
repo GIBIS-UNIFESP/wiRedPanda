@@ -62,7 +62,9 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
         dff_ids = []
         dff_x = input_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            ff_id = await self.instantiate_ic("level1_d_flip_flop", dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}")
+            ff_id = await self.instantiate_ic(
+                "level1_d_flip_flop", dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}"
+            )
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -100,7 +102,9 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
                 return False
 
         # Create Gnd element for inactive Preset/Clear pins (active-HIGH FFs)
-        gnd_id = await self.create_element("InputGnd", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Gnd")
+        gnd_id = await self.create_element(
+            "InputGnd", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Gnd"
+        )
         if gnd_id is None:
             return False
         await self.log(f"  ✓ Created Gnd element")
@@ -120,7 +124,9 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created SIPO Shift Register IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created SIPO Shift Register IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -134,6 +140,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "SIPO Shift Register IC"))
         sys.exit(exit_code)

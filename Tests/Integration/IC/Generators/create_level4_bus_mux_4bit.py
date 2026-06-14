@@ -28,7 +28,7 @@ class BusMux4BitBuilder(ICBuilderBase):
         """Create 4-bit Bus Multiplexer IC"""
         bit_width = 4
 
-        await self.begin_build('4-bit Bus Multiplexer')
+        await self.begin_build("4-bit Bus Multiplexer")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -42,7 +42,9 @@ class BusMux4BitBuilder(ICBuilderBase):
         # Create input switches for In0 (4 bits)
         in0_inputs = []
         for i in range(bit_width):
-            in0_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), in0_y, f"In0[{i}]")
+            in0_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), in0_y, f"In0[{i}]"
+            )
             if in0_id is None:
                 return False
             in0_inputs.append(in0_id)
@@ -51,7 +53,9 @@ class BusMux4BitBuilder(ICBuilderBase):
         # Create input switches for In1 (4 bits)
         in1_inputs = []
         for i in range(bit_width):
-            in1_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), in1_y, f"In1[{i}]")
+            in1_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), in1_y, f"In1[{i}]"
+            )
             if in1_id is None:
                 return False
             in1_inputs.append(in1_id)
@@ -68,7 +72,9 @@ class BusMux4BitBuilder(ICBuilderBase):
         mux_x = input_x + ((bit_width + 1) * HORIZONTAL_GATE_SPACING)
 
         for i in range(4):
-            mux_id = await self.instantiate_ic("level2_mux_2to1", mux_x + (i * HORIZONTAL_GATE_SPACING), in0_y + VERTICAL_STAGE_SPACING, f"Mux[{i}]")
+            mux_id = await self.instantiate_ic(
+                "level2_mux_2to1", mux_x + (i * HORIZONTAL_GATE_SPACING), in0_y + VERTICAL_STAGE_SPACING, f"Mux[{i}]"
+            )
             if mux_id is None:
                 return False
             mux_ic_ids.append(mux_id)
@@ -100,7 +106,12 @@ class BusMux4BitBuilder(ICBuilderBase):
         output_led_ids = []
         output_x = mux_x + (5 * HORIZONTAL_GATE_SPACING)
         for i in range(bit_width):
-            output_id = await self.create_element("Led", output_x + ((i % 4) * HORIZONTAL_GATE_SPACING), (in0_y + VERTICAL_STAGE_SPACING) + ((i // 4) * VERTICAL_STAGE_SPACING), f"Out[{i}]")
+            output_id = await self.create_element(
+                "Led",
+                output_x + ((i % 4) * HORIZONTAL_GATE_SPACING),
+                (in0_y + VERTICAL_STAGE_SPACING) + ((i // 4) * VERTICAL_STAGE_SPACING),
+                f"Out[{i}]",
+            )
             if output_id is None:
                 return False
             output_led_ids.append(output_id)
@@ -115,7 +126,9 @@ class BusMux4BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 4-bit Bus Multiplexer IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 4-bit Bus Multiplexer IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -129,6 +142,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Bus Multiplexer IC"))
         sys.exit(exit_code)

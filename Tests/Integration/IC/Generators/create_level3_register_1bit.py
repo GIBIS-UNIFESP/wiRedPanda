@@ -55,61 +55,63 @@ class Register1BitBuilder(ICBuilderBase):
         output_q_y = input_y
         output_notq_y = input_y + (2 * VERTICAL_STAGE_SPACING)
 
-        response = await self.mcp.send_command("create_element", {
-            "type": "InputSwitch", "x": input_x, "y": input_y, "label": "Data"
-        })
+        response = await self.mcp.send_command(
+            "create_element", {"type": "InputSwitch", "x": input_x, "y": input_y, "label": "Data"}
+        )
         if not response or not response.success:
             print(self.error_context.format_error("Create input Data"))
             return False
-        data_input = response.result.get('element_id') if response.result else None
+        data_input = response.result.get("element_id") if response.result else None
         self.element_count += 1
         await self.log("  ✓ Created input Data")
 
-        response = await self.mcp.send_command("create_element", {
-            "type": "InputSwitch", "x": input_x, "y": input_y + VERTICAL_STAGE_SPACING, "label": "Clock"
-        })
+        response = await self.mcp.send_command(
+            "create_element",
+            {"type": "InputSwitch", "x": input_x, "y": input_y + VERTICAL_STAGE_SPACING, "label": "Clock"},
+        )
         if not response or not response.success:
             print(self.error_context.format_error("Create input Clock"))
             return False
-        clock_input = response.result.get('element_id') if response.result else None
+        clock_input = response.result.get("element_id") if response.result else None
         self.element_count += 1
         await self.log("  ✓ Created input Clock")
 
-        response = await self.mcp.send_command("create_element", {
-            "type": "InputSwitch", "x": input_x, "y": input_y + (2 * VERTICAL_STAGE_SPACING), "label": "WriteEnable"
-        })
+        response = await self.mcp.send_command(
+            "create_element",
+            {"type": "InputSwitch", "x": input_x, "y": input_y + (2 * VERTICAL_STAGE_SPACING), "label": "WriteEnable"},
+        )
         if not response or not response.success:
             print(self.error_context.format_error("Create input WriteEnable"))
             return False
-        write_enable_input = response.result.get('element_id') if response.result else None
+        write_enable_input = response.result.get("element_id") if response.result else None
         self.element_count += 1
         await self.log("  ✓ Created input WriteEnable")
 
-        response = await self.mcp.send_command("create_element", {
-            "type": "InputSwitch", "x": input_x, "y": input_y + (3 * VERTICAL_STAGE_SPACING), "label": "Reset"
-        })
+        response = await self.mcp.send_command(
+            "create_element",
+            {"type": "InputSwitch", "x": input_x, "y": input_y + (3 * VERTICAL_STAGE_SPACING), "label": "Reset"},
+        )
         if not response or not response.success:
             print(self.error_context.format_error("Create input Reset"))
             return False
-        reset_input = response.result.get('element_id') if response.result else None
+        reset_input = response.result.get("element_id") if response.result else None
         self.element_count += 1
         await self.log("  ✓ Created input Reset")
 
         # ---- Create NOT gate to invert Reset signal (active-HIGH to active-LOW) ----
-        response = await self.mcp.send_command("create_element", {
-            "type": "Not", "x": not_reset_x, "y": not_reset_y, "label": "not_reset"
-        })
+        response = await self.mcp.send_command(
+            "create_element", {"type": "Not", "x": not_reset_x, "y": not_reset_y, "label": "not_reset"}
+        )
         if not response or not response.success:
             print(self.error_context.format_error("create NOT gate for reset inversion"))
             return False
-        not_reset = response.result.get('element_id') if response.result else None
+        not_reset = response.result.get("element_id") if response.result else None
         self.element_count += 1
         await self.log("  ✓ Created NOT gate to invert reset signal")
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": reset_input, "source_port": 0,
-            "target_id": not_reset, "target_port": 0
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements", {"source_id": reset_input, "source_port": 0, "target_id": not_reset, "target_port": 0}
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect Reset to NOT gate"))
             return False
@@ -119,19 +121,19 @@ class Register1BitBuilder(ICBuilderBase):
         # Mux: select=0 -> data[0], select=1 -> data[1]
         # We want: WriteEnable=1 -> data[0] (Data), WriteEnable=0 -> data[1] (Q)
         # So we need to invert WriteEnable for the Mux select line
-        response = await self.mcp.send_command("create_element", {
-            "type": "Not", "x": not_we_x, "y": not_we_y, "label": "not_writenable"
-        })
+        response = await self.mcp.send_command(
+            "create_element", {"type": "Not", "x": not_we_x, "y": not_we_y, "label": "not_writenable"}
+        )
         if not response or not response.success:
             print(self.error_context.format_error("create NOT gate to invert WriteEnable"))
             return False
-        not_writenable = response.result.get('element_id') if response.result else None
+        not_writenable = response.result.get("element_id") if response.result else None
         self.element_count += 1
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": write_enable_input, "source_port": 0,
-            "target_id": not_writenable, "target_port": 0
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements",
+            {"source_id": write_enable_input, "source_port": 0, "target_id": not_writenable, "target_port": 0},
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect WriteEnable to NOT gate"))
             return False
@@ -140,90 +142,90 @@ class Register1BitBuilder(ICBuilderBase):
         # ---- Create Mux2x1 to implement WriteEnable control ----
         # When WriteEnable=1: select Data input
         # When WriteEnable=0: select Q (feedback) to hold value
-        response = await self.mcp.send_command("create_element", {
-            "type": "Mux", "x": mux_x, "y": mux_y, "label": "write_mux"
-        })
+        response = await self.mcp.send_command(
+            "create_element", {"type": "Mux", "x": mux_x, "y": mux_y, "label": "write_mux"}
+        )
         if not response or not response.success:
             print(self.error_context.format_error("create Mux2x1 for WriteEnable control"))
             return False
-        write_mux = response.result.get('element_id') if response.result else None
+        write_mux = response.result.get("element_id") if response.result else None
         self.element_count += 1
         await self.log("  ✓ Created Mux2x1 for WriteEnable control")
 
         # Connect Data to Mux input 0 using semantic label (selected when WriteEnable=1, i.e., when NOT(WriteEnable)=0)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": data_input, "source_port": 0,
-            "target_id": write_mux, "target_port_label": "In0"
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements",
+            {"source_id": data_input, "source_port": 0, "target_id": write_mux, "target_port_label": "In0"},
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect Data to Mux input 0"))
             return False
         self.connection_count += 1
 
         # Connect inverted WriteEnable to Mux select line using semantic label
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_writenable, "source_port": 0,
-            "target_id": write_mux, "target_port_label": "S0"
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements",
+            {"source_id": not_writenable, "source_port": 0, "target_id": write_mux, "target_port_label": "S0"},
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect NOT(WriteEnable) to Mux select"))
             return False
         self.connection_count += 1
 
         # ---- Create D Flip-Flop ----
-        response = await self.mcp.send_command("create_element", {
-            "type": "DFlipFlop", "x": dff_x, "y": dff_y, "label": "dflipflop"
-        })
+        response = await self.mcp.send_command(
+            "create_element", {"type": "DFlipFlop", "x": dff_x, "y": dff_y, "label": "dflipflop"}
+        )
         if not response or not response.success:
             print(self.error_context.format_error("create D Flip-Flop"))
             return False
-        dflipflop = response.result.get('element_id') if response.result else None
+        dflipflop = response.result.get("element_id") if response.result else None
         self.element_count += 1
         await self.log("  ✓ Created D Flip-Flop")
 
         # Connect Mux output to D flip-flop D input
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": write_mux, "source_port": 0,
-            "target_id": dflipflop, "target_port_label": "Data"
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements",
+            {"source_id": write_mux, "source_port": 0, "target_id": dflipflop, "target_port_label": "Data"},
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect Mux output to D"))
             return False
         self.connection_count += 1
 
         # Connect Clock input
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": clock_input, "source_port": 0,
-            "target_id": dflipflop, "target_port_label": "Clock"
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements",
+            {"source_id": clock_input, "source_port": 0, "target_id": dflipflop, "target_port_label": "Clock"},
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect Clock"))
             return False
         self.connection_count += 1
 
         # Create InputVcc (constant HIGH) to keep Preset inactive
-        response = await self.mcp.send_command("create_element", {
-            "type": "InputVcc", "x": vcc_x, "y": vcc_y, "label": "Vcc"
-        })
+        response = await self.mcp.send_command(
+            "create_element", {"type": "InputVcc", "x": vcc_x, "y": vcc_y, "label": "Vcc"}
+        )
         if not response or not response.success:
             print(self.error_context.format_error("create InputVcc for preset"))
             return False
-        vcc_id = response.result.get('element_id') if response.result else None
+        vcc_id = response.result.get("element_id") if response.result else None
         self.element_count += 1
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": vcc_id, "source_port": 0,
-            "target_id": dflipflop, "target_port_label": "~Preset"
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements",
+            {"source_id": vcc_id, "source_port": 0, "target_id": dflipflop, "target_port_label": "~Preset"},
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect Vcc to Preset"))
             return False
         self.connection_count += 1
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": not_reset, "source_port": 0,
-            "target_id": dflipflop, "target_port_label": "~Clear"
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements",
+            {"source_id": not_reset, "source_port": 0, "target_id": dflipflop, "target_port_label": "~Clear"},
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect inverted Reset to Clear"))
             return False
@@ -231,48 +233,47 @@ class Register1BitBuilder(ICBuilderBase):
         await self.log("  ✓ Connected Data, Clock, Reset (inverted) to D Flip-Flop")
 
         # ---- Create outputs ----
-        response = await self.mcp.send_command("create_element", {
-            "type": "Led", "x": output_x, "y": output_q_y, "label": "Q"
-        })
+        response = await self.mcp.send_command(
+            "create_element", {"type": "Led", "x": output_x, "y": output_q_y, "label": "Q"}
+        )
         if not response or not response.success:
             print(self.error_context.format_error("create output Q LED"))
             return False
-        q_led = response.result.get('element_id') if response.result else None
+        q_led = response.result.get("element_id") if response.result else None
         self.element_count += 1
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": dflipflop, "source_port_label": "Q",
-            "target_id": q_led, "target_port": 0
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements", {"source_id": dflipflop, "source_port_label": "Q", "target_id": q_led, "target_port": 0}
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect Q to LED"))
             return False
         self.connection_count += 1
 
         # Connect Q feedback to Mux input 1 using semantic label (selected when WriteEnable=0)
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": dflipflop, "source_port_label": "Q",
-            "target_id": write_mux, "target_port_label": "In1"
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements",
+            {"source_id": dflipflop, "source_port_label": "Q", "target_id": write_mux, "target_port_label": "In1"},
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect Q feedback to Mux input 1"))
             return False
         self.connection_count += 1
         await self.log("  ✓ Connected Q feedback to Mux for hold functionality")
 
-        response = await self.mcp.send_command("create_element", {
-            "type": "Led", "x": output_x, "y": output_notq_y, "label": "NotQ"
-        })
+        response = await self.mcp.send_command(
+            "create_element", {"type": "Led", "x": output_x, "y": output_notq_y, "label": "NotQ"}
+        )
         if not response or not response.success:
             print(self.error_context.format_error("create output NotQ LED"))
             return False
-        notq_led = response.result.get('element_id') if response.result else None
+        notq_led = response.result.get("element_id") if response.result else None
         self.element_count += 1
 
-        conn = await self.mcp.send_command("connect_elements", {
-            "source_id": dflipflop, "source_port_label": "~Q",
-            "target_id": notq_led, "target_port": 0
-        })
+        conn = await self.mcp.send_command(
+            "connect_elements",
+            {"source_id": dflipflop, "source_port_label": "~Q", "target_id": notq_led, "target_port": 0},
+        )
         if not conn or not conn.success:
             print(self.error_context.format_error("connect NotQ to LED"))
             return False
@@ -284,7 +285,9 @@ class Register1BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 1-bit Register IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 1-bit Register IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 

@@ -46,7 +46,9 @@ class InstructionRegister8BitBuilder(ICBuilderBase):
         # ---- Create input data bus (Data[0..7]) ----
         data_inputs = []
         for i in range(8):
-            element_id = await self.create_element("InputSwitch", data_input_x + (i * HORIZONTAL_GATE_SPACING), data_input_y, f"Data[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", data_input_x + (i * HORIZONTAL_GATE_SPACING), data_input_y, f"Data[{i}]"
+            )
             if element_id is None:
                 return False
             data_inputs.append(element_id)
@@ -56,11 +58,15 @@ class InstructionRegister8BitBuilder(ICBuilderBase):
         if clock is None:
             return False
 
-        load = await self.create_element("InputSwitch", control_input_x, control_input_y + VERTICAL_STAGE_SPACING, "Load")
+        load = await self.create_element(
+            "InputSwitch", control_input_x, control_input_y + VERTICAL_STAGE_SPACING, "Load"
+        )
         if load is None:
             return False
 
-        reset = await self.create_element("InputSwitch", control_input_x, control_input_y + (2 * VERTICAL_STAGE_SPACING), "Reset")
+        reset = await self.create_element(
+            "InputSwitch", control_input_x, control_input_y + (2 * VERTICAL_STAGE_SPACING), "Reset"
+        )
         if reset is None:
             return False
 
@@ -100,7 +106,9 @@ class InstructionRegister8BitBuilder(ICBuilderBase):
 
         # ---- Create Instruction output LEDs (Instruction[0..7]) ----
         for i in range(8):
-            instr_led = await self.create_element("Led", output_x + (i * HORIZONTAL_GATE_SPACING), output_y, f"Instruction[{i}]")
+            instr_led = await self.create_element(
+                "Led", output_x + (i * HORIZONTAL_GATE_SPACING), output_y, f"Instruction[{i}]"
+            )
             if instr_led is None:
                 return False
 
@@ -110,7 +118,9 @@ class InstructionRegister8BitBuilder(ICBuilderBase):
 
         # ---- Create OpCode output LEDs (OpCode[0..4] = Instruction[7:3]) ----
         for i in range(5):
-            opcode_led = await self.create_element("Led", output_x + (i * HORIZONTAL_GATE_SPACING), output_y + VERTICAL_STAGE_SPACING, f"OpCode[{i}]")
+            opcode_led = await self.create_element(
+                "Led", output_x + (i * HORIZONTAL_GATE_SPACING), output_y + VERTICAL_STAGE_SPACING, f"OpCode[{i}]"
+            )
             if opcode_led is None:
                 return False
 
@@ -120,7 +130,12 @@ class InstructionRegister8BitBuilder(ICBuilderBase):
 
         # ---- Create RegisterAddr output LEDs (RegisterAddr[0..2] = Instruction[2:0]) ----
         for i in range(3):
-            regaddr_led = await self.create_element("Led", output_x + (i * HORIZONTAL_GATE_SPACING), output_y + (2 * VERTICAL_STAGE_SPACING), f"RegisterAddr[{i}]")
+            regaddr_led = await self.create_element(
+                "Led",
+                output_x + (i * HORIZONTAL_GATE_SPACING),
+                output_y + (2 * VERTICAL_STAGE_SPACING),
+                f"RegisterAddr[{i}]",
+            )
             if regaddr_led is None:
                 return False
 
@@ -133,7 +148,9 @@ class InstructionRegister8BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 8-bit Instruction Register IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 8-bit Instruction Register IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -147,6 +164,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "8-bit Instruction Register IC"))
         sys.exit(exit_code)

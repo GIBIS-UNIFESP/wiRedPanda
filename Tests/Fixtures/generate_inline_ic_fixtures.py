@@ -41,18 +41,10 @@ async def create_simple_and(mcp: MCPInfrastructure) -> bool:
         return False
 
     # Create elements on grid-snapped positions (multiples of 8)
-    a = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 96, "label": "A"
-    })
-    b = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 192, "label": "B"
-    })
-    gate = await mcp.send_command("create_element", {
-        "type": "And", "x": 256, "y": 144
-    })
-    led = await mcp.send_command("create_element", {
-        "type": "Led", "x": 400, "y": 144, "label": "OUT"
-    })
+    a = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 96, "label": "A"})
+    b = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 192, "label": "B"})
+    gate = await mcp.send_command("create_element", {"type": "And", "x": 256, "y": 144})
+    led = await mcp.send_command("create_element", {"type": "Led", "x": 400, "y": 144, "label": "OUT"})
 
     for r in [a, b, gate, led]:
         if not r.success:
@@ -115,22 +107,14 @@ async def create_nested_and(mcp: MCPInfrastructure) -> bool:
         return False
 
     # Create input switches
-    a = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 96, "label": "X"
-    })
-    b = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 192, "label": "Y"
-    })
+    a = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 96, "label": "X"})
+    b = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 192, "label": "Y"})
 
     # Instantiate the simple_and IC
-    ic = await mcp.send_command("instantiate_ic", {
-        "ic_name": "simple_and", "x": 256, "y": 144
-    })
+    ic = await mcp.send_command("instantiate_ic", {"ic_name": "simple_and", "x": 256, "y": 144})
 
     # Create LED output
-    led = await mcp.send_command("create_element", {
-        "type": "Led", "x": 400, "y": 144, "label": "Z"
-    })
+    led = await mcp.send_command("create_element", {"type": "Led", "x": 400, "y": 144, "label": "Z"})
 
     for r in [a, b, ic, led]:
         if not r.success:
@@ -190,22 +174,14 @@ async def create_parent_inline_ic(mcp: MCPInfrastructure) -> bool:
         return False
 
     # Create input switches
-    a = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 96, "label": "IN_A"
-    })
-    b = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 192, "label": "IN_B"
-    })
+    a = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 96, "label": "IN_A"})
+    b = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 192, "label": "IN_B"})
 
     # Instantiate as embedded IC
-    ic = await mcp.send_command("instantiate_ic", {
-        "ic_name": "simple_and", "x": 256, "y": 144, "inline": True
-    })
+    ic = await mcp.send_command("instantiate_ic", {"ic_name": "simple_and", "x": 256, "y": 144, "inline": True})
 
     # Create LED output
-    led = await mcp.send_command("create_element", {
-        "type": "Led", "x": 400, "y": 144, "label": "RESULT"
-    })
+    led = await mcp.send_command("create_element", {"type": "Led", "x": 400, "y": 144, "label": "RESULT"})
 
     for r in [a, b, ic, led]:
         if not r.success:
@@ -267,15 +243,9 @@ async def create_chain_c(mcp: MCPInfrastructure) -> bool:
         print(f"  FAIL new_circuit: {resp.message}")
         return False
 
-    inp = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 144, "label": "C_IN"
-    })
-    gate = await mcp.send_command("create_element", {
-        "type": "Not", "x": 256, "y": 144
-    })
-    led = await mcp.send_command("create_element", {
-        "type": "Led", "x": 400, "y": 144, "label": "C_OUT"
-    })
+    inp = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 144, "label": "C_IN"})
+    gate = await mcp.send_command("create_element", {"type": "Not", "x": 256, "y": 144})
+    led = await mcp.send_command("create_element", {"type": "Led", "x": 400, "y": 144, "label": "C_OUT"})
 
     for r in [inp, gate, led]:
         if not r.success:
@@ -283,10 +253,18 @@ async def create_chain_c(mcp: MCPInfrastructure) -> bool:
             return False
 
     conns = [
-        {"source_id": inp.result["element_id"], "source_port": 0,
-         "target_id": gate.result["element_id"], "target_port": 0},
-        {"source_id": gate.result["element_id"], "source_port": 0,
-         "target_id": led.result["element_id"], "target_port": 0},
+        {
+            "source_id": inp.result["element_id"],
+            "source_port": 0,
+            "target_id": gate.result["element_id"],
+            "target_port": 0,
+        },
+        {
+            "source_id": gate.result["element_id"],
+            "source_port": 0,
+            "target_id": led.result["element_id"],
+            "target_port": 0,
+        },
     ]
     for c in conns:
         r = await mcp.send_command("connect_elements", c)
@@ -316,21 +294,11 @@ async def create_chain_b(mcp: MCPInfrastructure) -> bool:
         print("  FAIL: could not set context dir")
         return False
 
-    inp_a = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 96, "label": "B_A"
-    })
-    inp_b = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 192, "label": "B_B"
-    })
-    gate = await mcp.send_command("create_element", {
-        "type": "And", "x": 224, "y": 144
-    })
-    ic_c = await mcp.send_command("instantiate_ic", {
-        "ic_name": "chain_c", "x": 368, "y": 144
-    })
-    led = await mcp.send_command("create_element", {
-        "type": "Led", "x": 512, "y": 144, "label": "B_OUT"
-    })
+    inp_a = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 96, "label": "B_A"})
+    inp_b = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 192, "label": "B_B"})
+    gate = await mcp.send_command("create_element", {"type": "And", "x": 224, "y": 144})
+    ic_c = await mcp.send_command("instantiate_ic", {"ic_name": "chain_c", "x": 368, "y": 144})
+    led = await mcp.send_command("create_element", {"type": "Led", "x": 512, "y": 144, "label": "B_OUT"})
 
     for r in [inp_a, inp_b, gate, ic_c, led]:
         if not r.success:
@@ -338,14 +306,30 @@ async def create_chain_b(mcp: MCPInfrastructure) -> bool:
             return False
 
     conns = [
-        {"source_id": inp_a.result["element_id"], "source_port": 0,
-         "target_id": gate.result["element_id"], "target_port": 0},
-        {"source_id": inp_b.result["element_id"], "source_port": 0,
-         "target_id": gate.result["element_id"], "target_port": 1},
-        {"source_id": gate.result["element_id"], "source_port": 0,
-         "target_id": ic_c.result["element_id"], "target_port": 0},
-        {"source_id": ic_c.result["element_id"], "source_port": 0,
-         "target_id": led.result["element_id"], "target_port": 0},
+        {
+            "source_id": inp_a.result["element_id"],
+            "source_port": 0,
+            "target_id": gate.result["element_id"],
+            "target_port": 0,
+        },
+        {
+            "source_id": inp_b.result["element_id"],
+            "source_port": 0,
+            "target_id": gate.result["element_id"],
+            "target_port": 1,
+        },
+        {
+            "source_id": gate.result["element_id"],
+            "source_port": 0,
+            "target_id": ic_c.result["element_id"],
+            "target_port": 0,
+        },
+        {
+            "source_id": ic_c.result["element_id"],
+            "source_port": 0,
+            "target_id": led.result["element_id"],
+            "target_port": 0,
+        },
     ]
     for c in conns:
         r = await mcp.send_command("connect_elements", c)
@@ -376,18 +360,10 @@ async def create_chain_a(mcp: MCPInfrastructure) -> bool:
         print("  FAIL: could not set context dir")
         return False
 
-    inp_a = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 96, "label": "A_X"
-    })
-    inp_b = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 192, "label": "A_Y"
-    })
-    ic_b = await mcp.send_command("instantiate_ic", {
-        "ic_name": "chain_b", "x": 304, "y": 144
-    })
-    led = await mcp.send_command("create_element", {
-        "type": "Led", "x": 512, "y": 144, "label": "A_OUT"
-    })
+    inp_a = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 96, "label": "A_X"})
+    inp_b = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 192, "label": "A_Y"})
+    ic_b = await mcp.send_command("instantiate_ic", {"ic_name": "chain_b", "x": 304, "y": 144})
+    led = await mcp.send_command("create_element", {"type": "Led", "x": 512, "y": 144, "label": "A_OUT"})
 
     for r in [inp_a, inp_b, ic_b, led]:
         if not r.success:
@@ -395,12 +371,24 @@ async def create_chain_a(mcp: MCPInfrastructure) -> bool:
             return False
 
     conns = [
-        {"source_id": inp_a.result["element_id"], "source_port": 0,
-         "target_id": ic_b.result["element_id"], "target_port": 0},
-        {"source_id": inp_b.result["element_id"], "source_port": 0,
-         "target_id": ic_b.result["element_id"], "target_port": 1},
-        {"source_id": ic_b.result["element_id"], "source_port": 0,
-         "target_id": led.result["element_id"], "target_port": 0},
+        {
+            "source_id": inp_a.result["element_id"],
+            "source_port": 0,
+            "target_id": ic_b.result["element_id"],
+            "target_port": 0,
+        },
+        {
+            "source_id": inp_b.result["element_id"],
+            "source_port": 0,
+            "target_id": ic_b.result["element_id"],
+            "target_port": 1,
+        },
+        {
+            "source_id": ic_b.result["element_id"],
+            "source_port": 0,
+            "target_id": led.result["element_id"],
+            "target_port": 0,
+        },
     ]
     for c in conns:
         r = await mcp.send_command("connect_elements", c)
@@ -441,9 +429,7 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
         return False
 
     # Embed chain_b as inline IC — flattenBlob will recursively embed chain_c
-    ic_nand = await mcp.send_command("instantiate_ic", {
-        "ic_name": "chain_b", "x": 304, "y": 144, "inline": True
-    })
+    ic_nand = await mcp.send_command("instantiate_ic", {"ic_name": "chain_b", "x": 304, "y": 144, "inline": True})
     if not ic_nand.success:
         print(f"  FAIL instantiate chain_b inline: {ic_nand.message}")
         return False
@@ -451,15 +437,9 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
     print("    (chain_b blob contains chain_c, recursively flattened)")
 
     # Create input switches and LED
-    inp_a = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 96, "label": "A"
-    })
-    inp_b = await mcp.send_command("create_element", {
-        "type": "InputSwitch", "x": 96, "y": 192, "label": "B"
-    })
-    led = await mcp.send_command("create_element", {
-        "type": "Led", "x": 512, "y": 144, "label": "NAND"
-    })
+    inp_a = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 96, "label": "A"})
+    inp_b = await mcp.send_command("create_element", {"type": "InputSwitch", "x": 96, "y": 192, "label": "B"})
+    led = await mcp.send_command("create_element", {"type": "Led", "x": 512, "y": 144, "label": "NAND"})
 
     for r in [inp_a, inp_b, led]:
         if not r.success:
@@ -468,12 +448,24 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
 
     # Wire: A→chain_b.0, B→chain_b.1, chain_b→LED
     conns = [
-        {"source_id": inp_a.result["element_id"], "source_port": 0,
-         "target_id": ic_nand.result["element_id"], "target_port": 0},
-        {"source_id": inp_b.result["element_id"], "source_port": 0,
-         "target_id": ic_nand.result["element_id"], "target_port": 1},
-        {"source_id": ic_nand.result["element_id"], "source_port": 0,
-         "target_id": led.result["element_id"], "target_port": 0},
+        {
+            "source_id": inp_a.result["element_id"],
+            "source_port": 0,
+            "target_id": ic_nand.result["element_id"],
+            "target_port": 0,
+        },
+        {
+            "source_id": inp_b.result["element_id"],
+            "source_port": 0,
+            "target_id": ic_nand.result["element_id"],
+            "target_port": 1,
+        },
+        {
+            "source_id": ic_nand.result["element_id"],
+            "source_port": 0,
+            "target_id": led.result["element_id"],
+            "target_port": 0,
+        },
     ]
     for c in conns:
         r = await mcp.send_command("connect_elements", c)

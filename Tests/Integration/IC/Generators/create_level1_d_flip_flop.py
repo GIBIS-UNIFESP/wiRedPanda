@@ -92,7 +92,9 @@ class DFlipFlopBuilder(ICBuilderBase):
         await self.log(f"  ✓ Created input Preset (id={input_preset_id})")
 
         # Create CLEAR input (active LOW)
-        input_clear_id = await self.create_element("InputSwitch", input_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "Clear")
+        input_clear_id = await self.create_element(
+            "InputSwitch", input_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "Clear"
+        )
         if input_clear_id is None:
             return False
         await self.log(f"  ✓ Created input Clear (id={input_clear_id})")
@@ -125,11 +127,15 @@ class DFlipFlopBuilder(ICBuilderBase):
         # these, asserting Preset/Clear while Clock=1 contends with the open
         # slave's data path (master holding the opposite value drives the
         # invalid Q=Q_bar=0 state, and the forced level is lost on release).
-        master_or_r_id = await self.create_element("Or", master_not_x, bottom_y + (4 * VERTICAL_STAGE_SPACING), "master_or_r")
+        master_or_r_id = await self.create_element(
+            "Or", master_not_x, bottom_y + (4 * VERTICAL_STAGE_SPACING), "master_or_r"
+        )
         if master_or_r_id is None:
             return False
 
-        master_or_s_id = await self.create_element("Or", master_not_x, bottom_y + (5 * VERTICAL_STAGE_SPACING), "master_or_s")
+        master_or_s_id = await self.create_element(
+            "Or", master_not_x, bottom_y + (5 * VERTICAL_STAGE_SPACING), "master_or_s"
+        )
         if master_or_s_id is None:
             return False
 
@@ -315,7 +321,9 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created DFlipFlop IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created DFlipFlop IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -329,6 +337,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "D Flip-Flop IC"))
         sys.exit(exit_code)

@@ -33,6 +33,7 @@ from typing import Optional, List
 @dataclass
 class IncludeEntry:
     """Represents a single include with optional conditional context."""
+
     kind: str  # 'related', 'stdlib', 'qt', 'project'
     header: str  # The include path/name
     line: str  # The raw #include line
@@ -41,10 +42,7 @@ class IncludeEntry:
 
 def find_repo_root():
     try:
-        result = subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            capture_output=True, text=True, check=True
-        )
+        result = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         return Path(result.stdout.strip())
     except (subprocess.CalledProcessError, FileNotFoundError):
         return Path(__file__).parent.parent
@@ -90,10 +88,10 @@ def classify_include(line):
 
 def extract_condition(line):
     """Extract preprocessor condition name from #ifdef or #if defined lines."""
-    m = re.match(r'^\s*#ifdef\s+(\w+)', line)
+    m = re.match(r"^\s*#ifdef\s+(\w+)", line)
     if m:
         return m.group(1)
-    m = re.match(r'^\s*#if\s+defined\s*\(\s*(\w+)\s*\)', line)
+    m = re.match(r"^\s*#if\s+defined\s*\(\s*(\w+)\s*\)", line)
     if m:
         return m.group(1)
     return None
@@ -183,12 +181,9 @@ def parse_include_section_with_ifdef(lines, start_idx):
                 kind, header = classify_include(block_line)
                 if kind:
                     # Extract the include — it will be reordered into the right section
-                    block_includes.append(IncludeEntry(
-                        kind=kind,
-                        header=header,
-                        line=block_line.rstrip(),
-                        condition=condition
-                    ))
+                    block_includes.append(
+                        IncludeEntry(kind=kind, header=header, line=block_line.rstrip(), condition=condition)
+                    )
                 elif bstripped and not bstripped.startswith("//"):
                     # Non-include code inside #ifdef — collect to re-emit later
                     block_code_lines.append(block_line.rstrip())
@@ -210,12 +205,7 @@ def parse_include_section_with_ifdef(lines, start_idx):
             return i, entries, trailing_blocks
 
         # Add direct include with no condition
-        entries.append(IncludeEntry(
-            kind=kind,
-            header=header,
-            line=line.rstrip(),
-            condition=None
-        ))
+        entries.append(IncludeEntry(kind=kind, header=header, line=line.rstrip(), condition=None))
         i += 1
 
     return i, entries, trailing_blocks
@@ -534,9 +524,11 @@ def main():
     for ext in ["*.cpp", "*.h"]:
         cpp_files.extend(root.glob(f"**/{ext}"))
 
-    cpp_files = [f for f in cpp_files if not any(
-        should_exclude_dir(part) for part in f.relative_to(root).parts
-    ) and f.name not in EXCLUDE_FILES]
+    cpp_files = [
+        f
+        for f in cpp_files
+        if not any(should_exclude_dir(part) for part in f.relative_to(root).parts) and f.name not in EXCLUDE_FILES
+    ]
 
     cpp_files.sort()
 

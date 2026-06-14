@@ -54,7 +54,9 @@ class ParityCheckerBuilder(ICBuilderBase):
         # Create input switches for data[0 to 7]
         data_inputs = []
         for i in range(width):
-            element_id = await self.create_element("InputSwitch", input_x, 100.0 + i * VERTICAL_STAGE_SPACING, f"data[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", input_x, 100.0 + i * VERTICAL_STAGE_SPACING, f"data[{i}]"
+            )
             if element_id is None:
                 return False
             data_inputs.append(element_id)
@@ -71,7 +73,12 @@ class ParityCheckerBuilder(ICBuilderBase):
 
             # Create pairs of XOR gates for current stage
             for pair_idx in range(0, len(current_stage), 2):
-                xor_id = await self.create_element("Xor", stage_x + (pair_idx // 2 % 2) * HORIZONTAL_GATE_SPACING, 100.0 + (pair_idx // 4) * VERTICAL_STAGE_SPACING, f"xor_s{stage_num}[{pair_idx // 2}]")
+                xor_id = await self.create_element(
+                    "Xor",
+                    stage_x + (pair_idx // 2 % 2) * HORIZONTAL_GATE_SPACING,
+                    100.0 + (pair_idx // 4) * VERTICAL_STAGE_SPACING,
+                    f"xor_s{stage_num}[{pair_idx // 2}]",
+                )
                 if xor_id is None:
                     return False
                 next_stage.append(xor_id)
@@ -96,17 +103,21 @@ class ParityCheckerBuilder(ICBuilderBase):
         # less-significant block into this block's parity. Tied low (the default)
         # it is a no-op, so a single block behaves exactly as before; chain blocks
         # to check parity across more than 8 bits.
-        cascade_in = await self.create_element("InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "CascadeIn")
+        cascade_in = await self.create_element(
+            "InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "CascadeIn"
+        )
         if cascade_in is None:
             return False
-        cascade_xor = await self.create_element("Xor", stage_x, 100.0 + (width // 2) * VERTICAL_STAGE_SPACING, "cascade_xor")
+        cascade_xor = await self.create_element(
+            "Xor", stage_x, 100.0 + (width // 2) * VERTICAL_STAGE_SPACING, "cascade_xor"
+        )
         if cascade_xor is None:
             return False
         if not await self.connect(tree_parity_id, cascade_xor):
             return False
         if not await self.connect(cascade_in, cascade_xor, target_port=1):
             return False
-        parity_xor_id = cascade_xor   # output LEDs read the cascaded parity
+        parity_xor_id = cascade_xor  # output LEDs read the cascaded parity
 
         # Create odd-parity output LED (parity = XOR of all bits = 1 iff odd #1s)
         parity_led = await self.create_element("Led", output_x, 100.0 + (width // 2) * VERTICAL_STAGE_SPACING, "parity")
@@ -136,7 +147,9 @@ class ParityCheckerBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Parity Checker IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Parity Checker IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -150,6 +163,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Parity Checker IC"))
         sys.exit(exit_code)

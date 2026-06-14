@@ -51,7 +51,9 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         # Create input switches for 5 ALU result bits
         result_inputs = []
         for i in range(5):
-            result_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"result{i}")
+            result_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"result{i}"
+            )
             if result_id is None:
                 return False
             result_inputs.append(result_id)
@@ -59,7 +61,9 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         # Create input switches for 3-bit opcode
         op_inputs = []
         for i in range(3):
-            op_id = await self.create_element("InputSwitch", opcode_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"op{i}")
+            op_id = await self.create_element(
+                "InputSwitch", opcode_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"op{i}"
+            )
             if op_id is None:
                 return False
             op_inputs.append(op_id)
@@ -81,7 +85,9 @@ class ALUSelector5wayBuilder(ICBuilderBase):
             return False
 
         # Level 1: 2:1 mux between result2/result3 using op0
-        l1_mux2 = await self.instantiate_ic("level2_mux_2to1", level1_x, input_y + (2 * VERTICAL_STAGE_SPACING), "l1_mux2")
+        l1_mux2 = await self.instantiate_ic(
+            "level2_mux_2to1", level1_x, input_y + (2 * VERTICAL_STAGE_SPACING), "l1_mux2"
+        )
         if l1_mux2 is None:
             return False
 
@@ -107,7 +113,9 @@ class ALUSelector5wayBuilder(ICBuilderBase):
 
         # Level 2: Mux between l1_mux1, l1_mux2, result4 (need special logic for 5 inputs)
         # Use cascaded structure: first select between l1_mux1 and l1_mux2 using op1
-        l2_mux1 = await self.instantiate_ic("level2_mux_2to1", level2_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l2_mux1")
+        l2_mux1 = await self.instantiate_ic(
+            "level2_mux_2to1", level2_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l2_mux1"
+        )
         if l2_mux1 is None:
             return False
 
@@ -127,7 +135,9 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         await self.log("  Created level 2: select between 4-input results")
 
         # Level 3: Mux between l2_mux1 and result4 using op2
-        l3_mux = await self.instantiate_ic("level2_mux_2to1", level3_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l3_mux")
+        l3_mux = await self.instantiate_ic(
+            "level2_mux_2to1", level3_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l3_mux"
+        )
         if l3_mux is None:
             return False
 
@@ -162,7 +172,9 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created ALUSelector5way IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created ALUSelector5way IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -176,6 +188,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "ALU Selector 5-way IC"))
         sys.exit(exit_code)

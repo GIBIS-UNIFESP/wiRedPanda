@@ -83,7 +83,9 @@ class JohnsonCounterBuilder(ICBuilderBase):
         dff_ids = []
         dff_x = input_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            ff_id = await self.instantiate_ic("level1_d_flip_flop", dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}")
+            ff_id = await self.instantiate_ic(
+                "level1_d_flip_flop", dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}"
+            )
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -113,7 +115,9 @@ class JohnsonCounterBuilder(ICBuilderBase):
             if not await self.connect(mux_vcc_id, hm, target_port_label="Enable"):
                 return False
 
-            lm = await self.instantiate_ic("level2_mux_2to1", mux_x + HORIZONTAL_GATE_SPACING, 225.0 + (i * 30.0), f"load_mux{i}")
+            lm = await self.instantiate_ic(
+                "level2_mux_2to1", mux_x + HORIZONTAL_GATE_SPACING, 225.0 + (i * 30.0), f"load_mux{i}"
+            )
             if lm is None:
                 return False
             if not await self.connect(hm, lm, source_port_label="Output", target_port_label="Data[0]"):
@@ -128,7 +132,9 @@ class JohnsonCounterBuilder(ICBuilderBase):
                 return False
 
         # Create NOT gate for twisted feedback
-        not_id = await self.create_element("Not", dff_x + (3 * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, "not_q3")
+        not_id = await self.create_element(
+            "Not", dff_x + (3 * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, "not_q3"
+        )
         if not_id is None:
             return False
         await self.log(f"  ✓ Created NOT gate")
@@ -151,7 +157,9 @@ class JohnsonCounterBuilder(ICBuilderBase):
         # ========== Connect cascade path (into the hold-mux shift input) ==========
         for i in range(3):
             # Q[i] → hold_mux[i+1].Data[1] (the "shift" input)
-            if not await self.connect(dff_ids[i], hold_mux_ids[i + 1], source_port_label="Q", target_port_label="Data[1]"):
+            if not await self.connect(
+                dff_ids[i], hold_mux_ids[i + 1], source_port_label="Q", target_port_label="Data[1]"
+            ):
                 return False
 
         # ========== Connect twisted feedback path ==========
@@ -173,7 +181,9 @@ class JohnsonCounterBuilder(ICBuilderBase):
             return False
 
         # Gnd holds the otherwise-unused Preset/Clear pins inactive (active-HIGH)
-        gnd_id = await self.create_element("InputGnd", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Gnd")
+        gnd_id = await self.create_element(
+            "InputGnd", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Gnd"
+        )
         if gnd_id is None:
             return False
         await self.log(f"  ✓ Created Gnd element")
@@ -197,7 +207,9 @@ class JohnsonCounterBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 4-bit Johnson Counter IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 4-bit Johnson Counter IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -211,6 +223,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Johnson Counter IC"))
         sys.exit(exit_code)

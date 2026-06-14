@@ -57,7 +57,9 @@ class StackPointer8BitBuilder(ICBuilderBase):
         load_value_inputs = []
         input_x = 50.0
         for i in range(8):
-            element_id = await self.create_element("InputSwitch", input_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"LoadValue[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", input_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"LoadValue[{i}]"
+            )
             if element_id is None:
                 return False
             load_value_inputs.append(element_id)
@@ -68,7 +70,9 @@ class StackPointer8BitBuilder(ICBuilderBase):
 
         # (F26: the dangling "Enable" input was removed — nothing consumed it.)
         for ctrl_name in ["Clock", "Load", "Push", "Pop", "Reset"]:
-            element_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + len(control_signals) * VERTICAL_STAGE_SPACING, ctrl_name)
+            element_id = await self.create_element(
+                "InputSwitch", ctrl_x, 100.0 + len(control_signals) * VERTICAL_STAGE_SPACING, ctrl_name
+            )
             if element_id is None:
                 return False
             control_signals[ctrl_name] = element_id
@@ -84,7 +88,9 @@ class StackPointer8BitBuilder(ICBuilderBase):
         sp_flipflops = []
         ff_x = 550.0
         for i in range(8):
-            element_id = await self.instantiate_ic("level1_d_flip_flop", ff_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"SP[{i}]")
+            element_id = await self.instantiate_ic(
+                "level1_d_flip_flop", ff_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"SP[{i}]"
+            )
             if element_id is None:
                 return False
             sp_flipflops.append(element_id)
@@ -102,7 +108,9 @@ class StackPointer8BitBuilder(ICBuilderBase):
         priority_muxes = []
         mux_x = 900.0
         for i in range(8):
-            element_id = await self.instantiate_ic("level2_priority_mux_3to1", mux_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"SPMux[{i}]")
+            element_id = await self.instantiate_ic(
+                "level2_priority_mux_3to1", mux_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"SPMux[{i}]"
+            )
             if element_id is None:
                 return False
             priority_muxes.append(element_id)
@@ -266,6 +274,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Stack Pointer 8-bit"))
         sys.exit(exit_code)

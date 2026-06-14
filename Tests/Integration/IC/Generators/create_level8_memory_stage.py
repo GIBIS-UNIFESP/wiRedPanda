@@ -57,7 +57,7 @@ class MemoryStageBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the Memory Stage IC"""
-        await self.begin_build('Memory Stage')
+        await self.begin_build("Memory Stage")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -69,7 +69,9 @@ class MemoryStageBuilder(ICBuilderBase):
         # ---- Create Address input switches (8-bit) ----
         address_inputs = []
         for i in range(8):
-            addr_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"Address[{i}]")
+            addr_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"Address[{i}]"
+            )
             if addr_id is None:
                 return False
             address_inputs.append(addr_id)
@@ -78,7 +80,12 @@ class MemoryStageBuilder(ICBuilderBase):
         # ---- Create DataIn input switches (8-bit) ----
         datain_inputs = []
         for i in range(8):
-            datain_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y + VERTICAL_STAGE_SPACING / 2, f"DataIn[{i}]")
+            datain_id = await self.create_element(
+                "InputSwitch",
+                input_x + (i * HORIZONTAL_GATE_SPACING),
+                input_y + VERTICAL_STAGE_SPACING / 2,
+                f"DataIn[{i}]",
+            )
             if datain_id is None:
                 return False
             datain_inputs.append(datain_id)
@@ -87,7 +94,9 @@ class MemoryStageBuilder(ICBuilderBase):
         # ---- Create Result input switches (8-bit) ----
         result_inputs = []
         for i in range(8):
-            result_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y + VERTICAL_STAGE_SPACING, f"Result[{i}]")
+            result_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y + VERTICAL_STAGE_SPACING, f"Result[{i}]"
+            )
             if result_id is None:
                 return False
             result_inputs.append(result_id)
@@ -100,7 +109,9 @@ class MemoryStageBuilder(ICBuilderBase):
         if memread_id is None:
             return False
 
-        memwrite_id = await self.create_element("InputSwitch", control_x, input_y + VERTICAL_STAGE_SPACING / 2, "MemWrite")
+        memwrite_id = await self.create_element(
+            "InputSwitch", control_x, input_y + VERTICAL_STAGE_SPACING / 2, "MemWrite"
+        )
         if memwrite_id is None:
             return False
 
@@ -108,7 +119,9 @@ class MemoryStageBuilder(ICBuilderBase):
         if clock_id is None:
             return False
 
-        reset_id = await self.create_element("InputSwitch", control_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "Reset")
+        reset_id = await self.create_element(
+            "InputSwitch", control_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "Reset"
+        )
         if reset_id is None:
             return False
 
@@ -180,7 +193,9 @@ class MemoryStageBuilder(ICBuilderBase):
         output_x = mux_x + (2 * HORIZONTAL_GATE_SPACING)
 
         for i in range(8):
-            led_id = await self.create_element("Led", output_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"DataOut[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"DataOut[{i}]"
+            )
             if led_id is None:
                 return False
 
@@ -194,7 +209,9 @@ class MemoryStageBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Memory Stage IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Memory Stage IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -208,6 +225,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Memory Stage IC"))
         sys.exit(exit_code)

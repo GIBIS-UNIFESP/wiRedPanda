@@ -43,7 +43,7 @@ class DataForwardingUnitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the Data Forwarding Unit IC"""
-        await self.begin_build('Data Forwarding Unit')
+        await self.begin_build("Data Forwarding Unit")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -54,7 +54,9 @@ class DataForwardingUnitBuilder(ICBuilderBase):
         # Create DataA inputs (8-bit)
         data_a_inputs = []
         for i in range(8):
-            data_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"DataA[{i}]")
+            data_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"DataA[{i}]"
+            )
             if data_id is None:
                 return False
             data_a_inputs.append(data_id)
@@ -63,7 +65,9 @@ class DataForwardingUnitBuilder(ICBuilderBase):
         # Create DataB inputs (8-bit)
         data_b_inputs = []
         for i in range(8):
-            data_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, f"DataB[{i}]")
+            data_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, f"DataB[{i}]"
+            )
             if data_id is None:
                 return False
             data_b_inputs.append(data_id)
@@ -72,7 +76,12 @@ class DataForwardingUnitBuilder(ICBuilderBase):
         # Create DataC inputs (8-bit)
         data_c_inputs = []
         for i in range(8):
-            data_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0 + (2 * VERTICAL_STAGE_SPACING), f"DataC[{i}]")
+            data_id = await self.create_element(
+                "InputSwitch",
+                input_x + (i * HORIZONTAL_GATE_SPACING),
+                100.0 + (2 * VERTICAL_STAGE_SPACING),
+                f"DataC[{i}]",
+            )
             if data_id is None:
                 return False
             data_c_inputs.append(data_id)
@@ -81,7 +90,12 @@ class DataForwardingUnitBuilder(ICBuilderBase):
         # Create DataD inputs (8-bit)
         data_d_inputs = []
         for i in range(8):
-            data_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0 + (3 * VERTICAL_STAGE_SPACING), f"DataD[{i}]")
+            data_id = await self.create_element(
+                "InputSwitch",
+                input_x + (i * HORIZONTAL_GATE_SPACING),
+                100.0 + (3 * VERTICAL_STAGE_SPACING),
+                f"DataD[{i}]",
+            )
             if data_id is None:
                 return False
             data_d_inputs.append(data_id)
@@ -90,7 +104,12 @@ class DataForwardingUnitBuilder(ICBuilderBase):
         # Create Select inputs (2-bit)
         select_inputs = []
         for i in range(2):
-            sel_id = await self.create_element("InputSwitch", input_x + (8 * HORIZONTAL_GATE_SPACING) + (i * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, f"Select[{i}]")
+            sel_id = await self.create_element(
+                "InputSwitch",
+                input_x + (8 * HORIZONTAL_GATE_SPACING) + (i * HORIZONTAL_GATE_SPACING),
+                100.0 + VERTICAL_STAGE_SPACING,
+                f"Select[{i}]",
+            )
             if sel_id is None:
                 return False
             select_inputs.append(sel_id)
@@ -105,7 +124,9 @@ class DataForwardingUnitBuilder(ICBuilderBase):
         mux_ids = []
         for bit_idx in range(8):
             # Instantiate level2_mux_4to1 IC for this bit
-            mux_id = await self.instantiate_ic("level2_mux_4to1", output_x + (bit_idx * HORIZONTAL_GATE_SPACING), 250.0, f"Mux4to1_{bit_idx}")
+            mux_id = await self.instantiate_ic(
+                "level2_mux_4to1", output_x + (bit_idx * HORIZONTAL_GATE_SPACING), 250.0, f"Mux4to1_{bit_idx}"
+            )
             if mux_id is None:
                 return False
             mux_ids.append(mux_id)
@@ -139,7 +160,12 @@ class DataForwardingUnitBuilder(ICBuilderBase):
                 return False
 
             # Create output LED
-            led_id = await self.create_element("Led", output_x + (10 * HORIZONTAL_GATE_SPACING) + (bit_idx * HORIZONTAL_GATE_SPACING), 250.0, f"ForwardedData[{bit_idx}]")
+            led_id = await self.create_element(
+                "Led",
+                output_x + (10 * HORIZONTAL_GATE_SPACING) + (bit_idx * HORIZONTAL_GATE_SPACING),
+                250.0,
+                f"ForwardedData[{bit_idx}]",
+            )
             if led_id is None:
                 return False
 
@@ -153,7 +179,9 @@ class DataForwardingUnitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Data Forwarding Unit IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Data Forwarding Unit IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -167,6 +195,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Data Forwarding Unit IC"))
         sys.exit(exit_code)

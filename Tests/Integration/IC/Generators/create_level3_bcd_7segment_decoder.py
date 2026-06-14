@@ -62,17 +62,21 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
         # Create input switches for BCD[0-3]
         bcd_inputs = []
         for i in range(4):
-            element_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"BCD[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"BCD[{i}]"
+            )
             if element_id is None:
                 return False
             bcd_inputs.append(element_id)
             await self.log(f"  ✓ Created BCD[{i}] (id={element_id})")
 
         # Create output LEDs for segments a-g
-        segment_names = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+        segment_names = ["a", "b", "c", "d", "e", "f", "g"]
         segment_outputs = []
         for i, segment in enumerate(segment_names):
-            element_id = await self.create_element("Led", output_x, output_y + (i * VERTICAL_STAGE_SPACING), f"segment_{segment}")
+            element_id = await self.create_element(
+                "Led", output_x, output_y + (i * VERTICAL_STAGE_SPACING), f"segment_{segment}"
+            )
             if element_id is None:
                 return False
             segment_outputs.append(element_id)
@@ -84,7 +88,9 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
         # Create NOT gates for inverted inputs
         not_gates = []
         for i in range(4):
-            element_id = await self.create_element("Not", not_gate_x, input_y + (i * VERTICAL_STAGE_SPACING), f"not_bcd{i}")
+            element_id = await self.create_element(
+                "Not", not_gate_x, input_y + (i * VERTICAL_STAGE_SPACING), f"not_bcd{i}"
+            )
             if element_id is None:
                 return False
             not_gates.append(element_id)
@@ -100,15 +106,15 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
         digit_patterns = [
             # Digit: which inputs are 1 (True) vs 0 (False) for BCD[0-3]
             (False, False, False, False),  # 0: 0000
-            (True, False, False, False),   # 1: 0001
-            (False, True, False, False),   # 2: 0010
-            (True, True, False, False),    # 3: 0011
-            (False, False, True, False),   # 4: 0100
-            (True, False, True, False),    # 5: 0101
-            (False, True, True, False),    # 6: 0110
-            (True, True, True, False),     # 7: 0111
-            (False, False, False, True),   # 8: 1000
-            (True, False, False, True),    # 9: 1001
+            (True, False, False, False),  # 1: 0001
+            (False, True, False, False),  # 2: 0010
+            (True, True, False, False),  # 3: 0011
+            (False, False, True, False),  # 4: 0100
+            (True, False, True, False),  # 5: 0101
+            (False, True, True, False),  # 6: 0110
+            (True, True, True, False),  # 7: 0111
+            (False, False, False, True),  # 8: 1000
+            (True, False, False, True),  # 9: 1001
         ]
 
         # AND gate (digit detector) positions - arrange 10 detectors vertically or in grid
@@ -122,10 +128,7 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
             digit_detectors.append(element_id)
 
             # Change input size to 4
-            response = await self.mcp.send_command("change_input_size", {
-                "element_id": element_id,
-                "size": 4
-            })
+            response = await self.mcp.send_command("change_input_size", {"element_id": element_id, "size": 4})
             if not response.success:
                 self.log_error(f"Failed to change input size for digit_{digit}: {response.error}")
                 return False
@@ -141,13 +144,13 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
         # Define which digits light up each segment
         # Based on the standard 7-segment truth table
         segment_digit_map = [
-            [0, 2, 3, 5, 6, 7, 8, 9],     # Segment a: all except 1,4
-            [0, 1, 2, 3, 4, 7, 8, 9],     # Segment b: all except 5,6
+            [0, 2, 3, 5, 6, 7, 8, 9],  # Segment a: all except 1,4
+            [0, 1, 2, 3, 4, 7, 8, 9],  # Segment b: all except 5,6
             [0, 1, 3, 4, 5, 6, 7, 8, 9],  # Segment c: all except 2
-            [0, 2, 3, 5, 6, 8, 9],        # Segment d: all except 1,4,7
-            [0, 2, 6, 8],                  # Segment e: only these
-            [0, 4, 5, 6, 8, 9],           # Segment f: except 1,2,3,7
-            [2, 3, 4, 5, 6, 8, 9],        # Segment g: all except 0,1,7
+            [0, 2, 3, 5, 6, 8, 9],  # Segment d: all except 1,4,7
+            [0, 2, 6, 8],  # Segment e: only these
+            [0, 4, 5, 6, 8, 9],  # Segment f: except 1,2,3,7
+            [2, 3, 4, 5, 6, 8, 9],  # Segment g: all except 0,1,7
         ]
 
         # OR gate positions
@@ -160,16 +163,17 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
             # Handle case where more than 8 inputs needed (OR gate max is 8)
             if len(active_digits) <= 8:
                 # Single OR gate is sufficient
-                or_gate_id = await self.create_element("Or", or_gate_x, output_y + (segment_idx * VERTICAL_STAGE_SPACING), f"or_seg_{segment_name}")
+                or_gate_id = await self.create_element(
+                    "Or", or_gate_x, output_y + (segment_idx * VERTICAL_STAGE_SPACING), f"or_seg_{segment_name}"
+                )
                 if or_gate_id is None:
                     return False
 
                 # Change input size to match number of active digits
                 if len(active_digits) > 2:
-                    response = await self.mcp.send_command("change_input_size", {
-                        "element_id": or_gate_id,
-                        "size": len(active_digits)
-                    })
+                    response = await self.mcp.send_command(
+                        "change_input_size", {"element_id": or_gate_id, "size": len(active_digits)}
+                    )
                     if not response.success:
                         self.log_error(f"Failed to change input size for OR[{segment_name}]: {response.error}")
                         return False
@@ -185,34 +189,39 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
             else:
                 # Multiple OR gates needed for >8 inputs
                 # Create first OR gate with 8 inputs
-                or_gate_1 = await self.create_element("Or", or_gate_x, output_y + (segment_idx * VERTICAL_STAGE_SPACING), f"or_seg_{segment_name}_1")
+                or_gate_1 = await self.create_element(
+                    "Or", or_gate_x, output_y + (segment_idx * VERTICAL_STAGE_SPACING), f"or_seg_{segment_name}_1"
+                )
                 if or_gate_1 is None:
                     return False
 
-                response = await self.mcp.send_command("change_input_size", {
-                    "element_id": or_gate_1,
-                    "size": 8
-                })
+                response = await self.mcp.send_command("change_input_size", {"element_id": or_gate_1, "size": 8})
                 if not response.success:
                     self.log_error(f"Failed to set input size for OR[{segment_name}]_1: {response.error}")
                     return False
 
                 # Connect first 8 digit detectors
                 for input_port in range(8):
-                    if not await self.connect(digit_detectors[active_digits[input_port]], or_gate_1, target_port=input_port):
+                    if not await self.connect(
+                        digit_detectors[active_digits[input_port]], or_gate_1, target_port=input_port
+                    ):
                         return False
 
                 # Create second OR gate with remaining inputs
                 remaining_digits = active_digits[8:]
-                or_gate_2 = await self.create_element("Or", or_gate_x + HORIZONTAL_GATE_SPACING, output_y + (segment_idx * VERTICAL_STAGE_SPACING), f"or_seg_{segment_name}_2")
+                or_gate_2 = await self.create_element(
+                    "Or",
+                    or_gate_x + HORIZONTAL_GATE_SPACING,
+                    output_y + (segment_idx * VERTICAL_STAGE_SPACING),
+                    f"or_seg_{segment_name}_2",
+                )
                 if or_gate_2 is None:
                     return False
 
                 input_size_2 = len(remaining_digits) + 1  # remaining digits + output of OR gate 1
-                response = await self.mcp.send_command("change_input_size", {
-                    "element_id": or_gate_2,
-                    "size": input_size_2
-                })
+                response = await self.mcp.send_command(
+                    "change_input_size", {"element_id": or_gate_2, "size": input_size_2}
+                )
                 if not response.success:
                     self.log_error(f"Failed to set input size for OR[{segment_name}]_2: {response.error}")
                     return False
@@ -235,7 +244,9 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created BCD to 7-Segment Decoder IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created BCD to 7-Segment Decoder IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -249,6 +260,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "BCD to 7-Segment Decoder IC"))
         sys.exit(exit_code)

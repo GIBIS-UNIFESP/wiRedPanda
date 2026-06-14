@@ -83,7 +83,9 @@ class JKFlipFlopBuilder(ICBuilderBase):
         output_x = slave_nor_x + HORIZONTAL_GATE_SPACING
 
         row1_y = 100.0  # Top row: J, master S, gate S, NOR Q, slave S, gate S, NOR Q, Q output
-        row2_y = row1_y + VERTICAL_STAGE_SPACING  # Bottom row: K, master R, gate R, NOR Q_bar, slave R, gate R, NOR Q_bar, Q_bar output
+        row2_y = (
+            row1_y + VERTICAL_STAGE_SPACING
+        )  # Bottom row: K, master R, gate R, NOR Q_bar, slave R, gate R, NOR Q_bar, Q_bar output
         clock_y = row2_y + VERTICAL_STAGE_SPACING  # Third row for Clock input
         preset_y = clock_y + VERTICAL_STAGE_SPACING  # Fourth row for Preset input
         clear_y = preset_y + VERTICAL_STAGE_SPACING  # Fifth row for Clear input
@@ -131,7 +133,8 @@ class JKFlipFlopBuilder(ICBuilderBase):
         # (F63: this gate performs the Reset function, so it is labelled "or_r"
         # to match the master pair and the D-FF convention — was mislabelled "or_s".)
         or_r_id = await self.create_element(
-            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 2), "or_r")
+            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 2), "or_r"
+        )
         if or_r_id is None:
             return False
 
@@ -140,19 +143,22 @@ class JKFlipFlopBuilder(ICBuilderBase):
         # (F63: this gate performs the Set function, so it is labelled "or_s" —
         # was mislabelled "or_r".)
         or_s_id = await self.create_element(
-            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 3), "or_s")
+            "Or", slave_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 3), "or_s"
+        )
         if or_s_id is None:
             return False
 
         # Master-side injection (F56-consistent): force BOTH latches on
         # Preset/Clear so async controls work under any clock level.
         master_or_s_id = await self.create_element(
-            "Or", master_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 2), "master_or_s")
+            "Or", master_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 2), "master_or_s"
+        )
         if master_or_s_id is None:
             return False
 
         master_or_r_id = await self.create_element(
-            "Or", master_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 3), "master_or_r")
+            "Or", master_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 3), "master_or_r"
+        )
         if master_or_r_id is None:
             return False
 
@@ -364,7 +370,9 @@ class JKFlipFlopBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created JKFlipFlop IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created JKFlipFlop IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -378,6 +386,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "JK Flip-Flop IC"))
         sys.exit(exit_code)

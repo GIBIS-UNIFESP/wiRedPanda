@@ -58,7 +58,9 @@ class BarrelRotatorBuilder(ICBuilderBase):
         # Create input switches for Data[0-3]
         data_inputs = []
         for i in range(4):
-            data_id = await self.create_element("InputSwitch", input_x_start + i * dense_spacing, data_input_y, f"Data[{i}]")
+            data_id = await self.create_element(
+                "InputSwitch", input_x_start + i * dense_spacing, data_input_y, f"Data[{i}]"
+            )
             if data_id is None:
                 return False
             data_inputs.append(data_id)
@@ -69,34 +71,46 @@ class BarrelRotatorBuilder(ICBuilderBase):
             return False
 
         # Create input for Rotate_Amount[1]
-        rotate_amount_1_id = await self.create_element("InputSwitch", rotate_input_x, data_input_dup_y, "Rotate_Amount[1]")
+        rotate_amount_1_id = await self.create_element(
+            "InputSwitch", rotate_input_x, data_input_dup_y, "Rotate_Amount[1]"
+        )
         if rotate_amount_1_id is None:
             return False
 
         # Create input for Direction (0=left, 1=right)
-        direction_id = await self.create_element("InputSwitch", rotate_input_x, data_input_dup_y + VERTICAL_STAGE_SPACING, "Direction")
+        direction_id = await self.create_element(
+            "InputSwitch", rotate_input_x, data_input_dup_y + VERTICAL_STAGE_SPACING, "Direction"
+        )
         if direction_id is None:
             return False
 
         # ============ LEFT ROTATION PATH ============
         # Stage 1: Rotate by 0 or 1 (left) - using bus_mux_4bit
-        left_stage1_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage1_y, "BusMux_Left_S1")
+        left_stage1_mux_ic = await self.instantiate_ic(
+            "level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage1_y, "BusMux_Left_S1"
+        )
         if left_stage1_mux_ic is None:
             return False
 
         # Stage 2: Rotate by 0 or 2 (left) - using bus_mux_4bit
-        left_stage2_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage2_y, "BusMux_Left_S2")
+        left_stage2_mux_ic = await self.instantiate_ic(
+            "level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, left_stage2_y, "BusMux_Left_S2"
+        )
         if left_stage2_mux_ic is None:
             return False
 
         # ============ RIGHT ROTATION PATH ============
         # Stage 1: Rotate by 0 or 1 (right) - using bus_mux_4bit
-        right_stage1_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage1_y, "BusMux_Right_S1")
+        right_stage1_mux_ic = await self.instantiate_ic(
+            "level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage1_y, "BusMux_Right_S1"
+        )
         if right_stage1_mux_ic is None:
             return False
 
         # Stage 2: Rotate by 0 or 2 (right) - using bus_mux_4bit
-        right_stage2_mux_ic = await self.instantiate_ic("level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage2_y, "BusMux_Right_S2")
+        right_stage2_mux_ic = await self.instantiate_ic(
+            "level4_bus_mux_4bit", input_x_start + HORIZONTAL_GATE_SPACING, right_stage2_y, "BusMux_Right_S2"
+        )
         if right_stage2_mux_ic is None:
             return False
 
@@ -109,7 +123,9 @@ class BarrelRotatorBuilder(ICBuilderBase):
         # Create output LEDs for Result[0-3]
         output_leds = []
         for i in range(4):
-            led_id = await self.create_element("Led", output_x + HORIZONTAL_GATE_SPACING + i * dense_spacing, direction_y, f"Result[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x + HORIZONTAL_GATE_SPACING + i * dense_spacing, direction_y, f"Result[{i}]"
+            )
             if led_id is None:
                 return False
             output_leds.append(led_id)
@@ -134,12 +150,19 @@ class BarrelRotatorBuilder(ICBuilderBase):
         # Left Stage 2: Rotate by 2 left using bus_mux_4bit (cascaded on stage 1 output)
         for i in range(4):
             # In0[i]: pass through from stage 1
-            if not await self.connect(left_stage1_mux_ic, left_stage2_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"):
+            if not await self.connect(
+                left_stage1_mux_ic, left_stage2_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"
+            ):
                 return False
 
             # In1[i]: rotated by 2 from stage 1 - stage1[(i-2+4) % 4]
             src_bit = (i - 2 + 4) % 4
-            if not await self.connect(left_stage1_mux_ic, left_stage2_mux_ic, source_port_label=f"Out[{src_bit}]", target_port_label=f"In1[{i}]"):
+            if not await self.connect(
+                left_stage1_mux_ic,
+                left_stage2_mux_ic,
+                source_port_label=f"Out[{src_bit}]",
+                target_port_label=f"In1[{i}]",
+            ):
                 return False
 
         # Select: Rotate_Amount[1]
@@ -166,12 +189,19 @@ class BarrelRotatorBuilder(ICBuilderBase):
         # Right Stage 2: Rotate by 2 right using bus_mux_4bit (cascaded on stage 1 output)
         for i in range(4):
             # In0[i]: pass through from stage 1
-            if not await self.connect(right_stage1_mux_ic, right_stage2_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"):
+            if not await self.connect(
+                right_stage1_mux_ic, right_stage2_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"
+            ):
                 return False
 
             # In1[i]: rotated by 2 from stage 1 - stage1[(i+2) % 4]
             src_bit = (i + 2) % 4
-            if not await self.connect(right_stage1_mux_ic, right_stage2_mux_ic, source_port_label=f"Out[{src_bit}]", target_port_label=f"In1[{i}]"):
+            if not await self.connect(
+                right_stage1_mux_ic,
+                right_stage2_mux_ic,
+                source_port_label=f"Out[{src_bit}]",
+                target_port_label=f"In1[{i}]",
+            ):
                 return False
 
         # Select: Rotate_Amount[1]
@@ -183,11 +213,15 @@ class BarrelRotatorBuilder(ICBuilderBase):
         # In0: left path, In1: right path, Sel: Direction (0=left, 1=right)
         for i in range(4):
             # In0[i]: left path output
-            if not await self.connect(left_stage2_mux_ic, direction_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"):
+            if not await self.connect(
+                left_stage2_mux_ic, direction_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In0[{i}]"
+            ):
                 return False
 
             # In1[i]: right path output
-            if not await self.connect(right_stage2_mux_ic, direction_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In1[{i}]"):
+            if not await self.connect(
+                right_stage2_mux_ic, direction_mux_ic, source_port_label=f"Out[{i}]", target_port_label=f"In1[{i}]"
+            ):
                 return False
 
         # Select: Direction
@@ -204,7 +238,9 @@ class BarrelRotatorBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Barrel Rotator IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Barrel Rotator IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -218,6 +254,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Barrel Rotator IC"))
         sys.exit(exit_code)

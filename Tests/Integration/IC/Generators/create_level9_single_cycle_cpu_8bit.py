@@ -59,7 +59,7 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 8-bit Single-Cycle CPU IC"""
-        await self.begin_build('8-bit Single-Cycle CPU')
+        await self.begin_build("8-bit Single-Cycle CPU")
         if not await self.create_new_circuit():
             return False
 
@@ -88,19 +88,28 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         prog_addr_inputs = []
         for i in range(8):
-            pid = await self.create_element("InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), prog_y, f"ProgAddr[{i}]")
+            pid = await self.create_element(
+                "InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), prog_y, f"ProgAddr[{i}]"
+            )
             if pid is None:
                 return False
             prog_addr_inputs.append(pid)
 
         prog_data_inputs = []
         for i in range(8):
-            pid = await self.create_element("InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), prog_y + VERTICAL_STAGE_SPACING / 2, f"ProgData[{i}]")
+            pid = await self.create_element(
+                "InputSwitch",
+                prog_x + (i * HORIZONTAL_GATE_SPACING),
+                prog_y + VERTICAL_STAGE_SPACING / 2,
+                f"ProgData[{i}]",
+            )
             if pid is None:
                 return False
             prog_data_inputs.append(pid)
 
-        prog_write_id = await self.create_element("InputSwitch", prog_x + (8 * HORIZONTAL_GATE_SPACING), prog_y, "ProgWrite")
+        prog_write_id = await self.create_element(
+            "InputSwitch", prog_x + (8 * HORIZONTAL_GATE_SPACING), prog_y, "ProgWrite"
+        )
         if prog_write_id is None:
             return False
 
@@ -111,19 +120,28 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         reg_prog_addr_inputs = []
         for i in range(3):
-            pid = await self.create_element("InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), reg_prog_y, f"RegProgAddr[{i}]")
+            pid = await self.create_element(
+                "InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), reg_prog_y, f"RegProgAddr[{i}]"
+            )
             if pid is None:
                 return False
             reg_prog_addr_inputs.append(pid)
 
         reg_prog_data_inputs = []
         for i in range(8):
-            pid = await self.create_element("InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), reg_prog_y + VERTICAL_STAGE_SPACING / 2, f"RegProgData[{i}]")
+            pid = await self.create_element(
+                "InputSwitch",
+                prog_x + (i * HORIZONTAL_GATE_SPACING),
+                reg_prog_y + VERTICAL_STAGE_SPACING / 2,
+                f"RegProgData[{i}]",
+            )
             if pid is None:
                 return False
             reg_prog_data_inputs.append(pid)
 
-        reg_prog_write_id = await self.create_element("InputSwitch", prog_x + (8 * HORIZONTAL_GATE_SPACING), reg_prog_y, "RegProgWrite")
+        reg_prog_write_id = await self.create_element(
+            "InputSwitch", prog_x + (8 * HORIZONTAL_GATE_SPACING), reg_prog_y, "RegProgWrite"
+        )
         if reg_prog_write_id is None:
             return False
 
@@ -165,7 +183,9 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         # Write address muxes (3 individual Mux elements for 3-bit address)
         write_addr_mux_ids = []
         for i in range(3):
-            mux_id = await self.create_element("Mux", 350.0 + (i * HORIZONTAL_GATE_SPACING), reg_file_y - 150.0, f"WriteAddrMux{i}")
+            mux_id = await self.create_element(
+                "Mux", 350.0 + (i * HORIZONTAL_GATE_SPACING), reg_file_y - 150.0, f"WriteAddrMux{i}"
+            )
             if mux_id is None:
                 return False
             write_addr_mux_ids.append(mux_id)
@@ -246,13 +266,17 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         # ==== CONNECT FETCH → DECODE (using raw unregistered instruction) ====
         # RawInstr[3..7] → OpCode[0..4] (bypass instruction register for zero-delay decode)
         for i in range(5):
-            if not await self.connect(fetch_id, decode_id, source_port_label=f"RawInstr[{i + 3}]", target_port_label=f"OpCode[{i}]"):
+            if not await self.connect(
+                fetch_id, decode_id, source_port_label=f"RawInstr[{i + 3}]", target_port_label=f"OpCode[{i}]"
+            ):
                 return False
         await self.log("  ✓ Connected Fetch to Decode (via RawInstr)")
 
         # ==== CONNECT DECODE → EXECUTE ====
         for i in range(3):
-            if not await self.connect(decode_id, execute_id, source_port_label=f"ALUOp[{i}]", target_port_label=f"ALUOp[{i}]"):
+            if not await self.connect(
+                decode_id, execute_id, source_port_label=f"ALUOp[{i}]", target_port_label=f"ALUOp[{i}]"
+            ):
                 return False
         await self.log("  ✓ Connected Decode to Execute")
 
@@ -264,23 +288,31 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         # Read_Addr2 = RawInstr[0..2] (instruction-addressed register → OperandB)
         for i in range(3):
-            if not await self.connect(fetch_id, regfile_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"Read_Addr2[{i}]"):
+            if not await self.connect(
+                fetch_id, regfile_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"Read_Addr2[{i}]"
+            ):
                 return False
 
         # Connect register file reads to Execute stage operands
         for i in range(8):
-            if not await self.connect(regfile_id, execute_id, source_port_label=f"Read_Data1[{i}]", target_port_label=f"OperandA[{i}]"):
+            if not await self.connect(
+                regfile_id, execute_id, source_port_label=f"Read_Data1[{i}]", target_port_label=f"OperandA[{i}]"
+            ):
                 return False
-            if not await self.connect(regfile_id, execute_id, source_port_label=f"Read_Data2[{i}]", target_port_label=f"OperandB[{i}]"):
+            if not await self.connect(
+                regfile_id, execute_id, source_port_label=f"Read_Data2[{i}]", target_port_label=f"OperandB[{i}]"
+            ):
                 return False
 
         await self.log("  ✓ Wired register file read ports to Execute stage")
 
         # Write address mux: In0=GND (normal: write to R0), In1=RegProgAddr, Sel=RegProgWrite
         for i in range(3):
-            if not await self.connect(gnd_id, write_addr_mux_ids[i], target_port=0):            # In0 = GND
+            if not await self.connect(gnd_id, write_addr_mux_ids[i], target_port=0):  # In0 = GND
                 return False
-            if not await self.connect(reg_prog_addr_inputs[i], write_addr_mux_ids[i], target_port=1):  # In1 = RegProgAddr
+            if not await self.connect(
+                reg_prog_addr_inputs[i], write_addr_mux_ids[i], target_port=1
+            ):  # In1 = RegProgAddr
                 return False
             if not await self.connect(reg_prog_write_id, write_addr_mux_ids[i], target_port=2):  # Sel = RegProgWrite
                 return False
@@ -323,7 +355,9 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         # ==== CONNECT EXECUTE → MEMORY ====
         for i in range(8):
-            if not await self.connect(execute_id, memory_id, source_port_label=f"Result[{i}]", target_port_label=f"Result[{i}]"):
+            if not await self.connect(
+                execute_id, memory_id, source_port_label=f"Result[{i}]", target_port_label=f"Result[{i}]"
+            ):
                 return False
 
         if not await self.connect(decode_id, memory_id, source_port_label="MemRead", target_port_label="MemRead"):
@@ -333,7 +367,9 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         # Memory Address: RawInstr[0-2] for lower 3 bits, GND for upper 5
         for i in range(3):
-            if not await self.connect(fetch_id, memory_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"Address[{i}]"):
+            if not await self.connect(
+                fetch_id, memory_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"Address[{i}]"
+            ):
                 return False
         for i in range(3, 8):
             if not await self.connect(gnd_id, memory_id, target_port_label=f"Address[{i}]"):
@@ -341,7 +377,9 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         # Memory DataIn: R0 value (accumulator) for STORE operations
         for i in range(8):
-            if not await self.connect(regfile_id, memory_id, source_port_label=f"Read_Data1[{i}]", target_port_label=f"DataIn[{i}]"):
+            if not await self.connect(
+                regfile_id, memory_id, source_port_label=f"Read_Data1[{i}]", target_port_label=f"DataIn[{i}]"
+            ):
                 return False
 
         await self.log("  ✓ Connected Execute and Memory stages")
@@ -349,11 +387,15 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         # ==== CONNECT MEMORY WRITEBACK → REGISTER FILE ====
         # Memory DataOut → Write Data Mux In0 (normal writeback path)
         for i in range(8):
-            if not await self.connect(memory_id, write_data_mux_id, source_port_label=f"DataOut[{i}]", target_port_label=f"In0[{i}]"):
+            if not await self.connect(
+                memory_id, write_data_mux_id, source_port_label=f"DataOut[{i}]", target_port_label=f"In0[{i}]"
+            ):
                 return False
         # Mux output → Register File Data_In
         for i in range(8):
-            if not await self.connect(write_data_mux_id, regfile_id, source_port_label=f"Out[{i}]", target_port_label=f"Data_In[{i}]"):
+            if not await self.connect(
+                write_data_mux_id, regfile_id, source_port_label=f"Out[{i}]", target_port_label=f"Data_In[{i}]"
+            ):
                 return False
 
         await self.log("  ✓ Connected Memory writeback to Register File")
@@ -420,7 +462,9 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 8-bit Single-Cycle CPU IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 8-bit Single-Cycle CPU IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -434,6 +478,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "8-bit Single-Cycle CPU IC"))
         sys.exit(exit_code)

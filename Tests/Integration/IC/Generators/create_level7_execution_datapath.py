@@ -43,7 +43,7 @@ class ExecutionDatapathBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the Execution Datapath IC"""
-        await self.begin_build('Execution Datapath')
+        await self.begin_build("Execution Datapath")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -54,7 +54,9 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         # Create OperandA inputs (8-bit)
         operand_a_inputs = []
         for i in range(8):
-            op_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"OperandA[{i}]")
+            op_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"OperandA[{i}]"
+            )
             if op_id is None:
                 return False
             operand_a_inputs.append(op_id)
@@ -63,7 +65,9 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         # Create OperandB inputs (8-bit)
         operand_b_inputs = []
         for i in range(8):
-            op_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, f"OperandB[{i}]")
+            op_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, f"OperandB[{i}]"
+            )
             if op_id is None:
                 return False
             operand_b_inputs.append(op_id)
@@ -72,14 +76,21 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         # Create OpCode inputs (3-bit)
         opcode_inputs = []
         for i in range(3):
-            op_id = await self.create_element("InputSwitch", input_x + (8 * HORIZONTAL_GATE_SPACING) + (i * HORIZONTAL_GATE_SPACING), 100.0, f"OpCode[{i}]")
+            op_id = await self.create_element(
+                "InputSwitch",
+                input_x + (8 * HORIZONTAL_GATE_SPACING) + (i * HORIZONTAL_GATE_SPACING),
+                100.0,
+                f"OpCode[{i}]",
+            )
             if op_id is None:
                 return False
             opcode_inputs.append(op_id)
         await self.log("  ✓ Created 3 OpCode inputs")
 
         # Instantiate 8-bit ALU
-        alu_id = await self.instantiate_ic("level6_alu_8bit", input_x + (6 * HORIZONTAL_GATE_SPACING), 250.0, "ALU_8bit")
+        alu_id = await self.instantiate_ic(
+            "level6_alu_8bit", input_x + (6 * HORIZONTAL_GATE_SPACING), 250.0, "ALU_8bit"
+        )
         if alu_id is None:
             return False
         await self.log("  ✓ Instantiated 8-bit ALU")
@@ -102,7 +113,9 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         output_x = input_x + (14 * HORIZONTAL_GATE_SPACING)
         result_leds = []
         for i in range(8):
-            led_id = await self.create_element("Led", output_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"Result[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"Result[{i}]"
+            )
             if led_id is None:
                 return False
             if not led_id:
@@ -132,7 +145,9 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         await self.log("  ✓ Wired ALU Zero flag to LED")
 
         # Create Sign flag output LED (MSB of result)
-        sign_led_id = await self.create_element("Led", output_x + (2 * HORIZONTAL_GATE_SPACING), 250.0 + VERTICAL_STAGE_SPACING, "Sign")
+        sign_led_id = await self.create_element(
+            "Led", output_x + (2 * HORIZONTAL_GATE_SPACING), 250.0 + VERTICAL_STAGE_SPACING, "Sign"
+        )
         if sign_led_id is None:
             return False
         if not sign_led_id:
@@ -149,7 +164,9 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Execution Datapath IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Execution Datapath IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -163,6 +180,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Execution Datapath IC"))
         sys.exit(exit_code)

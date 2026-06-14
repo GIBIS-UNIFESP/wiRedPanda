@@ -31,7 +31,7 @@ class Multiplexer2to1Builder(ICBuilderBase):
         data_inputs = 2
         input_size = 3  # 2 data + 1 select
 
-        await self.begin_build('Multiplexer 2-to-1')
+        await self.begin_build("Multiplexer 2-to-1")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -43,7 +43,9 @@ class Multiplexer2to1Builder(ICBuilderBase):
         # Create input switches for data
         data_inputs_list = []
         for i in range(data_inputs):
-            data_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"Data[{i}]")
+            data_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"Data[{i}]"
+            )
             if data_id is None:
                 return False
             data_inputs_list.append(data_id)
@@ -67,10 +69,7 @@ class Multiplexer2to1Builder(ICBuilderBase):
         await self.log(f"  ✓ Created Mux (id={mux_id})")
 
         # Set the Mux inputSize
-        response = await self.mcp.send_command("change_input_size", {
-            "element_id": mux_id,
-            "size": input_size
-        })
+        response = await self.mcp.send_command("change_input_size", {"element_id": mux_id, "size": input_size})
         if not response.success:
             self.log_error(f"Failed to set Mux inputSize: {response.error}")
             return False
@@ -121,7 +120,9 @@ class Multiplexer2to1Builder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 2:1 Multiplexer IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 2:1 Multiplexer IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -135,6 +136,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "2-to-1 Multiplexer IC"))
         sys.exit(exit_code)

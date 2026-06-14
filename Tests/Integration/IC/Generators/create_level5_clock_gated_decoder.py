@@ -37,7 +37,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the Clock-Gated Decoder IC"""
-        await self.begin_build('Clock-Gated Decoder 3-to-8')
+        await self.begin_build("Clock-Gated Decoder 3-to-8")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -56,7 +56,9 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         # Address inputs (3 bits)
         addr_inputs = []
         for i in range(3):
-            addr_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), addr_y, f"addr{i}")
+            addr_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), addr_y, f"addr{i}"
+            )
             if addr_id is None:
                 return False
             addr_inputs.append(addr_id)
@@ -67,7 +69,9 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
             return False
 
         # WriteEnable input
-        write_enable_id = await self.create_element("InputSwitch", input_x + HORIZONTAL_GATE_SPACING, control_y, "WriteEnable")
+        write_enable_id = await self.create_element(
+            "InputSwitch", input_x + HORIZONTAL_GATE_SPACING, control_y, "WriteEnable"
+        )
         if write_enable_id is None:
             return False
 
@@ -105,7 +109,12 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         # ========== Create Output LEDs (straight off the gated decoder) ==========
         output_leds = []
         for i in range(8):
-            led_id = await self.create_element("Led", output_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6, addr_y + (i // 4) * VERTICAL_STAGE_SPACING, f"out{i}")
+            led_id = await self.create_element(
+                "Led",
+                output_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6,
+                addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
+                f"out{i}",
+            )
             if led_id is None:
                 return False
             output_leds.append(led_id)
@@ -121,7 +130,9 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 3-to-8 Clock-Gated Decoder IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 3-to-8 Clock-Gated Decoder IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Inputs: addr0, addr1, addr2, clock, writeEnable")
         await self.log(f"   Outputs: out0..out7 (8 one-hot)")
         await self.log(f"   Saved to: {output_file}")
@@ -137,6 +148,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Clock-Gated Decoder IC (3-to-8, Level 5)"))
         sys.exit(exit_code)

@@ -56,7 +56,7 @@ class ExecuteStageBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the Execute Stage IC"""
-        await self.begin_build('Execute Stage')
+        await self.begin_build("Execute Stage")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -68,7 +68,9 @@ class ExecuteStageBuilder(ICBuilderBase):
         # ---- Create OperandA input switches (8-bit) ----
         operandA_inputs = []
         for i in range(8):
-            opA_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"OperandA[{i}]")
+            opA_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"OperandA[{i}]"
+            )
             if opA_id is None:
                 return False
             operandA_inputs.append(opA_id)
@@ -77,7 +79,12 @@ class ExecuteStageBuilder(ICBuilderBase):
         # ---- Create OperandB input switches (8-bit) ----
         operandB_inputs = []
         for i in range(8):
-            opB_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y + VERTICAL_STAGE_SPACING / 2, f"OperandB[{i}]")
+            opB_id = await self.create_element(
+                "InputSwitch",
+                input_x + (i * HORIZONTAL_GATE_SPACING),
+                input_y + VERTICAL_STAGE_SPACING / 2,
+                f"OperandB[{i}]",
+            )
             if opB_id is None:
                 return False
             operandB_inputs.append(opB_id)
@@ -87,14 +94,18 @@ class ExecuteStageBuilder(ICBuilderBase):
         aluop_inputs = []
         control_x = input_x + (9 * HORIZONTAL_GATE_SPACING)
         for i in range(3):
-            aluop_id = await self.create_element("InputSwitch", control_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"ALUOp[{i}]")
+            aluop_id = await self.create_element(
+                "InputSwitch", control_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"ALUOp[{i}]"
+            )
             if aluop_id is None:
                 return False
             aluop_inputs.append(aluop_id)
         await self.log("  ✓ Created 3 ALUOp inputs")
 
         # ---- Instantiate Execution Datapath ----
-        datapath_id = await self.instantiate_ic("level7_execution_datapath", input_x + (3 * HORIZONTAL_GATE_SPACING), 300.0, "Datapath")
+        datapath_id = await self.instantiate_ic(
+            "level7_execution_datapath", input_x + (3 * HORIZONTAL_GATE_SPACING), 300.0, "Datapath"
+        )
         if datapath_id is None:
             return False
         await self.log("  ✓ Instantiated Execution Datapath")
@@ -119,7 +130,9 @@ class ExecuteStageBuilder(ICBuilderBase):
         # Result outputs (8-bit)
         result_outputs = []
         for i in range(8):
-            led_id = await self.create_element("Led", output_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"Result[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"Result[{i}]"
+            )
             if led_id is None:
                 return False
             result_outputs.append(led_id)
@@ -138,7 +151,9 @@ class ExecuteStageBuilder(ICBuilderBase):
             return False
 
         # Sign flag output
-        sign_led_id = await self.create_element("Led", output_x + HORIZONTAL_GATE_SPACING, input_y + (VERTICAL_STAGE_SPACING / 2), "Sign")
+        sign_led_id = await self.create_element(
+            "Led", output_x + HORIZONTAL_GATE_SPACING, input_y + (VERTICAL_STAGE_SPACING / 2), "Sign"
+        )
         if sign_led_id is None:
             return False
 
@@ -151,7 +166,9 @@ class ExecuteStageBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Execute Stage IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Execute Stage IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -165,6 +182,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Execute Stage IC"))
         sys.exit(exit_code)

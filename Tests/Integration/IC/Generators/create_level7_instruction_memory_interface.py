@@ -43,7 +43,7 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the Instruction Memory Interface IC"""
-        await self.begin_build('Instruction Memory Interface')
+        await self.begin_build("Instruction Memory Interface")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -54,7 +54,9 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
         # Create address inputs (8-bit)
         address_inputs = []
         for i in range(8):
-            addr_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"Address[{i}]")
+            addr_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"Address[{i}]"
+            )
             if addr_id is None:
                 return False
             address_inputs.append(addr_id)
@@ -63,14 +65,18 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
         # Create data inputs (8-bit) for writing to memory
         data_inputs = []
         for i in range(8):
-            data_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"DataIn[{i}]")
+            data_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"DataIn[{i}]"
+            )
             if data_id is None:
                 return False
             data_inputs.append(data_id)
         await self.log("  ✓ Created 8 data inputs")
 
         # Create write enable input
-        write_enable_id = await self.create_element("InputSwitch", input_x + (8 * HORIZONTAL_GATE_SPACING), 200.0, "WriteEnable")
+        write_enable_id = await self.create_element(
+            "InputSwitch", input_x + (8 * HORIZONTAL_GATE_SPACING), 200.0, "WriteEnable"
+        )
         if write_enable_id is None:
             return False
         await self.log("  ✓ Created WriteEnable input")
@@ -82,7 +88,9 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
         await self.log("  ✓ Created clock input")
 
         # Instantiate 8×8 RAM for instruction memory
-        ram_id = await self.instantiate_ic("level6_ram_8x8", input_x + (4 * HORIZONTAL_GATE_SPACING), 250.0, "InstructionMemory")
+        ram_id = await self.instantiate_ic(
+            "level6_ram_8x8", input_x + (4 * HORIZONTAL_GATE_SPACING), 250.0, "InstructionMemory"
+        )
         if ram_id is None:
             return False
         await self.log("  ✓ Instantiated 8×8 RAM for instruction memory")
@@ -120,7 +128,9 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
         # Create instruction output LEDs (8-bit)
         output_x = input_x + (14 * HORIZONTAL_GATE_SPACING)
         for i in range(8):
-            led_id = await self.create_element("Led", output_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"Instruction[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"Instruction[{i}]"
+            )
             if led_id is None:
                 return False
 
@@ -134,7 +144,9 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Instruction Memory Interface IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Instruction Memory Interface IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -148,6 +160,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Instruction Memory Interface IC"))
         sys.exit(exit_code)

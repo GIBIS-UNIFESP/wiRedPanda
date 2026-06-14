@@ -48,7 +48,9 @@ class Decoder4to16Builder(ICBuilderBase):
         # Create input switches for address bits
         addr_inputs = []
         for i in range(width):
-            addr_id = await self.create_element("InputSwitch", input_x, 100.0 + i * VERTICAL_STAGE_SPACING, f"addr[{i}]")
+            addr_id = await self.create_element(
+                "InputSwitch", input_x, 100.0 + i * VERTICAL_STAGE_SPACING, f"addr[{i}]"
+            )
             if addr_id is None:
                 return False
             addr_inputs.append(addr_id)
@@ -79,16 +81,15 @@ class Decoder4to16Builder(ICBuilderBase):
         and_gates = []
 
         for i in range(num_outputs):
-            gate_id = await self.create_element("And", and_x + (i % 4) * HORIZONTAL_GATE_SPACING, 100.0 + (i // 4) * VERTICAL_STAGE_SPACING, f"and[{i}]")
+            gate_id = await self.create_element(
+                "And", and_x + (i % 4) * HORIZONTAL_GATE_SPACING, 100.0 + (i // 4) * VERTICAL_STAGE_SPACING, f"and[{i}]"
+            )
             if gate_id is None:
                 return False
             and_gates.append(gate_id)
 
             # Set AND gate to (width+1)-input size: width address bits + enable
-            set_props = await self.mcp.send_command("change_input_size", {
-                "element_id": gate_id,
-                "size": width + 1
-            })
+            set_props = await self.mcp.send_command("change_input_size", {"element_id": gate_id, "size": width + 1})
             if not set_props.success:
                 self.log_error(f"Failed to set input_size={width + 1} for AND gate {i}")
                 return False
@@ -108,7 +109,12 @@ class Decoder4to16Builder(ICBuilderBase):
                 return False
 
             # Create output LED
-            led_id = await self.create_element("Led", output_x + (i % 4) * HORIZONTAL_GATE_SPACING, 100.0 + (i // 4) * VERTICAL_STAGE_SPACING, f"out[{i}]")
+            led_id = await self.create_element(
+                "Led",
+                output_x + (i % 4) * HORIZONTAL_GATE_SPACING,
+                100.0 + (i // 4) * VERTICAL_STAGE_SPACING,
+                f"out[{i}]",
+            )
             if led_id is None:
                 return False
             output_leds.append(led_id)
@@ -124,7 +130,9 @@ class Decoder4to16Builder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 4-to-16 Decoder IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 4-to-16 Decoder IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -138,6 +146,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-to-16 Decoder IC"))
         sys.exit(exit_code)

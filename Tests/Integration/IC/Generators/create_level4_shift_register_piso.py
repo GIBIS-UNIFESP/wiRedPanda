@@ -91,7 +91,9 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         # Create data inputs (4-bit)
         data_in_ids = []
         for i in range(4):
-            d_id = await self.create_element("InputSwitch", input_x, input_y_data_base + (i * data_input_spacing), f"D{i}")
+            d_id = await self.create_element(
+                "InputSwitch", input_x, input_y_data_base + (i * data_input_spacing), f"D{i}"
+            )
             if d_id is None:
                 return False
             data_in_ids.append(d_id)
@@ -120,7 +122,9 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
 
         # Instantiate shift path Bus Mux 4-bit IC
         # BusMux(GND, shiftIn[0-3], NOT_LOAD) = NOT_LOAD AND shiftIn[0-3]
-        shift_mux_ic_id = await self.instantiate_ic("level4_bus_mux_4bit", shift_gate_x, shift_gate_y_base, "BusMux_Shift")
+        shift_mux_ic_id = await self.instantiate_ic(
+            "level4_bus_mux_4bit", shift_gate_x, shift_gate_y_base, "BusMux_Shift"
+        )
         if shift_mux_ic_id is None:
             return False
         await self.log(f"  ✓ Instantiated shift path Bus Multiplexer IC (id={shift_mux_ic_id})")
@@ -130,13 +134,17 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         # Actually, for load/shift selection, use a Mux2to1: Mux(shift, load, LOAD) = (NOT LOAD AND shift) OR (LOAD AND load)
         select_gate_ids = []
         for i in range(4):
-            mux_id = await self.instantiate_ic("level2_mux_2to1", select_gate_x, select_gate_y_base + (i * bit_spacing), f"mux_sel{i}")
+            mux_id = await self.instantiate_ic(
+                "level2_mux_2to1", select_gate_x, select_gate_y_base + (i * bit_spacing), f"mux_sel{i}"
+            )
             if mux_id is None:
                 return False
             select_gate_ids.append(mux_id)
 
         # The load/shift select muxes are always active: tie their enables high.
-        sel_mux_vcc = await self.create_element("InputVcc", select_gate_x - HORIZONTAL_GATE_SPACING, select_gate_y_base, "Enable_Vcc")
+        sel_mux_vcc = await self.create_element(
+            "InputVcc", select_gate_x - HORIZONTAL_GATE_SPACING, select_gate_y_base, "Enable_Vcc"
+        )
         if sel_mux_vcc is None:
             return False
         for mux_element_id in select_gate_ids:
@@ -190,7 +198,9 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
             # the SIN serial input (saved off, so the default is the old
             # zero fill — previously an explicit GND, F34)
             if i < 3:
-                if not await self.connect(dff_ids[i + 1], shift_mux_ic_id, source_port_label="Q", target_port_label=f"In1[{i}]"):
+                if not await self.connect(
+                    dff_ids[i + 1], shift_mux_ic_id, source_port_label="Q", target_port_label=f"In1[{i}]"
+                ):
                     return False
             else:
                 if not await self.connect(sin_id, shift_mux_ic_id, target_port_label=f"In1[{i}]"):
@@ -208,7 +218,9 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
                 return False
 
             # Port 1: load_result (LOAD AND D[i]) from load BusMux Out[i]
-            if not await self.connect(load_mux_ic_id, select_gate_ids[i], source_port_label=f"Out[{i}]", target_port_label="Data[1]"):
+            if not await self.connect(
+                load_mux_ic_id, select_gate_ids[i], source_port_label=f"Out[{i}]", target_port_label="Data[1]"
+            ):
                 return False
 
             # Port 2: LOAD (select signal) - selects between shift (port 0) and load (port 1)
@@ -238,7 +250,9 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created PISO Shift Register IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created PISO Shift Register IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -252,6 +266,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "PISO Shift Register IC"))
         sys.exit(exit_code)

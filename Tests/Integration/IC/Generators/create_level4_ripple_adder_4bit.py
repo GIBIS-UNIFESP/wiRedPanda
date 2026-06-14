@@ -83,7 +83,12 @@ class FullAdder4bitBuilder(ICBuilderBase):
         fa_y = 100.0
 
         for bit in range(4):
-            fa_id = await self.instantiate_ic("level2_full_adder_1bit", fa_x + (bit * HORIZONTAL_GATE_SPACING * 1.5), fa_y + (bit * VERTICAL_STAGE_SPACING * 0.3), f"FA[{bit}]")
+            fa_id = await self.instantiate_ic(
+                "level2_full_adder_1bit",
+                fa_x + (bit * HORIZONTAL_GATE_SPACING * 1.5),
+                fa_y + (bit * VERTICAL_STAGE_SPACING * 0.3),
+                f"FA[{bit}]",
+            )
             if fa_id is None:
                 return False
             full_adders.append(fa_id)
@@ -123,7 +128,9 @@ class FullAdder4bitBuilder(ICBuilderBase):
                 if not await self.connect(carry_in_id, full_adders[bit], target_port_label="Cin"):
                     return False
             else:
-                if not await self.connect(full_adders[bit - 1], full_adders[bit], source_port_label="Cout", target_port_label="Cin"):
+                if not await self.connect(
+                    full_adders[bit - 1], full_adders[bit], source_port_label="Cout", target_port_label="Cin"
+                ):
                     return False
             await self.log(f"  ✓ Connected carry chain FA[{bit}]")
 
@@ -159,6 +166,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Full Adder IC"))
         sys.exit(exit_code)

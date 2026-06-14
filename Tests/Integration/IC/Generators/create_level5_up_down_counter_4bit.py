@@ -46,7 +46,7 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 4-bit Up/Down Counter IC"""
-        await self.begin_build('4-bit Up/Down Counter')
+        await self.begin_build("4-bit Up/Down Counter")
         if not await self.create_new_circuit():
             return False
 
@@ -90,7 +90,9 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         inc_carry_and_ids = []
         inc_carry_x = not_x + HORIZONTAL_GATE_SPACING
         for i in range(2):
-            and_id = await self.create_element("And", inc_carry_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"inc_carry{i}")
+            and_id = await self.create_element(
+                "And", inc_carry_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"inc_carry{i}"
+            )
             if and_id is None:
                 return False
             inc_carry_and_ids.append(and_id)
@@ -99,7 +101,9 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         inc_not_carry_ids = []
         inc_not_carry_x = inc_carry_x + HORIZONTAL_GATE_SPACING
         for i in range(3):
-            not_id = await self.create_element("Not", inc_not_carry_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"inc_not_carry{i}")
+            not_id = await self.create_element(
+                "Not", inc_not_carry_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"inc_not_carry{i}"
+            )
             if not_id is None:
                 return False
             inc_not_carry_ids.append(not_id)
@@ -110,7 +114,12 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         for i in range(4):
             bit_ands = []
             for j in range(2):
-                and_id = await self.create_element("And", inc_xor_and_x + (j * HORIZONTAL_GATE_SPACING), 100.0 + (i * VERTICAL_STAGE_SPACING), f"inc_xor_and{i}_{j}")
+                and_id = await self.create_element(
+                    "And",
+                    inc_xor_and_x + (j * HORIZONTAL_GATE_SPACING),
+                    100.0 + (i * VERTICAL_STAGE_SPACING),
+                    f"inc_xor_and{i}_{j}",
+                )
                 if and_id is None:
                     return False
                 bit_ands.append(and_id)
@@ -120,7 +129,9 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         inc_xor_or_ids = []
         inc_xor_or_x = inc_xor_and_x + (2 * HORIZONTAL_GATE_SPACING)
         for i in range(4):
-            or_id = await self.create_element("Or", inc_xor_or_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"inc_xor_or{i}")
+            or_id = await self.create_element(
+                "Or", inc_xor_or_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"inc_xor_or{i}"
+            )
             if or_id is None:
                 return False
             inc_xor_or_ids.append(or_id)
@@ -137,7 +148,9 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         dec_borrow_and_ids = []
         dec_borrow_x = inc_xor_or_x + HORIZONTAL_GATE_SPACING
         for i in range(2):
-            and_id = await self.create_element("And", dec_borrow_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"dec_borrow{i}")
+            and_id = await self.create_element(
+                "And", dec_borrow_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"dec_borrow{i}"
+            )
             if and_id is None:
                 return False
             dec_borrow_and_ids.append(and_id)
@@ -146,7 +159,9 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         dec_not_borrow_ids = []
         dec_not_borrow_x = dec_borrow_x + HORIZONTAL_GATE_SPACING
         for i in range(3):
-            not_id = await self.create_element("Not", dec_not_borrow_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"dec_not_borrow{i}")
+            not_id = await self.create_element(
+                "Not", dec_not_borrow_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"dec_not_borrow{i}"
+            )
             if not_id is None:
                 return False
             dec_not_borrow_ids.append(not_id)
@@ -157,7 +172,12 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         for i in range(4):
             bit_ands = []
             for j in range(2):
-                and_id = await self.create_element("And", dec_xor_and_x + (j * HORIZONTAL_GATE_SPACING), 100.0 + (i * VERTICAL_STAGE_SPACING), f"dec_xor_and{i}_{j}")
+                and_id = await self.create_element(
+                    "And",
+                    dec_xor_and_x + (j * HORIZONTAL_GATE_SPACING),
+                    100.0 + (i * VERTICAL_STAGE_SPACING),
+                    f"dec_xor_and{i}_{j}",
+                )
                 if and_id is None:
                     return False
                 bit_ands.append(and_id)
@@ -167,7 +187,9 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         dec_xor_or_ids = []
         dec_xor_or_x = dec_xor_and_x + (2 * HORIZONTAL_GATE_SPACING)
         for i in range(4):
-            or_id = await self.create_element("Or", dec_xor_or_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"dec_xor_or{i}")
+            or_id = await self.create_element(
+                "Or", dec_xor_or_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"dec_xor_or{i}"
+            )
             if or_id is None:
                 return False
             dec_xor_or_ids.append(or_id)
@@ -198,7 +220,9 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         dff_ids = []
         dff_x = en_mux_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            ff_id = await self.instantiate_ic("level1_d_flip_flop", dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}")
+            ff_id = await self.instantiate_ic(
+                "level1_d_flip_flop", dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}"
+            )
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -519,7 +543,9 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"Successfully created 4-bit Up/Down Counter IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"Successfully created 4-bit Up/Down Counter IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -533,6 +559,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Up/Down Counter IC"))
         sys.exit(exit_code)

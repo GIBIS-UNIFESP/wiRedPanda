@@ -59,37 +59,49 @@ class RAM8x1Builder(ICBuilderBase):
         # Address inputs
         address_inputs = []
         for i in range(address_bits):
-            addr_id = await self.create_element("InputSwitch", 50.0 + i * HORIZONTAL_GATE_SPACING, input_y, f"Address[{i}]")
+            addr_id = await self.create_element(
+                "InputSwitch", 50.0 + i * HORIZONTAL_GATE_SPACING, input_y, f"Address[{i}]"
+            )
             if addr_id is None:
                 return False
             address_inputs.append(addr_id)
             await self.log(f"  ✓ Created Address[{i}]")
 
         # DataIn input
-        data_in_id = await self.create_element("InputSwitch", 50.0 + address_bits * HORIZONTAL_GATE_SPACING, input_y, "DataIn")
+        data_in_id = await self.create_element(
+            "InputSwitch", 50.0 + address_bits * HORIZONTAL_GATE_SPACING, input_y, "DataIn"
+        )
         if data_in_id is None:
             return False
         await self.log("  ✓ Created DataIn")
 
         # WriteEnable input
-        write_en_id = await self.create_element("InputSwitch", 50.0 + (address_bits + 1) * HORIZONTAL_GATE_SPACING, input_y, "WriteEnable")
+        write_en_id = await self.create_element(
+            "InputSwitch", 50.0 + (address_bits + 1) * HORIZONTAL_GATE_SPACING, input_y, "WriteEnable"
+        )
         if write_en_id is None:
             return False
         await self.log("  ✓ Created WriteEnable")
 
         # Clock input
-        clock_id = await self.create_element("InputSwitch", 50.0 + (address_bits + 2) * HORIZONTAL_GATE_SPACING, input_y, "Clock")
+        clock_id = await self.create_element(
+            "InputSwitch", 50.0 + (address_bits + 2) * HORIZONTAL_GATE_SPACING, input_y, "Clock"
+        )
         if clock_id is None:
             return False
         await self.log("  ✓ Created Clock")
 
         # Reset input (async clear of all cells — F54)
-        reset_id = await self.create_element("InputSwitch", 50.0 + (address_bits + 3) * HORIZONTAL_GATE_SPACING, input_y, "Reset")
+        reset_id = await self.create_element(
+            "InputSwitch", 50.0 + (address_bits + 3) * HORIZONTAL_GATE_SPACING, input_y, "Reset"
+        )
         if reset_id is None:
             return False
         await self.log("  ✓ Created Reset")
 
-        not_reset_id = await self.create_element("Not", 50.0 + (address_bits + 4) * HORIZONTAL_GATE_SPACING, input_y, "NOT_Reset")
+        not_reset_id = await self.create_element(
+            "Not", 50.0 + (address_bits + 4) * HORIZONTAL_GATE_SPACING, input_y, "NOT_Reset"
+        )
         if not_reset_id is None:
             return False
 
@@ -163,7 +175,9 @@ class RAM8x1Builder(ICBuilderBase):
                 return False
 
             # Write control signal -> MUX select (0=hold, 1=write)
-            if not await self.connect(decoder_ic, data_mux_gates[i], source_port_label=f"out[{i}]", target_port_label="S0"):
+            if not await self.connect(
+                decoder_ic, data_mux_gates[i], source_port_label=f"out[{i}]", target_port_label="S0"
+            ):
                 return False
 
             # MUX output -> FF Data input
@@ -179,7 +193,9 @@ class RAM8x1Builder(ICBuilderBase):
                 return False
 
             # Connect DFlipFlop Q output to read multiplexer input
-            if not await self.connect(storage_ffs[i], read_mux_ic, target_port_label=f"Data[{i}]", source_port_label="Q"):
+            if not await self.connect(
+                storage_ffs[i], read_mux_ic, target_port_label=f"Data[{i}]", source_port_label="Q"
+            ):
                 return False
 
         # ========== Connect Read Multiplexer ==========
@@ -196,7 +212,9 @@ class RAM8x1Builder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created RAM 8x1 IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created RAM 8x1 IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -210,6 +228,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "RAM 8x1 IC"))
         sys.exit(exit_code)

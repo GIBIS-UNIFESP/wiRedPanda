@@ -51,7 +51,7 @@ class ALU16bitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 16-bit ALU IC"""
-        await self.begin_build('16-bit ALU')
+        await self.begin_build("16-bit ALU")
         if not await self.create_new_circuit():
             return False
 
@@ -73,7 +73,9 @@ class ALU16bitBuilder(ICBuilderBase):
         # OperandB[0-15]
         opB_inputs = []
         for i in range(16):
-            elem_id = await self.create_element("InputSwitch", input_x + HORIZONTAL_GATE_SPACING, 100.0 + (i * 40.0), f"OperandB[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x + HORIZONTAL_GATE_SPACING, 100.0 + (i * 40.0), f"OperandB[{i}]"
+            )
             if elem_id is None:
                 return False
             opB_inputs.append(elem_id)
@@ -83,7 +85,9 @@ class ALU16bitBuilder(ICBuilderBase):
         # ALUOp[0-2]
         aluop_inputs = []
         for i in range(3):
-            elem_id = await self.create_element("InputSwitch", input_x + (2 * HORIZONTAL_GATE_SPACING), 100.0 + (i * 40.0), f"ALUOp[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x + (2 * HORIZONTAL_GATE_SPACING), 100.0 + (i * 40.0), f"ALUOp[{i}]"
+            )
             if elem_id is None:
                 return False
             aluop_inputs.append(elem_id)
@@ -140,7 +144,9 @@ class ALU16bitBuilder(ICBuilderBase):
         # ADD and SUB correct across the byte boundary.
         if not await self.connect(alu_low_id, alu_high_id, source_port_label="Carry", target_port_label="CarryIn"):
             return False
-        if not await self.connect(alu_low_id, alu_high_id, source_port_label="SubCarryOut", target_port_label="SubCarryIn"):
+        if not await self.connect(
+            alu_low_id, alu_high_id, source_port_label="SubCarryOut", target_port_label="SubCarryIn"
+        ):
             return False
 
         await self.log("  ✓ Chained ADD and SUB carries between the byte halves")
@@ -170,7 +176,7 @@ class ALU16bitBuilder(ICBuilderBase):
                 if not await self.connect(alu_low_id, led_id, source_port_label=f"Result[{i}]"):
                     return False
             else:
-                if not await self.connect(alu_high_id, led_id, source_port_label=f"Result[{i-8}]"):
+                if not await self.connect(alu_high_id, led_id, source_port_label=f"Result[{i - 8}]"):
                     return False
 
         await self.log("  ✓ Created Result outputs")
@@ -220,7 +226,9 @@ class ALU16bitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 16-bit ALU IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 16-bit ALU IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -234,6 +242,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "16-bit ALU IC"))
         sys.exit(exit_code)

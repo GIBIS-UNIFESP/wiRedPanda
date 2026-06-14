@@ -24,10 +24,7 @@ EXCLUDE_DIRS = {".git", ".venv", ".github", ".vscode", ".idea", "_deps", "cmake"
 
 def find_repo_root():
     try:
-        result = subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            capture_output=True, text=True, check=True
-        )
+        result = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         return Path(result.stdout.strip())
     except (subprocess.CalledProcessError, FileNotFoundError):
         return Path(__file__).resolve().parent.parent
@@ -50,9 +47,9 @@ def find_source_files(root):
         files.extend(root.glob(f"**/*{ext}"))
 
     return [
-        f for f in files
-        if f.name != "pch.h"
-        and not any(should_exclude_dir(part) for part in f.relative_to(root).parts)
+        f
+        for f in files
+        if f.name != "pch.h" and not any(should_exclude_dir(part) for part in f.relative_to(root).parts)
     ]
 
 
@@ -109,7 +106,7 @@ def update_pch_file(pch_path, used_includes):
 
     sorted_includes = sorted(used_includes)
 
-    new_lines = lines[:start_idx + 1]
+    new_lines = lines[: start_idx + 1]
     new_lines.append("\n")
     for include in sorted_includes:
         new_lines.append(f"#include {include}\n")
