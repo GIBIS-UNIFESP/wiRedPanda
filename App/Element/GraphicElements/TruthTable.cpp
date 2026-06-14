@@ -5,6 +5,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QSvgRenderer>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
@@ -117,52 +118,59 @@ void TruthTable::updatePortsProperties()
     generatePixmap();
 }
 
+/// Shared, lazily-constructed vector renderer for the truth-table icon — one per process, drawn
+/// directly in drawBody() so it stays crisp at any zoom. GUI-thread only, like pixmapCache().
+static QSvgRenderer &truthTableLogoRenderer()
+{
+    static QSvgRenderer renderer(QStringLiteral(":/Components/Logic/truthtable-rotated.svg"));
+    return renderer;
+}
+
 void TruthTable::generatePixmap()
 {
-    // The TruthTable renders a custom IC-style body rather than using a fixed SVG.
-    // The pixmap is regenerated whenever port count changes because the body height
-    // must grow to accommodate the port layout.
+    // The TruthTable renders a custom IC-style body, now drawn as vectors in drawBody()/paint().
+    // m_pixmap is kept only so the base pixmapCenter()/boundingRect() have the right size (its image
+    // content is never displayed); a transparent pixmap of the body footprint is enough. It is
+    // regenerated whenever the port count changes because the body height grows with the port layout.
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
+    QPixmap sizingPixmap(size);
+    sizingPixmap.fill(Qt::transparent);
+    m_pixmap = sizingPixmap;
+    GraphicElement::update();
+}
 
-    QPixmap tempPixmap(size);
+void TruthTable::drawBody(QPainter *painter)
+{
+    painter->save();
+    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing, true);
+    // boundingRect()'s top-left may be negative when ports extend past the 64×64 body; align the
+    // local origin with it so the body lands exactly where the old rasterised pixmap was blitted.
+    painter->translate(boundingRect().topLeft());
+    // The body footprint is the (correctly-sized) m_pixmap rect — exactly the area the old raster
+    // occupied — so the geometry is reproduced 1:1 at any zoom.
+    const QRectF bounds(pixmap().rect());
 
-    tempPixmap.fill(Qt::transparent);
+    // Main body: mid-gray rounded rectangle inset 7px on each side (14px total) so port connector
+    // dots sit on top of the body border rather than floating in empty space.
+    painter->setBrush(QColor(126, 126, 126));
+    painter->setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
+    const QRectF finalRect(QPointF(7, 0), QSizeF(bounds.width() - 14, bounds.height()));
+    painter->drawRoundedRect(finalRect, 3, 3);
 
-    QPainter tmpPainter(&tempPixmap);
+    // Centre the truth-table icon inside the body, rendered as vectors at its native size.
+    QSvgRenderer &logo = truthTableLogoRenderer();
+    const QSizeF logoSize = logo.defaultSize();
+    const QRectF logoRect(finalRect.center() - QPointF(logoSize.width() / 2, logoSize.height() / 2), logoSize);
+    logo.render(painter, logoRect);
 
-    // Main body: mid-gray rounded rectangle inset 7px on each side to leave room
-    // for port connectors on the left and right edges
-    tmpPainter.setBrush(QColor(126, 126, 126));
-    tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
-
-    // 7px inset on each side (14px total width reduction) so port connector dots sit
-    // on top of the body border rather than floating in empty space
-    QPoint topLeft = tempPixmap.rect().topLeft();
-    topLeft.setX(topLeft.x() + 7);
-    QSize finalSize = tempPixmap.rect().size();
-    finalSize.setWidth(finalSize.width() - 14);
-    QRectF finalRect = QRectF(topLeft, finalSize);
-    tmpPainter.drawRoundedRect(finalRect, 3, 3);
-
-    // Center the truth-table icon inside the body
-    QPixmap panda(":/Components/Logic/truthtable-rotated.svg");
-    QPointF pandaOrigin = finalRect.center();
-    pandaOrigin.setX(pandaOrigin.x() - panda.width() / 2);
-    pandaOrigin.setY(pandaOrigin.y() - panda.height() / 2);
-    tmpPainter.drawPixmap(pandaOrigin, panda);
-
-    // Shadow strip at the bottom of the body to give a subtle 3-D depth effect
-    tmpPainter.setBrush(QColor(78, 78, 78));
-    tmpPainter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
-
-    // Collapse the two-point rect to a 3px-tall strip at the bottom edge for the shadow
+    // Shadow strip at the bottom of the body for a subtle 3-D depth effect.
+    painter->setBrush(QColor(78, 78, 78));
+    painter->setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
     QRectF shadowRect(finalRect.bottomLeft(), finalRect.bottomRight());
     shadowRect.adjust(0, -3, 0, 0);
-    tmpPainter.drawRoundedRect(shadowRect, 3, 3);
+    painter->drawRoundedRect(shadowRect, 3, 3);
 
-    m_pixmap = tempPixmap;
-
-    GraphicElement::update();
+    painter->restore();
 }
 
 void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -179,7 +187,8 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         painter->restore();
     }
 
-    painter->drawPixmap(boundingRect().topLeft(), pixmap());
+    // Draw the body as vectors (crisp at any zoom) rather than blitting a fixed-resolution pixmap.
+    drawBody(painter);
 }
 
 void TruthTable::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
