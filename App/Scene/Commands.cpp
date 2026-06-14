@@ -737,6 +737,23 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
             newElm->setTrigger(oldElm->trigger());
         }
 
+        // Mirror state is a base property of every element (not type-specific), so it is
+        // always carried over — otherwise morphing a flipped element silently un-flips it.
+        newElm->setFlippedX(oldElm->isFlippedX());
+        newElm->setFlippedY(oldElm->isFlippedY());
+
+        if (newElm->hasAudio() && oldElm->hasAudio()) {
+            newElm->setAudio(oldElm->audio());
+        }
+
+        if (newElm->hasVolume() && oldElm->hasVolume()) {
+            newElm->setVolume(oldElm->volume());
+        }
+
+        if (newElm->hasDelay() && oldElm->hasDelay()) {
+            newElm->setDelay(oldElm->delay());
+        }
+
         // --- Migrate existing wires to the new element's ports ---
         // The while loop drains the connection list; setEndPort/setStartPort calls
         // internally detach from oldElm and attach to newElm, so the list shrinks.
