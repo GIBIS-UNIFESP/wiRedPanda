@@ -3,10 +3,13 @@
 
 #include "Tests/Unit/Commands/TestCommands.h"
 
+#include <QImage>
+
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Display7.h"
+#include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -18,6 +21,16 @@
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Commands.h"
 #include "Tests/Common/TestUtils.h"
+
+namespace {
+/// Test-only accessor: GraphicElement::pixmap() is protected, but a subclass may read it for its
+/// own instances. This exposes the currently displayed pixmap so flip-variant rendering can be
+/// asserted without widening the production API.
+template <typename Element>
+struct PixmapProbe : Element {
+    QImage displayedImage() const { return this->pixmap().toImage(); }
+};
+} // namespace
 
 void TestCommands::testAddItemsCommand()
 {
@@ -205,6 +218,83 @@ void TestCommands::testFlipCommand()
     undoStack->undo();
     QCOMPARE(gate1->pos(), pos1Before);
     QCOMPARE(gate2->pos(), pos2Before);
+}
+
+void TestCommands::testFlipTextPixmapVariant()
+{
+    // Memory elements bake their pin letters (D, E, Q...) into the SVG. Flipping must swap in a
+    // text-corrected pixmap variant (so the glyphs stay upright after the item-level mirror),
+    // while a text-free element keeps its base pixmap (the item transform alone handles it).
+    PixmapProbe<DLatch> latch;
+    const QImage baseImage = latch.displayedImage();
+    QVERIFY(!baseImage.isNull());
+
+    latch.setFlippedX(true);
+    QVERIFY2(latch.displayedImage() != baseImage,
+             "Flipping a latch must produce a text-corrected pixmap variant");
+
+    // Unflipping must round-trip back to exactly the base pixmap (zero regression).
+    latch.setFlippedX(false);
+    QCOMPARE(latch.displayedImage(), baseImage);
+
+    // A text-free element re-uses its base pixmap when flipped (no redundant re-render).
+    PixmapProbe<And> gate;
+    const QImage gateBase = gate.displayedImage();
+    gate.setFlippedX(true);
+    QCOMPARE(gate.displayedImage(), gateBase);
+}
+
+void TestCommands::testRotateTextPixmapVariant()
+{
+    // Same idea as flipping, for rotation: a rotated memory element must swap in a pixmap whose
+    // baked-in <text> is counter-rotated, so the pin letters stay upright while the body rotates.
+    PixmapProbe<DLatch> latch;
+    const QImage baseImage = latch.displayedImage();
+    QVERIFY(!baseImage.isNull());
+
+    latch.setRotation(90);
+    QVERIFY2(latch.displayedImage() != baseImage,
+             "Rotating a latch must produce a text-corrected pixmap variant");
+
+    // Rotating back to 0 must round-trip to exactly the base pixmap (zero regression).
+    latch.setRotation(0);
+    QCOMPARE(latch.displayedImage(), baseImage);
+
+    // A text-free element re-uses its base pixmap when rotated (no redundant re-render).
+    PixmapProbe<And> gate;
+    const QImage gateBase = gate.displayedImage();
+    gate.setRotation(90);
+    QCOMPARE(gate.displayedImage(), gateBase);
+}
+
+void TestCommands::testFlipRotateTextPixmapVariant()
+{
+    // The combined rotate+flip state is the one orientation case whose correction order matters
+    // (the glyph carries Rotate(-angle) then the flip). Verify the combined variant is distinct
+    // from base, rotate-only and flip-only, and round-trips back through each state to the base.
+    PixmapProbe<DLatch> latch;
+    const QImage baseImage = latch.displayedImage();
+    QVERIFY(!baseImage.isNull());
+
+    latch.setRotation(90);
+    const QImage rotateOnly = latch.displayedImage();
+    QVERIFY(rotateOnly != baseImage);
+
+    latch.setFlippedX(true); // now rotated AND flipped
+    const QImage rotateFlip = latch.displayedImage();
+    QVERIFY2(rotateFlip != baseImage, "Rotated+flipped latch must differ from the base pixmap");
+    QVERIFY2(rotateFlip != rotateOnly, "Rotated+flipped must differ from rotate-only");
+
+    // ...and from a flip-only latch (flipped but not rotated).
+    PixmapProbe<DLatch> flipOnly;
+    flipOnly.setFlippedX(true);
+    QVERIFY2(rotateFlip != flipOnly.displayedImage(), "Rotated+flipped must differ from flip-only");
+
+    // Round-trip: unflip → back to rotate-only; then unrotate → back to the base (zero regression).
+    latch.setFlippedX(false);
+    QCOMPARE(latch.displayedImage(), rotateOnly);
+    latch.setRotation(0);
+    QCOMPARE(latch.displayedImage(), baseImage);
 }
 
 void TestCommands::testFlipNonRotatablePorts()
