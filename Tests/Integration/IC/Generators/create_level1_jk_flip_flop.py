@@ -5,7 +5,7 @@
 """
 Create JK Flip-Flop IC with Preset and Clear
 
-Inputs: J (Set), K (Reset), Clock, Preset (active LOW), Clear (active LOW)
+Inputs: J (Set), K (Reset), Clock, Preset (active HIGH), Clear (active HIGH)
 Outputs: Q, Q_bar
 
 Circuit (textbook pulse-triggered master-slave JK, 7476-style — F55):
@@ -44,8 +44,8 @@ J K | Action
 1 0 | Set (Q=1)
 1 1 | Toggle
 
-Preset (active LOW): Forces Q=1, Q_bar=0
-Clear (active LOW): Forces Q=0, Q_bar=1
+Preset (active HIGH): Forces Q=1, Q_bar=0
+Clear (active HIGH): Forces Q=0, Q_bar=1
 
 Usage:
     python3 create_level1_jk_flip_flop.py
@@ -122,20 +122,12 @@ class JKFlipFlopBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created NOT Clock gate (id={not_clk_id})")
 
-        # ========== Preset/Clear Control Logic ==========
+        # ========== Preset/Clear Control Logic (active-HIGH) ==========
+        # Preset/Clear are injected DIRECTLY into the latch OR-gates (no input
+        # inverters): Preset=1 forces Q=1, Clear=1 forces Q=0.
 
-        # NOT gate to invert Preset
-        not_preset_id = await self.create_element("Not", not_clk_x, preset_y, "not_preset")
-        if not_preset_id is None:
-            return False
-
-        # NOT gate to invert Clear
-        not_clear_id = await self.create_element("Not", not_clk_x, clear_y, "not_clear")
-        if not_clear_id is None:
-            return False
-
-        # Slave reset-side OR (slave_gate_r OR NOT(clear)) -> drives the Q NOR.
-        # When Clear=0: NOT(0)=1 -> OR forces slave NOR Q input high -> Q=0.
+        # Slave reset-side OR (slave_gate_r OR Clear) -> drives the Q NOR.
+        # When Clear=1: OR forces slave NOR Q input high -> Q=0.
         # (F63: this gate performs the Reset function, so it is labelled "or_r"
         # to match the master pair and the D-FF convention — was mislabelled "or_s".)
         or_r_id = await self.create_element(
@@ -143,8 +135,8 @@ class JKFlipFlopBuilder(ICBuilderBase):
         if or_r_id is None:
             return False
 
-        # Slave set-side OR (slave_gate_s OR NOT(preset)) -> drives the Q_bar NOR.
-        # When Preset=0: NOT(0)=1 -> OR forces slave NOR Q_bar input high -> Q_bar=0 -> Q=1.
+        # Slave set-side OR (slave_gate_s OR Preset) -> drives the Q_bar NOR.
+        # When Preset=1: OR forces slave NOR Q_bar input high -> Q_bar=0 -> Q=1.
         # (F63: this gate performs the Set function, so it is labelled "or_s" —
         # was mislabelled "or_r".)
         or_s_id = await self.create_element(
@@ -162,14 +154,6 @@ class JKFlipFlopBuilder(ICBuilderBase):
         master_or_r_id = await self.create_element(
             "Or", master_gate_x + (HORIZONTAL_GATE_SPACING / 2), row1_y + (VERTICAL_STAGE_SPACING * 3), "master_or_r")
         if master_or_r_id is None:
-            return False
-
-        # Connect Preset to NOT gate
-        if not await self.connect(input_preset_id, not_preset_id):
-            return False
-
-        # Connect Clear to NOT gate
-        if not await self.connect(input_clear_id, not_clear_id):
             return False
 
         # ========== Master Stage - Feedback Logic ==========
@@ -270,7 +254,7 @@ class JKFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(master_gate_r_id, master_or_r_id):
             return False
 
-        if not await self.connect(not_clear_id, master_or_r_id, target_port=1):
+        if not await self.connect(input_clear_id, master_or_r_id, target_port=1):
             return False
 
         if not await self.connect(master_or_r_id, master_nor_q_id):
@@ -280,12 +264,12 @@ class JKFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(master_nor_qbar_id, master_nor_q_id, target_port=1):
             return False
 
-        # Master S path: OR(gated set path, NOT(Preset)) into the
+        # Master S path: OR(gated set path, Preset) into the
         # Q_bar-producing NOR — Preset forces the master high too (F56)
         if not await self.connect(master_gate_s_id, master_or_s_id):
             return False
 
-        if not await self.connect(not_preset_id, master_or_s_id, target_port=1):
+        if not await self.connect(input_preset_id, master_or_s_id, target_port=1):
             return False
 
         if not await self.connect(master_or_s_id, master_nor_qbar_id):
@@ -322,9 +306,9 @@ class JKFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(slave_gate_r_id, or_r_id):
             return False
 
-        # Connect NOT Clear to OR R gate (input 1)
-        # When Clear=0: NOT(0)=1 -> OR=1 -> slave NOR Q forced low -> Q=0
-        if not await self.connect(not_clear_id, or_r_id, target_port=1):
+        # Connect Clear to OR R gate (input 1) — active-high
+        # When Clear=1: OR=1 -> slave NOR Q forced low -> Q=0
+        if not await self.connect(input_clear_id, or_r_id, target_port=1):
             return False
 
         # Connect OR R to slave NOR Q port 0 (replaces direct slave gate R connection)
@@ -340,9 +324,9 @@ class JKFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(slave_gate_s_id, or_s_id):
             return False
 
-        # Connect NOT Preset to OR S gate (input 1)
-        # When Preset=0: NOT(0)=1 -> OR=1 -> slave NOR Q_bar forced low -> Q_bar=0 -> Q=1
-        if not await self.connect(not_preset_id, or_s_id, target_port=1):
+        # Connect Preset to OR S gate (input 1) — active-high
+        # When Preset=1: OR=1 -> slave NOR Q_bar forced low -> Q_bar=0 -> Q=1
+        if not await self.connect(input_preset_id, or_s_id, target_port=1):
             return False
 
         # Connect OR S to slave NOR Q_bar port 0 (replaces direct slave gate S connection)

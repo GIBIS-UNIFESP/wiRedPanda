@@ -228,22 +228,22 @@ class StackPointer8BitBuilder(ICBuilderBase):
                 return False
 
         # ========== Connect Preset/Clear pins (CRITICAL) ==========
-        # Create a single Vcc element to keep Preset/Clear inactive (active-LOW)
-        vcc_preset_clear_id = await self.create_element("InputVcc", 400.0, 500.0, "Vcc_PresetClear")
-        if vcc_preset_clear_id is None:
-            self.log_error("extract element_id for Vcc Preset/Clear")
+        # Create a single Gnd element to keep Preset/Clear inactive (active-HIGH)
+        gnd_preset_clear_id = await self.create_element("InputGnd", 400.0, 500.0, "Gnd_PresetClear")
+        if gnd_preset_clear_id is None:
+            self.log_error("extract element_id for Gnd Preset/Clear")
             return False
 
-        # Connect Vcc to all FF Preset and Clear pins (keep them inactive)
+        # Connect Gnd to all FF Preset and Clear pins (keep them inactive)
         for i in range(8):
             ff_id = sp_flipflops[i]
 
-            # Connect Vcc to Preset (active-LOW, so HIGH keeps it inactive)
-            if not await self.connect(vcc_preset_clear_id, ff_id, target_port_label="Preset"):
+            # Connect Gnd to Preset (active-HIGH, so LOW keeps it inactive)
+            if not await self.connect(gnd_preset_clear_id, ff_id, target_port_label="Preset"):
                 return False
 
-            # Connect Vcc to Clear (active-LOW, so HIGH keeps it inactive)
-            if not await self.connect(vcc_preset_clear_id, ff_id, target_port_label="Clear"):
+            # Connect Gnd to Clear (active-HIGH, so LOW keeps it inactive)
+            if not await self.connect(gnd_preset_clear_id, ff_id, target_port_label="Clear"):
                 return False
 
         await self.log(f"✓ Made {self.connection_count} connections")

@@ -71,9 +71,9 @@ class FlagRegisterBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Created Load and Clock inputs")
 
-        # Create Vcc for inactive Preset/Clear signals
-        vcc_id = await self.create_element("InputVcc", input_x + (5 * HORIZONTAL_GATE_SPACING), 100.0, "Vcc")
-        if vcc_id is None:
+        # Create Gnd for inactive Preset/Clear signals (active-HIGH FFs)
+        gnd_id = await self.create_element("InputGnd", input_x + (5 * HORIZONTAL_GATE_SPACING), 100.0, "Gnd")
+        if gnd_id is None:
             return False
         await self.log("  ✓ Created Vcc for FF control signals")
 
@@ -110,12 +110,12 @@ class FlagRegisterBuilder(ICBuilderBase):
             if not await self.connect(clk_id, ff_id, target_port_label="Clock"):
                 return False
 
-            # Connect Vcc to Preset (inactive HIGH)
-            if not await self.connect(vcc_id, ff_id, target_port_label="Preset"):
+            # Connect Gnd to Preset (inactive LOW)
+            if not await self.connect(gnd_id, ff_id, target_port_label="Preset"):
                 return False
 
-            # Connect Vcc to Clear (inactive HIGH)
-            if not await self.connect(vcc_id, ff_id, target_port_label="Clear"):
+            # Connect Gnd to Clear (inactive LOW)
+            if not await self.connect(gnd_id, ff_id, target_port_label="Clear"):
                 return False
 
             # Connect FF Q output back to Mux port 0 (hold path)

@@ -99,20 +99,20 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
             if not await self.connect(dff_ids[i], output_led_ids[i], source_port_label="Q"):
                 return False
 
-        # Create Vcc element for inactive Preset/Clear pins
-        vcc_id = await self.create_element("InputVcc", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Vcc")
-        if vcc_id is None:
+        # Create Gnd element for inactive Preset/Clear pins (active-HIGH FFs)
+        gnd_id = await self.create_element("InputGnd", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Gnd")
+        if gnd_id is None:
             return False
-        await self.log(f"  ✓ Created Vcc element")
+        await self.log(f"  ✓ Created Gnd element")
 
-        # ========== Connect Vcc to all Preset/Clear pins ==========
+        # ========== Connect Gnd to all Preset/Clear pins ==========
         for i in range(4):
-            # Connect Vcc to Preset (active-LOW, so HIGH keeps it inactive)
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
+            # Connect Gnd to Preset (active-HIGH, so LOW keeps it inactive)
+            if not await self.connect(gnd_id, dff_ids[i], target_port_label="Preset"):
                 return False
 
-            # Connect Vcc to Clear (active-LOW, so HIGH keeps it inactive)
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Clear"):
+            # Connect Gnd to Clear (active-HIGH, so LOW keeps it inactive)
+            if not await self.connect(gnd_id, dff_ids[i], target_port_label="Clear"):
                 return False
 
         # Save circuit as IC

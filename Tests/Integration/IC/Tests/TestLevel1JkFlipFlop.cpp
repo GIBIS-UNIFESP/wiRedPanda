@@ -16,7 +16,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 // JK Flip-Flop IC Tests
 // ============================================================
 //
-// Inputs: J, K, Clock, Preset (active LOW), Clear (active LOW)
+// Inputs: J, K, Clock, Preset (active HIGH), Clear (active HIGH)
 // Outputs: Q, Q_bar
 //
 // Classic pulse-triggered master-slave JK (7476-style, F55): the master
@@ -27,9 +27,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 //   J=1, K=0 -> Set (Q=1)
 //   J=1, K=1 -> Toggle (Q inverts)
 //
-// Async controls (active LOW, override clock, forced into BOTH latches):
-//   Preset=0 -> Q=1 (asynchronous set)
-//   Clear=0  -> Q=0 (asynchronous clear)
+// Async controls (active HIGH, override clock, forced into BOTH latches):
+//   Preset=1 -> Q=1 (asynchronous set)
+//   Clear=1  -> Q=0 (asynchronous clear)
 
 struct JkFlipFlopFixture {
     std::unique_ptr<WorkSpace> workspace;
@@ -65,8 +65,8 @@ struct JkFlipFlopFixture {
         builder.connect(ic, "Q", ledQ, 0);
         builder.connect(ic, "Q_bar", ledQBar, 0);
 
-        presetIn->setOn(true);
-        clearIn->setOn(true);
+        presetIn->setOn(false);
+        clearIn->setOn(false);
 
         sim = builder.initSimulation();
         sim->update();
@@ -88,8 +88,8 @@ struct JkFlipFlopFixture {
     {
         jIn->setOn(false);
         kIn->setOn(true);
-        presetIn->setOn(true);
-        clearIn->setOn(true);
+        presetIn->setOn(false);
+        clearIn->setOn(false);
         clockPulse();
     }
 };
@@ -266,14 +266,14 @@ void TestLevel1JKFlipFlop::testAsyncPreset()
     f.clockPulse();
     QCOMPARE(f.q(), false);
 
-    // Async preset: Preset=0 -> Q forced to 1 without clock
-    f.presetIn->setOn(false);
+    // Async preset: Preset=1 -> Q forced to 1 without clock
+    f.presetIn->setOn(true);
     f.sim->update();
     QCOMPARE(f.q(), true);
     QCOMPARE(f.qBar(), false);
 
     // Release preset: Q should hold at 1
-    f.presetIn->setOn(true);
+    f.presetIn->setOn(false);
     f.sim->update();
     QCOMPARE(f.q(), true);
 }
@@ -295,14 +295,14 @@ void TestLevel1JKFlipFlop::testAsyncClear()
     f.clockPulse();
     QCOMPARE(f.q(), true);
 
-    // Async clear: Clear=0 -> Q forced to 0 without clock
-    f.clearIn->setOn(false);
+    // Async clear: Clear=1 -> Q forced to 0 without clock
+    f.clearIn->setOn(true);
     f.sim->update();
     QCOMPARE(f.q(), false);
     QCOMPARE(f.qBar(), true);
 
     // Release clear: Q should hold at 0
-    f.clearIn->setOn(true);
+    f.clearIn->setOn(false);
     f.sim->update();
     QCOMPARE(f.q(), false);
 }
@@ -316,21 +316,21 @@ void TestLevel1JKFlipFlop::testPresetClearOverrideClock()
     f.jIn->setOn(true);
     f.kIn->setOn(false);
 
-    // But assert Clear=0 -> Q forced to 0 regardless
-    f.clearIn->setOn(false);
+    // But assert Clear=1 -> Q forced to 0 regardless
+    f.clearIn->setOn(true);
     f.clockPulse();
     QCOMPARE(f.q(), false);
     QCOMPARE(f.qBar(), true);
 
-    // Release clear, assert Preset=0 -> Q forced to 1
-    f.clearIn->setOn(true);
-    f.presetIn->setOn(false);
+    // Release clear, assert Preset=1 -> Q forced to 1
+    f.clearIn->setOn(false);
+    f.presetIn->setOn(true);
     f.sim->update();
     QCOMPARE(f.q(), true);
     QCOMPARE(f.qBar(), false);
 
     // Release preset, normal operation resumes
-    f.presetIn->setOn(true);
+    f.presetIn->setOn(false);
     f.sim->update();
     QCOMPARE(f.q(), true);
 }
@@ -355,13 +355,13 @@ void TestLevel1JKFlipFlop::testAsyncPresetClearUnderClockHigh()
     QCOMPARE(f.q(), false);
 
     // Assert Preset while Clock=1 -> Q forced to 1 immediately
-    f.presetIn->setOn(false);
+    f.presetIn->setOn(true);
     f.sim->update();
     QCOMPARE(f.q(), true);
     QCOMPARE(f.qBar(), false);
 
     // Release Preset, Clock still HIGH -> Q holds 1 (slave locked)
-    f.presetIn->setOn(true);
+    f.presetIn->setOn(false);
     f.sim->update();
     QCOMPARE(f.q(), true);
 
@@ -384,12 +384,12 @@ void TestLevel1JKFlipFlop::testAsyncPresetClearUnderClockHigh()
     f.sim->update();
     QCOMPARE(f.q(), true);
 
-    f.clearIn->setOn(false);
+    f.clearIn->setOn(true);
     f.sim->update();
     QCOMPARE(f.q(), false);
     QCOMPARE(f.qBar(), true);
 
-    f.clearIn->setOn(true);
+    f.clearIn->setOn(false);
     f.sim->update();
     QCOMPARE(f.q(), false);
 
@@ -411,24 +411,24 @@ void TestLevel1JKFlipFlop::testPresetClearBothAsserted()
     f.jIn->setOn(false);
     f.kIn->setOn(false);
     f.clockIn->setOn(false);
-    f.presetIn->setOn(false);
-    f.clearIn->setOn(false);
+    f.presetIn->setOn(true);
+    f.clearIn->setOn(true);
     f.sim->update();
     QCOMPARE(f.q(), false);
     QCOMPARE(f.qBar(), false);
 
     // Release Clear (Preset still asserted): Preset wins -> Q=1
-    f.clearIn->setOn(true);
+    f.clearIn->setOn(false);
     f.sim->update();
     QCOMPARE(f.q(), true);
     QCOMPARE(f.qBar(), false);
 
     // Re-assert both, then release Preset: Clear wins -> Q=0
-    f.clearIn->setOn(false);
+    f.clearIn->setOn(true);
     f.sim->update();
     QCOMPARE(f.q(), false);
     QCOMPARE(f.qBar(), false);
-    f.presetIn->setOn(true);
+    f.presetIn->setOn(false);
     f.sim->update();
     QCOMPARE(f.q(), false);
     QCOMPARE(f.qBar(), true);

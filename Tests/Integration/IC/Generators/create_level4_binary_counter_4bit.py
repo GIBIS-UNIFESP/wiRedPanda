@@ -7,13 +7,13 @@ Create 4-bit Binary Counter IC
 
 Inputs:
   - CLK (Clock)
-  - CountEnable, Load, Clear (74161-style controls, all active-HIGH)
+  - CountEnable, Load, Reset (74161-style controls, all active-HIGH)
   - Data[0:3] (parallel-load value, captured on the next edge when Load=1)
 Outputs: Q[0:3] (Counter Output, 0-15)
 
-74161-style controls (all active-HIGH; tie CountEnable high, Load/Clear low for a
+74161-style controls (all active-HIGH; tie CountEnable high, Load/Reset low for a
 free-running counter):
-  - Clear=1: asynchronously zeroes the counter
+  - Reset=1: asynchronously zeroes the counter
   - Load=1: synchronously loads Data[0:3] on the next rising edge
   - CountEnable=0: holds the current value (pause); =1 counts
 
@@ -81,8 +81,8 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         load_id = await self.create_element("InputSwitch", input_x, 20.0, "Load")
         if load_id is None:
             return False
-        clear_id = await self.create_element("InputSwitch", input_x, -20.0, "Clear")
-        if clear_id is None:
+        reset_id = await self.create_element("InputSwitch", input_x, -20.0, "Reset")
+        if reset_id is None:
             return False
         data_in_ids = []
         for i in range(4):
@@ -91,11 +91,14 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
                 return False
             data_in_ids.append(d_id)
 
-        # Create Vcc element for Preset/Clear inactive state
+        # Vcc drives the mux enables; Gnd holds the FF Preset pins inactive
         vcc_id = await self.create_element("InputVcc", input_x, 140.0, "Vcc")
         if vcc_id is None:
             return False
-        await self.log(f"  ✓ Created Vcc for inactive Preset/Clear")
+        gnd_id = await self.create_element("InputGnd", input_x, 170.0, "Gnd")
+        if gnd_id is None:
+            return False
+        await self.log(f"  ✓ Created Vcc (mux enables) and Gnd (inactive Preset)")
 
         # Create NOT gates for each Q output (stage 1)
         not_q_ids = []
@@ -208,22 +211,17 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
                 return False
 
-        # ========== Connect Preset (inactive) and asynchronous Clear ==========
-        # Preset is unused -> tied high (active-LOW inactive). The Clear input is
-        # active-HIGH; invert it so Clear=1 drives the FFs' active-LOW Clear,
-        # asynchronously zeroing the counter.
-        clear_not = await self.create_element("Not", input_x + HORIZONTAL_GATE_SPACING, -20.0, "clear_not")
-        if clear_not is None:
-            return False
-        if not await self.connect(clear_id, clear_not):
-            return False
+        # ========== Connect Preset (inactive) and asynchronous Reset ==========
+        # Preset unused -> tied low (active-HIGH inactive). The active-HIGH Reset
+        # input drives the FFs' active-HIGH Clear directly (no inverter): Reset=1
+        # asynchronously zeroes the counter.
         for i in range(4):
-            # Preset to Vcc (active-LOW, so Vcc=1 keeps it inactive)
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
+            # Preset to Gnd (active-HIGH, so LOW keeps it inactive)
+            if not await self.connect(gnd_id, dff_ids[i], target_port_label="Preset"):
                 return False
 
-            # Clear from NOT(Clear input): Clear input high -> FF Clear low -> zero
-            if not await self.connect(clear_not, dff_ids[i], target_port_label="Clear"):
+            # Reset drives FF Clear directly: Reset=1 -> FF Clear=1 -> zero
+            if not await self.connect(reset_id, dff_ids[i], target_port_label="Clear"):
                 return False
 
         # ========== Connect FF outputs to LEDs and NOT gates ==========

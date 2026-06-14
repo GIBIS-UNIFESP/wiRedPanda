@@ -15,43 +15,39 @@ module level1_d_flip_flop (
 
 /* verilator lint_off UNOPTFLAT */ // intentional latch feedback
 wire aux_not_1;
-wire aux_not_2;
-wire aux_not_3;
+wire aux_or_2;
+wire aux_or_3;
 wire aux_or_4;
 wire aux_or_5;
-wire aux_or_6;
-wire aux_or_7;
-wire aux_not_8;
-wire aux_and_9;
-wire aux_and_10;
-reg aux_nor_11 = 1'b0;
-reg aux_nor_12 = 1'b0;
-wire aux_and_13;
-wire aux_and_14;
-reg aux_nor_15 = 1'b0;
-reg aux_nor_16 = 1'b0;
+wire aux_not_6;
+wire aux_and_7;
+wire aux_and_8;
+reg aux_nor_9 = 1'b0;
+reg aux_nor_10 = 1'b0;
+wire aux_and_11;
+wire aux_and_12;
+reg aux_nor_13 = 1'b0;
+reg aux_nor_14 = 1'b0;
 
 // Internal logic
 assign aux_not_1 = ~clock;
-assign aux_not_2 = ~preset;
-assign aux_not_3 = ~clear;
-assign aux_or_4 = (aux_and_14 | aux_not_3);
-assign aux_or_5 = (aux_and_13 | aux_not_2);
-assign aux_or_6 = (aux_and_10 | aux_not_3);
-assign aux_or_7 = (aux_and_9 | aux_not_2);
-assign aux_not_8 = ~d;
-assign aux_and_9 = (d & aux_not_1);
-assign aux_and_10 = (aux_not_8 & aux_not_1);
-always @(*) aux_nor_11 = ~(aux_or_6 | aux_nor_12);
-always @(*) aux_nor_12 = ~(aux_or_7 | aux_nor_11);
-assign aux_and_13 = (aux_nor_11 & clock);
-assign aux_and_14 = (aux_nor_12 & clock);
-always @(*) aux_nor_15 = ~(aux_or_4 | aux_nor_16);
-always @(*) aux_nor_16 = ~(aux_or_5 | aux_nor_15);
+assign aux_or_2 = (aux_and_12 | clear);
+assign aux_or_3 = (aux_and_11 | preset);
+assign aux_or_4 = (aux_and_8 | clear);
+assign aux_or_5 = (aux_and_7 | preset);
+assign aux_not_6 = ~d;
+assign aux_and_7 = (d & aux_not_1);
+assign aux_and_8 = (aux_not_6 & aux_not_1);
+always @(*) aux_nor_9 = ~(aux_or_4 | aux_nor_10);
+always @(*) aux_nor_10 = ~(aux_or_5 | aux_nor_9);
+assign aux_and_11 = (aux_nor_9 & clock);
+assign aux_and_12 = (aux_nor_10 & clock);
+always @(*) aux_nor_13 = ~(aux_or_2 | aux_nor_14);
+always @(*) aux_nor_14 = ~(aux_or_3 | aux_nor_13);
 /* verilator lint_on UNOPTFLAT */
 
-assign q = aux_nor_15;
-assign q_bar = aux_nor_16;
+assign q = aux_nor_13;
+assign q_bar = aux_nor_14;
 endmodule
 
 // Module for LEVEL5_LOADABLE_COUNTER_4BIT (generated from level5_loadable_counter_4bit.panda)
@@ -68,16 +64,15 @@ module level5_loadable_counter_4bit_ic (
     output q3
 );
 
-wire aux_not_2;
 wire aux_not_3;
 wire aux_not_4;
 wire aux_not_5;
-wire aux_and_6;
+wire aux_not_6;
 wire aux_and_7;
-wire aux_not_8;
+wire aux_and_8;
 wire aux_not_9;
 wire aux_not_10;
-wire aux_and_11;
+wire aux_not_11;
 wire aux_and_12;
 wire aux_and_13;
 wire aux_and_14;
@@ -85,65 +80,56 @@ wire aux_and_15;
 wire aux_and_16;
 wire aux_and_17;
 wire aux_and_18;
-wire aux_or_19;
+wire aux_and_19;
 wire aux_or_20;
 wire aux_or_21;
 wire aux_or_22;
-reg aux_mux_23 = 1'b0;
+wire aux_or_23;
 reg aux_mux_24 = 1'b0;
 reg aux_mux_25 = 1'b0;
 reg aux_mux_26 = 1'b0;
+reg aux_mux_27 = 1'b0;
 // IC instance: FF0 (level1_d_flip_flop)
-wire w_level1_d_flip_flop_inst_27_q;
-wire w_level1_d_flip_flop_inst_27_q_bar;
-// IC instance: FF1 (level1_d_flip_flop)
 wire w_level1_d_flip_flop_inst_28_q;
 wire w_level1_d_flip_flop_inst_28_q_bar;
-// IC instance: FF2 (level1_d_flip_flop)
+// IC instance: FF1 (level1_d_flip_flop)
 wire w_level1_d_flip_flop_inst_29_q;
 wire w_level1_d_flip_flop_inst_29_q_bar;
-// IC instance: FF3 (level1_d_flip_flop)
+// IC instance: FF2 (level1_d_flip_flop)
 wire w_level1_d_flip_flop_inst_30_q;
 wire w_level1_d_flip_flop_inst_30_q_bar;
+// IC instance: FF3 (level1_d_flip_flop)
+wire w_level1_d_flip_flop_inst_31_q;
+wire w_level1_d_flip_flop_inst_31_q_bar;
 
 // Internal logic
-assign aux_not_2 = ~w_level1_d_flip_flop_inst_27_q;
 assign aux_not_3 = ~w_level1_d_flip_flop_inst_28_q;
 assign aux_not_4 = ~w_level1_d_flip_flop_inst_29_q;
 assign aux_not_5 = ~w_level1_d_flip_flop_inst_30_q;
-assign aux_and_6 = (w_level1_d_flip_flop_inst_27_q & w_level1_d_flip_flop_inst_28_q);
-assign aux_and_7 = (aux_and_6 & w_level1_d_flip_flop_inst_29_q);
-assign aux_not_8 = ~w_level1_d_flip_flop_inst_27_q;
-assign aux_not_9 = ~aux_and_6;
+assign aux_not_6 = ~w_level1_d_flip_flop_inst_31_q;
+assign aux_and_7 = (w_level1_d_flip_flop_inst_28_q & w_level1_d_flip_flop_inst_29_q);
+assign aux_and_8 = (aux_and_7 & w_level1_d_flip_flop_inst_30_q);
+assign aux_not_9 = ~w_level1_d_flip_flop_inst_28_q;
 assign aux_not_10 = ~aux_and_7;
-assign aux_and_11 = (aux_not_2 & 1'b1);
-assign aux_and_12 = (w_level1_d_flip_flop_inst_27_q & aux_not_8);
-assign aux_and_13 = (aux_not_3 & w_level1_d_flip_flop_inst_27_q);
-assign aux_and_14 = (w_level1_d_flip_flop_inst_28_q & aux_not_8);
-assign aux_and_15 = (aux_not_4 & aux_and_6);
-assign aux_and_16 = (w_level1_d_flip_flop_inst_29_q & aux_not_9);
-assign aux_and_17 = (aux_not_5 & aux_and_7);
-assign aux_and_18 = (w_level1_d_flip_flop_inst_30_q & aux_not_10);
-assign aux_or_19 = (aux_and_11 | aux_and_12);
-assign aux_or_20 = (aux_and_13 | aux_and_14);
-assign aux_or_21 = (aux_and_15 | aux_and_16);
-assign aux_or_22 = (aux_and_17 | aux_and_18);
-    //Multiplexer
-    always @(*)
-    begin
-        case({load})
-            1'd0: aux_mux_23 = aux_or_19;
-            1'd1: aux_mux_23 = d0;
-            default: aux_mux_23 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
+assign aux_not_11 = ~aux_and_8;
+assign aux_and_12 = (aux_not_3 & 1'b1);
+assign aux_and_13 = (w_level1_d_flip_flop_inst_28_q & aux_not_9);
+assign aux_and_14 = (aux_not_4 & w_level1_d_flip_flop_inst_28_q);
+assign aux_and_15 = (w_level1_d_flip_flop_inst_29_q & aux_not_9);
+assign aux_and_16 = (aux_not_5 & aux_and_7);
+assign aux_and_17 = (w_level1_d_flip_flop_inst_30_q & aux_not_10);
+assign aux_and_18 = (aux_not_6 & aux_and_8);
+assign aux_and_19 = (w_level1_d_flip_flop_inst_31_q & aux_not_11);
+assign aux_or_20 = (aux_and_12 | aux_and_13);
+assign aux_or_21 = (aux_and_14 | aux_and_15);
+assign aux_or_22 = (aux_and_16 | aux_and_17);
+assign aux_or_23 = (aux_and_18 | aux_and_19);
     //Multiplexer
     always @(*)
     begin
         case({load})
             1'd0: aux_mux_24 = aux_or_20;
-            1'd1: aux_mux_24 = d1;
+            1'd1: aux_mux_24 = d0;
             default: aux_mux_24 = 1'b0;
         endcase
     end
@@ -153,7 +139,7 @@ assign aux_or_22 = (aux_and_17 | aux_and_18);
     begin
         case({load})
             1'd0: aux_mux_25 = aux_or_21;
-            1'd1: aux_mux_25 = d2;
+            1'd1: aux_mux_25 = d1;
             default: aux_mux_25 = 1'b0;
         endcase
     end
@@ -163,48 +149,58 @@ assign aux_or_22 = (aux_and_17 | aux_and_18);
     begin
         case({load})
             1'd0: aux_mux_26 = aux_or_22;
-            1'd1: aux_mux_26 = d3;
+            1'd1: aux_mux_26 = d2;
             default: aux_mux_26 = 1'b0;
         endcase
     end
     //End of Multiplexer
-level1_d_flip_flop level1_d_flip_flop_inst_27 (
-    .d(aux_mux_23),
-    .clock(clk),
-    .preset(1'b1),
-    .clear(1'b1),
-    .q(w_level1_d_flip_flop_inst_27_q),
-    .q_bar(w_level1_d_flip_flop_inst_27_q_bar)
-);
+    //Multiplexer
+    always @(*)
+    begin
+        case({load})
+            1'd0: aux_mux_27 = aux_or_23;
+            1'd1: aux_mux_27 = d3;
+            default: aux_mux_27 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
 level1_d_flip_flop level1_d_flip_flop_inst_28 (
     .d(aux_mux_24),
     .clock(clk),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_28_q),
     .q_bar(w_level1_d_flip_flop_inst_28_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_29 (
     .d(aux_mux_25),
     .clock(clk),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_29_q),
     .q_bar(w_level1_d_flip_flop_inst_29_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_30 (
     .d(aux_mux_26),
     .clock(clk),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_30_q),
     .q_bar(w_level1_d_flip_flop_inst_30_q_bar)
 );
+level1_d_flip_flop level1_d_flip_flop_inst_31 (
+    .d(aux_mux_27),
+    .clock(clk),
+    .preset(1'b0),
+    .clear(1'b0),
+    .q(w_level1_d_flip_flop_inst_31_q),
+    .q_bar(w_level1_d_flip_flop_inst_31_q_bar)
+);
 
-assign q0 = w_level1_d_flip_flop_inst_27_q;
-assign q1 = w_level1_d_flip_flop_inst_28_q;
-assign q2 = w_level1_d_flip_flop_inst_29_q;
-assign q3 = w_level1_d_flip_flop_inst_30_q;
+assign q0 = w_level1_d_flip_flop_inst_28_q;
+assign q1 = w_level1_d_flip_flop_inst_29_q;
+assign q2 = w_level1_d_flip_flop_inst_30_q;
+assign q3 = w_level1_d_flip_flop_inst_31_q;
 endmodule
 
 module level5_loadable_counter_4bit (

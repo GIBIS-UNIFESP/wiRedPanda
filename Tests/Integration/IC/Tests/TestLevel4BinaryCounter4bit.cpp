@@ -51,7 +51,7 @@ struct BinaryCounter4bitFixture {
         builder.connect(clk, 0, ic, "CLK");
         builder.connect(ce, 0, ic, "CountEnable");
         builder.connect(load, 0, ic, "Load");
-        builder.connect(clear, 0, ic, "Clear");
+        builder.connect(clear, 0, ic, "Reset");
         for (int i = 0; i < 4; ++i) {
             builder.connect(data[i], 0, ic, QString("Data[%1]").arg(i));
         }

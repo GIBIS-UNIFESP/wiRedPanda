@@ -16,45 +16,41 @@ module level1_jk_flip_flop_ic (
 
 /* verilator lint_off UNOPTFLAT */ // intentional latch feedback
 wire aux_not_1;
-wire aux_not_2;
-wire aux_not_3;
+reg aux_or_2 = 1'b0;
+reg aux_or_3 = 1'b0;
 reg aux_or_4 = 1'b0;
 reg aux_or_5 = 1'b0;
-reg aux_or_6 = 1'b0;
-reg aux_or_7 = 1'b0;
+reg aux_and_6 = 1'b0;
+reg aux_and_7 = 1'b0;
 reg aux_and_8 = 1'b0;
 reg aux_and_9 = 1'b0;
-reg aux_and_10 = 1'b0;
-reg aux_and_11 = 1'b0;
-reg aux_nor_12 = 1'b0;
-reg aux_nor_13 = 1'b0;
-reg aux_and_14 = 1'b0;
-reg aux_and_15 = 1'b0;
-reg aux_nor_16 = 1'b0;
-reg aux_nor_17 = 1'b0;
+reg aux_nor_10 = 1'b0;
+reg aux_nor_11 = 1'b0;
+reg aux_and_12 = 1'b0;
+reg aux_and_13 = 1'b0;
+reg aux_nor_14 = 1'b0;
+reg aux_nor_15 = 1'b0;
 
 // Internal logic
 assign aux_not_1 = ~clock;
-assign aux_not_2 = ~preset;
-assign aux_not_3 = ~clear;
-always @(*) aux_or_4 = (aux_and_15 | aux_not_3);
-always @(*) aux_or_5 = (aux_and_14 | aux_not_2);
-always @(*) aux_or_6 = (aux_and_10 | aux_not_2);
-always @(*) aux_or_7 = (aux_and_11 | aux_not_3);
-always @(*) aux_and_8 = (j & aux_nor_17);
-always @(*) aux_and_9 = (k & aux_nor_16);
-always @(*) aux_and_10 = (aux_and_8 & clock);
-always @(*) aux_and_11 = (aux_and_9 & clock);
-always @(*) aux_nor_12 = ~(aux_or_7 | aux_nor_13);
-always @(*) aux_nor_13 = ~(aux_or_6 | aux_nor_12);
-always @(*) aux_and_14 = (aux_nor_12 & aux_not_1);
-always @(*) aux_and_15 = (aux_nor_13 & aux_not_1);
-always @(*) aux_nor_16 = ~(aux_or_4 | aux_nor_17);
-always @(*) aux_nor_17 = ~(aux_or_5 | aux_nor_16);
+always @(*) aux_or_2 = (aux_and_13 | clear);
+always @(*) aux_or_3 = (aux_and_12 | preset);
+always @(*) aux_or_4 = (aux_and_8 | preset);
+always @(*) aux_or_5 = (aux_and_9 | clear);
+always @(*) aux_and_6 = (j & aux_nor_15);
+always @(*) aux_and_7 = (k & aux_nor_14);
+always @(*) aux_and_8 = (aux_and_6 & clock);
+always @(*) aux_and_9 = (aux_and_7 & clock);
+always @(*) aux_nor_10 = ~(aux_or_5 | aux_nor_11);
+always @(*) aux_nor_11 = ~(aux_or_4 | aux_nor_10);
+always @(*) aux_and_12 = (aux_nor_10 & aux_not_1);
+always @(*) aux_and_13 = (aux_nor_11 & aux_not_1);
+always @(*) aux_nor_14 = ~(aux_or_2 | aux_nor_15);
+always @(*) aux_nor_15 = ~(aux_or_3 | aux_nor_14);
 /* verilator lint_on UNOPTFLAT */
 
-assign q = aux_nor_16;
-assign q_bar = aux_nor_17;
+assign q = aux_nor_14;
+assign q_bar = aux_nor_15;
 endmodule
 
 module level1_jk_flip_flop (

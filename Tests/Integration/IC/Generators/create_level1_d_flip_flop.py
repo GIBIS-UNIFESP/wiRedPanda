@@ -5,7 +5,7 @@
 """
 Create D Flip-Flop IC with Preset and Clear
 
-Inputs: D (Data), Clock, Preset (active LOW), Clear (active LOW)
+Inputs: D (Data), Clock, Preset (active HIGH), Clear (active HIGH)
 Outputs: Q, Q_bar
 
 Circuit (gate-level master-slave, built from primitives — not "D Latch" parts):
@@ -19,12 +19,12 @@ Circuit (gate-level master-slave, built from primitives — not "D Latch" parts)
   latches so they work under any clock level (F56).
 
 Implementation (gate inventory):
-- 3 NOT gates: invert Clock, Preset, Clear.
+- 1 NOT gate: invert Clock.
 - 1 NOT gate: master D_bar (master_not_d).
 - Master: 2 AND (D*clk', D_bar*clk' -> S/R), 2 NOR (cross-coupled core).
 - Slave:  2 AND (Qm*clk, Qm_bar*clk -> S/R), 2 NOR (cross-coupled core).
-- 4 OR gates: inject NOT(Preset)/NOT(Clear) into the S/R of BOTH latches
-  (master_or_s/master_or_r + or_s/or_r) — a 7474 forces master and slave, so
+- 4 OR gates: inject Preset/Clear DIRECTLY (active-high) into the S/R of BOTH
+  latches (master_or_s/master_or_r + or_s/or_r) — forcing master and slave, so
   async controls survive any clock level and the forced value holds on release
   (F56).
 
@@ -33,8 +33,8 @@ D Flip-Flop behavior:
   (Note: the JK flip-flop in this library is FALLING-edge — mind the polarity
   when composing the two.)
 - Output stable during the rest of the clock cycle.
-- Preset (active LOW): Forces Q=1, Q_bar=0
-- Clear (active LOW): Forces Q=0, Q_bar=1
+- Preset (active HIGH): Forces Q=1, Q_bar=0
+- Clear (active HIGH): Forces Q=0, Q_bar=1
 
 Usage:
     python3 create_level1_d_flip_flop.py
@@ -103,19 +103,12 @@ class DFlipFlopBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created NOT gate (id={not_id})")
 
-        # ========== Preset/Clear Control Logic ==========
+        # ========== Preset/Clear Control Logic (active-HIGH) ==========
+        # Preset/Clear are injected DIRECTLY into the latch S/R OR-gates (no input
+        # inverters): Preset=1 forces Q=1, Clear=1 forces Q=0. Injected into BOTH
+        # latches (F56) so the forced value holds under any clock level.
 
-        # NOT gate to invert Preset
-        not_preset_id = await self.create_element("Not", not_clk_x, bottom_y + VERTICAL_STAGE_SPACING, "not_preset")
-        if not_preset_id is None:
-            return False
-
-        # NOT gate to invert Clear
-        not_clear_id = await self.create_element("Not", not_clk_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "not_clear")
-        if not_clear_id is None:
-            return False
-
-        # OR gate for R: injects the data reset path and NOT(Clear) into the
+        # OR gate for R: injects the data reset path and Clear into the
         # Q NOR — driving it high forces Q=0. (F31: this gate was labelled
         # "or_s" although it performs the Reset function.)
         or_r_id = await self.create_element("Or", master_not_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "or_r")
@@ -138,14 +131,6 @@ class DFlipFlopBuilder(ICBuilderBase):
 
         master_or_s_id = await self.create_element("Or", master_not_x, bottom_y + (5 * VERTICAL_STAGE_SPACING), "master_or_s")
         if master_or_s_id is None:
-            return False
-
-        # Connect Preset to NOT gate
-        if not await self.connect(input_preset_id, not_preset_id):
-            return False
-
-        # Connect Clear to NOT gate
-        if not await self.connect(input_clear_id, not_clear_id):
             return False
 
         # ========== Master Latch Components ==========
@@ -237,11 +222,11 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(not_id, master_and2_id, target_port=1):
             return False
 
-        # Master R path: OR(data reset path, NOT(Clear)) into the Q NOR (F56)
+        # Master R path: OR(data reset path, Clear) into the Q NOR (F56)
         if not await self.connect(master_and2_id, master_or_r_id):
             return False
 
-        if not await self.connect(not_clear_id, master_or_r_id, target_port=1):
+        if not await self.connect(input_clear_id, master_or_r_id, target_port=1):
             return False
 
         if not await self.connect(master_or_r_id, master_nor1_id):
@@ -251,11 +236,11 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(master_nor2_id, master_nor1_id, target_port=1):
             return False
 
-        # Master S path: OR(data set path, NOT(Preset)) into the Q_bar NOR (F56)
+        # Master S path: OR(data set path, Preset) into the Q_bar NOR (F56)
         if not await self.connect(master_and1_id, master_or_s_id):
             return False
 
-        if not await self.connect(not_preset_id, master_or_s_id, target_port=1):
+        if not await self.connect(input_preset_id, master_or_s_id, target_port=1):
             return False
 
         if not await self.connect(master_or_s_id, master_nor2_id):
@@ -287,8 +272,8 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(slave_and2_id, or_r_id):
             return False
 
-        # Connect NOT Preset to OR S gate (input 1)
-        if not await self.connect(not_preset_id, or_s_id, target_port=1):
+        # Connect Preset to OR S gate (input 1) — active-high
+        if not await self.connect(input_preset_id, or_s_id, target_port=1):
             return False
 
         # Connect OR S to slave NOR2 (S forces Q_bar=0 to make Q=1)
@@ -303,8 +288,8 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(slave_and1_id, or_s_id):
             return False
 
-        # Connect NOT Clear to OR R gate (input 1)
-        if not await self.connect(not_clear_id, or_r_id, target_port=1):
+        # Connect Clear to OR R gate (input 1) — active-high
+        if not await self.connect(input_clear_id, or_r_id, target_port=1):
             return False
 
         # Connect OR R to slave NOR1 (R forces Q=0 to make Q_bar=1)

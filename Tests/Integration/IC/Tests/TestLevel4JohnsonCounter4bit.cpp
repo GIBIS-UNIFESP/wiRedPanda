@@ -44,7 +44,7 @@ struct JohnsonCounter4bitFixture {
         builder.add(ic);
 
         builder.connect(clk, 0, ic, "CLK");
-        builder.connect(preset, 0, ic, "PRESET");
+        builder.connect(preset, 0, ic, "Init");
         builder.connect(ce, 0, ic, "CountEnable");
         builder.connect(load, 0, ic, "Load");
         for (int i = 0; i < 4; ++i) {
@@ -74,11 +74,11 @@ struct JohnsonCounter4bitFixture {
 
     void presetPulse()
     {
-        preset->setOn(true);   // inactive (active-LOW)
+        preset->setOn(false);  // inactive (active-HIGH)
         sim->update();
-        preset->setOn(false);  // active -> init to 0001
+        preset->setOn(true);   // active -> init to 0001
         sim->update();
-        preset->setOn(true);   // release
+        preset->setOn(false);  // release
         sim->update();
     }
 
@@ -180,7 +180,7 @@ void TestLevel4JohnsonCounter4Bit::testParallelLoad()
     auto &f = *s_level4JohnsonCounter4bit;
     f.tieRun();
     f.clk->setOn(false);
-    f.preset->setOn(true);        // keep PRESET inactive
+    f.preset->setOn(false);       // keep Init inactive
     f.sim->update();
 
     // Load 0x5 = 0101.

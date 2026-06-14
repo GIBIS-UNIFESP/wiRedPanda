@@ -59,9 +59,12 @@ class LoadableCounter4BitBuilder(ICBuilderBase):
                 return False
             data_ids.append(data_id)
 
-        # Create Vcc element for Preset/Clear inactive state
+        # Create Vcc element (data-path constant) and Gnd (inactive Preset/Clear)
         vcc_id = await self.create_element("InputVcc", input_x, 100.0 + (6 * VERTICAL_STAGE_SPACING), "Vcc")
         if vcc_id is None:
+            return False
+        gnd_id = await self.create_element("InputGnd", input_x, 100.0 + (7 * VERTICAL_STAGE_SPACING), "Gnd")
+        if gnd_id is None:
             return False
 
         await self.log("  Created inputs: CLK, Load, D[0-3], Vcc")
@@ -161,12 +164,12 @@ class LoadableCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
                 return False
 
-        # ========== Connect Preset and Clear to Vcc ==========
+        # ========== Connect Preset and Clear to Gnd (active-HIGH FFs) ==========
         for i in range(4):
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
+            if not await self.connect(gnd_id, dff_ids[i], target_port_label="Preset"):
                 return False
 
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Clear"):
+            if not await self.connect(gnd_id, dff_ids[i], target_port_label="Clear"):
                 return False
 
         # ========== Connect FF outputs to LEDs and NOT gates ==========

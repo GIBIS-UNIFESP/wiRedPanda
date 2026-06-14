@@ -6,7 +6,7 @@
 Create 4-bit Ring Counter IC
 
 Inputs:
-  - CLK (Clock), PRESET (Preset/Initialize signal - active LOW)
+  - CLK (Clock), Init (initialise to the valid seed state 0001 - active HIGH)
   - CountEnable (active-HIGH; low = hold), Load (active-HIGH; synchronous parallel
     load), Data[0:3] (value captured when Load=1)
 Outputs: Q[0:3] (Counter Output)
@@ -18,7 +18,7 @@ Circuit:
 - FF[3] output feeds back to FF[0] input (circular)
 
 Ring Counter behavior (one-hot sequence):
-- Initialize with PRESET: Sets Q[0]=1, all others=0
+- Initialize with Init=1: Sets Q[0]=1, all others=0
 - Rotates single '1' around the ring: 0001→0010→0100→1000→0001
 - Period: 4 clock cycles
 - Used for sequencing and state machines
@@ -56,10 +56,10 @@ class RingCounterBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created input CLK")
 
-        preset_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "PRESET")
-        if preset_id is None:
+        init_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "Init")
+        if init_id is None:
             return False
-        await self.log(f"  ✓ Created input PRESET")
+        await self.log(f"  ✓ Created input Init")
 
         # Control inputs (active-HIGH): CountEnable holds the value when low;
         # Load synchronously captures Data[0-3] on the next edge. Tie CountEnable
@@ -152,28 +152,29 @@ class RingCounterBuilder(ICBuilderBase):
             if not await self.connect(dff_ids[i], output_led_ids[i], source_port_label="Q"):
                 return False
 
-        # ========== Connect PRESET input directly to FF[0] Preset ==========
-        if not await self.connect(preset_id, dff_ids[0], target_port_label="Preset"):
+        # ========== Connect Init directly to FF[0] Preset (active-HIGH) ==========
+        # Init=1 sets FF0 (Preset) and clears FF1-3 (Clear) -> seed 0001.
+        if not await self.connect(init_id, dff_ids[0], target_port_label="Preset"):
             return False
 
-        # Create Vcc element for inactive Preset/Clear pins
-        vcc_id = await self.create_element("InputVcc", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Vcc")
-        if vcc_id is None:
+        # Gnd holds the otherwise-unused Preset/Clear pins inactive (active-HIGH)
+        gnd_id = await self.create_element("InputGnd", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Gnd")
+        if gnd_id is None:
             return False
-        await self.log(f"  ✓ Created Vcc element")
+        await self.log(f"  ✓ Created Gnd element")
 
-        # ========== Connect Vcc/PRESET to Preset/Clear pins ==========
+        # ========== Connect Gnd/Init to Preset/Clear pins ==========
         for i in range(1, 4):
-            # Connect Vcc to Preset (active-LOW, so HIGH keeps it inactive)
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
+            # Connect Gnd to Preset (active-HIGH, so LOW keeps it inactive)
+            if not await self.connect(gnd_id, dff_ids[i], target_port_label="Preset"):
                 return False
 
-            # Connect PRESET to Clear (when PRESET goes LOW, clear FF[1-3] to Q=0)
-            if not await self.connect(preset_id, dff_ids[i], target_port_label="Clear"):
+            # Connect Init to Clear (Init=1 -> clear FF[1-3] to Q=0)
+            if not await self.connect(init_id, dff_ids[i], target_port_label="Clear"):
                 return False
 
-        # Also connect Vcc to FF[0]'s Clear (keep it inactive)
-        if not await self.connect(vcc_id, dff_ids[0], target_port_label="Clear"):
+        # Also connect Gnd to FF[0]'s Clear (keep it inactive)
+        if not await self.connect(gnd_id, dff_ids[0], target_port_label="Clear"):
             return False
 
         # Save circuit as IC

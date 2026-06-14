@@ -15,43 +15,39 @@ module level1_d_flip_flop (
 
 /* verilator lint_off UNOPTFLAT */ // intentional latch feedback
 wire aux_not_1;
-wire aux_not_2;
-wire aux_not_3;
+wire aux_or_2;
+wire aux_or_3;
 wire aux_or_4;
 wire aux_or_5;
-wire aux_or_6;
-wire aux_or_7;
-wire aux_not_8;
-wire aux_and_9;
-wire aux_and_10;
-reg aux_nor_11 = 1'b0;
-reg aux_nor_12 = 1'b0;
-wire aux_and_13;
-wire aux_and_14;
-reg aux_nor_15 = 1'b0;
-reg aux_nor_16 = 1'b0;
+wire aux_not_6;
+wire aux_and_7;
+wire aux_and_8;
+reg aux_nor_9 = 1'b0;
+reg aux_nor_10 = 1'b0;
+wire aux_and_11;
+wire aux_and_12;
+reg aux_nor_13 = 1'b0;
+reg aux_nor_14 = 1'b0;
 
 // Internal logic
 assign aux_not_1 = ~clock;
-assign aux_not_2 = ~preset;
-assign aux_not_3 = ~clear;
-assign aux_or_4 = (aux_and_14 | aux_not_3);
-assign aux_or_5 = (aux_and_13 | aux_not_2);
-assign aux_or_6 = (aux_and_10 | aux_not_3);
-assign aux_or_7 = (aux_and_9 | aux_not_2);
-assign aux_not_8 = ~d;
-assign aux_and_9 = (d & aux_not_1);
-assign aux_and_10 = (aux_not_8 & aux_not_1);
-always @(*) aux_nor_11 = ~(aux_or_6 | aux_nor_12);
-always @(*) aux_nor_12 = ~(aux_or_7 | aux_nor_11);
-assign aux_and_13 = (aux_nor_11 & clock);
-assign aux_and_14 = (aux_nor_12 & clock);
-always @(*) aux_nor_15 = ~(aux_or_4 | aux_nor_16);
-always @(*) aux_nor_16 = ~(aux_or_5 | aux_nor_15);
+assign aux_or_2 = (aux_and_12 | clear);
+assign aux_or_3 = (aux_and_11 | preset);
+assign aux_or_4 = (aux_and_8 | clear);
+assign aux_or_5 = (aux_and_7 | preset);
+assign aux_not_6 = ~d;
+assign aux_and_7 = (d & aux_not_1);
+assign aux_and_8 = (aux_not_6 & aux_not_1);
+always @(*) aux_nor_9 = ~(aux_or_4 | aux_nor_10);
+always @(*) aux_nor_10 = ~(aux_or_5 | aux_nor_9);
+assign aux_and_11 = (aux_nor_9 & clock);
+assign aux_and_12 = (aux_nor_10 & clock);
+always @(*) aux_nor_13 = ~(aux_or_2 | aux_nor_14);
+always @(*) aux_nor_14 = ~(aux_or_3 | aux_nor_13);
 /* verilator lint_on UNOPTFLAT */
 
-assign q = aux_nor_15;
-assign q_bar = aux_nor_16;
+assign q = aux_nor_13;
+assign q_bar = aux_nor_14;
 endmodule
 
 // Module for AddrDecoder (generated from level2_decoder_3to8.panda)
@@ -931,64 +927,64 @@ level6_ripple_adder_8bit level6_ripple_adder_8bit_inst_1 (
 level1_d_flip_flop level1_d_flip_flop_inst_2 (
     .d(w_level2_priority_mux_3to1_inst_18_out),
     .clock(clock),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_2_q),
     .q_bar(w_level1_d_flip_flop_inst_2_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_3 (
     .d(w_level2_priority_mux_3to1_inst_19_out),
     .clock(clock),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_3_q),
     .q_bar(w_level1_d_flip_flop_inst_3_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_4 (
     .d(w_level2_priority_mux_3to1_inst_20_out),
     .clock(clock),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_4_q),
     .q_bar(w_level1_d_flip_flop_inst_4_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_5 (
     .d(w_level2_priority_mux_3to1_inst_21_out),
     .clock(clock),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_5_q),
     .q_bar(w_level1_d_flip_flop_inst_5_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_6 (
     .d(w_level2_priority_mux_3to1_inst_22_out),
     .clock(clock),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_6_q),
     .q_bar(w_level1_d_flip_flop_inst_6_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_7 (
     .d(w_level2_priority_mux_3to1_inst_23_out),
     .clock(clock),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_7_q),
     .q_bar(w_level1_d_flip_flop_inst_7_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_8 (
     .d(w_level2_priority_mux_3to1_inst_24_out),
     .clock(clock),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_8_q),
     .q_bar(w_level1_d_flip_flop_inst_8_q_bar)
 );
 level1_d_flip_flop level1_d_flip_flop_inst_9 (
     .d(w_level2_priority_mux_3to1_inst_25_out),
     .clock(clock),
-    .preset(1'b1),
-    .clear(1'b1),
+    .preset(1'b0),
+    .clear(1'b0),
     .q(w_level1_d_flip_flop_inst_9_q),
     .q_bar(w_level1_d_flip_flop_inst_9_q_bar)
 );
