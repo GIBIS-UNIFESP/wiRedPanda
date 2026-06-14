@@ -1,0 +1,13 @@
+{
+  "//": "Pyright config for the non-MCP Python (IC generators, Scripts/, Tests/Fixtures/). Invoked explicitly via `pyright -p pyrightconfig.nonmcp.json`; the non-standard filename is deliberately NOT auto-discovered, so the MCP/Client `pyright .` run keeps its own defaults. extraPaths supply the two import roots: mcp_client under MCP/Client and the generators' sibling modules.",
+  "include": [
+    "Tests/Integration/IC/Generators",
+    "Scripts",
+    "Tests/Fixtures"
+  ],
+  "extraPaths": [
+    "MCP/Client",
+    "Tests/Integration/IC/Generators"
+  ],
+  "pythonVersion": "3.10"
+}

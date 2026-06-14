@@ -19,6 +19,7 @@ on:
       - 'Scripts/**'
       - 'Tests/Fixtures/**'
       - 'ruff.toml'
+      - 'pyrightconfig.nonmcp.json'
       - '.github/workflows/lint.yml'
 
   pull_request:
@@ -31,6 +32,7 @@ on:
       - 'Scripts/**'
       - 'Tests/Fixtures/**'
       - 'ruff.toml'
+      - 'pyrightconfig.nonmcp.json'
       - '.github/workflows/lint.yml'
 
 jobs:
@@ -130,3 +132,10 @@ jobs:
       env:
         MYPYPATH: MCP/Client:Tests/Integration/IC/Generators
       run: mypy --check-untyped-defs Tests/Integration/IC/Generators Scripts Tests/Fixtures
+
+    # pyrightconfig.nonmcp.json scopes pyright to the three trees and sets the
+    # extraPaths import roots. Its non-standard name is deliberately not
+    # auto-discovered, so the MCP/Client `pyright .` run keeps its own defaults.
+    - name: pyright (non-MCP Python)
+      working-directory: ${{ github.workspace }}
+      run: pyright -p pyrightconfig.nonmcp.json

@@ -60,7 +60,7 @@ def should_exclude_dir(dirname):
     return dirname.lower().startswith("build")
 
 
-def classify_include(line):
+def classify_include(line: str) -> tuple[str | None, str]:
     """
     Classify an #include line into one of:
       'stdlib'   - angle-bracket include NOT starting with Q
@@ -71,16 +71,15 @@ def classify_include(line):
     """
     m = re.match(r'^\s*#\s*include\s*(<([^>]+)>|"([^"]+)")', line)
     if not m:
-        return None, None
+        return None, ""
     angle = m.group(2)
     quote = m.group(3)
     if angle is not None:
         if angle.startswith("Q") or angle.startswith("nlohmann"):
             return "qt", angle
-        else:
-            return "stdlib", angle
-    else:
-        return "project", quote
+        return "stdlib", angle
+    assert quote is not None  # regex guarantees the quoted alternative matched here
+    return "project", quote
 
 
 def extract_condition(line):
