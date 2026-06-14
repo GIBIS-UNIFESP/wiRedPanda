@@ -19,6 +19,9 @@ private slots:
     void testRotateCommand();
     void testMoveCommand();
     void testFlipCommand();
+    void testFlipTextPixmapVariant();
+    void testRotateTextPixmapVariant();
+    void testFlipRotateTextPixmapVariant();
     void testFlipNonRotatablePorts();
     void testRotateNonRotatablePorts();
     void testFlipRotateNonRotatablePort();

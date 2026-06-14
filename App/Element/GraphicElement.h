@@ -510,6 +510,10 @@ protected:
     /// Current pixmap displayed for this GraphicElement.
     QPixmap m_pixmap;
 
+    /// Upright, unflipped pixmap loaded for the current appearance. m_pixmap is derived from this:
+    /// it equals m_basePixmap normally, or a text-corrected SVG variant while rotated or flipped.
+    QPixmap m_basePixmap;
+
     QColor m_selectionBrush; ///< Fill color used to draw the selection highlight rectangle.
     QColor m_selectionPen;   ///< Border color used to draw the selection highlight rectangle.
     QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
@@ -559,6 +563,11 @@ private:
 
     /// Recomputes the QGraphicsItem transform from the current flip flags.
     void applyFlipTransform();
+
+    /// Selects m_pixmap from m_basePixmap, substituting a text-corrected SVG variant while the
+    /// element is rotated or flipped so baked-in <text> labels stay upright after the item-level
+    /// rotation + flip.
+    void applyPixmapOrientation();
 
     /// Orients \a port for the current rotation + flip state (used by non-rotatable elements,
     /// which keep their pixmap fixed). Applies Rotate(centre, m_angle) then Flip about the
@@ -666,6 +675,7 @@ private:
     QString m_labelText;
 
     QString m_currentPixmapPath;
+    QString m_resolvedPixmapPath; ///< Resolved file/resource path of m_basePixmap; used to build orientation variants.
 
     // --- Members: Capabilities & Display State ---
 
