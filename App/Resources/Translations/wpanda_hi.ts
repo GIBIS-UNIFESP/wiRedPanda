@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="135"/>
+        <location filename="../../Core/Application.cpp" line="143"/>
         <source>Error!</source>
         <translation>त्रुटि!</translation>
     </message>
@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="867"/>
+        <location filename="../../Scene/Commands.cpp" line="882"/>
         <source>Change input size to %1</source>
         <translation>इनपुट आकार %1 में बदलें</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="868"/>
+        <location filename="../../Scene/Commands.cpp" line="883"/>
         <source>Change output size to %1</source>
         <translation>आउटपुट आकार को %1 में बदलें</translation>
     </message>
@@ -1190,7 +1190,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="806"/>
+        <location filename="../../Scene/Commands.cpp" line="823"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>अक्ष %2 में %1 तत्वों को फ़्लिप करें</translation>
     </message>
@@ -1198,27 +1198,27 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="173"/>
+        <location filename="../../Element/GraphicElement.cpp" line="322"/>
         <source>File does not exist</source>
         <translation>फाइल मौजूद नहीं है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="175"/>
+        <location filename="../../Element/GraphicElement.cpp" line="324"/>
         <source>File is not readable</source>
         <translation>फाइल पढ़ने योग्य नहीं है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="176"/>
+        <location filename="../../Element/GraphicElement.cpp" line="325"/>
         <source>Unknown reason</source>
         <translation>अज्ञात कारण</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
+        <location filename="../../Element/GraphicElement.cpp" line="331"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>पिक्समैप लोड नहीं हो सका: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="406"/>
+        <location filename="../../Element/GraphicElement.cpp" line="659"/>
         <source>Default</source>
         <translation>डिफ़ॉल्ट</translation>
     </message>
@@ -1251,47 +1251,47 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="114"/>
         <source>IC</source>
         <translation>आईसी</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="112"/>
+        <location filename="../../Element/IC.cpp" line="113"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>एकीकृत परिपथ</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
+        <location filename="../../Element/IC.cpp" line="226"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC लोड: क्रमबद्ध डेटा में IC नाम मौजूद नहीं</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
+        <location filename="../../Element/IC.cpp" line="351"/>
         <source>%1 not found.</source>
         <translation>%1 नहीं मिला।</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
+        <location filename="../../Element/IC.cpp" line="392"/>
         <source>Circular IC reference detected: %1</source>
         <translation>चक्रीय IC संदर्भ पाया गया: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
+        <location filename="../../Element/IC.cpp" line="399"/>
         <source>Error opening file: %1</source>
         <translation>फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
+        <location filename="../../Element/IC.cpp" line="453"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC माइग्रेशन: लिखने के लिए फ़ाइल नहीं खोली जा सकी: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
+        <location filename="../../Element/IC.cpp" line="460"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC माइग्रेशन: पुनः सहेजी गई फ़ाइल को कमिट करने में विफल: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
+        <location filename="../../Element/IC.cpp" line="519"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>IC नेस्टिंग गहराई सीमा (%1) पार हो गई — blob दुर्भावनापूर्वक तैयार किया गया हो सकता है</translation>
     </message>
@@ -2586,7 +2586,7 @@ Suggested name:</source>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1020"/>
+        <location filename="../../Scene/Commands.cpp" line="1035"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>ब्लॉब पंजीकृत करें &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Suggested name:</source>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1043"/>
+        <location filename="../../Scene/Commands.cpp" line="1058"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>blob &quot;%1&quot; हटाएँ</translation>
     </message>
@@ -2805,12 +2805,12 @@ Suggested name:</source>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="961"/>
+        <location filename="../../Scene/Commands.cpp" line="976"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>स्थिति %1 पर TruthTable आउटपुट टॉगल करें</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="970"/>
+        <location filename="../../Scene/Commands.cpp" line="985"/>
         <source>Could not find truthtable element!</source>
         <translation>सत्य तालिका तत्व नहीं मिला!</translation>
     </message>
@@ -2831,12 +2831,12 @@ Suggested name:</source>
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="38"/>
         <source>TRUTH TABLE</source>
         <translation>सत्य तालिका</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="38"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="39"/>
         <source>Truth Table</source>
         <translation>सत्य तालिका</translation>
     </message>
@@ -2844,7 +2844,7 @@ Suggested name:</source>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1076"/>
+        <location filename="../../Scene/Commands.cpp" line="1091"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 IC ब्लॉब अपडेट करें</translation>
     </message>
