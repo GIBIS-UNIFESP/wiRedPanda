@@ -21,7 +21,7 @@ struct ElementInfo<InputButton> {
         .canChangeAppearance = true,
         .hasTrigger = true,
         .hasLabel = true,
-        .rotatable = false,
+        .rotatesGraphic = false,
     };
     static_assert(validate(constraints));
 

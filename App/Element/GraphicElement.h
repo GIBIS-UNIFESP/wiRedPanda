@@ -301,8 +301,9 @@ public:
     /// Rotates the element to \a angle degrees and updates port positions.
     void setRotation(const qreal angle);
 
-    /// Returns \c true if the user is allowed to rotate this element.
-    bool isRotatable() const;
+    /// Returns \c true if rotating/flipping re-orients this element's graphic. When \c false the
+    /// icon stays fixed and only the ports reposition around the centre (the element still rotates).
+    bool rotatesGraphic() const;
 
     /// Rotates all ports by \a angle degrees around the element centre.
     void rotatePorts(const qreal angle);

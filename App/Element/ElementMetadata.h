@@ -59,7 +59,7 @@ struct ElementMetadata {
     bool hasLabel = false;      ///< True if the element supports a user-editable label.
     bool hasTruthTable = false; ///< True if the element has an editable truth table.
     bool hasVolume = false;     ///< True if the element supports volume control.
-    bool rotatable = true;      ///< True if the user can rotate this element.
+    bool rotatesGraphic = true; ///< True if rotating/flipping re-orients the graphic itself; false keeps the icon fixed and only repositions ports.
 };
 
 /**

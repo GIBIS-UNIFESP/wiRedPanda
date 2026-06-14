@@ -44,7 +44,7 @@ void TestClock::testConstructorInitialization()
     QVERIFY(clock.hasLabel());
 
     // Verify cannot rotate
-    QVERIFY(!clock.isRotatable());
+    QVERIFY(!clock.rotatesGraphic());
 
     // Verify can change appearance
     QVERIFY(clock.canChangeAppearance());

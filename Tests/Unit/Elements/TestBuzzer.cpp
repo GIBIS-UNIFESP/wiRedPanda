@@ -35,7 +35,7 @@ void TestBuzzer::testConstructorInitialization()
     QVERIFY(buzzer.hasFrequency());
     QVERIFY(buzzer.hasVolume());
     QVERIFY(buzzer.hasLabel());
-    QVERIFY(!buzzer.isRotatable());
+    QVERIFY(!buzzer.rotatesGraphic());
     QVERIFY(buzzer.canChangeAppearance());
 }
 

@@ -16,7 +16,7 @@ struct ElementInfo<InputGnd> {
         .canChangeAppearance = true,
         // Static inputs are not rotatable as a whole; instead their output port rotates
         // around the element centre so the wire attachment point tracks the correct position.
-        .rotatable = false,
+        .rotatesGraphic = false,
     };
     static_assert(validate(constraints));
 

@@ -43,7 +43,7 @@ void TestLED::testConstructorInitialization()
     QVERIFY(led.hasLabel());
 
     // Verify cannot rotate
-    QVERIFY(!led.isRotatable());
+    QVERIFY(!led.rotatesGraphic());
 
     // Verify can change appearance
     QVERIFY(led.canChangeAppearance());

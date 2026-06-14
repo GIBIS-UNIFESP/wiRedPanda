@@ -45,7 +45,7 @@ void TestInputElements::testInputSwitchConstructor()
     QVERIFY(inputSwitch.hasTrigger());
 
     // Verify cannot rotate
-    QVERIFY(!inputSwitch.isRotatable());
+    QVERIFY(!inputSwitch.rotatesGraphic());
 }
 
 void TestInputElements::testInputSwitchInitialState()
@@ -269,7 +269,7 @@ void TestInputElements::testInputButtonConstructor()
     QVERIFY(inputButton.hasTrigger());
 
     // Verify cannot rotate
-    QVERIFY(!inputButton.isRotatable());
+    QVERIFY(!inputButton.rotatesGraphic());
 }
 
 void TestInputElements::testInputButtonInitialState()

@@ -23,7 +23,7 @@ struct ElementInfo<Buzzer> {
         .hasFrequency = true,
         .hasLabel = true,
         .hasVolume = true,
-        .rotatable = false,
+        .rotatesGraphic = false,
     };
     static_assert(validate(constraints));
 

@@ -16,7 +16,7 @@ struct ElementInfo<InputVcc> {
         .maxOutputSize = 1,
         .canChangeAppearance = true,
         // Static inputs are not rotatable as a whole (see InputGND.cpp for explanation).
-        .rotatable = false,
+        .rotatesGraphic = false,
     };
     static_assert(validate(constraints));
 

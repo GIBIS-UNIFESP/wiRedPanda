@@ -22,7 +22,7 @@ struct ElementInfo<Led> {
         .canChangeAppearance = true,
         .hasColors = true,
         .hasLabel = true,
-        .rotatable = false,
+        .rotatesGraphic = false,
     };
     static_assert(validate(constraints));
 
