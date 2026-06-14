@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include <QBitArray>
 #include <QGraphicsItem>
 #include <QKeySequence>
@@ -25,6 +27,7 @@ class QNEOutputPort;
 class QNEPort;
 class QPainter;
 class QStyleOptionGraphicsItem;
+class QSvgRenderer;
 class QWidget;
 
 /**
@@ -61,6 +64,9 @@ public:
 
     /// Constructs a graphic element of the given \a type, fetching all properties from the metadata registry.
     explicit GraphicElement(ElementType type, QGraphicsItem *parent = nullptr);
+
+    /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
+    ~GraphicElement() override;
 
     // --- External file dependencies ---
 
@@ -514,6 +520,10 @@ protected:
     /// it equals m_basePixmap normally, or a text-corrected SVG variant while rotated or flipped.
     QPixmap m_basePixmap;
 
+    /// Vector renderer for the current SVG appearance (with labels counter-oriented while rotated/
+    /// flipped), drawn by paint() so the element stays crisp at any zoom. Null for raster appearances.
+    std::unique_ptr<QSvgRenderer> m_svgRenderer;
+
     QColor m_selectionBrush; ///< Fill color used to draw the selection highlight rectangle.
     QColor m_selectionPen;   ///< Border color used to draw the selection highlight rectangle.
     QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
@@ -568,6 +578,11 @@ private:
     /// element is rotated or flipped so baked-in <text> labels stay upright after the item-level
     /// rotation + flip.
     void applyPixmapOrientation();
+
+    /// Rebuilds m_svgRenderer from the current resolved SVG path and orientation (reusing the
+    /// <text> counter-orientation), or clears it for non-SVG (raster) appearances. Called whenever
+    /// the appearance or rotation/flip state changes, via applyPixmapOrientation().
+    void rebuildSvgRenderer();
 
     /// Orients \a port for the current rotation + flip state (used by non-rotatable elements,
     /// which keep their pixmap fixed). Applies Rotate(centre, m_angle) then Flip about the
