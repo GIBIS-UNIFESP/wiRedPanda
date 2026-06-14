@@ -3,10 +3,11 @@
 
 name: Lint
 
-# MCP/Client/ is the only Python tree in the repo, so the workflow is path-gated
-# to its files plus this workflow itself (so edits here self-test). Everything
-# else — C++, CMake, translations, deploy scripts — falls through to build.yml
-# and the other workflows.
+# Python lives in several trees: MCP/Client/ (the full lint stack) plus the IC
+# generators, Scripts/, and Tests/Fixtures/ (ruff only, via the repo-root
+# ruff.toml). The workflow is path-gated to all of them, the two ruff configs,
+# and this workflow itself (so edits here self-test). Everything else — C++,
+# CMake, translations, deploy scripts — falls through to build.yml and friends.
 on:
   push:
     branches-ignore:
@@ -14,6 +15,10 @@ on:
       - wasm
     paths:
       - 'MCP/Client/**'
+      - 'Tests/Integration/IC/Generators/**'
+      - 'Scripts/**'
+      - 'Tests/Fixtures/**'
+      - 'ruff.toml'
       - '.github/workflows/lint.yml'
 
   pull_request:
@@ -22,6 +27,10 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - 'MCP/Client/**'
+      - 'Tests/Integration/IC/Generators/**'
+      - 'Scripts/**'
+      - 'Tests/Fixtures/**'
+      - 'ruff.toml'
       - '.github/workflows/lint.yml'
 
 jobs:
@@ -29,7 +38,7 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-24.04
-    name: Python lint (MCP/Client)
+    name: Python lint
     # Same fork-PR guard as build.yml: GITHUB_TOKEN on forked PRs has no write
     # permissions, and we don't want to run untrusted code with our caches.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
@@ -53,14 +62,22 @@ jobs:
         pip install -r requirements.txt
 
     # Lint steps run sequentially with default fail-fast: the first failure
-    # stops the job. The 8 tools are intentionally separate steps (rather
-    # than chained with `&&`) so the failing tool is visible in the job UI
-    # without scraping logs.
+    # stops the job. The tools are intentionally separate steps (rather than
+    # chained with `&&`) so the failing tool is visible in the job UI without
+    # scraping logs.
 
+    # ruff runs from the repo root so it covers every Python tree: MCP/Client
+    # under MCP/Client/ruff.toml and the generators/Scripts/fixtures under the
+    # repo-root ruff.toml (ruff applies the nearest config per file). The
+    # remaining tools below are MCP/Client-specific and keep the default
+    # working-directory. The pinned ruff from requirements.txt is reused, so
+    # the whole repo is checked against one ruff version.
     - name: ruff check
+      working-directory: ${{ github.workspace }}
       run: ruff check .
 
     - name: ruff format
+      working-directory: ${{ github.workspace }}
       run: ruff format --check .
 
     - name: mypy
