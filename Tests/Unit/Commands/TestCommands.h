@@ -19,6 +19,9 @@ private slots:
     void testRotateCommand();
     void testMoveCommand();
     void testFlipCommand();
+    void testFlipNonRotatablePorts();
+    void testRotateNonRotatablePorts();
+    void testFlipRotateNonRotatablePort();
 
     // Element modification commands
     void testChangeInputSizeCommand();

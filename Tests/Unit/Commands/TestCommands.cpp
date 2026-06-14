@@ -6,6 +6,8 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
+#include "App/Element/GraphicElements/Display7.h"
+#include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
@@ -203,6 +205,114 @@ void TestCommands::testFlipCommand()
     undoStack->undo();
     QCOMPARE(gate1->pos(), pos1Before);
     QCOMPARE(gate2->pos(), pos2Before);
+}
+
+void TestCommands::testFlipNonRotatablePorts()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    // --- InputButton: non-rotatable, single output port at the right edge on the mid-line ---
+    // Flipping must mirror the PORT to the other side while leaving the button graphic upright
+    // (no item-level transform), paralleling how rotation already repositions these ports.
+    auto *button = new InputButton();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{button}, scene));
+    button->setPos(100, 100);
+
+    const QPointF portBase = button->outputPort(0)->scenePos();
+    const QPointF buttonPos = button->pos();
+
+    // Horizontal flip: the right-edge port (x=64) moves to the left edge (x=0).
+    scene->receiveCommand(new FlipCommand(QList<GraphicElement *>{button}, 0, scene));
+    QVERIFY2(button->transform().isIdentity(), "Non-rotatable element must not get an item flip transform");
+    QCOMPARE(button->pos(), buttonPos); // lone element: the position mirror is a no-op
+    const QPointF portFlipped = button->outputPort(0)->scenePos();
+    QVERIFY2(portFlipped.x() < portBase.x(), "Horizontal flip must move the output port to the left side");
+    QCOMPARE(portFlipped.y(), portBase.y());
+
+    // Flip is an involution: undo restores the port exactly.
+    undoStack->undo();
+    QCOMPARE(button->outputPort(0)->scenePos(), portBase);
+
+    // Vertical flip: the single port sits on the vertical centre line, so it does not move.
+    scene->receiveCommand(new FlipCommand(QList<GraphicElement *>{button}, 1, scene));
+    QCOMPARE(button->outputPort(0)->scenePos(), portBase);
+    undoStack->undo();
+
+    // --- Display7: overrides updatePortsProperties with off-centre, two-column ports ---
+    // Guards the path where the override bypasses the base updatePortsProperties().
+    auto *display = new Display7();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{display}, scene));
+    display->setPos(300, 100);
+
+    const QPointF leftPinBase = display->inputPort(0)->scenePos(); // left column (x=0)
+    scene->receiveCommand(new FlipCommand(QList<GraphicElement *>{display}, 0, scene));
+    QVERIFY2(display->transform().isIdentity(), "Non-rotatable display must not get an item flip transform");
+    QVERIFY2(display->inputPort(0)->scenePos().x() > leftPinBase.x(),
+             "Horizontal flip must move a left-column display pin to the right");
+    undoStack->undo();
+    QCOMPARE(display->inputPort(0)->scenePos(), leftPinBase);
+}
+
+void TestCommands::testRotateNonRotatablePorts()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    // A fixed-graphic element (rotatesGraphic() == false) still rotates: setRotation keeps the
+    // icon upright and repositions the ports around the centre. This is the behaviour the GUI —
+    // and, after reconciliation, the MCP rotate_element handler — rely on, so a rotated
+    // pushbutton's output port must actually move (and round-trip back at 0°).
+    auto *button = new InputButton();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{button}, scene));
+    button->setPos(100, 100);
+
+    QVERIFY(!button->rotatesGraphic());
+    const QPointF portBase = button->outputPort(0)->scenePos();
+
+    button->setRotation(90);
+    QVERIFY2(button->outputPort(0)->scenePos() != portBase,
+             "Rotating a fixed-graphic element must reposition its port");
+
+    button->setRotation(0);
+    QCOMPARE(button->outputPort(0)->scenePos(), portBase);
+}
+
+void TestCommands::testFlipRotateNonRotatablePort()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    // applyPortOrientation() applies rotation and flip together (order-dependent). A non-rotatable
+    // element that is both rotated and flipped must place its port distinctly from rotate-only,
+    // keep an identity item transform, and round-trip back through each state to the base position.
+    auto *button = new InputButton();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{button}, scene));
+    button->setPos(100, 100);
+    QVERIFY(!button->rotatesGraphic());
+
+    const QPointF portBase = button->outputPort(0)->scenePos();
+
+    button->setRotation(90);
+    const QPointF portRotated = button->outputPort(0)->scenePos();
+    QVERIFY(portRotated != portBase);
+
+    // applyPortOrientation applies the flip *before* the rotation (port = centre + R·S·(p−centre)),
+    // so the flip acts on the pre-rotation offset. The single output port sits on the horizontal
+    // centre line (x-offset, y=0), so flipX moves it (flipY would be a no-op there) — this exercises
+    // the order-dependent combined rotation+flip path.
+    button->setFlippedX(true);
+    const QPointF portRotatedFlipped = button->outputPort(0)->scenePos();
+    QVERIFY2(portRotatedFlipped != portRotated, "Flipping after rotating must move the port again");
+    QVERIFY2(portRotatedFlipped != portBase, "Combined rotate+flip must differ from the base position");
+    QVERIFY2(button->transform().isIdentity(), "Non-rotatable element must never get an item transform");
+
+    // Round-trip: unflip → back to rotated; unrotate → back to base.
+    button->setFlippedX(false);
+    QCOMPARE(button->outputPort(0)->scenePos(), portRotated);
+    button->setRotation(0);
+    QCOMPARE(button->outputPort(0)->scenePos(), portBase);
 }
 
 void TestCommands::testChangeInputSizeCommand()

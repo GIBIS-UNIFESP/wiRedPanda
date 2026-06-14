@@ -147,6 +147,10 @@ void Display7::updatePortsProperties()
         in->setRequired(false);
         in->setDefaultStatus(Status::Inactive);
     }
+
+    // This override doesn't chain to the base updatePortsProperties(), so re-apply the current
+    // rotation/flip orientation to the freshly-positioned ports (keeps flip working on displays).
+    rotatePorts();
 }
 
 void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
