@@ -10,6 +10,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
+#include "Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
@@ -17,30 +18,6 @@ using TestUtils::setMultiBitInput;
 using TestUtils::getInputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
-
-/// ALU operation codes
-enum ALUOp { ADD = 0, SUB = 1, AND = 2, OR = 3, XOR = 4, NOT = 5, SHL = 6, SHR = 7 };
-
-/// Encode an 8-bit ALU instruction: ALUOp in bits [5:3], regAddr in bits [2:0].
-/// Bit 7 = 0, bit 6 = 0 for ALU/register operations.
-static int encodeInstruction(int aluOp, int regAddr)
-{
-    return ((aluOp & 0x7) << 3) | (regAddr & 0x7);
-}
-
-/// Encode a STORE instruction: write R0 to data memory at address regAddr.
-/// Bit 7 = 1, bit 6 = 1 → MemWrite=1, RegWrite=0.
-static int encodeStore(int regAddr)
-{
-    return 0xC0 | (regAddr & 0x7);
-}
-
-/// Encode a LOAD instruction: read data memory at address regAddr.
-/// Bit 7 = 1, bit 6 = 0 → MemRead=1, RegWrite=0.
-static int encodeLoad(int regAddr)
-{
-    return 0x80 | (regAddr & 0x7);
-}
 
 /// Fixture holding the full CPU test harness.
 struct CPUFixture {

@@ -11,33 +11,13 @@
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
+#include "Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
-
-/// ALU operation codes (shared with the single-cycle CPU ISA).
-enum ALUOp { ADD = 0, SUB = 1, AND = 2, OR = 3, XOR = 4, NOT = 5, SHL = 6, SHR = 7 };
-
-/// Encode an 8-bit ALU instruction: ALUOp in bits [5:3], regAddr in bits [2:0].
-static int encodeInstruction(int aluOp, int regAddr)
-{
-    return ((aluOp & 0x7) << 3) | (regAddr & 0x7);
-}
-
-/// STORE R0 to data memory at address regAddr (bits [7:6] = 11).
-static int encodeStore(int regAddr)
-{
-    return 0xC0 | (regAddr & 0x7);
-}
-
-/// LOAD from data memory at address regAddr (bits [7:6] = 10).
-static int encodeLoad(int regAddr)
-{
-    return 0x80 | (regAddr & 0x7);
-}
 
 struct MultiCycleCpu8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
