@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="135"/>
+        <location filename="../../Core/Application.cpp" line="143"/>
         <source>Error!</source>
         <translation>Ralat!</translation>
     </message>
@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="867"/>
+        <location filename="../../Scene/Commands.cpp" line="882"/>
         <source>Change input size to %1</source>
         <translation>Tukar saiz input kepada %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="868"/>
+        <location filename="../../Scene/Commands.cpp" line="883"/>
         <source>Change output size to %1</source>
         <translation>Tukar saiz output kepada %1</translation>
     </message>
@@ -1190,7 +1190,7 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="806"/>
+        <location filename="../../Scene/Commands.cpp" line="823"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Balik %1 elemen dalam paksi %2</translation>
     </message>
@@ -1198,27 +1198,27 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="173"/>
+        <location filename="../../Element/GraphicElement.cpp" line="322"/>
         <source>File does not exist</source>
         <translation>Fail tidak wujud</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="175"/>
+        <location filename="../../Element/GraphicElement.cpp" line="324"/>
         <source>File is not readable</source>
         <translation>Fail tidak boleh dibaca</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="176"/>
+        <location filename="../../Element/GraphicElement.cpp" line="325"/>
         <source>Unknown reason</source>
         <translation>Sebab tidak diketahui</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
+        <location filename="../../Element/GraphicElement.cpp" line="331"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Tidak dapat memuatkan pixmap: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="406"/>
+        <location filename="../../Element/GraphicElement.cpp" line="659"/>
         <source>Default</source>
         <translation>Lalai</translation>
     </message>
@@ -1251,47 +1251,47 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="114"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="112"/>
+        <location filename="../../Element/IC.cpp" line="113"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>LITAR BERSEPADU</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
+        <location filename="../../Element/IC.cpp" line="226"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>Muat IC: nama IC tiada dalam data bersiri</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
+        <location filename="../../Element/IC.cpp" line="351"/>
         <source>%1 not found.</source>
         <translation>%1 tidak ditemui.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
+        <location filename="../../Element/IC.cpp" line="392"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Rujukan IC berputar dikesan: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
+        <location filename="../../Element/IC.cpp" line="399"/>
         <source>Error opening file: %1</source>
         <translation>Ralat membuka fail: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
+        <location filename="../../Element/IC.cpp" line="453"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Migrasi IC: tidak dapat membuka fail untuk penulisan: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
+        <location filename="../../Element/IC.cpp" line="460"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Migrasi IC: gagal menghantar fail yang disimpan semula: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
+        <location filename="../../Element/IC.cpp" line="519"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Had kedalaman bersarang IC (%1) dilampaui — blob mungkin dibina secara berniat jahat</translation>
     </message>
@@ -2586,7 +2586,7 @@ Nama yang dicadangkan:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1020"/>
+        <location filename="../../Scene/Commands.cpp" line="1035"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Daftar blob &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Nama yang dicadangkan:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1043"/>
+        <location filename="../../Scene/Commands.cpp" line="1058"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Buang blob &quot;%1&quot;</translation>
     </message>
@@ -2805,12 +2805,12 @@ Nama yang dicadangkan:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="961"/>
+        <location filename="../../Scene/Commands.cpp" line="976"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Togol Output Jadual Kebenaran di kedudukan: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="970"/>
+        <location filename="../../Scene/Commands.cpp" line="985"/>
         <source>Could not find truthtable element!</source>
         <translation>Tidak dapat menemui elemen jadual kebenaran!</translation>
     </message>
@@ -2831,12 +2831,12 @@ Nama yang dicadangkan:</translation>
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="38"/>
         <source>TRUTH TABLE</source>
         <translation>JADUAL KEBENARAN</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="38"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="39"/>
         <source>Truth Table</source>
         <translation>Jadual Kebenaran</translation>
     </message>
@@ -2844,7 +2844,7 @@ Nama yang dicadangkan:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1076"/>
+        <location filename="../../Scene/Commands.cpp" line="1091"/>
         <source>Update %1 IC blobs</source>
         <translation>Kemas kini %1 blob IC</translation>
     </message>

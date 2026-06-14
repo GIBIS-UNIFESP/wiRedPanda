@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="135"/>
+        <location filename="../../Core/Application.cpp" line="143"/>
         <source>Error!</source>
         <translation>Virhe!</translation>
     </message>
@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="867"/>
+        <location filename="../../Scene/Commands.cpp" line="882"/>
         <source>Change input size to %1</source>
         <translation>Vaihda sisääntulon koko arvoon %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="868"/>
+        <location filename="../../Scene/Commands.cpp" line="883"/>
         <source>Change output size to %1</source>
         <translation>Vaihda ulostulon koko arvoon %1</translation>
     </message>
@@ -1190,7 +1190,7 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="806"/>
+        <location filename="../../Scene/Commands.cpp" line="823"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Käännä %1 elementtiä akselilla %2</translation>
     </message>
@@ -1198,27 +1198,27 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="173"/>
+        <location filename="../../Element/GraphicElement.cpp" line="322"/>
         <source>File does not exist</source>
         <translation>Tiedostoa ei ole olemassa</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="175"/>
+        <location filename="../../Element/GraphicElement.cpp" line="324"/>
         <source>File is not readable</source>
         <translation>Tiedostoa ei voida lukea</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="176"/>
+        <location filename="../../Element/GraphicElement.cpp" line="325"/>
         <source>Unknown reason</source>
         <translation>Tuntematon syy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="181"/>
+        <location filename="../../Element/GraphicElement.cpp" line="331"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Bittikarttaa ei voitu ladata: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="406"/>
+        <location filename="../../Element/GraphicElement.cpp" line="659"/>
         <source>Default</source>
         <translation>Oletus</translation>
     </message>
@@ -1251,47 +1251,47 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="114"/>
         <source>IC</source>
         <translation>Piiri</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="112"/>
+        <location filename="../../Element/IC.cpp" line="113"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>INTEGROITU PIIRI</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="225"/>
+        <location filename="../../Element/IC.cpp" line="226"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC-lataus: IC-nimeä ei ole sarjallistetuissa tiedoissa</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="350"/>
+        <location filename="../../Element/IC.cpp" line="351"/>
         <source>%1 not found.</source>
         <translation>%1 ei löytynyt.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="391"/>
+        <location filename="../../Element/IC.cpp" line="392"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Kehäviittaus IC:hen havaittu: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="398"/>
+        <location filename="../../Element/IC.cpp" line="399"/>
         <source>Error opening file: %1</source>
         <translation>Virhe avattaessa tiedostoa: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="452"/>
+        <location filename="../../Element/IC.cpp" line="453"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC-siirto: tiedostoa ei voi avata kirjoittamista varten: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="459"/>
+        <location filename="../../Element/IC.cpp" line="460"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC-siirto: uudelleen tallennetun tiedoston viimeistely epäonnistui: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="518"/>
+        <location filename="../../Element/IC.cpp" line="519"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>IC:n sisäkkäisyyden syvyysrajoitus (%1) ylittyi — blob saattaa olla haitallisesti laadittu</translation>
     </message>
@@ -2586,7 +2586,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1020"/>
+        <location filename="../../Scene/Commands.cpp" line="1035"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Rekisteröi blob &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1043"/>
+        <location filename="../../Scene/Commands.cpp" line="1058"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Poista blob &quot;%1&quot;</translation>
     </message>
@@ -2805,12 +2805,12 @@ Ehdotettu nimi:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="961"/>
+        <location filename="../../Scene/Commands.cpp" line="976"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Vaihda totuustaulun ulostulo paikassa: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="970"/>
+        <location filename="../../Scene/Commands.cpp" line="985"/>
         <source>Could not find truthtable element!</source>
         <translation>Totuustauluelementtiä ei löytynyt!</translation>
     </message>
@@ -2831,12 +2831,12 @@ Ehdotettu nimi:</translation>
 <context>
     <name>TruthTable</name>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="38"/>
         <source>TRUTH TABLE</source>
         <translation>TOTUUSTAULU</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="38"/>
+        <location filename="../../Element/GraphicElements/TruthTable.cpp" line="39"/>
         <source>Truth Table</source>
         <translation>Totuustaulu</translation>
     </message>
@@ -2844,7 +2844,7 @@ Ehdotettu nimi:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1076"/>
+        <location filename="../../Scene/Commands.cpp" line="1091"/>
         <source>Update %1 IC blobs</source>
         <translation>Päivitä %1 IC-blobit</translation>
     </message>
