@@ -163,7 +163,8 @@ async def main():
             print(f"  OK  {name}")
 
     finally:
-        proc.stdin.close()
+        if proc.stdin is not None:
+            proc.stdin.close()
         try:
             await asyncio.wait_for(proc.wait(), timeout=5.0)
         except asyncio.TimeoutError:

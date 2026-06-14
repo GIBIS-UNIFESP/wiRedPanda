@@ -314,7 +314,7 @@ def format_includes_from_entries(entries: list[IncludeEntry], is_cpp, filepath):
                 break
 
     # Group entries by kind, preserving conditions
-    groups = {}
+    groups: dict[str, list[IncludeEntry]] = {}
     for kind in ["related", "stdlib", "qt", "project"]:
         groups[kind] = []
 
@@ -339,7 +339,7 @@ def format_includes_from_entries(entries: list[IncludeEntry], is_cpp, filepath):
     for idx, kind in enumerate(kinds_to_output):
         # Separate unconditional and conditional entries
         unconditional = [e for e in groups[kind] if e.condition is None]
-        conditional_by_cond = {}
+        conditional_by_cond: dict[str, list[IncludeEntry]] = {}
         for e in groups[kind]:
             if e.condition:
                 if e.condition not in conditional_by_cond:
@@ -516,7 +516,7 @@ def main():
     else:
         print()
 
-    cpp_files = []
+    cpp_files: list[Path] = []
     for ext in ["*.cpp", "*.h"]:
         cpp_files.extend(root.glob(f"**/{ext}"))
 

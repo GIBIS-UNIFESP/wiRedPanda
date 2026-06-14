@@ -27,8 +27,21 @@ project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(project_root / "MCP" / "Client"))
 
 from mcp_client.mcp_infrastructure import MCPInfrastructure  # noqa: E402
+from mcp_client.mcp_models import MCPResponse  # noqa: E402
 
 FIXTURES_DIR = project_root / "Tests" / "Fixtures"
+
+
+def _element_id(resp: MCPResponse) -> int:
+    """Return the new element's id from a create_element response.
+
+    send_command returns an MCPResponse whose result payload is typed Optional;
+    callers reach here only after checking resp.success, at which point the
+    result dict is populated. Centralizing the narrowing keeps the call sites
+    readable and the None handling in one place.
+    """
+    assert resp.result is not None, f"expected a result payload, got: {resp.message}"
+    return resp.result["element_id"]
 
 
 async def create_simple_and(mcp: MCPInfrastructure) -> bool:
@@ -51,10 +64,10 @@ async def create_simple_and(mcp: MCPInfrastructure) -> bool:
             print(f"  FAIL create_element: {r.message}")
             return False
 
-    a_id = a.result["element_id"]
-    b_id = b.result["element_id"]
-    gate_id = gate.result["element_id"]
-    led_id = led.result["element_id"]
+    a_id = _element_id(a)
+    b_id = _element_id(b)
+    gate_id = _element_id(gate)
+    led_id = _element_id(led)
 
     # Connect: A→AND.0, B→AND.1, AND→LED
     conns = [
@@ -121,10 +134,10 @@ async def create_nested_and(mcp: MCPInfrastructure) -> bool:
             print(f"  FAIL create: {r.message}")
             return False
 
-    a_id = a.result["element_id"]
-    b_id = b.result["element_id"]
-    ic_id = ic.result["element_id"]
-    led_id = led.result["element_id"]
+    a_id = _element_id(a)
+    b_id = _element_id(b)
+    ic_id = _element_id(ic)
+    led_id = _element_id(led)
 
     # Connect: X→IC.0, Y→IC.1, IC→LED
     conns = [
@@ -188,14 +201,14 @@ async def create_parent_inline_ic(mcp: MCPInfrastructure) -> bool:
             print(f"  FAIL create: {r.message}")
             return False
 
-    a_id = a.result["element_id"]
-    b_id = b.result["element_id"]
-    ic_id = ic.result["element_id"]
-    led_id = led.result["element_id"]
+    a_id = _element_id(a)
+    b_id = _element_id(b)
+    ic_id = _element_id(ic)
+    led_id = _element_id(led)
 
     # Verify it was embedded
-    if ic.result.get("inline"):
-        print(f"  Embedded IC created: blobName={ic.result.get('blobName')}")
+    if (ic.result or {}).get("inline"):
+        print(f"  Embedded IC created: blobName={(ic.result or {}).get('blobName')}")
     else:
         print("  WARNING: IC was not created as inline")
 
@@ -254,15 +267,15 @@ async def create_chain_c(mcp: MCPInfrastructure) -> bool:
 
     conns = [
         {
-            "source_id": inp.result["element_id"],
+            "source_id": _element_id(inp),
             "source_port": 0,
-            "target_id": gate.result["element_id"],
+            "target_id": _element_id(gate),
             "target_port": 0,
         },
         {
-            "source_id": gate.result["element_id"],
+            "source_id": _element_id(gate),
             "source_port": 0,
-            "target_id": led.result["element_id"],
+            "target_id": _element_id(led),
             "target_port": 0,
         },
     ]
@@ -307,27 +320,27 @@ async def create_chain_b(mcp: MCPInfrastructure) -> bool:
 
     conns = [
         {
-            "source_id": inp_a.result["element_id"],
+            "source_id": _element_id(inp_a),
             "source_port": 0,
-            "target_id": gate.result["element_id"],
+            "target_id": _element_id(gate),
             "target_port": 0,
         },
         {
-            "source_id": inp_b.result["element_id"],
+            "source_id": _element_id(inp_b),
             "source_port": 0,
-            "target_id": gate.result["element_id"],
+            "target_id": _element_id(gate),
             "target_port": 1,
         },
         {
-            "source_id": gate.result["element_id"],
+            "source_id": _element_id(gate),
             "source_port": 0,
-            "target_id": ic_c.result["element_id"],
+            "target_id": _element_id(ic_c),
             "target_port": 0,
         },
         {
-            "source_id": ic_c.result["element_id"],
+            "source_id": _element_id(ic_c),
             "source_port": 0,
-            "target_id": led.result["element_id"],
+            "target_id": _element_id(led),
             "target_port": 0,
         },
     ]
@@ -372,21 +385,21 @@ async def create_chain_a(mcp: MCPInfrastructure) -> bool:
 
     conns = [
         {
-            "source_id": inp_a.result["element_id"],
+            "source_id": _element_id(inp_a),
             "source_port": 0,
-            "target_id": ic_b.result["element_id"],
+            "target_id": _element_id(ic_b),
             "target_port": 0,
         },
         {
-            "source_id": inp_b.result["element_id"],
+            "source_id": _element_id(inp_b),
             "source_port": 0,
-            "target_id": ic_b.result["element_id"],
+            "target_id": _element_id(ic_b),
             "target_port": 1,
         },
         {
-            "source_id": ic_b.result["element_id"],
+            "source_id": _element_id(ic_b),
             "source_port": 0,
-            "target_id": led.result["element_id"],
+            "target_id": _element_id(led),
             "target_port": 0,
         },
     ]
@@ -433,7 +446,7 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
     if not ic_nand.success:
         print(f"  FAIL instantiate chain_b inline: {ic_nand.message}")
         return False
-    print(f"  Embedded NAND: blobName={ic_nand.result.get('blobName')}")
+    print(f"  Embedded NAND: blobName={(ic_nand.result or {}).get('blobName')}")
     print("    (chain_b blob contains chain_c, recursively flattened)")
 
     # Create input switches and LED
@@ -449,21 +462,21 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
     # Wire: A→chain_b.0, B→chain_b.1, chain_b→LED
     conns = [
         {
-            "source_id": inp_a.result["element_id"],
+            "source_id": _element_id(inp_a),
             "source_port": 0,
-            "target_id": ic_nand.result["element_id"],
+            "target_id": _element_id(ic_nand),
             "target_port": 0,
         },
         {
-            "source_id": inp_b.result["element_id"],
+            "source_id": _element_id(inp_b),
             "source_port": 0,
-            "target_id": ic_nand.result["element_id"],
+            "target_id": _element_id(ic_nand),
             "target_port": 1,
         },
         {
-            "source_id": ic_nand.result["element_id"],
+            "source_id": _element_id(ic_nand),
             "source_port": 0,
-            "target_id": led.result["element_id"],
+            "target_id": _element_id(led),
             "target_port": 0,
         },
     ]

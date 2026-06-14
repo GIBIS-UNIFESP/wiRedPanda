@@ -223,8 +223,8 @@ class GeneratorRunner:
         self.timeout = timeout
         self.generators_dir = Path(__file__).parent
         self.results: dict[str, tuple[bool, str]] = {}
-        self.start_time = None
-        self.end_time = None
+        self.start_time: datetime | None = None
+        self.end_time: datetime | None = None
         self.dependency_graph: dict[str, set[str]] = {}
         self.component_to_gen: dict[str, str] = {}
 

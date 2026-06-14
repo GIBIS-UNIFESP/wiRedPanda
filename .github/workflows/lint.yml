@@ -80,8 +80,11 @@ jobs:
       working-directory: ${{ github.workspace }}
       run: ruff format --check .
 
+    # --check-untyped-defs also type-checks the bodies of unannotated functions
+    # (off by default). MCP/Client passes cleanly with it, so we enable it here
+    # and on the non-MCP step below for one consistent strictness across the repo.
     - name: mypy
-      run: mypy .
+      run: mypy --check-untyped-defs .
 
     - name: pyright
       run: pyright .
@@ -119,3 +122,11 @@ jobs:
     - name: pyrefly (non-MCP Python)
       working-directory: ${{ github.workspace }}
       run: pyrefly check --search-path MCP/Client --search-path Tests/Integration/IC/Generators Tests/Integration/IC/Generators Scripts Tests/Fixtures
+
+    # MYPYPATH gives mypy both import roots (mcp_client under MCP/Client, and the
+    # generators' sibling modules). --check-untyped-defs matches the MCP step.
+    - name: mypy (non-MCP Python)
+      working-directory: ${{ github.workspace }}
+      env:
+        MYPYPATH: MCP/Client:Tests/Integration/IC/Generators
+      run: mypy --check-untyped-defs Tests/Integration/IC/Generators Scripts Tests/Fixtures

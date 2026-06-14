@@ -104,6 +104,8 @@ class Controller4BitBuilder(ICBuilderBase):
             # ctrl[0] and ctrl[1] pass through from opcode bits
             # ctrl[2] comes from OR gate, ctrl[3] from opcode[3]
             source_id = gate_source if gate_source else opcode_source
+            if source_id is None:
+                return False
             if not await self.connect(source_id, led_id):
                 return False
 

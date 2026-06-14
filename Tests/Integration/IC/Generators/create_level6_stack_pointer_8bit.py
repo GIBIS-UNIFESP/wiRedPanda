@@ -66,7 +66,7 @@ class StackPointer8BitBuilder(ICBuilderBase):
 
         # Create control signals (shared by all bits)
         ctrl_x = input_x + HORIZONTAL_GATE_SPACING
-        control_signals = {}
+        control_signals: dict[str, int] = {}
 
         # (F26: the dangling "Enable" input was removed — nothing consumed it.)
         for ctrl_name in ["Clock", "Load", "Push", "Pop", "Reset"]:
