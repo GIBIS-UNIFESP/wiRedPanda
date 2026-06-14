@@ -179,7 +179,7 @@
        transform="matrix(0.69574812,0,0,0.65477821,1.683577,28.371201)" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="26.516504"
        y="35.450562"
        id="text3005"><tspan
@@ -190,7 +190,7 @@
          style="font-size:14px;line-height:1.25"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="28.372662"
        y="35.804115"
        id="text3009"><tspan
@@ -201,7 +201,7 @@
          style="font-size:16px;line-height:1.25"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        x="42.901367"
        y="23.035151"
        id="text3021-2"><tspan
@@ -212,7 +212,7 @@
          style="font-size:18px;line-height:1.25;fill:#ffffff;fill-opacity:1">Q</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        x="42.901367"
        y="52.471737"
        id="text3021"><tspan
@@ -220,15 +220,10 @@
          id="tspan3023"
          x="42.901367"
          y="52.471737"
-         style="font-size:18px;line-height:1.25;fill:#ffffff;fill-opacity:1">Q</tspan></text>
-    <path
-       style="fill:#ffffff;fill-opacity:1;stroke:none"
-       d="m 44.543457,37.660271 v -0.609375 h 5.578125 5.578126 v 0.609375 0.609375 h -5.578126 -5.578125 z"
-       id="path3058"
-       inkscape:connector-curvature="0" />
+         style="font-size:18px;line-height:1.25;fill:#ffffff;fill-opacity:1">Q&#x305;</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-65.937714"
        y="77.611809"
        id="text3828"><tspan
@@ -239,7 +234,7 @@
          style="font-size:18px;line-height:1.25"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        x="8.2509766"
        y="23.093744"
        id="text3847"><tspan
@@ -250,7 +245,7 @@
          style="font-size:18px;line-height:1.25;fill:#ffffff;fill-opacity:1">D</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        x="26.397463"
        y="22.765463"
        id="text3785"><tspan
@@ -258,15 +253,10 @@
          id="tspan3787"
          x="26.397463"
          y="22.765463"
-         style="font-size:18px;line-height:1.25;fill:#ffffff;fill-opacity:1">P</tspan></text>
-    <path
-       style="fill:#ffffff;fill-opacity:1;stroke:none"
-       d="M 26.421875,8.046875 V 7.4375 H 32 37.578126 V 8.046875 8.65625 H 32 26.421875 Z"
-       id="path3058-8"
-       inkscape:connector-curvature="0" />
+         style="font-size:18px;line-height:1.25;fill:#ffffff;fill-opacity:1">P&#x305;</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        x="25.133667"
        y="52.353554"
        id="text3789"><tspan
@@ -274,11 +264,6 @@
          id="tspan3791"
          x="25.133667"
          y="52.353554"
-         style="font-size:18px;line-height:1.25;fill:#ffffff;fill-opacity:1">C</tspan></text>
-    <path
-       style="fill:#ffffff;fill-opacity:1;stroke:none"
-       d="m 25.993529,37.593501 v -0.609375 h 5.578125 5.578126 v 0.609375 0.609375 h -5.578126 -5.578125 z"
-       id="path3058-4"
-       inkscape:connector-curvature="0" />
+         style="font-size:18px;line-height:1.25;fill:#ffffff;fill-opacity:1">C&#x305;</tspan></text>
   </g>
 </svg>

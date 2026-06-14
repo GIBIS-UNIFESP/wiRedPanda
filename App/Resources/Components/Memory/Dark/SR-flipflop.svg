@@ -162,7 +162,7 @@
        ry="2.6350775" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
        x="26.516504"
        y="35.450562"
        id="text3005"><tspan
@@ -173,7 +173,7 @@
          style="font-size:14px;line-height:1.25"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
        x="28.372662"
        y="35.804115"
        id="text3009"><tspan
@@ -184,7 +184,7 @@
          style="font-size:16px;line-height:1.25"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
        x="42.901367"
        y="23.031406"
        id="text3021-2"><tspan
@@ -193,29 +193,20 @@
          x="42.901367"
          y="23.031406"
          style="font-size:18px;line-height:1.25">Q</tspan></text>
-    <g
-       id="g33682"
-       transform="translate(0,0.43750002)">
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
-         x="42.901367"
-         y="51.941406"
-         id="text3021"><tspan
-           sodipodi:role="line"
-           id="tspan3023"
-           x="42.901367"
-           y="51.941406"
-           style="font-size:18px;line-height:1.25">Q</tspan></text>
-      <path
-         style="opacity:1;fill:#004d41;fill-opacity:1;stroke:none"
-         d="m 44.543457,37.129941 v -0.609375 h 5.578125 5.578126 v 0.609375 0.609375 h -5.578126 -5.578125 z"
-         id="path3058"
-         inkscape:connector-curvature="0" />
-    </g>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
+       x="42.901367"
+       y="52.37890602"
+       id="text3021"><tspan
+         sodipodi:role="line"
+         id="tspan3023"
+         x="42.901367"
+         y="52.37890602"
+         style="font-size:18px;line-height:1.25">Q&#x305;</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
        x="-65.937714"
        y="77.611809"
        id="text3828"><tspan
@@ -226,7 +217,7 @@
          style="font-size:18px;line-height:1.25"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
        x="9.0859375"
        y="22.914219"
        id="text3785"><tspan
@@ -237,7 +228,7 @@
          style="font-size:18px;line-height:1.25">S</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
        x="8.2509766"
        y="52"
        id="text3789"><tspan
@@ -246,46 +237,28 @@
          x="8.2509766"
          y="52"
          style="font-size:18px;line-height:1.25">R</tspan></text>
-    <g
-       id="g33677"
-       transform="translate(5e-7,1.3399999)">
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
-         x="26.401367"
-         y="21.410006"
-         id="text3785-3"><tspan
-           sodipodi:role="line"
-           id="tspan3787-5"
-           x="26.401367"
-           y="21.410006"
-           style="font-size:18px;line-height:1.25">P</tspan></text>
-      <path
-         style="opacity:1;fill:#004d41;fill-opacity:1;stroke:none"
-         d="M 26.421874,6.779804 V 6.170429 h 5.578125 5.578126 v 0.609375 0.609375 h -5.578126 -5.578125 z"
-         id="path3058-8"
-         inkscape:connector-curvature="0" />
-    </g>
-    <g
-       id="g33687"
-       transform="translate(0.08960011,0.31250001)">
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
-         x="26.282715"
-         y="52"
-         id="text3789-6"><tspan
-           sodipodi:role="line"
-           id="tspan3791-2"
-           x="26.282715"
-           y="52"
-           style="font-size:18px;line-height:1.25">C</tspan></text>
-      <path
-         style="opacity:1;fill:#004d41;fill-opacity:1;stroke:none"
-         d="m 26.421874,37.129941 v -0.609375 h 5.578125 5.578126 v 0.609375 0.609375 h -5.578126 -5.578125 z"
-         id="path3058-4"
-         inkscape:connector-curvature="0" />
-    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
+       x="26.4013675"
+       y="22.7500059"
+       id="text3785-3"><tspan
+         sodipodi:role="line"
+         id="tspan3787-5"
+         x="26.4013675"
+         y="22.7500059"
+         style="font-size:18px;line-height:1.25">P&#x305;</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#004d41;fill-opacity:1;stroke:none"
+       x="26.37231511"
+       y="52.31250001"
+       id="text3789-6"><tspan
+         sodipodi:role="line"
+         id="tspan3791-2"
+         x="26.37231511"
+         y="52.31250001"
+         style="font-size:18px;line-height:1.25">C&#x305;</tspan></text>
     <path
        sodipodi:type="star"
        style="display:inline;fill:#004d41;fill-opacity:1;stroke:none;stroke-width:0;stroke-dasharray:none;paint-order:markers stroke fill"
