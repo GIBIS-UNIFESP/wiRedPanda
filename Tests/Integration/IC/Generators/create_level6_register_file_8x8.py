@@ -14,7 +14,7 @@ Inputs:
   - Read_Addr1[0..2] (3-bit read address port 1)
   - Read_Addr2[0..2] (3-bit read address port 2)
   - Data_In[0..7] (8-bit write data)
-  - Write_Enable (write control signal)
+  - WriteEnable (write control signal)
   - Clock (clock signal for synchronous write)
 
 Outputs:

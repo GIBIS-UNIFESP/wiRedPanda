@@ -114,7 +114,7 @@ class PriorityMux3to1Builder(ICBuilderBase):
         await self.log("  Created stage 2: mux(data0, stage1, sel0)")
 
         # Create active-high enable input: out = selected AND enable
-        enable_id = await self.create_element("InputSwitch", sel_input_x, sel_input_y + 2 * VERTICAL_STAGE_SPACING, "enable")
+        enable_id = await self.create_element("InputSwitch", sel_input_x, sel_input_y + 2 * VERTICAL_STAGE_SPACING, "Enable")
         if enable_id is None:
             return False
         await self.log(f"  Created enable (id={enable_id})")

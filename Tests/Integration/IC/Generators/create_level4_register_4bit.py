@@ -59,7 +59,7 @@ class RegisterBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created input CLK (id={clk_id})")
 
-        en_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "EN")
+        en_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "Enable")
         if en_id is None:
             return False
         await self.log(f"  ✓ Created input EN (id={en_id})")

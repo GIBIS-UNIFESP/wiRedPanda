@@ -78,7 +78,7 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created input CLK (id={clk_id})")
 
-        load_id = await self.create_element("InputSwitch", input_x, input_y_load, "LOAD")
+        load_id = await self.create_element("InputSwitch", input_x, input_y_load, "Load")
         if load_id is None:
             return False
         await self.log(f"  ✓ Created input LOAD (id={load_id})")

@@ -42,7 +42,7 @@ struct Decoder4to16Fixture {
         for (int i = 0; i < 4; ++i) {
             builder.connect(swAddr[i], 0, ic, QString("addr[%1]").arg(i));
         }
-        builder.connect(enable, 0, ic, "enable");
+        builder.connect(enable, 0, ic, "Enable");
         for (int i = 0; i < 16; ++i) {
             builder.connect(ic, QString("out[%1]").arg(i), ledOut[i], 0);
         }

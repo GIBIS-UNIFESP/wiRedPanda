@@ -55,7 +55,7 @@ class Decoder2to4Builder(ICBuilderBase):
             await self.log(f"  ✓ Created addr[{i}]")
 
         # Create active-high enable input: out[i] = (addr==i) AND enable
-        enable_id = await self.create_element("InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "enable")
+        enable_id = await self.create_element("InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "Enable")
         if enable_id is None:
             return False
         await self.log("  ✓ Created enable")

@@ -66,7 +66,7 @@ struct RegFile6_8x8Fixture {
             builder.connect(ic, QString("Read_Data2[%1]").arg(i), readData2[i], 0);
         }
 
-        builder.connect(we, 0, ic, "Write_Enable");
+        builder.connect(we, 0, ic, "WriteEnable");
         builder.connect(clk, 0, ic, "Clock");
 
         sim = builder.initSimulation();

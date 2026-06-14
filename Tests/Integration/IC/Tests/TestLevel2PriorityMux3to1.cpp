@@ -50,7 +50,7 @@ struct PriorityMux3to1Fixture {
         for (int i = 0; i < 2; ++i) {
             builder.connect(sel[i], 0, ic, QString("sel%1").arg(i));
         }
-        builder.connect(enable, 0, ic, "enable");
+        builder.connect(enable, 0, ic, "Enable");
         builder.connect(ic, "out", output, 0);
 
         sim = builder.initSimulation();

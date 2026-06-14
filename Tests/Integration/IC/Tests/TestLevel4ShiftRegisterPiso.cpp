@@ -39,7 +39,7 @@ struct ShiftRegisterPisoFixture {
         builder.add(ic);
 
         builder.connect(clk, 0, ic, "CLK");
-        builder.connect(load, 0, ic, "LOAD");
+        builder.connect(load, 0, ic, "Load");
         builder.connect(sin, 0, ic, "SIN");
 
         for (int i = 0; i < 4; ++i) {

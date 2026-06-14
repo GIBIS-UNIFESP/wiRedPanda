@@ -48,7 +48,7 @@ struct ClockGatedDecoderFixture {
             builder.connect(addressBits[i], 0, ic, QString("addr%1").arg(i));
         }
         builder.connect(clockGate, 0, ic, "clock");
-        builder.connect(writeEnable, 0, ic, "writeEnable");
+        builder.connect(writeEnable, 0, ic, "WriteEnable");
 
         for (int i = 0; i < 8; ++i) {
             builder.connect(ic, QString("out%1").arg(i), outputs[i], 0);

@@ -85,11 +85,11 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
 
     // Connect inputs to IC using semantic port labels
     for (int i = 0; i < 8; i++) {
-        builder.connect(loadValue[i], 0, pcIC, QString("loadValue[%1]").arg(i));
+        builder.connect(loadValue[i], 0, pcIC, QString("LoadValue[%1]").arg(i));
     }
-    builder.connect(load, 0, pcIC, "load");
+    builder.connect(load, 0, pcIC, "Load");
     builder.connect(inc, 0, pcIC, "inc");
-    builder.connect(reset, 0, pcIC, "reset");
+    builder.connect(reset, 0, pcIC, "Reset");
     builder.connect(clock, 0, pcIC, "clock");
 
     // Connect IC outputs to LEDs
@@ -218,7 +218,7 @@ inline std::unique_ptr<WorkSpace> buildInstructionDecoder4to16(InputSwitch* opco
     // The decoder has an active-high enable: hold it high so it always decodes.
     auto *decoderEnable = new InputVcc();
     builder.add(decoderEnable);
-    builder.connect(decoderEnable, 0, decoder, "enable");
+    builder.connect(decoderEnable, 0, decoder, "Enable");
 
     // Connect decoder outputs to LEDs (semantic port labels)
     for (int i = 0; i < 16; i++) {
@@ -804,7 +804,7 @@ inline std::unique_ptr<WorkSpace> buildDecoder3to8Debug(InputSwitch* addr[3],
     // The decoder has an active-high enable: hold it high so it always decodes.
     auto *decoderEnable = new InputVcc();
     builder.add(decoderEnable);
-    builder.connect(decoderEnable, 0, decoder, "enable");
+    builder.connect(decoderEnable, 0, decoder, "Enable");
 
     // Connect IC outputs to external LEDs using semantic port labels
     for (int i = 0; i < 8; i++) {
@@ -1037,7 +1037,7 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
         builder.connect(writeAddr[i], 0, clockGatedDecoder, QString("addr%1").arg(i));
     }
     builder.connect(clock, 0, clockGatedDecoder, "clock");
-    builder.connect(writeEnable, 0, clockGatedDecoder, "writeEnable");
+    builder.connect(writeEnable, 0, clockGatedDecoder, "WriteEnable");
 
     // Connect each Register8bit IC to receive:
     // - Data inputs (8 bits)

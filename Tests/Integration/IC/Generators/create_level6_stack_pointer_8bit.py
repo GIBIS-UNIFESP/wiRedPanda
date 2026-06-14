@@ -112,7 +112,7 @@ class StackPointer8BitBuilder(ICBuilderBase):
         if sp_mux_vcc is None:
             return False
         for mux_element_id in priority_muxes:
-            if not await self.connect(sp_mux_vcc, mux_element_id, target_port_label="enable"):
+            if not await self.connect(sp_mux_vcc, mux_element_id, target_port_label="Enable"):
                 return False
 
         # Create 8 output LEDs for SP value

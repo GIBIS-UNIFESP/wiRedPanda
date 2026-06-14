@@ -134,7 +134,7 @@ class RAM4x1Builder(ICBuilderBase):
         # Gate the write decoder with WriteEnable: a cell is selected for write
         # only while WriteEnable is high. Folds away the per-cell write_ctrl ANDs;
         # decoder.out[i] now already carries (addr==i AND WriteEnable).
-        if not await self.connect(write_en_id, decoder_ic, target_port_label="enable"):
+        if not await self.connect(write_en_id, decoder_ic, target_port_label="Enable"):
             return False
 
         # ========== Create Multiplexer IC Instance ==========

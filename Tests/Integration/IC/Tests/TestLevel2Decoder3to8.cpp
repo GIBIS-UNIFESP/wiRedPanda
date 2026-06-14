@@ -42,7 +42,7 @@ struct Decoder3to8Fixture {
         builder.connect(swAddr[0], 0, ic, "addr[0]");
         builder.connect(swAddr[1], 0, ic, "addr[1]");
         builder.connect(swAddr[2], 0, ic, "addr[2]");
-        builder.connect(enable, 0, ic, "enable");
+        builder.connect(enable, 0, ic, "Enable");
 
         for (int i = 0; i < 8; ++i) {
             builder.connect(ic, QString("out[%1]").arg(i), ledOut[i], 0);

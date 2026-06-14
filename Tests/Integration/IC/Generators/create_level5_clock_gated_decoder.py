@@ -67,7 +67,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
             return False
 
         # WriteEnable input
-        write_enable_id = await self.create_element("InputSwitch", input_x + HORIZONTAL_GATE_SPACING, control_y, "writeEnable")
+        write_enable_id = await self.create_element("InputSwitch", input_x + HORIZONTAL_GATE_SPACING, control_y, "WriteEnable")
         if write_enable_id is None:
             return False
 
@@ -97,7 +97,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
             return False
         if not await self.connect(write_enable_id, gate_id, target_port=1):
             return False
-        if not await self.connect(gate_id, decoder_id, target_port_label="enable"):
+        if not await self.connect(gate_id, decoder_id, target_port_label="Enable"):
             return False
 
         await self.log("  ✓ Gated decoder enable with clock AND writeEnable")

@@ -93,9 +93,9 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
         vcc_id = await self.create_element("InputVcc", input_x, 150.0, "Enable_Vcc")
         if vcc_id is None:
             return False
-        if not await self.connect(vcc_id, decoder1_id, target_port_label="enable"):
+        if not await self.connect(vcc_id, decoder1_id, target_port_label="Enable"):
             return False
-        if not await self.connect(vcc_id, decoder2_id, target_port_label="enable"):
+        if not await self.connect(vcc_id, decoder2_id, target_port_label="Enable"):
             return False
 
         # Create 256 2-input AND gates to combine decoder outputs

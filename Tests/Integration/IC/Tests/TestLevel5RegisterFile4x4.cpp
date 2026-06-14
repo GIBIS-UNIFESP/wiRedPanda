@@ -63,7 +63,7 @@ struct RegFile4x4Fixture {
         for (int i = 0; i < 4; ++i) {
             builder.connect(writeData[i], 0, ic, QString("Data_In[%1]").arg(i));
         }
-        builder.connect(writeEnable, 0, ic, "Write_Enable");
+        builder.connect(writeEnable, 0, ic, "WriteEnable");
         builder.connect(clock, 0, ic, "Clock");
 
         for (int i = 0; i < 4; ++i) {

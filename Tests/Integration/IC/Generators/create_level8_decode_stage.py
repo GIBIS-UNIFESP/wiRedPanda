@@ -187,7 +187,7 @@ class DecodeStageBuilder(ICBuilderBase):
         decoder_vcc_id = await self.create_element("InputVcc", input_x, input_y + VERTICAL_STAGE_SPACING, "Enable_Vcc")
         if decoder_vcc_id is None:
             return False
-        if not await self.connect(decoder_vcc_id, decoder_id, target_port_label="enable"):
+        if not await self.connect(decoder_vcc_id, decoder_id, target_port_label="Enable"):
             return False
 
         # The RegWrite NOT gate already computes NOT(OpCode[4]) — reuse it.

@@ -74,12 +74,12 @@ struct ProgramCounter8bitArithFixture {
         }
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(dataInputs[i], 0, ic, QString("loadValue[%1]").arg(i));
+            builder.connect(dataInputs[i], 0, ic, QString("LoadValue[%1]").arg(i));
         }
         builder.connect(clock, 0, ic, "clock");
-        builder.connect(load, 0, ic, "load");
+        builder.connect(load, 0, ic, "Load");
         builder.connect(inc, 0, ic, "inc");
-        builder.connect(reset, 0, ic, "reset");
+        builder.connect(reset, 0, ic, "Reset");
 
         for (int i = 0; i < 8; i++) {
             builder.connect(ic, QString("pc[%1]").arg(i), pcOutputs[i], 0);

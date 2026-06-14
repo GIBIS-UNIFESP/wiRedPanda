@@ -6,7 +6,7 @@
 Create 8-bit Program Counter IC
 
 Inputs:
-  - loadValue[0-7]: 8-bit load value
+  - LoadValue[0-7]: 8-bit load value
   - load: Load enable signal
   - increment: Increment enable signal
   - clock: Clock signal
@@ -43,10 +43,10 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Input positions
         input_x = 50.0
 
-        # Create loadValue[0-7] inputs
+        # Create LoadValue[0-7] inputs
         load_value_inputs = []
         for i in range(8):
-            lv_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"loadValue[{i}]")
+            lv_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"LoadValue[{i}]")
             if lv_id is None:
                 return False
             load_value_inputs.append(lv_id)
@@ -55,7 +55,7 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Control inputs: load, inc, reset, clock (all lowercase)
         ctrl_x = input_x + (8 * HORIZONTAL_GATE_SPACING)
 
-        load_id = await self.create_element("InputSwitch", ctrl_x, 100.0, "load")
+        load_id = await self.create_element("InputSwitch", ctrl_x, 100.0, "Load")
         if load_id is None:
             return False
 
@@ -63,7 +63,7 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         if inc_id is None:
             return False
 
-        reset_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "reset")
+        reset_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "Reset")
         if reset_id is None:
             return False
 

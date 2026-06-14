@@ -66,7 +66,7 @@ class InstructionDecoder4BitBuilder(ICBuilderBase):
         vcc_id = await self.create_element("InputVcc", input_x + HORIZONTAL_GATE_SPACING, 150.0, "Enable_Vcc")
         if vcc_id is None:
             return False
-        if not await self.connect(vcc_id, decoder_id, target_port_label="enable"):
+        if not await self.connect(vcc_id, decoder_id, target_port_label="Enable"):
             return False
 
         # Create output LEDs for each instruction line (16 total)

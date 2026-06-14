@@ -88,18 +88,18 @@ class ProgramCounter7BitBuilder(ICBuilderBase):
         if not await self.connect(clock, pc_ic, target_port_label="clock"):
             return False
 
-        if not await self.connect(load, pc_ic, target_port_label="load"):
+        if not await self.connect(load, pc_ic, target_port_label="Load"):
             return False
 
         if not await self.connect(inc, pc_ic, target_port_label="inc"):
             return False
 
-        if not await self.connect(reset, pc_ic, target_port_label="reset"):
+        if not await self.connect(reset, pc_ic, target_port_label="Reset"):
             return False
 
         # Connect Data inputs to PC loadValue ports
         for i in range(8):
-            if not await self.connect(data_inputs[i], pc_ic, target_port_label=f"loadValue[{i}]"):
+            if not await self.connect(data_inputs[i], pc_ic, target_port_label=f"LoadValue[{i}]"):
                 return False
 
         await self.log("  ✓ Connected all control and data inputs to PC IC")

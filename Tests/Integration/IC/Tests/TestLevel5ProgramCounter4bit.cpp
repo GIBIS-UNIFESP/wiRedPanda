@@ -55,14 +55,14 @@ struct ProgramCounter4bitFixture {
         }
 
         for (int i = 0; i < 4; ++i) {
-            builder.connect(loadValueInputs[i], 0, ic, QString("loadValue[%1]").arg(i));
+            builder.connect(loadValueInputs[i], 0, ic, QString("LoadValue[%1]").arg(i));
             builder.connect(ic, QString("pc[%1]").arg(i), pcOutputs[i], 0);
             builder.connect(ic, QString("pc_plus_1[%1]").arg(i), pcPlus1Outputs[i], 0);
         }
         builder.connect(clock, 0, ic, "clock");
-        builder.connect(load, 0, ic, "load");
+        builder.connect(load, 0, ic, "Load");
         builder.connect(inc, 0, ic, "inc");
-        builder.connect(reset, 0, ic, "reset");
+        builder.connect(reset, 0, ic, "Reset");
 
         sim = builder.initSimulation();
         sim->update();

@@ -316,7 +316,7 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
             return False
         if not await self.connect(reg_prog_write_id, we_or_id, target_port=1):
             return False
-        if not await self.connect(we_or_id, regfile_id, target_port_label="Write_Enable"):
+        if not await self.connect(we_or_id, regfile_id, target_port_label="WriteEnable"):
             return False
 
         await self.log("  ✓ Wired register file write ports with programming mux")

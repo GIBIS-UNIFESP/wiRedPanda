@@ -8,7 +8,7 @@ Create 4-bit Program Counter IC
 Composes level4_register_4bit and level4_ripple_adder_4bit for PC functionality.
 
 Inputs:
-  loadValue[0..3] (4-bit load value)
+  LoadValue[0..3] (4-bit load value)
   load (Load enable signal)
   inc (Increment enable signal)
   reset (Reset to 0, asynchronous, active HIGH)
@@ -48,10 +48,10 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         # Input positions
         input_x = 50.0
 
-        # Create loadValue[0-3] inputs
+        # Create LoadValue[0-3] inputs
         load_value_inputs = []
         for i in range(4):
-            lv_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"loadValue[{i}]")
+            lv_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"LoadValue[{i}]")
             if lv_id is None:
                 return False
             load_value_inputs.append(lv_id)
@@ -60,7 +60,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         # Control inputs: load, inc, reset, clock
         ctrl_x = input_x + (4 * HORIZONTAL_GATE_SPACING) + HORIZONTAL_GATE_SPACING
 
-        load_id = await self.create_element("InputSwitch", ctrl_x, 100.0, "load")
+        load_id = await self.create_element("InputSwitch", ctrl_x, 100.0, "Load")
         if load_id is None:
             return False
 
@@ -68,7 +68,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if inc_id is None:
             return False
 
-        reset_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "reset")
+        reset_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "Reset")
         if reset_id is None:
             return False
 
@@ -150,7 +150,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(mux1_id, mux2_id, target_port_label="In0"):
                 return False
 
-            # Load path: loadValue[i] to Mux2 In1 (load has priority)
+            # Load path: LoadValue[i] to Mux2 In1 (load has priority)
             if not await self.connect(load_value_inputs[i], mux2_id, target_port_label="In1"):
                 return False
 
@@ -181,7 +181,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if en_vcc_id is None:
             return False
 
-        if not await self.connect(en_vcc_id, reg_id, target_port_label="EN"):
+        if not await self.connect(en_vcc_id, reg_id, target_port_label="Enable"):
             return False
 
         await self.log("  ✓ Connected register data and control inputs")

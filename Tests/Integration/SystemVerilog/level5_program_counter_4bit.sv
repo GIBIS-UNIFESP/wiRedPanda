@@ -115,7 +115,7 @@ endmodule
 // Module for Register4bit (generated from level4_register_4bit.panda)
 module level4_register_4bit (
     input clk,
-    input en,
+    input enable,
     input reset,
     input d0,
     input d1,
@@ -220,7 +220,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     end
     //End of D FlipFlop
 assign aux_not_6 = ~reset;
-assign aux_not_7 = ~en;
+assign aux_not_7 = ~enable;
 
 assign q0 = aux_d_flip_flop_2_0_q;
 assign q1 = aux_d_flip_flop_3_0_q;
@@ -377,7 +377,7 @@ reg aux_mux_12 = 1'b0;
 // Internal logic
 level4_register_4bit level4_register_4bit_inst_1 (
     .clk(clock),
-    .en(1'b1),
+    .enable(1'b1),
     .reset(reset),
     .d0(aux_mux_6),
     .d1(aux_mux_8),

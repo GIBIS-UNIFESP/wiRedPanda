@@ -39,7 +39,7 @@ struct Register4bitFixture {
         builder.add(ic);
 
         builder.connect(clk, 0, ic, "CLK");
-        builder.connect(en, 0, ic, "EN");
+        builder.connect(en, 0, ic, "Enable");
         builder.connect(reset, 0, ic, "Reset");
 
         for (int i = 0; i < 4; ++i) {

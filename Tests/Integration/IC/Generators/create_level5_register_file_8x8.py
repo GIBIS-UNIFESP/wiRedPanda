@@ -107,7 +107,7 @@ class RegisterFile8x8Builder(ICBuilderBase):
             data_in.append(elem_id)
 
         # Control signals
-        write_enable = await self.create_element("InputSwitch", input_x_start, control_y, "Write_Enable")
+        write_enable = await self.create_element("InputSwitch", input_x_start, control_y, "WriteEnable")
         if write_enable is None:
             return False
 
@@ -133,7 +133,7 @@ class RegisterFile8x8Builder(ICBuilderBase):
         # Drive the decoder's active-high enable with Write_Enable: a register is
         # selected only while writing. This folds away the per-register write-gate
         # AND stage — decoder.out[i] now already carries (addr==i AND Write_Enable).
-        if not await self.connect(write_enable, decoder_ic, target_port_label="enable"):
+        if not await self.connect(write_enable, decoder_ic, target_port_label="Enable"):
             return False
 
         await self.log("  ✓ Gated write decoder with Write_Enable")

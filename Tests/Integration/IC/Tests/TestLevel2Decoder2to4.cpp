@@ -43,7 +43,7 @@ struct Decoder2to4Fixture {
 
         builder.connect(addressBits[0], 0, ic, "addr[0]");
         builder.connect(addressBits[1], 0, ic, "addr[1]");
-        builder.connect(enable, 0, ic, "enable");
+        builder.connect(enable, 0, ic, "Enable");
         for (int i = 0; i < 4; ++i) {
             builder.connect(ic, QString("out[%1]").arg(i), outputs[i], 0);
         }
