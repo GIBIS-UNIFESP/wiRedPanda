@@ -33,37 +33,37 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="30"/>
         <source>Could not open file for writing: %1</source>
         <translation>Không thể mở tệp để ghi: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="202"/>
         <source>Not enough pins available for all input elements</source>
         <translation>Không đủ chân cho tất cả các phần tử đầu vào</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="229"/>
         <source>Not enough pins available for all rotary switch positions</source>
         <translation>Không đủ chân cho tất cả các vị trí công tắc xoay</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="264"/>
         <source>Not enough pins available for all output elements</source>
         <translation>Không đủ chân cho tất cả các phần tử đầu ra</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="690"/>
         <source>Element type not supported: %1</source>
         <translation>Loại phần tử không được hỗ trợ: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="913"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Biến đầu ra chưa được ánh xạ cho bảng chân trị: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1157"/>
         <source>Could not open testbench file: %1</source>
         <translation>Không thể mở tệp testbench: %1</translation>
     </message>
@@ -165,7 +165,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1361"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>Xuất ra PDF</translation>
@@ -381,8 +381,8 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1113"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1245"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Bộ mô phỏng beWavedDolphin</translation>
     </message>
@@ -407,44 +407,44 @@
         <translation>Mạch không có phần tử đầu ra. Thêm ít nhất một đầu ra (ví dụ: LED hoặc Display) để tạo dạng sóng.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="517"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1163"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="518"/>
         <source>Save simulation before closing?</source>
         <translation>Lưu mô phỏng trước khi đóng?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1164"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Bạn có muốn liên kết tệp beWavedDolphin này với tệp wiRedPanda hiện tại và lưu nó không?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1395"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin là trình mô phỏng dạng sóng cho wiRedPanda, được phát triển bởi Đại học Liên bang São Paulo để giúp sinh viên học về mạch logic.&lt;/p&gt;&lt;p&gt;Phiên bản phần mềm: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Người tạo:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin hiện được duy trì bởi Prof. Fábio Cappabianco, Ph.D. và các sinh viên của ông.&lt;/p&gt;&lt;p&gt; Vui lòng gửi báo cáo trên trang GitHub của chúng tôi nếu bạn tìm thấy lỗi hoặc muốn yêu cầu tính năng mới.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Truy cập trang web của chúng tôi!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1093"/>
         <source>Save File as...</source>
         <translation>Lưu tệp thành...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1090"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>Tệp CSV (*.csv);;Tệp Dolphin (*.dolphin);;Tất cả tệp được hỗ trợ (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1091"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Tệp Dolphin (*.dolphin);;Tệp CSV (*.csv);;Tất cả tệp được hỗ trợ (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1077"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1114"/>
         <source>Saved file successfully.</source>
         <translation>Lưu tệp thành công.</translation>
     </message>
@@ -464,73 +464,73 @@
         <translation>Hàng %1 có %2 giá trị nhưng cần %3.&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="481"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>Dạng sóng sẽ quá lớn! Đang đặt lại mức phóng to.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="714"/>
         <source>No cells selected.</source>
         <translation>Không có ô nào được chọn.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1126"/>
         <source>Error opening file: %1</source>
         <translation>Lỗi khi mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1140"/>
         <source>Error saving file: %1</source>
         <translation>Lỗi khi lưu tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1195"/>
         <source>Open File</source>
         <translation>Mở tệp</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1196"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Tất cả tệp được hỗ trợ (*.dolphin *.csv);;Tệp Dolphin (*.dolphin);;Tệp CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1204"/>
         <source>File loaded successfully.</source>
         <translation>Tải tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1220"/>
         <source>Could not open file for reading: %1</source>
         <translation>Không thể mở tệp để đọc: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1239"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Định dạng không được hỗ trợ. Không thể mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1327"/>
         <source>Export to Image</source>
         <translation>Xuất ra hình ảnh</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1327"/>
         <source>PNG files (*.png)</source>
         <translation>Tệp PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1361"/>
         <source>PDF files (*.pdf)</source>
         <translation>Tệp PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1381"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Không thể in mạch này thành PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1213"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Tệp &quot;%1&quot; không tồn tại!</translation>
     </message>
@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="882"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change input size to %1</source>
         <translation>Thay đổi kích thước đầu vào thành %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="885"/>
         <source>Change output size to %1</source>
         <translation>Thay đổi kích thước đầu ra thành %1</translation>
     </message>
@@ -1088,29 +1088,29 @@
         <translation>Tím</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="595"/>
+        <location filename="../../UI/ElementEditor.cpp" line="598"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Kênh không dây trùng lặp</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="599"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Một nút Tx với nhãn &quot;%1&quot; đã tồn tại.
 Mỗi kênh không dây phải có nhãn duy nhất.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="662"/>
+        <location filename="../../UI/ElementEditor.cpp" line="665"/>
         <source>Change wireless mode</source>
         <translation>Đổi chế độ không dây</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="865"/>
+        <location filename="../../UI/ElementEditor.cpp" line="873"/>
         <source>Select any audio</source>
         <translation>Chọn âm thanh bất kì</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="866"/>
+        <location filename="../../UI/ElementEditor.cpp" line="874"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Âm thanh (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1167,22 +1167,22 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="38"/>
+        <location filename="../../Element/ElementFactory.cpp" line="41"/>
         <source>MULTIPLE TYPES</source>
         <translation>NHIỀU LOẠI</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="48"/>
+        <location filename="../../Element/ElementFactory.cpp" line="51"/>
         <source>Unknown</source>
         <translation>Không xác định</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
+        <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Unknown element type: %1</source>
         <translation>Loại phần tử không xác định: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
+        <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>Unknown type: %1</source>
         <translation>Loại không xác định: %1</translation>
     </message>
@@ -1190,7 +1190,7 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="823"/>
+        <location filename="../../Scene/Commands.cpp" line="825"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Lật %1 phần tử theo trục %2</translation>
     </message>
@@ -1218,7 +1218,7 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>Không thể tải pixmap: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="659"/>
+        <location filename="../../Element/GraphicElement.cpp" line="671"/>
         <source>Default</source>
         <translation>Mặc định</translation>
     </message>
@@ -1251,47 +1251,47 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="114"/>
+        <location filename="../../Element/IC.cpp" line="116"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="115"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>MẠCH TÍCH HỢP</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="226"/>
+        <location filename="../../Element/IC.cpp" line="228"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>Tải IC: không có tên IC trong dữ liệu tuần tự hóa</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="351"/>
+        <location filename="../../Element/IC.cpp" line="354"/>
         <source>%1 not found.</source>
         <translation>Không tìm thấy %1.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="392"/>
+        <location filename="../../Element/IC.cpp" line="399"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Phát hiện tham chiếu IC vòng: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="399"/>
+        <location filename="../../Element/IC.cpp" line="406"/>
         <source>Error opening file: %1</source>
         <translation>Lỗi khi mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="453"/>
+        <location filename="../../Element/IC.cpp" line="460"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Di chuyển IC: không thể mở tệp để ghi: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
+        <location filename="../../Element/IC.cpp" line="467"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Di chuyển IC: không thể lưu lại tệp đã lưu: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="519"/>
+        <location filename="../../Element/IC.cpp" line="526"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Đã vượt giới hạn độ sâu lồng nhau của IC (%1) — blob có thể được tạo độc hại</translation>
     </message>
@@ -1968,8 +1968,8 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
+        <location filename="../../UI/MainWindow.cpp" line="1356"/>
+        <location filename="../../UI/MainWindow.cpp" line="1922"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Tắt tiếng</translation>
@@ -2000,7 +2000,7 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>Khởi động lại mô phỏng.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="963"/>
+        <location filename="../../UI/MainWindow.cpp" line="960"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Phím tắt và mẹo</translation>
@@ -2012,9 +2012,9 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="434"/>
-        <location filename="../../UI/MainWindow.cpp" line="673"/>
-        <location filename="../../UI/MainWindow.cpp" line="1176"/>
-        <location filename="../../UI/MainWindow.cpp" line="1715"/>
+        <location filename="../../UI/MainWindow.cpp" line="670"/>
+        <location filename="../../UI/MainWindow.cpp" line="1175"/>
+        <location filename="../../UI/MainWindow.cpp" line="1714"/>
         <source>New Project</source>
         <translation>Dự án mới</translation>
     </message>
@@ -2024,35 +2024,35 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <translation>Tệp đã được lưu thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="654"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Tệp chưa được lưu. Vẫn đóng tab?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="675"/>
+        <location filename="../../UI/MainWindow.cpp" line="672"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> đã bị thay đổi.
 Bạn có muốn lưu thay đổi không?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="747"/>
+        <location filename="../../UI/MainWindow.cpp" line="744"/>
         <source>File loaded successfully.</source>
         <translation>Tải tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="1976"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="1975"/>
         <source>Open File</source>
         <translation>Mở tệp</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
-        <location filename="../../UI/MainWindow.cpp" line="2109"/>
-        <location filename="../../UI/MainWindow.cpp" line="2180"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
+        <location filename="../../UI/MainWindow.cpp" line="2115"/>
+        <location filename="../../UI/MainWindow.cpp" line="2186"/>
         <source>Panda files (*.panda)</source>
         <translation>Tệp Panda (*.panda)</translation>
     </message>
@@ -2092,54 +2092,54 @@ Bạn có muốn lưu thay đổi không?</translation>
         <translation>Tải xuống</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Đang tải xuống wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Cancel</source>
         <translation>Hủy</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="579"/>
+        <location filename="../../UI/MainWindow.cpp" line="577"/>
         <source>Downloading Update</source>
         <translation>Đang tải xuống bản cập nhật</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Download Failed</source>
         <translation>Tải xuống thất bại</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
         <source>Could not download the update:
 %1</source>
         <translation>Không thể tải xuống bản cập nhật:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Could not save the file:
 %1</source>
         <translation>Không thể lưu tệp:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="620"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>Download Complete</source>
         <translation>Tải xuống hoàn tất</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="621"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda đã được tải xuống tại:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="633"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2158,226 +2158,226 @@ wiRedPanda %1 sẽ tự động liệt kê tất cả các tệp .panda khác tr
 Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện, hoặc chạy mô phỏng beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
         <source>Save File as ...</source>
         <translation>Lưu tệp thành ...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="853"/>
-        <location filename="../../UI/MainWindow.cpp" line="906"/>
+        <location filename="../../UI/MainWindow.cpp" line="850"/>
+        <location filename="../../UI/MainWindow.cpp" line="903"/>
         <source>File Conflict</source>
         <translation>Xung đột tệp</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="854"/>
-        <location filename="../../UI/MainWindow.cpp" line="907"/>
+        <location filename="../../UI/MainWindow.cpp" line="851"/>
+        <location filename="../../UI/MainWindow.cpp" line="904"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Tệp &quot;%1&quot; đã được mở trong một thẻ khác.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="857"/>
-        <location filename="../../UI/MainWindow.cpp" line="910"/>
+        <location filename="../../UI/MainWindow.cpp" line="854"/>
+        <location filename="../../UI/MainWindow.cpp" line="907"/>
         <source>Switch to Tab</source>
         <translation>Chuyển sang thẻ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1026"/>
+        <location filename="../../UI/MainWindow.cpp" line="1023"/>
         <source>Are you sure?</source>
         <translation>Bạn có chắc chắn?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1984"/>
+        <location filename="../../UI/MainWindow.cpp" line="1983"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>Các tệp đã chọn (và các phụ thuộc của chúng) sẽ được sao chép vào thư mục dự án hiện tại.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2043"/>
+        <location filename="../../UI/MainWindow.cpp" line="2049"/>
         <source>Name Collision</source>
         <translation>Trùng tên</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2044"/>
+        <location filename="../../UI/MainWindow.cpp" line="2050"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>IC nhúng có tên &quot;%1&quot; đã tồn tại.
 Tên gợi ý:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2070"/>
-        <location filename="../../UI/MainWindow.cpp" line="2132"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2138"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Vui lòng lưu dự án trước để có thể tìm thấy IC.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2081"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
-        <location filename="../../UI/MainWindow.cpp" line="2232"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2145"/>
+        <location filename="../../UI/MainWindow.cpp" line="2238"/>
         <source>Could not read IC file: %1</source>
         <translation>Không thể đọc tệp IC: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2089"/>
-        <location filename="../../UI/MainWindow.cpp" line="2157"/>
+        <location filename="../../UI/MainWindow.cpp" line="2095"/>
+        <location filename="../../UI/MainWindow.cpp" line="2163"/>
         <source>IC embedded successfully.</source>
         <translation>Nhúng IC thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2109"/>
-        <location filename="../../UI/MainWindow.cpp" line="2180"/>
+        <location filename="../../UI/MainWindow.cpp" line="2115"/>
+        <location filename="../../UI/MainWindow.cpp" line="2186"/>
         <source>Extract IC to file...</source>
         <translation>Trích xuất IC ra tệp...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2120"/>
-        <location filename="../../UI/MainWindow.cpp" line="2191"/>
+        <location filename="../../UI/MainWindow.cpp" line="2126"/>
+        <location filename="../../UI/MainWindow.cpp" line="2197"/>
         <source>IC extracted to %1</source>
         <translation>IC đã được trích xuất ra %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2104"/>
-        <location filename="../../UI/MainWindow.cpp" line="2169"/>
-        <location filename="../../UI/MainWindow.cpp" line="2204"/>
+        <location filename="../../UI/MainWindow.cpp" line="2110"/>
+        <location filename="../../UI/MainWindow.cpp" line="2175"/>
+        <location filename="../../UI/MainWindow.cpp" line="2210"/>
         <source>Please save the project first.</source>
         <translation>Vui lòng lưu dự án trước.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2221"/>
+        <location filename="../../UI/MainWindow.cpp" line="2227"/>
         <source>No file-based ICs to embed.</source>
         <translation>Không có IC dựa trên tệp để nhúng.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2247"/>
+        <location filename="../../UI/MainWindow.cpp" line="2253"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>Đã nhúng %1 IC. Mạch hiện tự chứa.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <location filename="../../UI/MainWindow.cpp" line="1244"/>
-        <location filename="../../UI/MainWindow.cpp" line="2070"/>
-        <location filename="../../UI/MainWindow.cpp" line="2081"/>
-        <location filename="../../UI/MainWindow.cpp" line="2104"/>
-        <location filename="../../UI/MainWindow.cpp" line="2132"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
-        <location filename="../../UI/MainWindow.cpp" line="2169"/>
-        <location filename="../../UI/MainWindow.cpp" line="2204"/>
-        <location filename="../../UI/MainWindow.cpp" line="2232"/>
+        <location filename="../../UI/MainWindow.cpp" line="1243"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2110"/>
+        <location filename="../../UI/MainWindow.cpp" line="2138"/>
+        <location filename="../../UI/MainWindow.cpp" line="2145"/>
+        <location filename="../../UI/MainWindow.cpp" line="2175"/>
+        <location filename="../../UI/MainWindow.cpp" line="2210"/>
+        <location filename="../../UI/MainWindow.cpp" line="2238"/>
         <source>Error</source>
         <translation>Lỗi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="942"/>
+        <location filename="../../UI/MainWindow.cpp" line="939"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda là phần mềm được phát triển bởi sinh viên Đại học Liên bang São Paulo để giúp sinh viên học về mạch logic.&lt;/p&gt;&lt;p&gt;Phiên bản phần mềm: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Người tạo:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda hiện được duy trì bởi Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves và Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vui lòng gửi báo cáo trên trang GitHub của chúng tôi nếu bạn tìm thấy lỗi hoặc muốn yêu cầu tính năng mới.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Truy cập trang web của chúng tôi!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="964"/>
+        <location filename="../../UI/MainWindow.cpp" line="961"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Phím tắt Canvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Phóng to &lt;/li&gt;&lt;li&gt; Ctrl+- : Thu nhỏ &lt;/li&gt;&lt;li&gt; Ctrl+1 : Ẩn/Hiện dây &lt;/li&gt;&lt;li&gt; Ctrl+2 : Ẩn/Hiện cổng &lt;/li&gt;&lt;li&gt; Ctrl+F : Tìm phần tử &lt;/li&gt;&lt;li&gt; Ctrl+W : Mở beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Lưu dự án &lt;/li&gt;&lt;li&gt; Ctrl+Q : Thoát wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Bắt đầu/Tạm dừng mô phỏng &lt;/li&gt;&lt;li&gt; [ : Thuộc tính chính trước của phần tử &lt;/li&gt;&lt;li&gt; ] : Thuộc tính chính tiếp theo của phần tử &lt;/li&gt;&lt;li&gt; { : Thuộc tính phụ trước của phần tử &lt;/li&gt;&lt;li&gt; } : Thuộc tính phụ tiếp theo của phần tử &lt;/li&gt;&lt;li&gt; &amp;lt; : Chuyển đổi sang phần tử trước &lt;/li&gt;&lt;li&gt; &amp;gt; : Chuyển đổi sang phần tử tiếp theo &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Mẹo chung&lt;/h1&gt;&lt;p&gt;Nhấp đúp vào dây để tạo nút&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1025"/>
+        <location filename="../../UI/MainWindow.cpp" line="1022"/>
         <source>Exit</source>
         <translation>Thoát</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
+        <location filename="../../UI/MainWindow.cpp" line="1432"/>
+        <location filename="../../UI/MainWindow.cpp" line="1461"/>
+        <location filename="../../UI/MainWindow.cpp" line="1484"/>
         <source>Missing file name.</source>
         <translation>Thiếu tên tệp.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
+        <location filename="../../UI/MainWindow.cpp" line="1438"/>
+        <location filename="../../UI/MainWindow.cpp" line="1467"/>
         <source>The .panda file is empty.</source>
         <translation>Tệp .panda trống.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1450"/>
+        <location filename="../../UI/MainWindow.cpp" line="1449"/>
         <source>Arduino code successfully generated.</source>
         <translation>Mã Arduino đã được tạo thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1477"/>
+        <location filename="../../UI/MainWindow.cpp" line="1476"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>Mã SystemVerilog đã được tạo thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1514"/>
+        <location filename="../../UI/MainWindow.cpp" line="1513"/>
         <source>Generate Arduino Code</source>
         <translation>Tạo mã Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1514"/>
+        <location filename="../../UI/MainWindow.cpp" line="1513"/>
         <source>Arduino file (*.ino)</source>
         <translation>Tệp Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
+        <location filename="../../UI/MainWindow.cpp" line="1535"/>
         <source>Generate SystemVerilog Code</source>
         <translation>Tạo mã SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
+        <location filename="../../UI/MainWindow.cpp" line="1535"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>Tệp SystemVerilog (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1647"/>
+        <location filename="../../UI/MainWindow.cpp" line="1646"/>
         <source>Export to PDF</source>
         <translation>Xuất ra PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1647"/>
+        <location filename="../../UI/MainWindow.cpp" line="1646"/>
         <source>PDF files (*.pdf)</source>
         <translation>Tệp PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1658"/>
-        <location filename="../../UI/MainWindow.cpp" line="1686"/>
+        <location filename="../../UI/MainWindow.cpp" line="1657"/>
+        <location filename="../../UI/MainWindow.cpp" line="1685"/>
         <source>Exported file successfully.</source>
         <translation>Xuất tệp thành công.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1675"/>
+        <location filename="../../UI/MainWindow.cpp" line="1674"/>
         <source>Export to Image</source>
         <translation>Xuất ra hình ảnh</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1675"/>
+        <location filename="../../UI/MainWindow.cpp" line="1674"/>
         <source>PNG files (*.png)</source>
         <translation>Tệp PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
+        <location filename="../../UI/MainWindow.cpp" line="1356"/>
+        <location filename="../../UI/MainWindow.cpp" line="1922"/>
         <source>Unmute</source>
         <translation>Bật tiếng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="1972"/>
         <source>Save file first.</source>
         <translation>Lưu tệp trước.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1976"/>
+        <location filename="../../UI/MainWindow.cpp" line="1975"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1984"/>
-        <location filename="../../UI/MainWindow.cpp" line="2001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1983"/>
+        <location filename="../../UI/MainWindow.cpp" line="2000"/>
         <source>Info</source>
         <translation>Thông tin</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2001"/>
+        <location filename="../../UI/MainWindow.cpp" line="2000"/>
         <source>Drag here to remove.</source>
         <translation>Kéo vào đây để xóa.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
+        <location filename="../../UI/MainWindow.cpp" line="2032"/>
         <source>Error removing file: %1</source>
         <translation>Lỗi khi xóa tệp: %1</translation>
     </message>
@@ -2487,12 +2487,12 @@ Tên gợi ý:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>Lỗi luồng khi đọc bản đồ kết nối tại vị trí %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Lỗi luồng khi đọc ID cổng kết nối tại vị trí %1</translation>
     </message>
@@ -2500,7 +2500,7 @@ Tên gợi ý:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="435"/>
+        <location filename="../../Main.cpp" line="443"/>
         <source>Error!</source>
         <translation>Lỗi!</translation>
     </message>
@@ -2586,7 +2586,7 @@ Tên gợi ý:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1035"/>
+        <location filename="../../Scene/Commands.cpp" line="1045"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Đăng ký blob &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Tên gợi ý:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1058"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Xóa blob &quot;%1&quot;</translation>
     </message>
@@ -2637,18 +2637,18 @@ Tên gợi ý:</translation>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="564"/>
+        <location filename="../../Scene/Scene.cpp" line="569"/>
         <source>&amp;Undo</source>
         <translation>&amp;Hoàn tác</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="570"/>
+        <location filename="../../Scene/Scene.cpp" line="575"/>
         <source>&amp;Redo</source>
         <translation>&amp;Làm lại</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="590"/>
+        <location filename="../../Scene/Scene.cpp" line="595"/>
         <source>Paste</source>
         <translation>Dán</translation>
     </message>
@@ -2725,7 +2725,7 @@ Tên gợi ý:</translation>
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="243"/>
+        <location filename="../../Simulation/Simulation.cpp" line="297"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Cảnh báo: mạch hồi tiếp không hội tụ — mạch có thể đang dao động.</translation>
     </message>
@@ -2766,12 +2766,17 @@ Tên gợi ý:</translation>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
+        <source>Could not open file for writing: %1</source>
+        <translation>Không thể mở tệp để ghi: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1234"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Biến đầu ra chưa được ánh xạ cho bảng chân trị: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
         <source>Element type not supported: %1</source>
         <translation>Loại phần tử không được hỗ trợ: %1</translation>
     </message>
@@ -2805,14 +2810,19 @@ Tên gợi ý:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="976"/>
+        <location filename="../../Scene/Commands.cpp" line="978"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Chuyển đổi đầu ra Bảng chân lý tại vị trí: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="985"/>
+        <location filename="../../Scene/Commands.cpp" line="987"/>
         <source>Could not find truthtable element!</source>
         <translation>Không tìm thấy phần tử bảng chân lý!</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="994"/>
+        <source>TruthTable toggle position out of range: %1</source>
+        <translation>Vị trí chuyển đổi bảng chân trị nằm ngoài phạm vi: %1</translation>
     </message>
 </context>
 <context>
@@ -2844,7 +2854,7 @@ Tên gợi ý:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1091"/>
+        <location filename="../../Scene/Commands.cpp" line="1101"/>
         <source>Update %1 IC blobs</source>
         <translation>Cập nhật %1 blob IC</translation>
     </message>
@@ -3028,12 +3038,19 @@ Bản sao lưu của tệp gốc đã được tạo với tên: %3</translation
         <translation>Chạy chế độ MCP với cửa sổ GUI hiển thị.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="395"/>
+        <location filename="../../Main.cpp" line="356"/>
+        <location filename="../../Main.cpp" line="368"/>
+        <location filename="../../Main.cpp" line="380"/>
+        <source>Error: no input circuit file given.</source>
+        <translation>Lỗi: không có tệp mạch đầu vào được cung cấp.</translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="403"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Lỗi: Mạch chứa các phần tử Bảng chân lý.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="440"/>
+        <location filename="../../Main.cpp" line="448"/>
         <source>Error: </source>
         <translation>Lỗi: </translation>
     </message>

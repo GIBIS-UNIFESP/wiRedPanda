@@ -33,37 +33,37 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="30"/>
         <source>Could not open file for writing: %1</source>
         <translation>Nepavyko atidaryti failo rašymui: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="202"/>
         <source>Not enough pins available for all input elements</source>
         <translation>Nepakanka kontaktų visiems įvesties elementams</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="229"/>
         <source>Not enough pins available for all rotary switch positions</source>
         <translation>Nepakanka kontaktų visoms sukamojo jungiklio padėtims</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="264"/>
         <source>Not enough pins available for all output elements</source>
         <translation>Nepakanka kontaktų visiems išvesties elementams</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="690"/>
         <source>Element type not supported: %1</source>
         <translation>Elemento tipas nepalaikomas: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="913"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Išvesties kintamasis nesusietas su tiesos lentele: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1157"/>
         <source>Could not open testbench file: %1</source>
         <translation>Nepavyko atidaryti testavimo failo: %1</translation>
     </message>
@@ -165,7 +165,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1361"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>Eksportuoti į PDF</translation>
@@ -381,8 +381,8 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1113"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1245"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin simuliatorius</translation>
     </message>
@@ -407,44 +407,44 @@
         <translation>Grandinėje nėra išvesties elementų. Pridėkite bent vieną išvestį (pvz., LED arba Display) bangos formai generuoti.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="517"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1163"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="518"/>
         <source>Save simulation before closing?</source>
         <translation>Išsaugoti simuliaciją prieš uždarant?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1164"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Ar norite susieti šį beWavedDolphin failą su dabartiniu wiRedPanda failu ir jį išsaugoti?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1395"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin yra bangų formų simuliatorius, skirtas wiRedPanda, sukurtas San Paulo federaliniame universitete, kad padėtų studentams mokytis apie logines grandines.&lt;/p&gt;&lt;p&gt;Programinės įrangos versija: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Kūrėjai:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin šiuo metu prižiūri Prof. Fábio Cappabianco, Ph.D. ir jo studentai.&lt;/p&gt;&lt;p&gt; Prašome pranešti mūsų GitHub puslapyje, jei radote klaidą ar norite paprašyti naujos funkcijos.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Aplankykite mūsų svetainę!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1093"/>
         <source>Save File as...</source>
         <translation>Išsaugoti failą kaip...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1090"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV failai (*.csv);;Gelfinuko failai (*.dolphin);;Visi palaikomi failai (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1091"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Gelfinuko failai (*.dolphin);;CSV failai (*.csv);;Visi palaikomi failai (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1077"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1114"/>
         <source>Saved file successfully.</source>
         <translation>Failas sėkmingai išsaugotas.</translation>
     </message>
@@ -464,73 +464,73 @@
         <translation>%1 eilutė turi %2 reikšmę/reikšmes, bet reikia %3.&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="481"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>Bangų forma būtų per didelė! Atkuriamas mastelis.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="714"/>
         <source>No cells selected.</source>
         <translation>Nepasirinkta jokių langelių.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1126"/>
         <source>Error opening file: %1</source>
         <translation>Klaida atidarant failą: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1140"/>
         <source>Error saving file: %1</source>
         <translation>Klaida išsaugant failą: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1195"/>
         <source>Open File</source>
         <translation>Atidaryti failą</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1196"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Visi palaikomi failai (*.dolphin *.csv);;Gelfinuko failai (*.dolphin);;CSV failai (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1204"/>
         <source>File loaded successfully.</source>
         <translation>Failas sėkmingai įkeltas.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1220"/>
         <source>Could not open file for reading: %1</source>
         <translation>Nepavyko atidaryti failo skaitymui: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1239"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Formatas nepalaikomas. Nepavyko atidaryti failo: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1327"/>
         <source>Export to Image</source>
         <translation>Eksportuoti į paveikslėlį</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1327"/>
         <source>PNG files (*.png)</source>
         <translation>PNG failai (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1361"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF failai (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1381"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Nepavyko atspausdinti šios grandinės į PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1213"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Failas &quot;%1&quot; neegzistuoja!</translation>
     </message>
@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="882"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change input size to %1</source>
         <translation>Pakeisti įėjimo dydį į %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="885"/>
         <source>Change output size to %1</source>
         <translation>Pakeisti išėjimo dydį į %1</translation>
     </message>
@@ -1088,29 +1088,29 @@
         <translation>Violetinė</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="595"/>
+        <location filename="../../UI/ElementEditor.cpp" line="598"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Pasikartojantis belaidis kanalas</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="599"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Tx mazgas su etikete &quot;%1&quot; jau egzistuoja.
 Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="662"/>
+        <location filename="../../UI/ElementEditor.cpp" line="665"/>
         <source>Change wireless mode</source>
         <translation>Pakeisti belaidį režimą</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="865"/>
+        <location filename="../../UI/ElementEditor.cpp" line="873"/>
         <source>Select any audio</source>
         <translation>Pasirinkti bet kokį garsą</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="866"/>
+        <location filename="../../UI/ElementEditor.cpp" line="874"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Garsas (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1167,22 +1167,22 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="38"/>
+        <location filename="../../Element/ElementFactory.cpp" line="41"/>
         <source>MULTIPLE TYPES</source>
         <translation>KELI TIPAI</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="48"/>
+        <location filename="../../Element/ElementFactory.cpp" line="51"/>
         <source>Unknown</source>
         <translation>Nežinomas</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
+        <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Unknown element type: %1</source>
         <translation>Nežinomas elemento tipas: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
+        <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>Unknown type: %1</source>
         <translation>Nežinomas tipas: %1</translation>
     </message>
@@ -1190,7 +1190,7 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="823"/>
+        <location filename="../../Scene/Commands.cpp" line="825"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Apversti %1 elementų ašyje %2</translation>
     </message>
@@ -1218,7 +1218,7 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>Nepavyko įkelti pixmap: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="659"/>
+        <location filename="../../Element/GraphicElement.cpp" line="671"/>
         <source>Default</source>
         <translation>Numatytasis</translation>
     </message>
@@ -1251,47 +1251,47 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="114"/>
+        <location filename="../../Element/IC.cpp" line="116"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="115"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>INTEGRUOTA MIKROSCHEMA</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="226"/>
+        <location filename="../../Element/IC.cpp" line="228"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC įkėlimas: serializuotuose duomenyse nėra IC pavadinimo</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="351"/>
+        <location filename="../../Element/IC.cpp" line="354"/>
         <source>%1 not found.</source>
         <translation>%1 nerastas.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="392"/>
+        <location filename="../../Element/IC.cpp" line="399"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Aptikta ciklinė IC nuoroda: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="399"/>
+        <location filename="../../Element/IC.cpp" line="406"/>
         <source>Error opening file: %1</source>
         <translation>Klaida atidarant failą: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="453"/>
+        <location filename="../../Element/IC.cpp" line="460"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC migracija: nepavyko atidaryti failo rašymui: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
+        <location filename="../../Element/IC.cpp" line="467"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC migracija: nepavyko patvirtinti iš naujo išsaugoto failo: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="519"/>
+        <location filename="../../Element/IC.cpp" line="526"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Viršyta IC įdėjimo gylio riba (%1) — blob gali būti suformuotas piktavališkai</translation>
     </message>
@@ -1953,8 +1953,8 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
+        <location filename="../../UI/MainWindow.cpp" line="1356"/>
+        <location filename="../../UI/MainWindow.cpp" line="1922"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Nutildyti</translation>
@@ -1990,7 +1990,7 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>Fono simuliacija</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="963"/>
+        <location filename="../../UI/MainWindow.cpp" line="960"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Trumpiniai ir patarimai</translation>
@@ -2012,9 +2012,9 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="434"/>
-        <location filename="../../UI/MainWindow.cpp" line="673"/>
-        <location filename="../../UI/MainWindow.cpp" line="1176"/>
-        <location filename="../../UI/MainWindow.cpp" line="1715"/>
+        <location filename="../../UI/MainWindow.cpp" line="670"/>
+        <location filename="../../UI/MainWindow.cpp" line="1175"/>
+        <location filename="../../UI/MainWindow.cpp" line="1714"/>
         <source>New Project</source>
         <translation>Naujas projektas</translation>
     </message>
@@ -2024,35 +2024,35 @@ Kiekvienas belaidis kanalas turi turėti unikalią etiketę.</translation>
         <translation>Failas sėkmingai išsaugotas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="654"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Failas neišsaugotas. Vis tiek uždaryti skirtuką?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="675"/>
+        <location filename="../../UI/MainWindow.cpp" line="672"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> buvo pakeistas.
 Ar norite išsaugoti pakeitimus?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="747"/>
+        <location filename="../../UI/MainWindow.cpp" line="744"/>
         <source>File loaded successfully.</source>
         <translation>Failas sėkmingai įkeltas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="1976"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="1975"/>
         <source>Open File</source>
         <translation>Atidaryti failą</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
-        <location filename="../../UI/MainWindow.cpp" line="2109"/>
-        <location filename="../../UI/MainWindow.cpp" line="2180"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
+        <location filename="../../UI/MainWindow.cpp" line="2115"/>
+        <location filename="../../UI/MainWindow.cpp" line="2186"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda failai (*.panda)</translation>
     </message>
@@ -2087,7 +2087,7 @@ Ar norite išsaugoti pakeitimus?</translation>
         <translation>Atsisiųsti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="633"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2106,32 +2106,32 @@ wiRedPanda %1 automatiškai pateiks visus kitus .panda failus, esančius tame pa
 Prieš pasiekiant IC ir išvaizdas arba paleidžiant beWavedDolphin simuliacijas, turite išsaugoti naujus projektus.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
         <source>Save File as ...</source>
         <translation>Išsaugoti failą kaip ...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="942"/>
+        <location filename="../../UI/MainWindow.cpp" line="939"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda yra programinė įranga, sukurta San Paulo federalinio universiteto studentų, kad padėtų studentams mokytis apie logines grandines.&lt;/p&gt;&lt;p&gt;Programinės įrangos versija: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Kūrėjai:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda šiuo metu prižiūri Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ir Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Prašome pranešti mūsų GitHub puslapyje, jei radote klaidą ar norite paprašyti naujos funkcijos.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Aplankykite mūsų svetainę!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1026"/>
+        <location filename="../../UI/MainWindow.cpp" line="1023"/>
         <source>Are you sure?</source>
         <translation>Ar tikrai?</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <location filename="../../UI/MainWindow.cpp" line="1244"/>
-        <location filename="../../UI/MainWindow.cpp" line="2070"/>
-        <location filename="../../UI/MainWindow.cpp" line="2081"/>
-        <location filename="../../UI/MainWindow.cpp" line="2104"/>
-        <location filename="../../UI/MainWindow.cpp" line="2132"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
-        <location filename="../../UI/MainWindow.cpp" line="2169"/>
-        <location filename="../../UI/MainWindow.cpp" line="2204"/>
-        <location filename="../../UI/MainWindow.cpp" line="2232"/>
+        <location filename="../../UI/MainWindow.cpp" line="1243"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2110"/>
+        <location filename="../../UI/MainWindow.cpp" line="2138"/>
+        <location filename="../../UI/MainWindow.cpp" line="2145"/>
+        <location filename="../../UI/MainWindow.cpp" line="2175"/>
+        <location filename="../../UI/MainWindow.cpp" line="2210"/>
+        <location filename="../../UI/MainWindow.cpp" line="2238"/>
         <source>Error</source>
         <translation>Klaida</translation>
     </message>
@@ -2141,243 +2141,243 @@ Prieš pasiekiant IC ir išvaizdas arba paleidžiant beWavedDolphin simuliacijas
         <translation>&lt;b&gt;wiRedPanda %1 yra pasiekiamas.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Šiuo metu naudojate versiją %2.&lt;br&gt;Spustelėkite &lt;b&gt;Atsisiųsti&lt;/b&gt;, kad išsaugotumėte naują versiją.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Atsisiunčiama wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Cancel</source>
         <translation>Atšaukti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="579"/>
+        <location filename="../../UI/MainWindow.cpp" line="577"/>
         <source>Downloading Update</source>
         <translation>Atsisiunčiamas atnaujinimas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Download Failed</source>
         <translation>Atsisiuntimas nepavyko</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nepavyko atsisiųsti atnaujinimo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nepavyko išsaugoti failo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="620"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>Download Complete</source>
         <translation>Atsisiuntimas baigtas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="621"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda atsisiųstas į:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="853"/>
-        <location filename="../../UI/MainWindow.cpp" line="906"/>
+        <location filename="../../UI/MainWindow.cpp" line="850"/>
+        <location filename="../../UI/MainWindow.cpp" line="903"/>
         <source>File Conflict</source>
         <translation>Failo konfliktas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="854"/>
-        <location filename="../../UI/MainWindow.cpp" line="907"/>
+        <location filename="../../UI/MainWindow.cpp" line="851"/>
+        <location filename="../../UI/MainWindow.cpp" line="904"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Failas „%1“ jau atidarytas kitoje kortelėje.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="857"/>
-        <location filename="../../UI/MainWindow.cpp" line="910"/>
+        <location filename="../../UI/MainWindow.cpp" line="854"/>
+        <location filename="../../UI/MainWindow.cpp" line="907"/>
         <source>Switch to Tab</source>
         <translation>Pereiti į kortelę</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
+        <location filename="../../UI/MainWindow.cpp" line="1432"/>
+        <location filename="../../UI/MainWindow.cpp" line="1461"/>
+        <location filename="../../UI/MainWindow.cpp" line="1484"/>
         <source>Missing file name.</source>
         <translation>Trūksta failo pavadinimo.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
+        <location filename="../../UI/MainWindow.cpp" line="1438"/>
+        <location filename="../../UI/MainWindow.cpp" line="1467"/>
         <source>The .panda file is empty.</source>
         <translation>.panda failas tuščias.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1450"/>
+        <location filename="../../UI/MainWindow.cpp" line="1449"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino kodas sėkmingai sugeneruotas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1477"/>
+        <location filename="../../UI/MainWindow.cpp" line="1476"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>SystemVerilog kodas sėkmingai sugeneruotas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1514"/>
+        <location filename="../../UI/MainWindow.cpp" line="1513"/>
         <source>Generate Arduino Code</source>
         <translation>Generuoti Arduino kodą</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1514"/>
+        <location filename="../../UI/MainWindow.cpp" line="1513"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino failas (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
+        <location filename="../../UI/MainWindow.cpp" line="1535"/>
         <source>Generate SystemVerilog Code</source>
         <translation>Generuoti SystemVerilog kodą</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
+        <location filename="../../UI/MainWindow.cpp" line="1535"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>SystemVerilog failas (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1647"/>
+        <location filename="../../UI/MainWindow.cpp" line="1646"/>
         <source>Export to PDF</source>
         <translation>Eksportuoti į PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1647"/>
+        <location filename="../../UI/MainWindow.cpp" line="1646"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF failai (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1984"/>
+        <location filename="../../UI/MainWindow.cpp" line="1983"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>Pasirinkti failai (ir jų priklausomybės) bus nukopijuoti į dabartinį projekto aplanką.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2043"/>
+        <location filename="../../UI/MainWindow.cpp" line="2049"/>
         <source>Name Collision</source>
         <translation>Pavadinimų konfliktas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2044"/>
+        <location filename="../../UI/MainWindow.cpp" line="2050"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>Įterptas IC pavadinimu &quot;%1&quot; jau egzistuoja.
 Siūlomas pavadinimas:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2070"/>
-        <location filename="../../UI/MainWindow.cpp" line="2132"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2138"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Pirmiausia išsaugokite projektą, kad IC galėtų būti rasti.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2081"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
-        <location filename="../../UI/MainWindow.cpp" line="2232"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2145"/>
+        <location filename="../../UI/MainWindow.cpp" line="2238"/>
         <source>Could not read IC file: %1</source>
         <translation>Nepavyko perskaityti IC failo: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2089"/>
-        <location filename="../../UI/MainWindow.cpp" line="2157"/>
+        <location filename="../../UI/MainWindow.cpp" line="2095"/>
+        <location filename="../../UI/MainWindow.cpp" line="2163"/>
         <source>IC embedded successfully.</source>
         <translation>IC sėkmingai įterptas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2109"/>
-        <location filename="../../UI/MainWindow.cpp" line="2180"/>
+        <location filename="../../UI/MainWindow.cpp" line="2115"/>
+        <location filename="../../UI/MainWindow.cpp" line="2186"/>
         <source>Extract IC to file...</source>
         <translation>Išskleisti IC į failą...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2120"/>
-        <location filename="../../UI/MainWindow.cpp" line="2191"/>
+        <location filename="../../UI/MainWindow.cpp" line="2126"/>
+        <location filename="../../UI/MainWindow.cpp" line="2197"/>
         <source>IC extracted to %1</source>
         <translation>IC išskleistas į %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2104"/>
-        <location filename="../../UI/MainWindow.cpp" line="2169"/>
-        <location filename="../../UI/MainWindow.cpp" line="2204"/>
+        <location filename="../../UI/MainWindow.cpp" line="2110"/>
+        <location filename="../../UI/MainWindow.cpp" line="2175"/>
+        <location filename="../../UI/MainWindow.cpp" line="2210"/>
         <source>Please save the project first.</source>
         <translation>Pirmiausia išsaugokite projektą.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2221"/>
+        <location filename="../../UI/MainWindow.cpp" line="2227"/>
         <source>No file-based ICs to embed.</source>
         <translation>Nėra failais pagrįstų IC įterpimui.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2247"/>
+        <location filename="../../UI/MainWindow.cpp" line="2253"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>Įterpta %1 IC. Grandinė dabar yra savarankiška.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1658"/>
-        <location filename="../../UI/MainWindow.cpp" line="1686"/>
+        <location filename="../../UI/MainWindow.cpp" line="1657"/>
+        <location filename="../../UI/MainWindow.cpp" line="1685"/>
         <source>Exported file successfully.</source>
         <translation>Failas sėkmingai eksportuotas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="964"/>
+        <location filename="../../UI/MainWindow.cpp" line="961"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Drobės spartieji klavišai&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Priartinti &lt;/li&gt;&lt;li&gt; Ctrl+- : Nutolinti &lt;/li&gt;&lt;li&gt; Ctrl+1 : Slėpti/Rodyti laidus &lt;/li&gt;&lt;li&gt; Ctrl+2 : Slėpti/Rodyti elementus &lt;/li&gt;&lt;li&gt; Ctrl+F : Ieškoti elementų &lt;/li&gt;&lt;li&gt; Ctrl+W : Atidaryti beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Išsaugoti projektą &lt;/li&gt;&lt;li&gt; Ctrl+Q : Išeiti iš wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Paleisti/Pristabdyti simuliaciją &lt;/li&gt;&lt;li&gt; [ : Ankstesnė pirminė elemento savybė &lt;/li&gt;&lt;li&gt; ] : Kita pirminė elemento savybė &lt;/li&gt;&lt;li&gt; { : Ankstesnė antrinė elemento savybė &lt;/li&gt;&lt;li&gt; } : Kita antrinė elemento savybė &lt;/li&gt;&lt;li&gt; &amp;lt; : Konvertuoti į ankstesnį elementą &lt;/li&gt;&lt;li&gt; &amp;gt; : Konvertuoti į kitą elementą &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Bendri patarimai&lt;/h1&gt;&lt;p&gt;Dukart spustelėkite laidą, kad sukurtumėte mazgą&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1025"/>
+        <location filename="../../UI/MainWindow.cpp" line="1022"/>
         <source>Exit</source>
         <translation>Išeiti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1675"/>
+        <location filename="../../UI/MainWindow.cpp" line="1674"/>
         <source>Export to Image</source>
         <translation>Eksportuoti į paveikslėlį</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1675"/>
+        <location filename="../../UI/MainWindow.cpp" line="1674"/>
         <source>PNG files (*.png)</source>
         <translation>PNG failai (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
+        <location filename="../../UI/MainWindow.cpp" line="1356"/>
+        <location filename="../../UI/MainWindow.cpp" line="1922"/>
         <source>Unmute</source>
         <translation>Atitildyti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="1972"/>
         <source>Save file first.</source>
         <translation>Pirmiausia išsaugokite failą.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1976"/>
+        <location filename="../../UI/MainWindow.cpp" line="1975"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1984"/>
-        <location filename="../../UI/MainWindow.cpp" line="2001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1983"/>
+        <location filename="../../UI/MainWindow.cpp" line="2000"/>
         <source>Info</source>
         <translation>Informacija</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2001"/>
+        <location filename="../../UI/MainWindow.cpp" line="2000"/>
         <source>Drag here to remove.</source>
         <translation>Nuvilkite čia, kad pašalintumėte.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
+        <location filename="../../UI/MainWindow.cpp" line="2032"/>
         <source>Error removing file: %1</source>
         <translation>Klaida šalinant failą: %1</translation>
     </message>
@@ -2487,12 +2487,12 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>Srauto klaida skaitant jungčių žemėlapį ties poslinkiu %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Srauto klaida skaitant jungties prievadų ID pozicijoje %1</translation>
     </message>
@@ -2500,7 +2500,7 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="435"/>
+        <location filename="../../Main.cpp" line="443"/>
         <source>Error!</source>
         <translation>Klaida!</translation>
     </message>
@@ -2586,7 +2586,7 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1035"/>
+        <location filename="../../Scene/Commands.cpp" line="1045"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registruoti blob &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1058"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Pašalinti blob „%1“</translation>
     </message>
@@ -2637,18 +2637,18 @@ Siūlomas pavadinimas:</translation>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="564"/>
+        <location filename="../../Scene/Scene.cpp" line="569"/>
         <source>&amp;Undo</source>
         <translation>&amp;Atšaukti</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="570"/>
+        <location filename="../../Scene/Scene.cpp" line="575"/>
         <source>&amp;Redo</source>
         <translation>&amp;Pakartoti</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="590"/>
+        <location filename="../../Scene/Scene.cpp" line="595"/>
         <source>Paste</source>
         <translation>Įklijuoti</translation>
     </message>
@@ -2725,7 +2725,7 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="243"/>
+        <location filename="../../Simulation/Simulation.cpp" line="297"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Įspėjimas: grįžtamojo ryšio grandinė nekonvergavo — grandinė gali svyruoti.</translation>
     </message>
@@ -2766,12 +2766,17 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
+        <source>Could not open file for writing: %1</source>
+        <translation>Nepavyko atidaryti failo rašymui: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1234"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Išvesties kintamasis nesusietas su tiesos lentele: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
         <source>Element type not supported: %1</source>
         <translation>Elemento tipas nepalaikomas: %1</translation>
     </message>
@@ -2805,14 +2810,19 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="976"/>
+        <location filename="../../Scene/Commands.cpp" line="978"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Perjungti Tiesos lentelės išėjimą pozicijoje: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="985"/>
+        <location filename="../../Scene/Commands.cpp" line="987"/>
         <source>Could not find truthtable element!</source>
         <translation>Nepavyko rasti tiesos lentelės elemento!</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="994"/>
+        <source>TruthTable toggle position out of range: %1</source>
+        <translation>Tiesos lentelės perjungiklio padėtis viršija ribas: %1</translation>
     </message>
 </context>
 <context>
@@ -2844,7 +2854,7 @@ Siūlomas pavadinimas:</translation>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1091"/>
+        <location filename="../../Scene/Commands.cpp" line="1101"/>
         <source>Update %1 IC blobs</source>
         <translation>Atnaujinti %1 IC blob</translation>
     </message>
@@ -3028,12 +3038,19 @@ Originalaus failo atsarginė kopija sukurta pavadinimu: %3</translation>
         <translation>Paleisti MCP režimą su matomu GUI langu.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="395"/>
+        <location filename="../../Main.cpp" line="356"/>
+        <location filename="../../Main.cpp" line="368"/>
+        <location filename="../../Main.cpp" line="380"/>
+        <source>Error: no input circuit file given.</source>
+        <translation>Klaida: nenurodytas įvesties grandinės failas.</translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="403"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Klaida: Grandinėje yra Tiesos lentelės elementų.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="440"/>
+        <location filename="../../Main.cpp" line="448"/>
         <source>Error: </source>
         <translation>Klaida: </translation>
     </message>

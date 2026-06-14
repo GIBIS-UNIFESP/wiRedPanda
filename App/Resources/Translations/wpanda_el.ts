@@ -33,37 +33,37 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="30"/>
         <source>Could not open file for writing: %1</source>
         <translation>Δεν ήταν δυνατό το άνοιγμα του αρχείου για εγγραφή: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="202"/>
         <source>Not enough pins available for all input elements</source>
         <translation>Δεν υπάρχουν αρκετές ακίδες για όλα τα στοιχεία εισόδου</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="229"/>
         <source>Not enough pins available for all rotary switch positions</source>
         <translation>Δεν υπάρχουν αρκετές ακίδες για όλες τις θέσεις του περιστροφικού διακόπτη</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="264"/>
         <source>Not enough pins available for all output elements</source>
         <translation>Δεν υπάρχουν αρκετές ακίδες για όλα τα στοιχεία εξόδου</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="690"/>
         <source>Element type not supported: %1</source>
         <translation>Τύπος στοιχείου δεν υποστηρίζεται: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="913"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Η μεταβλητή εξόδου δεν έχει αντιστοιχιστεί στον πίνακα αληθείας: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1157"/>
         <source>Could not open testbench file: %1</source>
         <translation>Δεν ήταν δυνατό το άνοιγμα του αρχείου δοκιμής: %1</translation>
     </message>
@@ -165,7 +165,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1361"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>Εξαγωγή σε PDF</translation>
@@ -381,8 +381,8 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1113"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1245"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Προσομοιωτής beWavedDolphin</translation>
     </message>
@@ -407,44 +407,44 @@
         <translation>Το κύκλωμα δεν έχει στοιχεία εξόδου. Προσθέστε τουλάχιστον μία έξοδο (π.χ. LED ή Display) για να δημιουργήσετε κυματομορφή.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="517"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1163"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="518"/>
         <source>Save simulation before closing?</source>
         <translation>Αποθήκευση προσομοίωσης πριν το κλείσιμο;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1164"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Θέλετε να συνδέσετε αυτό το αρχείο beWavedDolphin με το τρέχον αρχείο wiRedPanda και να το αποθηκεύσετε;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1395"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Το beWavedDolphin είναι ένας προσομοιωτής κυματομορφών για το wiRedPanda, αναπτυγμένος από το Ομοσπονδιακό Πανεπιστήμιο του Σάο Πάολο για να βοηθήσει τους φοιτητές να μάθουν για τα λογικά κυκλώματα.&lt;/p&gt;&lt;p&gt;Έκδοση λογισμικού: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Δημιουργοί:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; Το beWavedDolphin συντηρείται αυτή τη στιγμή από τον Prof. Fábio Cappabianco, Ph.D. και τους φοιτητές του.&lt;/p&gt;&lt;p&gt; Παρακαλούμε υποβάλετε αναφορά στη σελίδα μας στο GitHub αν βρείτε σφάλμα ή θέλετε να ζητήσετε μια νέα λειτουργία.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Επισκεφτείτε τον ιστότοπό μας!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1093"/>
         <source>Save File as...</source>
         <translation>Αποθήκευση Αρχείου ως...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1090"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>Αρχεία CSV (*.csv);;Αρχεία Dolphin (*.dolphin);;Όλα τα υποστηριζόμενα αρχεία (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1091"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Αρχεία Dolphin (*.dolphin);;Αρχεία CSV (*.csv);;Όλα τα υποστηριζόμενα αρχεία (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1077"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1114"/>
         <source>Saved file successfully.</source>
         <translation>Επιτυχής αποθήκευση αρχείου.</translation>
     </message>
@@ -464,73 +464,73 @@
         <translation>Η γραμμή %1 έχει %2 τιμή/τιμές, αλλά απαιτούνται %3.&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="481"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>Η κυματομορφή θα ήταν πολύ μεγάλη! Επαναφορά μεγέθυνσης.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="714"/>
         <source>No cells selected.</source>
         <translation>Δεν έχουν επιλεγεί κελιά.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1126"/>
         <source>Error opening file: %1</source>
         <translation>Σφάλμα ανοίγματος αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1140"/>
         <source>Error saving file: %1</source>
         <translation>Σφάλμα αποθήκευσης αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1195"/>
         <source>Open File</source>
         <translation>Άνοιγμα Αρχείου</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1196"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Όλα τα υποστηριζόμενα αρχεία (*.dolphin *.csv);;Αρχεία Dolphin (*.dolphin);;Αρχεία CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1204"/>
         <source>File loaded successfully.</source>
         <translation>Επιτυχής φόρτωση αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1220"/>
         <source>Could not open file for reading: %1</source>
         <translation>Δεν ήταν δυνατό το άνοιγμα του αρχείου για ανάγνωση: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1239"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Μορφή δεν υποστηρίζεται. Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1327"/>
         <source>Export to Image</source>
         <translation>Εξαγωγή σε Εικόνα</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1327"/>
         <source>PNG files (*.png)</source>
         <translation>Αρχεία PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1361"/>
         <source>PDF files (*.pdf)</source>
         <translation>Αρχεία PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1381"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Δεν ήταν δυνατό να εκτυπωθεί αυτό το κύκλωμα σε PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1213"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Το αρχείο &quot;%1&quot; δεν υπάρχει!</translation>
     </message>
@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="882"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change input size to %1</source>
         <translation>Αλλαγή μεγέθους εισόδου σε %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="885"/>
         <source>Change output size to %1</source>
         <translation>Αλλαγή μεγέθους εξόδου σε %1</translation>
     </message>
@@ -1088,29 +1088,29 @@
         <translation>Μωβ</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="595"/>
+        <location filename="../../UI/ElementEditor.cpp" line="598"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Διπλότυπο ασύρματου καναλιού</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="599"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Ένας κόμβος Tx με ετικέτα &quot;%1&quot; υπάρχει ήδη.
 Κάθε ασύρματο κανάλι πρέπει να έχει μοναδική ετικέτα.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="662"/>
+        <location filename="../../UI/ElementEditor.cpp" line="665"/>
         <source>Change wireless mode</source>
         <translation>Αλλαγή ασύρματης λειτουργίας</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="865"/>
+        <location filename="../../UI/ElementEditor.cpp" line="873"/>
         <source>Select any audio</source>
         <translation>Επιλογή οποιουδήποτε αρχείου ήχου</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="866"/>
+        <location filename="../../UI/ElementEditor.cpp" line="874"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Ήχος (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1167,22 +1167,22 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="38"/>
+        <location filename="../../Element/ElementFactory.cpp" line="41"/>
         <source>MULTIPLE TYPES</source>
         <translation>ΠΟΛΛΑΠΛΟΙ ΤΥΠΟΙ</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="48"/>
+        <location filename="../../Element/ElementFactory.cpp" line="51"/>
         <source>Unknown</source>
         <translation>Άγνωστο</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
+        <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Unknown element type: %1</source>
         <translation>Άγνωστος τύπος στοιχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
+        <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>Unknown type: %1</source>
         <translation>Άγνωστος τύπος: %1</translation>
     </message>
@@ -1190,7 +1190,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="823"/>
+        <location filename="../../Scene/Commands.cpp" line="825"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Αναστροφή %1 στοιχείων στον άξονα %2</translation>
     </message>
@@ -1218,7 +1218,7 @@ Each wireless channel must have a unique label.</source>
         <translation>Δεν ήταν δυνατό να φορτωθεί το pixmap: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="659"/>
+        <location filename="../../Element/GraphicElement.cpp" line="671"/>
         <source>Default</source>
         <translation>Προεπιλογή</translation>
     </message>
@@ -1251,47 +1251,47 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="114"/>
+        <location filename="../../Element/IC.cpp" line="116"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="115"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>ΟΛΟΚΛΗΡΩΜΕΝΟ ΚΥΚΛΩΜΑ</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="226"/>
+        <location filename="../../Element/IC.cpp" line="228"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>Φόρτωση IC: δεν υπάρχει όνομα IC στα σειριακοποιημένα δεδομένα</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="351"/>
+        <location filename="../../Element/IC.cpp" line="354"/>
         <source>%1 not found.</source>
         <translation>Δεν βρέθηκε %1.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="392"/>
+        <location filename="../../Element/IC.cpp" line="399"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Ανιχνεύθηκε κυκλική αναφορά IC: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="399"/>
+        <location filename="../../Element/IC.cpp" line="406"/>
         <source>Error opening file: %1</source>
         <translation>Σφάλμα ανοίγματος αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="453"/>
+        <location filename="../../Element/IC.cpp" line="460"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Μετεγκατάσταση IC: δεν είναι δυνατό το άνοιγμα αρχείου για εγγραφή: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
+        <location filename="../../Element/IC.cpp" line="467"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Μετεγκατάσταση IC: αποτυχία αποθήκευσης του αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="519"/>
+        <location filename="../../Element/IC.cpp" line="526"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Υπέρβαση ορίου βάθους ένθεσης IC (%1) — το blob ενδέχεται να έχει δημιουργηθεί κακόβουλα</translation>
     </message>
@@ -1953,8 +1953,8 @@ Each wireless channel must have a unique label.</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
+        <location filename="../../UI/MainWindow.cpp" line="1356"/>
+        <location filename="../../UI/MainWindow.cpp" line="1922"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Σίγαση</translation>
@@ -1990,7 +1990,7 @@ Each wireless channel must have a unique label.</source>
         <translation>Προσομοίωση Υποβάθρου</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="963"/>
+        <location filename="../../UI/MainWindow.cpp" line="960"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Συντομεύσεις και Συμβουλές</translation>
@@ -2012,9 +2012,9 @@ Each wireless channel must have a unique label.</source>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="434"/>
-        <location filename="../../UI/MainWindow.cpp" line="673"/>
-        <location filename="../../UI/MainWindow.cpp" line="1176"/>
-        <location filename="../../UI/MainWindow.cpp" line="1715"/>
+        <location filename="../../UI/MainWindow.cpp" line="670"/>
+        <location filename="../../UI/MainWindow.cpp" line="1175"/>
+        <location filename="../../UI/MainWindow.cpp" line="1714"/>
         <source>New Project</source>
         <translation>Νέο Έργο</translation>
     </message>
@@ -2024,35 +2024,35 @@ Each wireless channel must have a unique label.</source>
         <translation>Επιτυχής αποθήκευση αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="654"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Το αρχείο δεν αποθηκεύτηκε. Κλείσιμο καρτέλας παρόλα αυτά;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="675"/>
+        <location filename="../../UI/MainWindow.cpp" line="672"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> έχει τροποποιηθεί.
 Θέλετε να αποθηκεύσετε τις αλλαγές σας;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="747"/>
+        <location filename="../../UI/MainWindow.cpp" line="744"/>
         <source>File loaded successfully.</source>
         <translation>Επιτυχής φόρτωση αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="1976"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="1975"/>
         <source>Open File</source>
         <translation>Άνοιγμα Αρχείου</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
-        <location filename="../../UI/MainWindow.cpp" line="2109"/>
-        <location filename="../../UI/MainWindow.cpp" line="2180"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
+        <location filename="../../UI/MainWindow.cpp" line="2115"/>
+        <location filename="../../UI/MainWindow.cpp" line="2186"/>
         <source>Panda files (*.panda)</source>
         <translation>Αρχεία Panda (*.panda)</translation>
     </message>
@@ -2087,7 +2087,7 @@ Do you want to save your changes?</source>
         <translation>Λήψη</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="633"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2106,32 +2106,32 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
 Πρέπει να αποθηκεύσετε νέα έργα πριν αποκτήσετε πρόσβαση σε IC και εμφανίσεις ή εκτελέσετε προσομοιώσεις beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
         <source>Save File as ...</source>
         <translation>Αποθήκευση Αρχείου ως...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="942"/>
+        <location filename="../../UI/MainWindow.cpp" line="939"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Το wiRedPanda είναι λογισμικό που αναπτύχθηκε από φοιτητές του Ομοσπονδιακού Πανεπιστημίου του Σάο Πάολο για να βοηθήσει τους φοιτητές να μάθουν για τα λογικά κυκλώματα.&lt;/p&gt;&lt;p&gt;Έκδοση λογισμικού: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Δημιουργοί:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; Το wiRedPanda συντηρείται αυτή τη στιγμή από τον Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves και Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Παρακαλούμε υποβάλετε αναφορά στη σελίδα μας στο GitHub αν βρείτε σφάλμα ή θέλετε να ζητήσετε μια νέα λειτουργία.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Επισκεφτείτε τον ιστότοπό μας!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1026"/>
+        <location filename="../../UI/MainWindow.cpp" line="1023"/>
         <source>Are you sure?</source>
         <translation>Είστε σίγουροι;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <location filename="../../UI/MainWindow.cpp" line="1244"/>
-        <location filename="../../UI/MainWindow.cpp" line="2070"/>
-        <location filename="../../UI/MainWindow.cpp" line="2081"/>
-        <location filename="../../UI/MainWindow.cpp" line="2104"/>
-        <location filename="../../UI/MainWindow.cpp" line="2132"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
-        <location filename="../../UI/MainWindow.cpp" line="2169"/>
-        <location filename="../../UI/MainWindow.cpp" line="2204"/>
-        <location filename="../../UI/MainWindow.cpp" line="2232"/>
+        <location filename="../../UI/MainWindow.cpp" line="1243"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2110"/>
+        <location filename="../../UI/MainWindow.cpp" line="2138"/>
+        <location filename="../../UI/MainWindow.cpp" line="2145"/>
+        <location filename="../../UI/MainWindow.cpp" line="2175"/>
+        <location filename="../../UI/MainWindow.cpp" line="2210"/>
+        <location filename="../../UI/MainWindow.cpp" line="2238"/>
         <source>Error</source>
         <translation>Σφάλμα</translation>
     </message>
@@ -2141,243 +2141,243 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
         <translation>&lt;b&gt;Το wiRedPanda %1 είναι διαθέσιμο.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Εκτελείτε αυτή τη στιγμή την έκδοση %2.&lt;br&gt;Κάντε κλικ στο &lt;b&gt;Λήψη&lt;/b&gt; για αποθήκευση της νέας έκδοσης.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Λήψη wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Cancel</source>
         <translation>Άκυρο</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="579"/>
+        <location filename="../../UI/MainWindow.cpp" line="577"/>
         <source>Downloading Update</source>
         <translation>Λήψη ενημέρωσης</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Download Failed</source>
         <translation>Αποτυχία λήψης</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
         <source>Could not download the update:
 %1</source>
         <translation>Δεν ήταν δυνατή η λήψη της ενημέρωσης:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Could not save the file:
 %1</source>
         <translation>Δεν ήταν δυνατή η αποθήκευση του αρχείου:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="620"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>Download Complete</source>
         <translation>Η λήψη ολοκληρώθηκε</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="621"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>Το wiRedPanda ελήφθη στο:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="853"/>
-        <location filename="../../UI/MainWindow.cpp" line="906"/>
+        <location filename="../../UI/MainWindow.cpp" line="850"/>
+        <location filename="../../UI/MainWindow.cpp" line="903"/>
         <source>File Conflict</source>
         <translation>Σύγκρουση αρχείου</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="854"/>
-        <location filename="../../UI/MainWindow.cpp" line="907"/>
+        <location filename="../../UI/MainWindow.cpp" line="851"/>
+        <location filename="../../UI/MainWindow.cpp" line="904"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Το αρχείο &quot;%1&quot; είναι ήδη ανοιχτό σε άλλη καρτέλα.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="857"/>
-        <location filename="../../UI/MainWindow.cpp" line="910"/>
+        <location filename="../../UI/MainWindow.cpp" line="854"/>
+        <location filename="../../UI/MainWindow.cpp" line="907"/>
         <source>Switch to Tab</source>
         <translation>Μετάβαση στην καρτέλα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
+        <location filename="../../UI/MainWindow.cpp" line="1432"/>
+        <location filename="../../UI/MainWindow.cpp" line="1461"/>
+        <location filename="../../UI/MainWindow.cpp" line="1484"/>
         <source>Missing file name.</source>
         <translation>Λείπει όνομα αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
+        <location filename="../../UI/MainWindow.cpp" line="1438"/>
+        <location filename="../../UI/MainWindow.cpp" line="1467"/>
         <source>The .panda file is empty.</source>
         <translation>Το αρχείο .panda είναι κενό.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1450"/>
+        <location filename="../../UI/MainWindow.cpp" line="1449"/>
         <source>Arduino code successfully generated.</source>
         <translation>Επιτυχής δημιουργία κώδικα Arduino.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1477"/>
+        <location filename="../../UI/MainWindow.cpp" line="1476"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>Ο κώδικας SystemVerilog δημιουργήθηκε επιτυχώς.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1514"/>
+        <location filename="../../UI/MainWindow.cpp" line="1513"/>
         <source>Generate Arduino Code</source>
         <translation>Δημιουργία Κώδικα Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1514"/>
+        <location filename="../../UI/MainWindow.cpp" line="1513"/>
         <source>Arduino file (*.ino)</source>
         <translation>Αρχείο Arduino (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
+        <location filename="../../UI/MainWindow.cpp" line="1535"/>
         <source>Generate SystemVerilog Code</source>
         <translation>Δημιουργία κώδικα SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
+        <location filename="../../UI/MainWindow.cpp" line="1535"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>Αρχείο SystemVerilog (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1647"/>
+        <location filename="../../UI/MainWindow.cpp" line="1646"/>
         <source>Export to PDF</source>
         <translation>Εξαγωγή σε PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1647"/>
+        <location filename="../../UI/MainWindow.cpp" line="1646"/>
         <source>PDF files (*.pdf)</source>
         <translation>Αρχεία PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1984"/>
+        <location filename="../../UI/MainWindow.cpp" line="1983"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>Τα επιλεγμένα αρχεία (και οι εξαρτήσεις τους) θα αντιγραφούν στον τρέχοντα φάκελο του έργου.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2043"/>
+        <location filename="../../UI/MainWindow.cpp" line="2049"/>
         <source>Name Collision</source>
         <translation>Σύγκρουση ονομάτων</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2044"/>
+        <location filename="../../UI/MainWindow.cpp" line="2050"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>Ένα ενσωματωμένο IC με όνομα &quot;%1&quot; υπάρχει ήδη.
 Προτεινόμενο όνομα:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2070"/>
-        <location filename="../../UI/MainWindow.cpp" line="2132"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2138"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Αποθηκεύστε πρώτα το έργο για να μπορούν να επιλυθούν τα IC.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2081"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
-        <location filename="../../UI/MainWindow.cpp" line="2232"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2145"/>
+        <location filename="../../UI/MainWindow.cpp" line="2238"/>
         <source>Could not read IC file: %1</source>
         <translation>Δεν ήταν δυνατή η ανάγνωση του αρχείου IC: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2089"/>
-        <location filename="../../UI/MainWindow.cpp" line="2157"/>
+        <location filename="../../UI/MainWindow.cpp" line="2095"/>
+        <location filename="../../UI/MainWindow.cpp" line="2163"/>
         <source>IC embedded successfully.</source>
         <translation>Το IC ενσωματώθηκε επιτυχώς.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2109"/>
-        <location filename="../../UI/MainWindow.cpp" line="2180"/>
+        <location filename="../../UI/MainWindow.cpp" line="2115"/>
+        <location filename="../../UI/MainWindow.cpp" line="2186"/>
         <source>Extract IC to file...</source>
         <translation>Εξαγωγή IC σε αρχείο...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2120"/>
-        <location filename="../../UI/MainWindow.cpp" line="2191"/>
+        <location filename="../../UI/MainWindow.cpp" line="2126"/>
+        <location filename="../../UI/MainWindow.cpp" line="2197"/>
         <source>IC extracted to %1</source>
         <translation>Το IC εξήχθη στο %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2104"/>
-        <location filename="../../UI/MainWindow.cpp" line="2169"/>
-        <location filename="../../UI/MainWindow.cpp" line="2204"/>
+        <location filename="../../UI/MainWindow.cpp" line="2110"/>
+        <location filename="../../UI/MainWindow.cpp" line="2175"/>
+        <location filename="../../UI/MainWindow.cpp" line="2210"/>
         <source>Please save the project first.</source>
         <translation>Αποθηκεύστε πρώτα το έργο.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2221"/>
+        <location filename="../../UI/MainWindow.cpp" line="2227"/>
         <source>No file-based ICs to embed.</source>
         <translation>Δεν υπάρχουν IC βασισμένα σε αρχεία για ενσωμάτωση.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2247"/>
+        <location filename="../../UI/MainWindow.cpp" line="2253"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>Ενσωματώθηκαν %1 IC. Το κύκλωμα είναι πλέον αυτόνομο.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1658"/>
-        <location filename="../../UI/MainWindow.cpp" line="1686"/>
+        <location filename="../../UI/MainWindow.cpp" line="1657"/>
+        <location filename="../../UI/MainWindow.cpp" line="1685"/>
         <source>Exported file successfully.</source>
         <translation>Επιτυχής εξαγωγή αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="964"/>
+        <location filename="../../UI/MainWindow.cpp" line="961"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Συντομεύσεις καμβά&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Μεγέθυνση &lt;/li&gt;&lt;li&gt; Ctrl+- : Σμίκρυνση &lt;/li&gt;&lt;li&gt; Ctrl+1 : Απόκρυψη/Εμφάνιση καλωδίων &lt;/li&gt;&lt;li&gt; Ctrl+2 : Απόκρυψη/Εμφάνιση πυλών &lt;/li&gt;&lt;li&gt; Ctrl+F : Αναζήτηση στοιχείων &lt;/li&gt;&lt;li&gt; Ctrl+W : Άνοιγμα beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Αποθήκευση έργου &lt;/li&gt;&lt;li&gt; Ctrl+Q : Έξοδος από wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Εκκίνηση/Παύση προσομοίωσης &lt;/li&gt;&lt;li&gt; [ : Προηγούμενη κύρια ιδιότητα στοιχείου &lt;/li&gt;&lt;li&gt; ] : Επόμενη κύρια ιδιότητα στοιχείου &lt;/li&gt;&lt;li&gt; { : Προηγούμενη δευτερεύουσα ιδιότητα στοιχείου &lt;/li&gt;&lt;li&gt; } : Επόμενη δευτερεύουσα ιδιότητα στοιχείου &lt;/li&gt;&lt;li&gt; &amp;lt; : Μετατροπή σε προηγούμενο στοιχείο &lt;/li&gt;&lt;li&gt; &amp;gt; : Μετατροπή σε επόμενο στοιχείο &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Γενικές συμβουλές&lt;/h1&gt;&lt;p&gt;Κάντε διπλό κλικ σε ένα καλώδιο για να δημιουργήσετε έναν κόμβο&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1025"/>
+        <location filename="../../UI/MainWindow.cpp" line="1022"/>
         <source>Exit</source>
         <translation>Έξοδος</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1675"/>
+        <location filename="../../UI/MainWindow.cpp" line="1674"/>
         <source>Export to Image</source>
         <translation>Εξαγωγή σε Εικόνα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1675"/>
+        <location filename="../../UI/MainWindow.cpp" line="1674"/>
         <source>PNG files (*.png)</source>
         <translation>Αρχεία PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
+        <location filename="../../UI/MainWindow.cpp" line="1356"/>
+        <location filename="../../UI/MainWindow.cpp" line="1922"/>
         <source>Unmute</source>
         <translation>Αποσίγαση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="1972"/>
         <source>Save file first.</source>
         <translation>Αποθηκεύστε πρώτα το αρχείο.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1976"/>
+        <location filename="../../UI/MainWindow.cpp" line="1975"/>
         <source>Panda (*.panda)</source>
         <translation>Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1984"/>
-        <location filename="../../UI/MainWindow.cpp" line="2001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1983"/>
+        <location filename="../../UI/MainWindow.cpp" line="2000"/>
         <source>Info</source>
         <translation>Πληροφορίες</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2001"/>
+        <location filename="../../UI/MainWindow.cpp" line="2000"/>
         <source>Drag here to remove.</source>
         <translation>Σύρετε εδώ για αφαίρεση.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
+        <location filename="../../UI/MainWindow.cpp" line="2032"/>
         <source>Error removing file: %1</source>
         <translation>Σφάλμα αφαίρεσης αρχείου: %1</translation>
     </message>
@@ -2487,12 +2487,12 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>Σφάλμα ροής κατά την ανάγνωση χάρτη συνδέσεων στη θέση %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Σφάλμα ροής κατά την ανάγνωση αναγνωριστικών θυρών σύνδεσης στη θέση %1</translation>
     </message>
@@ -2500,7 +2500,7 @@ Suggested name:</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="435"/>
+        <location filename="../../Main.cpp" line="443"/>
         <source>Error!</source>
         <translation>Σφάλμα!</translation>
     </message>
@@ -2586,7 +2586,7 @@ Suggested name:</source>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1035"/>
+        <location filename="../../Scene/Commands.cpp" line="1045"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Εγγραφή blob &quot;%1&quot;</translation>
     </message>
@@ -2594,7 +2594,7 @@ Suggested name:</source>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1058"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Αφαίρεση blob &quot;%1&quot;</translation>
     </message>
@@ -2637,18 +2637,18 @@ Suggested name:</source>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="564"/>
+        <location filename="../../Scene/Scene.cpp" line="569"/>
         <source>&amp;Undo</source>
         <translation>&amp;Αναίρεση</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="570"/>
+        <location filename="../../Scene/Scene.cpp" line="575"/>
         <source>&amp;Redo</source>
         <translation>&amp;Επανάληψη</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="590"/>
+        <location filename="../../Scene/Scene.cpp" line="595"/>
         <source>Paste</source>
         <translation>Επικόλληση</translation>
     </message>
@@ -2725,7 +2725,7 @@ Suggested name:</source>
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="243"/>
+        <location filename="../../Simulation/Simulation.cpp" line="297"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Προειδοποίηση: το κύκλωμα ανάδρασης δεν συγκλίνει — το κύκλωμα μπορεί να ταλαντώνεται.</translation>
     </message>
@@ -2766,12 +2766,17 @@ Suggested name:</source>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
+        <source>Could not open file for writing: %1</source>
+        <translation>Δεν ήταν δυνατό το άνοιγμα του αρχείου για εγγραφή: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1234"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Η μεταβλητή εξόδου δεν έχει αντιστοιχιστεί στον πίνακα αληθείας: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
         <source>Element type not supported: %1</source>
         <translation>Τύπος στοιχείου δεν υποστηρίζεται: %1</translation>
     </message>
@@ -2805,14 +2810,19 @@ Suggested name:</source>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="976"/>
+        <location filename="../../Scene/Commands.cpp" line="978"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Εναλλαγή Εξόδου Πίνακα Αληθείας στη θέση: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="985"/>
+        <location filename="../../Scene/Commands.cpp" line="987"/>
         <source>Could not find truthtable element!</source>
         <translation>Δεν βρέθηκε στοιχείο πίνακα αληθείας!</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="994"/>
+        <source>TruthTable toggle position out of range: %1</source>
+        <translation>Η θέση εναλλαγής του πίνακα αληθείας είναι εκτός εμβέλειας: %1</translation>
     </message>
 </context>
 <context>
@@ -2844,7 +2854,7 @@ Suggested name:</source>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1091"/>
+        <location filename="../../Scene/Commands.cpp" line="1101"/>
         <source>Update %1 IC blobs</source>
         <translation>Ενημέρωση %1 IC blobs</translation>
     </message>
@@ -3028,12 +3038,19 @@ A backup of the original file has been created with name: %3</source>
         <translation>Εκτέλεση λειτουργίας MCP με ορατό παράθυρο GUI.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="395"/>
+        <location filename="../../Main.cpp" line="356"/>
+        <location filename="../../Main.cpp" line="368"/>
+        <location filename="../../Main.cpp" line="380"/>
+        <source>Error: no input circuit file given.</source>
+        <translation>Σφάλμα: δεν δόθηκε αρχείο κυκλώματος εισόδου.</translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="403"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Σφάλμα: Το κύκλωμα περιέχει στοιχεία Πίνακα Αληθείας.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="440"/>
+        <location filename="../../Main.cpp" line="448"/>
         <source>Error: </source>
         <translation>Σφάλμα: </translation>
     </message>

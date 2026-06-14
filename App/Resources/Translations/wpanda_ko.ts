@@ -33,37 +33,37 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="30"/>
         <source>Could not open file for writing: %1</source>
         <translation>파일을 쓰기용으로 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="202"/>
         <source>Not enough pins available for all input elements</source>
         <translation>모든 입력 요소에 사용할 수 있는 핀이 부족합니다</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="229"/>
         <source>Not enough pins available for all rotary switch positions</source>
         <translation>로터리 스위치의 모든 위치에 사용할 수 있는 핀이 부족합니다</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="264"/>
         <source>Not enough pins available for all output elements</source>
         <translation>모든 출력 요소에 사용할 수 있는 핀이 부족합니다</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="690"/>
         <source>Element type not supported: %1</source>
         <translation>지원되지 않는 요소 유형: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="913"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>진리표에 출력 변수가 매핑되지 않았습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1157"/>
         <source>Could not open testbench file: %1</source>
         <translation>테스트벤치 파일을 열 수 없습니다: %1</translation>
     </message>
@@ -165,7 +165,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1361"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>PDF로 내보내기</translation>
@@ -381,8 +381,8 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1113"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1245"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin 시뮤레이터</translation>
     </message>
@@ -407,44 +407,44 @@
         <translation>회로에 출력 요소가 없습니다. 파형을 생성하려면 최소 하나의 출력(예: LED 또는 Display)을 추가하세요.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="517"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1163"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="518"/>
         <source>Save simulation before closing?</source>
         <translation>종료하기 전에 시뮬레이션을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1164"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>이 beWavedDolphin 파일을 현재 wiRedPanda 파일에 연결하여 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1395"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin은 wiRedPanda용 파형 시뮬레이터로, 상파울루 연방 대학교에서 학생들의 논리 회로 학습을 돕기 위해 개발했습니다.&lt;/p&gt;&lt;p&gt;소프트웨어 버전: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;제작자:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin은 현재 Prof. Fábio Cappabianco, Ph.D.와 그의 학생들이 관리하고 있습니다.&lt;/p&gt;&lt;p&gt; 버그를 발견하거나 새로운 기능을 요청하려면 GitHub 페이지에 보고해 주세요.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;웹사이트를 방문하세요!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1093"/>
         <source>Save File as...</source>
         <translation>다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1090"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV 파일 (*.csv);;Dolphin 파일 (*.dolphin);;지원되는 모든 파일 (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1091"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin 파일 (*.dolphin);;CSV 파일 (*.csv);;지원되는 모든 파일 (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1077"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1114"/>
         <source>Saved file successfully.</source>
         <translation>파일이 성공적으로 저장되었습니다.</translation>
     </message>
@@ -464,73 +464,73 @@
         <translation>%1행에 %2개의 값이 있지만 %3개가 필요합니다.&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="481"/>
         <source>Waveform would be too big! Resetting zoom.</source>
         <translation>파형이 너무 큽니다! 확대/축소를 재설정합니다.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="714"/>
         <source>No cells selected.</source>
         <translation>선택된 셀이 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1126"/>
         <source>Error opening file: %1</source>
         <translation>파일 열기 오류: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1140"/>
         <source>Error saving file: %1</source>
         <translation>파일 저장 오류: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1195"/>
         <source>Open File</source>
         <translation>파일 열기</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1196"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>지원되는 모든 파일 (*.dolphin *.csv);;Dolphin 파일 (*.dolphin);;CSV 파일 (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1204"/>
         <source>File loaded successfully.</source>
         <translation>파일이 성공적으로 로드되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1220"/>
         <source>Could not open file for reading: %1</source>
         <translation>파일을 읽기용으로 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1239"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>지원되지 않는 형식입니다. 파일을 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1327"/>
         <source>Export to Image</source>
         <translation>이미지로 내보내기</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1327"/>
         <source>PNG files (*.png)</source>
         <translation>PNG 파일 (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1361"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF 파일 (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1381"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>이 회로를 PDF로 인쇄할 수 없습니다.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1213"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>파일 &quot;%1&quot;이(가) 존재하지 않습니다!</translation>
     </message>
@@ -551,12 +551,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="882"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change input size to %1</source>
         <translation>입력 크기를 %1로 변경</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="885"/>
         <source>Change output size to %1</source>
         <translation>출력 크기를 %1로 변경</translation>
     </message>
@@ -1088,29 +1088,29 @@
         <translation>보라색</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="595"/>
+        <location filename="../../UI/ElementEditor.cpp" line="598"/>
         <source>Duplicate Wireless Channel</source>
         <translation>무선 채널 중복</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="599"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>레이블 &quot;%1&quot;의 Tx 노드가 이미 존재합니다.
 각 무선 채널에는 고유한 레이블이 있어야 합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="662"/>
+        <location filename="../../UI/ElementEditor.cpp" line="665"/>
         <source>Change wireless mode</source>
         <translation>무선 모드 변경</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="865"/>
+        <location filename="../../UI/ElementEditor.cpp" line="873"/>
         <source>Select any audio</source>
         <translation>오디오 선택</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="866"/>
+        <location filename="../../UI/ElementEditor.cpp" line="874"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>오디오 (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1167,22 +1167,22 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="38"/>
+        <location filename="../../Element/ElementFactory.cpp" line="41"/>
         <source>MULTIPLE TYPES</source>
         <translation>다중 유형</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="48"/>
+        <location filename="../../Element/ElementFactory.cpp" line="51"/>
         <source>Unknown</source>
         <translation>알 수 없음</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
+        <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Unknown element type: %1</source>
         <translation>알 수 없는 요소 유형: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
+        <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>Unknown type: %1</source>
         <translation>알 수 없는 유형: %1</translation>
     </message>
@@ -1190,7 +1190,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="823"/>
+        <location filename="../../Scene/Commands.cpp" line="825"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%2 축에서 %1개 요소 뒤집기</translation>
     </message>
@@ -1218,7 +1218,7 @@ Each wireless channel must have a unique label.</source>
         <translation>픽스맵을 로드할 수 없습니다: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="659"/>
+        <location filename="../../Element/GraphicElement.cpp" line="671"/>
         <source>Default</source>
         <translation>기본값</translation>
     </message>
@@ -1251,47 +1251,47 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="114"/>
+        <location filename="../../Element/IC.cpp" line="116"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="115"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>집적 회로</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="226"/>
+        <location filename="../../Element/IC.cpp" line="228"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC 로드: 직렬화된 데이터에 IC 이름이 없습니다</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="351"/>
+        <location filename="../../Element/IC.cpp" line="354"/>
         <source>%1 not found.</source>
         <translation>%1을(를) 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="392"/>
+        <location filename="../../Element/IC.cpp" line="399"/>
         <source>Circular IC reference detected: %1</source>
         <translation>순환 IC 참조가 감지되었습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="399"/>
+        <location filename="../../Element/IC.cpp" line="406"/>
         <source>Error opening file: %1</source>
         <translation>파일 열기 오류: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="453"/>
+        <location filename="../../Element/IC.cpp" line="460"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC 마이그레이션: 파일을 쓰기용으로 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
+        <location filename="../../Element/IC.cpp" line="467"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC 마이그레이션: 다시 저장한 파일을 커밋하지 못했습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="519"/>
+        <location filename="../../Element/IC.cpp" line="526"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>IC 중첩 깊이 한계(%1)를 초과했습니다 — blob이 악의적으로 조작되었을 수 있습니다</translation>
     </message>
@@ -1968,8 +1968,8 @@ Each wireless channel must have a unique label.</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
+        <location filename="../../UI/MainWindow.cpp" line="1356"/>
+        <location filename="../../UI/MainWindow.cpp" line="1922"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>음소거</translation>
@@ -2000,7 +2000,7 @@ Each wireless channel must have a unique label.</source>
         <translation>시뮤레이션을 재시작합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="963"/>
+        <location filename="../../UI/MainWindow.cpp" line="960"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>단축키와 팁</translation>
@@ -2012,9 +2012,9 @@ Each wireless channel must have a unique label.</source>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="434"/>
-        <location filename="../../UI/MainWindow.cpp" line="673"/>
-        <location filename="../../UI/MainWindow.cpp" line="1176"/>
-        <location filename="../../UI/MainWindow.cpp" line="1715"/>
+        <location filename="../../UI/MainWindow.cpp" line="670"/>
+        <location filename="../../UI/MainWindow.cpp" line="1175"/>
+        <location filename="../../UI/MainWindow.cpp" line="1714"/>
         <source>New Project</source>
         <translation>새 프로젝트</translation>
     </message>
@@ -2024,35 +2024,35 @@ Each wireless channel must have a unique label.</source>
         <translation>파일이 성공적으로 저장되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="654"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>파일이 저장되지 않았습니다. 그래도 탭을 닫으시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="675"/>
+        <location filename="../../UI/MainWindow.cpp" line="672"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> 이 수정되었습니다.
 변경사항을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="747"/>
+        <location filename="../../UI/MainWindow.cpp" line="744"/>
         <source>File loaded successfully.</source>
         <translation>파일이 성공적으로 로드되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="1976"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="1975"/>
         <source>Open File</source>
         <translation>파일 열기</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
-        <location filename="../../UI/MainWindow.cpp" line="2109"/>
-        <location filename="../../UI/MainWindow.cpp" line="2180"/>
+        <location filename="../../UI/MainWindow.cpp" line="804"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
+        <location filename="../../UI/MainWindow.cpp" line="2115"/>
+        <location filename="../../UI/MainWindow.cpp" line="2186"/>
         <source>Panda files (*.panda)</source>
         <translation>판다 파일 (*.panda)</translation>
     </message>
@@ -2092,54 +2092,54 @@ Do you want to save your changes?</source>
         <translation>다운로드</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>wiRedPanda %1 다운로드 중…</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
+        <location filename="../../UI/MainWindow.cpp" line="576"/>
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="579"/>
+        <location filename="../../UI/MainWindow.cpp" line="577"/>
         <source>Downloading Update</source>
         <translation>업데이트 다운로드</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Download Failed</source>
         <translation>다운로드 실패</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
+        <location filename="../../UI/MainWindow.cpp" line="601"/>
         <source>Could not download the update:
 %1</source>
         <translation>업데이트를 다운로드할 수 없습니다:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="609"/>
         <source>Could not save the file:
 %1</source>
         <translation>파일을 저장할 수 없습니다:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="620"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>Download Complete</source>
         <translation>다운로드 완료</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="621"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda가 다운로드된 위치:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="633"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2158,226 +2158,226 @@ wiRedPanda %1 는 현재 프로젝트와 같은 디렉터리에 있는 다른 �
 IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 전에 새 프로젝트를 저장해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
+        <location filename="../../UI/MainWindow.cpp" line="838"/>
+        <location filename="../../UI/MainWindow.cpp" line="892"/>
         <source>Save File as ...</source>
         <translation>다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="853"/>
-        <location filename="../../UI/MainWindow.cpp" line="906"/>
+        <location filename="../../UI/MainWindow.cpp" line="850"/>
+        <location filename="../../UI/MainWindow.cpp" line="903"/>
         <source>File Conflict</source>
         <translation>파일 충돌</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="854"/>
-        <location filename="../../UI/MainWindow.cpp" line="907"/>
+        <location filename="../../UI/MainWindow.cpp" line="851"/>
+        <location filename="../../UI/MainWindow.cpp" line="904"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>&quot;%1&quot; 파일이 이미 다른 탭에서 열려 있습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="857"/>
-        <location filename="../../UI/MainWindow.cpp" line="910"/>
+        <location filename="../../UI/MainWindow.cpp" line="854"/>
+        <location filename="../../UI/MainWindow.cpp" line="907"/>
         <source>Switch to Tab</source>
         <translation>탭으로 전환</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1026"/>
+        <location filename="../../UI/MainWindow.cpp" line="1023"/>
         <source>Are you sure?</source>
         <translation>확실하십니까?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1984"/>
+        <location filename="../../UI/MainWindow.cpp" line="1983"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
         <translation>선택한 파일(및 종속 파일)이 현재 프로젝트 폴더에 복사됩니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2043"/>
+        <location filename="../../UI/MainWindow.cpp" line="2049"/>
         <source>Name Collision</source>
         <translation>이름 충돌</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2044"/>
+        <location filename="../../UI/MainWindow.cpp" line="2050"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>&quot;%1&quot;라는 임베디드 IC가 이미 존재합니다.
 제안 이름:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2070"/>
-        <location filename="../../UI/MainWindow.cpp" line="2132"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2138"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>IC를 확인하려면 먼저 프로젝트를 저장하세요.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2081"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
-        <location filename="../../UI/MainWindow.cpp" line="2232"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2145"/>
+        <location filename="../../UI/MainWindow.cpp" line="2238"/>
         <source>Could not read IC file: %1</source>
         <translation>IC 파일을 읽을 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2089"/>
-        <location filename="../../UI/MainWindow.cpp" line="2157"/>
+        <location filename="../../UI/MainWindow.cpp" line="2095"/>
+        <location filename="../../UI/MainWindow.cpp" line="2163"/>
         <source>IC embedded successfully.</source>
         <translation>IC가 성공적으로 임베드되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2109"/>
-        <location filename="../../UI/MainWindow.cpp" line="2180"/>
+        <location filename="../../UI/MainWindow.cpp" line="2115"/>
+        <location filename="../../UI/MainWindow.cpp" line="2186"/>
         <source>Extract IC to file...</source>
         <translation>IC를 파일로 추출...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2120"/>
-        <location filename="../../UI/MainWindow.cpp" line="2191"/>
+        <location filename="../../UI/MainWindow.cpp" line="2126"/>
+        <location filename="../../UI/MainWindow.cpp" line="2197"/>
         <source>IC extracted to %1</source>
         <translation>IC가 %1에 추출되었습니다</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2104"/>
-        <location filename="../../UI/MainWindow.cpp" line="2169"/>
-        <location filename="../../UI/MainWindow.cpp" line="2204"/>
+        <location filename="../../UI/MainWindow.cpp" line="2110"/>
+        <location filename="../../UI/MainWindow.cpp" line="2175"/>
+        <location filename="../../UI/MainWindow.cpp" line="2210"/>
         <source>Please save the project first.</source>
         <translation>먼저 프로젝트를 저장하세요.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2221"/>
+        <location filename="../../UI/MainWindow.cpp" line="2227"/>
         <source>No file-based ICs to embed.</source>
         <translation>임베드할 파일 기반 IC가 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2247"/>
+        <location filename="../../UI/MainWindow.cpp" line="2253"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>%1개의 IC가 임베드되었습니다. 회로가 자체 포함형이 되었습니다.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <location filename="../../UI/MainWindow.cpp" line="1244"/>
-        <location filename="../../UI/MainWindow.cpp" line="2070"/>
-        <location filename="../../UI/MainWindow.cpp" line="2081"/>
-        <location filename="../../UI/MainWindow.cpp" line="2104"/>
-        <location filename="../../UI/MainWindow.cpp" line="2132"/>
-        <location filename="../../UI/MainWindow.cpp" line="2139"/>
-        <location filename="../../UI/MainWindow.cpp" line="2169"/>
-        <location filename="../../UI/MainWindow.cpp" line="2204"/>
-        <location filename="../../UI/MainWindow.cpp" line="2232"/>
+        <location filename="../../UI/MainWindow.cpp" line="1243"/>
+        <location filename="../../UI/MainWindow.cpp" line="2076"/>
+        <location filename="../../UI/MainWindow.cpp" line="2087"/>
+        <location filename="../../UI/MainWindow.cpp" line="2110"/>
+        <location filename="../../UI/MainWindow.cpp" line="2138"/>
+        <location filename="../../UI/MainWindow.cpp" line="2145"/>
+        <location filename="../../UI/MainWindow.cpp" line="2175"/>
+        <location filename="../../UI/MainWindow.cpp" line="2210"/>
+        <location filename="../../UI/MainWindow.cpp" line="2238"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="942"/>
+        <location filename="../../UI/MainWindow.cpp" line="939"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda는 상파울루 연방 대학교 학생들이 개발한 소프트웨어로, 학생들의 논리 회로 학습을 돕습니다.&lt;/p&gt;&lt;p&gt;소프트웨어 버전: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;제작자:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda는 현재 Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves, Maycon A. Santana가 관리하고 있습니다.&lt;/p&gt;&lt;p&gt; 버그를 발견하거나 새로운 기능을 요청하려면 GitHub 페이지에 보고해 주세요.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;웹사이트를 방문하세요!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="964"/>
+        <location filename="../../UI/MainWindow.cpp" line="961"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;캔버스 단축키&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : 확대 &lt;/li&gt;&lt;li&gt; Ctrl+- : 축소 &lt;/li&gt;&lt;li&gt; Ctrl+1 : 와이어 표시/숨기기 &lt;/li&gt;&lt;li&gt; Ctrl+2 : 게이트 표시/숨기기 &lt;/li&gt;&lt;li&gt; Ctrl+F : 요소 검색 &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin 열기 &lt;/li&gt;&lt;li&gt; Ctrl+S : 프로젝트 저장 &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda 종료 &lt;/li&gt;&lt;li&gt; F5 : 시뮬레이션 시작/일시정지 &lt;/li&gt;&lt;li&gt; [ : 이전 기본 요소 속성 &lt;/li&gt;&lt;li&gt; ] : 다음 기본 요소 속성 &lt;/li&gt;&lt;li&gt; { : 이전 보조 요소 속성 &lt;/li&gt;&lt;li&gt; } : 다음 보조 요소 속성 &lt;/li&gt;&lt;li&gt; &amp;lt; : 이전 요소로 변환 &lt;/li&gt;&lt;li&gt; &amp;gt; : 다음 요소로 변환 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;일반 팁&lt;/h1&gt;&lt;p&gt;와이어를 더블 클릭하여 노드 생성&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1025"/>
+        <location filename="../../UI/MainWindow.cpp" line="1022"/>
         <source>Exit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
+        <location filename="../../UI/MainWindow.cpp" line="1432"/>
+        <location filename="../../UI/MainWindow.cpp" line="1461"/>
+        <location filename="../../UI/MainWindow.cpp" line="1484"/>
         <source>Missing file name.</source>
         <translation>파일 이름이 누락되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
+        <location filename="../../UI/MainWindow.cpp" line="1438"/>
+        <location filename="../../UI/MainWindow.cpp" line="1467"/>
         <source>The .panda file is empty.</source>
         <translation>.panda 파일이 비어 있습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1450"/>
+        <location filename="../../UI/MainWindow.cpp" line="1449"/>
         <source>Arduino code successfully generated.</source>
         <translation>Arduino 코드가 성공적으로 생성되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1477"/>
+        <location filename="../../UI/MainWindow.cpp" line="1476"/>
         <source>SystemVerilog code successfully generated.</source>
         <translation>SystemVerilog 코드가 성공적으로 생성되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1514"/>
+        <location filename="../../UI/MainWindow.cpp" line="1513"/>
         <source>Generate Arduino Code</source>
         <translation>Arduino 코드 생성</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1514"/>
+        <location filename="../../UI/MainWindow.cpp" line="1513"/>
         <source>Arduino file (*.ino)</source>
         <translation>Arduino 파일 (*.ino)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
+        <location filename="../../UI/MainWindow.cpp" line="1535"/>
         <source>Generate SystemVerilog Code</source>
         <translation>SystemVerilog 코드 생성</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1536"/>
+        <location filename="../../UI/MainWindow.cpp" line="1535"/>
         <source>SystemVerilog file (*.sv)</source>
         <translation>SystemVerilog 파일 (*.sv)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1647"/>
+        <location filename="../../UI/MainWindow.cpp" line="1646"/>
         <source>Export to PDF</source>
         <translation>PDF로 내보내기</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1647"/>
+        <location filename="../../UI/MainWindow.cpp" line="1646"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF 파일 (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1658"/>
-        <location filename="../../UI/MainWindow.cpp" line="1686"/>
+        <location filename="../../UI/MainWindow.cpp" line="1657"/>
+        <location filename="../../UI/MainWindow.cpp" line="1685"/>
         <source>Exported file successfully.</source>
         <translation>파일이 성공적으로 내보내졌습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1675"/>
+        <location filename="../../UI/MainWindow.cpp" line="1674"/>
         <source>Export to Image</source>
         <translation>이미지로 내보내기</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1675"/>
+        <location filename="../../UI/MainWindow.cpp" line="1674"/>
         <source>PNG files (*.png)</source>
         <translation>PNG 파일 (*.png)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1923"/>
+        <location filename="../../UI/MainWindow.cpp" line="1356"/>
+        <location filename="../../UI/MainWindow.cpp" line="1922"/>
         <source>Unmute</source>
         <translation>음소거 해제</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1973"/>
+        <location filename="../../UI/MainWindow.cpp" line="1972"/>
         <source>Save file first.</source>
         <translation>먼저 파일을 저장하세요.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1976"/>
+        <location filename="../../UI/MainWindow.cpp" line="1975"/>
         <source>Panda (*.panda)</source>
         <translation>판다 (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1984"/>
-        <location filename="../../UI/MainWindow.cpp" line="2001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1983"/>
+        <location filename="../../UI/MainWindow.cpp" line="2000"/>
         <source>Info</source>
         <translation>정보</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2001"/>
+        <location filename="../../UI/MainWindow.cpp" line="2000"/>
         <source>Drag here to remove.</source>
         <translation>제거하려면 여기로 끌어다 놓으세요.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="2026"/>
+        <location filename="../../UI/MainWindow.cpp" line="2032"/>
         <source>Error removing file: %1</source>
         <translation>파일 삭제 오류: %1</translation>
     </message>
@@ -2487,12 +2487,12 @@ Suggested name:</source>
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>오프셋 %1에서 연결 맵을 읽는 중 스트림 오류</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>오프셋 %1에서 연결 포트 ID 읽기 중 스트림 오류</translation>
     </message>
@@ -2500,7 +2500,7 @@ Suggested name:</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="435"/>
+        <location filename="../../Main.cpp" line="443"/>
         <source>Error!</source>
         <translation>오류!</translation>
     </message>
@@ -2586,7 +2586,7 @@ Suggested name:</source>
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1035"/>
+        <location filename="../../Scene/Commands.cpp" line="1045"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>블롭 &quot;%1&quot; 등록</translation>
     </message>
@@ -2594,7 +2594,7 @@ Suggested name:</source>
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1058"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>blob &quot;%1&quot; 제거</translation>
     </message>
@@ -2637,18 +2637,18 @@ Suggested name:</source>
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="564"/>
+        <location filename="../../Scene/Scene.cpp" line="569"/>
         <source>&amp;Undo</source>
         <translation>실행 취소(&amp;U)</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="570"/>
+        <location filename="../../Scene/Scene.cpp" line="575"/>
         <source>&amp;Redo</source>
         <translation>다시 실행(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="590"/>
+        <location filename="../../Scene/Scene.cpp" line="595"/>
         <source>Paste</source>
         <translation>붙여넣기</translation>
     </message>
@@ -2725,7 +2725,7 @@ Suggested name:</source>
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="243"/>
+        <location filename="../../Simulation/Simulation.cpp" line="297"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>경고: 피드백 회로가 수렴하지 않았습니다 — 회로가 진동하고 있을 수 있습니다.</translation>
     </message>
@@ -2766,12 +2766,17 @@ Suggested name:</source>
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
+        <source>Could not open file for writing: %1</source>
+        <translation>파일을 쓰기용으로 열 수 없습니다: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1234"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>진리표에 출력 변수가 매핑되지 않았습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
         <source>Element type not supported: %1</source>
         <translation>지원되지 않는 요소 유형: %1</translation>
     </message>
@@ -2805,14 +2810,19 @@ Suggested name:</source>
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="976"/>
+        <location filename="../../Scene/Commands.cpp" line="978"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>위치 %1에서 진리표 출력 토글</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="985"/>
+        <location filename="../../Scene/Commands.cpp" line="987"/>
         <source>Could not find truthtable element!</source>
         <translation>진리표 요소를 찾을 수 없습니다!</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="994"/>
+        <source>TruthTable toggle position out of range: %1</source>
+        <translation>진리표 토글 위치가 범위를 벗어났습니다: %1</translation>
     </message>
 </context>
 <context>
@@ -2844,7 +2854,7 @@ Suggested name:</source>
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1091"/>
+        <location filename="../../Scene/Commands.cpp" line="1101"/>
         <source>Update %1 IC blobs</source>
         <translation>%1개의 IC 블롭 업데이트</translation>
     </message>
@@ -3028,12 +3038,19 @@ A backup of the original file has been created with name: %3</source>
         <translation>GUI 창이 보이는 상태로 MCP 모드를 실행합니다.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="395"/>
+        <location filename="../../Main.cpp" line="356"/>
+        <location filename="../../Main.cpp" line="368"/>
+        <location filename="../../Main.cpp" line="380"/>
+        <source>Error: no input circuit file given.</source>
+        <translation>오류: 입력 회로 파일이 지정되지 않았습니다.</translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="403"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>오류: 회로에 진리표 요소가 포함되어 있습니다.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="440"/>
+        <location filename="../../Main.cpp" line="448"/>
         <source>Error: </source>
         <translation>오류: </translation>
     </message>
