@@ -22,6 +22,7 @@ from pathlib import Path
 
 
 def find_repo_root():
+    """Return the repository root directory."""
     try:
         result = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         return Path(result.stdout.strip())
@@ -80,6 +81,7 @@ def snapshot_examples():
 
 
 def collect_panda_files():
+    """Return the list of .panda files to migrate."""
     files = []
     for d in PANDA_DIRS:
         if d.is_dir():
@@ -103,6 +105,7 @@ def remove_versioned_backups():
 
 
 async def send_command(proc, command, params, request_id):
+    """Send one MCP command over the subprocess pipe and await its response."""
     request = {"jsonrpc": "2.0", "method": command, "params": params, "id": request_id}
     line = json.dumps(request) + "\n"
     proc.stdin.write(line.encode("utf-8"))
@@ -113,6 +116,7 @@ async def send_command(proc, command, params, request_id):
 
 
 async def main():
+    """Migrate every .panda fixture to the current file format."""
     snapshot_examples()
 
     files = collect_panda_files()

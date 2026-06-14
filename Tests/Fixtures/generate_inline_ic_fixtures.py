@@ -26,8 +26,8 @@ from pathlib import Path
 project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(project_root / "MCP" / "Client"))
 
-from mcp_client.mcp_infrastructure import MCPInfrastructure  # noqa: E402
-from mcp_client.mcp_models import MCPResponse  # noqa: E402
+from mcp_client.mcp_infrastructure import MCPInfrastructure  # noqa: E402  # pylint: disable=wrong-import-position
+from mcp_client.mcp_models import MCPResponse  # noqa: E402  # pylint: disable=wrong-import-position
 
 FIXTURES_DIR = project_root / "Tests" / "Fixtures"
 
@@ -502,6 +502,7 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
 
 
 async def main() -> int:
+    """Generate all inline-IC .panda fixtures."""
     FIXTURES_DIR.mkdir(parents=True, exist_ok=True)
 
     mcp = MCPInfrastructure(enable_validation=True, verbose=False)

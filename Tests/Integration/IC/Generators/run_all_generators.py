@@ -255,11 +255,10 @@ class GeneratorRunner:
 
             if result.returncode == 0:
                 return True, "Success"
-            else:
-                # Extract error message - take last 3 lines for context
-                error_lines = result.stderr.strip().split("\n")
-                error_msg = " | ".join(error_lines[-3:]) if error_lines else "Unknown error"
-                return False, f"Exit code {result.returncode}: {error_msg}"
+            # Extract error message - take last 3 lines for context
+            error_lines = result.stderr.strip().split("\n")
+            error_msg = " | ".join(error_lines[-3:]) if error_lines else "Unknown error"
+            return False, f"Exit code {result.returncode}: {error_msg}"
 
         except subprocess.TimeoutExpired:
             return False, f"Timeout ({self.timeout}s)"
@@ -339,9 +338,8 @@ class GeneratorRunner:
         if failure_count == 0:
             print("✨ All generators completed successfully!")
             return 0
-        else:
-            print(f"⚠️  {failure_count} generator(s) failed. See details above.")
-            return 1
+        print(f"⚠️  {failure_count} generator(s) failed. See details above.")
+        return 1
 
     async def verify_output_files(self) -> None:
         """Verify that output .panda files were created and are valid"""

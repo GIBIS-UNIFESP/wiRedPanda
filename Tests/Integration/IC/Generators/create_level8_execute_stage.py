@@ -66,28 +66,28 @@ class ExecuteStageBuilder(ICBuilderBase):
         input_y = 100.0
 
         # ---- Create OperandA input switches (8-bit) ----
-        operandA_inputs = []
+        operand_a_inputs = []
         for i in range(8):
-            opA_id = await self.create_element(
+            op_a_id = await self.create_element(
                 "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"OperandA[{i}]"
             )
-            if opA_id is None:
+            if op_a_id is None:
                 return False
-            operandA_inputs.append(opA_id)
+            operand_a_inputs.append(op_a_id)
         await self.log("  ✓ Created 8 OperandA inputs")
 
         # ---- Create OperandB input switches (8-bit) ----
-        operandB_inputs = []
+        operand_b_inputs = []
         for i in range(8):
-            opB_id = await self.create_element(
+            op_b_id = await self.create_element(
                 "InputSwitch",
                 input_x + (i * HORIZONTAL_GATE_SPACING),
                 input_y + VERTICAL_STAGE_SPACING / 2,
                 f"OperandB[{i}]",
             )
-            if opB_id is None:
+            if op_b_id is None:
                 return False
-            operandB_inputs.append(opB_id)
+            operand_b_inputs.append(op_b_id)
         await self.log("  ✓ Created 8 OperandB inputs")
 
         # ---- Create ALUOp input switches (3-bit) ----
@@ -112,10 +112,10 @@ class ExecuteStageBuilder(ICBuilderBase):
 
         # ---- Connect operands and ALUOp to datapath ----
         for i in range(8):
-            if not await self.connect(operandA_inputs[i], datapath_id, target_port_label=f"OperandA[{i}]"):
+            if not await self.connect(operand_a_inputs[i], datapath_id, target_port_label=f"OperandA[{i}]"):
                 return False
 
-            if not await self.connect(operandB_inputs[i], datapath_id, target_port_label=f"OperandB[{i}]"):
+            if not await self.connect(operand_b_inputs[i], datapath_id, target_port_label=f"OperandB[{i}]"):
                 return False
 
         for i in range(3):

@@ -22,6 +22,7 @@ EXCLUDE_DIRS = {".git", ".venv", ".github", ".vscode", ".idea", "_deps", "cmake"
 
 
 def find_repo_root():
+    """Return the repository root directory."""
     try:
         result = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         return Path(result.stdout.strip())
@@ -30,6 +31,7 @@ def find_repo_root():
 
 
 def should_exclude_dir(dirname):
+    """Return True if a directory should be skipped when scanning for sources."""
     if dirname in EXCLUDE_DIRS:
         return True
     if dirname.startswith("."):
@@ -115,6 +117,7 @@ def update_pch_file(pch_path, used_includes):
 
 
 def main():
+    """Regenerate the precompiled-header include list from the source tree."""
     root = Path(sys.argv[1]) if len(sys.argv) > 1 else find_repo_root()
 
     if not root.exists():

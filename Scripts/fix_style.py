@@ -40,6 +40,7 @@ class IncludeEntry:
 
 
 def find_repo_root():
+    """Return the repository root directory."""
     try:
         result = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         return Path(result.stdout.strip())
@@ -248,10 +249,12 @@ def skip_initial_comments(lines):
 
 
 def is_cpp_file(filepath):
+    """Return True if the path is a .cpp source file."""
     return str(filepath).endswith(".cpp")
 
 
 def is_header_file(filepath):
+    """Return True if the path is a .h header file."""
     return str(filepath).endswith(".h")
 
 
@@ -261,7 +264,7 @@ def detect_violations(entries: list[IncludeEntry], is_cpp, filepath, original_li
 
     # The parser skips blank lines, so end_idx always points to a non-blank line.
     # A missing blank line means the line immediately before end_idx is not blank.
-    if end_idx < len(original_lines) and end_idx > 0 and original_lines[end_idx - 1].strip() != "":
+    if 0 < end_idx < len(original_lines) and original_lines[end_idx - 1].strip() != "":
         violations.append("Missing blank line after includes")
 
     if not entries:
@@ -490,6 +493,7 @@ def fix_file(filepath, verbose=False, force=False):
 
 
 def main():
+    """Apply include-ordering and trailing-style fixes across the source tree."""
     root = None
     verbose = False
     force = False

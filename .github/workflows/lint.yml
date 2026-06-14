@@ -139,3 +139,14 @@ jobs:
     - name: pyright (non-MCP Python)
       working-directory: ${{ github.workspace }}
       run: pyright -p pyrightconfig.nonmcp.json
+
+    # pylint reuses MCP/Client/.pylintrc (the shared rule philosophy) and adds one
+    # carve-out: --disable=duplicate-code. The IC generators are intentionally
+    # parallel one-script-per-IC files sharing a build skeleton; reuse already
+    # proved fragile (it broke the SystemVerilog codegen differential), so the
+    # repetition is by design, not a smell. PYTHONPATH supplies both import roots.
+    - name: pylint (non-MCP Python)
+      working-directory: ${{ github.workspace }}
+      env:
+        PYTHONPATH: MCP/Client:Tests/Integration/IC/Generators
+      run: pylint --rcfile=MCP/Client/.pylintrc --disable=duplicate-code Tests/Integration/IC/Generators Scripts Tests/Fixtures

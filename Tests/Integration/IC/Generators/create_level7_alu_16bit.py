@@ -64,22 +64,22 @@ class ALU16bitBuilder(ICBuilderBase):
 
         # ---- Create Input Switches ----
         # OperandA[0-15]
-        opA_inputs = []
+        op_a_inputs = []
         for i in range(16):
             elem_id = await self.create_element("InputSwitch", input_x, 100.0 + (i * 40.0), f"OperandA[{i}]")
             if elem_id is None:
                 return False
-            opA_inputs.append(elem_id)
+            op_a_inputs.append(elem_id)
 
         # OperandB[0-15]
-        opB_inputs = []
+        op_b_inputs = []
         for i in range(16):
             elem_id = await self.create_element(
                 "InputSwitch", input_x + HORIZONTAL_GATE_SPACING, 100.0 + (i * 40.0), f"OperandB[{i}]"
             )
             if elem_id is None:
                 return False
-            opB_inputs.append(elem_id)
+            op_b_inputs.append(elem_id)
 
         await self.log("  ✓ Created operand inputs")
 
@@ -111,18 +111,18 @@ class ALU16bitBuilder(ICBuilderBase):
         # ---- Connect operands to ALUs ----
         # Low byte: connect A[0-7], B[0-7]
         for i in range(8):
-            if not await self.connect(opA_inputs[i], alu_low_id, target_port_label=f"A[{i}]"):
+            if not await self.connect(op_a_inputs[i], alu_low_id, target_port_label=f"A[{i}]"):
                 return False
 
-            if not await self.connect(opB_inputs[i], alu_low_id, target_port_label=f"B[{i}]"):
+            if not await self.connect(op_b_inputs[i], alu_low_id, target_port_label=f"B[{i}]"):
                 return False
 
         # High byte: connect A[8-15], B[8-15]
         for i in range(8):
-            if not await self.connect(opA_inputs[8 + i], alu_high_id, target_port_label=f"A[{i}]"):
+            if not await self.connect(op_a_inputs[8 + i], alu_high_id, target_port_label=f"A[{i}]"):
                 return False
 
-            if not await self.connect(opB_inputs[8 + i], alu_high_id, target_port_label=f"B[{i}]"):
+            if not await self.connect(op_b_inputs[8 + i], alu_high_id, target_port_label=f"B[{i}]"):
                 return False
 
         await self.log("  ✓ Connected operands to ALUs")
@@ -158,9 +158,9 @@ class ALU16bitBuilder(ICBuilderBase):
         # bit-7 fill is the high half's LSB. Both fills are plain operand
         # bits, available right here. The outer fills keep their saved-off
         # defaults (zero fill).
-        if not await self.connect(opA_inputs[7], alu_high_id, target_port_label="ShlIn"):
+        if not await self.connect(op_a_inputs[7], alu_high_id, target_port_label="ShlIn"):
             return False
-        if not await self.connect(opA_inputs[8], alu_low_id, target_port_label="ShrIn"):
+        if not await self.connect(op_a_inputs[8], alu_low_id, target_port_label="ShrIn"):
             return False
 
         await self.log("  ✓ Chained SHL/SHR fills between the byte halves")
