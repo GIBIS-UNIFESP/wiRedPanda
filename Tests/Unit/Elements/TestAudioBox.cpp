@@ -42,7 +42,7 @@ void TestAudioBox::testConstructorInitialization()
     QCOMPARE(audioBox.outputSize(), 0);
 
     // Verify is rotatable
-    QVERIFY(audioBox.isRotatable());
+    QVERIFY(audioBox.rotatesGraphic());
 
     // Verify has audio box feature
     QVERIFY(audioBox.hasAudioBox());

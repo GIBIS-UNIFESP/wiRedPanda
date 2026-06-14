@@ -23,7 +23,7 @@ struct ElementInfo<Display16> {
         .canChangeAppearance = true,
         .hasColors = true,
         .hasLabel = true,
-        .rotatable = false,
+        .rotatesGraphic = false,
     };
     static_assert(validate(constraints));
 

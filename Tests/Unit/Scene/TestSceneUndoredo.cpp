@@ -1323,7 +1323,7 @@ void TestSceneUndoredo::testFlipNonRotatableElement()
     const int id1 = sw1->id();
     const int id2 = sw2->id();
 
-    QVERIFY(!sw1->isRotatable());
+    QVERIFY(!sw1->rotatesGraphic());
     QCOMPARE(sw1->rotation(), 0.0);
     QCOMPARE(sw2->rotation(), 0.0);
 
@@ -1361,7 +1361,7 @@ void TestSceneUndoredo::testFlipSingleElementPositionUnchanged()
     const int id = elm->id();
     const QPointF originalPos = elm->pos();
 
-    QVERIFY(elm->isRotatable());
+    QVERIFY(elm->rotatesGraphic());
     QVERIFY(!elm->isFlippedX());
 
     // Push flip (axis=0, single element): minX = maxX = pos.x()

@@ -26,7 +26,7 @@ struct ElementInfo<Clock> {
         .hasFrequency = true,
         .hasDelay = true,
         .hasLabel = true,
-        .rotatable = false,
+        .rotatesGraphic = false,
     };
     static_assert(validate(constraints));
 

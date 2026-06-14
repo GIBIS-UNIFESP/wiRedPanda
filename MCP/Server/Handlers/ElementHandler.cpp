@@ -328,7 +328,7 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         element->setFrequency(newFreq);
     }
 
-    if (params.contains("rotation") && element->isRotatable()) {
+    if (params.contains("rotation") && element->rotatesGraphic()) {
         qreal oldRotation = element->rotation();
         qreal newRotation = params.value("rotation").toDouble();
 
@@ -554,7 +554,7 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
-    if (!element->isRotatable()) {
+    if (!element->rotatesGraphic()) {
         return createErrorResponse(QString("Element %1 is not rotatable").arg(element->id()),
                                    requestId, JsonRpcError::ValidationError);
     }

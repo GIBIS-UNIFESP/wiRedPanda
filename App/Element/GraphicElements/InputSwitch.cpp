@@ -21,7 +21,7 @@ struct ElementInfo<InputSwitch> {
         .canChangeAppearance = true,
         .hasTrigger = true,
         .hasLabel = true,
-        .rotatable = false,
+        .rotatesGraphic = false,
     };
     static_assert(validate(constraints));
 

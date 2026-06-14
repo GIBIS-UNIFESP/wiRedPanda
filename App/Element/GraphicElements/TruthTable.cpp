@@ -75,7 +75,7 @@ void TruthTable::updatePortsProperties()
 
         for (auto *port : std::as_const(m_inputPorts)) {
 
-            if (!isRotatable()) {
+            if (!rotatesGraphic()) {
                 port->setRotation(0);
             }
 
@@ -97,7 +97,7 @@ void TruthTable::updatePortsProperties()
 
         for (auto *port : std::as_const(m_outputPorts)) {
 
-            if (!isRotatable()) {
+            if (!rotatesGraphic()) {
                 port->setRotation(0);
             }
 

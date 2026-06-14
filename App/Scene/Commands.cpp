@@ -717,7 +717,7 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
 
         // Copy over all compatible properties; each is guarded by capability checks
         // so that mismatched element types are silently skipped
-        if (newElm->isRotatable() && oldElm->isRotatable()) {
+        if (newElm->rotatesGraphic() && oldElm->rotatesGraphic()) {
             newElm->setRotation(oldElm->rotation());
         }
 
@@ -850,7 +850,7 @@ void FlipCommand::redo()
         // This applies a QTransform-based scale(-1) around the pixmap centre,
         // producing a true single-axis reflection (unlike rotation, which
         // flips both axes at once). Toggling is an involution, so undo == redo.
-        if (elm->isRotatable()) {
+        if (elm->rotatesGraphic()) {
             (m_axis == 0) ? elm->setFlippedX(!elm->isFlippedX())
                           : elm->setFlippedY(!elm->isFlippedY());
         }

@@ -328,7 +328,7 @@ void GraphicElement::setRotation(const qreal angle)
     // Rotatable elements rotate the entire QGraphicsItem (pixmap + ports move together).
     // Non-rotatable elements (inputs/outputs) keep the pixmap fixed and only spin ports
     // around the element centre so connections track the correct positions.
-    isRotatable() ? QGraphicsItem::setRotation(m_angle) : rotatePorts(m_angle);
+    rotatesGraphic() ? QGraphicsItem::setRotation(m_angle) : rotatePorts(m_angle);
 }
 
 void GraphicElement::rotatePorts(const qreal angle)
@@ -424,14 +424,14 @@ void GraphicElement::updatePortsProperties()
 
             // Non-rotatable elements (e.g. inputs) spin their ports in place rather than rotating
             // the whole item, so reset port rotation before applying the current element angle
-            if (!isRotatable()) {
+            if (!rotatesGraphic()) {
                 port->setRotation(0);
             }
 
             // Inputs are pinned to the left edge (x=0) of the 64 px body
             port->setPos(0, y);
 
-            if (!isRotatable()) {
+            if (!rotatesGraphic()) {
                 port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
                 port->setRotation(m_angle);
             }
@@ -448,14 +448,14 @@ void GraphicElement::updatePortsProperties()
         for (auto *port : std::as_const(m_outputPorts)) {
             qCDebug(five) << "Setting output at " << 64 << ", " << y;
 
-            if (!isRotatable()) {
+            if (!rotatesGraphic()) {
                 port->setRotation(0);
             }
 
             // Outputs are pinned to the right edge (x=64) of the 64 px body
             port->setPos(64, y);
 
-            if (!isRotatable()) {
+            if (!rotatesGraphic()) {
                 port->setTransformOriginPoint(mapToItem(port, pixmapCenter()));
                 port->setRotation(m_angle);
             }
@@ -748,9 +748,9 @@ bool GraphicElement::canChangeAppearance() const
     return ElementMetadataRegistry::metadata(m_elementType).canChangeAppearance;
 }
 
-bool GraphicElement::isRotatable() const
+bool GraphicElement::rotatesGraphic() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).rotatable;
+    return ElementMetadataRegistry::metadata(m_elementType).rotatesGraphic;
 }
 
 int GraphicElement::inputSize() const

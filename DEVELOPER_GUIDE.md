@@ -506,7 +506,7 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 | `hasLabel`      | Displays a text label                          |
 | `hasTruthTable` | Based on a truth table                         |
 | `hasVolume`     | Has volume control (e.g., Buzzer, AudioBox)    |
-| `rotatable`     | Can be rotated                                 |
+| `rotatesGraphic` | Rotating/flipping re-orients the graphic (false = icon fixed, ports still move) |
 
 `ElementMetadata` extends this with visual information: pixmap paths, translated names, default and alternative skins.
 
