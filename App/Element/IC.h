@@ -138,6 +138,10 @@ protected:
 private:
     // --- Utility methods ---
 
+    /// True when \a localPos (in IC item coordinates) lies over one of this IC's
+    /// ports.  Used to suppress the hover preview over the connection pins.
+    bool isCursorOverPort(const QPointF &localPos) const;
+
     void loadFileDirectly(const QFileInfo &fileInfo);
     void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
                      const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);

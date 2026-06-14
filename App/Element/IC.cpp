@@ -13,6 +13,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QSvgRenderer>
 
+#include <algorithm>
+
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
@@ -630,17 +632,49 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 // --- Hover preview ---
 
+bool IC::isCursorOverPort(const QPointF &localPos) const
+{
+    const auto ports = allPorts();
+    return std::any_of(ports.cbegin(), ports.cend(), [&](const QNEPort *port) {
+        return port->contains(mapToItem(port, localPos));
+    });
+}
+
 void IC::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    if (auto *popup = icPreviewPopup()) {
-        popup->showForIC(this, event->screenPos());
+    auto *popup = icPreviewPopup();
+    if (!popup) {
+        return;
     }
+
+    // The preview belongs to the IC body only — the ports are child items that
+    // don't consume hover events, so the IC also receives them over the pins.
+    if (isCursorOverPort(event->pos())) {
+        popup->scheduleHide();
+        return;
+    }
+
+    popup->showForIC(this, event->screenPos());
 }
 
 void IC::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    if (auto *popup = icPreviewPopup()) {
+    auto *popup = icPreviewPopup();
+    if (!popup) {
+        return;
+    }
+
+    if (isCursorOverPort(event->pos())) {
+        popup->scheduleHide();
+        return;
+    }
+
+    // Over the body: keep tracking the cursor while a show is pending, but
+    // re-arm the show when the cursor returns from a port within the same hover.
+    if (popup->isShowActiveFor(this)) {
         popup->updatePendingPos(event->screenPos());
+    } else {
+        popup->showForIC(this, event->screenPos());
     }
 }
 
