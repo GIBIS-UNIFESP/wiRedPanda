@@ -6,6 +6,7 @@
 #include <array>
 
 #include <QElapsedTimer>
+#include <QFontDatabase>
 #include <QMessageBox>
 
 #include "App/Core/Common.h"
@@ -74,6 +75,13 @@ bool Application::isSentryDenyMessage(const QString &message)
 Application::Application(int &argc, char **argv)
     : QApplication(argc, argv)
 {
+    // Register the bundled font used by element SVG labels (flip-flop / latch pin letters and the
+    // inverted-output overline glyph) so they render identically on every platform — before any
+    // GraphicElement pixmap is built and cached. Both the desktop entry and the test runner
+    // construct Application before any element exists, so this single spot covers both.
+    if (QFontDatabase::addApplicationFont(QStringLiteral(":/Fonts/NotoSans-Regular.ttf")) == -1) {
+        qWarning() << "Failed to register bundled font: NotoSans-Regular.ttf";
+    }
 }
 
 Application *Application::instance()

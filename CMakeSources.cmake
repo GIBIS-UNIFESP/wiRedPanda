@@ -215,11 +215,16 @@ set(RESOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Assets/Assets.qrc
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Components/Components.qrc
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Interface/Interface.qrc
+    # NotoSans-Regular is bundled on every platform: the memory-element SVG pin labels (and the
+    # U+0305 overline on inverted outputs) render with it, so it must ship — and be registered in
+    # Application's ctor — on desktop too, not only in the WASM build.
+    ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Fonts/Fonts.qrc
 )
 
 if(EMSCRIPTEN)
+    # The large per-script Noto fonts (CJK etc., ~17 MB) are only needed by the WASM language menu.
     list(APPEND RESOURCES
-        ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Fonts/Fonts.qrc
+        ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Fonts/ScriptFonts.qrc
     )
 endif()
 
