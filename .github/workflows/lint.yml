@@ -112,3 +112,10 @@ jobs:
     - name: vulture (non-MCP Python)
       working-directory: ${{ github.workspace }}
       run: vulture --min-confidence 80 Tests/Integration/IC/Generators Scripts Tests/Fixtures
+
+    # --search-path lets pyrefly resolve both import roots (mcp_client under
+    # MCP/Client, and the generators' sibling modules) without a config file,
+    # so the MCP/Client `pyrefly check` run above is untouched.
+    - name: pyrefly (non-MCP Python)
+      working-directory: ${{ github.workspace }}
+      run: pyrefly check --search-path MCP/Client --search-path Tests/Integration/IC/Generators Tests/Integration/IC/Generators Scripts Tests/Fixtures
