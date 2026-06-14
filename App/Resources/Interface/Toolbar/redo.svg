@@ -1,45 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   enable-background="new 0 0 24 24"
-   id="Layer_1"
-   version="1.0"
-   viewBox="0 0 24 24"
-   xml:space="preserve"
-   sodipodi:docname="redo.svg"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs9"><linearGradient
-       id="linearGradient8034"
-       inkscape:swatch="solid"><stop
-         style="stop-color:#000000;stop-opacity:1;"
-         offset="0"
-         id="stop8032" /></linearGradient></defs><sodipodi:namedview
-     id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     showgrid="false"
-     inkscape:zoom="42.791667"
-     inkscape:cx="12.023369"
-     inkscape:cy="11.988315"
-     inkscape:window-width="1765"
-     inkscape:window-height="1679"
-     inkscape:window-x="1767"
-     inkscape:window-y="309"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="Layer_1" /><polygon
-     points="22,7 15,2 15,12 "
-     id="polygon2"
-     style="display:inline;mix-blend-mode:normal;fill:#bd2812;fill-opacity:1" /><g
-     id="path4"
-     style="stroke:none;stroke-opacity:1;fill:#bd2812;fill-opacity:1"><path
-       style="color:#000000;mix-blend-mode:darken;fill:#bd2812;stroke-miterlimit:10;-inkscape-stroke:none;fill-opacity:1;stroke:none;stroke-opacity:1"
-       d="M 10.5,5 C 5.8259306,5 2,8.8259306 2,13.5 2,18.174069 5.8259306,22 10.5,22 H 22 V 18 H 10.5 C 7.9740766,18 6,16.025923 6,13.5 6,10.974077 7.9740766,9 10.5,9 H 18 V 5 Z"
-       id="path9554" /></g></svg>
+<svg enable-background="new 0 0 24 24" version="1.0" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="22,7 15,2 15,12 " style="display:inline;mix-blend-mode:normal;fill:#bd2812;fill-opacity:1"/>
+  <g style="stroke:none;stroke-opacity:1;fill:#bd2812;fill-opacity:1">
+    <path style="color:#000000;mix-blend-mode:darken;fill:#bd2812;stroke-miterlimit:10;-inkscape-stroke:none;fill-opacity:1;stroke:none;stroke-opacity:1" d="M 10.5,5 C 5.8259306,5 2,8.8259306 2,13.5 2,18.174069 5.8259306,22 10.5,22 H 22 V 18 H 10.5 C 7.9740766,18 6,16.025923 6,13.5 6,10.974077 7.9740766,9 10.5,9 H 18 V 5 Z"/>
+  </g>
+</svg>

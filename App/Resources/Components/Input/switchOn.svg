@@ -1,153 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   width="64px"
-   height="64px"
-   id="svg2985"
-   version="1.1"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
-   sodipodi:docname="switchOn.svg"
-   inkscape:export-filename="/home/davi/git/wiRedPanda/app/resources/input/switchOn.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <defs
-     id="defs2987">
-    <filter
-       id="filter3987"
-       inkscape:label="Glow"
-       inkscape:menu="Shadows and Glows"
-       inkscape:menu-tooltip="Glow of object's own color at the edges"
-       color-interpolation-filters="sRGB">
-      <feGaussianBlur
-         id="feGaussianBlur3989"
-         stdDeviation="5"
-         result="result91" />
-      <feComposite
-         id="feComposite3991"
-         in2="result91"
-         in="SourceGraphic"
-         operator="over" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3797"
-       x="-0.11800064"
-       width="1.2360013"
-       y="-0.23009758"
-       height="1.4601952">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="1.1665276"
-         id="feGaussianBlur3799" />
+<svg width="64px" height="64px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="filter3797" x="-0.11800064" width="1.2360013" y="-0.23009758" height="1.4601952">
+      <feGaussianBlur stdDeviation="1.1665276"/>
     </filter>
   </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="8"
-     inkscape:cx="-16.3125"
-     inkscape:cy="31.4375"
-     inkscape:current-layer="svg2985"
-     showgrid="true"
-     inkscape:document-units="px"
-     inkscape:grid-bbox="true"
-     showguides="true"
-     inkscape:guide-bbox="true"
-     inkscape:window-width="1350"
-     inkscape:window-height="1230"
-     inkscape:window-x="468"
-     inkscape:window-y="468"
-     inkscape:window-maximized="0"
-     inkscape:showpageshadow="2"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1">
-    <sodipodi:guide
-       orientation="1,0"
-       position="32.003906,43.21875"
-       id="guide2993"
-       inkscape:locked="false" />
-  </sodipodi:namedview>
-  <metadata
-     id="metadata2990">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     style="display:inline">
-    <rect
-       style="fill:#a59290;fill-opacity:1;stroke:none"
-       id="rect3901"
-       width="33.894081"
-       height="46.135773"
-       x="15"
-       y="11.864227"
-       rx="3.2506468" />
-    <rect
-       style="fill:#e1dada;fill-opacity:1;stroke:none"
-       id="rect3901-8"
-       width="34"
-       height="46.135773"
-       x="15"
-       y="10.169523"
-       rx="3.2608049" />
-    <rect
-       style="fill:#881c0c;fill-opacity:1;stroke:none"
-       id="rect3924"
-       width="23.725857"
-       height="19.098467"
-       x="20.084112"
-       y="33.204361"
-       rx="0"
-       ry="0" />
-    <rect
-       style="fill:#881c0c;fill-opacity:1;stroke:none"
-       id="rect3924-9"
-       width="23.725857"
-       height="19.098492"
-       x="20.084112"
-       y="14.106295"
-       rx="0"
-       ry="0" />
-    <rect
-       style="fill:#bd2812;fill-opacity:1;stroke:none"
-       id="rect3924-6"
-       width="23.725857"
-       height="12.1673"
-       x="20.084112"
-       y="4.2899942"
-       rx="0"
-       ry="0" />
-    <rect
-       style="opacity:0.5;fill:#fc3103;fill-opacity:1;stroke:none;filter:url(#filter3797)"
-       id="rect3924-6-3"
-       width="23.725857"
-       height="12.1673"
-       x="19.887072"
-       y="8.6663513"
-       rx="4.6408916"
-       ry="0"
-       transform="matrix(1.1577142,0,0,3.4835883,-4.819927,-19.57043)" />
+  <g style="display:inline">
+    <rect style="fill:#a59290;fill-opacity:1;stroke:none" width="33.894081" height="46.135773" x="15" y="11.864227" rx="3.2506468"/>
+    <rect style="fill:#e1dada;fill-opacity:1;stroke:none" width="34" height="46.135773" x="15" y="10.169523" rx="3.2608049"/>
+    <rect style="fill:#881c0c;fill-opacity:1;stroke:none" width="23.725857" height="19.098467" x="20.084112" y="33.204361" rx="0" ry="0"/>
+    <rect style="fill:#881c0c;fill-opacity:1;stroke:none" width="23.725857" height="19.098492" x="20.084112" y="14.106295" rx="0" ry="0"/>
+    <rect style="fill:#bd2812;fill-opacity:1;stroke:none" width="23.725857" height="12.1673" x="20.084112" y="4.2899942" rx="0" ry="0"/>
+    <rect style="opacity:0.5;fill:#fc3103;fill-opacity:1;stroke:none;filter:url(#filter3797)" width="23.725857" height="12.1673" x="19.887072" y="8.6663513" rx="4.6408916" ry="0" transform="matrix(1.1577142,0,0,3.4835883,-4.819927,-19.57043)"/>
   </g>
 </svg>
