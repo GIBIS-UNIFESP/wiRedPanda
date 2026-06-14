@@ -1,0 +1,37 @@
+# Repo-root ruff config governing the Python that lives OUTSIDE MCP/Client —
+# the IC generators (Tests/Integration/IC/Generators/), Scripts/, and
+# Tests/Fixtures/. MCP/Client/ has its own ruff.toml; ruff applies the nearest
+# ancestor config, so that tree is unaffected by this file (no merge, no conflict).
+# The rule set mirrors MCP/Client/ruff.toml so the whole repo shares one standard.
+line-length = 120
+extend-exclude = [".venv", "__pycache__", "build", "node_modules"]
+# Python 3.10+ baseline lets UP rules safely rewrite `Optional[X]` → `X | None`
+# (PEP 604) and `List[int]` → `list[int]` (PEP 585). 3.9 is EOL.
+target-version = "py310"
+
+[lint]
+# Ruff defaults already include F (pyflakes) and a subset of E (E4/E7/E9).
+# Add the rest to fully replace flake8: full pycodestyle (E + W) and import sorting (I).
+extend-select = [
+    "E",     # pycodestyle errors (line-too-long E501, etc.)
+    "W",     # pycodestyle warnings
+    "I",     # isort-equivalent import sorting
+    "B",     # flake8-bugbear: real bugs (mutable defaults, loop-var capture, etc.)
+    "ASYNC", # async-correctness: blocking calls in coroutines, missing awaits
+    "UP",    # pyupgrade: modernize for the target Python version
+    "SIM",   # flake8-simplify: `if x: return True else: return False` → `return bool(x)`
+    "C4",    # flake8-comprehensions: prefer comp/genexpr over list(map(...)) etc.
+    "RUF",   # ruff-specific rules incl. RUF100 (unused noqa)
+]
+
+[lint.per-file-ignores]
+# The IC generator docstrings deliberately use typographic glyphs that carry
+# meaning: "×" for dimensions (an 8×8 register file, a 2-to-4 decoder's truth
+# table), "•" for bullet lists, and status emoji in progress output. These are
+# correct, intentional characters — not the ASCII look-alike confusables that
+# RUF001-003 exist to catch — so we keep them rather than mangling correct text.
+"Tests/Integration/IC/Generators/**" = [
+    "RUF001", # ambiguous character in a string literal
+    "RUF002", # ambiguous character in a docstring
+    "RUF003", # ambiguous character in a comment
+]
