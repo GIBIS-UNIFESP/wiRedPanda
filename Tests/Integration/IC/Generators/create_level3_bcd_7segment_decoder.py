@@ -245,7 +245,8 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created BCD to 7-Segment Decoder IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created BCD to 7-Segment Decoder IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

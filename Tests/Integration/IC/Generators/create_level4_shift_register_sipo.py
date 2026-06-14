@@ -125,7 +125,8 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created SIPO Shift Register IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created SIPO Shift Register IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

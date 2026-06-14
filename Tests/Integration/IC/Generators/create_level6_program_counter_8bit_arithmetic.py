@@ -271,7 +271,8 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 8-bit Program Counter IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created 8-bit Program Counter IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         await self.log("   Outputs: pc[0-7], pc_plus_1[0-7]")

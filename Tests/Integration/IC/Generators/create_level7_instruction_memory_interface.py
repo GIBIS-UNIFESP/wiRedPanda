@@ -145,7 +145,8 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created Instruction Memory Interface IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created Instruction Memory Interface IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

@@ -464,7 +464,8 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 8-bit Single-Cycle CPU IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created 8-bit Single-Cycle CPU IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

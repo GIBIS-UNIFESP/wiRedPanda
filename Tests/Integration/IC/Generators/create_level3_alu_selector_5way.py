@@ -173,7 +173,8 @@ class ALUSelector5wayBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created ALUSelector5way IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created ALUSelector5way IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

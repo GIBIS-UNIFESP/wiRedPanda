@@ -131,7 +131,8 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 3-to-8 Clock-Gated Decoder IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created 3-to-8 Clock-Gated Decoder IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log("   Inputs: addr0, addr1, addr2, clock, writeEnable")
         await self.log("   Outputs: out0..out7 (8 one-hot)")

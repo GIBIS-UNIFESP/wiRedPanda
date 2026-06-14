@@ -326,7 +326,8 @@ class RegisterFile8x8Builder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 8×8 Register File IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created 8×8 Register File IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log("   Architecture: 8 registers × 8 bits, dual-read single-write with hold muxes")
         await self.log(f"   Saved to: {output_file}")

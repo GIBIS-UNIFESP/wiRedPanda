@@ -233,7 +233,8 @@ class CPU16BitRISCBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 16-bit RISC CPU IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created 16-bit RISC CPU IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log("   Architecture: 16-bit Fetch + 16-bit ALU")
         await self.log(f"   Saved to: {output_file}")

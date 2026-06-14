@@ -191,7 +191,8 @@ class RingCounterBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 4-bit Ring Counter IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created 4-bit Ring Counter IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

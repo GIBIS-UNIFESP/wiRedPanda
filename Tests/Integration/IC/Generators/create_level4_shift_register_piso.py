@@ -131,7 +131,8 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
 
         # Instantiate select/mux Mux2to1 IC (4 times for 4 bits)
         # Mux(load_gate[i], shift_gate[i], select_bit) - but we'll use OR instead for clarity
-        # Actually, for load/shift selection, use a Mux2to1: Mux(shift, load, LOAD) = (NOT LOAD AND shift) OR (LOAD AND load)
+        # Actually, for load/shift selection, use a Mux2to1:
+        # Mux(shift, load, LOAD) = (NOT LOAD AND shift) OR (LOAD AND load)
         select_gate_ids = []
         for i in range(4):
             mux_id = await self.instantiate_ic(
@@ -251,7 +252,8 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created PISO Shift Register IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created PISO Shift Register IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

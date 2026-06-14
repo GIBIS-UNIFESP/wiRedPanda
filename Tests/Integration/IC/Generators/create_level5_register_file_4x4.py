@@ -282,7 +282,8 @@ class RegisterFile4x4Builder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created RegisterFile 4×4 IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created RegisterFile 4×4 IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

@@ -147,7 +147,8 @@ class ParityGeneratorBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created Parity Generator IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created Parity Generator IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

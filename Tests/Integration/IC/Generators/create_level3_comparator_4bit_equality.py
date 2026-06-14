@@ -112,7 +112,8 @@ class Comparator4BitEqualityBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created Comparator4BitEquality IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created Comparator4BitEquality IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

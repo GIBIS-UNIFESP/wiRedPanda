@@ -131,7 +131,8 @@ class Decoder4to16Builder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 4-to-16 Decoder IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created 4-to-16 Decoder IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True

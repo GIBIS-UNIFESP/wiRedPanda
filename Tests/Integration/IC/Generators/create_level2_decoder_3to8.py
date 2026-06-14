@@ -131,7 +131,8 @@ class Decoder3to8Builder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 3-to-8 Decoder IC ({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created 3-to-8 Decoder IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True
