@@ -66,5 +66,9 @@ private:
 
     void generatePixmap();
 
+    /// Draws the truth-table body (DIP rect, table icon, shadow) straight onto \a painter as
+    /// vectors, so it stays crisp at any zoom instead of blitting a fixed-resolution pixmap.
+    void drawBody(QPainter *painter);
+
     QBitArray m_key;
 };

@@ -150,6 +150,10 @@ private:
     void generatePixmap();
     void generatePreviewPixmap(const QList<QGraphicsItem *> &items);
 
+    /// Draws the IC body (DIP rect, mascot logo, shadow, pin-1 notch) straight onto \a painter as
+    /// vectors, so it stays crisp at any zoom instead of blitting a fixed-resolution pixmap.
+    void drawBody(QPainter *painter);
+
     // --- Members ---
 
     QString m_file;
