@@ -100,3 +100,15 @@ jobs:
 
     - name: import-linter
       run: lint-imports
+
+    # ----------------------------------------------------------------------
+    # The IC generators, Scripts/, and Tests/Fixtures/ are linted by ruff from
+    # the repo root above. The deeper static-analysis tools below also cover
+    # those trees, run from the repo root so imports resolve across MCP/Client
+    # and the generators. deptry and import-linter stay MCP/Client-only: the
+    # former needs a project manifest, the latter enforces package layering —
+    # neither applies to these flat one-shot scripts.
+    # ----------------------------------------------------------------------
+    - name: vulture (non-MCP Python)
+      working-directory: ${{ github.workspace }}
+      run: vulture --min-confidence 80 Tests/Integration/IC/Generators Scripts Tests/Fixtures
