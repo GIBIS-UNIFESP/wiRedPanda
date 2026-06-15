@@ -105,6 +105,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
