@@ -2,18 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief SignalModel and PlotType for the beWavedDolphin waveform table.
+ * \brief SignalModel for the beWavedDolphin waveform table.
  */
 
 #pragma once
 
 #include <QStandardItemModel>
-
-/// Controls how signal cells are rendered in the waveform table.
-enum class PlotType {
-    Number, ///< Cells display the numeric value (0/1).
-    Line    ///< Cells display a waveform-style rising/falling edge graphic.
-};
 
 /**
  * \class SignalModel
