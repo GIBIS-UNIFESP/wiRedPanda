@@ -515,7 +515,28 @@ void TestBewavedDolphinGui::testFitScreen()
 
     auto *action = dolphin->findChild<QAction *>("actionFitScreen");
     QVERIFY(action);
-    action->trigger(); // Should not crash
+
+    // A single Fit press must fully fit: pressing it again is a no-op. Regression for the
+    // one-step feedback loop where fitScreen() measured the pre-apply layout — the gutter
+    // width and scroll bars change as a *result* of the fit — so it took two presses to
+    // converge (e.g. 0.065 then 0.080 for this circuit).
+    dolphin->setLength(256, false); // content far wider than the viewport
+    dolphin->resize(800, 500);
+    dolphin->show();
+    QApplication::processEvents();
+
+    action->trigger();
+    QApplication::processEvents();
+    const double firstFit = dolphin->m_zoom->fitScale();
+
+    action->trigger();
+    QApplication::processEvents();
+    const double secondFit = dolphin->m_zoom->fitScale();
+
+    QVERIFY(std::isfinite(firstFit));
+    QVERIFY(firstFit > 0.0);
+    QVERIFY2(std::abs(secondFit - firstFit) < 1e-3,
+             qPrintable(QString("Fit to Screen not idempotent: %1 then %2").arg(firstFit).arg(secondFit)));
 }
 
 void TestBewavedDolphinGui::testLongWaveformScrolls()

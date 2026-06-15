@@ -9,6 +9,7 @@
 #include <QAbstractItemModel>
 #include <QApplication>
 #include <QHeaderView>
+#include <QScrollBar>
 #include <QTableView>
 
 static constexpr int    kDefaultColumnWidth = 38;    ///<  Per-column pixel width at zoom 1.0 (matches the pre-refactor on-screen size).
@@ -17,6 +18,8 @@ static constexpr double kZoomStep           = 1.25;  ///<  Multiplicative factor
 static constexpr int    kMaxZoomLevel       = 6;     ///<  Maximum discrete column-zoom step (baseline = 0).
 static constexpr double kMinFitScale        = 0.05;  ///<  Smallest allowed Fit Screen scale.
 static constexpr double kMaxFitScale        = 20.0;  ///<  Largest allowed Fit Screen scale.
+static constexpr int    kFitIterations      = 6;     ///<  Max passes to converge Fit Screen's fixed point.
+static constexpr double kFitEpsilon         = 1e-3;  ///<  Fit Screen scale convergence threshold.
 
 DolphinZoom::DolphinZoom(QTableView *view)
     : m_view(view)
@@ -61,28 +64,49 @@ void DolphinZoom::reset()
 void DolphinZoom::fitScreen()
 {
     // Fit Screen scales everything (columns, rows, font) uniformly to fit, and resets
-    // the discrete column zoom. The factor is computed analytically from the default
-    // cell metrics so it is independent of the current zoom state.
+    // the discrete column zoom.
     const int cols = m_view->model() ? m_view->model()->columnCount() : 0;
     const int rows = m_view->model() ? m_view->model()->rowCount() : 0;
     // Degenerate geometry (empty/hidden table): nothing to fit, leave the zoom untouched.
     if (cols <= 0 || rows <= 0) {
         return;
     }
-    const QSize viewport = m_view->viewport()->size();
-    // Subtract the fixed chrome (row-label gutter, column-header strip) from the
-    // available area; the remainder must hold the unscaled cell grid.
-    const double availW = viewport.width()  - m_view->verticalHeader()->width();
-    const double availH = viewport.height() - m_view->horizontalHeader()->height();
-    const double sW = availW / (kDefaultColumnWidth * cols);
-    const double sH = availH / (kDefaultRowHeight   * rows);
-    // A hidden or too-small viewport yields a non-positive scale; leave the zoom untouched.
-    if (sW <= 0 || sH <= 0) {
-        return;
+
+    auto *vHeader = m_view->verticalHeader();
+    auto *hHeader = m_view->horizontalHeader();
+    auto *vbar    = m_view->verticalScrollBar();
+    auto *hbar    = m_view->horizontalScrollBar();
+
+    // viewport() already excludes the header gutter/strip and shrinks under any visible
+    // scroll bar. Add both back to get the window interior available to the grid + its
+    // chrome — a quantity independent of the current zoom (so the fit cannot feed back on
+    // its own starting geometry, which is what forced a second Fit press to converge).
+    const double interiorW = m_view->viewport()->width()
+        + vHeader->width() + (vbar->isVisible() ? vbar->width()  : 0);
+    const double interiorH = m_view->viewport()->height()
+        + hHeader->height() + (hbar->isVisible() ? hbar->height() : 0);
+
+    // The gutter/strip scale with the font, which scales with the fit factor, so the
+    // available cell area depends on the result. Solve the fixed point: recompute against
+    // the chrome size the new font yields (sizeHint() reflects the new font synchronously),
+    // re-applying until the scale stabilizes — converging in one Fit press.
+    for (int i = 0; i < kFitIterations; ++i) {
+        const double availW = interiorW - vHeader->sizeHint().width();
+        const double availH = interiorH - hHeader->sizeHint().height();
+        const double sW = availW / (kDefaultColumnWidth * cols);
+        const double sH = availH / (kDefaultRowHeight   * rows);
+        // A hidden or too-small viewport yields a non-positive scale; leave the zoom untouched.
+        if (sW <= 0 || sH <= 0) {
+            return;
+        }
+        const double next = std::clamp((std::min)(sW, sH), kMinFitScale, kMaxFitScale);
+        m_zoomLevel = 0;
+        if (std::abs(next - m_fitScale) < kFitEpsilon) {
+            break;
+        }
+        m_fitScale = next;
+        apply();
     }
-    m_fitScale  = std::clamp((std::min)(sW, sH), kMinFitScale, kMaxFitScale);
-    m_zoomLevel = 0;
-    apply();
 }
 
 void DolphinZoom::apply() const
