@@ -25,67 +25,67 @@
 
 void TestDialogs::testClockDialogConstructor()
 {
-    // Test that constructor sets initial frequency value and syncs spinbox/slider
+    // Test that constructor sets initial period value and syncs spinbox/slider
     ClockDialog dialog(100);
 
-    auto *spinBox = dialog.findChild<QSpinBox *>("frequencySpinBox");
+    auto *spinBox = dialog.findChild<QSpinBox *>("periodSpinBox");
     QVERIFY(spinBox != nullptr);
     QCOMPARE(spinBox->value(), 100);
 
-    auto *slider = dialog.findChild<QSlider *>("frequencySlider");
+    auto *slider = dialog.findChild<QSlider *>("periodSlider");
     QVERIFY(slider != nullptr);
     QCOMPARE(slider->value(), 100);
 }
 
-void TestDialogs::testClockDialogMinFrequency()
+void TestDialogs::testClockDialogMinPeriod()
 {
-    // Test that minimum frequency (2 Hz) is accepted and stored correctly
+    // Test that the minimum period (2 columns) is accepted and stored correctly
     ClockDialog dialog(2);
 
-    auto *spinBox = dialog.findChild<QSpinBox *>("frequencySpinBox");
+    auto *spinBox = dialog.findChild<QSpinBox *>("periodSpinBox");
     QCOMPARE(spinBox->minimum(), 2);
     QCOMPARE(spinBox->value(), 2);
 }
 
-void TestDialogs::testClockDialogMaxFrequency()
+void TestDialogs::testClockDialogMaxPeriod()
 {
-    // Test that maximum frequency (1024 Hz) is accepted and stored correctly
+    // Test that the maximum period (1024 columns) is accepted and stored correctly
     ClockDialog dialog(1024);
 
-    auto *spinBox = dialog.findChild<QSpinBox *>("frequencySpinBox");
+    auto *spinBox = dialog.findChild<QSpinBox *>("periodSpinBox");
     QCOMPARE(spinBox->maximum(), 1024);
     QCOMPARE(spinBox->value(), 1024);
 }
 
 void TestDialogs::testClockDialogRange()
 {
-    // Test various valid frequencies within range (2-1024 Hz)
-    QVector<int> validFrequencies = {2, 10, 100, 256, 512, 1000, 1024};
+    // Test various valid periods within range (2-1024 columns)
+    QVector<int> validPeriods = {2, 10, 100, 256, 512, 1000, 1024};
 
-    for (int freq : validFrequencies) {
-        ClockDialog dialog(freq);
-        auto *spinBox = dialog.findChild<QSpinBox *>("frequencySpinBox");
-        QCOMPARE(spinBox->value(), freq);
+    for (int period : validPeriods) {
+        ClockDialog dialog(period);
+        auto *spinBox = dialog.findChild<QSpinBox *>("periodSpinBox");
+        QCOMPARE(spinBox->value(), period);
     }
 
     // Test out-of-range clamping: value above max clamps to 1024
     ClockDialog dialogHigh(5000);
-    auto *spinBox = dialogHigh.findChild<QSpinBox *>("frequencySpinBox");
+    auto *spinBox = dialogHigh.findChild<QSpinBox *>("periodSpinBox");
     QCOMPARE(spinBox->value(), 1024);
 }
 
-void TestDialogs::testClockDialogFrequencyReturnValue()
+void TestDialogs::testClockDialogPeriodReturnValue()
 {
-    // Test cancel and accept return values for frequency()
-    // Cancel path → -1
+    // period() is a pure accessor; the caller runs exec() and distinguishes accept/cancel
+    // by the exec() result, then reads period() on accept.
     ClockDialog dialog1(100);
     QTimer::singleShot(0, &dialog1, &QDialog::reject);
-    QCOMPARE(dialog1.frequency(), -1);
+    QCOMPARE(dialog1.exec(), static_cast<int>(QDialog::Rejected));
 
-    // Accept path → returns spinbox value
     ClockDialog dialog2(256);
     QTimer::singleShot(0, &dialog2, &QDialog::accept);
-    QCOMPARE(dialog2.frequency(), 256);
+    QCOMPARE(dialog2.exec(), static_cast<int>(QDialog::Accepted));
+    QCOMPARE(dialog2.period(), 256);
 }
 
 // ============================================================================

@@ -45,8 +45,8 @@ public:
     QGridLayout *gridLayout_2 = nullptr;
 
     // Controls
-    QSpinBox *frequencySpinBox = nullptr;
-    QSlider *frequencySlider = nullptr;
+    QSpinBox *periodSpinBox = nullptr;
+    QSlider *periodSlider = nullptr;
 
     // Labels
     QLabel *titleLabel = nullptr;

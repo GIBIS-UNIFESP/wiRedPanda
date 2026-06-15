@@ -26,25 +26,26 @@ void ClockDialogUi::setupUi(QDialog *ClockDialog)
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout_2->addWidget(buttonBox, 6, 0, 1, 2);
 
-    // Minimum of 2 because a clock with period 1 would toggle every step (degenerate);
-    // step of 2 enforces even periods so 50% duty cycle divides cleanly
-    frequencySpinBox = new QSpinBox(ClockDialog);
-    frequencySpinBox->setObjectName("frequencySpinBox");
-    frequencySpinBox->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-    frequencySpinBox->setMinimum(2);
-    frequencySpinBox->setMaximum(1024);
-    frequencySpinBox->setSingleStep(2);
-    gridLayout_2->addWidget(frequencySpinBox, 0, 1, 1, 1);
+    // The value is a clock period in waveform time-step columns. Minimum of 2 because a
+    // period of 1 would toggle every step (degenerate); step of 2 enforces even periods so
+    // the 50% duty cycle divides cleanly.
+    periodSpinBox = new QSpinBox(ClockDialog);
+    periodSpinBox->setObjectName("periodSpinBox");
+    periodSpinBox->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+    periodSpinBox->setMinimum(2);
+    periodSpinBox->setMaximum(1024);
+    periodSpinBox->setSingleStep(2);
+    gridLayout_2->addWidget(periodSpinBox, 0, 1, 1, 1);
 
-    frequencySlider = new QSlider(ClockDialog);
-    frequencySlider->setObjectName("frequencySlider");
+    periodSlider = new QSlider(ClockDialog);
+    periodSlider->setObjectName("periodSlider");
     // Slider mirrors the spin box constraints exactly so both controls always
     // show the same legal range.
-    frequencySlider->setMinimum(2);
-    frequencySlider->setMaximum(1024);
-    frequencySlider->setSingleStep(2);
-    frequencySlider->setOrientation(Qt::Horizontal);
-    gridLayout_2->addWidget(frequencySlider, 3, 0, 1, 2);
+    periodSlider->setMinimum(2);
+    periodSlider->setMaximum(1024);
+    periodSlider->setSingleStep(2);
+    periodSlider->setOrientation(Qt::Horizontal);
+    gridLayout_2->addWidget(periodSlider, 3, 0, 1, 2);
 
     titleLabel = new QLabel(ClockDialog);
     titleLabel->setObjectName("titleLabel");
@@ -63,8 +64,8 @@ void ClockDialogUi::setupUi(QDialog *ClockDialog)
     retranslateUi(ClockDialog);
 
     // Bidirectionally sync the slider and spin box so either control can drive the other
-    QObject::connect(frequencySlider, &QSlider::valueChanged, frequencySpinBox, &QSpinBox::setValue);
-    QObject::connect(frequencySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), frequencySlider, &QSlider::setValue);
+    QObject::connect(periodSlider, &QSlider::valueChanged, periodSpinBox, &QSpinBox::setValue);
+    QObject::connect(periodSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), periodSlider, &QSlider::setValue);
 
     QMetaObject::connectSlotsByName(ClockDialog);
 }
@@ -72,7 +73,7 @@ void ClockDialogUi::setupUi(QDialog *ClockDialog)
 void ClockDialogUi::retranslateUi(QDialog *ClockDialog)
 {
     ClockDialog->setWindowTitle(QCoreApplication::translate("ClockDialog", "Dialog"));
-    titleLabel->setText(QCoreApplication::translate("ClockDialog", "Clock Frequency"));
+    titleLabel->setText(QCoreApplication::translate("ClockDialog", "Clock Period"));
     maxLabel->setText(QCoreApplication::translate("ClockDialog", "1024"));
     minLabel->setText(QCoreApplication::translate("ClockDialog", "2"));
 }

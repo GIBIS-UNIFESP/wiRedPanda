@@ -5,16 +5,16 @@
 
 #include "App/UI/ClockDialogUI.h"
 
-ClockDialog::ClockDialog(const int currentFrequency, QWidget *parent)
+ClockDialog::ClockDialog(const int currentPeriod, QWidget *parent)
     : QDialog(parent)
     , m_ui(std::make_unique<ClockDialogUi>())
 {
     m_ui->setupUi(this);
 
-    // Pre-populate with the last used frequency so the user doesn't have to re-enter it
-    m_ui->frequencySpinBox->setValue(currentFrequency);
+    // Pre-populate with the last used period so the user doesn't have to re-enter it
+    m_ui->periodSpinBox->setValue(currentPeriod);
 
-    setWindowTitle(tr("Clock Frequency Selection"));
+    setWindowTitle(tr("Clock Period Selection"));
 
     connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
@@ -24,9 +24,8 @@ ClockDialog::~ClockDialog()
 {
 }
 
-int ClockDialog::frequency()
+int ClockDialog::period() const
 {
-    // Returns -1 on cancel so callers can distinguish "user chose a frequency" from
-    // "user dismissed the dialog" without needing a separate success/failure flag
-    return (exec() == QDialog::Accepted) ? m_ui->frequencySpinBox->value() : -1;
+    // Pure accessor: the caller runs exec() and reads this only on QDialog::Accepted.
+    return m_ui->periodSpinBox->value();
 }
