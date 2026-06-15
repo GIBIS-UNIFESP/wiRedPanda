@@ -52,6 +52,10 @@ public:
      */
     void setOn(const bool value, const int port = 0) override;
 
+    /// \reimp A rotary selects exactly one active port, so a low cell is implicit: only a
+    /// high \a value writes (selecting \a port); a low one is a no-op.
+    void setWaveformValue(const bool value, const int port = 0) override;
+
     // --- Visual ---
 
     /// Paints the rotary wheel with the indicator arrow pointing to the active port.
