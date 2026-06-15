@@ -53,6 +53,7 @@ private slots:
     void testShowNumbers();
     void testShowWaveforms();
     void testFitScreen();
+    void testLongWaveformScrolls();
 
     // --- Double-click cell ---
 
@@ -81,8 +82,9 @@ private slots:
     // Regression: C9 — actionSetClockWave gated on a non-empty selection
     void testSetClockWaveDisabledWithoutSelectionC9();
 
-    // Regression: A26 — m_scale must track the view's transform and FitScreen must
-    // not crash on degenerate geometry or produce extreme scale factors.
+    // Regression: A26 — Zoom In/Out scales column width only (m_zoomLevel); Fit Screen
+    // scales all metrics uniformly (m_fitScale) and must not crash on degenerate geometry
+    // or produce extreme scale factors.
     void testZoomScaleTrackingA26();
     void testFitScreenClampsAndGuardsA26();
 

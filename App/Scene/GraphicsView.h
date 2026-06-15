@@ -53,19 +53,7 @@ public:
      */
     void setFastMode(const bool fastMode);
 
-    /**
-     * \brief When enabled, wheel zoom events emit scaleIn/scaleOut instead of zooming directly.
-     * \param value \c true to redirect zoom events.
-     */
-    void setRedirectZoom(const bool value);
-
 signals:
-    /// Emitted when redirectZoom is true and the user scrolls in.
-    void scaleIn();
-
-    /// Emitted when redirectZoom is true and the user scrolls out.
-    void scaleOut();
-
     /// Emitted whenever the zoom level changes.
     void zoomChanged();
 
@@ -87,7 +75,6 @@ protected:
 
     // --- Members ---
 
-    bool m_redirectZoom = false; ///< When true, wheel events emit signals instead of zooming directly.
     int m_zoomLevel = 0;        ///< Current zoom step (0 = 1:1, positive = zoomed in).
 
 private:

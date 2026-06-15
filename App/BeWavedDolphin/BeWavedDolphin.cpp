@@ -14,10 +14,12 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QPainter>
 #include <QPrinter>
 #include <QSaveFile>
+#include <QTableView>
 #include <QTextStream>
-#include <QTransform>
+#include <QWheelEvent>
 
 #include "App/BeWavedDolphin/Serializer.h"
 #include "App/Core/Application.h"
@@ -29,6 +31,7 @@
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/IO/Serialization.h"
+#include "App/Scene/GraphicsView.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/Simulation/SimulationThrottleDisabler.h"
 #include "App/UI/ClockDialog.h"
@@ -36,9 +39,15 @@
 #include "App/UI/LengthDialog.h"
 #include "App/UI/MainWindow.h"
 
-static constexpr int    kDefaultColumnWidth = 49;    ///<  Per-column pixel width at reset zoom.
+static constexpr int    kDefaultColumnWidth = 38;    ///<  Per-column pixel width at zoom 1.0 (matches the pre-refactor on-screen size).
+static constexpr int    kDefaultRowHeight   = 30;    ///<  Per-row pixel height at zoom 1.0 (matches the pre-refactor on-screen size).
 static constexpr int    kMaxSimLength       = 2048;  ///<  Maximum allowed simulation length.
-static constexpr double kZoomStep           = 1.25;  ///<  Multiplicative factor per zoom step.
+static constexpr double kZoomStep           = 1.25;  ///<  Multiplicative factor per column-zoom step.
+static constexpr int    kMaxZoomLevel       = 6;     ///<  Maximum discrete column-zoom step (baseline = 0).
+static constexpr double kMinFitScale        = 0.05;  ///<  Smallest allowed Fit Screen scale.
+static constexpr double kMaxFitScale        = 20.0;  ///<  Largest allowed Fit Screen scale.
+static constexpr int    kExportCellWidth    = 50;    ///<  Per-column pixel width for PNG/PDF export.
+static constexpr int    kExportCellHeight   = 40;    ///<  Per-row pixel height for PNG/PDF export.
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
     : QMainWindow(nullptr)
@@ -63,26 +72,20 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindo
 
     restoreGeometry(Settings::dolphinGeometry());
 
-    // The delegate owns and renders the waveform pixmaps
+    // The delegate paints the waveform cells; the table is the central widget directly
     m_delegate = new SignalDelegate(this);
     m_signalTableView->setItemDelegate(m_delegate);
 
-    // Embed the QTableView inside a QGraphicsScene so the whole waveform can be
-    // uniformly scaled via the scene's transform without resizing individual rows/cols
-    m_scene->addWidget(m_signalTableView);
+    // Native scrollbars let long waveforms scroll; zoom changes row/column metrics instead
+    m_signalTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_signalTableView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_ui->verticalLayout->addWidget(m_signalTableView);
 
-    m_view.setScene(m_scene);
-    // Scrollbars are suppressed because the scene is always resized to exactly fill the view
-    m_view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    m_view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    // Redirect zoom events to BewavedDolphin so column widths are updated alongside the transform
-    m_view.setRedirectZoom(true);
-    m_ui->verticalLayout->addWidget(&m_view);
+    // The mouse wheel over the table zooms the columns (see eventFilter)
+    m_signalTableView->viewport()->installEventFilter(this);
 
     m_ui->mainToolBar->setToolButtonStyle(Settings::labelsUnderIcons() ? Qt::ToolButtonTextUnderIcon : Qt::ToolButtonIconOnly);
 
-    connect(&m_view,                   &WaveformView::scaleIn,         this, &BewavedDolphin::on_actionZoomIn_triggered);
-    connect(&m_view,                   &WaveformView::scaleOut,        this, &BewavedDolphin::on_actionZoomOut_triggered);
     connect(m_ui->actionAbout,         &QAction::triggered,            this, &BewavedDolphin::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,       &QAction::triggered,            this, &BewavedDolphin::on_actionAboutQt_triggered);
     connect(m_ui->actionClear,         &QAction::triggered,            this, &BewavedDolphin::on_actionClear_triggered);
@@ -275,12 +278,10 @@ void BewavedDolphin::loadNewTable()
     m_signalTableView->setAlternatingRowColors(true);
     m_signalTableView->setShowGrid(false);
 
-    // Fixed section sizes prevent the user from resizing columns, keeping waveforms aligned
+    // Fixed section sizes keep waveforms aligned; applyZoom() drives the actual
+    // row/column sizes from the current zoom factor.
     m_signalTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
     m_signalTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
-
-    // Start at minimum width of 1px; zoom actions then set per-column widths to 49px
-    m_signalTableView->horizontalHeader()->setDefaultSectionSize(1);
 
     qCDebug(zero) << "Inputs: " << inputLabels.size() << ", outputs: " << outputLabels.size();
 
@@ -289,6 +290,10 @@ void BewavedDolphin::loadNewTable()
 
     connect(m_signalTableView,                   &QAbstractItemView::doubleClicked,      this, &BewavedDolphin::on_tableView_cellDoubleClicked);
     connect(m_signalTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &BewavedDolphin::on_tableView_selectionChanged);
+
+    // Size rows/columns/font for the current zoom so the table is correct even
+    // before the window is shown (e.g. in headless tests and offscreen export).
+    applyZoom();
 }
 
 void BewavedDolphin::on_tableView_cellDoubleClicked()
@@ -456,30 +461,46 @@ void BewavedDolphin::restoreInputs()
     }
 }
 
-void BewavedDolphin::resizeEvent(QResizeEvent *event)
+bool BewavedDolphin::eventFilter(QObject *watched, QEvent *event)
 {
-    QMainWindow::resizeEvent(event);
-    resizeScene();
+    // The mouse wheel zooms the columns (the original beWavedDolphin behavior): any
+    // wheel over the table viewport widens/narrows the columns and is consumed, so the
+    // table never scrolls on wheel. Use the scrollbar to pan a long waveform.
+    if (watched == m_signalTableView->viewport() && event->type() == QEvent::Wheel) {
+        auto *wheel = static_cast<QWheelEvent *>(event);
+        if (wheel->angleDelta().y() > 0) {
+            on_actionZoomIn_triggered();
+        } else if (wheel->angleDelta().y() < 0) {
+            on_actionZoomOut_triggered();
+        }
+        return true;
+    }
+
+    return QMainWindow::eventFilter(watched, event);
 }
 
-void BewavedDolphin::resizeScene()
+void BewavedDolphin::applyZoom()
 {
-    const int newWidth  = m_ui->centralwidget->width();
-    // Subtract 2px to avoid a persistent vertical scrollbar appearing at the boundary
-    const int newHeight = m_ui->centralwidget->height() - 2;
+    // Two independent zoom axes: the discrete column-zoom (m_zoomLevel) widens columns
+    // only — a horizontal "time stretch" — while Fit Screen (m_fitScale) scales columns,
+    // rows, and font together. Sections use Fixed resize mode, so setting the header
+    // default section size resizes every row/column uniformly without a per-cell loop.
+    const double colScale = m_fitScale * std::pow(kZoomStep, m_zoomLevel);
+    m_signalTableView->horizontalHeader()->setDefaultSectionSize(
+        static_cast<int>(std::lround(kDefaultColumnWidth * colScale)));
+    m_signalTableView->verticalHeader()->setDefaultSectionSize(
+        static_cast<int>(std::lround(kDefaultRowHeight * m_fitScale)));
 
-    // Zoom is already bounded to 6 discrete steps by WaveformView::canZoomIn();
-    // no additional scene-size guard is needed here.
-    setTableViewSize(newWidth, newHeight);
-    m_scene->setSceneRect(m_scene->itemsBoundingRect());
-}
+    // Scale the cell/header font with the Fit Screen factor only (column zoom leaves text
+    // untouched), from the application's base point size.
+    QFont font = QApplication::font();
+    const double basePointSize = font.pointSizeF() > 0 ? font.pointSizeF() : 10.0;
+    font.setPointSizeF(basePointSize * m_fitScale);
+    m_signalTableView->setFont(font);
+    m_signalTableView->horizontalHeader()->setFont(font);
+    m_signalTableView->verticalHeader()->setFont(font);
 
-void BewavedDolphin::setTableViewSize(const int width, const int height)
-{
-    // Size the inner table view inversely to m_scale so that, after the view's
-    // scale transform is reapplied, the table fills the central widget.
-    m_signalTableView->resize(static_cast<int>(width  / m_scale),
-                              static_cast<int>(height / m_scale));
+    zoomChanged();
 }
 
 void BewavedDolphin::on_actionExit_triggered()
@@ -558,8 +579,7 @@ void BewavedDolphin::setCellValue(const int row, const int col, const int value,
 void BewavedDolphin::show()
 {
     QMainWindow::show();
-    qCDebug(zero) << "Getting table dimensions.";
-    resizeScene();
+    applyZoom();
 }
 
 void BewavedDolphin::print()
@@ -612,18 +632,7 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
 bool BewavedDolphin::exportToPng(const QString &filename)
 {
     try {
-        const int timeSteps   = m_model->columnCount();
-        const int signalCount = m_model->rowCount();
-
-        // Fixed cell size chosen to ensure waveform SVG segments are legible at 1:1 zoom
-        const int cellWidth  = 50;   // pixels per time step
-        const int cellHeight = 40;   // pixels per signal
-        const int padding    = 100;  // extra space for labels and margins
-
-        setTableViewSize((timeSteps * cellWidth) + padding, (signalCount * cellHeight) + padding);
-        m_scene->setSceneRect(m_scene->itemsBoundingRect());
-
-        return exportWaveformToPng(filename);
+        return renderWaveform(kExportCellWidth, kExportCellHeight).save(filename);
     } catch (...) {
         return false;
     }
@@ -788,10 +797,10 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     m_length = simLength;
 
     if (simLength <= m_model->columnCount()) {
-        // Shrinking: Qt's setColumnCount removes trailing columns automatically
+        // Shrinking: Qt's setColumnCount removes trailing columns automatically.
+        // New/removed columns inherit the Fixed default section size, so no resize needed.
         qCDebug(zero) << "Reducing or keeping the simulation length.";
         m_model->setColumnCount(simLength);
-        resizeScene();
         m_edited = true;
         return;
     }
@@ -809,7 +818,6 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
         }
     }
 
-    resizeScene();
     m_edited = true;
     qCDebug(zero) << "Running simulation.";
 
@@ -818,24 +826,15 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     }
 }
 
-void BewavedDolphin::adjustColumnWidths(const std::function<int(int)> &widthFn)
-{
-    for (int col = 0; col < m_signalTableView->model()->columnCount(); ++col) {
-        m_signalTableView->setColumnWidth(col, widthFn(m_signalTableView->columnWidth(col)));
-    }
-    resizeScene();
-    zoomChanged();
-}
-
 void BewavedDolphin::on_actionZoomOut_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom out"));
-        // WaveformView::zoomOut only bumps a discrete level counter; the visual
-        // zoom comes from widening/narrowing the columns below. The view's
-        // scale transform stays at identity, so m_scale stays at 1.0 too.
-        m_view.zoomOut();
-        adjustColumnWidths([](int w) { return static_cast<int>(w / kZoomStep); });
+        // Column-width only; floored at the baseline (no shrink below the default width).
+        if (m_zoomLevel > 0) {
+            --m_zoomLevel;
+        }
+        applyZoom();
     });
 }
 
@@ -843,10 +842,11 @@ void BewavedDolphin::on_actionZoomIn_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom in"));
-        // See on_actionZoomOut_triggered: m_scale tracks m_view.scale() only,
-        // and discrete zoom does not call scale().
-        m_view.zoomIn();
-        adjustColumnWidths([](int w) { return static_cast<int>(w * kZoomStep); });
+        // Column-width only; capped at kMaxZoomLevel discrete steps.
+        if (m_zoomLevel < kMaxZoomLevel) {
+            ++m_zoomLevel;
+        }
+        applyZoom();
     });
 }
 
@@ -854,36 +854,45 @@ void BewavedDolphin::on_actionResetZoom_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom reset"));
-        m_view.resetTransform();
-        m_view.resetZoom();
-        m_scale = kZoomStep;
-        adjustColumnWidths([](int) { return kDefaultColumnWidth; });
+        m_zoomLevel = 0;
+        m_fitScale  = 1.0;
+        applyZoom();
     });
 }
 
 void BewavedDolphin::zoomChanged()
 {
-    m_ui->actionZoomIn->setEnabled(m_view.canZoomIn());
-    m_ui->actionZoomOut->setEnabled(m_view.canZoomOut());
+    m_ui->actionZoomIn->setEnabled(m_zoomLevel < kMaxZoomLevel);
+    m_ui->actionZoomOut->setEnabled(m_zoomLevel > 0);
 }
 
 void BewavedDolphin::on_actionFitScreen_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Fit screen"));
-        const int hLen = m_signalTableView->horizontalHeader()->length() + m_signalTableView->columnWidth(0);
-        const int vLen = m_signalTableView->verticalHeader()->length() + m_signalTableView->rowHeight(0) + 10;
-        if (hLen <= 0 || vLen <= 0) {
+        // Fit Screen scales everything (columns, rows, font) uniformly to fit, and resets
+        // the discrete column zoom. The factor is computed analytically from the default
+        // cell metrics so it is independent of the current zoom state.
+        const int cols = m_model->columnCount();
+        const int rows = m_model->rowCount();
+        // Degenerate geometry (empty/hidden table): nothing to fit, leave the zoom untouched.
+        if (cols <= 0 || rows <= 0) {
             return;
         }
-        m_view.resetTransform();
-        const double wScale = static_cast<double>(m_view.width()) / hLen;
-        const double hScale = static_cast<double>(m_view.height()) / vLen;
-        m_scale = std::clamp((std::min)(wScale, hScale), 0.05, 20.0);
-        m_view.setTransform(QTransform::fromScale(m_scale, m_scale));
-        m_view.resetZoom();
-        resizeScene();
-        zoomChanged();
+        const QSize viewport = m_signalTableView->viewport()->size();
+        // Subtract the fixed chrome (row-label gutter, column-header strip) from the
+        // available area; the remainder must hold the unscaled cell grid.
+        const double availW = viewport.width()  - m_signalTableView->verticalHeader()->width();
+        const double availH = viewport.height() - m_signalTableView->horizontalHeader()->height();
+        const double sW = availW / (kDefaultColumnWidth * cols);
+        const double sH = availH / (kDefaultRowHeight   * rows);
+        // A hidden or too-small viewport yields a non-positive scale; leave the zoom untouched.
+        if (sW <= 0 || sH <= 0) {
+            return;
+        }
+        m_fitScale  = std::clamp((std::min)(sW, sH), kMinFitScale, kMaxFitScale);
+        m_zoomLevel = 0;
+        applyZoom();
     });
 }
 
@@ -1335,18 +1344,32 @@ void BewavedDolphin::on_actionExportToPng_triggered()
 
 bool BewavedDolphin::exportWaveformToPng(const QString &filename)
 {
-    const QRectF sceneRect = m_scene->sceneRect();
-    // Create a pixmap exactly the size of the scene so there is no blank padding
-    QPixmap pixmap(sceneRect.size().toSize());
+    return renderWaveform(kExportCellWidth, kExportCellHeight).save(filename);
+}
 
-    QPainter painter;
-    painter.begin(&pixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-    // Render the full scene into the pixmap without any additional clipping
-    m_scene->render(&painter, QRectF(), sceneRect);
-    painter.end();
+QPixmap BewavedDolphin::renderWaveform(const int cellW, const int cellH) const
+{
+    // Render through a throwaway table bound to the same model, so the live view
+    // (its zoom, selection, scroll position) is never disturbed by an export.
+    QTableView view;
+    view.setModel(m_model);
+    view.setItemDelegate(new SignalDelegate(&view));
+    view.setShowGrid(false);
+    view.setAlternatingRowColors(true);
+    view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view.horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    view.verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    view.horizontalHeader()->setDefaultSectionSize(cellW);
+    view.verticalHeader()->setDefaultSectionSize(cellH);
 
-    return pixmap.toImage().save(filename);
+    // Size the view to its full content so grab() captures every row/column with
+    // no scrollbars and no blank padding.
+    const int contentW = view.horizontalHeader()->length() + view.verticalHeader()->width();
+    const int contentH = view.verticalHeader()->length() + view.horizontalHeader()->height();
+    view.resize(contentW, contentH);
+
+    return view.grab();
 }
 
 void BewavedDolphin::on_actionExportToPdf_triggered()
@@ -1376,8 +1399,10 @@ void BewavedDolphin::on_actionExportToPdf_triggered()
             throw PANDACEPTION("Could not print this circuit to PDF.");
         }
 
-        // Expand the source rect by 64px on each side to add a small margin around the waveform
-        m_scene->render(&painter, QRectF(), m_scene->sceneRect().adjusted(-64, -64, 64, 64));
+        // Render the waveform offscreen, then scale it to fit the page preserving aspect
+        const QPixmap pixmap = renderWaveform(kExportCellWidth, kExportCellHeight);
+        const QSize target = pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
+        painter.drawPixmap(QRect(QPoint(0, 0), target), pixmap);
         painter.end();
     });
 }

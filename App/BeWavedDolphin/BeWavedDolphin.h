@@ -12,13 +12,13 @@
 
 #include <QFileInfo>
 #include <QMainWindow>
+#include <QPixmap>
 #include <QStandardItemModel>
 #include <QTableView>
 
 #include "App/BeWavedDolphin/BeWavedDolphinUI.h"
 #include "App/BeWavedDolphin/SignalDelegate.h"
 #include "App/BeWavedDolphin/SignalModel.h"
-#include "App/BeWavedDolphin/WaveformView.h"
 #include "App/Scene/Scene.h"
 
 class MainWindow;
@@ -126,8 +126,8 @@ protected:
 
     /// \reimp
     void closeEvent(QCloseEvent *event) override;
-    /// \reimp
-    void resizeEvent(QResizeEvent *event) override;
+    /// \reimp Intercepts the mouse wheel on the table viewport to zoom the columns.
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     Q_DISABLE_COPY(BewavedDolphin)
@@ -172,19 +172,18 @@ private:
     void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     /// Deserializes clipboard data from \a stream into the selected \a ranges.
     void paste(const QItemSelection &ranges, QDataStream &stream);
-    /// Resizes the internal QGraphicsScene to fit the current table dimensions.
-    void resizeScene();
     /// Restores original input element values after a simulation run.
     void restoreInputs();
     /// Sets a single cell at (\a row, \a col) to \a value with edge-update control.
     void setCellValue(int row, int col, int value, bool isInput, bool changeNext);
     /// Applies \a valueFn to every selected cell, marks the waveform edited, and re-runs.
     void applyToSelectedCells(const std::function<int(int)> &valueFn);
-    /// Applies \a widthFn to every column width, then resizes the scene and updates zoom state.
-    void adjustColumnWidths(const std::function<int(int)> &widthFn);
-    /// Adjusts the table view widget to \a width columns and \a height rows.
-    void setTableViewSize(int width, int height);
-    /// Slot: applies the current zoom scale to the waveform view.
+    /// Applies the current zoom factor to the table's row/column sizes and font.
+    void applyZoom();
+    /// Renders the full waveform to a pixmap using \a cellW x \a cellH cells, via a
+    /// throwaway offscreen table bound to the same model (the live view is untouched).
+    QPixmap renderWaveform(int cellW, int cellH) const;
+    /// Updates the enabled state of the zoom-in/out actions for the current zoom.
     void zoomChanged();
 
     // --- Action Handlers (menu / toolbar callbacks) ---
@@ -220,13 +219,11 @@ private:
     // --- Members ---
 
     std::unique_ptr<BewavedDolphinUi> m_ui;          ///< Auto-generated UI descriptor.
-    WaveformView m_view;                              ///< Graphics view for the waveform scene.
     MainWindow *m_mainWindow       = nullptr;         ///< Owner main window (for simulation restore).
     PlotType m_type                = PlotType::Line;  ///< Current display style (line vs. number).
     QFileInfo m_currentFile;                          ///< Path of the currently loaded .dolphin file.
-    QGraphicsScene *m_scene        = new QGraphicsScene(this); ///< Scene backing the waveform view.
     QStandardItemModel *m_model    = nullptr;         ///< Table model (rows = signals, cols = time steps).
-    QTableView *m_signalTableView  = new QTableView(); ///< Hidden table view used for selection management.
+    QTableView *m_signalTableView  = new QTableView(); ///< The waveform table, shown as the central widget.
     SignalDelegate *m_delegate     = nullptr;         ///< Custom delegate rendering waveform cells.
     QVector<GraphicElement *> m_outputs;              ///< Output elements mapped to waveform rows.
     QVector<GraphicElementInput *> m_inputs;          ///< Input elements mapped to waveform rows.
@@ -235,7 +232,8 @@ private:
     Simulation *m_simulation       = nullptr;         ///< Simulation engine used for waveform runs.
     bool m_edited                  = false;           ///< True if the waveform has unsaved changes.
     const bool m_askConnection;                       ///< If true, prompt to link to a .dolphin file on open.
-    double m_scale                 = 1.0;             ///< Mirrors the view's accumulated scale transform (only FitScreen changes it; discrete zoom in/out re-flow columns instead).
+    int m_zoomLevel                = 0;               ///< Discrete column-width zoom step (0..6); Zoom In/Out/Reset only — row height and font stay fixed.
+    double m_fitScale              = 1.0;             ///< Uniform scale from Fit Screen; scales column width, row height, and font together.
     int m_clockPeriod              = 0;               ///< Period used by "Set Clock Wave" (0 = auto).
     int m_inputPorts               = 0;               ///< Number of input ports in the circuit.
     int m_length                   = 32;              ///< Number of simulation time-step columns.

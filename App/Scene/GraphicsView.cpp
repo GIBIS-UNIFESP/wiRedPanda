@@ -122,21 +122,11 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     const int zoomDirection = event->angleDelta().y();
     bool zoomed = false;
 
-    // When zoom is redirected (e.g., when a scroll-sensitive widget has focus),
-    // emit signals instead of zooming so the parent can decide what to do
     if (zoomDirection > 0 && canZoomIn()) {
-        if (m_redirectZoom) {
-            emit scaleIn();
-        } else {
-            zoomIn();
-        }
+        zoomIn();
         zoomed = true;
     } else if (zoomDirection < 0 && canZoomOut()) {
-        if (m_redirectZoom) {
-            emit scaleOut();
-        } else {
-            zoomOut();
-        }
+        zoomOut();
         zoomed = true;
     }
 
@@ -148,11 +138,6 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     }
 
     event->accept();
-}
-
-void GraphicsView::setRedirectZoom(const bool value)
-{
-    m_redirectZoom = value;
 }
 
 void GraphicsView::setFastMode(const bool fastMode)
