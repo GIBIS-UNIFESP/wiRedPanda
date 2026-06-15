@@ -110,7 +110,7 @@ public:
     // --- MCP Accessors ---
 
     /// Returns the underlying table model (MCP access).
-    QStandardItemModel* getModel() const { return m_model; }
+    SignalModel* getModel() const { return m_model; }
 
     /// Returns the output element vector (MCP access).
     const QVector<GraphicElement *>& getOutputElements() const { return m_outputs; }
@@ -156,6 +156,9 @@ private:
     void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     /// Applies \a valueFn to every selected cell, marks the waveform edited, and re-runs.
     void applyToSelectedCells(const std::function<int(int)> &valueFn);
+    /// Fills the first m_inputPorts rows of \a model (over \a columns) with the
+    /// Gray-code-style enumeration of all input combinations (the combinational truth table).
+    void fillCombinationalInputs(SignalModel *model, int columns) const;
     /// Applies the current zoom factor to the table's row/column sizes and font.
     void applyZoom();
     /// Renders the full waveform to a pixmap using \a cellW x \a cellH cells, via a

@@ -186,7 +186,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
 
             QJsonArray values;
             for (int col = 0; col < duration; ++col) {
-                values.append(model->index(row, col).data().toInt());
+                values.append(model->value(row, col));
             }
             inputSignal["values"] = values;
             inputData.append(inputSignal);
@@ -200,7 +200,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
             QJsonArray values;
             int outputRowIndex = static_cast<int>(inputs.size()) + row;
             for (int col = 0; col < duration; ++col) {
-                values.append(model->index(outputRowIndex, col).data().toInt());
+                values.append(model->value(outputRowIndex, col));
             }
             outputSignal["values"] = values;
             outputData.append(outputSignal);
