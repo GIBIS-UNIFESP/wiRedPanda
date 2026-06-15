@@ -89,7 +89,7 @@ void TestDialogs::testClockDialogPeriodReturnValue()
 }
 
 // ============================================================================
-// LengthDialog Tests (4 tests)
+// LengthDialog Tests (5 tests)
 // ============================================================================
 
 void TestDialogs::testLengthDialogConstructor()
@@ -145,6 +145,20 @@ void TestDialogs::testLengthDialogRange()
     LengthDialog dialogHigh(9999);
     auto *spinBox = dialogHigh.findChild<QSpinBox *>("lengthSpinBox");
     QCOMPARE(spinBox->value(), 2048);
+}
+
+void TestDialogs::testLengthDialogReturnValue()
+{
+    // length() is a pure accessor; the caller runs exec() and distinguishes accept/cancel
+    // by the exec() result, then reads length() on accept.
+    LengthDialog dialog1(64);
+    QTimer::singleShot(0, &dialog1, &QDialog::reject);
+    QCOMPARE(dialog1.exec(), static_cast<int>(QDialog::Rejected));
+
+    LengthDialog dialog2(128);
+    QTimer::singleShot(0, &dialog2, &QDialog::accept);
+    QCOMPARE(dialog2.exec(), static_cast<int>(QDialog::Accepted));
+    QCOMPARE(dialog2.length(), 128);
 }
 
 // ============================================================================
