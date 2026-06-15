@@ -35,8 +35,9 @@ public:
 
     // --- Result Access ---
 
-    /// Returns the simulation length value selected by the user.
-    int length();
+    /// Returns the selected simulation length. Pure accessor: the caller runs exec() and
+    /// reads this only on QDialog::Accepted.
+    int length() const;
 
 private:
     Q_DISABLE_COPY(LengthDialog)

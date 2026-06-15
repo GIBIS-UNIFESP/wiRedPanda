@@ -21,12 +21,13 @@ private slots:
     void testClockDialogPeriodReturnValue();
 
     // ============================================================
-    // LengthDialog Tests (4 tests)
+    // LengthDialog Tests (5 tests)
     // ============================================================
     void testLengthDialogConstructor();
     void testLengthDialogMinLength();
     void testLengthDialogMaxLength();
     void testLengthDialogRange();
+    void testLengthDialogReturnValue();
 
     // ============================================================
     // ElementEditor — Wireless Tx duplicate-label rejection (5 tests)

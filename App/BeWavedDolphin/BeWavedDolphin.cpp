@@ -509,13 +509,12 @@ void BewavedDolphin::on_actionSetLength_triggered()
         qCDebug(zero) << "Setting the simulation length.";
         const int currentLength = m_length > 0 ? m_length : m_model->columnCount();
         LengthDialog dialog(currentLength, this);
-        const int simLength = dialog.length();
 
-        if (simLength < 0) {
+        if (dialog.exec() != QDialog::Accepted) {
             return;
         }
 
-        setLength(simLength, true);
+        setLength(dialog.length(), true);
     });
 }
 

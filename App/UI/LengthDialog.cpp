@@ -24,8 +24,8 @@ LengthDialog::~LengthDialog()
 {
 }
 
-int LengthDialog::length()
+int LengthDialog::length() const
 {
-    // Returns -1 on cancel so the caller can distinguish a user-chosen length from a dismissed dialog
-    return (exec() == QDialog::Accepted) ? m_ui->lengthSpinBox->value() : -1;
+    // Pure accessor: the caller runs exec() and reads this only on QDialog::Accepted.
+    return m_ui->lengthSpinBox->value();
 }
