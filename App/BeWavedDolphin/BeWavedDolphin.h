@@ -108,19 +108,23 @@ public:
      */
     void setLength(const int simLength, const bool runSimulation = false);
 
-    // --- MCP Accessors ---
+    /// A labelled waveform signal: a row label and its per-column 0/1 values.
+    struct Signal {
+        QString label;        ///< The signal's display label.
+        QVector<int> values;  ///< Per-column logic values.
+    };
 
-    /// Returns the underlying table model (MCP access).
-    SignalModel* getModel() const { return m_model; }
+    /// A read-only snapshot of the computed waveform, for automation/export consumers.
+    struct WaveformSnapshot {
+        QList<Signal> inputs;   ///< Input signals (one per input element).
+        QList<Signal> outputs;  ///< Output signals (one per output element).
+    };
 
-    /// Returns the output element vector (MCP access).
-    const QVector<GraphicElement *>& getOutputElements() const { return m_outputs; }
+    /// Returns the input/output signals over the first \a duration columns (MCP access).
+    WaveformSnapshot snapshot(int duration) const;
 
-    /// Returns the input element vector (MCP access).
-    const QVector<GraphicElementInput *>& getInputElements() const { return m_inputs; }
-
-    /// Returns the current simulation length (number of columns).
-    int getLength() const { return m_length; }
+    /// Returns the input row index whose element label equals \a label, or -1 (MCP access).
+    int inputRow(const QString &label) const;
 
 protected:
     // --- Qt event overrides ---
@@ -132,6 +136,17 @@ protected:
 
 private:
     Q_DISABLE_COPY(BewavedDolphin)
+
+    // --- Internal accessors (test-only; TestBewavedDolphinGui is a friend) ---
+
+    /// Returns the underlying table model.
+    SignalModel* getModel() const { return m_model; }
+    /// Returns the output element vector.
+    const QVector<GraphicElement *>& getOutputElements() const { return m_outputs; }
+    /// Returns the input element vector.
+    const QVector<GraphicElementInput *>& getInputElements() const { return m_inputs; }
+    /// Returns the current simulation length (number of columns).
+    int getLength() const { return m_length; }
 
     // --- File I/O ---
 

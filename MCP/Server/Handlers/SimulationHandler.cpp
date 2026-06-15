@@ -133,19 +133,11 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
         bewavedDolphin->setLength(duration, false);
 
         if (!inputPatterns.isEmpty()) {
-            const auto inputElements = bewavedDolphin->getInputElements();
-
             for (auto it = inputPatterns.begin(); it != inputPatterns.end(); ++it) {
                 QString inputLabel = it.key();
                 QJsonArray pattern = it.value().toArray();
 
-                int rowIndex = -1;
-                for (int i = 0; i < inputElements.size(); ++i) {
-                    if (inputElements[i]->label() == inputLabel) {
-                        rowIndex = i;
-                        break;
-                    }
-                }
+                const int rowIndex = bewavedDolphin->inputRow(inputLabel);
 
                 if (rowIndex == -1) {
                     return createErrorResponse(QString("Input element with label '%1' not found").arg(inputLabel),
@@ -176,32 +168,29 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
         QJsonArray inputData;
         QJsonArray outputData;
 
-        const auto inputs = bewavedDolphin->getInputElements();
-        const auto outputs = bewavedDolphin->getOutputElements();
-        const auto model = bewavedDolphin->getModel();
+        const auto waveform = bewavedDolphin->snapshot(duration);
 
-        for (int row = 0; row < inputs.size(); ++row) {
+        for (const auto &signal : waveform.inputs) {
             QJsonObject inputSignal;
-            inputSignal["label"] = inputs[row]->label();
+            inputSignal["label"] = signal.label;
             inputSignal["type"] = "input";
 
             QJsonArray values;
-            for (int col = 0; col < duration; ++col) {
-                values.append(model->value(row, col));
+            for (const int value : signal.values) {
+                values.append(value);
             }
             inputSignal["values"] = values;
             inputData.append(inputSignal);
         }
 
-        for (int row = 0; row < outputs.size(); ++row) {
+        for (const auto &signal : waveform.outputs) {
             QJsonObject outputSignal;
-            outputSignal["label"] = outputs[row]->label();
+            outputSignal["label"] = signal.label;
             outputSignal["type"] = "output";
 
             QJsonArray values;
-            int outputRowIndex = static_cast<int>(inputs.size()) + row;
-            for (int col = 0; col < duration; ++col) {
-                values.append(model->value(outputRowIndex, col));
+            for (const int value : signal.values) {
+                values.append(value);
             }
             outputSignal["values"] = values;
             outputData.append(outputSignal);
