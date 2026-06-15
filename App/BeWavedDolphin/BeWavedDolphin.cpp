@@ -21,6 +21,7 @@
 #include <QWheelEvent>
 
 #include "App/BeWavedDolphin/DolphinClipboard.h"
+#include "App/BeWavedDolphin/DolphinExporter.h"
 #include "App/BeWavedDolphin/DolphinFile.h"
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/Serializer.h"
@@ -493,18 +494,8 @@ void BewavedDolphin::show()
 void BewavedDolphin::print()
 {
     // Outputs in the same CSV format used by loadFromTerminal() / the CSV save path,
-    // allowing round-trip scripted use without a GUI. Read through SignalModel::value()
-    // so never-set cells read as 0 instead of dereferencing a null item().
-    std::cout << m_model->rowCount() << ",";
-    std::cout << m_model->columnCount() << ",\n";
-
-    for (int row = 0; row < m_model->rowCount(); ++row) {
-        for (int col = 0; col < m_model->columnCount(); ++col) {
-            std::cout << m_model->value(row, col) << ",";
-        }
-
-        std::cout << "\n";
-    }
+    // allowing round-trip scripted use without a GUI.
+    std::cout << DolphinExporter::csvText(m_model).toStdString();
 }
 
 void BewavedDolphin::saveToTxt(QTextStream &stream)
@@ -514,6 +505,15 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
     // exporting must not clobber the user's waveform (e.g. an MCP persistent session).
     const int columns = static_cast<int>(std::pow(2, m_inputPorts));
     SignalModel truthTable(m_model->rowCount(), columns);
+
+    // Carry the live model's row labels onto the throwaway model so the exporter, which
+    // reads labels and values from a single model, formats the same headers as before.
+    QStringList labels;
+    labels.reserve(m_model->rowCount());
+    for (int row = 0; row < m_model->rowCount(); ++row) {
+        labels.append(m_model->verticalHeaderItem(row)->text());
+    }
+    truthTable.setVerticalHeaderLabels(labels);
 
     fillCombinationalInputs(&truthTable, columns);
 
@@ -525,31 +525,13 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
         [&truthTable](int row, int col, int value) { truthTable.setValue(row, col, value); });
     WaveformSimulator::restoreInputs(m_inputs, m_oldInputValues);
 
-    // Write input rows first, then output rows, each followed by its signal label. Labels
-    // come from the live model's headers, which the throwaway computation leaves untouched.
-    for (int row = 0; row < m_inputs.size(); ++row) {
-        for (int col = 0; col < columns; ++col) {
-            stream << truthTable.value(row, col);
-        }
-
-        stream << " : \"" << m_model->verticalHeaderItem(row)->text() << "\"\n";
-    }
-
-    stream << "\n";
-
-    for (int row = static_cast<int>(m_inputs.size()); row < m_model->rowCount(); ++row) {
-        for (int col = 0; col < columns; ++col) {
-            stream << truthTable.value(row, col);
-        }
-
-        stream << " : \"" << m_model->verticalHeaderItem(row)->text() << "\"\n";
-    }
+    DolphinExporter::writeTruthTableText(stream, &truthTable, static_cast<int>(m_inputs.size()));
 }
 
 bool BewavedDolphin::exportToPng(const QString &filename)
 {
     try {
-        return renderWaveform(kExportCellWidth, kExportCellHeight).save(filename);
+        return DolphinExporter::renderToPixmap(m_model, m_delegate->plotType(), kExportCellWidth, kExportCellHeight).save(filename);
     } catch (...) {
         return false;
     }
@@ -1086,34 +1068,7 @@ void BewavedDolphin::on_actionExportToPng_triggered()
 
 bool BewavedDolphin::exportWaveformToPng(const QString &filename)
 {
-    return renderWaveform(kExportCellWidth, kExportCellHeight).save(filename);
-}
-
-QPixmap BewavedDolphin::renderWaveform(const int cellW, const int cellH) const
-{
-    // Render through a throwaway table bound to the same model, so the live view
-    // (its zoom, selection, scroll position) is never disturbed by an export.
-    QTableView view;
-    view.setModel(m_model);
-    auto *delegate = new SignalDelegate(&view);
-    delegate->setPlotType(m_delegate->plotType());
-    view.setItemDelegate(delegate);
-    view.setShowGrid(false);
-    view.setAlternatingRowColors(true);
-    view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view.horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    view.verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    view.horizontalHeader()->setDefaultSectionSize(cellW);
-    view.verticalHeader()->setDefaultSectionSize(cellH);
-
-    // Size the view to its full content so grab() captures every row/column with
-    // no scrollbars and no blank padding.
-    const int contentW = view.horizontalHeader()->length() + view.verticalHeader()->width();
-    const int contentH = view.verticalHeader()->length() + view.horizontalHeader()->height();
-    view.resize(contentW, contentH);
-
-    return view.grab();
+    return DolphinExporter::renderToPixmap(m_model, m_delegate->plotType(), kExportCellWidth, kExportCellHeight).save(filename);
 }
 
 void BewavedDolphin::on_actionExportToPdf_triggered()
@@ -1144,7 +1099,7 @@ void BewavedDolphin::on_actionExportToPdf_triggered()
         }
 
         // Render the waveform offscreen, then scale it to fit the page preserving aspect
-        const QPixmap pixmap = renderWaveform(kExportCellWidth, kExportCellHeight);
+        const QPixmap pixmap = DolphinExporter::renderToPixmap(m_model, m_delegate->plotType(), kExportCellWidth, kExportCellHeight);
         const QSize target = pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
         painter.drawPixmap(QRect(QPoint(0, 0), target), pixmap);
         painter.end();
