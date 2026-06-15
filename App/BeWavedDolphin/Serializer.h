@@ -19,7 +19,7 @@ class QStandardItemModel;
  * \brief Pure I/O functions for the beWavedDolphin waveform file formats.
  *
  * \details Handles only the encoding and decoding of data.  BewavedDolphin
- * retains responsibility for model updates (setLength, setCellValue, run).
+ * retains responsibility for model updates (setLength, SignalModel::setValue, run).
  */
 namespace DolphinSerializer {
 

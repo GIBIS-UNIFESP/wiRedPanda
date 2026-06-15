@@ -87,10 +87,8 @@ public:
      * \param row        Signal row index.
      * \param col        Time-step column index.
      * \param value      Logical value (0 or 1).
-     * \param isInput    \c true if the row is an input signal.
-     * \param changeNext \c true to also update the subsequent cell's edge pixmap.
      */
-    void createElement(const int row, const int col, const int value, const bool isInput, const bool changeNext);
+    void createElement(const int row, const int col, const int value);
 
     /**
      * \brief Prepares the waveform from \a fileName (or blank if empty).
@@ -173,8 +171,6 @@ private:
     void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     /// Deserializes clipboard data from \a stream into the selected \a ranges.
     void paste(const QItemSelection &ranges, QDataStream &stream);
-    /// Sets a single cell at (\a row, \a col) to \a value with edge-update control.
-    void setCellValue(int row, int col, int value, bool isInput, bool changeNext);
     /// Applies \a valueFn to every selected cell, marks the waveform edited, and re-runs.
     void applyToSelectedCells(const std::function<int(int)> &valueFn);
     /// Applies the current zoom factor to the table's row/column sizes and font.
@@ -221,7 +217,7 @@ private:
     MainWindow *m_mainWindow       = nullptr;         ///< Owner main window (for simulation restore).
     PlotType m_type                = PlotType::Line;  ///< Current display style (line vs. number).
     QFileInfo m_currentFile;                          ///< Path of the currently loaded .dolphin file.
-    QStandardItemModel *m_model    = nullptr;         ///< Table model (rows = signals, cols = time steps).
+    SignalModel *m_model           = nullptr;         ///< Table model (rows = signals, cols = time steps).
     QTableView *m_signalTableView  = new QTableView(); ///< The waveform table, shown as the central widget.
     SignalDelegate *m_delegate     = nullptr;         ///< Custom delegate rendering waveform cells.
     QVector<GraphicElement *> m_outputs;              ///< Output elements mapped to waveform rows.

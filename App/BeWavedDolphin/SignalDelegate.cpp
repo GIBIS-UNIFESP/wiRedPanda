@@ -6,6 +6,8 @@
 #include <QPainter>
 #include <QStyleOptionViewItem>
 
+#include "App/BeWavedDolphin/SignalModel.h"
+
 namespace
 {
 // Waveform colors: green for output rows, blue for input rows.
@@ -24,6 +26,11 @@ constexpr double kLowBottom     = 24.0 / 30.0;  ///< Bottom of the low plateau l
 SignalDelegate::SignalDelegate(QObject *parent)
     : QItemDelegate(parent)
 {
+}
+
+void SignalDelegate::setWaveformMode(const bool waveformMode)
+{
+    m_waveformMode = waveformMode;
 }
 
 WaveSegment SignalDelegate::segmentFor(const int value, const bool hasPrev, const int prevValue)
@@ -66,20 +73,30 @@ void SignalDelegate::drawWaveform(QPainter *painter, const QRectF &cell, const W
 
 void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    const QVariant segment = index.data(SegmentRole);
-
-    // In waveform (Line) mode each cell carries a WaveSegment. In Number mode the
-    // role is unset, so we fall through to the default text rendering.
-    if (segment.isValid()) {
-        // Draw the selection highlight behind the waveform rather than over it
-        if (option.state & QStyle::State_Selected) {
-            painter->fillRect(option.rect, option.palette.highlight());
-        }
-
-        drawWaveform(painter, option.rect, static_cast<WaveSegment>(segment.toInt()), index.data(InputRole).toBool());
+    // Number mode: render the "0"/"1" centered (no per-cell alignment role needed).
+    if (!m_waveformMode) {
+        QStyleOptionViewItem opt(option);
+        opt.displayAlignment = Qt::AlignCenter;
+        QItemDelegate::paint(painter, opt, index);
         return;
     }
 
-    // Number mode: delegate to the standard item delegate to render the "0"/"1" text
-    QItemDelegate::paint(painter, option, index);
+    // Waveform mode: derive the segment from this cell's value and its left neighbour,
+    // and the input/output colour from the model's row partition — nothing is stored.
+    const int value = index.data().toInt();
+    const QModelIndex prev = index.siblingAtColumn(index.column() - 1);
+    const bool hasPrev = prev.isValid();
+    const WaveSegment seg = segmentFor(value, hasPrev, hasPrev ? prev.data().toInt() : 0);
+
+    bool isInput = true;
+    if (const auto *model = qobject_cast<const SignalModel *>(index.model())) {
+        isInput = model->isInputRow(index.row());
+    }
+
+    // Draw the selection highlight behind the waveform rather than over it
+    if (option.state & QStyle::State_Selected) {
+        painter->fillRect(option.rect, option.palette.highlight());
+    }
+
+    drawWaveform(painter, option.rect, seg, isInput);
 }

@@ -184,7 +184,7 @@ void BewavedDolphin::loadFromTerminal()
 
         for (int col = 0; col < cols; ++col) {
             const int value = wordList2.at(col).toInt();
-            createElement(row, col, value, true, false);
+            m_model->setValue(row, col, value);
         }
     }
 
@@ -274,6 +274,16 @@ void BewavedDolphin::loadNewTable()
 
     // Input rows come first, then output rows — the split point is inputLabels.size()
     m_model->setVerticalHeaderLabels(inputLabels + outputLabels);
+    m_model->setInputRows(static_cast<int>(inputLabels.size()));
+
+    // The delegate derives each cell's waveform from the model; tell it the current mode.
+    m_delegate->setWaveformMode(m_type == PlotType::Line);
+
+    // A cell's rising/falling edge depends on its left neighbour, so any value change must
+    // repaint the whole visible grid (update() coalesces, so a full sweep is one repaint).
+    connect(m_model, &QAbstractItemModel::dataChanged, this, [this] {
+        m_signalTableView->viewport()->update();
+    });
 
     m_signalTableView->setAlternatingRowColors(true);
     m_signalTableView->setShowGrid(false);
@@ -302,9 +312,9 @@ void BewavedDolphin::on_tableView_cellDoubleClicked()
 
     // Toggle each selected cell between 0 and 1, then re-simulate
     for (auto &index : indexes) {
-        int value = m_model->index(index.row(), index.column(), QModelIndex()).data().toInt();
+        int value = m_model->value(index.row(), index.column());
         value = (value + 1) % 2;
-        createElement(index.row(), index.column(), value, true, false);
+        m_model->setValue(index.row(), index.column(), value);
     }
 
     run();
@@ -381,8 +391,8 @@ void BewavedDolphin::run()
     // resumes correctly.
     m_simDriver->sweep(
         m_inputs, m_outputs, m_inputPorts, m_model->columnCount(),
-        [this](int row, int col) { return m_model->index(row, col).data().toBool(); },
-        [this](int row, int col, int value) { createElement(row, col, value, false, false); });
+        [this](int row, int col) { return m_model->value(row, col) != 0; },
+        [this](int row, int col, int value) { m_model->setValue(row, col, value); });
 
     qCDebug(three) << "Setting inputs back to old values.";
     WaveformSimulator::restoreInputs(m_inputs, m_oldInputValues);
@@ -465,42 +475,11 @@ bool BewavedDolphin::checkSave()
     }
 }
 
-void BewavedDolphin::createElement(const int row, const int col, const int value, const bool isInput, const bool changeNext)
+void BewavedDolphin::createElement(const int row, const int col, const int value)
 {
-    setCellValue(row, col, value, isInput, changeNext);
-}
-
-void BewavedDolphin::setCellValue(const int row, const int col, const int value, const bool isInput, const bool changeNext)
-{
-    const auto index = m_model->index(row, col);
-    const int currentValue = index.data().toInt();
-
-    m_model->setData(index, value, Qt::DisplayRole);
-
-    if (m_type == PlotType::Number) {
-        m_model->setData(index, static_cast<uint>(Qt::AlignCenter), Qt::TextAlignmentRole);
-    }
-
-    if (m_type == PlotType::Line) {
-        m_model->setData(index, static_cast<uint>(Qt::AlignLeft), Qt::TextAlignmentRole);
-
-        const auto previousIndex = index.siblingAtColumn(col - 1);
-        const bool hasPrev  = previousIndex.isValid();
-        const int prevValue = hasPrev ? previousIndex.data().toInt() : 0;
-
-        m_model->setData(index, static_cast<int>(SignalDelegate::segmentFor(value, hasPrev, prevValue)), SignalDelegate::SegmentRole);
-        m_model->setData(index, isInput, SignalDelegate::InputRole);
-
-        if (!changeNext) {
-            return;
-        }
-
-        // If the value changed, the next cell's edge type (rising/falling) may have changed too
-        const auto nextIndex = m_model->index(row, col + 1);
-        if (nextIndex.isValid() && (currentValue != value)) {
-            setCellValue(row, col + 1, nextIndex.data().toInt(), isInput, false);
-        }
-    }
+    // The model stores only the logic value; the delegate derives the waveform segment
+    // (from this cell and its left neighbour) and the input/output colour at paint time.
+    m_model->setValue(row, col, value);
 }
 
 void BewavedDolphin::show()
@@ -569,7 +548,7 @@ void BewavedDolphin::applyToSelectedCells(const std::function<int(int)> &valueFn
 {
     const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
     for (const auto &item : itemList) {
-        setCellValue(item.row(), item.column(), valueFn(item.data().toInt()), true, true);
+        m_model->setValue(item.row(), item.column(), valueFn(item.data().toInt()));
     }
     m_edited = true;
     qCDebug(zero) << "Running simulation.";
@@ -660,7 +639,7 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
         for (const auto &item : itemList) {
             const int value = ((item.column() - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
-            setCellValue(item.row(), item.column(), value, true, true);
+            m_model->setValue(item.row(), item.column(), value);
         }
 
         m_edited = true;
@@ -684,7 +663,7 @@ void BewavedDolphin::on_actionCombinational_triggered()
 
         for (int row = 0; row < m_inputPorts; ++row) {
             for (int col = 0; col < m_model->columnCount(); ++col) {
-                setCellValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1), true, true);
+                m_model->setValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1));
             }
 
             // Double the period for each successive input bit; cap at max int-safe values
@@ -741,7 +720,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     for (int row = 0; row < m_inputPorts; ++row) {
         for (int col = oldLength; col < simLength; ++col) {
             // changeNext=false: avoid cascading into further new (still unset) cells
-            setCellValue(row, col, 0, true, false);
+            m_model->setValue(row, col, 0);
         }
     }
 
@@ -829,7 +808,7 @@ void BewavedDolphin::on_actionClear_triggered()
         sentryBreadcrumb("waveform", QStringLiteral("Clear input"));
         for (int row = 0; row < m_inputPorts; ++row) {
             for (int col = 0; col < m_model->columnCount(); ++col) {
-                setCellValue(row, col, 0, true, true);
+                m_model->setValue(row, col, 0);
             }
         }
 
@@ -847,7 +826,7 @@ void BewavedDolphin::on_actionAutoCrop_triggered()
         for (int col = m_model->columnCount() - 1; col >= 0; --col) {
             bool allZero = true;
             for (int row = 0; row < m_inputPorts; ++row) {
-                if (m_model->item(row, col)->data(Qt::DisplayRole).toInt() != 0) {
+                if (m_model->value(row, col) != 0) {
                     allZero = false;
                     break;
                 }
@@ -894,7 +873,7 @@ void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
     stream << static_cast<qint64>(itemList.size());
 
     for (const auto &item : itemList) {
-        const int data_ = m_model->index(item.row(), item.column()).data().toInt();
+        const int data_ = m_model->value(item.row(), item.column());
         // Store offsets relative to the selection origin so paste can re-anchor
         // the data at any target cell regardless of absolute position
         stream << static_cast<qint64>(item.row() - firstRow);
@@ -983,7 +962,7 @@ void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
         // Silently drop cells that land outside the input rows or past the simulation length;
         // output rows are never editable
         if ((newRow < m_inputPorts) && (newCol < m_model->columnCount())) {
-            setCellValue(newRow, newCol, static_cast<int>(data_), true, true);
+            m_model->setValue(newRow, newCol, static_cast<int>(data_));
         }
     }
 
@@ -1182,7 +1161,7 @@ void BewavedDolphin::load(QDataStream &stream)
 
     for (int row = 0; row < loadedData.inputPorts; ++row) {
         for (int col = 0; col < loadedData.columns; ++col) {
-            setCellValue(row, col, loadedData.values[row * loadedData.columns + col], true, true);
+            m_model->setValue(row, col, loadedData.values[row * loadedData.columns + col]);
         }
     }
 
@@ -1197,7 +1176,7 @@ void BewavedDolphin::load(QFile &file)
 
     for (int row = 0; row < loadedData.inputPorts; ++row) {
         for (int col = 0; col < loadedData.columns; ++col) {
-            setCellValue(row, col, loadedData.values[row * loadedData.columns + col], true, true);
+            m_model->setValue(row, col, loadedData.values[row * loadedData.columns + col]);
         }
     }
 
@@ -1208,27 +1187,11 @@ void BewavedDolphin::on_actionShowNumbers_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Show numbers"));
+        // Display mode is a pure view concern now: the model keeps the same values and the
+        // delegate switches between numeric text and waveform rendering.
         m_type = PlotType::Number;
-
-        // Clear the waveform roles that Line mode sets; if left, the delegate
-        // would paint the waveform on top of the numeric text
-        for (int row = 0; row < m_model->rowCount(); ++row) {
-            for (int col = 0; col < m_model->columnCount(); ++col) {
-                const auto index = m_model->index(row, col);
-                m_model->setData(index, QVariant(), SignalDelegate::SegmentRole);
-                m_model->setData(index, QVariant(), SignalDelegate::InputRole);
-            }
-        }
-
-        // Re-apply input cells through setCellValue so alignment roles are set for Number mode
-        for (int row = 0; row < m_inputPorts; ++row) {
-            for (int col = 0; col < m_model->columnCount(); ++col) {
-                setCellValue(row, col, m_model->index(row, col).data().toInt(), true, true);
-            }
-        }
-
-        qCDebug(zero) << "Running simulation.";
-        run();
+        m_delegate->setWaveformMode(false);
+        m_signalTableView->viewport()->update();
     });
 }
 
@@ -1237,17 +1200,8 @@ void BewavedDolphin::on_actionShowWaveforms_triggered()
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Show waveforms"));
         m_type = PlotType::Line;
-
-        // Re-create all input cells so they receive the correct rising/falling pixmaps
-        // for the current value sequence; output cells are refreshed by run() below
-        for (int row = 0; row < m_inputPorts; ++row) {
-            for (int col = 0; col < m_model->columnCount(); ++col) {
-                setCellValue(row, col, m_model->index(row, col).data().toInt(), true, true);
-            }
-        }
-
-        qCDebug(zero) << "Running simulation.";
-        run();
+        m_delegate->setWaveformMode(true);
+        m_signalTableView->viewport()->update();
     });
 }
 
@@ -1280,7 +1234,9 @@ QPixmap BewavedDolphin::renderWaveform(const int cellW, const int cellH) const
     // (its zoom, selection, scroll position) is never disturbed by an export.
     QTableView view;
     view.setModel(m_model);
-    view.setItemDelegate(new SignalDelegate(&view));
+    auto *delegate = new SignalDelegate(&view);
+    delegate->setWaveformMode(m_type == PlotType::Line);
+    view.setItemDelegate(delegate);
     view.setShowGrid(false);
     view.setAlternatingRowColors(true);
     view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
