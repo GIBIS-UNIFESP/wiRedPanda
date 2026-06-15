@@ -11,6 +11,7 @@
 #include <QTextStream>
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
+#include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRegistry.h"
@@ -115,8 +116,8 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
     int duration = params.value("duration").toInt(32);
     QJsonObject inputPatterns = params.value("input_patterns").toObject();
 
-    if (duration <= 0 || duration > 1024) {
-        return createErrorResponse("Duration must be between 1 and 1024", requestId, JsonRpcError::ValidationError);
+    if (duration <= 0 || duration > SignalModel::kMaxColumns) {
+        return createErrorResponse(QString("Duration must be between 1 and %1").arg(SignalModel::kMaxColumns), requestId, JsonRpcError::ValidationError);
     }
 
     return tryCommand([&]() -> QJsonObject {

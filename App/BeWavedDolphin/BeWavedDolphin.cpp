@@ -41,7 +41,6 @@
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
 
-static constexpr int    kMaxSimLength       = 2048;  ///<  Maximum allowed simulation length.
 static constexpr int    kExportCellWidth    = 50;    ///<  Per-column pixel width for PNG/PDF export.
 static constexpr int    kExportCellHeight   = 40;    ///<  Per-row pixel height for PNG/PDF export.
 
@@ -170,8 +169,8 @@ void BewavedDolphin::loadFromTerminal()
         rows = m_inputPorts;
     }
 
-    if ((cols < 1) || (cols > kMaxSimLength)) {
-        throw PANDACEPTION("Invalid column count %1: must be between 1 and %2.", QString::number(cols), QString::number(kMaxSimLength));
+    if ((cols < 1) || (cols > SignalModel::kMaxColumns)) {
+        throw PANDACEPTION("Invalid column count %1: must be between 1 and %2.", QString::number(cols), QString::number(SignalModel::kMaxColumns));
     }
 
     setLength(cols, false);
@@ -492,7 +491,7 @@ void BewavedDolphin::on_actionCombinational_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Combinational mode"));
-        const int truthTableSize = static_cast<int>((std::min)(static_cast<double>(kMaxSimLength), std::pow(2, m_inputPorts)));
+        const int truthTableSize = static_cast<int>((std::min)(static_cast<double>(SignalModel::kMaxColumns), std::pow(2, m_inputPorts)));
         setLength(truthTableSize, false);
 
         qCDebug(zero) << "Setting the signal according to its columns and clock period.";
