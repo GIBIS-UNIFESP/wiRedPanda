@@ -22,6 +22,7 @@
 #include <QWheelEvent>
 
 #include "App/BeWavedDolphin/Serializer.h"
+#include "App/BeWavedDolphin/WaveformSimulator.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
@@ -29,11 +30,8 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/GraphicsView.h"
-#include "App/Simulation/SimulationBlocker.h"
-#include "App/Simulation/SimulationThrottleDisabler.h"
 #include "App/UI/ClockDialog.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
@@ -197,6 +195,8 @@ void BewavedDolphin::prepare(const QString &fileName)
 {
     qCDebug(zero) << "Updating window name with current: " << fileName;
     m_simulation = m_externalScene->simulation();
+    // Construct the sweep driver before loadNewTable(), whose initial clear triggers run().
+    m_simDriver = std::make_unique<WaveformSimulator>(m_externalScene, m_simulation);
 
     qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
     loadElements();
@@ -332,9 +332,6 @@ void BewavedDolphin::on_tableView_selectionChanged()
 
 void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLabels)
 {
-    QVector<Status> oldValues(m_inputPorts);
-    int oldIndex = 0;
-
     for (auto *input : std::as_const(m_inputs)) {
         QString label = input->label();
 
@@ -350,12 +347,11 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
             } else {
                 inputLabels.append(label);
             }
-
-            // Snapshot the live port state before the simulation sweep overwrites it
-            oldValues[oldIndex] = input->outputPort(port)->status();
-            ++oldIndex;
         }
     }
+
+    // Snapshot the live input port states before the simulation sweep overwrites them
+    m_oldInputValues = WaveformSimulator::captureInputs(m_inputs, m_inputPorts);
 
     qCDebug(zero) << "Getting the name of the outputs. If no label is given, element type is used as a name.";
 
@@ -375,90 +371,21 @@ void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLa
             }
         }
     }
-
-    m_oldInputValues = oldValues;
 }
 
 void BewavedDolphin::run()
 {
-    // Block the live simulation timer while we drive the circuit manually column by column
-    qCDebug(zero) << "Creating class to pause main window simulator while creating waveform.";
-    SimulationBlocker simulationBlocker(m_simulation);
-    // Disable the visual refresh throttle so phases 3–4 (port-status updates) run on every
-    // update() call. Without this, output port statuses are stale for most columns and the
-    // waveform shows incorrect values.
-    SimulationThrottleDisabler throttleDisabler(m_simulation);
+    // Drive the circuit across every time column. Inputs are read from the model and the
+    // computed outputs (isInput=false → green; changeNext=false → caller refreshes) are
+    // written back, then the original input states are restored so the live simulation
+    // resumes correctly.
+    m_simDriver->sweep(
+        m_inputs, m_outputs, m_inputPorts, m_model->columnCount(),
+        [this](int row, int col) { return m_model->index(row, col).data().toBool(); },
+        [this](int row, int col, int value) { createElement(row, col, value, false, false); });
 
-    // Reset every element's sequential state (Q/~Q outputs, edge-detection variables) to
-    // power-on defaults before the sweep so results are reproducible regardless of any
-    // prior simulation run that may have left flip-flops in a different state.
-    qCDebug(zero) << "Resetting simulation state of all elements.";
-    for (auto *elm : m_externalScene->elements()) {
-        if (elm && elm->type() == GraphicElement::Type) {
-            elm->resetSimState();
-        }
-    }
-
-    // --- Step through each time column and compute circuit outputs ---
-    for (int column = 0; column < m_model->columnCount(); ++column) {
-        qCDebug(four) << "Itr: " << column << ", inputs: " << m_inputs.size();
-        int row = 0;
-
-        for (auto *input : std::as_const(m_inputs)) {
-            const bool isRotary = qobject_cast<InputRotary *>(input);
-            for (int port = 0; port < input->outputSize(); ++port) {
-                const bool value = m_model->index(row++, column).data().toBool();
-
-                // Rotary encoders only accept "setOn" for the high state; low is implicit
-                if (isRotary && value) {
-                    input->setOn(1, port);
-                } else if (!isRotary) {
-                    input->setOn(value, port);
-                }
-            }
-        }
-
-        qCDebug(four) << "Updating the values of the circuit logic based on current input values.";
-        m_simulation->update();
-
-        // Write computed output port states back into the model's output rows
-        qCDebug(four) << "Setting the computed output values to the waveform results.";
-        row = m_inputPorts;
-
-        for (auto *output : std::as_const(m_outputs)) {
-            for (int port = 0; port < output->inputSize(); ++port) {
-                const int value = static_cast<int>(output->inputPort(port)->status());
-                // isInput=false → green output pixmaps; changeNext=false → caller will refresh
-                createElement(row, column, value, false, false);
-                ++row;
-            }
-        }
-    }
-
-    // Restore the circuit to the state it was in before the sweep so the live simulation
-    // resumes correctly when the SimulationBlocker is destroyed
     qCDebug(three) << "Setting inputs back to old values.";
-    restoreInputs();
-}
-
-void BewavedDolphin::restoreInputs()
-{
-    qCDebug(zero) << "Restoring old values to inputs, prior to simulation.";
-
-    // m_oldInputValues is indexed by PORT (one entry per output port of each input element),
-    // not by element. A separate port-level index is required to avoid reading the wrong
-    // saved value for multi-port inputs (e.g. InputRotary).
-    int portIndex = 0;
-    for (auto *input : std::as_const(m_inputs)) {
-        for (int port = 0; port < input->outputSize(); ++port) {
-            const bool oldValue = static_cast<bool>(m_oldInputValues.at(portIndex++));
-            if (input->outputSize() > 1) {
-                input->setOn(oldValue, port);
-            } else {
-                input->setOn(oldValue);
-            }
-        }
-    }
+    WaveformSimulator::restoreInputs(m_inputs, m_oldInputValues);
 }
 
 bool BewavedDolphin::eventFilter(QObject *watched, QEvent *event)
