@@ -165,7 +165,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1353"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>صادرات به PDF</translation>
@@ -381,8 +381,8 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1105"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1237"/>
         <source>beWavedDolphin Simulator</source>
         <translation>شبیه‌ساز beWavedDolphin</translation>
     </message>
@@ -407,44 +407,44 @@
         <translation>مدار هیچ عنصر خروجی ندارد. برای تولید شکل موج حداقل یک خروجی (مثلاً LED یا Display) اضافه کنید.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="506"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1155"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="507"/>
         <source>Save simulation before closing?</source>
         <translation>آیا شبیه‌سازی قبل از بستن ذخیره شود؟</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1156"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>آیا می‌خواهید این فایل beWavedDolphin را به فایل جاری wiRedPanda پیوند دهید و آن را ذخیره کنید؟</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1387"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin یک شبیه‌ساز شکل موج برای wiRedPanda است که توسط دانشگاه فدرال سائوپائولو برای کمک به دانشجویان در یادگیری مدارهای منطقی توسعه داده شده است.&lt;/p&gt;&lt;p&gt;نسخه نرم‌افزار: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;سازندگان:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin در حال حاضر توسط Prof. Fábio Cappabianco, Ph.D. و دانشجویانش نگهداری می‌شود.&lt;/p&gt;&lt;p&gt; لطفاً اگر باگی پیدا کردید یا می‌خواهید ویژگی جدیدی درخواست دهید، در صفحه GitHub ما گزارش دهید.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;از وب‌سایت ما دیدن کنید!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1085"/>
         <source>Save File as...</source>
         <translation>ذخیره فایل به عنوان...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>فایل‌های CSV (*.csv);;Dolphin فایل‌ها (*.dolphin);;همه فایل‌های پشتیبانی شده (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1079"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin فایل‌ها (*.dolphin);;فایل‌های CSV (*.csv);;همه فایل‌های پشتیبانی شده (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1066"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1106"/>
         <source>Saved file successfully.</source>
         <translation>فایل با موفقیت ذخیره شد.</translation>
     </message>
@@ -464,73 +464,68 @@
         <translation>ردیف %1 دارای %2 مقدار است اما %3 مورد نیاز است.&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
-        <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>شکل موج بیش از حد بزرگ خواهد بود! بازنشانی زوم.</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="703"/>
         <source>No cells selected.</source>
         <translation>هیچ سلولی انتخاب نشده است.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1118"/>
         <source>Error opening file: %1</source>
         <translation>خطا در باز کردن فایل: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1132"/>
         <source>Error saving file: %1</source>
         <translation>خطا در ذخیره فایل: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1187"/>
         <source>Open File</source>
         <translation>باز کردن فایل</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1188"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>همه فایل‌های پشتیبانی شده (*.dolphin *.csv);;Dolphin فایل‌ها (*.dolphin);;فایل‌های CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1196"/>
         <source>File loaded successfully.</source>
         <translation>فایل با موفقیت بارگذاری شد.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1212"/>
         <source>Could not open file for reading: %1</source>
         <translation>فایل برای خواندن باز نشد: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1231"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>فرمت پشتیبانی نمی‌شود. امکان باز کردن فایل وجود ندارد: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1319"/>
         <source>Export to Image</source>
         <translation>صادرات به تصویر</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1319"/>
         <source>PNG files (*.png)</source>
         <translation>فایل‌های PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1353"/>
         <source>PDF files (*.pdf)</source>
         <translation>فایل‌های PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1373"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>امکان چاپ این مدار به PDF وجود ندارد.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>فایل &quot;%1&quot; وجود ندارد!</translation>
     </message>

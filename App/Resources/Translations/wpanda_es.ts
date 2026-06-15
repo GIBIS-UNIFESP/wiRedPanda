@@ -165,7 +165,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1353"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>Exportar a PDF</translation>
@@ -381,14 +381,14 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1105"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1237"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulador beWavedDolphin</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>¡El archivo &quot;%1&quot; no existe!</translation>
     </message>
@@ -413,39 +413,34 @@
         <translation>El circuito no tiene elementos de salida. Agregue al menos una salida (p. ej. LED o Display) para generar una forma de onda.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
-        <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>¡La forma de onda sería demasiado grande! Restableciendo zoom.</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="506"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1155"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="507"/>
         <source>Save simulation before closing?</source>
         <translation>¿Guardar la simulación antes de cerrar?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="703"/>
         <source>No cells selected.</source>
         <translation>No hay celdas seleccionadas.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1066"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1106"/>
         <source>Saved file successfully.</source>
         <translation>Archivo guardado con éxito.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1085"/>
         <source>Save File as...</source>
         <translation>Guardar archivo como...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>Archivos CSV (*.csv);;Archivos Dolphin (*.dolphin);;Todos los archivos compatibles (*.dolphin *.csv)</translation>
     </message>
@@ -465,72 +460,72 @@
         <translation>La fila %1 tiene %2 valor(es) pero se necesitan %3.&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1079"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Archivos Dolphin (*.dolphin);;Archivos CSV (*.csv);;Todos los archivos compatibles (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1118"/>
         <source>Error opening file: %1</source>
         <translation>Error al abrir archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1132"/>
         <source>Error saving file: %1</source>
         <translation>Error al guardar archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1156"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>¿Desea vincular este archivo beWavedDolphin a su archivo wiRedPanda actual y guardarlo?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1187"/>
         <source>Open File</source>
         <translation>Abrir Archivo</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1188"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Todos los archivos compatibles (*.dolphin *.csv);;Archivos Dolphin (*.dolphin);;Archivos CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1196"/>
         <source>File loaded successfully.</source>
         <translation>El archivo se cargó con éxito.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1212"/>
         <source>Could not open file for reading: %1</source>
         <translation>No se pudo abrir el archivo para lectura: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1231"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Formato no compatible. No se pudo abrir el archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1319"/>
         <source>Export to Image</source>
         <translation>Exportar a Imagen</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1319"/>
         <source>PNG files (*.png)</source>
         <translation>Archivos PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1353"/>
         <source>PDF files (*.pdf)</source>
         <translation>Archivos PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1373"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>No se pudo imprimir este circuito a PDF.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1387"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin es un simulador de formas de onda para wiRedPanda, desarrollado por la Universidad Federal de São Paulo para ayudar a los estudiantes a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versión del software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin es mantenido actualmente por el Prof. Fábio Cappabianco, Ph.D. y sus estudiantes.&lt;/p&gt;&lt;p&gt; Por favor, envíe un informe en nuestra página de GitHub si encuentra un error o desea solicitar una nueva funcionalidad.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;¡Visite nuestro sitio web!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>

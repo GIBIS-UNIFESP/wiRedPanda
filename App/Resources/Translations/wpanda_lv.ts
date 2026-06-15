@@ -165,7 +165,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1353"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>Eksportēt uz PDF</translation>
@@ -381,8 +381,8 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1105"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1237"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin Simulator</translation>
     </message>
@@ -407,44 +407,44 @@
         <translation>Ķēdei nav izejas elementu. Pievienojiet vismaz vienu izeju (piem., LED vai Display), lai ģenerētu viļņformu.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="506"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1155"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="507"/>
         <source>Save simulation before closing?</source>
         <translation>Saglabāt simulāciju pirms aizvēršanas?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1156"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Vai vēlaties saistīt šo beWavedDolphin failu ar jūsu pašreizējo wiRedPanda failu un to saglabāt?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1387"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin ir viļņformu simulators programmai wiRedPanda, ko izstrādāja Sanpaulu Federālā universitāte, lai palīdzētu studentiem apgūt loģiskās shēmas.&lt;/p&gt;&lt;p&gt;Programmatūras versija: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Veidotāji:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin pašlaik uztur Prof. Fábio Cappabianco, Ph.D. un viņa studenti.&lt;/p&gt;&lt;p&gt; Lūdzu, ziņojiet mūsu GitHub lapā, ja atrodat kļūdu vai vēlaties pieprasīt jaunu funkciju.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Apmeklējiet mūsu tīmekļa vietni!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1085"/>
         <source>Save File as...</source>
         <translation>Saglabāt failu kā...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV faili (*.csv);;Dolphin faili (*.dolphin);;Visi atbalstītie faili (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1079"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin faili (*.dolphin);;CSV faili (*.csv);;Visi atbalstītie faili (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1066"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1106"/>
         <source>Saved file successfully.</source>
         <translation>Fails saglabāts veiksmīgi.</translation>
     </message>
@@ -464,73 +464,68 @@
         <translation>%1. rindā ir %2 vērtība/vērtības, bet nepieciešamas %3.&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
-        <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Viļņa forma būtu pārāk liela! Atiestatām mērogu.</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="703"/>
         <source>No cells selected.</source>
         <translation>Nav atlasītas šūnas.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1118"/>
         <source>Error opening file: %1</source>
         <translation>Kļūda, atverot failu: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1132"/>
         <source>Error saving file: %1</source>
         <translation>Kļūda, saglabājot failu: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1187"/>
         <source>Open File</source>
         <translation>Atvērt failu</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1188"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Visi atbalstītie faili (*.dolphin *.csv);;Dolphin faili (*.dolphin);;CSV faili (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1196"/>
         <source>File loaded successfully.</source>
         <translation>Fails ielādēts veiksmīgi.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1212"/>
         <source>Could not open file for reading: %1</source>
         <translation>Nevarēja atvērt failu lasīšanai: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1231"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Formāts netiek atbalstīts. Neizdevās atvērt failu: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1319"/>
         <source>Export to Image</source>
         <translation>Eksportēt uz attēlu</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1319"/>
         <source>PNG files (*.png)</source>
         <translation>PNG faili (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1353"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF faili (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1373"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Neizdevās drukāt šo shēmu PDF formātā.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Fails &quot;%1&quot; neeksistē!</translation>
     </message>

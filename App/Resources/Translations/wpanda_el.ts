@@ -165,7 +165,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1353"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
         <source>Export to PDF</source>
         <translation>Εξαγωγή σε PDF</translation>
@@ -381,8 +381,8 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="60"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="124"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1098"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1230"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1105"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1237"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Προσομοιωτής beWavedDolphin</translation>
     </message>
@@ -407,44 +407,44 @@
         <translation>Το κύκλωμα δεν έχει στοιχεία εξόδου. Προσθέστε τουλάχιστον μία έξοδο (π.χ. LED ή Display) για να δημιουργήσετε κυματομορφή.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="504"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1148"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="506"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1155"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="505"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="507"/>
         <source>Save simulation before closing?</source>
         <translation>Αποθήκευση προσομοίωσης πριν το κλείσιμο;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1149"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1156"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Θέλετε να συνδέσετε αυτό το αρχείο beWavedDolphin με το τρέχον αρχείο wiRedPanda και να το αποθηκεύσετε;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1380"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1387"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Το beWavedDolphin είναι ένας προσομοιωτής κυματομορφών για το wiRedPanda, αναπτυγμένος από το Ομοσπονδιακό Πανεπιστήμιο του Σάο Πάολο για να βοηθήσει τους φοιτητές να μάθουν για τα λογικά κυκλώματα.&lt;/p&gt;&lt;p&gt;Έκδοση λογισμικού: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Δημιουργοί:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; Το beWavedDolphin συντηρείται αυτή τη στιγμή από τον Prof. Fábio Cappabianco, Ph.D. και τους φοιτητές του.&lt;/p&gt;&lt;p&gt; Παρακαλούμε υποβάλετε αναφορά στη σελίδα μας στο GitHub αν βρείτε σφάλμα ή θέλετε να ζητήσετε μια νέα λειτουργία.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Επισκεφτείτε τον ιστότοπό μας!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1085"/>
         <source>Save File as...</source>
         <translation>Αποθήκευση Αρχείου ως...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1075"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1078"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>Αρχεία CSV (*.csv);;Αρχεία Dolphin (*.dolphin);;Όλα τα υποστηριζόμενα αρχεία (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1076"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1079"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Αρχεία Dolphin (*.dolphin);;Αρχεία CSV (*.csv);;Όλα τα υποστηριζόμενα αρχεία (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1062"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1099"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1066"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1106"/>
         <source>Saved file successfully.</source>
         <translation>Επιτυχής αποθήκευση αρχείου.</translation>
     </message>
@@ -464,73 +464,68 @@
         <translation>Η γραμμή %1 έχει %2 τιμή/τιμές, αλλά απαιτούνται %3.&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="468"/>
-        <source>Waveform would be too big! Resetting zoom.</source>
-        <translation>Η κυματομορφή θα ήταν πολύ μεγάλη! Επαναφορά μεγέθυνσης.</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="703"/>
         <source>No cells selected.</source>
         <translation>Δεν έχουν επιλεγεί κελιά.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1111"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1118"/>
         <source>Error opening file: %1</source>
         <translation>Σφάλμα ανοίγματος αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1125"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1132"/>
         <source>Error saving file: %1</source>
         <translation>Σφάλμα αποθήκευσης αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1180"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1187"/>
         <source>Open File</source>
         <translation>Άνοιγμα Αρχείου</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1181"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1188"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Όλα τα υποστηριζόμενα αρχεία (*.dolphin *.csv);;Αρχεία Dolphin (*.dolphin);;Αρχεία CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1189"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1196"/>
         <source>File loaded successfully.</source>
         <translation>Επιτυχής φόρτωση αρχείου.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1212"/>
         <source>Could not open file for reading: %1</source>
         <translation>Δεν ήταν δυνατό το άνοιγμα του αρχείου για ανάγνωση: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1224"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1231"/>
         <source>Format not supported. Could not open file: %1</source>
         <translation>Μορφή δεν υποστηρίζεται. Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1319"/>
         <source>Export to Image</source>
         <translation>Εξαγωγή σε Εικόνα</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1312"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1319"/>
         <source>PNG files (*.png)</source>
         <translation>Αρχεία PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1346"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1353"/>
         <source>PDF files (*.pdf)</source>
         <translation>Αρχεία PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1366"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1373"/>
         <source>Could not print this circuit to PDF.</source>
         <translation>Δεν ήταν δυνατό να εκτυπωθεί αυτό το κύκλωμα σε PDF.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1198"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1205"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Το αρχείο &quot;%1&quot; δεν υπάρχει!</translation>
     </message>
