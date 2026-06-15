@@ -21,6 +21,7 @@
 #include <QWheelEvent>
 
 #include "App/BeWavedDolphin/DolphinClipboard.h"
+#include "App/BeWavedDolphin/DolphinEdits.h"
 #include "App/BeWavedDolphin/DolphinExporter.h"
 #include "App/BeWavedDolphin/DolphinFile.h"
 #include "App/BeWavedDolphin/DolphinModelBuilder.h"
@@ -259,15 +260,9 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
 
 void BewavedDolphin::on_tableView_cellDoubleClicked()
 {
-    const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
-
     // Toggle each selected cell between 0 and 1, then re-simulate
-    for (auto &index : indexes) {
-        int value = m_model->value(index.row(), index.column());
-        value = (value + 1) % 2;
-        m_model->setValue(index.row(), index.column(), value);
-    }
-
+    DolphinEdits::applyToCells(*m_model, m_signalTableView->selectionModel()->selectedIndexes(),
+                               [](int v) { return (v + 1) % 2; });
     run();
 }
 
@@ -403,7 +398,7 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
     }
     truthTable.setVerticalHeaderLabels(labels);
 
-    fillCombinationalInputs(&truthTable, columns);
+    DolphinEdits::combinational(truthTable, m_inputPorts, columns);
 
     // Compute the outputs for every input combination, then restore the live inputs the
     // sweep perturbed (the same capture/restore contract run() relies on).
@@ -427,31 +422,10 @@ bool BewavedDolphin::exportToPng(const QString &filename)
 
 void BewavedDolphin::applyToSelectedCells(const std::function<int(int)> &valueFn)
 {
-    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-    for (const auto &item : itemList) {
-        m_model->setValue(item.row(), item.column(), valueFn(item.data().toInt()));
-    }
+    DolphinEdits::applyToCells(*m_model, m_signalTableView->selectionModel()->selectedIndexes(), valueFn);
     m_edited = true;
     qCDebug(zero) << "Running simulation.";
     run();
-}
-
-void BewavedDolphin::fillCombinationalInputs(SignalModel *model, const int columns) const
-{
-    // Gray-code-like input patterns: row 0 toggles every 1 column (period=2), row 1 every
-    // 2 columns (period=4), etc. Together they enumerate all input combinations.
-    int halfClockPeriod = 1;
-    int clockPeriod     = 2;
-
-    for (int row = 0; row < m_inputPorts; ++row) {
-        for (int col = 0; col < columns; ++col) {
-            model->setValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1));
-        }
-
-        // Double the period for each successive input bit; cap at max int-safe values
-        halfClockPeriod = (std::min)(clockPeriod, 524288);
-        clockPeriod     = (std::min)(2 * clockPeriod, 1048576);
-    }
 }
 
 void BewavedDolphin::on_actionSetTo0_triggered()
@@ -506,14 +480,7 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
         m_clockPeriod = clockPeriod;
 
-        // First half of each period is LOW, second half is HIGH (50% duty cycle)
-        const int halfClockPeriod = clockPeriod / 2;
-        const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-
-        for (const auto &item : itemList) {
-            const int value = ((item.column() - firstCol) % clockPeriod < halfClockPeriod ? 0 : 1);
-            m_model->setValue(item.row(), item.column(), value);
-        }
+        DolphinEdits::clockWave(*m_model, m_signalTableView->selectionModel()->selectedIndexes(), firstCol, clockPeriod);
 
         m_edited = true;
         qCDebug(zero) << "Running simulation.";
@@ -529,7 +496,7 @@ void BewavedDolphin::on_actionCombinational_triggered()
         setLength(truthTableSize, false);
 
         qCDebug(zero) << "Setting the signal according to its columns and clock period.";
-        fillCombinationalInputs(m_model, m_model->columnCount());
+        DolphinEdits::combinational(*m_model, m_inputPorts, m_model->columnCount());
 
         m_edited = true;
         qCDebug(zero) << "Running simulation.";
@@ -576,13 +543,7 @@ void BewavedDolphin::setLength(const int simLength, const bool runSimulation)
     qCDebug(zero) << "Increasing the simulation length.";
     const int oldLength = m_model->columnCount();
     m_model->setColumnCount(simLength);
-
-    for (int row = 0; row < m_inputPorts; ++row) {
-        for (int col = oldLength; col < simLength; ++col) {
-            // changeNext=false: avoid cascading into further new (still unset) cells
-            m_model->setValue(row, col, 0);
-        }
-    }
+    DolphinEdits::growInputColumns(*m_model, m_inputPorts, oldLength, simLength);
 
     m_edited = true;
     qCDebug(zero) << "Running simulation.";
@@ -638,11 +599,7 @@ void BewavedDolphin::on_actionClear_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Clear input"));
-        for (int row = 0; row < m_inputPorts; ++row) {
-            for (int col = 0; col < m_model->columnCount(); ++col) {
-                m_model->setValue(row, col, 0);
-            }
-        }
+        DolphinEdits::clearInputs(*m_model, m_inputPorts);
 
         m_edited = true;
         qCDebug(zero) << "Running simulation.";
@@ -654,20 +611,7 @@ void BewavedDolphin::on_actionAutoCrop_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Auto crop"));
-        int lastNonZero = 0;
-        for (int col = m_model->columnCount() - 1; col >= 0; --col) {
-            bool allZero = true;
-            for (int row = 0; row < m_inputPorts; ++row) {
-                if (m_model->value(row, col) != 0) {
-                    allZero = false;
-                    break;
-                }
-            }
-            if (!allZero) {
-                lastNonZero = col;
-                break;
-            }
-        }
+        const int lastNonZero = DolphinEdits::lastNonZeroColumn(*m_model, m_inputPorts);
         setLength(lastNonZero + 1, true);
     });
 }

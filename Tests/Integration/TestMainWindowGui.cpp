@@ -3151,7 +3151,7 @@ void TestMainWindowGui::testWaveformOnEmptySceneShowsWarningHQ()
     // Regression for WIREDPANDA-HQ on macOS arm64.
     //
     // Pre-fix: triggering actionWaveform on an empty scene drove
-    // BewavedDolphin::loadElements() to throw PANDACEPTION. On macOS arm64
+    // DolphinModelBuilder::collect() to throw PANDACEPTION. On macOS arm64
     // the exception escaped Application::notify and the process aborted with
     // SIGABRT (captured as a Sentry minidump). The fix at
     // MainWindow::on_actionWaveform_triggered pre-checks the empty case and

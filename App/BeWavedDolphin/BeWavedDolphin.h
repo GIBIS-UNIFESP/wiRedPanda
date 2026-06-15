@@ -154,9 +154,6 @@ private:
     void loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels);
     /// Applies \a valueFn to every selected cell, marks the waveform edited, and re-runs.
     void applyToSelectedCells(const std::function<int(int)> &valueFn);
-    /// Fills the first m_inputPorts rows of \a model (over \a columns) with the
-    /// Gray-code-style enumeration of all input combinations (the combinational truth table).
-    void fillCombinationalInputs(SignalModel *model, int columns) const;
     /// Applies the current zoom factor to the table's row/column sizes and font.
     void applyZoom();
     /// Updates the enabled state of the zoom-in/out actions for the current zoom.
