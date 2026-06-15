@@ -492,13 +492,14 @@ void BewavedDolphin::show()
 void BewavedDolphin::print()
 {
     // Outputs in the same CSV format used by loadFromTerminal() / the CSV save path,
-    // allowing round-trip scripted use without a GUI
+    // allowing round-trip scripted use without a GUI. Read through SignalModel::value()
+    // so never-set cells read as 0 instead of dereferencing a null item().
     std::cout << m_model->rowCount() << ",";
     std::cout << m_model->columnCount() << ",\n";
 
     for (int row = 0; row < m_model->rowCount(); ++row) {
         for (int col = 0; col < m_model->columnCount(); ++col) {
-            std::cout << m_model->item(row, col)->text().toStdString() << ",";
+            std::cout << m_model->value(row, col) << ",";
         }
 
         std::cout << "\n";
@@ -507,32 +508,40 @@ void BewavedDolphin::print()
 
 void BewavedDolphin::saveToTxt(QTextStream &stream)
 {
-    // Force combinational mode so the truth table covers all 2^n input combinations
-    on_actionCombinational_triggered();
+    // Dump the full combinational truth table. Build it in a throwaway model (like
+    // renderWaveform() uses a throwaway view) so the live document is never mutated —
+    // exporting must not clobber the user's waveform (e.g. an MCP persistent session).
+    const int columns = static_cast<int>(std::pow(2, m_inputPorts));
+    SignalModel truthTable(m_model->rowCount(), columns);
 
-    // Expand the length to exactly the full truth table; capped at 2048 by setLength()
-    const int truthTableSize = static_cast<int>(std::pow(2, m_inputPorts));
-    setLength(truthTableSize, false);
+    fillCombinationalInputs(&truthTable, columns);
 
-    // Write input rows first, then output rows, each followed by its signal label
+    // Compute the outputs for every input combination, then restore the live inputs the
+    // sweep perturbed (the same capture/restore contract run() relies on).
+    m_simDriver->sweep(
+        m_inputs, m_outputs, m_inputPorts, columns,
+        [&truthTable](int row, int col) { return truthTable.value(row, col) != 0; },
+        [&truthTable](int row, int col, int value) { truthTable.setValue(row, col, value); });
+    WaveformSimulator::restoreInputs(m_inputs, m_oldInputValues);
+
+    // Write input rows first, then output rows, each followed by its signal label. Labels
+    // come from the live model's headers, which the throwaway computation leaves untouched.
     for (int row = 0; row < m_inputs.size(); ++row) {
-        for (int col = 0; col < m_model->columnCount(); ++col) {
-            stream << m_model->item(row, col)->text();
+        for (int col = 0; col < columns; ++col) {
+            stream << truthTable.value(row, col);
         }
 
-        QString label = m_model->verticalHeaderItem(row)->text();
-        stream << " : \"" << label << "\"\n";
+        stream << " : \"" << m_model->verticalHeaderItem(row)->text() << "\"\n";
     }
 
     stream << "\n";
 
     for (int row = static_cast<int>(m_inputs.size()); row < m_model->rowCount(); ++row) {
-        for (int col = 0; col < m_model->columnCount(); ++col) {
-            stream << m_model->item(row, col)->text();
+        for (int col = 0; col < columns; ++col) {
+            stream << truthTable.value(row, col);
         }
 
-        QString label = m_model->verticalHeaderItem(row)->text();
-        stream << " : \"" << label << "\"\n";
+        stream << " : \"" << m_model->verticalHeaderItem(row)->text() << "\"\n";
     }
 }
 
@@ -554,6 +563,24 @@ void BewavedDolphin::applyToSelectedCells(const std::function<int(int)> &valueFn
     m_edited = true;
     qCDebug(zero) << "Running simulation.";
     run();
+}
+
+void BewavedDolphin::fillCombinationalInputs(SignalModel *model, const int columns) const
+{
+    // Gray-code-like input patterns: row 0 toggles every 1 column (period=2), row 1 every
+    // 2 columns (period=4), etc. Together they enumerate all input combinations.
+    int halfClockPeriod = 1;
+    int clockPeriod     = 2;
+
+    for (int row = 0; row < m_inputPorts; ++row) {
+        for (int col = 0; col < columns; ++col) {
+            model->setValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1));
+        }
+
+        // Double the period for each successive input bit; cap at max int-safe values
+        halfClockPeriod = (std::min)(clockPeriod, 524288);
+        clockPeriod     = (std::min)(2 * clockPeriod, 1048576);
+    }
 }
 
 void BewavedDolphin::on_actionSetTo0_triggered()
@@ -630,21 +657,8 @@ void BewavedDolphin::on_actionCombinational_triggered()
         const int truthTableSize = static_cast<int>((std::min)(static_cast<double>(kMaxSimLength), std::pow(2, m_inputPorts)));
         setLength(truthTableSize, false);
 
-        // Generate Gray-code-like input patterns: row 0 toggles every 1 column (period=2),
-        // row 1 every 2 columns (period=4), etc. Together they enumerate all input combinations.
         qCDebug(zero) << "Setting the signal according to its columns and clock period.";
-        int halfClockPeriod = 1;
-        int clockPeriod     = 2;
-
-        for (int row = 0; row < m_inputPorts; ++row) {
-            for (int col = 0; col < m_model->columnCount(); ++col) {
-                m_model->setValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1));
-            }
-
-            // Double the period for each successive input bit; cap at max int-safe values
-            halfClockPeriod = (std::min)(clockPeriod, 524288);
-            clockPeriod     = (std::min)(2 * clockPeriod, 1048576);
-        }
+        fillCombinationalInputs(m_model, m_model->columnCount());
 
         m_edited = true;
         qCDebug(zero) << "Running simulation.";

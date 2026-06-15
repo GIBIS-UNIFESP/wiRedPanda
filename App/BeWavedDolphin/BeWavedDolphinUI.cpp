@@ -241,7 +241,9 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
 
 void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
 {
-    BewavedDolphin->setWindowTitle(QCoreApplication::translate("BewavedDolphin", "MainWindow"));
+    // The window title is set by BewavedDolphin's constructor (and updated on file
+    // load/save), so no placeholder is applied here.
+    Q_UNUSED(BewavedDolphin)
     actionAbout->setText(QCoreApplication::translate("BewavedDolphin", "About"));
     actionAbout->setShortcut(QCoreApplication::translate("BewavedDolphin", "Ctrl+H"));
     actionLoad->setText(QCoreApplication::translate("BewavedDolphin", "Load"));
