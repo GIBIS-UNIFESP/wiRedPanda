@@ -23,6 +23,7 @@
 #include "App/BeWavedDolphin/DolphinClipboard.h"
 #include "App/BeWavedDolphin/DolphinExporter.h"
 #include "App/BeWavedDolphin/DolphinFile.h"
+#include "App/BeWavedDolphin/DolphinZoom.h"
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/Serializer.h"
 #include "App/BeWavedDolphin/WaveformSimulator.h"
@@ -39,13 +40,7 @@
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
 
-static constexpr int    kDefaultColumnWidth = 38;    ///<  Per-column pixel width at zoom 1.0 (matches the pre-refactor on-screen size).
-static constexpr int    kDefaultRowHeight   = 30;    ///<  Per-row pixel height at zoom 1.0 (matches the pre-refactor on-screen size).
 static constexpr int    kMaxSimLength       = 2048;  ///<  Maximum allowed simulation length.
-static constexpr double kZoomStep           = 1.25;  ///<  Multiplicative factor per column-zoom step.
-static constexpr int    kMaxZoomLevel       = 6;     ///<  Maximum discrete column-zoom step (baseline = 0).
-static constexpr double kMinFitScale        = 0.05;  ///<  Smallest allowed Fit Screen scale.
-static constexpr double kMaxFitScale        = 20.0;  ///<  Largest allowed Fit Screen scale.
 static constexpr int    kExportCellWidth    = 50;    ///<  Per-column pixel width for PNG/PDF export.
 static constexpr int    kExportCellHeight   = 40;    ///<  Per-row pixel height for PNG/PDF export.
 
@@ -75,6 +70,10 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHo
     // The delegate paints the waveform cells; the table is the central widget directly
     m_delegate = new SignalDelegate(this);
     m_signalTableView->setItemDelegate(m_delegate);
+
+    // Zoom state + view metrics live in DolphinZoom; the controller keeps the UI glue
+    // (breadcrumbs, action enable-state via zoomChanged(), and the wheel event filter).
+    m_zoom = std::make_unique<DolphinZoom>(m_signalTableView);
 
     // Native scrollbars let long waveforms scroll; zoom changes row/column metrics instead
     m_signalTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -421,25 +420,8 @@ bool BewavedDolphin::eventFilter(QObject *watched, QEvent *event)
 
 void BewavedDolphin::applyZoom()
 {
-    // Two independent zoom axes: the discrete column-zoom (m_zoomLevel) widens columns
-    // only — a horizontal "time stretch" — while Fit Screen (m_fitScale) scales columns,
-    // rows, and font together. Sections use Fixed resize mode, so setting the header
-    // default section size resizes every row/column uniformly without a per-cell loop.
-    const double colScale = m_fitScale * std::pow(kZoomStep, m_zoomLevel);
-    m_signalTableView->horizontalHeader()->setDefaultSectionSize(
-        static_cast<int>(std::lround(kDefaultColumnWidth * colScale)));
-    m_signalTableView->verticalHeader()->setDefaultSectionSize(
-        static_cast<int>(std::lround(kDefaultRowHeight * m_fitScale)));
-
-    // Scale the cell/header font with the Fit Screen factor only (column zoom leaves text
-    // untouched), from the application's base point size.
-    QFont font = QApplication::font();
-    const double basePointSize = font.pointSizeF() > 0 ? font.pointSizeF() : 10.0;
-    font.setPointSizeF(basePointSize * m_fitScale);
-    m_signalTableView->setFont(font);
-    m_signalTableView->horizontalHeader()->setFont(font);
-    m_signalTableView->verticalHeader()->setFont(font);
-
+    // The zoom math lives in DolphinZoom; the controller drives the action enable-state.
+    m_zoom->apply();
     zoomChanged();
 }
 
@@ -708,11 +690,8 @@ void BewavedDolphin::on_actionZoomOut_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom out"));
-        // Column-width only; floored at the baseline (no shrink below the default width).
-        if (m_zoomLevel > 0) {
-            --m_zoomLevel;
-        }
-        applyZoom();
+        m_zoom->zoomOut();
+        zoomChanged();
     });
 }
 
@@ -720,11 +699,8 @@ void BewavedDolphin::on_actionZoomIn_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom in"));
-        // Column-width only; capped at kMaxZoomLevel discrete steps.
-        if (m_zoomLevel < kMaxZoomLevel) {
-            ++m_zoomLevel;
-        }
-        applyZoom();
+        m_zoom->zoomIn();
+        zoomChanged();
     });
 }
 
@@ -732,45 +708,23 @@ void BewavedDolphin::on_actionResetZoom_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Zoom reset"));
-        m_zoomLevel = 0;
-        m_fitScale  = 1.0;
-        applyZoom();
+        m_zoom->reset();
+        zoomChanged();
     });
 }
 
 void BewavedDolphin::zoomChanged()
 {
-    m_ui->actionZoomIn->setEnabled(m_zoomLevel < kMaxZoomLevel);
-    m_ui->actionZoomOut->setEnabled(m_zoomLevel > 0);
+    m_ui->actionZoomIn->setEnabled(m_zoom->canZoomIn());
+    m_ui->actionZoomOut->setEnabled(m_zoom->canZoomOut());
 }
 
 void BewavedDolphin::on_actionFitScreen_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Fit screen"));
-        // Fit Screen scales everything (columns, rows, font) uniformly to fit, and resets
-        // the discrete column zoom. The factor is computed analytically from the default
-        // cell metrics so it is independent of the current zoom state.
-        const int cols = m_model->columnCount();
-        const int rows = m_model->rowCount();
-        // Degenerate geometry (empty/hidden table): nothing to fit, leave the zoom untouched.
-        if (cols <= 0 || rows <= 0) {
-            return;
-        }
-        const QSize viewport = m_signalTableView->viewport()->size();
-        // Subtract the fixed chrome (row-label gutter, column-header strip) from the
-        // available area; the remainder must hold the unscaled cell grid.
-        const double availW = viewport.width()  - m_signalTableView->verticalHeader()->width();
-        const double availH = viewport.height() - m_signalTableView->horizontalHeader()->height();
-        const double sW = availW / (kDefaultColumnWidth * cols);
-        const double sH = availH / (kDefaultRowHeight   * rows);
-        // A hidden or too-small viewport yields a non-positive scale; leave the zoom untouched.
-        if (sW <= 0 || sH <= 0) {
-            return;
-        }
-        m_fitScale  = std::clamp((std::min)(sW, sH), kMinFitScale, kMaxFitScale);
-        m_zoomLevel = 0;
-        applyZoom();
+        m_zoom->fitScreen();
+        zoomChanged();
     });
 }
 

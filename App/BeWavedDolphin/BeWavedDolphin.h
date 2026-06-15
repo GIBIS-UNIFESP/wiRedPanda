@@ -22,6 +22,7 @@
 #include "App/Scene/Scene.h"
 
 class DolphinHost;
+class DolphinZoom;
 class WaveformSimulator;
 
 namespace DolphinSerializer { struct WaveformData; }
@@ -208,10 +209,9 @@ private:
     Scene *m_externalScene         = nullptr;         ///< The circuit scene being simulated.
     Simulation *m_simulation       = nullptr;         ///< Simulation engine used for waveform runs.
     std::unique_ptr<WaveformSimulator> m_simDriver;   ///< Drives the column-by-column simulation sweep.
+    std::unique_ptr<DolphinZoom> m_zoom;              ///< Owns the table's zoom state + view metrics.
     bool m_edited                  = false;           ///< True if the waveform has unsaved changes.
     const bool m_askConnection;                       ///< If true, prompt to link to a .dolphin file on open.
-    int m_zoomLevel                = 0;               ///< Discrete column-width zoom step (0..6); Zoom In/Out/Reset only — row height and font stay fixed.
-    double m_fitScale              = 1.0;             ///< Uniform scale from Fit Screen; scales column width, row height, and font together.
     int m_clockPeriod              = 0;               ///< Period used by "Set Clock Wave" (0 = auto).
     int m_inputPorts               = 0;               ///< Number of input ports in the circuit.
     int m_length                   = 32;              ///< Number of simulation time-step columns.

@@ -24,6 +24,7 @@
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/BeWavedDolphin/DolphinHost.h"
+#include "App/BeWavedDolphin/DolphinZoom.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -900,8 +901,8 @@ void TestBewavedDolphinGui::testZoomScaleTrackingA26()
     // Baseline cell metrics match the pre-refactor on-screen size (column 38px, row 30px).
     static constexpr int kDefaultColumnWidth = 38;
     static constexpr int kDefaultRowHeight = 30;
-    QCOMPARE(dolphin->m_zoomLevel, 0);
-    QCOMPARE(dolphin->m_fitScale, 1.0);
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 0);
+    QCOMPARE(dolphin->m_zoom->fitScale(), 1.0);
 
     auto *zoomIn = dolphin->findChild<QAction *>("actionZoomIn");
     auto *zoomOut = dolphin->findChild<QAction *>("actionZoomOut");
@@ -917,32 +918,32 @@ void TestBewavedDolphinGui::testZoomScaleTrackingA26()
 
     // One Zoom In: columns widen by the step; rows AND font are untouched.
     zoomIn->trigger();
-    QCOMPARE(dolphin->m_zoomLevel, 1);
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 1);
     QCOMPARE(hHeader->defaultSectionSize(),
              static_cast<int>(std::lround(kDefaultColumnWidth * kZoomStep)));
     QCOMPARE(vHeader->defaultSectionSize(), baseRowHeight);
     QCOMPARE(dolphin->m_signalTableView->font().pointSizeF(), baseFontPt);
 
     zoomOut->trigger();
-    QCOMPARE(dolphin->m_zoomLevel, 0);
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 0);
     QCOMPARE(hHeader->defaultSectionSize(), kDefaultColumnWidth);
 
     // Zoom Out is floored at the baseline — repeated triggers never go below level 0.
     zoomOut->trigger();
     zoomOut->trigger();
-    QCOMPARE(dolphin->m_zoomLevel, 0);
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 0);
     QCOMPARE(hHeader->defaultSectionSize(), kDefaultColumnWidth);
 
     // Zoom In is capped at kMaxZoomLevel (6) — repeated triggers never exceed it.
     for (int i = 0; i < 10; ++i) {
         zoomIn->trigger();
     }
-    QCOMPARE(dolphin->m_zoomLevel, 6);
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 6);
     QVERIFY(!zoomIn->isEnabled());
 
     resetZoom->trigger();
-    QCOMPARE(dolphin->m_zoomLevel, 0);
-    QCOMPARE(dolphin->m_fitScale, 1.0);
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 0);
+    QCOMPARE(dolphin->m_zoom->fitScale(), 1.0);
     QCOMPARE(hHeader->defaultSectionSize(), kDefaultColumnWidth);
 }
 
@@ -963,16 +964,16 @@ void TestBewavedDolphinGui::testFitScreenClampsAndGuardsA26()
     QVERIFY(fitScreen);
 
     fitScreen->trigger();
-    QVERIFY(std::isfinite(dolphin->m_fitScale));
-    QVERIFY(dolphin->m_fitScale >= kMinFitScale);
-    QVERIFY(dolphin->m_fitScale <= kMaxFitScale);
-    QCOMPARE(dolphin->m_zoomLevel, 0);
+    QVERIFY(std::isfinite(dolphin->m_zoom->fitScale()));
+    QVERIFY(dolphin->m_zoom->fitScale() >= kMinFitScale);
+    QVERIFY(dolphin->m_zoom->fitScale() <= kMaxFitScale);
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 0);
 
     // Repeating FitScreen with the same geometry stays within bounds and finite.
     fitScreen->trigger();
-    QVERIFY(std::isfinite(dolphin->m_fitScale));
-    QVERIFY(dolphin->m_fitScale >= kMinFitScale);
-    QVERIFY(dolphin->m_fitScale <= kMaxFitScale);
+    QVERIFY(std::isfinite(dolphin->m_zoom->fitScale()));
+    QVERIFY(dolphin->m_zoom->fitScale() >= kMinFitScale);
+    QVERIFY(dolphin->m_zoom->fitScale() <= kMaxFitScale);
 
     // Degenerate geometry: hide every column and row so the content extent
     // collapses; FitScreen must leave m_fitScale finite and clamped, not blow up.
@@ -989,7 +990,7 @@ void TestBewavedDolphinGui::testFitScreenClampsAndGuardsA26()
     }
 
     fitScreen->trigger();
-    QVERIFY(std::isfinite(dolphin->m_fitScale));
-    QVERIFY(dolphin->m_fitScale >= kMinFitScale);
-    QVERIFY(dolphin->m_fitScale <= kMaxFitScale);
+    QVERIFY(std::isfinite(dolphin->m_zoom->fitScale()));
+    QVERIFY(dolphin->m_zoom->fitScale() >= kMinFitScale);
+    QVERIFY(dolphin->m_zoom->fitScale() <= kMaxFitScale);
 }
