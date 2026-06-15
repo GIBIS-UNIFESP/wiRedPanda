@@ -23,6 +23,7 @@
 #include "App/BeWavedDolphin/DolphinClipboard.h"
 #include "App/BeWavedDolphin/DolphinExporter.h"
 #include "App/BeWavedDolphin/DolphinFile.h"
+#include "App/BeWavedDolphin/DolphinModelBuilder.h"
 #include "App/BeWavedDolphin/DolphinZoom.h"
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/Serializer.h"
@@ -31,7 +32,6 @@
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
-#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/IO/Serialization.h"
@@ -199,73 +199,22 @@ void BewavedDolphin::prepare(const QString &fileName)
     // Construct the sweep driver before loadNewTable(), whose initial clear triggers run().
     m_simDriver = std::make_unique<WaveformSimulator>(m_externalScene, m_simulation);
 
-    qCDebug(zero) << "Loading elements. All elements initially in elements vector. Then, inputs and outputs are extracted from it.";
-    loadElements();
+    qCDebug(zero) << "Collecting and ordering the scene's input/output elements.";
+    const auto tableSignals = DolphinModelBuilder::collect(m_externalScene);
+    m_inputs     = tableSignals.inputs;
+    m_outputs    = tableSignals.outputs;
+    m_inputPorts = tableSignals.inputPorts;
 
     qCDebug(zero) << "Loading initial data into the table.";
-    loadNewTable();
+    loadNewTable(tableSignals.inputLabels, tableSignals.outputLabels);
 }
 
-void BewavedDolphin::loadElements()
+void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels)
 {
-    m_inputs.clear();
-    m_outputs.clear();
-    m_inputPorts = 0;
-
-    const auto elements = m_externalScene->elements();
-
-    if (elements.isEmpty()) {
-        throw PANDACEPTION("The circuit is empty. Add input and output elements to generate a waveform.");
-    }
-
-    for (auto *elm : elements) {
-        if (!elm || (elm->type() != GraphicElement::Type)) {
-            continue;
-        }
-
-        if (elm->elementGroup() == ElementGroup::Input) {
-            m_inputs.append(qobject_cast<GraphicElementInput *>(elm));
-            // Multi-bit inputs (e.g. rotary encoder) contribute multiple port rows
-            m_inputPorts += elm->outputSize();
-        }
-
-        if (elm->elementGroup() == ElementGroup::Output) {
-            m_outputs.append(elm);
-        }
-    }
-
-    // Stable sort by label so the waveform table ordering is deterministic and
-    // matches what the user expects from the label names they assigned
-    std::stable_sort(m_inputs.begin(), m_inputs.end(), [](const auto &elm1, const auto &elm2) {
-        return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) < 0;
-    });
-
-    std::stable_sort(m_outputs.begin(), m_outputs.end(), [](const auto &elm1, const auto &elm2) {
-        return QString::compare(elm1->label(), elm2->label(), Qt::CaseInsensitive) < 0;
-    });
-
-    if (m_inputs.isEmpty() && m_outputs.isEmpty()) {
-        throw PANDACEPTION("The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.");
-    }
-
-    if (m_inputs.isEmpty()) {
-        throw PANDACEPTION("The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.");
-    }
-
-    if (m_outputs.isEmpty()) {
-        throw PANDACEPTION("The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.");
-    }
-}
-
-void BewavedDolphin::loadNewTable()
-{
-    qCDebug(zero) << "Getting initial value from inputs and writing them to oldvalues. Used to save current state of inputs and restore it after simulation. Not saving memory states though...";
-    qCDebug(zero) << "Also getting the name of the inputs. If no label is given, the element type is used as a name.";
-    QStringList inputLabels;
-    QStringList outputLabels;
-    // loadSignals also snapshots current input port values into m_oldInputValues so
-    // they can be restored after the simulation sweep completes
-    loadSignals(inputLabels, outputLabels);
+    qCDebug(zero) << "Snapshotting current input values into oldvalues, to restore after simulation.";
+    // Snapshot the live input port states before the simulation sweep overwrites them, so
+    // they can be restored after the sweep completes.
+    m_oldInputValues = WaveformSimulator::captureInputs(m_inputs, m_inputPorts);
 
     qCDebug(zero) << "Num iter = " << m_length;
 
@@ -340,49 +289,6 @@ void BewavedDolphin::on_tableView_selectionChanged()
     }
 
     m_externalScene->view()->update();
-}
-
-void BewavedDolphin::loadSignals(QStringList &inputLabels, QStringList &outputLabels)
-{
-    for (auto *input : std::as_const(m_inputs)) {
-        QString label = input->label();
-
-        // Fall back to the element type name when the user hasn't given it a label
-        if (label.isEmpty()) {
-            label = ElementFactory::translatedName(input->elementType());
-        }
-
-        for (int port = 0; port < input->outputSize(); ++port) {
-            // Multi-port inputs (e.g. bus inputs) get indexed labels like "A[0]", "A[1]"
-            if (input->outputSize() > 1) {
-                inputLabels.append(label + "[" + QString::number(port) + "]");
-            } else {
-                inputLabels.append(label);
-            }
-        }
-    }
-
-    // Snapshot the live input port states before the simulation sweep overwrites them
-    m_oldInputValues = WaveformSimulator::captureInputs(m_inputs, m_inputPorts);
-
-    qCDebug(zero) << "Getting the name of the outputs. If no label is given, element type is used as a name.";
-
-    for (auto *output : std::as_const(m_outputs)) {
-        QString label = output->label();
-
-        if (label.isEmpty()) {
-            label = ElementFactory::translatedName(output->elementType());
-        }
-
-        // Outputs with multiple input ports (e.g. multi-bit displays) get indexed labels
-        for (int port = 0; port < output->inputSize(); ++port) {
-            if (output->inputSize() > 1) {
-                outputLabels.append(label + "[" + QString::number(port) + "]");
-            } else {
-                outputLabels.append(label);
-            }
-        }
-    }
 }
 
 void BewavedDolphin::run()

@@ -147,14 +147,11 @@ private:
 
     // --- Signal Table Management ---
 
-    /// Collects input/output GraphicElements from the circuit scene.
-    void loadElements();
     /// Populates signal rows from the external circuit's terminal elements.
     void loadFromTerminal();
-    /// Creates a fresh table model with the current input/output configuration.
-    void loadNewTable();
-    /// Fills \a inputLabels and \a outputLabels from the circuit's I/O elements.
-    void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
+    /// Builds the table model + wires the view for the given input/output row labels
+    /// (produced by DolphinModelBuilder), snapshots input states, and runs the first sweep.
+    void loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels);
     /// Applies \a valueFn to every selected cell, marks the waveform edited, and re-runs.
     void applyToSelectedCells(const std::function<int(int)> &valueFn);
     /// Fills the first m_inputPorts rows of \a model (over \a columns) with the
