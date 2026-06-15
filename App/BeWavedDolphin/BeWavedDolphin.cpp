@@ -16,12 +16,12 @@
 #include <QMimeData>
 #include <QPainter>
 #include <QPrinter>
-#include <QSaveFile>
 #include <QTableView>
 #include <QTextStream>
 #include <QWheelEvent>
 
 #include "App/BeWavedDolphin/DolphinClipboard.h"
+#include "App/BeWavedDolphin/DolphinFile.h"
 #include "App/BeWavedDolphin/Serializer.h"
 #include "App/BeWavedDolphin/WaveformSimulator.h"
 #include "App/Core/Application.h"
@@ -491,7 +491,7 @@ void BewavedDolphin::show()
 
 void BewavedDolphin::print()
 {
-    // Outputs in the same CSV format used by loadFromTerminal() / save(QSaveFile &),
+    // Outputs in the same CSV format used by loadFromTerminal() / the CSV save path,
     // allowing round-trip scripted use without a GUI
     std::cout << m_model->rowCount() << ",";
     std::cout << m_model->columnCount() << ",\n";
@@ -908,7 +908,7 @@ void BewavedDolphin::on_actionSave_triggered()
             return;
         }
 
-        save(m_currentFile.absoluteFilePath());
+        DolphinFile::save(*m_model, m_currentFile.absoluteFilePath(), m_inputPorts);
         m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
         m_edited = false;
     });
@@ -945,49 +945,13 @@ void BewavedDolphin::on_actionSaveAs_triggered()
             }
         }
 
-        save(fileName);
+        DolphinFile::save(*m_model, fileName, m_inputPorts);
         m_currentFile = QFileInfo(fileName);
         associateToWiRedPanda(fileName);
         setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
         m_ui->statusbar->showMessage(tr("Saved file successfully."), 4000);
         m_edited = false;
     });
-}
-
-void BewavedDolphin::save(const QString &fileName)
-{
-    // QSaveFile writes to a temp file and atomically renames on commit,
-    // preventing data loss if the process is interrupted during a write
-    QSaveFile file(fileName);
-
-    if (!file.open(QIODevice::WriteOnly)) {
-        throw PANDACEPTION("Error opening file: %1", file.errorString());
-    }
-
-    if (fileName.endsWith(".dolphin")) {
-        qCDebug(zero) << "Saving dolphin file.";
-        QDataStream stream(&file);
-        Serialization::writeDolphinHeader(stream);
-        save(stream);
-    } else {
-        qCDebug(zero) << "Saving CSV file.";
-        save(file);
-    }
-
-    if (!file.commit()) {
-        throw PANDACEPTION("Error saving file: %1", file.errorString());
-    }
-}
-
-void BewavedDolphin::save(QDataStream &stream)
-{
-    qCDebug(zero) << "Serializing data into data stream.";
-    DolphinSerializer::saveBinary(stream, m_model, m_inputPorts);
-}
-
-void BewavedDolphin::save(QSaveFile &file)
-{
-    DolphinSerializer::saveCSV(file, m_model);
 }
 
 void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
@@ -1045,68 +1009,22 @@ void BewavedDolphin::on_actionLoad_triggered()
 
 void BewavedDolphin::load(const QString &fileName)
 {
-    QFile file(fileName);
-
-    if (!file.exists()) {
-        throw PANDACEPTION("File \"%1\" does not exist!", fileName);
-    }
-
-    qCDebug(zero) << "File exists.";
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        qCDebug(zero) << "Could not open file in ReadOnly mode: " << file.errorString();
-        throw PANDACEPTION("Could not open file for reading: %1", file.errorString());
-    }
-
-    if (fileName.endsWith(".dolphin")) {
-        qCDebug(zero) << "Dolphin file opened.";
-        QDataStream stream(&file);
-        Serialization::readDolphinHeader(stream);
-        qCDebug(zero) << "Loading in editor.";
-        load(stream);
-        qCDebug(zero) << "Current file set.";
-        m_currentFile = QFileInfo(fileName);
-    } else if (fileName.endsWith(".csv")) {
-        qCDebug(zero) << "CSV file opened.";
-        qCDebug(zero) << "Loading in editor.";
-        load(file);
-        qCDebug(zero) << "Current file set.";
-        m_currentFile = QFileInfo(fileName);
-    } else {
-        qCDebug(zero) << "Format not supported. Could not open file: " << fileName;
-        throw PANDACEPTION("Format not supported. Could not open file: %1", fileName);
-    }
-
-    qCDebug(zero) << "Closing file.";
-    file.close();
+    // DolphinFile handles the on-disk format; we apply the parsed input rows and
+    // record the association with the circuit file.
+    applyWaveformData(DolphinFile::load(fileName, m_inputPorts));
+    m_currentFile = QFileInfo(fileName);
     associateToWiRedPanda(fileName);
     setWindowTitle(tr("beWavedDolphin Simulator") + " [" + m_currentFile.fileName() + "]");
 }
 
-void BewavedDolphin::load(QDataStream &stream)
+void BewavedDolphin::applyWaveformData(const DolphinSerializer::WaveformData &fileData)
 {
-    const auto loadedData = DolphinSerializer::loadBinary(stream, m_inputPorts);
-    setLength(loadedData.columns, false);
+    setLength(fileData.columns, false);
     qCDebug(zero) << "Update table.";
 
-    for (int row = 0; row < loadedData.inputPorts; ++row) {
-        for (int col = 0; col < loadedData.columns; ++col) {
-            m_model->setValue(row, col, loadedData.values[row * loadedData.columns + col]);
-        }
-    }
-
-    run();
-}
-
-void BewavedDolphin::load(QFile &file)
-{
-    const auto loadedData = DolphinSerializer::loadCSV(file, m_inputPorts);
-    setLength(loadedData.columns, false);
-    qCDebug(zero) << "Update table.";
-
-    for (int row = 0; row < loadedData.inputPorts; ++row) {
-        for (int col = 0; col < loadedData.columns; ++col) {
-            m_model->setValue(row, col, loadedData.values[row * loadedData.columns + col]);
+    for (int row = 0; row < fileData.inputPorts; ++row) {
+        for (int col = 0; col < fileData.columns; ++col) {
+            m_model->setValue(row, col, fileData.values[row * fileData.columns + col]);
         }
     }
 
