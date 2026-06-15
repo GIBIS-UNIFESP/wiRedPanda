@@ -13,7 +13,6 @@
 #include <QCloseEvent>
 #include <QHeaderView>
 #include <QMessageBox>
-#include <QMimeData>
 #include <QPainter>
 #include <QPrinter>
 #include <QTableView>
@@ -35,7 +34,6 @@
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
-#include "App/IO/Serialization.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/UI/ClockDialog.h"
 #include "App/UI/FileDialogProvider.h"
@@ -666,16 +664,7 @@ void BewavedDolphin::on_actionCopy_triggered()
             return;
         }
 
-        // Serialise using a versioned header so paste can verify format compatibility
-        QByteArray itemData;
-        QDataStream stream(&itemData, QIODevice::WriteOnly);
-        Serialization::writeDolphinHeader(stream);
-        DolphinClipboard::copy(*m_model, ranges, stream);
-
-        auto *mimeData = new QMimeData();
-        mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
-
-        QApplication::clipboard()->setMimeData(mimeData);
+        DolphinClipboard::copyToClipboard(*m_model, ranges);
     });
 }
 
@@ -690,18 +679,9 @@ void BewavedDolphin::on_actionCut_triggered()
             return;
         }
 
-        QByteArray itemData;
-        QDataStream stream(&itemData, QIODevice::WriteOnly);
-        Serialization::writeDolphinHeader(stream);
         // Cut = copy the selection, then clear it (which re-runs the simulation).
-        DolphinClipboard::copy(*m_model, ranges, stream);
+        DolphinClipboard::copyToClipboard(*m_model, ranges);
         on_actionSetTo0_triggered();
-
-        auto *mimeData = new QMimeData();
-        mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
-
-        QApplication::clipboard()->setMimeData(mimeData);
-
         m_edited = true;
     });
 }
@@ -716,23 +696,7 @@ void BewavedDolphin::on_actionPaste_triggered()
             return;
         }
 
-        const auto *mimeData = QApplication::clipboard()->mimeData();
-        QByteArray itemData;
-
-        // Support both the legacy "bdolphin/copydata" MIME type and the current one,
-        // so files or clipboard data from older versions of the app can still be pasted
-        if (mimeData->hasFormat("bdolphin/copydata")) {
-            itemData = mimeData->data("bdolphin/copydata");
-        }
-
-        if (mimeData->hasFormat("application/x-bewaveddolphin-waveform")) {
-            itemData = mimeData->data("application/x-bewaveddolphin-waveform");
-        }
-
-        if (!itemData.isEmpty()) {
-            QDataStream stream(&itemData, QIODevice::ReadOnly);
-            Serialization::readDolphinHeader(stream);
-            DolphinClipboard::paste(*m_model, ranges, stream);
+        if (DolphinClipboard::pasteFromClipboard(*m_model, ranges)) {
             m_edited = true;
             run();
         }
