@@ -144,45 +144,10 @@ void BewavedDolphin::createWaveform()
 
 void BewavedDolphin::loadFromTerminal()
 {
-    // Protocol: first line is "rows,cols"; subsequent lines contain comma-separated 0/1 values per row.
-    // This allows driving the simulator from scripts without a GUI file dialog.
+    // DolphinFile owns the stdin protocol parsing; applyWaveformData() applies the parsed
+    // rows the same way a file load does (setLength + fill inputs + run).
     QTextStream cin(stdin);
-    QString str = cin.readLine();
-    const auto wordList(str.split(','));
-
-    if (wordList.size() < 2) {
-        throw PANDACEPTION("Invalid header: expected 'rows,cols' on the first line.");
-    }
-
-    int rows = wordList.at(0).toInt();
-    const int cols = wordList.at(1).toInt();
-
-    // Clamp rows to the number of actual input ports to avoid out-of-bounds writes
-    if (rows > m_inputPorts) {
-        rows = m_inputPorts;
-    }
-
-    if ((cols < 1) || (cols > SignalModel::kMaxColumns)) {
-        throw PANDACEPTION("Invalid column count %1: must be between 1 and %2.", QString::number(cols), QString::number(SignalModel::kMaxColumns));
-    }
-
-    setLength(cols, false);
-
-    for (int row = 0; row < rows; ++row) {
-        str = cin.readLine();
-        const auto wordList2(str.split(','));
-
-        if (wordList2.size() < cols) {
-            throw PANDACEPTION("Row %1 has %2 value(s) but %3 are required.", QString::number(row), QString::number(wordList2.size()), QString::number(cols));
-        }
-
-        for (int col = 0; col < cols; ++col) {
-            const int value = wordList2.at(col).toInt();
-            m_model->setValue(row, col, value);
-        }
-    }
-
-    run();
+    applyWaveformData(DolphinFile::parseTerminal(cin, m_inputPorts));
 }
 
 void BewavedDolphin::prepare(const QString &fileName)
