@@ -10,9 +10,11 @@
 #include <QClipboard>
 #include <QDialog>
 #include <QFile>
-#include <QGraphicsProxyWidget>
 #include <QHeaderView>
+#include <QImage>
 #include <QItemSelectionModel>
+#include <QScrollBar>
+#include <QSet>
 #include <QStandardItemModel>
 #include <QTableView>
 #include <QTest>
@@ -70,22 +72,10 @@ static BewavedDolphin *createDolphin(WorkSpace *ws)
     return dolphin;
 }
 
-/// Finds the QTableView embedded inside BewavedDolphin's QGraphicsScene proxy.
+/// Finds the BewavedDolphin's waveform QTableView (now a plain child widget).
 static QTableView *findTableView(BewavedDolphin *dolphin)
 {
-    // The table view is added to a QGraphicsScene via addWidget(), which wraps it
-    // in a QGraphicsProxyWidget. We iterate through the scene items to find it.
-    auto *scene = dolphin->findChild<QGraphicsScene *>();
-    if (!scene) return nullptr;
-
-    for (auto *item : scene->items()) {
-        if (auto *proxy = dynamic_cast<QGraphicsProxyWidget *>(item)) {
-            if (auto *tv = qobject_cast<QTableView *>(proxy->widget())) {
-                return tv;
-            }
-        }
-    }
-    return nullptr;
+    return dolphin->findChild<QTableView *>();
 }
 
 /// Selects a range of cells in the BewavedDolphin table view.
@@ -253,6 +243,19 @@ void TestBewavedDolphinGui::testExportToPng()
     QVERIFY(ok);
     QVERIFY(QFile::exists(pngPath));
     QVERIFY(QFileInfo(pngPath).size() > 0);
+
+    // The offscreen render must actually contain the waveform, not a blank image:
+    // expect a non-trivial size and more than one distinct color.
+    QImage img(pngPath);
+    QVERIFY(!img.isNull());
+    QVERIFY(img.width() > 50 && img.height() > 50);
+    QSet<QRgb> colors;
+    for (int y = 0; y < img.height() && colors.size() < 3; ++y) {
+        for (int x = 0; x < img.width() && colors.size() < 3; ++x) {
+            colors.insert(img.pixel(x, y));
+        }
+    }
+    QVERIFY2(colors.size() >= 2, "Exported waveform image should not be a single flat color");
 
     QFile::remove(pngPath);
 }
@@ -492,6 +495,26 @@ void TestBewavedDolphinGui::testFitScreen()
     auto *action = dolphin->findChild<QAction *>("actionFitScreen");
     QVERIFY(action);
     action->trigger(); // Should not crash
+}
+
+void TestBewavedDolphinGui::testLongWaveformScrolls()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *tv = findTableView(dolphin.get());
+    QVERIFY(tv);
+
+    // The old QGraphicsScene embedding forced both scrollbars AlwaysOff; native
+    // scrolling must now be available.
+    QCOMPARE(tv->horizontalScrollBarPolicy(), Qt::ScrollBarAsNeeded);
+    QCOMPARE(tv->verticalScrollBarPolicy(), Qt::ScrollBarAsNeeded);
+
+    // A waveform far wider than the viewport must expose a horizontal scroll range.
+    dolphin->setLength(256, false);
+    tv->resize(200, 150);
+    QApplication::processEvents();
+    QVERIFY2(tv->horizontalScrollBar()->maximum() > 0,
+             "Long waveform should produce a horizontal scroll range");
 }
 
 // ===========================================================================
@@ -831,76 +854,93 @@ void TestBewavedDolphinGui::testSetClockWaveDisabledWithoutSelectionC9()
 
 void TestBewavedDolphinGui::testZoomScaleTrackingA26()
 {
-    // m_scale is initialised to 1.0 (member default). FitScreen now uses
-    // resetTransform() + setTransform(absolute) so the old cumulative drift
-    // no longer applies. Discrete zoom in/out re-flows columns but does NOT
-    // touch m_scale or the view transform. Reset zoom sets m_scale to kZoomStep.
+    // Zoom In/Out is a horizontal "time stretch": a discrete level (m_zoomLevel, 0..6)
+    // scales the COLUMN width only — row height and font stay fixed — and it is floored
+    // at the baseline (no shrink below the default width). Reset returns to level 0 /
+    // fit 1.0. (Fit Screen, the only thing that scales rows + font, is covered separately.)
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     static constexpr double kZoomStep = 1.25;
-    QCOMPARE(dolphin->m_scale, 1.0);
-    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
+    // Baseline cell metrics match the pre-refactor on-screen size (column 38px, row 30px).
+    static constexpr int kDefaultColumnWidth = 38;
+    static constexpr int kDefaultRowHeight = 30;
+    QCOMPARE(dolphin->m_zoomLevel, 0);
+    QCOMPARE(dolphin->m_fitScale, 1.0);
 
     auto *zoomIn = dolphin->findChild<QAction *>("actionZoomIn");
     auto *zoomOut = dolphin->findChild<QAction *>("actionZoomOut");
     auto *resetZoom = dolphin->findChild<QAction *>("actionResetZoom");
     QVERIFY(zoomIn && zoomOut && resetZoom);
 
+    auto *hHeader = dolphin->m_signalTableView->horizontalHeader();
+    auto *vHeader = dolphin->m_signalTableView->verticalHeader();
+    const int baseRowHeight = vHeader->defaultSectionSize();
+    QCOMPARE(baseRowHeight, kDefaultRowHeight);
+    QCOMPARE(hHeader->defaultSectionSize(), kDefaultColumnWidth);
+    const double baseFontPt = dolphin->m_signalTableView->font().pointSizeF();
+
+    // One Zoom In: columns widen by the step; rows AND font are untouched.
     zoomIn->trigger();
-    QCOMPARE(dolphin->m_scale, 1.0);
-    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
-    zoomIn->trigger();
-    zoomIn->trigger();
-    QCOMPARE(dolphin->m_scale, 1.0);
-    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
+    QCOMPARE(dolphin->m_zoomLevel, 1);
+    QCOMPARE(hHeader->defaultSectionSize(),
+             static_cast<int>(std::lround(kDefaultColumnWidth * kZoomStep)));
+    QCOMPARE(vHeader->defaultSectionSize(), baseRowHeight);
+    QCOMPARE(dolphin->m_signalTableView->font().pointSizeF(), baseFontPt);
 
     zoomOut->trigger();
+    QCOMPARE(dolphin->m_zoomLevel, 0);
+    QCOMPARE(hHeader->defaultSectionSize(), kDefaultColumnWidth);
+
+    // Zoom Out is floored at the baseline — repeated triggers never go below level 0.
     zoomOut->trigger();
-    QCOMPARE(dolphin->m_scale, 1.0);
-    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
+    zoomOut->trigger();
+    QCOMPARE(dolphin->m_zoomLevel, 0);
+    QCOMPARE(hHeader->defaultSectionSize(), kDefaultColumnWidth);
+
+    // Zoom In is capped at kMaxZoomLevel (6) — repeated triggers never exceed it.
+    for (int i = 0; i < 10; ++i) {
+        zoomIn->trigger();
+    }
+    QCOMPARE(dolphin->m_zoomLevel, 6);
+    QVERIFY(!zoomIn->isEnabled());
 
     resetZoom->trigger();
-    QCOMPARE(dolphin->m_scale, kZoomStep);
-    QCOMPARE(dolphin->m_view.transform().m11(), 1.0);
+    QCOMPARE(dolphin->m_zoomLevel, 0);
+    QCOMPARE(dolphin->m_fitScale, 1.0);
+    QCOMPARE(hHeader->defaultSectionSize(), kDefaultColumnWidth);
 }
 
 void TestBewavedDolphinGui::testFitScreenClampsAndGuardsA26()
 {
-    // A26 part 2: FitScreen must (a) not crash on degenerate geometry where
-    // hLen or vLen is <= 0 (would produce +inf when used as a divisor and
-    // trip Qt's CreateDIBSection qFatal on Windows — WIREDPANDA-HW), and (b)
-    // clamp the computed scale to a sane range so a pathological table size
-    // can't request an extreme backing-store transform.
+    // FitScreen computes a uniform scale (m_fitScale) that fits the content in the
+    // viewport, clamped to [kMinFitScale, kMaxFitScale], and resets the column zoom.
+    // On degenerate geometry (everything hidden) it must keep m_fitScale finite and
+    // inside the clamp window — never +inf from a tiny divisor (the WIREDPANDA-HW
+    // class of bug).
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    static constexpr double kMinFitScale = 0.05;
+    static constexpr double kMaxFitScale = 20.0;
 
     auto *fitScreen = dolphin->findChild<QAction *>("actionFitScreen");
     QVERIFY(fitScreen);
 
-    // Happy path: m_scale stays finite and inside the clamp window [0.05, 20.0]
-    // regardless of the offscreen QPA's viewport quirks.
     fitScreen->trigger();
-    QVERIFY(std::isfinite(dolphin->m_scale));
-    QVERIFY(dolphin->m_scale >= 0.05);
-    QVERIFY(dolphin->m_scale <= 20.0);
+    QVERIFY(std::isfinite(dolphin->m_fitScale));
+    QVERIFY(dolphin->m_fitScale >= kMinFitScale);
+    QVERIFY(dolphin->m_fitScale <= kMaxFitScale);
+    QCOMPARE(dolphin->m_zoomLevel, 0);
 
-    // FitScreen sets m_view.scale(m_scale, m_scale); WaveformView::resetZoom
-    // only resets m_zoomLevel, leaving the transform intact.  So the view's
-    // accumulated scale must equal m_scale.  Pre-fix the initial m_scale=1.25
-    // / view=1.0 mismatch left view.transform() at 0.8 * m_scale.
-    QCOMPARE(dolphin->m_view.transform().m11(), dolphin->m_scale);
-
-    // Repeating FitScreen with the same geometry must be idempotent — no
-    // (0.8)^N drift the doc described under the unfixed m_scale tracking.
-    const double scaleAfterFirst = dolphin->m_scale;
+    // Repeating FitScreen with the same geometry stays within bounds and finite.
     fitScreen->trigger();
-    QCOMPARE(dolphin->m_scale, scaleAfterFirst);
-    QCOMPARE(dolphin->m_view.transform().m11(), dolphin->m_scale);
+    QVERIFY(std::isfinite(dolphin->m_fitScale));
+    QVERIFY(dolphin->m_fitScale >= kMinFitScale);
+    QVERIFY(dolphin->m_fitScale <= kMaxFitScale);
 
-    // Degenerate geometry: hide every column and row so hLen / vLen collapse
-    // to <= 0.  Pre-guard this would divide by zero and produce +inf; the
-    // guard makes FitScreen a no-op that leaves the prior m_scale intact.
+    // Degenerate geometry: hide every column and row so the content extent
+    // collapses; FitScreen must leave m_fitScale finite and clamped, not blow up.
     auto *table = dolphin->m_signalTableView;
     QVERIFY(table);
     auto *model = dolphin->getModel();
@@ -913,8 +953,8 @@ void TestBewavedDolphinGui::testFitScreenClampsAndGuardsA26()
         table->setRowHidden(row, true);
     }
 
-    const double scaleBeforeBadFit = dolphin->m_scale;
     fitScreen->trigger();
-    QCOMPARE(dolphin->m_scale, scaleBeforeBadFit);
-    QVERIFY(std::isfinite(dolphin->m_scale));
+    QVERIFY(std::isfinite(dolphin->m_fitScale));
+    QVERIFY(dolphin->m_fitScale >= kMinFitScale);
+    QVERIFY(dolphin->m_fitScale <= kMaxFitScale);
 }
