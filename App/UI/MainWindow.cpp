@@ -1485,16 +1485,18 @@ void MainWindow::exportToWaveFormFile(const QString &fileName)
         throw PANDACEPTION("Missing file name.");
     }
 
-    auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), false, this);
-    bewavedDolphin->createWaveform(fileName);
-    bewavedDolphin->print();
+    // Headless export: a stack instance is never shown/closed, so it cleans up at scope end
+    // (its WA_DeleteOnClose only fires on a close event) — and RAII-frees even if this throws.
+    BewavedDolphin bewavedDolphin(m_currentTab->scene(), false, this);
+    bewavedDolphin.createWaveform(fileName);
+    bewavedDolphin.print();
 }
 
 void MainWindow::exportToWaveFormTerminal()
 {
-    auto *bewavedDolphin = new BewavedDolphin(m_currentTab->scene(), false, this);
-    bewavedDolphin->createWaveform();
-    bewavedDolphin->print();
+    BewavedDolphin bewavedDolphin(m_currentTab->scene(), false, this);
+    bewavedDolphin.createWaveform();
+    bewavedDolphin.print();
 }
 
 void MainWindow::on_actionExportToArduino_triggered()
