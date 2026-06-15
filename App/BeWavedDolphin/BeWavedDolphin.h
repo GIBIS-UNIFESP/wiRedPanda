@@ -161,9 +161,6 @@ private:
     void fillCombinationalInputs(SignalModel *model, int columns) const;
     /// Applies the current zoom factor to the table's row/column sizes and font.
     void applyZoom();
-    /// Renders the full waveform to a pixmap using \a cellW x \a cellH cells, via a
-    /// throwaway offscreen table bound to the same model (the live view is untouched).
-    QPixmap renderWaveform(int cellW, int cellH) const;
     /// Updates the enabled state of the zoom-in/out actions for the current zoom.
     void zoomChanged();
 
