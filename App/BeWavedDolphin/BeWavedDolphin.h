@@ -22,7 +22,6 @@
 #include "App/Scene/Scene.h"
 
 class MainWindow;
-class QItemSelection;
 class QSaveFile;
 class WaveformSimulator;
 
@@ -153,14 +152,6 @@ private:
 
     // --- Signal Table Management ---
 
-    /// Returns the first column index in the selected \a ranges.
-    int sectionFirstColumn(const QItemSelection &ranges);
-    /// Returns the first row index in the selected \a ranges.
-    int sectionFirstRow(const QItemSelection &ranges);
-    /// Serializes the selected \a ranges to \a stream (clipboard copy).
-    void copy(const QItemSelection &ranges, QDataStream &stream);
-    /// Serializes and clears the selected \a ranges (clipboard cut).
-    void cut(const QItemSelection &ranges, QDataStream &stream);
     /// Collects input/output GraphicElements from the circuit scene.
     void loadElements();
     /// Populates signal rows from the external circuit's terminal elements.
@@ -169,8 +160,6 @@ private:
     void loadNewTable();
     /// Fills \a inputLabels and \a outputLabels from the circuit's I/O elements.
     void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
-    /// Deserializes clipboard data from \a stream into the selected \a ranges.
-    void paste(const QItemSelection &ranges, QDataStream &stream);
     /// Applies \a valueFn to every selected cell, marks the waveform edited, and re-runs.
     void applyToSelectedCells(const std::function<int(int)> &valueFn);
     /// Applies the current zoom factor to the table's row/column sizes and font.
