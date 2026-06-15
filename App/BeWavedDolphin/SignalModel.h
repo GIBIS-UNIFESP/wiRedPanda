@@ -19,7 +19,7 @@ enum class PlotType {
  * \class SignalModel
  * \brief QStandardItemModel subclass that makes all cells non-editable.
  *
- * \details All editing is done programmatically via BewavedDolphin::createElement().
+ * \details All editing is done programmatically via BewavedDolphin::setCellValue().
  * The model enforces read-only at the Qt item level so the table view never opens
  * an inline editor.
  */

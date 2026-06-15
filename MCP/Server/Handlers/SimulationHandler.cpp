@@ -164,7 +164,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
                                                    .arg(value).arg(inputLabel).arg(col),
                                                    requestId, JsonRpcError::ValidationError);
                     }
-                    bewavedDolphin->createElement(rowIndex, col, value);
+                    bewavedDolphin->setCellValue(rowIndex, col, value);
                 }
             }
         }
