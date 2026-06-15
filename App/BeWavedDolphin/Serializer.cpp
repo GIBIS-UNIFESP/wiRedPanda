@@ -8,6 +8,7 @@
 #include <QSaveFile>
 #include <QStandardItemModel>
 
+#include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Core/Common.h"
 
 namespace DolphinSerializer {
@@ -38,10 +39,10 @@ WaveformData loadBinary(QDataStream &stream, const int maxInputPorts)
         rows = maxInputPorts;
     }
 
-    if ((cols < 2) || (cols > 2048)) {
+    if ((cols < 2) || (cols > SignalModel::kMaxColumns)) {
         throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer",
-            "Invalid number of columns: got %1, expected between 2 and 2048.",
-            static_cast<int>(cols));
+            "Invalid number of columns: got %1, expected between 2 and %2.",
+            QString::number(cols), QString::number(SignalModel::kMaxColumns));
     }
 
     WaveformData data;
@@ -100,10 +101,10 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
         rows = maxInputPorts;
     }
 
-    if ((cols < 2) || (cols > 2048)) {
+    if ((cols < 2) || (cols > SignalModel::kMaxColumns)) {
         throw PANDACEPTION_WITH_CONTEXT("DolphinSerializer",
-            "Invalid number of columns: got %1, expected between 2 and 2048.",
-            cols);
+            "Invalid number of columns: got %1, expected between 2 and %2.",
+            QString::number(cols), QString::number(SignalModel::kMaxColumns));
     }
 
     // Validate before indexing to avoid out-of-bounds access on corrupt files

@@ -31,6 +31,12 @@ public:
      */
     SignalModel(int rows, int columns, QObject *parent = nullptr);
 
+    /// Maximum number of time-step columns a waveform may have. Single source of truth for
+    /// the upper bound, shared by the file loaders, the runtime length, and the MCP cap.
+    /// The *minimum* is intentionally context-specific (a saved file needs >= 2 columns; a
+    /// runtime length allows >= 1) and is not centralized here.
+    static constexpr int kMaxColumns = 2048;
+
     /// \reimp Returns Qt::ItemIsEnabled only (no editing).
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
