@@ -4,6 +4,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
@@ -108,6 +109,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinHost.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
