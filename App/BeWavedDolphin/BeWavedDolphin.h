@@ -22,8 +22,9 @@
 #include "App/Scene/Scene.h"
 
 class MainWindow;
-class QSaveFile;
 class WaveformSimulator;
+
+namespace DolphinSerializer { struct WaveformData; }
 
 /**
  * \class BewavedDolphin
@@ -137,18 +138,10 @@ private:
     bool exportWaveformToPng(const QString &filename);
     /// Links the waveform editor to the .dolphin file at \a fileName.
     void associateToWiRedPanda(const QString &fileName);
-    /// Loads waveform data from a binary \a stream.
-    void load(QDataStream &stream);
-    /// Opens \a file and loads waveform data from it.
-    void load(QFile &file);
-    /// Opens the .dolphin file at \a fileName and loads waveform data.
+    /// Opens the .dolphin/.csv file at \a fileName and loads its waveform data.
     void load(const QString &fileName);
-    /// Writes the current waveform data to a binary \a stream.
-    void save(QDataStream &stream);
-    /// Writes the waveform to \a file (atomic save via QSaveFile).
-    void save(QSaveFile &file);
-    /// Saves the waveform to the .dolphin file at \a fileName.
-    void save(const QString &fileName);
+    /// Applies parsed file \a fileData to the model (sets length, fills inputs, re-runs).
+    void applyWaveformData(const DolphinSerializer::WaveformData &fileData);
 
     // --- Signal Table Management ---
 
