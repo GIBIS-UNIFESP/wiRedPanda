@@ -11,6 +11,12 @@
 
 class QPainter;
 
+/// Controls how signal cells are rendered in the waveform table.
+enum class PlotType {
+    Number, ///< Cells display the numeric value (0/1).
+    Line    ///< Cells display a waveform-style rising/falling edge graphic.
+};
+
 /// Identifies which waveform segment a Line-mode cell draws.
 enum class WaveSegment {
     Low,     ///< Logic-low plateau (signal stays at 0).
@@ -29,7 +35,7 @@ enum class WaveSegment {
  * the SignalModel: the WaveSegment from the cell value and its left neighbour, and
  * the input/output colour from SignalModel::isInputRow().  Nothing is stored per cell.
  *
- * In Number mode (see setWaveformMode()) the delegate falls back to centered
+ * In Number mode (see setPlotType()) the delegate falls back to centered
  * QItemDelegate text rendering.
  */
 class SignalDelegate : public QItemDelegate
@@ -40,8 +46,11 @@ public:
     /// Constructs the delegate.
     explicit SignalDelegate(QObject *parent = nullptr);
 
-    /// Selects waveform rendering (\c true) or numeric text rendering (\c false).
-    void setWaveformMode(bool waveformMode);
+    /// Selects the cell rendering mode (waveform graphics vs. numeric text).
+    void setPlotType(PlotType plotType);
+
+    /// Returns the current cell rendering mode.
+    PlotType plotType() const { return m_plotType; }
 
     /// \reimp
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
@@ -58,5 +67,5 @@ private:
     /// Draws \a seg into \a cell using the input/output color selected by \a isInput.
     void drawWaveform(QPainter *painter, const QRectF &cell, WaveSegment seg, bool isInput) const;
 
-    bool m_waveformMode = true; ///< true → draw waveforms; false → numeric text.
+    PlotType m_plotType = PlotType::Line; ///< Line → draw waveforms; Number → numeric text.
 };

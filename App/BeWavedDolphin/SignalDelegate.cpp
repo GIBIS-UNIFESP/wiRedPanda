@@ -28,9 +28,9 @@ SignalDelegate::SignalDelegate(QObject *parent)
 {
 }
 
-void SignalDelegate::setWaveformMode(const bool waveformMode)
+void SignalDelegate::setPlotType(const PlotType plotType)
 {
-    m_waveformMode = waveformMode;
+    m_plotType = plotType;
 }
 
 WaveSegment SignalDelegate::segmentFor(const int value, const bool hasPrev, const int prevValue)
@@ -74,7 +74,7 @@ void SignalDelegate::drawWaveform(QPainter *painter, const QRectF &cell, const W
 void SignalDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     // Number mode: render the "0"/"1" centered (no per-cell alignment role needed).
-    if (!m_waveformMode) {
+    if (m_plotType == PlotType::Number) {
         QStyleOptionViewItem opt(option);
         opt.displayAlignment = Qt::AlignCenter;
         QItemDelegate::paint(painter, opt, index);

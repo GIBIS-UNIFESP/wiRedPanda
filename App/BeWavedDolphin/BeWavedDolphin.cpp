@@ -279,8 +279,7 @@ void BewavedDolphin::loadNewTable()
     m_model->setVerticalHeaderLabels(inputLabels + outputLabels);
     m_model->setInputRows(static_cast<int>(inputLabels.size()));
 
-    // The delegate derives each cell's waveform from the model; tell it the current mode.
-    m_delegate->setWaveformMode(m_type == PlotType::Line);
+    // The delegate derives each cell's waveform from the model; it owns the current mode.
 
     // A cell's rising/falling edge depends on its left neighbour, so any value change must
     // repaint the whole visible grid (update() coalesces, so a full sweep is one repaint).
@@ -1053,8 +1052,7 @@ void BewavedDolphin::on_actionShowNumbers_triggered()
         sentryBreadcrumb("waveform", QStringLiteral("Show numbers"));
         // Display mode is a pure view concern now: the model keeps the same values and the
         // delegate switches between numeric text and waveform rendering.
-        m_type = PlotType::Number;
-        m_delegate->setWaveformMode(false);
+        m_delegate->setPlotType(PlotType::Number);
         m_signalTableView->viewport()->update();
     });
 }
@@ -1063,8 +1061,7 @@ void BewavedDolphin::on_actionShowWaveforms_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Show waveforms"));
-        m_type = PlotType::Line;
-        m_delegate->setWaveformMode(true);
+        m_delegate->setPlotType(PlotType::Line);
         m_signalTableView->viewport()->update();
     });
 }
@@ -1099,7 +1096,7 @@ QPixmap BewavedDolphin::renderWaveform(const int cellW, const int cellH) const
     QTableView view;
     view.setModel(m_model);
     auto *delegate = new SignalDelegate(&view);
-    delegate->setWaveformMode(m_type == PlotType::Line);
+    delegate->setPlotType(m_delegate->plotType());
     view.setItemDelegate(delegate);
     view.setShowGrid(false);
     view.setAlternatingRowColors(true);

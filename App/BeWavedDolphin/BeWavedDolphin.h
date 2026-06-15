@@ -201,7 +201,6 @@ private:
 
     std::unique_ptr<BewavedDolphinUi> m_ui;          ///< Auto-generated UI descriptor.
     DolphinHost *m_host            = nullptr;         ///< Host app providing circuit file context.
-    PlotType m_type                = PlotType::Line;  ///< Current display style (line vs. number).
     QFileInfo m_currentFile;                          ///< Path of the currently loaded .dolphin file.
     SignalModel *m_model           = nullptr;         ///< Table model (rows = signals, cols = time steps). Created once by loadNewTable() and owned via QObject parenting (this); freed when the window closes.
     QTableView *m_signalTableView  = new QTableView(); ///< The waveform table, shown as the central widget.
