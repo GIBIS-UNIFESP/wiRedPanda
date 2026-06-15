@@ -104,7 +104,7 @@ static void selectCells(BewavedDolphin *dolphin, int startRow, int startCol, int
 {
     auto *tv = findTableView(dolphin);
     QVERIFY2(tv, "QTableView not found in BewavedDolphin");
-    auto *model = dolphin->getModel();
+    auto *model = tv->model();
     QVERIFY2(model, "Model is null in BewavedDolphin");
     auto *selModel = tv->selectionModel();
     QVERIFY2(selModel, "Selection model is null");

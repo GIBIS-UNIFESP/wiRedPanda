@@ -367,6 +367,46 @@ void BewavedDolphin::setCellValue(const int row, const int col, const int value)
     m_model->setValue(row, col, value);
 }
 
+int BewavedDolphin::inputRow(const QString &label) const
+{
+    for (int row = 0; row < m_inputs.size(); ++row) {
+        if (m_inputs.at(row)->label() == label) {
+            return row;
+        }
+    }
+
+    return -1;
+}
+
+BewavedDolphin::WaveformSnapshot BewavedDolphin::snapshot(const int duration) const
+{
+    // Read the computed waveform into a plain DTO so automation consumers (the MCP server)
+    // need neither the live model nor the element vectors. Input rows come first; output
+    // rows follow at the m_inputs.size() offset (mirroring the table's row layout).
+    WaveformSnapshot result;
+
+    for (int row = 0; row < m_inputs.size(); ++row) {
+        Signal signal;
+        signal.label = m_inputs.at(row)->label();
+        for (int col = 0; col < duration; ++col) {
+            signal.values.append(m_model->value(row, col));
+        }
+        result.inputs.append(signal);
+    }
+
+    for (int row = 0; row < m_outputs.size(); ++row) {
+        Signal signal;
+        signal.label = m_outputs.at(row)->label();
+        const int outputRowIndex = static_cast<int>(m_inputs.size()) + row;
+        for (int col = 0; col < duration; ++col) {
+            signal.values.append(m_model->value(outputRowIndex, col));
+        }
+        result.outputs.append(signal);
+    }
+
+    return result;
+}
+
 void BewavedDolphin::show()
 {
     QMainWindow::show();
