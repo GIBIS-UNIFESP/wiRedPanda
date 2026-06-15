@@ -66,6 +66,19 @@ public:
      */
     virtual void setOn(const bool value, const int port = 0);
 
+    /**
+     * \brief Applies a waveform-sweep cell \a value to output \a port.
+     *
+     * Used by the beWavedDolphin column sweep to drive each input port per time step.
+     * The default simply forwards to setOn(value, port). Inputs whose ports are not
+     * independent on/off bits override this — e.g. InputRotary selects exactly one active
+     * port, so a low cell is implicit and must not write (which would re-select that port).
+     *
+     * \param value Cell logic value for this time step.
+     * \param port  Port index (default 0).
+     */
+    virtual void setWaveformValue(const bool value, const int port = 0);
+
     /// Applies a custom appearance image indexed by the current on/off state.
     ///
     /// Default implementation updates \a m_alternativeAppearances at the slot

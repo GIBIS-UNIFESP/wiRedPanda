@@ -8,7 +8,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
@@ -86,16 +85,9 @@ void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
         int row = 0;
 
         for (auto *input : std::as_const(inputs)) {
-            const bool isRotary = qobject_cast<InputRotary *>(input);
             for (int port = 0; port < input->outputSize(); ++port) {
-                const bool value = readInput(row++, column);
-
-                // Rotary encoders only accept "setOn" for the high state; low is implicit
-                if (isRotary && value) {
-                    input->setOn(1, port);
-                } else if (!isRotary) {
-                    input->setOn(value, port);
-                }
+                // Each input applies the cell value its own way (e.g. a rotary ignores lows).
+                input->setWaveformValue(readInput(row++, column), port);
             }
         }
 

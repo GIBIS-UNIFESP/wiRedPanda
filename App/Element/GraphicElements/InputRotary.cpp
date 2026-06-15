@@ -253,6 +253,15 @@ void InputRotary::setOn(const bool value, const int port)
     }
 }
 
+void InputRotary::setWaveformValue(const bool value, const int port)
+{
+    // Only a high cell selects this port; a low cell is implicit (writing it would wrongly
+    // re-select that port, since setOn ignores the value and selects by port index).
+    if (value) {
+        setOn(true, port);
+    }
+}
+
 void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_locked && (event->button() == Qt::LeftButton)) {

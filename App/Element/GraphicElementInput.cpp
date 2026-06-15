@@ -16,6 +16,12 @@ void GraphicElementInput::setOn(const bool value, const int port)
     }
 }
 
+void GraphicElementInput::setWaveformValue(const bool value, const int port)
+{
+    // Default: a waveform cell drives the port directly to its value.
+    setOn(value, port);
+}
+
 void GraphicElementInput::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
     if (defaultAppearance) {
