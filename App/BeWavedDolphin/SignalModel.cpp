@@ -14,3 +14,18 @@ Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
     // Cells are read-only in the model; editing is done programmatically via createElement()
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
+
+void SignalModel::setValue(const int row, const int col, const int value)
+{
+    setData(index(row, col), value, Qt::DisplayRole);
+}
+
+int SignalModel::value(const int row, const int col) const
+{
+    return index(row, col).data(Qt::DisplayRole).toInt();
+}
+
+void SignalModel::setInputRows(const int inputRows)
+{
+    m_inputRows = inputRows;
+}

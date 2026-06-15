@@ -148,11 +148,11 @@ void TestBewavedDolphinGui::testSetCellValue()
     QVERIFY(model);
 
     // Set input 0, column 0 to 1
-    dolphin->createElement(0, 0, 1, true, false);
+    dolphin->createElement(0, 0, 1);
     QCOMPARE(model->index(0, 0).data().toInt(), 1);
 
     // Set input 0, column 0 back to 0
-    dolphin->createElement(0, 0, 0, true, false);
+    dolphin->createElement(0, 0, 0);
     QCOMPARE(model->index(0, 0).data().toInt(), 0);
 }
 
@@ -165,8 +165,8 @@ void TestBewavedDolphinGui::testRunSimulationFillsOutputs()
     int outputRow = static_cast<int>(dolphin->getInputElements().size()); // first output row
 
     // Set both inputs to 1 at column 5
-    dolphin->createElement(0, 5, 1, true, false);
-    dolphin->createElement(1, 5, 1, true, false);
+    dolphin->createElement(0, 5, 1);
+    dolphin->createElement(1, 5, 1);
 
     dolphin->run();
 
@@ -236,7 +236,7 @@ void TestBewavedDolphinGui::testExportToPng()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    dolphin->createElement(0, 0, 1, true, false);
+    dolphin->createElement(0, 0, 1);
     dolphin->run();
 
     bool ok = dolphin->exportToPng(pngPath);
@@ -272,9 +272,9 @@ void TestBewavedDolphinGui::testClearAction()
     auto *model = dolphin->getModel();
 
     // Set some input cells to 1
-    dolphin->createElement(0, 0, 1, true, false);
-    dolphin->createElement(0, 1, 1, true, false);
-    dolphin->createElement(1, 0, 1, true, false);
+    dolphin->createElement(0, 0, 1);
+    dolphin->createElement(0, 1, 1);
+    dolphin->createElement(1, 0, 1);
     QCOMPARE(model->index(0, 0).data().toInt(), 1);
 
     // Clear all
@@ -298,7 +298,7 @@ void TestBewavedDolphinGui::testAutoCropAction()
     // has something to trim to (all-zero trims to 1 column).
     dolphin->setLength(32, false);
     QCOMPARE(dolphin->getLength(), 32);
-    dolphin->createElement(0, 3, 1, true, false); // set input 0, col 3 to 1
+    dolphin->createElement(0, 3, 1); // set input 0, col 3 to 1
 
     auto *action = dolphin->findChild<QAction *>("actionAutoCrop");
     QVERIFY(action);
@@ -318,8 +318,8 @@ void TestBewavedDolphinGui::testSetTo0WithSelection()
     auto *model = dolphin->getModel();
 
     // Set cells to 1 first
-    dolphin->createElement(0, 0, 1, true, false);
-    dolphin->createElement(0, 1, 1, true, false);
+    dolphin->createElement(0, 0, 1);
+    dolphin->createElement(0, 1, 1);
     QCOMPARE(model->index(0, 0).data().toInt(), 1);
 
     // Select and set to 0
@@ -356,10 +356,10 @@ void TestBewavedDolphinGui::testInvertWithSelection()
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
     auto *model = dolphin->getModel();
 
-    dolphin->createElement(0, 0, 0, true, false);
-    dolphin->createElement(0, 1, 1, true, false);
-    dolphin->createElement(0, 2, 0, true, false);
-    dolphin->createElement(0, 3, 1, true, false);
+    dolphin->createElement(0, 0, 0);
+    dolphin->createElement(0, 1, 1);
+    dolphin->createElement(0, 2, 0);
+    dolphin->createElement(0, 3, 1);
 
     selectCells(dolphin.get(), 0, 0, 0, 3);
     auto *action = dolphin->findChild<QAction *>("actionInvert");
@@ -378,10 +378,10 @@ void TestBewavedDolphinGui::testCopyPasteWithSelection()
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
     auto *model = dolphin->getModel();
 
-    dolphin->createElement(0, 0, 1, true, false);
-    dolphin->createElement(0, 1, 0, true, false);
-    dolphin->createElement(0, 2, 1, true, false);
-    dolphin->createElement(0, 3, 0, true, false);
+    dolphin->createElement(0, 0, 1);
+    dolphin->createElement(0, 1, 0);
+    dolphin->createElement(0, 2, 1);
+    dolphin->createElement(0, 3, 0);
 
     // Copy cols 0-3
     selectCells(dolphin.get(), 0, 0, 0, 3);
@@ -528,7 +528,7 @@ void TestBewavedDolphinGui::testDoubleClickToggle()
     auto *model = dolphin->getModel();
 
     // Set cell (0,0) to 0
-    dolphin->createElement(0, 0, 0, true, false);
+    dolphin->createElement(0, 0, 0);
     QCOMPARE(model->index(0, 0).data().toInt(), 0);
 
     // Select the cell and emit doubleClicked to trigger the toggle handler.
@@ -560,14 +560,14 @@ void TestBewavedDolphinGui::testSaveToTxtOutput()
 
     // Set a known pattern
     dolphin->setLength(4, false);
-    dolphin->createElement(0, 0, 0, true, false);
-    dolphin->createElement(0, 1, 0, true, false);
-    dolphin->createElement(0, 2, 1, true, false);
-    dolphin->createElement(0, 3, 1, true, false);
-    dolphin->createElement(1, 0, 0, true, false);
-    dolphin->createElement(1, 1, 1, true, false);
-    dolphin->createElement(1, 2, 0, true, false);
-    dolphin->createElement(1, 3, 1, true, false);
+    dolphin->createElement(0, 0, 0);
+    dolphin->createElement(0, 1, 0);
+    dolphin->createElement(0, 2, 1);
+    dolphin->createElement(0, 3, 1);
+    dolphin->createElement(1, 0, 0);
+    dolphin->createElement(1, 1, 1);
+    dolphin->createElement(1, 2, 0);
+    dolphin->createElement(1, 3, 1);
     dolphin->run();
 
     QString output;
@@ -605,10 +605,10 @@ void TestBewavedDolphinGui::testCutWithSelection()
     auto *model = dolphin->getModel();
 
     // Set cells to a known pattern
-    dolphin->createElement(0, 0, 1, true, false);
-    dolphin->createElement(0, 1, 1, true, false);
-    dolphin->createElement(0, 2, 0, true, false);
-    dolphin->createElement(0, 3, 0, true, false);
+    dolphin->createElement(0, 0, 1);
+    dolphin->createElement(0, 1, 1);
+    dolphin->createElement(0, 2, 0);
+    dolphin->createElement(0, 3, 0);
     QCOMPARE(model->index(0, 0).data().toInt(), 1);
     QCOMPARE(model->index(0, 1).data().toInt(), 1);
 
@@ -642,10 +642,10 @@ void TestBewavedDolphinGui::testSaveAndLoadWaveform()
     {
         std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
         dolphin->setLength(4, false);
-        dolphin->createElement(0, 0, 1, true, false);
-        dolphin->createElement(0, 1, 0, true, false);
-        dolphin->createElement(0, 2, 1, true, false);
-        dolphin->createElement(0, 3, 0, true, false);
+        dolphin->createElement(0, 0, 1);
+        dolphin->createElement(0, 1, 0);
+        dolphin->createElement(0, 2, 1);
+        dolphin->createElement(0, 3, 0);
         dolphin->run();
 
         QFile file(txtPath);
@@ -678,7 +678,7 @@ void TestBewavedDolphinGui::testExportToPdf()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    dolphin->createElement(0, 0, 1, true, false);
+    dolphin->createElement(0, 0, 1);
     dolphin->run();
 
     ScopedFileDialogStub guard;
@@ -707,7 +707,7 @@ void TestBewavedDolphinGui::testOutputRowsIgnoreSetValue()
     int outputVal = model->index(outputRow, 0).data().toInt();
 
     // Attempt to set an output cell — should have no effect or be overwritten on next run
-    dolphin->createElement(outputRow, 0, outputVal == 0 ? 1 : 0, false, false);
+    dolphin->createElement(outputRow, 0, outputVal == 0 ? 1 : 0);
     dolphin->run();
 
     // After re-running, output should be determined by logic, not manual override
@@ -723,10 +723,10 @@ void TestBewavedDolphinGui::testPasteAtBoundary()
     dolphin->setLength(8, false);
 
     // Set pattern in cols 0-3
-    dolphin->createElement(0, 0, 1, true, false);
-    dolphin->createElement(0, 1, 0, true, false);
-    dolphin->createElement(0, 2, 1, true, false);
-    dolphin->createElement(0, 3, 0, true, false);
+    dolphin->createElement(0, 0, 1);
+    dolphin->createElement(0, 1, 0);
+    dolphin->createElement(0, 2, 1);
+    dolphin->createElement(0, 3, 0);
 
     // Copy cols 0-3
     selectCells(dolphin.get(), 0, 0, 0, 3);

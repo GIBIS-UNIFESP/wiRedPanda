@@ -40,4 +40,23 @@ public:
     /// \reimp Returns Qt::ItemIsEnabled only (no editing).
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
+    // --- Waveform data access ---
+
+    /// Sets the logic value (0/1) of the cell at (\a row, \a col).
+    void setValue(int row, int col, int value);
+
+    /// Returns the logic value (0/1) of the cell at (\a row, \a col).
+    int value(int row, int col) const;
+
+    /// Records how many leading rows are inputs (the rest are outputs).
+    void setInputRows(int inputRows);
+
+    /// Returns the number of input rows (the output rows follow them).
+    int inputRows() const { return m_inputRows; }
+
+    /// Returns \c true if \a row is an input row (\a row < inputRows()).
+    bool isInputRow(int row) const { return row < m_inputRows; }
+
+private:
+    int m_inputRows = 0; ///< Number of leading input rows; the rest are outputs.
 };
