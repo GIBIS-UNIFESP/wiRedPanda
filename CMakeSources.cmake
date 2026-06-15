@@ -4,6 +4,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.cpp
@@ -103,6 +104,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/CodeGenUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.h

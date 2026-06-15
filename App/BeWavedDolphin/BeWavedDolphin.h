@@ -24,6 +24,7 @@
 class MainWindow;
 class QItemSelection;
 class QSaveFile;
+class WaveformSimulator;
 
 /**
  * \class BewavedDolphin
@@ -172,8 +173,6 @@ private:
     void loadSignals(QStringList &inputLabels, QStringList &outputLabels);
     /// Deserializes clipboard data from \a stream into the selected \a ranges.
     void paste(const QItemSelection &ranges, QDataStream &stream);
-    /// Restores original input element values after a simulation run.
-    void restoreInputs();
     /// Sets a single cell at (\a row, \a col) to \a value with edge-update control.
     void setCellValue(int row, int col, int value, bool isInput, bool changeNext);
     /// Applies \a valueFn to every selected cell, marks the waveform edited, and re-runs.
@@ -230,6 +229,7 @@ private:
     QVector<Status> m_oldInputValues;                 ///< Saved input values for restoreInputs().
     Scene *m_externalScene         = nullptr;         ///< The circuit scene being simulated.
     Simulation *m_simulation       = nullptr;         ///< Simulation engine used for waveform runs.
+    std::unique_ptr<WaveformSimulator> m_simDriver;   ///< Drives the column-by-column simulation sweep.
     bool m_edited                  = false;           ///< True if the waveform has unsaved changes.
     const bool m_askConnection;                       ///< If true, prompt to link to a .dolphin file on open.
     int m_zoomLevel                = 0;               ///< Discrete column-width zoom step (0..6); Zoom In/Out/Reset only — row height and font stay fixed.
