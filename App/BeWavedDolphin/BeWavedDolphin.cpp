@@ -269,7 +269,9 @@ void BewavedDolphin::loadNewTable()
 
     qCDebug(zero) << "Num iter = " << m_length;
 
-    // Rows = total signals (inputs + outputs); columns = simulation length in time steps
+    // Rows = total signals (inputs + outputs); columns = simulation length in time steps.
+    // loadNewTable() runs exactly once per window (each is WA_DeleteOnClose), so this is a
+    // single allocation; parenting to `this` ties its lifetime to the window — not re-created.
     m_model = new SignalModel(static_cast<int>(inputLabels.size() + outputLabels.size()), m_length, this);
     m_signalTableView->setModel(m_model);
 
@@ -476,7 +478,7 @@ bool BewavedDolphin::checkSave()
     }
 }
 
-void BewavedDolphin::createElement(const int row, const int col, const int value)
+void BewavedDolphin::setCellValue(const int row, const int col, const int value)
 {
     // The model stores only the logic value; the delegate derives the waveform segment
     // (from this cell and its left neighbour) and the input/output colour at paint time.

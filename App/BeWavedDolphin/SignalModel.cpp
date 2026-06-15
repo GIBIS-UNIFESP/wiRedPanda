@@ -11,7 +11,7 @@ SignalModel::SignalModel(const int rows, const int columns, QObject *parent)
 Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 {
     Q_UNUSED(index)
-    // Cells are read-only in the model; editing is done programmatically via createElement()
+    // Cells are read-only in the model; editing is done programmatically via setCellValue()
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
