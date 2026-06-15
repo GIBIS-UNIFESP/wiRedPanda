@@ -15,6 +15,7 @@
 #include <QSpacerItem>
 #include <QUrl>
 
+#include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/UI/MainWindowUI.h"
 
 class ElementLabel;
@@ -34,7 +35,7 @@ class WorkSpace;
  * WorkSpace), connects undo/redo stacks, handles file open/save/export, manages translations,
  * and integrates the element palette, element editor, and IC list panel.
  */
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public DolphinHost
 {
     Q_OBJECT
 
@@ -73,7 +74,7 @@ public:
      * \brief Saves the current circuit to \a fileName (or prompts if empty).
      * \param fileName Absolute path; empty triggers a Save-As dialog.
      */
-    void save(const QString &fileName = {});
+    void save(const QString &fileName = {}) override;
 
     /**
      * \brief Loads a .panda circuit file into the current or a new tab.
@@ -92,10 +93,10 @@ public:
     int confirmSave(const bool multiple);
 
     /// Returns the QFileInfo of the currently active .panda file.
-    QFileInfo currentFile() const;
+    QFileInfo currentFile() const override;
 
     /// Returns the directory of the currently active .panda file.
-    QDir currentDir() const;
+    QDir currentDir() const override;
 
     /**
      * \brief Updates the tracked current file to \a fileInfo.
@@ -129,13 +130,13 @@ public:
     // --- BeWavedDolphin Integration ---
 
     /// Returns the BeWavedDolphin file name associated with the current tab.
-    QString dolphinFileName();
+    QString dolphinFileName() override;
 
     /**
      * \brief Associates \a fileName as the BeWavedDolphin file for the current tab.
      * \param fileName Path to the .dolphin file.
      */
-    void setDolphinFileName(const QString &fileName);
+    void setDolphinFileName(const QString &fileName) override;
 
     // --- Translation ---
 

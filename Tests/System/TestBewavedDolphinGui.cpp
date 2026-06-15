@@ -9,7 +9,9 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QDialog>
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QHeaderView>
 #include <QImage>
 #include <QItemSelectionModel>
@@ -21,6 +23,7 @@
 #include <QTextStream>
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
+#include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -63,6 +66,23 @@ static std::unique_ptr<WorkSpace> createAndCircuit()
 /// The caller must ensure ws outlives the returned pointer.
 /// Note: BewavedDolphin has WA_DeleteOnClose, so don't close it manually — let it
 /// leak in tests (the test process will clean up).
+/// Minimal DolphinHost stub so file-context-dependent paths (Save As, associate,
+/// load directory) can be exercised without a real MainWindow.
+class StubDolphinHost : public DolphinHost
+{
+public:
+    QFileInfo m_currentFile;
+    QDir m_currentDir;
+    QString m_dolphinFileName;
+    int saveCount = 0;
+
+    QFileInfo currentFile() const override { return m_currentFile; }
+    QDir currentDir() const override { return m_currentDir; }
+    QString dolphinFileName() override { return m_dolphinFileName; }
+    void setDolphinFileName(const QString &fileName) override { m_dolphinFileName = fileName; }
+    void save(const QString &) override { ++saveCount; }
+};
+
 static BewavedDolphin *createDolphin(WorkSpace *ws)
 {
     // Prevent WA_DeleteOnClose from deleting during test — we manage lifetime ourselves
@@ -780,16 +800,31 @@ void TestBewavedDolphinGui::testAboutQtDialog()
 void TestBewavedDolphinGui::testSaveAsAction()
 {
     auto ws = createAndCircuit();
-    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    // Verify the SaveAs action exists and is enabled
+    // Inject a stub host so the Save-As path (which reads the host's current file/dir)
+    // can be exercised end-to-end — previously untestable because it dereferenced a
+    // real MainWindow (audit §8).
+    StubDolphinHost host;
+    host.m_currentDir = QDir(m_tempDir.path());
+    host.m_currentFile = QFileInfo(m_tempDir.filePath("circuit.panda"));
+
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, &host));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+
     auto *action = dolphin->findChild<QAction *>("actionSaveAs");
     QVERIFY2(action, "actionSaveAs not found");
     QVERIFY(action->isEnabled());
 
-    // Cannot trigger SaveAs via action because it requires m_mainWindow
-    // (asserts non-null), which is not set in test-created instances.
-    // Save functionality is validated via testSaveAndLoadWaveform (saveToTxt).
+    const QString savePath = m_tempDir.filePath("saved.dolphin");
+    ScopedFileDialogStub guard;
+    guard.stub.saveResult = {savePath, "Dolphin files (*.dolphin)"};
+
+    action->trigger();
+
+    QVERIFY(QFile::exists(savePath));
+    QVERIFY(!dolphin->m_edited);
+    QVERIFY(dolphin->windowTitle().contains("saved.dolphin"));
 }
 
 void TestBewavedDolphinGui::testExitAction()

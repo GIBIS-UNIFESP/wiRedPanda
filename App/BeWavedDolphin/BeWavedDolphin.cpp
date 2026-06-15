@@ -22,6 +22,7 @@
 
 #include "App/BeWavedDolphin/DolphinClipboard.h"
 #include "App/BeWavedDolphin/DolphinFile.h"
+#include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/Serializer.h"
 #include "App/BeWavedDolphin/WaveformSimulator.h"
 #include "App/Core/Application.h"
@@ -36,7 +37,6 @@
 #include "App/UI/ClockDialog.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
-#include "App/UI/MainWindow.h"
 
 static constexpr int    kDefaultColumnWidth = 38;    ///<  Per-column pixel width at zoom 1.0 (matches the pre-refactor on-screen size).
 static constexpr int    kDefaultRowHeight   = 30;    ///<  Per-row pixel height at zoom 1.0 (matches the pre-refactor on-screen size).
@@ -48,10 +48,10 @@ static constexpr double kMaxFitScale        = 20.0;  ///<  Largest allowed Fit S
 static constexpr int    kExportCellWidth    = 50;    ///<  Per-column pixel width for PNG/PDF export.
 static constexpr int    kExportCellHeight   = 40;    ///<  Per-row pixel height for PNG/PDF export.
 
-BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, MainWindow *parent)
+BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHost *host)
     : QMainWindow(nullptr)
     , m_ui(std::make_unique<BewavedDolphinUi>())
-    , m_mainWindow(parent)
+    , m_host(host)
     , m_externalScene(scene)
     // askConnection controls whether closing triggers a save-changes prompt and
     // whether saving offers to link the .dolphin file to the parent .panda file
@@ -128,7 +128,7 @@ void BewavedDolphin::createWaveform(const QString &fileName)
     } else {
         // Resolve the file relative to the main window's working directory so that
         // relative paths stored inside .panda files resolve correctly
-        QFileInfo fileInfo(m_mainWindow->currentDir(), QFileInfo(fileName).fileName());
+        QFileInfo fileInfo(m_host->currentDir(), QFileInfo(fileName).fileName());
 
         if (!fileInfo.exists()) {
             m_ui->statusbar->showMessage(tr("File \"%1\" does not exist!").arg(fileName), 4000);
@@ -925,7 +925,7 @@ void BewavedDolphin::on_actionSaveAs_triggered()
                   : tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)");
 
         const QString initialPath = m_currentFile.fileName().isEmpty()
-                                        ? m_mainWindow->currentFile().absolutePath()
+                                        ? m_host->currentFile().absolutePath()
                                         : m_currentFile.absoluteFilePath();
 
         const auto result = FileDialogs::provider()->getSaveFileName(this, tr("Save File as..."), initialPath, fileFilter);
@@ -958,7 +958,7 @@ void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
 {
     // Only prompt when the file is new (not already linked) and we are in interactive mode;
     // non-interactive (command-line / test) sessions skip the dialog entirely
-    if ((m_mainWindow->dolphinFileName() != fileName) && Application::interactiveMode) {
+    if ((m_host->dolphinFileName() != fileName) && Application::interactiveMode) {
         const auto reply =
             QMessageBox::question(
                 this,
@@ -967,8 +967,8 @@ void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
                 QMessageBox::Yes | QMessageBox::No);
 
         if (reply == QMessageBox::Yes) {
-            m_mainWindow->setDolphinFileName(fileName);
-            m_mainWindow->save();
+            m_host->setDolphinFileName(fileName);
+            m_host->save({});
         }
     }
 }
@@ -984,14 +984,14 @@ void BewavedDolphin::on_actionLoad_triggered()
         if (m_currentFile.exists()) {
             defaultDirectory.setPath(m_currentFile.absolutePath());
         } else {
-            if (m_mainWindow->currentFile().exists()) {
-                m_mainWindow->currentFile().dir();
+            if (m_host->currentFile().exists()) {
+                m_host->currentFile().dir();
             } else {
                 defaultDirectory.setPath(QDir::homePath());
             }
         }
 
-        const QString homeDir(m_mainWindow->currentDir().absolutePath());
+        const QString homeDir(m_host->currentDir().absolutePath());
 
         const QString fileName = FileDialogs::provider()->getOpenFileName(
             this, tr("Open File"), homeDir,

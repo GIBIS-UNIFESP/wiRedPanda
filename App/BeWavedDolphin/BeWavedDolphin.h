@@ -21,7 +21,7 @@
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Scene/Scene.h"
 
-class MainWindow;
+class DolphinHost;
 class WaveformSimulator;
 
 namespace DolphinSerializer { struct WaveformData; }
@@ -47,9 +47,10 @@ public:
      * \brief Constructs the waveform editor.
      * \param scene         Circuit scene whose I/O elements will be mapped to signals.
      * \param askConnection If \c true, prompts the user to link to a .dolphin file.
-     * \param parent        Owner MainWindow (used to restore simulation state after run).
+     * \param host          Host application providing the circuit file context (a
+     *                      MainWindow in the app; a stub in tests). May be \c nullptr.
      */
-    explicit BewavedDolphin(Scene *scene, const bool askConnection = true, MainWindow *parent = nullptr);
+    explicit BewavedDolphin(Scene *scene, const bool askConnection = true, DolphinHost *host = nullptr);
     ~BewavedDolphin() override;
 
     /// Initializes a blank waveform from the current scene's I/O elements.
@@ -196,7 +197,7 @@ private:
     // --- Members ---
 
     std::unique_ptr<BewavedDolphinUi> m_ui;          ///< Auto-generated UI descriptor.
-    MainWindow *m_mainWindow       = nullptr;         ///< Owner main window (for simulation restore).
+    DolphinHost *m_host            = nullptr;         ///< Host app providing circuit file context.
     PlotType m_type                = PlotType::Line;  ///< Current display style (line vs. number).
     QFileInfo m_currentFile;                          ///< Path of the currently loaded .dolphin file.
     SignalModel *m_model           = nullptr;         ///< Table model (rows = signals, cols = time steps).
