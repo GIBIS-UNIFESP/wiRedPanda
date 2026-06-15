@@ -13,8 +13,6 @@
 #include <QCloseEvent>
 #include <QHeaderView>
 #include <QMessageBox>
-#include <QPainter>
-#include <QPrinter>
 #include <QTableView>
 #include <QTextStream>
 #include <QWheelEvent>
@@ -38,9 +36,6 @@
 #include "App/UI/ClockDialog.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
-
-static constexpr int    kExportCellWidth    = 50;    ///<  Per-column pixel width for PNG/PDF export.
-static constexpr int    kExportCellHeight   = 40;    ///<  Per-row pixel height for PNG/PDF export.
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHost *host)
     : QMainWindow(nullptr)
@@ -450,8 +445,9 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
 
 bool BewavedDolphin::exportToPng(const QString &filename)
 {
+    // Public façade for the MCP server: swallow exceptions and report success as a bool.
     try {
-        return DolphinExporter::renderToPixmap(m_model, m_delegate->plotType(), kExportCellWidth, kExportCellHeight).save(filename);
+        return DolphinExporter::exportToPng(m_model, m_delegate->plotType(), filename);
     } catch (...) {
         return false;
     }
@@ -869,13 +865,8 @@ void BewavedDolphin::on_actionExportToPng_triggered()
             pngFile.append(".png");
         }
 
-        exportWaveformToPng(pngFile);
+        DolphinExporter::exportToPng(m_model, m_delegate->plotType(), pngFile);
     });
-}
-
-bool BewavedDolphin::exportWaveformToPng(const QString &filename)
-{
-    return DolphinExporter::renderToPixmap(m_model, m_delegate->plotType(), kExportCellWidth, kExportCellHeight).save(filename);
 }
 
 void BewavedDolphin::on_actionExportToPdf_triggered()
@@ -892,24 +883,7 @@ void BewavedDolphin::on_actionExportToPdf_triggered()
             pdfFile.append(".pdf");
         }
 
-        // Landscape A4 fits a reasonably long waveform without excessive scaling
-        QPrinter printer(QPrinter::HighResolution);
-        printer.setPageSize(QPageSize(QPageSize::A4));
-        printer.setPageOrientation(QPageLayout::Orientation::Landscape);
-        printer.setOutputFormat(QPrinter::PdfFormat);
-        printer.setOutputFileName(pdfFile);
-
-        QPainter painter;
-
-        if (!painter.begin(&printer)) {
-            throw PANDACEPTION("Could not print this circuit to PDF.");
-        }
-
-        // Render the waveform offscreen, then scale it to fit the page preserving aspect
-        const QPixmap pixmap = DolphinExporter::renderToPixmap(m_model, m_delegate->plotType(), kExportCellWidth, kExportCellHeight);
-        const QSize target = pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
-        painter.drawPixmap(QRect(QPoint(0, 0), target), pixmap);
-        painter.end();
+        DolphinExporter::exportToPdf(m_model, m_delegate->plotType(), pdfFile);
     });
 }
 

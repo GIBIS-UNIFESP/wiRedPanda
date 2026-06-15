@@ -12,7 +12,6 @@
 
 #include <QFileInfo>
 #include <QMainWindow>
-#include <QPixmap>
 #include <QStandardItemModel>
 #include <QTableView>
 
@@ -152,7 +151,6 @@ private:
 
     /// Prompts the user to save unsaved changes; returns \c false if cancelled.
     bool checkSave();
-    bool exportWaveformToPng(const QString &filename);
     /// Links the waveform editor to the .dolphin file at \a fileName.
     void associateToWiRedPanda(const QString &fileName);
     /// Opens the .dolphin/.csv file at \a fileName and loads its waveform data.
