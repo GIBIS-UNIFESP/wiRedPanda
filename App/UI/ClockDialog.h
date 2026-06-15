@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief ClockDialog: dialog for configuring a clock element's frequency.
+ * \brief ClockDialog: dialog for selecting a clock wave's period (in time-step columns).
  */
 
 #pragma once
@@ -15,10 +15,11 @@
 
 /**
  * \class ClockDialog
- * \brief Modal dialog for selecting the tick frequency of a Clock element.
+ * \brief Modal dialog for selecting the period of a beWavedDolphin clock wave.
  *
- * \details Presents a slider and spin-box linked to the same frequency value.
- * The user accepts or cancels; the chosen frequency is retrieved via frequency().
+ * \details Presents a slider and spin-box linked to the same period value (measured in
+ * waveform time-step columns). Run the dialog with exec() and, on QDialog::Accepted,
+ * read the chosen value via period().
  */
 class ClockDialog : public QDialog
 {
@@ -27,14 +28,14 @@ class ClockDialog : public QDialog
 public:
     // --- Lifecycle ---
 
-    /// Constructs the dialog with \a currentFrequency as the initial value.
-    explicit ClockDialog(const int currentFrequency, QWidget *parent = nullptr);
+    /// Constructs the dialog with \a currentPeriod (in time-step columns) as the initial value.
+    explicit ClockDialog(const int currentPeriod, QWidget *parent = nullptr);
     ~ClockDialog() override;
 
     // --- Result Access ---
 
-    /// Returns the clock frequency in Hz.
-    int frequency();
+    /// Returns the selected clock period, in waveform time-step columns.
+    int period() const;
 
 private:
     Q_DISABLE_COPY(ClockDialog)

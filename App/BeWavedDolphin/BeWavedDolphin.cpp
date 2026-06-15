@@ -511,12 +511,12 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
         qCDebug(zero) << "Setting the signal according to its column and clock period.";
         ClockDialog dialog(m_clockPeriod, this);
-        const int clockPeriod = dialog.frequency();
 
-        if (clockPeriod < 0) {
+        if (dialog.exec() != QDialog::Accepted) {
             return;
         }
 
+        const int clockPeriod = dialog.period();
         m_clockPeriod = clockPeriod;
 
         DolphinEdits::clockWave(*m_model, m_signalTableView->selectionModel()->selectedIndexes(), firstCol, clockPeriod);

@@ -15,10 +15,10 @@ private slots:
     // ClockDialog Tests (5 tests)
     // ============================================================
     void testClockDialogConstructor();
-    void testClockDialogMinFrequency();
-    void testClockDialogMaxFrequency();
+    void testClockDialogMinPeriod();
+    void testClockDialogMaxPeriod();
     void testClockDialogRange();
-    void testClockDialogFrequencyReturnValue();
+    void testClockDialogPeriodReturnValue();
 
     // ============================================================
     // LengthDialog Tests (4 tests)
