@@ -21,7 +21,7 @@ void save(const SignalModel &model, const QString &fileName, const int inputPort
     QSaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly)) {
-        throw PANDACEPTION_WITH_CONTEXT("DolphinFile", "Error opening file: %1", file.errorString());
+        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Error opening file: %1", file.errorString());
     }
 
     if (fileName.endsWith(".dolphin")) {
@@ -35,7 +35,7 @@ void save(const SignalModel &model, const QString &fileName, const int inputPort
     }
 
     if (!file.commit()) {
-        throw PANDACEPTION_WITH_CONTEXT("DolphinFile", "Error saving file: %1", file.errorString());
+        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Error saving file: %1", file.errorString());
     }
 }
 
@@ -44,12 +44,12 @@ DolphinSerializer::WaveformData load(const QString &fileName, const int maxInput
     QFile file(fileName);
 
     if (!file.exists()) {
-        throw PANDACEPTION_WITH_CONTEXT("DolphinFile", "File \"%1\" does not exist!", fileName);
+        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "File \"%1\" does not exist!", fileName);
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << "Could not open file in ReadOnly mode: " << file.errorString();
-        throw PANDACEPTION_WITH_CONTEXT("DolphinFile", "Could not open file for reading: %1", file.errorString());
+        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Could not open file for reading: %1", file.errorString());
     }
 
     DolphinSerializer::WaveformData data;
@@ -64,7 +64,7 @@ DolphinSerializer::WaveformData load(const QString &fileName, const int maxInput
         data = DolphinSerializer::loadCSV(file, maxInputPorts);
     } else {
         qCDebug(zero) << "Format not supported. Could not open file: " << fileName;
-        throw PANDACEPTION_WITH_CONTEXT("DolphinFile", "Format not supported. Could not open file: %1", fileName);
+        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Format not supported. Could not open file: %1", fileName);
     }
 
     file.close();
