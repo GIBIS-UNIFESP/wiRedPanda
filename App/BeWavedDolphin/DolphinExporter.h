@@ -16,17 +16,25 @@ class SignalModel;
 
 /**
  * \namespace DolphinExporter
- * \brief Pure model → artifact conversions for the beWavedDolphin export paths.
+ * \brief Model → artifact conversions for the beWavedDolphin export paths.
  *
- * \details No window, dialog, or simulation state — every function takes a SignalModel
- * and produces a pixmap or text. The controller owns the file dialogs, the printer, and
- * (for the truth table) the simulation that fills the model before formatting.
+ * \details No window or dialog state — every function takes a SignalModel and produces a
+ * pixmap, an image/PDF file, or text. The controller owns the file dialogs and (for the
+ * truth table) the simulation that fills the model before formatting.
  */
 namespace DolphinExporter {
 
 /// Rasterizes \a model to a pixmap via a throwaway table view (the live view is untouched),
 /// using \a plotType for the cell rendering and \a cellW x \a cellH per cell.
 QPixmap renderToPixmap(const SignalModel *model, PlotType plotType, int cellW, int cellH);
+
+/// Renders \a model with \a plotType and saves it to \a fileName as a PNG. Returns \c true
+/// on success.
+bool exportToPng(const SignalModel *model, PlotType plotType, const QString &fileName);
+
+/// Renders \a model with \a plotType and writes it to \a fileName as a landscape A4 PDF,
+/// scaled to fit the page. Throws if the PDF device cannot be opened.
+void exportToPdf(const SignalModel *model, PlotType plotType, const QString &fileName);
 
 /// Writes \a model to \a out as the truth-table text format: \a inputRowCount input rows,
 /// a blank line, then the output rows, each line followed by its `: "label"`.

@@ -4,13 +4,21 @@
 #include "App/BeWavedDolphin/DolphinExporter.h"
 
 #include <QHeaderView>
+#include <QPainter>
 #include <QPixmap>
+#include <QPrinter>
 #include <QString>
 #include <QTableView>
 #include <QTextStream>
 
 #include "App/BeWavedDolphin/SignalDelegate.h"
 #include "App/BeWavedDolphin/SignalModel.h"
+#include "App/Core/Common.h"
+
+namespace {
+constexpr int kExportCellWidth  = 50;  ///< Per-column pixel width for PNG/PDF export.
+constexpr int kExportCellHeight = 40;  ///< Per-row pixel height for PNG/PDF export.
+} // namespace
 
 namespace DolphinExporter {
 
@@ -39,6 +47,33 @@ QPixmap renderToPixmap(const SignalModel *model, const PlotType plotType, const 
     view.resize(contentW, contentH);
 
     return view.grab();
+}
+
+bool exportToPng(const SignalModel *model, const PlotType plotType, const QString &fileName)
+{
+    return renderToPixmap(model, plotType, kExportCellWidth, kExportCellHeight).save(fileName);
+}
+
+void exportToPdf(const SignalModel *model, const PlotType plotType, const QString &fileName)
+{
+    // Landscape A4 fits a reasonably long waveform without excessive scaling.
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setPageSize(QPageSize(QPageSize::A4));
+    printer.setPageOrientation(QPageLayout::Orientation::Landscape);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fileName);
+
+    QPainter painter;
+
+    if (!painter.begin(&printer)) {
+        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Could not print this circuit to PDF.");
+    }
+
+    // Render the waveform offscreen, then scale it to fit the page preserving aspect.
+    const QPixmap pixmap = renderToPixmap(model, plotType, kExportCellWidth, kExportCellHeight);
+    const QSize target = pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
+    painter.drawPixmap(QRect(QPoint(0, 0), target), pixmap);
+    painter.end();
 }
 
 void writeTruthTableText(QTextStream &out, const SignalModel *model, const int inputRowCount)
