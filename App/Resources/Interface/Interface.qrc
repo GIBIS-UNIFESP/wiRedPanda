@@ -89,15 +89,9 @@
         <file>Dolphin/cut.svg</file>
         <file>Dolphin/delete.svg</file>
         <file>Dolphin/exit.svg</file>
-        <file>Dolphin/falling_blue.svg</file>
-        <file>Dolphin/falling_green.svg</file>
         <file>Dolphin/folder.svg</file>
         <file>Dolphin/help.svg</file>
         <file>Dolphin/helpQt.svg</file>
-        <file>Dolphin/high_blue.svg</file>
-        <file>Dolphin/high_green.svg</file>
-        <file>Dolphin/low_blue.svg</file>
-        <file>Dolphin/low_green.svg</file>
         <file>Dolphin/new.svg</file>
         <file>Dolphin/paste.svg</file>
         <file>Dolphin/pdf.svg</file>
@@ -105,8 +99,6 @@
         <file>Dolphin/png.svg</file>
         <file>Dolphin/range.svg</file>
         <file>Dolphin/reloadFile.svg</file>
-        <file>Dolphin/rising_blue.svg</file>
-        <file>Dolphin/rising_green.svg</file>
         <file>Dolphin/save.svg</file>
         <file>Dolphin/zoomIn.svg</file>
         <file>Dolphin/zoomOut.svg</file>

@@ -8,53 +8,55 @@
 #pragma once
 
 #include <QItemDelegate>
-#include <QPixmap>
+
+class QPainter;
+
+/// Identifies which waveform segment a Line-mode cell draws.
+enum class WaveSegment {
+    Low,     ///< Logic-low plateau (signal stays at 0).
+    High,    ///< Logic-high plateau (signal stays at 1).
+    Rising,  ///< Low → high transition (high plateau + leading edge).
+    Falling  ///< High → low transition (low plateau + leading edge).
+};
 
 /**
  * \class SignalDelegate
  * \brief Item delegate that draws digital waveform graphics inside table cells.
  *
- * \details Replaces the default text rendering with pixmaps representing logic-high,
- * logic-low, rising-edge, and falling-edge states.  The pixmaps are loaded once at
- * construction time and owned by the delegate.
+ * \details Replaces the default text rendering with vector waveforms representing
+ * logic-high, logic-low, rising-edge, and falling-edge states, painted directly
+ * with QPainter at the cell's real size.  Line-mode cells carry a WaveSegment in
+ * SegmentRole and an input/output flag in InputRole (set by
+ * BewavedDolphin::setCellValue).
  *
- * In Number mode (no pixmap stored in DecorationRole) the delegate falls back to the
- * default QItemDelegate text rendering.
+ * In Number mode (no SegmentRole stored) the delegate falls back to the default
+ * QItemDelegate text rendering.
  */
 class SignalDelegate : public QItemDelegate
 {
     Q_OBJECT
 
 public:
-    /// Constructs the delegate and pre-loads all waveform pixmaps.
+    /// Item-data role holding the cell's WaveSegment (Line mode only).
+    static constexpr int SegmentRole = Qt::UserRole + 1;
+    /// Item-data role holding the cell's input flag (true → blue, false → green).
+    static constexpr int InputRole = Qt::UserRole + 2;
+
+    /// Constructs the delegate.
     explicit SignalDelegate(QObject *parent = nullptr);
 
     /// \reimp
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
     /**
-     * \brief Returns the correct waveform pixmap for a cell.
+     * \brief Returns the waveform segment a cell should draw.
      * \param value      Current cell value (0 or 1).
-     * \param isInput    true → blue (input) pixmaps; false → green (output) pixmaps.
      * \param hasPrev    true if a cell exists to the left of this one.
      * \param prevValue  Value of the previous cell (only meaningful when hasPrev is true).
      */
-    QPixmap pixmapFor(int value, bool isInput, bool hasPrev, int prevValue) const;
+    static WaveSegment segmentFor(int value, bool hasPrev, int prevValue);
 
 private:
-    // --- Helpers ---
-
-    /// Loads all 8 waveform pixmaps from Qt resources into the member variables.
-    void loadPixmaps();
-
-    // --- Members ---
-
-    QPixmap m_fallingBlue;  ///< Blue falling-edge waveform (input signal).
-    QPixmap m_fallingGreen; ///< Green falling-edge waveform (output signal).
-    QPixmap m_highBlue;     ///< Blue logic-high plateau (input signal).
-    QPixmap m_highGreen;    ///< Green logic-high plateau (output signal).
-    QPixmap m_lowBlue;      ///< Blue logic-low plateau (input signal).
-    QPixmap m_lowGreen;     ///< Green logic-low plateau (output signal).
-    QPixmap m_risingBlue;   ///< Blue rising-edge waveform (input signal).
-    QPixmap m_risingGreen;  ///< Green rising-edge waveform (output signal).
+    /// Draws \a seg into \a cell using the input/output color selected by \a isInput.
+    void drawWaveform(QPainter *painter, const QRectF &cell, WaveSegment seg, bool isInput) const;
 };

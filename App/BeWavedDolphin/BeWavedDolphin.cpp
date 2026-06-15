@@ -540,7 +540,8 @@ void BewavedDolphin::setCellValue(const int row, const int col, const int value,
         const bool hasPrev  = previousIndex.isValid();
         const int prevValue = hasPrev ? previousIndex.data().toInt() : 0;
 
-        m_model->setData(index, m_delegate->pixmapFor(value, isInput, hasPrev, prevValue), Qt::DecorationRole);
+        m_model->setData(index, static_cast<int>(SignalDelegate::segmentFor(value, hasPrev, prevValue)), SignalDelegate::SegmentRole);
+        m_model->setData(index, isInput, SignalDelegate::InputRole);
 
         if (!changeNext) {
             return;
@@ -1273,11 +1274,13 @@ void BewavedDolphin::on_actionShowNumbers_triggered()
         sentryBreadcrumb("waveform", QStringLiteral("Show numbers"));
         m_type = PlotType::Number;
 
-        // Clear the DecorationRole pixmaps that the Line mode sets; if left, the delegate
-        // would paint the waveform image on top of the numeric text
+        // Clear the waveform roles that Line mode sets; if left, the delegate
+        // would paint the waveform on top of the numeric text
         for (int row = 0; row < m_model->rowCount(); ++row) {
             for (int col = 0; col < m_model->columnCount(); ++col) {
-                m_model->setData(m_model->index(row, col), QVariant(), Qt::DecorationRole);
+                const auto index = m_model->index(row, col);
+                m_model->setData(index, QVariant(), SignalDelegate::SegmentRole);
+                m_model->setData(index, QVariant(), SignalDelegate::InputRole);
             }
         }
 
