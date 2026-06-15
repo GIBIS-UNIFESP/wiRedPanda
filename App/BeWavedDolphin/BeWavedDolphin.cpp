@@ -21,6 +21,7 @@
 #include <QTextStream>
 #include <QWheelEvent>
 
+#include "App/BeWavedDolphin/DolphinClipboard.h"
 #include "App/BeWavedDolphin/Serializer.h"
 #include "App/BeWavedDolphin/WaveformSimulator.h"
 #include "App/Core/Application.h"
@@ -582,32 +583,6 @@ void BewavedDolphin::on_actionInvert_triggered()
     });
 }
 
-int BewavedDolphin::sectionFirstColumn(const QItemSelection &ranges)
-{
-    int firstCol = m_model->columnCount() - 1;
-
-    for (const auto &range : ranges) {
-        if (range.left() < firstCol) {
-            firstCol = range.left();
-        }
-    }
-
-    return firstCol;
-}
-
-int BewavedDolphin::sectionFirstRow(const QItemSelection &ranges)
-{
-    int firstRow = m_model->rowCount() - 1;
-
-    for (const auto &range : ranges) {
-        if (range.top() < firstRow) {
-            firstRow = range.top();
-        }
-    }
-
-    return firstRow;
-}
-
 void BewavedDolphin::on_actionSetClockWave_triggered()
 {
     Application::guardedSlot(this, [this] {
@@ -621,7 +596,7 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
 
         // Anchor the clock phase to the leftmost selected column so the waveform
         // starts at 0 regardless of where in the timeline the selection begins
-        const int firstCol = sectionFirstColumn(ranges);
+        const int firstCol = DolphinClipboard::firstColumn(*m_model, ranges);
 
         qCDebug(zero) << "Setting the signal according to its column and clock period.";
         ClockDialog dialog(m_clockPeriod, this);
@@ -855,31 +830,13 @@ void BewavedDolphin::on_actionCopy_triggered()
         QByteArray itemData;
         QDataStream stream(&itemData, QIODevice::WriteOnly);
         Serialization::writeDolphinHeader(stream);
-        copy(ranges, stream);
+        DolphinClipboard::copy(*m_model, ranges, stream);
 
         auto *mimeData = new QMimeData();
         mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
 
         QApplication::clipboard()->setMimeData(mimeData);
     });
-}
-
-void BewavedDolphin::copy(const QItemSelection &ranges, QDataStream &stream)
-{
-    qCDebug(zero) << "Serializing data into data stream.";
-    const int firstRow = sectionFirstRow(ranges);
-    const int firstCol = sectionFirstColumn(ranges);
-    const auto itemList = m_signalTableView->selectionModel()->selectedIndexes();
-    stream << static_cast<qint64>(itemList.size());
-
-    for (const auto &item : itemList) {
-        const int data_ = m_model->value(item.row(), item.column());
-        // Store offsets relative to the selection origin so paste can re-anchor
-        // the data at any target cell regardless of absolute position
-        stream << static_cast<qint64>(item.row() - firstRow);
-        stream << static_cast<qint64>(item.column() - firstCol);
-        stream << static_cast<qint64>(data_);
-    }
 }
 
 void BewavedDolphin::on_actionCut_triggered()
@@ -896,7 +853,9 @@ void BewavedDolphin::on_actionCut_triggered()
         QByteArray itemData;
         QDataStream stream(&itemData, QIODevice::WriteOnly);
         Serialization::writeDolphinHeader(stream);
-        cut(ranges, stream);
+        // Cut = copy the selection, then clear it (which re-runs the simulation).
+        DolphinClipboard::copy(*m_model, ranges, stream);
+        on_actionSetTo0_triggered();
 
         auto *mimeData = new QMimeData();
         mimeData->setData("application/x-bewaveddolphin-waveform", itemData);
@@ -905,12 +864,6 @@ void BewavedDolphin::on_actionCut_triggered()
 
         m_edited = true;
     });
-}
-
-void BewavedDolphin::cut(const QItemSelection &ranges, QDataStream &stream)
-{
-    copy(ranges, stream);
-    on_actionSetTo0_triggered();
 }
 
 void BewavedDolphin::on_actionPaste_triggered()
@@ -939,34 +892,11 @@ void BewavedDolphin::on_actionPaste_triggered()
         if (!itemData.isEmpty()) {
             QDataStream stream(&itemData, QIODevice::ReadOnly);
             Serialization::readDolphinHeader(stream);
-            paste(ranges, stream);
+            DolphinClipboard::paste(*m_model, ranges, stream);
             m_edited = true;
+            run();
         }
     });
-}
-
-void BewavedDolphin::paste(const QItemSelection &ranges, QDataStream &stream)
-{
-    const int firstCol = sectionFirstColumn(ranges);
-    const int firstRow = sectionFirstRow(ranges);
-    quint64 itemListSize; stream >> itemListSize;
-
-    for (int i = 0; i < static_cast<int>(itemListSize); ++i) {
-        quint64 row;   stream >> row;
-        quint64 col;   stream >> col;
-        quint64 data_; stream >> data_;
-        // Re-anchor the stored relative offsets to the paste-target cell
-        const int newRow = static_cast<int>(static_cast<quint64>(firstRow) + row);
-        const int newCol = static_cast<int>(static_cast<quint64>(firstCol) + col);
-
-        // Silently drop cells that land outside the input rows or past the simulation length;
-        // output rows are never editable
-        if ((newRow < m_inputPorts) && (newCol < m_model->columnCount())) {
-            m_model->setValue(newRow, newCol, static_cast<int>(data_));
-        }
-    }
-
-    run();
 }
 
 void BewavedDolphin::on_actionSave_triggered()
