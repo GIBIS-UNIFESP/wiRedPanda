@@ -21,17 +21,6 @@
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindowHost.h"
 
-namespace
-{
-    /// Appends \a extension to \a fileName when it is not already present.
-    void ensureFileExtension(QString &fileName, const QString &extension)
-    {
-        if (!fileName.endsWith(extension)) {
-            fileName.append(extension);
-        }
-    }
-} // namespace
-
 ExportController::ExportController(MainWindowHost &host, QObject *parent)
     : QObject(parent)
     , m_host(host)
@@ -59,7 +48,9 @@ void ExportController::exportToArduino(QString fileName)
     // the simulation timer and the code generator reading element state.
     SimulationBlocker simulationBlocker(tab->simulation());
 
-    ensureFileExtension(fileName, ".ino");
+    if (!fileName.endsWith(".ino")) {
+        fileName.append(".ino");
+    }
 
     ArduinoCodeGen arduino(QDir::home().absoluteFilePath(fileName), elements);
     arduino.generate();
@@ -87,7 +78,9 @@ void ExportController::exportToSystemVerilog(QString fileName)
 
     SimulationBlocker simulationBlocker(tab->simulation());
 
-    ensureFileExtension(fileName, ".sv");
+    if (!fileName.endsWith(".sv")) {
+        fileName.append(".sv");
+    }
 
     SystemVerilogCodeGen verilog(QDir::home().absoluteFilePath(fileName), elements);
     verilog.generate();

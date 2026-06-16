@@ -85,6 +85,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.cpp
@@ -205,6 +206,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.h
