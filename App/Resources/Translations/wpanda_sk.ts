@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Súbor neexistuje</translation>
+        <translation>Súbor neexistuje</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Súbor nie je čitateľný</translation>
+        <translation>Súbor nie je čitateľný</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Neznámy dôvod</translation>
+        <translation>Neznámy dôvod</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Nepodarilo sa načítať pixmapu: %1 (%2)</translation>
+        <translation>Nepodarilo sa načítať pixmapu: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Každý bezdrôtový kanál musí mať jedinečný názov.</translation>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Chýba názov súboru.</translation>
+        <translation>Chýba názov súboru.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">Súbor .panda je prázdny.</translation>
+        <translation>Súbor .panda je prázdny.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Arduino kód úspešne vygenerovaný.</translation>
+        <translation>Arduino kód úspešne vygenerovaný.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">Kód SystemVerilog bol úspešne vygenerovaný.</translation>
+        <translation>Kód SystemVerilog bol úspešne vygenerovaný.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Vygenerovať Arduino kód</translation>
+        <translation>Vygenerovať Arduino kód</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Arduino súbor (*.ino)</translation>
+        <translation>Arduino súbor (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Vygenerovať kód SystemVerilog</translation>
+        <translation>Vygenerovať kód SystemVerilog</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">Súbor SystemVerilog (*.sv)</translation>
+        <translation>Súbor SystemVerilog (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Exportovať do PDF</translation>
+        <translation>Exportovať do PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">PDF súbory (*.pdf)</translation>
+        <translation>PDF súbory (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Súbor bol úspešne exportovaný.</translation>
+        <translation>Súbor bol úspešne exportovaný.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Exportovať do obrázka</translation>
+        <translation>Exportovať do obrázka</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">PNG súbory (*.png)</translation>
+        <translation>PNG súbory (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Každý bezdrôtový kanál musí mať jedinečný názov.</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Najprv uložte súbor.</translation>
+        <translation>Najprv uložte súbor.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Otvoriť súbor</translation>
+        <translation>Otvoriť súbor</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Informácie</translation>
+        <translation>Informácie</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Vybrané súbory (a ich závislosti) budú skopírované do aktuálneho priečinka projektu.</translation>
+        <translation>Vybrané súbory (a ich závislosti) budú skopírované do aktuálneho priečinka projektu.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Pretiahnite sem na odstránenie.</translation>
+        <translation>Pretiahnite sem na odstránenie.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Chyba pri odstraňovaní súboru: %1</translation>
+        <translation>Chyba pri odstraňovaní súboru: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Kolízia názvov</translation>
+        <translation>Kolízia názvov</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Vložený IC s názvom &quot;%1&quot; už existuje.
+        <translation>Vložený IC s názvom &quot;%1&quot; už existuje.
 Navrhovaný názov:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Navrhovaný názov:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Najprv uložte projekt, aby bolo možné nájsť IC.</translation>
+        <translation>Najprv uložte projekt, aby bolo možné nájsť IC.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Súbor IC sa nepodarilo prečítať: %1</translation>
+        <translation>Súbor IC sa nepodarilo prečítať: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC bol úspešne vložený.</translation>
+        <translation>IC bol úspešne vložený.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Najprv uložte projekt.</translation>
+        <translation>Najprv uložte projekt.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Extrahovať IC do súboru...</translation>
+        <translation>Extrahovať IC do súboru...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda súbory (*.panda)</translation>
+        <translation>Panda súbory (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC extrahovaný do %1</translation>
+        <translation>IC extrahovaný do %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Žiadne IC založené na súboroch na vloženie.</translation>
+        <translation>Žiadne IC založené na súboroch na vloženie.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">Vložených %1 IC. Obvod je teraz sebestačný.</translation>
+        <translation>Vložených %1 IC. Obvod je teraz sebestačný.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Vyberte súbor IC na vloženie</translation>
+        <translation>Vyberte súbor IC na vloženie</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Súbor sa nepodarilo prečítať: %1</translation>
+        <translation>Súbor sa nepodarilo prečítať: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Zapnúť zvuk</translation>
+        <translation>Zapnúť zvuk</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Stíšiť</translation>
+        <translation>Stíšiť</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">K dispozícii je aktualizácia</translation>
+        <translation>K dispozícii je aktualizácia</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 je k dispozícii.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Momentálne používate verziu %2.&lt;br&gt;Kliknite na &lt;b&gt;Stiahnuť&lt;/b&gt; pre uloženie novej verzie.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 je k dispozícii.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Momentálne používate verziu %2.&lt;br&gt;Kliknite na &lt;b&gt;Stiahnuť&lt;/b&gt; pre uloženie novej verzie.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 je k dispozícii.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Aktuálne používate verziu %2.&lt;br&gt;Navštívte stránku vydaní a stiahnite novú verziu.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 je k dispozícii.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Aktuálne používate verziu %2.&lt;br&gt;Navštívte stránku vydaní a stiahnite novú verziu.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Neupozorňovať ma na túto verziu znova</translation>
+        <translation>Neupozorňovať ma na túto verziu znova</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Stiahnuť</translation>
+        <translation>Stiahnuť</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">Sťahovanie wiRedPanda %1…</translation>
+        <translation>Sťahovanie wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušiť</translation>
+        <translation>Zrušiť</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Sťahovanie aktualizácie</translation>
+        <translation>Sťahovanie aktualizácie</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Sťahovanie zlyhalo</translation>
+        <translation>Sťahovanie zlyhalo</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Nepodarilo sa stiahnuť aktualizáciu:
+        <translation>Nepodarilo sa stiahnuť aktualizáciu:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Nepodarilo sa uložiť súbor:
+        <translation>Nepodarilo sa uložiť súbor:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Sťahovanie dokončené</translation>
+        <translation>Sťahovanie dokončené</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda bolo stiahnuté do:
+        <translation>wiRedPanda bolo stiahnuté do:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ Záloha pôvodného súboru bola vytvorená s názvom: %3</translation>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Nový projekt</translation>
+        <translation>Nový projekt</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Súbor úspešne uložený.</translation>
+        <translation>Súbor úspešne uložený.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Súbor nie je uložený. Zavrieť kartu napriek tomu?</translation>
+        <translation>Súbor nie je uložený. Zavrieť kartu napriek tomu?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> bol upravený.
+        <translation> bol upravený.
 Chcete uložiť zmeny?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Súbor bol úspešne načítaný.</translation>
+        <translation>Súbor bol úspešne načítaný.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Otvoriť súbor</translation>
+        <translation>Otvoriť súbor</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda súbory (*.panda)</translation>
+        <translation>Panda súbory (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Uložiť súbor ako ...</translation>
+        <translation>Uložiť súbor ako ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Konflikt súboru</translation>
+        <translation>Konflikt súboru</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Súbor „%1“ je už otvorený na inej karte.</translation>
+        <translation>Súbor „%1“ je už otvorený na inej karte.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Prepnúť na kartu</translation>
+        <translation>Prepnúť na kartu</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Chyba!</translation>
+        <translation>Chyba!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
 </context>
 <context>

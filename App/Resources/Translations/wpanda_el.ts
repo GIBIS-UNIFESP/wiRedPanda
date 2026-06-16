@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Το αρχείο δεν υπάρχει</translation>
+        <translation>Το αρχείο δεν υπάρχει</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Το αρχείο δεν είναι αναγνώσιμο</translation>
+        <translation>Το αρχείο δεν είναι αναγνώσιμο</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Άγνωστος λόγος</translation>
+        <translation>Άγνωστος λόγος</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Δεν ήταν δυνατό να φορτωθεί το pixmap: %1 (%2)</translation>
+        <translation>Δεν ήταν δυνατό να φορτωθεί το pixmap: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Each wireless channel must have a unique label.</source>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Λείπει όνομα αρχείου.</translation>
+        <translation>Λείπει όνομα αρχείου.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">Το αρχείο .panda είναι κενό.</translation>
+        <translation>Το αρχείο .panda είναι κενό.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Επιτυχής δημιουργία κώδικα Arduino.</translation>
+        <translation>Επιτυχής δημιουργία κώδικα Arduino.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">Ο κώδικας SystemVerilog δημιουργήθηκε επιτυχώς.</translation>
+        <translation>Ο κώδικας SystemVerilog δημιουργήθηκε επιτυχώς.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Δημιουργία Κώδικα Arduino</translation>
+        <translation>Δημιουργία Κώδικα Arduino</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Αρχείο Arduino (*.ino)</translation>
+        <translation>Αρχείο Arduino (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Δημιουργία κώδικα SystemVerilog</translation>
+        <translation>Δημιουργία κώδικα SystemVerilog</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">Αρχείο SystemVerilog (*.sv)</translation>
+        <translation>Αρχείο SystemVerilog (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Εξαγωγή σε PDF</translation>
+        <translation>Εξαγωγή σε PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">Αρχεία PDF (*.pdf)</translation>
+        <translation>Αρχεία PDF (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Επιτυχής εξαγωγή αρχείου.</translation>
+        <translation>Επιτυχής εξαγωγή αρχείου.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Εξαγωγή σε Εικόνα</translation>
+        <translation>Εξαγωγή σε Εικόνα</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">Αρχεία PNG (*.png)</translation>
+        <translation>Αρχεία PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Αποθηκεύστε πρώτα το αρχείο.</translation>
+        <translation>Αποθηκεύστε πρώτα το αρχείο.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Άνοιγμα Αρχείου</translation>
+        <translation>Άνοιγμα Αρχείου</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Πληροφορίες</translation>
+        <translation>Πληροφορίες</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Τα επιλεγμένα αρχεία (και οι εξαρτήσεις τους) θα αντιγραφούν στον τρέχοντα φάκελο του έργου.</translation>
+        <translation>Τα επιλεγμένα αρχεία (και οι εξαρτήσεις τους) θα αντιγραφούν στον τρέχοντα φάκελο του έργου.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Σύρετε εδώ για αφαίρεση.</translation>
+        <translation>Σύρετε εδώ για αφαίρεση.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Σφάλμα αφαίρεσης αρχείου: %1</translation>
+        <translation>Σφάλμα αφαίρεσης αρχείου: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Σύγκρουση ονομάτων</translation>
+        <translation>Σύγκρουση ονομάτων</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Ένα ενσωματωμένο IC με όνομα &quot;%1&quot; υπάρχει ήδη.
+        <translation>Ένα ενσωματωμένο IC με όνομα &quot;%1&quot; υπάρχει ήδη.
 Προτεινόμενο όνομα:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Suggested name:</source>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Σφάλμα</translation>
+        <translation>Σφάλμα</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Αποθηκεύστε πρώτα το έργο για να μπορούν να επιλυθούν τα IC.</translation>
+        <translation>Αποθηκεύστε πρώτα το έργο για να μπορούν να επιλυθούν τα IC.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Δεν ήταν δυνατή η ανάγνωση του αρχείου IC: %1</translation>
+        <translation>Δεν ήταν δυνατή η ανάγνωση του αρχείου IC: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">Το IC ενσωματώθηκε επιτυχώς.</translation>
+        <translation>Το IC ενσωματώθηκε επιτυχώς.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Αποθηκεύστε πρώτα το έργο.</translation>
+        <translation>Αποθηκεύστε πρώτα το έργο.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Εξαγωγή IC σε αρχείο...</translation>
+        <translation>Εξαγωγή IC σε αρχείο...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Αρχεία Panda (*.panda)</translation>
+        <translation>Αρχεία Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">Το IC εξήχθη στο %1</translation>
+        <translation>Το IC εξήχθη στο %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Δεν υπάρχουν IC βασισμένα σε αρχεία για ενσωμάτωση.</translation>
+        <translation>Δεν υπάρχουν IC βασισμένα σε αρχεία για ενσωμάτωση.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">Ενσωματώθηκαν %1 IC. Το κύκλωμα είναι πλέον αυτόνομο.</translation>
+        <translation>Ενσωματώθηκαν %1 IC. Το κύκλωμα είναι πλέον αυτόνομο.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Επιλέξτε αρχείο IC για ενσωμάτωση</translation>
+        <translation>Επιλέξτε αρχείο IC για ενσωμάτωση</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Δεν ήταν δυνατή η ανάγνωση του αρχείου: %1</translation>
+        <translation>Δεν ήταν δυνατή η ανάγνωση του αρχείου: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Αποσίγαση</translation>
+        <translation>Αποσίγαση</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Σίγαση</translation>
+        <translation>Σίγαση</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Διαθέσιμη ενημέρωση</translation>
+        <translation>Διαθέσιμη ενημέρωση</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;Το wiRedPanda %1 είναι διαθέσιμο.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Εκτελείτε αυτή τη στιγμή την έκδοση %2.&lt;br&gt;Κάντε κλικ στο &lt;b&gt;Λήψη&lt;/b&gt; για αποθήκευση της νέας έκδοσης.</translation>
+        <translation>&lt;b&gt;Το wiRedPanda %1 είναι διαθέσιμο.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Εκτελείτε αυτή τη στιγμή την έκδοση %2.&lt;br&gt;Κάντε κλικ στο &lt;b&gt;Λήψη&lt;/b&gt; για αποθήκευση της νέας έκδοσης.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;Το wiRedPanda %1 είναι διαθέσιμο.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Χρησιμοποιείτε αυτή τη στιγμή την έκδοση %2.&lt;br&gt;Επισκεφθείτε τη σελίδα εκδόσεων για να κατεβάσετε τη νέα έκδοση.</translation>
+        <translation>&lt;b&gt;Το wiRedPanda %1 είναι διαθέσιμο.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Χρησιμοποιείτε αυτή τη στιγμή την έκδοση %2.&lt;br&gt;Επισκεφθείτε τη σελίδα εκδόσεων για να κατεβάσετε τη νέα έκδοση.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Να μην ειδοποιηθώ ξανά για αυτήν την έκδοση</translation>
+        <translation>Να μην ειδοποιηθώ ξανά για αυτήν την έκδοση</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Λήψη</translation>
+        <translation>Λήψη</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">Λήψη wiRedPanda %1…</translation>
+        <translation>Λήψη wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Άκυρο</translation>
+        <translation>Άκυρο</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Λήψη ενημέρωσης</translation>
+        <translation>Λήψη ενημέρωσης</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Αποτυχία λήψης</translation>
+        <translation>Αποτυχία λήψης</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Δεν ήταν δυνατή η λήψη της ενημέρωσης:
+        <translation>Δεν ήταν δυνατή η λήψη της ενημέρωσης:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Δεν ήταν δυνατή η αποθήκευση του αρχείου:
+        <translation>Δεν ήταν δυνατή η αποθήκευση του αρχείου:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Η λήψη ολοκληρώθηκε</translation>
+        <translation>Η λήψη ολοκληρώθηκε</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">Το wiRedPanda ελήφθη στο:
+        <translation>Το wiRedPanda ελήφθη στο:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ A backup of the original file has been created with name: %3</source>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Νέο Έργο</translation>
+        <translation>Νέο Έργο</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Επιτυχής αποθήκευση αρχείου.</translation>
+        <translation>Επιτυχής αποθήκευση αρχείου.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Το αρχείο δεν αποθηκεύτηκε. Κλείσιμο καρτέλας παρόλα αυτά;</translation>
+        <translation>Το αρχείο δεν αποθηκεύτηκε. Κλείσιμο καρτέλας παρόλα αυτά;</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> έχει τροποποιηθεί.
+        <translation> έχει τροποποιηθεί.
 Θέλετε να αποθηκεύσετε τις αλλαγές σας;</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Επιτυχής φόρτωση αρχείου.</translation>
+        <translation>Επιτυχής φόρτωση αρχείου.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Άνοιγμα Αρχείου</translation>
+        <translation>Άνοιγμα Αρχείου</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Αρχεία Panda (*.panda)</translation>
+        <translation>Αρχεία Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Αποθήκευση Αρχείου ως...</translation>
+        <translation>Αποθήκευση Αρχείου ως...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Σύγκρουση αρχείου</translation>
+        <translation>Σύγκρουση αρχείου</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Το αρχείο &quot;%1&quot; είναι ήδη ανοιχτό σε άλλη καρτέλα.</translation>
+        <translation>Το αρχείο &quot;%1&quot; είναι ήδη ανοιχτό σε άλλη καρτέλα.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Μετάβαση στην καρτέλα</translation>
+        <translation>Μετάβαση στην καρτέλα</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Σφάλμα!</translation>
+        <translation>Σφάλμα!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Σφάλμα</translation>
+        <translation>Σφάλμα</translation>
     </message>
 </context>
 <context>

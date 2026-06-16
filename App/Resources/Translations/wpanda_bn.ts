@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">ফাইল বিদ্যমান নেই</translation>
+        <translation>ফাইল বিদ্যমান নেই</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">ফাইল পড়া যায়না</translation>
+        <translation>ফাইল পড়া যায়না</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">অজানা কারণ</translation>
+        <translation>অজানা কারণ</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">পিক্সম্যাপ লোড করা যায়নি: %1 (%2)</translation>
+        <translation>পিক্সম্যাপ লোড করা যায়নি: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Each wireless channel must have a unique label.</source>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">ফাইলের নাম নেই।</translation>
+        <translation>ফাইলের নাম নেই।</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">.panda ফাইলটি খালি।</translation>
+        <translation>.panda ফাইলটি খালি।</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Arduino কোড সফলভাবে তৈরি হয়েছে।</translation>
+        <translation>Arduino কোড সফলভাবে তৈরি হয়েছে।</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">SystemVerilog কোড সফলভাবে তৈরি হয়েছে।</translation>
+        <translation>SystemVerilog কোড সফলভাবে তৈরি হয়েছে।</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Arduino কোড তৈরি করুন</translation>
+        <translation>Arduino কোড তৈরি করুন</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Arduino ফাইল (*.ino)</translation>
+        <translation>Arduino ফাইল (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">SystemVerilog কোড তৈরি করুন</translation>
+        <translation>SystemVerilog কোড তৈরি করুন</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">SystemVerilog ফাইল (*.sv)</translation>
+        <translation>SystemVerilog ফাইল (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF তে রপ্তানি করুন</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">PDF ফাইল (*.pdf)</translation>
+        <translation>PDF ফাইল (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">ফাইল সফলভাবে রপ্তানি হয়েছে।</translation>
+        <translation>ফাইল সফলভাবে রপ্তানি হয়েছে।</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">ছবিতে রপ্তানি করুন</translation>
+        <translation>ছবিতে রপ্তানি করুন</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">PNG ফাইল (*.png)</translation>
+        <translation>PNG ফাইল (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">প্রথমে ফাইল সংরক্ষণ করুন।</translation>
+        <translation>প্রথমে ফাইল সংরক্ষণ করুন।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">ফাইল খুলুন</translation>
+        <translation>ফাইল খুলুন</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">তথ্য</translation>
+        <translation>তথ্য</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">নির্বাচিত ফাইলগুলি (এবং তাদের নির্ভরতা) বর্তমান প্রকল্প ফোল্ডারে অনুলিপি করা হবে।</translation>
+        <translation>নির্বাচিত ফাইলগুলি (এবং তাদের নির্ভরতা) বর্তমান প্রকল্প ফোল্ডারে অনুলিপি করা হবে।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">সরানোর জন্য এখানে টেনে আনুন।</translation>
+        <translation>সরানোর জন্য এখানে টেনে আনুন।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">ফাইল মুছে ফেলতে ত্রুটি: %1</translation>
+        <translation>ফাইল মুছে ফেলতে ত্রুটি: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">নাম সংঘর্ষ</translation>
+        <translation>নাম সংঘর্ষ</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">&quot;%1&quot; নামের একটি এম্বেডেড IC ইতিমধ্যে বিদ্যমান।
+        <translation>&quot;%1&quot; নামের একটি এম্বেডেড IC ইতিমধ্যে বিদ্যমান।
 প্রস্তাবিত নাম:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Suggested name:</source>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">ত্রুটি</translation>
+        <translation>ত্রুটি</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">অনুগ্রহ করে প্রথমে প্রকল্পটি সংরক্ষণ করুন যাতে IC সমাধান করা যায়।</translation>
+        <translation>অনুগ্রহ করে প্রথমে প্রকল্পটি সংরক্ষণ করুন যাতে IC সমাধান করা যায়।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">IC ফাইল পড়া যায়নি: %1</translation>
+        <translation>IC ফাইল পড়া যায়নি: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC সফলভাবে এম্বেড করা হয়েছে।</translation>
+        <translation>IC সফলভাবে এম্বেড করা হয়েছে।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">অনুগ্রহ করে প্রথমে প্রকল্পটি সংরক্ষণ করুন।</translation>
+        <translation>অনুগ্রহ করে প্রথমে প্রকল্পটি সংরক্ষণ করুন।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">IC ফাইলে এক্সট্রাক্ট করুন...</translation>
+        <translation>IC ফাইলে এক্সট্রাক্ট করুন...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">প্যান্ডা ফাইল (*.panda)</translation>
+        <translation>প্যান্ডা ফাইল (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">%1-এ IC এক্সট্রাক্ট করা হয়েছে</translation>
+        <translation>%1-এ IC এক্সট্রাক্ট করা হয়েছে</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">এম্বেড করার জন্য কোনো ফাইল-ভিত্তিক IC নেই।</translation>
+        <translation>এম্বেড করার জন্য কোনো ফাইল-ভিত্তিক IC নেই।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">%1টি IC এম্বেড করা হয়েছে। সার্কিট এখন স্বয়ংসম্পূর্ণ।</translation>
+        <translation>%1টি IC এম্বেড করা হয়েছে। সার্কিট এখন স্বয়ংসম্পূর্ণ।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">এম্বেড করতে IC ফাইল নির্বাচন করুন</translation>
+        <translation>এম্বেড করতে IC ফাইল নির্বাচন করুন</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">ফাইল পড়া যায়নি: %1</translation>
+        <translation>ফাইল পড়া যায়নি: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">শব্দ চালু</translation>
+        <translation>শব্দ চালু</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">নিরব</translation>
+        <translation>নিরব</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">আপডেট উপলব্ধ</translation>
+        <translation>আপডেট উপলব্ধ</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 উপলব্ধ।&lt;/b&gt;&lt;br&gt;&lt;br&gt;আপনি বর্তমানে সংস্করণ %2 চালাচ্ছেন।&lt;br&gt;নতুন সংস্করণ সংরক্ষণ করতে &lt;b&gt;ডাউনলোড&lt;/b&gt; ক্লিক করুন।</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 উপলব্ধ।&lt;/b&gt;&lt;br&gt;&lt;br&gt;আপনি বর্তমানে সংস্করণ %2 চালাচ্ছেন।&lt;br&gt;নতুন সংস্করণ সংরক্ষণ করতে &lt;b&gt;ডাউনলোড&lt;/b&gt; ক্লিক করুন।</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 উপলব্ধ।&lt;/b&gt;&lt;br&gt;&lt;br&gt;আপনি বর্তমানে সংস্করণ %2 চালাচ্ছেন।&lt;br&gt;নতুন সংস্করণ ডাউনলোড করতে রিলিজ পেজে যান।</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 উপলব্ধ।&lt;/b&gt;&lt;br&gt;&lt;br&gt;আপনি বর্তমানে সংস্করণ %2 চালাচ্ছেন।&lt;br&gt;নতুন সংস্করণ ডাউনলোড করতে রিলিজ পেজে যান।</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">এই সংস্করণ সম্পর্কে আবার জানাবেন না</translation>
+        <translation>এই সংস্করণ সম্পর্কে আবার জানাবেন না</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">ডাউনলোড</translation>
+        <translation>ডাউনলোড</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">wiRedPanda %1 ডাউনলোড হচ্ছে…</translation>
+        <translation>wiRedPanda %1 ডাউনলোড হচ্ছে…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">বাতিল</translation>
+        <translation>বাতিল</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">আপডেট ডাউনলোড হচ্ছে</translation>
+        <translation>আপডেট ডাউনলোড হচ্ছে</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">ডাউনলোড ব্যর্থ</translation>
+        <translation>ডাউনলোড ব্যর্থ</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">আপডেট ডাউনলোড করা যায়নি:
+        <translation>আপডেট ডাউনলোড করা যায়নি:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">ফাইল সংরক্ষণ করা যায়নি:
+        <translation>ফাইল সংরক্ষণ করা যায়নি:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">ডাউনলোড সম্পূর্ণ</translation>
+        <translation>ডাউনলোড সম্পূর্ণ</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda এখানে ডাউনলোড হয়েছে:
+        <translation>wiRedPanda এখানে ডাউনলোড হয়েছে:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ A backup of the original file has been created with name: %3</source>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">নতুন প্রকল্প</translation>
+        <translation>নতুন প্রকল্প</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">ফাইল সফলভাবে সংরক্ষিত হয়েছে।</translation>
+        <translation>ফাইল সফলভাবে সংরক্ষিত হয়েছে।</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">ফাইল সংরক্ষিত হয়নি। তবুও ট্যাব বন্ধ করবেন?</translation>
+        <translation>ফাইল সংরক্ষিত হয়নি। তবুও ট্যাব বন্ধ করবেন?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> পরিবর্তিত হয়েছে।
+        <translation> পরিবর্তিত হয়েছে।
 আপনি কি আপনার পরিবর্তনগুলি সংরক্ষণ করতে চান?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">ফাইল সফলভাবে লোড হয়েছে।</translation>
+        <translation>ফাইল সফলভাবে লোড হয়েছে।</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">ফাইল খুলুন</translation>
+        <translation>ফাইল খুলুন</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">প্যান্ডা ফাইল (*.panda)</translation>
+        <translation>প্যান্ডা ফাইল (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">ফাইল নামে সংরক্ষণ করুন...</translation>
+        <translation>ফাইল নামে সংরক্ষণ করুন...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">ফাইল সংঘাত</translation>
+        <translation>ফাইল সংঘাত</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">&quot;%1&quot; ফাইলটি ইতিমধ্যে অন্য ট্যাবে খোলা রয়েছে।</translation>
+        <translation>&quot;%1&quot; ফাইলটি ইতিমধ্যে অন্য ট্যাবে খোলা রয়েছে।</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">ট্যাবে যান</translation>
+        <translation>ট্যাবে যান</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">ত্রুটি!</translation>
+        <translation>ত্রুটি!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">ত্রুটি</translation>
+        <translation>ত্রুটি</translation>
     </message>
 </context>
 <context>
