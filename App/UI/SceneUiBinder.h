@@ -1,0 +1,62 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+/** \file
+ * \brief SceneUiBinder: wires the active tab's scene into the shared editor chrome.
+ */
+
+#pragma once
+
+#include <QObject>
+
+class ElementPalette;
+class MainWindowUi;
+class QShortcut;
+class QWidget;
+class WorkSpace;
+
+/**
+ * \class SceneUiBinder
+ * \brief Binds and unbinds the active WorkSpace's scene to the single-instance editor
+ * chrome (element editor, Edit-menu undo/redo, scene-property shortcuts, and the
+ * zoom/mute/play action state).
+ *
+ * \details Extracted from MainWindow. The chrome widgets are shared singletons that
+ * must be re-pointed at the current scene on every tab switch; that wiring is this
+ * class's sole responsibility. It owns the six scene-property QShortcuts (which only
+ * ever target the active scene). Tab navigation triggered by scene signals
+ * (icOpenRequested) and the file-based IC list stay with the tab owner.
+ */
+class SceneUiBinder : public QObject
+{
+    Q_OBJECT
+
+public:
+    /// \param ui Shared UI (element editor, menus, actions, status bar).
+    /// \param palette Element palette (embedded-IC list reflects the active scene).
+    /// \param shortcutParent Widget that parents the scene-property shortcuts (the window).
+    SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, QWidget *shortcutParent, QObject *parent = nullptr);
+
+    /// Connects \a tab's scene/view/simulation to the chrome and syncs action state.
+    void bind(WorkSpace *tab);
+
+    /// Tears down the connections established by bind() for the currently bound tab.
+    void unbind();
+
+private:
+    void addUndoRedoMenu();
+    void removeUndoRedoMenu();
+    void syncZoomActions();
+
+    MainWindowUi *m_ui;
+    ElementPalette *m_palette;
+    WorkSpace *m_bound = nullptr;
+
+    // Scene-property navigation shortcuts ( [ ] { } < > ), re-targeted to the active scene.
+    QShortcut *m_prevMainPropShortcut;
+    QShortcut *m_nextMainPropShortcut;
+    QShortcut *m_prevSecndPropShortcut;
+    QShortcut *m_nextSecndPropShortcut;
+    QShortcut *m_changePrevElmShortcut;
+    QShortcut *m_changeNextElmShortcut;
+};
