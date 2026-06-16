@@ -11,6 +11,7 @@
 #include <QUndoStack>
 
 #include "App/Core/Common.h"
+#include "App/Element/ICRegistry.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -115,6 +116,15 @@ void SceneUiBinder::bind(WorkSpace *tab)
     connect(scene, &Scene::openTruthTableRequested, this, [this] {
         m_ui->elementEditor->truthTable();
     });
+    connect(scene, &Scene::icOpenRequested, this, [this](int elementId, const QString &blobName, const QString &filePath) {
+        if (!blobName.isEmpty()) {
+            if (m_bound) {
+                emit openICRequested(blobName, elementId, m_bound->scene()->icRegistry()->blob(blobName));
+            }
+        } else if (!filePath.isEmpty()) {
+            emit loadFileRequested(filePath);
+        }
+    });
 
     if (m_ui->actionPlay->isChecked()) {
         qCDebug(zero) << "Restarting simulation.";
@@ -162,6 +172,7 @@ void SceneUiBinder::unbind()
     disconnect(m_changePrevElmShortcut, nullptr, scene, nullptr);
     disconnect(m_changeNextElmShortcut, nullptr, scene, nullptr);
     disconnect(scene, &Scene::openTruthTableRequested, this, nullptr);
+    disconnect(scene, &Scene::icOpenRequested, this, nullptr);
     disconnect(scene->undoStack(), &QUndoStack::indexChanged, this, nullptr);
 
     qCDebug(zero) << "Removing undo and redo actions from UI menu.";

@@ -27,6 +27,7 @@ class LanguageManager;
 class RecentFiles;
 class SceneUiBinder;
 class WorkSpace;
+class WorkspaceManager;
 
 /**
  * \class MainWindow
@@ -66,9 +67,6 @@ public:
     /// Returns the currently visible WorkSpace tab, or nullptr.
     WorkSpace *currentTab() const override;
 
-    /// Closes all tabs, prompting to save if needed. Returns \c false if cancelled.
-    bool closeFiles();
-
     // --- File Operations ---
 
     /**
@@ -85,13 +83,6 @@ public:
 
     /// Opens an embedded IC blob for editing in a new tab.
     void openICInTab(const QString &blobName, int icElementId, const QByteArray &blob);
-
-    /**
-     * \brief Prompts the user to save unsaved changes before closing.
-     * \param multiple \c true when multiple tabs may be affected.
-     * \return QMessageBox button code: Save, Discard, or Cancel.
-     */
-    int confirmSave(const bool multiple);
 
     /// Returns the QFileInfo of the currently active .panda file.
     QFileInfo currentFile() const override;
@@ -114,11 +105,11 @@ public:
     /// \reimp MainWindowHost — saves the current tab (triggers the Save action).
     void requestSave() override;
 
-    /**
-     * \brief Updates the tracked current file to \a fileInfo.
-     * \param fileInfo New file info (used after load or save-as).
-     */
-    void setCurrentFile(const QFileInfo &fileInfo);
+    /// \reimp MainWindowHost — shows/hides the IC management tool buttons.
+    void setICButtonsVisible(bool visible) override;
+
+    /// \reimp MainWindowHost — re-evaluates the Add-IC button enabled state.
+    void refreshICButtonsEnabled() override;
 
     // --- Export ---
 
@@ -191,13 +182,6 @@ public:
     /// \reimp
     bool event(QEvent *event) override;
 
-signals:
-    /**
-     * \brief Emitted when a file is successfully loaded or saved.
-     * \param fileName Absolute path of the affected file.
-     */
-    void addRecentFile(const QString &fileName);
-
 protected:
     // --- Protected Interface ---
 
@@ -209,32 +193,17 @@ private:
 
     // --- Tab Lifecycle ---
 
-    bool closeTab(const int tabIndex);
-    int closeTabAnyway();
-    void tabChanged(const int newTabIndex);
-    void disconnectTab();
-    void connectTab();
+    /// Reacts to WorkspaceManager::currentTabChanged: rebinds the chrome to the new scene.
+    void onCurrentTabChanged(WorkSpace *newTab);
 
-    /// Returns the file info to use for populating the file-based IC palette.
-    /// For inline IC tabs this returns the parent workspace's file info.
+    /// \reimp MainWindowHost — file info used to populate the file-based IC palette.
     QFileInfo icListFile() const override;
 
-    /// Connects \a action to \a method on the current tab's scene (guarded by m_currentTab check).
+    /// Connects \a action to \a method on the current tab's scene (guarded by a current-tab check).
     void connectSceneAction(QAction *action, void (Scene::*method)());
 
     // --- File Helpers ---
 
-    /// Appends \a extension (e.g. ".panda") to \a fileName if not already present.
-    static void ensureFileExtension(QString &fileName, const QString &extension);
-
-    /// Shows or hides the IC management buttons (Add, Remove, MakeSelfContained).
-    void setICButtonsVisible(bool visible);
-
-    /// Updates the enabled state of Add IC based on current tab's saved-file status.
-    void refreshICButtonsEnabled();
-
-    bool hasModifiedFiles();
-    void loadAutosaveFiles();
     void createRecentFileActions();
     void updateRecentFileActions();
     void openRecentFile();
@@ -260,17 +229,12 @@ private:
     void on_actionGates_triggered(const bool checked);
     void on_actionLabelsUnderIcons_triggered(const bool checked);
     void on_actionMute_triggered(const bool checked);
-    void on_actionNew_triggered();
-    void on_actionOpen_triggered();
     void on_actionPlay_toggled(const bool checked);
-    void on_actionReloadFile_triggered();
     void on_actionReportTranslationError_triggered();
     void on_actionResetZoom_triggered() const;
     void on_actionRestart_triggered();
     void on_actionRotateLeft_triggered();
     void on_actionRotateRight_triggered();
-    void on_actionSaveAs_triggered();
-    void on_actionSave_triggered();
     void on_actionSelectAll_triggered();
     void on_actionShortcuts_and_Tips_triggered();
     void on_actionWaveform_triggered();
@@ -310,13 +274,9 @@ private:
     ExportController *m_exportController  = nullptr;
     ICController     *m_icController      = nullptr;
     SceneUiBinder    *m_binder            = nullptr;
+    WorkspaceManager *m_workspaceManager  = nullptr;
 
     /// Shared IC-hover preview, parented to this MainWindow.
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.
     QPointer<ICPreviewPopup> m_icPreviewPopup;
-
-    WorkSpace *m_currentTab = nullptr;
-    int m_tabIndex = -1;
-
-    [[nodiscard]] int findTabWithFile(const QString &fileName) const;
 };

@@ -56,4 +56,10 @@ public:
 
     /// Saves the current tab (equivalent to triggering the Save action).
     virtual void requestSave() = 0;
+
+    /// Shows or hides the IC management tool buttons (Add / Remove / Make-self-contained).
+    virtual void setICButtonsVisible(bool visible) = 0;
+
+    /// Re-evaluates the enabled state of the Add-IC button against the current tab.
+    virtual void refreshICButtonsEnabled() = 0;
 };

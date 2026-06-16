@@ -7,7 +7,9 @@
 
 #pragma once
 
+#include <QByteArray>
 #include <QObject>
+#include <QString>
 
 class ElementPalette;
 class MainWindowUi;
@@ -42,6 +44,12 @@ public:
 
     /// Tears down the connections established by bind() for the currently bound tab.
     void unbind();
+
+signals:
+    /// The bound scene asked to open an embedded IC in a tab (forwarded to the tab owner).
+    void openICRequested(const QString &blobName, int icElementId, const QByteArray &blob);
+    /// The bound scene asked to open a file-based IC by path (forwarded to the tab owner).
+    void loadFileRequested(const QString &filePath);
 
 private:
     void addUndoRedoMenu();
