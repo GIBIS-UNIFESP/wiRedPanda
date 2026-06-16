@@ -13,7 +13,6 @@
 #include <QMainWindow>
 #include <QPointer>
 #include <QSpacerItem>
-#include <QUrl>
 
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/UI/MainWindowUI.h"
@@ -235,8 +234,6 @@ private:
     void makeSelfContained();
     void embedICByFile(const QString &fileName);
     void extractICByBlobName(const QString &blobName);
-    void showUpdateDialog(const QString &latestVersion, const QUrl &downloadUrl, const QUrl &releaseUrl);
-    void downloadUpdate(const QString &latestVersion, const QUrl &url);
 
     // --- Settings & Theme ---
 
