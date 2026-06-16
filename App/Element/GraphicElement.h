@@ -17,6 +17,7 @@
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
+#include "App/Element/ElementSimState.h"
 #include "App/Element/PropertyDescriptor.h"
 
 struct SerializationContext;
@@ -360,40 +361,31 @@ public:
     virtual void resetSimState();
 
     /// Returns the four-state signal value on simulation output port \a index.
-    inline Status outputValue(const int index = 0) const
-    {
-        if (index >= m_simOutputValues.size()) { return Status::Unknown; }
-        return m_simOutputValues.at(index);
-    }
+    inline Status outputValue(const int index = 0) const { return m_sim.outputValue(index); }
 
     /// Returns the number of simulation output slots.
-    qsizetype simOutputSize() const;
+    qsizetype simOutputSize() const { return m_sim.outputSize(); }
 
     /// Sets simulation output port \a index to \a value.
-    inline void setOutputValue(const int index, const Status value)
-    {
-        if (index >= m_simOutputValues.size()) { return; }
-        if (m_simOutputValues[index] != value) { m_simOutputChanged = true; }
-        m_simOutputValues[index] = value;
-    }
+    inline void setOutputValue(const int index, const Status value) { m_sim.setOutputValue(index, value); }
 
     /// Sets simulation output port 0 to \a value.
-    inline void setOutputValue(const Status value) { setOutputValue(0, value); }
+    inline void setOutputValue(const Status value) { m_sim.setOutputValue(0, value); }
 
     /// Convenience overload — converts \c bool to Active/Inactive for port \a index.
-    void setOutputValue(const int index, const bool value) { setOutputValue(index, value ? Status::Active : Status::Inactive); }
+    void setOutputValue(const int index, const bool value) { m_sim.setOutputValue(index, value ? Status::Active : Status::Inactive); }
 
     /// Convenience overload — converts \c bool to Active/Inactive for port 0.
-    void setOutputValue(const bool value) { setOutputValue(value ? Status::Active : Status::Inactive); }
+    void setOutputValue(const bool value) { m_sim.setOutputValue(0, value ? Status::Active : Status::Inactive); }
 
     /// Connects simulation input \a inputIndex to output \a outputPort of \a source element.
     void connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort);
 
     /// Returns \c true if any simulation output changed since the last query (and resets the flag).
-    bool outputChanged() const { return m_simOutputChanged; }
+    bool outputChanged() const { return m_sim.outputChanged(); }
 
     /// Clears the simulation output-changed flag.
-    void clearOutputChanged() { m_simOutputChanged = false; }
+    void clearOutputChanged() { m_sim.clearOutputChanged(); }
 
     /// Allocates simulation I/O vectors with \a inputs inputs and \a outputs outputs.
     void initSimulationVectors(const int inputCount, const int outputCount);
@@ -443,10 +435,10 @@ public:
     void setPortName(const QString &name);
 
     /// Read-only view of the cached simulation input values.
-    const QVector<Status> &simInputs() const { return m_simInputValues; }
+    const QVector<Status> &simInputs() const { return m_sim.inputs(); }
 
     /// Read-only view of the current simulation output values.
-    const QVector<Status> &simOutputs() const { return m_simOutputValues; }
+    const QVector<Status> &simOutputs() const { return m_sim.outputs(); }
 
     // --- Theme ---
 
@@ -557,7 +549,7 @@ protected:
      *
      * \return \c true if all inputs are Active or Inactive (simulation can proceed).
      */
-    bool simUpdateInputs();
+    bool simUpdateInputs() { return m_sim.updateInputs(false, m_inputPorts); }
 
     /**
      * \brief Like simUpdateInputs(), but allows Unknown/Error values through.
@@ -566,7 +558,7 @@ protected:
      * Only a truly unconnected input (null predecessor whose port default
      * is Unknown) triggers an early all-outputs-Unknown return.
      */
-    bool simUpdateInputsAllowUnknown();
+    bool simUpdateInputsAllowUnknown() { return m_sim.updateInputs(true, m_inputPorts); }
 
     /**
      * \brief Decodes \a count select-line statuses from simInputs() into a binary index.
@@ -575,7 +567,7 @@ protected:
      * \return An integer where bit i is 1 if simInputs()[offset+i] == Active.
      * \details Used by Mux and Demux to convert select-line signals into a data-port index.
      */
-    int decodeSelectValue(int offset, int count) const;
+    int decodeSelectValue(int offset, int count) const { return m_sim.decodeSelectValue(offset, count); }
 
 private:
     // --- Flip Transform ---
@@ -616,8 +608,6 @@ private:
     /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
     static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
 
-    /// Shared implementation for simUpdateInputs() and simUpdateInputsAllowUnknown().
-    bool simUpdateInputsImpl(const bool allowUnknown);
     /// Removes input ports beyond \a inputSize_ (used when the loaded port count exceeds current limits).
     void removeSurplusInputs(const quint64 inputSize_, SerializationContext &context);
     /// Removes output ports beyond \a outputSize_ (used when the loaded port count exceeds current limits).
@@ -678,20 +668,9 @@ private:
 
     // --- Members: Direct Simulation ---
 
-    /**
-     * \brief Describes a single simulation-graph edge: which element and output
-     * port feeds into one of this element's input slots.
-     * \details Used by simUpdateInputs() to traverse the simulation graph.
-     */
-    struct SimInputConnection {
-        GraphicElement *sourceElement = nullptr;
-        int sourceOutputIndex = 0;
-    };
-
-    QVector<SimInputConnection> m_simInputConnections;
-    QVector<Status> m_simInputValues;
-    QVector<Status> m_simOutputValues;
-    bool m_simOutputChanged = false;
+    /// Owns the simulation runtime state (I/O values + connection graph); this element
+    /// forwards its direct-simulation interface here.  See ElementSimState.
+    ElementSimState m_sim;
 
     // --- Members: Trigger & Label ---
 

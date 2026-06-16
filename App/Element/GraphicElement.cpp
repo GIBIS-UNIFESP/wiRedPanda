@@ -1073,104 +1073,17 @@ void GraphicElement::updateLogic()
 
 void GraphicElement::resetSimState()
 {
-    // Reset each output slot to the port's power-on default so that the next
-    // BeWavedDolphin sweep starts from a known, reproducible state.
-    // Subclasses with internal edge-detection variables (flip-flops) override this
-    // to also clear those fields.
-    for (int i = 0; i < m_simOutputValues.size(); ++i) {
-        const Status def = (i < m_outputPorts.size())
-                               ? m_outputPorts.at(i)->defaultValue()
-                               : Status::Inactive;
-        m_simOutputValues[i] = (def == Status::Unknown) ? Status::Inactive : def;
-    }
-    m_simOutputChanged = true;
-}
-
-qsizetype GraphicElement::simOutputSize() const
-{
-    return m_simOutputValues.size();
+    m_sim.reset(m_outputPorts);
 }
 
 void GraphicElement::connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort)
 {
-    if (inputIndex >= m_simInputConnections.size()) {
-        return;
-    }
-    m_simInputConnections[inputIndex] = {source, outputPort};
+    m_sim.connectPredecessor(inputIndex, source, outputPort);
 }
 
 void GraphicElement::initSimulationVectors(const int inputCount, const int outputCount)
 {
-    m_simInputConnections.fill({}, inputCount);
-    m_simInputValues.fill(Status::Inactive, inputCount);
-    m_simOutputValues.resize(outputCount);
-    // Initialize outputs from port default statuses when they're explicitly set
-    // (e.g., flip-flop Q'=Active), otherwise default to Inactive.
-    // Using Inactive (not Unknown) ensures gate-level feedback loops can settle.
-    for (int i = 0; i < outputCount; ++i) {
-        if (i < m_outputPorts.size()) {
-            const Status def = m_outputPorts.at(i)->defaultValue();
-            m_simOutputValues[i] = (def == Status::Unknown) ? Status::Inactive : def;
-        } else {
-            m_simOutputValues[i] = Status::Inactive;
-        }
-    }
-    m_simOutputChanged = false;
-}
-
-bool GraphicElement::simUpdateInputsImpl(const bool allowUnknown)
-{
-    for (int index = 0; index < m_simInputConnections.size(); ++index) {
-        auto *pred = m_simInputConnections.at(index).sourceElement;
-        Status val;
-        if (pred) {
-            val = pred->outputValue(m_simInputConnections.at(index).sourceOutputIndex);
-        } else {
-            if (index < m_inputPorts.size() && m_inputPorts.at(index)->connections().size() > 1) {
-                val = Status::Error;  // multi-driver bus conflict
-            } else {
-                // Unconnected input: use port's default status (replaces global GND/VCC).
-                val = (index < m_inputPorts.size()) ? m_inputPorts.at(index)->defaultValue() : Status::Unknown;
-            }
-        }
-
-        // allowUnknown: only fail for truly unconnected inputs that return Unknown.
-        // !allowUnknown: fail for any Unknown or Error value.
-        const bool shouldFail = allowUnknown ? (val == Status::Unknown && !pred)
-                                             : (val == Status::Unknown || val == Status::Error);
-        if (shouldFail) {
-            for (auto &out : m_simOutputValues) {
-                if (out != Status::Unknown) {
-                    m_simOutputChanged = true;
-                }
-                out = Status::Unknown;
-            }
-            return false;
-        }
-        m_simInputValues[index] = val;
-    }
-    return true;
-}
-
-bool GraphicElement::simUpdateInputs()
-{
-    return simUpdateInputsImpl(false);
-}
-
-bool GraphicElement::simUpdateInputsAllowUnknown()
-{
-    return simUpdateInputsImpl(true);
-}
-
-int GraphicElement::decodeSelectValue(int offset, int count) const
-{
-    int selectValue = 0;
-    for (int i = 0; i < count; i++) {
-        if (m_simInputValues.at(offset + i) == Status::Active) {
-            selectValue |= (1 << i);
-        }
-    }
-    return selectValue;
+    m_sim.initVectors(inputCount, outputCount, m_outputPorts);
 }
 
 int GraphicElement::minOutputSize() const
