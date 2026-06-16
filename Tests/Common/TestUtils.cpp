@@ -3,6 +3,8 @@
 
 #include "Tests/Common/TestUtils.h"
 
+#include <QDir>
+#include <QSettings>
 #include <QTest>
 
 #include "App/Core/Application.h"
@@ -16,6 +18,8 @@ namespace TestUtils {
 
 void setupTestEnvironment()
 {
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
+                       QDir::tempPath() + "/wiredpanda_tests");
 #ifdef Q_OS_LINUX
     qputenv("QT_QPA_PLATFORM", "offscreen");
     // Disable input method plugins — ibus daemon is single-threaded and serializes
