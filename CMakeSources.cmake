@@ -96,6 +96,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
@@ -221,6 +222,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.h

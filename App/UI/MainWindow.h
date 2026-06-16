@@ -24,8 +24,8 @@ class ExportController;
 class ICController;
 class ICPreviewPopup;
 class LanguageManager;
-class QShortcut;
 class RecentFiles;
+class SceneUiBinder;
 class WorkSpace;
 
 /**
@@ -212,8 +212,6 @@ private:
     bool closeTab(const int tabIndex);
     int closeTabAnyway();
     void tabChanged(const int newTabIndex);
-    void addUndoRedoMenu();
-    void removeUndoRedoMenu();
     void disconnectTab();
     void connectTab();
 
@@ -245,7 +243,6 @@ private:
 
     void updateSettings();
     void updateTheme();
-    void zoomChanged();
     void aboutThisVersion();
 
     // --- Action Handlers ---
@@ -298,7 +295,7 @@ private:
     void setupRecentFiles();
     /// Populates the Examples menu from the Examples/ directory.
     void setupExamplesMenu();
-    /// Registers all QShortcut objects (requires m_currentTab to be valid).
+    /// Registers the global search shortcut (scene-property shortcuts live in SceneUiBinder).
     void setupShortcuts();
     /// Connects all QAction and widget signals to their slots.
     void setupConnections();
@@ -312,6 +309,7 @@ private:
     RecentFiles      *m_recentFiles      = nullptr;
     ExportController *m_exportController  = nullptr;
     ICController     *m_icController      = nullptr;
+    SceneUiBinder    *m_binder            = nullptr;
 
     /// Shared IC-hover preview, parented to this MainWindow.
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.
@@ -321,12 +319,4 @@ private:
     int m_tabIndex = -1;
 
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
-
-    // Scene-level shortcuts created once in setupShortcuts(), reconnected on tab switch.
-    QShortcut *m_prevMainPropShortcut  = nullptr;
-    QShortcut *m_nextMainPropShortcut  = nullptr;
-    QShortcut *m_prevSecndPropShortcut = nullptr;
-    QShortcut *m_nextSecndPropShortcut = nullptr;
-    QShortcut *m_changePrevElmShortcut = nullptr;
-    QShortcut *m_changeNextElmShortcut = nullptr;
 };

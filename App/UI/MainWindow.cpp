@@ -53,6 +53,7 @@
 #include "App/UI/ICController.h"
 #include "App/UI/LanguageManager.h"
 #include "App/UI/MainWindowUI.h"
+#include "App/UI/SceneUiBinder.h"
 #include "App/UI/UpdateController.h"
 #include "App/Versions.h"
 
@@ -86,6 +87,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     m_exportController = new ExportController(*this, this);
     m_icController = new ICController(*this, this);
+    m_binder = new SceneUiBinder(m_ui.get(), m_palette, this, this);
 
     setupLanguage();
     setupGeometry();
@@ -243,17 +245,9 @@ void MainWindow::setupExamplesMenu()
 
 void MainWindow::setupShortcuts()
 {
-    // [ / ] cycle a selected element's primary property (e.g. input size).
-    // { / } cycle a secondary property; < / > morph through element variants.
-    // Scene connections are made in connectTab() so they follow the active tab.
+    // The scene-property shortcuts ( [ ] { } < > ) are owned by SceneUiBinder, which
+    // re-targets them to the active tab's scene on each switch.
     auto *searchShortcut = new QShortcut(QKeySequence("Ctrl+F"), this);
-    m_prevMainPropShortcut  = new QShortcut(QKeySequence("["), this);
-    m_nextMainPropShortcut  = new QShortcut(QKeySequence("]"), this);
-    m_prevSecndPropShortcut = new QShortcut(QKeySequence("{"), this);
-    m_nextSecndPropShortcut = new QShortcut(QKeySequence("}"), this);
-    m_changePrevElmShortcut = new QShortcut(QKeySequence("<"), this);
-    m_changeNextElmShortcut = new QShortcut(QKeySequence(">"), this);
-
     connect(searchShortcut, &QShortcut::activated, m_ui->lineEditSearch, qOverload<>(&QWidget::setFocus));
 }
 
@@ -403,44 +397,6 @@ void MainWindow::createNewTab()
     m_ui->tab->setCurrentIndex(m_ui->tab->count() - 1);
 
     qCDebug(zero) << "Finished #tabs: " << m_ui->tab->count() << ", current tab: " << m_tabIndex;
-}
-
-void MainWindow::removeUndoRedoMenu()
-{
-    if (!m_currentTab) {
-        return;
-    }
-
-    // The undo/redo actions are always inserted at positions 0 and 1 of menuEdit.
-    // Any fewer entries means they were never added, so nothing to remove.
-    const auto actions = m_ui->menuEdit->actions();
-    if (actions.size() < 2) {
-        return;
-    }
-    m_ui->menuEdit->removeAction(actions.at(0));
-    m_ui->menuEdit->removeAction(actions.at(1));
-}
-
-void MainWindow::addUndoRedoMenu()
-{
-    if (!m_currentTab) {
-        return;
-    }
-
-    auto *scene = m_currentTab->scene();
-    if (!scene) {
-        return;
-    }
-
-    const auto actions = m_ui->menuEdit->actions();
-    if (actions.size() < 2) {
-        return;
-    }
-
-    // Insert before position 0 then before the new position 1 so undo appears
-    // first, redo second — above the separator that already exists in menuEdit.
-    m_ui->menuEdit->insertAction(actions.at(0), scene->undoAction());
-    m_ui->menuEdit->insertAction(m_ui->menuEdit->actions().at(1), scene->redoAction());
 }
 
 void MainWindow::setFastMode(const bool fastMode)
@@ -1129,71 +1085,29 @@ bool MainWindow::closeTab(const int tabIndex)
 
 void MainWindow::disconnectTab()
 {
-    // Called before switching away from a tab.  Tear down all connections that
-    // route scene signals into shared UI elements, and stop the simulation so it
-    // doesn't keep running in the background consuming CPU.
+    // Called before switching away from a tab. SceneUiBinder tears down the chrome
+    // wiring; the IC-open navigation connection is owned here (it drives tab/file
+    // opening, not chrome).
     if (!m_currentTab) {
         return;
     }
 
-    m_ui->elementEditor->setScene(nullptr);
-
-    qCDebug(zero) << "Stopping simulation.";
-    m_currentTab->simulation()->stop();
-
-    qCDebug(zero) << "Disconnecting zoom and simulation signals from UI.";
-    disconnect(m_currentTab->view(),       &GraphicsView::zoomChanged,        this, &MainWindow::zoomChanged);
-    disconnect(m_currentTab->simulation(), &Simulation::simulationWarning,    this, nullptr);
-
-    qCDebug(zero) << "Disconnecting scene shortcuts from previous tab.";
-    disconnect(m_prevMainPropShortcut,  nullptr, m_currentTab->scene(), nullptr);
-    disconnect(m_nextMainPropShortcut,  nullptr, m_currentTab->scene(), nullptr);
-    disconnect(m_prevSecndPropShortcut, nullptr, m_currentTab->scene(), nullptr);
-    disconnect(m_nextSecndPropShortcut, nullptr, m_currentTab->scene(), nullptr);
-    disconnect(m_changePrevElmShortcut, nullptr, m_currentTab->scene(), nullptr);
-    disconnect(m_changeNextElmShortcut, nullptr, m_currentTab->scene(), nullptr);
     disconnect(m_currentTab->scene(), &Scene::icOpenRequested, this, nullptr);
-    disconnect(m_currentTab->scene(), &Scene::openTruthTableRequested, this, nullptr);
-    disconnect(m_currentTab->scene()->undoStack(), &QUndoStack::indexChanged, this, nullptr);
-
-    qCDebug(zero) << "Removing undo and redo actions from UI menu.";
-    removeUndoRedoMenu();
+    m_binder->unbind();
 }
 
 void MainWindow::connectTab()
 {
-    qCDebug(zero) << "Connecting undo and redo functions to UI menu.";
-    addUndoRedoMenu();
+    m_binder->bind(m_currentTab);
 
+    // Tab-navigation wiring (not chrome): the file-based IC list, IC tool-button
+    // state, and the scene's open-IC-in-tab / open-file requests.
     m_palette->updateICList(icListFile());
-    m_palette->updateEmbeddedICList(m_currentTab->scene());
 
     // Hide management buttons for inline IC tabs (they use currentFile/currentDir which are empty)
     setICButtonsVisible(!m_currentTab->isInlineIC());
     refreshICButtonsEnabled();
 
-    qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
-    m_ui->elementEditor->setScene(m_currentTab->scene());
-
-    connect(m_currentTab->view(),       &GraphicsView::zoomChanged, this,                  &MainWindow::zoomChanged);
-    connect(m_currentTab->simulation(), &Simulation::simulationWarning, this, [this](const QString &msg) {
-        m_ui->statusBar->showMessage(msg, 8000);
-    });
-    connect(m_currentTab->scene()->undoStack(), &QUndoStack::indexChanged, this, [this] {
-        if (m_currentTab) {
-            m_palette->updateEmbeddedICList(m_currentTab->scene());
-        }
-    });
-
-    connect(m_prevMainPropShortcut,  &QShortcut::activated, m_currentTab->scene(), &Scene::prevMainPropShortcut);
-    connect(m_nextMainPropShortcut,  &QShortcut::activated, m_currentTab->scene(), &Scene::nextMainPropShortcut);
-    connect(m_prevSecndPropShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::prevSecndPropShortcut);
-    connect(m_nextSecndPropShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::nextSecndPropShortcut);
-    connect(m_changePrevElmShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::prevElm);
-    connect(m_changeNextElmShortcut, &QShortcut::activated, m_currentTab->scene(), &Scene::nextElm);
-    connect(m_currentTab->scene(), &Scene::openTruthTableRequested, this, [this] {
-        m_ui->elementEditor->truthTable();
-    });
     connect(m_currentTab->scene(), &Scene::icOpenRequested, this, [this](int elementId, const QString &blobName, const QString &filePath) {
         if (!blobName.isEmpty()) {
             if (m_currentTab) {
@@ -1203,25 +1117,6 @@ void MainWindow::connectTab()
             loadPandaFile(filePath);
         }
     });
-
-    if (m_ui->actionPlay->isChecked()) {
-        qCDebug(zero) << "Restarting simulation.";
-        m_currentTab->simulation()->start();
-        // Clear selection so the element editor doesn't show stale data from the
-        // previously active tab.
-        m_currentTab->scene()->clearSelection();
-    }
-
-    m_currentTab->view()->setFastMode(m_ui->actionFastMode->isChecked());
-    // Synchronise zoom button state to the newly visible tab's zoom level.
-    m_ui->actionZoomIn->setEnabled(m_currentTab->view()->canZoomIn());
-    m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
-
-    // Synchronise the mute button state to the newly visible tab's mute intent.
-    const bool muted = m_currentTab->simulation()->isUserMuted();
-    m_ui->actionMute->setChecked(muted);
-    m_ui->actionMute->setText(muted ? tr("Unmute") : tr("Mute"));
-
 }
 
 WorkSpace *MainWindow::currentTab() const
@@ -1340,16 +1235,6 @@ void MainWindow::on_actionResetZoom_triggered() const
 
         m_currentTab->view()->resetZoom();
     });
-}
-
-void MainWindow::zoomChanged()
-{
-    if (!m_currentTab) {
-        return;
-    }
-
-    m_ui->actionZoomIn->setEnabled(m_currentTab->view()->canZoomIn());
-    m_ui->actionZoomOut->setEnabled(m_currentTab->view()->canZoomOut());
 }
 
 void MainWindow::updateRecentFileActions()
