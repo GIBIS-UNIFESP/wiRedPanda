@@ -828,6 +828,29 @@
     </message>
 </context>
 <context>
+    <name>ElementAppearance</name>
+    <message>
+        <location filename="../../Element/ElementAppearance.cpp" line="249"/>
+        <source>File does not exist</source>
+        <translation type="unfinished">Soubor neexistuje</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
+        <source>File is not readable</source>
+        <translation type="unfinished">Soubor není čitelny</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ElementAppearance.cpp" line="252"/>
+        <source>Unknown reason</source>
+        <translation type="unfinished">Neznámý důvod</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ElementAppearance.cpp" line="258"/>
+        <source>Couldn&apos;t load pixmap: %1 (%2)</source>
+        <translation type="unfinished">Nelze načíst pixmapu: %1 (%2)</translation>
+    </message>
+</context>
+<context>
     <name>ElementEditor</name>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="251"/>
@@ -1117,6 +1140,78 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
     </message>
 </context>
 <context>
+    <name>ExportController</name>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="38"/>
+        <location filename="../../UI/ExportController.cpp" line="70"/>
+        <location filename="../../UI/ExportController.cpp" line="95"/>
+        <source>Missing file name.</source>
+        <translation type="unfinished">Chybí název souboru.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="44"/>
+        <location filename="../../UI/ExportController.cpp" line="76"/>
+        <source>The .panda file is empty.</source>
+        <translation type="unfinished">Soubor .panda je prázdný.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="57"/>
+        <source>Arduino code successfully generated.</source>
+        <translation type="unfinished">Arduino kód úspěšně vygenerován.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="87"/>
+        <source>SystemVerilog code successfully generated.</source>
+        <translation type="unfinished">Kód SystemVerilog byl úspěšně vygenerován.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="126"/>
+        <source>Generate Arduino Code</source>
+        <translation type="unfinished">Generovat Arduino kód</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="126"/>
+        <source>Arduino file (*.ino)</source>
+        <translation type="unfinished">Arduino soubor (*.ino)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="148"/>
+        <source>Generate SystemVerilog Code</source>
+        <translation type="unfinished">Generovat kód SystemVerilog</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="148"/>
+        <source>SystemVerilog file (*.sv)</source>
+        <translation type="unfinished">Soubor SystemVerilog (*.sv)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="169"/>
+        <source>Export to PDF</source>
+        <translation type="unfinished">Exportovat do PDF</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="169"/>
+        <source>PDF files (*.pdf)</source>
+        <translation type="unfinished">PDF soubory (*.pdf)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="180"/>
+        <location filename="../../UI/ExportController.cpp" line="209"/>
+        <source>Exported file successfully.</source>
+        <translation type="unfinished">Soubor byl úspěšně exportován.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="198"/>
+        <source>Export to Image</source>
+        <translation type="unfinished">Exportovat do obrázku</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="198"/>
+        <source>PNG files (*.png)</source>
+        <translation type="unfinished">PNG soubory (*.png)</translation>
+    </message>
+</context>
+<context>
     <name>FlipCommand</name>
     <message>
         <location filename="../../Scene/Commands.cpp" line="823"/>
@@ -1127,27 +1222,7 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="322"/>
-        <source>File does not exist</source>
-        <translation>Soubor neexistuje</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElement.cpp" line="324"/>
-        <source>File is not readable</source>
-        <translation>Soubor není čitelny</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElement.cpp" line="325"/>
-        <source>Unknown reason</source>
-        <translation>Neznámý důvod</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElement.cpp" line="331"/>
-        <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>Nelze načíst pixmapu: %1 (%2)</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElement.cpp" line="659"/>
+        <location filename="../../Element/GraphicElement.cpp" line="348"/>
         <source>Default</source>
         <translation>Výchozí</translation>
     </message>
@@ -1167,12 +1242,12 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>Index vzhledu %1 mimo rozsah (velikost=%2) — proud může být poškozen</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="529"/>
         <source>Loading pixmap appearance names.</source>
         <translation>Načítání názvů vzhledů pixmap.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="562"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Index skinu %1 mimo rozsah (velikost=%2) pro název skinu &quot;%3&quot; — proud může být poškozen</translation>
     </message>
@@ -1223,6 +1298,135 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <location filename="../../Element/IC.cpp" line="519"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Překročen limit hloubky zanoření IC (%1) — blob může být škodlivě sestaven</translation>
+    </message>
+</context>
+<context>
+    <name>ICController</name>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="66"/>
+        <source>Save file first.</source>
+        <translation type="unfinished">Nejprve uložte soubor.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="69"/>
+        <source>Open File</source>
+        <translation type="unfinished">Otevřít soubor</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="69"/>
+        <source>Panda (*.panda)</source>
+        <translation type="unfinished">Panda (*.panda)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="77"/>
+        <location filename="../../UI/ICController.cpp" line="94"/>
+        <source>Info</source>
+        <translation type="unfinished">Informace</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="77"/>
+        <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
+        <translation type="unfinished">Vybrané soubory (a jejich závislosti) budou zkopírovány do aktuální složky projektu.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="94"/>
+        <source>Drag here to remove.</source>
+        <translation type="unfinished">Přetáhněte sem k odstranění.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="120"/>
+        <source>Error removing file: %1</source>
+        <translation type="unfinished">Chyba při odstraňování souboru: %1</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="137"/>
+        <source>Name Collision</source>
+        <translation type="unfinished">Kolize názvů</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="138"/>
+        <source>An embedded IC named &quot;%1&quot; already exists.
+Suggested name:</source>
+        <translation type="unfinished">Vložený IC s názvem &quot;%1&quot; již existuje.
+Navrhovaný název:</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="164"/>
+        <location filename="../../UI/ICController.cpp" line="175"/>
+        <location filename="../../UI/ICController.cpp" line="198"/>
+        <location filename="../../UI/ICController.cpp" line="229"/>
+        <location filename="../../UI/ICController.cpp" line="236"/>
+        <location filename="../../UI/ICController.cpp" line="267"/>
+        <location filename="../../UI/ICController.cpp" line="305"/>
+        <location filename="../../UI/ICController.cpp" line="333"/>
+        <location filename="../../UI/ICController.cpp" line="364"/>
+        <source>Error</source>
+        <translation type="unfinished">Chyba</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="164"/>
+        <location filename="../../UI/ICController.cpp" line="229"/>
+        <source>Please save the project first so ICs can be resolved.</source>
+        <translation type="unfinished">Nejprve prosím uložte projekt, aby bylo možné najít IC.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="175"/>
+        <location filename="../../UI/ICController.cpp" line="236"/>
+        <location filename="../../UI/ICController.cpp" line="333"/>
+        <source>Could not read IC file: %1</source>
+        <translation type="unfinished">Soubor IC nelze přečíst: %1</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="183"/>
+        <location filename="../../UI/ICController.cpp" line="254"/>
+        <source>IC embedded successfully.</source>
+        <translation type="unfinished">IC byl úspěšně vložen.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="198"/>
+        <location filename="../../UI/ICController.cpp" line="267"/>
+        <location filename="../../UI/ICController.cpp" line="305"/>
+        <source>Please save the project first.</source>
+        <translation type="unfinished">Nejprve prosím uložte projekt.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="203"/>
+        <location filename="../../UI/ICController.cpp" line="278"/>
+        <source>Extract IC to file...</source>
+        <translation type="unfinished">Extrahovat IC do souboru...</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="203"/>
+        <location filename="../../UI/ICController.cpp" line="278"/>
+        <location filename="../../UI/ICController.cpp" line="357"/>
+        <source>Panda files (*.panda)</source>
+        <translation type="unfinished">Panda soubory (*.panda)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="216"/>
+        <location filename="../../UI/ICController.cpp" line="291"/>
+        <source>IC extracted to %1</source>
+        <translation type="unfinished">IC extrahován do %1</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="322"/>
+        <source>No file-based ICs to embed.</source>
+        <translation type="unfinished">Žádné IC založené na souborech k vložení.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="348"/>
+        <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
+        <translation type="unfinished">Vloženo %1 IC. Obvod je nyní soběstačný.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="357"/>
+        <source>Select IC file to embed</source>
+        <translation type="unfinished">Vyberte soubor IC k vložení</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="364"/>
+        <source>Could not read file: %1</source>
+        <translation type="unfinished">Soubor nelze přečíst: %1</translation>
     </message>
 </context>
 <context>
@@ -1341,37 +1545,37 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="242"/>
         <source>Off</source>
         <translation>Vyp.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="244"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
         <source>On</source>
         <translation>Zap.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="247"/>
         <source>00 (off)</source>
         <translation>00 (vyp.)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
         <source>01</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>10</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="251"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
         <source>11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="267"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="266"/>
         <source>Default</source>
         <translation>Výchozí</translation>
     </message>
@@ -1882,8 +2086,7 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1925"/>
+        <location filename="../../UI/MainWindow.cpp" line="1001"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Ztlumit</translation>
@@ -1919,7 +2122,7 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>Simulace na pozadí</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="963"/>
+        <location filename="../../UI/MainWindow.cpp" line="477"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Klávesové zkratky a tipy</translation>
@@ -1935,88 +2138,12 @@ Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
         <translation>Nahlašte chyby překladu nebo pomozte vylepšit překlady na Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="406"/>
-        <source>Error!</source>
-        <translation>Chyba!</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="434"/>
-        <location filename="../../UI/MainWindow.cpp" line="673"/>
-        <location filename="../../UI/MainWindow.cpp" line="1176"/>
-        <location filename="../../UI/MainWindow.cpp" line="1717"/>
+        <location filename="../../UI/MainWindow.cpp" line="801"/>
         <source>New Project</source>
         <translation>Nový projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="505"/>
-        <source>File saved successfully.</source>
-        <translation>Soubor byl úspěšně uložen.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="654"/>
-        <source>File not saved. Close tab anyway?</source>
-        <translation>Soubor není uložen. Přesto zavřít kartu?</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="675"/>
-        <source> has been modified.
-Do you want to save your changes?</source>
-        <translation> byl upraven.
-Chcete uložit své změny?</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="747"/>
-        <source>File loaded successfully.</source>
-        <translation>Soubor byl úspěšně načten.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="1978"/>
-        <source>Open File</source>
-        <translation>Otevřít soubor</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
-        <location filename="../../UI/MainWindow.cpp" line="2111"/>
-        <location filename="../../UI/MainWindow.cpp" line="2182"/>
-        <source>Panda files (*.panda)</source>
-        <translation>Panda soubory (*.panda)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <source>Select IC file to embed</source>
-        <translation>Vyberte soubor IC k vložení</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <source>Could not read file: %1</source>
-        <translation>Soubor nelze přečíst: %1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="525"/>
-        <source>Update Available</source>
-        <translation>Aktualizace k dispozici</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="536"/>
-        <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation>&lt;b&gt;wiRedPanda %1 je k dispozici.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Aktuálně používáte verzi %2.&lt;br&gt;Navštivte stránku vydání a stáhněte novou verzi.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="545"/>
-        <source>Don&apos;t notify me about this version again</source>
-        <translation>O této verzi mě znovu neupozorňovat</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="549"/>
-        <source>Download</source>
-        <translation>Stáhnout</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="633"/>
+        <location filename="../../UI/MainWindow.cpp" line="396"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2035,280 +2162,29 @@ wiRedPanda %1 automaticky zobrazí všechny ostatní soubory .panda ve stejné s
 Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěním simulací beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
-        <source>Save File as ...</source>
-        <translation>Uložit soubor jako ...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="942"/>
+        <location filename="../../UI/MainWindow.cpp" line="456"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda je software vyvinutý studenty Federální univerzity v São Paulu, aby pomohl studentům učit se o logických obvodech.&lt;/p&gt;&lt;p&gt;Verze softwaru: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tvůrci:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda je momentálně spravován Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves a Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Pokud najdete chybu nebo chcete požádat o novou funkci, nahlaste to prosím na naší stránce GitHub.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Navštivte naše stránky!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1026"/>
+        <location filename="../../UI/MainWindow.cpp" line="529"/>
         <source>Are you sure?</source>
         <translation>Jste si jisti?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <location filename="../../UI/MainWindow.cpp" line="1244"/>
-        <location filename="../../UI/MainWindow.cpp" line="2072"/>
-        <location filename="../../UI/MainWindow.cpp" line="2083"/>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2134"/>
-        <location filename="../../UI/MainWindow.cpp" line="2141"/>
-        <location filename="../../UI/MainWindow.cpp" line="2171"/>
-        <location filename="../../UI/MainWindow.cpp" line="2206"/>
-        <location filename="../../UI/MainWindow.cpp" line="2234"/>
-        <source>Error</source>
-        <translation>Chyba</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="533"/>
-        <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation>&lt;b&gt;wiRedPanda %1 je k dispozici.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Aktuálně používáte verzi %2.&lt;br&gt;Klikněte na &lt;b&gt;Stáhnout&lt;/b&gt; pro uložení nové verze.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
-        <source>Downloading wiRedPanda %1…</source>
-        <translation>Stahování wiRedPanda %1…</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
-        <source>Cancel</source>
-        <translation>Zrušit</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="579"/>
-        <source>Downloading Update</source>
-        <translation>Stahování aktualizace</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
-        <source>Download Failed</source>
-        <translation>Stahování selhalo</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
-        <source>Could not download the update:
-%1</source>
-        <translation>Nepodařilo se stáhnout aktualizaci:
-%1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
-        <source>Could not save the file:
-%1</source>
-        <translation>Nepodařilo se uložit soubor:
-%1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="620"/>
-        <source>Download Complete</source>
-        <translation>Stahování dokončeno</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="621"/>
-        <source>wiRedPanda has been downloaded to:
-%1</source>
-        <translation>wiRedPanda bylo staženo do:
-%1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="853"/>
-        <location filename="../../UI/MainWindow.cpp" line="906"/>
-        <source>File Conflict</source>
-        <translation>Konflikt souboru</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="854"/>
-        <location filename="../../UI/MainWindow.cpp" line="907"/>
-        <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation>Soubor „%1“ je již otevřen v jiné kartě.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="857"/>
-        <location filename="../../UI/MainWindow.cpp" line="910"/>
-        <source>Switch to Tab</source>
-        <translation>Přepnout na kartu</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
-        <source>Missing file name.</source>
-        <translation>Chybí název souboru.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
-        <source>The .panda file is empty.</source>
-        <translation>Soubor .panda je prázdný.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1450"/>
-        <source>Arduino code successfully generated.</source>
-        <translation>Arduino kód úspěšně vygenerován.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1477"/>
-        <source>SystemVerilog code successfully generated.</source>
-        <translation>Kód SystemVerilog byl úspěšně vygenerován.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1516"/>
-        <source>Generate Arduino Code</source>
-        <translation>Generovat Arduino kód</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1516"/>
-        <source>Arduino file (*.ino)</source>
-        <translation>Arduino soubor (*.ino)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1538"/>
-        <source>Generate SystemVerilog Code</source>
-        <translation>Generovat kód SystemVerilog</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1538"/>
-        <source>SystemVerilog file (*.sv)</source>
-        <translation>Soubor SystemVerilog (*.sv)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1649"/>
-        <source>Export to PDF</source>
-        <translation>Exportovat do PDF</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1649"/>
-        <source>PDF files (*.pdf)</source>
-        <translation>PDF soubory (*.pdf)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1986"/>
-        <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation>Vybrané soubory (a jejich závislosti) budou zkopírovány do aktuální složky projektu.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2045"/>
-        <source>Name Collision</source>
-        <translation>Kolize názvů</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2046"/>
-        <source>An embedded IC named &quot;%1&quot; already exists.
-Suggested name:</source>
-        <translation>Vložený IC s názvem &quot;%1&quot; již existuje.
-Navrhovaný název:</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2072"/>
-        <location filename="../../UI/MainWindow.cpp" line="2134"/>
-        <source>Please save the project first so ICs can be resolved.</source>
-        <translation>Nejprve prosím uložte projekt, aby bylo možné najít IC.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2083"/>
-        <location filename="../../UI/MainWindow.cpp" line="2141"/>
-        <location filename="../../UI/MainWindow.cpp" line="2234"/>
-        <source>Could not read IC file: %1</source>
-        <translation>Soubor IC nelze přečíst: %1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2091"/>
-        <location filename="../../UI/MainWindow.cpp" line="2159"/>
-        <source>IC embedded successfully.</source>
-        <translation>IC byl úspěšně vložen.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2111"/>
-        <location filename="../../UI/MainWindow.cpp" line="2182"/>
-        <source>Extract IC to file...</source>
-        <translation>Extrahovat IC do souboru...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2122"/>
-        <location filename="../../UI/MainWindow.cpp" line="2193"/>
-        <source>IC extracted to %1</source>
-        <translation>IC extrahován do %1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2171"/>
-        <location filename="../../UI/MainWindow.cpp" line="2206"/>
-        <source>Please save the project first.</source>
-        <translation>Nejprve prosím uložte projekt.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2223"/>
-        <source>No file-based ICs to embed.</source>
-        <translation>Žádné IC založené na souborech k vložení.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2249"/>
-        <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation>Vloženo %1 IC. Obvod je nyní soběstačný.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1660"/>
-        <location filename="../../UI/MainWindow.cpp" line="1688"/>
-        <source>Exported file successfully.</source>
-        <translation>Soubor byl úspěšně exportován.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="964"/>
+        <location filename="../../UI/MainWindow.cpp" line="478"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Klávesové zkratky plátna&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Přiblížit &lt;/li&gt;&lt;li&gt; Ctrl+- : Oddálit &lt;/li&gt;&lt;li&gt; Ctrl+1 : Skrýt/Zobrazit vodiče &lt;/li&gt;&lt;li&gt; Ctrl+2 : Skrýt/Zobrazit hradla &lt;/li&gt;&lt;li&gt; Ctrl+F : Hledat prvky &lt;/li&gt;&lt;li&gt; Ctrl+W : Otevřít beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Uložit projekt &lt;/li&gt;&lt;li&gt; Ctrl+Q : Ukončit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Spustit/Pozastavit simulaci &lt;/li&gt;&lt;li&gt; [ : Předchozí primární vlastnost prvku &lt;/li&gt;&lt;li&gt; ] : Další primární vlastnost prvku &lt;/li&gt;&lt;li&gt; { : Předchozí sekundární vlastnost prvku &lt;/li&gt;&lt;li&gt; } : Další sekundární vlastnost prvku &lt;/li&gt;&lt;li&gt; &amp;lt; : Přeměnit na předchozí prvek &lt;/li&gt;&lt;li&gt; &amp;gt; : Přeměnit na další prvek &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Obecné tipy&lt;/h1&gt;&lt;p&gt;Dvojklikem na vodič vytvoříte uzel&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1025"/>
+        <location filename="../../UI/MainWindow.cpp" line="528"/>
         <source>Exit</source>
         <translation>Ukončit</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1677"/>
-        <source>Export to Image</source>
-        <translation>Exportovat do obrázku</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1677"/>
-        <source>PNG files (*.png)</source>
-        <translation>PNG soubory (*.png)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1925"/>
+        <location filename="../../UI/MainWindow.cpp" line="1001"/>
         <source>Unmute</source>
         <translation>Zapnout zvuk</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1975"/>
-        <source>Save file first.</source>
-        <translation>Nejprve uložte soubor.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1978"/>
-        <source>Panda (*.panda)</source>
-        <translation>Panda (*.panda)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1986"/>
-        <location filename="../../UI/MainWindow.cpp" line="2003"/>
-        <source>Info</source>
-        <translation>Informace</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2003"/>
-        <source>Drag here to remove.</source>
-        <translation>Přetáhněte sem k odstranění.</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2028"/>
-        <source>Error removing file: %1</source>
-        <translation>Chyba při odstraňování souboru: %1</translation>
     </message>
 </context>
 <context>
@@ -2565,21 +2441,34 @@ Navrhovaný název:</translation>
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="564"/>
+        <location filename="../../Scene/Scene.cpp" line="59"/>
+        <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Undo</source>
         <translation>&amp;Zpět</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="570"/>
+        <location filename="../../Scene/Scene.cpp" line="67"/>
+        <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Redo</source>
         <translation>&amp;Opakovat</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="590"/>
+        <location filename="../../Scene/Scene.cpp" line="561"/>
         <source>Paste</source>
         <translation>Vložit</translation>
+    </message>
+</context>
+<context>
+    <name>SceneUiBinder</name>
+    <message>
+        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <source>Unmute</source>
+        <translation type="unfinished">Zapnout zvuk</translation>
+    </message>
+    <message>
+        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <source>Mute</source>
+        <translation type="unfinished">Ztlumit</translation>
     </message>
 </context>
 <context>
@@ -2787,6 +2676,81 @@ Navrhovaný název:</translation>
     </message>
 </context>
 <context>
+    <name>UpdateController</name>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="48"/>
+        <source>Update Available</source>
+        <translation type="unfinished">Aktualizace k dispozici</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="56"/>
+        <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
+        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 je k dispozici.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Aktuálně používáte verzi %2.&lt;br&gt;Klikněte na &lt;b&gt;Stáhnout&lt;/b&gt; pro uložení nové verze.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="59"/>
+        <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
+        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 je k dispozici.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Aktuálně používáte verzi %2.&lt;br&gt;Navštivte stránku vydání a stáhněte novou verzi.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="68"/>
+        <source>Don&apos;t notify me about this version again</source>
+        <translation type="unfinished">O této verzi mě znovu neupozorňovat</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="72"/>
+        <source>Download</source>
+        <translation type="unfinished">Stáhnout</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <source>Downloading wiRedPanda %1…</source>
+        <translation type="unfinished">Stahování wiRedPanda %1…</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Zrušit</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="102"/>
+        <source>Downloading Update</source>
+        <translation type="unfinished">Stahování aktualizace</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="126"/>
+        <location filename="../../UI/UpdateController.cpp" line="134"/>
+        <source>Download Failed</source>
+        <translation type="unfinished">Stahování selhalo</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="126"/>
+        <source>Could not download the update:
+%1</source>
+        <translation type="unfinished">Nepodařilo se stáhnout aktualizaci:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="134"/>
+        <source>Could not save the file:
+%1</source>
+        <translation type="unfinished">Nepodařilo se uložit soubor:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="143"/>
+        <source>Download Complete</source>
+        <translation type="unfinished">Stahování dokončeno</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="144"/>
+        <source>wiRedPanda has been downloaded to:
+%1</source>
+        <translation type="unfinished">wiRedPanda bylo staženo do:
+%1</translation>
+    </message>
+</context>
+<context>
     <name>WorkSpace</name>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="141"/>
@@ -2886,6 +2850,84 @@ Záloha původního souboru byla vytvořena s názvem: %3</translation>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Odebrat vložený IC „%1“</translation>
+    </message>
+</context>
+<context>
+    <name>WorkspaceManager</name>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
+        <source>New Project</source>
+        <translation type="unfinished">Nový projekt</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <source>File saved successfully.</source>
+        <translation type="unfinished">Soubor byl úspěšně uložen.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
+        <source>File not saved. Close tab anyway?</source>
+        <translation type="unfinished">Soubor není uložen. Přesto zavřít kartu?</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
+        <source> has been modified.
+Do you want to save your changes?</source>
+        <translation type="unfinished"> byl upraven.
+Chcete uložit své změny?</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
+        <source>File loaded successfully.</source>
+        <translation type="unfinished">Soubor byl úspěšně načten.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
+        <source>Open File</source>
+        <translation type="unfinished">Otevřít soubor</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <source>Panda files (*.panda)</source>
+        <translation type="unfinished">Panda soubory (*.panda)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <source>Save File as ...</source>
+        <translation type="unfinished">Uložit soubor jako ...</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
+        <source>File Conflict</source>
+        <translation type="unfinished">Konflikt souboru</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
+        <source>The file &quot;%1&quot; is already open in another tab.</source>
+        <translation type="unfinished">Soubor „%1“ je již otevřen v jiné kartě.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
+        <source>Switch to Tab</source>
+        <translation type="unfinished">Přepnout na kartu</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
+        <source>Error!</source>
+        <translation type="unfinished">Chyba!</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
+        <source>Error</source>
+        <translation type="unfinished">Chyba</translation>
     </message>
 </context>
 <context>

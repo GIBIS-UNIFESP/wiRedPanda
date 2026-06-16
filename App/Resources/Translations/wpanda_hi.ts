@@ -828,6 +828,29 @@
     </message>
 </context>
 <context>
+    <name>ElementAppearance</name>
+    <message>
+        <location filename="../../Element/ElementAppearance.cpp" line="249"/>
+        <source>File does not exist</source>
+        <translation type="unfinished">फाइल मौजूद नहीं है</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
+        <source>File is not readable</source>
+        <translation type="unfinished">फाइल पढ़ने योग्य नहीं है</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ElementAppearance.cpp" line="252"/>
+        <source>Unknown reason</source>
+        <translation type="unfinished">अज्ञात कारण</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ElementAppearance.cpp" line="258"/>
+        <source>Couldn&apos;t load pixmap: %1 (%2)</source>
+        <translation type="unfinished">पिक्समैप लोड नहीं हो सका: %1 (%2)</translation>
+    </message>
+</context>
+<context>
     <name>ElementEditor</name>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="251"/>
@@ -1117,6 +1140,78 @@ Each wireless channel must have a unique label.</source>
     </message>
 </context>
 <context>
+    <name>ExportController</name>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="38"/>
+        <location filename="../../UI/ExportController.cpp" line="70"/>
+        <location filename="../../UI/ExportController.cpp" line="95"/>
+        <source>Missing file name.</source>
+        <translation type="unfinished">फ़ाइल नाम गुम।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="44"/>
+        <location filename="../../UI/ExportController.cpp" line="76"/>
+        <source>The .panda file is empty.</source>
+        <translation type="unfinished">.panda फ़ाइल खाली है।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="57"/>
+        <source>Arduino code successfully generated.</source>
+        <translation type="unfinished">Arduino कोड सफलतापूर्वक तैयार किया गया।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="87"/>
+        <source>SystemVerilog code successfully generated.</source>
+        <translation type="unfinished">SystemVerilog कोड सफलतापूर्वक उत्पन्न किया गया।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="126"/>
+        <source>Generate Arduino Code</source>
+        <translation type="unfinished">Arduino कोड तैयार करें</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="126"/>
+        <source>Arduino file (*.ino)</source>
+        <translation type="unfinished">Arduino फाइल (*.ino)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="148"/>
+        <source>Generate SystemVerilog Code</source>
+        <translation type="unfinished">SystemVerilog कोड उत्पन्न करें</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="148"/>
+        <source>SystemVerilog file (*.sv)</source>
+        <translation type="unfinished">SystemVerilog फ़ाइल (*.sv)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="169"/>
+        <source>Export to PDF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="169"/>
+        <source>PDF files (*.pdf)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="180"/>
+        <location filename="../../UI/ExportController.cpp" line="209"/>
+        <source>Exported file successfully.</source>
+        <translation type="unfinished">फाइल सफलतापूर्वक निर्यात की गई।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="198"/>
+        <source>Export to Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="198"/>
+        <source>PNG files (*.png)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FlipCommand</name>
     <message>
         <location filename="../../Scene/Commands.cpp" line="823"/>
@@ -1127,27 +1222,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="322"/>
-        <source>File does not exist</source>
-        <translation>फाइल मौजूद नहीं है</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElement.cpp" line="324"/>
-        <source>File is not readable</source>
-        <translation>फाइल पढ़ने योग्य नहीं है</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElement.cpp" line="325"/>
-        <source>Unknown reason</source>
-        <translation>अज्ञात कारण</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElement.cpp" line="331"/>
-        <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation>पिक्समैप लोड नहीं हो सका: %1 (%2)</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElement.cpp" line="659"/>
+        <location filename="../../Element/GraphicElement.cpp" line="348"/>
         <source>Default</source>
         <translation>डिफ़ॉल्ट</translation>
     </message>
@@ -1167,12 +1242,12 @@ Each wireless channel must have a unique label.</source>
         <translation>दिखावट सूचकांक %1 सीमा से बाहर (आकार=%2) — स्ट्रीम दूषित हो सकती है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="529"/>
         <source>Loading pixmap appearance names.</source>
         <translation>पिक्समैप स्किन नाम लोड हो रहे हैं।</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="568"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="562"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>स्किन इंडेक्स %1 सीमा से बाहर (आकार=%2) स्किन नाम &quot;%3&quot; के लिए — स्ट्रीम दूषित हो सकती है</translation>
     </message>
@@ -1223,6 +1298,135 @@ Each wireless channel must have a unique label.</source>
         <location filename="../../Element/IC.cpp" line="519"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>IC नेस्टिंग गहराई सीमा (%1) पार हो गई — blob दुर्भावनापूर्वक तैयार किया गया हो सकता है</translation>
+    </message>
+</context>
+<context>
+    <name>ICController</name>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="66"/>
+        <source>Save file first.</source>
+        <translation type="unfinished">पहले फ़ाइल सेव करें।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="69"/>
+        <source>Open File</source>
+        <translation type="unfinished">फ़ाइल खोलें</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="69"/>
+        <source>Panda (*.panda)</source>
+        <translation type="unfinished">पांडा (*.panda)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="77"/>
+        <location filename="../../UI/ICController.cpp" line="94"/>
+        <source>Info</source>
+        <translation type="unfinished">जानकारी</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="77"/>
+        <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
+        <translation type="unfinished">चयनित फ़ाइलें (और उनकी निर्भरताएँ) वर्तमान प्रोजेक्ट फ़ोल्डर में कॉपी की जाएँगी।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="94"/>
+        <source>Drag here to remove.</source>
+        <translation type="unfinished">हटाने के लिए यहाँ खींचें।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="120"/>
+        <source>Error removing file: %1</source>
+        <translation type="unfinished">फ़ाइल हटाने में त्रुटि: %1</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="137"/>
+        <source>Name Collision</source>
+        <translation type="unfinished">नाम टकराव</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="138"/>
+        <source>An embedded IC named &quot;%1&quot; already exists.
+Suggested name:</source>
+        <translation type="unfinished">&quot;%1&quot; नामक एक एम्बेडेड IC पहले से मौजूद है।
+सुझाया गया नाम:</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="164"/>
+        <location filename="../../UI/ICController.cpp" line="175"/>
+        <location filename="../../UI/ICController.cpp" line="198"/>
+        <location filename="../../UI/ICController.cpp" line="229"/>
+        <location filename="../../UI/ICController.cpp" line="236"/>
+        <location filename="../../UI/ICController.cpp" line="267"/>
+        <location filename="../../UI/ICController.cpp" line="305"/>
+        <location filename="../../UI/ICController.cpp" line="333"/>
+        <location filename="../../UI/ICController.cpp" line="364"/>
+        <source>Error</source>
+        <translation type="unfinished">त्रुटि</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="164"/>
+        <location filename="../../UI/ICController.cpp" line="229"/>
+        <source>Please save the project first so ICs can be resolved.</source>
+        <translation type="unfinished">कृपया पहले प्रोजेक्ट को सहेजें ताकि IC हल किए जा सकें।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="175"/>
+        <location filename="../../UI/ICController.cpp" line="236"/>
+        <location filename="../../UI/ICController.cpp" line="333"/>
+        <source>Could not read IC file: %1</source>
+        <translation type="unfinished">IC फ़ाइल नहीं पढ़ी जा सकी: %1</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="183"/>
+        <location filename="../../UI/ICController.cpp" line="254"/>
+        <source>IC embedded successfully.</source>
+        <translation type="unfinished">IC सफलतापूर्वक एम्बेड किया गया।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="198"/>
+        <location filename="../../UI/ICController.cpp" line="267"/>
+        <location filename="../../UI/ICController.cpp" line="305"/>
+        <source>Please save the project first.</source>
+        <translation type="unfinished">कृपया पहले प्रोजेक्ट को सहेजें।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="203"/>
+        <location filename="../../UI/ICController.cpp" line="278"/>
+        <source>Extract IC to file...</source>
+        <translation type="unfinished">IC को फ़ाइल में निकालें...</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="203"/>
+        <location filename="../../UI/ICController.cpp" line="278"/>
+        <location filename="../../UI/ICController.cpp" line="357"/>
+        <source>Panda files (*.panda)</source>
+        <translation type="unfinished">पांडा फाइलें (*.panda)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="216"/>
+        <location filename="../../UI/ICController.cpp" line="291"/>
+        <source>IC extracted to %1</source>
+        <translation type="unfinished">IC %1 में निकाला गया</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="322"/>
+        <source>No file-based ICs to embed.</source>
+        <translation type="unfinished">एम्बेड करने के लिए कोई फ़ाइल-आधारित IC नहीं है।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="348"/>
+        <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
+        <translation type="unfinished">%1 IC एम्बेड किए गए। सर्किट अब स्वयं-निहित है।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="357"/>
+        <source>Select IC file to embed</source>
+        <translation type="unfinished">एम्बेड करने के लिए IC फ़ाइल चुनें</translation>
+    </message>
+    <message>
+        <location filename="../../UI/ICController.cpp" line="364"/>
+        <source>Could not read file: %1</source>
+        <translation type="unfinished">फ़ाइल नहीं पढ़ी जा सकी: %1</translation>
     </message>
 </context>
 <context>
@@ -1341,37 +1545,37 @@ Each wireless channel must have a unique label.</source>
         <translation>एलईडी</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="242"/>
         <source>Off</source>
         <translation>बंद</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="244"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="243"/>
         <source>On</source>
         <translation>चालू</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="247"/>
         <source>00 (off)</source>
         <translation>00 (बंद)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
         <source>01</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>10</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="251"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
         <source>11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="267"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="266"/>
         <source>Default</source>
         <translation>डिफ़ॉल्ट</translation>
     </message>
@@ -1897,8 +2101,7 @@ Each wireless channel must have a unique label.</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1925"/>
+        <location filename="../../UI/MainWindow.cpp" line="1001"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>मूक</translation>
@@ -1929,146 +2132,18 @@ Each wireless channel must have a unique label.</source>
         <translation>सिमुलेशन पुनरारंभ करें।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="963"/>
+        <location filename="../../UI/MainWindow.cpp" line="477"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>शॉर्टकट और टिप्स</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="406"/>
-        <source>Error!</source>
-        <translation>त्रुटि!</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="434"/>
-        <location filename="../../UI/MainWindow.cpp" line="673"/>
-        <location filename="../../UI/MainWindow.cpp" line="1176"/>
-        <location filename="../../UI/MainWindow.cpp" line="1717"/>
+        <location filename="../../UI/MainWindow.cpp" line="801"/>
         <source>New Project</source>
         <translation>नया प्रोजेक्ट</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="505"/>
-        <source>File saved successfully.</source>
-        <translation>फ़ाइल सफलतापूर्वक सेव हुई।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="654"/>
-        <source>File not saved. Close tab anyway?</source>
-        <translation>फ़ाइल सेव नहीं हुई। फिर भी टैब बंद करें?</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="675"/>
-        <source> has been modified.
-Do you want to save your changes?</source>
-        <translation> में बदलाव किया गया है।
-क्या आप अपने बदलाव सेव करना चाहते हैं?</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="747"/>
-        <source>File loaded successfully.</source>
-        <translation>फ़ाइल सफलतापूर्वक लोड हुई।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="1978"/>
-        <source>Open File</source>
-        <translation>फ़ाइल खोलें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <location filename="../../UI/MainWindow.cpp" line="807"/>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
-        <location filename="../../UI/MainWindow.cpp" line="2111"/>
-        <location filename="../../UI/MainWindow.cpp" line="2182"/>
-        <source>Panda files (*.panda)</source>
-        <translation>पांडा फाइलें (*.panda)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="338"/>
-        <source>Select IC file to embed</source>
-        <translation>एम्बेड करने के लिए IC फ़ाइल चुनें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <source>Could not read file: %1</source>
-        <translation>फ़ाइल नहीं पढ़ी जा सकी: %1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="525"/>
-        <source>Update Available</source>
-        <translation>अपडेट उपलब्ध</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="533"/>
-        <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation>&lt;b&gt;wiRedPanda %1 उपलब्ध है।&lt;/b&gt;&lt;br&gt;&lt;br&gt;आप वर्तमान में संस्करण %2 चला रहे हैं।&lt;br&gt;नया संस्करण सहेजने के लिए &lt;b&gt;डाउनलोड&lt;/b&gt; पर क्लिक करें।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="536"/>
-        <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation>&lt;b&gt;wiRedPanda %1 उपलब्ध है।&lt;/b&gt;&lt;br&gt;&lt;br&gt;आप वर्तमान में संस्करण %2 चला रहे हैं।&lt;br&gt;नया संस्करण डाउनलोड करने के लिए रिलीज़ पेज पर जाएं।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="545"/>
-        <source>Don&apos;t notify me about this version again</source>
-        <translation>इस संस्करण के बारे में दोबारा सूचित न करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="549"/>
-        <source>Download</source>
-        <translation>डाउनलोड</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
-        <source>Downloading wiRedPanda %1…</source>
-        <translation>wiRedPanda %1 डाउनलोड हो रहा है…</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="578"/>
-        <source>Cancel</source>
-        <translation>रद्द करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="579"/>
-        <source>Downloading Update</source>
-        <translation>अपडेट डाउनलोड हो रहा है</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
-        <source>Download Failed</source>
-        <translation>डाउनलोड विफल</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="603"/>
-        <source>Could not download the update:
-%1</source>
-        <translation>अपडेट डाउनलोड नहीं हो सका:
-%1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
-        <source>Could not save the file:
-%1</source>
-        <translation>फ़ाइल सहेजी नहीं जा सकी:
-%1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="620"/>
-        <source>Download Complete</source>
-        <translation>डाउनलोड पूर्ण</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="621"/>
-        <source>wiRedPanda has been downloaded to:
-%1</source>
-        <translation>wiRedPanda यहाँ डाउनलोड हो गया:
-%1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="633"/>
+        <location filename="../../UI/MainWindow.cpp" line="396"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2087,228 +2162,29 @@ wiRedPanda %1 स्वचालित रूप से वर्तमान �
 IC और दिखावट तक पहुँचने या beWavedDolphin सिमुलेशन चलाने से पहले आपको नए प्रोजेक्ट सहेजने होंगे।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="841"/>
-        <location filename="../../UI/MainWindow.cpp" line="895"/>
-        <source>Save File as ...</source>
-        <translation>फ़ाइल इस रूप में सेव करें...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="853"/>
-        <location filename="../../UI/MainWindow.cpp" line="906"/>
-        <source>File Conflict</source>
-        <translation>फ़ाइल टकराव</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="854"/>
-        <location filename="../../UI/MainWindow.cpp" line="907"/>
-        <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation>फ़ाइल &quot;%1&quot; पहले से ही दूसरे टैब में खुली है।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="857"/>
-        <location filename="../../UI/MainWindow.cpp" line="910"/>
-        <source>Switch to Tab</source>
-        <translation>टैब पर जाएँ</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1026"/>
+        <location filename="../../UI/MainWindow.cpp" line="529"/>
         <source>Are you sure?</source>
         <translation>क्या आप निश्चित हैं?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1986"/>
-        <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation>चयनित फ़ाइलें (और उनकी निर्भरताएँ) वर्तमान प्रोजेक्ट फ़ोल्डर में कॉपी की जाएँगी।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2045"/>
-        <source>Name Collision</source>
-        <translation>नाम टकराव</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2046"/>
-        <source>An embedded IC named &quot;%1&quot; already exists.
-Suggested name:</source>
-        <translation>&quot;%1&quot; नामक एक एम्बेडेड IC पहले से मौजूद है।
-सुझाया गया नाम:</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2072"/>
-        <location filename="../../UI/MainWindow.cpp" line="2134"/>
-        <source>Please save the project first so ICs can be resolved.</source>
-        <translation>कृपया पहले प्रोजेक्ट को सहेजें ताकि IC हल किए जा सकें।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2083"/>
-        <location filename="../../UI/MainWindow.cpp" line="2141"/>
-        <location filename="../../UI/MainWindow.cpp" line="2234"/>
-        <source>Could not read IC file: %1</source>
-        <translation>IC फ़ाइल नहीं पढ़ी जा सकी: %1</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2091"/>
-        <location filename="../../UI/MainWindow.cpp" line="2159"/>
-        <source>IC embedded successfully.</source>
-        <translation>IC सफलतापूर्वक एम्बेड किया गया।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2111"/>
-        <location filename="../../UI/MainWindow.cpp" line="2182"/>
-        <source>Extract IC to file...</source>
-        <translation>IC को फ़ाइल में निकालें...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2122"/>
-        <location filename="../../UI/MainWindow.cpp" line="2193"/>
-        <source>IC extracted to %1</source>
-        <translation>IC %1 में निकाला गया</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2171"/>
-        <location filename="../../UI/MainWindow.cpp" line="2206"/>
-        <source>Please save the project first.</source>
-        <translation>कृपया पहले प्रोजेक्ट को सहेजें।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2223"/>
-        <source>No file-based ICs to embed.</source>
-        <translation>एम्बेड करने के लिए कोई फ़ाइल-आधारित IC नहीं है।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2249"/>
-        <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation>%1 IC एम्बेड किए गए। सर्किट अब स्वयं-निहित है।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="343"/>
-        <location filename="../../UI/MainWindow.cpp" line="1244"/>
-        <location filename="../../UI/MainWindow.cpp" line="2072"/>
-        <location filename="../../UI/MainWindow.cpp" line="2083"/>
-        <location filename="../../UI/MainWindow.cpp" line="2106"/>
-        <location filename="../../UI/MainWindow.cpp" line="2134"/>
-        <location filename="../../UI/MainWindow.cpp" line="2141"/>
-        <location filename="../../UI/MainWindow.cpp" line="2171"/>
-        <location filename="../../UI/MainWindow.cpp" line="2206"/>
-        <location filename="../../UI/MainWindow.cpp" line="2234"/>
-        <source>Error</source>
-        <translation>त्रुटि</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="942"/>
+        <location filename="../../UI/MainWindow.cpp" line="456"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda साओ पाउलो के संघीय विश्वविद्यालय के छात्रों द्वारा विकसित सॉफ़्टवेयर है जो छात्रों को लॉजिक सर्किट सीखने में मदद करता है।&lt;/p&gt;&lt;p&gt;सॉफ़्टवेयर संस्करण: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;निर्माता:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda वर्तमान में Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves और Maycon A. Santana द्वारा अनुरक्षित है।&lt;/p&gt;&lt;p&gt; यदि आपको कोई बग मिलता है या नई सुविधा का अनुरोध करना चाहते हैं तो कृपया हमारे GitHub पृष्ठ पर रिपोर्ट दर्ज करें।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;हमारी वेबसाइट पर जाएँ!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="964"/>
+        <location filename="../../UI/MainWindow.cpp" line="478"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;कैनवास शॉर्टकट&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : ज़ूम इन &lt;/li&gt;&lt;li&gt; Ctrl+- : ज़ूम आउट &lt;/li&gt;&lt;li&gt; Ctrl+1 : तार छुपाएँ/दिखाएँ &lt;/li&gt;&lt;li&gt; Ctrl+2 : गेट छुपाएँ/दिखाएँ &lt;/li&gt;&lt;li&gt; Ctrl+F : तत्व खोजें &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin खोलें &lt;/li&gt;&lt;li&gt; Ctrl+S : प्रोजेक्ट सहेजें &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda से बाहर निकलें &lt;/li&gt;&lt;li&gt; F5 : सिमुलेशन शुरू/रोकें &lt;/li&gt;&lt;li&gt; [ : पिछली प्राथमिक तत्व विशेषता &lt;/li&gt;&lt;li&gt; ] : अगली प्राथमिक तत्व विशेषता &lt;/li&gt;&lt;li&gt; { : पिछली द्वितीयक तत्व विशेषता &lt;/li&gt;&lt;li&gt; } : अगली द्वितीयक तत्व विशेषता &lt;/li&gt;&lt;li&gt; &amp;lt; : पिछले तत्व में बदलें &lt;/li&gt;&lt;li&gt; &amp;gt; : अगले तत्व में बदलें &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;सामान्य सुझाव&lt;/h1&gt;&lt;p&gt;एक नोड बनाने के लिए तार पर डबल-क्लिक करें&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1025"/>
+        <location filename="../../UI/MainWindow.cpp" line="528"/>
         <source>Exit</source>
         <translation>बाहर निकलें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1433"/>
-        <location filename="../../UI/MainWindow.cpp" line="1462"/>
-        <location filename="../../UI/MainWindow.cpp" line="1485"/>
-        <source>Missing file name.</source>
-        <translation>फ़ाइल नाम गुम।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1439"/>
-        <location filename="../../UI/MainWindow.cpp" line="1468"/>
-        <source>The .panda file is empty.</source>
-        <translation>.panda फ़ाइल खाली है।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1450"/>
-        <source>Arduino code successfully generated.</source>
-        <translation>Arduino कोड सफलतापूर्वक तैयार किया गया।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1477"/>
-        <source>SystemVerilog code successfully generated.</source>
-        <translation>SystemVerilog कोड सफलतापूर्वक उत्पन्न किया गया।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1516"/>
-        <source>Generate Arduino Code</source>
-        <translation>Arduino कोड तैयार करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1516"/>
-        <source>Arduino file (*.ino)</source>
-        <translation>Arduino फाइल (*.ino)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1538"/>
-        <source>Generate SystemVerilog Code</source>
-        <translation>SystemVerilog कोड उत्पन्न करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1538"/>
-        <source>SystemVerilog file (*.sv)</source>
-        <translation>SystemVerilog फ़ाइल (*.sv)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1649"/>
-        <source>Export to PDF</source>
-        <translation>PDF में निर्यात करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1649"/>
-        <source>PDF files (*.pdf)</source>
-        <translation>PDF फाइलें (*.pdf)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1660"/>
-        <location filename="../../UI/MainWindow.cpp" line="1688"/>
-        <source>Exported file successfully.</source>
-        <translation>फाइल सफलतापूर्वक निर्यात की गई।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1677"/>
-        <source>Export to Image</source>
-        <translation>छवि में निर्यात करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1677"/>
-        <source>PNG files (*.png)</source>
-        <translation>PNG फाइलें (*.png)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1357"/>
-        <location filename="../../UI/MainWindow.cpp" line="1925"/>
+        <location filename="../../UI/MainWindow.cpp" line="1001"/>
         <source>Unmute</source>
         <translation>अनम्यूट</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1975"/>
-        <source>Save file first.</source>
-        <translation>पहले फ़ाइल सेव करें।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1978"/>
-        <source>Panda (*.panda)</source>
-        <translation>पांडा (*.panda)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1986"/>
-        <location filename="../../UI/MainWindow.cpp" line="2003"/>
-        <source>Info</source>
-        <translation>जानकारी</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2003"/>
-        <source>Drag here to remove.</source>
-        <translation>हटाने के लिए यहाँ खींचें।</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="2028"/>
-        <source>Error removing file: %1</source>
-        <translation>फ़ाइल हटाने में त्रुटि: %1</translation>
     </message>
 </context>
 <context>
@@ -2565,21 +2441,34 @@ Suggested name:</source>
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="564"/>
+        <location filename="../../Scene/Scene.cpp" line="59"/>
+        <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Undo</source>
         <translation>&amp;अनडू</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="570"/>
+        <location filename="../../Scene/Scene.cpp" line="67"/>
+        <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Redo</source>
         <translation>&amp;रीडू</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="590"/>
+        <location filename="../../Scene/Scene.cpp" line="561"/>
         <source>Paste</source>
         <translation>पेस्ट करें</translation>
+    </message>
+</context>
+<context>
+    <name>SceneUiBinder</name>
+    <message>
+        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <source>Unmute</source>
+        <translation type="unfinished">अनम्यूट</translation>
+    </message>
+    <message>
+        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <source>Mute</source>
+        <translation type="unfinished">मूक</translation>
     </message>
 </context>
 <context>
@@ -2787,6 +2676,81 @@ Suggested name:</source>
     </message>
 </context>
 <context>
+    <name>UpdateController</name>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="48"/>
+        <source>Update Available</source>
+        <translation type="unfinished">अपडेट उपलब्ध</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="56"/>
+        <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
+        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 उपलब्ध है।&lt;/b&gt;&lt;br&gt;&lt;br&gt;आप वर्तमान में संस्करण %2 चला रहे हैं।&lt;br&gt;नया संस्करण सहेजने के लिए &lt;b&gt;डाउनलोड&lt;/b&gt; पर क्लिक करें।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="59"/>
+        <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
+        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 उपलब्ध है।&lt;/b&gt;&lt;br&gt;&lt;br&gt;आप वर्तमान में संस्करण %2 चला रहे हैं।&lt;br&gt;नया संस्करण डाउनलोड करने के लिए रिलीज़ पेज पर जाएं।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="68"/>
+        <source>Don&apos;t notify me about this version again</source>
+        <translation type="unfinished">इस संस्करण के बारे में दोबारा सूचित न करें</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="72"/>
+        <source>Download</source>
+        <translation type="unfinished">डाउनलोड</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <source>Downloading wiRedPanda %1…</source>
+        <translation type="unfinished">wiRedPanda %1 डाउनलोड हो रहा है…</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <source>Cancel</source>
+        <translation type="unfinished">रद्द करें</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="102"/>
+        <source>Downloading Update</source>
+        <translation type="unfinished">अपडेट डाउनलोड हो रहा है</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="126"/>
+        <location filename="../../UI/UpdateController.cpp" line="134"/>
+        <source>Download Failed</source>
+        <translation type="unfinished">डाउनलोड विफल</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="126"/>
+        <source>Could not download the update:
+%1</source>
+        <translation type="unfinished">अपडेट डाउनलोड नहीं हो सका:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="134"/>
+        <source>Could not save the file:
+%1</source>
+        <translation type="unfinished">फ़ाइल सहेजी नहीं जा सकी:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="143"/>
+        <source>Download Complete</source>
+        <translation type="unfinished">डाउनलोड पूर्ण</translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="144"/>
+        <source>wiRedPanda has been downloaded to:
+%1</source>
+        <translation type="unfinished">wiRedPanda यहाँ डाउनलोड हो गया:
+%1</translation>
+    </message>
+</context>
+<context>
     <name>WorkSpace</name>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="141"/>
@@ -2886,6 +2850,84 @@ A backup of the original file has been created with name: %3</source>
         <location filename="../../Scene/Workspace.cpp" line="774"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>अंतर्निहित IC &quot;%1&quot; हटाएँ</translation>
+    </message>
+</context>
+<context>
+    <name>WorkspaceManager</name>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
+        <source>New Project</source>
+        <translation type="unfinished">नया प्रोजेक्ट</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <source>File saved successfully.</source>
+        <translation type="unfinished">फ़ाइल सफलतापूर्वक सेव हुई।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
+        <source>File not saved. Close tab anyway?</source>
+        <translation type="unfinished">फ़ाइल सेव नहीं हुई। फिर भी टैब बंद करें?</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
+        <source> has been modified.
+Do you want to save your changes?</source>
+        <translation type="unfinished"> में बदलाव किया गया है।
+क्या आप अपने बदलाव सेव करना चाहते हैं?</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
+        <source>File loaded successfully.</source>
+        <translation type="unfinished">फ़ाइल सफलतापूर्वक लोड हुई।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
+        <source>Open File</source>
+        <translation type="unfinished">फ़ाइल खोलें</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <source>Panda files (*.panda)</source>
+        <translation type="unfinished">पांडा फाइलें (*.panda)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <source>Save File as ...</source>
+        <translation type="unfinished">फ़ाइल इस रूप में सेव करें...</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
+        <source>File Conflict</source>
+        <translation type="unfinished">फ़ाइल टकराव</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
+        <source>The file &quot;%1&quot; is already open in another tab.</source>
+        <translation type="unfinished">फ़ाइल &quot;%1&quot; पहले से ही दूसरे टैब में खुली है।</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
+        <source>Switch to Tab</source>
+        <translation type="unfinished">टैब पर जाएँ</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
+        <source>Error!</source>
+        <translation type="unfinished">त्रुटि!</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
+        <source>Error</source>
+        <translation type="unfinished">त्रुटि</translation>
     </message>
 </context>
 <context>
