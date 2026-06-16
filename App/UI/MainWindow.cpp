@@ -11,32 +11,21 @@
 #endif
 
 #include <QActionGroup>
-#include <QCheckBox>
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDesktopServices>
-#include <QDialog>
-#include <QDialogButtonBox>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QInputDialog>
-#include <QLabel>
 #include <QLocale>
 #include <QLoggingCategory>
 #include <QMessageBox>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QPixmapCache>
-#include <QProgressDialog>
 #include <QPushButton>
 #include <QSaveFile>
 #include <QShortcut>
-#include <QSslError>
-#include <QStandardPaths>
 #include <QTemporaryFile>
-#include <QVBoxLayout>
 
 #ifdef Q_OS_MAC
 #include <QSvgRenderer>
@@ -50,7 +39,6 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Core/UpdateChecker.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
@@ -68,6 +56,7 @@
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LanguageManager.h"
 #include "App/UI/MainWindowUI.h"
+#include "App/UI/UpdateController.h"
 #include "App/Versions.h"
 
 #ifdef Q_OS_MAC
@@ -512,114 +501,8 @@ void MainWindow::show()
     qCDebug(zero) << "Checking for autosave file recovery.";
     loadAutosaveFiles();
 
-    if (Application::interactiveMode) {
-        auto *updateChecker = new UpdateChecker(this);
-        connect(updateChecker, &UpdateChecker::updateAvailable, this, &MainWindow::showUpdateDialog);
-        updateChecker->checkForUpdates();
-    }
-}
-
-void MainWindow::showUpdateDialog(const QString &latestVersion, const QUrl &downloadUrl, const QUrl &releaseUrl)
-{
-    QDialog dialog(this);
-    dialog.setWindowTitle(tr("Update Available"));
-    dialog.setWindowModality(Qt::WindowModal);
-
-    auto *layout = new QVBoxLayout(&dialog);
-
-    const bool hasDirectDownload = downloadUrl.isValid() && !downloadUrl.isEmpty();
-    auto *label = new QLabel(
-        (hasDirectDownload
-             ? tr("<b>wiRedPanda %1 is available.</b><br><br>"
-                  "You are currently running version %2.<br>"
-                  "Click <b>Download</b> to save the new version to your computer.")
-             : tr("<b>wiRedPanda %1 is available.</b><br><br>"
-                  "You are currently running version %2.<br>"
-                  "Visit the release page to download the new version."))
-            .arg(latestVersion, APP_VERSION),
-        &dialog);
-    label->setTextFormat(Qt::RichText);
-    label->setWordWrap(true);
-    layout->addWidget(label);
-
-    auto *skipCheckBox = new QCheckBox(tr("Don't notify me about this version again"), &dialog);
-    layout->addWidget(skipCheckBox);
-
-    auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
-    auto *downloadButton = buttonBox->addButton(tr("Download"), QDialogButtonBox::AcceptRole);
-    connect(downloadButton, &QPushButton::clicked, &dialog, [&dialog] { dialog.accept(); });
-    connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
-    layout->addWidget(buttonBox);
-
-    const bool accepted = dialog.exec() == QDialog::Accepted;
-
-    if (skipCheckBox->isChecked()) {
-        Settings::setUpdateCheckSkippedVersion(latestVersion);
-    }
-
-    if (accepted) {
-        if (hasDirectDownload) {
-            downloadUpdate(latestVersion, downloadUrl);
-        } else {
-            QDesktopServices::openUrl(releaseUrl);
-            Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
-        }
-    } else {
-        /// User closed dialog without taking action — still record the check
-        Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
-    }
-}
-
-void MainWindow::downloadUpdate(const QString &latestVersion, const QUrl &url)
-{
-    const QString fileName = url.fileName();
-    const QString savePath = QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)).filePath(fileName);
-
-    auto *progress = new QProgressDialog(tr("Downloading wiRedPanda %1…").arg(latestVersion), tr("Cancel"), 0, 100, this);
-    progress->setWindowTitle(tr("Downloading Update"));
-    progress->setWindowModality(Qt::WindowModal);
-    progress->setMinimumDuration(0);
-    progress->setValue(0);
-
-    auto *network = new QNetworkAccessManager(this);
-    QNetworkRequest request(url);
-    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
-    QNetworkReply *reply = network->get(request);
-
-    connect(reply, &QNetworkReply::downloadProgress, progress, [progress](qint64 received, qint64 total) {
-        if (total > 0) {
-            progress->setValue(static_cast<int>(received * 100 / total));
-        }
-    });
-
-    connect(progress, &QProgressDialog::canceled, reply, &QNetworkReply::abort);
-
-    connect(reply, &QNetworkReply::finished, this, [this, reply, progress, savePath] {
-        progress->close();
-        progress->deleteLater();
-
-        if (reply->error() != QNetworkReply::NoError) {
-            if (reply->error() != QNetworkReply::OperationCanceledError) {
-                QMessageBox::warning(this, tr("Download Failed"), tr("Could not download the update:\n%1").arg(reply->errorString()));
-            }
-            reply->deleteLater();
-            return;
-        }
-
-        QFile file(savePath);
-        if (!file.open(QIODevice::WriteOnly)) {
-            QMessageBox::warning(this, tr("Download Failed"), tr("Could not save the file:\n%1").arg(savePath));
-            reply->deleteLater();
-            return;
-        }
-        file.write(reply->readAll());
-        file.close();
-        reply->deleteLater();
-
-        Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
-        QMessageBox::information(this, tr("Download Complete"),
-            tr("wiRedPanda has been downloaded to:\n%1").arg(savePath));
-    });
+    auto *updateController = new UpdateController(this);
+    updateController->checkForUpdates();
 }
 
 void MainWindow::aboutThisVersion()
