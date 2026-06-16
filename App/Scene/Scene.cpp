@@ -138,62 +138,47 @@ void Scene::removeItem(QGraphicsItem *item)
 
 ItemWithId *Scene::itemById(const int id) const
 {
-    return m_elementRegistry.value(id, nullptr);
+    return m_itemRegistry.itemById(id);
 }
 
 bool Scene::contains(const int id) const
 {
-    return m_elementRegistry.contains(id);
+    return m_itemRegistry.contains(id);
 }
 
 int Scene::lastId() const
 {
-    return m_lastId;
+    return m_itemRegistry.lastId();
 }
 
 void Scene::setLastId(const int newLastId)
 {
-    m_lastId = qMax(m_lastId, newLastId);
+    m_itemRegistry.setLastId(newLastId);
 }
 
 int Scene::nextId()
 {
-    return ++m_lastId;
+    return m_itemRegistry.nextId();
 }
 
 void Scene::updateItemId(ItemWithId *item, const int newId)
 {
-    // Called before addItem() to pre-assign a specific ID (undo/redo restore path).
-    // The item is not yet in the registry; addItem() will preserve this positive ID.
-    item->setId(newId);
-    setLastId(newId);
+    m_itemRegistry.updateItemId(item, newId);
 }
 
 void Scene::forgetItemId(const int id)
 {
-    m_elementRegistry.remove(id);
+    m_itemRegistry.forgetItemId(id);
 }
 
 void Scene::registerItem(ItemWithId *item)
 {
-    if (!item) {
-        return;
-    }
-    // HC invariant: an id must map to exactly one live item — never to a stale pointer
-    // left behind by a missed unregisterItem (the WIREDPANDA-HC family upstream condition)
-    Q_ASSERT(!m_elementRegistry.contains(item->id())
-          || m_elementRegistry.value(item->id()) == item);
-    m_elementRegistry[item->id()] = item;
+    m_itemRegistry.registerItem(item);
 }
 
 void Scene::unregisterItem(ItemWithId *item)
 {
-    if (!item) {
-        return;
-    }
-    m_elementRegistry.remove(item->id());
-    // HC postcondition: after unregister, the registry must not still resolve this id
-    Q_ASSERT(!m_elementRegistry.contains(item->id()));
+    m_itemRegistry.unregisterItem(item);
 }
 
 SerializationContext Scene::deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version)
