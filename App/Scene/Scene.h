@@ -7,12 +7,10 @@
 
 #pragma once
 
-#include <QElapsedTimer>
 #include <QGraphicsScene>
 #include <QHash>
 #include <QMap>
 #include <QMimeData>
-#include <QPointer>
 #include <QUndoCommand>
 #include <QVersionNumber>
 
@@ -22,6 +20,7 @@
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/PropertyShortcutHandler.h"
 #include "App/Scene/SceneDropHandler.h"
+#include "App/Scene/SceneInteraction.h"
 #include "App/Scene/SceneItemRegistry.h"
 #include "App/Scene/VisibilityManager.h"
 #include "App/Simulation/Simulation.h"
@@ -165,7 +164,10 @@ public:
     QGraphicsItem *itemAt(QPointF pos);
 
     /// Returns the last known mouse position in scene coordinates.
-    [[nodiscard]] QPointF mousePos() const { return m_mousePos; }
+    [[nodiscard]] QPointF mousePos() const { return m_interaction.lastMousePos(); }
+
+    /// Opens the element/selection context menu at \a screenPos (driven by SceneInteraction on right-click).
+    void contextMenu(const QPoint screenPos);
 
     // --- Adding Items ---
 
@@ -321,13 +323,11 @@ private:
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
     const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
-    void contextMenu(const QPoint screenPos);
     void updateUndoText(const QString &text);
     void updateRedoText(const QString &text);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
     void rotate(const int angle);
     void setDots(const QPen &dots);
-    void startSelectionRect();
 
     /// Registers \a item's current ID in the scene registry. Called by addItem().
     void registerItem(ItemWithId *item);
@@ -347,25 +347,15 @@ private:
     // Simulation
     Simulation m_simulation;
 
-    // Per-scene element registry (must be declared before m_selectionRect so it is
-    // initialized before the Scene constructor calls addItem(&m_selectionRect))
+    // Per-scene element registry (delegated to SceneItemRegistry)
     SceneItemRegistry m_itemRegistry;
 
     // Rendering
     QPen m_dots;
-    QGraphicsRectItem m_selectionRect;
 
-    // Mouse / interaction state
-    QElapsedTimer m_timer;
-    QPointF m_mousePos;
-    QPointF m_selectionStartPoint;
-    /// Drag-state snapshot: each entry pairs an element with its press-time
-    /// position. QPointer auto-clears if the element is destroyed mid-drag
-    /// (e.g. user presses Delete while holding the mouse), preventing a
-    /// dangling-pointer dereference in mouseReleaseEvent.
-    QList<QPair<QPointer<GraphicElement>, QPointF>> m_dragSnapshot;
-    bool m_draggingElement = false;
-    bool m_markingSelectionBox = false;
+    // Mouse-move re-entrancy guard. Stays on Scene (not SceneInteraction) because it
+    // must wrap the base QGraphicsScene::mouseMoveEvent call, where the re-entrancy
+    // (ensureVisible → replayLastMouseEvent → mouseMoveEvent) actually originates.
     bool m_handlingMouseMove = false;
 
     // Context directory (directory of the .panda file owning this scene)
@@ -391,4 +381,7 @@ private:
 
     // Drag-and-drop payload decoding (delegated to SceneDropHandler)
     SceneDropHandler m_dropHandler{this};
+
+    // Mouse-driven editing gestures + rubber-band selection (delegated to SceneInteraction)
+    SceneInteraction m_interaction{this};
 };

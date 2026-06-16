@@ -52,10 +52,9 @@ Scene::Scene(QObject *parent)
     // (e.g., to detect Ctrl+drag for cloning before Qt's default drag-selection activates)
     installEventFilter(this);
 
-    // The rubber-band selection rectangle must not itself be selectable or it would
-    // appear in selectedItems() and interfere with element operations
-    m_selectionRect.setFlag(QGraphicsItem::ItemIsSelectable, false);
-    addItem(&m_selectionRect);
+    // Attach the interaction layer: adds its rubber-band selection rectangle to the
+    // scene and starts its drag throttle timer.
+    m_interaction.attachToScene();
 
     m_undoAction = new QAction(tr("&Undo"), this);
     m_undoAction->setEnabled(false);
@@ -72,9 +71,6 @@ Scene::Scene(QObject *parent)
     connect(&m_undoStack, &QUndoStack::canRedoChanged, m_redoAction, &QAction::setEnabled);
     connect(&m_undoStack, &QUndoStack::redoTextChanged, this, &Scene::updateRedoText);
     connect(m_redoAction, &QAction::triggered, &m_undoStack, &QUndoStack::redo);
-
-    // Used to throttle expensive operations during drag (e.g., ensureVisible)
-    m_timer.start();
 
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
     // Emit autosave signal only after each undo-stack index change (not on every internal state update)
@@ -409,7 +405,7 @@ void Scene::resizeScene()
 {
     const auto bounds = itemsBoundingRect();
 
-    if (m_draggingElement) {
+    if (m_interaction.isDraggingElement()) {
         // While dragging, only expand the scene rect (union with current rect).
         // Never shrink during drag — shrinking shifts the viewport origin and
         // causes jarring visual jumps as the scene rect chases the items.
@@ -470,8 +466,7 @@ void Scene::updateTheme()
     const ThemeAttributes theme = ThemeManager::attributes();
     setBackgroundBrush(theme.m_sceneBgBrush);
     setDots(QPen(theme.m_sceneBgDots));
-    m_selectionRect.setBrush(QBrush(theme.m_selectionBrush));
-    m_selectionRect.setPen(QPen(theme.m_selectionPen, 1, Qt::SolidLine));
+    m_interaction.applyTheme(theme);
 
     for (auto *element : elements()) {
         element->updateTheme();
@@ -507,15 +502,6 @@ void Scene::showGates(const bool checked)
 void Scene::showWires(const bool checked)
 {
     m_visibilityManager.showWires(checked);
-}
-
-void Scene::startSelectionRect()
-{
-    m_selectionStartPoint = m_mousePos;
-    m_markingSelectionBox = true;
-    m_selectionRect.setRect(QRectF(m_selectionStartPoint, m_selectionStartPoint));
-    m_selectionRect.show();
-    m_selectionRect.update();
 }
 
 GraphicsView *Scene::view() const
@@ -558,7 +544,7 @@ void Scene::updateRedoText(const QString &text)
 
 void Scene::contextMenu(const QPoint screenPos)
 {
-    if (auto *item = itemAt(m_mousePos)) {
+    if (auto *item = itemAt(m_interaction.lastMousePos())) {
         // Right-clicking a selected item opens the property context menu for that selection
         if (selectedItems().contains(item)) {
             emit contextMenuPos(screenPos, item);
@@ -778,81 +764,9 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
 
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    m_mousePos = event->scenePos();
-    m_connectionManager.updateHover(m_mousePos);
-
-    auto *item = itemAt(m_mousePos);
-
-    if (item) {
-        // --- Element selection and drag preparation ---
-        if (event->button() == Qt::LeftButton) {
-            if (event->modifiers().testFlag(Qt::ControlModifier)) {
-                // Ctrl+click toggles individual item membership in the selection
-                item->setSelected(!item->isSelected());
-            }
-
-            auto selectedElements_ = selectedElements();
-
-            // Include the clicked element even if it isn't yet selected, so a
-            // single-click drag of an unselected element works immediately
-            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
-                selectedElements_ << element;
-            }
-
-            m_draggingElement = ((item->type() == GraphicElement::Type) && !selectedElements_.isEmpty());
-            if (m_draggingElement) {
-                sentryBreadcrumb("ui", QStringLiteral("Drag started: %1 element(s)").arg(selectedElements_.size()));
-            }
-
-            // Snapshot positions now; MoveCommand compares these against release-time positions.
-            // QPointer in m_dragSnapshot lets entries auto-clear if the element is destroyed
-            // before release (e.g. Delete shortcut while mid-drag — see WIREDPANDA-H9).
-            m_dragSnapshot.clear();
-            m_dragSnapshot.reserve(selectedElements_.size());
-
-            for (auto *element : std::as_const(selectedElements_)) {
-                m_dragSnapshot.append({element, element->pos()});
-            }
-        }
-
-        // --- Wire connection handling ---
-        if (item->type() == QNEPort::Type) {
-            /* When the mouse is pressed over an connected input port, the line
-             * is disconnected and can be connected to another port. */
-            if (m_connectionManager.hasEditedConnection()) {
-                // An in-progress wire exists; try to complete it at this port
-                m_connectionManager.tryComplete(m_mousePos);
-                return;
-            }
-
-            auto *pressedPort = qgraphicsitem_cast<QNEPort *>(item);
-
-            if (auto *startPort = dynamic_cast<QNEOutputPort *>(pressedPort)) {
-                m_connectionManager.startFromOutput(startPort);
-                return;
-            }
-
-            if (auto *endPort = dynamic_cast<QNEInputPort *>(pressedPort)) {
-                // Empty input port: begin a new wire; occupied port: detach the existing wire
-                endPort->connections().isEmpty() ? m_connectionManager.startFromInput(endPort) : m_connectionManager.detach(endPort);
-                return;
-            }
-        }
+    if (!m_interaction.mousePress(event)) {
+        QGraphicsScene::mousePressEvent(event);
     }
-
-    // Clicking on empty space while a wire is being drawn cancels it
-        m_connectionManager.cancel();
-
-    if (!item && (event->button() == Qt::LeftButton)) {
-        startSelectionRect();
-    }
-
-    if (event->button() == Qt::RightButton) {
-        contextMenu(event->screenPos());
-        return;
-    }
-
-    QGraphicsScene::mousePressEvent(event);
 }
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -863,118 +777,31 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     // scrolling to satisfy the H-margin violates the V-margin, so the replay
     // triggers another ensureVisible() that does the opposite, oscillating
     // until a stack overflow. Dropping the re-entrant call breaks the loop.
+    // The guard lives here, not in SceneInteraction, because it must wrap the
+    // base-class call below where the re-entrancy actually originates.
     if (m_handlingMouseMove) {
         return;
     }
     m_handlingMouseMove = true;
     const auto resetFlag = qScopeGuard([this] { m_handlingMouseMove = false; });
 
-    m_mousePos = event->scenePos();
-    m_connectionManager.updateHover(m_mousePos);
-
-    // Expand scene rect while dragging so elements can be moved beyond the current boundary,
-    // and auto-scroll the viewport to follow the cursor.
-    if (m_draggingElement) {
-        resizeScene();
-
-        if (m_timer.elapsed() > 50) {
-            const auto viewList = views();
-            if (!viewList.isEmpty()) {
-                viewList.first()->ensureVisible(m_mousePos.x(), m_mousePos.y(), 1, 1, 50, 50);
-            }
-            m_timer.restart();
-        }
+    if (!m_interaction.mouseMove(event)) {
+        QGraphicsScene::mouseMoveEvent(event);
     }
-
-    // --- In-progress wire routing ---
-    if (m_connectionManager.hasEditedConnection()) {
-        m_connectionManager.updateEditedEnd(m_mousePos);
-        return;
-    }
-
-    // --- Rubber-band selection rectangle ---
-    if (m_markingSelectionBox) {
-        const QRectF rect = QRectF(m_selectionStartPoint, m_mousePos).normalized();
-        m_selectionRect.setRect(rect);
-        QPainterPath selectionBox;
-        selectionBox.addRect(rect);
-        setSelectionArea(selectionBox);
-    }
-
-    QGraphicsScene::mouseMoveEvent(event);
 }
 
 void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (m_draggingElement && (event->button() == Qt::LeftButton)) {
-        bool moved = false;
-
-        if (!m_dragSnapshot.empty()) {
-            // Filter out elements destroyed mid-drag (their QPointers are now null).
-            // Without this, dereferencing a freed element below crashes the app.
-            QList<GraphicElement *> liveElements;
-            QList<QPointF> liveOldPositions;
-            liveElements.reserve(m_dragSnapshot.size());
-            liveOldPositions.reserve(m_dragSnapshot.size());
-
-            for (const auto &[ptr, oldPos] : std::as_const(m_dragSnapshot)) {
-                if (ptr) {
-                    liveElements.append(ptr.data());
-                    liveOldPositions.append(oldPos);
-                }
-            }
-
-            // Only push a MoveCommand if at least one surviving element actually changed
-            // position; avoids polluting the undo stack with no-op moves (click without drag).
-            for (int i = 0; i < liveElements.size(); ++i) {
-                if (liveElements.at(i)->pos() != liveOldPositions.at(i)) {
-                    moved = true;
-                    break;
-                }
-            }
-
-            if (moved) {
-                receiveCommand(new MoveCommand(liveElements, liveOldPositions, this));
-            }
-        }
-
-        sentryBreadcrumb("ui", moved ? QStringLiteral("Drag ended: moved") : QStringLiteral("Drag ended: no move"));
-        m_draggingElement = false;
-        m_dragSnapshot.clear();
-
-        // Only tighten scene rect after an actual drag; a click-without-move
-        // should not trigger a rect change that could shift the viewport.
-        if (moved) {
-            resizeScene();
-        }
+    if (!m_interaction.mouseRelease(event)) {
+        QGraphicsScene::mouseReleaseEvent(event);
     }
-
-    m_selectionRect.hide();
-    m_markingSelectionBox = false;
-
-    // Complete an in-progress wire on mouse release (when no button is held)
-    // — this handles the drag-to-connect gesture (press output → drag → release on input)
-    if (m_connectionManager.hasEditedConnection() && (event->buttons() == Qt::NoButton)) {
-        m_connectionManager.tryComplete(m_mousePos);
-        return;
-    }
-
-    QGraphicsScene::mouseReleaseEvent(event);
 }
 
 void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->modifiers().testFlag(Qt::ControlModifier)) {
-        return;
+    if (!m_interaction.mouseDoubleClick(event)) {
+        QGraphicsScene::mouseDoubleClickEvent(event);
     }
-
-    // Double-click on a fully connected wire inserts a routing node at the click point,
-    // splitting the wire into two segments; guard ensures it's not a dangling wire
-    if (auto *connection = qgraphicsitem_cast<QNEConnection *>(itemAt(m_mousePos)); connection && connection->startPort() && connection->endPort()) {
-        receiveCommand(new SplitCommand(connection, m_mousePos, this));
-    }
-
-    QGraphicsScene::mouseDoubleClickEvent(event);
 }
 
 void Scene::addItem(QMimeData *mimeData)
