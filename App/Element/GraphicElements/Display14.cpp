@@ -65,21 +65,21 @@ struct ElementInfo<Display14> {
 Display14::Display14(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display14, parent)
 {
-    a  = Display7::cachedSegmentColors(m_defaultAppearances.at(1));
-    b  = Display7::cachedSegmentColors(m_defaultAppearances.at(2));
-    c  = Display7::cachedSegmentColors(m_defaultAppearances.at(3));
-    d  = Display7::cachedSegmentColors(m_defaultAppearances.at(4));
-    e  = Display7::cachedSegmentColors(m_defaultAppearances.at(5));
-    f  = Display7::cachedSegmentColors(m_defaultAppearances.at(6));
-    g1 = Display7::cachedSegmentColors(m_defaultAppearances.at(7));
-    g2 = Display7::cachedSegmentColors(m_defaultAppearances.at(8));
-    h  = Display7::cachedSegmentColors(m_defaultAppearances.at(9));
-    j  = Display7::cachedSegmentColors(m_defaultAppearances.at(10));
-    k  = Display7::cachedSegmentColors(m_defaultAppearances.at(11));
-    l  = Display7::cachedSegmentColors(m_defaultAppearances.at(12));
-    m  = Display7::cachedSegmentColors(m_defaultAppearances.at(13));
-    n  = Display7::cachedSegmentColors(m_defaultAppearances.at(14));
-    dp = Display7::cachedSegmentColors(m_defaultAppearances.at(15));
+    a  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(1));
+    b  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(2));
+    c  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(3));
+    d  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(4));
+    e  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(5));
+    f  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(6));
+    g1 = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(7));
+    g2 = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(8));
+    h  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(9));
+    j  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(10));
+    k  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(11));
+    l  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(12));
+    m  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(13));
+    n  = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(14));
+    dp = Display7::cachedSegmentColors(m_appearance.defaultAppearances().at(15));
 
     Display14::updatePortsProperties();
 }

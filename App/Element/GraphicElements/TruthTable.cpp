@@ -135,7 +135,7 @@ void TruthTable::generatePixmap()
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
     QPixmap sizingPixmap(size);
     sizingPixmap.fill(Qt::transparent);
-    m_pixmap = sizingPixmap;
+    m_appearance.setRenderPixmap(sizingPixmap);
     GraphicElement::update();
 }
 
@@ -180,8 +180,8 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
     if (isSelected()) {
         painter->save();
-        painter->setBrush(m_selectionBrush);
-        painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
+        painter->setBrush(m_appearance.selectionBrush());
+        painter->setPen(QPen(m_appearance.selectionPen(), 0.5, Qt::SolidLine));
         // Expand the highlight rect to cover any ports that extend outside the 64x64 body
         painter->drawRoundedRect(portsBoundingRect().united(QRectF(0, 0, 64, 64)), 5, 5);
         painter->restore();

@@ -19,6 +19,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.cpp
@@ -141,6 +142,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StatusOps.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h

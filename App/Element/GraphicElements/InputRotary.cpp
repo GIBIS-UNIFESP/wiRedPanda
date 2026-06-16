@@ -50,8 +50,8 @@ struct ElementInfo<InputRotary> {
 InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputRotary, parent)
 {
-    m_rotary = m_defaultAppearances.at(0);
-    m_arrow  = m_defaultAppearances.at(1);
+    m_rotary = m_appearance.defaultAppearances().at(0);
+    m_arrow  = m_appearance.defaultAppearances().at(1);
 
     setLocked(false);
 
@@ -316,12 +316,12 @@ void InputRotary::load(QDataStream &stream, SerializationContext &context)
 void InputRotary::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
     if (defaultAppearance) {
-        m_alternativeAppearances = m_defaultAppearances;
+        m_appearance.resetAlternativeToDefault();
     } else {
-        m_alternativeAppearances[0] = fileName;
+        m_appearance.setAlternativeAppearanceAt(0, fileName);
     }
 
-    m_usingDefaultAppearance = defaultAppearance;
+    m_appearance.setUsingDefaultAppearance(defaultAppearance);
     setPixmap(0);
 }
 
