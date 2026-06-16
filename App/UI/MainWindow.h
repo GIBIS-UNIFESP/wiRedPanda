@@ -15,10 +15,12 @@
 #include <QSpacerItem>
 
 #include "App/BeWavedDolphin/DolphinHost.h"
+#include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
 class ElementLabel;
 class ElementPalette;
+class ExportController;
 class IC;
 class ICPreviewPopup;
 class LanguageManager;
@@ -34,7 +36,7 @@ class WorkSpace;
  * WorkSpace), connects undo/redo stacks, handles file open/save/export, manages translations,
  * and integrates the element palette, element editor, and IC list panel.
  */
-class MainWindow : public QMainWindow, public DolphinHost
+class MainWindow : public QMainWindow, public DolphinHost, public MainWindowHost
 {
     Q_OBJECT
 
@@ -62,7 +64,7 @@ public:
     void createNewTab();
 
     /// Returns the currently visible WorkSpace tab, or nullptr.
-    WorkSpace *currentTab() const;
+    WorkSpace *currentTab() const override;
 
     /// Closes all tabs, prompting to save if needed. Returns \c false if cancelled.
     bool closeFiles();
@@ -96,6 +98,15 @@ public:
 
     /// Returns the directory of the currently active .panda file.
     QDir currentDir() const override;
+
+    /// \reimp MainWindowHost — parent widget for controller-spawned dialogs.
+    QWidget *widget() override;
+
+    /// \reimp MainWindowHost — this window's DolphinHost facet.
+    DolphinHost *dolphinHost() override;
+
+    /// \reimp MainWindowHost — shows \a message in the status bar for \a timeout ms.
+    void showStatusMessage(const QString &message, int timeout) override;
 
     /**
      * \brief Updates the tracked current file to \a fileInfo.
@@ -250,10 +261,6 @@ private:
     void on_actionAboutQt_triggered();
     void on_actionAbout_triggered();
     void on_actionExit_triggered();
-    void on_actionExportToArduino_triggered();
-    void on_actionExportToSystemVerilog_triggered();
-    void on_actionExportToImage_triggered();
-    void on_actionExportToPdf_triggered();
     void on_actionFastMode_triggered(const bool checked);
     void on_actionFlipHorizontally_triggered();
     void on_actionFlipVertically_triggered();
@@ -307,9 +314,10 @@ private:
 
     std::unique_ptr<MainWindowUi> m_ui;
 
-    ElementPalette  *m_palette         = nullptr;
-    LanguageManager *m_languageManager = nullptr;
-    RecentFiles     *m_recentFiles     = nullptr;
+    ElementPalette   *m_palette          = nullptr;
+    LanguageManager  *m_languageManager  = nullptr;
+    RecentFiles      *m_recentFiles      = nullptr;
+    ExportController *m_exportController  = nullptr;
 
     /// Shared IC-hover preview, parented to this MainWindow.
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.

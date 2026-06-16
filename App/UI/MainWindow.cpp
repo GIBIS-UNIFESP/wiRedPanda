@@ -4,6 +4,7 @@
 #include "App/UI/MainWindow.h"
 
 #include <algorithm>
+#include <utility>
 
 #ifdef Q_OS_WASM
 #include <emscripten/emscripten.h>
@@ -32,8 +33,6 @@
 #endif
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
-#include "App/CodeGen/ArduinoCodeGen.h"
-#include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
@@ -50,9 +49,8 @@
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
-#include "App/Simulation/SimulationBlocker.h"
-#include "App/UI/CircuitExporter.h"
 #include "App/UI/ElementPalette.h"
+#include "App/UI/ExportController.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LanguageManager.h"
 #include "App/UI/MainWindowUI.h"
@@ -86,6 +84,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     // Shared IC-hover preview, owned by this MainWindow as a Qt child.
     m_icPreviewPopup = new ICPreviewPopup(this);
+
+    m_exportController = new ExportController(*this, this);
 
     setupLanguage();
     setupGeometry();
@@ -270,10 +270,10 @@ void MainWindow::setupConnections()
     connect(m_ui->actionDarkTheme,             &QAction::triggered,       this,                &MainWindow::on_actionDarkTheme_triggered);
     connect(m_ui->actionSystemTheme,           &QAction::triggered,       this,                &MainWindow::on_actionSystemTheme_triggered);
     connect(m_ui->actionExit,                  &QAction::triggered,       this,                &MainWindow::on_actionExit_triggered);
-    connect(m_ui->actionExportToArduino,       &QAction::triggered,       this,                &MainWindow::on_actionExportToArduino_triggered);
-    connect(m_ui->actionExportToSystemVerilog, &QAction::triggered,       this,                &MainWindow::on_actionExportToSystemVerilog_triggered);
-    connect(m_ui->actionExportToImage,         &QAction::triggered,       this,                &MainWindow::on_actionExportToImage_triggered);
-    connect(m_ui->actionExportToPdf,           &QAction::triggered,       this,                &MainWindow::on_actionExportToPdf_triggered);
+    connect(m_ui->actionExportToArduino,       &QAction::triggered,       m_exportController,  &ExportController::exportArduinoDialog);
+    connect(m_ui->actionExportToSystemVerilog, &QAction::triggered,       m_exportController,  &ExportController::exportSystemVerilogDialog);
+    connect(m_ui->actionExportToImage,         &QAction::triggered,       m_exportController,  &ExportController::exportImageDialog);
+    connect(m_ui->actionExportToPdf,           &QAction::triggered,       m_exportController,  &ExportController::exportPdfDialog);
     connect(m_ui->actionFastMode,              &QAction::triggered,       this,                &MainWindow::on_actionFastMode_triggered);
     connect(m_ui->actionFlipHorizontally,      &QAction::triggered,       this,                &MainWindow::on_actionFlipHorizontally_triggered);
     connect(m_ui->actionFlipVertically,        &QAction::triggered,       this,                &MainWindow::on_actionFlipVertically_triggered);
@@ -1019,6 +1019,21 @@ QDir MainWindow::currentDir() const
     return m_currentTab ? m_currentTab->fileInfo().absoluteDir() : QDir();
 }
 
+QWidget *MainWindow::widget()
+{
+    return this;
+}
+
+DolphinHost *MainWindow::dolphinHost()
+{
+    return this;
+}
+
+void MainWindow::showStatusMessage(const QString &message, int timeout)
+{
+    m_ui->statusBar->showMessage(message, timeout);
+}
+
 QFileInfo MainWindow::icListFile() const
 {
     // Walk up the parent workspace chain to find the root file on disk.
@@ -1308,122 +1323,22 @@ void MainWindow::on_actionGates_triggered(const bool checked)
 
 void MainWindow::exportToArduino(QString fileName)
 {
-    if (!m_currentTab) {
-        return;
-    }
-
-    if (fileName.isEmpty()) {
-        throw PANDACEPTION("Missing file name.");
-    }
-
-    auto elements = m_currentTab->scene()->elements();
-
-    if (elements.isEmpty()) {
-        throw PANDACEPTION("The .panda file is empty.");
-    }
-
-    // Pause the simulation while generating code to avoid data races between
-    // the simulation timer and the code generator reading element state.
-    SimulationBlocker simulationBlocker(m_currentTab->simulation());
-
-    ensureFileExtension(fileName, ".ino");
-
-    ArduinoCodeGen arduino(QDir::home().absoluteFilePath(fileName), elements);
-    arduino.generate();
-    m_ui->statusBar->showMessage(tr("Arduino code successfully generated."), 4000);
-
-    qCDebug(zero) << "Arduino code successfully generated.";
+    m_exportController->exportToArduino(std::move(fileName));
 }
 
 void MainWindow::exportToSystemVerilog(QString fileName)
 {
-    if (!m_currentTab) {
-        return;
-    }
-
-    if (fileName.isEmpty()) {
-        throw PANDACEPTION("Missing file name.");
-    }
-
-    auto elements = m_currentTab->scene()->elements();
-
-    if (elements.isEmpty()) {
-        throw PANDACEPTION("The .panda file is empty.");
-    }
-
-    SimulationBlocker simulationBlocker(m_currentTab->simulation());
-
-    ensureFileExtension(fileName, ".sv");
-
-    SystemVerilogCodeGen verilog(QDir::home().absoluteFilePath(fileName), elements);
-    verilog.generate();
-    m_ui->statusBar->showMessage(tr("SystemVerilog code successfully generated."), 4000);
-
-    qCDebug(zero) << "SystemVerilog code successfully generated.";
+    m_exportController->exportToSystemVerilog(std::move(fileName));
 }
 
 void MainWindow::exportToWaveFormFile(const QString &fileName)
 {
-    if (fileName.isEmpty()) {
-        throw PANDACEPTION("Missing file name.");
-    }
-
-    // Headless export: a stack instance is never shown/closed, so it cleans up at scope end
-    // (its WA_DeleteOnClose only fires on a close event) — and RAII-frees even if this throws.
-    BewavedDolphin bewavedDolphin(m_currentTab->scene(), false, this);
-    bewavedDolphin.createWaveform(fileName);
-    bewavedDolphin.print();
+    m_exportController->exportToWaveFormFile(fileName);
 }
 
 void MainWindow::exportToWaveFormTerminal()
 {
-    BewavedDolphin bewavedDolphin(m_currentTab->scene(), false, this);
-    bewavedDolphin.createWaveform();
-    bewavedDolphin.print();
-}
-
-void MainWindow::on_actionExportToArduino_triggered()
-{
-    Application::guardedSlot(this, [this] {
-        sentryBreadcrumb("export", QStringLiteral("Export to Arduino"));
-        if (!m_currentTab) {
-            return;
-        }
-
-        QString path;
-
-        if (currentFile().exists()) {
-            path = currentFile().absolutePath();
-        }
-
-        const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate Arduino Code"), path, tr("Arduino file (*.ino)")).fileName;
-
-        if (!fileName.isEmpty()) {
-            exportToArduino(fileName);
-        }
-    });
-}
-
-void MainWindow::on_actionExportToSystemVerilog_triggered()
-{
-    Application::guardedSlot(this, [this] {
-        sentryBreadcrumb("export", QStringLiteral("Export to SystemVerilog"));
-        if (!m_currentTab) {
-            return;
-        }
-
-        QString path;
-
-        if (currentFile().exists()) {
-            path = currentFile().absolutePath();
-        }
-
-        const QString fileName = FileDialogs::provider()->getSaveFileName(this, tr("Generate SystemVerilog Code"), path, tr("SystemVerilog file (*.sv)")).fileName;
-
-        if (!fileName.isEmpty()) {
-            exportToSystemVerilog(fileName);
-        }
-    });
+    m_exportController->exportToWaveFormTerminal();
 }
 
 void MainWindow::on_actionZoomIn_triggered() const
@@ -1515,62 +1430,6 @@ void MainWindow::createRecentFileActions()
     }
 
     updateRecentFileActions();
-}
-
-void MainWindow::on_actionExportToPdf_triggered()
-{
-    Application::guardedSlot(this, [this] {
-        sentryBreadcrumb("export", QStringLiteral("Export to PDF"));
-        if (!m_currentTab) {
-            return;
-        }
-
-        // De-select elements so their selection handles don't appear in the export.
-        m_currentTab->scene()->clearSelection();
-
-        const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
-        QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), path, tr("PDF files (*.pdf)")).fileName;
-
-        if (pdfFile.isEmpty()) {
-            return;
-        }
-
-        if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
-            pdfFile.append(".pdf");
-        }
-
-        CircuitExporter::renderToPdf(m_currentTab->scene(), pdfFile);
-        m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
-        QDesktopServices::openUrl(QUrl::fromLocalFile(pdfFile));
-    });
-}
-
-void MainWindow::on_actionExportToImage_triggered()
-{
-    Application::guardedSlot(this, [this] {
-        sentryBreadcrumb("export", QStringLiteral("Export to image"));
-        if (!m_currentTab) {
-            return;
-        }
-
-        // De-select elements so their selection handles don't appear in the export.
-        m_currentTab->scene()->clearSelection();
-
-        const QString path    = currentFile().exists() ? currentFile().absolutePath() : QString();
-        QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), path, tr("PNG files (*.png)")).fileName;
-
-        if (pngFile.isEmpty()) {
-            return;
-        }
-
-        if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
-            pngFile.append(".png");
-        }
-
-        CircuitExporter::renderToImage(m_currentTab->scene(), pngFile);
-        m_ui->statusBar->showMessage(tr("Exported file successfully."), 4000);
-        QDesktopServices::openUrl(QUrl::fromLocalFile(pngFile));
-    });
 }
 
 void MainWindow::retranslateUi()
