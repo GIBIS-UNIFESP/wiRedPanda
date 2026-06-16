@@ -21,6 +21,7 @@
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/PropertyShortcutHandler.h"
+#include "App/Scene/SceneDropHandler.h"
 #include "App/Scene/SceneItemRegistry.h"
 #include "App/Scene/VisibilityManager.h"
 #include "App/Simulation/Simulation.h"
@@ -317,14 +318,6 @@ protected:
 private:
     // --- Helpers ---
 
-    /// Returns \c true if \a mimeData contains any recognised wiRedPanda drop format.
-    static bool isSupportedDropFormat(const QMimeData *mimeData);
-
-    /// Handles a new-element drop from the toolbox palette.
-    void handleNewElementDrop(QGraphicsSceneDragDropEvent *event);
-    /// Handles a clone drag (Ctrl+drag of an existing selection).
-    void handleCloneDrag(QGraphicsSceneDragDropEvent *event);
-
     QList<QGraphicsItem *> itemsAt(const QPointF pos);
     const QVector<QNEConnection *> connections();
     void checkUpdateRequest();
@@ -395,4 +388,7 @@ private:
 
     // Visibility control (delegated to VisibilityManager)
     VisibilityManager m_visibilityManager{this};
+
+    // Drag-and-drop payload decoding (delegated to SceneDropHandler)
+    SceneDropHandler m_dropHandler{this};
 };

@@ -681,18 +681,9 @@ void Scene::flipVertically()
     }
 }
 
-bool Scene::isSupportedDropFormat(const QMimeData *mimeData)
-{
-    const auto &formats = mimeData->formats();
-    return formats.contains(MimeType::DragDropLegacy)
-           || formats.contains(MimeType::CloneDragLegacy)
-           || formats.contains(MimeType::DragDrop)
-           || formats.contains(MimeType::CloneDrag);
-}
-
 void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (isSupportedDropFormat(event->mimeData())) {
+    if (SceneDropHandler::isSupportedDropFormat(event->mimeData())) {
         event->accept();
         return;
     }
@@ -702,105 +693,12 @@ void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (isSupportedDropFormat(event->mimeData())) {
+    if (SceneDropHandler::isSupportedDropFormat(event->mimeData())) {
         event->accept();
         return;
     }
 
     QGraphicsScene::dragMoveEvent(event);
-}
-
-void Scene::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
-{
-    // Both MIME types carry the same payload; the newer format has a namespaced key
-    QByteArray itemData;
-
-    if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)) {
-        itemData = event->mimeData()->data(MimeType::DragDropLegacy);
-    }
-
-    if (event->mimeData()->hasFormat(MimeType::DragDrop)) {
-        itemData = event->mimeData()->data(MimeType::DragDrop);
-    }
-
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    Serialization::readPandaHeader(stream);
-
-    QPoint offset;      stream >> offset;
-    ElementType type;   stream >> type;
-    QString icFileName; stream >> icFileName;
-
-    bool isEmbedded = false;
-    QString blobName;
-    if (!stream.atEnd()) { stream >> isEmbedded; }
-    if (!stream.atEnd()) { stream >> blobName; }
-
-    // Subtract the drag offset so the element lands under the original grab point
-    QPointF pos = event->scenePos() - offset;
-    qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
-
-    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
-    qCDebug(zero) << "Valid element.";
-
-    if (isEmbedded && type == ElementType::IC) {
-        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element.get()), blobName)) {
-            return;
-        }
-    } else {
-        // loadFromDrop can throw on malformed files; unique_ptr keeps the
-        // freshly-allocated element from leaking when it does.
-        element->loadFromDrop(icFileName, contextDir());
-    }
-
-    qCDebug(zero) << "Adding the element to the scene.";
-    auto *raw = element.release();
-    receiveCommand(new AddItemsCommand({raw}, this));
-
-    qCDebug(zero) << "Cleaning the selection.";
-    clearSelection();
-
-    qCDebug(zero) << "Setting created element as selected.";
-    raw->setSelected(true);
-
-    qCDebug(zero) << "Adjusting the position of the element.";
-    raw->setPos(pos);
-}
-
-void Scene::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
-{
-    QByteArray itemData;
-
-    if (event->mimeData()->hasFormat(MimeType::CloneDragLegacy)) {
-        itemData = event->mimeData()->data(MimeType::CloneDragLegacy);
-    }
-
-    if (event->mimeData()->hasFormat(MimeType::CloneDrag)) {
-        itemData = event->mimeData()->data(MimeType::CloneDrag);
-    }
-
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-
-    // offset = mouse position at drag-start; recompute drop offset from current position
-    QPointF offset; stream >> offset;
-    QPointF ctr;    stream >> ctr;
-    offset = event->scenePos() - offset;
-
-    QMap<quint64, QNEPort *> portMap;
-    auto context = deserializationContext(portMap, version);
-    const auto itemList = Serialization::deserialize(stream, context);
-
-    receiveCommand(new AddItemsCommand(itemList, this));
-    clearSelection();
-
-    for (auto *item : itemList) {
-        if (item->type() == GraphicElement::Type) {
-            item->setPos((item->pos() + offset));
-            item->setSelected(true);
-        }
-    }
-
-    resizeScene();
 }
 
 void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
@@ -809,12 +707,12 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
     if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)
         || event->mimeData()->hasFormat(MimeType::DragDrop)) {
-        handleNewElementDrop(event);
+        m_dropHandler.handleNewElementDrop(event);
     }
 
     if (event->mimeData()->hasFormat(MimeType::CloneDragLegacy)
         || event->mimeData()->hasFormat(MimeType::CloneDrag)) {
-        handleCloneDrag(event);
+        m_dropHandler.handleCloneDrag(event);
     }
 
     QGraphicsScene::dropEvent(event);
@@ -1081,44 +979,5 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::addItem(QMimeData *mimeData)
 {
-    QByteArray itemData = mimeData->hasFormat(MimeType::DragDrop)
-        ? mimeData->data(MimeType::DragDrop)
-        : mimeData->data(MimeType::DragDropLegacy);
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    Serialization::readPandaHeader(stream);
-
-    QPoint offset;      stream >> offset;
-    ElementType type;   stream >> type;
-    QString icFileName; stream >> icFileName;
-
-    bool isEmbedded = false;
-    QString blobName;
-    if (!stream.atEnd()) { stream >> isEmbedded; }
-    if (!stream.atEnd()) { stream >> blobName; }
-
-    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
-    qCDebug(zero) << "Valid element.";
-
-    // RAII for mimeData too — the original deleteLater at the bottom is
-    // unreachable if loadFromDrop throws, so the QMimeData would leak alongside
-    // the half-built element.
-    auto mimeGuard = qScopeGuard([mimeData]() { mimeData->deleteLater(); });
-
-    if (isEmbedded && type == ElementType::IC) {
-        if (!m_icRegistry.initEmbeddedIC(static_cast<IC *>(element.get()), blobName)) {
-            return;
-        }
-    } else {
-        element->loadFromDrop(icFileName, contextDir());
-    }
-
-    qCDebug(zero) << "Adding the element to the scene.";
-    auto *raw = element.release();
-    receiveCommand(new AddItemsCommand({raw}, this));
-
-    qCDebug(zero) << "Cleaning the selection.";
-    clearSelection();
-
-    qCDebug(zero) << "Setting created element as selected.";
-    raw->setSelected(true);
+    m_dropHandler.addFromMimeData(mimeData);
 }
