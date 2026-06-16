@@ -82,8 +82,7 @@ Led::Led(QGraphicsItem *parent)
     // base offset for the chosen color (0=White, 2=Red, 4=Green, 6=Blue, 8=Purple).
     // Even indices are the Off state; odd indices are the On state.
     // Indices 10-25 cover multi-input (2/3/4-bit) color palettes (see comment below).
-    m_defaultAppearances = ElementMetadataRegistry::metadata(ElementType::Led).defaultAppearances;
-    m_alternativeAppearances = m_defaultAppearances;
+    m_appearance.seedFromMetadata(ElementMetadataRegistry::metadata(ElementType::Led).defaultAppearances, {}, {});
     setPixmap(0);
 
     setHasColors(true);
@@ -223,14 +222,14 @@ void Led::setAppearance(const bool useDefaultAppearance, const QString &fileName
     const int index = colorIndex();
 
     if (useDefaultAppearance) {
-        m_alternativeAppearances = m_defaultAppearances;
+        m_appearance.resetAlternativeToDefault();
     } else {
         // Replace only the appearance for the currently active color/state, so other
         // color states continue to use their default images.
-        m_alternativeAppearances[index] = fileName;
+        m_appearance.setAlternativeAppearanceAt(index, fileName);
     }
 
-    m_usingDefaultAppearance = useDefaultAppearance;
+    m_appearance.setUsingDefaultAppearance(useDefaultAppearance);
     setPixmap(index);
 }
 

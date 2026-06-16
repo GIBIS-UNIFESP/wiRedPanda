@@ -17,6 +17,7 @@
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
+#include "App/Element/ElementAppearance.h"
 #include "App/Element/ElementSimState.h"
 #include "App/Element/PropertyDescriptor.h"
 
@@ -502,39 +503,22 @@ protected:
     /// Sets the minimum number of output ports to \a minOutputSize.
     void setMinOutputSize(const int minOutputSize);
 
-    /// Path to all default appearances. The default appearance is in a resource file.
-    QStringList m_defaultAppearances;
-
-    /// Path to all custom appearances. Custom appearance names are system file paths defined by the user.
-    QStringList m_alternativeAppearances;
-
     /// All input ports owned by this element (ordered by index).
     QVector<QNEInputPort *> m_inputPorts;
 
     /// All output ports owned by this element (ordered by index).
     QVector<QNEOutputPort *> m_outputPorts;
 
-    /// Current pixmap displayed for this GraphicElement.
-    QPixmap m_pixmap;
+    /// Owns the pixmap/SVG appearance, the appearance list, and selection-highlight colors;
+    /// this element forwards its rendering and appearance interface here.  See ElementAppearance.
+    ElementAppearance m_appearance{this};
 
-    /// Upright, unflipped pixmap loaded for the current appearance. m_pixmap is derived from this:
-    /// it equals m_basePixmap normally, or a text-corrected SVG variant while rotated or flipped.
-    QPixmap m_basePixmap;
-
-    /// Vector renderer for the current SVG appearance (with labels counter-oriented while rotated/
-    /// flipped), drawn by paint() so the element stays crisp at any zoom. Null for raster appearances.
-    std::unique_ptr<QSvgRenderer> m_svgRenderer;
-
-    QColor m_selectionBrush; ///< Fill color used to draw the selection highlight rectangle.
-    QColor m_selectionPen;   ///< Border color used to draw the selection highlight rectangle.
     QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
 
     // --- Members: Metadata ---
 
-    QString m_pixmapPath;     ///< Resource or file path of the element's default pixmap (from metadata).
     QString m_titleText;      ///< Translated title text shown in UI panels (from metadata).
     QString m_translatedName; ///< Translated element name used as tooltip and port object name.
-    bool m_usingDefaultAppearance = true; ///< True when the active appearance matches the built-in default appearances.
 
     // --- Direct Simulation Helpers ---
 
@@ -574,16 +558,6 @@ private:
 
     /// Recomputes the QGraphicsItem transform from the current flip flags.
     void applyFlipTransform();
-
-    /// Selects m_pixmap from m_basePixmap, substituting a text-corrected SVG variant while the
-    /// element is rotated or flipped so baked-in <text> labels stay upright after the item-level
-    /// rotation + flip.
-    void applyPixmapOrientation();
-
-    /// Rebuilds m_svgRenderer from the current resolved SVG path and orientation (reusing the
-    /// <text> counter-orientation), or clears it for non-SVG (raster) appearances. Called whenever
-    /// the appearance or rotation/flip state changes, via applyPixmapOrientation().
-    void rebuildSvgRenderer();
 
     /// Orients \a port for the current rotation + flip state (used by non-rotatable elements,
     /// which keep their pixmap fixed). Applies Rotate(centre, m_angle) then Flip about the
@@ -676,9 +650,6 @@ private:
 
     QKeySequence m_trigger;
     QString m_labelText;
-
-    QString m_currentPixmapPath;
-    QString m_resolvedPixmapPath; ///< Resolved file/resource path of m_basePixmap; used to build orientation variants.
 
     // --- Members: Capabilities & Display State ---
 

@@ -125,7 +125,7 @@ void Mux::generatePixmap()
           << QPointF(42 - fillInset, bodyTop + rightInset + fillInset - 2);
     painter.drawPolygon(inner);
 
-    m_pixmap = tempPixmap;
+    m_appearance.setRenderPixmap(tempPixmap);
 }
 
 void Mux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -135,8 +135,8 @@ void Mux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
 
     if (isSelected()) {
         painter->save();
-        painter->setBrush(m_selectionBrush);
-        painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
+        painter->setBrush(m_appearance.selectionBrush());
+        painter->setPen(QPen(m_appearance.selectionPen(), 0.5, Qt::SolidLine));
         painter->drawRoundedRect(portsBoundingRect().united(QRectF(0, 0, 64, 64)), 5, 5);
         painter->restore();
     }

@@ -25,11 +25,11 @@ void GraphicElementInput::setWaveformValue(const bool value, const int port)
 void GraphicElementInput::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
     if (defaultAppearance) {
-        m_alternativeAppearances = m_defaultAppearances;
+        m_appearance.resetAlternativeToDefault();
     } else {
-        m_alternativeAppearances[static_cast<int>(m_isOn)] = fileName;
+        m_appearance.setAlternativeAppearanceAt(static_cast<int>(m_isOn), fileName);
     }
 
-    m_usingDefaultAppearance = defaultAppearance;
+    m_appearance.setUsingDefaultAppearance(defaultAppearance);
     setPixmap(static_cast<int>(m_isOn));
 }

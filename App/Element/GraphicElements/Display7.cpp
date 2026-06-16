@@ -60,14 +60,14 @@ struct ElementInfo<Display7> {
 Display7::Display7(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display7, parent)
 {
-    a  = cachedSegmentColors(m_defaultAppearances.at(1));
-    b  = cachedSegmentColors(m_defaultAppearances.at(2));
-    c  = cachedSegmentColors(m_defaultAppearances.at(3));
-    d  = cachedSegmentColors(m_defaultAppearances.at(4));
-    e  = cachedSegmentColors(m_defaultAppearances.at(5));
-    f  = cachedSegmentColors(m_defaultAppearances.at(6));
-    g  = cachedSegmentColors(m_defaultAppearances.at(7));
-    dp = cachedSegmentColors(m_defaultAppearances.at(8));
+    a  = cachedSegmentColors(m_appearance.defaultAppearances().at(1));
+    b  = cachedSegmentColors(m_appearance.defaultAppearances().at(2));
+    c  = cachedSegmentColors(m_appearance.defaultAppearances().at(3));
+    d  = cachedSegmentColors(m_appearance.defaultAppearances().at(4));
+    e  = cachedSegmentColors(m_appearance.defaultAppearances().at(5));
+    f  = cachedSegmentColors(m_appearance.defaultAppearances().at(6));
+    g  = cachedSegmentColors(m_appearance.defaultAppearances().at(7));
+    dp = cachedSegmentColors(m_appearance.defaultAppearances().at(8));
 
     Display7::updatePortsProperties();
 }

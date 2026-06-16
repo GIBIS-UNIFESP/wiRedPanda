@@ -127,7 +127,7 @@ void GraphicElement::save(QDataStream &stream) const
 
     QList<QMap<QString, QVariant>> appearancesMap;
 
-    for (const auto &appearance : m_alternativeAppearances) {
+    for (const auto &appearance : m_appearance.alternativeAppearances()) {
         QMap<QString, QVariant> tempMap;
         tempMap.insert("skinName", appearance.startsWith(":/") ? appearance : QFileInfo(appearance).fileName());
         appearancesMap << tempMap;
@@ -329,16 +329,16 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
     int index = 0;
 
     for (const auto &entry : std::as_const(appearancesMap)) {
-        if (index >= m_alternativeAppearances.size()) {
+        if (index >= m_appearance.alternativeAppearances().size()) {
             throw PANDACEPTION("Appearance index %1 out of range (size=%2) — stream may be corrupt",
                                QString::number(index),
-                               QString::number(m_alternativeAppearances.size()));
+                               QString::number(m_appearance.alternativeAppearances().size()));
         }
 
         const QString name = entry.value("skinName").toString();
 
         if (!name.startsWith(":/")) {
-            m_alternativeAppearances[index] = name;
+            m_appearance.setAlternativeAppearanceAt(index, name);
         }
 
         ++index;
@@ -346,10 +346,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
 
     // If all alternative appearance slots still match the defaults, the user never
     // applied a custom appearance — record that so the "Reset to default" action works.
-    m_usingDefaultAppearance = std::equal(
-        m_defaultAppearances.begin(), m_defaultAppearances.end(),
-        m_alternativeAppearances.begin(), m_alternativeAppearances.end()
-        );
+    m_appearance.recomputeUsingDefault();
 
     refresh();
 
@@ -551,10 +548,7 @@ void GraphicElement::loadPixmapAppearanceNames(QDataStream &stream, Serializatio
             loadPixmapAppearanceName(stream, static_cast<int>(i), context.contextDir);
         }
 
-        m_usingDefaultAppearance = std::equal(
-            m_defaultAppearances.begin(), m_defaultAppearances.end(),
-            m_alternativeAppearances.begin(), m_alternativeAppearances.end()
-            );
+        m_appearance.recomputeUsingDefault();
 
         refresh();
     }
@@ -564,9 +558,9 @@ void GraphicElement::loadPixmapAppearanceName(QDataStream &stream, const int ind
 {
     const QString name = Serialization::readBoundedString(stream);
 
-    if (index >= m_alternativeAppearances.size()) {
+    if (index >= m_appearance.alternativeAppearances().size()) {
         throw PANDACEPTION("Appearance index %1 out of range (size=%2) for appearance name \"%3\" — stream may be corrupt",
-                           QString::number(index), QString::number(m_alternativeAppearances.size()), name);
+                           QString::number(index), QString::number(m_appearance.alternativeAppearances().size()), name);
     }
 
     // Only override the alternative appearance if it is a filesystem path; resource
@@ -574,9 +568,9 @@ void GraphicElement::loadPixmapAppearanceName(QDataStream &stream, const int ind
     // potentially missing saved path from an older project file.
     if (!name.startsWith(":/")) {
         if (!contextDir.isEmpty() && QDir::isRelativePath(name)) {
-            m_alternativeAppearances[index] = contextDir + "/" + name;
+            m_appearance.setAlternativeAppearanceAt(index, contextDir + "/" + name);
         } else {
-            m_alternativeAppearances[index] = name;
+            m_appearance.setAlternativeAppearanceAt(index, name);
         }
     }
 }

@@ -570,7 +570,7 @@ void IC::generatePixmap()
     const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
     QPixmap sizingPixmap(size);
     sizingPixmap.fill(Qt::transparent);
-    m_pixmap = sizingPixmap;
+    m_appearance.setRenderPixmap(sizingPixmap);
     update();
 }
 
@@ -731,8 +731,8 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidge
 
     if (isSelected()) {
         painter->save();
-        painter->setBrush(m_selectionBrush);
-        painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
+        painter->setBrush(m_appearance.selectionBrush());
+        painter->setPen(QPen(m_appearance.selectionPen(), 0.5, Qt::SolidLine));
         painter->drawRoundedRect(boundingRect(), 5, 5);
         painter->restore();
     }
