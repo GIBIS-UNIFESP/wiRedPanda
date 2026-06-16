@@ -83,6 +83,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
@@ -202,6 +203,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.h
@@ -209,6 +211,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
