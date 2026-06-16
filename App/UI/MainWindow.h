@@ -21,7 +21,7 @@
 class ElementLabel;
 class ElementPalette;
 class ExportController;
-class IC;
+class ICController;
 class ICPreviewPopup;
 class LanguageManager;
 class QShortcut;
@@ -105,8 +105,14 @@ public:
     /// \reimp MainWindowHost — this window's DolphinHost facet.
     DolphinHost *dolphinHost() override;
 
+    /// \reimp MainWindowHost — the element palette panel.
+    ElementPalette *palette() const override;
+
     /// \reimp MainWindowHost — shows \a message in the status bar for \a timeout ms.
     void showStatusMessage(const QString &message, int timeout) override;
+
+    /// \reimp MainWindowHost — saves the current tab (triggers the Save action).
+    void requestSave() override;
 
     /**
      * \brief Updates the tracked current file to \a fileInfo.
@@ -213,7 +219,7 @@ private:
 
     /// Returns the file info to use for populating the file-based IC palette.
     /// For inline IC tabs this returns the parent workspace's file info.
-    QFileInfo icListFile() const;
+    QFileInfo icListFile() const override;
 
     /// Connects \a action to \a method on the current tab's scene (guarded by m_currentTab check).
     void connectSceneAction(QAction *action, void (Scene::*method)());
@@ -222,10 +228,6 @@ private:
 
     /// Appends \a extension (e.g. ".panda") to \a fileName if not already present.
     static void ensureFileExtension(QString &fileName, const QString &extension);
-
-    /// Returns the first selected IC element, or nullptr if none is selected or
-    /// if there is no current tab or the first selected element is not an IC.
-    IC *getSelectedIC() const;
 
     /// Shows or hides the IC management buttons (Add, Remove, MakeSelfContained).
     void setICButtonsVisible(bool visible);
@@ -238,13 +240,6 @@ private:
     void createRecentFileActions();
     void updateRecentFileActions();
     void openRecentFile();
-    void removeICFile(const QString &icFileName);
-    QString resolveUniqueBlobName(const QString &initialName, Scene *scene);
-    void embedSelectedIC();
-    void extractSelectedIC();
-    void makeSelfContained();
-    void embedICByFile(const QString &fileName);
-    void extractICByBlobName(const QString &blobName);
 
     // --- Settings & Theme ---
 
@@ -285,8 +280,6 @@ private:
     void on_actionWires_triggered(const bool checked);
     void on_actionZoomIn_triggered() const;
     void on_actionZoomOut_triggered() const;
-    void on_pushButtonAddIC_clicked();
-    void on_pushButtonRemoveIC_clicked();
 
 #ifdef Q_OS_WASM
     /// Emscripten beforeunload callback — saves window geometry before the browser tab closes.
@@ -318,6 +311,7 @@ private:
     LanguageManager  *m_languageManager  = nullptr;
     RecentFiles      *m_recentFiles      = nullptr;
     ExportController *m_exportController  = nullptr;
+    ICController     *m_icController      = nullptr;
 
     /// Shared IC-hover preview, parented to this MainWindow.
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.

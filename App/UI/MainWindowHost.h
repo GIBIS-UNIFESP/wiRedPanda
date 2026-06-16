@@ -7,9 +7,11 @@
 
 #pragma once
 
+#include <QDir>
 #include <QFileInfo>
 
 class DolphinHost;
+class ElementPalette;
 class QString;
 class QWidget;
 class WorkSpace;
@@ -34,6 +36,15 @@ public:
     /// QFileInfo of the currently active .panda file.
     virtual QFileInfo currentFile() const = 0;
 
+    /// Directory of the currently active .panda file.
+    virtual QDir currentDir() const = 0;
+
+    /// File info used to populate the file-based IC palette (parent workspace for inline IC tabs).
+    virtual QFileInfo icListFile() const = 0;
+
+    /// The element palette panel (file-based and embedded IC lists live here).
+    virtual ElementPalette *palette() const = 0;
+
     /// Widget used to parent modal dialogs spawned by a controller.
     virtual QWidget *widget() = 0;
 
@@ -42,4 +53,7 @@ public:
 
     /// Shows \a message in the host's status bar for \a timeout milliseconds.
     virtual void showStatusMessage(const QString &message, int timeout) = 0;
+
+    /// Saves the current tab (equivalent to triggering the Save action).
+    virtual void requestSave() = 0;
 };
