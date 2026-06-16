@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Tập tin không tồn tại</translation>
+        <translation>Tập tin không tồn tại</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Tập tin không thể đọc</translation>
+        <translation>Tập tin không thể đọc</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Lý do không xác định</translation>
+        <translation>Lý do không xác định</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Không thể tải pixmap: %1 (%2)</translation>
+        <translation>Không thể tải pixmap: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Thiếu tên tệp.</translation>
+        <translation>Thiếu tên tệp.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">Tệp .panda trống.</translation>
+        <translation>Tệp .panda trống.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Mã Arduino đã được tạo thành công.</translation>
+        <translation>Mã Arduino đã được tạo thành công.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">Mã SystemVerilog đã được tạo thành công.</translation>
+        <translation>Mã SystemVerilog đã được tạo thành công.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Tạo mã Arduino</translation>
+        <translation>Tạo mã Arduino</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Tệp Arduino (*.ino)</translation>
+        <translation>Tệp Arduino (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Tạo mã SystemVerilog</translation>
+        <translation>Tạo mã SystemVerilog</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">Tệp SystemVerilog (*.sv)</translation>
+        <translation>Tệp SystemVerilog (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Xuất ra PDF</translation>
+        <translation>Xuất ra PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">Tệp PDF (*.pdf)</translation>
+        <translation>Tệp PDF (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Xuất tệp thành công.</translation>
+        <translation>Xuất tệp thành công.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Xuất ra hình ảnh</translation>
+        <translation>Xuất ra hình ảnh</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">Tệp PNG (*.png)</translation>
+        <translation>Tệp PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Lưu tệp trước.</translation>
+        <translation>Lưu tệp trước.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Mở tệp</translation>
+        <translation>Mở tệp</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Thông tin</translation>
+        <translation>Thông tin</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Các tệp đã chọn (và các phụ thuộc của chúng) sẽ được sao chép vào thư mục dự án hiện tại.</translation>
+        <translation>Các tệp đã chọn (và các phụ thuộc của chúng) sẽ được sao chép vào thư mục dự án hiện tại.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Kéo vào đây để xóa.</translation>
+        <translation>Kéo vào đây để xóa.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Lỗi khi xóa tệp: %1</translation>
+        <translation>Lỗi khi xóa tệp: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Trùng tên</translation>
+        <translation>Trùng tên</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">IC nhúng có tên &quot;%1&quot; đã tồn tại.
+        <translation>IC nhúng có tên &quot;%1&quot; đã tồn tại.
 Tên gợi ý:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Tên gợi ý:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Vui lòng lưu dự án trước để có thể tìm thấy IC.</translation>
+        <translation>Vui lòng lưu dự án trước để có thể tìm thấy IC.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Không thể đọc tệp IC: %1</translation>
+        <translation>Không thể đọc tệp IC: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">Nhúng IC thành công.</translation>
+        <translation>Nhúng IC thành công.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Vui lòng lưu dự án trước.</translation>
+        <translation>Vui lòng lưu dự án trước.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Trích xuất IC ra tệp...</translation>
+        <translation>Trích xuất IC ra tệp...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Tệp Panda (*.panda)</translation>
+        <translation>Tệp Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC đã được trích xuất ra %1</translation>
+        <translation>IC đã được trích xuất ra %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Không có IC dựa trên tệp để nhúng.</translation>
+        <translation>Không có IC dựa trên tệp để nhúng.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">Đã nhúng %1 IC. Mạch hiện tự chứa.</translation>
+        <translation>Đã nhúng %1 IC. Mạch hiện tự chứa.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Chọn tệp IC để nhúng</translation>
+        <translation>Chọn tệp IC để nhúng</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Không thể đọc tệp: %1</translation>
+        <translation>Không thể đọc tệp: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Bật tiếng</translation>
+        <translation>Bật tiếng</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Tắt tiếng</translation>
+        <translation>Tắt tiếng</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Có bản cập nhật</translation>
+        <translation>Có bản cập nhật</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 đã có sẵn.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Bạn đang chạy phiên bản %2.&lt;br&gt;Nhấp vào &lt;b&gt;Tải xuống&lt;/b&gt; để lưu phiên bản mới.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 đã có sẵn.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Bạn đang chạy phiên bản %2.&lt;br&gt;Nhấp vào &lt;b&gt;Tải xuống&lt;/b&gt; để lưu phiên bản mới.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 đã có sẵn.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Bạn đang chạy phiên bản %2.&lt;br&gt;Truy cập trang phát hành để tải phiên bản mới.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 đã có sẵn.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Bạn đang chạy phiên bản %2.&lt;br&gt;Truy cập trang phát hành để tải phiên bản mới.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Không thông báo về phiên bản này nữa</translation>
+        <translation>Không thông báo về phiên bản này nữa</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Tải xuống</translation>
+        <translation>Tải xuống</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">Đang tải xuống wiRedPanda %1…</translation>
+        <translation>Đang tải xuống wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Hủy</translation>
+        <translation>Hủy</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Đang tải xuống bản cập nhật</translation>
+        <translation>Đang tải xuống bản cập nhật</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Tải xuống thất bại</translation>
+        <translation>Tải xuống thất bại</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Không thể tải xuống bản cập nhật:
+        <translation>Không thể tải xuống bản cập nhật:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Không thể lưu tệp:
+        <translation>Không thể lưu tệp:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Tải xuống hoàn tất</translation>
+        <translation>Tải xuống hoàn tất</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda đã được tải xuống tại:
+        <translation>wiRedPanda đã được tải xuống tại:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ Bản sao lưu của tệp gốc đã được tạo với tên: %3</translation
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Dự án mới</translation>
+        <translation>Dự án mới</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Tệp đã được lưu thành công.</translation>
+        <translation>Tệp đã được lưu thành công.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Tệp chưa được lưu. Vẫn đóng tab?</translation>
+        <translation>Tệp chưa được lưu. Vẫn đóng tab?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> đã bị thay đổi.
+        <translation> đã bị thay đổi.
 Bạn có muốn lưu thay đổi không?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Tải tệp thành công.</translation>
+        <translation>Tải tệp thành công.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Mở tệp</translation>
+        <translation>Mở tệp</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Tệp Panda (*.panda)</translation>
+        <translation>Tệp Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Lưu tệp thành ...</translation>
+        <translation>Lưu tệp thành ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Xung đột tệp</translation>
+        <translation>Xung đột tệp</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Tệp &quot;%1&quot; đã được mở trong một thẻ khác.</translation>
+        <translation>Tệp &quot;%1&quot; đã được mở trong một thẻ khác.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Chuyển sang thẻ</translation>
+        <translation>Chuyển sang thẻ</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Lỗi!</translation>
+        <translation>Lỗi!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
 </context>
 <context>

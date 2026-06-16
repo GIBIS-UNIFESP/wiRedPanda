@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Datoteka ne postoji</translation>
+        <translation>Datoteka ne postoji</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Datoteka se ne može čitati</translation>
+        <translation>Datoteka se ne može čitati</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Nepoznat razlog</translation>
+        <translation>Nepoznat razlog</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Nije moguće učitati pixmap: %1 (%2)</translation>
+        <translation>Nije moguće učitati pixmap: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Nedostaje naziv datoteke.</translation>
+        <translation>Nedostaje naziv datoteke.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">.panda datoteka je prazna.</translation>
+        <translation>.panda datoteka je prazna.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Arduino kod je uspješno generiran.</translation>
+        <translation>Arduino kod je uspješno generiran.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">SystemVerilog kod uspješno generiran.</translation>
+        <translation>SystemVerilog kod uspješno generiran.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Generiraj Arduino kod</translation>
+        <translation>Generiraj Arduino kod</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Arduino datoteka (*.ino)</translation>
+        <translation>Arduino datoteka (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Generiraj SystemVerilog kod</translation>
+        <translation>Generiraj SystemVerilog kod</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">SystemVerilog datoteka (*.sv)</translation>
+        <translation>SystemVerilog datoteka (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Izvezi u PDF</translation>
+        <translation>Izvezi u PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">PDF datoteke (*.pdf)</translation>
+        <translation>PDF datoteke (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Datoteka je uspješno izvezena.</translation>
+        <translation>Datoteka je uspješno izvezena.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Izvezi u sliku</translation>
+        <translation>Izvezi u sliku</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">PNG datoteke (*.png)</translation>
+        <translation>PNG datoteke (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Svaki bežični kanal mora imati jedinstvenu oznaku.</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Prvo spremi datoteku.</translation>
+        <translation>Prvo spremi datoteku.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Otvori datoteku</translation>
+        <translation>Otvori datoteku</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Informacije</translation>
+        <translation>Informacije</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Odabrane datoteke (i njihove ovisnosti) bit će kopirane u trenutnu mapu projekta.</translation>
+        <translation>Odabrane datoteke (i njihove ovisnosti) bit će kopirane u trenutnu mapu projekta.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Povuci ovdje za uklanjanje.</translation>
+        <translation>Povuci ovdje za uklanjanje.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Greška pri uklanjanju datoteke: %1</translation>
+        <translation>Greška pri uklanjanju datoteke: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Sukob naziva</translation>
+        <translation>Sukob naziva</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Ugrađeni IC s imenom &quot;%1&quot; već postoji.
+        <translation>Ugrađeni IC s imenom &quot;%1&quot; već postoji.
 Predloženi naziv:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Predloženi naziv:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Greška</translation>
+        <translation>Greška</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Molimo prvo spremite projekt kako bi se IC-ovi mogli pronaći.</translation>
+        <translation>Molimo prvo spremite projekt kako bi se IC-ovi mogli pronaći.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">IC datoteka se ne može pročitati: %1</translation>
+        <translation>IC datoteka se ne može pročitati: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC je uspješno ugrađen.</translation>
+        <translation>IC je uspješno ugrađen.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Molimo prvo spremite projekt.</translation>
+        <translation>Molimo prvo spremite projekt.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Izdvoji IC u datoteku...</translation>
+        <translation>Izdvoji IC u datoteku...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda datoteke (*.panda)</translation>
+        <translation>Panda datoteke (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC izdvojen u %1</translation>
+        <translation>IC izdvojen u %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Nema IC-ova temeljenih na datotekama za ugradnju.</translation>
+        <translation>Nema IC-ova temeljenih na datotekama za ugradnju.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">Ugrađeno %1 IC-ova. Sklop je sada samostalan.</translation>
+        <translation>Ugrađeno %1 IC-ova. Sklop je sada samostalan.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Odaberite IC datoteku za ugradnju</translation>
+        <translation>Odaberite IC datoteku za ugradnju</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Datoteka se ne može pročitati: %1</translation>
+        <translation>Datoteka se ne može pročitati: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Uključi zvuk</translation>
+        <translation>Uključi zvuk</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Utišaj</translation>
+        <translation>Utišaj</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Ažuriranje dostupno</translation>
+        <translation>Ažuriranje dostupno</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 je dostupan.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Trenutno koristite verziju %2.&lt;br&gt;Kliknite &lt;b&gt;Preuzmi&lt;/b&gt; za spremanje nove verzije.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 je dostupan.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Trenutno koristite verziju %2.&lt;br&gt;Kliknite &lt;b&gt;Preuzmi&lt;/b&gt; za spremanje nove verzije.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 je dostupan.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Trenutno koristite verziju %2.&lt;br&gt;Posjetite stranicu izdanja za preuzimanje nove verzije.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 je dostupan.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Trenutno koristite verziju %2.&lt;br&gt;Posjetite stranicu izdanja za preuzimanje nove verzije.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Ne obavještavaj me o ovoj verziji ponovno</translation>
+        <translation>Ne obavještavaj me o ovoj verziji ponovno</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Preuzmi</translation>
+        <translation>Preuzmi</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">Preuzimanje wiRedPanda %1…</translation>
+        <translation>Preuzimanje wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Odustani</translation>
+        <translation>Odustani</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Preuzimanje ažuriranja</translation>
+        <translation>Preuzimanje ažuriranja</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Preuzimanje neuspješno</translation>
+        <translation>Preuzimanje neuspješno</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Nije moguće preuzeti ažuriranje:
+        <translation>Nije moguće preuzeti ažuriranje:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Nije moguće spremiti datoteku:
+        <translation>Nije moguće spremiti datoteku:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Preuzimanje završeno</translation>
+        <translation>Preuzimanje završeno</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda je preuzet u:
+        <translation>wiRedPanda je preuzet u:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ Sigurnosna kopija izvorne datoteke stvorena je pod imenom: %3</translation>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Novi projekt</translation>
+        <translation>Novi projekt</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Datoteka je uspješno spremljena.</translation>
+        <translation>Datoteka je uspješno spremljena.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Datoteka nije spremljena. Zatvori karticu ipak?</translation>
+        <translation>Datoteka nije spremljena. Zatvori karticu ipak?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> je promijenjena.
+        <translation> je promijenjena.
 Želite li spremiti promjene?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Datoteka je uspješno učitana.</translation>
+        <translation>Datoteka je uspješno učitana.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Otvori datoteku</translation>
+        <translation>Otvori datoteku</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda datoteke (*.panda)</translation>
+        <translation>Panda datoteke (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Spremi datoteku kao ...</translation>
+        <translation>Spremi datoteku kao ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Sukob datoteka</translation>
+        <translation>Sukob datoteka</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Datoteka „%1” već je otvorena u drugoj kartici.</translation>
+        <translation>Datoteka „%1” već je otvorena u drugoj kartici.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Prebaci na karticu</translation>
+        <translation>Prebaci na karticu</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Greška!</translation>
+        <translation>Greška!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Greška</translation>
+        <translation>Greška</translation>
     </message>
 </context>
 <context>

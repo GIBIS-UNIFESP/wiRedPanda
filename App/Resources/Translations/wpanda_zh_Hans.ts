@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">文件不存在</translation>
+        <translation>文件不存在</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">文件不可读</translation>
+        <translation>文件不可读</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">未知原因</translation>
+        <translation>未知原因</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">无法加载像素图：%1 (%2)</translation>
+        <translation>无法加载像素图：%1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Each wireless channel must have a unique label.</source>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">缺少文件名。</translation>
+        <translation>缺少文件名。</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">.panda文件为空。</translation>
+        <translation>.panda文件为空。</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Arduino代码成功生成。</translation>
+        <translation>Arduino代码成功生成。</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">SystemVerilog 代码已成功生成。</translation>
+        <translation>SystemVerilog 代码已成功生成。</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">生成Arduino代码</translation>
+        <translation>生成Arduino代码</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Arduino文件 (*.ino)</translation>
+        <translation>Arduino文件 (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">生成 SystemVerilog 代码</translation>
+        <translation>生成 SystemVerilog 代码</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">SystemVerilog 文件 (*.sv)</translation>
+        <translation>SystemVerilog 文件 (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">导出为PDF</translation>
+        <translation>导出为PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">PDF 文件 (*.pdf)</translation>
+        <translation>PDF 文件 (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">文件导出成功。</translation>
+        <translation>文件导出成功。</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">导出为图像</translation>
+        <translation>导出为图像</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">PNG 文件 (*.png)</translation>
+        <translation>PNG 文件 (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">请先保存文件。</translation>
+        <translation>请先保存文件。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">打开文件</translation>
+        <translation>打开文件</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda 文件 (*.panda)</translation>
+        <translation>Panda 文件 (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">信息</translation>
+        <translation>信息</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">所选文件（及其依赖项）将被复制到当前项目文件夹。</translation>
+        <translation>所选文件（及其依赖项）将被复制到当前项目文件夹。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">拖放到此处以删除。</translation>
+        <translation>拖放到此处以删除。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">删除文件时出错：%1</translation>
+        <translation>删除文件时出错：%1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">名称冲突</translation>
+        <translation>名称冲突</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">名为 &quot;%1&quot; 的嵌入式 IC 已存在。
+        <translation>名为 &quot;%1&quot; 的嵌入式 IC 已存在。
 建议名称:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Suggested name:</source>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">错误</translation>
+        <translation>错误</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">请先保存项目，以便解析 IC。</translation>
+        <translation>请先保存项目，以便解析 IC。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">无法读取 IC 文件: %1</translation>
+        <translation>无法读取 IC 文件: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC 嵌入成功。</translation>
+        <translation>IC 嵌入成功。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">请先保存项目。</translation>
+        <translation>请先保存项目。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">提取 IC 到文件...</translation>
+        <translation>提取 IC 到文件...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda文件 (*.panda)</translation>
+        <translation>Panda文件 (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC 已提取到 %1</translation>
+        <translation>IC 已提取到 %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">没有基于文件的 IC 可嵌入。</translation>
+        <translation>没有基于文件的 IC 可嵌入。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">已嵌入 %1 个 IC。电路现在是自包含的。</translation>
+        <translation>已嵌入 %1 个 IC。电路现在是自包含的。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">选择要嵌入的 IC 文件</translation>
+        <translation>选择要嵌入的 IC 文件</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">无法读取文件: %1</translation>
+        <translation>无法读取文件: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">取消静音</translation>
+        <translation>取消静音</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">静音</translation>
+        <translation>静音</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">有可用更新</translation>
+        <translation>有可用更新</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 已可用。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您当前正在运行版本 %2。&lt;br&gt;单击&lt;b&gt;下载&lt;/b&gt;以保存新版本。</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 已可用。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您当前正在运行版本 %2。&lt;br&gt;单击&lt;b&gt;下载&lt;/b&gt;以保存新版本。</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 现已推出。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您当前运行的是版本 %2。&lt;br&gt;请访问发布页面下载新版本。</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 现已推出。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您当前运行的是版本 %2。&lt;br&gt;请访问发布页面下载新版本。</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">不再通知我关于此版本的更新</translation>
+        <translation>不再通知我关于此版本的更新</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">下载</translation>
+        <translation>下载</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">正在下载 wiRedPanda %1…</translation>
+        <translation>正在下载 wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">正在下载更新</translation>
+        <translation>正在下载更新</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">下载失败</translation>
+        <translation>下载失败</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">无法下载更新:
+        <translation>无法下载更新:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">无法保存文件:
+        <translation>无法保存文件:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">下载完成</translation>
+        <translation>下载完成</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda 已下载至:
+        <translation>wiRedPanda 已下载至:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ A backup of the original file has been created with name: %3</source>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">新项目</translation>
+        <translation>新项目</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">文件保存成功。</translation>
+        <translation>文件保存成功。</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">文件未保存。仍要关闭标签页吗？</translation>
+        <translation>文件未保存。仍要关闭标签页吗？</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> 已被修改。
+        <translation> 已被修改。
 您要保存更改吗？</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">文件加载成功。</translation>
+        <translation>文件加载成功。</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">打开文件</translation>
+        <translation>打开文件</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda文件 (*.panda)</translation>
+        <translation>Panda文件 (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">另存为...</translation>
+        <translation>另存为...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">文件冲突</translation>
+        <translation>文件冲突</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">文件 &quot;%1&quot; 已在另一个标签页中打开。</translation>
+        <translation>文件 &quot;%1&quot; 已在另一个标签页中打开。</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">切换到标签页</translation>
+        <translation>切换到标签页</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">错误！</translation>
+        <translation>错误！</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">错误</translation>
+        <translation>错误</translation>
     </message>
 </context>
 <context>

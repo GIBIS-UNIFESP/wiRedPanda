@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">A fájl nem létezik</translation>
+        <translation>A fájl nem létezik</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">A fájl nem olvasható</translation>
+        <translation>A fájl nem olvasható</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Ismeretlen ok</translation>
+        <translation>Ismeretlen ok</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Nem sikerült betölteni a pixmap-ot: %1 (%2)</translation>
+        <translation>Nem sikerült betölteni a pixmap-ot: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Hiányzó fájlnév.</translation>
+        <translation>Hiányzó fájlnév.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">A .panda fájl üres.</translation>
+        <translation>A .panda fájl üres.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Arduino kód sikeresen generálva.</translation>
+        <translation>Arduino kód sikeresen generálva.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">SystemVerilog kód sikeresen generálva.</translation>
+        <translation>SystemVerilog kód sikeresen generálva.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Arduino kód generálása</translation>
+        <translation>Arduino kód generálása</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Arduino fájl (*.ino)</translation>
+        <translation>Arduino fájl (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">SystemVerilog kód generálása</translation>
+        <translation>SystemVerilog kód generálása</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">SystemVerilog fájl (*.sv)</translation>
+        <translation>SystemVerilog fájl (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálás PDF-be</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">PDF fájlok (*.pdf)</translation>
+        <translation>PDF fájlok (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Fájl sikeresen exportálva.</translation>
+        <translation>Fájl sikeresen exportálva.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Exportálás képpé</translation>
+        <translation>Exportálás képpé</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">PNG fájlok (*.png)</translation>
+        <translation>PNG fájlok (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Először mentse el a fájlt.</translation>
+        <translation>Először mentse el a fájlt.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Fájl megnyitása</translation>
+        <translation>Fájl megnyitása</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Infó</translation>
+        <translation>Infó</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">A kiválasztott fájlok (és függőségeik) az aktuális projektmappába lesznek másolva.</translation>
+        <translation>A kiválasztott fájlok (és függőségeik) az aktuális projektmappába lesznek másolva.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Húzza ide az eltávolításhoz.</translation>
+        <translation>Húzza ide az eltávolításhoz.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Hiba a fájl törlésekor: %1</translation>
+        <translation>Hiba a fájl törlésekor: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Névütközés</translation>
+        <translation>Névütközés</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Egy &quot;%1&quot; nevű beágyazott IC már létezik.
+        <translation>Egy &quot;%1&quot; nevű beágyazott IC már létezik.
 Javasolt név:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Javasolt név:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
+        <translation>Hiba</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Kérjük, először mentse el a projektet, hogy az IC-k feloldhatók legyenek.</translation>
+        <translation>Kérjük, először mentse el a projektet, hogy az IC-k feloldhatók legyenek.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Az IC-fájl nem olvasható: %1</translation>
+        <translation>Az IC-fájl nem olvasható: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC sikeresen beágyazva.</translation>
+        <translation>IC sikeresen beágyazva.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Kérjük, először mentse el a projektet.</translation>
+        <translation>Kérjük, először mentse el a projektet.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">IC kicsomagolása fájlba...</translation>
+        <translation>IC kicsomagolása fájlba...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda fájlok (*.panda)</translation>
+        <translation>Panda fájlok (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC kicsomagolva ide: %1</translation>
+        <translation>IC kicsomagolva ide: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Nincs fájlalapú IC a beágyazáshoz.</translation>
+        <translation>Nincs fájlalapú IC a beágyazáshoz.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">%1 IC beágyazva. Az áramkör mostantól önálló.</translation>
+        <translation>%1 IC beágyazva. Az áramkör mostantól önálló.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Válassza ki a beágyazandó IC-fájlt</translation>
+        <translation>Válassza ki a beágyazandó IC-fájlt</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">A fájl nem olvasható: %1</translation>
+        <translation>A fájl nem olvasható: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Hang feloldása</translation>
+        <translation>Hang feloldása</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Némítás</translation>
+        <translation>Némítás</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Frissítés elérhető</translation>
+        <translation>Frissítés elérhető</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;A wiRedPanda %1 elérhető.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Jelenleg a %2-es verziót futtatja.&lt;br&gt;Kattintson a &lt;b&gt;Letöltés&lt;/b&gt; gombra az új verzió mentéséhez.</translation>
+        <translation>&lt;b&gt;A wiRedPanda %1 elérhető.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Jelenleg a %2-es verziót futtatja.&lt;br&gt;Kattintson a &lt;b&gt;Letöltés&lt;/b&gt; gombra az új verzió mentéséhez.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;A wiRedPanda %1 elérhető.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Jelenleg a(z) %2 verziót futtatja.&lt;br&gt;Látogasson el a kiadási oldalra az új verzió letöltéséhez.</translation>
+        <translation>&lt;b&gt;A wiRedPanda %1 elérhető.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Jelenleg a(z) %2 verziót futtatja.&lt;br&gt;Látogasson el a kiadási oldalra az új verzió letöltéséhez.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Ne értesítsen erről a verzióról többé</translation>
+        <translation>Ne értesítsen erről a verzióról többé</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Letöltés</translation>
+        <translation>Letöltés</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">wiRedPanda %1 letöltése…</translation>
+        <translation>wiRedPanda %1 letöltése…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégse</translation>
+        <translation>Mégse</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Frissítés letöltése</translation>
+        <translation>Frissítés letöltése</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Letöltés sikertelen</translation>
+        <translation>Letöltés sikertelen</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Nem sikerült letölteni a frissítést:
+        <translation>Nem sikerült letölteni a frissítést:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Nem sikerült menteni a fájlt:
+        <translation>Nem sikerült menteni a fájlt:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Letöltés befejezve</translation>
+        <translation>Letöltés befejezve</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">A wiRedPanda ide lett letöltve:
+        <translation>A wiRedPanda ide lett letöltve:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ Az eredeti fájlról biztonsági másolat készült a következő néven: %3</tr
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Új projekt</translation>
+        <translation>Új projekt</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Fájl sikeresen mentve.</translation>
+        <translation>Fájl sikeresen mentve.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">A fájl nincs mentve. Bezárja a fület?</translation>
+        <translation>A fájl nincs mentve. Bezárja a fület?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> módosult.
+        <translation> módosult.
 Menti a változtatásokat?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Fájl sikeresen betöltve.</translation>
+        <translation>Fájl sikeresen betöltve.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Fájl megnyitása</translation>
+        <translation>Fájl megnyitása</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda fájlok (*.panda)</translation>
+        <translation>Panda fájlok (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Fájl mentése másként...</translation>
+        <translation>Fájl mentése másként...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Fájlütközés</translation>
+        <translation>Fájlütközés</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">A(z) „%1” fájl már nyitva van egy másik lapon.</translation>
+        <translation>A(z) „%1” fájl már nyitva van egy másik lapon.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Váltás a lapra</translation>
+        <translation>Váltás a lapra</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Hiba!</translation>
+        <translation>Hiba!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
+        <translation>Hiba</translation>
     </message>
 </context>
 <context>

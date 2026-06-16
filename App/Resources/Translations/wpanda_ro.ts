@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Fișierul nu există</translation>
+        <translation>Fișierul nu există</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Fișierul nu poate fi citit</translation>
+        <translation>Fișierul nu poate fi citit</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Motiv necunoscut</translation>
+        <translation>Motiv necunoscut</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Nu s-a putut încărca pixmap-ul: %1 (%2)</translation>
+        <translation>Nu s-a putut încărca pixmap-ul: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Lipsește numele fișierului.</translation>
+        <translation>Lipsește numele fișierului.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">Fișierul .panda este gol.</translation>
+        <translation>Fișierul .panda este gol.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Codul Arduino a fost generat cu succes.</translation>
+        <translation>Codul Arduino a fost generat cu succes.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">Codul SystemVerilog a fost generat cu succes.</translation>
+        <translation>Codul SystemVerilog a fost generat cu succes.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Generează Cod Arduino</translation>
+        <translation>Generează Cod Arduino</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Fișier Arduino (*.ino)</translation>
+        <translation>Fișier Arduino (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Generează cod SystemVerilog</translation>
+        <translation>Generează cod SystemVerilog</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">Fișier SystemVerilog (*.sv)</translation>
+        <translation>Fișier SystemVerilog (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Exportă în PDF</translation>
+        <translation>Exportă în PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">Fișiere PDF (*.pdf)</translation>
+        <translation>Fișiere PDF (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Fișierul a fost exportat cu succes.</translation>
+        <translation>Fișierul a fost exportat cu succes.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Exportă în imagine</translation>
+        <translation>Exportă în imagine</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">Fișiere PNG (*.png)</translation>
+        <translation>Fișiere PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Salvează mai întâi fișierul.</translation>
+        <translation>Salvează mai întâi fișierul.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Deschide fișier</translation>
+        <translation>Deschide fișier</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Informații</translation>
+        <translation>Informații</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Fișierele selectate (și dependențele lor) vor fi copiate în folderul proiectului curent.</translation>
+        <translation>Fișierele selectate (și dependențele lor) vor fi copiate în folderul proiectului curent.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Trage aici pentru a elimina.</translation>
+        <translation>Trage aici pentru a elimina.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Eroare la ștergerea fișierului: %1</translation>
+        <translation>Eroare la ștergerea fișierului: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Conflict de nume</translation>
+        <translation>Conflict de nume</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Un IC încorporat cu numele &quot;%1&quot; există deja.
+        <translation>Un IC încorporat cu numele &quot;%1&quot; există deja.
 Nume sugerat:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Nume sugerat:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Eroare</translation>
+        <translation>Eroare</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Salvați mai întâi proiectul pentru ca IC-urile să poată fi rezolvate.</translation>
+        <translation>Salvați mai întâi proiectul pentru ca IC-urile să poată fi rezolvate.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Fișierul IC nu a putut fi citit: %1</translation>
+        <translation>Fișierul IC nu a putut fi citit: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC-ul a fost încorporat cu succes.</translation>
+        <translation>IC-ul a fost încorporat cu succes.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Salvați mai întâi proiectul.</translation>
+        <translation>Salvați mai întâi proiectul.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Extrage IC în fișier...</translation>
+        <translation>Extrage IC în fișier...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Fișiere Panda (*.panda)</translation>
+        <translation>Fișiere Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC extras în %1</translation>
+        <translation>IC extras în %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Nu există IC-uri bazate pe fișiere de încorporat.</translation>
+        <translation>Nu există IC-uri bazate pe fișiere de încorporat.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">%1 IC(-uri) încorporate. Circuitul este acum autonom.</translation>
+        <translation>%1 IC(-uri) încorporate. Circuitul este acum autonom.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Selectați fișierul IC de încorporat</translation>
+        <translation>Selectați fișierul IC de încorporat</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Fișierul nu a putut fi citit: %1</translation>
+        <translation>Fișierul nu a putut fi citit: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Activează sunetul</translation>
+        <translation>Activează sunetul</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Mută</translation>
+        <translation>Mută</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Actualizare disponibilă</translation>
+        <translation>Actualizare disponibilă</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 este disponibil.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Rulați în prezent versiunea %2.&lt;br&gt;Faceți clic pe &lt;b&gt;Descărcare&lt;/b&gt; pentru a salva noua versiune.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 este disponibil.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Rulați în prezent versiunea %2.&lt;br&gt;Faceți clic pe &lt;b&gt;Descărcare&lt;/b&gt; pentru a salva noua versiune.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 este disponibil.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Rulați în prezent versiunea %2.&lt;br&gt;Vizitați pagina de lansări pentru a descărca noua versiune.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 este disponibil.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Rulați în prezent versiunea %2.&lt;br&gt;Vizitați pagina de lansări pentru a descărca noua versiune.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Nu mă mai notifica despre această versiune</translation>
+        <translation>Nu mă mai notifica despre această versiune</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Descarcă</translation>
+        <translation>Descarcă</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">Se descarcă wiRedPanda %1…</translation>
+        <translation>Se descarcă wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Anulare</translation>
+        <translation>Anulare</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Descărcare actualizare</translation>
+        <translation>Descărcare actualizare</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Descărcare eșuată</translation>
+        <translation>Descărcare eșuată</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Nu s-a putut descărca actualizarea:
+        <translation>Nu s-a putut descărca actualizarea:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Nu s-a putut salva fișierul:
+        <translation>Nu s-a putut salva fișierul:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Descărcare finalizată</translation>
+        <translation>Descărcare finalizată</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda a fost descărcat în:
+        <translation>wiRedPanda a fost descărcat în:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ O copie de siguranță a fișierului original a fost creată cu numele: %3</tran
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Proiect nou</translation>
+        <translation>Proiect nou</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Fișier salvat cu succes.</translation>
+        <translation>Fișier salvat cu succes.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Fișier nesalvat. Închide tab oricum?</translation>
+        <translation>Fișier nesalvat. Închide tab oricum?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> a fost modificat.
+        <translation> a fost modificat.
 Vrei să salvezi modificările?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Fișier încărcat cu succes.</translation>
+        <translation>Fișier încărcat cu succes.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Deschide fișier</translation>
+        <translation>Deschide fișier</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Fișiere Panda (*.panda)</translation>
+        <translation>Fișiere Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Salvează fișierul ca ...</translation>
+        <translation>Salvează fișierul ca ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Conflict de fișier</translation>
+        <translation>Conflict de fișier</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Fișierul „%1” este deja deschis într-o altă filă.</translation>
+        <translation>Fișierul „%1” este deja deschis într-o altă filă.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Comută pe filă</translation>
+        <translation>Comută pe filă</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Eroare!</translation>
+        <translation>Eroare!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Eroare</translation>
+        <translation>Eroare</translation>
     </message>
 </context>
 <context>

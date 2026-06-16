@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Fail tidak wujud</translation>
+        <translation>Fail tidak wujud</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Fail tidak boleh dibaca</translation>
+        <translation>Fail tidak boleh dibaca</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Sebab tidak diketahui</translation>
+        <translation>Sebab tidak diketahui</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Tidak dapat memuatkan pixmap: %1 (%2)</translation>
+        <translation>Tidak dapat memuatkan pixmap: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Nama fail hilang.</translation>
+        <translation>Nama fail hilang.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">Fail .panda kosong.</translation>
+        <translation>Fail .panda kosong.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Kod Arduino berjaya dijana.</translation>
+        <translation>Kod Arduino berjaya dijana.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">Kod SystemVerilog berjaya dihasilkan.</translation>
+        <translation>Kod SystemVerilog berjaya dihasilkan.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Jana Kod Arduino</translation>
+        <translation>Jana Kod Arduino</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Fail Arduino (*.ino)</translation>
+        <translation>Fail Arduino (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Jana kod SystemVerilog</translation>
+        <translation>Jana kod SystemVerilog</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">Fail SystemVerilog (*.sv)</translation>
+        <translation>Fail SystemVerilog (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Eksport ke PDF</translation>
+        <translation>Eksport ke PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">Fail PDF (*.pdf)</translation>
+        <translation>Fail PDF (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Fail berjaya dieksport.</translation>
+        <translation>Fail berjaya dieksport.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Eksport ke Imej</translation>
+        <translation>Eksport ke Imej</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">Fail PNG (*.png)</translation>
+        <translation>Fail PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Setiap saluran wayarles mesti mempunyai label unik.</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Simpan fail terlebih dahulu.</translation>
+        <translation>Simpan fail terlebih dahulu.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Buka Fail</translation>
+        <translation>Buka Fail</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Maklumat</translation>
+        <translation>Maklumat</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Fail yang dipilih (dan kebergantungannya) akan disalin ke folder projek semasa.</translation>
+        <translation>Fail yang dipilih (dan kebergantungannya) akan disalin ke folder projek semasa.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Seret ke sini untuk buang.</translation>
+        <translation>Seret ke sini untuk buang.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Ralat membuang fail: %1</translation>
+        <translation>Ralat membuang fail: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Percanggahan nama</translation>
+        <translation>Percanggahan nama</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">IC terbenam bernama &quot;%1&quot; sudah wujud.
+        <translation>IC terbenam bernama &quot;%1&quot; sudah wujud.
 Nama yang dicadangkan:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Nama yang dicadangkan:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Ralat</translation>
+        <translation>Ralat</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Sila simpan projek dahulu supaya IC boleh diselesaikan.</translation>
+        <translation>Sila simpan projek dahulu supaya IC boleh diselesaikan.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Tidak dapat membaca fail IC: %1</translation>
+        <translation>Tidak dapat membaca fail IC: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC berjaya dibenamkan.</translation>
+        <translation>IC berjaya dibenamkan.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Sila simpan projek dahulu.</translation>
+        <translation>Sila simpan projek dahulu.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Ekstrak IC ke fail...</translation>
+        <translation>Ekstrak IC ke fail...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Fail Panda (*.panda)</translation>
+        <translation>Fail Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC diekstrak ke %1</translation>
+        <translation>IC diekstrak ke %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Tiada IC berasaskan fail untuk dibenamkan.</translation>
+        <translation>Tiada IC berasaskan fail untuk dibenamkan.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">%1 IC telah dibenamkan. Litar kini berdikari.</translation>
+        <translation>%1 IC telah dibenamkan. Litar kini berdikari.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Pilih fail IC untuk dibenamkan</translation>
+        <translation>Pilih fail IC untuk dibenamkan</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Tidak dapat membaca fail: %1</translation>
+        <translation>Tidak dapat membaca fail: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ Anda perlu menyimpan projek baharu sebelum mengakses IC dan penampilan, atau men
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Nyahbisu</translation>
+        <translation>Nyahbisu</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Bisu</translation>
+        <translation>Bisu</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ Anda perlu menyimpan projek baharu sebelum mengakses IC dan penampilan, atau men
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Kemas kini tersedia</translation>
+        <translation>Kemas kini tersedia</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 tersedia.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Anda sedang menjalankan versi %2.&lt;br&gt;Klik &lt;b&gt;Muat turun&lt;/b&gt; untuk menyimpan versi baharu.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 tersedia.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Anda sedang menjalankan versi %2.&lt;br&gt;Klik &lt;b&gt;Muat turun&lt;/b&gt; untuk menyimpan versi baharu.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 tersedia.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Anda kini menjalankan versi %2.&lt;br&gt;Lawati halaman keluaran untuk memuat turun versi baharu.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 tersedia.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Anda kini menjalankan versi %2.&lt;br&gt;Lawati halaman keluaran untuk memuat turun versi baharu.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Jangan beritahu saya tentang versi ini lagi</translation>
+        <translation>Jangan beritahu saya tentang versi ini lagi</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Muat turun</translation>
+        <translation>Muat turun</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">Memuat turun wiRedPanda %1…</translation>
+        <translation>Memuat turun wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Batal</translation>
+        <translation>Batal</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Memuat turun Kemas kini</translation>
+        <translation>Memuat turun Kemas kini</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Muat turun Gagal</translation>
+        <translation>Muat turun Gagal</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Tidak dapat memuat turun kemas kini:
+        <translation>Tidak dapat memuat turun kemas kini:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Tidak dapat menyimpan fail:
+        <translation>Tidak dapat menyimpan fail:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Muat turun Selesai</translation>
+        <translation>Muat turun Selesai</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda telah dimuat turun ke:
+        <translation>wiRedPanda telah dimuat turun ke:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ Sandaran fail asal telah dicipta dengan nama: %3</translation>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Projek Baru</translation>
+        <translation>Projek Baru</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Fail berjaya disimpan.</translation>
+        <translation>Fail berjaya disimpan.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Fail tidak disimpan. Tutup tab juga?</translation>
+        <translation>Fail tidak disimpan. Tutup tab juga?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> telah diubah suai.
+        <translation> telah diubah suai.
 Adakah anda ingin menyimpan perubahan?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Fail berjaya dimuatkan.</translation>
+        <translation>Fail berjaya dimuatkan.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Buka Fail</translation>
+        <translation>Buka Fail</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Fail Panda (*.panda)</translation>
+        <translation>Fail Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Simpan Fail sebagai ...</translation>
+        <translation>Simpan Fail sebagai ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Konflik fail</translation>
+        <translation>Konflik fail</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Fail &quot;%1&quot; sudah dibuka dalam tab lain.</translation>
+        <translation>Fail &quot;%1&quot; sudah dibuka dalam tab lain.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Tukar ke tab</translation>
+        <translation>Tukar ke tab</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Ralat!</translation>
+        <translation>Ralat!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Ralat</translation>
+        <translation>Ralat</translation>
     </message>
 </context>
 <context>

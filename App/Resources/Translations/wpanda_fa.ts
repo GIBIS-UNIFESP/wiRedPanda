@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">فایل وجود ندارد</translation>
+        <translation>فایل وجود ندارد</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">فایل خواندنی نیست</translation>
+        <translation>فایل خواندنی نیست</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">دلیل نامعلوم</translation>
+        <translation>دلیل نامعلوم</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">امکان بارگذاری تصویر وجود ندارد: %1 (%2)</translation>
+        <translation>امکان بارگذاری تصویر وجود ندارد: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Each wireless channel must have a unique label.</source>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">نام فایل موجود نیست.</translation>
+        <translation>نام فایل موجود نیست.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">فایل .panda خالی است.</translation>
+        <translation>فایل .panda خالی است.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">کد Arduino با موفقیت تولید شد.</translation>
+        <translation>کد Arduino با موفقیت تولید شد.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">کد SystemVerilog با موفقیت تولید شد.</translation>
+        <translation>کد SystemVerilog با موفقیت تولید شد.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">تولید کد Arduino</translation>
+        <translation>تولید کد Arduino</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">فایل Arduino (*.ino)</translation>
+        <translation>فایل Arduino (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">تولید کد SystemVerilog</translation>
+        <translation>تولید کد SystemVerilog</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">فایل SystemVerilog (*.sv)</translation>
+        <translation>فایل SystemVerilog (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">صادرات به PDF</translation>
+        <translation>صادرات به PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">فایل‌های PDF (*.pdf)</translation>
+        <translation>فایل‌های PDF (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">فایل با موفقیت صادر شد.</translation>
+        <translation>فایل با موفقیت صادر شد.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">صادرات به تصویر</translation>
+        <translation>صادرات به تصویر</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">فایل‌های PNG (*.png)</translation>
+        <translation>فایل‌های PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">ابتدا فایل را ذخیره کنید.</translation>
+        <translation>ابتدا فایل را ذخیره کنید.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">باز کردن فایل</translation>
+        <translation>باز کردن فایل</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">پاندا (*.panda)</translation>
+        <translation>پاندا (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">اطلاعات</translation>
+        <translation>اطلاعات</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">فایل‌های انتخاب‌شده (و وابستگی‌هایشان) به پوشه پروژه فعلی کپی خواهند شد.</translation>
+        <translation>فایل‌های انتخاب‌شده (و وابستگی‌هایشان) به پوشه پروژه فعلی کپی خواهند شد.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">برای حذف به اینجا بکشید.</translation>
+        <translation>برای حذف به اینجا بکشید.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">خطا در حذف فایل: %1</translation>
+        <translation>خطا در حذف فایل: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">تداخل نام</translation>
+        <translation>تداخل نام</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">IC جاسازی‌شده‌ای با نام &quot;%1&quot; از قبل وجود دارد.
+        <translation>IC جاسازی‌شده‌ای با نام &quot;%1&quot; از قبل وجود دارد.
 نام پیشنهادی:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Suggested name:</source>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">خطا</translation>
+        <translation>خطا</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">لطفاً ابتدا پروژه را ذخیره کنید تا IC ها قابل حل باشند.</translation>
+        <translation>لطفاً ابتدا پروژه را ذخیره کنید تا IC ها قابل حل باشند.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">فایل IC خوانده نشد: %1</translation>
+        <translation>فایل IC خوانده نشد: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC با موفقیت جاسازی شد.</translation>
+        <translation>IC با موفقیت جاسازی شد.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">لطفاً ابتدا پروژه را ذخیره کنید.</translation>
+        <translation>لطفاً ابتدا پروژه را ذخیره کنید.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">استخراج IC به فایل...</translation>
+        <translation>استخراج IC به فایل...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">فایل‌های Panda (*.panda)</translation>
+        <translation>فایل‌های Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC به %1 استخراج شد</translation>
+        <translation>IC به %1 استخراج شد</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">هیچ IC مبتنی بر فایلی برای جاسازی وجود ندارد.</translation>
+        <translation>هیچ IC مبتنی بر فایلی برای جاسازی وجود ندارد.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">%1 IC جاسازی شد. مدار اکنون مستقل است.</translation>
+        <translation>%1 IC جاسازی شد. مدار اکنون مستقل است.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">فایل IC را برای جاسازی انتخاب کنید</translation>
+        <translation>فایل IC را برای جاسازی انتخاب کنید</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">فایل خوانده نشد: %1</translation>
+        <translation>فایل خوانده نشد: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ wiRedPanda %1 به طور خودکار تمام فایل‌های .panda دیگ�
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">برگرداندن صدا</translation>
+        <translation>برگرداندن صدا</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">بی‌صدا</translation>
+        <translation>بی‌صدا</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ wiRedPanda %1 به طور خودکار تمام فایل‌های .panda دیگ�
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">به‌روزرسانی موجود است</translation>
+        <translation>به‌روزرسانی موجود است</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 موجود است.&lt;/b&gt;&lt;br&gt;&lt;br&gt;شما در حال اجرای نسخه %2 هستید.&lt;br&gt;برای ذخیره نسخه جدید روی &lt;b&gt;دانلود&lt;/b&gt; کلیک کنید.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 موجود است.&lt;/b&gt;&lt;br&gt;&lt;br&gt;شما در حال اجرای نسخه %2 هستید.&lt;br&gt;برای ذخیره نسخه جدید روی &lt;b&gt;دانلود&lt;/b&gt; کلیک کنید.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 موجود است.&lt;/b&gt;&lt;br&gt;&lt;br&gt;شما در حال حاضر نسخه %2 را اجرا می‌کنید.&lt;br&gt;برای دانلود نسخه جدید به صفحه انتشار مراجعه کنید.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 موجود است.&lt;/b&gt;&lt;br&gt;&lt;br&gt;شما در حال حاضر نسخه %2 را اجرا می‌کنید.&lt;br&gt;برای دانلود نسخه جدید به صفحه انتشار مراجعه کنید.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">دیگر درباره این نسخه اطلاع نده</translation>
+        <translation>دیگر درباره این نسخه اطلاع نده</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">دانلود</translation>
+        <translation>دانلود</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">در حال دانلود wiRedPanda %1…</translation>
+        <translation>در حال دانلود wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">لغو</translation>
+        <translation>لغو</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">در حال دانلود به‌روزرسانی</translation>
+        <translation>در حال دانلود به‌روزرسانی</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">دانلود ناموفق</translation>
+        <translation>دانلود ناموفق</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">امکان دانلود به‌روزرسانی وجود ندارد:
+        <translation>امکان دانلود به‌روزرسانی وجود ندارد:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">امکان ذخیره فایل وجود ندارد:
+        <translation>امکان ذخیره فایل وجود ندارد:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">دانلود کامل شد</translation>
+        <translation>دانلود کامل شد</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda در اینجا دانلود شد:
+        <translation>wiRedPanda در اینجا دانلود شد:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ A backup of the original file has been created with name: %3</source>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">پروژه جدید</translation>
+        <translation>پروژه جدید</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">فایل با موفقیت ذخیره شد.</translation>
+        <translation>فایل با موفقیت ذخیره شد.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">فایل ذخیره نشد. با وجود این زبانه بسته شود؟</translation>
+        <translation>فایل ذخیره نشد. با وجود این زبانه بسته شود؟</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> تغییر کرده است.
+        <translation> تغییر کرده است.
 آیا می‌خواهید تغییرات را ذخیره کنید؟</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">فایل با موفقیت بارگذاری شد.</translation>
+        <translation>فایل با موفقیت بارگذاری شد.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">باز کردن فایل</translation>
+        <translation>باز کردن فایل</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">فایل‌های Panda (*.panda)</translation>
+        <translation>فایل‌های Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">ذخیره فایل به نام ...</translation>
+        <translation>ذخیره فایل به نام ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">تداخل فایل</translation>
+        <translation>تداخل فایل</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">فایل «%1» در یک زبانه دیگر باز است.</translation>
+        <translation>فایل «%1» در یک زبانه دیگر باز است.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">رفتن به زبانه</translation>
+        <translation>رفتن به زبانه</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">خطا!</translation>
+        <translation>خطا!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">خطا</translation>
+        <translation>خطا</translation>
     </message>
 </context>
 <context>

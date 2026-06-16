@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Файл не існує</translation>
+        <translation>Файл не існує</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Файл нечитабельний</translation>
+        <translation>Файл нечитабельний</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Невідома причина</translation>
+        <translation>Невідома причина</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Не вдалося завантажити зображення: %1 (%2)</translation>
+        <translation>Не вдалося завантажити зображення: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Each wireless channel must have a unique label.</source>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Відсутнє ім&apos;я файлу.</translation>
+        <translation>Відсутнє ім&apos;я файлу.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">Файл .panda порожній.</translation>
+        <translation>Файл .panda порожній.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Код Arduino успішно згенеровано.</translation>
+        <translation>Код Arduino успішно згенеровано.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">Код SystemVerilog успішно згенеровано.</translation>
+        <translation>Код SystemVerilog успішно згенеровано.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Генерувати код Arduino</translation>
+        <translation>Генерувати код Arduino</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Файл Arduino (*.ino)</translation>
+        <translation>Файл Arduino (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Згенерувати код SystemVerilog</translation>
+        <translation>Згенерувати код SystemVerilog</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">Файл SystemVerilog (*.sv)</translation>
+        <translation>Файл SystemVerilog (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Експорт в PDF</translation>
+        <translation>Експорт в PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">Файли PDF (*.pdf)</translation>
+        <translation>Файли PDF (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Файл успішно експортовано.</translation>
+        <translation>Файл успішно експортовано.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Експорт в зображення</translation>
+        <translation>Експорт в зображення</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">Файли PNG (*.png)</translation>
+        <translation>Файли PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Спочатку збережіть файл.</translation>
+        <translation>Спочатку збережіть файл.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Відкрити файл</translation>
+        <translation>Відкрити файл</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Інформація</translation>
+        <translation>Інформація</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Вибрані файли (та їхні залежності) будуть скопійовані до поточної теки проєкту.</translation>
+        <translation>Вибрані файли (та їхні залежності) будуть скопійовані до поточної теки проєкту.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Перетягніть сюди для видалення.</translation>
+        <translation>Перетягніть сюди для видалення.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Помилка видалення файлу: %1</translation>
+        <translation>Помилка видалення файлу: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Конфлікт імен</translation>
+        <translation>Конфлікт імен</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Вбудований IC з назвою &quot;%1&quot; вже існує.
+        <translation>Вбудований IC з назвою &quot;%1&quot; вже існує.
 Запропонована назва:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Suggested name:</source>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Спочатку збережіть проект, щоб IC можна було знайти.</translation>
+        <translation>Спочатку збережіть проект, щоб IC можна було знайти.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Не вдалося прочитати файл IC: %1</translation>
+        <translation>Не вдалося прочитати файл IC: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC успішно вбудовано.</translation>
+        <translation>IC успішно вбудовано.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Спочатку збережіть проект.</translation>
+        <translation>Спочатку збережіть проект.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Витягти IC у файл...</translation>
+        <translation>Витягти IC у файл...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Файли Panda (*.panda)</translation>
+        <translation>Файли Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC витягнуто до %1</translation>
+        <translation>IC витягнуто до %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Немає IC на основі файлів для вбудовування.</translation>
+        <translation>Немає IC на основі файлів для вбудовування.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">Вбудовано %1 IC. Схема тепер автономна.</translation>
+        <translation>Вбудовано %1 IC. Схема тепер автономна.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Виберіть файл IC для вбудовування</translation>
+        <translation>Виберіть файл IC для вбудовування</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Не вдалося прочитати файл: %1</translation>
+        <translation>Не вдалося прочитати файл: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ wiRedPanda %1 автоматично відобразить усі інші фа
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Вмикнути звук</translation>
+        <translation>Вмикнути звук</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Вимкнути звук</translation>
+        <translation>Вимкнути звук</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ wiRedPanda %1 автоматично відобразить усі інші фа
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Доступне оновлення</translation>
+        <translation>Доступне оновлення</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 доступна.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Ви зараз використовуєте версію %2.&lt;br&gt;Натисніть &lt;b&gt;Завантажити&lt;/b&gt;, щоб зберегти нову версію.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 доступна.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Ви зараз використовуєте версію %2.&lt;br&gt;Натисніть &lt;b&gt;Завантажити&lt;/b&gt;, щоб зберегти нову версію.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 доступна.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Ви зараз використовуєте версію %2.&lt;br&gt;Відвідайте сторінку випусків, щоб завантажити нову версію.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 доступна.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Ви зараз використовуєте версію %2.&lt;br&gt;Відвідайте сторінку випусків, щоб завантажити нову версію.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Не сповіщувати мене про цю версію знову</translation>
+        <translation>Не сповіщувати мене про цю версію знову</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Завантажити</translation>
+        <translation>Завантажити</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">Завантаження wiRedPanda %1…</translation>
+        <translation>Завантаження wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Скасувати</translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Завантаження оновлення</translation>
+        <translation>Завантаження оновлення</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Помилка завантаження</translation>
+        <translation>Помилка завантаження</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Не вдалося завантажити оновлення:
+        <translation>Не вдалося завантажити оновлення:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Не вдалося зберегти файл:
+        <translation>Не вдалося зберегти файл:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Завантаження завершено</translation>
+        <translation>Завантаження завершено</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda завантажено до:
+        <translation>wiRedPanda завантажено до:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ A backup of the original file has been created with name: %3</source>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Новий проєкт</translation>
+        <translation>Новий проєкт</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Файл успішно збережено.</translation>
+        <translation>Файл успішно збережено.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Файл не збережено. Закрити вкладку все одно?</translation>
+        <translation>Файл не збережено. Закрити вкладку все одно?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> було змінено.
+        <translation> було змінено.
 Чи хочете зберегти зміни?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Файл успішно завантажено.</translation>
+        <translation>Файл успішно завантажено.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Відкрити файл</translation>
+        <translation>Відкрити файл</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Файли Panda (*.panda)</translation>
+        <translation>Файли Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Зберегти файл як ...</translation>
+        <translation>Зберегти файл як ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Конфлікт файлів</translation>
+        <translation>Конфлікт файлів</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Файл «%1» уже відкрито в іншій вкладці.</translation>
+        <translation>Файл «%1» уже відкрито в іншій вкладці.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Перейти до вкладки</translation>
+        <translation>Перейти до вкладки</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Помилка!</translation>
+        <translation>Помилка!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
 </context>
 <context>

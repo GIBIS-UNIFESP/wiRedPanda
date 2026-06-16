@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Tiedostoa ei ole olemassa</translation>
+        <translation>Tiedostoa ei ole olemassa</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Tiedostoa ei voida lukea</translation>
+        <translation>Tiedostoa ei voida lukea</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Tuntematon syy</translation>
+        <translation>Tuntematon syy</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Bittikarttaa ei voitu ladata: %1 (%2)</translation>
+        <translation>Bittikarttaa ei voitu ladata: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Tiedostonimi puuttuu.</translation>
+        <translation>Tiedostonimi puuttuu.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">.panda-tiedosto on tyhjä.</translation>
+        <translation>.panda-tiedosto on tyhjä.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Arduino-koodi generoitu onnistuneesti.</translation>
+        <translation>Arduino-koodi generoitu onnistuneesti.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">SystemVerilog-koodi luotu onnistuneesti.</translation>
+        <translation>SystemVerilog-koodi luotu onnistuneesti.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Generoi Arduino-koodi</translation>
+        <translation>Generoi Arduino-koodi</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Arduino-tiedosto (*.ino)</translation>
+        <translation>Arduino-tiedosto (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Luo SystemVerilog-koodi</translation>
+        <translation>Luo SystemVerilog-koodi</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">SystemVerilog-tiedosto (*.sv)</translation>
+        <translation>SystemVerilog-tiedosto (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Vie PDF:ksi</translation>
+        <translation>Vie PDF:ksi</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">PDF-tiedostot (*.pdf)</translation>
+        <translation>PDF-tiedostot (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Tiedosto viety onnistuneesti.</translation>
+        <translation>Tiedosto viety onnistuneesti.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Vie kuvaksi</translation>
+        <translation>Vie kuvaksi</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">PNG-tiedostot (*.png)</translation>
+        <translation>PNG-tiedostot (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Tallenna tiedosto ensin.</translation>
+        <translation>Tallenna tiedosto ensin.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Avaa tiedosto</translation>
+        <translation>Avaa tiedosto</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Tiedot</translation>
+        <translation>Tiedot</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Valitut tiedostot (ja niiden riippuvuudet) kopioidaan nykyiseen projektikansioon.</translation>
+        <translation>Valitut tiedostot (ja niiden riippuvuudet) kopioidaan nykyiseen projektikansioon.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Vedä tähän poistaaksesi.</translation>
+        <translation>Vedä tähän poistaaksesi.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Virhe poistettaessa tiedostoa: %1</translation>
+        <translation>Virhe poistettaessa tiedostoa: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Nimitörmäys</translation>
+        <translation>Nimitörmäys</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Upotettu IC nimellä &quot;%1&quot; on jo olemassa.
+        <translation>Upotettu IC nimellä &quot;%1&quot; on jo olemassa.
 Ehdotettu nimi:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Ehdotettu nimi:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Virhe</translation>
+        <translation>Virhe</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Tallenna projekti ensin, jotta IC:t voidaan selvittää.</translation>
+        <translation>Tallenna projekti ensin, jotta IC:t voidaan selvittää.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">IC-tiedostoa ei voitu lukea: %1</translation>
+        <translation>IC-tiedostoa ei voitu lukea: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC upotettu onnistuneesti.</translation>
+        <translation>IC upotettu onnistuneesti.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Tallenna projekti ensin.</translation>
+        <translation>Tallenna projekti ensin.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Pura IC tiedostoon...</translation>
+        <translation>Pura IC tiedostoon...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda-tiedostot (*.panda)</translation>
+        <translation>Panda-tiedostot (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC purettu kohteeseen %1</translation>
+        <translation>IC purettu kohteeseen %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Ei tiedostopohjaisia IC:itä upotettavaksi.</translation>
+        <translation>Ei tiedostopohjaisia IC:itä upotettavaksi.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">%1 IC upotettu. Piiri on nyt itsenäinen.</translation>
+        <translation>%1 IC upotettu. Piiri on nyt itsenäinen.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Valitse upotettava IC-tiedosto</translation>
+        <translation>Valitse upotettava IC-tiedosto</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Tiedostoa ei voitu lukea: %1</translation>
+        <translation>Tiedostoa ei voitu lukea: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Poista vaimennus</translation>
+        <translation>Poista vaimennus</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Vaimenna</translation>
+        <translation>Vaimenna</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Päivitys saatavilla</translation>
+        <translation>Päivitys saatavilla</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 on saatavilla.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Käytät tällä hetkellä versiota %2.&lt;br&gt;Napsauta &lt;b&gt;Lataa&lt;/b&gt; tallentaaksesi uuden version.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 on saatavilla.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Käytät tällä hetkellä versiota %2.&lt;br&gt;Napsauta &lt;b&gt;Lataa&lt;/b&gt; tallentaaksesi uuden version.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 on saatavilla.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Käytät tällä hetkellä versiota %2.&lt;br&gt;Siirry julkaisusivulle ladataksesi uuden version.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 on saatavilla.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Käytät tällä hetkellä versiota %2.&lt;br&gt;Siirry julkaisusivulle ladataksesi uuden version.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Älä ilmoita tästä versiosta uudelleen</translation>
+        <translation>Älä ilmoita tästä versiosta uudelleen</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Lataa</translation>
+        <translation>Lataa</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">Ladataan wiRedPanda %1…</translation>
+        <translation>Ladataan wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Peruuta</translation>
+        <translation>Peruuta</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Ladataan päivitystä</translation>
+        <translation>Ladataan päivitystä</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Lataus epäonnistui</translation>
+        <translation>Lataus epäonnistui</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Päivityksen lataaminen epäonnistui:
+        <translation>Päivityksen lataaminen epäonnistui:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Tiedoston tallentaminen epäonnistui:
+        <translation>Tiedoston tallentaminen epäonnistui:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Lataus valmis</translation>
+        <translation>Lataus valmis</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda on ladattu kohteeseen:
+        <translation>wiRedPanda on ladattu kohteeseen:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ Alkuperäisen tiedoston varmuuskopio on luotu nimellä: %3</translation>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Uusi projekti</translation>
+        <translation>Uusi projekti</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Tiedosto tallennettu onnistuneesti.</translation>
+        <translation>Tiedosto tallennettu onnistuneesti.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Tiedostoa ei tallennettu. Sulje välilehti silti?</translation>
+        <translation>Tiedostoa ei tallennettu. Sulje välilehti silti?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> on muokattu.
+        <translation> on muokattu.
 Haluatko tallentaa muutokset?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Tiedosto ladattu onnistuneesti.</translation>
+        <translation>Tiedosto ladattu onnistuneesti.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Avaa tiedosto</translation>
+        <translation>Avaa tiedosto</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda-tiedostot (*.panda)</translation>
+        <translation>Panda-tiedostot (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Tallenna tiedosto nimellä ...</translation>
+        <translation>Tallenna tiedosto nimellä ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Tiedostoristiriita</translation>
+        <translation>Tiedostoristiriita</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Tiedosto &quot;%1&quot; on jo avoinna toisessa välilehdessä.</translation>
+        <translation>Tiedosto &quot;%1&quot; on jo avoinna toisessa välilehdessä.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Vaihda välilehteen</translation>
+        <translation>Vaihda välilehteen</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Virhe!</translation>
+        <translation>Virhe!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Virhe</translation>
+        <translation>Virhe</translation>
     </message>
 </context>
 <context>

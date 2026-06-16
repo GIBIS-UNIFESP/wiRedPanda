@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Bestand bestaat niet</translation>
+        <translation>Bestand bestaat niet</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Bestand is niet leesbaar</translation>
+        <translation>Bestand is niet leesbaar</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Onbekende reden</translation>
+        <translation>Onbekende reden</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Kon pixmap niet laden: %1 (%2)</translation>
+        <translation>Kon pixmap niet laden: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Elk draadloos kanaal moet een uniek label hebben.</translation>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Bestandsnaam ontbreekt.</translation>
+        <translation>Bestandsnaam ontbreekt.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">Het .panda-bestand is leeg.</translation>
+        <translation>Het .panda-bestand is leeg.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Arduino code succesvol gegenereerd.</translation>
+        <translation>Arduino code succesvol gegenereerd.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">SystemVerilog-code succesvol gegenereerd.</translation>
+        <translation>SystemVerilog-code succesvol gegenereerd.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Genereer Arduino Code</translation>
+        <translation>Genereer Arduino Code</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Arduino bestand (*.ino)</translation>
+        <translation>Arduino bestand (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">SystemVerilog-code genereren</translation>
+        <translation>SystemVerilog-code genereren</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">SystemVerilog-bestand (*.sv)</translation>
+        <translation>SystemVerilog-bestand (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Exporteren naar PDF</translation>
+        <translation>Exporteren naar PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-bestanden (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Bestand succesvol geëxporteerd.</translation>
+        <translation>Bestand succesvol geëxporteerd.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Exporteren naar afbeelding</translation>
+        <translation>Exporteren naar afbeelding</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG-bestanden (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Elk draadloos kanaal moet een uniek label hebben.</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Sla eerst het bestand op.</translation>
+        <translation>Sla eerst het bestand op.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Bestand openen</translation>
+        <translation>Bestand openen</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Informatie</translation>
+        <translation>Informatie</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Geselecteerde bestanden (en hun afhankelijkheden) worden gekopieerd naar de huidige projectmap.</translation>
+        <translation>Geselecteerde bestanden (en hun afhankelijkheden) worden gekopieerd naar de huidige projectmap.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Sleep hier naartoe om te verwijderen.</translation>
+        <translation>Sleep hier naartoe om te verwijderen.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Fout bij verwijderen van bestand: %1</translation>
+        <translation>Fout bij verwijderen van bestand: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Naamconflict</translation>
+        <translation>Naamconflict</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Een ingesloten IC met de naam &quot;%1&quot; bestaat al.
+        <translation>Een ingesloten IC met de naam &quot;%1&quot; bestaat al.
 Voorgestelde naam:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Voorgestelde naam:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Sla het project eerst op zodat IC’s kunnen worden gevonden.</translation>
+        <translation>Sla het project eerst op zodat IC’s kunnen worden gevonden.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Kan IC-bestand niet lezen: %1</translation>
+        <translation>Kan IC-bestand niet lezen: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC succesvol ingesloten.</translation>
+        <translation>IC succesvol ingesloten.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Sla het project eerst op.</translation>
+        <translation>Sla het project eerst op.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">IC naar bestand extraheren...</translation>
+        <translation>IC naar bestand extraheren...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda bestanden (*.panda)</translation>
+        <translation>Panda bestanden (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC geëxtraheerd naar %1</translation>
+        <translation>IC geëxtraheerd naar %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Geen bestandsgebaseerde IC’s om in te sluiten.</translation>
+        <translation>Geen bestandsgebaseerde IC’s om in te sluiten.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">%1 IC(&apos;s) ingesloten. Het circuit is nu zelfstandig.</translation>
+        <translation>%1 IC(&apos;s) ingesloten. Het circuit is nu zelfstandig.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Selecteer IC-bestand om in te sluiten</translation>
+        <translation>Selecteer IC-bestand om in te sluiten</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Kan bestand niet lezen: %1</translation>
+        <translation>Kan bestand niet lezen: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Geluid aan</translation>
+        <translation>Geluid aan</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Dempen</translation>
+        <translation>Dempen</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Update beschikbaar</translation>
+        <translation>Update beschikbaar</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 is beschikbaar.&lt;/b&gt;&lt;br&gt;&lt;br&gt;U gebruikt momenteel versie %2.&lt;br&gt;Klik op &lt;b&gt;Downloaden&lt;/b&gt; om de nieuwe versie op te slaan.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 is beschikbaar.&lt;/b&gt;&lt;br&gt;&lt;br&gt;U gebruikt momenteel versie %2.&lt;br&gt;Klik op &lt;b&gt;Downloaden&lt;/b&gt; om de nieuwe versie op te slaan.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 is beschikbaar.&lt;/b&gt;&lt;br&gt;&lt;br&gt;U gebruikt momenteel versie %2.&lt;br&gt;Bezoek de releasepagina om de nieuwe versie te downloaden.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 is beschikbaar.&lt;/b&gt;&lt;br&gt;&lt;br&gt;U gebruikt momenteel versie %2.&lt;br&gt;Bezoek de releasepagina om de nieuwe versie te downloaden.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Niet meer melden over deze versie</translation>
+        <translation>Niet meer melden over deze versie</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Downloaden</translation>
+        <translation>Downloaden</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">wiRedPanda %1 wordt gedownload…</translation>
+        <translation>wiRedPanda %1 wordt gedownload…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Update downloaden</translation>
+        <translation>Update downloaden</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Download mislukt</translation>
+        <translation>Download mislukt</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Kon de update niet downloaden:
+        <translation>Kon de update niet downloaden:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Kon het bestand niet opslaan:
+        <translation>Kon het bestand niet opslaan:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Download voltooid</translation>
+        <translation>Download voltooid</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda is gedownload naar:
+        <translation>wiRedPanda is gedownload naar:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ Een back-up van het oorspronkelijke bestand is aangemaakt met de naam: %3</trans
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Nieuw project</translation>
+        <translation>Nieuw project</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Bestand succesvol opgeslagen.</translation>
+        <translation>Bestand succesvol opgeslagen.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Bestand niet opgeslagen. Tabblad toch sluiten?</translation>
+        <translation>Bestand niet opgeslagen. Tabblad toch sluiten?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> is gewijzigd.
+        <translation> is gewijzigd.
 Wilt u uw wijzigingen opslaan?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Bestand succesvol geladen.</translation>
+        <translation>Bestand succesvol geladen.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Bestand openen</translation>
+        <translation>Bestand openen</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda bestanden (*.panda)</translation>
+        <translation>Panda bestanden (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Bestand opslaan als ...</translation>
+        <translation>Bestand opslaan als ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Bestandsconflict</translation>
+        <translation>Bestandsconflict</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Het bestand &quot;%1&quot; is al geopend in een ander tabblad.</translation>
+        <translation>Het bestand &quot;%1&quot; is al geopend in een ander tabblad.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Naar tabblad gaan</translation>
+        <translation>Naar tabblad gaan</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Fout!</translation>
+        <translation>Fout!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
 </context>
 <context>

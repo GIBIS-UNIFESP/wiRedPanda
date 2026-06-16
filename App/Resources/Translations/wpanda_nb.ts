@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">Filen finnes ikke</translation>
+        <translation>Filen finnes ikke</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">Filen er ikke lesbar</translation>
+        <translation>Filen er ikke lesbar</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Ukjent årsak</translation>
+        <translation>Ukjent årsak</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Kunne ikke laste pixmap: %1 (%2)</translation>
+        <translation>Kunne ikke laste pixmap: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Hver trådløs kanal må ha en unik etikett.</translation>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Mangler filnavn.</translation>
+        <translation>Mangler filnavn.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">.panda-filen er tom.</translation>
+        <translation>.panda-filen er tom.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Arduino-kode generert med suksess.</translation>
+        <translation>Arduino-kode generert med suksess.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">SystemVerilog-kode ble generert.</translation>
+        <translation>SystemVerilog-kode ble generert.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Generer Arduino-kode</translation>
+        <translation>Generer Arduino-kode</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Arduino-fil (*.ino)</translation>
+        <translation>Arduino-fil (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Generer SystemVerilog-kode</translation>
+        <translation>Generer SystemVerilog-kode</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">SystemVerilog-fil (*.sv)</translation>
+        <translation>SystemVerilog-fil (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Eksporter til PDF</translation>
+        <translation>Eksporter til PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">PDF-filer (*.pdf)</translation>
+        <translation>PDF-filer (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Filen ble eksportert med suksess.</translation>
+        <translation>Filen ble eksportert med suksess.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Eksporter til bilde</translation>
+        <translation>Eksporter til bilde</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">PNG-filer (*.png)</translation>
+        <translation>PNG-filer (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Hver trådløs kanal må ha en unik etikett.</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Lagre fil først.</translation>
+        <translation>Lagre fil først.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Åpne fil</translation>
+        <translation>Åpne fil</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Informasjon</translation>
+        <translation>Informasjon</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Valgte filer (og deres avhengigheter) vil bli kopiert til gjeldende prosjektmappe.</translation>
+        <translation>Valgte filer (og deres avhengigheter) vil bli kopiert til gjeldende prosjektmappe.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Dra hit for å fjerne.</translation>
+        <translation>Dra hit for å fjerne.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Feil ved sletting av fil: %1</translation>
+        <translation>Feil ved sletting av fil: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Navnekollisjon</translation>
+        <translation>Navnekollisjon</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Et innebygd IC med navnet &quot;%1&quot; eksisterer allerede.
+        <translation>Et innebygd IC med navnet &quot;%1&quot; eksisterer allerede.
 Foreslått navn:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Foreslått navn:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Feil</translation>
+        <translation>Feil</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Lagre prosjektet først slik at IC-er kan finnes.</translation>
+        <translation>Lagre prosjektet først slik at IC-er kan finnes.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Kunne ikke lese IC-filen: %1</translation>
+        <translation>Kunne ikke lese IC-filen: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">IC ble innebygd.</translation>
+        <translation>IC ble innebygd.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Lagre prosjektet først.</translation>
+        <translation>Lagre prosjektet først.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Pakk ut IC til fil...</translation>
+        <translation>Pakk ut IC til fil...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda-filer (*.panda)</translation>
+        <translation>Panda-filer (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">IC pakket ut til %1</translation>
+        <translation>IC pakket ut til %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Ingen filbaserte IC-er å bygge inn.</translation>
+        <translation>Ingen filbaserte IC-er å bygge inn.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">%1 IC(-er) innebygd. Kretsen er nå selvstendig.</translation>
+        <translation>%1 IC(-er) innebygd. Kretsen er nå selvstendig.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Velg IC-fil å bygge inn</translation>
+        <translation>Velg IC-fil å bygge inn</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Kunne ikke lese filen: %1</translation>
+        <translation>Kunne ikke lese filen: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Opphev demping</translation>
+        <translation>Opphev demping</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Demp</translation>
+        <translation>Demp</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Oppdatering tilgjengelig</translation>
+        <translation>Oppdatering tilgjengelig</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 er tilgjengelig.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Du kjører for øyeblikket versjon %2.&lt;br&gt;Klikk på &lt;b&gt;Last ned&lt;/b&gt; for å lagre den nye versjonen.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 er tilgjengelig.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Du kjører for øyeblikket versjon %2.&lt;br&gt;Klikk på &lt;b&gt;Last ned&lt;/b&gt; for å lagre den nye versjonen.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 er tilgjengelig.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Du kjører for øyeblikket versjon %2.&lt;br&gt;Besøk utgivelsessiden for å laste ned den nye versjonen.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 er tilgjengelig.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Du kjører for øyeblikket versjon %2.&lt;br&gt;Besøk utgivelsessiden for å laste ned den nye versjonen.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Ikke varsle meg om denne versjonen igjen</translation>
+        <translation>Ikke varsle meg om denne versjonen igjen</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Last ned</translation>
+        <translation>Last ned</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">Laster ned wiRedPanda %1…</translation>
+        <translation>Laster ned wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">Laster ned oppdatering</translation>
+        <translation>Laster ned oppdatering</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Nedlasting mislyktes</translation>
+        <translation>Nedlasting mislyktes</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Kunne ikke laste ned oppdateringen:
+        <translation>Kunne ikke laste ned oppdateringen:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Kunne ikke lagre filen:
+        <translation>Kunne ikke lagre filen:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Nedlasting fullført</translation>
+        <translation>Nedlasting fullført</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda er lastet ned til:
+        <translation>wiRedPanda er lastet ned til:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ En sikkerhetskopi av originalfilen er opprettet med navnet: %3</translation>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Nytt prosjekt</translation>
+        <translation>Nytt prosjekt</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Filen ble lagret.</translation>
+        <translation>Filen ble lagret.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Filen er ikke lagret. Lukk fanen likevel?</translation>
+        <translation>Filen er ikke lagret. Lukk fanen likevel?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> er blitt endret.
+        <translation> er blitt endret.
 Ønsker du å lagre endringene?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Filen ble lastet inn.</translation>
+        <translation>Filen ble lastet inn.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Åpne fil</translation>
+        <translation>Åpne fil</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Panda-filer (*.panda)</translation>
+        <translation>Panda-filer (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Lagre fil som ...</translation>
+        <translation>Lagre fil som ...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Filkonflikt</translation>
+        <translation>Filkonflikt</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">Filen &quot;%1&quot; er allerede åpen i en annen fane.</translation>
+        <translation>Filen &quot;%1&quot; er allerede åpen i en annen fane.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Bytt til fane</translation>
+        <translation>Bytt til fane</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Feil!</translation>
+        <translation>Feil!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Feil</translation>
+        <translation>Feil</translation>
     </message>
 </context>
 <context>

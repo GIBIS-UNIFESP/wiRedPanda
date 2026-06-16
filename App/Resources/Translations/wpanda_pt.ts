@@ -832,22 +832,22 @@
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="249"/>
         <source>File does not exist</source>
-        <translation type="unfinished">O ficheiro não existe</translation>
+        <translation>O ficheiro não existe</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>File is not readable</source>
-        <translation type="unfinished">O ficheiro não é legível</translation>
+        <translation>O ficheiro não é legível</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="252"/>
         <source>Unknown reason</source>
-        <translation type="unfinished">Motivo desconhecido</translation>
+        <translation>Motivo desconhecido</translation>
     </message>
     <message>
         <location filename="../../Element/ElementAppearance.cpp" line="258"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
-        <translation type="unfinished">Não foi possível carregar pixmap: %1 (%2)</translation>
+        <translation>Não foi possível carregar pixmap: %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -1146,69 +1146,69 @@ Cada canal sem fios deve ter um rótulo único.</translation>
         <location filename="../../UI/ExportController.cpp" line="70"/>
         <location filename="../../UI/ExportController.cpp" line="95"/>
         <source>Missing file name.</source>
-        <translation type="unfinished">Nome de ficheiro em falta.</translation>
+        <translation>Nome de ficheiro em falta.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="44"/>
         <location filename="../../UI/ExportController.cpp" line="76"/>
         <source>The .panda file is empty.</source>
-        <translation type="unfinished">O ficheiro .panda está vazio.</translation>
+        <translation>O ficheiro .panda está vazio.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="57"/>
         <source>Arduino code successfully generated.</source>
-        <translation type="unfinished">Código Arduino gerado com sucesso.</translation>
+        <translation>Código Arduino gerado com sucesso.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="87"/>
         <source>SystemVerilog code successfully generated.</source>
-        <translation type="unfinished">Código SystemVerilog gerado com sucesso.</translation>
+        <translation>Código SystemVerilog gerado com sucesso.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Generate Arduino Code</source>
-        <translation type="unfinished">Gerar Código Arduino</translation>
+        <translation>Gerar Código Arduino</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file (*.ino)</source>
-        <translation type="unfinished">Ficheiro Arduino (*.ino)</translation>
+        <translation>Ficheiro Arduino (*.ino)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>Generate SystemVerilog Code</source>
-        <translation type="unfinished">Gerar código SystemVerilog</translation>
+        <translation>Gerar código SystemVerilog</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file (*.sv)</source>
-        <translation type="unfinished">Ficheiro SystemVerilog (*.sv)</translation>
+        <translation>Ficheiro SystemVerilog (*.sv)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
-        <translation type="unfinished">Exportar para PDF</translation>
+        <translation>Exportar para PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files (*.pdf)</source>
-        <translation type="unfinished">Ficheiros PDF (*.pdf)</translation>
+        <translation>Ficheiros PDF (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
         <location filename="../../UI/ExportController.cpp" line="209"/>
         <source>Exported file successfully.</source>
-        <translation type="unfinished">Ficheiro exportado com sucesso.</translation>
+        <translation>Ficheiro exportado com sucesso.</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
-        <translation type="unfinished">Exportar para Imagem</translation>
+        <translation>Exportar para Imagem</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished">Ficheiros PNG (*.png)</translation>
+        <translation>Ficheiros PNG (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1305,49 +1305,49 @@ Cada canal sem fios deve ter um rótulo único.</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="66"/>
         <source>Save file first.</source>
-        <translation type="unfinished">Guardar ficheiro primeiro.</translation>
+        <translation>Guardar ficheiro primeiro.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Open File</source>
-        <translation type="unfinished">Abrir Ficheiro</translation>
+        <translation>Abrir Ficheiro</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
         <source>Panda (*.panda)</source>
-        <translation type="unfinished">Panda (*.panda)</translation>
+        <translation>Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Info</source>
-        <translation type="unfinished">Informação</translation>
+        <translation>Informação</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
         <source>Selected files (and their dependencies) will be copied to the current project folder.</source>
-        <translation type="unfinished">Os ficheiros selecionados (e as suas dependências) serão copiados para a pasta do projeto atual.</translation>
+        <translation>Os ficheiros selecionados (e as suas dependências) serão copiados para a pasta do projeto atual.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Drag here to remove.</source>
-        <translation type="unfinished">Arrastar aqui para remover.</translation>
+        <translation>Arrastar aqui para remover.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="120"/>
         <source>Error removing file: %1</source>
-        <translation type="unfinished">Erro ao remover ficheiro: %1</translation>
+        <translation>Erro ao remover ficheiro: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="137"/>
         <source>Name Collision</source>
-        <translation type="unfinished">Conflito de nomes</translation>
+        <translation>Conflito de nomes</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="138"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
-        <translation type="unfinished">Um CI incorporado com o nome &quot;%1&quot; já existe.
+        <translation>Um CI incorporado com o nome &quot;%1&quot; já existe.
 Nome sugerido:</translation>
     </message>
     <message>
@@ -1361,72 +1361,72 @@ Nome sugerido:</translation>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Error</source>
-        <translation type="unfinished">Erro</translation>
+        <translation>Erro</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="164"/>
         <location filename="../../UI/ICController.cpp" line="229"/>
         <source>Please save the project first so ICs can be resolved.</source>
-        <translation type="unfinished">Guarde o projeto primeiro para que os CIs possam ser encontrados.</translation>
+        <translation>Guarde o projeto primeiro para que os CIs possam ser encontrados.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="175"/>
         <location filename="../../UI/ICController.cpp" line="236"/>
         <location filename="../../UI/ICController.cpp" line="333"/>
         <source>Could not read IC file: %1</source>
-        <translation type="unfinished">Não foi possível ler o ficheiro CI: %1</translation>
+        <translation>Não foi possível ler o ficheiro CI: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="183"/>
         <location filename="../../UI/ICController.cpp" line="254"/>
         <source>IC embedded successfully.</source>
-        <translation type="unfinished">CI incorporado com sucesso.</translation>
+        <translation>CI incorporado com sucesso.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="198"/>
         <location filename="../../UI/ICController.cpp" line="267"/>
         <location filename="../../UI/ICController.cpp" line="305"/>
         <source>Please save the project first.</source>
-        <translation type="unfinished">Guarde o projeto primeiro.</translation>
+        <translation>Guarde o projeto primeiro.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <source>Extract IC to file...</source>
-        <translation type="unfinished">Extrair CI para ficheiro...</translation>
+        <translation>Extrair CI para ficheiro...</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="203"/>
         <location filename="../../UI/ICController.cpp" line="278"/>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Ficheiros Panda (*.panda)</translation>
+        <translation>Ficheiros Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="216"/>
         <location filename="../../UI/ICController.cpp" line="291"/>
         <source>IC extracted to %1</source>
-        <translation type="unfinished">CI extraído para %1</translation>
+        <translation>CI extraído para %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <source>No file-based ICs to embed.</source>
-        <translation type="unfinished">Não há CIs baseados em ficheiros para incorporar.</translation>
+        <translation>Não há CIs baseados em ficheiros para incorporar.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="348"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
-        <translation type="unfinished">%1 CI(s) incorporados. O circuito é agora autónomo.</translation>
+        <translation>%1 CI(s) incorporados. O circuito é agora autónomo.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="357"/>
         <source>Select IC file to embed</source>
-        <translation type="unfinished">Selecionar ficheiro CI para incorporar</translation>
+        <translation>Selecionar ficheiro CI para incorporar</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
-        <translation type="unfinished">Não foi possível ler o ficheiro: %1</translation>
+        <translation>Não foi possível ler o ficheiro: %1</translation>
     </message>
 </context>
 <context>
@@ -2463,12 +2463,12 @@ Tem de guardar os novos projetos antes de aceder a CIs e aparências ou executar
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Unmute</source>
-        <translation type="unfinished">Reativar som</translation>
+        <translation>Reativar som</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
         <source>Mute</source>
-        <translation type="unfinished">Silenciar</translation>
+        <translation>Silenciar</translation>
     </message>
 </context>
 <context>
@@ -2680,73 +2680,73 @@ Tem de guardar os novos projetos antes de aceder a CIs e aparências ou executar
     <message>
         <location filename="../../UI/UpdateController.cpp" line="48"/>
         <source>Update Available</source>
-        <translation type="unfinished">Atualização disponível</translation>
+        <translation>Atualização disponível</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="56"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 está disponível.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Está a executar atualmente a versão %2.&lt;br&gt;Clique em &lt;b&gt;Transferir&lt;/b&gt; para guardar a nova versão.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 está disponível.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Está a executar atualmente a versão %2.&lt;br&gt;Clique em &lt;b&gt;Transferir&lt;/b&gt; para guardar a nova versão.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="59"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
-        <translation type="unfinished">&lt;b&gt;wiRedPanda %1 está disponível.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Está a utilizar a versão %2.&lt;br&gt;Visite a página de lançamentos para transferir a nova versão.</translation>
+        <translation>&lt;b&gt;wiRedPanda %1 está disponível.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Está a utilizar a versão %2.&lt;br&gt;Visite a página de lançamentos para transferir a nova versão.</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="68"/>
         <source>Don&apos;t notify me about this version again</source>
-        <translation type="unfinished">Não me notificar sobre esta versão novamente</translation>
+        <translation>Não me notificar sobre esta versão novamente</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="72"/>
         <source>Download</source>
-        <translation type="unfinished">Transferir</translation>
+        <translation>Transferir</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading wiRedPanda %1…</source>
-        <translation type="unfinished">A transferir wiRedPanda %1…</translation>
+        <translation>A transferir wiRedPanda %1…</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="102"/>
         <source>Downloading Update</source>
-        <translation type="unfinished">A transferir atualização</translation>
+        <translation>A transferir atualização</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Download Failed</source>
-        <translation type="unfinished">Falha na transferência</translation>
+        <translation>Falha na transferência</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="126"/>
         <source>Could not download the update:
 %1</source>
-        <translation type="unfinished">Não foi possível transferir a atualização:
+        <translation>Não foi possível transferir a atualização:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="134"/>
         <source>Could not save the file:
 %1</source>
-        <translation type="unfinished">Não foi possível guardar o ficheiro:
+        <translation>Não foi possível guardar o ficheiro:
 %1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="143"/>
         <source>Download Complete</source>
-        <translation type="unfinished">Transferência concluída</translation>
+        <translation>Transferência concluída</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="144"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
-        <translation type="unfinished">wiRedPanda foi transferido para:
+        <translation>wiRedPanda foi transferido para:
 %1</translation>
     </message>
 </context>
@@ -2859,75 +2859,75 @@ Foi criada uma cópia de segurança do ficheiro original com o nome: %3</transla
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
         <source>New Project</source>
-        <translation type="unfinished">Novo Projeto</translation>
+        <translation>Novo Projeto</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>File saved successfully.</source>
-        <translation type="unfinished">Ficheiro guardado com sucesso.</translation>
+        <translation>Ficheiro guardado com sucesso.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
         <source>File not saved. Close tab anyway?</source>
-        <translation type="unfinished">Ficheiro não guardado. Fechar separador mesmo assim?</translation>
+        <translation>Ficheiro não guardado. Fechar separador mesmo assim?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
         <source> has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"> foi modificado.
+        <translation> foi modificado.
 Deseja guardar as alterações?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source>File loaded successfully.</source>
-        <translation type="unfinished">Ficheiro carregado com sucesso.</translation>
+        <translation>Ficheiro carregado com sucesso.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <source>Open File</source>
-        <translation type="unfinished">Abrir Ficheiro</translation>
+        <translation>Abrir Ficheiro</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Panda files (*.panda)</source>
-        <translation type="unfinished">Ficheiros Panda (*.panda)</translation>
+        <translation>Ficheiros Panda (*.panda)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
         <source>Save File as ...</source>
-        <translation type="unfinished">Guardar Ficheiro como...</translation>
+        <translation>Guardar Ficheiro como...</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
         <source>File Conflict</source>
-        <translation type="unfinished">Conflito de ficheiro</translation>
+        <translation>Conflito de ficheiro</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
-        <translation type="unfinished">O ficheiro &quot;%1&quot; já está aberto noutro separador.</translation>
+        <translation>O ficheiro &quot;%1&quot; já está aberto noutro separador.</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
         <source>Switch to Tab</source>
-        <translation type="unfinished">Mudar para o separador</translation>
+        <translation>Mudar para o separador</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
         <source>Error!</source>
-        <translation type="unfinished">Erro!</translation>
+        <translation>Erro!</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
         <source>Error</source>
-        <translation type="unfinished">Erro</translation>
+        <translation>Erro</translation>
     </message>
 </context>
 <context>
