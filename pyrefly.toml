@@ -1,0 +1,8 @@
+project-includes = ["**/*"]
+project-excludes = [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/*venv/**/*",
+    "build/**",
+]
+search-path = ["MCP/Client", "Tests/Integration/IC/Generators"]
