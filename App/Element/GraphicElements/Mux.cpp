@@ -164,6 +164,16 @@ void Mux::updateLogic()
     }
 
     const int selectValue = decodeSelectValue(numDataInputs, numSelectLines);
+
+    // With a non-power-of-two data width the select lines can encode values
+    // that address no data input (e.g. 5 data inputs, 3 select lines, select
+    // = 6). Routing is indeterminate — answer Unknown instead of reading a
+    // select line back as data or indexing past the input vector.
+    if (selectValue >= numDataInputs) {
+        setOutputValue(Status::Unknown);
+        return;
+    }
+
     setOutputValue(simInputs().at(selectValue));
 }
 
