@@ -32,6 +32,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import cast
 
 
 def discover_generators(generators_dir: Path) -> list[str]:
@@ -243,14 +244,17 @@ class GeneratorRunner:
             env["PYTHONPATH"] = os.pathsep.join(filter(None, [mcp_client, env.get("PYTHONPATH", "")]))
 
             # Run the generator script
-            result = await asyncio.to_thread(
-                subprocess.run,
-                ["python3", str(script_path)],
-                cwd=str(self.generators_dir),
-                capture_output=True,
-                text=True,
-                timeout=self.timeout,
-                env=env,
+            result = cast(
+                subprocess.CompletedProcess[str],
+                await asyncio.to_thread(
+                    subprocess.run,
+                    ["python3", str(script_path)],
+                    cwd=str(self.generators_dir),
+                    capture_output=True,
+                    text=True,
+                    timeout=self.timeout,
+                    env=env,
+                ),
             )
 
             if result.returncode == 0:

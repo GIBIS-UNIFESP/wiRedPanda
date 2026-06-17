@@ -24,7 +24,7 @@ from typing import Any
 from beartype import beartype
 
 try:
-    from mcp_infrastructure import MCPInfrastructure
+    from mcp_client.mcp_infrastructure import MCPInfrastructure
 except ImportError:
     # MCP/Client is not on sys.path yet. Prefer setting PYTHONPATH before
     # invoking generator scripts (run_all_generators.py does this automatically).
@@ -34,12 +34,12 @@ except ImportError:
     if not _mcp_client.is_dir():
         raise ImportError(
             f"Cannot locate MCP/Client at {_mcp_client}\n"
-            f"Expected structure: .../MCP/Client/mcp_infrastructure.py\n"
+            f"Expected structure: .../MCP/Client/mcp_client/mcp_infrastructure.py\n"
             f"Set PYTHONPATH manually: export PYTHONPATH={_mcp_client}:$PYTHONPATH"
         ) from None
     sys.path.insert(0, str(_mcp_client))
     del _mcp_client, _mcp_root
-    from mcp_infrastructure import MCPInfrastructure
+    from mcp_client.mcp_infrastructure import MCPInfrastructure
 
 # Output directory for all IC components
 IC_COMPONENTS_DIR = Path(__file__).parent.parent / "Components"
