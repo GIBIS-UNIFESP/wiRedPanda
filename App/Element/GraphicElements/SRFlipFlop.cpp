@@ -123,4 +123,3 @@ void SRFlipFlop::resetSimState()
     m_simLastS   = Status::Inactive;
     m_simLastR   = Status::Inactive;
 }
-

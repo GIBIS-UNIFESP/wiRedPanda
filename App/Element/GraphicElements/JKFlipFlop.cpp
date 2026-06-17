@@ -126,4 +126,3 @@ void JKFlipFlop::resetSimState()
     m_simLastJ   = Status::Active;
     m_simLastK   = Status::Active;
 }
-
