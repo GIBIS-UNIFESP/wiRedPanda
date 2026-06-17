@@ -25,26 +25,24 @@ If root_dir is not provided, uses the git repository root (or script's parent di
 import re
 import subprocess
 import sys
-from pathlib import Path
 from dataclasses import dataclass
-from typing import Optional, List
+from pathlib import Path
 
 
 @dataclass
 class IncludeEntry:
     """Represents a single include with optional conditional context."""
+
     kind: str  # 'related', 'stdlib', 'qt', 'project'
     header: str  # The include path/name
     line: str  # The raw #include line
-    condition: Optional[str] = None  # E.g., "Q_OS_WIN", "HAVE_SENTRY", etc.
+    condition: str | None = None  # E.g., "Q_OS_WIN", "HAVE_SENTRY", etc.
 
 
 def find_repo_root():
+    """Return the git repository root, falling back to the script's grandparent directory."""
     try:
-        result = subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            capture_output=True, text=True, check=True
-        )
+        result = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         return Path(result.stdout.strip())
     except (subprocess.CalledProcessError, FileNotFoundError):
         return Path(__file__).parent.parent
@@ -60,9 +58,7 @@ def should_exclude_dir(dirname):
         return True
     if dirname.startswith("."):
         return True
-    if dirname.lower().startswith("build"):
-        return True
-    return False
+    return bool(dirname.lower().startswith("build"))
 
 
 def classify_include(line):
@@ -82,18 +78,16 @@ def classify_include(line):
     if angle is not None:
         if angle.startswith("Q") or angle.startswith("nlohmann"):
             return "qt", angle
-        else:
-            return "stdlib", angle
-    else:
-        return "project", quote
+        return "stdlib", angle
+    return "project", quote
 
 
 def extract_condition(line):
     """Extract preprocessor condition name from #ifdef or #if defined lines."""
-    m = re.match(r'^\s*#ifdef\s+(\w+)', line)
+    m = re.match(r"^\s*#ifdef\s+(\w+)", line)
     if m:
         return m.group(1)
-    m = re.match(r'^\s*#if\s+defined\s*\(\s*(\w+)\s*\)', line)
+    m = re.match(r"^\s*#if\s+defined\s*\(\s*(\w+)\s*\)", line)
     if m:
         return m.group(1)
     return None
@@ -113,8 +107,8 @@ def parse_include_section_with_ifdef(lines, start_idx):
     """
     i = start_idx
     n = len(lines)
-    entries: List[IncludeEntry] = []
-    trailing_blocks: List[tuple] = []
+    entries: list[IncludeEntry] = []
+    trailing_blocks: list[tuple] = []
 
     while i < n:
         line = lines[i]
@@ -131,20 +125,30 @@ def parse_include_section_with_ifdef(lines, start_idx):
             j = i + 1
             depth = 1
             has_includes = False
+            has_else = False
             while j < n and depth > 0:
                 s = lines[j].strip()
                 if s.startswith("#ifdef") or s.startswith("#if "):
                     depth += 1
-                elif s == "#endif":
+                elif s.startswith("#endif"):
                     depth -= 1
                     if depth == 0:
                         break
+                elif depth == 1 and (s.startswith("#else") or s.startswith("#elif")):
+                    has_else = True
                 if depth > 0 and classify_include(lines[j])[0]:
                     has_includes = True
                 j += 1
 
             # If the block contains no includes, treat it as end-of-section
             if not has_includes:
+                return i, entries, trailing_blocks
+
+            # If the block has #else/#elif branches, its includes live in
+            # mutually-exclusive arms and must not be merged under one condition
+            # (doing so mis-attributes e.g. the #else POSIX headers to the #ifdef
+            # Q_OS_WIN arm). Preserve the whole block verbatim.
+            if has_else:
                 return i, entries, trailing_blocks
 
             # Block has includes — process it
@@ -164,19 +168,16 @@ def parse_include_section_with_ifdef(lines, start_idx):
                 block_line = lines[i]
                 bstripped = block_line.strip()
 
-                if bstripped == "#endif":
+                if bstripped.startswith("#endif"):
                     i += 1
                     break
 
                 kind, header = classify_include(block_line)
                 if kind:
                     # Extract the include — it will be reordered into the right section
-                    block_includes.append(IncludeEntry(
-                        kind=kind,
-                        header=header,
-                        line=block_line.rstrip(),
-                        condition=condition
-                    ))
+                    block_includes.append(
+                        IncludeEntry(kind=kind, header=header, line=block_line.rstrip(), condition=condition)
+                    )
                 elif bstripped and not bstripped.startswith("//"):
                     # Non-include code inside #ifdef — collect to re-emit later
                     block_code_lines.append(block_line.rstrip())
@@ -198,12 +199,7 @@ def parse_include_section_with_ifdef(lines, start_idx):
             return i, entries, trailing_blocks
 
         # Add direct include with no condition
-        entries.append(IncludeEntry(
-            kind=kind,
-            header=header,
-            line=line.rstrip(),
-            condition=None
-        ))
+        entries.append(IncludeEntry(kind=kind, header=header, line=line.rstrip(), condition=None))
         i += 1
 
     return i, entries, trailing_blocks
@@ -250,20 +246,22 @@ def skip_initial_comments(lines):
 
 
 def is_cpp_file(filepath):
+    """Return True if the path refers to a C++ implementation file."""
     return str(filepath).endswith(".cpp")
 
 
 def is_header_file(filepath):
+    """Return True if the path refers to a C++ header file."""
     return str(filepath).endswith(".h")
 
 
-def detect_violations(entries: List[IncludeEntry], is_cpp, filepath, original_lines, end_idx):
+def detect_violations(entries: list[IncludeEntry], is_cpp, filepath, original_lines, end_idx):
     """Detect include ordering violations."""
     violations = []
 
     # The parser skips blank lines, so end_idx always points to a non-blank line.
     # A missing blank line means the line immediately before end_idx is not blank.
-    if end_idx < len(original_lines) and end_idx > 0 and original_lines[end_idx - 1].strip() != "":
+    if 0 < end_idx < len(original_lines) and original_lines[end_idx - 1].strip() != "":
         violations.append("Missing blank line after includes")
 
     if not entries:
@@ -298,7 +296,7 @@ def detect_violations(entries: List[IncludeEntry], is_cpp, filepath, original_li
     return violations
 
 
-def format_includes_from_entries(entries: List[IncludeEntry], is_cpp, filepath):
+def format_includes_from_entries(entries: list[IncludeEntry], is_cpp, filepath):
     """
     Format includes from IncludeEntry list in correct order.
     Preserves #ifdef conditions and separates mixed-type conditional blocks.
@@ -367,9 +365,8 @@ def format_includes_from_entries(entries: List[IncludeEntry], is_cpp, filepath):
             result.append("#endif")
 
         # Add blank line after this group if not the last group
-        if idx < len(kinds_to_output) - 1:
-            if result and result[-1] != "":
-                result.append("")
+        if idx < len(kinds_to_output) - 1 and result and result[-1] != "":
+            result.append("")
 
     # Remove trailing blank lines
     while result and result[-1] == "":
@@ -381,7 +378,7 @@ def format_includes_from_entries(entries: List[IncludeEntry], is_cpp, filepath):
 def fix_includes_in_file(filepath, verbose=False, force=False):
     """Fix includes in a single file."""
     try:
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             lines = f.readlines()
     except Exception as e:
         print(f"Error reading {filepath}: {e}")
@@ -493,6 +490,7 @@ def fix_file(filepath, verbose=False, force=False):
 
 
 def main():
+    """Entry point: apply include ordering and style fixes across the repository."""
     root = None
     verbose = False
     force = False
@@ -522,9 +520,11 @@ def main():
     for ext in ["*.cpp", "*.h"]:
         cpp_files.extend(root.glob(f"**/{ext}"))
 
-    cpp_files = [f for f in cpp_files if not any(
-        should_exclude_dir(part) for part in f.relative_to(root).parts
-    ) and f.name not in EXCLUDE_FILES]
+    cpp_files = [
+        f
+        for f in cpp_files
+        if not any(should_exclude_dir(part) for part in f.relative_to(root).parts) and f.name not in EXCLUDE_FILES
+    ]
 
     cpp_files.sort()
 
@@ -535,7 +535,7 @@ def main():
                 print(f"Fixed: {filepath.relative_to(root)}")
             processed_count += 1
 
-    print(f"\n--- Summary ---")
+    print("\n--- Summary ---")
     print(f"Files checked:    {len(cpp_files)}")
     print(f"Files processed:  {processed_count}")
 
