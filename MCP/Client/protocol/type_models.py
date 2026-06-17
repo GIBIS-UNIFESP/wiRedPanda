@@ -141,28 +141,15 @@ class EmptyParameters(BaseModel):
 
 
 # ==================== RESPONSE RESULT TYPES ====================
-
-
-class ElementCreationResult(BaseModel):
-    """Result for element creation commands"""
-
-    element_id: Annotated[int, Field(gt=0, description="Created element ID")]
-
-    model_config = ConfigDict(extra="forbid", frozen=True)
+# ElementCreationResult and OutputValueResult live in protocol/results.py
+# (the canonical, package-exported definitions) — they were duplicated here
+# with drifting configs (F45).
 
 
 class ConnectionCreationResult(BaseModel):
     """Result for connection creation commands"""
 
     connection_id: Annotated[int, Field(gt=0, description="Created connection ID")]
-
-    model_config = ConfigDict(extra="forbid", frozen=True)
-
-
-class OutputValueResult(BaseModel):
-    """Result for output value queries"""
-
-    value: bool = Field(description="Output value")
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 

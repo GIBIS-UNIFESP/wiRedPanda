@@ -1716,7 +1716,7 @@
                 },
                 "angle": {
                   "type": "integer",
-                  "description": "Rotation angle in degrees (0-360)"
+                  "description": "Rotation angle in degrees (any integer; the server normalizes modulo 360, and the response echoes the normalized 0-359 value)"
                 }
               },
               "required": [
@@ -1906,7 +1906,8 @@
                 },
                 "size": {
                   "type": "integer",
-                  "minimum": 1
+                  "minimum": 1,
+                  "maximum": 256
                 }
               },
               "required": [
@@ -1955,7 +1956,8 @@
                 },
                 "size": {
                   "type": "integer",
-                  "minimum": 1
+                  "minimum": 1,
+                  "maximum": 256
                 }
               },
               "required": [
