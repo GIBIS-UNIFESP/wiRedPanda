@@ -45,4 +45,7 @@ private slots:
 
     // Regression: D13 — SplitCommand::redo must throw before allocating
     void testSplitCommandRedoThrowsBeforeAllocation();
+
+    // Regression: F17 — toggle position must be bounds-checked (OOB write)
+    void testToggleTruthTableOutputCommandBounds();
 };

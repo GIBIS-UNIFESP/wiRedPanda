@@ -722,6 +722,16 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
                                    requestId, JsonRpcError::ValidationError);
     }
 
+    // The key stores 256 rows per output; positions beyond the current
+    // outputs address nothing the UI can ever toggle (and ≥ 2048 would be an
+    // out-of-bounds write on the 2048-bit key — the command guards that too).
+    const int maxPosition = 256 * truthTable->outputSize();
+    if (position >= maxPosition) {
+        return createErrorResponse(QString("position %1 out of range: TruthTable %2 has %3 outputs (valid positions 0..%4)")
+                                       .arg(position).arg(element->id()).arg(truthTable->outputSize()).arg(maxPosition - 1),
+                                   requestId, JsonRpcError::ValidationError);
+    }
+
     Scene *scene = getCurrentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
