@@ -112,4 +112,3 @@ void TFlipFlop::resetSimState()
     m_simLastClk   = Status::Inactive;
     m_simLastValue = Status::Active;
 }
-
