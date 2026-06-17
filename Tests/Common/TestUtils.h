@@ -8,6 +8,12 @@
 #include <QApplication>
 #include <QTest>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
+#  define QVERIFY_THROWS(exType, ...) QVERIFY_THROWS_EXCEPTION(exType, __VA_ARGS__)
+#else
+#  define QVERIFY_THROWS(exType, ...) QVERIFY_EXCEPTION_THROWN(__VA_ARGS__, exType)
+#endif
+
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"

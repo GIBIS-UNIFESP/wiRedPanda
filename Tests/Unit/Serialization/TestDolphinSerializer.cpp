@@ -180,7 +180,7 @@ void TestDolphinSerializer::testLoadBinaryRejectsNegativeRows()
         stream << static_cast<qint64>(5);
     }
     QDataStream stream(&payload, QIODevice::ReadOnly);
-    QVERIFY_EXCEPTION_THROWN(DolphinSerializer::loadBinary(stream, 8), std::exception);
+    QVERIFY_THROWS(std::exception, DolphinSerializer::loadBinary(stream, 8));
 }
 
 void TestDolphinSerializer::testLoadCSVRejectsNegativeRows()
@@ -195,5 +195,5 @@ void TestDolphinSerializer::testLoadCSVRejectsNegativeRows()
     }
     QFile in(path);
     QVERIFY(in.open(QIODevice::ReadOnly));
-    QVERIFY_EXCEPTION_THROWN(DolphinSerializer::loadCSV(in, 8), std::exception);
+    QVERIFY_THROWS(std::exception, DolphinSerializer::loadCSV(in, 8));
 }

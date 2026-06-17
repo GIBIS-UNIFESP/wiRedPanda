@@ -165,11 +165,11 @@ bool BaseHandler::validatePortRange(GraphicElement *element, int portIndex, bool
     }
 
     // Use the safe QVector size() instead of calling outputPort()/inputPort()
-    int maxPorts = 0;
+    qsizetype maxPorts = 0;
     if (isOutput) {
-        maxPorts = static_cast<int>(element->outputs().size());
+        maxPorts = element->outputs().size();
     } else {
-        maxPorts = static_cast<int>(element->inputs().size());
+        maxPorts = element->inputs().size();
     }
 
     if (portIndex >= maxPorts) {

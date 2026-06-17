@@ -55,12 +55,12 @@ bool ElementTabNavigator::eventFilter(QObject *obj, QEvent *event)
         return a->pos().rx() < b->pos().rx();
     });
 
-    const int elmPos = static_cast<int>(elements.indexOf(elm));
-    const int step   = moveFwd ? 1 : -1;
-    const int total  = static_cast<int>(elements.size());
+    const qsizetype elmPos = elements.indexOf(elm);
+    const qsizetype step   = moveFwd ? 1 : -1;
+    const qsizetype total  = elements.size();
 
     auto *widget = qobject_cast<QWidget *>(obj);
-    int pos = (total + elmPos + step) % total;
+    qsizetype pos = (total + elmPos + step) % total;
 
     // Advance until we find an element whose editor widget is actually enabled
     // (some elements don't expose the currently focused field, so we skip them).

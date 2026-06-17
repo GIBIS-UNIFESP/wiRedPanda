@@ -68,7 +68,7 @@ void ElementPalette::updateICList(const QFileInfo &currentFile)
         QStringList files = directory.entryList({"*.panda", "*.PANDA"}, QDir::Files);
         // Exclude the project file itself and hidden/autosave files.
         files.removeAll(currentFile.fileName());
-        for (int i = static_cast<int>(files.size()) - 1; i >= 0; --i) {
+        for (qsizetype i = files.size() - 1; i >= 0; --i) {
             if (files.at(i).at(0) == '.') {
                 files.removeAt(i);
             }

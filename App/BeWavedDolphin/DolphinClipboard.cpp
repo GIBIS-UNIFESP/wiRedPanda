@@ -52,7 +52,8 @@ void copy(const SignalModel &model, const QItemSelection &ranges, QDataStream &s
     const int anchorRow = firstRow(model, ranges);
     const int anchorCol = firstColumn(model, ranges);
     const auto itemList = ranges.indexes();
-    stream << static_cast<qint64>(itemList.size());
+    const qint64 sz = itemList.size();
+    stream << sz;
 
     for (const auto &item : itemList) {
         const int value = model.value(item.row(), item.column());

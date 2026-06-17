@@ -69,10 +69,10 @@ else()
 endif()
 
 if(MSVC)
-    add_compile_options(/W4 /external:W0 /permissive-)
+    add_compile_options(/W4 /WX /external:W0 /permissive-)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     add_compile_options(
-        -Wall -Wextra -Wpedantic
+        -Wall -Wextra -Wpedantic -Werror
         -Wconversion -Wsign-conversion
         -Wshadow
         -Wnon-virtual-dtor
@@ -91,9 +91,11 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
             -Wduplicated-cond
             -Wduplicated-branches
             -Wlogical-op
-            -Wuseless-cast
             -Wsuggest-override
         )
+        if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+            add_compile_options(-Wuseless-cast)
+        endif()
     endif()
 endif()
 
