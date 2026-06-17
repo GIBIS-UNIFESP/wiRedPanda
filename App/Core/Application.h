@@ -82,7 +82,16 @@ public:
     void setMainWindow(MainWindow *mainWindow);
 
     /// When false, suppresses informational dialogs (e.g. version-mismatch warnings).
+    /// Stays false in BOTH MCP modes: an automated session can't dismiss a
+    /// QMessageBox. Visual concerns are governed by renderingEnabled instead.
     inline static bool interactiveMode = true;
+
+    /// When false, skips wire-geometry construction (QNEConnection::updatePath)
+    /// as a throughput optimization for contexts that never paint or export:
+    /// unit tests and fuzz harnesses. Must stay true whenever anything can be
+    /// rendered — including headless --mcp, whose export_image paints the
+    /// scene off-screen.
+    inline static bool renderingEnabled = true;
 
     /// When true, old-format files are automatically backed up and re-saved in the current
     /// format on load. Independent of interactiveMode so tests can enable migration
