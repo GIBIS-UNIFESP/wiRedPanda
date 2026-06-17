@@ -62,6 +62,10 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRegistry.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseBrowserDialog.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseBrowserDialogUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.cpp
@@ -187,6 +191,11 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseBrowserDialog.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseBrowserDialogUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseStep.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
@@ -248,6 +257,7 @@ set(HEADERS
 set(RESOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Assets/Assets.qrc
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Components/Components.qrc
+    ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Exercises/Exercises.qrc
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Interface/Interface.qrc
     # NotoSans-Regular is bundled on every platform: the memory-element SVG pin labels (and the
     # U+0305 overline on inverted outputs) render with it, so it must ship — and be registered in

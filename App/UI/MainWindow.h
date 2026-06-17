@@ -18,8 +18,11 @@
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
+class BewavedDolphin;
 class ElementLabel;
 class ElementPalette;
+class ExerciseEngine;
+class ExerciseOverlay;
 class ExportController;
 class ICController;
 class ICPreviewPopup;
@@ -237,6 +240,7 @@ private:
     void on_actionRotateRight_triggered();
     void on_actionSelectAll_triggered();
     void on_actionShortcuts_and_Tips_triggered();
+    void on_actionExercises_triggered();
     void on_actionWaveform_triggered();
     void on_actionWires_triggered(const bool checked);
     void on_actionZoomIn_triggered() const;
@@ -264,6 +268,13 @@ private:
     /// Connects all QAction and widget signals to their slots.
     void setupConnections();
 
+    // --- Exercise ---
+
+    void startExercise(const QString &resourcePath);
+    void showWidget(const QString &id);
+    void hideWidget(const QString &id);
+    void clickTarget(const QString &id);
+
     // --- Members ---
 
     std::unique_ptr<MainWindowUi> m_ui;
@@ -279,4 +290,13 @@ private:
     /// Shared IC-hover preview, parented to this MainWindow.
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.
     QPointer<ICPreviewPopup> m_icPreviewPopup;
+
+    // --- Exercise ---
+
+    ExerciseEngine  *m_exerciseEngine  = nullptr;
+    ExerciseOverlay *m_exerciseOverlay = nullptr;
+    QStringList      m_exerciseShownWidgets;
+
+    /// Tracks the currently open BeWavedDolphin window; null when it is closed.
+    QPointer<BewavedDolphin> m_bwd;
 };

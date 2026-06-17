@@ -75,6 +75,13 @@ public:
     static QString updateCheckSkippedVersion();
     static void setUpdateCheckSkippedVersion(const QString &version);
 
+    // Exercise progress
+    static QStringList completedExercises();
+    static void        setCompletedExercises(const QStringList &ids);
+    static int         exerciseProgress(const QString &exerciseId); ///< Returns -1 if no record.
+    static void        setExerciseProgress(const QString &exerciseId, int step);
+
+
 private:
     static QVariant value(const QString &key);
     static void setValue(const QString &key, const QVariant &value);

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/Exercises">
+        <file>basic-and-gate.json</file>
+        <file>clock-led-waveform.json</file>
+    </qresource>
+</RCC>

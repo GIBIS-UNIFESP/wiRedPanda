@@ -12,6 +12,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Exercise/ExerciseOverlay.h"
 
 namespace {
 
@@ -785,4 +786,17 @@ void WorkSpace::setCurrentFile(const QString &filePath)
 {
     m_fileInfo = QFileInfo(filePath);
     m_scene.setContextDir(m_fileInfo.absolutePath());
+}
+
+void WorkSpace::setExerciseOverlay(ExerciseOverlay *overlay)
+{
+    m_exerciseOverlay = overlay;
+}
+
+void WorkSpace::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    if (m_exerciseOverlay && m_exerciseOverlay->isVisible()) {
+        m_exerciseOverlay->repositionToParent();
+    }
 }
