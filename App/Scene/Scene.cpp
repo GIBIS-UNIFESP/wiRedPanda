@@ -258,6 +258,11 @@ const QVector<GraphicElement *> Scene::visibleElements() const
 
 const QVector<GraphicElement *> Scene::elements() const
 {
+    return sortByTopology(unsortedElements());
+}
+
+const QVector<GraphicElement *> Scene::unsortedElements() const
+{
     const auto items_ = items();
     QVector<GraphicElement *> elements_;
     elements_.reserve(items_.size());
@@ -268,7 +273,7 @@ const QVector<GraphicElement *> Scene::elements() const
         }
     }
 
-    return sortByTopology(elements_);
+    return elements_;
 }
 
 const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
@@ -637,7 +642,7 @@ void Scene::rotate(const int angle)
 
 void Scene::mute(const bool mute)
 {
-    for (auto *element : elements()) {
+    for (auto *element : unsortedElements()) {
         if (element->elementType() == ElementType::Buzzer) {
             auto *buzzer = qobject_cast<Buzzer *>(element);
             if (buzzer) {
@@ -708,7 +713,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
 {
     // Skip keyboard triggers while Ctrl is held to avoid firing during Ctrl+Z/C/V shortcuts
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
-        for (auto *element : elements()) {
+        for (auto *element : unsortedElements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
                 if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked()) {
                     input->setOn();
@@ -723,7 +728,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
 void Scene::keyReleaseEvent(QKeyEvent *event)
 {
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
-        for (auto *element : elements()) {
+        for (auto *element : unsortedElements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
                 // Only InputButton (momentary) is released on key-up; InputSwitch stays latched
                 if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {

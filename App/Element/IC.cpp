@@ -309,8 +309,9 @@ void IC::resetInternalState()
 {
     m_internalInputs.clear();
     m_internalOutputs.clear();
-    setInputSize(0);
-    setOutputSize(0);
+    // No setInputSize(0)/setOutputSize(0) here: after the first load,
+    // loadBoundaryPorts locks min == max, making those calls silent no-ops —
+    // the boundary port counts are re-established by the next load anyway.
     // Clear derived simulation state BEFORE freeing the elements those
     // vectors reference. If we freed first, a simulation tick between the
     // free and the clear (via Application::notify + QMessageBox spinning

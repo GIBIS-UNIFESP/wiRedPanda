@@ -382,7 +382,8 @@ public:
     /// Connects simulation input \a inputIndex to output \a outputPort of \a source element.
     void connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort);
 
-    /// Returns \c true if any simulation output changed since the last query (and resets the flag).
+    /// Returns \c true if any simulation output changed since the flag was
+    /// last cleared (it does NOT reset the flag — see clearOutputChanged()).
     bool outputChanged() const { return m_sim.outputChanged(); }
 
     /// Clears the simulation output-changed flag.

@@ -752,7 +752,7 @@ void ElementEditor::triggerChanged(const QString &cmd)
 void ElementEditor::truthTable()
 {
     sentryBreadcrumb("ui", QStringLiteral("Truth table editor"));
-    if (!m_caps.hasTruthTable) return;
+    if (!m_caps.hasTruthTable || m_elements.isEmpty()) return;
 
     // Only a single TruthTable element is supported at a time.
     auto *truthtable = qobject_cast<TruthTable *>(m_elements[0]);
@@ -828,7 +828,9 @@ void ElementEditor::truthTable()
 
 void ElementEditor::setTruthTableProposition(const int row, const int column)
 {
-    if (m_elements.size() > 1) return;
+    // size() != 1 also rejects an empty selection — `> 1` passed for empty
+    // and then indexed m_elements[0].
+    if (m_elements.size() != 1) return;
 
     // Input columns (< nInputs) are read-only; only output columns are editable.
     if (column < m_elements[0]->inputSize()) return;
@@ -857,6 +859,9 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
 void ElementEditor::audioBox()
 {
     sentryBreadcrumb("ui", QStringLiteral("Audio file dialog"));
+    if (m_elements.isEmpty()) {
+        return;
+    }
     auto *audiobox = qobject_cast<AudioBox *>(m_elements[0]);
     if (!audiobox) {
         return;

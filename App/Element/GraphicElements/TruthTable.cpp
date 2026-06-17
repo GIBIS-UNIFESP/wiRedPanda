@@ -250,12 +250,15 @@ void TruthTable::updateLogic()
         }
     }
 
+    // The row index is the inputs read MSB-first (input 0 is the most
+    // significant bit) — computed once with integer ops instead of building
+    // and re-parsing a binary QString per output per tick.
+    quint32 pos = 0;
+    for (const auto s : simInputs()) {
+        pos = (pos << 1) | ((s == Status::Active) ? 1U : 0U);
+    }
+
     for (int i = 0; i < outputSize(); ++i) {
-        const auto pos = std::accumulate(simInputs().cbegin(), simInputs().cend(), QString(""),
-                                         [](QString acc, Status s) {
-                                             acc += (s == Status::Active) ? '1' : '0';
-                                             return acc;
-                                         }).toUInt(nullptr, 2);
         const bool result = m_key.at(static_cast<qsizetype>(256 * i) + static_cast<qsizetype>(pos));
         setOutputValue(i, result);
     }
