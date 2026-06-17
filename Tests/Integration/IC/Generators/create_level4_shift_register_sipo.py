@@ -31,8 +31,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ShiftRegisterSIPOBuilder(ICBuilderBase):
@@ -51,22 +51,23 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
         clk_id = await self.create_element("InputSwitch", input_x, 100.0, "CLK")
         if clk_id is None:
             return False
-        await self.log(f"  ✓ Created input CLK")
+        await self.log("  ✓ Created input CLK")
 
         sin_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "SIN")
         if sin_id is None:
             return False
-        await self.log(f"  ✓ Created input SIN")
+        await self.log("  ✓ Created input SIN")
 
         # Create D flip-flops (4-bit) using level1_d_flip_flop IC
         dff_ids = []
         dff_x = input_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level1_d_flip_flop")):
-
                 return False
 
-            ff_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}")
+            ff_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}"
+            )
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -104,10 +105,12 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
                 return False
 
         # Create Vcc element for inactive Preset/Clear pins
-        vcc_id = await self.create_element("InputVcc", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Vcc")
+        vcc_id = await self.create_element(
+            "InputVcc", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Vcc"
+        )
         if vcc_id is None:
             return False
-        await self.log(f"  ✓ Created Vcc element")
+        await self.log("  ✓ Created Vcc element")
 
         # ========== Connect Vcc to all Preset/Clear pins ==========
         for i in range(4):
@@ -124,7 +127,10 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created SIPO Shift Register IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created SIPO Shift Register IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -138,6 +144,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "SIPO Shift Register IC"))
         sys.exit(exit_code)

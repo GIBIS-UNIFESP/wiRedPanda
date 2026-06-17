@@ -3,10 +3,9 @@
 
 name: Lint
 
-# MCP/Client/ is the only Python tree in the repo, so the workflow is path-gated
-# to its files plus this workflow itself (so edits here self-test). Everything
-# else — C++, CMake, translations, deploy scripts — falls through to build.yml
-# and the other workflows.
+# Python trees covered: MCP/Client/ (full suite) and Scripts/, Tests/Fixtures/,
+# Tests/Integration/IC/Generators/ (ruff only so far).
+# C++, CMake, translations, and deploy scripts fall through to build.yml.
 on:
   push:
     branches-ignore:
@@ -14,6 +13,10 @@ on:
       - wasm
     paths:
       - 'MCP/Client/**'
+      - 'Scripts/**'
+      - 'Tests/Fixtures/**'
+      - 'Tests/Integration/IC/Generators/**'
+      - 'ruff.toml'
       - '.github/workflows/lint.yml'
 
   pull_request:
@@ -22,6 +25,10 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - 'MCP/Client/**'
+      - 'Scripts/**'
+      - 'Tests/Fixtures/**'
+      - 'Tests/Integration/IC/Generators/**'
+      - 'ruff.toml'
       - '.github/workflows/lint.yml'
 
 jobs:
@@ -83,3 +90,30 @@ jobs:
 
     - name: import-linter
       run: lint-imports
+
+  python-lint-scripts:
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    name: Python lint (Scripts/Fixtures/Generators)
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+        cache-dependency-path: 'MCP/Client/requirements.txt'
+
+    - name: Install Python Dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r MCP/Client/requirements.txt
+
+    - name: ruff check
+      run: ruff check Scripts/ Tests/Fixtures/ Tests/Integration/IC/Generators/
+
+    - name: ruff format
+      run: ruff format --check Scripts/ Tests/Fixtures/ Tests/Integration/IC/Generators/

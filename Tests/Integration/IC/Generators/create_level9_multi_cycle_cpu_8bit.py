@@ -39,8 +39,9 @@ Usage:
 """
 
 import asyncio
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
+
 from element_spacing import HORIZONTAL_GATE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class CPU8BitMultiCycleBuilder(ICBuilderBase):
@@ -48,7 +49,7 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 8-bit Multi-Cycle CPU IC"""
-        await self.begin_build('8-bit Multi-Cycle CPU')
+        await self.begin_build("8-bit Multi-Cycle CPU")
         if not await self.create_new_circuit():
             return False
 
@@ -76,7 +77,9 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         # This counter sequences through 4 cycles: 00->01->10->11->00
         counter_ids = []
         for i in range(2):
-            ff_id = await self.create_element("DFlipFlop", 150.0 + (i * HORIZONTAL_GATE_SPACING / 2), counter_y, f"CycleFF[{i}]")
+            ff_id = await self.create_element(
+                "DFlipFlop", 150.0 + (i * HORIZONTAL_GATE_SPACING / 2), counter_y, f"CycleFF[{i}]"
+            )
             if ff_id is None:
                 return False
             counter_ids.append(ff_id)
@@ -96,56 +99,61 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         # ---- Instantiate Fetch Stage ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level8_fetch_stage")):
-
             return False
 
-        fetch_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level8_fetch_stage"), stage_x_offsets[0], stage_y, "Fetch")
+        fetch_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level8_fetch_stage"), stage_x_offsets[0], stage_y, "Fetch"
+        )
         if fetch_id is None:
             return False
         await self.log("  ✓ Instantiated Fetch Stage")
 
         # ---- Instantiate Decode Stage ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level8_decode_stage")):
-
             return False
 
-        decode_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level8_decode_stage"), stage_x_offsets[1], stage_y, "Decode")
+        decode_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level8_decode_stage"), stage_x_offsets[1], stage_y, "Decode"
+        )
         if decode_id is None:
             return False
         await self.log("  ✓ Instantiated Decode Stage")
 
         # ---- Instantiate Execute Stage ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level8_execute_stage")):
-
             return False
 
-        execute_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level8_execute_stage"), stage_x_offsets[2], stage_y, "Execute")
+        execute_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level8_execute_stage"), stage_x_offsets[2], stage_y, "Execute"
+        )
         if execute_id is None:
             return False
         await self.log("  ✓ Instantiated Execute Stage")
 
         # ---- Instantiate Memory Stage ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level8_memory_stage")):
-
             return False
 
-        memory_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level8_memory_stage"), stage_x_offsets[3], stage_y, "Memory")
+        memory_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level8_memory_stage"), stage_x_offsets[3], stage_y, "Memory"
+        )
         if memory_id is None:
             return False
         await self.log("  ✓ Instantiated Memory Stage")
 
         # ---- Instantiate Register File ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_register_file_8x8")):
-
             return False
 
-        regfile_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_register_file_8x8"), 425.0, reg_file_y, "RegFile")
+        regfile_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level6_register_file_8x8"), 425.0, reg_file_y, "RegFile"
+        )
         if regfile_id is None:
             return False
         await self.log("  ✓ Instantiated Register File")
 
         # ---- Connect Clock to cycle counter flip-flops ----
-        for i, ff_id in enumerate(counter_ids):
+        for _i, ff_id in enumerate(counter_ids):
             if not await self.connect(clock_id, ff_id, target_port_label="Clock"):
                 return False
 
@@ -199,16 +207,15 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
             gated_clocks.append(and_id)
 
             # Set AND gate to 3 inputs
-            set_size = await self.mcp.send_command("change_input_size", {
-                "element_id": and_id,
-                "size": 3
-            })
+            set_size = await self.mcp.send_command("change_input_size", {"element_id": and_id, "size": 3})
             if not set_size.success:
                 self.log_error(f"Failed to set input_size=3 for {label} AND gate: {set_size.error}")
                 return False
 
             # Connect three inputs to 3-input AND (ports 0, 1, 2)
-            for port_num, (input_id, use_q_port) in enumerate([(in1, False), (in2, use_q_for_in2), (in3, use_q_for_in3)]):
+            for port_num, (input_id, use_q_port) in enumerate(
+                [(in1, False), (in2, use_q_for_in2), (in3, use_q_for_in3)]
+            ):
                 if use_q_port:
                     if not await self.connect(input_id, and_id, source_port_label="Q", target_port=port_num):
                         return False
@@ -225,7 +232,7 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
             (decode_id, "Decode", gated_clocks[1]),
             (execute_id, "Execute", gated_clocks[2]),
             (memory_id, "Memory", gated_clocks[3]),
-            (regfile_id, "RegFile", clock_id)  # Register file gets main clock for synchronous write
+            (regfile_id, "RegFile", clock_id),  # Register file gets main clock for synchronous write
         ]
 
         for stage_id, _, clock_source in stage_info:
@@ -245,7 +252,7 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         # ---- Connect Reset signals ----
         # Reset both cycle counter flip-flops using ~Clear port (active-low)
-        for i, ff_id in enumerate(counter_ids):
+        for _i, ff_id in enumerate(counter_ids):
             if not await self.connect(reset_not_id, ff_id, target_port_label="~Clear"):
                 return False
 
@@ -257,21 +264,27 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         # ---- Connect Fetch to Decode (OpCode pass-through) ----
         for i in range(5):
-            if not await self.connect(fetch_id, decode_id, source_port_label=f"OpCode[{i}]", target_port_label=f"OpCode[{i}]"):
+            if not await self.connect(
+                fetch_id, decode_id, source_port_label=f"OpCode[{i}]", target_port_label=f"OpCode[{i}]"
+            ):
                 return False
 
         await self.log("  ✓ Connected Fetch to Decode")
 
         # ---- Connect Decode to Execute (ALUOp pass-through) ----
         for i in range(3):
-            if not await self.connect(decode_id, execute_id, source_port_label=f"ALUOp[{i}]", target_port_label=f"ALUOp[{i}]"):
+            if not await self.connect(
+                decode_id, execute_id, source_port_label=f"ALUOp[{i}]", target_port_label=f"ALUOp[{i}]"
+            ):
                 return False
 
         await self.log("  ✓ Connected Decode to Execute")
 
         # ---- Connect Execute to Memory (Result pass-through) ----
         for i in range(8):
-            if not await self.connect(execute_id, memory_id, source_port_label=f"Result[{i}]", target_port_label=f"Result[{i}]"):
+            if not await self.connect(
+                execute_id, memory_id, source_port_label=f"Result[{i}]", target_port_label=f"Result[{i}]"
+            ):
                 return False
 
         # MemRead and MemWrite from Decode to Memory
@@ -385,7 +398,10 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 8-bit Multi-Cycle CPU IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 8-bit Multi-Cycle CPU IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -399,6 +415,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "8-bit Multi-Cycle CPU IC"))
         sys.exit(exit_code)

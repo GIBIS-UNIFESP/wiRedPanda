@@ -35,8 +35,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class RegisterBuilder(ICBuilderBase):
@@ -74,10 +74,11 @@ class RegisterBuilder(ICBuilderBase):
         # Instantiate 4-bit Bus Multiplexer IC (replaces manual AND/OR gates)
         mux_x = input_x + HORIZONTAL_GATE_SPACING
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
             return False
 
-        mux_ic_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), mux_x, 100.0 + VERTICAL_STAGE_SPACING, "BusMux_LoadHold")
+        mux_ic_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), mux_x, 100.0 + VERTICAL_STAGE_SPACING, "BusMux_LoadHold"
+        )
         if mux_ic_id is None:
             return False
         await self.log(f"  ✓ Instantiated BusMux_LoadHold (id={mux_ic_id})")
@@ -134,7 +135,9 @@ class RegisterBuilder(ICBuilderBase):
         # Bus mux logic: Sel=0 → In0 (load), Sel=1 → In1 (hold)
         # We need: EN=1 → load, EN=0 → hold
         # So we invert EN: Sel = NOT(EN)
-        not_gate_id = await self.create_element("Not", input_x + HORIZONTAL_GATE_SPACING, 100.0 + VERTICAL_STAGE_SPACING, "NOT_EN")
+        not_gate_id = await self.create_element(
+            "Not", input_x + HORIZONTAL_GATE_SPACING, 100.0 + VERTICAL_STAGE_SPACING, "NOT_EN"
+        )
         if not_gate_id is None:
             return False
         await self.log(f"  ✓ Created NOT gate for EN inversion (id={not_gate_id})")
@@ -146,14 +149,17 @@ class RegisterBuilder(ICBuilderBase):
         # Connect NOT gate output to mux Sel
         if not await self.connect(not_gate_id, mux_ic_id, target_port_label="Sel"):
             return False
-        await self.log(f"  ✓ Connected EN → NOT → Mux Sel")
+        await self.log("  ✓ Connected EN → NOT → Mux Sel")
 
         # Save circuit as IC
         output_file = str(IC_COMPONENTS_DIR / "level4_register_4bit.panda")
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 4-bit Register IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 4-bit Register IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -167,6 +173,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Register IC"))
         sys.exit(exit_code)

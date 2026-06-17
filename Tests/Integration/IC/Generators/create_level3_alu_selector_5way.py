@@ -24,8 +24,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ALUSelector5wayBuilder(ICBuilderBase):
@@ -51,7 +51,9 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         # Create input switches for 5 ALU result bits
         result_inputs = []
         for i in range(5):
-            result_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"result{i}")
+            result_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"result{i}"
+            )
             if result_id is None:
                 return False
             result_inputs.append(result_id)
@@ -59,7 +61,9 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         # Create input switches for 3-bit opcode
         op_inputs = []
         for i in range(3):
-            op_id = await self.create_element("InputSwitch", opcode_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"op{i}")
+            op_id = await self.create_element(
+                "InputSwitch", opcode_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"op{i}"
+            )
             if op_id is None:
                 return False
             op_inputs.append(op_id)
@@ -81,7 +85,7 @@ class ALUSelector5wayBuilder(ICBuilderBase):
 
         # Connect level 1 muxes
         port_labels = ["In0", "In1"]
-        for source_id, result_idx, mux_id, port in [
+        for source_id, _result_idx, mux_id, port in [
             (result_inputs[0], 0, l1_mux1, 0),  # result0 to l1_mux1 In0
             (result_inputs[1], 1, l1_mux1, 1),  # result1 to l1_mux1 In1
             (result_inputs[2], 2, l1_mux2, 0),  # result2 to l1_mux2 In0
@@ -148,7 +152,10 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created ALUSelector5way IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created ALUSelector5way IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -162,6 +169,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "ALU Selector 5-way IC"))
         sys.exit(exit_code)

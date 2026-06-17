@@ -33,8 +33,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ShiftRegisterPISOBuilder(ICBuilderBase):
@@ -82,7 +82,9 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         # Create data inputs (4-bit)
         data_in_ids = []
         for i in range(4):
-            d_id = await self.create_element("InputSwitch", input_x, input_y_data_base + (i * data_input_spacing), f"D{i}")
+            d_id = await self.create_element(
+                "InputSwitch", input_x, input_y_data_base + (i * data_input_spacing), f"D{i}"
+            )
             if d_id is None:
                 return False
             data_in_ids.append(d_id)
@@ -97,10 +99,11 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         dff_ids = []
         for i in range(4):
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level1_d_flip_flop")):
-
                 return False
 
-            ff_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), dff_x, dff_y_base + (i * bit_spacing), f"FF{i}")
+            ff_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), dff_x, dff_y_base + (i * bit_spacing), f"FF{i}"
+            )
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -109,10 +112,11 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         # Instantiate load path Bus Mux 4-bit IC
         # BusMux(GND, D[0-3], LOAD) = LOAD AND D[0-3]
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
             return False
 
-        load_mux_ic_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), load_gate_x, load_gate_y_base, "BusMux_Load")
+        load_mux_ic_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), load_gate_x, load_gate_y_base, "BusMux_Load"
+        )
         if load_mux_ic_id is None:
             return False
         await self.log(f"  ✓ Instantiated load path Bus Multiplexer IC (id={load_mux_ic_id})")
@@ -120,24 +124,30 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         # Instantiate shift path Bus Mux 4-bit IC
         # BusMux(GND, shiftIn[0-3], NOT_LOAD) = NOT_LOAD AND shiftIn[0-3]
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-
             return False
 
-        shift_mux_ic_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), shift_gate_x, shift_gate_y_base, "BusMux_Shift")
+        shift_mux_ic_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), shift_gate_x, shift_gate_y_base, "BusMux_Shift"
+        )
         if shift_mux_ic_id is None:
             return False
         await self.log(f"  ✓ Instantiated shift path Bus Multiplexer IC (id={shift_mux_ic_id})")
 
         # Instantiate select/mux Mux2to1 IC (4 times for 4 bits)
         # Mux(load_gate[i], shift_gate[i], select_bit) - but we'll use OR instead for clarity
-        # Actually, for load/shift selection, use a Mux2to1: Mux(shift, load, LOAD) = (NOT LOAD AND shift) OR (LOAD AND load)
+        # For load/shift selection, use Mux2to1:
+        # Mux(shift, load, LOAD) = (NOT LOAD AND shift) OR (LOAD AND load)
         select_gate_ids = []
         for i in range(4):
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_mux_2to1")):
-
                 return False
 
-            mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_mux_2to1"), select_gate_x, select_gate_y_base + (i * bit_spacing), f"mux_sel{i}")
+            mux_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level2_mux_2to1"),
+                select_gate_x,
+                select_gate_y_base + (i * bit_spacing),
+                f"mux_sel{i}",
+            )
             if mux_id is None:
                 return False
             select_gate_ids.append(mux_id)
@@ -186,9 +196,10 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
                 return False
 
             # Connect In1[i] to shiftIn[i] (Q[i+1] for i<3, otherwise unconnected/0)
-            if i < 3:
-                if not await self.connect(dff_ids[i + 1], shift_mux_ic_id, source_port_label="Q", target_port_label=f"In1[{i}]"):
-                    return False
+            if i < 3 and not await self.connect(
+                dff_ids[i + 1], shift_mux_ic_id, source_port_label="Q", target_port_label=f"In1[{i}]"
+            ):
+                return False
 
         # Connect Sel to NOT_LOAD (select signal)
         if not await self.connect(not_load_id, shift_mux_ic_id, target_port_label="Sel"):
@@ -202,7 +213,9 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
                 return False
 
             # Port 1: load_result (LOAD AND D[i]) from load BusMux Out[i]
-            if not await self.connect(load_mux_ic_id, select_gate_ids[i], source_port_label=f"Out[{i}]", target_port_label="Data[1]"):
+            if not await self.connect(
+                load_mux_ic_id, select_gate_ids[i], source_port_label=f"Out[{i}]", target_port_label="Data[1]"
+            ):
                 return False
 
             # Port 2: LOAD (select signal) - selects between shift (port 0) and load (port 1)
@@ -214,10 +227,12 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
                 return False
 
         # Create Vcc element for inactive Preset/Clear pins
-        vcc_id = await self.create_element("InputVcc", dff_x - HORIZONTAL_GATE_SPACING, dff_y_base + 4 * bit_spacing, "Vcc")
+        vcc_id = await self.create_element(
+            "InputVcc", dff_x - HORIZONTAL_GATE_SPACING, dff_y_base + 4 * bit_spacing, "Vcc"
+        )
         if vcc_id is None:
             return False
-        await self.log(f"  ✓ Created Vcc element")
+        await self.log("  ✓ Created Vcc element")
 
         # ========== Connect Vcc to all Preset/Clear pins ==========
         for i in range(4):
@@ -238,7 +253,10 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created PISO Shift Register IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created PISO Shift Register IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -252,6 +270,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "PISO Shift Register IC"))
         sys.exit(exit_code)

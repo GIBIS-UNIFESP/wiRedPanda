@@ -34,8 +34,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class FlagRegisterBuilder(ICBuilderBase):
@@ -43,7 +43,7 @@ class FlagRegisterBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the Flag Register IC"""
-        await self.begin_build('Flag Register')
+        await self.begin_build("Flag Register")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -55,7 +55,9 @@ class FlagRegisterBuilder(ICBuilderBase):
         flag_names = ["Zero", "Sign", "Carry", "Overflow"]
         flag_inputs = []
         for i in range(4):
-            flag_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FlagIn[{i}]_{flag_names[i]}")
+            flag_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FlagIn[{i}]_{flag_names[i]}"
+            )
             if flag_id is None:
                 return False
             flag_inputs.append(flag_id)
@@ -66,7 +68,9 @@ class FlagRegisterBuilder(ICBuilderBase):
         if load_id is None:
             return False
 
-        clk_id = await self.create_element("InputSwitch", input_x + (4 * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, "Clock")
+        clk_id = await self.create_element(
+            "InputSwitch", input_x + (4 * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, "Clock"
+        )
         if clk_id is None:
             return False
         await self.log("  ✓ Created Load and Clock inputs")
@@ -98,10 +102,14 @@ class FlagRegisterBuilder(ICBuilderBase):
         ff_ids = []
         for i in range(4):
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level1_d_flip_flop")):
-
                 return False
 
-            ff_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), input_x + (i * HORIZONTAL_GATE_SPACING), 300.0, f"FlagFF{i}")
+            ff_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level1_d_flip_flop"),
+                input_x + (i * HORIZONTAL_GATE_SPACING),
+                300.0,
+                f"FlagFF{i}",
+            )
             if ff_id is None:
                 return False
             ff_ids.append(ff_id)
@@ -130,7 +138,9 @@ class FlagRegisterBuilder(ICBuilderBase):
         # Create output LEDs for flags
         output_x = input_x + (6 * HORIZONTAL_GATE_SPACING)
         for i in range(4):
-            led_id = await self.create_element("Led", output_x, 300.0 + (i * VERTICAL_STAGE_SPACING), f"FlagOut[{i}]_{flag_names[i]}")
+            led_id = await self.create_element(
+                "Led", output_x, 300.0 + (i * VERTICAL_STAGE_SPACING), f"FlagOut[{i}]_{flag_names[i]}"
+            )
             if led_id is None:
                 return False
 
@@ -143,7 +153,10 @@ class FlagRegisterBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Flag Register IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Flag Register IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -157,6 +170,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Flag Register IC"))
         sys.exit(exit_code)

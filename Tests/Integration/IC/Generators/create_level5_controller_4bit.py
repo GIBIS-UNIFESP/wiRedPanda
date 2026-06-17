@@ -37,8 +37,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class Controller4BitBuilder(ICBuilderBase):
@@ -46,7 +46,7 @@ class Controller4BitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 4-bit Controller IC"""
-        await self.begin_build('4-bit Controller')
+        await self.begin_build("4-bit Controller")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -57,7 +57,9 @@ class Controller4BitBuilder(ICBuilderBase):
         # Create opcode input switches (4-bit)
         opcode_inputs = []
         for i in range(4):
-            opcode_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"opcode[{i}]")
+            opcode_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"opcode[{i}]"
+            )
             if opcode_id is None:
                 return False
             opcode_inputs.append(opcode_id)
@@ -91,7 +93,9 @@ class Controller4BitBuilder(ICBuilderBase):
         ]
 
         for ctrl_idx, opcode_source, gate_source, _ in output_connections:
-            led_id = await self.create_element("Led", output_x, 100.0 + (ctrl_idx * VERTICAL_STAGE_SPACING), f"ctrl[{ctrl_idx}]")
+            led_id = await self.create_element(
+                "Led", output_x, 100.0 + (ctrl_idx * VERTICAL_STAGE_SPACING), f"ctrl[{ctrl_idx}]"
+            )
             if led_id is None:
                 return False
             control_outputs.append(led_id)
@@ -100,6 +104,8 @@ class Controller4BitBuilder(ICBuilderBase):
             # ctrl[0] and ctrl[1] pass through from opcode bits
             # ctrl[2] comes from OR gate, ctrl[3] from opcode[3]
             source_id = gate_source if gate_source else opcode_source
+            if source_id is None:
+                return False
             if not await self.connect(source_id, led_id):
                 return False
 
@@ -109,7 +115,10 @@ class Controller4BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 4-bit Controller IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 4-bit Controller IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -123,6 +132,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Controller IC"))
         sys.exit(exit_code)

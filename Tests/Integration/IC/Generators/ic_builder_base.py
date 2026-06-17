@@ -36,7 +36,7 @@ except ImportError:
             f"Cannot locate MCP/Client at {_mcp_client}\n"
             f"Expected structure: .../MCP/Client/mcp_infrastructure.py\n"
             f"Set PYTHONPATH manually: export PYTHONPATH={_mcp_client}:$PYTHONPATH"
-        )
+        ) from None
     sys.path.insert(0, str(_mcp_client))
     del _mcp_client, _mcp_root
     from mcp_infrastructure import MCPInfrastructure
@@ -115,42 +115,38 @@ class ICBuilderBase:
         self.connection_count = 0
         await self.log(f"🔧 Creating {component_name} IC...")
 
-    async def create_element(self, elem_type: str, x: float, y: float,
-                             label: str = "") -> "int | None":
+    async def create_element(self, elem_type: str, x: float, y: float, label: str = "") -> "int | None":
         """Create a graphic element. Returns element_id, or None on failure."""
-        response = await self.mcp.send_command("create_element", {
-            "type": elem_type, "x": x, "y": y, "label": label
-        })
+        response = await self.mcp.send_command("create_element", {"type": elem_type, "x": x, "y": y, "label": label})
         if not response.success:
             self.log_error(f"create {elem_type} '{label}'")
             return None
-        elem_id = response.result.get('element_id') if response.result else None
+        elem_id = response.result.get("element_id") if response.result else None
         if elem_id is not None:
             self.element_count += 1
         return elem_id
 
-    async def instantiate_ic(self, ic_name: str, x: float, y: float,
-                             label: str = "") -> "int | None":
+    async def instantiate_ic(self, ic_name: str, x: float, y: float, label: str = "") -> "int | None":
         """Instantiate an IC component. Returns element_id, or None on failure."""
-        response = await self.mcp.send_command("instantiate_ic", {
-            "ic_name": ic_name, "x": x, "y": y, "label": label
-        })
+        response = await self.mcp.send_command("instantiate_ic", {"ic_name": ic_name, "x": x, "y": y, "label": label})
         if not response.success:
             self.log_error(f"instantiate IC '{label}' ({ic_name})")
             return None
-        elem_id = response.result.get('element_id') if response.result else None
+        elem_id = response.result.get("element_id") if response.result else None
         if elem_id is not None:
             self.element_count += 1
         return elem_id
 
-    async def connect(self,
-                      source_id: int,
-                      target_id: int,
-                      source_port: "int | None" = 0,
-                      target_port: "int | None" = 0,
-                      source_port_label: "str | None" = None,
-                      target_port_label: "str | None" = None,
-                      description: str = "") -> bool:
+    async def connect(
+        self,
+        source_id: int,
+        target_id: int,
+        source_port: "int | None" = 0,
+        target_port: "int | None" = 0,
+        source_port_label: "str | None" = None,
+        target_port_label: "str | None" = None,
+        description: str = "",
+    ) -> bool:
         """Connect two elements. Returns True on success.
 
         Port resolution (per side): label takes priority over numeric index.
@@ -184,9 +180,7 @@ class ICBuilderBase:
 
     async def save_circuit(self, output_file: str) -> bool:
         """Save the circuit to file. Returns True on success."""
-        response = await self.mcp.send_command("save_circuit", {
-            "filename": output_file
-        })
+        response = await self.mcp.send_command("save_circuit", {"filename": output_file})
         if not response.success:
             self.log_error("save IC", response.error)
             return False

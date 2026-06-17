@@ -22,11 +22,11 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import (
     HORIZONTAL_GATE_SPACING,
     VERTICAL_STAGE_SPACING,
 )
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class PriorityMux3to1Builder(ICBuilderBase):
@@ -34,7 +34,7 @@ class PriorityMux3to1Builder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 3-way Priority Multiplexer IC"""
-        await self.begin_build('Priority Mux 3-to-1')
+        await self.begin_build("Priority Mux 3-to-1")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -46,7 +46,9 @@ class PriorityMux3to1Builder(ICBuilderBase):
         # Create input switches for data
         data_inputs = []
         for i in range(3):
-            data_id = await self.create_element("InputSwitch", input_x, data_input_y + i * VERTICAL_STAGE_SPACING, f"data{i}")
+            data_id = await self.create_element(
+                "InputSwitch", input_x, data_input_y + i * VERTICAL_STAGE_SPACING, f"data{i}"
+            )
             if data_id is None:
                 return False
             data_inputs.append(data_id)
@@ -58,7 +60,9 @@ class PriorityMux3to1Builder(ICBuilderBase):
 
         sel_inputs = []
         for i in range(2):
-            sel_id = await self.create_element("InputSwitch", sel_input_x, sel_input_y + i * VERTICAL_STAGE_SPACING, f"sel{i}")
+            sel_id = await self.create_element(
+                "InputSwitch", sel_input_x, sel_input_y + i * VERTICAL_STAGE_SPACING, f"sel{i}"
+            )
             if sel_id is None:
                 return False
             sel_inputs.append(sel_id)
@@ -129,7 +133,10 @@ class PriorityMux3to1Builder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"Successfully created PriorityMux3to1 IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"Successfully created PriorityMux3to1 IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -143,6 +150,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Priority Mux 3-to-1 IC"))
         sys.exit(exit_code)

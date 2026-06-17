@@ -29,8 +29,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ProgramCounter4BitBuilder(ICBuilderBase):
@@ -38,7 +38,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 4-bit Program Counter IC"""
-        await self.begin_build('Program Counter 4-bit')
+        await self.begin_build("Program Counter 4-bit")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -49,7 +49,9 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         # Create loadValue[0-3] inputs
         load_value_inputs = []
         for i in range(4):
-            lv_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"loadValue[{i}]")
+            lv_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"loadValue[{i}]"
+            )
             if lv_id is None:
                 return False
             load_value_inputs.append(lv_id)
@@ -78,20 +80,28 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
 
         # Instantiate level4_register_4bit
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_register_4bit")):
-
             return False
 
-        reg_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_register_4bit"), input_x + (2 * HORIZONTAL_GATE_SPACING), 200.0, "Register4bit")
+        reg_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level4_register_4bit"),
+            input_x + (2 * HORIZONTAL_GATE_SPACING),
+            200.0,
+            "Register4bit",
+        )
         if reg_id is None:
             return False
         await self.log("  ✓ Instantiated 4-bit Register")
 
         # Instantiate level4_ripple_adder_4bit
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit")):
-
             return False
 
-        adder_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit"), input_x + (2 * HORIZONTAL_GATE_SPACING), 300.0, "Adder4bit")
+        adder_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit"),
+            input_x + (2 * HORIZONTAL_GATE_SPACING),
+            300.0,
+            "Adder4bit",
+        )
         if adder_id is None:
             return False
         await self.log("  ✓ Instantiated 4-bit Adder")
@@ -127,7 +137,9 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
                 return False
 
             # Mux2: Select between Mux1 output (no increment, Sel=0) or adder output (increment, Sel=1)
-            mux2_id = await self.create_element("Mux", mux_x + (i * HORIZONTAL_GATE_SPACING), mux_y + VERTICAL_STAGE_SPACING, f"Mux2_Inc[{i}]")
+            mux2_id = await self.create_element(
+                "Mux", mux_x + (i * HORIZONTAL_GATE_SPACING), mux_y + VERTICAL_STAGE_SPACING, f"Mux2_Inc[{i}]"
+            )
             if mux2_id is None:
                 return False
             mux2_outputs.append(mux2_id)
@@ -187,7 +199,9 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         pc_output_y = 400.0
 
         for i in range(4):
-            led_id = await self.create_element("Led", pc_output_x + (i * HORIZONTAL_GATE_SPACING), pc_output_y, f"pc[{i}]")
+            led_id = await self.create_element(
+                "Led", pc_output_x + (i * HORIZONTAL_GATE_SPACING), pc_output_y, f"pc[{i}]"
+            )
             if led_id is None:
                 return False
 
@@ -199,7 +213,9 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         pc_p1_output_y = pc_output_y + VERTICAL_STAGE_SPACING
 
         for i in range(4):
-            led_id = await self.create_element("Led", pc_output_x + (i * HORIZONTAL_GATE_SPACING), pc_p1_output_y, f"pc_plus_1[{i}]")
+            led_id = await self.create_element(
+                "Led", pc_output_x + (i * HORIZONTAL_GATE_SPACING), pc_p1_output_y, f"pc_plus_1[{i}]"
+            )
             if led_id is None:
                 return False
 
@@ -213,7 +229,10 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 4-bit Program Counter IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 4-bit Program Counter IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -227,6 +246,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Program Counter IC"))
         sys.exit(exit_code)
