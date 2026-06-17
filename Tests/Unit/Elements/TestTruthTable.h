@@ -19,6 +19,7 @@ private slots:
     // Key management tests
     void testKeyInitialization();
     void testSetKey();
+    void testSetKeyEnforcesSizeInvariant();
     void testKeyAccess();
     void testKeyBitArray();
 
