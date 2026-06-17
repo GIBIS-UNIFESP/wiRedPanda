@@ -4,7 +4,6 @@
 #include "App/UI/UpdateController.h"
 
 #include <QCheckBox>
-#include <QDate>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -80,16 +79,14 @@ void UpdateController::showUpdateDialog(const QString &latestVersion, const QUrl
         Settings::setUpdateCheckSkippedVersion(latestVersion);
     }
 
+    // The check date is recorded by UpdateChecker::onReplyFinished — the
+    // single writer — so no dialog outcome needs to touch it here.
     if (accepted) {
         if (hasDirectDownload) {
             downloadUpdate(latestVersion, downloadUrl);
         } else {
             QDesktopServices::openUrl(releaseUrl);
-            Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
         }
-    } else {
-        /// User closed dialog without taking action — still record the check
-        Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
     }
 }
 
@@ -139,7 +136,6 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
         file.close();
         reply->deleteLater();
 
-        Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
         QMessageBox::information(m_parent, tr("Download Complete"),
             tr("wiRedPanda has been downloaded to:\n%1").arg(savePath));
     });

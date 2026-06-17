@@ -14,4 +14,7 @@ private slots:
     // Exception Tests (2 tests)
     void testPandaceptionMessage();
     void testPandaceptionEnglishMessage();
+
+    // Regression: F8 — verbosity 5 enables category five; >5 doesn't silence
+    void testSetVerbosityCategoryScale();
 };

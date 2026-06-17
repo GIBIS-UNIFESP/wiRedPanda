@@ -80,6 +80,10 @@ void DFlipFlop::updateTheme()
 void DFlipFlop::updateLogic()
 {
     if (!simUpdateInputs()) {
+        // Forget the last clock level while inputs are invalid: edge
+        // detection requires lastClk == Inactive, so recovery with the clock
+        // already high cannot fabricate a rising edge from stale state.
+        m_simLastClk = Status::Unknown;
         return;
     }
     Status q0 = simOutputs().at(0);

@@ -12,10 +12,13 @@
 
 ElementType ElementFactory::textToType(const QString &text)
 {
-    // QMetaEnum provides compile-time-safe string<->int conversion for Q_ENUM types;
-    // returns -1 on failure, which maps to the first enum value (Unknown).
+    // QMetaEnum provides compile-time-safe string<->int conversion for Q_ENUM
+    // types; it returns -1 on failure, which is NOT a valid ElementType —
+    // map it to Unknown explicitly so callers' `== ElementType::Unknown`
+    // checks catch bad input (Unknown is 0, not -1).
     qCDebug(four) << text;
-    return static_cast<ElementType>(QMetaEnum::fromType<ElementType>().keyToValue(text.toLatin1()));
+    const int value = QMetaEnum::fromType<ElementType>().keyToValue(text.toLatin1());
+    return (value == -1) ? ElementType::Unknown : static_cast<ElementType>(value);
 }
 
 QString ElementFactory::typeToText(const ElementType type)
