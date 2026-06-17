@@ -11,5 +11,5 @@ Terminal=false
 Categories=Education;Science;Electronics;
 StartupNotify=false
 StartupWMClass=wiredpanda
-MimeType=application/x-wpanda;application/x-wiredpanda;
+MimeType=application/x-wiredpanda;
 X-AppImage-Version=@PROJECT_VERSION@
