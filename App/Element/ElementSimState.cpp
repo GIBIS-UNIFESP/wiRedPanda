@@ -34,6 +34,8 @@ void ElementSimState::initVectors(int inputCount, int outputCount, const QVector
     m_connections.fill({}, inputCount);
     m_inputs.fill(Status::Inactive, inputCount);
     m_outputs.resize(outputCount);
+    m_staged.resize(outputCount);
+    m_deferCommit = false;
     // Initialize outputs from port default statuses when they're explicitly set
     // (e.g., flip-flop Q'=Active), otherwise default to Inactive.
     // Using Inactive (not Unknown) ensures gate-level feedback loops can settle.

@@ -80,7 +80,22 @@ void Simulation::update()
         }
     }
 
-    // Phase 2: update all GraphicElements in topological order
+    // Phase 2: update all GraphicElements in topological order.
+    //
+    // Synchronous sequential elements (flip-flops, latches — ElementGroup::Memory,
+    // collected across the whole IC hierarchy) get non-blocking semantics: their
+    // outputs are staged during the pass and committed together afterwards, so any
+    // combinational logic between them (gated clocks especially) reads the
+    // pre-tick state. This matches real synchronous hardware and the exported
+    // SystemVerilog's non-blocking (<=) model. Gate-built feedback latches are
+    // ElementGroup::Gate, not Memory, so they are never deferred and settle
+    // through the existing path unchanged.
+    for (auto *element : std::as_const(m_sequentialElements)) {
+        if (element) {
+            element->beginDeferredCommit();
+        }
+    }
+
     if (m_simHasFeedbackElements) {
         // Use iterative settling for circuits with feedback loops.
         updateWithIterativeSettling();
@@ -90,6 +105,44 @@ void Simulation::update()
         for (auto *element : std::as_const(m_sortedElements)) {
             if (element) {
                 element->updateLogic();
+            }
+        }
+    }
+
+    // Publish every staged sequential output simultaneously (global commit).
+    bool anySequentialChanged = false;
+    for (auto *element : std::as_const(m_sequentialElements)) {
+        if (element) {
+            element->clearOutputChanged();
+            element->commitDeferredOutputs();
+            if (element->outputChanged()) {
+                anySequentialChanged = true;
+            }
+        }
+    }
+
+    // Post-edge settle (the second half of a clock cycle / a bounded delta
+    // cycle): once flip-flops have committed, re-propagate their new outputs
+    // through combinational logic and IC output boundaries so the end-of-tick
+    // state is a true fixed point — and so asynchronous overrides (preset/clear)
+    // surface immediately rather than lagging a tick behind. Sequential elements
+    // are skipped here so they are not re-clocked. Only needed on ticks where an
+    // edge or async override actually changed sequential state; steady-state
+    // ticks pay nothing. Feed-forward logic settles in one topological sweep;
+    // iterate only when combinational feedback is present.
+    if (anySequentialChanged) {
+        const int maxPasses = m_simHasFeedbackElements ? kMaxSettleIterations : 1;
+        for (int pass = 0; pass < maxPasses; ++pass) {
+            bool changed = false;
+            for (auto *element : std::as_const(m_sortedElements)) {
+                if (element && element->elementGroup() != ElementGroup::Memory) {
+                    element->clearOutputChanged();
+                    element->resettleCombinational();
+                    changed = changed || element->outputChanged();
+                }
+            }
+            if (!changed) {
+                break;
             }
         }
     }
@@ -168,6 +221,7 @@ void Simulation::restart()
     // initialize() can rebuild them cleanly.
     m_initialized = false;
     m_sortedElements.clear();
+    m_sequentialElements.clear();
     m_connections.clear();
     m_clocks.clear();
     m_inputs.clear();
@@ -176,7 +230,7 @@ void Simulation::restart()
     // cleared above. This assert documents the invariant for future maintainers
     // and trips immediately if a new vector is forgotten.
     Q_ASSERT(!m_initialized);
-    Q_ASSERT(m_sortedElements.isEmpty() && m_connections.isEmpty()
+    Q_ASSERT(m_sortedElements.isEmpty() && m_sequentialElements.isEmpty() && m_connections.isEmpty()
           && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty());
 }
 
@@ -258,6 +312,7 @@ bool Simulation::initialize()
     m_inputs.clear();
     m_connections.clear();
     m_sortedElements.clear();
+    m_sequentialElements.clear();
 
     QVector<GraphicElement *> elements;
     auto items = m_scene->items();
@@ -351,6 +406,10 @@ bool Simulation::initialize()
 
     // Topological sort with feedback detection
     sortSimElements(elements);
+
+    // Collect every synchronous sequential element (across the IC hierarchy) so
+    // Phase 2 can give them non-blocking commit semantics.
+    collectSequentialElements(elements);
 
     m_initialized = true;
 
@@ -508,4 +567,19 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
     }
     m_simHasFeedbackElements = !m_simFeedbackNodes.isEmpty();
     m_sortedElements = result.sorted;
+}
+
+void Simulation::collectSequentialElements(const QVector<GraphicElement *> &elements)
+{
+    for (auto *elm : std::as_const(elements)) {
+        if (!elm) {
+            continue;
+        }
+        if (elm->elementGroup() == ElementGroup::Memory) {
+            m_sequentialElements.append(elm);
+        }
+        if (elm->elementType() == ElementType::IC) {
+            collectSequentialElements(static_cast<IC *>(elm)->internalElements());
+        }
+    }
 }

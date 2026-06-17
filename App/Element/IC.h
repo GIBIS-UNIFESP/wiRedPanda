@@ -96,6 +96,11 @@ public:
     /// \reimp Simulates the IC's internal circuit and propagates results.
     void updateLogic() override;
 
+    /// \reimp Re-propagates committed sequential state through the IC's internal
+    /// combinational logic and refreshes its output boundary, without re-clocking
+    /// internal flip-flops/latches.
+    void resettleCombinational() override;
+
     /// Builds the internal simulation graph (connection graph + sort) for direct simulation.
     void initializeSimulation();
 
@@ -146,6 +151,13 @@ private:
                      const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);
     void resetInternalState();
     void deserializeAndLoad(const QByteArray &bytes, const QString &contextDir);
+
+    // --- Simulation helpers ---
+
+    /// Copies the IC's external input values onto its boundary input nodes.
+    void pushInputsToBoundary();
+    /// Copies the boundary output nodes' values onto the IC's external outputs.
+    void pullOutputsFromBoundary();
 
     // --- Loading helpers ---
 
