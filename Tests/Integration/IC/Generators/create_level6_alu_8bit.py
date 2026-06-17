@@ -43,8 +43,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ALU8BitBuilder(ICBuilderBase):
@@ -69,7 +69,9 @@ class ALU8BitBuilder(ICBuilderBase):
         # ---- Create A operand inputs (8 bits) ----
         a_inputs = []
         for i in range(8):
-            element_id = await self.create_element("InputSwitch", input_a_x_start + i * HORIZONTAL_GATE_SPACING, input_a_y, f"A[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", input_a_x_start + i * HORIZONTAL_GATE_SPACING, input_a_y, f"A[{i}]"
+            )
             if element_id is None:
                 return False
             a_inputs.append(element_id)
@@ -77,7 +79,9 @@ class ALU8BitBuilder(ICBuilderBase):
         # ---- Create B operand inputs (8 bits) ----
         b_inputs = []
         for i in range(8):
-            element_id = await self.create_element("InputSwitch", input_b_x_start + i * HORIZONTAL_GATE_SPACING, input_b_y, f"B[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", input_b_x_start + i * HORIZONTAL_GATE_SPACING, input_b_y, f"B[{i}]"
+            )
             if element_id is None:
                 return False
             b_inputs.append(element_id)
@@ -85,7 +89,9 @@ class ALU8BitBuilder(ICBuilderBase):
         # ---- Create OpCode inputs (3 bits) ----
         opcode_inputs = []
         for i in range(3):
-            element_id = await self.create_element("InputSwitch", input_op_x + i * HORIZONTAL_GATE_SPACING, op_y, f"OpCode[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", input_op_x + i * HORIZONTAL_GATE_SPACING, op_y, f"OpCode[{i}]"
+            )
             if element_id is None:
                 return False
             opcode_inputs.append(element_id)
@@ -98,43 +104,45 @@ class ALU8BitBuilder(ICBuilderBase):
         alu_y = 250.0
 
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit")):
-
-
             return False
 
-
-        alu_low = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit"), alu_low_x, alu_y, "ALU_Low")
+        alu_low = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit"), alu_low_x, alu_y, "ALU_Low"
+        )
         if alu_low is None:
             return False
 
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit")):
-
-
             return False
 
-
-        alu_high = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit"), alu_high_x, alu_y, "ALU_High")
+        alu_high = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level4_ripple_alu_4bit"), alu_high_x, alu_y, "ALU_High"
+        )
         if alu_high is None:
             return False
         await self.log("  ✓ Instantiated 4-bit ALUs for operations 0-3")
 
         # Connect inputs to ALUs
         for i in range(4):
-            for src, tgt_alu in [(a_inputs[i], alu_low), (a_inputs[i+4], alu_high)]:
+            for src, tgt_alu in [(a_inputs[i], alu_low), (a_inputs[i + 4], alu_high)]:
                 if not await self.connect(src, tgt_alu, target_port_label=f"A[{i}]"):
                     return False
 
-            for src, tgt_alu in [(b_inputs[i], alu_low), (b_inputs[i+4], alu_high)]:
+            for src, tgt_alu in [(b_inputs[i], alu_low), (b_inputs[i + 4], alu_high)]:
                 if not await self.connect(src, tgt_alu, target_port_label=f"B[{i}]"):
                     return False
 
         # Create ground for low ALU CarryIn (no carry-in for 8-bit ADD)
-        ground_id = await self.create_element("InputGnd", input_a_x_start + (8 * HORIZONTAL_GATE_SPACING), 250.0, "GND_CarryIn")
+        ground_id = await self.create_element(
+            "InputGnd", input_a_x_start + (8 * HORIZONTAL_GATE_SPACING), 250.0, "GND_CarryIn"
+        )
         if ground_id is None:
             return False
 
         # Create Vcc for low ALU SubCarryIn (the +1 for two's complement SUB)
-        vcc_sub_id = await self.create_element("InputVcc", input_a_x_start + (9 * HORIZONTAL_GATE_SPACING), 250.0, "VCC_SubCarryIn")
+        vcc_sub_id = await self.create_element(
+            "InputVcc", input_a_x_start + (9 * HORIZONTAL_GATE_SPACING), 250.0, "VCC_SubCarryIn"
+        )
         if vcc_sub_id is None:
             return False
 
@@ -200,7 +208,9 @@ class ALU8BitBuilder(ICBuilderBase):
                 shl_results.append(a_inputs[i + 1])
             else:
                 # Result[7] = 0 for SHL (constant 0)
-                gnd_id = await self.create_element("InputGnd", input_a_x_start + (i * HORIZONTAL_GATE_SPACING), shl_y, f"GND_SHL")
+                gnd_id = await self.create_element(
+                    "InputGnd", input_a_x_start + (i * HORIZONTAL_GATE_SPACING), shl_y, "GND_SHL"
+                )
                 if gnd_id is None:
                     return False
                 shl_results.append(gnd_id)
@@ -215,7 +225,12 @@ class ALU8BitBuilder(ICBuilderBase):
                 shr_results.append(a_inputs[i - 1])
             else:
                 # Result[0] = 0 for SHR (constant 0)
-                gnd_id = await self.create_element("InputGnd", input_a_x_start + (i * HORIZONTAL_GATE_SPACING), shl_y + VERTICAL_STAGE_SPACING, f"GND_SHR")
+                gnd_id = await self.create_element(
+                    "InputGnd",
+                    input_a_x_start + (i * HORIZONTAL_GATE_SPACING),
+                    shl_y + VERTICAL_STAGE_SPACING,
+                    "GND_SHR",
+                )
                 if gnd_id is None:
                     return False
                 shr_results.append(gnd_id)
@@ -235,10 +250,14 @@ class ALU8BitBuilder(ICBuilderBase):
         for i in range(8):
             # Instantiate selector for this bit (handles operations 0-4)
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level3_alu_selector_5way")):
-
                 return False
 
-            selector_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level3_alu_selector_5way"), selector_x + i * HORIZONTAL_GATE_SPACING, selector_y, f"Selector5way[{i}]")
+            selector_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level3_alu_selector_5way"),
+                selector_x + i * HORIZONTAL_GATE_SPACING,
+                selector_y,
+                f"Selector5way[{i}]",
+            )
             if selector_id is None:
                 return False
             selector_ids.append(selector_id)
@@ -248,19 +267,27 @@ class ALU8BitBuilder(ICBuilderBase):
             alu_idx = i % 4
 
             # result0: ADD operation
-            if not await self.connect(alu_src, selector_id, source_port_label=f"Result_ADD[{alu_idx}]", target_port_label="result0"):
+            if not await self.connect(
+                alu_src, selector_id, source_port_label=f"Result_ADD[{alu_idx}]", target_port_label="result0"
+            ):
                 return False
 
             # result1: SUB operation
-            if not await self.connect(alu_src, selector_id, source_port_label=f"Result_SUB[{alu_idx}]", target_port_label="result1"):
+            if not await self.connect(
+                alu_src, selector_id, source_port_label=f"Result_SUB[{alu_idx}]", target_port_label="result1"
+            ):
                 return False
 
             # result2: AND operation
-            if not await self.connect(alu_src, selector_id, source_port_label=f"Result_AND[{alu_idx}]", target_port_label="result2"):
+            if not await self.connect(
+                alu_src, selector_id, source_port_label=f"Result_AND[{alu_idx}]", target_port_label="result2"
+            ):
                 return False
 
             # result3: OR operation
-            if not await self.connect(alu_src, selector_id, source_port_label=f"Result_OR[{alu_idx}]", target_port_label="result3"):
+            if not await self.connect(
+                alu_src, selector_id, source_port_label=f"Result_OR[{alu_idx}]", target_port_label="result3"
+            ):
                 return False
 
             # result4: XOR operation
@@ -287,13 +314,17 @@ class ALU8BitBuilder(ICBuilderBase):
 
         for i in range(8):
             # Create mux to select between 5way output and extended operations (NOT, SHL, SHR)
-            mux_id = await self.create_element("Mux", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y, f"Mux8way[{i}]")
+            mux_id = await self.create_element(
+                "Mux", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y, f"Mux8way[{i}]"
+            )
             if mux_id is None:
                 return False
             mux_8way_outputs.append(mux_id)
 
             # Port 0: 5-way selector output (for OpCode 0-4)
-            if not await self.connect(selector_5way_outputs[i], mux_id, source_port_label="out", target_port_label="In0"):
+            if not await self.connect(
+                selector_5way_outputs[i], mux_id, source_port_label="out", target_port_label="In0"
+            ):
                 return False
 
             # Port 1: NOT output (for OpCode 101)
@@ -324,7 +355,9 @@ class ALU8BitBuilder(ICBuilderBase):
         # Op7: OpCode[2] AND OpCode[1] AND OpCode[0] (detects 111)
 
         # Create NOT gates
-        not_op1_id = await self.create_element("Not", selector_x - HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "NOT_OpCode1")
+        not_op1_id = await self.create_element(
+            "Not", selector_x - HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "NOT_OpCode1"
+        )
         if not_op1_id is None:
             return False
 
@@ -349,7 +382,9 @@ class ALU8BitBuilder(ICBuilderBase):
         if not await self.connect(not_op1_id, op5_and1_id, target_port=1):
             return False
 
-        op5_and2_id = await self.create_element("And", selector_x + HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND2")
+        op5_and2_id = await self.create_element(
+            "And", selector_x + HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND2"
+        )
         if op5_and2_id is None:
             return False
 
@@ -391,7 +426,9 @@ class ALU8BitBuilder(ICBuilderBase):
         if not await self.connect(opcode_inputs[1], op7_and1_id, target_port=1):
             return False
 
-        op7_and2_id = await self.create_element("And", selector_x + HORIZONTAL_GATE_SPACING, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND2")
+        op7_and2_id = await self.create_element(
+            "And", selector_x + HORIZONTAL_GATE_SPACING, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND2"
+        )
         if op7_and2_id is None:
             return False
 
@@ -409,12 +446,19 @@ class ALU8BitBuilder(ICBuilderBase):
         for i in range(8):
             # ========== Mux1: Select between 5-way output and NOT result ==========
             # Implements: Out = (OpCode==101) ? NOT(A) : (ops 0-4 result)
-            mux1_id = await self.create_element("Mux", selector_x + i * HORIZONTAL_GATE_SPACING - (2 * HORIZONTAL_GATE_SPACING), mux_8way_y, f"Mux1_5way_NOT[{i}]")
+            mux1_id = await self.create_element(
+                "Mux",
+                selector_x + i * HORIZONTAL_GATE_SPACING - (2 * HORIZONTAL_GATE_SPACING),
+                mux_8way_y,
+                f"Mux1_5way_NOT[{i}]",
+            )
             if mux1_id is None:
                 return False
 
             # Mux1 In0: 5-way selector output (selected when OpCode != 101)
-            if not await self.connect(selector_5way_outputs[i], mux1_id, source_port_label="out", target_port_label="In0"):
+            if not await self.connect(
+                selector_5way_outputs[i], mux1_id, source_port_label="out", target_port_label="In0"
+            ):
                 return False
 
             # Mux1 In1: NOT result (selected when OpCode == 101)
@@ -427,7 +471,9 @@ class ALU8BitBuilder(ICBuilderBase):
 
             # ========== Mux2: Select between SHL and SHR results ==========
             # Implements: Out = (OpCode[1]) ? SHR : SHL
-            mux2_id = await self.create_element("Mux", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y, f"Mux2_SHL_SHR[{i}]")
+            mux2_id = await self.create_element(
+                "Mux", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y, f"Mux2_SHL_SHR[{i}]"
+            )
             if mux2_id is None:
                 return False
 
@@ -445,7 +491,12 @@ class ALU8BitBuilder(ICBuilderBase):
 
             # ========== Mux3: Final selector between (ops 0-5) and (ops 6-7) ==========
             # Implements: Out = ((OpCode & 110)==110) ? ShiftResult : ArithLogicResult
-            mux3_id = await self.create_element("Mux", selector_x + i * HORIZONTAL_GATE_SPACING + HORIZONTAL_GATE_SPACING, mux_8way_y, f"Mux3_Final[{i}]")
+            mux3_id = await self.create_element(
+                "Mux",
+                selector_x + i * HORIZONTAL_GATE_SPACING + HORIZONTAL_GATE_SPACING,
+                mux_8way_y,
+                f"Mux3_Final[{i}]",
+            )
             if mux3_id is None:
                 return False
 
@@ -459,7 +510,12 @@ class ALU8BitBuilder(ICBuilderBase):
 
             # ========== Op6_OR_Op7 gate for Mux3 Select ==========
             # Determines if we're in shift operation mode (OpCode[2:1]==11x)
-            or_id = await self.create_element("Or", selector_x + i * HORIZONTAL_GATE_SPACING + (2 * HORIZONTAL_GATE_SPACING), mux_8way_y, f"Op6_OR_Op7[{i}]")
+            or_id = await self.create_element(
+                "Or",
+                selector_x + i * HORIZONTAL_GATE_SPACING + (2 * HORIZONTAL_GATE_SPACING),
+                mux_8way_y,
+                f"Op6_OR_Op7[{i}]",
+            )
             if or_id is None:
                 return False
 
@@ -476,7 +532,9 @@ class ALU8BitBuilder(ICBuilderBase):
                 return False
 
             # ========== Create result output LED ==========
-            led_id = await self.create_element("Led", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y + VERTICAL_STAGE_SPACING, f"Result[{i}]")
+            led_id = await self.create_element(
+                "Led", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y + VERTICAL_STAGE_SPACING, f"Result[{i}]"
+            )
             if led_id is None:
                 return False
             result_outputs.append(led_id)
@@ -489,15 +547,14 @@ class ALU8BitBuilder(ICBuilderBase):
 
         # Create Zero flag (1 if all Result bits are 0)
         # NOR all result outputs together
-        zero_nor_id = await self.create_element("Nor", selector_x, selector_y + (2 * VERTICAL_STAGE_SPACING), "Zero_NOR")
+        zero_nor_id = await self.create_element(
+            "Nor", selector_x, selector_y + (2 * VERTICAL_STAGE_SPACING), "Zero_NOR"
+        )
         if zero_nor_id is None:
             return False
 
         # Set NOR gate to 8 inputs
-        set_size = await self.mcp.send_command("change_input_size", {
-            "element_id": zero_nor_id,
-            "size": 8
-        })
+        set_size = await self.mcp.send_command("change_input_size", {"element_id": zero_nor_id, "size": 8})
         if not set_size.success:
             self.log_error(f"Failed to set input_size=8 for Zero NOR: {set_size.error}")
             return False
@@ -509,7 +566,9 @@ class ALU8BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created Zero flag (8-input NOR)")
 
         # Create Zero flag LED
-        zero_led_id = await self.create_element("Led", selector_x + HORIZONTAL_GATE_SPACING, selector_y + (2 * VERTICAL_STAGE_SPACING), "Zero")
+        zero_led_id = await self.create_element(
+            "Led", selector_x + HORIZONTAL_GATE_SPACING, selector_y + (2 * VERTICAL_STAGE_SPACING), "Zero"
+        )
         if zero_led_id is None:
             return False
 
@@ -519,26 +578,30 @@ class ALU8BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created Zero flag")
 
         # Create Negative flag (Result[7])
-        await self.log(f"  🔍 Creating Negative flag from Result[7]")
-        negative_led_id = await self.create_element("Led", selector_x + (2 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "Negative")
+        await self.log("  🔍 Creating Negative flag from Result[7]")
+        negative_led_id = await self.create_element(
+            "Led", selector_x + (2 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "Negative"
+        )
         if negative_led_id is None:
             return False
         await self.log(f"  ✓ Created Negative LED (id={negative_led_id})")
 
-        await self.log(f"  🔍 Connecting Selector[7] output to Negative LED")
+        await self.log("  🔍 Connecting Selector[7] output to Negative LED")
         if not await self.connect(selector_ids[7], negative_led_id, source_port_label="out"):
             return False
 
         await self.log("  ✓ Created Negative flag")
 
         # Create Carry flag (CarryOut from high ALU)
-        await self.log(f"  🔍 Creating Carry flag from high ALU CarryOut")
-        carry_led_id = await self.create_element("Led", selector_x + (3 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "Carry")
+        await self.log("  🔍 Creating Carry flag from high ALU CarryOut")
+        carry_led_id = await self.create_element(
+            "Led", selector_x + (3 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "Carry"
+        )
         if carry_led_id is None:
             return False
         await self.log(f"  ✓ Created Carry LED (id={carry_led_id})")
 
-        await self.log(f"  🔍 Connecting high ALU CarryOut to Carry LED")
+        await self.log("  🔍 Connecting high ALU CarryOut to Carry LED")
         if not await self.connect(alu_high, carry_led_id, source_port_label="CarryOut"):
             return False
 
@@ -548,11 +611,13 @@ class ALU8BitBuilder(ICBuilderBase):
         output_file = str(IC_COMPONENTS_DIR / "level6_alu_8bit.panda")
         await self.log(f"  🔍 Saving circuit to {output_file}")
         if not await self.save_circuit(output_file):
-            self.log_error(f"Failed to save circuit")
+            self.log_error("Failed to save circuit")
             return False
 
-        await self.log(f"✅ Successfully created 8-bit ALU IC ({self.element_count} elements, {self.connection_count} connections)")
-        await self.log(f"   Architecture: 2× level4_ripple_alu_4bit + 8× XOR + 8× NOT + 8× level3_alu_selector_5way")
+        await self.log(
+            f"✅ Successfully created 8-bit ALU IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
+        await self.log("   Architecture: 2× level4_ripple_alu_4bit + 8× XOR + 8× NOT + 8× level3_alu_selector_5way")
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -566,6 +631,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "8-bit ALU IC"))
         sys.exit(exit_code)

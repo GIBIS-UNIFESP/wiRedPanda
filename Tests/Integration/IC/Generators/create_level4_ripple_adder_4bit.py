@@ -28,8 +28,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class FullAdder4bitBuilder(ICBuilderBase):
@@ -84,10 +84,14 @@ class FullAdder4bitBuilder(ICBuilderBase):
 
         for bit in range(4):
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_full_adder_1bit")):
-
                 return False
 
-            fa_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_full_adder_1bit"), fa_x + (bit * HORIZONTAL_GATE_SPACING * 1.5), fa_y + (bit * VERTICAL_STAGE_SPACING * 0.3), f"FA[{bit}]")
+            fa_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level2_full_adder_1bit"),
+                fa_x + (bit * HORIZONTAL_GATE_SPACING * 1.5),
+                fa_y + (bit * VERTICAL_STAGE_SPACING * 0.3),
+                f"FA[{bit}]",
+            )
             if fa_id is None:
                 return False
             full_adders.append(fa_id)
@@ -127,7 +131,9 @@ class FullAdder4bitBuilder(ICBuilderBase):
                 if not await self.connect(carry_in_id, full_adders[bit], target_port_label="Cin"):
                     return False
             else:
-                if not await self.connect(full_adders[bit - 1], full_adders[bit], source_port_label="Cout", target_port_label="Cin"):
+                if not await self.connect(
+                    full_adders[bit - 1], full_adders[bit], source_port_label="Cout", target_port_label="Cin"
+                ):
                     return False
             await self.log(f"  ✓ Connected carry chain FA[{bit}]")
 
@@ -163,6 +169,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "4-bit Full Adder IC"))
         sys.exit(exit_code)

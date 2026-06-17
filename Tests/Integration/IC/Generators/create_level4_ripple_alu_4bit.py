@@ -33,8 +33,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ALU4bitBuilder(ICBuilderBase):
@@ -80,29 +80,36 @@ class ALU4bitBuilder(ICBuilderBase):
             b_inputs.append(b_id)
 
         # Create CarryIn input port for adder chaining
-        carryin_id = await self.create_element("InputSwitch", input_x_start, b_input_y + VERTICAL_STAGE_SPACING, "CarryIn")
+        carryin_id = await self.create_element(
+            "InputSwitch", input_x_start, b_input_y + VERTICAL_STAGE_SPACING, "CarryIn"
+        )
         if carryin_id is None:
             return False
 
         # Create ground (always 0) for fallback/reference
-        ground_id = await self.create_element("InputGnd", input_x_start + HORIZONTAL_GATE_SPACING, b_input_y + VERTICAL_STAGE_SPACING, "Ground")
+        ground_id = await self.create_element(
+            "InputGnd", input_x_start + HORIZONTAL_GATE_SPACING, b_input_y + VERTICAL_STAGE_SPACING, "Ground"
+        )
         if ground_id is None:
             return False
 
         # Create SubCarryIn input port for subtractor chaining
-        sub_carryin_id = await self.create_element("InputSwitch", input_x_start, b_input_y + VERTICAL_STAGE_SPACING * 1.5, "SubCarryIn")
+        sub_carryin_id = await self.create_element(
+            "InputSwitch", input_x_start, b_input_y + VERTICAL_STAGE_SPACING * 1.5, "SubCarryIn"
+        )
         if sub_carryin_id is None:
             return False
 
         # Create Vcc (always 1) for OR mux logic
-        vcc_id = await self.create_element("InputVcc", input_x_start + 2 * HORIZONTAL_GATE_SPACING, b_input_y + VERTICAL_STAGE_SPACING * 1.5, "Vcc")
+        vcc_id = await self.create_element(
+            "InputVcc", input_x_start + 2 * HORIZONTAL_GATE_SPACING, b_input_y + VERTICAL_STAGE_SPACING * 1.5, "Vcc"
+        )
         if vcc_id is None:
             return False
 
         # Load FullAdder4bit IC for ADD operation
         adder_ic_name = str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit")
         if not self.check_dependency(adder_ic_name):
-
             return False
 
         adder_id = await self.instantiate_ic(adder_ic_name, adder_x, adder_y, "Adder")
@@ -113,17 +120,23 @@ class ALU4bitBuilder(ICBuilderBase):
         # Subtraction = A - B = A + (~B + 1) = A + ~B + 1, so we invert B and add
         subtractor_ic_name = str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit")
         if not self.check_dependency(subtractor_ic_name):
-
             return False
 
-        subtractor_id = await self.instantiate_ic(subtractor_ic_name, adder_x, subtractor_y, "Subtractor (Adder with ~B)")
+        subtractor_id = await self.instantiate_ic(
+            subtractor_ic_name, adder_x, subtractor_y, "Subtractor (Adder with ~B)"
+        )
         if subtractor_id is None:
             return False
 
         # Create NOT gates for inverting B inputs in subtraction
         not_gates = []
         for i in range(4):
-            not_id = await self.create_element("Not", adder_x - HORIZONTAL_GATE_SPACING + i * dense_spacing, subtractor_y - VERTICAL_STAGE_SPACING / 2, f"NOT_B[{i}]")
+            not_id = await self.create_element(
+                "Not",
+                adder_x - HORIZONTAL_GATE_SPACING + i * dense_spacing,
+                subtractor_y - VERTICAL_STAGE_SPACING / 2,
+                f"NOT_B[{i}]",
+            )
             if not_id is None:
                 return False
             not_gates.append(not_id)
@@ -133,10 +146,11 @@ class ALU4bitBuilder(ICBuilderBase):
         and_gates = []
         for i in range(4):
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_mux_2to1")):
-
                 return False
 
-            mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_mux_2to1"), adder_x + i * dense_spacing, and_or_y, f"mux_and[{i}]")
+            mux_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level2_mux_2to1"), adder_x + i * dense_spacing, and_or_y, f"mux_and[{i}]"
+            )
             if mux_id is None:
                 return False
             and_gates.append(mux_id)
@@ -146,10 +160,14 @@ class ALU4bitBuilder(ICBuilderBase):
         or_gates = []
         for i in range(4):
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_mux_2to1")):
-
                 return False
 
-            mux_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_mux_2to1"), adder_x + i * dense_spacing, and_or_y + VERTICAL_STAGE_SPACING, f"mux_or[{i}]")
+            mux_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level2_mux_2to1"),
+                adder_x + i * dense_spacing,
+                and_or_y + VERTICAL_STAGE_SPACING,
+                f"mux_or[{i}]",
+            )
             if mux_id is None:
                 return False
             or_gates.append(mux_id)
@@ -297,7 +315,9 @@ class ALU4bitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 4-bit ALU IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 4-bit ALU IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -311,6 +331,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "ALU 4-bit IC"))
         sys.exit(exit_code)

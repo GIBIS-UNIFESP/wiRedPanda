@@ -37,8 +37,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class StackPointer8BitBuilder(ICBuilderBase):
@@ -58,7 +58,9 @@ class StackPointer8BitBuilder(ICBuilderBase):
         load_value_inputs = []
         input_x = 50.0
         for i in range(8):
-            element_id = await self.create_element("InputSwitch", input_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"LoadValue[{i}]")
+            element_id = await self.create_element(
+                "InputSwitch", input_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"LoadValue[{i}]"
+            )
             if element_id is None:
                 return False
             load_value_inputs.append(element_id)
@@ -68,7 +70,9 @@ class StackPointer8BitBuilder(ICBuilderBase):
         control_signals = {}
 
         for ctrl_name in ["Clock", "Load", "Push", "Pop", "Reset", "Enable"]:
-            element_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + len(control_signals) * VERTICAL_STAGE_SPACING, ctrl_name)
+            element_id = await self.create_element(
+                "InputSwitch", ctrl_x, 100.0 + len(control_signals) * VERTICAL_STAGE_SPACING, ctrl_name
+            )
             if element_id is None:
                 return False
             control_signals[ctrl_name] = element_id
@@ -77,7 +81,6 @@ class StackPointer8BitBuilder(ICBuilderBase):
 
         # Instantiate RippleCarryAdder8bit for SP ±1 operations
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ripple_adder_8bit")):
-
             return False
 
         adder_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_ripple_adder_8bit"), 300.0, 200.0, "Adder")
@@ -89,10 +92,11 @@ class StackPointer8BitBuilder(ICBuilderBase):
         ff_x = 550.0
         for i in range(8):
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level1_d_flip_flop")):
-
                 return False
 
-            element_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), ff_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"SP[{i}]")
+            element_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), ff_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"SP[{i}]"
+            )
             if element_id is None:
                 return False
             sp_flipflops.append(element_id)
@@ -111,10 +115,14 @@ class StackPointer8BitBuilder(ICBuilderBase):
         mux_x = 900.0
         for i in range(8):
             if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_priority_mux_3to1")):
-
                 return False
 
-            element_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_priority_mux_3to1"), mux_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"SPMux[{i}]")
+            element_id = await self.instantiate_ic(
+                str(IC_COMPONENTS_DIR / "level2_priority_mux_3to1"),
+                mux_x + (i * HORIZONTAL_GATE_SPACING),
+                200.0,
+                f"SPMux[{i}]",
+            )
             if element_id is None:
                 return False
             priority_muxes.append(element_id)
@@ -237,6 +245,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Stack Pointer 8-bit"))
         sys.exit(exit_code)

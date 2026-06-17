@@ -38,8 +38,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class InstructionDecoder8BitBuilder(ICBuilderBase):
@@ -47,7 +47,7 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 8-bit Instruction Decoder IC"""
-        await self.begin_build('8-bit Instruction Decoder')
+        await self.begin_build("8-bit Instruction Decoder")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -58,7 +58,9 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
         # Create instruction input switches (8-bit opcode)
         instr_inputs = []
         for i in range(8):
-            instr_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"instr[{i}]")
+            instr_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"instr[{i}]"
+            )
             if instr_id is None:
                 return False
             instr_inputs.append(instr_id)
@@ -67,20 +69,28 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
         # Instantiate two 4-to-16 decoders for hierarchical decoding
         # Decoder 1: bits [3:0] → 16 outputs (low nibble)
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_4to16")):
-
             return False
 
-        decoder1_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_4to16"), input_x + (2 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16_low")
+        decoder1_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level2_decoder_4to16"),
+            input_x + (2 * HORIZONTAL_GATE_SPACING),
+            200.0,
+            "Decoder4to16_low",
+        )
         if decoder1_id is None:
             return False
         await self.log("  ✓ Instantiated decoder for low nibble [3:0]")
 
         # Decoder 2: bits [7:4] → 16 outputs (high nibble)
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_4to16")):
-
             return False
 
-        decoder2_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_4to16"), input_x + (6 * HORIZONTAL_GATE_SPACING), 200.0, "Decoder4to16_high")
+        decoder2_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level2_decoder_4to16"),
+            input_x + (6 * HORIZONTAL_GATE_SPACING),
+            200.0,
+            "Decoder4to16_high",
+        )
         if decoder2_id is None:
             return False
         await self.log("  ✓ Instantiated decoder for high nibble [7:4]")
@@ -142,7 +152,10 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 8-bit Instruction Decoder IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 8-bit Instruction Decoder IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -156,6 +169,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "8-bit Instruction Decoder IC"))
         sys.exit(exit_code)

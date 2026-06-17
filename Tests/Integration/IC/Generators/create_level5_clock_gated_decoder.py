@@ -28,8 +28,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ClockGatedDecoderBuilder(ICBuilderBase):
@@ -37,7 +37,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the Clock-Gated Decoder IC"""
-        await self.begin_build('Clock-Gated Decoder 3-to-8')
+        await self.begin_build("Clock-Gated Decoder 3-to-8")
         # Create new circuit
         if not await self.create_new_circuit():
             return False
@@ -56,7 +56,9 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         # Address inputs (3 bits)
         addr_inputs = []
         for i in range(3):
-            addr_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), addr_y, f"addr{i}")
+            addr_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), addr_y, f"addr{i}"
+            )
             if addr_id is None:
                 return False
             addr_inputs.append(addr_id)
@@ -67,18 +69,21 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
             return False
 
         # WriteEnable input
-        write_enable_id = await self.create_element("InputSwitch", input_x + HORIZONTAL_GATE_SPACING, control_y, "writeEnable")
+        write_enable_id = await self.create_element(
+            "InputSwitch", input_x + HORIZONTAL_GATE_SPACING, control_y, "writeEnable"
+        )
         if write_enable_id is None:
             return False
 
-        await self.log(f"  ✓ Created all inputs (3 address + 2 control)")
+        await self.log("  ✓ Created all inputs (3 address + 2 control)")
 
         # ========== Instantiate 3-to-8 Decoder IC ==========
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_3to8")):
-
             return False
 
-        decoder_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level2_decoder_3to8"), decoder_gates_x, addr_y, "Decoder_3to8")
+        decoder_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level2_decoder_3to8"), decoder_gates_x, addr_y, "Decoder_3to8"
+        )
         if decoder_id is None:
             return False
 
@@ -92,7 +97,12 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         # ========== Create Gating AND Gates (decoder output AND clock) ==========
         gating_gates = []
         for i in range(8):
-            gating_id = await self.create_element("And", gating_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6, addr_y + (i // 4) * VERTICAL_STAGE_SPACING, f"gating_and{i}")
+            gating_id = await self.create_element(
+                "And",
+                gating_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6,
+                addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
+                f"gating_and{i}",
+            )
             if gating_id is None:
                 return False
             gating_gates.append(gating_id)
@@ -110,7 +120,12 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         # ========== Create Output ANDs for WriteEnable Control ==========
         output_gates = []
         for i in range(8):
-            output_id = await self.create_element("And", output_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6, addr_y + (i // 4) * VERTICAL_STAGE_SPACING, f"output_and{i}")
+            output_id = await self.create_element(
+                "And",
+                output_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6,
+                addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
+                f"output_and{i}",
+            )
             if output_id is None:
                 return False
             output_gates.append(output_id)
@@ -128,7 +143,12 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         # ========== Create Output LEDs ==========
         output_leds = []
         for i in range(8):
-            led_id = await self.create_element("Led", output_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6, addr_y + (i // 4) * VERTICAL_STAGE_SPACING, f"out{i}")
+            led_id = await self.create_element(
+                "Led",
+                output_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6,
+                addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
+                f"out{i}",
+            )
             if led_id is None:
                 return False
             output_leds.append(led_id)
@@ -144,9 +164,12 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 3-to-8 Clock-Gated Decoder IC ({self.element_count} elements, {self.connection_count} connections)")
-        await self.log(f"   Inputs: addr0, addr1, addr2, clock, writeEnable")
-        await self.log(f"   Outputs: out0..out7 (8 one-hot)")
+        await self.log(
+            f"✅ Successfully created 3-to-8 Clock-Gated Decoder IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
+        await self.log("   Inputs: addr0, addr1, addr2, clock, writeEnable")
+        await self.log("   Outputs: out0..out7 (8 one-hot)")
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -160,6 +183,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Clock-Gated Decoder IC (3-to-8, Level 5)"))
         sys.exit(exit_code)

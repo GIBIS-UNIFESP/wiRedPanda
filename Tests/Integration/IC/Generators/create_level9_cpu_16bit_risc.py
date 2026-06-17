@@ -44,7 +44,8 @@ Usage:
 """
 
 import asyncio
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
+
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class CPU16BitRISCBuilder(ICBuilderBase):
@@ -52,7 +53,7 @@ class CPU16BitRISCBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 16-bit RISC CPU IC"""
-        await self.begin_build('16-bit RISC CPU')
+        await self.begin_build("16-bit RISC CPU")
         if not await self.create_new_circuit():
             return False
 
@@ -76,10 +77,11 @@ class CPU16BitRISCBuilder(ICBuilderBase):
 
         # ---- Instantiate 16-bit Fetch Stage ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level9_fetch_stage_16bit")):
-
             return False
 
-        fetch_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level9_fetch_stage_16bit"), 300.0, 100.0, "Fetch_16bit")
+        fetch_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level9_fetch_stage_16bit"), 300.0, 100.0, "Fetch_16bit"
+        )
         if fetch_id is None:
             return False
 
@@ -98,7 +100,6 @@ class CPU16BitRISCBuilder(ICBuilderBase):
 
         # ---- Instantiate 16-bit ALU ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_alu_16bit")):
-
             return False
 
         alu_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_alu_16bit"), 650.0, 100.0, "ALU_16bit")
@@ -155,8 +156,11 @@ class CPU16BitRISCBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 16-bit RISC CPU IC ({self.element_count} elements, {self.connection_count} connections)")
-        await self.log(f"   Architecture: 16-bit Fetch + 16-bit ALU")
+        await self.log(
+            f"✅ Successfully created 16-bit RISC CPU IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
+        await self.log("   Architecture: 16-bit Fetch + 16-bit ALU")
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -170,6 +174,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "16-bit RISC CPU"))
         sys.exit(exit_code)

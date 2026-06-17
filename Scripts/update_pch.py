@@ -17,17 +17,13 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-
 SOURCE_EXTENSIONS = {".cpp", ".h", ".hpp", ".cc", ".cxx"}
 EXCLUDE_DIRS = {".git", ".venv", ".github", ".vscode", ".idea", "_deps", "cmake", "Scripts"}
 
 
 def find_repo_root():
     try:
-        result = subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            capture_output=True, text=True, check=True
-        )
+        result = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         return Path(result.stdout.strip())
     except (subprocess.CalledProcessError, FileNotFoundError):
         return Path(__file__).resolve().parent.parent
@@ -38,9 +34,7 @@ def should_exclude_dir(dirname):
         return True
     if dirname.startswith("."):
         return True
-    if dirname.lower().startswith("build"):
-        return True
-    return False
+    return bool(dirname.lower().startswith("build"))
 
 
 def find_source_files(root):
@@ -50,9 +44,9 @@ def find_source_files(root):
         files.extend(root.glob(f"**/*{ext}"))
 
     return [
-        f for f in files
-        if f.name != "pch.h"
-        and not any(should_exclude_dir(part) for part in f.relative_to(root).parts)
+        f
+        for f in files
+        if f.name != "pch.h" and not any(should_exclude_dir(part) for part in f.relative_to(root).parts)
     ]
 
 
@@ -109,7 +103,7 @@ def update_pch_file(pch_path, used_includes):
 
     sorted_includes = sorted(used_includes)
 
-    new_lines = lines[:start_idx + 1]
+    new_lines = lines[: start_idx + 1]
     new_lines.append("\n")
     for include in sorted_includes:
         new_lines.append(f"#include {include}\n")
@@ -150,7 +144,7 @@ def main():
     missing = all_includes - current_pch
     unused = current_pch - all_includes
 
-    print(f"\nQt includes analysis:")
+    print("\nQt includes analysis:")
     print(f"Total unique Qt includes used: {len(all_includes)}")
     print(f"Current PCH includes: {len(current_pch)}")
 
@@ -169,7 +163,7 @@ def main():
         return
 
     if update_pch_file(pch_path, all_includes):
-        print(f"\nPCH updated successfully.")
+        print("\nPCH updated successfully.")
         print(f"  Total includes: {len(all_includes)}")
         if missing:
             print(f"  Added: {len(missing)}")

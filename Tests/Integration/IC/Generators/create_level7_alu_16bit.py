@@ -40,8 +40,9 @@ Usage:
 """
 
 import asyncio
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
+
 from element_spacing import HORIZONTAL_GATE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class ALU16bitBuilder(ICBuilderBase):
@@ -49,7 +50,7 @@ class ALU16bitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 16-bit ALU IC"""
-        await self.begin_build('16-bit ALU')
+        await self.begin_build("16-bit ALU")
         if not await self.create_new_circuit():
             return False
 
@@ -61,27 +62,31 @@ class ALU16bitBuilder(ICBuilderBase):
 
         # ---- Create Input Switches ----
         # OperandA[0-15]
-        opA_inputs = []
+        op_a_inputs = []
         for i in range(16):
             elem_id = await self.create_element("InputSwitch", input_x, 100.0 + (i * 40.0), f"OperandA[{i}]")
             if elem_id is None:
                 return False
-            opA_inputs.append(elem_id)
+            op_a_inputs.append(elem_id)
 
         # OperandB[0-15]
-        opB_inputs = []
+        op_b_inputs = []
         for i in range(16):
-            elem_id = await self.create_element("InputSwitch", input_x + HORIZONTAL_GATE_SPACING, 100.0 + (i * 40.0), f"OperandB[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x + HORIZONTAL_GATE_SPACING, 100.0 + (i * 40.0), f"OperandB[{i}]"
+            )
             if elem_id is None:
                 return False
-            opB_inputs.append(elem_id)
+            op_b_inputs.append(elem_id)
 
         await self.log("  ✓ Created operand inputs")
 
         # ALUOp[0-2]
         aluop_inputs = []
         for i in range(3):
-            elem_id = await self.create_element("InputSwitch", input_x + (2 * HORIZONTAL_GATE_SPACING), 100.0 + (i * 40.0), f"ALUOp[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x + (2 * HORIZONTAL_GATE_SPACING), 100.0 + (i * 40.0), f"ALUOp[{i}]"
+            )
             if elem_id is None:
                 return False
             aluop_inputs.append(elem_id)
@@ -91,7 +96,6 @@ class ALU16bitBuilder(ICBuilderBase):
         # ---- Instantiate two 8-bit ALUs ----
         # Low byte ALU (bits 0-7)
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_alu_8bit")):
-
             return False
 
         alu_low_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_alu_8bit"), alu_low_x, 150.0, "ALU_Low")
@@ -100,10 +104,11 @@ class ALU16bitBuilder(ICBuilderBase):
 
         # High byte ALU (bits 8-15)
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_alu_8bit")):
-
             return False
 
-        alu_high_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_alu_8bit"), alu_high_x, 150.0, "ALU_High")
+        alu_high_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level6_alu_8bit"), alu_high_x, 150.0, "ALU_High"
+        )
         if alu_high_id is None:
             return False
 
@@ -112,18 +117,18 @@ class ALU16bitBuilder(ICBuilderBase):
         # ---- Connect operands to ALUs ----
         # Low byte: connect A[0-7], B[0-7]
         for i in range(8):
-            if not await self.connect(opA_inputs[i], alu_low_id, target_port_label=f"A[{i}]"):
+            if not await self.connect(op_a_inputs[i], alu_low_id, target_port_label=f"A[{i}]"):
                 return False
 
-            if not await self.connect(opB_inputs[i], alu_low_id, target_port_label=f"B[{i}]"):
+            if not await self.connect(op_b_inputs[i], alu_low_id, target_port_label=f"B[{i}]"):
                 return False
 
         # High byte: connect A[8-15], B[8-15]
         for i in range(8):
-            if not await self.connect(opA_inputs[8 + i], alu_high_id, target_port_label=f"A[{i}]"):
+            if not await self.connect(op_a_inputs[8 + i], alu_high_id, target_port_label=f"A[{i}]"):
                 return False
 
-            if not await self.connect(opB_inputs[8 + i], alu_high_id, target_port_label=f"B[{i}]"):
+            if not await self.connect(op_b_inputs[8 + i], alu_high_id, target_port_label=f"B[{i}]"):
                 return False
 
         await self.log("  ✓ Connected operands to ALUs")
@@ -152,7 +157,7 @@ class ALU16bitBuilder(ICBuilderBase):
                 if not await self.connect(alu_low_id, led_id, source_port_label=f"Result[{i}]"):
                     return False
             else:
-                if not await self.connect(alu_high_id, led_id, source_port_label=f"Result[{i-8}]"):
+                if not await self.connect(alu_high_id, led_id, source_port_label=f"Result[{i - 8}]"):
                     return False
 
         await self.log("  ✓ Created Result outputs")
@@ -202,7 +207,9 @@ class ALU16bitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 16-bit ALU IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 16-bit ALU IC({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -216,6 +223,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "16-bit ALU IC"))
         sys.exit(exit_code)

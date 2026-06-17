@@ -43,8 +43,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class FetchStage16bitBuilder(ICBuilderBase):
@@ -52,7 +52,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
     async def create(self) -> bool:
         """Create the 16-bit Fetch Stage IC"""
-        await self.begin_build('16-bit Fetch Stage')
+        await self.begin_build("16-bit Fetch Stage")
         if not await self.create_new_circuit():
             return False
 
@@ -63,7 +63,9 @@ class FetchStage16bitBuilder(ICBuilderBase):
         # ---- Create PC data input (8-bit) ----
         pc_data_inputs = []
         for i in range(8):
-            elem_id = await self.create_element("InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"PCData[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"PCData[{i}]"
+            )
             if elem_id is None:
                 return False
             pc_data_inputs.append(elem_id)
@@ -76,7 +78,9 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         control_signals = {}
         for signal_name in ["Clock", "Reset", "PCLoad", "PCInc", "InstrLoad"]:
-            elem_id = await self.create_element("InputSwitch" if signal_name != "Clock" else "Clock", control_x, control_y, signal_name)
+            elem_id = await self.create_element(
+                "InputSwitch" if signal_name != "Clock" else "Clock", control_x, control_y, signal_name
+            )
             if elem_id is None:
                 return False
             control_signals[signal_name] = elem_id
@@ -89,10 +93,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
         pc_y = 100.0
 
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_cpu_program_counter_8bit")):
-
-
             return False
-
 
         pc_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_cpu_program_counter_8bit"), pc_x, pc_y, "PC")
         if pc_id is None:
@@ -124,31 +125,36 @@ class FetchStage16bitBuilder(ICBuilderBase):
         instr_mem_high_y = 250.0
 
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface")):
-
-
             return False
 
-
-        instr_mem_low_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface"), instr_mem_x, instr_mem_low_y, "InstrMem_Low")
+        instr_mem_low_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface"), instr_mem_x, instr_mem_low_y, "InstrMem_Low"
+        )
         if instr_mem_low_id is None:
             return False
 
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface")):
-
-
             return False
 
-
-        instr_mem_high_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface"), instr_mem_x, instr_mem_high_y, "InstrMem_High")
+        instr_mem_high_id = await self.instantiate_ic(
+            str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface"),
+            instr_mem_x,
+            instr_mem_high_y,
+            "InstrMem_High",
+        )
         if instr_mem_high_id is None:
             return False
 
         # Connect PC output to both instruction memory address inputs
         for i in range(8):
-            if not await self.connect(pc_id, instr_mem_low_id, source_port_label=f"Address[{i}]", target_port_label=f"Address[{i}]"):
+            if not await self.connect(
+                pc_id, instr_mem_low_id, source_port_label=f"Address[{i}]", target_port_label=f"Address[{i}]"
+            ):
                 return False
 
-            if not await self.connect(pc_id, instr_mem_high_id, source_port_label=f"Address[{i}]", target_port_label=f"Address[{i}]"):
+            if not await self.connect(
+                pc_id, instr_mem_high_id, source_port_label=f"Address[{i}]", target_port_label=f"Address[{i}]"
+            ):
                 return False
 
         await self.log("  ✓ Instantiated instruction memory interfaces")
@@ -188,7 +194,9 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         # ---- Create Output: PC (for external use) ----
         for i in range(8):
-            led_id = await self.create_element("Led", output_x + HORIZONTAL_GATE_SPACING, output_y + (i * 30), f"PC[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x + HORIZONTAL_GATE_SPACING, output_y + (i * 30), f"PC[{i}]"
+            )
             if led_id is None:
                 return False
 
@@ -222,7 +230,9 @@ class FetchStage16bitBuilder(ICBuilderBase):
             instr_bit = 10 - i  # 10, 9, 8, 7, 6
             mem_source, mem_port, _ = instr_mem_connections[instr_bit]
 
-            led_id = await self.create_element("Led", decode_x + HORIZONTAL_GATE_SPACING, output_y + (i * 30), f"DestReg[{i}]")
+            led_id = await self.create_element(
+                "Led", decode_x + HORIZONTAL_GATE_SPACING, output_y + (i * 30), f"DestReg[{i}]"
+            )
             if led_id is None:
                 return False
 
@@ -234,7 +244,9 @@ class FetchStage16bitBuilder(ICBuilderBase):
             instr_bit = 5 - i  # 5, 4, 3, 2, 1, 0
             mem_source, mem_port, _ = instr_mem_connections[instr_bit]
 
-            led_id = await self.create_element("Led", decode_x + (2 * HORIZONTAL_GATE_SPACING), output_y + (i * 30), f"SrcBits[{i}]")
+            led_id = await self.create_element(
+                "Led", decode_x + (2 * HORIZONTAL_GATE_SPACING), output_y + (i * 30), f"SrcBits[{i}]"
+            )
             if led_id is None:
                 return False
 
@@ -247,7 +259,10 @@ class FetchStage16bitBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created 16-bit Fetch Stage IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created 16-bit Fetch Stage IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -261,6 +276,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "16-bit Fetch Stage IC"))
         sys.exit(exit_code)

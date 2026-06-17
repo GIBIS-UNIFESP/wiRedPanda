@@ -34,11 +34,11 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import (
     HORIZONTAL_GATE_SPACING,
     VERTICAL_STAGE_SPACING,
 )
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class DFlipFlopBuilder(ICBuilderBase):
@@ -84,7 +84,9 @@ class DFlipFlopBuilder(ICBuilderBase):
         await self.log(f"  ✓ Created input Preset (id={input_preset_id})")
 
         # Create CLEAR input (active LOW)
-        input_clear_id = await self.create_element("InputSwitch", input_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "Clear")
+        input_clear_id = await self.create_element(
+            "InputSwitch", input_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "Clear"
+        )
         if input_clear_id is None:
             return False
         await self.log(f"  ✓ Created input Clear (id={input_clear_id})")
@@ -300,7 +302,9 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created DFlipFlop IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created DFlipFlop IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -314,6 +318,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "D Flip-Flop IC"))
         sys.exit(exit_code)

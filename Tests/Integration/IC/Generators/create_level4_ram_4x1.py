@@ -26,8 +26,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class RAM4x1Builder(ICBuilderBase):
@@ -57,26 +57,34 @@ class RAM4x1Builder(ICBuilderBase):
         # Address inputs
         address_inputs = []
         for i in range(address_bits):
-            addr_id = await self.create_element("InputSwitch", 50.0 + i * HORIZONTAL_GATE_SPACING, input_y, f"Address[{i}]")
+            addr_id = await self.create_element(
+                "InputSwitch", 50.0 + i * HORIZONTAL_GATE_SPACING, input_y, f"Address[{i}]"
+            )
             if addr_id is None:
                 return False
             address_inputs.append(addr_id)
             await self.log(f"  ✓ Created Address[{i}]")
 
         # DataIn input
-        data_in_id = await self.create_element("InputSwitch", 50.0 + address_bits * HORIZONTAL_GATE_SPACING, input_y, "DataIn")
+        data_in_id = await self.create_element(
+            "InputSwitch", 50.0 + address_bits * HORIZONTAL_GATE_SPACING, input_y, "DataIn"
+        )
         if data_in_id is None:
             return False
         await self.log("  ✓ Created DataIn")
 
         # WriteEnable input
-        write_en_id = await self.create_element("InputSwitch", 50.0 + (address_bits + 1) * HORIZONTAL_GATE_SPACING, input_y, "WriteEnable")
+        write_en_id = await self.create_element(
+            "InputSwitch", 50.0 + (address_bits + 1) * HORIZONTAL_GATE_SPACING, input_y, "WriteEnable"
+        )
         if write_en_id is None:
             return False
         await self.log("  ✓ Created WriteEnable")
 
         # Clock input
-        clock_id = await self.create_element("InputSwitch", 50.0 + (address_bits + 2) * HORIZONTAL_GATE_SPACING, input_y, "Clock")
+        clock_id = await self.create_element(
+            "InputSwitch", 50.0 + (address_bits + 2) * HORIZONTAL_GATE_SPACING, input_y, "Clock"
+        )
         if clock_id is None:
             return False
         await self.log("  ✓ Created Clock")
@@ -119,7 +127,6 @@ class RAM4x1Builder(ICBuilderBase):
         # ========== Create Decoder IC Instance ==========
         decoder_ic_name = str(IC_COMPONENTS_DIR / "level2_decoder_2to4")
         if not self.check_dependency(decoder_ic_name):
-
             return False
 
         decoder_ic = await self.instantiate_ic(decoder_ic_name, 150.0, 150.0, "AddrDecoder")
@@ -135,7 +142,6 @@ class RAM4x1Builder(ICBuilderBase):
         # ========== Create Multiplexer IC Instance ==========
         mux_ic_name = str(IC_COMPONENTS_DIR / "level2_mux_4to1")
         if not self.check_dependency(mux_ic_name):
-
             return False
 
         read_mux_ic = await self.instantiate_ic(mux_ic_name, 500.0, 250.0, "ReadMux")
@@ -176,7 +182,9 @@ class RAM4x1Builder(ICBuilderBase):
                 return False
 
             # Connect DFlipFlop Q output to read multiplexer input
-            if not await self.connect(storage_ffs[i], read_mux_ic, target_port_label=f"Data[{i}]", source_port_label="Q"):
+            if not await self.connect(
+                storage_ffs[i], read_mux_ic, target_port_label=f"Data[{i}]", source_port_label="Q"
+            ):
                 return False
 
         # ========== Connect Read Multiplexer ==========
@@ -193,7 +201,9 @@ class RAM4x1Builder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created RAM 4x1 IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created RAM 4x1 IC ({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -207,6 +217,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "RAM 4x1 IC"))
         sys.exit(exit_code)

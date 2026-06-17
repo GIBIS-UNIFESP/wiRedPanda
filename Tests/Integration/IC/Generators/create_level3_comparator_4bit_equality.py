@@ -18,8 +18,8 @@ Usage:
 
 import asyncio
 
-from ic_builder_base import ICBuilderBase, IC_COMPONENTS_DIR, run_ic_builder
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
 class Comparator4BitEqualityBuilder(ICBuilderBase):
@@ -46,7 +46,9 @@ class Comparator4BitEqualityBuilder(ICBuilderBase):
         # Create input switches for B bits
         b_inputs = []
         for i in range(4):
-            b_id = await self.create_element("InputSwitch", input_x, 100.0 + (4 + i) * VERTICAL_STAGE_SPACING, f"B[{i}]")
+            b_id = await self.create_element(
+                "InputSwitch", input_x, 100.0 + (4 + i) * VERTICAL_STAGE_SPACING, f"B[{i}]"
+            )
             if b_id is None:
                 return False
             b_inputs.append(b_id)
@@ -56,7 +58,9 @@ class Comparator4BitEqualityBuilder(ICBuilderBase):
         xnor_gates = []
         xnor_x = input_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            xnor_id = await self.create_element("Xnor", xnor_x + i * HORIZONTAL_GATE_SPACING, 100.0 + i * VERTICAL_STAGE_SPACING, f"xnor[{i}]")
+            xnor_id = await self.create_element(
+                "Xnor", xnor_x + i * HORIZONTAL_GATE_SPACING, 100.0 + i * VERTICAL_STAGE_SPACING, f"xnor[{i}]"
+            )
             if xnor_id is None:
                 return False
             xnor_gates.append(xnor_id)
@@ -78,10 +82,7 @@ class Comparator4BitEqualityBuilder(ICBuilderBase):
             return False
 
         # Set AND gate to 4-input size
-        set_props = await self.mcp.send_command("change_input_size", {
-            "element_id": and_gate_final,
-            "size": 4
-        })
+        set_props = await self.mcp.send_command("change_input_size", {"element_id": and_gate_final, "size": 4})
         if not set_props.success:
             self.log_error("Failed to set input_size=4 for equality AND gate")
             return False
@@ -110,7 +111,10 @@ class Comparator4BitEqualityBuilder(ICBuilderBase):
         if not await self.save_circuit(output_file):
             return False
 
-        await self.log(f"✅ Successfully created Comparator4BitEquality IC ({self.element_count} elements, {self.connection_count} connections)")
+        await self.log(
+            f"✅ Successfully created Comparator4BitEquality IC"
+            f"({self.element_count} elements, {self.connection_count} connections)"
+        )
         await self.log(f"   Saved to: {output_file}")
         return True
 
@@ -124,6 +128,7 @@ async def build(mcp) -> bool:
 if __name__ == "__main__":
     import sys
     import traceback
+
     try:
         exit_code = asyncio.run(run_ic_builder(build, "Comparator 4-bit Equality IC"))
         sys.exit(exit_code)

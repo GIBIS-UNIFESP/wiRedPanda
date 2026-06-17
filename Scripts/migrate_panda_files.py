@@ -23,10 +23,7 @@ from pathlib import Path
 
 def find_repo_root():
     try:
-        result = subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            capture_output=True, text=True, check=True
-        )
+        result = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
         return Path(result.stdout.strip())
     except (subprocess.CalledProcessError, FileNotFoundError):
         return Path(__file__).resolve().parent.parent
@@ -127,7 +124,8 @@ async def main():
     env = os.environ.copy()
     env["QT_QPA_PLATFORM"] = "offscreen"
     proc = await asyncio.create_subprocess_exec(
-        BINARY, "--mcp",
+        BINARY,
+        "--mcp",
         stdin=asyncio.subprocess.PIPE,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
