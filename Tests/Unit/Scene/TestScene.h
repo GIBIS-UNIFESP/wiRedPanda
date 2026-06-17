@@ -88,4 +88,7 @@ private slots:
 
     // Regression: WIREDPANDA-HC — drainConnections must clean the registry
     void testDrainConnectionsCleansRegistryHC();
+
+    // Regression: F4 — paste gate must accept every format paste() reads
+    void testClipboardCanPasteMatchesPasteFormats();
 };
