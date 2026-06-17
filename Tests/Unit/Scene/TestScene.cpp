@@ -7,9 +7,11 @@
 #include <memory>
 
 #include <QClipboard>
+#include <QMimeData>
 #include <QTest>
 
 #include "App/Core/ItemWithId.h"
+#include "App/Core/MimeTypes.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
@@ -18,6 +20,7 @@
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Nodes/QNEConnection.h"
+#include "App/Scene/ClipboardManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -1512,4 +1515,31 @@ void TestScene::testDrainConnectionsCleansRegistryHC()
     // Scene::removeItem, so the registry no longer points at freed memory.
     // Pre-fix this assertion fails and proves the WIREDPANDA-HC hypothesis.
     QVERIFY(scene->itemById(connId) == nullptr);
+}
+
+void TestScene::testClipboardCanPasteMatchesPasteFormats()
+{
+    // Regression test (F4): the empty-canvas context menu gated Paste on the
+    // *legacy* mime type only, while copy()/cut() write only the current one —
+    // right-click Paste was permanently disabled for data this very app
+    // copied. canPaste() is now the single source of truth shared with
+    // paste(), which reads both formats.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *sw = new InputSwitch();
+    scene->addItem(sw);
+    sw->setSelected(true);
+    scene->copyAction();
+
+    QVERIFY(ClipboardManager::canPaste(QApplication::clipboard()->mimeData()));
+
+    QMimeData legacy;
+    legacy.setData(MimeType::ClipboardLegacy, QByteArrayLiteral("x"));
+    QVERIFY(ClipboardManager::canPaste(&legacy));
+
+    QMimeData unrelated;
+    unrelated.setText("not circuit data");
+    QVERIFY(!ClipboardManager::canPaste(&unrelated));
+    QVERIFY(!ClipboardManager::canPaste(nullptr));
 }

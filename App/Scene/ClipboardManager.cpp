@@ -164,6 +164,14 @@ void ClipboardManager::paste()
     }
 }
 
+bool ClipboardManager::canPaste(const QMimeData *mimeData)
+{
+    // Mirrors the formats paste() reads above — copy()/cut() write only the
+    // current format, while older app versions wrote the legacy one.
+    return mimeData
+           && (mimeData->hasFormat(MimeType::Clipboard) || mimeData->hasFormat(MimeType::ClipboardLegacy));
+}
+
 void ClipboardManager::cloneDrag(const QPointF &mousePos)
 {
     auto *view = m_scene->view();
