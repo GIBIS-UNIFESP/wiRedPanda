@@ -104,7 +104,11 @@ void ICController::removeICFile(const QString &icFileName)
 
     QList<QGraphicsItem *> toDelete;
     for (auto *element : tab->scene()->elements()) {
-        if (element->elementType() == ElementType::IC && element->label().append(".panda").toLower() == icFileName) {
+        if (element->elementType() != ElementType::IC) {
+            continue;
+        }
+        const auto *ic = qobject_cast<IC *>(element);
+        if (ic && !ic->isEmbedded() && QFileInfo(ic->file()).fileName().toLower() == icFileName.toLower()) {
             toDelete.append(element);
         }
     }

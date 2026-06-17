@@ -23,6 +23,14 @@ RecentFiles::RecentFiles(QObject *parent)
             emit recentFilesUpdated();
         }
     });
+
+    // Entries restored from settings were only watched once re-opened (F36);
+    // register them now so the comment above is actually true.
+    for (const QString &filePath : std::as_const(m_files)) {
+        if (QFile::exists(filePath)) {
+            m_fileWatcher.addPath(filePath);
+        }
+    }
 }
 
 void RecentFiles::addRecentFile(const QString &filePath)

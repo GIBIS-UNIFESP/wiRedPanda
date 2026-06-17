@@ -4,9 +4,11 @@
 #include "App/Scene/PropertyShortcutHandler.h"
 
 #include <algorithm>
+#include <functional>
 
 #include "App/Core/Enums.h"
 #include "App/Element/GraphicElement.h"
+#include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 
@@ -17,6 +19,20 @@ PropertyShortcutHandler::PropertyShortcutHandler(Scene *scene)
 
 void PropertyShortcutHandler::adjustMainProperty(int dir)
 {
+    // Wraps a direct property mutation in an UpdateCommand (F37) so the
+    // [ / ] shortcuts are undoable and mark the circuit dirty, exactly like
+    // the port-size path below and the property editor.
+    const auto applyWithUndo = [this](GraphicElement *element, const std::function<void()> &mutate) {
+        QByteArray oldData;
+        {
+            QDataStream stream(&oldData, QIODevice::WriteOnly);
+            Serialization::writePandaHeader(stream);
+            element->save(stream);
+        }
+        mutate();
+        m_scene->receiveCommand(new UpdateCommand({element}, oldData, m_scene));
+    };
+
     // dir = -1 for prev, +1 for next
     // Cycles the "primary" configurable property of each selected element:
     // input count for logic gates, output count for rotary inputs,
@@ -49,24 +65,24 @@ void PropertyShortcutHandler::adjustMainProperty(int dir)
         }
         case ElementType::Clock:
             if (element->hasFrequency())
-                element->setFrequency(element->frequency() + dir * 0.5);
+                applyWithUndo(element, [element, dir] { element->setFrequency(element->frequency() + dir * 0.5); });
             break;
 
         case ElementType::Buzzer:
             if (element->hasFrequency())
-                element->setFrequency(std::clamp(element->frequency() + dir * 100.0, 20.0, 20000.0));
+                applyWithUndo(element, [element, dir] { element->setFrequency(std::clamp(element->frequency() + dir * 100.0, 20.0, 20000.0)); });
             break;
 
         case ElementType::Display16:
             // Only previous-color is handled for Display16 (no next-color cycling)
             if (dir < 0 && element->hasColors())
-                element->setColor(element->previousColor());
+                applyWithUndo(element, [element] { element->setColor(element->previousColor()); });
             break;
 
         case ElementType::Display14:
         case ElementType::Display7:
             if (element->hasColors())
-                element->setColor(dir < 0 ? element->previousColor() : element->nextColor());
+                applyWithUndo(element, [element, dir] { element->setColor(dir < 0 ? element->previousColor() : element->nextColor()); });
             break;
 
         default: // Not implemented
