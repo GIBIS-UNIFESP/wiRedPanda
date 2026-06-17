@@ -1,3 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto eol=lf
 
+# Binary fixtures must never be EOL-normalized or treated as text.
+# (text=auto already detects them; these make it explicit and guaranteed.)
+*.panda binary
+*.bin   binary
+
