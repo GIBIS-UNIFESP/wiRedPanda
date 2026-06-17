@@ -131,12 +131,40 @@ void TestTruthTable::testSetKey()
     // Set the key
     truthTable.setkey(testKey);
 
-    // Verify key was set correctly
+    // Verify the supplied bits were kept; the key itself is padded back to
+    // the 2048-bit class invariant (see testSetKeyEnforcesSizeInvariant).
     QBitArray &retrievedKey = truthTable.key();
-    QCOMPARE(retrievedKey.size(), testKey.size());
+    QCOMPARE(retrievedKey.size(), 2048);
     QVERIFY(retrievedKey.at(0) == true);
     QVERIFY(retrievedKey.at(5) == true);
     QVERIFY(retrievedKey.at(15) == true);
+}
+
+void TestTruthTable::testSetKeyEnforcesSizeInvariant()
+{
+    // Regression test (F2): updateLogic() indexes the key at 256*output + row
+    // (up to bit 2047) and ToggleTruthTableOutputCommand toggles bits in
+    // place, so the key must always hold exactly 2048 bits. A crafted/corrupt
+    // .panda file can carry a shorter (or longer) array — setkey() is the
+    // single mutation point and must restore the invariant, padding with
+    // zeros and preserving the supplied bits.
+    TruthTable truthTable;
+
+    QBitArray shortKey(16);
+    shortKey.setBit(0, true);
+    shortKey.setBit(15, true);
+    truthTable.setkey(shortKey);
+
+    QCOMPARE(truthTable.key().size(), 2048);
+    QVERIFY(truthTable.key().at(0));
+    QVERIFY(truthTable.key().at(15));
+    for (int i = 16; i < 2048; ++i) {
+        QVERIFY(!truthTable.key().at(i));
+    }
+
+    QBitArray longKey(4096, true);
+    truthTable.setkey(longKey);
+    QCOMPARE(truthTable.key().size(), 2048);
 }
 
 void TestTruthTable::testKeyAccess()

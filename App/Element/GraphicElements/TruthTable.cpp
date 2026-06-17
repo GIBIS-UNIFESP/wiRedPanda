@@ -205,6 +205,11 @@ QBitArray &TruthTable::key()
 void TruthTable::setkey(const QBitArray &key)
 {
     m_key = key;
+    // updateLogic() indexes the key at 256*output + row (up to bit 2047) and
+    // ToggleTruthTableOutputCommand toggles bits in place, so the key must
+    // hold exactly 2048 bits regardless of what a (possibly corrupt or
+    // crafted) .panda file supplied — resize pads with zeros or truncates.
+    m_key.resize(2048);
 }
 
 void TruthTable::save(QDataStream &stream) const
