@@ -28,6 +28,7 @@ void setupTestEnvironment()
 #endif
     Comment::setVerbosity(-1);
     Application::interactiveMode = false;   // Suppress UI dialogs in tests
+    Application::renderingEnabled = false;  // Skip wire-geometry work — tests never paint
     Application::migrationEnabled = false;  // Preserve backward-compatibility test files as-is
 }
 

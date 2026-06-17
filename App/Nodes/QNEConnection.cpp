@@ -109,9 +109,11 @@ void QNEConnection::updatePosFromPorts()
 void QNEConnection::updatePath()
 {
     // Skip expensive Bézier path construction when there is no visible rendering.
-    // In non-interactive (test/headless) mode, connection geometry is never painted,
-    // so building and comparing QPainterPaths is pure waste.
-    if (!Application::interactiveMode) {
+    // Tests and fuzz harnesses never paint, so building and comparing
+    // QPainterPaths is pure waste there. This must NOT key off interactiveMode:
+    // both MCP modes run non-interactively yet still render (the --mcp-gui
+    // window, and export_image painting the scene off-screen in headless --mcp).
+    if (!Application::renderingEnabled) {
         return;
     }
 

@@ -9,11 +9,33 @@
 
 void TestQNEConnection::testConnectionPathUpdate()
 {
+    // Regression test (F5): path construction was gated on
+    // Application::interactiveMode — false in both MCP modes — so the
+    // --mcp-gui window and headless export_image painted wire-less circuits
+    // (paint() draws path()). Geometry is gated on its own rendering flag
+    // now; non-interactive sessions still build wire paths.
+    const bool prevRendering = Application::renderingEnabled;
+    const bool prevInteractive = Application::interactiveMode;
+
+    Application::renderingEnabled = true;
+    Application::interactiveMode = false; // both MCP modes run non-interactive
+
     QNEConnection connection;
     connection.setStartPos({0, 0});
     connection.setEndPos({100, 100});
     connection.updatePath();
-    QVERIFY(true);
+    QVERIFY(!connection.path().isEmpty());
+
+    // Tests/fuzzers opt out of the geometry work entirely.
+    Application::renderingEnabled = false;
+    QNEConnection skipped;
+    skipped.setStartPos({0, 0});
+    skipped.setEndPos({100, 100});
+    skipped.updatePath();
+    QVERIFY(skipped.path().isEmpty());
+
+    Application::renderingEnabled = prevRendering;
+    Application::interactiveMode = prevInteractive;
 }
 
 void TestQNEConnection::testConnectionHoverEffect()
