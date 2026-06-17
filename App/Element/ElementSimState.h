@@ -66,6 +66,12 @@ public:
     void setOutputValue(const int index, const Status value)
     {
         if (index >= m_outputs.size()) { return; }
+        if (m_deferCommit) {
+            // Synchronous sequential element mid-tick: stage the value so peers
+            // still read the old output. commitDeferredOutputs() publishes it.
+            m_staged[index] = value;
+            return;
+        }
         if (m_outputs[index] != value) { m_outputChanged = true; }
         m_outputs[index] = value;
     }
@@ -83,11 +89,37 @@ public:
     const QVector<Status> &inputs() const { return m_inputs; }
 
     /// Read-only view of the current simulation output values.
-    const QVector<Status> &outputs() const { return m_outputs; }
+    /// During a deferred-commit window returns the staged (in-progress) outputs
+    /// so a sequential element re-evaluated multiple times within one tick sees
+    /// the value it already staged rather than its stale committed output.
+    const QVector<Status> &outputs() const { return m_deferCommit ? m_staged : m_outputs; }
+
+    /// Begins a deferred (non-blocking) commit window: seeds the staging buffer
+    /// from current outputs and routes subsequent setOutputValue() calls to it.
+    void beginDeferredCommit()
+    {
+        m_staged = m_outputs;
+        m_deferCommit = true;
+    }
+
+    /// Ends the deferred-commit window and publishes staged outputs via the
+    /// normal change-detecting path so visuals refresh correctly.
+    void commitDeferredOutputs()
+    {
+        m_deferCommit = false;
+        for (int i = 0; i < m_staged.size() && i < m_outputs.size(); ++i) {
+            setOutputValue(i, m_staged.at(i));
+        }
+    }
 
 private:
     QVector<InputConnection> m_connections;
     QVector<Status> m_inputs;
     QVector<Status> m_outputs;
+    /// Staging buffer for non-blocking (synchronous) sequential commit. While
+    /// m_deferCommit is true, setOutputValue() writes here so peers keep reading
+    /// the pre-tick value until commitDeferredOutputs() publishes the snapshot.
+    QVector<Status> m_staged;
     bool m_outputChanged = false;
+    bool m_deferCommit = false;
 };

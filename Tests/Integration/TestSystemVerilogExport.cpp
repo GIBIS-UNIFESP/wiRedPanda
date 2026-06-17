@@ -1419,10 +1419,7 @@ void TestSystemVerilogExport::testSystemVerilogExportFetchStage16Bit()
 
 void TestSystemVerilogExport::testSystemVerilogExportMultiCycleCpu8Bit()
 {
-    QSKIP("Gated-clock timing mismatch: wiRedPanda's topological-sort engine evaluates "
-          "counter DFFs before gated clocks (using NEW state), while SystemVerilog's "
-          "event-driven model fires gated clocks with OLD state (non-blocking delta-cycle "
-          "semantics). Will be resolved when the engine transitions to event-driven.");
+    testSystemVerilogExportHelper("level9_multi_cycle_cpu_8bit.panda");
 }
 
 void TestSystemVerilogExport::testSystemVerilogExportSingleCycleCpu8Bit()

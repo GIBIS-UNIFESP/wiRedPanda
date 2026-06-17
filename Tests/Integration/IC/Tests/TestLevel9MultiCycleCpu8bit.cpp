@@ -115,12 +115,18 @@ void TestLevel9MultiCycleCPU8Bit::testCycleCounter_data()
     QTest::addColumn<int>("expectedCounter");
     QTest::addColumn<int>("expectedPC");
 
+    // PC increments at the START of each 4-cycle instruction group (when the
+    // cycle counter leaves phase 0), not at the wrap. Under the engine's
+    // synchronous (non-blocking) semantics the PC's gated clock samples the
+    // counter's pre-edge state, so the increment lands one phase earlier than the
+    // old blocking engine reported — i.e. PC = ceil(cycles / 4). This matches the
+    // exported SystemVerilog (validated by testSystemVerilogExportMultiCycleCpu8Bit).
     QTest::newRow("initial (00, PC=0)") << 0 << 0x0 << 0x0;
-    QTest::newRow("cycle 1 (01, PC=0)") << 1 << 0x1 << 0x0;
-    QTest::newRow("cycle 2 (10, PC=0)") << 2 << 0x2 << 0x0;
-    QTest::newRow("cycle 3 (11, PC=0)") << 3 << 0x3 << 0x0;
+    QTest::newRow("cycle 1 (01, PC=1)") << 1 << 0x1 << 0x1;
+    QTest::newRow("cycle 2 (10, PC=1)") << 2 << 0x2 << 0x1;
+    QTest::newRow("cycle 3 (11, PC=1)") << 3 << 0x3 << 0x1;
     QTest::newRow("cycle 4 (00, PC=1)") << 4 << 0x0 << 0x1;
-    QTest::newRow("cycle 5 (01, PC=1)") << 5 << 0x1 << 0x1;
+    QTest::newRow("cycle 5 (01, PC=2)") << 5 << 0x1 << 0x2;
     QTest::newRow("after 8 cycles (00, PC=2)") << 8 << 0x0 << 0x2;
 }
 

@@ -361,6 +361,17 @@ public:
      */
     virtual void resetSimState();
 
+    /**
+     * \brief Re-evaluates combinational outputs after the synchronous sequential
+     * commit, propagating just-committed flip-flop/latch state to downstream
+     * logic and IC output boundaries within the same tick.
+     * \details Called only on non-sequential elements (the simulation skips
+     * ElementGroup::Memory so their edge state is not disturbed). The default
+     * recomputes via updateLogic(); IC overrides it to recurse through its
+     * internals while skipping its own sequential elements.
+     */
+    virtual void resettleCombinational() { updateLogic(); }
+
     /// Returns the four-state signal value on simulation output port \a index.
     inline Status outputValue(const int index = 0) const { return m_sim.outputValue(index); }
 
@@ -388,6 +399,14 @@ public:
 
     /// Clears the simulation output-changed flag.
     void clearOutputChanged() { m_sim.clearOutputChanged(); }
+
+    /// Begins a deferred (non-blocking) output commit window; routes subsequent
+    /// setOutputValue() calls to a staging buffer so peers read the pre-tick value.
+    void beginDeferredCommit() { m_sim.beginDeferredCommit(); }
+
+    /// Ends the deferred-commit window and publishes staged outputs through the
+    /// normal change-detecting path so visuals refresh correctly.
+    void commitDeferredOutputs() { m_sim.commitDeferredOutputs(); }
 
     /// Allocates simulation I/O vectors with \a inputs inputs and \a outputs outputs.
     void initSimulationVectors(const int inputCount, const int outputCount);

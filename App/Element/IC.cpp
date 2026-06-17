@@ -935,6 +935,26 @@ void IC::initializeSimulation()
         m_sortedInternalElements.end());
 }
 
+void IC::pushInputsToBoundary()
+{
+    for (int i = 0; i < inputSize() && i < m_internalInputs.size(); ++i) {
+        auto *boundaryElement = m_internalInputs.at(i)->graphicElement();
+        if (boundaryElement) {
+            boundaryElement->setOutputValue(0, simInputs().at(i));
+        }
+    }
+}
+
+void IC::pullOutputsFromBoundary()
+{
+    for (int i = 0; i < outputSize() && i < m_internalOutputs.size(); ++i) {
+        auto *boundaryElement = m_internalOutputs.at(i)->graphicElement();
+        if (boundaryElement) {
+            setOutputValue(i, boundaryElement->outputValue(0));
+        }
+    }
+}
+
 void IC::updateLogic()
 {
     if (m_sortedInternalElements.isEmpty()) {
@@ -946,15 +966,7 @@ void IC::updateLogic()
         return;
     }
 
-    // Push external input values to boundary input nodes' GraphicElement outputs.
-    // Boundary input nodes are Nodes whose input port is in m_internalInputs.
-    // We set their output value directly and skip them in the update loop.
-    for (int i = 0; i < inputSize() && i < m_internalInputs.size(); ++i) {
-        auto *boundaryElement = m_internalInputs.at(i)->graphicElement();
-        if (boundaryElement) {
-            boundaryElement->setOutputValue(0, simInputs().at(i));
-        }
-    }
+    pushInputsToBoundary();
 
     // Run internal elements in topological order.
     // Boundary input nodes are already excluded from m_sortedInternalElements.
@@ -968,13 +980,45 @@ void IC::updateLogic()
         }
     }
 
-    // Pull output values from boundary output nodes
-    for (int i = 0; i < outputSize() && i < m_internalOutputs.size(); ++i) {
-        auto *boundaryElement = m_internalOutputs.at(i)->graphicElement();
-        if (boundaryElement) {
-            setOutputValue(i, boundaryElement->outputValue(0));
+    pullOutputsFromBoundary();
+}
+
+void IC::resettleCombinational()
+{
+    if (m_sortedInternalElements.isEmpty()) {
+        return;
+    }
+
+    if (!simUpdateInputsAllowUnknown()) {
+        return;
+    }
+
+    pushInputsToBoundary();
+
+    // Re-propagate just-committed internal sequential state through the IC's
+    // combinational logic, WITHOUT re-running the sequential elements (that
+    // would corrupt their edge state / re-clock them). Memory-group internals
+    // keep the value they committed this tick; everything else recomputes.
+    // Most cycles run through a sequential element (register/counter cells), so
+    // removing them leaves an acyclic graph that settles in one topological
+    // sweep; only genuine combinational feedback (gate-built latches) needs more.
+    // Iterate to a fixed point, bounded, instead of a fixed pass count.
+    const int maxPasses = m_internalHasFeedback ? Simulation::kMaxSettleIterations : 1;
+    for (int pass = 0; pass < maxPasses; ++pass) {
+        bool changed = false;
+        for (auto *element : std::as_const(m_sortedInternalElements)) {
+            if (element && element->elementGroup() != ElementGroup::Memory) {
+                element->clearOutputChanged();
+                element->resettleCombinational();
+                changed = changed || element->outputChanged();
+            }
+        }
+        if (!changed) {
+            break;
         }
     }
+
+    pullOutputsFromBoundary();
 }
 
 void IC::refresh()
