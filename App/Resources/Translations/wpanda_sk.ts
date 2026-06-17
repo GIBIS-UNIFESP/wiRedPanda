@@ -2441,13 +2441,13 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="59"/>
+        <location filename="../../Scene/Scene.cpp" line="60"/>
         <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Undo</source>
         <translation>&amp;Späť</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="67"/>
+        <location filename="../../Scene/Scene.cpp" line="68"/>
         <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Redo</source>
         <translation>&amp;Znovu</translation>

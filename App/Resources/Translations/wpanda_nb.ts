@@ -2441,13 +2441,13 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="59"/>
+        <location filename="../../Scene/Scene.cpp" line="60"/>
         <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Undo</source>
         <translation>&amp;Angre</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="67"/>
+        <location filename="../../Scene/Scene.cpp" line="68"/>
         <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Redo</source>
         <translation>&amp;Gjør om</translation>

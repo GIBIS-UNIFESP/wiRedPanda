@@ -2441,13 +2441,13 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="59"/>
+        <location filename="../../Scene/Scene.cpp" line="60"/>
         <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Undo</source>
         <translation>復原(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="67"/>
+        <location filename="../../Scene/Scene.cpp" line="68"/>
         <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Redo</source>
         <translation>重做(&amp;R)</translation>

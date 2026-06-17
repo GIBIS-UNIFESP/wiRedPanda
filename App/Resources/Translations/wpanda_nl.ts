@@ -2441,13 +2441,13 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="59"/>
+        <location filename="../../Scene/Scene.cpp" line="60"/>
         <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Undo</source>
         <translation>&amp;Ongedaan maken</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="67"/>
+        <location filename="../../Scene/Scene.cpp" line="68"/>
         <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Redo</source>
         <translation>&amp;Opnieuw doen</translation>

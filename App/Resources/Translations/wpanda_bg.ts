@@ -2441,13 +2441,13 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="59"/>
+        <location filename="../../Scene/Scene.cpp" line="60"/>
         <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Undo</source>
         <translation>&amp;Отмени</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="67"/>
+        <location filename="../../Scene/Scene.cpp" line="68"/>
         <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Redo</source>
         <translation>&amp;Повтори</translation>
