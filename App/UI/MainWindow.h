@@ -87,6 +87,9 @@ public:
     /// Returns the QFileInfo of the currently active .panda file.
     QFileInfo currentFile() const override;
 
+    /// Returns true if any open workspace has unsaved changes or is a recovered autosave.
+    bool hasModifiedFiles();
+
     /// Returns the directory of the currently active .panda file.
     QDir currentDir() const override;
 

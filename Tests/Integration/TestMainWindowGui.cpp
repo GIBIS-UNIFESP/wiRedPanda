@@ -3208,3 +3208,31 @@ void TestMainWindowGui::testWaveformOnEmptySceneShowsWarningHQ()
 
     Application::interactiveMode = prevInteractive;
 }
+
+void TestMainWindowGui::testRecoveredAutosaveCountsAsModifiedF6()
+{
+    // Regression test (F6): hasModifiedFiles() compared the workspace's
+    // *basename* against Settings::autosaveFiles(), which stores *absolute*
+    // paths — the "recovered autosave counts as modified" check could never
+    // match. After autosave recovery (clean undo stack), closing the app
+    // skipped the save prompt and ~WorkSpace deleted the autosave file: the
+    // crash-recovered work vanished silently.
+    const QString savePath = m_fixtureDir + "/recovered_autosave.panda";
+    createMWFixture(savePath);
+
+    const QStringList previousAutosaves = Settings::autosaveFiles();
+    Settings::setAutosaveFiles({QFileInfo(savePath).absoluteFilePath()});
+
+    {
+        std::unique_ptr<MainWindow> window(createMW());
+        window->loadPandaFile(savePath);
+
+        // Freshly loaded: clean undo stack, so only the autosave-list check
+        // can (and must) report the recovered file as modified.
+        QVERIFY(window->currentTab()->scene()->undoStack()->isClean());
+        QVERIFY(window->hasModifiedFiles());
+    }
+
+    Settings::setAutosaveFiles(previousAutosaves);
+    QFile::remove(savePath);
+}
