@@ -15,4 +15,5 @@ private slots:
     void testDemuxOutputSize();
     void testDemuxRouting();
     void testDemuxPainting();
+    void testDemuxOutOfRangeSelect();
 };

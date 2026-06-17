@@ -15,4 +15,6 @@ private slots:
     void testMuxInputSize();
     void testMuxSelection();
     void testMuxPainting();
+    void testMuxOutOfRangeSelect_data();
+    void testMuxOutOfRangeSelect();
 };
