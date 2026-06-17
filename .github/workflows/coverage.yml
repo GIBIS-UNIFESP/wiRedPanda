@@ -46,6 +46,26 @@ jobs:
       run: |
         ctest --preset coverage -V -LE gui
 
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+        cache-dependency-path: 'MCP/Client/requirements.txt'
+
+    - name: Install MCP client dependencies
+      run: pip install -r MCP/Client/requirements.txt
+
+    # Exercise the MCP/Server C++ paths through the Python integration suite,
+    # driving the coverage-instrumented binary so its subprocess .gcda files
+    # are written (the server exits cleanly on stdin EOF). Must run before gcov.
+    - name: MCP Integration Test (instrumented)
+      timeout-minutes: 10
+      env:
+        QT_QPA_PLATFORM: offscreen
+        WIREDPANDA_EXE: ${{ github.workspace }}/build-coverage/wiredpanda
+      run: python3 MCP/Client/run_tests.py
+
     - name: Generate gcov reports
       run: |
         cd build-coverage

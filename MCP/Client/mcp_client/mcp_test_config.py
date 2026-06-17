@@ -6,6 +6,7 @@ Centralized configuration for all test-related paths and settings.
 This avoids duplication and makes maintenance easier.
 """
 
+import os
 from pathlib import Path
 
 
@@ -37,7 +38,16 @@ class TestConfig:
         (build-release/), the legacy single-`build/` layout (build/, optionally
         with a multi-config Release/ subdir on Windows), or one of the other
         named presets.
+
+        An explicit ``WIREDPANDA_EXE`` environment variable overrides the search
+        entirely — CI uses it to point at a specific build (e.g. the
+        coverage-instrumented binary under build-coverage/).
         """
+        # Explicit override takes precedence over any auto-detection.
+        env_exe = os.environ.get("WIREDPANDA_EXE")
+        if env_exe and Path(env_exe).exists():
+            return Path(env_exe)
+
         # Each preset gets its own binary dir — see CMakePresets.json
         # ("chore(presets): give release / sentry / macos presets their own
         # build dirs").  Probe in priority order: explicit Release first, then
@@ -56,6 +66,7 @@ class TestConfig:
             project_root / "build-relwithdebinfo",
             project_root / "build-macos-universal",
             project_root / "build",
+            project_root / "build-coverage",
         ]
         candidate_build_dirs = []
         for root in roots:
