@@ -81,6 +81,11 @@ public:
     static int         exerciseProgress(const QString &exerciseId); ///< Returns -1 if no record.
     static void        setExerciseProgress(const QString &exerciseId, int step);
 
+    // Tour progress
+    static QStringList completedTours();
+    static void        setCompletedTours(const QStringList &ids);
+    static int         tourProgress(const QString &tourId); ///< Returns -1 if no record.
+    static void        setTourProgress(const QString &tourId, int step);
 
 private:
     static QVariant value(const QString &key);

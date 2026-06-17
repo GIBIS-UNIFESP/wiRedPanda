@@ -596,6 +596,10 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuExercises->setObjectName("menuExercises");
     actionExercises = new QAction(MainWindow);
     actionExercises->setObjectName("actionExercises");
+    menuTours = new QMenu(menuBar);
+    menuTours->setObjectName("menuTours");
+    actionTours = new QAction(MainWindow);
+    actionTours->setObjectName("actionTours");
     MainWindow->setMenuBar(menuBar);
     QWidget::setTabOrder(lineEditSearch, tabElements);
     QWidget::setTabOrder(tabElements, scrollAreaInOut);
@@ -627,6 +631,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuBar->addAction(menuSimulation->menuAction());
     menuBar->addAction(menuExamples->menuAction());
     menuBar->addAction(menuExercises->menuAction());
+    menuBar->addAction(menuTours->menuAction());
     menuBar->addAction(menuLanguage->menuAction());
     menuBar->addAction(menuTranslation->menuAction());
     menuBar->addAction(menuHelp->menuAction());
@@ -665,6 +670,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuEdit->addAction(actionSelectAll);
     menuEdit->addAction(actionClearSelection);
     menuExercises->addAction(actionExercises);
+    menuTours->addAction(actionTours);
     menuHelp->addAction(actionAbout);
     menuHelp->addAction(actionAboutQt);
     menuHelp->addAction(actionAboutThisVersion);
@@ -817,4 +823,6 @@ void MainWindowUi::retranslateUi()
     menuExamples->setTitle(QCoreApplication::translate("MainWindow", "Examples"));
     menuExercises->setTitle(QCoreApplication::translate("MainWindow", "&Exercises"));
     actionExercises->setText(QCoreApplication::translate("MainWindow", "&Circuit Exercises..."));
+    menuTours->setTitle(QCoreApplication::translate("MainWindow", "&Tours"));
+    actionTours->setText(QCoreApplication::translate("MainWindow", "&Interactive Tours..."));
 }

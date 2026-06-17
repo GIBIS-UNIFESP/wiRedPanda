@@ -18,17 +18,21 @@
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
-class BewavedDolphin;
 class ElementLabel;
 class ElementPalette;
+class ExerciseBrowserDialog;
 class ExerciseEngine;
 class ExerciseOverlay;
 class ExportController;
 class ICController;
 class ICPreviewPopup;
 class LanguageManager;
+class BewavedDolphin;
 class RecentFiles;
 class SceneUiBinder;
+class TourBrowserDialog;
+class TourEngine;
+class TourOverlay;
 class WorkSpace;
 class WorkspaceManager;
 
@@ -219,6 +223,16 @@ private:
 
     // --- Action Handlers ---
 
+    void on_actionExercises_triggered();
+    void startExercise(const QString &resourcePath);
+    void on_actionTours_triggered();
+    void startTour(const QString &resourcePath);
+    QRect resolveTourTarget(const QString &id) const;
+
+    void showWidget(const QString &id);
+    void hideWidget(const QString &id);
+    void clickTarget(const QString &id);
+
     static void on_actionDarkTheme_triggered();
     static void on_actionLightTheme_triggered();
     static void on_actionSystemTheme_triggered();
@@ -240,7 +254,6 @@ private:
     void on_actionRotateRight_triggered();
     void on_actionSelectAll_triggered();
     void on_actionShortcuts_and_Tips_triggered();
-    void on_actionExercises_triggered();
     void on_actionWaveform_triggered();
     void on_actionWires_triggered(const bool checked);
     void on_actionZoomIn_triggered() const;
@@ -268,13 +281,6 @@ private:
     /// Connects all QAction and widget signals to their slots.
     void setupConnections();
 
-    // --- Exercise ---
-
-    void startExercise(const QString &resourcePath);
-    void showWidget(const QString &id);
-    void hideWidget(const QString &id);
-    void clickTarget(const QString &id);
-
     // --- Members ---
 
     std::unique_ptr<MainWindowUi> m_ui;
@@ -287,16 +293,18 @@ private:
     SceneUiBinder    *m_binder            = nullptr;
     WorkspaceManager *m_workspaceManager  = nullptr;
 
+    ExerciseEngine  *m_exerciseEngine  = nullptr;
+    ExerciseOverlay *m_exerciseOverlay = nullptr;
+
+    TourEngine  *m_tourEngine  = nullptr;
+    TourOverlay *m_tourOverlay = nullptr;
+    QStringList  m_tourShownWidgets;
+
+    QPointer<BewavedDolphin> m_bwd;
+
+    QStringList  m_exerciseShownWidgets;
+
     /// Shared IC-hover preview, parented to this MainWindow.
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.
     QPointer<ICPreviewPopup> m_icPreviewPopup;
-
-    // --- Exercise ---
-
-    ExerciseEngine  *m_exerciseEngine  = nullptr;
-    ExerciseOverlay *m_exerciseOverlay = nullptr;
-    QStringList      m_exerciseShownWidgets;
-
-    /// Tracks the currently open BeWavedDolphin window; null when it is closed.
-    QPointer<BewavedDolphin> m_bwd;
 };

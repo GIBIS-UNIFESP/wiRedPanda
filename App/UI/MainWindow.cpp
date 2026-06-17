@@ -24,6 +24,7 @@
 #include <QPixmapCache>
 #include <QPushButton>
 #include <QShortcut>
+#include <QTabBar>
 
 #ifdef Q_OS_MAC
 #include <QSvgRenderer>
@@ -44,9 +45,13 @@
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/IO/RecentFiles.h"
+#include "App/Nodes/QNEConnection.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Tour/TourBrowserDialog.h"
+#include "App/Tour/TourEngine.h"
+#include "App/Tour/TourOverlay.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/ExportController.h"
 #include "App/UI/ICController.h"
@@ -112,10 +117,11 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << "Loading recent file list.";
     setupRecentFiles();
 
-    m_exerciseEngine = new ExerciseEngine(this);
-
     qCDebug(zero) << "Setting connections";
     setupConnections();
+
+    m_exerciseEngine = new ExerciseEngine(this);
+    m_tourEngine     = new TourEngine(this);
 
     qCDebug(zero) << "Checking playing simulation.";
     // Start simulation running by default so the circuit is live on open.
@@ -265,6 +271,8 @@ void MainWindow::setupConnections()
     connect(m_ui->tab, &QTabWidget::currentChanged,    m_workspaceManager, &WorkspaceManager::onCurrentIndexChanged);
     connect(m_ui->tab, &QTabWidget::tabCloseRequested, m_workspaceManager, &WorkspaceManager::closeTab);
 
+    connect(m_ui->actionExercises,             &QAction::triggered,       this,                &MainWindow::on_actionExercises_triggered);
+    connect(m_ui->actionTours,                 &QAction::triggered,       this,                &MainWindow::on_actionTours_triggered);
     connect(m_ui->actionAbout,                 &QAction::triggered,       this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,               &QAction::triggered,       this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion,      &QAction::triggered,       this,                &MainWindow::aboutThisVersion);
@@ -307,7 +315,6 @@ void MainWindow::setupConnections()
     connect(m_ui->actionSaveAs,               &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::saveFileAs);
     connect(m_ui->actionSelectAll,             &QAction::triggered,       this,                &MainWindow::on_actionSelectAll_triggered);
     connect(m_ui->actionShortcutsAndTips,      &QAction::triggered,       this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
-    connect(m_ui->actionExercises,             &QAction::triggered,       this,                &MainWindow::on_actionExercises_triggered);
     connect(m_ui->actionWaveform,              &QAction::triggered,       this,                &MainWindow::on_actionWaveform_triggered);
     connect(m_ui->actionWires,                 &QAction::triggered,       this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,                &QAction::triggered,       this,                &MainWindow::on_actionZoomIn_triggered);
@@ -1167,14 +1174,141 @@ void MainWindow::startExercise(const QString &resourcePath)
     m_exerciseOverlay->raise();
 }
 
-void MainWindow::showWidget(const QString &id)
+void MainWindow::on_actionTours_triggered()
 {
-    if (id == "elementEditor") m_ui->elementEditor->show();
+    TourBrowserDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        startTour(dialog.selectedTourPath());
+    }
 }
 
-void MainWindow::hideWidget(const QString &id)
+void MainWindow::startTour(const QString &resourcePath)
 {
-    if (id == "elementEditor") m_ui->elementEditor->hide();
+    if (resourcePath.isEmpty()) {
+        return;
+    }
+    if (!m_tourEngine->loadFromResource(resourcePath)) {
+        qWarning() << "TourEngine: failed to load" << resourcePath;
+        return;
+    }
+
+    delete m_tourOverlay;
+    m_tourOverlay = new TourOverlay(m_tourEngine, this);
+    m_tourOverlay->setTargetResolver([this](const QString &id) {
+        return resolveTourTarget(id);
+    });
+
+    auto hideTourShown = [this]() {
+        for (const QString &id : m_tourShownWidgets) hideWidget(id);
+        m_tourShownWidgets.clear();
+    };
+
+    // Must be connected before stepChanged→onStepChanged so show/hide/click
+    // execute before resolveTourTarget computes widget rects.
+    connect(m_tourEngine, &TourEngine::stepChanged, this,
+            [this](int, int, const TourStep &step) {
+        for (const QString &id : step.click) clickTarget(id);
+        for (const QString &id : m_tourShownWidgets)
+            if (!step.show.contains(id)) hideWidget(id);
+        for (const QString &id : step.hide) hideWidget(id);
+        for (const QString &id : step.show) showWidget(id);
+        m_tourShownWidgets = step.show;
+
+        if (!m_tourOverlay) {
+            return;
+        }
+        const bool wantBwd = step.target.startsWith("bwd:");
+        if (wantBwd && m_bwd) {
+            if (m_tourOverlay->parentWidget() != m_bwd) {
+                m_tourOverlay->setParentWindow(m_bwd);
+            }
+            m_tourOverlay->show();
+            m_tourOverlay->raise();
+        } else if (!wantBwd && m_tourOverlay->parentWidget() != this) {
+            m_tourOverlay->setParentWindow(this);
+            m_tourOverlay->show();
+            m_tourOverlay->raise();
+        }
+    });
+    connect(m_tourEngine, &TourEngine::tourCompleted, this, hideTourShown);
+    connect(m_tourEngine, &TourEngine::tourStopped,   this, hideTourShown);
+    connect(m_tourEngine, &TourEngine::stepChanged,
+            m_tourOverlay, &TourOverlay::onStepChanged);
+    connect(m_tourEngine, &TourEngine::tourCompleted,
+            m_tourOverlay, &TourOverlay::onTourFinished);
+    connect(m_tourEngine, &TourEngine::tourStopped,
+            m_tourOverlay, &TourOverlay::onTourFinished);
+    connect(m_tourOverlay, &TourOverlay::closeRequested, this, [this] {
+        if (!m_tourOverlay) return;
+        TourOverlay *overlay = m_tourOverlay;
+        m_tourOverlay = nullptr;
+        m_tourEngine->stop();
+        overlay->deleteLater();
+    });
+
+    auto *esc = new QShortcut(QKeySequence(Qt::Key_Escape), m_tourOverlay);
+    connect(esc, &QShortcut::activated, m_tourOverlay, &TourOverlay::closeRequested);
+
+    m_tourEngine->start();
+
+    m_tourOverlay->show();
+    m_tourOverlay->raise();
+}
+
+QRect MainWindow::resolveTourTarget(const QString &id) const
+{
+    if (!m_tourOverlay || id.isEmpty() || id == "none") {
+        return {};
+    }
+
+    auto mapWidget = [this](QWidget *w) -> QRect {
+        if (!w) return {};
+        const QPoint topLeft = m_tourOverlay->mapFromGlobal(w->mapToGlobal(QPoint(0, 0)));
+        return QRect(topLeft, w->size());
+    };
+
+    if (id == "toolbar")        return mapWidget(m_ui->mainToolBar->widgetForAction(m_ui->actionWaveform));
+    if (id == "elementPalette") return mapWidget(m_ui->tabElements);
+    if (id == "gatesTab") {
+        QTabBar *bar = m_ui->tabElements->tabBar();
+        const QRect tabRect = bar->tabRect(1);
+        const QPoint topLeft = m_tourOverlay->mapFromGlobal(bar->mapToGlobal(tabRect.topLeft()));
+        return QRect(topLeft, tabRect.size());
+    }
+    if (id == "ioTab") {
+        QTabBar *bar = m_ui->tabElements->tabBar();
+        const QRect tabRect = bar->tabRect(0);
+        const QPoint topLeft = m_tourOverlay->mapFromGlobal(bar->mapToGlobal(tabRect.topLeft()));
+        return QRect(topLeft, tabRect.size());
+    }
+    if (id == "canvasArea" && currentTab()) return mapWidget(currentTab()->view());
+    if (id == "elementEditor")  return mapWidget(m_ui->elementEditor);
+    if (id == "searchBar")      return mapWidget(m_ui->lineEditSearch);
+
+    if (id.startsWith("bwd:") && m_bwd) {
+        auto mapBwd = [this](QWidget *w) -> QRect {
+            if (!w || !m_tourOverlay) {
+                return {};
+            }
+            const QPoint tl = m_tourOverlay->mapFromGlobal(w->mapToGlobal(QPoint(0, 0)));
+            return QRect(tl, w->size());
+        };
+        const QString sub = id.sliced(4);
+        if (sub == "tableView") return mapBwd(m_bwd->signalTableView());
+        if (sub == "toolbar")   return mapBwd(m_bwd->mainToolBar()->widgetForAction(m_bwd->actionCombinational()));
+        if (sub == "menuBar")   return mapBwd(m_bwd->menuBar());
+        return {};
+    }
+
+    return {};
+}
+
+void MainWindow::showWidget(const QString &/*id*/)
+{
+}
+
+void MainWindow::hideWidget(const QString &/*id*/)
+{
 }
 
 void MainWindow::clickTarget(const QString &id)
@@ -1185,4 +1319,50 @@ void MainWindow::clickTarget(const QString &id)
     else if (id == "memoryTab")      m_ui->tabElements->setCurrentIndex(3);
     else if (id == "actionPlay")     m_ui->actionPlay->trigger();
     else if (id == "actionWaveform") m_ui->actionWaveform->trigger();
+    else if (id == "bwd:actionCombinational" && m_bwd) m_bwd->triggerCombinational();
+    else if (id == "setupElementEditorDemo") {
+        if (!currentTab()) {
+            return;
+        }
+        Scene *scene = currentTab()->scene();
+        scene->clearSelection();
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+        sw->setPos(0, 0);
+        scene->addItem(sw);
+        sw->setSelected(true);
+    }
+    else if (id == "setupWaveformDemo") {
+        if (!currentTab()) {
+            return;
+        }
+        Scene *scene = currentTab()->scene();
+        scene->clearSelection();
+        auto *clock1 = ElementFactory::buildElement(ElementType::Clock);
+        auto *clock2 = ElementFactory::buildElement(ElementType::Clock);
+        auto *gate   = ElementFactory::buildElement(ElementType::And);
+        auto *led    = ElementFactory::buildElement(ElementType::Led);
+        clock1->setPos(-160, -60);
+        clock2->setPos(-160,  60);
+        gate->setPos(0, 0);
+        led->setPos(160, 0);
+        scene->addItem(clock1);
+        scene->addItem(clock2);
+        scene->addItem(gate);
+        scene->addItem(led);
+        auto *conn1 = new QNEConnection();
+        conn1->setStartPort(clock1->outputPort(0));
+        conn1->setEndPort(gate->inputPort(0));
+        scene->addItem(conn1);
+        conn1->updatePath();
+        auto *conn2 = new QNEConnection();
+        conn2->setStartPort(clock2->outputPort(0));
+        conn2->setEndPort(gate->inputPort(1));
+        scene->addItem(conn2);
+        conn2->updatePath();
+        auto *conn3 = new QNEConnection();
+        conn3->setStartPort(gate->outputPort(0));
+        conn3->setEndPort(led->inputPort(0));
+        scene->addItem(conn3);
+        conn3->updatePath();
+    }
 }

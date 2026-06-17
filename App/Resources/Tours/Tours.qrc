@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/Tours">
+        <file>ui-overview.json</file>
+    </qresource>
+</RCC>

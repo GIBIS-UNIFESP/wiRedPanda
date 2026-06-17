@@ -84,6 +84,10 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourBrowserDialog.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourBrowserDialogUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
@@ -217,6 +221,11 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourBrowserDialog.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourBrowserDialogUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourStep.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
@@ -259,6 +268,7 @@ set(RESOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Components/Components.qrc
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Exercises/Exercises.qrc
     ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Interface/Interface.qrc
+    ${CMAKE_CURRENT_LIST_DIR}/App/Resources/Tours/Tours.qrc
     # NotoSans-Regular is bundled on every platform: the memory-element SVG pin labels (and the
     # U+0305 overline on inverted outputs) render with it, so it must ship — and be registered in
     # Application's ctor — on desktop too, not only in the WASM build.
