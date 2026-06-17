@@ -2004,7 +2004,8 @@
                 },
                 "position": {
                   "type": "integer",
-                  "minimum": 0
+                  "minimum": 0,
+                  "maximum": 2047
                 }
               },
               "required": [
@@ -2900,7 +2901,8 @@
                     },
                     "position": {
                       "type": "integer",
-                      "minimum": 0
+                      "minimum": 0,
+                      "maximum": 2047
                     }
                   },
                   "required": [

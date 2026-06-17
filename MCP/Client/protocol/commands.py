@@ -423,7 +423,8 @@ class ToggleTruthTableOutputCommand(MCPCommand):
 
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]
-        position: Annotated[int, Field(ge=0, description="Truth table output position to toggle")]
+        # The truth-table key holds exactly 2048 bits (256 rows x 8 outputs).
+        position: Annotated[int, Field(ge=0, le=2047, description="Truth table output position to toggle")]
 
         model_config = ConfigDict(extra="forbid")
 
