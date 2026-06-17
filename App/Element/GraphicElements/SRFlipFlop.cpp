@@ -85,6 +85,8 @@ void SRFlipFlop::updateTheme()
 void SRFlipFlop::updateLogic()
 {
     if (!simUpdateInputs()) {
+        // Forget the last clock level while inputs are invalid (see DFlipFlop).
+        m_simLastClk = Status::Unknown;
         return;
     }
     Status q0 = simOutputs().at(0);

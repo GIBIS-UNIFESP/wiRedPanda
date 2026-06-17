@@ -241,7 +241,9 @@ void InputRotary::setOn(const bool value, const int port)
     Q_UNUSED(value)
     m_currentPort = port;
 
-    if (m_currentPort >= outputSize()) {
+    // Clamp both directions: load() feeds this raw values from the file, and
+    // a negative position would otherwise leave no port selected at all.
+    if (m_currentPort < 0 || m_currentPort >= outputSize()) {
         m_currentPort = 0;
     }
 

@@ -12,6 +12,7 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -553,4 +554,21 @@ void TestInputRotary::testInputRotary()
 
     // Test output ports exist
     QCOMPARE(inputRotary->outputs().size(), 4);
+}
+
+void TestInputRotary::testSetOnNegativePortClamps()
+{
+    // Regression test (F13): load() passes raw file values to setOn, and a
+    // negative position bypassed the upper-bound clamp — no port matched in
+    // the output loop, leaving the rotary with no active output at all.
+    WorkSpace workspace;
+    auto *rotary = new InputRotary;
+    workspace.scene()->addItem(rotary);
+
+    rotary->setOn(true, -5);
+
+    QCOMPARE(rotary->outputPort(0)->status(), Status::Active);
+    for (int i = 1; i < rotary->outputSize(); ++i) {
+        QCOMPARE(rotary->outputPort(i)->status(), Status::Inactive);
+    }
 }

@@ -6,6 +6,7 @@
 #include <QtTest>
 
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
@@ -318,4 +319,60 @@ void TestElementLogicErrors::testBoolOverloadMapsToStatus()
 
     QVERIFY(src.outputValue(0) != Status::Unknown);
     QVERIFY(src.outputValue(1) != Status::Unknown);
+}
+
+void TestElementLogicErrors::testFlipFlopNoSpuriousEdgeAfterInvalidInputs()
+{
+    // Regression test (F12): when simUpdateInputs() failed, the flip-flops
+    // kept m_simLastClk from before the invalid period. If the clock rose
+    // *while* inputs were invalid, recovery saw clk=Active with a stale
+    // lastClk=Inactive and fabricated a rising edge, latching stale data.
+    DFlipFlop dff;
+    InputVcc d, clk, prst, clr;
+    initElm(dff);
+    initSrc(d);
+    initSrc(clk);
+    initSrc(prst);
+    initSrc(clr);
+    dff.connectPredecessor(0, &d, 0);    // Data
+    dff.connectPredecessor(1, &clk, 0);  // Clock
+    dff.connectPredecessor(2, &prst, 0); // ~Preset (active low)
+    dff.connectPredecessor(3, &clr, 0);  // ~Clear  (active low)
+    prst.setOutputValue(true);
+    clr.setOutputValue(true);
+
+    // Latch Q=1 with a genuine rising edge (D is sampled from the previous tick).
+    d.setOutputValue(true);
+    clk.setOutputValue(false);
+    dff.updateLogic();
+    clk.setOutputValue(true);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Active);
+
+    // Park the clock low with D=0.
+    clk.setOutputValue(false);
+    d.setOutputValue(false);
+    dff.updateLogic();
+
+    // Inputs go invalid, and the clock rises during the invalid period.
+    // (Outputs are clobbered to Unknown by design while inputs are invalid.)
+    d.setOutputValue(Status::Unknown);
+    dff.updateLogic();
+    clk.setOutputValue(true);
+    dff.updateLogic();
+
+    // Recovery with the clock already high: no edge was observed, so the
+    // output stays honestly Unknown. The old code fabricated a rising edge
+    // here (stale lastClk=Inactive) and latched the stale data as a definite
+    // — and wrong — Inactive.
+    d.setOutputValue(false);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Unknown);
+
+    // A genuine edge afterwards latches the current data again.
+    clk.setOutputValue(false);
+    dff.updateLogic();
+    clk.setOutputValue(true);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Inactive);
 }

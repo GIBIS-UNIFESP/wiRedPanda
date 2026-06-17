@@ -27,4 +27,7 @@ private slots:
     // Status propagation tests (Phase 4+6)
     void testInvalidPropagatesChain();
     void testBoolOverloadMapsToStatus();
+
+    // Regression: F12 — no fabricated clock edge after an invalid-input period
+    void testFlipFlopNoSpuriousEdgeAfterInvalidInputs();
 };
