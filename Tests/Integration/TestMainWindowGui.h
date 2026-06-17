@@ -197,6 +197,10 @@ private slots:
     void testRemoveICFileIsUndoableA14();
     void testWaveformOnEmptySceneShowsWarningHQ();
 
+    // --- Deep-review regressions ---
+
+    void testRecoveredAutosaveCountsAsModifiedF6();
+
 private:
     QTemporaryDir m_tempDir;
     QString m_fixtureDir;

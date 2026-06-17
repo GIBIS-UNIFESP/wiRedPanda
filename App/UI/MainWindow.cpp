@@ -575,6 +575,11 @@ QFileInfo MainWindow::currentFile() const
     return m_workspaceManager->currentFile();
 }
 
+bool MainWindow::hasModifiedFiles()
+{
+    return m_workspaceManager->hasModifiedFiles();
+}
+
 QDir MainWindow::currentDir() const
 {
     return m_workspaceManager->currentDir();
