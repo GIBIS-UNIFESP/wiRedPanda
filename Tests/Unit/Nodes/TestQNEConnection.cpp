@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Nodes/TestQNEConnection.h"
 
+#include "App/Core/Application.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "Tests/Common/TestUtils.h"

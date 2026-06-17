@@ -204,19 +204,24 @@ class MCPInfrastructure:
             _test_process_manager.unregister_process(self.process)
 
             try:
-                # Close stdin first to signal graceful shutdown
+                # Close stdin first: the server shuts down cleanly on stdin
+                # EOF. Wait for that graceful exit instead of immediately
+                # sending SIGTERM — letting it run its normal teardown (and, on
+                # coverage-instrumented builds, flush its .gcda data).
                 if self.process.stdin:
                     self.process.stdin.close()
                     await self.process.stdin.wait_closed()
 
-                # Attempt graceful termination with timeout
-                self.process.terminate()
                 try:
-                    await asyncio.wait_for(self.process.wait(), timeout=3.0)
+                    await asyncio.wait_for(self.process.wait(), timeout=5.0)
                 except asyncio.TimeoutError:
-                    # Force kill if graceful termination fails
-                    self.process.kill()
-                    await self.process.wait()  # This will not hang after kill()
+                    # Didn't exit on EOF — escalate to SIGTERM, then SIGKILL.
+                    self.process.terminate()
+                    try:
+                        await asyncio.wait_for(self.process.wait(), timeout=3.0)
+                    except asyncio.TimeoutError:
+                        self.process.kill()
+                        await self.process.wait()  # This will not hang after kill()
             except (OSError, ProcessLookupError):
                 # Process may have already terminated
                 pass
