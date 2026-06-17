@@ -11,9 +11,11 @@ class TestPriorities : public QObject
 
 private slots:
 
-    // Priority Calculation Tests (2 tests)
+    // Priority Calculation Tests (4 tests)
     void testPriorityBasic();
     void testPriorityMemoization();
+    void testPriorityTransitiveDiamond();
+    void testPriorityCycleSharedPriority();
 
     // Feedback Detection Tests (7 tests)
     void testFeedbackNoCycle();

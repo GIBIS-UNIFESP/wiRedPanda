@@ -108,6 +108,58 @@ void TestPriorities::testPriorityMemoization()
     QCOMPARE(sw1Priority, sw2Priority);
 }
 
+void TestPriorities::testPriorityTransitiveDiamond()
+{
+    // Regression test (F1): A → B, A → C, C → B is cycle-free, so priorities
+    // must be the longest path to a sink regardless of iteration order:
+    // B (sink) = 1, C = 2, A = 3.
+    //
+    // The old algorithm treated C's pending sibling B (pushed by A but not yet
+    // expanded) as a feedback edge and produced {B:1, C:1, A:2} for the
+    // iteration order [A, B, C] — a consumer (B) tied with its producer (C).
+    int a, b, c;
+    QHash<int *, QVector<int *>> successors;
+    successors[&a] = {&b, &c};
+    successors[&c] = {&b};
+
+    const QVector<QVector<int *>> orders = {
+        {&a, &b, &c},
+        {&b, &c, &a},
+        {&a, &c, &b},
+    };
+
+    for (const auto &elements : orders) {
+        QHash<int *, int> priorities;
+        calculatePriorities(elements, successors, priorities);
+
+        QCOMPARE(priorities.value(&b), 1);
+        QCOMPARE(priorities.value(&c), 2);
+        QCOMPARE(priorities.value(&a), 3);
+    }
+}
+
+void TestPriorities::testPriorityCycleSharedPriority()
+{
+    // A → B → C → B (B and C form a cycle, A feeds it): cycle members occupy
+    // a contiguous band strictly below their upstream feeder, ordered by
+    // discovery — the loop entry B evaluates before C, so the external input
+    // propagates through the loop in flow order (latch races settle the way
+    // real hardware would).
+    int a, b, c;
+    QVector<int *> elements = {&a, &b, &c};
+    QHash<int *, QVector<int *>> successors;
+    successors[&a] = {&b};
+    successors[&b] = {&c};
+    successors[&c] = {&b};
+
+    QHash<int *, int> priorities;
+    calculatePriorities(elements, successors, priorities);
+
+    QCOMPARE(priorities.value(&c), 1);
+    QCOMPARE(priorities.value(&b), 2);
+    QCOMPARE(priorities.value(&a), 3);
+}
+
 // Feedback Detection Tests
 
 void TestPriorities::testFeedbackNoCycle()
