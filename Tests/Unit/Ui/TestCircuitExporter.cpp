@@ -26,5 +26,5 @@ void TestCircuitExporter::testRenderToImageThrowsOnInvalidPath()
     // and pre-fix that failure was silently swallowed. The throw is the regression.
     WorkSpace workspace;
     const QString path = "/nonexistent/directory/that/does/not/exist/img.png";
-    QVERIFY_EXCEPTION_THROWN(CircuitExporter::renderToImage(workspace.scene(), path), std::exception);
+    QVERIFY_THROWS(std::exception, CircuitExporter::renderToImage(workspace.scene(), path));
 }

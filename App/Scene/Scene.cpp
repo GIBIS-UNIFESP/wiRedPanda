@@ -11,6 +11,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QPolygon>
 #include <QScrollBar>
 
 #include "App/Core/Common.h"
@@ -201,9 +202,8 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 
     painter->setPen(m_dots);
 
-    QVector<QPoint> points;
-    points.reserve(static_cast<qsizetype>((right - left) / gridSize + 1)
-                 * ((bottom - top) / gridSize + 1));
+    QPolygon points;
+    points.reserve(((right - left) / gridSize + 1) * ((bottom - top) / gridSize + 1));
 
     for (int x = left; x <= right; x += gridSize) {
         for (int y = top; y <= bottom; y += gridSize) {
@@ -211,7 +211,7 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
         }
     }
 
-    painter->drawPoints(points.data(), static_cast<int>(points.size()));
+    painter->drawPoints(points);
 }
 
 void Scene::setDots(const QPen &dots)

@@ -392,7 +392,7 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
     }
 
     // Re-serialize the blob with updated metadata
-    const QByteArray elements = blobData.mid(readStream.device()->pos());
+    const QByteArray elements = readStream.device()->readAll();
 
     Serialization::serializeBlobRegistry(embeddedICs, metadata);
 
@@ -423,7 +423,7 @@ void ICRegistry::renameBlobReference(QByteArray &blobData, const QString &oldNam
     embeddedICs[newName] = embeddedICs.take(oldName);
 
     // Re-serialize the blob with updated metadata
-    const QByteArray elements = blobData.mid(readStream.device()->pos());
+    const QByteArray elements = readStream.device()->readAll();
     auto metadata = preamble.metadata;
     Serialization::serializeBlobRegistry(embeddedICs, metadata);
 

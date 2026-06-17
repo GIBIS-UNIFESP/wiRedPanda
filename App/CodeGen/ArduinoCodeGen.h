@@ -63,7 +63,7 @@ struct ArduinoBoardConfig
     QStringList availablePins; ///< Ordered list of usable pin labels.
     QString description;   ///< Human-readable board description.
     /// Returns the total number of available pins.
-    int maxPins() const { return static_cast<int>(availablePins.size()); }
+    qsizetype maxPins() const { return availablePins.size(); }
 };
 
 /**

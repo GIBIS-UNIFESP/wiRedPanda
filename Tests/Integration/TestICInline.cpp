@@ -4378,7 +4378,7 @@ void TestICInline::testSceneAddItemMimeDataThrowCleansUp()
     mimeData->setData("application/x-wiredpanda-dragdrop", itemData);
     QPointer<QMimeData> mimeWatcher(mimeData);
 
-    QVERIFY_EXCEPTION_THROWN(ws.scene()->addItem(mimeData), std::exception);
+    QVERIFY_THROWS(std::exception, ws.scene()->addItem(mimeData));
 
     QCOMPARE(static_cast<int>(ws.scene()->elements().size()), elementsBefore);
 

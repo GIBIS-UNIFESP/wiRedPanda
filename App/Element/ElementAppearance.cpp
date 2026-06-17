@@ -58,7 +58,7 @@ QByteArray orientSvgTextNodes(const QByteArray &svgBytes, const qreal angle, con
     // Inkscape already ids these, but be defensive for hand-written assets.
     {
         QString out;
-        int last = 0;
+        qsizetype last = 0;
         int generated = 0;
         auto matches = textTag.globalMatch(svg);
         while (matches.hasNext()) {
@@ -89,7 +89,7 @@ QByteArray orientSvgTextNodes(const QByteArray &svgBytes, const qreal angle, con
     // glyph must carry is Rotate(-angle) ∘ Flip (rotate outer, scale inner). The rotate term is
     // omitted at angle 0 and the scale term when unflipped, so the flip-only output is unchanged.
     QString out;
-    int last = 0;
+    qsizetype last = 0;
     auto matches = textTag.globalMatch(svg);
     while (matches.hasNext()) {
         const auto match = matches.next();
