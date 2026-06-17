@@ -52,9 +52,9 @@ class TestResults(BaseModel):
     total: Annotated[int, Field(ge=0)]
     passed: Annotated[int, Field(ge=0)]
     failed: Annotated[int, Field(ge=0)]
-    errors: list[str] = Field(default_factory=list, description="List of actual failure error messages")
-    known_issues: list[str] = Field(default_factory=list, description="List of documented limitations")
-    process_issues: list[str] = Field(default_factory=list, description="List of process/stability issues")
+    errors: Annotated[list[str], Field(default_factory=list, description="List of actual failure error messages")]
+    known_issues: Annotated[list[str], Field(default_factory=list, description="List of documented limitations")]
+    process_issues: Annotated[list[str], Field(default_factory=list, description="List of process/stability issues")]
 
     @field_validator("passed", "failed")
     @classmethod

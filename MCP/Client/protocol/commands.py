@@ -399,7 +399,9 @@ class ChangeInputSizeCommand(MCPCommand):
 
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]
-        size: Annotated[int, Field(gt=0, description="New input port count")]
+        # Global ceiling matching schema-mcp.json; per-element bounds are
+        # enforced by the server.
+        size: Annotated[int, Field(gt=0, le=256, description="New input port count")]
 
         model_config = ConfigDict(extra="forbid")
 
@@ -411,7 +413,7 @@ class ChangeOutputSizeCommand(MCPCommand):
 
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]
-        size: Annotated[int, Field(gt=0, description="New output port count")]
+        size: Annotated[int, Field(gt=0, le=256, description="New output port count")]
 
         model_config = ConfigDict(extra="forbid")
 

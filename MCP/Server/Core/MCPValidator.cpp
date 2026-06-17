@@ -101,7 +101,7 @@ ValidationResult MCPValidator::validateCommand(const json &command)
     }
 
     // Validate against the command schema using native validator
-    return validateAgainstSchema(command, commandSchema, commandType);
+    return validateAgainstSchema(command, commandSchema, commandType, "command:" + commandType.toStdString());
 }
 
 ValidationResult MCPValidator::validateResponse(const QJsonObject &response, const QString &expectedCommand)
@@ -123,7 +123,7 @@ ValidationResult MCPValidator::validateResponse(const json &response, const QStr
         return ValidationResult(false, "CommandResponse schema not found in definitions");
     }
 
-    ValidationResult baseResult = validateAgainstSchema(response, baseResponseSchema, expectedCommand);
+    ValidationResult baseResult = validateAgainstSchema(response, baseResponseSchema, expectedCommand, "response:base");
     if (!baseResult.isValid) {
         return ValidationResult(false,
             QString("Base response validation failed: %1").arg(baseResult.errorMessage),
@@ -134,7 +134,7 @@ ValidationResult MCPValidator::validateResponse(const json &response, const QStr
     if (!expectedCommand.isEmpty()) {
         json responseSchema = findResponseSchema(expectedCommand);
         if (!responseSchema.is_null()) {
-            ValidationResult specificResult = validateAgainstSchema(response, responseSchema, expectedCommand);
+            ValidationResult specificResult = validateAgainstSchema(response, responseSchema, expectedCommand, "response:" + expectedCommand.toStdString());
             if (!specificResult.isValid) {
                 return ValidationResult(false,
                     QString("Specific response validation failed: %1").arg(specificResult.errorMessage),
@@ -147,27 +147,36 @@ ValidationResult MCPValidator::validateResponse(const json &response, const QStr
     return ValidationResult(true, "", "base_response", expectedCommand);
 }
 
-ValidationResult MCPValidator::validateAgainstSchema(const json &data, const json &schema, const QString &commandType)
+ValidationResult MCPValidator::validateAgainstSchema(const json &data, const json &schema, const QString &commandType, const std::string &cacheKey)
 {
     try {
         // Use the main validator which has access to all definitions for $ref resolution
         if (m_validator) {
-            // For schema references that may contain $ref, we need to create a complete schema
-            json fullSchema = schema;
+            json_validator *validator = nullptr;
 
-            // If this is a sub-schema without definitions but contains $ref,
-            // we need to include the definitions section
-            if (schema.contains("properties") && m_schema.contains("definitions")) {
-                fullSchema["definitions"] = m_schema["definitions"];
-                fullSchema["$schema"] = m_schema["$schema"];
+            // Schemas are immutable after load — compile each one once (F44);
+            // a fresh json_validator per call was the dominant per-request cost.
+            const auto it = m_validatorCache.find(cacheKey);
+            if (it != m_validatorCache.end()) {
+                validator = it->second.get();
+            } else {
+                // For schema references that may contain $ref, we need to create a complete schema
+                json fullSchema = schema;
+
+                // If this is a sub-schema without definitions but contains $ref,
+                // we need to include the definitions section
+                if (schema.contains("properties") && m_schema.contains("definitions")) {
+                    fullSchema["definitions"] = m_schema["definitions"];
+                    fullSchema["$schema"] = m_schema["$schema"];
+                }
+
+                auto compiled = std::make_unique<json_validator>();
+                compiled->set_root_schema(fullSchema);
+                validator = m_validatorCache.emplace(cacheKey, std::move(compiled)).first->second.get();
             }
 
-            // Create a temporary validator with the full schema context
-            json_validator validator;
-            validator.set_root_schema(fullSchema);
-
             // This throws on validation failure with detailed error messages
-            validator.validate(data);
+            validator->validate(data);
         }
 
         return ValidationResult(true, "", "", commandType);

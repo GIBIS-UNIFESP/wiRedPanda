@@ -4,6 +4,8 @@
 #pragma once
 
 #include <memory>
+#include <string>
+#include <unordered_map>
 
 #include <nlohmann/json-schema.hpp>
 #include <nlohmann/json.hpp>
@@ -70,7 +72,7 @@ public:
 
 private:
     // Internal validation methods
-    ValidationResult validateAgainstSchema(const json &data, const json &schema, const QString &commandType);
+    ValidationResult validateAgainstSchema(const json &data, const json &schema, const QString &commandType, const std::string &cacheKey);
     QString extractErrorPath(const QString &errorMsg);
 
     // Member variables
@@ -78,6 +80,10 @@ private:
     json m_commandSchemas;
     json m_responseSchemas;
     std::unique_ptr<json_validator> m_validator;
+    /// Compiled validators keyed by schema identity ("command:x" /
+    /// "response:x" / "response:base") — schemas are immutable after load,
+    /// and compiling one per validation call was the dominant cost.
+    std::unordered_map<std::string, std::unique_ptr<json_validator>> m_validatorCache;
     QString m_schemaPath;
     bool m_schemaLoaded = false;
 };
