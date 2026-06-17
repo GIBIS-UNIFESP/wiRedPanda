@@ -4,7 +4,7 @@
 name: Lint
 
 # Python trees covered: MCP/Client/ (full suite) and Scripts/, Tests/Fixtures/,
-# Tests/Integration/IC/Generators/ (ruff only so far).
+# Tests/Integration/IC/Generators/ (ruff + pylint so far).
 # C++, CMake, translations, and deploy scripts fall through to build.yml.
 on:
   push:
@@ -17,6 +17,7 @@ on:
       - 'Tests/Fixtures/**'
       - 'Tests/Integration/IC/Generators/**'
       - 'ruff.toml'
+      - '.pylintrc'
       - '.github/workflows/lint.yml'
 
   pull_request:
@@ -29,6 +30,7 @@ on:
       - 'Tests/Fixtures/**'
       - 'Tests/Integration/IC/Generators/**'
       - 'ruff.toml'
+      - '.pylintrc'
       - '.github/workflows/lint.yml'
 
 jobs:
@@ -83,7 +85,7 @@ jobs:
       run: vulture --min-confidence 80 --exclude '.venv' .
 
     - name: pylint
-      run: pylint mcp_client/ domain/ protocol/ tests/ examples/ minimal_test.py run_tests.py
+      run: pylint --rcfile=../../.pylintrc mcp_client/ domain/ protocol/ tests/ examples/ minimal_test.py run_tests.py
 
     - name: deptry
       run: deptry .
@@ -117,3 +119,6 @@ jobs:
 
     - name: ruff format
       run: ruff format --check Scripts/ Tests/Fixtures/ Tests/Integration/IC/Generators/
+
+    - name: pylint
+      run: pylint Scripts/ Tests/Fixtures/ Tests/Integration/IC/Generators/

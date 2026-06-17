@@ -22,13 +22,24 @@ import asyncio
 import sys
 from pathlib import Path
 
-# Add MCP client to path
+try:
+    from mcp_client.mcp_infrastructure import MCPInfrastructure
+    from mcp_client.mcp_models import MCPResponse
+except ImportError:
+    _root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(_root / "MCP" / "Client"))
+    del _root
+    from mcp_client.mcp_infrastructure import MCPInfrastructure
+    from mcp_client.mcp_models import MCPResponse
+
 project_root = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(project_root / "MCP" / "Client"))
-
-from mcp_infrastructure import MCPInfrastructure  # noqa: E402
-
 FIXTURES_DIR = project_root / "Tests" / "Fixtures"
+
+
+def _result(resp: MCPResponse) -> dict:
+    """Return the result dict from an MCP response, asserting success."""
+    assert resp.success and resp.result is not None, f"MCP command failed: {resp.message}"
+    return resp.result
 
 
 async def create_simple_and(mcp: MCPInfrastructure) -> bool:
@@ -51,10 +62,10 @@ async def create_simple_and(mcp: MCPInfrastructure) -> bool:
             print(f"  FAIL create_element: {r.message}")
             return False
 
-    a_id = a.result["element_id"]
-    b_id = b.result["element_id"]
-    gate_id = gate.result["element_id"]
-    led_id = led.result["element_id"]
+    a_id = _result(a)["element_id"]
+    b_id = _result(b)["element_id"]
+    gate_id = _result(gate)["element_id"]
+    led_id = _result(led)["element_id"]
 
     # Connect: A→AND.0, B→AND.1, AND→LED
     conns = [
@@ -121,10 +132,10 @@ async def create_nested_and(mcp: MCPInfrastructure) -> bool:
             print(f"  FAIL create: {r.message}")
             return False
 
-    a_id = a.result["element_id"]
-    b_id = b.result["element_id"]
-    ic_id = ic.result["element_id"]
-    led_id = led.result["element_id"]
+    a_id = _result(a)["element_id"]
+    b_id = _result(b)["element_id"]
+    ic_id = _result(ic)["element_id"]
+    led_id = _result(led)["element_id"]
 
     # Connect: X→IC.0, Y→IC.1, IC→LED
     conns = [
@@ -188,14 +199,14 @@ async def create_parent_inline_ic(mcp: MCPInfrastructure) -> bool:
             print(f"  FAIL create: {r.message}")
             return False
 
-    a_id = a.result["element_id"]
-    b_id = b.result["element_id"]
-    ic_id = ic.result["element_id"]
-    led_id = led.result["element_id"]
+    a_id = _result(a)["element_id"]
+    b_id = _result(b)["element_id"]
+    ic_id = _result(ic)["element_id"]
+    led_id = _result(led)["element_id"]
 
     # Verify it was embedded
-    if ic.result.get("inline"):
-        print(f"  Embedded IC created: blobName={ic.result.get('blobName')}")
+    if _result(ic).get("inline"):
+        print(f"  Embedded IC created: blobName={_result(ic).get('blobName')}")
     else:
         print("  WARNING: IC was not created as inline")
 
@@ -254,15 +265,15 @@ async def create_chain_c(mcp: MCPInfrastructure) -> bool:
 
     conns = [
         {
-            "source_id": inp.result["element_id"],
+            "source_id": _result(inp)["element_id"],
             "source_port": 0,
-            "target_id": gate.result["element_id"],
+            "target_id": _result(gate)["element_id"],
             "target_port": 0,
         },
         {
-            "source_id": gate.result["element_id"],
+            "source_id": _result(gate)["element_id"],
             "source_port": 0,
-            "target_id": led.result["element_id"],
+            "target_id": _result(led)["element_id"],
             "target_port": 0,
         },
     ]
@@ -307,27 +318,27 @@ async def create_chain_b(mcp: MCPInfrastructure) -> bool:
 
     conns = [
         {
-            "source_id": inp_a.result["element_id"],
+            "source_id": _result(inp_a)["element_id"],
             "source_port": 0,
-            "target_id": gate.result["element_id"],
+            "target_id": _result(gate)["element_id"],
             "target_port": 0,
         },
         {
-            "source_id": inp_b.result["element_id"],
+            "source_id": _result(inp_b)["element_id"],
             "source_port": 0,
-            "target_id": gate.result["element_id"],
+            "target_id": _result(gate)["element_id"],
             "target_port": 1,
         },
         {
-            "source_id": gate.result["element_id"],
+            "source_id": _result(gate)["element_id"],
             "source_port": 0,
-            "target_id": ic_c.result["element_id"],
+            "target_id": _result(ic_c)["element_id"],
             "target_port": 0,
         },
         {
-            "source_id": ic_c.result["element_id"],
+            "source_id": _result(ic_c)["element_id"],
             "source_port": 0,
-            "target_id": led.result["element_id"],
+            "target_id": _result(led)["element_id"],
             "target_port": 0,
         },
     ]
@@ -372,21 +383,21 @@ async def create_chain_a(mcp: MCPInfrastructure) -> bool:
 
     conns = [
         {
-            "source_id": inp_a.result["element_id"],
+            "source_id": _result(inp_a)["element_id"],
             "source_port": 0,
-            "target_id": ic_b.result["element_id"],
+            "target_id": _result(ic_b)["element_id"],
             "target_port": 0,
         },
         {
-            "source_id": inp_b.result["element_id"],
+            "source_id": _result(inp_b)["element_id"],
             "source_port": 0,
-            "target_id": ic_b.result["element_id"],
+            "target_id": _result(ic_b)["element_id"],
             "target_port": 1,
         },
         {
-            "source_id": ic_b.result["element_id"],
+            "source_id": _result(ic_b)["element_id"],
             "source_port": 0,
-            "target_id": led.result["element_id"],
+            "target_id": _result(led)["element_id"],
             "target_port": 0,
         },
     ]
@@ -433,7 +444,7 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
     if not ic_nand.success:
         print(f"  FAIL instantiate chain_b inline: {ic_nand.message}")
         return False
-    print(f"  Embedded NAND: blobName={ic_nand.result.get('blobName')}")
+    print(f"  Embedded NAND: blobName={_result(ic_nand).get('blobName')}")
     print("    (chain_b blob contains chain_c, recursively flattened)")
 
     # Create input switches and LED
@@ -449,21 +460,21 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
     # Wire: A→chain_b.0, B→chain_b.1, chain_b→LED
     conns = [
         {
-            "source_id": inp_a.result["element_id"],
+            "source_id": _result(inp_a)["element_id"],
             "source_port": 0,
-            "target_id": ic_nand.result["element_id"],
+            "target_id": _result(ic_nand)["element_id"],
             "target_port": 0,
         },
         {
-            "source_id": inp_b.result["element_id"],
+            "source_id": _result(inp_b)["element_id"],
             "source_port": 0,
-            "target_id": ic_nand.result["element_id"],
+            "target_id": _result(ic_nand)["element_id"],
             "target_port": 1,
         },
         {
-            "source_id": ic_nand.result["element_id"],
+            "source_id": _result(ic_nand)["element_id"],
             "source_port": 0,
-            "target_id": led.result["element_id"],
+            "target_id": _result(led)["element_id"],
             "target_port": 0,
         },
     ]
@@ -489,6 +500,7 @@ async def create_example_nested(mcp: MCPInfrastructure) -> bool:
 
 
 async def main() -> int:
+    """Generate all inline-IC .panda test fixtures via the MCP server."""
     FIXTURES_DIR.mkdir(parents=True, exist_ok=True)
 
     mcp = MCPInfrastructure(enable_validation=True, verbose=False)
