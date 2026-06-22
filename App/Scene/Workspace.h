@@ -109,6 +109,9 @@ public:
      */
     void setLastId(int newLastId);
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
 signals:
     /**
      * \brief Emitted whenever the file info of this workspace changes (load/save).
@@ -143,6 +146,9 @@ private:
     QTimer m_autosaveDebounceTimer;
     QVersionNumber m_loadedVersion;
     int m_lastId = 0;
+
+    // Minimap overview widget (small, shows full scene and viewport)
+    class MinimapWidget *m_minimap = nullptr;
 
     // Inline IC tab state
     bool m_isInlineIC = false;

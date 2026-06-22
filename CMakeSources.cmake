@@ -103,6 +103,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.cpp
@@ -232,6 +233,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Versions.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/JsonRpcError.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.h
