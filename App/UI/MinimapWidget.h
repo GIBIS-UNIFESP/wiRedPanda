@@ -20,6 +20,7 @@ public:
 
 public slots:
     void invalidateCache();
+    void onThrottleTimeout();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -36,4 +37,9 @@ private:
     bool m_cacheDirty = true;  ///< whether cache needs to be regenerated
     bool m_dragging = false;
     QPoint m_lastPos;
+    QTimer m_throttle;        ///< throttle timer to limit redraws
+
+    // Compute mapping parameters used by both paint and mouse handling.
+    bool computeTransform(QRectF &srcOut, double &scaleOut, double &dxOut, double &dyOut, double &usedWOut, double &usedHOut) const;
+    QPointF widgetToScene(const QPointF &p) const;
 };

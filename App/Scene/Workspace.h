@@ -88,6 +88,10 @@ public:
     /// Removes all IC instances with the given blob name.
     void removeEmbeddedIC(const QString &blobName);
 
+    // Minimap control
+    void setMinimapVisible(bool visible);
+    void setMinimapCorner(const QString &corner);
+
     // --- Waveform Integration ---
 
     /// Returns the path of the associated BeWavedDolphin waveform file.

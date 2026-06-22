@@ -119,11 +119,57 @@ void WorkSpace::resizeEvent(QResizeEvent *event)
     if (!m_minimap)
         return;
 
-    // Position minimap at bottom-right of the view with a small margin.
+    // Position minimap according to user preference (corner) with a small margin.
     const int margin = 12;
     const QRect viewGeom = m_view.geometry();
-    const int x = viewGeom.right() - m_minimap->width() - margin;
-    const int y = viewGeom.bottom() - m_minimap->height() - margin;
+    const QString corner = Settings::minimapCorner();
+    int x = viewGeom.right() - m_minimap->width() - margin;
+    int y = viewGeom.bottom() - m_minimap->height() - margin;
+
+    if (corner == QLatin1String("bottom-left")) {
+        x = viewGeom.left() + margin;
+        y = viewGeom.bottom() - m_minimap->height() - margin;
+    } else if (corner == QLatin1String("top-left")) {
+        x = viewGeom.left() + margin;
+        y = viewGeom.top() + margin;
+    } else if (corner == QLatin1String("top-right")) {
+        x = viewGeom.right() - m_minimap->width() - margin;
+        y = viewGeom.top() + margin;
+    } else {
+        // default bottom-right
+        x = viewGeom.right() - m_minimap->width() - margin;
+        y = viewGeom.bottom() - m_minimap->height() - margin;
+    }
+
+    m_minimap->move(qMax(x, margin), qMax(y, margin));
+}
+
+void WorkSpace::setMinimapVisible(bool visible)
+{
+    if (!m_minimap) return;
+    m_minimap->setVisible(visible);
+}
+
+void WorkSpace::setMinimapCorner(const QString &corner)
+{
+    Settings::setMinimapCorner(corner);
+    // reposition immediately
+    if (!m_minimap) return;
+    const int margin = 12;
+    const QRect viewGeom = m_view.geometry();
+    int x = viewGeom.right() - m_minimap->width() - margin;
+    int y = viewGeom.bottom() - m_minimap->height() - margin;
+
+    if (corner == QLatin1String("bottom-left")) {
+        x = viewGeom.left() + margin;
+        y = viewGeom.bottom() - m_minimap->height() - margin;
+    } else if (corner == QLatin1String("top-left")) {
+        x = viewGeom.left() + margin;
+        y = viewGeom.top() + margin;
+    } else if (corner == QLatin1String("top-right")) {
+        x = viewGeom.right() - m_minimap->width() - margin;
+        y = viewGeom.top() + margin;
+    }
     m_minimap->move(qMax(x, margin), qMax(y, margin));
 }
 

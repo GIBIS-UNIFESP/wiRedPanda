@@ -125,6 +125,17 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << "Building a new tab.";
     createNewTab();
 
+    // Restore minimap visibility preference and apply to current tab if any.
+    m_ui->actionShowMinimap->setChecked(Settings::minimapVisible());
+    if (currentTab()) currentTab()->setMinimapVisible(Settings::minimapVisible());
+    // Restore minimap corner preference
+    const QString corner = Settings::minimapCorner();
+    if (corner == QLatin1String("top-left")) m_ui->actionMinimapTopLeft->setChecked(true);
+    else if (corner == QLatin1String("top-right")) m_ui->actionMinimapTopRight->setChecked(true);
+    else if (corner == QLatin1String("bottom-left")) m_ui->actionMinimapBottomLeft->setChecked(true);
+    else m_ui->actionMinimapBottomRight->setChecked(true);
+    if (currentTab()) currentTab()->setMinimapCorner(corner);
+
     qCDebug(zero) << "Opening file if not empty.";
     if (!fileName.isEmpty()) {
         loadPandaFile(fileName);
@@ -306,6 +317,30 @@ void MainWindow::setupConnections()
     connect(m_ui->actionWires,                 &QAction::triggered,       this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,                &QAction::triggered,       this,                &MainWindow::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,               &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
+    // Minimap position actions: exclusive group
+    {
+        auto *group = new QActionGroup(this);
+        group->setExclusive(true);
+        group->addAction(m_ui->actionMinimapTopLeft);
+        group->addAction(m_ui->actionMinimapTopRight);
+        group->addAction(m_ui->actionMinimapBottomLeft);
+        group->addAction(m_ui->actionMinimapBottomRight);
+        connect(group, &QActionGroup::triggered, this, [this](QAction *act){
+            const QString text = act->text().toLower().replace('-', ' ').trimmed();
+            // Map display text to stored corner keys
+            QString key = "bottom-right";
+            if (act == m_ui->actionMinimapTopLeft) key = "top-left";
+            else if (act == m_ui->actionMinimapTopRight) key = "top-right";
+            else if (act == m_ui->actionMinimapBottomLeft) key = "bottom-left";
+            else if (act == m_ui->actionMinimapBottomRight) key = "bottom-right";
+            Settings::setMinimapCorner(key);
+            if (currentTab()) currentTab()->setMinimapCorner(key);
+        });
+    }
+    connect(m_ui->actionShowMinimap,           &QAction::toggled,         this,                [this](bool checked){
+        Settings::setMinimapVisible(checked);
+        if (currentTab()) currentTab()->setMinimapVisible(checked);
+    });
     connect(m_palette,                         &ElementPalette::addElementRequested, this, [this](QMimeData *mimeData) {
         if (currentTab()) currentTab()->scene()->addItem(mimeData);
     });
@@ -650,6 +685,9 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
 
     m_binder->bind(newTab);
     m_palette->updateICList(icListFile());
+
+    // Apply minimap visibility preference to the newly activated tab.
+    newTab->setMinimapVisible(Settings::minimapVisible());
 
     // Hide management buttons for inline IC tabs (they use currentFile/currentDir which are empty)
     setICButtonsVisible(!newTab->isInlineIC());

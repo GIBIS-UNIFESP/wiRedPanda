@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QScrollBar>
 #include <QEvent>
+#include <QPaintDevice>
 
 #include "App/Scene/Scene.h"
 #include "App/Scene/GraphicsView.h"
@@ -37,6 +38,10 @@ MinimapWidget::MinimapWidget(Scene *scene, GraphicsView *view, QWidget *parent)
         if (m_view->viewport())
             m_view->viewport()->installEventFilter(this);
     }
+
+    m_throttle.setInterval(200);
+    m_throttle.setSingleShot(true);
+    connect(&m_throttle, &QTimer::timeout, this, &MinimapWidget::onThrottleTimeout);
 }
 
 QSize MinimapWidget::sizeHint() const
@@ -51,7 +56,6 @@ void MinimapWidget::paintEvent(QPaintEvent * /*event*/)
     }
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, false);
-    painter.fillRect(rect(), palette().window().color());
 
     // Source rect: prefer items bounding rect, fallback to sceneRect
     QRectF src = m_scene->itemsBoundingRect();
@@ -60,37 +64,40 @@ void MinimapWidget::paintEvent(QPaintEvent * /*event*/)
     if (!src.isValid() || src.isEmpty())
         return;
 
-    // Regenerate cache if needed
-    if (m_cacheDirty || m_cache.size() != size()) {
-        m_cache = QPixmap(size());
+    QRectF srcUsed;
+    double scale = 1.0, dx = 0.0, dy = 0.0, usedW = 0.0, usedH = 0.0;
+    if (!computeTransform(srcUsed, scale, dx, dy, usedW, usedH))
+        return;
+
+    const qreal dpr = this->devicePixelRatioF();
+    const QSize pixSize = QSize(qRound(usedW * dpr), qRound(usedH * dpr));
+    if (m_cacheDirty || m_cache.size() != pixSize) {
+        m_cache = QPixmap(pixSize);
+        m_cache.setDevicePixelRatio(dpr);
         m_cache.fill(palette().window().color());
         QPainter pixmapPainter(&m_cache);
         pixmapPainter.setRenderHint(QPainter::Antialiasing, false);
-        m_scene->render(&pixmapPainter, QRectF(0, 0, width(), height()), src, Qt::KeepAspectRatio);
+        m_scene->render(&pixmapPainter, QRectF(0, 0, usedW, usedH), srcUsed, Qt::KeepAspectRatio);
         m_cacheDirty = false;
     }
 
-    painter.drawPixmap(0, 0, m_cache);
+    // Draw the cached pixmap at the computed offset so the minimap content
+    // aligns with the widget's mapping and avoids letterbox misalignment.
+    painter.drawPixmap(QRectF(dx, dy, usedW, usedH), m_cache, QRectF(0, 0, usedW, usedH));
 
     // Draw viewport rectangle in minimap coordinates
     const QRectF visible = m_view->mapToScene(m_view->viewport()->rect()).boundingRect();
 
-    // Map visible rect to widget coordinates (account for KeepAspectRatio letterboxing)
-    const double sx = src.width() > 0 ? static_cast<double>(width()) / src.width() : 1.0;
-    const double sy = src.height() > 0 ? static_cast<double>(height()) / src.height() : 1.0;
-    const double scale = qMin(sx, sy);
-    const double ox = src.left();
-    const double oy = src.top();
-    const double usedW = src.width() * scale;
-    const double usedH = src.height() * scale;
-    const double dx = (width() - usedW) * 0.5;
-    const double dy = (height() - usedH) * 0.5;
+    QRectF tmpSrc;
+    double tmpScale = 1.0, tmpDx = 0.0, tmpDy = 0.0, tmpUsedW = 0.0, tmpUsedH = 0.0;
+    if (!computeTransform(tmpSrc, tmpScale, tmpDx, tmpDy, tmpUsedW, tmpUsedH))
+        return;
 
     QRectF vr(
-        dx + (visible.left() - ox) * scale,
-        dy + (visible.top() - oy) * scale,
-        visible.width() * scale,
-        visible.height() * scale);
+        tmpDx + (visible.left() - tmpSrc.left()) * tmpScale,
+        tmpDy + (visible.top() - tmpSrc.top()) * tmpScale,
+        visible.width() * tmpScale,
+        visible.height() * tmpScale);
 
     QPen pen(palette().highlight().color());
     pen.setWidthF(1.6);
@@ -114,17 +121,9 @@ void MinimapWidget::mousePressEvent(QMouseEvent *event)
         return;
     }
 
-    const double sx = src.width() > 0 ? static_cast<double>(width()) / src.width() : 1.0;
-    const double sy = src.height() > 0 ? static_cast<double>(height()) / src.height() : 1.0;
-    const double scale = qMin(sx, sy);
-    const double dx = (width() - src.width() * scale) * 0.5;
-    const double dy = (height() - src.height() * scale) * 0.5;
+    const QPointF scenePt = widgetToScene(event->pos());
 
-    const QPointF pos = event->pos();
-    const double sceneX = src.left() + (pos.x() - dx) / scale;
-    const double sceneY = src.top() + (pos.y() - dy) / scale;
-
-    m_view->centerOn(QPointF(sceneX, sceneY));
+    m_view->centerOn(scenePt);
     invalidateCache();
     // start drag
     m_dragging = true;
@@ -141,6 +140,13 @@ void MinimapWidget::wheelEvent(QWheelEvent *event)
 
 void MinimapWidget::invalidateCache()
 {
+    // Start or restart the throttle timer. The actual cache invalidation
+    // and repaint will happen when the timer fires (max ~5 fps).
+    m_throttle.start();
+}
+
+void MinimapWidget::onThrottleTimeout()
+{
     m_cacheDirty = true;
     update();
 }
@@ -153,6 +159,52 @@ bool MinimapWidget::eventFilter(QObject *watched, QEvent *event)
         return QWidget::eventFilter(watched, event);
     }
     return QWidget::eventFilter(watched, event);
+}
+
+bool MinimapWidget::computeTransform(QRectF &srcOut, double &scaleOut, double &dxOut, double &dyOut, double &usedWOut, double &usedHOut) const
+{
+    if (!m_scene)
+        return false;
+
+    QRectF src = m_scene->itemsBoundingRect();
+    if (!src.isValid() || src.isEmpty())
+        src = m_scene->sceneRect();
+    if (!src.isValid() || src.isEmpty())
+        return false;
+
+    const double w = static_cast<double>(width());
+    const double h = static_cast<double>(height());
+    const double sx = src.width() > 0 ? w / src.width() : 1.0;
+    const double sy = src.height() > 0 ? h / src.height() : 1.0;
+    const double scale = qMin(sx, sy);
+    const double usedW = src.width() * scale;
+    const double usedH = src.height() * scale;
+    const double dx = (w - usedW) * 0.5;
+    const double dy = (h - usedH) * 0.5;
+
+    srcOut = src;
+    scaleOut = scale;
+    dxOut = dx;
+    dyOut = dy;
+    usedWOut = usedW;
+    usedHOut = usedH;
+    return true;
+}
+
+QPointF MinimapWidget::widgetToScene(const QPointF &p) const
+{
+    QRectF src;
+    double scale = 1.0, dx = 0.0, dy = 0.0, usedW = 0.0, usedH = 0.0;
+    if (!computeTransform(src, scale, dx, dy, usedW, usedH))
+        return QPointF();
+
+    double x = (p.x() - dx) / scale + src.left();
+    double y = (p.y() - dy) / scale + src.top();
+
+    // Clamp to source rect
+    x = qBound(src.left(), x, src.right());
+    y = qBound(src.top(), y, src.bottom());
+    return QPointF(x, y);
 }
 
 void MinimapWidget::mouseMoveEvent(QMouseEvent *event)
@@ -168,21 +220,9 @@ void MinimapWidget::mouseMoveEvent(QMouseEvent *event)
     if (!src.isValid() || src.isEmpty())
         return;
 
-    const double sx = src.width() > 0 ? static_cast<double>(width()) / src.width() : 1.0;
-    const double sy = src.height() > 0 ? static_cast<double>(height()) / src.height() : 1.0;
-    const double scale = qMin(sx, sy);
-    const double usedW = src.width() * scale;
-    const double usedH = src.height() * scale;
-    const double dx = (width() - usedW) * 0.5;
-    const double dy = (height() - usedH) * 0.5;
 
-    const QPointF pcur = event->pos();
-    const QPointF pprev = m_lastPos;
-
-    const QPointF sceneCur(src.left() + (pcur.x() - dx) / scale,
-                          src.top()  + (pcur.y() - dy) / scale);
-    const QPointF scenePrev(src.left() + (pprev.x() - dx) / scale,
-                           src.top()  + (pprev.y() - dy) / scale);
+    const QPointF sceneCur = widgetToScene(event->pos());
+    const QPointF scenePrev = widgetToScene(m_lastPos);
 
     const QPointF delta = scenePrev - sceneCur; // move center by delta to follow drag
 

@@ -54,6 +54,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionZoomIn->setObjectName("actionZoomIn");
     actionZoomIn->setIcon(QIcon(":/Interface/Toolbar/zoomIn.svg"));
     actionZoomOut = new QAction(MainWindow);
+    actionShowMinimap = new QAction(MainWindow);
     actionZoomOut->setObjectName("actionZoomOut");
     actionZoomOut->setIcon(QIcon(":/Interface/Toolbar/zoomOut.svg"));
     actionWires = new QAction(MainWindow);
@@ -586,6 +587,12 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->setObjectName("menuView");
     menuTheme = new QMenu(menuView);
     menuTheme->setObjectName("menuTheme");
+    menuMinimapPosition = new QMenu(menuView);
+    menuMinimapPosition->setObjectName("menuMinimapPosition");
+    actionMinimapTopLeft = new QAction(MainWindow);
+    actionMinimapTopRight = new QAction(MainWindow);
+    actionMinimapBottomLeft = new QAction(MainWindow);
+    actionMinimapBottomRight = new QAction(MainWindow);
     menuLanguage = new QMenu(menuBar);
     menuLanguage->setObjectName("menuLanguage");
     menuSimulation = new QMenu(menuBar);
@@ -672,7 +679,13 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addAction(actionGates);
     menuView->addSeparator();
     menuView->addAction(actionFastMode);
+    menuView->addAction(actionShowMinimap);
     menuView->addSeparator();
+    menuView->addAction(menuMinimapPosition->menuAction());
+    menuMinimapPosition->addAction(actionMinimapTopLeft);
+    menuMinimapPosition->addAction(actionMinimapTopRight);
+    menuMinimapPosition->addAction(actionMinimapBottomLeft);
+    menuMinimapPosition->addAction(actionMinimapBottomRight);
     menuView->addAction(menuTheme->menuAction());
     menuView->addAction(actionFullscreen);
     menuView->addAction(actionLabelsUnderIcons);
@@ -742,6 +755,12 @@ void MainWindowUi::retranslateUi()
     actionExportToSystemVerilog->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Alt+O"));
     actionResetZoom->setText(QCoreApplication::translate("MainWindow", "&Reset Zoom"));
     actionResetZoom->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+0"));
+    actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
+    actionShowMinimap->setCheckable(true);
+    actionMinimapTopLeft->setText(QCoreApplication::translate("MainWindow", "Top-left"));
+    actionMinimapTopRight->setText(QCoreApplication::translate("MainWindow", "Top-right"));
+    actionMinimapBottomLeft->setText(QCoreApplication::translate("MainWindow", "Bottom-left"));
+    actionMinimapBottomRight->setText(QCoreApplication::translate("MainWindow", "Bottom-right"));
     actionExportToPdf->setText(QCoreApplication::translate("MainWindow", "Export to &PDF"));
     actionExportToPdf->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Shift+P"));
     actionPlay->setText(QCoreApplication::translate("MainWindow", "&Play/Pause"));
