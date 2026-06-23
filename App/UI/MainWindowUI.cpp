@@ -53,8 +53,10 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionZoomIn = new QAction(MainWindow);
     actionZoomIn->setObjectName("actionZoomIn");
     actionZoomIn->setIcon(QIcon(":/Interface/Toolbar/zoomIn.svg"));
-    actionZoomOut = new QAction(MainWindow);
     actionShowMinimap = new QAction(MainWindow);
+    actionShowMinimap->setObjectName("actionShowMinimap");
+    actionShowMinimap->setCheckable(true);
+    actionZoomOut = new QAction(MainWindow);
     actionZoomOut->setObjectName("actionZoomOut");
     actionZoomOut->setIcon(QIcon(":/Interface/Toolbar/zoomOut.svg"));
     actionWires = new QAction(MainWindow);
@@ -589,6 +591,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuTheme->setObjectName("menuTheme");
     menuMinimapPosition = new QMenu(menuView);
     menuMinimapPosition->setObjectName("menuMinimapPosition");
+    menuMinimapPosition->menuAction()->setCheckable(true);
     actionMinimapTopLeft = new QAction(MainWindow);
     actionMinimapTopRight = new QAction(MainWindow);
     actionMinimapBottomLeft = new QAction(MainWindow);
@@ -680,8 +683,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addSeparator();
     menuView->addAction(actionFastMode);
     menuView->addAction(actionShowMinimap);
-    menuView->addSeparator();
     menuView->addAction(menuMinimapPosition->menuAction());
+    menuView->addSeparator();
     menuMinimapPosition->addAction(actionMinimapTopLeft);
     menuMinimapPosition->addAction(actionMinimapTopRight);
     menuMinimapPosition->addAction(actionMinimapBottomLeft);
@@ -755,8 +758,8 @@ void MainWindowUi::retranslateUi()
     actionExportToSystemVerilog->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Alt+O"));
     actionResetZoom->setText(QCoreApplication::translate("MainWindow", "&Reset Zoom"));
     actionResetZoom->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+0"));
-    actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
-    actionShowMinimap->setCheckable(true);
+    actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "&Minimap"));
+    menuMinimapPosition->menuAction()->setText(QCoreApplication::translate("MainWindow", "Minimap &Position"));
     actionMinimapTopLeft->setText(QCoreApplication::translate("MainWindow", "Top-left"));
     actionMinimapTopRight->setText(QCoreApplication::translate("MainWindow", "Top-right"));
     actionMinimapBottomLeft->setText(QCoreApplication::translate("MainWindow", "Bottom-left"));

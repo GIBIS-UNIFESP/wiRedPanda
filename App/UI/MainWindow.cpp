@@ -125,9 +125,12 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << "Building a new tab.";
     createNewTab();
 
-    // Restore minimap visibility preference and apply to current tab if any.
-    m_ui->actionShowMinimap->setChecked(Settings::minimapVisible());
+    {
+        QSignalBlocker blocker(m_ui->menuMinimapPosition->menuAction());
+        m_ui->menuMinimapPosition->menuAction()->setChecked(Settings::minimapVisible());
+    }
     if (currentTab()) currentTab()->setMinimapVisible(Settings::minimapVisible());
+    m_ui->menuMinimapPosition->setEnabled(Settings::minimapVisible());
     // Restore minimap corner preference
     const QString corner = Settings::minimapCorner();
     if (corner == QLatin1String("top-left")) m_ui->actionMinimapTopLeft->setChecked(true);
@@ -337,9 +340,10 @@ void MainWindow::setupConnections()
             if (currentTab()) currentTab()->setMinimapCorner(key);
         });
     }
-    connect(m_ui->actionShowMinimap,           &QAction::toggled,         this,                [this](bool checked){
+    connect(m_ui->menuMinimapPosition->menuAction(), &QAction::toggled, this, [this](bool checked){
         Settings::setMinimapVisible(checked);
         if (currentTab()) currentTab()->setMinimapVisible(checked);
+        m_ui->menuMinimapPosition->setEnabled(checked);
     });
     connect(m_palette,                         &ElementPalette::addElementRequested, this, [this](QMimeData *mimeData) {
         if (currentTab()) currentTab()->scene()->addItem(mimeData);
@@ -687,7 +691,8 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
     m_palette->updateICList(icListFile());
 
     // Apply minimap visibility preference to the newly activated tab.
-    newTab->setMinimapVisible(Settings::minimapVisible());
+    newTab->setMinimapVisible(m_ui->menuMinimapPosition->menuAction()->isChecked());
+    newTab->setMinimapCorner(Settings::minimapCorner());
 
     // Hide management buttons for inline IC tabs (they use currentFile/currentDir which are empty)
     setICButtonsVisible(!newTab->isInlineIC());
