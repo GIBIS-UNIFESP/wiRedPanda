@@ -35,7 +35,7 @@
 
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
-    , m_simulation(this)
+    , m_simulation(this, this)
 {
     // The scene filters its own events to intercept mouse events before items see them
     // (e.g., to detect Ctrl+drag for cloning before Qt's default drag-selection activates)

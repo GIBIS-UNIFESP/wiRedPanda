@@ -25,6 +25,7 @@
 #include "App/Scene/SceneItemRegistry.h"
 #include "App/Scene/VisibilityManager.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Simulation/SimulationHost.h"
 
 class GraphicElement;
 class GraphicsView;
@@ -44,7 +45,7 @@ struct SerializationContext;
  * undo/redo functionality and handles various user interface events like drag-and-drop,
  * keyboard shortcuts, and mouse operations.
  */
-class Scene : public QGraphicsScene, public ContextDirProvider
+class Scene : public QGraphicsScene, public ContextDirProvider, public SimulationHost
 {
     Q_OBJECT
 
@@ -232,6 +233,11 @@ public:
     Simulation *simulation();
     /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
+
+    /// \reimp SimulationHost — all scene items the simulation engine should consider.
+    QList<QGraphicsItem *> simulationItems() const override { return items(); }
+    /// \reimp SimulationHost — mute/unmute audible output elements (buzzers).
+    void setMuted(bool muted) override { mute(muted); }
 
     // --- Context Directory ---
 

@@ -209,6 +209,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h

@@ -15,13 +15,13 @@
 #include "App/Element/IC.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Scene/Scene.h"
+#include "App/Simulation/SimulationHost.h"
 
 using namespace std::chrono_literals;
 
-Simulation::Simulation(Scene *scene)
-    : QObject(scene)
-    , m_scene(scene)
+Simulation::Simulation(SimulationHost *host, QObject *parent)
+    : QObject(parent)
+    , m_host(host)
 {
     // 1ms tick drives the simulation at ~1000 steps/second — fast enough for
     // human perception while keeping CPU load predictable.
@@ -193,8 +193,8 @@ bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
 void Simulation::stop()
 {
     m_timer.stop();
-    if (m_scene) {
-        m_scene->mute(true);
+    if (m_host) {
+        m_host->setMuted(true);
     }
 }
 
@@ -216,8 +216,8 @@ void Simulation::start()
     }
 
     m_timer.start();
-    if (m_scene) {
-        m_scene->mute(m_userMuted);
+    if (m_host) {
+        m_host->setMuted(m_userMuted);
     }
     qCDebug(zero) << "Simulation started.";
 }
@@ -225,8 +225,8 @@ void Simulation::start()
 void Simulation::setUserMuted(const bool muted)
 {
     m_userMuted = muted;
-    if (m_scene) {
-        m_scene->mute(muted);
+    if (m_host) {
+        m_host->setMuted(muted);
     }
 }
 
@@ -246,7 +246,7 @@ void Simulation::updateWithIterativeSettling()
 
 bool Simulation::initialize()
 {
-    if (!m_scene) {
+    if (!m_host) {
         return false;
     }
 
@@ -260,7 +260,7 @@ bool Simulation::initialize()
     m_sortedElements.clear();
 
     QVector<GraphicElement *> elements;
-    auto items = m_scene->items();
+    auto items = m_host->simulationItems();
 
     // Sort items by position coordinates for consistent ordering between runs.
     // QGraphicsScene::items() returns items in an unspecified Z/stacking order;

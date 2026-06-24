@@ -21,7 +21,7 @@ class GraphicElementInput;
 class QNEConnection;
 class QNEInputPort;
 class QNEOutputPort;
-class Scene;
+class SimulationHost;
 
 /**
  * \class Simulation
@@ -45,10 +45,11 @@ public:
     // --- Lifecycle ---
 
     /**
-     * \brief Constructs a Simulation bound to \a scene.
-     * \param scene Scene whose elements will be simulated.
+     * \brief Constructs a Simulation driven by \a host.
+     * \param host   Supplies the item list and mute control (implemented by Scene).
+     * \param parent Optional QObject parent.
      */
-    explicit Simulation(Scene *scene);
+    explicit Simulation(SimulationHost *host, QObject *parent = nullptr);
 
     /// Destructor; stops the simulation timer.
     ~Simulation() override = default;
@@ -151,9 +152,9 @@ private:
     QVector<GraphicElementInput *> m_inputs;
     QVector<QNEConnection *> m_connections;
 
-    // --- Members: Scene & state ---
+    // --- Members: Host & state ---
 
-    Scene *m_scene;
+    SimulationHost *m_host;
 
     // --- Members: State flags ---
 
