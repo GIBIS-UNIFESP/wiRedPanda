@@ -294,7 +294,10 @@ QJsonObject SimulationHandler::handleCreateIC(const QJsonObject &params, const Q
             return createErrorResponse("No active workspace available", requestId, JsonRpcError::InternalError);
         }
 
-        workspace->save(fullPath);
+        if (workspace->save(fullPath) != WorkSpace::SaveOutcome::Saved) {
+            return createErrorResponse(QString("Could not save IC: %1 is not writable").arg(fullPath),
+                                       requestId, JsonRpcError::IcError);
+        }
 
         QJsonObject result;
         result["name"] = name;

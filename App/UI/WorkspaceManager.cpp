@@ -85,13 +85,57 @@ void WorkspaceManager::createNewTab()
     m_tab->setCurrentIndex(m_tab->count() - 1);
 }
 
+QString WorkspaceManager::promptSavePath(const QString &dir, const QString &caption)
+{
+    QString fileName = FileDialogs::provider()->getSaveFileName(
+        m_host.widget(), caption, dir, tr("Panda files (*.panda)")).fileName;
+
+    if (!fileName.isEmpty() && !fileName.endsWith(".panda")) {
+        fileName.append(".panda");
+    }
+
+    return fileName;
+}
+
 void WorkspaceManager::save(const QString &fileName)
 {
     if (!m_currentTab) {
         return;
     }
 
-    m_currentTab->save(fileName);
+    // Inline-IC tabs serialize to a blob and emit to the parent — no path, no dialog.
+    if (m_currentTab->isInlineIC()) {
+        m_currentTab->save(QString());
+        m_host.palette()->updateICList(icListFile());
+        m_host.showStatusMessage(tr("File saved successfully."), 4000);
+        return;
+    }
+
+    // Resolve the target. A never-saved project (e.g. closing a brand-new tab) has no
+    // path yet, so prompt for one here — WorkSpace::save no longer shows file dialogs.
+    QString target = fileName.isEmpty() ? currentFile().absoluteFilePath() : fileName;
+    if (target.isEmpty()) {
+        target = promptSavePath(currentFile().absolutePath(), tr("Save File"));
+        if (target.isEmpty()) {
+            return; // user cancelled
+        }
+    }
+
+    // Write, re-prompting for a writable location if the target turns out to be
+    // read-only (OneDrive lock, write-protected dir, network drive, ...) instead of
+    // dropping the user into a stuck "Acesso negado" dialog with no way out.
+    while (m_currentTab->save(target) == WorkSpace::SaveOutcome::ReadOnlyTarget) {
+        if (!Application::interactiveMode) {
+            throw PANDACEPTION("Could not save file: %1 is not writable.", target);
+        }
+        const QString newPath = promptSavePath(QFileInfo(target).fileName(),
+                                               tr("Save File (original location is read-only)"));
+        if (newPath.isEmpty()) {
+            return; // user cancelled the recovery prompt
+        }
+        target = newPath;
+    }
+
     m_host.palette()->updateICList(icListFile());
     m_host.showStatusMessage(tr("File saved successfully."), 4000);
 }
@@ -260,14 +304,10 @@ void WorkspaceManager::saveFile()
         QString fileName = currentFile().absoluteFilePath();
 
         if (fileName.isEmpty()) {
-            fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File as ..."), QString(), tr("Panda files (*.panda)")).fileName;
+            fileName = promptSavePath(QString(), tr("Save File as ..."));
 
             if (fileName.isEmpty()) {
                 return;
-            }
-
-            if (!fileName.endsWith(".panda")) {
-                fileName.append(".panda");
             }
         }
 
@@ -316,14 +356,10 @@ void WorkspaceManager::saveFileAs()
             QFileDialog::saveFileContent(content, suggestedName);
         }
     #else
-        QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files (*.panda)")).fileName;
+        QString fileName = promptSavePath(currentFile().absoluteFilePath(), tr("Save File as ..."));
 
         if (fileName.isEmpty()) {
             return;
-        }
-
-        if (!fileName.endsWith(".panda")) {
-            fileName.append(".panda");
         }
 
         const int conflictTab = findTabWithFile(fileName);

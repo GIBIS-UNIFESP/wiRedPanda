@@ -49,7 +49,7 @@ private slots:
 
     // --- WorkSpace: Save dialog ---
 
-    void testWorkspaceSaveDialogUsesProvider();
+    void testWorkspaceSaveIsProviderFree();
 
     // --- ElementEditor: Audio ---
 

@@ -42,7 +42,6 @@ bool isReadOnlyFailure(QFileDevice::FileError error)
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Commands.h"
 #include "App/Simulation/SimulationBlocker.h"
-#include "App/UI/FileDialogProvider.h"
 #include "App/Versions.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
@@ -128,7 +127,7 @@ QFileInfo WorkSpace::fileInfo()
     return m_fileInfo;
 }
 
-void WorkSpace::save(const QString &fileName)
+WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
 {
     sentryBreadcrumb("file", QStringLiteral("Save: %1").arg(fileName));
 
@@ -144,13 +143,13 @@ void WorkSpace::save(const QString &fileName)
                           .arg(m_loadedVersion.toString(), AppVersion::current.toString(), FormatRev::current.toString());
             QMessageBox::warning(this, tr("Cannot save."), message);
         }
-        return;
+        return SaveOutcome::Saved;
     }
 
     if (m_isInlineIC) {
         if (!m_parentWorkspace) {
             qCWarning(zero) << "Inline IC tab: parent workspace was closed. Save is a no-op.";
-            return;
+            return SaveOutcome::Saved;
         }
 
         // Inline-IC tabs serialize to a blob and emit a signal instead of writing to disk.
@@ -194,7 +193,7 @@ void WorkSpace::save(const QString &fileName)
 
         m_scene.undoStack()->setClean();
         emit icBlobSaved(m_parentICElementId, blob);
-        return;
+        return SaveOutcome::Saved;
     }
 
     QString fileName_ = fileName.isEmpty() ? m_fileInfo.absoluteFilePath() : fileName;
@@ -204,22 +203,17 @@ void WorkSpace::save(const QString &fileName)
     QStringList autosaves = Settings::autosaveFiles();
     qCDebug(zero) << "All auto save file names before save: " << autosaves;
 
-    QString autosaveFileName;
-    qCDebug(zero) << "Checking if it is an autosave file or a new project, and ask for a fileName.";
-
-    // If saving to an autosave path or no path at all, prompt the user for a real filename
-    if (fileName_.isEmpty() || autosaves.contains(fileName_)) {
-        qCDebug(zero) << "Should open window.";
-        autosaveFileName = fileName_;
-
-        if (m_fileInfo.fileName().isEmpty()) {
-            const QString path = fileName.isEmpty() ? m_fileInfo.absolutePath() : QFileInfo(fileName).absolutePath();
-            fileName_ = FileDialogs::provider()->getSaveFileName(this, tr("Save File"), path, tr("Panda files (*.panda)")).fileName;
-        }
+    // No resolved path to write to: path selection is the caller's (WorkspaceManager)
+    // responsibility, so a Scene-layer save() with no target is simply a no-op.
+    if (fileName_.isEmpty()) {
+        return SaveOutcome::Saved;
     }
 
-    if (fileName_.isEmpty()) {
-        return;
+    // Saving over an autosave path (crash-recovered tab) means that autosave entry is
+    // now a real, user-owned file — remember it so the post-save cleanup de-lists it.
+    QString autosaveFileName;
+    if (autosaves.contains(fileName_)) {
+        autosaveFileName = fileName_;
     }
 
     if (!fileName_.endsWith(".panda")) {
@@ -254,18 +248,11 @@ void WorkSpace::save(const QString &fileName)
     QSaveFile saveFile(fileName_);
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
-        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) {
+        if (isReadOnlyFailure(saveFile.error())) {
             // OneDrive lock, ZIP-extracted folder, network drive, write-protected
-            // attribute. Re-prompt for a writable location instead of throwing
-            // the user into a stuck "Acesso negado" dialog with no way out.
-            const QString newPath = FileDialogs::provider()->getSaveFileName(
-                this, tr("Save File (original location is read-only)"),
-                QFileInfo(fileName_).fileName(),
-                tr("Panda files (*.panda)")).fileName;
-            if (!newPath.isEmpty()) {
-                save(newPath);
-            }
-            return;
+            // attribute. Report it so WorkspaceManager can offer a writable location
+            // instead of throwing the user into a stuck "Acesso negado" dialog.
+            return SaveOutcome::ReadOnlyTarget;
         }
         throw PANDACEPTION("Error opening file: %1", saveFile.errorString());
     }
@@ -296,15 +283,8 @@ void WorkSpace::save(const QString &fileName)
     save(stream);
 
     if (!saveFile.commit()) {
-        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) {
-            const QString newPath = FileDialogs::provider()->getSaveFileName(
-                this, tr("Save File (original location is read-only)"),
-                QFileInfo(fileName_).fileName(),
-                tr("Panda files (*.panda)")).fileName;
-            if (!newPath.isEmpty()) {
-                save(newPath);
-            }
-            return;
+        if (isReadOnlyFailure(saveFile.error())) {
+            return SaveOutcome::ReadOnlyTarget;
         }
         throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
     }
@@ -330,6 +310,7 @@ void WorkSpace::save(const QString &fileName)
     }
 
     emit fileChanged(m_fileInfo);
+    return SaveOutcome::Saved;
 }
 
 void WorkSpace::save(QDataStream &stream)

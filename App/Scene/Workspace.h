@@ -52,14 +52,26 @@ public:
 
     // --- File Operations ---
 
+    /// Outcome of a file-backed save() — distinguishes a recoverable read-only
+    /// target (the caller may re-prompt for a writable location) from success.
+    /// Hard, non-recoverable failures are reported by throwing Pandaception.
+    enum class SaveOutcome {
+        Saved,          ///< Written successfully (or handled internally: inline-IC blob / newer-version no-op / no path to write).
+        ReadOnlyTarget, ///< The resolved path is not writable; the caller may offer a different location.
+    };
+
     /// Returns the file info for the currently open circuit file.
     QFileInfo fileInfo();
     /// Loads a circuit from the file at \a fileName.
     void load(const QString &fileName);
     /// Loads a circuit from \a stream using the given format \a version and optional \a contextDir.
     void load(QDataStream &stream, const QVersionNumber &version, const QString &contextDir);
-    /// Saves the current circuit to \a fileName.
-    void save(const QString &fileName);
+    /// Saves the current circuit to the already-resolved \a fileName (no dialogs).
+    /// \return SaveOutcome::ReadOnlyTarget if the target is not writable (caller decides
+    /// whether to re-prompt); SaveOutcome::Saved otherwise. Throws Pandaception on a hard
+    /// I/O failure. Path selection / read-only recovery is the caller's responsibility
+    /// (WorkspaceManager), keeping this Scene-layer class free of UI file dialogs.
+    SaveOutcome save(const QString &fileName);
     /// Saves the current circuit to \a stream.
     void save(QDataStream &stream);
     /// Creates or replaces the autosave temporary file.

@@ -1019,17 +1019,18 @@ void TestWorkspace::testSaveToInvalidPathThrows()
     // Use a path that definitely cannot be created (read-only filesystem path)
     QString invalidPath = "/root/definitely/invalid/path/that/cannot/be/created/file.panda";
 
-    bool exceptionThrown = false;
+    // After finding E, save() never silently "succeeds" on an unwritable target: a hard
+    // I/O error throws Pandaception, while an unwritable-but-recoverable target returns
+    // SaveOutcome::ReadOnlyTarget so the caller (WorkspaceManager) can re-prompt. Either
+    // is a valid failure report — the only forbidden outcome is SaveOutcome::Saved.
+    bool failed = false;
     try {
-        workspace.save(invalidPath);
-        // If we get here without exception, the save failed silently (which is also a failure)
-        QFAIL("save() should either throw an exception or fail gracefully for invalid path");
+        failed = (workspace.save(invalidPath) != WorkSpace::SaveOutcome::Saved);
     } catch (const Pandaception &) {
-        // Expected - invalid path should cause exception
-        exceptionThrown = true;
+        failed = true;
     }
 
-    QVERIFY2(exceptionThrown, "Saving to invalid path should throw Pandaception");
+    QVERIFY2(failed, "Saving to an unwritable path must fail (throw or report ReadOnlyTarget), not return Saved");
 }
 
 void TestWorkspace::testSaveEmptyCircuit()
@@ -1131,16 +1132,16 @@ void TestWorkspace::testFlushPendingAutosaveRunsImmediatelyB3()
 
 void TestWorkspace::testSaveRepromptsOnPermissionsErrorB24()
 {
-    // Pre-fix Ctrl+S to a read-only path threw straight into a modal "Acesso
-    // negado" dialog with no way out. Now save() catches QFileDevice::
-    // PermissionsError, prompts the user via FileDialogs::provider() for a
-    // new path, and recurses with that path.
+    // B24: Ctrl+S to a read-only path must not throw the user into a dead-end "Acesso
+    // negado" dialog. After finding E the *recovery* (re-prompting for a writable path)
+    // lives in WorkspaceManager; WorkSpace::save is now pure — it reports
+    // SaveOutcome::ReadOnlyTarget and shows NO file dialog of its own. This test pins
+    // that contract: an unwritable target is reported, not retried in place, and the
+    // file-dialog provider is never touched at this layer.
     QTemporaryDir lockedDir;
-    QTemporaryDir writableDir;
-    QVERIFY(lockedDir.isValid() && writableDir.isValid());
+    QVERIFY(lockedDir.isValid());
 
     const QString readOnlyPath = lockedDir.path() + "/locked.panda";
-    const QString writablePath = writableDir.path() + "/recovered.panda";
 
     // Pre-create the target file as read-only AND drop write on the directory
     // — QSaveFile uses a sibling temp file in the same dir on commit, so just
@@ -1154,8 +1155,9 @@ void TestWorkspace::testSaveRepromptsOnPermissionsErrorB24()
     QFile::setPermissions(lockedDir.path(),
         QFileDevice::ReadOwner | QFileDevice::ExeOwner);
 
+    // Install a stub that would record a call if WorkSpace::save wrongly prompted.
     StubFileDialogProvider stub;
-    stub.saveResult = {writablePath, "Panda files (*.panda)"};
+    stub.saveResult = {QString(), QString()};
     auto *prevProvider = FileDialogs::setProvider(&stub);
     const bool prevInteractive = Application::interactiveMode;
     Application::interactiveMode = true;
@@ -1167,11 +1169,12 @@ void TestWorkspace::testSaveRepromptsOnPermissionsErrorB24()
         QVERIFY(!probe.open(QIODevice::WriteOnly));
     }
 
+    WorkSpace::SaveOutcome outcome = WorkSpace::SaveOutcome::Saved;
     {
         WorkSpace workspace;
         auto *led = ElementFactory::buildElement(ElementType::Led);
         workspace.scene()->addItem(led);
-        workspace.save(readOnlyPath);
+        outcome = workspace.save(readOnlyPath);
     }
 
     Application::interactiveMode = prevInteractive;
@@ -1181,7 +1184,7 @@ void TestWorkspace::testSaveRepromptsOnPermissionsErrorB24()
     QFile::setPermissions(readOnlyPath,
         QFileDevice::ReadOwner | QFileDevice::WriteOwner);
 
-    QCOMPARE(stub.saveCallCount, 1);
-    QVERIFY2(QFile::exists(writablePath),
-             qPrintable("Save should have been redirected to " + writablePath));
+    QVERIFY2(outcome == WorkSpace::SaveOutcome::ReadOnlyTarget,
+             "WorkSpace::save must report a read-only target as SaveOutcome::ReadOnlyTarget");
+    QCOMPARE(stub.saveCallCount, 0);   // recovery prompting is WorkspaceManager's job, not WorkSpace's
 }

@@ -86,6 +86,11 @@ private:
     int closeTabAnyway();
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
 
+    /// Shows a "Save File" dialog and returns the chosen path (with a ".panda"
+    /// suffix ensured), or an empty string if the user cancelled. Centralises the
+    /// file-dialog access that used to live inside WorkSpace::save (finding E).
+    QString promptSavePath(const QString &dir, const QString &caption);
+
     QTabWidget *m_tab;
     MainWindowHost &m_host;
     WorkSpace *m_currentTab = nullptr;

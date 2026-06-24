@@ -347,8 +347,13 @@ void TestFileDialogProvider::testEmbedICFromFileUsesProvider()
 // WorkSpace: Save dialog
 // ===========================================================================
 
-void TestFileDialogProvider::testWorkspaceSaveDialogUsesProvider()
+void TestFileDialogProvider::testWorkspaceSaveIsProviderFree()
 {
+    // After finding E, WorkSpace::save is pure: path selection moved up to
+    // WorkspaceManager, so a bare WorkSpace asked to save with no resolved path is a
+    // no-op that must NOT touch the file-dialog provider. The "first save prompts via
+    // the provider" behaviour is covered at the proper level by
+    // testSaveFirstTimeUsesProvider (MainWindow + Ctrl+S).
     ScopedFileDialogStub guard;
     const QString savePath = m_fixtureDir + "/ws_save.panda";
     guard.stub.saveResult = {savePath, "Panda files (*.panda)"};
@@ -357,15 +362,12 @@ void TestFileDialogProvider::testWorkspaceSaveDialogUsesProvider()
     auto *sw = new InputSwitch();
     ws.scene()->addItem(sw);
 
-    // Save with empty path — should trigger dialog
-    ws.save(QString());
+    // No resolved path and no UI: WorkSpace::save must neither prompt nor write.
+    const WorkSpace::SaveOutcome outcome = ws.save(QString());
 
-    QCOMPARE(guard.stub.saveCallCount, 1);
-    QVERIFY(guard.stub.lastSaveCall.caption.contains("Save"));
-    QVERIFY(guard.stub.lastSaveCall.filter.contains("panda"));
-    QVERIFY(QFile::exists(savePath));
-
-    QFile::remove(savePath);
+    QVERIFY(outcome == WorkSpace::SaveOutcome::Saved);
+    QCOMPARE(guard.stub.saveCallCount, 0);
+    QVERIFY(!QFile::exists(savePath));
 }
 
 // ===========================================================================
