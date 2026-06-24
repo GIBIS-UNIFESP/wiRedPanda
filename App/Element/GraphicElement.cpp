@@ -20,13 +20,14 @@
 #include <QThread>
 
 #include "App/Core/Common.h"
+#include "App/Core/Constants.h"
+#include "App/Core/ContextDirProvider.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Scene/Scene.h"
 
 /// Shared label font — constructed once to avoid repeated QFont creation and fontconfig lookups.
 static const QFont &labelFont()
@@ -88,6 +89,19 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
 }
 
 GraphicElement::~GraphicElement() = default;
+
+QString GraphicElement::resolveContextDir(const QGraphicsItem *item)
+{
+    // Prefer the live scene's context dir (it tracks Save-As); fall back to the
+    // contextDir stored on the element during load() for items not yet in a scene.
+    if (const auto *provider = dynamic_cast<const ContextDirProvider *>(item->scene())) {
+        return provider->contextDir();
+    }
+    if (const auto *element = dynamic_cast<const GraphicElement *>(item)) {
+        return element->loadContextDir();
+    }
+    return {};
+}
 
 ElementType GraphicElement::elementType() const
 {
@@ -354,7 +368,7 @@ void GraphicElement::updatePortsProperties()
 
     // gridSize is 16 px; half that (8 px) is the port spacing unit so ports land
     // on sub-grid snap points that wires can reach when snapped to the same grid.
-    const int step = Scene::gridSize / 2;
+    const int step = Constants::gridSize / 2;
 
     if (!m_inputPorts.isEmpty()) {
         // Centre the port column vertically around y=32 (the mid-point of a 64 px body).
@@ -418,7 +432,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         QPointF newPos = value.toPointF();
         // Snap to half-grid (8 px steps) so elements always align with each other
         // and with the port positions computed in updatePortsProperties().
-        const int gridSize = Scene::gridSize / 2;
+        const int gridSize = Constants::gridSize / 2;
         const int xV = qRound(newPos.x() / gridSize) * gridSize;
         const int yV = qRound(newPos.y() / gridSize) * gridSize;
         return QPoint(xV, yV);

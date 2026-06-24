@@ -12,6 +12,7 @@
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/BeWavedDolphin/SignalModel.h"
+#include "App/Core/Constants.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRegistry.h"
@@ -319,7 +320,7 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
     }
 
     QString icName = params.value("ic_name").toString();
-    const int snap = Scene::gridSize / 2;
+    const int snap = Constants::gridSize / 2;
     int x = qRound(params.value("x").toDouble() / snap) * snap;
     int y = qRound(params.value("y").toDouble() / snap) * snap;
     QString label = params.value("label").toString(icName);

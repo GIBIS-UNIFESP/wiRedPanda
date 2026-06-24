@@ -15,6 +15,7 @@
 #include <QScrollBar>
 
 #include "App/Core/Common.h"
+#include "App/Core/Constants.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Core/MimeTypes.h"
 #include "App/Core/Priorities.h"
@@ -31,19 +32,6 @@
 #include "App/Nodes/QNEConnection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
-
-QString Scene::resolveContextDir(const QGraphicsItem *item)
-{
-    if (auto *s = dynamic_cast<Scene *>(item->scene())) {
-        return s->contextDir();
-    }
-    // Element not yet added to a scene (mid-deserialization): use the
-    // contextDir stored on the element during load().
-    if (auto *ge = dynamic_cast<const GraphicElement *>(item)) {
-        return ge->loadContextDir();
-    }
-    return {};
-}
 
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
@@ -195,6 +183,7 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 
     QGraphicsScene::drawBackground(painter, rect);
 
+    const int gridSize = Constants::gridSize;
     const int left = static_cast<int>(std::floor(rect.left() / gridSize)) * gridSize;
     const int top = static_cast<int>(std::floor(rect.top() / gridSize)) * gridSize;
     const int right = static_cast<int>(std::ceil(rect.right() / gridSize)) * gridSize;

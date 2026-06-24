@@ -7,10 +7,10 @@
 
 #include <QPainter>
 
+#include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Scene/Scene.h"
 
 template<>
 struct ElementInfo<Demux> {
@@ -83,7 +83,7 @@ void Demux::updatePortsProperties()
     // Determine number of select lines based on number of outputs
     const int numSelectLines = calculateSelectLines(outputSize());
 
-    const int step = Scene::gridSize / 2; // 8
+    const int step = Constants::gridSize / 2; // 8
 
     // Calculate element height to fit all output ports with padding
     int outputPortsSpan = (outputSize() - 1) * step * 2;

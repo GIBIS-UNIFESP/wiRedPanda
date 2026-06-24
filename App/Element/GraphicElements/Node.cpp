@@ -16,7 +16,6 @@
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Scene/Scene.h"
 
 template<>
 struct ElementInfo<Node> {

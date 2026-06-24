@@ -18,7 +18,6 @@
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Scene/Scene.h"
 
 namespace {
 
@@ -223,7 +222,7 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     // Try the path as-is against contextDir first; if not found, fall back to
     // just the filename — handles cross-platform absolute paths from old files.
     if (!path.startsWith(":/")) {
-        const QString contextDir = Scene::resolveContextDir(m_owner);
+        const QString contextDir = GraphicElement::resolveContextDir(m_owner);
         if (contextDir.isEmpty()) {
             return;
         }

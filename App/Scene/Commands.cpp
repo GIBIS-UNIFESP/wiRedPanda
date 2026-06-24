@@ -9,6 +9,7 @@
 #include <QIODevice>
 
 #include "App/Core/Common.h"
+#include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
@@ -489,7 +490,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     // Subtract pixmapCenter so the node's visual center lands on the mouse click,
     // then snap to the nearest grid intersection
     m_nodePos = mousePos - node->pixmapCenter();
-    const int gridSize = Scene::gridSize;
+    const int gridSize = Constants::gridSize;
     qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
     qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
     m_nodePos = QPointF(xV, yV);

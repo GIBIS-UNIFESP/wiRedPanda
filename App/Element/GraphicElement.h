@@ -90,6 +90,12 @@ public:
     /// Returns the context directory stored during load() for path resolution.
     QString loadContextDir() const { return m_contextDir; }
 
+    /// Resolves the context directory for \a item: from its scene (via the
+    /// ContextDirProvider interface) when the item is in one, else the element's
+    /// stored loadContextDir(). Static so items not yet added to a scene
+    /// (mid-deserialization) still resolve correctly.
+    static QString resolveContextDir(const QGraphicsItem *item);
+
     // --- Port Management ---
 
     /**

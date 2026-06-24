@@ -133,6 +133,8 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Constants.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ContextDirProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/MimeTypes.h

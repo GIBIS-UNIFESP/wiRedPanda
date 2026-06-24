@@ -7,10 +7,10 @@
 
 #include <QPainter>
 
+#include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Scene/Scene.h"
 
 template<>
 struct ElementInfo<Mux> {
@@ -55,7 +55,7 @@ void Mux::updatePortsProperties()
     const int numSelectLines = calculateSelectLines(inputSize());
     int numDataInputs = inputSize() - numSelectLines;
 
-    const int step = Scene::gridSize / 2; // 8
+    const int step = Constants::gridSize / 2; // 8
 
     // Calculate element height to fit all data ports with padding
     int dataPortsSpan = (numDataInputs - 1) * step * 2; // spacing between first and last port
