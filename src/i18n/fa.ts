@@ -11,6 +11,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'مخزن GitHub',
   'nav.toggleMenu': 'نمایش/پنهان کردن منوی ناوبری',
+  'nav.apiDocs': 'مستندات API',
 
   // Hero
   'hero.logoAlt': 'لوگوی wiRedPanda',

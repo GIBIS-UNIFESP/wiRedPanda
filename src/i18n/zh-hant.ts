@@ -10,6 +10,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'GitHub 儲存庫',
   'nav.toggleMenu': '切換導覽選單',
+  'nav.apiDocs': 'API 文件',
 
   // Hero
   'hero.logoAlt': 'wiRedPanda 標誌',

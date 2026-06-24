@@ -11,6 +11,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'Repositorio en GitHub',
   'nav.toggleMenu': 'Abrir/cerrar menú de navegación',
+  'nav.apiDocs': 'Docs de API',
 
   // Hero
   'hero.logoAlt': 'Logo de wiRedPanda',

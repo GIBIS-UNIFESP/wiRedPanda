@@ -10,6 +10,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'GitHub リポジトリ',
   'nav.toggleMenu': 'ナビゲーションメニューの切替',
+  'nav.apiDocs': 'API ドキュメント',
 
   // Hero
   'hero.logoAlt': 'wiRedPanda ロゴ',

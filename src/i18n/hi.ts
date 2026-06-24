@@ -11,6 +11,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'GitHub रिपॉजिटरी',
   'nav.toggleMenu': 'नेविगेशन मेनू दिखाएं/छिपाएं',
+  'nav.apiDocs': 'API प्रलेखन',
 
   // Hero
   'hero.logoAlt': 'wiRedPanda लोगो',

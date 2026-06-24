@@ -1,0 +1,39 @@
+<!-- Doxygen custom footer — matches the wiRedPanda Astro site layout -->
+<!-- end content -->
+</div><!-- id="doc-content" (closed by doxygen) -->
+
+<!-- ── Site footer bar (mirrors Astro Footer component) ────────────────────── -->
+<div id="site-footer-bar">
+  <span>wiRedPanda Team &copy; <script>document.write(new Date().getFullYear())</script></span>
+</div>
+
+<!-- doxygen-awesome interactive extensions ──────────────────────────────────── -->
+<script type="text/javascript" src="$relpath^doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="$relpath^doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="$relpath^doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="$relpath^doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="$relpath^doxygen-awesome-tabs.js"></script>
+<script type="text/javascript">
+  // Initialize doxygen-awesome extensions
+  DoxygenAwesomeDarkModeToggle.init();
+  DoxygenAwesomeFragmentCopyButton.init();
+  DoxygenAwesomeParagraphLink.init();
+  DoxygenAwesomeInteractiveToc.init();
+  DoxygenAwesomeTabs.init();
+
+  // Sync with site-wide theme preference stored in localStorage
+  (function() {
+    var stored = localStorage.getItem('theme');
+    var toggle = document.querySelector('doxygen-awesome-dark-mode-toggle');
+    if (!toggle) return;
+    // Listen to doxygen-awesome toggle changes and persist
+    var observer = new MutationObserver(function() {
+      var isDark = document.documentElement.classList.contains('dark-mode');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  })();
+</script>
+
+</body>
+</html>

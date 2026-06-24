@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          submodules: true
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
@@ -40,6 +42,21 @@ jobs:
 
       - name: Format check
         run: npm run format:check
+
+      - name: Checkout master source for Doxygen
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: master
+          path: master-src
+
+      - name: Install Doxygen
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends doxygen graphviz
+
+      - name: Generate API docs
+        run: doxygen Doxyfile
+
+      - name: Copy API docs to site
+        run: cp -r docs/html public/api
 
       - name: Build and upload
         uses: withastro/action@b7d53628f8b666036b0238aadb0b984a2a489f26 # v6

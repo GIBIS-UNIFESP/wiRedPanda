@@ -11,6 +11,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'Αποθετήριο GitHub',
   'nav.toggleMenu': 'Εναλλαγή μενού πλοήγησης',
+  'nav.apiDocs': 'Τεκμηρίωση API',
 
   // Hero
   'hero.logoAlt': 'Λογότυπο wiRedPanda',

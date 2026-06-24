@@ -11,6 +11,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'GitHub রিপোজিটরি',
   'nav.toggleMenu': 'নেভিগেশন মেনু দেখান/লুকান',
+  'nav.apiDocs': 'API ডকুমেন্টেশন',
 
   // Hero
   'hero.logoAlt': 'wiRedPanda লোগো',

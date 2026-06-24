@@ -11,6 +11,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'GitHub saugykla',
   'nav.toggleMenu': 'Rodyti/slėpti naršymo meniu',
+  'nav.apiDocs': 'API dokumentacija',
 
   // Hero
   'hero.logoAlt': 'wiRedPanda logotipas',

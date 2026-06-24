@@ -10,6 +10,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'مستودع GitHub',
   'nav.toggleMenu': 'تبديل قائمة التنقل',
+  'nav.apiDocs': 'وثائق API',
 
   // Hero
   'hero.logoAlt': 'شعار wiRedPanda',

@@ -11,6 +11,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'GitHub repozitář',
   'nav.toggleMenu': 'Přepnout navigační menu',
+  'nav.apiDocs': 'API dokumentace',
 
   // Hero
   'hero.logoAlt': 'Logo wiRedPanda',

@@ -1,0 +1,243 @@
+/*
+ * doxygen-custom.css
+ * Overrides for doxygen-awesome-css to match the wiRedPanda Astro site.
+ *
+ * Brand palette:
+ *   --color-brand-blue:       #134074
+ *   --color-brand-light-blue: #2da6f4
+ *   --color-brand-red:        #bd2812
+ *   --color-bg-light:         #f0ece4
+ *   --color-bg-dark:          #1a1a2e
+ *   --color-bg-darker:        #111118
+ */
+
+/* ── Google Fonts (Moderustic) ─────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap');
+
+/* ── Light mode ────────────────────────────────────────────────────────────── */
+html {
+  /* Typography */
+  --font-family: 'Moderustic', 'Helvetica', sans-serif;
+  --font-family-monospace: 'JetBrains Mono', ui-monospace, 'Cascadia Code',
+    'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+
+  /* Brand colors → doxygen-awesome variables */
+  --primary-color: #134074;
+  --primary-dark-color: #0e2f55;
+  --primary-light-color: #2da6f4;
+
+  /* Page background */
+  --page-background-color: #f0ece4;
+  --page-foreground-color: #1f2937; /* gray-800 */
+
+  /* Sidebar */
+  --side-nav-background: #e8e4dc;
+  --side-nav-foreground: #1f2937;
+
+  /* Separator / borders */
+  --separator-color: #d5d0c7;
+
+  /* Content area */
+  --content-background-color: #faf8f4;
+
+  /* Fragment (code blocks) */
+  --fragment-background: #fdfcfa;
+  --fragment-foreground: #1f2937;
+
+  /* Search */
+  --searchbar-background: #ffffff;
+}
+
+/* ── Dark mode ─────────────────────────────────────────────────────────────── */
+html.dark-mode {
+  --primary-color: #2da6f4;
+  --primary-dark-color: #2490d4;
+  --primary-light-color: #60bfff;
+
+  /* Page background */
+  --page-background-color: #1a1a2e;
+  --page-foreground-color: #e5e7eb; /* gray-200 */
+
+  /* Sidebar */
+  --side-nav-background: #111118;
+  --side-nav-foreground: #e5e7eb;
+
+  /* Separator / borders */
+  --separator-color: rgba(19, 64, 116, 0.3);
+
+  /* Content area */
+  --content-background-color: #16162a;
+
+  /* Fragment (code blocks) */
+  --fragment-background: #111118;
+  --fragment-foreground: #e5e7eb;
+
+  /* Search */
+  --searchbar-background: #111118;
+}
+
+/* ── Selection ─────────────────────────────────────────────────────────────── */
+::selection {
+  color: white;
+  background-color: #bd2812;
+}
+
+/* ── Custom site header bar ────────────────────────────────────────────────── */
+#site-header-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.5rem;
+  padding: 0 1.5rem;
+  font-family: var(--font-family);
+  background: rgba(240, 236, 228, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+}
+
+html.dark-mode #site-header-bar {
+  background: rgba(17, 17, 24, 0.8);
+  border-bottom-color: rgba(19, 64, 116, 0.3);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+}
+
+#site-header-bar a {
+  text-decoration: none;
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+html.dark-mode #site-header-bar a {
+  color: #e5e7eb;
+}
+
+#site-header-bar a:hover {
+  color: #2da6f4;
+}
+
+#site-header-bar .header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+#site-header-bar .header-logo img {
+  height: 1.75rem;
+  width: auto;
+  transition: transform 0.2s;
+}
+
+#site-header-bar .header-logo:hover img {
+  transform: scale(1.1);
+}
+
+#site-header-bar nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+#site-header-bar nav a {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+html.dark-mode #site-header-bar nav a {
+  color: #d1d5db;
+}
+
+#site-header-bar nav a:hover {
+  color: #111827;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+html.dark-mode #site-header-bar nav a:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+#site-header-bar nav a.active {
+  color: #2da6f4;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+html.dark-mode #site-header-bar nav a.active {
+  color: #2da6f4;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Custom footer ─────────────────────────────────────────────────────────── */
+#site-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.25rem 1.5rem;
+  font-family: var(--font-family);
+  font-size: 0.875rem;
+  color: #6b7280;
+  background: #f3f4f6;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+html.dark-mode #site-footer-bar {
+  color: #9ca3af;
+  background: #111118;
+  border-top-color: rgba(19, 64, 116, 0.2);
+}
+
+#site-footer-bar a {
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+#site-footer-bar a:hover {
+  opacity: 1;
+}
+
+/* ── Smooth scrolling ──────────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ── Link transitions ──────────────────────────────────────────────────────── */
+a {
+  transition: color 0.2s;
+}
+
+/* ── Scrollbar tweaks (optional, WebKit) ───────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c4bfb5;
+  border-radius: 4px;
+}
+
+html.dark-mode ::-webkit-scrollbar-thumb {
+  background: #2a2a40;
+}

@@ -11,6 +11,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'GitHub repozitorijs',
   'nav.toggleMenu': 'Rādīt/paslēpt navigācijas izvēlni',
+  'nav.apiDocs': 'API dokumentācija',
 
   // Hero
   'hero.logoAlt': 'wiRedPanda logotips',

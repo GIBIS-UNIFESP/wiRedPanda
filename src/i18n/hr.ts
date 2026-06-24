@@ -11,6 +11,7 @@ export default {
   'nav.github': 'GitHub',
   'nav.githubRepo': 'GitHub repozitorij',
   'nav.toggleMenu': 'Prikaži/sakrij izbornik navigacije',
+  'nav.apiDocs': 'API dokumentacija',
 
   // Hero
   'hero.logoAlt': 'Logotip wiRedPanda',
