@@ -8,7 +8,6 @@
 
 #include <QPen>
 
-#include "App/Core/SceneItemHost.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Nodes/QNEConnection.h"
@@ -199,14 +198,11 @@ void QNEPort::drainConnections(bool isInput)
         } else {
             conn->setStartPort(nullptr);
         }
-        // Route through the scene's registry-aware removal (via the narrow SceneItemHost
-        // interface, so Nodes needn't know the concrete Scene) before delete. Qt's
-        // ~QGraphicsItem cascade dispatches to the non-virtual QGraphicsScene::removeItem,
-        // which would skip Scene's override and leave a stale itemById entry pointing at
-        // freed memory — same family as db565817c (WIREDPANDA-HC).
-        if (auto *host = dynamic_cast<SceneItemHost *>(conn->scene())) {
-            host->removeItem(conn);
-        }
+        // Just delete: the connection drops its own id-registry entry via ~ItemWithId
+        // (which forgets it from the SceneItemRegistry), and ~QGraphicsItem removes it from
+        // the scene. No Scene knowledge needed here — this structurally avoids the stale
+        // itemById entry that Qt's non-virtual QGraphicsScene::removeItem cascade left behind
+        // (WIREDPANDA-HC family).
         delete conn;
     }
 }

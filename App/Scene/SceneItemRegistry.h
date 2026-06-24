@@ -9,6 +9,8 @@
 
 #include <QMap>
 
+#include "App/Core/ItemRegistry.h"
+
 class ItemWithId;
 
 /**
@@ -20,9 +22,16 @@ class ItemWithId;
  * scene; Scene forwards its itemById/nextId/register/… API here. Keeping the
  * invariant (one id ↔ one live item) local makes the registry independently testable.
  */
-class SceneItemRegistry
+class SceneItemRegistry : public ItemRegistry
 {
 public:
+    SceneItemRegistry() = default;
+
+    /// On destruction, detaches every still-registered item's back-pointer so items
+    /// destroyed after this registry (the QGraphicsScene base dtor runs after Scene's
+    /// members) never call forget() on a dead registry.
+    ~SceneItemRegistry() override;
+
     /// Returns the item registered under \a id, or nullptr.
     [[nodiscard]] ItemWithId *itemById(int id) const;
 
@@ -41,8 +50,14 @@ public:
     /// Pre-assigns \a newId to \a item before it is added (undo/redo restore path).
     void updateItemId(ItemWithId *item, int newId);
 
-    /// Removes the mapping for \a id without touching the item.
+    /// Removes the mapping for \a id. Under the RAII invariant a map entry always points to
+    /// a live item, so this clears that item's registry back-pointer before removing it
+    /// (preventing a dangling back-pointer if the item is destroyed past this registry).
     void forgetItemId(int id);
+
+    /// \reimp ItemRegistry — drops \a item's entry if it still owns its id (called from
+    /// ~ItemWithId). Identity-checked so a stale/reused id cannot evict the new owner.
+    void forget(ItemWithId *item) override;
 
     /// Registers \a item under its current id.
     void registerItem(ItemWithId *item);

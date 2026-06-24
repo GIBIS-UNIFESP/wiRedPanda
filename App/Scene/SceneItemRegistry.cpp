@@ -7,6 +7,18 @@
 
 #include "App/Core/ItemWithId.h"
 
+SceneItemRegistry::~SceneItemRegistry()
+{
+    // Detach every still-registered item's back-pointer so that items destroyed after this
+    // registry (the QGraphicsScene base dtor runs after Scene's members) don't call forget()
+    // on a dead registry.
+    for (auto *item : m_elementRegistry) {
+        if (item) {
+            item->setRegistry(nullptr);
+        }
+    }
+}
+
 ItemWithId *SceneItemRegistry::itemById(const int id) const
 {
     return m_elementRegistry.value(id, nullptr);
@@ -42,7 +54,23 @@ void SceneItemRegistry::updateItemId(ItemWithId *item, const int newId)
 
 void SceneItemRegistry::forgetItemId(const int id)
 {
+    // Clear the back-pointer of the (always-live, under the RAII invariant) mapped item so it
+    // cannot later forget() into this registry after being detached from the map.
+    if (auto *item = m_elementRegistry.value(id)) {
+        item->setRegistry(nullptr);
+    }
     m_elementRegistry.remove(id);
+}
+
+void SceneItemRegistry::forget(ItemWithId *item)
+{
+    // Called from ~ItemWithId. Identity-checked: only drop the entry if it still maps to THIS
+    // item -- an id can be reused (morph/undo) before a stale item is destroyed. Do not
+    // dereference the item beyond id() (it is mid-destruction).
+    const int id = item->id();
+    if (m_elementRegistry.value(id) == item) {
+        m_elementRegistry.remove(id);
+    }
 }
 
 void SceneItemRegistry::registerItem(ItemWithId *item)
@@ -55,6 +83,8 @@ void SceneItemRegistry::registerItem(ItemWithId *item)
     Q_ASSERT(!m_elementRegistry.contains(item->id())
           || m_elementRegistry.value(item->id()) == item);
     m_elementRegistry[item->id()] = item;
+    // RAII ownership: the item drops this mapping itself on destruction (via ~ItemWithId).
+    item->setRegistry(this);
 }
 
 void SceneItemRegistry::unregisterItem(ItemWithId *item)
@@ -63,6 +93,9 @@ void SceneItemRegistry::unregisterItem(ItemWithId *item)
         return;
     }
     m_elementRegistry.remove(item->id());
+    // Clear the back-pointer so a properly-removed item (which may outlive this registry,
+    // e.g. while held by an undo command) never calls forget() into a dead registry.
+    item->setRegistry(nullptr);
     // HC postcondition: after unregister, the registry must not still resolve this id
     Q_ASSERT(!m_elementRegistry.contains(item->id()));
 }

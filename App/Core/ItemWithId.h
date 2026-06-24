@@ -9,6 +9,8 @@
 
 #include <QtGlobal>
 
+#include "App/Core/ItemRegistry.h"
+
 /**
  * \class ItemWithId
  * \brief Base class providing a unique integer identifier for circuit items.
@@ -25,8 +27,15 @@ public:
     /// Constructs a new ItemWithId with an unassigned ID of -1.
     ItemWithId() = default;
 
-    /// Destructor.
-    virtual ~ItemWithId() = default;
+    /// Destructor. Drops this item's registry mapping (if still registered) so a stale
+    /// id->item entry can never outlive the item, regardless of the destruction path
+    /// (Scene::removeItem or Qt's parent-child cascade).
+    virtual ~ItemWithId()
+    {
+        if (m_registry) {
+            m_registry->forget(this);
+        }
+    }
 
     /// Returns the unique integer identifier of this item, or -1 if unassigned.
     int id() const { return m_id; }
@@ -37,8 +46,13 @@ public:
      */
     void setId(const int id) { m_id = id; }
 
+    /// Sets the registry owning this item's id mapping. Called by the registry on register
+    /// (with itself) and on unregister / its own destruction (with nullptr).
+    void setRegistry(ItemRegistry *registry) { m_registry = registry; }
+
 private:
     Q_DISABLE_COPY(ItemWithId)
 
     int m_id = -1; ///< The unique ID assigned by Scene; -1 means unassigned.
+    ItemRegistry *m_registry = nullptr; ///< Owning registry back-pointer, or nullptr if unregistered.
 };
