@@ -9,12 +9,43 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QSysInfo>
 #include <QVersionNumber>
 
 #include "App/Core/Settings.h"
 #include "App/Versions.h"
 
 static constexpr auto k_apiUrl = "https://api.github.com/repos/gibis-unifesp/wiredpanda/releases/latest";
+
+/// Compile-time name of the platform this binary was built for, matching the
+/// platform token embedded in release asset filenames by deploy.yml.
+static QString currentPlatform()
+{
+#if defined(Q_OS_WIN)
+    return "Windows";
+#elif defined(Q_OS_MACOS)
+    return "macOS";
+#elif defined(Q_OS_LINUX)
+    return "Linux";
+#else
+    return {};
+#endif
+}
+
+bool isMatchingReleaseAsset(const QString &name, const QString &platform, const QString &arch)
+{
+    if (platform == "Linux") {
+        return name.endsWith(".AppImage") && name.contains(arch, Qt::CaseInsensitive);
+    }
+    if (platform == "Windows") {
+        return name.contains("Windows") && name.endsWith(".zip") && name.contains(arch, Qt::CaseInsensitive);
+    }
+    if (platform == "macOS") {
+        // A single universal DMG serves both architectures, so it carries no arch token.
+        return name.contains("macOS") && name.endsWith(".dmg");
+    }
+    return false;
+}
 
 UpdateChecker::UpdateChecker(QObject *parent)
     : QObject(parent)
@@ -63,20 +94,13 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
     }
 
     QUrl downloadUrl;
+    const QString platform = currentPlatform();
+    const QString arch = QSysInfo::buildCpuArchitecture(); // "x86_64" / "arm64"
     const QJsonArray assets = doc.object().value("assets").toArray();
     for (const QJsonValue &assetVal : assets) {
         const QJsonObject asset = assetVal.toObject();
         const QString name = asset.value("name").toString();
-#if defined(Q_OS_WIN)
-        const bool match = name.contains("Windows") && name.endsWith(".zip");
-#elif defined(Q_OS_MACOS)
-        const bool match = name.contains("macOS") && name.endsWith(".dmg");
-#elif defined(Q_OS_LINUX)
-        const bool match = name.endsWith(".AppImage");
-#else
-        const bool match = false;
-#endif
-        if (match) {
+        if (isMatchingReleaseAsset(name, platform, arch)) {
             downloadUrl = QUrl(asset.value("browser_download_url").toString());
             break;
         }

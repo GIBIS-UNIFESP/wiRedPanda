@@ -49,3 +49,12 @@ private:
 
     QNetworkAccessManager m_network;
 };
+
+/// \brief True when a GitHub release asset filename is the binary for the given
+/// platform ("Windows"/"macOS"/"Linux") and CPU arch token (a QSysInfo arch name,
+/// e.g. "x86_64", "arm64").
+///
+/// \details Exposed for testing. Linux (.AppImage) and Windows (.zip) releases
+/// ship a per-architecture asset, so the arch token must also match; macOS ships
+/// a single universal DMG and is matched on platform alone.
+bool isMatchingReleaseAsset(const QString &name, const QString &platform, const QString &arch);
