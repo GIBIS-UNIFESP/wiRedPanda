@@ -27,7 +27,7 @@ void AudioOutputElement::refresh()
         return;
     }
 
-    const Status inputValue = m_inputPorts.constFirst()->status();
+    const Status inputValue = inputs().constFirst()->status();
 
     (inputValue == Status::Active) ? play() : stop();
 }

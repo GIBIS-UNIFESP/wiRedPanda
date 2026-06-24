@@ -20,6 +20,7 @@
 #include "App/Element/ElementAppearance.h"
 #include "App/Element/ElementMetadata.h"
 #include "App/Element/ElementOrientation.h"
+#include "App/Element/ElementPorts.h"
 #include "App/Element/ElementSimState.h"
 #include "App/Element/PropertyDescriptor.h"
 
@@ -523,11 +524,9 @@ protected:
     /// Sets the minimum number of output ports to \a minOutputSize.
     void setMinOutputSize(const int minOutputSize);
 
-    /// All input ports owned by this element (ordered by index).
-    QVector<QNEInputPort *> m_inputPorts;
-
-    /// All output ports owned by this element (ordered by index).
-    QVector<QNEOutputPort *> m_outputPorts;
+    /// Owns the input/output port vectors and their creation/resize lifecycle; this element
+    /// forwards its port-access interface here and keeps the polymorphic geometry layout.
+    ElementPorts m_ports{this};
 
     /// Owns the pixmap/SVG appearance, the appearance list, and selection-highlight colors;
     /// this element forwards its rendering and appearance interface here.  See ElementAppearance.
@@ -553,7 +552,7 @@ protected:
      *
      * \return \c true if all inputs are Active or Inactive (simulation can proceed).
      */
-    bool simUpdateInputs() { return m_sim.updateInputs(false, m_inputPorts); }
+    bool simUpdateInputs() { return m_sim.updateInputs(false, m_ports.inputs()); }
 
     /**
      * \brief Like simUpdateInputs(), but allows Unknown/Error values through.
@@ -562,7 +561,7 @@ protected:
      * Only a truly unconnected input (null predecessor whose port default
      * is Unknown) triggers an early all-outputs-Unknown return.
      */
-    bool simUpdateInputsAllowUnknown() { return m_sim.updateInputs(true, m_inputPorts); }
+    bool simUpdateInputsAllowUnknown() { return m_sim.updateInputs(true, m_ports.inputs()); }
 
     /**
      * \brief Decodes \a count select-line statuses from simInputs() into a binary index.
@@ -576,16 +575,8 @@ protected:
 private:
     // --- Port Management Helpers ---
 
-    /// Appends a new input port with optional \a name to the input port vector.
-    void addInputPort(const QString &name = {});
-
-    /// Appends a new output port with optional \a name to the output port vector.
-    void addOutputPort(const QString &name = {});
-
-    /// Appends a new port with optional \a name; \a isOutput selects the port direction.
-    void addPort(const QString &name, const bool isOutput);
-
-    /// Shared implementation for setInputSize() and setOutputSize().
+    /// Shared implementation for setInputSize() and setOutputSize(): resizes the port store
+    /// (within min/max constraints) then re-lays-out the ports via updatePortsProperties().
     void setPortSize(const int size, const bool isInput);
 
     /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.

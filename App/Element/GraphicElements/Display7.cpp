@@ -142,7 +142,7 @@ void Display7::updatePortsProperties()
     if (auto *port = inputPort(6)) { port->setPos(64, 40); port->setName("DP (" + tr("dot")         + ")"); }
     if (auto *port = inputPort(7)) { port->setPos(64, 56); port->setName("C (" +  tr("lower right") + ")"); }
 
-    for (auto *in : std::as_const(m_inputPorts)) {
+    for (auto *in : inputs()) {
         // Segments are individually driven; leaving a pin unconnected turns that segment off
         in->setRequired(false);
         in->setDefaultStatus(Status::Inactive);
@@ -212,7 +212,7 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
 
         if (aux.size() == order.size()) {
             for (int i = 0; i < aux.size(); ++i) {
-                aux[order[i]] = m_inputPorts.value(i);
+                aux[order[i]] = inputs().value(i);
             }
             setInputs(aux);
             updatePortsProperties();
@@ -228,7 +228,7 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
 
         if (aux.size() == order.size()) {
             for (int i = 0; i < aux.size(); ++i) {
-                aux[order[i]] = m_inputPorts.value(i);
+                aux[order[i]] = inputs().value(i);
             }
             setInputs(aux);
             updatePortsProperties();

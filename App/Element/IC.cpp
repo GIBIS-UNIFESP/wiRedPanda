@@ -174,12 +174,12 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     }
 
     QVector<quint64> savedInputKeys, savedOutputKeys;
-    for (auto *port : std::as_const(m_inputPorts)) {
+    for (auto *port : inputs()) {
         if (auto it = reversePortMap.constFind(port); it != reversePortMap.constEnd()) {
             savedInputKeys.append(it.value());
         }
     }
-    for (auto *port : std::as_const(m_outputPorts)) {
+    for (auto *port : outputs()) {
         if (auto it = reversePortMap.constFind(port); it != reversePortMap.constEnd()) {
             savedOutputKeys.append(it.value());
         }
@@ -238,15 +238,15 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     // Evict those stale entries so a later QNEConnection::load() cannot
     // dereference the freed pointer.  Surfaced by libFuzzer.
     for (int i = 0; i < savedInputKeys.size(); ++i) {
-        if (i < m_inputPorts.size()) {
-            context.portMap[savedInputKeys[i]] = m_inputPorts[i];
+        if (i < inputSize()) {
+            context.portMap[savedInputKeys[i]] = inputs()[i];
         } else {
             context.portMap.remove(savedInputKeys[i]);
         }
     }
     for (int i = 0; i < savedOutputKeys.size(); ++i) {
-        if (i < m_outputPorts.size()) {
-            context.portMap[savedOutputKeys[i]] = m_outputPorts[i];
+        if (i < outputSize()) {
+            context.portMap[savedOutputKeys[i]] = outputs()[i];
         } else {
             context.portMap.remove(savedOutputKeys[i]);
         }

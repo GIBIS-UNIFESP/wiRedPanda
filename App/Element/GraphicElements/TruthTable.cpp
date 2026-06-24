@@ -66,15 +66,15 @@ void TruthTable::updatePortsProperties()
     // step = 8px (half the 16px grid), giving ports a 16px pitch (every other grid line)
     const int step = Constants::gridSize / 2;
 
-    if (!m_inputPorts.isEmpty()) {
+    if (!inputs().isEmpty()) {
         // Center the input port column vertically within the 64px-minimum body height.
         // Formula: start at body centre (32) minus half the total column height, then
         // add one step back so the first port lands at the right offset.
         // Total height of n ports at 2*step pitch = n * 2*step; half = n*step.
         // e.g. 4 inputs → y_start = 32 - 4*8 + 8 = 8; ports at y=8,24,40,56
-        int y = 32 - (static_cast<int>(m_inputPorts.size()) * step) + step;
+        int y = 32 - (static_cast<int>(inputs().size()) * step) + step;
 
-        for (auto *port : std::as_const(m_inputPorts)) {
+        for (auto *port : inputs()) {
 
             if (!rotatesGraphic()) {
                 port->setRotation(0);
@@ -92,11 +92,11 @@ void TruthTable::updatePortsProperties()
 
     index = 0;
 
-    if (!m_outputPorts.isEmpty()) {
+    if (!outputs().isEmpty()) {
         // Same centering formula as inputs; output column is on the right edge (x=64)
-        int y = 32 - (static_cast<int>(m_outputPorts.size()) * step) + step;
+        int y = 32 - (static_cast<int>(outputs().size()) * step) + step;
 
-        for (auto *port : std::as_const(m_outputPorts)) {
+        for (auto *port : outputs()) {
 
             if (!rotatesGraphic()) {
                 port->setRotation(0);

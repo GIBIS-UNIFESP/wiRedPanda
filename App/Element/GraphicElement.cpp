@@ -136,23 +136,17 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
 
 const QVector<QNEOutputPort *> &GraphicElement::outputs() const
 {
-    return m_outputPorts;
+    return m_ports.outputs();
 }
 
 QNEInputPort *GraphicElement::inputPort(const int index)
 {
-    if (index < 0 || index >= m_inputPorts.size()) {
-        return nullptr;
-    }
-    return m_inputPorts.at(index);
+    return m_ports.inputPort(index);
 }
 
 QNEOutputPort *GraphicElement::outputPort(const int index)
 {
-    if (index < 0 || index >= m_outputPorts.size()) {
-        return nullptr;
-    }
-    return m_outputPorts.at(index);
+    return m_ports.outputPort(index);
 }
 
 WirelessMode GraphicElement::wirelessMode() const
@@ -167,21 +161,17 @@ bool GraphicElement::hasWirelessMode() const
 
 const QVector<QNEInputPort *> &GraphicElement::inputs() const
 {
-    return m_inputPorts;
+    return m_ports.inputs();
 }
 
 QVector<QNEPort *> GraphicElement::allPorts() const
 {
-    QVector<QNEPort *> result;
-    result.reserve(m_inputPorts.size() + m_outputPorts.size());
-    for (auto *p : m_inputPorts)  { result.append(p); }
-    for (auto *p : m_outputPorts) { result.append(p); }
-    return result;
+    return m_ports.allPorts();
 }
 
 void GraphicElement::setInputs(const QVector<QNEInputPort *> &inputs)
 {
-    m_inputPorts = inputs;
+    m_ports.setInputs(inputs);
 }
 
 QPointF GraphicElement::pixmapCenter() const
@@ -214,39 +204,6 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     Q_UNUSED(option)
 
     m_appearance.render(painter, boundingRect(), isSelected());
-}
-
-void GraphicElement::addPort(const QString &name, const bool isOutput)
-{
-    // No max-size guard here — setInputSize()/setOutputSize() already enforce
-    // min/max constraints before calling this method.  The serializer also
-    // calls addPort() and needs to create whatever ports the file contains.
-    qCDebug(four) << "New port.";
-    QNEPort *port = nullptr;
-
-    if (isOutput) {
-        m_outputPorts.push_back(new QNEOutputPort(this));
-        port = m_outputPorts.constLast();
-        port->setIndex(outputSize() - 1);
-    } else {
-        m_inputPorts.push_back(new QNEInputPort(this));
-        port = m_inputPorts.constLast();
-        port->setIndex(inputSize() - 1);
-    }
-
-    port->setGraphicElement(this);
-    port->setName(name);
-    port->show();
-}
-
-void GraphicElement::addInputPort(const QString &name)
-{
-    addPort(name, false);
-}
-
-void GraphicElement::addOutputPort(const QString &name)
-{
-    addPort(name, true);
 }
 
 void GraphicElement::setPortName(const QString &name)
@@ -303,12 +260,12 @@ void GraphicElement::updatePortsProperties()
     // on sub-grid snap points that wires can reach when snapped to the same grid.
     const int step = Constants::gridSize / 2;
 
-    if (!m_inputPorts.isEmpty()) {
+    if (!m_ports.inputs().isEmpty()) {
         // Centre the port column vertically around y=32 (the mid-point of a 64 px body).
         // The first port starts at 32 - (count-1)*step so all ports are symmetrically distributed.
-        int y = 32 - (static_cast<int>(m_inputPorts.size()) * step) + step;
+        int y = 32 - (static_cast<int>(m_ports.inputs().size()) * step) + step;
 
-        for (auto *port : std::as_const(m_inputPorts)) {
+        for (auto *port : m_ports.inputs()) {
             qCDebug(five) << "Setting input at " << 0 << ", " << y;
 
             // Inputs are pinned to the left edge (x=0) of the 64 px body
@@ -326,10 +283,10 @@ void GraphicElement::updatePortsProperties()
         }
     }
 
-    if (!m_outputPorts.isEmpty()) {
-        int y = 32 - (static_cast<int>(m_outputPorts.size()) * step) + step;
+    if (!m_ports.outputs().isEmpty()) {
+        int y = 32 - (static_cast<int>(m_ports.outputs().size()) * step) + step;
 
-        for (auto *port : std::as_const(m_outputPorts)) {
+        for (auto *port : m_ports.outputs()) {
             qCDebug(five) << "Setting output at " << 64 << ", " << y;
 
             // Outputs are pinned to the right edge (x=64) of the 64 px body
@@ -488,11 +445,11 @@ void GraphicElement::updateTheme()
     m_label->setBrush(theme.m_graphicElementLabelColor);
     m_appearance.applyTheme(theme);
 
-    for (auto *input : std::as_const(m_inputPorts)) {
+    for (auto *input : m_ports.inputs()) {
         input->updateTheme();
     }
 
-    for (auto *output : std::as_const(m_outputPorts)) {
+    for (auto *output : m_ports.outputs()) {
         output->updateTheme();
     }
 
@@ -503,12 +460,12 @@ bool GraphicElement::isValid()
 {
     qCDebug(four) << "Checking if the element has the required signals to compute its value.";
     // An element is valid only when every input port is satisfied (connected or optional)
-    const bool valid = std::all_of(m_inputPorts.cbegin(), m_inputPorts.cend(),
+    const bool valid = std::all_of(m_ports.inputs().cbegin(), m_ports.inputs().cend(),
                                    [](auto *input) { return input->isValid(); });
 
     if (!valid) {
         // Propagate invalid status downstream so the visual chain shows where validity breaks
-        for (auto *output : std::as_const(m_outputPorts)) {
+        for (auto *output : m_ports.outputs()) {
             for (auto *conn : output->connections()) {
                 conn->setStatus(Status::Error);
 
@@ -635,7 +592,7 @@ bool GraphicElement::rotatesGraphic() const
 
 int GraphicElement::inputSize() const
 {
-    return static_cast<int>(m_inputPorts.size());
+    return m_ports.inputSize();
 }
 
 void GraphicElement::setPortSize(const int size, const bool isInput)
@@ -648,19 +605,9 @@ void GraphicElement::setPortSize(const int size, const bool isInput)
     }
 
     if (isInput) {
-        if (size > inputSize()) {
-            while (size > inputSize()) { addInputPort(); }
-        } else {
-            qDeleteAll(m_inputPorts.begin() + size, m_inputPorts.end());
-            m_inputPorts.resize(size);
-        }
+        m_ports.resizeInputs(size);
     } else {
-        if (size > outputSize()) {
-            while (size > outputSize()) { addOutputPort(); }
-        } else {
-            qDeleteAll(m_outputPorts.begin() + size, m_outputPorts.end());
-            m_outputPorts.resize(size);
-        }
+        m_ports.resizeOutputs(size);
     }
 
     updatePortsProperties();
@@ -673,7 +620,7 @@ void GraphicElement::setInputSize(const int size)
 
 int GraphicElement::outputSize() const
 {
-    return static_cast<int>(m_outputPorts.size());
+    return m_ports.outputSize();
 }
 
 void GraphicElement::setOutputSize(const int size)
@@ -708,7 +655,7 @@ void GraphicElement::updateLogic()
 
 void GraphicElement::resetSimState()
 {
-    m_sim.reset(m_outputPorts);
+    m_sim.reset(m_ports.outputs());
 }
 
 void GraphicElement::connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort)
@@ -718,7 +665,7 @@ void GraphicElement::connectPredecessor(const int inputIndex, GraphicElement *so
 
 void GraphicElement::initSimulationVectors(const int inputCount, const int outputCount)
 {
-    m_sim.initVectors(inputCount, outputCount, m_outputPorts);
+    m_sim.initVectors(inputCount, outputCount, m_ports.outputs());
 }
 
 int GraphicElement::minOutputSize() const
