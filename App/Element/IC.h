@@ -35,6 +35,12 @@ class IC : public GraphicElement
     friend class TestIC;
     friend class TestDanglingPointer;
 
+    // Persistence-adjacent collaborators reach this IC's internal sub-circuit / port state
+    // through friendship (loading, rendering, internal simulation each live in their own class).
+    friend class ICLoader;
+    friend class ICRenderer;
+    friend class ICSimulation;
+
 public:
     /// Constructs an IC element without loading a file.
     explicit IC(QGraphicsItem *parent = nullptr);
@@ -139,28 +145,12 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
-    // --- Utility methods ---
+    // --- Internal state ---
 
-    void loadFileDirectly(const QFileInfo &fileInfo);
-    void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
-                     const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);
+    /// Clears every internal vector (elements, connections, ports, sorted/boundary/feedback
+    /// derived state) atomically and resets the external port counts. Called by ICLoader before
+    /// applying a freshly-parsed sub-circuit. Owned by IC because it manages IC's own state.
     void resetInternalState();
-    void deserializeAndLoad(const QByteArray &bytes, const QString &contextDir);
-
-    // --- Loading helpers ---
-
-    void processLoadedItems(const QList<QGraphicsItem *> &items);
-    void loadBoundaryElement(GraphicElement *elm, bool isInput);
-    void loadBoundaryPorts(bool isInput, const QVector<QString> &labels);
-
-    // --- Visual helpers ---
-
-    void generatePixmap();
-    void generatePreviewPixmap(const QList<QGraphicsItem *> &items);
-
-    /// Draws the IC body (DIP rect, mascot logo, shadow, pin-1 notch) straight onto \a painter as
-    /// vectors, so it stays crisp at any zoom instead of blitting a fixed-resolution pixmap.
-    void drawBody(QPainter *painter);
 
     // --- Members ---
 

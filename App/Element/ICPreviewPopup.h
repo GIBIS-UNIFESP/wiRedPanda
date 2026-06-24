@@ -58,7 +58,9 @@ public:
     void updatePendingPos(const QPoint &screenPos);
 
     /// Returns the IC currently pending display (may be null).
-    IC *pendingIC() const { return m_pendingIC; }
+    /// Defined out-of-line: the QPointer<IC>→IC* conversion needs a complete IC,
+    /// which this header only forward-declares.
+    IC *pendingIC() const;
 
 protected:
     /// \reimp Cancels a scheduled hide when the cursor enters the popup itself.

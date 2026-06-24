@@ -51,6 +51,11 @@ ICPreviewPopup::ICPreviewPopup(QWidget *parent)
     connect(&m_showTimer, &QTimer::timeout, this, &ICPreviewPopup::executeShow);
 }
 
+IC *ICPreviewPopup::pendingIC() const
+{
+    return m_pendingIC;
+}
+
 void ICPreviewPopup::showForIC(IC *ic, const QPoint &screenPos)
 {
     cancelHide();
