@@ -26,8 +26,8 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
 #include "App/IO/SerializationContext.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 /// Shared label font — constructed once to avoid repeated QFont creation and fontconfig lookups.
 static const QFont &labelFont()
@@ -134,17 +134,17 @@ void GraphicElement::setPixmap(const QString &pixmapPath)
     m_appearance.setPixmap(pixmapPath);
 }
 
-const QVector<QNEOutputPort *> &GraphicElement::outputs() const
+const QVector<OutputPort *> &GraphicElement::outputs() const
 {
     return m_ports.outputs();
 }
 
-QNEInputPort *GraphicElement::inputPort(const int index)
+InputPort *GraphicElement::inputPort(const int index)
 {
     return m_ports.inputPort(index);
 }
 
-QNEOutputPort *GraphicElement::outputPort(const int index)
+OutputPort *GraphicElement::outputPort(const int index)
 {
     return m_ports.outputPort(index);
 }
@@ -159,17 +159,17 @@ bool GraphicElement::hasWirelessMode() const
     return false;
 }
 
-const QVector<QNEInputPort *> &GraphicElement::inputs() const
+const QVector<InputPort *> &GraphicElement::inputs() const
 {
     return m_ports.inputs();
 }
 
-QVector<QNEPort *> GraphicElement::allPorts() const
+QVector<Port *> GraphicElement::allPorts() const
 {
     return m_ports.allPorts();
 }
 
-void GraphicElement::setInputs(const QVector<QNEInputPort *> &inputs)
+void GraphicElement::setInputs(const QVector<InputPort *> &inputs)
 {
     m_ports.setInputs(inputs);
 }
@@ -190,7 +190,7 @@ QRectF GraphicElement::portsBoundingRect() const
     const auto children = childItems();
 
     for (auto *child : children) {
-        if (auto *port = qgraphicsitem_cast<QNEPort *>(child)) {
+        if (auto *port = qgraphicsitem_cast<Port *>(child)) {
             rectChildren = rectChildren.united(mapRectFromItem(port, port->boundingRect()));
         }
     }

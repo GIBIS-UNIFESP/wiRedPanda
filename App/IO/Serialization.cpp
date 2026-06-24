@@ -23,7 +23,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 
 namespace {
 
@@ -418,7 +418,7 @@ void Serialization::readDolphinHeader(QDataStream &stream)
 void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream)
 {
     // Port serial IDs are computed as (elementId << 16) | portIndex by both
-    // GraphicElement::save() and QNEConnection::save(). Elements with id=-1
+    // GraphicElement::save() and Connection::save(). Elements with id=-1
     // (the unassigned sentinel) would all produce the same keys, causing portMap
     // collisions on the next load and destroying connection topology.
     //
@@ -473,8 +473,8 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     // Serialize all connections (wires)
     // Type tag written here at serialization layer for symmetry with deserialize()
     for (auto *item : items) {
-        if (auto *connection = qgraphicsitem_cast<QNEConnection *>(item)) {
-            stream << static_cast<int>(QNEConnection::Type);
+        if (auto *connection = qgraphicsitem_cast<Connection *>(item)) {
+            stream << static_cast<int>(Connection::Type);
             connection->save(stream);
         }
     }
@@ -483,11 +483,11 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
 QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, SerializationContext &context)
 {
     // portMap maps the raw pointer value (quint64) that was stored at save time to
-    // the newly allocated QNEPort object at load time.  Raw pointer values are used
+    // the newly allocated Port object at load time.  Raw pointer values are used
     // as keys because they were the only unique, stable port identity available when
     // the binary format was designed; they are meaningless as pointers after reload
     // but work perfectly as opaque 64-bit tokens for this cross-reference purpose.
-    // When portMap is empty (top-level file load), QNEConnection::load() falls back
+    // When portMap is empty (top-level file load), Connection::load() falls back
     // to directly casting the stored integer back to a pointer — only safe during
     // the same process session (e.g., clipboard paste with in-process copy/paste).
     QList<QGraphicsItem *> itemList;
@@ -496,7 +496,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
     // dismissing the guard at the end of the happy path hands the items to them.
     //
     // Order matters.  Connections must be deleted before elements: an element's
-    // QNEInputPort destructor calls QNEPort::drainConnections(true), which
+    // InputPort destructor calls Port::drainConnections(true), which
     // delete()s every connection still attached to the port.  If those connections
     // are also in itemList, a naive qDeleteAll would walk onto a freed pointer
     // and double-free.  A connection's destructor only detaches itself from its
@@ -505,7 +505,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
     // harness against malformed .panda input that triggers a mid-loop throw.
     auto cleanupGuard = qScopeGuard([&itemList]() {
         for (qsizetype i = 0; i < itemList.size(); ++i) {
-            if (itemList[i] && itemList[i]->type() == QNEConnection::Type) {
+            if (itemList[i] && itemList[i]->type() == Connection::Type) {
                 delete itemList[i];
                 itemList[i] = nullptr;
             }
@@ -549,9 +549,9 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
             break;
         }
 
-        case QNEConnection::Type: {
+        case Connection::Type: {
             qCDebug(three) << "Building connection.";
-            auto *conn = new QNEConnection();
+            auto *conn = new Connection();
             // Same as the element case: append first so a throw in conn->load() can't
             // strand the freshly allocated connection.
             itemList.append(conn);
@@ -673,10 +673,10 @@ void Serialization::serializeBlobRegistry(const QMap<QString, QByteArray> &blobs
 
 QString Serialization::typeName(const int type) {
     // These offsets must stay in sync with the ::Type enum constants defined in
-    // QNEPort, QNEConnection, and GraphicElement (all use QGraphicsItem::UserType + N)
+    // Port, Connection, and GraphicElement (all use QGraphicsItem::UserType + N)
     static const QHash<int, QString> typeMap = {
-        { QGraphicsItem::UserType + 1, "QNEPort" },
-        { QGraphicsItem::UserType + 2, "QNEConnection" },
+        { QGraphicsItem::UserType + 1, "Port" },
+        { QGraphicsItem::UserType + 2, "Connection" },
         { QGraphicsItem::UserType + 3, "GraphicElement" },
     };
 

@@ -11,7 +11,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================

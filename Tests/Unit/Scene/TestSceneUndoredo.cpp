@@ -16,7 +16,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -178,7 +178,7 @@ void TestSceneUndoredo::testDeleteWithConnectionsRestored()
     scene.addItem(andGate);
     scene.addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(andGate->outputPort(0));
     conn->setEndPort(led->inputPort(0));
     scene.addItem(conn);
@@ -497,7 +497,7 @@ void TestSceneUndoredo::testMorphPreservesConnections()
     scene.addItem(andGate);
     scene.addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(andGate->outputPort(0));
     conn->setEndPort(led->inputPort(0));
     scene.addItem(conn);
@@ -559,7 +559,7 @@ void TestSceneUndoredo::testDecreaseInputSizeRemovesConnection()
     QCOMPARE(andGate->inputSize(), 3);
 
     // Connect switch output to AND's third input (index 2)
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort(0));
     conn->setEndPort(andGate->inputPort(2));
     scene.addItem(conn);
@@ -600,12 +600,12 @@ void TestSceneUndoredo::testDecreaseInputSizeMultipleConnections()
     andGate->setInputSize(4);
     QCOMPARE(andGate->inputSize(), 4);
 
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     conn1->setStartPort(sw1->outputPort(0));
     conn1->setEndPort(andGate->inputPort(2));
     scene.addItem(conn1);
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     conn2->setStartPort(sw2->outputPort(0));
     conn2->setEndPort(andGate->inputPort(3));
     scene.addItem(conn2);
@@ -646,7 +646,7 @@ void TestSceneUndoredo::testDecreaseInputSizeRestoresConnectionWithOriginalId()
     const int andId = andGate->id();
 
     andGate->setInputSize(3);
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort(0));
     conn->setEndPort(andGate->inputPort(2));
     scene.addItem(conn);
@@ -656,7 +656,7 @@ void TestSceneUndoredo::testDecreaseInputSizeRestoresConnectionWithOriginalId()
     auto countSceneConnections = [&]() {
         int n = 0;
         for (auto *item : scene.items()) {
-            if (qgraphicsitem_cast<QNEConnection *>(item)) { ++n; }
+            if (qgraphicsitem_cast<Connection *>(item)) { ++n; }
         }
         return n;
     };
@@ -669,7 +669,7 @@ void TestSceneUndoredo::testDecreaseInputSizeRestoresConnectionWithOriginalId()
 
     // Undo: connection must come back with its original ID
     scene.undoStack()->undo();
-    auto *restoredConn = dynamic_cast<QNEConnection *>(scene.itemById(originalConnId));
+    auto *restoredConn = dynamic_cast<Connection *>(scene.itemById(originalConnId));
     QVERIFY2(restoredConn != nullptr, "Connection must be findable by its original ID after undo");
     auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(andId));
     QVERIFY(!elm->inputPort(2)->connections().isEmpty());
@@ -735,7 +735,7 @@ void TestSceneUndoredo::testChangeOutputSizeMultipleElements()
     demux2->setOutputSize(4);
 
     // Connect only demux1's port 2 to LED
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(demux1->outputPort(2));
     conn->setEndPort(led->inputPort(0));
     scene.addItem(conn);
@@ -775,7 +775,7 @@ void TestSceneUndoredo::testDecreaseOutputSizeRestoresConnectionWithOriginalId()
     const int demuxId = demux->id();
 
     demux->setOutputSize(4);
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(demux->outputPort(2));
     conn->setEndPort(led->inputPort(0));
     scene.addItem(conn);
@@ -785,7 +785,7 @@ void TestSceneUndoredo::testDecreaseOutputSizeRestoresConnectionWithOriginalId()
     auto countSceneConnections = [&]() {
         int n = 0;
         for (auto *item : scene.items()) {
-            if (qgraphicsitem_cast<QNEConnection *>(item)) { ++n; }
+            if (qgraphicsitem_cast<Connection *>(item)) { ++n; }
         }
         return n;
     };
@@ -798,7 +798,7 @@ void TestSceneUndoredo::testDecreaseOutputSizeRestoresConnectionWithOriginalId()
 
     // Undo: connection must come back with its original ID
     scene.undoStack()->undo();
-    auto *restoredConn = dynamic_cast<QNEConnection *>(scene.itemById(originalConnId));
+    auto *restoredConn = dynamic_cast<Connection *>(scene.itemById(originalConnId));
     QVERIFY2(restoredConn != nullptr, "Connection must be findable by its original ID after undo");
     auto *elm = dynamic_cast<GraphicElement *>(scene.itemById(demuxId));
     QVERIFY(!elm->outputPort(2)->connections().isEmpty());
@@ -830,7 +830,7 @@ void TestSceneUndoredo::testSplitConnectionCreatesNode()
     scene.addItem(andGate);
     scene.addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(andGate->outputPort(0));
     conn->setEndPort(led->inputPort(0));
     scene.addItem(conn);
@@ -1010,13 +1010,13 @@ void TestSceneUndoredo::testWirelessModeUndoRestoresConnection()
     QVERIFY(node != nullptr);
 
     // Wire: sw → node → led
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     conn1->setStartPort(sw->outputPort(0));
     conn1->setEndPort(node->inputPort());
     scene.addItem(conn1);
     const int conn1Id = conn1->id();
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     conn2->setStartPort(node->outputPort());
     conn2->setEndPort(led->inputPort(0));
     scene.addItem(conn2);
@@ -1054,7 +1054,7 @@ void TestSceneUndoredo::testWirelessModeUndoRestoresConnection()
     QCOMPARE(n->wirelessMode(), WirelessMode::None);
     QVERIFY(n->inputPort()->isRequired());
 
-    auto *restoredConn2 = dynamic_cast<QNEConnection *>(scene.itemById(conn2Id));
+    auto *restoredConn2 = dynamic_cast<Connection *>(scene.itemById(conn2Id));
     QVERIFY2(restoredConn2 != nullptr, "Output connection must be restored on undo");
     QCOMPARE(restoredConn2->startPort()->graphicElement()->id(), nodeId);
     QCOMPARE(restoredConn2->endPort()->graphicElement(), led);
@@ -1090,13 +1090,13 @@ void TestSceneUndoredo::testWirelessRxModeUndoRestoresConnection()
     QVERIFY(node != nullptr);
 
     // Wire: sw → node → led
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     conn1->setStartPort(sw->outputPort(0));
     conn1->setEndPort(node->inputPort());
     scene.addItem(conn1);
     const int conn1Id = conn1->id();
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     conn2->setStartPort(node->outputPort());
     conn2->setEndPort(led->inputPort(0));
     scene.addItem(conn2);
@@ -1126,7 +1126,7 @@ void TestSceneUndoredo::testWirelessRxModeUndoRestoresConnection()
 
     // Undo: conn1 restored
     scene.undoStack()->undo();
-    auto *restoredConn1 = dynamic_cast<QNEConnection *>(scene.itemById(conn1Id));
+    auto *restoredConn1 = dynamic_cast<Connection *>(scene.itemById(conn1Id));
     QVERIFY2(restoredConn1 != nullptr, "Input connection must be restored on undo");
     QCOMPARE(restoredConn1->endPort()->graphicElement()->id(), nodeId);
     QCOMPARE(dynamic_cast<Node *>(scene.itemById(nodeId))->wirelessMode(), WirelessMode::None);
@@ -1532,7 +1532,7 @@ void TestSceneUndoredo::testMorphMultipleElements()
 void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
 {
     // Regression: morphing Display14 (15 inputs) to Display7 (8 inputs) must delete
-    // any QNEConnection whose target port no longer exists on the new element, and
+    // any Connection whose target port no longer exists on the new element, and
     // undo must restore that connection on the recreated Display14.
     Scene scene;
 
@@ -1545,7 +1545,7 @@ void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
 
     // Display14 has 15 inputs (ports 0-14); connect to the last one
     QCOMPARE(disp14->inputSize(), 15);
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort(0));
     conn->setEndPort(disp14->inputPort(14));
     scene.addItem(conn);
@@ -1555,7 +1555,7 @@ void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
     auto countSceneConnections = [&]() {
         int n = 0;
         for (auto *item : scene.items()) {
-            if (qgraphicsitem_cast<QNEConnection *>(item)) { ++n; }
+            if (qgraphicsitem_cast<Connection *>(item)) { ++n; }
         }
         return n;
     };
@@ -1590,7 +1590,7 @@ void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
     QCOMPARE(redisp7->elementType(), ElementType::Display7);
     QCOMPARE(countSceneConnections(), 0);
     for (auto *item : scene.items()) {
-        if (auto *c = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *c = qgraphicsitem_cast<Connection *>(item)) {
             QVERIFY(c->startPort() != nullptr);
             QVERIFY(c->endPort()   != nullptr);
         }
@@ -1619,17 +1619,17 @@ void TestSceneUndoredo::testMorphToFewerPortsAllDroppedConnectionsRemoved()
     scene.addItem(sw7);
     scene.addItem(sw14);
 
-    auto *c0 = new QNEConnection();
+    auto *c0 = new Connection();
     c0->setStartPort(sw0->outputPort(0));
     c0->setEndPort(disp14->inputPort(0));
     scene.addItem(c0);
 
-    auto *c7 = new QNEConnection();
+    auto *c7 = new Connection();
     c7->setStartPort(sw7->outputPort(0));
     c7->setEndPort(disp14->inputPort(7));
     scene.addItem(c7);
 
-    auto *c14 = new QNEConnection();
+    auto *c14 = new Connection();
     c14->setStartPort(sw14->outputPort(0));
     c14->setEndPort(disp14->inputPort(14));
     scene.addItem(c14);
@@ -1637,7 +1637,7 @@ void TestSceneUndoredo::testMorphToFewerPortsAllDroppedConnectionsRemoved()
     auto countSceneConnections = [&]() {
         int n = 0;
         for (auto *item : scene.items()) {
-            if (qgraphicsitem_cast<QNEConnection *>(item)) {
+            if (qgraphicsitem_cast<Connection *>(item)) {
                 ++n;
             }
         }
@@ -1663,7 +1663,7 @@ void TestSceneUndoredo::testMorphToFewerPortsAllDroppedConnectionsRemoved()
     QVERIFY(!disp7->inputPort(7)->connections().isEmpty());
     QVERIFY(sw14->outputPort(0)->connections().isEmpty());
     for (auto *item : scene.items()) {
-        if (auto *c = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *c = qgraphicsitem_cast<Connection *>(item)) {
             QVERIFY(c->startPort() != nullptr);
             QVERIFY(c->endPort()   != nullptr);
         }
@@ -1698,7 +1698,7 @@ void TestSceneUndoredo::testMorphUndoRestoresConnectionWithOriginalId()
     scene.addItem(sw);
     const int dispId = disp14->id();
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort(0));
     conn->setEndPort(disp14->inputPort(14));
     scene.addItem(conn);
@@ -1716,7 +1716,7 @@ void TestSceneUndoredo::testMorphUndoRestoresConnectionWithOriginalId()
     QVERIFY(restored14 != nullptr);
     QCOMPARE(restored14->elementType(), ElementType::Display14);
 
-    auto *restoredConn = dynamic_cast<QNEConnection *>(scene.itemById(originalConnId));
+    auto *restoredConn = dynamic_cast<Connection *>(scene.itemById(originalConnId));
     QVERIFY2(restoredConn != nullptr, "Connection must be findable by its original ID after undo");
     QCOMPARE(restoredConn->endPort()->graphicElement()->id(), dispId);
     QCOMPARE(restoredConn->endPort()->index(), 14);
@@ -1889,12 +1889,12 @@ void TestSceneUndoredo::testDeleteUndoConnectionsReattachedCorrectly()
     scene.addItem(andGate); // ID=2
     scene.addItem(led);    // ID=3
 
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     conn1->setStartPort(swIn->outputPort(0));
     conn1->setEndPort(andGate->inputPort(0));
     scene.addItem(conn1);
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     conn2->setStartPort(andGate->outputPort(0));
     conn2->setEndPort(led->inputPort(0));
     scene.addItem(conn2);
@@ -1960,17 +1960,17 @@ void TestSceneUndoredo::testDeleteUndoRedoConnectionCountStable()
     scene.addItem(andGate);
     scene.addItem(led);
 
-    auto *c1 = new QNEConnection();
+    auto *c1 = new Connection();
     c1->setStartPort(swA->outputPort(0));
     c1->setEndPort(andGate->inputPort(0));
     scene.addItem(c1);
 
-    auto *c2 = new QNEConnection();
+    auto *c2 = new Connection();
     c2->setStartPort(swB->outputPort(0));
     c2->setEndPort(andGate->inputPort(1));
     scene.addItem(c2);
 
-    auto *c3 = new QNEConnection();
+    auto *c3 = new Connection();
     c3->setStartPort(andGate->outputPort(0));
     c3->setEndPort(led->inputPort(0));
     scene.addItem(c3);
@@ -1978,7 +1978,7 @@ void TestSceneUndoredo::testDeleteUndoRedoConnectionCountStable()
     // Helper: count live connections by scanning all element ports
     auto countConnections = [&]() {
         int n = 0;
-        QSet<QNEConnection *> seen;
+        QSet<Connection *> seen;
         for (auto *elm : scene.elements()) {
             for (auto *port : elm->outputs()) {
                 for (auto *conn : port->connections()) {
@@ -2041,12 +2041,12 @@ void TestSceneUndoredo::testDeleteChainMiddleUndoRestoresTopology()
     const int notId = notGate->id();
     const int ledId = led->id();
 
-    auto *cIn = new QNEConnection();
+    auto *cIn = new Connection();
     cIn->setStartPort(sw->outputPort(0));
     cIn->setEndPort(notGate->inputPort(0));
     scene.addItem(cIn);
 
-    auto *cOut = new QNEConnection();
+    auto *cOut = new Connection();
     cOut->setStartPort(notGate->outputPort(0));
     cOut->setEndPort(led->inputPort(0));
     scene.addItem(cOut);

@@ -10,7 +10,7 @@
 #include <QtGlobal>
 
 class GraphicElement;
-class QNEPort;
+class Port;
 
 /**
  * \class ElementOrientation
@@ -55,7 +55,7 @@ public:
     /// Orients a single \a port for the current rotation + flip state. Applies Rotate(centre,
     /// angle) then Flip about the pixmap centre, so the port moves to the mirrored/rotated side
     /// while the element graphic stays upright. Recomputed from the flags each call (involutive).
-    void orientPort(QNEPort *port);
+    void orientPort(Port *port);
 
     // --- Deserialization (raw state, applied in one pass by applyLoadedOrientation) ---
 

@@ -18,9 +18,9 @@
 class Clock;
 class GraphicElement;
 class GraphicElementInput;
-class QNEConnection;
-class QNEInputPort;
-class QNEOutputPort;
+class Connection;
+class InputPort;
+class OutputPort;
 class SimulationHost;
 
 /**
@@ -139,8 +139,8 @@ private:
 
     // --- Helpers ---
 
-    static void updatePort(QNEInputPort *port);
-    static void updatePort(QNEOutputPort *port);
+    static void updatePort(InputPort *port);
+    static void updatePort(OutputPort *port);
     void updateWithIterativeSettling();
     void sortSimElements(const QVector<GraphicElement *> &elements);
 
@@ -150,7 +150,7 @@ private:
     QVector<Clock *> m_clocks;
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
-    QVector<QNEConnection *> m_connections;
+    QVector<Connection *> m_connections;
 
     // --- Members: Host & state ---
 

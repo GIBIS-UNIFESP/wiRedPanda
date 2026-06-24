@@ -7,7 +7,7 @@
 #include <QTemporaryFile>
 
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -46,7 +46,7 @@ void TestFiles::testFiles()
 
     // Verify connections have valid structure
     for (auto *item : items) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             QVERIFY2(conn->startPort() != nullptr,
                      qPrintable(QString("Connection in %1 missing start port").arg(fileInfo.baseName())));
             QVERIFY2(conn->endPort() != nullptr,
@@ -135,7 +135,7 @@ void TestFiles::testBackwardCompatibility()
         const auto items = workspace.scene()->items();
         bool hasInvalidConnections = false;
         for (auto *item : items) {
-            if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+            if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
                 if (!conn->startPort() || !conn->endPort()) {
                     hasInvalidConnections = true;
                     break;

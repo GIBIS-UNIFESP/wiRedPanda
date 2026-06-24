@@ -17,8 +17,8 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -457,15 +457,15 @@ void TestCommands::testConnectionPreservation()
     scene->receiveCommand(new AddItemsCommand(elements, scene));
 
     // Create connections
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     conn1->setStartPort(sw1->outputPort());
     conn1->setEndPort(andGate->inputPort(0));
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     conn2->setStartPort(sw2->outputPort());
     conn2->setEndPort(andGate->inputPort(1));
 
-    auto *conn3 = new QNEConnection();
+    auto *conn3 = new Connection();
     conn3->setStartPort(andGate->outputPort());
     conn3->setEndPort(led->inputPort());
 
@@ -686,7 +686,7 @@ void TestCommands::testSplitCommandRedoThrowsBeforeAllocation()
     led->setPos(200, 0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw, led}, scene));
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
@@ -739,7 +739,7 @@ void TestCommands::testSplitCommand()
     scene->receiveCommand(new AddItemsCommand(elements, scene));
 
     // Create connection between switch and LED
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
 

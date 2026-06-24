@@ -4,7 +4,7 @@
 #include "App/Scene/VisibilityManager.h"
 
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
 
 VisibilityManager::VisibilityManager(Scene *scene)
@@ -40,7 +40,7 @@ void VisibilityManager::showWires(const bool visible)
     const auto items = m_scene->items();
 
     for (auto *item : items) {
-        if (item->type() == QNEConnection::Type) {
+        if (item->type() == Connection::Type) {
             item->setVisible(visible);
             continue;
         }

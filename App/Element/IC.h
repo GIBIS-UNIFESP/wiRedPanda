@@ -16,7 +16,7 @@
 #include "App/IO/SerializationContext.h"
 
 class QGraphicsSceneHoverEvent;
-class QNEConnection;
+class Connection;
 
 /**
  * \class IC
@@ -79,8 +79,8 @@ public:
     bool isEmbedded() const override { return !m_blobName.isEmpty(); }
 
     const QVector<GraphicElement *> &internalElements() const { return m_internalElements; }
-    const QVector<QNEPort *> &internalInputs() const { return m_internalInputs; }
-    const QVector<QNEPort *> &internalOutputs() const { return m_internalOutputs; }
+    const QVector<Port *> &internalInputs() const { return m_internalInputs; }
+    const QVector<Port *> &internalOutputs() const { return m_internalOutputs; }
 
     /// Returns the cached preview pixmap of the designed circuit.
     /// The snapshot is taken once during load (before boundary elements are
@@ -157,9 +157,9 @@ private:
     QString m_file;
     QString m_blobName;
     QVector<GraphicElement *> m_internalElements;
-    QVector<QNEConnection *> m_internalConnections;
-    QVector<QNEPort *> m_internalInputs;
-    QVector<QNEPort *> m_internalOutputs;
+    QVector<Connection *> m_internalConnections;
+    QVector<Port *> m_internalInputs;
+    QVector<Port *> m_internalOutputs;
 
     // --- Members: Direct simulation ---
 

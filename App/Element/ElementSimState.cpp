@@ -4,9 +4,9 @@
 #include "App/Element/ElementSimState.h"
 
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
-void ElementSimState::reset(const QVector<QNEOutputPort *> &outputPorts)
+void ElementSimState::reset(const QVector<OutputPort *> &outputPorts)
 {
     // Reset each output slot to the port's power-on default so that the next
     // BeWavedDolphin sweep starts from a known, reproducible state.
@@ -29,7 +29,7 @@ void ElementSimState::connectPredecessor(int inputIndex, GraphicElement *source,
     m_connections[inputIndex] = {source, outputPort};
 }
 
-void ElementSimState::initVectors(int inputCount, int outputCount, const QVector<QNEOutputPort *> &outputPorts)
+void ElementSimState::initVectors(int inputCount, int outputCount, const QVector<OutputPort *> &outputPorts)
 {
     m_connections.fill({}, inputCount);
     m_inputs.fill(Status::Inactive, inputCount);
@@ -48,7 +48,7 @@ void ElementSimState::initVectors(int inputCount, int outputCount, const QVector
     m_outputChanged = false;
 }
 
-bool ElementSimState::updateInputs(bool allowUnknown, const QVector<QNEInputPort *> &inputPorts)
+bool ElementSimState::updateInputs(bool allowUnknown, const QVector<InputPort *> &inputPorts)
 {
     for (int index = 0; index < m_connections.size(); ++index) {
         auto *pred = m_connections.at(index).sourceElement;

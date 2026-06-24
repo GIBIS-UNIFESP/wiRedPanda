@@ -5,14 +5,14 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 ElementPorts::ElementPorts(GraphicElement *owner)
     : m_owner(owner)
 {
 }
 
-QNEInputPort *ElementPorts::inputPort(const int index) const
+InputPort *ElementPorts::inputPort(const int index) const
 {
     if (index < 0 || index >= m_inputPorts.size()) {
         return nullptr;
@@ -20,7 +20,7 @@ QNEInputPort *ElementPorts::inputPort(const int index) const
     return m_inputPorts.at(index);
 }
 
-QNEOutputPort *ElementPorts::outputPort(const int index) const
+OutputPort *ElementPorts::outputPort(const int index) const
 {
     if (index < 0 || index >= m_outputPorts.size()) {
         return nullptr;
@@ -38,9 +38,9 @@ int ElementPorts::outputSize() const
     return static_cast<int>(m_outputPorts.size());
 }
 
-QVector<QNEPort *> ElementPorts::allPorts() const
+QVector<Port *> ElementPorts::allPorts() const
 {
-    QVector<QNEPort *> result;
+    QVector<Port *> result;
     result.reserve(m_inputPorts.size() + m_outputPorts.size());
     for (auto *p : m_inputPorts)  { result.append(p); }
     for (auto *p : m_outputPorts) { result.append(p); }
@@ -53,14 +53,14 @@ void ElementPorts::addPort(const QString &name, const bool isOutput)
     // min/max constraints before calling this method.  The serializer also
     // calls addPort() and needs to create whatever ports the file contains.
     qCDebug(four) << "New port.";
-    QNEPort *port = nullptr;
+    Port *port = nullptr;
 
     if (isOutput) {
-        m_outputPorts.push_back(new QNEOutputPort(m_owner));
+        m_outputPorts.push_back(new OutputPort(m_owner));
         port = m_outputPorts.constLast();
         port->setIndex(outputSize() - 1);
     } else {
-        m_inputPorts.push_back(new QNEInputPort(m_owner));
+        m_inputPorts.push_back(new InputPort(m_owner));
         port = m_inputPorts.constLast();
         port->setIndex(inputSize() - 1);
     }
@@ -90,7 +90,7 @@ void ElementPorts::resizeOutputs(const int size)
     }
 }
 
-QNEInputPort *ElementPorts::takeLastInput()
+InputPort *ElementPorts::takeLastInput()
 {
     if (m_inputPorts.isEmpty()) {
         return nullptr;
@@ -100,7 +100,7 @@ QNEInputPort *ElementPorts::takeLastInput()
     return port;
 }
 
-QNEOutputPort *ElementPorts::takeLastOutput()
+OutputPort *ElementPorts::takeLastOutput()
 {
     if (m_outputPorts.isEmpty()) {
         return nullptr;

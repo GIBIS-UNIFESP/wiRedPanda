@@ -91,7 +91,7 @@ private slots:
     /// Simulation.cpp:87's `element->updateLogic()` took in production.
     void integration_simulationTickAfterResetMustNotCrash();
 
-    /// WIREDPANDA-HC — QNEPort::drainConnections issued a bare
+    /// WIREDPANDA-HC — Port::drainConnections issued a bare
     /// `delete conn` during cascade-destruction. Qt's ~QGraphicsItem
     /// then dispatched to the non-virtual QGraphicsScene::removeItem,
     /// bypassing Scene::removeItem and leaving m_elementRegistry pointing

@@ -14,8 +14,8 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
@@ -91,7 +91,7 @@ bool SceneInteraction::mousePress(QGraphicsSceneMouseEvent *event)
         }
 
         // --- Wire connection handling ---
-        if (item->type() == QNEPort::Type) {
+        if (item->type() == Port::Type) {
             /* When the mouse is pressed over an connected input port, the line
              * is disconnected and can be connected to another port. */
             if (m_scene->connectionManager()->hasEditedConnection()) {
@@ -100,14 +100,14 @@ bool SceneInteraction::mousePress(QGraphicsSceneMouseEvent *event)
                 return true;
             }
 
-            auto *pressedPort = qgraphicsitem_cast<QNEPort *>(item);
+            auto *pressedPort = qgraphicsitem_cast<Port *>(item);
 
-            if (auto *startPort = dynamic_cast<QNEOutputPort *>(pressedPort)) {
+            if (auto *startPort = dynamic_cast<OutputPort *>(pressedPort)) {
                 m_scene->connectionManager()->startFromOutput(startPort);
                 return true;
             }
 
-            if (auto *endPort = dynamic_cast<QNEInputPort *>(pressedPort)) {
+            if (auto *endPort = dynamic_cast<InputPort *>(pressedPort)) {
                 // Empty input port: begin a new wire; occupied port: detach the existing wire
                 endPort->connections().isEmpty() ? m_scene->connectionManager()->startFromInput(endPort) : m_scene->connectionManager()->detach(endPort);
                 return true;
@@ -233,7 +233,7 @@ bool SceneInteraction::mouseDoubleClick(QGraphicsSceneMouseEvent *event)
 
     // Double-click on a fully connected wire inserts a routing node at the click point,
     // splitting the wire into two segments; guard ensures it's not a dangling wire
-    if (auto *connection = qgraphicsitem_cast<QNEConnection *>(m_scene->itemAt(m_mousePos)); connection && connection->startPort() && connection->endPort()) {
+    if (auto *connection = qgraphicsitem_cast<Connection *>(m_scene->itemAt(m_mousePos)); connection && connection->startPort() && connection->endPort()) {
         m_scene->receiveCommand(new SplitCommand(connection, m_mousePos, m_scene));
     }
 

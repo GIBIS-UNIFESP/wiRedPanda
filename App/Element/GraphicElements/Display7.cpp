@@ -13,7 +13,7 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 template<>
 struct ElementInfo<Display7> {
@@ -208,7 +208,7 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
         // Permutation: old[0]→new[2], old[1]→new[1], old[2]→new[4], etc.
         qCDebug(zero) << "Remapping inputs.";
         QVector<int> order{2, 1, 4, 5, 0, 7, 3, 6};
-        QVector<QNEInputPort *> aux = inputs();
+        QVector<InputPort *> aux = inputs();
 
         if (aux.size() == order.size()) {
             for (int i = 0; i < aux.size(); ++i) {
@@ -224,7 +224,7 @@ void Display7::load(QDataStream &stream, SerializationContext &context)
         // applied on top of whatever v1.6 remapping already happened.
         qCDebug(zero) << "Remapping inputs.";
         QVector<int> order{2, 5, 4, 0, 7, 3, 6, 1};
-        QVector<QNEInputPort *> aux = inputs();
+        QVector<InputPort *> aux = inputs();
 
         if (aux.size() == order.size()) {
             for (int i = 0; i < aux.size(); ++i) {

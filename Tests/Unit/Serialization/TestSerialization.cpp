@@ -17,8 +17,8 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -160,8 +160,8 @@ void TestSerialization::testConnectionPersistence()
     scene1->addItem(led);
 
     // Create connections
-    auto *conn1 = new QNEConnection();
-    auto *conn2 = new QNEConnection();
+    auto *conn1 = new Connection();
+    auto *conn2 = new Connection();
     conn1->setStartPort(sw->outputPort());
     conn1->setEndPort(andGate->inputPort(0));
     conn2->setStartPort(andGate->outputPort());
@@ -189,7 +189,7 @@ void TestSerialization::testConnectionPersistence()
     // Verify all connections have valid ports
     const auto items = workspace2.scene()->items();
     for (auto *item : std::as_const(items)) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             ++connectionCount;
             QVERIFY2(conn->startPort() != nullptr, "Missing start port");
             QVERIFY2(conn->endPort() != nullptr, "Missing end port");
@@ -272,7 +272,7 @@ void TestSerialization::testComplexCircuitSaveLoad()
     int originalConnectionCount = 0;
     const auto items1 = workspace1.scene()->items();
     for (auto *item : std::as_const(items1)) {
-        if (qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (qgraphicsitem_cast<Connection *>(item)) {
             ++originalConnectionCount;
         }
     }
@@ -288,7 +288,7 @@ void TestSerialization::testComplexCircuitSaveLoad()
     int newConnectionCount = 0;
     const auto items2 = workspace2.scene()->items();
     for (auto *item : std::as_const(items2)) {
-        if (qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (qgraphicsitem_cast<Connection *>(item)) {
             ++newConnectionCount;
         }
     }
@@ -1160,7 +1160,7 @@ void TestSerialization::testConnectionWithDeletedPorts()
     scene->addItem(or1);
 
     // Create connection
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(and1->outputPort(0));
     conn->setEndPort(or1->inputPort(0));
     scene->addItem(conn);

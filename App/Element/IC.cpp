@@ -19,8 +19,8 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 template<>
 struct ElementInfo<IC> {
@@ -104,7 +104,7 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     // to keep the outer portMap valid for connection deserialization.
     // Old format uses ptr values as keys; new format uses serialIds — we
     // build a reverse map to find each port's key in O(1) instead of scanning.
-    QHash<QNEPort *, quint64> reversePortMap;
+    QHash<Port *, quint64> reversePortMap;
     reversePortMap.reserve(context.portMap.size());
     for (auto it = context.portMap.constBegin(); it != context.portMap.constEnd(); ++it) {
         reversePortMap[it.value()] = it.key();
@@ -172,7 +172,7 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     // When the embedded sub-circuit declares fewer ports than the outer
     // element header did (malformed/fuzzed input), the leftover keys still
     // resolved to ports that loadFromBlob() destroyed in setPortSize().
-    // Evict those stale entries so a later QNEConnection::load() cannot
+    // Evict those stale entries so a later Connection::load() cannot
     // dereference the freed pointer.  Surfaced by libFuzzer.
     for (int i = 0; i < savedInputKeys.size(); ++i) {
         if (i < inputSize()) {

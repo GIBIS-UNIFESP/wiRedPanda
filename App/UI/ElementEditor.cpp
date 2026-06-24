@@ -22,7 +22,7 @@
 #include "App/Element/IC.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/ElementContextMenu.h"
@@ -613,8 +613,8 @@ void ElementEditor::apply()
                 auto *node = qobject_cast<Node *>(elm);
                 if (!node) continue;
 
-                QNEPort *port = (newMode == WirelessMode::Rx) ? static_cast<QNEPort *>(node->inputPort())
-                             : (newMode == WirelessMode::Tx) ? static_cast<QNEPort *>(node->outputPort())
+                Port *port = (newMode == WirelessMode::Rx) ? static_cast<Port *>(node->inputPort())
+                             : (newMode == WirelessMode::Tx) ? static_cast<Port *>(node->outputPort())
                              : nullptr;
                 if (port) {
                     for (auto *conn : port->connections()) {

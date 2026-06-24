@@ -14,7 +14,7 @@
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
 #include "Tests/Common/TestUtils.h"
@@ -211,7 +211,7 @@ void TestBuzzer::testLoadVersionNew()
     auto buzzer2 = std::make_unique<Buzzer>();
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     SerializationContext context{portMap, FormatRev::current, {}};
 
     buzzer2->load(loadStream, context);

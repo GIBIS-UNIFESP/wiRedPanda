@@ -7,7 +7,7 @@
 
 #include "App/Core/Enums.h"
 #include "App/Element/IC.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 #include "App/Simulation/Simulation.h"
 
 void ICSimulation::initialize(IC &ic)

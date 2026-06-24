@@ -38,8 +38,8 @@ bool isReadOnlyFailure(QFileDevice::FileError error)
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/Versions.h"
@@ -442,7 +442,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         m_scene.icRegistry()->setBlob(it.key(), it.value());
     }
 
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     if (!contextDir.isEmpty()) {
         m_scene.setContextDir(contextDir);
     }
@@ -637,7 +637,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
         m_scene.icRegistry()->setBlob(it.key(), it.value());
     }
 
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     auto context = m_scene.deserializationContext(portMap, preamble.version);
     context.contextDir = parentContextDir;
     const auto items = Serialization::deserialize(stream, context);

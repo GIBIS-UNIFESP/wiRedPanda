@@ -294,7 +294,7 @@ QByteArray buildOldPanda(FuzzedDataProvider &fdp)
     // with random IDs (exercises the miss path).
     const int connCount = fdp.ConsumeIntegralInRange<int>(0, 3);
     for (int c = 0; c < connCount; ++c) {
-        s << static_cast<int>(65538); // QNEConnection::Type = UserType + 2
+        s << static_cast<int>(65538); // Connection::Type = UserType + 2
         const bool useValid = fdp.ConsumeBool() && !outPtrs.isEmpty() && !inPtrs.isEmpty();
         if (useValid) {
             s << outPtrs[fdp.ConsumeIntegralInRange<size_t>(0, static_cast<size_t>(outPtrs.size()) - 1)];

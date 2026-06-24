@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="281"/>
+        <location filename="../../Scene/Commands.cpp" line="282"/>
         <source>Add %1 elements</source>
         <translation>%1 elem hozzáadása</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="143"/>
+        <location filename="../../Core/Application.cpp" line="144"/>
         <source>Error!</source>
         <translation>Hiba!</translation>
     </message>
@@ -71,23 +71,23 @@
 <context>
     <name>AudioBox</name>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="34"/>
         <location filename="../../Element/GraphicElements/AudioBox.cpp" line="35"/>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="36"/>
         <source>Audio Box</source>
         <translation>Hangdoboz</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="87"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="86"/>
         <source>File does not exist</source>
         <translation>A fájl nem létezik</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="88"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="87"/>
         <source>File is not readable</source>
         <translation>A fájl nem olvasható</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="89"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
         <translation>A hang nem tölthető be: %1 (%2)</translation>
     </message>
@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="882"/>
+        <location filename="../../Scene/Commands.cpp" line="883"/>
         <source>Change input size to %1</source>
         <translation>Bemenet méretének megváltoztatása %1-re</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change output size to %1</source>
         <translation>Kimenet méretének megváltoztatása %1-re</translation>
     </message>
@@ -542,6 +542,19 @@
     </message>
 </context>
 <context>
+    <name>ConnectionSerializer</name>
+    <message>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="60"/>
+        <source>Stream error reading connection map at offset %1</source>
+        <translation>Adatfolyam hiba a kapcsolati térkép olvasásakor a(z) %1 eltolásnál</translation>
+    </message>
+    <message>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="71"/>
+        <source>Stream error reading connection port IDs at offset %1</source>
+        <translation>Folyamhiba a csatlakozási port azonosítók olvasásakor a(z) %1 eltolásnál</translation>
+    </message>
+</context>
+<context>
     <name>DFlipFlop</name>
     <message>
         <location filename="../../Element/GraphicElements/DFlipFlop.cpp" line="27"/>
@@ -570,7 +583,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="307"/>
+        <location filename="../../Scene/Commands.cpp" line="308"/>
         <source>Delete %1 elements</source>
         <translation>%1 elem törlése</translation>
     </message>
@@ -830,22 +843,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="249"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="248"/>
         <source>File does not exist</source>
         <translation>A fájl nem létezik</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="250"/>
         <source>File is not readable</source>
         <translation>A fájl nem olvasható</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="252"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>Unknown reason</source>
         <translation>Ismeretlen ok</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="258"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="257"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Nem sikerült betölteni a pixmap-ot: %1 (%2)</translation>
     </message>
@@ -969,7 +982,7 @@
         <translation>Hangerő:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
+        <location filename="../../UI/ElementEditor.cpp" line="318"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1015,103 +1028,103 @@
         <translation>Zárolva:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="71"/>
+        <location filename="../../UI/ElementEditor.cpp" line="69"/>
         <source>Truth Table</source>
         <translation>Igazságtáblázat</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="174"/>
+        <location filename="../../UI/ElementEditor.cpp" line="172"/>
         <source>Open File</source>
         <translation>Fájl megnyitása</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="240"/>
+        <location filename="../../UI/ElementEditor.cpp" line="238"/>
         <source>Green</source>
         <translation>Zöld</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="241"/>
+        <location filename="../../UI/ElementEditor.cpp" line="239"/>
         <source>Blue</source>
         <translation>Kék</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="242"/>
+        <location filename="../../UI/ElementEditor.cpp" line="240"/>
         <source>Purple</source>
         <translation>Lila</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="595"/>
+        <location filename="../../UI/ElementEditor.cpp" line="593"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Duplikált vezeték nélküli csatorna</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="594"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Egy &quot;%1&quot; címkéjű Tx csomópont már létezik.
 Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="662"/>
+        <location filename="../../UI/ElementEditor.cpp" line="660"/>
         <source>Change wireless mode</source>
         <translation>Vezeték nélküli mód változtatása</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="865"/>
+        <location filename="../../UI/ElementEditor.cpp" line="863"/>
         <source>Select any audio</source>
         <translation>Hangfájl kiválasztása</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="866"/>
+        <location filename="../../UI/ElementEditor.cpp" line="864"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Hangfájlok (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="239"/>
+        <location filename="../../UI/ElementEditor.cpp" line="237"/>
         <source>Red</source>
         <translation>Piros</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="173"/>
+        <location filename="../../UI/ElementEditor.cpp" line="171"/>
         <source>Images</source>
         <translation>Képek</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="238"/>
+        <location filename="../../UI/ElementEditor.cpp" line="236"/>
         <source>White</source>
         <translation>Fehér</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="142"/>
+        <location filename="../../UI/ElementEditor.h" line="145"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Több hang&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="143"/>
+        <location filename="../../UI/ElementEditor.h" line="146"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Több szín&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="144"/>
-        <location filename="../../UI/ElementEditor.h" line="145"/>
-        <location filename="../../UI/ElementEditor.h" line="146"/>
+        <location filename="../../UI/ElementEditor.h" line="147"/>
         <location filename="../../UI/ElementEditor.h" line="148"/>
         <location filename="../../UI/ElementEditor.h" line="149"/>
+        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Több érték&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="147"/>
+        <location filename="../../UI/ElementEditor.h" line="150"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Több címke&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="154"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;Több mód&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="153"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Több kioldó&gt;</translation>
     </message>
@@ -1214,7 +1227,7 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="823"/>
+        <location filename="../../Scene/Commands.cpp" line="824"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%1 elem tükrözése %2 tengely mentén</translation>
     </message>
@@ -1222,82 +1235,27 @@ Minden vezeték nélküli csatornának egyedi címkével kell rendelkeznie.</tra
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="348"/>
+        <location filename="../../Element/GraphicElement.cpp" line="252"/>
         <source>Default</source>
         <translation>Alapértelmezett</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
-        <source>Stream error reading element properties at position %1</source>
-        <translation>Folyamhiba az elem tulajdonságainak olvasásakor a(z) %1 pozícióban</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
-        <source>Stream error reading appearances at position %1</source>
-        <translation>Folyamhiba a megjelenések olvasásakor a(z) %1 pozícióban</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
-        <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>%1 megjelenési index a tartományon kívül (méret=%2) — a folyam sérült lehet</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="529"/>
-        <source>Loading pixmap appearance names.</source>
-        <translation>Pixmap külső nevek betöltése.</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="562"/>
-        <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Megjelenés index %1 tartományon kívül (méret=%2) a(z) &quot;%3&quot; megjelenésnévnél — a folyam sérült lehet</translation>
     </message>
 </context>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="114"/>
+        <location filename="../../Element/IC.cpp" line="39"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="38"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>INTEGRÁLT ÁRAMKÖR</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="226"/>
+        <location filename="../../Element/IC.cpp" line="148"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC betöltés: nincs IC-név a szerializált adatokban</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="351"/>
-        <source>%1 not found.</source>
-        <translation>%1 nem található.</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="392"/>
-        <source>Circular IC reference detected: %1</source>
-        <translation>Körkörös IC-hivatkozás észlelve: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="399"/>
-        <source>Error opening file: %1</source>
-        <translation>Hiba a fájl megnyitásakor: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="453"/>
-        <source>IC migration: cannot open file for writing: %1</source>
-        <translation>IC migráció: a fájl nem nyitható meg írásra: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
-        <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>IC migráció: az újramentett fájl véglegesítése sikertelen: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="519"/>
-        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>IC beágyazási mélységkorlátja (%1) túllépve — a blob rosszindulatúan készülhetett</translation>
     </message>
 </context>
 <context>
@@ -1432,12 +1390,12 @@ Javasolt név:</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="272"/>
         <source>Could not open file: %1</source>
         <translation>Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
         <source>Could not save file: %1</source>
         <translation>Nem sikerült menteni a fájlt: %1</translation>
     </message>
@@ -2086,7 +2044,7 @@ Javasolt név:</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1002"/>
         <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Mute</source>
         <translation>Némítás</translation>
@@ -2122,7 +2080,7 @@ Javasolt név:</translation>
         <translation>Háttér szimuláció</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="477"/>
+        <location filename="../../UI/MainWindow.cpp" line="478"/>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Shortcuts and Tips</source>
         <translation>Gyorsbillentyűk és tippek</translation>
@@ -2138,12 +2096,12 @@ Javasolt név:</translation>
         <translation>Fordítási hibák jelentése vagy segítség a fordítások javításában a Weblate-en</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="801"/>
+        <location filename="../../UI/MainWindow.cpp" line="802"/>
         <source>New Project</source>
         <translation>Új projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="396"/>
+        <location filename="../../UI/MainWindow.cpp" line="397"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2162,27 +2120,27 @@ wiRedPanda %1 automatikusan felsorolja az összes többi .panda fájlt az aktuá
 Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelenésekhez, vagy futtatná a beWavedDolphin szimulációkat.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="456"/>
+        <location filename="../../UI/MainWindow.cpp" line="457"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;A wiRedPanda a São Paulo-i Szövetségi Egyetem hallgatói által fejlesztett szoftver, amely segíti a hallgatókat a logikai áramkörök tanulásában.&lt;/p&gt;&lt;p&gt;Szoftver verzió: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Alkotók:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; A wiRedPandát jelenleg Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves és Maycon A. Santana tartja karban.&lt;/p&gt;&lt;p&gt; Kérjük, küldjön jelentést a GitHub oldalunkon, ha hibát talál vagy új funkciót szeretne kérni.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Látogasson el weboldalunkra!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="529"/>
+        <location filename="../../UI/MainWindow.cpp" line="530"/>
         <source>Are you sure?</source>
         <translation>Biztos benne?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="478"/>
+        <location filename="../../UI/MainWindow.cpp" line="479"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Vászon gyorsbillentyűk&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Nagyítás &lt;/li&gt;&lt;li&gt; Ctrl+- : Kicsinyítés &lt;/li&gt;&lt;li&gt; Ctrl+1 : Vezetékek elrejtése/megjelenítése &lt;/li&gt;&lt;li&gt; Ctrl+2 : Kapuk elrejtése/megjelenítése &lt;/li&gt;&lt;li&gt; Ctrl+F : Elemek keresése &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin megnyitása &lt;/li&gt;&lt;li&gt; Ctrl+S : Projekt mentése &lt;/li&gt;&lt;li&gt; Ctrl+Q : Kilépés a wiRedPandából &lt;/li&gt;&lt;li&gt; F5 : Szimuláció indítása/szüneteltetése &lt;/li&gt;&lt;li&gt; [ : Előző elsődleges elem tulajdonság &lt;/li&gt;&lt;li&gt; ] : Következő elsődleges elem tulajdonság &lt;/li&gt;&lt;li&gt; { : Előző másodlagos elem tulajdonság &lt;/li&gt;&lt;li&gt; } : Következő másodlagos elem tulajdonság &lt;/li&gt;&lt;li&gt; &amp;lt; : Átalakítás előző elemre &lt;/li&gt;&lt;li&gt; &amp;gt; : Átalakítás következő elemre &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Általános tippek&lt;/h1&gt;&lt;p&gt;Dupla kattintás egy vezetéken csomópont létrehozásához&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="528"/>
+        <location filename="../../UI/MainWindow.cpp" line="529"/>
         <source>Exit</source>
         <translation>Kilépés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1002"/>
         <source>Unmute</source>
         <translation>Hang feloldása</translation>
     </message>
@@ -2190,7 +2148,7 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="635"/>
+        <location filename="../../Scene/Commands.cpp" line="636"/>
         <source>Morph %1 elements to %2</source>
         <translation>%1 elem átalakítása %2-re</translation>
     </message>
@@ -2198,7 +2156,7 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="400"/>
+        <location filename="../../Scene/Commands.cpp" line="401"/>
         <source>Move elements</source>
         <translation>Elemek mozgatása</translation>
     </message>
@@ -2232,12 +2190,12 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="40"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
         <source>Node</source>
         <translation>Csomópont</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="38"/>
         <source>NODE</source>
         <translation>CSOMÓPONT</translation>
     </message>
@@ -2284,28 +2242,15 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="224"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="224"/>
         <source>Add embedded IC</source>
         <translation>Beágyazott IC hozzáadása</translation>
     </message>
 </context>
 <context>
-    <name>QNEConnection</name>
-    <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
-        <source>Stream error reading connection map at offset %1</source>
-        <translation>Adatfolyam hiba a kapcsolati térkép olvasásakor a(z) %1 eltolásnál</translation>
-    </message>
-    <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
-        <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Folyamhiba a csatlakozási port azonosítók olvasásakor a(z) %1 eltolásnál</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="435"/>
+        <location filename="../../Main.cpp" line="433"/>
         <source>Error!</source>
         <translation>Hiba!</translation>
     </message>
@@ -2391,7 +2336,7 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1035"/>
+        <location filename="../../Scene/Commands.cpp" line="1036"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Blob regisztrálása: &quot;%1&quot;</translation>
     </message>
@@ -2399,7 +2344,7 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1058"/>
+        <location filename="../../Scene/Commands.cpp" line="1059"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>„%1” blob eltávolítása</translation>
     </message>
@@ -2407,7 +2352,7 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="332"/>
+        <location filename="../../Scene/Commands.cpp" line="333"/>
         <source>Rotate %1 degrees</source>
         <translation>%1 fokos forgatás</translation>
     </message>
@@ -2441,19 +2386,19 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="535"/>
+        <location filename="../../Scene/Scene.cpp" line="48"/>
+        <location filename="../../Scene/Scene.cpp" line="529"/>
         <source>&amp;Undo</source>
         <translation>&amp;Visszavonás</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="56"/>
+        <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ismétlés</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="561"/>
+        <location filename="../../Scene/Scene.cpp" line="555"/>
         <source>Paste</source>
         <translation>Beillesztés</translation>
     </message>
@@ -2461,12 +2406,12 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>SceneUiBinder</name>
     <message>
-        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <location filename="../../UI/SceneUiBinder.cpp" line="162"/>
         <source>Unmute</source>
         <translation>Hang feloldása</translation>
     </message>
     <message>
-        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <location filename="../../UI/SceneUiBinder.cpp" line="162"/>
         <source>Mute</source>
         <translation>Némítás</translation>
     </message>
@@ -2551,32 +2496,32 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="509"/>
+        <location filename="../../Scene/Commands.cpp" line="510"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Érvénytelen kapcsolódási portok a SplitCommand konstruktorban</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="515"/>
+        <location filename="../../Scene/Commands.cpp" line="516"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Érvénytelen grafikus elemek a SplitCommand konstruktorban</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="538"/>
+        <location filename="../../Scene/Commands.cpp" line="539"/>
         <source>Wire split</source>
         <translation>Vezeték szétválasztása</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="553"/>
+        <location filename="../../Scene/Commands.cpp" line="554"/>
         <source>Error trying to redo %1</source>
         <translation>Hiba a(z) %1 újbóli végrehajtása közben</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="576"/>
+        <location filename="../../Scene/Commands.cpp" line="577"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Hiba: az endPort null a SplitCommand::redo() függvényben</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="605"/>
+        <location filename="../../Scene/Commands.cpp" line="606"/>
         <source>Error trying to undo %1</source>
         <translation>Hiba a(z) %1 visszavonása közben</translation>
     </message>
@@ -2623,12 +2568,12 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="976"/>
+        <location filename="../../Scene/Commands.cpp" line="977"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Igazságtábla kimenet váltása a(z) %1 pozícióban</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="985"/>
+        <location filename="../../Scene/Commands.cpp" line="986"/>
         <source>Could not find truthtable element!</source>
         <translation>Nem sikerült megtalálni az igazságtábla elemet!</translation>
     </message>
@@ -2662,7 +2607,7 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1091"/>
+        <location filename="../../Scene/Commands.cpp" line="1092"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 IC blob frissítése</translation>
     </message>
@@ -2670,7 +2615,7 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="440"/>
+        <location filename="../../Scene/Commands.cpp" line="441"/>
         <source>Update %1 elements</source>
         <translation>%1 elem frissítése</translation>
     </message>
@@ -2753,7 +2698,7 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="141"/>
+        <location filename="../../Scene/Workspace.cpp" line="140"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2764,50 +2709,32 @@ Az Ön wiRedPanda verziója (%2) a(z) %3 fájlformátumot támogatja.
 Kérjük, frissítse a wiRedPanda alkalmazást a fájl módosításainak mentéséhez.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="145"/>
+        <location filename="../../Scene/Workspace.cpp" line="144"/>
         <source>Cannot save.</source>
         <translation>Nem lehet menteni.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="217"/>
-        <source>Save File</source>
-        <translation>Fájl mentése</translation>
-    </message>
-    <message>
-        <location filename="../../Scene/Workspace.cpp" line="217"/>
-        <location filename="../../Scene/Workspace.cpp" line="264"/>
-        <location filename="../../Scene/Workspace.cpp" line="303"/>
-        <source>Panda files (*.panda)</source>
-        <translation>Panda fájlok (*.panda)</translation>
-    </message>
-    <message>
-        <location filename="../../Scene/Workspace.cpp" line="262"/>
-        <location filename="../../Scene/Workspace.cpp" line="301"/>
-        <source>Save File (original location is read-only)</source>
-        <translation>Fájl mentése (az eredeti hely csak olvasható)</translation>
-    </message>
-    <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
+        <location filename="../../Scene/Workspace.cpp" line="257"/>
         <source>Error opening file: %1</source>
         <translation>Hiba a fájl megnyitásakor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
+        <location filename="../../Scene/Workspace.cpp" line="289"/>
         <source>Could not save file: %1</source>
         <translation>Nem sikerült menteni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
+        <location filename="../../Scene/Workspace.cpp" line="364"/>
         <source>This file does not exist: %1</source>
         <translation>Ez a fájl nem létezik: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
+        <location filename="../../Scene/Workspace.cpp" line="373"/>
         <source>Could not open file: %1</source>
         <translation>Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="427"/>
+        <location filename="../../Scene/Workspace.cpp" line="408"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2820,34 +2747,34 @@ A fájl megnyílik, de a mentés le van tiltva.
 Kérjük, frissítse a wiRedPanda alkalmazást a fájl szerkesztéséhez és mentéséhez.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="432"/>
+        <location filename="../../Scene/Workspace.cpp" line="413"/>
         <source>Newer version file.</source>
         <translation>Újabb verziójú fájl.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="435"/>
+        <location filename="../../Scene/Workspace.cpp" line="416"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Ez a fájl régebbi formátumban van (verzió %1), és automatikusan frissítésre kerül az aktuális formátumra (verzió %2).
 Az eredeti fájlról biztonsági másolat készült a következő néven: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="438"/>
+        <location filename="../../Scene/Workspace.cpp" line="419"/>
         <source>File upgraded.</source>
         <translation>Fájl frissítve.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
+        <location filename="../../Scene/Workspace.cpp" line="581"/>
         <source>Error opening autosave file: %1</source>
         <translation>Hiba az automatikus mentés fájl megnyitásakor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
+        <location filename="../../Scene/Workspace.cpp" line="589"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Nem sikerült véglegesíteni az automatikus mentés fájlját: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="774"/>
+        <location filename="../../Scene/Workspace.cpp" line="755"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Beágyazott „%1” IC eltávolítása</translation>
     </message>
@@ -2856,76 +2783,91 @@ Az eredeti fájlról biztonsági másolat készült a következő néven: %3</tr
     <name>WorkspaceManager</name>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="167"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="517"/>
         <source>New Project</source>
         <translation>Új projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="110"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="140"/>
         <source>File saved successfully.</source>
         <translation>Fájl sikeresen mentve.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="148"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>A fájl nincs mentve. Bezárja a fület?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> módosult.
 Menti a változtatásokat?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="213"/>
         <source>File loaded successfully.</source>
         <translation>Fájl sikeresen betöltve.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="273"/>
         <source>Open File</source>
         <translation>Fájl megnyitása</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="91"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="273"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda fájlok (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="118"/>
+        <source>Save File</source>
+        <translation type="unfinished">Fájl mentése</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="129"/>
+        <source>Could not save file: %1 is not writable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="132"/>
+        <source>Save File (original location is read-only)</source>
+        <translation type="unfinished">Fájl mentése (az eredeti hely csak olvasható)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="307"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="359"/>
         <source>Save File as ...</source>
         <translation>Fájl mentése másként...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="317"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="368"/>
         <source>File Conflict</source>
         <translation>Fájlütközés</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="318"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="369"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>A(z) „%1” fájl már nyitva van egy másik lapon.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="321"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="372"/>
         <source>Switch to Tab</source>
         <translation>Váltás a lapra</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="477"/>
         <source>Error!</source>
         <translation>Hiba!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="573"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
@@ -3004,7 +2946,7 @@ Menti a változtatásokat?</translation>
         <translation>Hiba: Az áramkör igazságtábla elemeket tartalmaz.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="440"/>
+        <location filename="../../Main.cpp" line="438"/>
         <source>Error: </source>
         <translation>Hiba: </translation>
     </message>

@@ -16,7 +16,7 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
@@ -181,7 +181,7 @@ void ClipboardManager::cloneDrag(const QPointF &mousePos)
     const auto items = m_scene->items();
 
     for (auto *item : items) {
-        if (((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type)) && !item->isSelected()) {
+        if (((item->type() == GraphicElement::Type) || (item->type() == Connection::Type)) && !item->isSelected()) {
             item->hide();
         }
     }
@@ -208,7 +208,7 @@ void ClipboardManager::cloneDrag(const QPointF &mousePos)
 
     // Restore hidden items before the drag begins so the scene looks normal
     for (auto *item : items) {
-        if (((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type)) && !item->isSelected()) {
+        if (((item->type() == GraphicElement::Type) || (item->type() == Connection::Type)) && !item->isSelected()) {
             item->show();
         }
     }
@@ -266,7 +266,7 @@ void ClipboardManager::deserializeAndAdd(QDataStream &stream, const QVersionNumb
 
     QPointF center; stream >> center;
 
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
     const auto itemList = Serialization::deserialize(stream, context);
     // Shift pasted elements so their centroid lands at the cursor position,

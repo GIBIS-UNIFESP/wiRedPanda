@@ -3,9 +3,13 @@
 //
 // Portions Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
+//
+// Originally derived from Stanislaw Adaszewski's Qt Node Editor (qneblock); since
+// re-authored for wiRedPanda. The BSD attribution above is retained as a license
+// obligation for the derived design.
 
 /** \file
- * \brief Port classes: QNEPort (base), QNEInputPort, and QNEOutputPort.
+ * \brief Port classes: Port (abstract base), InputPort, and OutputPort.
  */
 
 #pragma once
@@ -15,21 +19,19 @@
 
 #include "App/Core/Enums.h"
 
+class Connection;
 class GraphicElement;
-class QNEConnection;
-class QNEPort;
 
 /**
- * \class QNEPort
+ * \class Port
  * \brief Abstract base class for circuit element ports (connection endpoints).
  *
- * \details A port is the small diamond/circle drawn at the edge of a graphic element
- * where wires attach.  It stores a reference to the owning GraphicElement,
- * all attached QNEConnections, and its current logical status.
- *
- * Concrete subclasses QNEInputPort and QNEOutputPort differentiate direction.
+ * \details A port is the small diamond drawn at the edge of a graphic element where
+ * wires attach. It stores a reference to the owning GraphicElement, all attached
+ * Connections, and its current logical status. Concrete subclasses InputPort and
+ * OutputPort differentiate direction.
  */
-class QNEPort : public QGraphicsPathItem
+class Port : public QGraphicsPathItem
 {
 public:
     // --- Type ---
@@ -40,14 +42,14 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the port with optional \a parent item.
-    explicit QNEPort(QGraphicsItem *parent = nullptr);
+    explicit Port(QGraphicsItem *parent = nullptr);
 
-    // --- Element Access ---
+    // --- Element access ---
 
     /// Returns the graphic element that owns this port.
     GraphicElement *graphicElement() const { return m_graphicElement; }
 
-    // --- Identity & Status ---
+    // --- Identity & status ---
 
     /// Returns the port's label text.
     QString name() const;
@@ -58,17 +60,14 @@ public:
     /// Returns the current logical status (Active/Inactive/Unknown/Error).
     Status status() const { return m_status; }
 
-    /**
-     * \brief Returns \c true if this port is connected to \a otherPort via any wire.
-     * \param otherPort Port to check for an existing connection.
-     */
-    bool isConnected(QNEPort *otherPort);
+    /// Returns \c true if this port is connected to \a otherPort via any wire.
+    bool isConnected(Port *otherPort);
 
     /// Returns \c true if a connection to this port is mandatory.
     bool isRequired() const;
 
     /// Returns the list of wires attached to this port.
-    const QList<QNEConnection *> &connections() const;
+    const QList<Connection *> &connections() const;
 
     /// Returns the port's visual/logical index within the element.
     int index() const;
@@ -82,20 +81,17 @@ public:
     /// Returns \c true if the port satisfies its connection requirement. Pure virtual.
     virtual bool isValid() const = 0;
 
-    // --- Status Management ---
+    // --- Status management ---
 
     virtual void setStatus(Status status) = 0;
 
-    // --- Connection Management ---
+    // --- Connection management ---
 
     /// Registers \a conn as a connection attached to this port.
-    void attachConnection(QNEConnection *conn);
+    void attachConnection(Connection *conn);
 
-    /**
-     * \brief Removes \a conn from this port's connection list.
-     * \param conn Wire to detach.
-     */
-    void detachConnection(QNEConnection *conn);
+    /// Removes \a conn from this port's connection list.
+    void detachConnection(Connection *conn);
 
     /// Applies hover-enter visual feedback.
     void hoverEnter();
@@ -103,28 +99,16 @@ public:
     /// Reverts hover-enter visual feedback.
     void hoverLeave();
 
-    /**
-     * \brief Sets the brush used to fill the port shape.
-     * \param currentBrush New brush.
-     */
+    /// Sets the brush used to fill the port shape.
     void setCurrentBrush(const QBrush &currentBrush);
 
-    /**
-     * \brief Sets the status applied when the port has no connection.
-     * \param defaultStatus Default status value.
-     */
+    /// Sets the status applied when the port has no connection.
     void setDefaultStatus(const Status defaultStatus);
 
-    /**
-     * \brief Binds this port to \a graphicElement.
-     * \param graphicElement Owning graphic element.
-     */
+    /// Binds this port to \a graphicElement.
     void setGraphicElement(GraphicElement *graphicElement);
 
-    /**
-     * \brief Sets the port's visual index within the element.
-     * \param index New index.
-     */
+    /// Sets the port's visual index within the element.
     void setIndex(const int index);
 
     /**
@@ -142,11 +126,12 @@ public:
 
     /// Triggers a path update on all attached connections.
     void updateConnections();
+
     void setSerialId(quint64 serialId);
     quint64 serialId() const;
 
 protected:
-    // --- Qt Event Handling ---
+    // --- Qt event handling ---
 
     /// \reimp
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
@@ -157,22 +142,25 @@ protected:
     /**
      * \brief Drains all attached connections, breaking back-references before deletion.
      * \param isInput True if this is an input port (sets endPort to nullptr); false for output.
-     * \details Called from the QNEInputPort and QNEOutputPort destructors to avoid
-     * re-entrant disconnect() calls into a partially destroyed port.
+     * \details Called from the InputPort and OutputPort destructors to avoid re-entrant
+     * disconnect() calls into a partially destroyed port.
      */
     void drainConnections(bool isInput);
+
+    /// Port hit-area / visual half-extent in pixels. A 5 px radius gives a 10×10 px
+    /// clickable diamond — large enough to hit reliably without obscuring neighbours.
+    static constexpr int kRadius = 5;
 
     // --- Members ---
 
     GraphicElement *m_graphicElement = nullptr;
     QBrush m_currentBrush;
-    QList<QNEConnection *> m_connections; // use smart pointers
+    QList<Connection *> m_connections;
     QString m_name;
     Status m_defaultStatus = Status::Unknown;
     Status m_status = Status::Inactive;
     bool m_required = true;
     int m_index = 0;
-    int m_radius = 5;
     quint64 m_serialId = 0;
 
 private:
@@ -180,21 +168,20 @@ private:
 };
 
 /**
- * \class QNEInputPort
+ * \class InputPort
  * \brief A port that receives a signal (the destination end of a wire).
  *
- * \details Input ports are valid when they have exactly one connected wire or
- * when they are optional (isRequired() == false).
+ * \details Input ports are valid when they have exactly one connected wire or when
+ * they are optional (isRequired() == false).
  */
-class QNEInputPort : public QNEPort
+class InputPort : public Port
 {
 public:
     /// Constructs an input port attached to \a parent.
-    explicit QNEInputPort(QGraphicsItem *parent = nullptr);
-    ~QNEInputPort() override;
-    QNEInputPort(const QNEInputPort &other) : QNEInputPort(other.parentItem()) {}
+    explicit InputPort(QGraphicsItem *parent = nullptr);
+    ~InputPort() override;
 
-    // --- Type Queries ---
+    // --- Type queries ---
 
     /// \reimp
     bool isInput() const override;
@@ -203,35 +190,36 @@ public:
     /// \reimp
     bool isValid() const override;
 
-    // --- Status Management ---
+    // --- Status management ---
 
     /// \reimp
     void setStatus(const Status status) override;
 
     // --- Theme ---
 
-    /// \reimp
+    /// \reimp Re-applies the pen/brush for the current status from the active palette.
     void updateTheme() override;
+
+private:
+    /// Applies the pen + fill brush matching m_status from the current theme.
+    void applyStatusStyle();
 };
 
-Q_DECLARE_METATYPE(QNEInputPort)
-
 /**
- * \class QNEOutputPort
+ * \class OutputPort
  * \brief A port that drives a signal (the source end of a wire).
  *
- * \details Output ports can fan out to multiple input ports.
- * They are always considered valid regardless of connection count.
+ * \details Output ports can fan out to multiple input ports and are always considered
+ * valid regardless of connection count.
  */
-class QNEOutputPort : public QNEPort
+class OutputPort : public Port
 {
 public:
     /// Constructs an output port attached to \a parent.
-    explicit QNEOutputPort(QGraphicsItem *parent = nullptr);
-    ~QNEOutputPort() override;
-    QNEOutputPort(const QNEOutputPort &other) : QNEOutputPort(other.parentItem()) {}
+    explicit OutputPort(QGraphicsItem *parent = nullptr);
+    ~OutputPort() override;
 
-    // --- Type Queries ---
+    // --- Type queries ---
 
     /// \reimp
     bool isInput() const override;
@@ -240,7 +228,7 @@ public:
     /// \reimp
     bool isValid() const override;
 
-    // --- Status Management ---
+    // --- Status management ---
 
     /// \reimp
     void setStatus(const Status status) override;
@@ -250,5 +238,3 @@ public:
     /// \reimp
     void updateTheme() override;
 };
-
-Q_DECLARE_METATYPE(QNEOutputPort)

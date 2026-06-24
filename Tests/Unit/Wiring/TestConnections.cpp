@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Nodes/TestConnections.h"
+#include "Tests/Unit/Wiring/TestConnections.h"
 
 #include <memory>
 
@@ -12,8 +12,8 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -29,7 +29,7 @@ void TestConnections::initTestCase()
 
 void TestConnections::testCreateConnection()
 {
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
 
     QVERIFY(conn->startPort() == nullptr);
     QVERIFY(conn->endPort() == nullptr);
@@ -46,7 +46,7 @@ void TestConnections::testSetPorts()
     scene->addItem(andGate);
     scene->addItem(orGate);
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(andGate->outputPort());
     conn->setEndPort(orGate->inputPort(0));
 
@@ -66,7 +66,7 @@ void TestConnections::testDisconnectPorts()
     auto *andGate = new And();
     scene->addItem(andGate);
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(andGate->outputPort());
 
     QCOMPARE(andGate->outputPort()->connections().size(), 1);
@@ -87,7 +87,7 @@ void TestConnections::testOtherPort()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
 
@@ -116,7 +116,7 @@ void TestConnections::testValidOutputToInput()
     int connCount = 0;
     const auto items = scene->items();
     for (auto *item : std::as_const(items)) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             ++connCount;
             QVERIFY(conn->startPort() != nullptr);
             QVERIFY(conn->endPort() != nullptr);
@@ -138,11 +138,11 @@ void TestConnections::testRejectOutputToOutput()
     scene->addItem(and2);
 
     // Verify port type checking (output cannot be cast to input)
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(and1->outputPort());
 
-    QNEPort *outputAsPort = and2->outputPort();
-    auto *asInput = dynamic_cast<QNEInputPort *>(outputAsPort);
+    Port *outputAsPort = and2->outputPort();
+    auto *asInput = dynamic_cast<InputPort *>(outputAsPort);
     QVERIFY(asInput == nullptr);  // Cannot cast output to input
 }
 
@@ -156,12 +156,12 @@ void TestConnections::testRejectInputToInput()
     scene->addItem(and1);
     scene->addItem(and2);
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setEndPort(and1->inputPort(0));
 
     // Verify port type checking (input cannot be cast to output)
-    QNEPort *inputAsPort = and2->inputPort(0);
-    auto *asOutput = dynamic_cast<QNEOutputPort *>(inputAsPort);
+    Port *inputAsPort = and2->inputPort(0);
+    auto *asOutput = dynamic_cast<OutputPort *>(inputAsPort);
     QVERIFY(asOutput == nullptr);
 }
 
@@ -232,7 +232,7 @@ void TestConnections::testMultipleInputInvalid()
     scene->addItem(andGate);
 
     // First connection - valid
-    auto conn1 = std::make_unique<QNEConnection>();
+    auto conn1 = std::make_unique<Connection>();
     conn1->setStartPort(sw1->outputPort());
     conn1->setEndPort(andGate->inputPort(0));
     scene->addItem(conn1.get());
@@ -241,7 +241,7 @@ void TestConnections::testMultipleInputInvalid()
     QVERIFY(andGate->inputPort(0)->isValid());
 
     // Second connection to SAME input - should make port INVALID
-    auto conn2 = std::make_unique<QNEConnection>();
+    auto conn2 = std::make_unique<Connection>();
     conn2->setStartPort(sw2->outputPort());
     conn2->setEndPort(andGate->inputPort(0));
     scene->addItem(conn2.get());
@@ -267,17 +267,17 @@ void TestConnections::testOutputFanOut()
     // Connect single output to multiple inputs (fan-out)
     auto *output = sw->outputPort();
 
-    auto conn1 = std::make_unique<QNEConnection>();
+    auto conn1 = std::make_unique<Connection>();
     conn1->setStartPort(output);
     conn1->setEndPort(and1->inputPort(0));
     scene->addItem(conn1.get());
 
-    auto conn2 = std::make_unique<QNEConnection>();
+    auto conn2 = std::make_unique<Connection>();
     conn2->setStartPort(output);
     conn2->setEndPort(and2->inputPort(0));
     scene->addItem(conn2.get());
 
-    auto conn3 = std::make_unique<QNEConnection>();
+    auto conn3 = std::make_unique<Connection>();
     conn3->setStartPort(output);
     conn3->setEndPort(and3->inputPort(0));
     scene->addItem(conn3.get());
@@ -324,7 +324,7 @@ void TestConnections::testRequiredPortValidation()
     // Connect
     auto *sw = new InputSwitch();
     scene->addItem(sw);
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(input);
     scene->addItem(conn.get());
@@ -351,7 +351,7 @@ void TestConnections::testStatusPropagation()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn.get());
@@ -385,17 +385,17 @@ void TestConnections::testMultiConnectionStatus()
     scene->addItem(led3);
 
     // Create fan-out
-    auto conn1 = std::make_unique<QNEConnection>();
+    auto conn1 = std::make_unique<Connection>();
     conn1->setStartPort(sw->outputPort());
     conn1->setEndPort(led1->inputPort());
     scene->addItem(conn1.get());
 
-    auto conn2 = std::make_unique<QNEConnection>();
+    auto conn2 = std::make_unique<Connection>();
     conn2->setStartPort(sw->outputPort());
     conn2->setEndPort(led2->inputPort());
     scene->addItem(conn2.get());
 
-    auto conn3 = std::make_unique<QNEConnection>();
+    auto conn3 = std::make_unique<Connection>();
     conn3->setStartPort(sw->outputPort());
     conn3->setEndPort(led3->inputPort());
     scene->addItem(conn3.get());
@@ -430,7 +430,7 @@ void TestConnections::testInvalidPortStatus()
     sw2->outputPort()->setStatus(Status::Active);
 
     // First connection
-    auto conn1 = std::make_unique<QNEConnection>();
+    auto conn1 = std::make_unique<Connection>();
     conn1->setStartPort(sw1->outputPort());
     conn1->setEndPort(andGate->inputPort(0));
     scene->addItem(conn1.get());
@@ -438,7 +438,7 @@ void TestConnections::testInvalidPortStatus()
     QCOMPARE(andGate->inputPort(0)->status(), Status::Active);
 
     // Second connection - invalid (multiple connections to input)
-    auto conn2 = std::make_unique<QNEConnection>();
+    auto conn2 = std::make_unique<Connection>();
     conn2->setStartPort(sw2->outputPort());
     conn2->setEndPort(andGate->inputPort(0));
     scene->addItem(conn2.get());
@@ -463,7 +463,7 @@ void TestConnections::testConnectionPositionUpdate()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn.get());

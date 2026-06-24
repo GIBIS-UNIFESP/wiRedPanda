@@ -429,7 +429,7 @@ void TestLED::testLoadColorNewVersion()
     auto led2 = std::make_unique<Led>();
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     SerializationContext context{portMap, QVersionNumber(4, 1), {}};
 
     led2->load(loadStream, context);
@@ -454,7 +454,7 @@ void TestLED::testLoadColorDefault()
     // Create minimal data (empty or just headers)
     QByteArray data;
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     // Load with version < 1.1 - should return early, leaving color unchanged
     led.setColor("Blue");
     SerializationContext contextOld{portMap, QVersionNumber(1, 0), {}};

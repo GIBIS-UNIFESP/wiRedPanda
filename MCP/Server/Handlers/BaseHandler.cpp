@@ -9,7 +9,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
@@ -259,8 +259,8 @@ QString BaseHandler::getAvailablePorts(GraphicElement *element, bool isOutput)
 
     QStringList ports;
     for (int i = 0; i < count; ++i) {
-        auto *port = isOutput ? static_cast<QNEPort *>(element->outputPort(i))
-                              : static_cast<QNEPort *>(element->inputPort(i));
+        auto *port = isOutput ? static_cast<Port *>(element->outputPort(i))
+                              : static_cast<Port *>(element->inputPort(i));
         if (port) {
             QString portName = port->name().isEmpty() ? "(unnamed)" : port->name();
             ports.append(QString("[%1] %2").arg(i).arg(portName));

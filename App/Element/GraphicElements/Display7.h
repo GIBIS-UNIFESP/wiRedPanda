@@ -9,7 +9,7 @@
 
 #include "App/Element/GraphicElement.h"
 
-class QNEPort;
+class Port;
 
 /**
  * \class Display7

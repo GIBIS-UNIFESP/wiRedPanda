@@ -161,10 +161,10 @@
 #include "Tests/Unit/Logic/TestNodeLogic.h"
 #include "Tests/Unit/Logic/TestStatusOps.h"
 // unit/nodes
-#include "Tests/Unit/Nodes/TestConnectionSerialization.h"
-#include "Tests/Unit/Nodes/TestConnections.h"
-#include "Tests/Unit/Nodes/TestQNEConnection.h"
-#include "Tests/Unit/Nodes/TestQNEPort.h"
+#include "Tests/Unit/Wiring/TestConnectionSerialization.h"
+#include "Tests/Unit/Wiring/TestConnections.h"
+#include "Tests/Unit/Wiring/TestConnection.h"
+#include "Tests/Unit/Wiring/TestPort.h"
 // unit/scene
 #include "Tests/Unit/Scene/TestConnectionManager.h"
 #include "Tests/Unit/Scene/TestConnectionValidity.h"
@@ -363,8 +363,8 @@ int main(int argc, char **argv)
         {"TestFileUtils", []() -> QObject * { return new TestFileUtils; }},
         {"TestRecentFilesUnit", []() -> QObject * { return new TestRecentFilesUnit; }},
         {"TestSerialization", []() -> QObject * { return new TestSerialization; }},
-        {"TestQNEConnection", []() -> QObject * { return new TestQNEConnection; }},
-        {"TestQNEPort", []() -> QObject * { return new TestQNEPort; }},
+        {"TestConnection", []() -> QObject * { return new TestConnection; }},
+        {"TestPort", []() -> QObject * { return new TestPort; }},
         {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
         {"TestDanglingPointer", []() -> QObject * { return new TestDanglingPointer; }},

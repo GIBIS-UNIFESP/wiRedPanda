@@ -161,7 +161,7 @@ void TestInputElements::testInputSwitchLoadOldVersion()
     auto inputSwitch2 = std::unique_ptr<InputSwitch>(new InputSwitch());
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     // For versions < 4.1, loadOldFormat reads positional fields.  The saved data
     // is in QMap format, so readBoundedString rejects the map-count bytes as an
     // oversized string → PANDACEPTION is the expected result of this format mismatch.
@@ -192,7 +192,7 @@ void TestInputElements::testInputSwitchLoadNewVersion()
     auto inputSwitch2 = std::unique_ptr<InputSwitch>(new InputSwitch());
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     SerializationContext context{portMap, QVersionNumber(4, 1), {}};
 
     inputSwitch2->load(loadStream, context);
@@ -377,7 +377,7 @@ void TestInputElements::testInputButtonLoadOldVersion()
     auto inputButton2 = std::unique_ptr<InputButton>(new InputButton());
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     // Save wrote QMap format; loadOldFormat reads positional fields → format mismatch.
     // readBoundedString rejects the map-count bytes as an oversized string → throws.
     SerializationContext context{portMap, QVersionNumber(3, 5), {}};
@@ -406,7 +406,7 @@ void TestInputElements::testInputButtonLoadNewVersion()
     auto inputButton2 = std::unique_ptr<InputButton>(new InputButton());
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     SerializationContext context{portMap, QVersionNumber(4, 1), {}};
 
     inputButton2->load(loadStream, context);

@@ -18,7 +18,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
 #include "Tests/Common/TestUtils.h"
@@ -804,7 +804,7 @@ void TestIC::testICMigrationPreservesConnections()
 
     // Recount connections in the now-migrated files — must match the originals exactly.
     // If the migration serialized connections with corrupt IDs (the bug this test guards
-    // against), QNEConnection::load() silently drops them, so the count would be lower.
+    // against), Connection::load() silently drops them, so the count would be lower.
     const int dflipAfter = countConnectedElementsViaWorkspace(dflipPath);
     const int jkAfter    = countConnectedElementsViaWorkspace(jkPath);
 

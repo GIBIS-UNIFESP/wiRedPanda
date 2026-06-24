@@ -29,7 +29,7 @@
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 
@@ -171,7 +171,7 @@ void Scene::unregisterItem(ItemWithId *item)
     m_itemRegistry.unregisterItem(item);
 }
 
-SerializationContext Scene::deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version)
+SerializationContext Scene::deserializationContext(QMap<quint64, Port *> &portMap, const QVersionNumber &version)
 {
     SerializationContext context{portMap, version, contextDir()};
     context.blobRegistry = &m_icRegistry.blobMapRef();
@@ -307,9 +307,9 @@ QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elemen
     return elements;
 }
 
-QHash<QString, QNEInputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicElement *> &elements)
+QHash<QString, InputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicElement *> &elements)
 {
-    QHash<QString, QNEInputPort *> txMap;
+    QHash<QString, InputPort *> txMap;
     for (auto *elm : elements) {
         if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty() && elm->inputPort(0)) {
             if (!txMap.contains(elm->label())) {
@@ -320,15 +320,15 @@ QHash<QString, QNEInputPort *> Scene::wirelessTxInputPorts(const QVector<Graphic
     return txMap;
 }
 
-const QVector<QNEConnection *> Scene::connections()
+const QVector<Connection *> Scene::connections()
 {
     const auto items_ = items();
-    QVector<QNEConnection *> conns;
+    QVector<Connection *> conns;
     conns.reserve(items_.size());
 
     for (auto *item : items_) {
-        if (item->type() == QNEConnection::Type) {
-            conns.append(qgraphicsitem_cast<QNEConnection *>(item));
+        if (item->type() == Connection::Type) {
+            conns.append(qgraphicsitem_cast<Connection *>(item));
         }
     }
 
@@ -358,7 +358,7 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
 
     // Ports get priority so wire dragging begins/ends on the port, not the element body
     for (auto *item : std::as_const(items_)) {
-        if (item->type() == QNEPort::Type) {
+        if (item->type() == Port::Type) {
             return item;
         }
     }
@@ -437,7 +437,7 @@ QUndoStack *Scene::undoStack()
     return &m_undoStack;
 }
 
-bool Scene::isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort)
+bool Scene::isConnectionAllowed(OutputPort *startPort, InputPort *endPort)
 {
     return ConnectionManager::isConnectionAllowed(startPort, endPort);
 }
@@ -745,7 +745,7 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
         // Intercept Ctrl+Left-click on an element to begin a clone-drag instead of
         // the default rubber-band selection; return true to swallow the event
         if ((mouseEvent->button() == Qt::LeftButton) && mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
-            if (auto *item = itemAt(mouseEvent->scenePos()); item && ((item->type() == GraphicElement::Type) || (item->type() == QNEConnection::Type))) {
+            if (auto *item = itemAt(mouseEvent->scenePos()); item && ((item->type() == GraphicElement::Type) || (item->type() == Connection::Type))) {
                 item->setSelected(true);
                 m_clipboardManager.cloneDrag(mouseEvent->scenePos());
                 return true;

@@ -12,8 +12,8 @@
 #include "App/Core/Enums.h"
 
 class GraphicElement;
-class QNEInputPort;
-class QNEOutputPort;
+class InputPort;
+class OutputPort;
 
 /**
  * \class ElementSimState
@@ -35,10 +35,10 @@ public:
     };
 
     /// Allocates the I/O vectors and seeds outputs from \a outputPorts default statuses.
-    void initVectors(int inputCount, int outputCount, const QVector<QNEOutputPort *> &outputPorts);
+    void initVectors(int inputCount, int outputCount, const QVector<OutputPort *> &outputPorts);
 
     /// Resets each output slot to its port's power-on default (Unknown coerced to Inactive).
-    void reset(const QVector<QNEOutputPort *> &outputPorts);
+    void reset(const QVector<OutputPort *> &outputPorts);
 
     /// Records that simulation input \a inputIndex is driven by \a source output \a outputPort.
     void connectPredecessor(int inputIndex, GraphicElement *source, int outputPort);
@@ -50,7 +50,7 @@ public:
      * domination rules can still short-circuit); when false any Unknown/Error fails.
      * \return true if simulation can proceed; false (all outputs set Unknown) otherwise.
      */
-    bool updateInputs(bool allowUnknown, const QVector<QNEInputPort *> &inputPorts);
+    bool updateInputs(bool allowUnknown, const QVector<InputPort *> &inputPorts);
 
     /// Decodes \a count select-line statuses starting at \a offset into a binary index.
     int decodeSelectValue(int offset, int count) const;

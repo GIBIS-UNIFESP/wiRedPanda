@@ -10,7 +10,7 @@
 #include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 template<>
 struct ElementInfo<Demux> {

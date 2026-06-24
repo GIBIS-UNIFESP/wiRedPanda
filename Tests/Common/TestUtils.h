@@ -20,7 +20,7 @@
 #include "App/Scene/Workspace.h"
 
 class InputSwitch;
-class QNEConnection;
+class Connection;
 class Simulation;
 
 /**
@@ -123,16 +123,16 @@ bool getOutputStatus(GraphicElement *elm, int port = 0);
 /**
  * @brief Count the number of connections in a scene
  * @param scene Scene to count connections in
- * @return Number of QNEConnection items in the scene
+ * @return Number of Connection items in the scene
  */
 int countConnections(Scene *scene);
 
 /**
  * @brief Get all connections in a scene
  * @param scene Scene to get connections from
- * @return List of all QNEConnection items in the scene
+ * @return List of all Connection items in the scene
  */
-QList<QNEConnection *> getConnections(Scene *scene);
+QList<Connection *> getConnections(Scene *scene);
 
 /**
  * @brief Set multiple input bits from an integer value
@@ -260,7 +260,7 @@ public:
      * @param toPort Input port index
      * @return Pointer to created connection
      */
-    QNEConnection *connect(GraphicElement *from, int fromPort,
+    Connection *connect(GraphicElement *from, int fromPort,
                            GraphicElement *to, int toPort);
 
     /**
@@ -286,7 +286,7 @@ public:
      * @param toPort Input port index on destination element
      * @return Pointer to created connection
      */
-    QNEConnection *connect(GraphicElement *from, const QString &fromLabel,
+    Connection *connect(GraphicElement *from, const QString &fromLabel,
                            GraphicElement *to, int toPort);
 
     /**
@@ -297,7 +297,7 @@ public:
      * @param toLabel Input port label on destination element
      * @return Pointer to created connection
      */
-    QNEConnection *connect(GraphicElement *from, int fromPort,
+    Connection *connect(GraphicElement *from, int fromPort,
                            GraphicElement *to, const QString &toLabel);
 
     /**
@@ -308,7 +308,7 @@ public:
      * @param toLabel Input port label on destination element
      * @return Pointer to created connection
      */
-    QNEConnection *connect(GraphicElement *from, const QString &fromLabel,
+    Connection *connect(GraphicElement *from, const QString &fromLabel,
                            GraphicElement *to, const QString &toLabel);
 
 private:
@@ -320,7 +320,7 @@ private:
     struct InputPortTraits
     {
         static int getCount(GraphicElement *elm);
-        static class QNEPort *getPort(GraphicElement *elm, int idx);
+        static class Port *getPort(GraphicElement *elm, int idx);
         static const char *getPortType();
         static const char *getNoPortsMessage();
     };
@@ -328,7 +328,7 @@ private:
     struct OutputPortTraits
     {
         static int getCount(GraphicElement *elm);
-        static class QNEPort *getPort(GraphicElement *elm, int idx);
+        static class Port *getPort(GraphicElement *elm, int idx);
         static const char *getPortType();
         static const char *getNoPortsMessage();
     };

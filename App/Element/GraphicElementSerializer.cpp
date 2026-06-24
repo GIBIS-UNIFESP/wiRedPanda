@@ -17,7 +17,7 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 namespace {
 
@@ -68,7 +68,7 @@ QList<QMap<QString, QVariant>> readPortList(QDataStream &stream, const char *lab
 }
 
 /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
-void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap)
+void removePortFromMap(Port *deletedPort, QMap<quint64, Port *> &portMap)
 {
     for (auto it = portMap.begin(); it != portMap.end();) {
         if (it.value() == deletedPort) {

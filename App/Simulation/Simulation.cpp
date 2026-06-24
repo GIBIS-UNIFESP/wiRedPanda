@@ -13,8 +13,8 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/IC.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Simulation/SimulationHost.h"
 
 using namespace std::chrono_literals;
@@ -104,7 +104,7 @@ void Simulation::update()
     }
     m_visualTickCount = 0;
 
-    // Phase 3: push computed logic values onto the wire (QNEOutputPort) visuals
+    // Phase 3: push computed logic values onto the wire (OutputPort) visuals
     for (auto *connection : std::as_const(m_connections)) {
         if (connection) {
             updatePort(connection->startPort());
@@ -123,7 +123,7 @@ void Simulation::update()
     }
 }
 
-void Simulation::updatePort(QNEOutputPort *port)
+void Simulation::updatePort(OutputPort *port)
 {
     if (!port) {
         return;
@@ -138,7 +138,7 @@ void Simulation::updatePort(QNEOutputPort *port)
     port->setStatus(element->outputValue(port->index()));
 }
 
-void Simulation::updatePort(QNEInputPort *port)
+void Simulation::updatePort(InputPort *port)
 {
     if (!port) {
         return;
@@ -292,8 +292,8 @@ bool Simulation::initialize()
             continue;
         }
 
-        if (item->type() == QNEConnection::Type) {
-            auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
+        if (item->type() == Connection::Type) {
+            auto *connection = qgraphicsitem_cast<Connection *>(item);
             if (connection && connection->startPort() && connection->endPort()) {
                 m_connections.append(connection);
             }
@@ -435,7 +435,7 @@ QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGra
 
     // Add wireless Tx→Rx edges.
     // connectWirelessElements() already set predecessors for simulation input routing,
-    // but those don't create QNEConnection objects, so the connection-walking loop above
+    // but those don't create Connection objects, so the connection-walking loop above
     // doesn't see wireless dependencies.  We must add them explicitly here for correct
     // topological ordering.
     for (auto *elm : std::as_const(elements)) {

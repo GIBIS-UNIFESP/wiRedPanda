@@ -27,9 +27,9 @@
 struct SerializationContext;
 
 class GraphicElement;
-class QNEInputPort;
-class QNEOutputPort;
-class QNEPort;
+class InputPort;
+class OutputPort;
+class Port;
 class QPainter;
 class QStyleOptionGraphicsItem;
 class QSvgRenderer;
@@ -45,7 +45,7 @@ class QWidget;
  * I/O elements, integrated circuits, and all other element types.
  *
  * Responsibilities handled here:
- * - Port management (input and output QNEPort children).
+ * - Port management (input and output Port children).
  * - Pixmap / appearance rendering with default and user-defined appearances.
  * - Serialization to / from a versioned QDataStream (save/load).
  * - Grid-snapping and wire-update callbacks via itemChange().
@@ -141,19 +141,19 @@ public:
     // --- Port Access ---
 
     /// Returns the input port at \a index (default 0).
-    QNEInputPort *inputPort(const int index = 0);
+    InputPort *inputPort(const int index = 0);
 
     /// Returns the output port at \a index (default 0).
-    QNEOutputPort *outputPort(const int index = 0);
+    OutputPort *outputPort(const int index = 0);
 
     /// Returns a const reference to the vector of all input ports.
-    const QVector<QNEInputPort *> &inputs() const;
+    const QVector<InputPort *> &inputs() const;
 
     /// Returns a const reference to the vector of all output ports.
-    const QVector<QNEOutputPort *> &outputs() const;
+    const QVector<OutputPort *> &outputs() const;
 
-    /// Returns a combined list of all input and output ports as QNEPort pointers.
-    QVector<QNEPort *> allPorts() const;
+    /// Returns a combined list of all input and output ports as Port pointers.
+    QVector<Port *> allPorts() const;
 
     /// Returns the current number of input ports.
     int inputSize() const;
@@ -449,7 +449,7 @@ public:
     virtual void setOutputSize(const int size);
 
     /// Replaces the input port vector with \a inputs.
-    void setInputs(const QVector<QNEInputPort *> &inputs);
+    void setInputs(const QVector<InputPort *> &inputs);
 
     /// Sets the object name of all ports to \a name for identification.
     void setPortName(const QString &name);
@@ -473,7 +473,7 @@ protected:
 
     /**
      * \brief Returns the bounding rectangle that encompasses all child ports.
-     * \details Iterates over childItems(), mapping each QNEPort's bounding rect
+     * \details Iterates over childItems(), mapping each Port's bounding rect
      * into the element's local coordinate space.
      * \return Combined bounding QRectF of all port children.
      */

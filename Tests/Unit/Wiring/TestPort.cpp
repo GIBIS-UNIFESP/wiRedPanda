@@ -1,22 +1,22 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Nodes/TestQNEPort.h"
+#include "Tests/Unit/Wiring/TestPort.h"
 
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
-void TestQNEPort::testPortTooltip()
+void TestPort::testPortTooltip()
 {
-    // QNEPort is abstract — use QNEInputPort
-    QNEInputPort port;
+    // Port is abstract — use InputPort
+    InputPort port;
     port.setToolTip("Test tooltip");
     QCOMPARE(port.toolTip(), QString("Test tooltip"));
 }
 
-void TestQNEPort::testPortHoverState()
+void TestPort::testPortHoverState()
 {
-    QNEInputPort port;
+    InputPort port;
     QVERIFY(port.isInput());
     QVERIFY(!port.isOutput());
 }

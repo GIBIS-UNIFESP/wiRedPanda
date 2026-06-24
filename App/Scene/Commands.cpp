@@ -16,8 +16,8 @@
 #include "App/Scene/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
@@ -41,7 +41,7 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
     // These elements must be re-saved/re-loaded during undo so their port state
     // (connected/disconnected) is correctly restored after the operation.
     for (auto *item : connections) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             if (auto *port1 = conn->startPort(); port1 && port1->graphicElement() && !ids.contains(port1->graphicElement()->id())) {
                 otherIds.append(port1->graphicElement()->id());
             }
@@ -93,7 +93,7 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
 
     /* Stores the other wires selected */
     for (auto *item : items) {
-        if (item->type() == QNEConnection::Type) {
+        if (item->type() == Connection::Type) {
             if (!connections.contains(item)) {
                 connections.append(item);
             }
@@ -143,9 +143,9 @@ const QList<GraphicElement *> findElements(Scene *scene, const QList<int> &ids)
     return items;
 }
 
-QNEConnection *findConn(Scene *scene, const int id)
+Connection *findConn(Scene *scene, const int id)
 {
-    return dynamic_cast<QNEConnection *>(scene->itemById(id));
+    return dynamic_cast<Connection *>(scene->itemById(id));
 }
 
 GraphicElement *findElm(Scene *scene, const int id)
@@ -190,7 +190,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     auto context = scene->deserializationContext(portMap, version);
 
     for (auto *elm : CommandUtils::findElements(scene, otherIds)) {
@@ -230,13 +230,13 @@ void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
 {
     int connCount = 0;
     for (int port = fromPort; port < toPort; ++port) {
-        QNEPort *p = isInput ? static_cast<QNEPort *>(elm->inputPort(port)) : static_cast<QNEPort *>(elm->outputPort(port));
+        Port *p = isInput ? static_cast<Port *>(elm->inputPort(port)) : static_cast<Port *>(elm->outputPort(port));
         connCount += static_cast<int>(p->connections().size());
     }
     stream << connCount;
 
     for (int port = fromPort; port < toPort; ++port) {
-        QNEPort *p = isInput ? static_cast<QNEPort *>(elm->inputPort(port)) : static_cast<QNEPort *>(elm->outputPort(port));
+        Port *p = isInput ? static_cast<Port *>(elm->inputPort(port)) : static_cast<Port *>(elm->outputPort(port));
         while (!p->connections().isEmpty()) {
             auto *conn = p->connections().constFirst();
             stream << conn->id();
@@ -471,7 +471,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
 
     for (auto *elm : elements) {
@@ -480,7 +480,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     }
 }
 
-SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, QUndoCommand *parent)
+SplitCommand::SplitCommand(Connection *conn, QPointF mousePos, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
 {
@@ -524,7 +524,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
     // Reserve a stable ID for the second wire segment (conn2) by briefly registering
     // it in the scene so it receives a real scene-local ID, then removing it.
     // redo() will recreate conn2 using updateItemId() to restore this same ID.
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     m_scene->addItem(conn2);
     m_c2Id = conn2->id();
     m_scene->removeItem(conn2);
@@ -542,7 +542,7 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
 void SplitCommand::redo()
 {
     qCDebug(zero) << text();
-    // Allocating and rewiring QNEConnections while Simulation::m_connections
+    // Allocating and rewiring Connections while Simulation::m_connections
     // is still mid-iterate on the old topology faults on the dangling entry.
     SimulationBlocker blocker(m_scene->simulation());
     auto *conn1 = CommandUtils::findConn(m_scene, m_c1Id);
@@ -560,7 +560,7 @@ void SplitCommand::redo()
     // After undo(), conn2 and node were deleted; recreate them with the same
     // stable IDs so subsequent redo() calls find them correctly via findConn/findElm
     if (!conn2) {
-        conn2 = new QNEConnection();
+        conn2 = new Connection();
         m_scene->updateItemId(conn2, m_c2Id);
     }
 
@@ -662,7 +662,7 @@ void MorphCommand::undo()
             continue;
         }
 
-        auto *conn = new QNEConnection();
+        auto *conn = new Connection();
         if (info.isInput) {
             conn->setStartPort(otherElm->outputPort(info.otherPortIndex));
             conn->setEndPort(morphedElm->inputPort(info.portIndex));
@@ -780,27 +780,27 @@ void MorphCommand::transferPortConnections(GraphicElement *oldElm, GraphicElemen
 {
     const int portCount = isInput ? oldElm->inputSize() : oldElm->outputSize();
     for (int port = 0; port < portCount; ++port) {
-        QNEPort *oldPort = isInput ? static_cast<QNEPort *>(oldElm->inputPort(port))
-                                   : static_cast<QNEPort *>(oldElm->outputPort(port));
+        Port *oldPort = isInput ? static_cast<Port *>(oldElm->inputPort(port))
+                                   : static_cast<Port *>(oldElm->outputPort(port));
         while (!oldPort->connections().isEmpty()) {
             auto *conn = oldPort->connections().constFirst();
             if (!conn) { break; }
             const bool ownsSide = isInput ? (conn->endPort() == oldElm->inputPort(port))
                                           : (conn->startPort() == oldElm->outputPort(port));
             if (!ownsSide) { break; }
-            QNEPort *newPort = isInput ? static_cast<QNEPort *>(newElm->inputPort(port))
-                                       : static_cast<QNEPort *>(newElm->outputPort(port));
+            Port *newPort = isInput ? static_cast<Port *>(newElm->inputPort(port))
+                                       : static_cast<Port *>(newElm->outputPort(port));
             if (newPort) {
                 if (isInput) {
-                    conn->setEndPort(static_cast<QNEInputPort *>(newPort));
+                    conn->setEndPort(static_cast<InputPort *>(newPort));
                 } else {
-                    conn->setStartPort(static_cast<QNEOutputPort *>(newPort));
+                    conn->setStartPort(static_cast<OutputPort *>(newPort));
                 }
                 conn->setHighLight(false);
             } else {
                 // Port no longer exists on the morphed element — record before deleting
-                QNEPort *otherPort = isInput ? static_cast<QNEPort *>(conn->startPort())
-                                             : static_cast<QNEPort *>(conn->endPort());
+                Port *otherPort = isInput ? static_cast<Port *>(conn->startPort())
+                                             : static_cast<Port *>(conn->endPort());
                 if (deleted && otherPort && otherPort->graphicElement()) {
                     deleted->append({conn->id(), oldElm->id(), port, isInput, otherPort->graphicElement()->id(), otherPort->index()});
                 }
@@ -886,7 +886,7 @@ ChangePortSizeCommand::ChangePortSizeCommand(const QList<GraphicElement *> &elem
 
 void ChangePortSizeCommand::redo()
 {
-    // drainPortConnections() deletes QNEConnections for removed ports; a
+    // drainPortConnections() deletes Connections for removed ports; a
     // simulation tick between that delete and setCircuitUpdateRequired()
     // would see those freed connections in Simulation::m_connections.
     SimulationBlocker blocker(m_scene->simulation());
@@ -907,9 +907,9 @@ void ChangePortSizeCommand::redo()
         const int oldSize = m_isInput ? elm->inputSize() : elm->outputSize();
 
         for (int port = m_newPortSize; port < oldSize; ++port) {
-            QNEPort *nport = m_isInput ? static_cast<QNEPort *>(elm->inputPort(port)) : elm->outputPort(port);
+            Port *nport = m_isInput ? static_cast<Port *>(elm->inputPort(port)) : elm->outputPort(port);
             for (auto *conn : nport->connections()) {
-                QNEPort *otherPort = m_isInput ? static_cast<QNEPort *>(conn->startPort()) : conn->endPort();
+                Port *otherPort = m_isInput ? static_cast<Port *>(conn->startPort()) : conn->endPort();
                 otherPort->graphicElement()->save(stream);
                 serializationOrder.append(otherPort->graphicElement());
             }
@@ -945,7 +945,7 @@ void ChangePortSizeCommand::undo()
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
 
     for (auto *elm : serializationOrder) {
@@ -956,7 +956,7 @@ void ChangePortSizeCommand::undo()
         int connCount; stream >> connCount;
         for (int i = 0; i < connCount; ++i) {
             int connId; stream >> connId;
-            auto *conn = new QNEConnection();
+            auto *conn = new Connection();
             conn->load(stream, context);
             m_scene->updateItemId(conn, connId);
             m_scene->addItem(conn);
@@ -1138,7 +1138,7 @@ void UpdateBlobCommand::loadData(QByteArray &itemData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
 
     for (auto *elm : elements) {
@@ -1156,8 +1156,8 @@ void UpdateBlobCommand::reconnectConnections()
             continue;
         }
 
-        QNEInputPort *inPort = nullptr;
-        QNEOutputPort *outPort = nullptr;
+        InputPort *inPort = nullptr;
+        OutputPort *outPort = nullptr;
 
         if (ci.isInput) {
             inPort = (ci.portIndex >= 0 && ci.portIndex < elm->inputSize()) ? elm->inputPort(ci.portIndex) : nullptr;
@@ -1168,7 +1168,7 @@ void UpdateBlobCommand::reconnectConnections()
         }
 
         if (!inPort || !outPort) {
-            // Port shrunk: the QNEConnection that occupied this slot was
+            // Port shrunk: the Connection that occupied this slot was
             // cascade-deleted by Qt when the IC's port was destroyed, but
             // QGraphicsScene's non-virtual removeItem skipped our override
             // and the m_elementRegistry entry still points at freed memory.
@@ -1191,7 +1191,7 @@ void UpdateBlobCommand::reconnectConnections()
             continue;
         }
 
-        auto *conn = new QNEConnection();
+        auto *conn = new Connection();
         conn->setStartPort(outPort);
         conn->setEndPort(inPort);
         m_scene->updateItemId(conn, ci.connectionId);

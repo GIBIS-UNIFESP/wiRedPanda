@@ -9,8 +9,8 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -252,21 +252,21 @@ void TestSceneState::testEditedConnectionClears()
     scene.addItem(output);
 
     // Create connections between elements
-    QNEPort *outPort = input->outputPort(0);
-    QNEPort *inPort = and1->inputPort(0);
+    Port *outPort = input->outputPort(0);
+    Port *inPort = and1->inputPort(0);
     QVERIFY(outPort != nullptr && inPort != nullptr);
 
     // Create a connection
-    auto conn = std::make_unique<QNEConnection>(nullptr);
-    conn->setStartPort(dynamic_cast<QNEOutputPort *>(outPort));
-    conn->setEndPort(dynamic_cast<QNEInputPort *>(inPort));
+    auto conn = std::make_unique<Connection>(nullptr);
+    conn->setStartPort(dynamic_cast<OutputPort *>(outPort));
+    conn->setEndPort(dynamic_cast<InputPort *>(inPort));
     scene.addItem(conn.get());
 
     // Verify connection exists in scene
     QList<QGraphicsItem *> connItems = scene.items();
     bool connectionFound = false;
     for (QGraphicsItem *item : std::as_const(connItems)) {
-        auto *c = dynamic_cast<QNEConnection *>(item);
+        auto *c = dynamic_cast<Connection *>(item);
         if (c == conn.get()) {
             connectionFound = true;
             break;
@@ -280,7 +280,7 @@ void TestSceneState::testEditedConnectionClears()
     // Verify connection is no longer in scene
     connItems = scene.items();
     for (QGraphicsItem *item : std::as_const(connItems)) {
-        auto *c = dynamic_cast<QNEConnection *>(item);
+        auto *c = dynamic_cast<Connection *>(item);
         QVERIFY2(c != conn.get(), "Removed connection should not be in scene");
     }
 }
@@ -302,27 +302,27 @@ void TestSceneState::testActiveConnectionTracking()
     scene.addItem(or1);
 
     // Create connections to track their state
-    QNEPort *inputPort = input->outputPort(0);
-    QNEPort *and1Port1 = and1->inputPort(0);
-    QNEPort *and1Port2 = and1->inputPort(1);
-    QNEPort *orPort = or1->inputPort(0);
+    Port *inputPort = input->outputPort(0);
+    Port *and1Port1 = and1->inputPort(0);
+    Port *and1Port2 = and1->inputPort(1);
+    Port *orPort = or1->inputPort(0);
 
     // Connect input to AND gate
-    auto conn1 = std::make_unique<QNEConnection>(nullptr);
-    conn1->setStartPort(dynamic_cast<QNEOutputPort *>(inputPort));
-    conn1->setEndPort(dynamic_cast<QNEInputPort *>(and1Port1));
+    auto conn1 = std::make_unique<Connection>(nullptr);
+    conn1->setStartPort(dynamic_cast<OutputPort *>(inputPort));
+    conn1->setEndPort(dynamic_cast<InputPort *>(and1Port1));
     scene.addItem(conn1.get());
 
-    auto *conn2 = new QNEConnection(nullptr);
-    conn2->setStartPort(dynamic_cast<QNEOutputPort *>(inputPort));
-    conn2->setEndPort(dynamic_cast<QNEInputPort *>(and1Port2));
+    auto *conn2 = new Connection(nullptr);
+    conn2->setStartPort(dynamic_cast<OutputPort *>(inputPort));
+    conn2->setEndPort(dynamic_cast<InputPort *>(and1Port2));
     scene.addItem(conn2);
 
     // Connect AND output to OR gate
-    QNEPort *andOutput = and1->outputPort(0);
-    auto *conn3 = new QNEConnection(nullptr);
-    conn3->setStartPort(dynamic_cast<QNEOutputPort *>(andOutput));
-    conn3->setEndPort(dynamic_cast<QNEInputPort *>(orPort));
+    Port *andOutput = and1->outputPort(0);
+    auto *conn3 = new Connection(nullptr);
+    conn3->setStartPort(dynamic_cast<OutputPort *>(andOutput));
+    conn3->setEndPort(dynamic_cast<InputPort *>(orPort));
     scene.addItem(conn3);
 
     // Count connections in scene
@@ -367,7 +367,7 @@ void TestSceneState::testConnectionStateTransitions()
     QVERIFY(connectionsBefore == 0);
 
     // Create first connection (input → AND)
-    auto *conn1 = new QNEConnection(nullptr);
+    auto *conn1 = new Connection(nullptr);
     conn1->setStartPort(input->outputPort(0));
     conn1->setEndPort(and1->inputPort(0));
     scene.addItem(conn1);
@@ -376,7 +376,7 @@ void TestSceneState::testConnectionStateTransitions()
     QCOMPARE(connectionsAfterConn1, connectionsBefore + 1);
 
     // Create second connection (AND → LED)
-    auto *conn2 = new QNEConnection(nullptr);
+    auto *conn2 = new Connection(nullptr);
     conn2->setStartPort(and1->outputPort(0));
     conn2->setEndPort(led->inputPort(0));
     scene.addItem(conn2);
@@ -463,18 +463,18 @@ void TestSceneState::testHoverPortTracking()
     QCOMPARE(allElements.size(), 3);
 
     // Test port access (ports should be trackable for hover states)
-    QNEPort *port1 = elem1->outputPort(0);
-    QNEPort *port2 = elem2->inputPort(0);
-    QNEPort *port3 = elem3->inputPort(0);
+    Port *port1 = elem1->outputPort(0);
+    Port *port2 = elem2->inputPort(0);
+    Port *port3 = elem3->inputPort(0);
 
     QVERIFY2(port1 != nullptr, "Element should have output port");
     QVERIFY2(port2 != nullptr, "Element should have input port");
     QVERIFY2(port3 != nullptr, "Element should have input port");
 
     // Verify ports can be used to create connections (for hover tracking)
-    auto *conn = new QNEConnection(nullptr);
-    conn->setStartPort(dynamic_cast<QNEOutputPort *>(port1));
-    conn->setEndPort(dynamic_cast<QNEInputPort *>(port2));
+    auto *conn = new Connection(nullptr);
+    conn->setStartPort(dynamic_cast<OutputPort *>(port1));
+    conn->setEndPort(dynamic_cast<InputPort *>(port2));
     scene.addItem(conn);
 
     // Verify we can navigate the connection chain
@@ -610,7 +610,7 @@ void TestSceneState::testConnectionCountTracking()
     scene.addItem(input);
     scene.addItem(output);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(input->outputPort(0));
     conn->setEndPort(output->inputPort(0));
     scene.addItem(conn);
@@ -677,7 +677,7 @@ void TestSceneState::testConnectionZOrderBehindElements()
     scene.addItem(input);
     scene.addItem(output);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(input->outputPort(0));
     conn->setEndPort(output->inputPort(0));
     scene.addItem(conn);
@@ -759,7 +759,7 @@ void TestSceneState::testConnectionPropertiesAfterElementMove()
     scene.addItem(input);
     scene.addItem(output);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(input->outputPort(0));
     conn->setEndPort(output->inputPort(0));
     scene.addItem(conn);

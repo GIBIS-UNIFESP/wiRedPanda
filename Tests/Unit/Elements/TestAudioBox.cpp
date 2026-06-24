@@ -15,7 +15,7 @@
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
 #include "Tests/Common/TestUtils.h"
@@ -230,7 +230,7 @@ void TestAudioBox::testLoadVersionOld()
     auto audioBox2 = std::make_unique<AudioBox>();
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     SerializationContext context{portMap, FormatRev::current, {}};
     audioBox2->load(loadStream, context);
 
@@ -252,7 +252,7 @@ void TestAudioBox::testLoadVersionNew()
     auto audioBox2 = std::make_unique<AudioBox>();
 
     QDataStream loadStream(data);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     SerializationContext context{portMap, FormatRev::current, {}};
     audioBox2->load(loadStream, context);
 

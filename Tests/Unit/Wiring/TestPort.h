@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QTest>
 
-class TestQNEPort : public QObject
+class TestPort : public QObject
 {
     Q_OBJECT
 

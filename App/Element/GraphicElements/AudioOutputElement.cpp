@@ -6,7 +6,7 @@
 #include <QAudioDevice>
 #include <QMediaDevices>
 
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent)
     : GraphicElement(type, parent)

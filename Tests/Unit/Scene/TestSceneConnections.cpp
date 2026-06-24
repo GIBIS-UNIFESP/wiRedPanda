@@ -9,7 +9,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -71,7 +71,7 @@ void TestSceneConnections::testConnectionQueryAfterWiring()
     scene.addItem(orGate);
 
     // Create a connection manually
-    auto *connection = new QNEConnection(nullptr);
+    auto *connection = new Connection(nullptr);
 
     // Connect output to input
     auto *output = andGate->outputPort(0);
@@ -107,12 +107,12 @@ void TestSceneConnections::testConnectionListRetrieval()
     scene.addItem(and2);
 
     // Create multiple connections
-    auto *conn1 = new QNEConnection(nullptr);
+    auto *conn1 = new Connection(nullptr);
     conn1->setStartPort(and1->outputPort(0));
     conn1->setEndPort(or1->inputPort(0));
     scene.addItem(conn1);
 
-    auto *conn2 = new QNEConnection(nullptr);
+    auto *conn2 = new Connection(nullptr);
     conn2->setStartPort(or1->outputPort(0));
     conn2->setEndPort(and2->inputPort(0));
     scene.addItem(conn2);
@@ -150,7 +150,7 @@ void TestSceneConnections::testConnectionCreationBetweenPorts()
     QVERIFY(input != nullptr);
 
     // Create connection
-    auto *connection = new QNEConnection(nullptr);
+    auto *connection = new Connection(nullptr);
     connection->setStartPort(output);
     connection->setEndPort(input);
     scene.addItem(connection);
@@ -177,7 +177,7 @@ void TestSceneConnections::testConnectionWithMultiplePorts()
 
     // Connect multiple ports
     for (int i = 0; i < qMin(andGate->inputs().size(), orGate->inputs().size()); ++i) {
-        auto *conn = new QNEConnection(nullptr);
+        auto *conn = new Connection(nullptr);
         conn->setStartPort(andGate->outputPort(0));
         conn->setEndPort(orGate->inputPort(i));
         scene.addItem(conn);
@@ -212,7 +212,7 @@ void TestSceneConnections::testConnectionPreservesPortReferences()
     auto *input = gate2->inputPort(0);
 
     // Create connection
-    auto *connection = new QNEConnection(nullptr);
+    auto *connection = new Connection(nullptr);
     connection->setStartPort(output);
     connection->setEndPort(input);
 
@@ -240,7 +240,7 @@ void TestSceneConnections::testConnectionListUpdatesAfterAddition()
     int initialCount = static_cast<int>(input->connections().size());
 
     // Add connection
-    auto *conn = new QNEConnection(nullptr);
+    auto *conn = new Connection(nullptr);
     conn->setStartPort(gate1->outputPort(0));
     conn->setEndPort(input);
     scene.addItem(conn);
@@ -274,7 +274,7 @@ void TestSceneConnections::testValidConnectionBetweenInputOutput()
     QVERIFY(inputPort != nullptr);
 
     // Create valid connection
-    auto *connection = new QNEConnection(nullptr);
+    auto *connection = new Connection(nullptr);
     connection->setStartPort(outputPort);
     connection->setEndPort(inputPort);
     scene.addItem(connection);
@@ -298,7 +298,7 @@ void TestSceneConnections::testConnectionStatusTracking()
     scene.addItem(gate2);
 
     // Create connection
-    auto *connection = new QNEConnection(nullptr);
+    auto *connection = new Connection(nullptr);
     connection->setStartPort(gate1->outputPort(0));
     connection->setEndPort(gate2->inputPort(0));
     scene.addItem(connection);
@@ -324,7 +324,7 @@ void TestSceneConnections::testConnectionRemovalUpdatesCounters()
     auto *input = gate2->inputPort(0);
 
     // Create and add connection
-    auto connection = std::make_unique<QNEConnection>(nullptr);
+    auto connection = std::make_unique<Connection>(nullptr);
     connection->setStartPort(gate1->outputPort(0));
     connection->setEndPort(input);
     scene.addItem(connection.get());
@@ -370,7 +370,7 @@ void TestSceneConnections::testWirelessRxPortIsNotRequired()
     QVERIFY(src != nullptr);
     scene.addItem(src);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(src->outputPort(0));
     conn->setEndPort(node->inputPort(0));
     scene.addItem(conn);
@@ -398,7 +398,7 @@ void TestSceneConnections::testWirelessNoneModeNodePortIsRequired()
     QVERIFY(src != nullptr);
     scene.addItem(src);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(src->outputPort(0));
     conn->setEndPort(node->inputPort(0));
     scene.addItem(conn);

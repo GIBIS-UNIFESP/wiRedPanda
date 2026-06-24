@@ -7,8 +7,8 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 
@@ -61,8 +61,8 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
         return createErrorResponse(errorMsg, requestId, JsonRpcError::PortNotFound);
     }
 
-    QNEPort *outputPort = sourceElement->outputPort(sourcePort);
-    QNEPort *inputPort = targetElement->inputPort(targetPort);
+    Port *outputPort = sourceElement->outputPort(sourcePort);
+    Port *inputPort = targetElement->inputPort(targetPort);
 
     if (!outputPort || !inputPort) {
         return createErrorResponse("Invalid port specification", requestId, JsonRpcError::PortNotFound);
@@ -73,9 +73,9 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
-    auto *connection = new QNEConnection();
-    connection->setStartPort(dynamic_cast<QNEOutputPort *>(outputPort));
-    connection->setEndPort(dynamic_cast<QNEInputPort *>(inputPort));
+    auto *connection = new Connection();
+    connection->setStartPort(dynamic_cast<OutputPort *>(outputPort));
+    connection->setEndPort(dynamic_cast<InputPort *>(inputPort));
     connection->updatePath();
 
     try {
@@ -116,13 +116,13 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
 
     const auto connections = scene->items();
     for (auto *item : connections) {
-        auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
+        auto *connection = qgraphicsitem_cast<Connection *>(item);
         if (!connection) {
             continue;
         }
 
-        QNEPort *port1 = connection->startPort();
-        QNEPort *port2 = connection->endPort();
+        Port *port1 = connection->startPort();
+        Port *port2 = connection->endPort();
 
         if (!port1 || !port2) {
             continue;
@@ -155,13 +155,13 @@ QJsonObject ConnectionHandler::handleListConnections(const QJsonObject &, const 
     const auto sceneItems = scene->items();
 
     for (const auto *item : sceneItems) {
-        const auto *connection = qgraphicsitem_cast<const QNEConnection *>(item);
+        const auto *connection = qgraphicsitem_cast<const Connection *>(item);
         if (!connection) {
             continue;
         }
 
-        const QNEPort *startPort = connection->startPort();
-        const QNEPort *endPort = connection->endPort();
+        const Port *startPort = connection->startPort();
+        const Port *endPort = connection->endPort();
 
         if (!startPort || !endPort) {
             continue;
@@ -231,15 +231,15 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
     }
 
     // Find the connection between source and target
-    QNEConnection *connectionToSplit = nullptr;
+    Connection *connectionToSplit = nullptr;
     const auto sceneItems = scene->items();
 
     for (auto *item : sceneItems) {
-        auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
+        auto *connection = qgraphicsitem_cast<Connection *>(item);
         if (!connection) { continue; }
 
-        QNEPort *port1 = connection->startPort();
-        QNEPort *port2 = connection->endPort();
+        Port *port1 = connection->startPort();
+        Port *port2 = connection->endPort();
 
         if (!port1 || !port2) { 
             continue;

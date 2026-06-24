@@ -316,7 +316,7 @@ void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const
     QByteArray data(snapshot);
     QDataStream stream(&data, QIODevice::ReadOnly);
     const auto version = Serialization::readPandaHeader(stream);
-    QMap<quint64, QNEPort *> portMap;
+    QMap<quint64, Port *> portMap;
     auto ctx = scene->deserializationContext(portMap, version);
     for (auto *elm : elements) {
         elm->load(stream, ctx);

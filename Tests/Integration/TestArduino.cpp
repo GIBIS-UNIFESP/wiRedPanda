@@ -33,8 +33,8 @@ QString TestArduino::s_cliCachePath;
 #include "App/Element/IC.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Core/Priorities.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/ICTestHelpers.h"
@@ -174,14 +174,14 @@ IC *TestArduino::createICContaining(IC *innerIC, const QString &label)
     return outerIC;
 }
 
-QNEConnection *TestArduino::createConnection(GraphicElement *from, int fromPort, GraphicElement *to, int toPort)
+Connection *TestArduino::createConnection(GraphicElement *from, int fromPort, GraphicElement *to, int toPort)
 {
     auto *startPort = from->outputPort(fromPort);
     auto *endPort = to->inputPort(toPort);
     if (!startPort || !endPort) {
         return nullptr;
     }
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(startPort);
     conn->setEndPort(endPort);
     return conn;
@@ -352,11 +352,11 @@ void TestArduino::testGateGeneration()
     auto gate = ElementFactory::buildElement(static_cast<ElementType>(gateType));
     auto out  = ElementFactory::buildElement(ElementType::Led);
 
-    auto conn1 = std::make_unique<QNEConnection>();
+    auto conn1 = std::make_unique<Connection>();
     conn1->setStartPort(inp1->outputPort());
     conn1->setEndPort(gate->inputPort(0));
 
-    auto conn2 = std::make_unique<QNEConnection>();
+    auto conn2 = std::make_unique<Connection>();
     conn2->setStartPort(inp2->outputPort());
     conn2->setEndPort(gate->inputPort(1));
 
@@ -381,7 +381,7 @@ void TestArduino::testNotGateGeneration()
     elements << in << notGate << out;
 
     // Create connection to verify NOT operator is generated
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(in->outputPort());
     conn->setEndPort(notGate->inputPort(0));
 
@@ -456,11 +456,11 @@ void TestArduino::testFlipFlopGeneration()
     elements << in << clock << dff << out;
 
     // Create connections for D flip-flop
-    auto conn_d = std::make_unique<QNEConnection>();
+    auto conn_d = std::make_unique<Connection>();
     conn_d->setStartPort(in->outputPort());
     conn_d->setEndPort(dff->inputPort(0));  // D input
 
-    auto conn_clk = std::make_unique<QNEConnection>();
+    auto conn_clk = std::make_unique<Connection>();
     conn_clk->setStartPort(clock->outputPort());
     conn_clk->setEndPort(dff->inputPort(1));  // Clock input
 
@@ -491,11 +491,11 @@ void TestArduino::testLatchGeneration()
     elements << in1 << in2 << latch << out;
 
     // Create connections for D latch (level-triggered)
-    auto conn_d = std::make_unique<QNEConnection>();
+    auto conn_d = std::make_unique<Connection>();
     conn_d->setStartPort(in1->outputPort());
     conn_d->setEndPort(latch->inputPort(0));  // D input
 
-    auto conn_en = std::make_unique<QNEConnection>();
+    auto conn_en = std::make_unique<Connection>();
     conn_en->setStartPort(in2->outputPort());
     conn_en->setEndPort(latch->inputPort(1));  // Enable input
 
@@ -728,7 +728,7 @@ void TestArduino::testBoardSelection()
     auto in = ElementFactory::buildElement(ElementType::InputSwitch);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(in->outputPort());
     conn->setEndPort(out->inputPort());
 
@@ -773,7 +773,7 @@ void TestArduino::testBuzzerGeneration()
     auto buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     buzzer->setLabel("alarm");
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(buzzerInput->outputPort());
     conn->setEndPort(buzzer->inputPort());
 
@@ -802,15 +802,15 @@ void TestArduino::testDisplay7Generation()
     auto display = ElementFactory::buildElement(ElementType::Display7);
     display->setLabel("seg_display");
 
-    auto c0 = std::make_unique<QNEConnection>();
+    auto c0 = std::make_unique<Connection>();
     c0->setStartPort(bit0->outputPort());
     c0->setEndPort(display->inputPort(0));
 
-    auto c1 = std::make_unique<QNEConnection>();
+    auto c1 = std::make_unique<Connection>();
     c1->setStartPort(bit1->outputPort());
     c1->setEndPort(display->inputPort(1));
 
-    auto c2 = std::make_unique<QNEConnection>();
+    auto c2 = std::make_unique<Connection>();
     c2->setStartPort(bit2->outputPort());
     c2->setEndPort(display->inputPort(2));
 
@@ -843,11 +843,11 @@ void TestArduino::testDisplay14Generation()
     auto display = ElementFactory::buildElement(ElementType::Display14);
     display->setLabel("alphanum");
 
-    auto c0 = std::make_unique<QNEConnection>();
+    auto c0 = std::make_unique<Connection>();
     c0->setStartPort(sw0->outputPort());
     c0->setEndPort(display->inputPort(0));
 
-    auto c1 = std::make_unique<QNEConnection>();
+    auto c1 = std::make_unique<Connection>();
     c1->setStartPort(sw1->outputPort());
     c1->setEndPort(display->inputPort(1));
 
@@ -881,11 +881,11 @@ void TestArduino::testInputRotaryGeneration()
     auto led1 = ElementFactory::buildElement(ElementType::Led);
     led1->setLabel("out1");
 
-    auto c0 = std::make_unique<QNEConnection>();
+    auto c0 = std::make_unique<Connection>();
     c0->setStartPort(rotary->outputPort(0));
     c0->setEndPort(led0->inputPort(0));
 
-    auto c1 = std::make_unique<QNEConnection>();
+    auto c1 = std::make_unique<Connection>();
     c1->setStartPort(rotary->outputPort(1));
     c1->setEndPort(led1->inputPort(0));
 
@@ -1015,15 +1015,15 @@ void TestArduino::testAdvancedRealWorldCircuits()
     walkSignal->setLabel("walk_signal");
     auto notGate = ElementFactory::buildElement(ElementType::Not);
 
-    auto c1 = std::make_unique<QNEConnection>();
+    auto c1 = std::make_unique<Connection>();
     c1->setStartPort(pedButton->outputPort());
     c1->setEndPort(notGate->inputPort());
 
-    auto c2 = std::make_unique<QNEConnection>();
+    auto c2 = std::make_unique<Connection>();
     c2->setStartPort(notGate->outputPort());
     c2->setEndPort(greenLight->inputPort());
 
-    auto c3 = std::make_unique<QNEConnection>();
+    auto c3 = std::make_unique<Connection>();
     c3->setStartPort(pedButton->outputPort());
     c3->setEndPort(redLight->inputPort());
 
@@ -1098,11 +1098,11 @@ void TestArduino::testTFlipFlopGeneration()
     elements << in << clock << tff << out;
 
     // Create connections for T flip-flop
-    auto conn_t = std::make_unique<QNEConnection>();
+    auto conn_t = std::make_unique<Connection>();
     conn_t->setStartPort(in->outputPort());
     conn_t->setEndPort(tff->inputPort(0));  // T input
 
-    auto conn_clk = std::make_unique<QNEConnection>();
+    auto conn_clk = std::make_unique<Connection>();
     conn_clk->setStartPort(clock->outputPort());
     conn_clk->setEndPort(tff->inputPort(1));  // Clock input
 
@@ -1132,15 +1132,15 @@ void TestArduino::testJKFlipFlopGeneration()
     elements << j_in << k_in << clock << jkff << out;
 
     // Create connections for JK flip-flop
-    auto conn_j = std::make_unique<QNEConnection>();
+    auto conn_j = std::make_unique<Connection>();
     conn_j->setStartPort(j_in->outputPort());
     conn_j->setEndPort(jkff->inputPort(0));  // J input
 
-    auto conn_clk = std::make_unique<QNEConnection>();
+    auto conn_clk = std::make_unique<Connection>();
     conn_clk->setStartPort(clock->outputPort());
     conn_clk->setEndPort(jkff->inputPort(1));  // Clock input
 
-    auto conn_k = std::make_unique<QNEConnection>();
+    auto conn_k = std::make_unique<Connection>();
     conn_k->setStartPort(k_in->outputPort());
     conn_k->setEndPort(jkff->inputPort(2));  // K input
 
@@ -1172,15 +1172,15 @@ void TestArduino::testSRFlipFlopGeneration()
     elements << set_in << reset_in << clock << srff << out;
 
     // Create connections for SR flip-flop
-    auto conn_s = std::make_unique<QNEConnection>();
+    auto conn_s = std::make_unique<Connection>();
     conn_s->setStartPort(set_in->outputPort());
     conn_s->setEndPort(srff->inputPort(0));  // S input
 
-    auto conn_clk = std::make_unique<QNEConnection>();
+    auto conn_clk = std::make_unique<Connection>();
     conn_clk->setStartPort(clock->outputPort());
     conn_clk->setEndPort(srff->inputPort(1));  // Clock input
 
-    auto conn_r = std::make_unique<QNEConnection>();
+    auto conn_r = std::make_unique<Connection>();
     conn_r->setStartPort(reset_in->outputPort());
     conn_r->setEndPort(srff->inputPort(2));  // R input
 
@@ -1215,19 +1215,19 @@ void TestArduino::testFlipFlopPresetClear()
     elements << d_in << clk << prst << clr << dff << out_q << out_qn;
 
     // Create connections
-    auto conn_d = std::make_unique<QNEConnection>();
+    auto conn_d = std::make_unique<Connection>();
     conn_d->setStartPort(d_in->outputPort());
     conn_d->setEndPort(dff->inputPort(0));
 
-    auto conn_clk = std::make_unique<QNEConnection>();
+    auto conn_clk = std::make_unique<Connection>();
     conn_clk->setStartPort(clk->outputPort());
     conn_clk->setEndPort(dff->inputPort(1));
 
-    auto conn_prst = std::make_unique<QNEConnection>();
+    auto conn_prst = std::make_unique<Connection>();
     conn_prst->setStartPort(prst->outputPort());
     conn_prst->setEndPort(dff->inputPort(2));
 
-    auto conn_clr = std::make_unique<QNEConnection>();
+    auto conn_clr = std::make_unique<Connection>();
     conn_clr->setStartPort(clr->outputPort());
     conn_clr->setEndPort(dff->inputPort(3));
 
@@ -1349,7 +1349,7 @@ void TestArduino::testUnconnectedInput()
     auto gate = ElementFactory::buildElement(ElementType::And);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(in1->outputPort());
     conn->setEndPort(gate->inputPort(0));
 
@@ -1711,8 +1711,8 @@ void TestArduino::testWirelessNodeGeneration()
     auto *led = new Led();
 
     // Physical wire: InputSwitch → Tx node, Rx node → LED
-    auto conn1 = std::unique_ptr<QNEConnection>(createConnection(sw, 0, txNode, 0));
-    auto conn2 = std::unique_ptr<QNEConnection>(createConnection(rxNode, 0, led, 0));
+    auto conn1 = std::unique_ptr<Connection>(createConnection(sw, 0, txNode, 0));
+    auto conn2 = std::unique_ptr<Connection>(createConnection(rxNode, 0, led, 0));
 
     QVector<GraphicElement *> elements{sw, txNode, rxNode, led};
     auto code = generateFromElements(elements);
@@ -1741,7 +1741,7 @@ void TestArduino::testWirelessOrphanedRxCodegen()
 
     auto *led = new Led();
 
-    auto conn = std::unique_ptr<QNEConnection>(createConnection(rxNode, 0, led, 0));
+    auto conn = std::unique_ptr<Connection>(createConnection(rxNode, 0, led, 0));
 
     QVector<GraphicElement *> elements{rxNode, led};
     auto code = generateFromElements(elements);
@@ -2735,7 +2735,7 @@ void TestArduino::testCycleDetection()
     auto out = ElementFactory::buildElement(ElementType::Led);
 
     // Wire output of NOT back to its own input — creates a cycle
-    auto cycleConn = std::make_unique<QNEConnection>();
+    auto cycleConn = std::make_unique<Connection>();
     cycleConn->setStartPort(notGate->outputPort(0));
     cycleConn->setEndPort(notGate->inputPort(0));
 
@@ -2778,11 +2778,11 @@ void TestArduino::testSimavrFunctionalSimulation()
     auto led = ElementFactory::buildElement(ElementType::Led);
     led->setLabel("out");
 
-    auto c1 = std::make_unique<QNEConnection>();
+    auto c1 = std::make_unique<Connection>();
     c1->setStartPort(sw->outputPort());
     c1->setEndPort(notGate->inputPort(0));
 
-    auto c2 = std::make_unique<QNEConnection>();
+    auto c2 = std::make_unique<Connection>();
     c2->setStartPort(notGate->outputPort(0));
     c2->setEndPort(led->inputPort(0));
 

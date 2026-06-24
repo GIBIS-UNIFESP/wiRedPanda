@@ -68,8 +68,9 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEPort.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Port.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.cpp
@@ -207,8 +208,9 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/SerializationContext.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/VersionInfo.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEPort.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Port.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.h
@@ -444,10 +446,10 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnections.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnectionSerialization.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestQNEConnection.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestQNEPort.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestPort.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.cpp
@@ -628,10 +630,10 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnections.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestConnectionSerialization.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestQNEConnection.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Nodes/TestQNEPort.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestPort.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.h

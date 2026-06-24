@@ -25,7 +25,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/ICRegistry.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -331,7 +331,7 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn);
@@ -343,7 +343,7 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
 
     // Simulate ConnectionManager::startFromOutput: create an in-progress wire
     // with only startPort set (no endPort — the user is still dragging it).
-    auto *inProgressWire = new QNEConnection();
+    auto *inProgressWire = new Connection();
     inProgressWire->setStartPort(sw->outputPort());
     scene->addItem(inProgressWire);
 
@@ -352,7 +352,7 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
     sim->initialize();
 
     // The in-progress wire must NOT appear in m_connections. Pre-fix,
-    // initialize() adds all QNEConnections unconditionally, so this
+    // initialize() adds all Connections unconditionally, so this
     // assertion fails: m_connections.size() == 2.
     QVERIFY2(sim->m_connections.size() == 1,
              qPrintable(QString("initialize() picked up an in-progress wire "
@@ -515,7 +515,7 @@ void TestDanglingPointer::jd_cancelledWireMustNotLeaveDanglingPointer()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn);
@@ -525,7 +525,7 @@ void TestDanglingPointer::jd_cancelledWireMustNotLeaveDanglingPointer()
     sim->setVisualThrottleEnabled(false);
 
     // Add an in-progress wire (startPort only) to the scene.
-    auto *inProgressWire = new QNEConnection();
+    auto *inProgressWire = new Connection();
     inProgressWire->setStartPort(sw->outputPort());
     scene->addItem(inProgressWire);
 
@@ -558,7 +558,7 @@ void TestDanglingPointer::hcDrainConnectionsMustCleanRegistry()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn);
@@ -567,7 +567,7 @@ void TestDanglingPointer::hcDrainConnectionsMustCleanRegistry()
     QCOMPARE(scene->itemById(connId), conn);
 
     // Out-of-band destruction: removeItem on the element only, then delete.
-    // Cascade reaches ~QNEOutputPort → drainConnections, which deletes the
+    // Cascade reaches ~OutputPort → drainConnections, which deletes the
     // wire still in m_connections.
     scene->removeItem(sw);
     delete sw;

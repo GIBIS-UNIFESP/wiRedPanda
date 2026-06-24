@@ -9,7 +9,7 @@
 
 class GraphicElement;
 class IC;
-class QNEConnection;
+class Connection;
 
 class TestArduino : public QObject
 {
@@ -45,7 +45,7 @@ private:
     // IC test helpers
     IC *createICWithAndGate(const QString &label);
     IC *createICContaining(IC *innerIC, const QString &label);
-    QNEConnection *createConnection(GraphicElement *from, int fromPort, GraphicElement *to, int toPort);
+    Connection *createConnection(GraphicElement *from, int fromPort, GraphicElement *to, int toPort);
 
     // Board / pin helpers
     bool checkBoardSelection(const QString &content, const QString &expectedBoard);

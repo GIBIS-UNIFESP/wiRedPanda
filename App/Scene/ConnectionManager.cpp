@@ -7,8 +7,8 @@
 
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
@@ -22,10 +22,10 @@ ConnectionManager::ConnectionManager(Scene *scene)
 
 // --- Wire creation workflow ---
 
-void ConnectionManager::startFromOutput(QNEOutputPort *startPort)
+void ConnectionManager::startFromOutput(OutputPort *startPort)
 {
     sentryBreadcrumb("ui", QStringLiteral("Wire started"));
-    auto *connection = new QNEConnection();
+    auto *connection = new Connection();
     connection->setStartPort(startPort);
     connection->setEndPos(m_scene->mousePos());
 
@@ -34,9 +34,9 @@ void ConnectionManager::startFromOutput(QNEOutputPort *startPort)
     connection->updatePath();
 }
 
-void ConnectionManager::startFromInput(QNEInputPort *endPort)
+void ConnectionManager::startFromInput(InputPort *endPort)
 {
-    auto *connection = new QNEConnection();
+    auto *connection = new Connection();
     connection->setEndPort(endPort);
     connection->setStartPos(m_scene->mousePos());
 
@@ -48,23 +48,23 @@ void ConnectionManager::startFromInput(QNEInputPort *endPort)
 void ConnectionManager::tryComplete(const QPointF &scenePos)
 {
     auto *connection = editedConnection();
-    auto *port = qgraphicsitem_cast<QNEPort *>(m_scene->itemAt(scenePos));
+    auto *port = qgraphicsitem_cast<Port *>(m_scene->itemAt(scenePos));
 
     if (!port || !connection) {
         return;
     }
 
-    /* The mouse is released over a QNEPort. */
-    QNEOutputPort *startPort = nullptr;
-    QNEInputPort *endPort = nullptr;
+    /* The mouse is released over a Port. */
+    OutputPort *startPort = nullptr;
+    InputPort *endPort = nullptr;
 
     // A wire being dragged from an output needs the drop target to be an input, and vice versa.
     // The dynamic_cast returns nullptr if the port type doesn't match, which is caught below.
     if (connection->startPort() != nullptr) {
         startPort = connection->startPort();
-        endPort = dynamic_cast<QNEInputPort *>(port);
+        endPort = dynamic_cast<InputPort *>(port);
     } else if (connection->endPort() != nullptr) {
-        startPort = dynamic_cast<QNEOutputPort *>(port);
+        startPort = dynamic_cast<OutputPort *>(port);
         endPort = connection->endPort();
     }
 
@@ -92,7 +92,7 @@ void ConnectionManager::cancel()
     }
 }
 
-void ConnectionManager::detach(QNEInputPort *endPort)
+void ConnectionManager::detach(InputPort *endPort)
 {
     sentryBreadcrumb("ui", QStringLiteral("Wire detached"));
     const auto connections = endPort->connections();
@@ -118,9 +118,9 @@ bool ConnectionManager::hasEditedConnection() const
     return editedConnection() != nullptr;
 }
 
-QNEConnection *ConnectionManager::editedConnection() const
+Connection *ConnectionManager::editedConnection() const
 {
-    return dynamic_cast<QNEConnection *>(m_scene->itemById(m_editedConnectionId));
+    return dynamic_cast<Connection *>(m_scene->itemById(m_editedConnectionId));
 }
 
 void ConnectionManager::updateEditedEnd(const QPointF &scenePos)
@@ -152,7 +152,7 @@ void ConnectionManager::updateEditedEnd(const QPointF &scenePos)
 
 void ConnectionManager::updateHover(const QPointF &scenePos)
 {
-    auto *port = qgraphicsitem_cast<QNEPort *>(m_scene->itemAt(scenePos));
+    auto *port = qgraphicsitem_cast<Port *>(m_scene->itemAt(scenePos));
     auto *hoverPort_ = hoverPort();
 
     if (hoverPort_ && (hoverPort_ != port)) {
@@ -178,7 +178,7 @@ void ConnectionManager::clearHover()
 
 // --- Validation ---
 
-bool ConnectionManager::isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort)
+bool ConnectionManager::isConnectionAllowed(OutputPort *startPort, InputPort *endPort)
 {
     if (!startPort || !endPort) {
         return false;
@@ -204,7 +204,7 @@ bool ConnectionManager::isConnectionAllowed(QNEOutputPort *startPort, QNEInputPo
 
 // --- Private helpers ---
 
-void ConnectionManager::setEditedConnection(QNEConnection *connection)
+void ConnectionManager::setEditedConnection(Connection *connection)
 {
     if (connection) {
         connection->setFocus();
@@ -226,7 +226,7 @@ void ConnectionManager::deleteEditedConnection()
     setEditedConnection(nullptr);
 }
 
-void ConnectionManager::setHoverPort(QNEPort *port)
+void ConnectionManager::setHoverPort(Port *port)
 {
     if (!port) {
         m_hoverPortElmId = 0;
@@ -266,9 +266,9 @@ void ConnectionManager::releaseHoverPort()
     }
 }
 
-QNEPort *ConnectionManager::hoverPort()
+Port *ConnectionManager::hoverPort()
 {
-    QNEPort *hoverPort = nullptr;
+    Port *hoverPort = nullptr;
 
     if (auto *hoverElm = dynamic_cast<GraphicElement *>(m_scene->itemById(m_hoverPortElmId))) {
         if (m_hoverPortNumber < hoverElm->inputSize()) {

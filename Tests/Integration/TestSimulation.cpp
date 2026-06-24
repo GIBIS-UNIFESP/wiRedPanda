@@ -18,8 +18,8 @@
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/Xor.h"
 #include "App/Element/IC.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
@@ -362,7 +362,7 @@ void TestSimulation::testElementProcessingOrderConsistency()
         scene->addItem(&led);
 
         // Connect elements to create a meaningful circuit
-        QNEConnection conn1, conn2, conn3, conn4, conn5, conn6, conn7;
+        Connection conn1, conn2, conn3, conn4, conn5, conn6, conn7;
         scene->addItem(&conn1);
         scene->addItem(&conn2);
         scene->addItem(&conn3);
@@ -421,7 +421,7 @@ void TestSimulation::testSceneInitializationDeterminism()
         InputButton button1, button2;
         And andGate;
         Led led;
-        QNEConnection conn1, conn2, conn3;
+        Connection conn1, conn2, conn3;
 
         // Set positions to ensure deterministic topological sorting
         button1.setPos(0, 0);
@@ -495,7 +495,7 @@ void TestSimulation::testSimulationOutputReproducibility()
         scene->addItem(&led);
 
         // Connect circuit
-        QNEConnection conn1, conn2, conn3;
+        Connection conn1, conn2, conn3;
         scene->addItem(&conn1);
         scene->addItem(&conn2);
         scene->addItem(&conn3);
@@ -594,9 +594,9 @@ void TestSimulation::testSimulationGraphStability()
         scene->addItem(&led2);
 
         // Create connections to form complex dependency graph
-        QVector<QNEConnection *> connections;
+        QVector<Connection *> connections;
         for (int i = 0; i < 10; ++i) {
-            connections.append(new QNEConnection);
+            connections.append(new Connection);
             scene->addItem(connections[i]);
         }
 
@@ -707,7 +707,7 @@ void TestSimulation::testCircuitWithFeedbackLoops()
         scene->addItem(&notQLed);
 
         // Create feedback connections for proper NAND SR latch
-        QNEConnection conn1, conn2, conn3, conn4, conn5, conn6;
+        Connection conn1, conn2, conn3, conn4, conn5, conn6;
         scene->addItem(&conn1);
         scene->addItem(&conn2);
         scene->addItem(&conn3);
@@ -1549,7 +1549,7 @@ void TestSimulation::testPartiallyConnectedCircuitIsolation()
 
 void TestSimulation::testDanglingConnectionGraceful()
 {
-    // A QNEConnection with an end port but no start port is "dangling".
+    // A Connection with an end port but no start port is "dangling".
     // buildConnectionGraph() skips it (startPort() == nullptr), so the AND gate's input
     // remains unconnected → unknown logic → simulation must not crash.
     WorkSpace workspace;
@@ -1562,7 +1562,7 @@ void TestSimulation::testDanglingConnectionGraceful()
     builder.connect(&andGate, 0, &led, 0);  // AND output → LED
 
     // Create a dangling connection: end port set, start port intentionally absent.
-    QNEConnection danglingConn;
+    Connection danglingConn;
     workspace.scene()->addItem(&danglingConn);
     danglingConn.setEndPort(andGate.inputPort(0));  // registers with AND input 0
 

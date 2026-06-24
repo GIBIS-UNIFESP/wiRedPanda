@@ -17,7 +17,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -203,7 +203,7 @@ void TestScene::testConnectionsQuery()
     // Verify all connections have valid ports
     const auto items = scene->items();
     for (auto *item : std::as_const(items)) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             QVERIFY2(conn->startPort() != nullptr, "Connection missing start port");
             QVERIFY2(conn->endPort() != nullptr, "Connection missing end port");
         }
@@ -313,12 +313,12 @@ void TestScene::testSelectedElements()
     scene->addItem(led);
 
     // Add connections
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     conn1->setStartPort(sw->outputPort());
     conn1->setEndPort(andGate->inputPort(0));
     scene->addItem(conn1);
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     conn2->setStartPort(andGate->outputPort());
     conn2->setEndPort(led->inputPort());
     scene->addItem(conn2);
@@ -332,7 +332,7 @@ void TestScene::testSelectedElements()
 
     // Verify connections are NOT in the selectedElements result
     for (auto *elem : selectedElems) {
-        auto *conn = qgraphicsitem_cast<QNEConnection *>(elem);
+        auto *conn = qgraphicsitem_cast<Connection *>(elem);
         QVERIFY2(conn == nullptr, "selectedElements should not include connections");
     }
 }
@@ -938,7 +938,7 @@ void TestScene::testElementMorphingWithConnections()
     scene->addItem(led);
 
     // Create connection
-    auto *conn = new QNEConnection(nullptr);
+    auto *conn = new Connection(nullptr);
     conn->setStartPort(andGate->outputPort(0));
     conn->setEndPort(led->inputPort(0));
     scene->addItem(conn);
@@ -1101,7 +1101,7 @@ void TestScene::testShowWiresToggle()
     scene->addItem(and2);
 
     // Create wire
-    auto *conn = new QNEConnection(nullptr);
+    auto *conn = new Connection(nullptr);
     conn->setStartPort(and1->outputPort(0));
     conn->setEndPort(and2->inputPort(0));
     scene->addItem(conn);
@@ -1143,7 +1143,7 @@ void TestScene::testWireVisibilityStateTracking()
     scene->addItem(and2);
 
     // Create wire
-    auto *conn = new QNEConnection(nullptr);
+    auto *conn = new Connection(nullptr);
     conn->setStartPort(and1->outputPort(0));
     conn->setEndPort(and2->inputPort(0));
     scene->addItem(conn);
@@ -1196,12 +1196,12 @@ void TestScene::testShowWiresWithMultipleConnections()
     scene->addItem(and3);
 
     // Create connections
-    auto *conn1 = new QNEConnection(nullptr);
+    auto *conn1 = new Connection(nullptr);
     conn1->setStartPort(and1->outputPort(0));
     conn1->setEndPort(and2->inputPort(0));
     scene->addItem(conn1);
 
-    auto *conn2 = new QNEConnection(nullptr);
+    auto *conn2 = new Connection(nullptr);
     conn2->setStartPort(and2->outputPort(0));
     conn2->setEndPort(and3->inputPort(0));
     scene->addItem(conn2);
@@ -1431,7 +1431,7 @@ void TestScene::testForgetItemIdC7()
 {
     // Pre-fix UpdateBlobCommand::reconnectConnections silently dropped
     // connections whose port disappeared on a blob shrink, leaving the
-    // QNEConnection's m_elementRegistry entry pointing at memory Qt's
+    // Connection's m_elementRegistry entry pointing at memory Qt's
     // parent-child cascade had already freed. The new helper drops the
     // entry by ID so subsequent itemById lookups return nullptr instead
     // of a dangling pointer.
@@ -1442,7 +1442,7 @@ void TestScene::testForgetItemIdC7()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn);
@@ -1470,7 +1470,7 @@ void TestScene::testDrainConnectionsCleansRegistryHC()
     // (paint-time _purecall in QGraphicsItem::boundingRect, same family as
     // FH/EW/G1/GP).
     //
-    // QNEPort::drainConnections (called from ~QNEInputPort/~QNEOutputPort
+    // Port::drainConnections (called from ~InputPort/~OutputPort
     // during cascade-destruction of a deleted element) issues a bare
     // `delete conn` without going through Scene::removeItem. Qt's
     // ~QGraphicsItem then dispatches to the non-virtual
@@ -1489,7 +1489,7 @@ void TestScene::testDrainConnectionsCleansRegistryHC()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn);
@@ -1502,11 +1502,11 @@ void TestScene::testDrainConnectionsCleansRegistryHC()
     // first deleting attached wires.  This mirrors the non-command paths
     // that existed in 5.0.1 (pre-0e5399d83 removeICFile, pre-78fc0882d
     // inline-IC save reload, pre-515d7a97f onFileChanged) where ports
-    // could reach ~QNEPort with a non-empty m_connections list.
+    // could reach ~Port with a non-empty m_connections list.
     scene->removeItem(sw);
     delete sw;
     // ~InputSwitch → ~GraphicElement → ~QGraphicsItem cascades into
-    // ~QNEOutputPort → drainConnections(false) → `delete conn` (bare).
+    // ~OutputPort → drainConnections(false) → `delete conn` (bare).
 
     // Expectation (post-fix): drainConnections routed the delete through
     // Scene::removeItem, so the registry no longer points at freed memory.
