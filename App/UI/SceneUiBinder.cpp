@@ -11,6 +11,7 @@
 #include <QUndoStack>
 
 #include "App/Core/Common.h"
+#include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRegistry.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
@@ -20,10 +21,11 @@
 #include "App/UI/ElementPalette.h"
 #include "App/UI/MainWindowUI.h"
 
-SceneUiBinder::SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, QWidget *shortcutParent, QObject *parent)
+SceneUiBinder::SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, ICPreviewPopup *previewPopup, QWidget *shortcutParent, QObject *parent)
     : QObject(parent)
     , m_ui(ui)
     , m_palette(palette)
+    , m_previewPopup(previewPopup)
 {
     // [ / ] cycle a selected element's primary property (e.g. input size).
     // { / } cycle a secondary property; < / > morph through element variants.
@@ -126,6 +128,21 @@ void SceneUiBinder::bind(WorkSpace *tab)
         }
     });
 
+    // Drive the shared IC hover-preview popup off the bound scene's forwarded signals,
+    // so the IC element itself needs no dependency on MainWindow / the popup instance.
+    if (m_previewPopup) {
+        connect(scene, &Scene::icPreviewRequested,     m_previewPopup, &ICPreviewPopup::showForIC);
+        connect(scene, &Scene::icPreviewMoved,         m_previewPopup, &ICPreviewPopup::updatePendingPos);
+        connect(scene, &Scene::icPreviewHideRequested, m_previewPopup, &ICPreviewPopup::scheduleHide);
+        connect(scene, &Scene::icPreviewCancelRequested, this, [this](IC *ic) {
+            // Only dismiss if the popup is actually tracking the IC being cancelled.
+            if (m_previewPopup && m_previewPopup->pendingIC() == ic) {
+                m_previewPopup->cancelHide();
+                m_previewPopup->hide();
+            }
+        });
+    }
+
     if (m_ui->actionPlay->isChecked()) {
         qCDebug(zero) << "Restarting simulation.";
         tab->simulation()->start();
@@ -173,6 +190,12 @@ void SceneUiBinder::unbind()
     disconnect(m_changeNextElmShortcut, nullptr, scene, nullptr);
     disconnect(scene, &Scene::openTruthTableRequested, this, nullptr);
     disconnect(scene, &Scene::icOpenRequested, this, nullptr);
+    if (m_previewPopup) {
+        disconnect(scene, &Scene::icPreviewRequested,       m_previewPopup, nullptr);
+        disconnect(scene, &Scene::icPreviewMoved,           m_previewPopup, nullptr);
+        disconnect(scene, &Scene::icPreviewHideRequested,   m_previewPopup, nullptr);
+        disconnect(scene, &Scene::icPreviewCancelRequested, this,           nullptr);
+    }
     disconnect(scene->undoStack(), &QUndoStack::indexChanged, this, nullptr);
 
     qCDebug(zero) << "Removing undo and redo actions from UI menu.";

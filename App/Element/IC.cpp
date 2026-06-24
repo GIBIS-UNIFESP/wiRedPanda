@@ -26,20 +26,8 @@
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
-#include "App/UI/MainWindow.h"
 
 namespace {
-
-// Returns the shared IC preview popup, or nullptr if the chain isn't fully
-// alive (e.g. during early init or late teardown).  The popup is created
-// eagerly by MainWindow's constructor; null returns are exclusively a
-// teardown-safety concern.
-ICPreviewPopup *icPreviewPopup()
-{
-    auto *app = Application::instance();
-    auto *mw  = app ? app->mainWindow() : nullptr;
-    return mw ? mw->icPreviewPopup() : nullptr;
-}
 
 bool comparePorts(QNEPort *port1, QNEPort *port2)
 {
@@ -137,13 +125,10 @@ IC::IC(QGraphicsItem *parent)
 
 IC::~IC()
 {
-    // If this IC is destroyed while the shared popup is pending or showing it,
-    // cancel immediately — m_pendingIC is a QPointer so it auto-nulls, but the
-    // popup could still be visible with stale content.
-    if (auto *popup = icPreviewPopup(); popup && popup->pendingIC() == this) {
-        popup->cancelHide();
-        popup->hide();
-    }
+    // No popup teardown needed here: ICPreviewPopup tracks the pending IC through a
+    // QPointer that auto-nulls on our destruction (and executeShow() guards on it), so a
+    // pending/showing preview can never dereference a deleted IC. Emitting a signal from a
+    // destructor is unsafe — Qt asserts "class destructor may have already run".
     qDeleteAll(m_internalConnections);
     qDeleteAll(m_internalElements);
 }
@@ -619,10 +604,7 @@ void IC::drawBody(QPainter *painter)
 void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     // Hide the preview popup immediately on double-click so it doesn't overlap the sub-circuit tab
-    if (auto *popup = icPreviewPopup()) {
-        popup->cancelHide();
-        popup->hide();
-    }
+    emit previewCancelRequested(this);
     event->accept();
     emit requestOpenSubCircuit(id(), m_blobName, m_file);
 }
@@ -631,24 +613,18 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void IC::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    if (auto *popup = icPreviewPopup()) {
-        popup->showForIC(this, event->screenPos());
-    }
+    emit previewRequested(this, event->screenPos());
 }
 
 void IC::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    if (auto *popup = icPreviewPopup()) {
-        popup->updatePendingPos(event->screenPos());
-    }
+    emit previewMoved(event->screenPos());
 }
 
 void IC::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     Q_UNUSED(event)
-    if (auto *popup = icPreviewPopup()) {
-        popup->scheduleHide();
-    }
+    emit previewHideRequested();
 }
 
 void IC::generatePreviewPixmap(const QList<QGraphicsItem *> &items)

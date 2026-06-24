@@ -104,6 +104,11 @@ void Scene::addItem(QGraphicsItem *item)
                 m_icRegistry.watchFile(ic->file());
             }
             connect(ic, &IC::requestOpenSubCircuit, this, &Scene::icOpenRequested);
+            // Forward hover-preview signals so the UI layer can drive the shared popup.
+            connect(ic, &IC::previewRequested,       this, &Scene::icPreviewRequested);
+            connect(ic, &IC::previewMoved,           this, &Scene::icPreviewMoved);
+            connect(ic, &IC::previewHideRequested,   this, &Scene::icPreviewHideRequested);
+            connect(ic, &IC::previewCancelRequested, this, &Scene::icPreviewCancelRequested);
         } else if (auto *tt = qobject_cast<TruthTable *>(elm)) {
             connect(tt, &TruthTable::requestOpenTruthTableEditor, this, &Scene::openTruthTableRequested);
         }

@@ -28,6 +28,7 @@
 
 class GraphicElement;
 class GraphicsView;
+class IC;
 class ItemWithId;
 class QNEConnection;
 class QPainter;
@@ -288,6 +289,13 @@ signals:
 
     /// Emitted when an IC element is double-clicked to request opening its sub-circuit.
     void icOpenRequested(int elementId, const QString &blobName, const QString &filePath);
+
+    /// Re-emitted IC hover-preview signals — forwarded from each IC in the scene so the
+    /// UI layer can drive the shared ICPreviewPopup, keeping IC free of any UI dependency.
+    void icPreviewRequested(IC *ic, QPoint screenPos);
+    void icPreviewMoved(QPoint screenPos);
+    void icPreviewHideRequested();
+    void icPreviewCancelRequested(IC *ic);
 
     /// Emitted when a TruthTable element is double-clicked to request opening its editor.
     void openTruthTableRequested();
