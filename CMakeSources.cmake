@@ -139,6 +139,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/MimeTypes.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Priorities.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/SceneItemHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SentryHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StatusOps.h

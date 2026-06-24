@@ -15,6 +15,7 @@
 #include <QVersionNumber>
 
 #include "App/Core/ContextDirProvider.h"
+#include "App/Core/SceneItemHost.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/ClipboardManager.h"
@@ -45,7 +46,7 @@ struct SerializationContext;
  * undo/redo functionality and handles various user interface events like drag-and-drop,
  * keyboard shortcuts, and mouse operations.
  */
-class Scene : public QGraphicsScene, public ContextDirProvider, public SimulationHost
+class Scene : public QGraphicsScene, public ContextDirProvider, public SimulationHost, public SceneItemHost
 {
     Q_OBJECT
 
@@ -54,7 +55,8 @@ public:
     void addItem(QGraphicsItem *item);
 
     /// \brief Removes \a item from the scene and unregisters it from the per-scene ID registry.
-    void removeItem(QGraphicsItem *item);
+    /// \reimp SceneItemHost.
+    void removeItem(QGraphicsItem *item) override;
 
     /// Tightens the scene rect to item bounds while preserving the viewport position.
     void resizeScene();
