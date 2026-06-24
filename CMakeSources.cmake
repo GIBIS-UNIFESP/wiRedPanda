@@ -158,6 +158,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.h
