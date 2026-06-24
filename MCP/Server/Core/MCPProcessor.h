@@ -18,6 +18,8 @@ class BaseHandler;
 class ConnectionHandler;
 class ElementHandler;
 class FileHandler;
+class HistoryHandler;
+class ICHandler;
 class MCPValidator;
 class MainWindow;
 class ServerInfoHandler;
@@ -87,6 +89,8 @@ private:
     std::unique_ptr<ElementHandler> m_elementHandler;
     std::unique_ptr<ConnectionHandler> m_connectionHandler;
     std::unique_ptr<SimulationHandler> m_simulationHandler;
+    std::unique_ptr<ICHandler> m_icHandler;
+    std::unique_ptr<HistoryHandler> m_historyHandler;
     std::unique_ptr<ThemeHandler> m_themeHandler;
 
     /// Maps each MCP method name to the handler responsible for it.

@@ -9,10 +9,11 @@ class BewavedDolphin;
 
 /**
  * \class SimulationHandler
- * \brief Handler for simulation operation commands (control, waveforms, ICs, undo/redo)
+ * \brief Handler for simulation control and waveform commands.
  *
- * Handles all simulation-related MCP commands including simulation control,
- * waveform generation and export, IC creation and management, and undo/redo operations.
+ * Handles simulation control (start/stop/restart/update) and waveform generation
+ * and export. IC management and undo/redo history were split out into ICHandler and
+ * HistoryHandler respectively.
  */
 class SimulationHandler : public BaseHandler
 {
@@ -26,14 +27,6 @@ private:
     QJsonObject handleSimulationControl(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleCreateWaveform(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleExportWaveform(const QJsonObject &params, const QJsonValue &requestId);
-    QJsonObject handleCreateIC(const QJsonObject &params, const QJsonValue &requestId);
-    QJsonObject handleInstantiateIC(const QJsonObject &params, const QJsonValue &requestId);
-    QJsonObject handleListICs(const QJsonObject &params, const QJsonValue &requestId);
-    QJsonObject handleEmbedIC(const QJsonObject &params, const QJsonValue &requestId);
-    QJsonObject handleExtractIC(const QJsonObject &params, const QJsonValue &requestId);
-    QJsonObject handleUndo(const QJsonObject &params, const QJsonValue &requestId);
-    QJsonObject handleRedo(const QJsonObject &params, const QJsonValue &requestId);
-    QJsonObject handleGetUndoStack(const QJsonObject &params, const QJsonValue &requestId);
 
     BewavedDolphin *m_persistentDolphin;
 };

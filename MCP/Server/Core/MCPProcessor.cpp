@@ -19,6 +19,8 @@
 #include "MCP/Server/Handlers/ConnectionHandler.h"
 #include "MCP/Server/Handlers/ElementHandler.h"
 #include "MCP/Server/Handlers/FileHandler.h"
+#include "MCP/Server/Handlers/HistoryHandler.h"
+#include "MCP/Server/Handlers/ICHandler.h"
 #include "MCP/Server/Handlers/ServerInfoHandler.h"
 #include "MCP/Server/Handlers/SimulationHandler.h"
 #include "MCP/Server/Handlers/ThemeHandler.h"
@@ -63,6 +65,8 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     , m_elementHandler(std::make_unique<ElementHandler>(mainWindow, m_validator.get()))
     , m_connectionHandler(std::make_unique<ConnectionHandler>(mainWindow, m_validator.get()))
     , m_simulationHandler(std::make_unique<SimulationHandler>(mainWindow, m_validator.get()))
+    , m_icHandler(std::make_unique<ICHandler>(mainWindow, m_validator.get()))
+    , m_historyHandler(std::make_unique<HistoryHandler>(mainWindow, m_validator.get()))
     , m_themeHandler(std::make_unique<ThemeHandler>(mainWindow, m_validator.get()))
 {
     // Build the method → handler dispatch map
@@ -88,9 +92,12 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
         "connect_elements", "disconnect_elements", "list_connections", "split_connection"
     });
     addRoutes(m_simulationHandler.get(), {
-        "simulation_control", "create_waveform", "export_waveform",
-        "create_ic", "instantiate_ic", "list_ics",
-        "embed_ic", "extract_ic",
+        "simulation_control", "create_waveform", "export_waveform"
+    });
+    addRoutes(m_icHandler.get(), {
+        "create_ic", "instantiate_ic", "list_ics", "embed_ic", "extract_ic"
+    });
+    addRoutes(m_historyHandler.get(), {
         "undo", "redo", "get_undo_stack"
     });
     addRoutes(m_themeHandler.get(), {
