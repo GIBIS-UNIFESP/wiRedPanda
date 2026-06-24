@@ -15,7 +15,7 @@
 #include "App/Core/Constants.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/IC.h"
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"

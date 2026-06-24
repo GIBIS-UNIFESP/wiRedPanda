@@ -3,7 +3,7 @@
 
 #include "Tests/Unit/Elements/TestICRegistry.h"
 
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 

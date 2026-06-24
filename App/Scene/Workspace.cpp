@@ -33,7 +33,7 @@ bool isReadOnlyFailure(QFileDevice::FileError error)
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"

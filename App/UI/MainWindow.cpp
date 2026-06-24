@@ -39,7 +39,7 @@
 #include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/IO/RecentFiles.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Workspace.h"

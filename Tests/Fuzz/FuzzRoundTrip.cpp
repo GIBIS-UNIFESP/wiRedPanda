@@ -35,7 +35,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"

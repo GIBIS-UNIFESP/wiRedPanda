@@ -61,7 +61,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.cpp
@@ -70,6 +69,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.cpp
@@ -187,7 +187,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
@@ -200,6 +199,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.h

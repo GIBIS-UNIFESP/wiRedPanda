@@ -54,7 +54,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"

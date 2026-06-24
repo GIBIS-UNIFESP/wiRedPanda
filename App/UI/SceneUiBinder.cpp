@@ -12,7 +12,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ICPreviewPopup.h"
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"

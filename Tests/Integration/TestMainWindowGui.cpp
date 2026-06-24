@@ -28,7 +28,7 @@
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/IO/Serialization.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"

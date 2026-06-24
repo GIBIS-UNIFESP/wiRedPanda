@@ -15,7 +15,7 @@
 #include <QVersionNumber>
 
 #include "App/Core/ContextDirProvider.h"
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
