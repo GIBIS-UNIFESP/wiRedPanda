@@ -86,6 +86,11 @@ private:
     int closeTabAnyway();
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
 
+    /// If \a fileName is already open in another tab, warns and offers to switch to it;
+    /// returns true when a conflict was handled (the caller should abort its save).
+    /// Centralises the block shared by saveFile() and saveFileAs().
+    bool warnIfOpenInAnotherTab(const QString &fileName);
+
     /// Shows a "Save File" dialog and returns the chosen path (with a ".panda"
     /// suffix ensured), or an empty string if the user cancelled. Centralises the
     /// file-dialog access that used to live inside WorkSpace::save (finding E).
