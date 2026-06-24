@@ -3,3 +3,7 @@ public/
 node_modules/
 .astro/
 package-lock.json
+Doxyfile
+doxygen-header.html
+doxygen-footer.html
+doxygen-awesome-css/

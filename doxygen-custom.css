@@ -18,8 +18,9 @@
 html {
   /* Typography */
   --font-family: 'Moderustic', 'Helvetica', sans-serif;
-  --font-family-monospace: 'JetBrains Mono', ui-monospace, 'Cascadia Code',
-    'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  --font-family-monospace:
+    'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas,
+    'DejaVu Sans Mono', monospace;
 
   /* Brand colors → doxygen-awesome variables */
   --primary-color: #134074;
@@ -152,7 +153,9 @@ html.dark-mode #site-header-bar a {
   font-size: 0.875rem;
   font-weight: 500;
   color: #4b5563;
-  transition: color 0.2s, background-color 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 }
 
 html.dark-mode #site-header-bar nav a {
