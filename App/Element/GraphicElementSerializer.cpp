@@ -118,9 +118,8 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
     for (int i = 0; i < element.m_ports.inputSize(); ++i) {
         auto *port = element.m_ports.inputs().at(i);
         QMap<QString, QVariant> tempMap;
-        // Generate deterministic serial ID: (elementId << 16) | portIndex
-        // Note: We calculate but don't modify port state (no side effects in save())
-        quint64 serialId = (static_cast<quint64>(element.id()) << 16) | (static_cast<quint64>(i) & 0xFFFF);
+        // Deterministic serial ID, computed (not stored) so save() stays side-effect free.
+        quint64 serialId = Port::makeSerialId(static_cast<quint64>(element.id()), port->globalIndex());
         tempMap.insert("serialId", serialId);
         tempMap.insert("name", port->name());
 
@@ -136,9 +135,9 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
     for (int i = 0; i < element.m_ports.outputSize(); ++i) {
         auto *port = element.m_ports.outputs().at(i);
         QMap<QString, QVariant> tempMap;
-        // Generate deterministic serial ID: (elementId << 16) | portIndex
-        // Note: We calculate but don't modify port state (no side effects in save())
-        quint64 serialId = (static_cast<quint64>(element.id()) << 16) | (static_cast<quint64>(element.m_ports.inputSize() + i) & 0xFFFF);
+        // Deterministic serial ID, computed (not stored) so save() stays side-effect free.
+        // globalIndex() already offsets output ports past the input ports.
+        quint64 serialId = Port::makeSerialId(static_cast<quint64>(element.id()), port->globalIndex());
         tempMap.insert("serialId", serialId);
         tempMap.insert("name", port->name());
 
@@ -262,11 +261,10 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
         } else {
             // Old format fallback: use context.nextLocalId as element basis so that
             // serialIds remain unique even when element IDs are -1 (unassigned).
-            serialId = (static_cast<quint64>(context.nextLocalId) << 16) | (port & 0xFFFF);
+            serialId = Port::makeSerialId(static_cast<quint64>(context.nextLocalId), port);
         }
 
         if (port < element.m_ports.inputSize()) {
-            element.m_ports.inputPort(port)->setSerialId(serialId);
             quint64 oldPtr = input.value("ptr").toULongLong();
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
@@ -279,7 +277,6 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
         } else {
             quint64 oldPtr = input.value("ptr").toULongLong();
             element.m_ports.addPort(name, false);
-            element.m_ports.inputPort(port)->setSerialId(serialId);
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
                 context.oldPtrToSerialId[oldPtr] = serialId;
@@ -310,11 +307,10 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
         } else {
             // Old format fallback: use context.nextLocalId as element basis so that
             // serialIds remain unique even when element IDs are -1 (unassigned).
-            serialId = (static_cast<quint64>(context.nextLocalId) << 16) | ((element.m_ports.inputSize() + port) & 0xFFFF);
+            serialId = Port::makeSerialId(static_cast<quint64>(context.nextLocalId), element.m_ports.inputSize() + port);
         }
 
         if (port < element.m_ports.outputSize()) {
-            element.m_ports.outputPort(port)->setSerialId(serialId);
             quint64 oldPtr = output.value("ptr").toULongLong();
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
@@ -327,7 +323,6 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
         } else {
             quint64 oldPtr = output.value("ptr").toULongLong();
             element.m_ports.addPort(name, true);
-            element.m_ports.outputPort(port)->setSerialId(serialId);
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
                 context.oldPtrToSerialId[oldPtr] = serialId;
@@ -586,15 +581,4 @@ void GraphicElementSerializer::loadPixmapAppearanceName(GraphicElement &element,
             element.m_appearance.setAlternativeAppearanceAt(index, name);
         }
     }
-}
-
-// ========== Stream operator ==========
-
-QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
-{
-    // Type tags are now written by Serialization::serialize() for symmetry
-    // This is now only called from serialize(), so type is already written
-    qCDebug(four) << "Writing element.";
-    item->save(stream);
-    return stream;
 }

@@ -127,8 +127,15 @@ public:
     /// Triggers a path update on all attached connections.
     void updateConnections();
 
-    void setSerialId(quint64 serialId);
-    quint64 serialId() const;
+    /// Returns the port's "global" index within its element: the input index for input ports,
+    /// or inputSize() + output index for output ports. This is the single inputs-then-outputs
+    /// ordering used for serial-id packing (serialization) and hover-port encoding.
+    int globalIndex() const;
+
+    /// Packs an element base id and a global port index into the persisted serial id
+    /// (\a elementBase << 16 | \a globalIndex). Single source of truth for the on-disk
+    /// port-id format, shared by GraphicElementSerializer and ConnectionSerializer.
+    static quint64 makeSerialId(quint64 elementBase, int globalIndex);
 
 protected:
     // --- Qt event handling ---
@@ -161,7 +168,6 @@ protected:
     Status m_status = Status::Inactive;
     bool m_required = true;
     int m_index = 0;
-    quint64 m_serialId = 0;
 
 private:
     QBrush currentBrush() const;

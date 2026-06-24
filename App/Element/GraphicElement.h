@@ -630,8 +630,3 @@ private:
     quint64 m_minOutputSize = 0;
     quint64 m_maxOutputSize = 0;
 };
-
-Q_DECLARE_METATYPE(GraphicElement)
-
-/// Stream insertion operator that serializes \a item to \a stream via GraphicElement::save().
-QDataStream &operator<<(QDataStream &stream, const GraphicElement *item);

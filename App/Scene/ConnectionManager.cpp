@@ -242,17 +242,9 @@ void ConnectionManager::setHoverPort(Port *port)
     if (hoverElm && m_scene->contains(hoverElm->id())) {
         m_hoverPortElmId = hoverElm->id();
 
-        // Encode inputs first (indices 0..inputSize-1), then outputs (inputSize..total-1)
-        // so a single integer uniquely identifies any port on an element
-        for (int i = 0; i < (hoverElm->inputSize() + hoverElm->outputSize()); ++i) {
-            if (i < hoverElm->inputSize()) {
-                if (port == hoverElm->inputPort(i)) {
-                    m_hoverPortNumber = i;
-                }
-            } else if (port == hoverElm->outputPort(i - hoverElm->inputSize())) {
-                m_hoverPortNumber = i;
-            }
-        }
+        // Encode inputs first (indices 0..inputSize-1), then outputs (inputSize..total-1) so a
+        // single integer uniquely identifies any port on the element; hoverPort() decodes it.
+        m_hoverPortNumber = port->globalIndex();
     }
 }
 

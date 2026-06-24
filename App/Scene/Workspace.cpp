@@ -12,6 +12,20 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/SentryHelpers.h"
+#include "App/Core/Settings.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Element/IC.h"
+#include "App/Scene/ICRegistry.h"
+#include "App/IO/FileUtils.h"
+#include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
+#include "App/IO/VersionInfo.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
+#include "App/Scene/Commands.h"
+#include "App/Simulation/SimulationBlocker.h"
+#include "App/Versions.h"
 
 namespace {
 
@@ -28,21 +42,6 @@ bool isReadOnlyFailure(QFileDevice::FileError error)
 }
 
 } // namespace
-
-#include "App/Core/SentryHelpers.h"
-#include "App/Core/Settings.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/IC.h"
-#include "App/Scene/ICRegistry.h"
-#include "App/IO/FileUtils.h"
-#include "App/IO/Serialization.h"
-#include "App/IO/SerializationContext.h"
-#include "App/IO/VersionInfo.h"
-#include "App/Wiring/Connection.h"
-#include "App/Wiring/Port.h"
-#include "App/Scene/Commands.h"
-#include "App/Simulation/SimulationBlocker.h"
-#include "App/Versions.h"
 
 WorkSpace::WorkSpace(QWidget *parent)
     : QWidget(parent)

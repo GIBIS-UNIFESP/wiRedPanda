@@ -165,14 +165,19 @@ void Port::setRequired(const bool required)
     m_required = required;
 }
 
-void Port::setSerialId(quint64 serialId)
+int Port::globalIndex() const
 {
-    m_serialId = serialId;
+    // Output ports are numbered after all input ports so a single integer uniquely orders every
+    // port on the element (inputs 0..inputSize-1, then outputs inputSize..total-1).
+    if (isOutput() && m_graphicElement) {
+        return m_graphicElement->inputSize() + m_index;
+    }
+    return m_index;
 }
 
-quint64 Port::serialId() const
+quint64 Port::makeSerialId(quint64 elementBase, int globalIndex)
 {
-    return m_serialId;
+    return (elementBase << 16) | (static_cast<quint64>(globalIndex) & 0xFFFF);
 }
 
 void Port::setGraphicElement(GraphicElement *graphicElement)
