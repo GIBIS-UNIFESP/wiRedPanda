@@ -18,6 +18,7 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/ElementAppearance.h"
+#include "App/Element/ElementMetadata.h"
 #include "App/Element/ElementOrientation.h"
 #include "App/Element/ElementSimState.h"
 #include "App/Element/PropertyDescriptor.h"
@@ -130,6 +131,13 @@ public:
 
     /// Returns the type identifier for this element.
     ElementType elementType() const;
+
+    // --- Capabilities ---
+
+    /// Returns this element type's compile-time capability/metadata record (feature flags,
+    /// port-size limits, appearance lists). The hasAudio()/hasTrigger()/... accessors are
+    /// thin facades over this; new code can read the whole record in one call.
+    const ElementMetadata &capabilities() const { return m_metadata; }
 
     // --- Port Access ---
 
@@ -640,6 +648,11 @@ private:
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
+
+    /// Cached reference to this type's compile-time metadata (registry entry is a long-lived
+    /// singleton). Backs capabilities() and the hasAudio()/rotatesGraphic()/... facades,
+    /// replacing a per-call registry map lookup.
+    const ElementMetadata &m_metadata;
 
     // --- Members: Direct Simulation ---
 
