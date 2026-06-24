@@ -203,3 +203,30 @@ void Settings::setUpdateCheckSkippedVersion(const QString &version)
 {
     setValue("updateCheck/skippedVersion", version);
 }
+
+// Minimap preferences
+bool Settings::minimapVisible()
+{
+    const QVariant v = value("minimap/visible");
+    if (!v.isValid())
+        return true; // default visible
+    return v.toBool();
+}
+
+void Settings::setMinimapVisible(bool visible)
+{
+    setValue("minimap/visible", visible);
+}
+
+QString Settings::minimapCorner()
+{
+    const QVariant v = value("minimap/corner");
+    if (!v.isValid())
+        return QStringLiteral("bottom-right");
+    return v.toString();
+}
+
+void Settings::setMinimapCorner(const QString &corner)
+{
+    setValue("minimap/corner", corner);
+}
