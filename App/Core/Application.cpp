@@ -5,6 +5,7 @@
 
 #include <array>
 
+#include <QApplication>
 #include <QElapsedTimer>
 #include <QFontDatabase>
 #include <QMessageBox>
@@ -123,13 +124,13 @@ ExceptionInfo Application::makeExceptionInfo(const std::exception &e)
 void Application::handleException(const ExceptionInfo &info, const QObject *context)
 {
     if (Application::interactiveMode) {
-        // Prefer the slot's `this` as the dialog parent (falls back to the
-        // Application-stored main window only if context isn't a widget).
+        // Prefer the slot's `this` as the dialog parent; fall back to the active
+        // top-level window only if context isn't a widget.
         // See guardedSlot's call site for context.
         const QWidget *parent = qobject_cast<const QWidget *>(context);
         if (!parent) {
-            auto *app = Application::instance();
-            parent = app ? app->mainWindow() : nullptr;
+            // No widget context: fall back to the active top-level window as the dialog parent.
+            parent = QApplication::activeWindow();
         }
 
         // Use show() (non-modal) instead of QMessageBox::critical() (modal
@@ -152,6 +153,9 @@ void Application::handleException(const ExceptionInfo &info, const QObject *cont
         return;
     }
 
+    // Triage tag: whether the app is running interactively (GUI) or headless (CLI/MCP/tests).
+    sentry_set_tag("app.interactive", interactiveMode ? "true" : "false");
+
     sentry_value_t event_ = sentry_value_new_event();
     sentry_value_set_by_key(event_, "level", sentry_value_new_string("warning"));
 
@@ -173,19 +177,5 @@ void Application::handleException(const ExceptionInfo &info, const QObject *cont
     sentry_value_set_stacktrace(exc, NULL, 0);
     sentry_event_add_exception(event_, exc);
     sentry_capture_event(event_);
-#endif
-}
-
-MainWindow *Application::mainWindow() const
-{
-    return m_mainWindow;
-}
-
-void Application::setMainWindow(MainWindow *mainWindow)
-{
-    m_mainWindow = mainWindow;
-
-#ifdef HAVE_SENTRY
-    sentry_set_tag("app.interactive", interactiveMode ? "true" : "false");
 #endif
 }

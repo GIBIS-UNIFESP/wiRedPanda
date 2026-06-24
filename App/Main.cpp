@@ -408,7 +408,6 @@ int main(int argc, char *argv[])
             Application::interactiveMode = false;
 
             auto *window = new MainWindow();
-            app.setMainWindow(window);
 
             // Show window only if GUI mode is requested
             if (parser.isSet(mcpGuiOption)) {
@@ -424,7 +423,6 @@ int main(int argc, char *argv[])
 #endif
 
         auto *window = new MainWindow();
-        app.setMainWindow(window);
         window->show();
 
         if (!inputFile.isEmpty()) {

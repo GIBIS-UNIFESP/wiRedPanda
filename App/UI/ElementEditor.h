@@ -85,6 +85,9 @@ signals:
     /// Emitted when the user requests editing an embedded IC sub-circuit.
     void editSubcircuitRequested(const QString &blobName, int icElementId);
 
+    /// Emitted when the user requests opening a file-backed IC's .panda file in a tab.
+    void openSubcircuitFileRequested(const QString &filePath);
+
     /// Emitted when the user requests embedding a file-backed IC.
     void embedSubcircuitRequested();
 
