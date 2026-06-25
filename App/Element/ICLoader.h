@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QByteArray>
+#include <QCoreApplication>
 #include <QList>
 #include <QMap>
 #include <QString>
@@ -33,6 +34,11 @@ class QVersionNumber;
  */
 class ICLoader
 {
+    // tr context for the load-error PANDACEPTION throws. lupdate extracts the plain
+    // PANDACEPTION(...) calls under the "ICLoader" context (the tr+=PANDACEPTION alias resolves
+    // via this class scope); PANDACEPTION_WITH_CONTEXT is NOT extracted. Mirrors ConnectionSerializer.
+    Q_DECLARE_TR_FUNCTIONS(ICLoader)
+
 public:
     /// Loads the sub-circuit from \a fileName (resolved against \a contextDir) into \a ic.
     static void loadFile(IC &ic, const QString &fileName, const QString &contextDir);

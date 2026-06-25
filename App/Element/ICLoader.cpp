@@ -138,7 +138,7 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     }
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
-        throw PANDACEPTION_WITH_CONTEXT("IC", "%1 not found.", fileInfo.absoluteFilePath());
+        throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
 
     // Clear blob name only after validation so the IC remains consistent if
@@ -179,14 +179,14 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     static QSet<QString> s_loadingFiles;
     const QString canonicalPath = fileInfo.canonicalFilePath();
     if (s_loadingFiles.contains(canonicalPath)) {
-        throw PANDACEPTION_WITH_CONTEXT("IC", "Circular IC reference detected: %1", canonicalPath);
+        throw PANDACEPTION("Circular IC reference detected: %1", canonicalPath);
     }
     s_loadingFiles.insert(canonicalPath);
     auto removeGuard = qScopeGuard([&] { s_loadingFiles.remove(canonicalPath); });
 
     QFile file(fileInfo.absoluteFilePath());
     if (!file.open(QIODevice::ReadOnly)) {
-        throw PANDACEPTION_WITH_CONTEXT("IC", "Error opening file: %1", file.errorString());
+        throw PANDACEPTION("Error opening file: %1", file.errorString());
     }
 
     QDataStream stream(&file);
@@ -241,14 +241,14 @@ void ICLoader::migrateFile(IC &ic, const QFileInfo &fileInfo, const QList<QGraph
 
     QSaveFile saveFile(fileInfo.absoluteFilePath());
     if (!saveFile.open(QIODevice::WriteOnly)) {
-        throw PANDACEPTION_WITH_CONTEXT("IC", "IC migration: cannot open file for writing: %1", fileInfo.absoluteFilePath());
+        throw PANDACEPTION("IC migration: cannot open file for writing: %1", fileInfo.absoluteFilePath());
     }
     QDataStream outStream(&saveFile);
     Serialization::writePandaHeader(outStream);
     outStream << migrationMeta;
     Serialization::serialize(items, outStream);
     if (!saveFile.commit()) {
-        throw PANDACEPTION_WITH_CONTEXT("IC", "IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
+        throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
     }
 }
 
@@ -302,8 +302,8 @@ void ICLoader::processLoadedItems(IC &ic, const QList<QGraphicsItem *> &items)
 void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString &contextDir)
 {
     if (s_icLoadDepth >= kMaxICNestingDepth) {
-        throw PANDACEPTION_WITH_CONTEXT("IC", "IC nesting depth limit (%1) exceeded — blob may be maliciously crafted",
-                                        QString::number(kMaxICNestingDepth));
+        throw PANDACEPTION("IC nesting depth limit (%1) exceeded — blob may be maliciously crafted",
+                           QString::number(kMaxICNestingDepth));
     }
 
     ++s_icLoadDepth;

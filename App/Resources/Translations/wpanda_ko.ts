@@ -544,12 +544,12 @@
 <context>
     <name>ConnectionSerializer</name>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="60"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="46"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>오프셋 %1에서 연결 맵을 읽는 중 스트림 오류</translation>
     </message>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="71"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="57"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>오프셋 %1에서 연결 포트 ID 읽기 중 스트림 오류</translation>
     </message>
@@ -1241,6 +1241,59 @@ Each wireless channel must have a unique label.</source>
     </message>
 </context>
 <context>
+    <name>GraphicElementSerializer</name>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="44"/>
+        <source>Stream error reading %1 count at position %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="48"/>
+        <source>Refusing to read %1 with implausible count %2 (max %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="58"/>
+        <source>Stream error reading %1 entry %2 at position %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="213"/>
+        <source>Stream error reading element properties at position %1</source>
+        <translation>위치 %1에서 요소 속성 읽기 중 스트림 오류</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="338"/>
+        <source>Stream error reading appearances at position %1</source>
+        <translation>위치 %1에서 스킨 읽기 중 스트림 오류</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="346"/>
+        <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
+        <translation>외관 인덱스 %1이(가) 범위를 벗어났습니다 (크기=%2) — 스트림이 손상되었을 수 있습니다</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="434"/>
+        <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="468"/>
+        <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="529"/>
+        <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="558"/>
+        <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
+        <translation>스킨 인덱스 %1이 범위를 벗어남 (크기=%2) 스킨 이름 &quot;%3&quot; — 스트림이 손상되었을 수 있습니다</translation>
+    </message>
+</context>
+<context>
     <name>IC</name>
     <message>
         <location filename="../../Element/IC.cpp" line="39"/>
@@ -1385,6 +1438,39 @@ Suggested name:</source>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
         <translation>파일을 읽을 수 없습니다: %1</translation>
+    </message>
+</context>
+<context>
+    <name>ICLoader</name>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="141"/>
+        <source>%1 not found.</source>
+        <translation>%1을(를) 찾을 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="182"/>
+        <source>Circular IC reference detected: %1</source>
+        <translation>순환 IC 참조가 감지되었습니다: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="189"/>
+        <source>Error opening file: %1</source>
+        <translation>파일 열기 오류: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="244"/>
+        <source>IC migration: cannot open file for writing: %1</source>
+        <translation>IC 마이그레이션: 파일을 쓰기용으로 열 수 없습니다: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="251"/>
+        <source>IC migration: failed to commit re-saved file: %1</source>
+        <translation>IC 마이그레이션: 다시 저장한 파일을 커밋하지 못했습니다: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="305"/>
+        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
+        <translation>IC 중첩 깊이 한계(%1)를 초과했습니다 — blob이 악의적으로 조작되었을 수 있습니다</translation>
     </message>
 </context>
 <context>
@@ -2698,7 +2784,7 @@ IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 �
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="140"/>
+        <location filename="../../Scene/Workspace.cpp" line="139"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2709,32 +2795,32 @@ Please update wiRedPanda to save changes to this file.</source>
 이 파일의 변경 사항을 저장하려면 wiRedPanda를 업데이트하십시오.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="144"/>
+        <location filename="../../Scene/Workspace.cpp" line="143"/>
         <source>Cannot save.</source>
         <translation>저장할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="257"/>
+        <location filename="../../Scene/Workspace.cpp" line="256"/>
         <source>Error opening file: %1</source>
         <translation>파일 열기 오류: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="289"/>
+        <location filename="../../Scene/Workspace.cpp" line="288"/>
         <source>Could not save file: %1</source>
         <translation>파일을 저장할 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="364"/>
+        <location filename="../../Scene/Workspace.cpp" line="363"/>
         <source>This file does not exist: %1</source>
         <translation>이 파일은 존재하지 않습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="373"/>
+        <location filename="../../Scene/Workspace.cpp" line="372"/>
         <source>Could not open file: %1</source>
         <translation>파일을 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="408"/>
+        <location filename="../../Scene/Workspace.cpp" line="407"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2747,34 +2833,34 @@ Please update wiRedPanda to edit and save this file.</source>
 이 파일을 편집하고 저장하려면 wiRedPanda를 업데이트하십시오.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="413"/>
+        <location filename="../../Scene/Workspace.cpp" line="412"/>
         <source>Newer version file.</source>
         <translation>더 새로운 버전 파일입니다.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="416"/>
+        <location filename="../../Scene/Workspace.cpp" line="415"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>이 파일은 이전 형식(버전 %1)이며 현재 형식(버전 %2)으로 자동 업그레이드됩니다.
 원본 파일의 백업이 다음 이름으로 생성되었습니다: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="419"/>
+        <location filename="../../Scene/Workspace.cpp" line="418"/>
         <source>File upgraded.</source>
         <translation>파일이 업그레이드되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="581"/>
+        <location filename="../../Scene/Workspace.cpp" line="580"/>
         <source>Error opening autosave file: %1</source>
         <translation>자동 저장 파일 열기 오류: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="589"/>
+        <location filename="../../Scene/Workspace.cpp" line="588"/>
         <source>Could not commit autosave file: %1</source>
         <translation>자동 저장 파일을 확정할 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="755"/>
+        <location filename="../../Scene/Workspace.cpp" line="754"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>내장된 IC &quot;%1&quot; 제거</translation>
     </message>
@@ -2784,7 +2870,7 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="167"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="517"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="515"/>
         <source>New Project</source>
         <translation>새 프로젝트</translation>
     </message>
@@ -2839,35 +2925,32 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="307"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="359"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="348"/>
         <source>Save File as ...</source>
         <translation>다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="317"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="368"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="399"/>
         <source>File Conflict</source>
         <translation>파일 충돌</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="318"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="369"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="400"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>&quot;%1&quot; 파일이 이미 다른 탭에서 열려 있습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="321"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="372"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="403"/>
         <source>Switch to Tab</source>
         <translation>탭으로 전환</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="477"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="475"/>
         <source>Error!</source>
         <translation>오류!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="573"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="571"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>

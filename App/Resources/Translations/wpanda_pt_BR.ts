@@ -544,12 +544,12 @@
 <context>
     <name>ConnectionSerializer</name>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="60"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="46"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>Erro de fluxo ao ler o mapa de conexões na posição %1</translation>
     </message>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="71"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="57"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Erro de fluxo ao ler IDs das portas de conexão na posição %1</translation>
     </message>
@@ -1241,6 +1241,59 @@ Cada canal sem fio deve ter um rótulo único.</translation>
     </message>
 </context>
 <context>
+    <name>GraphicElementSerializer</name>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="44"/>
+        <source>Stream error reading %1 count at position %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="48"/>
+        <source>Refusing to read %1 with implausible count %2 (max %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="58"/>
+        <source>Stream error reading %1 entry %2 at position %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="213"/>
+        <source>Stream error reading element properties at position %1</source>
+        <translation>Erro de fluxo ao ler propriedades do elemento na posição %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="338"/>
+        <source>Stream error reading appearances at position %1</source>
+        <translation>Erro de fluxo ao ler aparências na posição %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="346"/>
+        <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
+        <translation>Índice de aparência %1 fora do intervalo (tamanho=%2) — o fluxo pode estar corrompido</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="434"/>
+        <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="468"/>
+        <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="529"/>
+        <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="558"/>
+        <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
+        <translation>Índice de aparência %1 fora do intervalo (tamanho=%2) para nome de aparência &quot;%3&quot; — o fluxo pode estar corrompido</translation>
+    </message>
+</context>
+<context>
     <name>IC</name>
     <message>
         <location filename="../../Element/IC.cpp" line="39"/>
@@ -1385,6 +1438,39 @@ Nome sugerido:</translation>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
         <translation>Não foi possível ler o arquivo: %1</translation>
+    </message>
+</context>
+<context>
+    <name>ICLoader</name>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="141"/>
+        <source>%1 not found.</source>
+        <translation>%1 não encontrado.</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="182"/>
+        <source>Circular IC reference detected: %1</source>
+        <translation>Referência circular de CI detectada: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="189"/>
+        <source>Error opening file: %1</source>
+        <translation>Erro ao abrir arquivo: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="244"/>
+        <source>IC migration: cannot open file for writing: %1</source>
+        <translation>Migração de CI: não é possível abrir o arquivo para escrita: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="251"/>
+        <source>IC migration: failed to commit re-saved file: %1</source>
+        <translation>Migração de CI: falha ao confirmar o arquivo ressalvo: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="305"/>
+        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
+        <translation>Limite de profundidade de aninhamento de IC (%1) excedido — o blob pode ter sido criado maliciosamente</translation>
     </message>
 </context>
 <context>
@@ -2698,7 +2784,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="140"/>
+        <location filename="../../Scene/Workspace.cpp" line="139"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2709,32 +2795,32 @@ Sua versão do wiRedPanda (%2) suporta o formato de arquivo %3.
 Por favor, atualize o wiRedPanda para salvar alterações neste arquivo.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="144"/>
+        <location filename="../../Scene/Workspace.cpp" line="143"/>
         <source>Cannot save.</source>
         <translation>Não é possível salvar.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="257"/>
+        <location filename="../../Scene/Workspace.cpp" line="256"/>
         <source>Error opening file: %1</source>
         <translation>Erro ao abrir arquivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="289"/>
+        <location filename="../../Scene/Workspace.cpp" line="288"/>
         <source>Could not save file: %1</source>
         <translation>Não foi possível salvar arquivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="364"/>
+        <location filename="../../Scene/Workspace.cpp" line="363"/>
         <source>This file does not exist: %1</source>
         <translation>Este arquivo não existe: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="373"/>
+        <location filename="../../Scene/Workspace.cpp" line="372"/>
         <source>Could not open file: %1</source>
         <translation>Não foi possível abrir arquivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="408"/>
+        <location filename="../../Scene/Workspace.cpp" line="407"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2747,34 +2833,34 @@ O arquivo será aberto mas o salvamento está bloqueado.
 Por favor, atualize o wiRedPanda para editar e salvar este arquivo.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="413"/>
+        <location filename="../../Scene/Workspace.cpp" line="412"/>
         <source>Newer version file.</source>
         <translation>Arquivo de versão mais nova.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="416"/>
+        <location filename="../../Scene/Workspace.cpp" line="415"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Este arquivo está em um formato antigo (versão %1) e será automaticamente atualizado para o formato atual (versão %2).
 Um backup do arquivo original foi criado com o nome: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="419"/>
+        <location filename="../../Scene/Workspace.cpp" line="418"/>
         <source>File upgraded.</source>
         <translation>Arquivo atualizado.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="581"/>
+        <location filename="../../Scene/Workspace.cpp" line="580"/>
         <source>Error opening autosave file: %1</source>
         <translation>Erro ao abrir arquivo de salvamento automático: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="589"/>
+        <location filename="../../Scene/Workspace.cpp" line="588"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Não foi possível efetivar o arquivo de salvamento automático: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="755"/>
+        <location filename="../../Scene/Workspace.cpp" line="754"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Remover IC embutido &quot;%1&quot;</translation>
     </message>
@@ -2784,7 +2870,7 @@ Um backup do arquivo original foi criado com o nome: %3</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="167"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="517"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="515"/>
         <source>New Project</source>
         <translation>Novo Projeto</translation>
     </message>
@@ -2839,35 +2925,32 @@ Você quer salvar suas alterações?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="307"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="359"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="348"/>
         <source>Save File as ...</source>
         <translation>Salvar Arquivo como...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="317"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="368"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="399"/>
         <source>File Conflict</source>
         <translation>Conflito de arquivo</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="318"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="369"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="400"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>O arquivo &quot;%1&quot; já está aberto em outra aba.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="321"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="372"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="403"/>
         <source>Switch to Tab</source>
         <translation>Ir para a aba</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="477"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="475"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="573"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="571"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>

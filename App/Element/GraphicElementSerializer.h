@@ -7,11 +7,16 @@
 
 #pragma once
 
+#include <QCoreApplication>
+#include <QList>
+#include <QMap>
+#include <QString>
+#include <QVariant>
 #include <QtGlobal>
 
 class GraphicElement;
+class Port;
 class QDataStream;
-class QString;
 class QVersionNumber;
 struct SerializationContext;
 
@@ -28,6 +33,12 @@ struct SerializationContext;
  */
 class GraphicElementSerializer
 {
+    // tr context for the load-error PANDACEPTION throws. lupdate extracts the plain
+    // PANDACEPTION(...) calls below under the "GraphicElementSerializer" context (the
+    // tr+=PANDACEPTION alias resolves via this class scope); PANDACEPTION_WITH_CONTEXT is NOT
+    // extracted. Mirrors ConnectionSerializer.
+    Q_DECLARE_TR_FUNCTIONS(GraphicElementSerializer)
+
 public:
     /// Writes \a element to \a stream (current keyed-QMap format).
     static void save(const GraphicElement &element, QDataStream &stream);
@@ -55,4 +66,12 @@ private:
 
     static void loadPixmapAppearanceNames(GraphicElement &element, QDataStream &stream, SerializationContext &context);
     static void loadPixmapAppearanceName(GraphicElement &element, QDataStream &stream, int index, const QString &contextDir);
+
+    /// Reads a `QList<QMap<QString, QVariant>>` from \a stream, rejecting implausible counts up
+    /// front (fuzz-hardening). A member (not a file-local helper) so its load-error throws extract
+    /// under this class's tr context.
+    static QList<QMap<QString, QVariant>> readPortList(QDataStream &stream, const char *label);
+
+    /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
+    static void removePortFromMap(Port *deletedPort, QMap<quint64, Port *> &portMap);
 };

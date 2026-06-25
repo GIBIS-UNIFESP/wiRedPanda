@@ -544,12 +544,12 @@
 <context>
     <name>ConnectionSerializer</name>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="60"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="46"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>Lỗi luồng khi đọc bản đồ kết nối tại vị trí %1</translation>
     </message>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="71"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="57"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Lỗi luồng khi đọc ID cổng kết nối tại vị trí %1</translation>
     </message>
@@ -1241,6 +1241,59 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
     </message>
 </context>
 <context>
+    <name>GraphicElementSerializer</name>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="44"/>
+        <source>Stream error reading %1 count at position %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="48"/>
+        <source>Refusing to read %1 with implausible count %2 (max %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="58"/>
+        <source>Stream error reading %1 entry %2 at position %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="213"/>
+        <source>Stream error reading element properties at position %1</source>
+        <translation>Lỗi luồng khi đọc thuộc tính phần tử tại vị trí %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="338"/>
+        <source>Stream error reading appearances at position %1</source>
+        <translation>Lỗi luồng khi đọc giao diện tại vị trí %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="346"/>
+        <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
+        <translation>Chỉ mục giao diện %1 ngoài phạm vi (kích thước=%2) — luồng có thể bị hỏng</translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="434"/>
+        <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="468"/>
+        <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="529"/>
+        <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="558"/>
+        <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
+        <translation>Chỉ mục giao diện %1 ngoài phạm vi (kích thước=%2) cho tên giao diện &quot;%3&quot; — luồng có thể bị hỏng</translation>
+    </message>
+</context>
+<context>
     <name>IC</name>
     <message>
         <location filename="../../Element/IC.cpp" line="39"/>
@@ -1385,6 +1438,39 @@ Tên gợi ý:</translation>
         <location filename="../../UI/ICController.cpp" line="364"/>
         <source>Could not read file: %1</source>
         <translation>Không thể đọc tệp: %1</translation>
+    </message>
+</context>
+<context>
+    <name>ICLoader</name>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="141"/>
+        <source>%1 not found.</source>
+        <translation>Không tìm thấy %1.</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="182"/>
+        <source>Circular IC reference detected: %1</source>
+        <translation>Phát hiện tham chiếu IC vòng: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="189"/>
+        <source>Error opening file: %1</source>
+        <translation>Lỗi khi mở tệp: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="244"/>
+        <source>IC migration: cannot open file for writing: %1</source>
+        <translation>Di chuyển IC: không thể mở tệp để ghi: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="251"/>
+        <source>IC migration: failed to commit re-saved file: %1</source>
+        <translation>Di chuyển IC: không thể lưu lại tệp đã lưu: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="305"/>
+        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
+        <translation>Đã vượt giới hạn độ sâu lồng nhau của IC (%1) — blob có thể được tạo độc hại</translation>
     </message>
 </context>
 <context>
@@ -2698,7 +2784,7 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="140"/>
+        <location filename="../../Scene/Workspace.cpp" line="139"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2709,32 +2795,32 @@ Phiên bản wiRedPanda của bạn (%2) hỗ trợ định dạng tệp %3.
 Vui lòng cập nhật wiRedPanda để lưu các thay đổi vào tệp này.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="144"/>
+        <location filename="../../Scene/Workspace.cpp" line="143"/>
         <source>Cannot save.</source>
         <translation>Không thể lưu.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="257"/>
+        <location filename="../../Scene/Workspace.cpp" line="256"/>
         <source>Error opening file: %1</source>
         <translation>Lỗi khi mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="289"/>
+        <location filename="../../Scene/Workspace.cpp" line="288"/>
         <source>Could not save file: %1</source>
         <translation>Không thể lưu tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="364"/>
+        <location filename="../../Scene/Workspace.cpp" line="363"/>
         <source>This file does not exist: %1</source>
         <translation>Tệp này không tồn tại: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="373"/>
+        <location filename="../../Scene/Workspace.cpp" line="372"/>
         <source>Could not open file: %1</source>
         <translation>Không thể mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="408"/>
+        <location filename="../../Scene/Workspace.cpp" line="407"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2747,34 +2833,34 @@ Tệp sẽ được mở nhưng việc lưu bị chặn.
 Vui lòng cập nhật wiRedPanda để chỉnh sửa và lưu tệp này.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="413"/>
+        <location filename="../../Scene/Workspace.cpp" line="412"/>
         <source>Newer version file.</source>
         <translation>Tệp phiên bản mới hơn.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="416"/>
+        <location filename="../../Scene/Workspace.cpp" line="415"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Tệp này ở định dạng cũ (phiên bản %1) và sẽ được tự động nâng cấp lên định dạng hiện tại (phiên bản %2).
 Bản sao lưu của tệp gốc đã được tạo với tên: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="419"/>
+        <location filename="../../Scene/Workspace.cpp" line="418"/>
         <source>File upgraded.</source>
         <translation>Tệp đã được nâng cấp.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="581"/>
+        <location filename="../../Scene/Workspace.cpp" line="580"/>
         <source>Error opening autosave file: %1</source>
         <translation>Lỗi khi mở tệp tự động lưu: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="589"/>
+        <location filename="../../Scene/Workspace.cpp" line="588"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Không thể xác nhận tệp tự động lưu: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="755"/>
+        <location filename="../../Scene/Workspace.cpp" line="754"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Xóa IC nhúng &quot;%1&quot;</translation>
     </message>
@@ -2784,7 +2870,7 @@ Bản sao lưu của tệp gốc đã được tạo với tên: %3</translation
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="167"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="517"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="515"/>
         <source>New Project</source>
         <translation>Dự án mới</translation>
     </message>
@@ -2839,35 +2925,32 @@ Bạn có muốn lưu thay đổi không?</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="307"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="359"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="348"/>
         <source>Save File as ...</source>
         <translation>Lưu tệp thành ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="317"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="368"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="399"/>
         <source>File Conflict</source>
         <translation>Xung đột tệp</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="318"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="369"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="400"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Tệp &quot;%1&quot; đã được mở trong một thẻ khác.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="321"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="372"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="403"/>
         <source>Switch to Tab</source>
         <translation>Chuyển sang thẻ</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="477"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="475"/>
         <source>Error!</source>
         <translation>Lỗi!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="573"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="571"/>
         <source>Error</source>
         <translation>Lỗi</translation>
     </message>

@@ -30,45 +30,42 @@ namespace {
 /// any threat of memory exhaustion.  Surfaced by libFuzzer.
 constexpr quint32 kMaxPortsPerElement = 1024;
 
-/// Read a `QList<QMap<QString, QVariant>>` from \a stream while enforcing
-/// kMaxPortsPerElement before any allocation.  Equivalent on the wire to
-/// `stream >> list` (Qt also writes a leading quint32 count) but rejects
-/// nonsense counts up front instead of `reserve()`-ing them.
-QList<QMap<QString, QVariant>> readPortList(QDataStream &stream, const char *label)
+} // namespace
+
+// readPortList() and removePortFromMap() are static members (not file-local helpers) so their
+// load-error PANDACEPTION throws extract under the GraphicElementSerializer tr context.
+
+QList<QMap<QString, QVariant>> GraphicElementSerializer::readPortList(QDataStream &stream, const char *label)
 {
     const QString labelStr = QString::fromUtf8(label);
     quint32 count;
     stream >> count;
     if (stream.status() != QDataStream::Ok) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Stream error reading %1 count at position %2",
-                                        labelStr, QString::number(stream.device()->pos()));
+        throw PANDACEPTION("Stream error reading %1 count at position %2",
+                           labelStr, QString::number(stream.device()->pos()));
     }
     if (count > kMaxPortsPerElement) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Refusing to read %1 with implausible count %2 (max %3)",
-                                        labelStr,
-                                        QString::number(count),
-                                        QString::number(kMaxPortsPerElement));
+        throw PANDACEPTION("Refusing to read %1 with implausible count %2 (max %3)",
+                           labelStr,
+                           QString::number(count),
+                           QString::number(kMaxPortsPerElement));
     }
     QList<QMap<QString, QVariant>> result;
     result.reserve(static_cast<int>(count));
     for (quint32 i = 0; i < count; ++i) {
         QMap<QString, QVariant> entry = Serialization::readBoundedMetadata(stream);
         if (stream.status() != QDataStream::Ok) {
-            throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                            "Stream error reading %1 entry %2 at position %3",
-                                            labelStr,
-                                            QString::number(i),
-                                            QString::number(stream.device()->pos()));
+            throw PANDACEPTION("Stream error reading %1 entry %2 at position %3",
+                               labelStr,
+                               QString::number(i),
+                               QString::number(stream.device()->pos()));
         }
         result.append(std::move(entry));
     }
     return result;
 }
 
-/// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
-void removePortFromMap(Port *deletedPort, QMap<quint64, Port *> &portMap)
+void GraphicElementSerializer::removePortFromMap(Port *deletedPort, QMap<quint64, Port *> &portMap)
 {
     for (auto it = portMap.begin(); it != portMap.end();) {
         if (it.value() == deletedPort) {
@@ -78,8 +75,6 @@ void removePortFromMap(Port *deletedPort, QMap<quint64, Port *> &portMap)
         }
     }
 }
-
-} // namespace
 
 // ========== GraphicElement entry points (delegate to the serializer) ==========
 
@@ -215,9 +210,8 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
 
     // Check stream integrity after reading element properties map
     if (stream.status() != QDataStream::Ok) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Stream error reading element properties at position %1",
-                                        QString::number(stream.device()->pos()));
+        throw PANDACEPTION("Stream error reading element properties at position %1",
+                           QString::number(stream.device()->pos()));
     }
 
     if (map.contains("pos")) {
@@ -341,19 +335,17 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
     QList<QMap<QString, QVariant>> appearancesMap = readPortList(stream, "appearances");
 
     if (stream.status() != QDataStream::Ok) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Stream error reading appearances at position %1",
-                                        QString::number(stream.device()->pos()));
+        throw PANDACEPTION("Stream error reading appearances at position %1",
+                           QString::number(stream.device()->pos()));
     }
 
     int index = 0;
 
     for (const auto &entry : std::as_const(appearancesMap)) {
         if (index >= element.m_appearance.alternativeAppearances().size()) {
-            throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                            "Appearance index %1 out of range (size=%2) — stream may be corrupt",
-                                            QString::number(index),
-                                            QString::number(element.m_appearance.alternativeAppearances().size()));
+            throw PANDACEPTION("Appearance index %1 out of range (size=%2) — stream may be corrupt",
+                               QString::number(index),
+                               QString::number(element.m_appearance.alternativeAppearances().size()));
         }
 
         const QString name = entry.value("skinName").toString();
@@ -439,10 +431,9 @@ void GraphicElementSerializer::loadInputPorts(GraphicElement &element, QDataStre
     qCDebug(four) << "Loading input ports.";
     quint64 inputSize; stream >> inputSize;
     if (inputSize > kMaxPortsPerElement) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Refusing old-format input port list with implausible count %1 (max %2)",
-                                        QString::number(inputSize),
-                                        QString::number(kMaxPortsPerElement));
+        throw PANDACEPTION("Refusing old-format input port list with implausible count %1 (max %2)",
+                           QString::number(inputSize),
+                           QString::number(kMaxPortsPerElement));
     }
 
     for (size_t port = 0; port < inputSize; ++port) {
@@ -474,10 +465,9 @@ void GraphicElementSerializer::loadOutputPorts(GraphicElement &element, QDataStr
     qCDebug(four) << "Loading output ports.";
     quint64 outputSize; stream >> outputSize;
     if (outputSize > kMaxPortsPerElement) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Refusing old-format output port list with implausible count %1 (max %2)",
-                                        QString::number(outputSize),
-                                        QString::number(kMaxPortsPerElement));
+        throw PANDACEPTION("Refusing old-format output port list with implausible count %1 (max %2)",
+                           QString::number(outputSize),
+                           QString::number(kMaxPortsPerElement));
     }
 
     for (size_t port = 0; port < outputSize; ++port) {
@@ -536,10 +526,9 @@ void GraphicElementSerializer::loadPixmapAppearanceNames(GraphicElement &element
         qCDebug(four) << "Loading pixmap appearance names.";
         quint64 outputSize; stream >> outputSize;
         if (outputSize > kMaxPortsPerElement) {
-            throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                            "Refusing old-format appearance list with implausible count %1 (max %2)",
-                                            QString::number(outputSize),
-                                            QString::number(kMaxPortsPerElement));
+            throw PANDACEPTION("Refusing old-format appearance list with implausible count %1 (max %2)",
+                               QString::number(outputSize),
+                               QString::number(kMaxPortsPerElement));
         }
 
         if (element.m_elementType == ElementType::IC) {
@@ -566,9 +555,8 @@ void GraphicElementSerializer::loadPixmapAppearanceName(GraphicElement &element,
     const QString name = Serialization::readBoundedString(stream);
 
     if (index >= element.m_appearance.alternativeAppearances().size()) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Appearance index %1 out of range (size=%2) for appearance name \"%3\" — stream may be corrupt",
-                                        QString::number(index), QString::number(element.m_appearance.alternativeAppearances().size()), name);
+        throw PANDACEPTION("Appearance index %1 out of range (size=%2) for appearance name \"%3\" — stream may be corrupt",
+                           QString::number(index), QString::number(element.m_appearance.alternativeAppearances().size()), name);
     }
 
     // Only override the alternative appearance if it is a filesystem path; resource
