@@ -77,7 +77,7 @@ private slots:
     void testSystemVerilogExportRippleAdder8Bit();
     void testSystemVerilogExportALU8Bit();
     void testSystemVerilogExportProgramCounter8BitArithmetic();
-    void testSystemVerilogExportRam256x8();
+    void testSystemVerilogExportRam8x8();
     void testSystemVerilogExportRegister8Bit();
     void testSystemVerilogExportRegisterFile8x8Level6();
     void testSystemVerilogExportStackPointer8Bit();

@@ -14,7 +14,6 @@ Inputs:
   - Pop - Increment SP (stack grow up)
   - Reset - Reset to 0xFF (priority 1, highest)
   - Clock - Clock signal
-  - Enable - Enable updates (usually tied high)
 
 Outputs:
   - SP[0..7] - Stack Pointer value
@@ -69,7 +68,8 @@ class StackPointer8BitBuilder(ICBuilderBase):
         ctrl_x = input_x + HORIZONTAL_GATE_SPACING
         control_signals = {}
 
-        for ctrl_name in ["Clock", "Load", "Push", "Pop", "Reset", "Enable"]:
+        # (F26: the dangling "Enable" input was removed — nothing consumed it.)
+        for ctrl_name in ["Clock", "Load", "Push", "Pop", "Reset"]:
             element_id = await self.create_element(
                 "InputSwitch", ctrl_x, 100.0 + len(control_signals) * VERTICAL_STAGE_SPACING, ctrl_name
             )
@@ -136,6 +136,35 @@ class StackPointer8BitBuilder(ICBuilderBase):
                 return False
             sp_outputs.append(element_id)
 
+        # ========== ±1 OPERAND AND HOLD LOGIC (F26) ==========
+        # The adder previously computed SP + 0 (its B operand was fully
+        # unconnected) and Push/Pop were dangling. Now:
+        #   B = 0x01 when Pop  (SP + 1)
+        #   B = 0xFF when Push (SP - 1 in two's complement)
+        # so B[0] = Push OR Pop and B[1..7] = Push. When neither is active,
+        # a hold mux routes the FF's own Q back instead of the adder sum.
+        or_pushpop_id = await self.create_element("Or", 450.0, 100.0, "or_push_pop")
+        if or_pushpop_id is None:
+            return False
+        if not await self.connect(control_signals["Push"], or_pushpop_id):
+            return False
+        if not await self.connect(control_signals["Pop"], or_pushpop_id, target_port=1):
+            return False
+
+        if not await self.connect(or_pushpop_id, adder_id, target_port_label="B[0]"):
+            return False
+        for i in range(1, 8):
+            if not await self.connect(control_signals["Push"], adder_id, target_port_label=f"B[{i}]"):
+                return False
+
+        # Per-bit hold mux: Sum when Push|Pop, otherwise hold Q.
+        hold_muxes = []
+        for i in range(8):
+            mux_id = await self.create_element("Mux", 700.0 + (i * 40.0), 350.0, f"hold_mux[{i}]")
+            if mux_id is None:
+                return False
+            hold_muxes.append(mux_id)
+
         # ========== CONNECTIONS ==========
 
         await self.log(f"✓ Created {self.element_count} elements")
@@ -143,12 +172,13 @@ class StackPointer8BitBuilder(ICBuilderBase):
 
         # For each bit [0..7]:
         # 1. SP[i] from FF → Output LED SP[i]
-        # 2. SP[i] from FF → Adder input A[i]
-        # 3. LoadValue[i] → PriorityMux[i] input 1 (medium priority)
-        # 4. Adder output[i] → PriorityMux[i] input 0 (low priority)
-        # 5. Reset control → Generate 0xFF for PriorityMux[i] input 2 (high priority)
-        # 6. PriorityMux[i] output → D Flip-Flop[i] input D
-        # 7. Clock → All D Flip-Flops clock input
+        # 2. SP[i] from FF → Adder input A[i] and hold mux In0
+        # 3. Adder Sum[i] → hold mux In1; (Push OR Pop) → hold mux S0
+        # 4. Vcc → PriorityMux data0 (Reset value 0xFF, highest priority)
+        # 5. LoadValue[i] → PriorityMux data1 (Load, medium priority)
+        # 6. Hold mux out → PriorityMux data2 (count-or-hold, lowest priority)
+        # 7. PriorityMux output → D Flip-Flop[i] input D
+        # 8. Clock → All D Flip-Flops clock input
 
         for i in range(8):
             ff_id = sp_flipflops[i]
@@ -156,6 +186,7 @@ class StackPointer8BitBuilder(ICBuilderBase):
             led_id = sp_outputs[i]
             load_val_id = load_value_inputs[i]
             vcc_id = vcc_inputs[i]
+            hold_mux_id = hold_muxes[i]
 
             # SP from FF to Output LED
             if not await self.connect(ff_id, led_id):
@@ -163,6 +194,14 @@ class StackPointer8BitBuilder(ICBuilderBase):
 
             # SP from FF to Adder input A[i]
             if not await self.connect(ff_id, adder_id, target_port_label=f"A[{i}]"):
+                return False
+
+            # Hold mux: In0 = current SP bit (hold), In1 = Sum (count)
+            if not await self.connect(ff_id, hold_mux_id, target_port_label="In0"):
+                return False
+            if not await self.connect(adder_id, hold_mux_id, source_port_label=f"Sum[{i}]", target_port_label="In1"):
+                return False
+            if not await self.connect(or_pushpop_id, hold_mux_id, target_port_label="S0"):
                 return False
 
             # Vcc to PriorityMux data0 (used for reset - outputs 1 when reset active)
@@ -173,8 +212,8 @@ class StackPointer8BitBuilder(ICBuilderBase):
             if not await self.connect(load_val_id, pmux_id, target_port_label="data1"):
                 return False
 
-            # Adder output[i] to PriorityMux data2 (low priority)
-            if not await self.connect(adder_id, pmux_id, source_port=i, target_port_label="data2"):
+            # Hold mux output to PriorityMux data2 (count-or-hold, lowest priority)
+            if not await self.connect(hold_mux_id, pmux_id, source_port_label="Out", target_port_label="data2"):
                 return False
 
             # PriorityMux output to D Flip-Flop input D

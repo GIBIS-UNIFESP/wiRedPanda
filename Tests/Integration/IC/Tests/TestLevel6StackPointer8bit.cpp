@@ -25,7 +25,6 @@ struct StackPointer8bitFixture {
     InputSwitch *load = nullptr;
     InputSwitch *push = nullptr;
     InputSwitch *pop = nullptr;
-    InputSwitch *enable = nullptr;
     InputSwitch *loadVal[8] = {};
     Led *sp[8] = {};
     Simulation *sim = nullptr;
@@ -42,9 +41,8 @@ struct StackPointer8bitFixture {
         load = new InputSwitch();
         push = new InputSwitch();
         pop = new InputSwitch();
-        enable = new InputSwitch();
 
-        builder.add(clk, reset, load, push, pop, enable, ic);
+        builder.add(clk, reset, load, push, pop, ic);
 
         for (int i = 0; i < 8; ++i) {
             loadVal[i] = new InputSwitch();
@@ -57,7 +55,6 @@ struct StackPointer8bitFixture {
         builder.connect(load, 0, ic, "Load");
         builder.connect(push, 0, ic, "Push");
         builder.connect(pop, 0, ic, "Pop");
-        builder.connect(enable, 0, ic, "Enable");
 
         for (int i = 0; i < 8; ++i) {
             builder.connect(loadVal[i], 0, ic, QString("LoadValue[%1]").arg(i));
@@ -115,13 +112,11 @@ void TestLevel6StackPointer8Bit::testStackPointer()
     f.load->setOn(false);
     f.push->setOn(false);
     f.pop->setOn(false);
-    f.enable->setOn(false);
     f.sim->update();
 
     // Load phase
     f.reset->setOn(false);
     f.load->setOn(true);
-    f.enable->setOn(true);
 
     for (int i = 0; i < 8; ++i) {
         f.loadVal[i]->setOn((loadValue >> i) & 1);

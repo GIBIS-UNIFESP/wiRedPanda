@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel6Ram256x8.h"
+#include "Tests/Integration/IC/Tests/TestLevel6Ram8x8.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -18,7 +18,7 @@ using TestUtils::readMultiBitOutput;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
-struct Ram256x8Fixture {
+struct Ram8x8Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<InputSwitch *> addressInputs;
@@ -33,10 +33,10 @@ struct Ram256x8Fixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        ic = loadBuildingBlockIC("level6_ram_256x8.panda");
+        ic = loadBuildingBlockIC("level6_ram_8x8.panda");
         builder.add(ic);
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 3; i++) {
             auto *sw = new InputSwitch();
             builder.add(sw);
             sw->setLabel(QString("Address[%1]").arg(i));
@@ -65,8 +65,10 @@ struct Ram256x8Fixture {
             dataOutOutputs.append(led);
         }
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 3; i++) {
             builder.connect(addressInputs[i], 0, ic, QString("Address[%1]").arg(i));
+        }
+        for (int i = 0; i < 8; i++) {
             builder.connect(dataInInputs[i], 0, ic, QString("DataIn[%1]").arg(i));
         }
         builder.connect(we, 0, ic, "WriteEnable");
@@ -87,28 +89,28 @@ struct Ram256x8Fixture {
     }
 };
 
-static std::unique_ptr<Ram256x8Fixture> s_level6Ram256x8;
+static std::unique_ptr<Ram8x8Fixture> s_level6Ram8x8;
 
-void TestLevel6RAM256X8::initTestCase()
+void TestLevel6RAM8X8::initTestCase()
 {
-    s_level6Ram256x8 = std::make_unique<Ram256x8Fixture>();
-    QVERIFY(s_level6Ram256x8->build());
+    s_level6Ram8x8 = std::make_unique<Ram8x8Fixture>();
+    QVERIFY(s_level6Ram8x8->build());
 }
 
-void TestLevel6RAM256X8::cleanupTestCase()
+void TestLevel6RAM8X8::cleanupTestCase()
 {
-    s_level6Ram256x8.reset();
+    s_level6Ram8x8.reset();
 }
 
-void TestLevel6RAM256X8::cleanup()
+void TestLevel6RAM8X8::cleanup()
 {
-    if (s_level6Ram256x8 && s_level6Ram256x8->sim) {
-        s_level6Ram256x8->sim->restart();
-        s_level6Ram256x8->sim->update();
+    if (s_level6Ram8x8 && s_level6Ram8x8->sim) {
+        s_level6Ram8x8->sim->restart();
+        s_level6Ram8x8->sim->update();
     }
 }
 
-void TestLevel6RAM256X8::testRAM256x8_data()
+void TestLevel6RAM8X8::testRAM8x8_data()
 {
     QTest::addColumn<int>("address");
     QTest::addColumn<int>("writeData");
@@ -125,14 +127,14 @@ void TestLevel6RAM256X8::testRAM256x8_data()
         << 7 << 0x55 << 7 << 0x55;
 }
 
-void TestLevel6RAM256X8::testRAM256x8()
+void TestLevel6RAM8X8::testRAM8x8()
 {
     QFETCH(int, address);
     QFETCH(int, writeData);
     QFETCH(int, readAddress);
     QFETCH(int, expectedReadData);
 
-    auto &f = *s_level6Ram256x8;
+    auto &f = *s_level6Ram8x8;
 
     // Step 1: Write data to address
     setMultiBitInput(f.addressInputs, address);
@@ -155,12 +157,12 @@ void TestLevel6RAM256X8::testRAM256x8()
     QCOMPARE(readData, expectedReadData);
 }
 
-void TestLevel6RAM256X8::testRAMStructure()
+void TestLevel6RAM8X8::testRAMStructure()
 {
-    auto &f = *s_level6Ram256x8;
+    auto &f = *s_level6Ram8x8;
 
     QVERIFY(f.ic != nullptr);
 
-    QCOMPARE(f.ic->inputSize(), 18);
+    QCOMPARE(f.ic->inputSize(), 13);
     QCOMPARE(f.ic->outputSize(), 8);
 }

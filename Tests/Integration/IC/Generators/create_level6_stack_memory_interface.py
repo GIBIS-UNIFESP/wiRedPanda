@@ -5,7 +5,7 @@
 """
 Create CPU Level 6: Stack Memory Interface IC
 
-Composes Stack Pointer with 256-byte RAM and address multiplexing.
+Composes the Stack Pointer with the 8×8 RAM and address multiplexing.
 
 This IC handles all stack memory operations:
 - Stack Pointer management (PUSH/POP)
@@ -23,21 +23,24 @@ Inputs:
   - AddressSelect - 0=Use Address input, 1=Use SP
   - DataIn[0..7] - Data to write to memory
   - MemWrite - Memory write enable
-  - MemRead - Memory read enable
   - Clock - Clock signal
-  - Enable - Enable updates
 
 Outputs:
   - SP[0..7] - Current Stack Pointer value
-  - DataOut[0..7] - Data read from memory
-  - FinalAddress[0..7] - Selected memory address (Address or SP)
+  - DataOut[0..7] - Data read from memory (asynchronous read — no MemRead
+                    gate needed; reads are always available)
+  - FinalAddress[0..7] - Selected memory address (Address or SP; the RAM
+                         decodes the low 3 bits — addresses alias modulo 8)
 
 Architecture:
 - level6_stack_pointer_8bit.panda - 8-bit SP with PUSH/POP
-- level6_ram_256x8.panda - 256-byte RAM
+- level6_ram_8x8.panda - 8-word stack memory (partial address decode)
 - 8x 2-to-1 Multiplexer - Select between Address[i] and SP[i]
 - Data paths for read/write operations
 - Control signal distribution
+
+(F26: the dangling MemRead and Enable inputs were removed — neither was
+connected to anything; reads are asynchronous and the SP has no enable.)
 
 Usage:
     python3 create_level6_stack_memory_interface.py
@@ -97,11 +100,9 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
             "DataIn[5]",
             "DataIn[6]",
             "DataIn[7]",
-            # Control signals
+            # Control signals (F26: MemRead/Enable removed — never consumed)
             "MemWrite",
-            "MemRead",
             "Clock",
-            "Enable",
         ]
 
         input_x = 50.0
@@ -124,12 +125,12 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
         if sp_id is None:
             return False
 
-        # Instantiate RAM (256x8)
-        await self.log("📦 Instantiating 256-byte RAM...")
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ram_256x8")):
+        # Instantiate RAM (8x8 stack memory)
+        await self.log("📦 Instantiating 8×8 stack RAM...")
+        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ram_8x8")):
             return False
 
-        ram_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_ram_256x8"), 750.0, 200.0, "StackRAM")
+        ram_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_ram_8x8"), 750.0, 200.0, "StackRAM")
         if ram_id is None:
             return False
 
@@ -235,8 +236,10 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
             if not await self.connect(inputs["AddressSelect"], address_muxes[i], target_port_label="Sel[0]"):
                 return False
 
-            # Address Mux output → RAM address[i]
-            if not await self.connect(address_muxes[i], ram_id, target_port_label=f"Address[{i}]"):
+            # Address Mux output → RAM address[i]. The backing memory holds
+            # 8 words; only the low 3 bits address it (partial decode — the
+            # full 8-bit selected address is still exposed on FinalAddress).
+            if i < 3 and not await self.connect(address_muxes[i], ram_id, target_port_label=f"Address[{i}]"):
                 return False
 
             # Address Mux output → Output FinalAddress[i]

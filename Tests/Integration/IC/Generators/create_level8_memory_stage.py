@@ -28,7 +28,8 @@ Memory Operations:
     - DataOut = Result
 
 Architecture:
-  - Instantiates level6_ram_256x8 for 256×8 data memory
+  - Instantiates level6_ram_8x8 for the data memory (8 words; the 8-bit
+    address bus partially decodes — addresses alias modulo 8)
   - Uses 2-to-1 multiplexer to select between memory data and result pass-through
   - Synchronous write, asynchronous read
   - MemWrite controls RAM write enable
@@ -127,18 +128,20 @@ class MemoryStageBuilder(ICBuilderBase):
         await self.log("  ✓ Created control signals")
 
         # ---- Instantiate RAM ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ram_256x8")):
+        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ram_8x8")):
             return False
 
         ram_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level6_ram_256x8"), input_x + (3 * HORIZONTAL_GATE_SPACING), 300.0, "RAM"
+            str(IC_COMPONENTS_DIR / "level6_ram_8x8"), input_x + (3 * HORIZONTAL_GATE_SPACING), 300.0, "RAM"
         )
         if ram_id is None:
             return False
         await self.log("  ✓ Instantiated RAM")
 
         # ---- Connect Address inputs to RAM ----
-        for i in range(8):
+        # The stage keeps an 8-bit address bus; the backing memory holds 8
+        # words, so the high bits are partial decode (aliasing modulo 8).
+        for i in range(3):
             if not await self.connect(address_inputs[i], ram_id, target_port_label=f"Address[{i}]"):
                 return False
 
