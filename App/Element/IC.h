@@ -59,6 +59,10 @@ public:
 
     const QString &file() const { return m_file; }
 
+    /// Name shown in the hover preview header: the blob name for embedded ICs,
+    /// otherwise the file's base name with extension.  Empty if neither is set.
+    QString displayName() const;
+
     /// Returns the blob name for embedded ICs, empty if file-backed.
     const QString &blobName() const override { return m_blobName; }
     void setBlobName(const QString &name) { m_blobName = name; }
@@ -132,6 +136,10 @@ protected:
 
 private:
     // --- Utility methods ---
+
+    /// True when \a localPos (in IC item coordinates) lies over one of this IC's
+    /// ports.  Used to suppress the hover preview over the connection pins.
+    bool isCursorOverPort(const QPointF &localPos) const;
 
     void loadFileDirectly(const QFileInfo &fileInfo);
     void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,

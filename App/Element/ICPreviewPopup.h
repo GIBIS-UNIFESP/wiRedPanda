@@ -60,6 +60,14 @@ public:
     /// Returns the IC currently pending display (may be null).
     IC *pendingIC() const { return m_pendingIC; }
 
+    /// True while a show is pending (timer running) or the popup is already
+    /// visible for \a ic.  Used by hover-move to tell "already armed" from
+    /// "needs re-arming" (e.g. after the cursor passed over a port).
+    bool isShowActiveFor(const IC *ic) const
+    {
+        return m_pendingIC == ic && (isVisible() || m_showTimer.isActive());
+    }
+
 protected:
     /// \reimp Cancels a scheduled hide when the cursor enters the popup itself.
     void enterEvent(QEnterEvent *event) override;
@@ -70,6 +78,7 @@ protected:
 private:
     void executeShow();
 
+    QLabel *m_titleLabel;   ///< Filename/blob-name caption shown above the preview image.
     QLabel *m_imageLabel;
     QTimer m_hideTimer;
     QTimer m_showTimer;
