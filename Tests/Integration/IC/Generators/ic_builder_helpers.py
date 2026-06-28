@@ -713,7 +713,13 @@ class BarrelShiftBuilder(ICBuilderBase):
 
 
 class CounterBuilder(ICBuilderBase):
-    """4-bit counter. mode: 'binary' | 'loadable' | 'modulo'."""
+    """4-bit counter. mode: 'loadable' | 'modulo'.
+
+    The plain binary counter is no longer built here: the 74161-style binary
+    counter (CountEnable/Load/Clear + parallel Data) diverged far enough from
+    the loadable/modulo pattern that it lives in its own standalone
+    BinaryCounter4BitBuilder (create_level4_binary_counter_4bit.py).
+    """
 
     def __init__(self, mcp, mode: str, verbose: bool = True) -> None:
         super().__init__(mcp, verbose)
@@ -722,11 +728,7 @@ class CounterBuilder(ICBuilderBase):
     async def create(self) -> bool:
         """Create a 4-bit counter IC."""
         mode = self.mode
-        if mode == "binary":
-            display = "4-bit Binary Counter"
-            output_name = "level4_binary_counter_4bit"
-            out_fmt = "Q{i}"
-        elif mode == "loadable":
+        if mode == "loadable":
             display = "4-bit Loadable Counter"
             output_name = "level5_loadable_counter_4bit"
             out_fmt = "Q[{i}]"

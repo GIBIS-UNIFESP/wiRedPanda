@@ -16,4 +16,7 @@ private slots:
 
     void testBinaryCounter_data();
     void testBinaryCounter();
+    void testClear();
+    void testCountEnable();
+    void testParallelLoad();
 };
