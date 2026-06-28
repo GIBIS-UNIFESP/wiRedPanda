@@ -11,8 +11,8 @@ Architecture:
   - RIGHT path: 2-stage cascade (rotate by 1, rotate by 2) with wrap-around
   - Direction selector: final mux layer selects between LEFT and RIGHT paths
 
-Left rotation:  output[i] = input[(i+rotate) % 4]
-Right rotation: output[i] = input[(i-rotate+4) % 4]
+Left rotation:  output[i] = input[(i-rotate+4) % 4]
+Right rotation: output[i] = input[(i+rotate) % 4]
 
 Inputs: Data[0-3], Rotate_Amount[0-1], Direction (7 inputs)
         Direction: 0=left, 1=right

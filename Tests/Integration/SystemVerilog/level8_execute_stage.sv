@@ -1151,7 +1151,6 @@ module level8_execute_stage_ic (
     input operanda6,
     input operanda7,
     input aluop0,
-    input clock,
     input operandb0,
     input operandb1,
     input operandb2,
@@ -1161,7 +1160,6 @@ module level8_execute_stage_ic (
     input operandb6,
     input operandb7,
     input aluop1,
-    input reset,
     input aluop2,
     output result0,
     output zero,
@@ -1253,10 +1251,10 @@ input input_switch16,
 input input_switch17,
 input input_switch18,
 input input_switch19,
-input input_switch20,
-input input_switch21,
 
 /* ========= Outputs ========== */
+output led21_1,
+output led22_1,
 output led23_1,
 output led24_1,
 output led25_1,
@@ -1264,9 +1262,7 @@ output led26_1,
 output led27_1,
 output led28_1,
 output led29_1,
-output led30_1,
-output led31_1,
-output led32_1
+output led30_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL8_EXECUTE_STAGE (level8_execute_stage_ic)
@@ -1293,18 +1289,16 @@ level8_execute_stage_ic level8_execute_stage_ic_inst_1 (
     .operanda6(input_switch7),
     .operanda7(input_switch8),
     .aluop0(input_switch9),
-    .clock(input_switch10),
-    .operandb0(input_switch11),
-    .operandb1(input_switch12),
-    .operandb2(input_switch13),
-    .operandb3(input_switch14),
-    .operandb4(input_switch15),
-    .operandb5(input_switch16),
-    .operandb6(input_switch17),
-    .operandb7(input_switch18),
-    .aluop1(input_switch19),
-    .reset(input_switch20),
-    .aluop2(input_switch21),
+    .operandb0(input_switch10),
+    .operandb1(input_switch11),
+    .operandb2(input_switch12),
+    .operandb3(input_switch13),
+    .operandb4(input_switch14),
+    .operandb5(input_switch15),
+    .operandb6(input_switch16),
+    .operandb7(input_switch17),
+    .aluop1(input_switch18),
+    .aluop2(input_switch19),
     .result0(w_level8_execute_stage_ic_inst_1_result0),
     .zero(w_level8_execute_stage_ic_inst_1_zero),
     .result1(w_level8_execute_stage_ic_inst_1_result1),
@@ -1318,14 +1312,14 @@ level8_execute_stage_ic level8_execute_stage_ic_inst_1 (
 );
 
 // Writing output data. //
-assign led23_1 = w_level8_execute_stage_ic_inst_1_result0;
-assign led24_1 = w_level8_execute_stage_ic_inst_1_zero;
-assign led25_1 = w_level8_execute_stage_ic_inst_1_result1;
-assign led26_1 = w_level8_execute_stage_ic_inst_1_sign;
-assign led27_1 = w_level8_execute_stage_ic_inst_1_result2;
-assign led28_1 = w_level8_execute_stage_ic_inst_1_result3;
-assign led29_1 = w_level8_execute_stage_ic_inst_1_result4;
-assign led30_1 = w_level8_execute_stage_ic_inst_1_result5;
-assign led31_1 = w_level8_execute_stage_ic_inst_1_result6;
-assign led32_1 = w_level8_execute_stage_ic_inst_1_result7;
+assign led21_1 = w_level8_execute_stage_ic_inst_1_result0;
+assign led22_1 = w_level8_execute_stage_ic_inst_1_zero;
+assign led23_1 = w_level8_execute_stage_ic_inst_1_result1;
+assign led24_1 = w_level8_execute_stage_ic_inst_1_sign;
+assign led25_1 = w_level8_execute_stage_ic_inst_1_result2;
+assign led26_1 = w_level8_execute_stage_ic_inst_1_result3;
+assign led27_1 = w_level8_execute_stage_ic_inst_1_result4;
+assign led28_1 = w_level8_execute_stage_ic_inst_1_result5;
+assign led29_1 = w_level8_execute_stage_ic_inst_1_result6;
+assign led30_1 = w_level8_execute_stage_ic_inst_1_result7;
 endmodule

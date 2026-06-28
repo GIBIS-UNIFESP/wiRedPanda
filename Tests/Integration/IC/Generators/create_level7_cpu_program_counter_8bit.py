@@ -9,7 +9,7 @@ Composes the Level 6 Program Counter with additional CPU-level integration.
 
 Inputs:
   Data[0..7] (load value)
-  Clock, Load, Inc, Reset, WriteEnable
+  Clock, Load, Inc, Reset
 
 Outputs:
   Address[0..7] (current PC value)
@@ -78,13 +78,10 @@ class ProgramCounter7BitBuilder(ICBuilderBase):
         if reset is None:
             return False
 
-        write_enable = await self.create_element(
-            "InputSwitch", control_input_x, control_input_y + (4 * VERTICAL_STAGE_SPACING), "WriteEnable"
-        )
-        if write_enable is None:
-            return False
+        # (F26: the dangling WriteEnable input was removed — the level-6 PC
+        # derives its own write enable as OR(load, inc).)
 
-        await self.log("  ✓ Created 8 data inputs + 5 control signals")
+        await self.log("  ✓ Created 8 data inputs + 4 control signals")
 
         # Instantiate Level 6 Program Counter IC
         pc_x = data_input_x + (4 * HORIZONTAL_GATE_SPACING)

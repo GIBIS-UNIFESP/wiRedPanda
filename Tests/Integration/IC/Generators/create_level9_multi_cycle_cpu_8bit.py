@@ -23,15 +23,18 @@ Outputs:
 
 Architecture:
   - 2-bit cycle counter for 4-cycle execution sequence
-  - Each stage instantiated separately
-  - All stages receive same clock (divided by local control signals)
-  - Intermediate register latching (simplified: no explicit latches shown)
-  - Register file for operand storage
+  - Each stage instantiated separately; decode/execute are purely
+    combinational (no clock), only fetch/memory/regfile are clocked,
+    each gated to its own phase of the cycle counter
+  - Register file provides operands (Read_Addr2 = RawInstr[0..2]);
+    execute stage computes on them; memory stage is addressed by
+    RawInstr[0..2]; write-back to the register file is gated by
+    AND(RegWrite, Phase3)
 
 Execution Flow:
   Cycle 0 (Fetch): PC → Address, fetch instruction from memory
   Cycle 1 (Decode): Decode instruction bits to control signals
-  Cycle 2 (Execute): Execute ALU operation with operands
+  Cycle 2 (Execute): Execute ALU operation with regfile operands
   Cycle 3 (Memory): Read/write memory, write-back result to registers
 
 Usage:
@@ -225,12 +228,11 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created 3-input clock gate AND gates")
 
-        # ---- Connect gated clocks to stages ----
-        # Now each stage gets its own gated clock
+        # ---- Connect gated clocks to the clocked stages ----
+        # Decode and execute are combinational (no Clock port — F33); fetch
+        # latches on the cycle-0 gated clock and memory writes on cycle 3.
         stage_info = [
             (fetch_id, "Fetch", gated_clocks[0]),
-            (decode_id, "Decode", gated_clocks[1]),
-            (execute_id, "Execute", gated_clocks[2]),
             (memory_id, "Memory", gated_clocks[3]),
             (regfile_id, "RegFile", clock_id),  # Register file gets main clock for synchronous write
         ]
@@ -297,11 +299,16 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         await self.log("  ✓ Connected Execute to Memory")
 
         # ---- Connect default control signals ----
-        # Fetch stage controls
+        # Fetch stage controls. InstrLoad is held high (F26: it was tied to
+        # GND, so the instruction register could never load) — the fetch
+        # stage's gated cycle-0 clock confines the actual latching to the
+        # fetch phase.
         if not await self.connect(vcc_id, fetch_id, target_port_label="PCInc"):
             return False
+        if not await self.connect(vcc_id, fetch_id, target_port_label="InstrLoad"):
+            return False
 
-        for port in ["PCLoad", "InstrLoad", "ProgWrite"]:
+        for port in ["PCLoad", "ProgWrite"]:
             if not await self.connect(gnd_id, fetch_id, target_port_label=port):
                 return False
 
@@ -311,13 +318,73 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
                 if not await self.connect(gnd_id, fetch_id, target_port_label=f"{port_prefix}[{i}]"):
                     return False
 
-        # Memory stage address/data defaults
-        for i in range(8):
-            for port_prefix in ["Address", "DataIn"]:
-                if not await self.connect(gnd_id, memory_id, target_port_label=f"{port_prefix}[{i}]"):
-                    return False
+        # ---- Register file datapath (F26: previously unconnected) ----
+        # Accumulator model matching the single-cycle CPU: OperandA reads R0,
+        # OperandB reads Register[RawInstr[2:0]], results write back to R0.
+        for i in range(3):
+            if not await self.connect(gnd_id, regfile_id, target_port_label=f"Read_Addr1[{i}]"):
+                return False
+            if not await self.connect(
+                fetch_id, regfile_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"Read_Addr2[{i}]"
+            ):
+                return False
+            if not await self.connect(gnd_id, regfile_id, target_port_label=f"Write_Addr[{i}]"):
+                return False
 
-        await self.log("  ✓ Connected default control signals")
+        for i in range(8):
+            if not await self.connect(
+                regfile_id, execute_id, source_port_label=f"Read_Data1[{i}]", target_port_label=f"OperandA[{i}]"
+            ):
+                return False
+            if not await self.connect(
+                regfile_id, execute_id, source_port_label=f"Read_Data2[{i}]", target_port_label=f"OperandB[{i}]"
+            ):
+                return False
+
+        # Memory address comes from the instruction's register field; data to
+        # store is the accumulator (Read_Data1).
+        for i in range(3):
+            if not await self.connect(
+                fetch_id, memory_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"Address[{i}]"
+            ):
+                return False
+        for i in range(3, 8):
+            if not await self.connect(gnd_id, memory_id, target_port_label=f"Address[{i}]"):
+                return False
+        for i in range(8):
+            if not await self.connect(
+                regfile_id, memory_id, source_port_label=f"Read_Data1[{i}]", target_port_label=f"DataIn[{i}]"
+            ):
+                return False
+
+        # Writeback: memory stage output (memory data or ALU pass-through)
+        # into R0, enabled only in the write-back phase (cycle 3) when the
+        # decoded instruction writes a register.
+        for i in range(8):
+            if not await self.connect(
+                memory_id, regfile_id, source_port_label=f"DataOut[{i}]", target_port_label=f"Data_In[{i}]"
+            ):
+                return False
+
+        phase3_id = await self.create_element("And", 380.0, counter_y, "Phase3")
+        if phase3_id is None:
+            return False
+        if not await self.connect(counter_ids[1], phase3_id, source_port_label="Q"):
+            return False
+        if not await self.connect(counter_ids[0], phase3_id, source_port_label="Q", target_port=1):
+            return False
+
+        we_and_id = await self.create_element("And", 420.0, counter_y, "WriteBackEnable")
+        if we_and_id is None:
+            return False
+        if not await self.connect(decode_id, we_and_id, source_port_label="RegWrite"):
+            return False
+        if not await self.connect(phase3_id, we_and_id, target_port=1):
+            return False
+        if not await self.connect(we_and_id, regfile_id, target_port_label="Write_Enable"):
+            return False
+
+        await self.log("  ✓ Connected datapath and control signals")
 
         # ---- Create output LEDs ----
         output_x = stage_x_offsets[3] + HORIZONTAL_GATE_SPACING
@@ -361,19 +428,9 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         await self.log("  ✓ Created output LEDs")
 
         # ---- Connect cycle counter feedback (simple ripple) ----
-        # FF0: Data = NOT(Q), Reset enables counting
-        # FF1: Data = Q0_XOR_1, (toggling pattern)
-        # For simplicity, make FF0 toggle each cycle by connecting NOT(Q0) to D0
-        not_id = await self.create_element("Not", 200.0, counter_y, "NotQ0")
-        if not_id is None:
-            return False
-
-        # Connect Q0 to NOT input
-        if not await self.connect(counter_ids[0], not_id, source_port_label="Q"):
-            return False
-
-        # Connect NOT output to FF0 D input
-        if not await self.connect(not_id, counter_ids[0], target_port_label="Data"):
+        # FF0 toggles each cycle: reuse the existing NotQ0 gate from the
+        # clock gating (a duplicate "NotQ0" used to be created here).
+        if not await self.connect(not_q0_id, counter_ids[0], target_port_label="Data"):
             return False
 
         # For FF1, use XOR(Q0, Q1) for ripple counting
