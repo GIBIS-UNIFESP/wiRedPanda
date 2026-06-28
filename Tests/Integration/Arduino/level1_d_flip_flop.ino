@@ -71,9 +71,9 @@ void computeLogic() {
     aux_ic_input_level1_d_flip_flop_0_3 = input_switch4_val;
     aux_level1_d_flip_flop_0_node_1 = aux_ic_input_level1_d_flip_flop_0_1;
     aux_level1_d_flip_flop_0_node_3 = aux_ic_input_level1_d_flip_flop_0_3;
-    aux_level1_d_flip_flop_0_not_14 = !aux_level1_d_flip_flop_0_nor_12;
     aux_level1_d_flip_flop_0_node_0 = aux_ic_input_level1_d_flip_flop_0_0;
     aux_level1_d_flip_flop_0_node_2 = aux_ic_input_level1_d_flip_flop_0_2;
+    aux_level1_d_flip_flop_0_not_14 = !aux_level1_d_flip_flop_0_nor_12;
     aux_level1_d_flip_flop_0_not_4 = !aux_level1_d_flip_flop_0_node_1;
     aux_level1_d_flip_flop_0_not_6 = !aux_level1_d_flip_flop_0_node_3;
     aux_level1_d_flip_flop_0_and_16 = aux_level1_d_flip_flop_0_not_14 && aux_level1_d_flip_flop_0_node_1;

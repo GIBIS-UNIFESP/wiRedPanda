@@ -84,6 +84,8 @@ void computeLogic() {
     aux_level3_alu_selector_5way_0_node_3 = aux_ic_input_level3_alu_selector_5way_0_3;
     aux_level3_alu_selector_5way_0_node_5 = aux_ic_input_level3_alu_selector_5way_0_5;
     aux_level3_alu_selector_5way_0_node_6 = aux_ic_input_level3_alu_selector_5way_0_6;
+    aux_level3_alu_selector_5way_0_node_4 = aux_ic_input_level3_alu_selector_5way_0_4;
+    aux_level3_alu_selector_5way_0_node_7 = aux_ic_input_level3_alu_selector_5way_0_7;
     //Multiplexer
     if ((aux_level3_alu_selector_5way_0_node_5) == 0) {
         aux_level3_alu_selector_5way_0_mux_8 = aux_level3_alu_selector_5way_0_node_0;
@@ -102,8 +104,6 @@ void computeLogic() {
         aux_level3_alu_selector_5way_0_mux_9 = LOW;
     }
     //End of Multiplexer
-    aux_level3_alu_selector_5way_0_node_4 = aux_ic_input_level3_alu_selector_5way_0_4;
-    aux_level3_alu_selector_5way_0_node_7 = aux_ic_input_level3_alu_selector_5way_0_7;
     //Multiplexer
     if ((aux_level3_alu_selector_5way_0_node_6) == 0) {
         aux_level3_alu_selector_5way_0_mux_10 = aux_level3_alu_selector_5way_0_mux_8;

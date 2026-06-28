@@ -189,9 +189,9 @@ void computeLogic() {
     aux_ic_input_ff0_23_3 = HIGH;
     aux_ff0_23_node_1 = aux_ic_input_ff0_23_1;
     aux_ff0_23_node_3 = aux_ic_input_ff0_23_3;
-    aux_ff0_23_not_14 = !aux_ff0_23_nor_12;
     aux_ff0_23_node_0 = aux_ic_input_ff0_23_0;
     aux_ff0_23_node_2 = aux_ic_input_ff0_23_2;
+    aux_ff0_23_not_14 = !aux_ff0_23_nor_12;
     aux_ff0_23_not_4 = !aux_ff0_23_node_1;
     aux_ff0_23_not_6 = !aux_ff0_23_node_3;
     aux_ff0_23_and_16 = aux_ff0_23_not_14 && aux_ff0_23_node_1;
@@ -218,9 +218,9 @@ void computeLogic() {
     aux_ic_input_ff1_24_3 = HIGH;
     aux_ff1_24_node_1 = aux_ic_input_ff1_24_1;
     aux_ff1_24_node_3 = aux_ic_input_ff1_24_3;
-    aux_ff1_24_not_14 = !aux_ff1_24_nor_12;
     aux_ff1_24_node_0 = aux_ic_input_ff1_24_0;
     aux_ff1_24_node_2 = aux_ic_input_ff1_24_2;
+    aux_ff1_24_not_14 = !aux_ff1_24_nor_12;
     aux_ff1_24_not_4 = !aux_ff1_24_node_1;
     aux_ff1_24_not_6 = !aux_ff1_24_node_3;
     aux_ff1_24_and_16 = aux_ff1_24_not_14 && aux_ff1_24_node_1;
@@ -248,9 +248,9 @@ void computeLogic() {
     aux_ic_input_ff2_25_3 = HIGH;
     aux_ff2_25_node_1 = aux_ic_input_ff2_25_1;
     aux_ff2_25_node_3 = aux_ic_input_ff2_25_3;
-    aux_ff2_25_not_14 = !aux_ff2_25_nor_12;
     aux_ff2_25_node_0 = aux_ic_input_ff2_25_0;
     aux_ff2_25_node_2 = aux_ic_input_ff2_25_2;
+    aux_ff2_25_not_14 = !aux_ff2_25_nor_12;
     aux_ff2_25_not_4 = !aux_ff2_25_node_1;
     aux_ff2_25_not_6 = !aux_ff2_25_node_3;
     aux_ff2_25_and_16 = aux_ff2_25_not_14 && aux_ff2_25_node_1;
@@ -278,9 +278,9 @@ void computeLogic() {
     aux_ic_input_ff3_26_3 = HIGH;
     aux_ff3_26_node_1 = aux_ic_input_ff3_26_1;
     aux_ff3_26_node_3 = aux_ic_input_ff3_26_3;
-    aux_ff3_26_not_14 = !aux_ff3_26_nor_12;
     aux_ff3_26_node_0 = aux_ic_input_ff3_26_0;
     aux_ff3_26_node_2 = aux_ic_input_ff3_26_2;
+    aux_ff3_26_not_14 = !aux_ff3_26_nor_12;
     aux_ff3_26_not_4 = !aux_ff3_26_node_1;
     aux_ff3_26_not_6 = !aux_ff3_26_node_3;
     aux_ff3_26_and_16 = aux_ff3_26_not_14 && aux_ff3_26_node_1;
