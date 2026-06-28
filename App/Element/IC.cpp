@@ -3,6 +3,8 @@
 
 #include "App/Element/IC.h"
 
+#include <algorithm>
+
 #include <QDir>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
@@ -363,7 +365,10 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
         if (!cached.isEmpty()) {
             deserializeAndLoad(cached, fileInfo.absolutePath());
             m_file = fileInfo.absoluteFilePath();
-            setToolTip(fileInfo.fileName());
+            // No Qt tooltip: the filename is shown in the hover preview popup
+            // (see ICPreviewPopup) so the two don't overlap. Clear the base
+            // class's translated-name tooltip set at construction.
+            setToolTip(QString());
             if (label().isEmpty()) {
                 setLabel(fileInfo.baseName().toUpper());
             }
@@ -378,7 +383,8 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
     // without ever leaving m_sortedInternalElements pointing at freed elements.
     loadFileDirectly(fileInfo);
     m_file = fileInfo.absoluteFilePath();
-    setToolTip(fileInfo.fileName());
+    // Name is carried by the hover preview popup, not a Qt tooltip — see above.
+    setToolTip(QString());
 
     qCDebug(zero) << "Finished reading IC.";
 }
@@ -548,9 +554,9 @@ void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
     deserializeAndLoad(blob, contextDir);
     m_file.clear(); // switching to blob-backed, no file association
 
-    if (!m_blobName.isEmpty()) {
-        setToolTip(m_blobName);
-    }
+    // Name is carried by the hover preview popup, not a Qt tooltip; clear the
+    // base class's translated-name tooltip so no bubble fights the preview.
+    setToolTip(QString());
 
     qCDebug(zero) << "Finished loading IC from blob.";
 }
@@ -630,17 +636,57 @@ void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 // --- Hover preview ---
 
+QString IC::displayName() const
+{
+    if (!m_blobName.isEmpty()) {
+        return m_blobName;
+    }
+    return m_file.isEmpty() ? QString() : QFileInfo(m_file).fileName();
+}
+
+bool IC::isCursorOverPort(const QPointF &localPos) const
+{
+    const auto ports = allPorts();
+    return std::any_of(ports.cbegin(), ports.cend(), [&](const QNEPort *port) {
+        return port->contains(mapToItem(port, localPos));
+    });
+}
+
 void IC::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    if (auto *popup = icPreviewPopup()) {
-        popup->showForIC(this, event->screenPos());
+    auto *popup = icPreviewPopup();
+    if (!popup) {
+        return;
     }
+
+    // The preview belongs to the IC body only — the ports are child items that
+    // don't consume hover events, so the IC also receives them over the pins.
+    if (isCursorOverPort(event->pos())) {
+        popup->scheduleHide();
+        return;
+    }
+
+    popup->showForIC(this, event->screenPos());
 }
 
 void IC::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    if (auto *popup = icPreviewPopup()) {
+    auto *popup = icPreviewPopup();
+    if (!popup) {
+        return;
+    }
+
+    if (isCursorOverPort(event->pos())) {
+        popup->scheduleHide();
+        return;
+    }
+
+    // Over the body: keep tracking the cursor while a show is pending, but
+    // re-arm the show when the cursor returns from a port within the same hover.
+    if (popup->isShowActiveFor(this)) {
         popup->updatePendingPos(event->screenPos());
+    } else {
+        popup->showForIC(this, event->screenPos());
     }
 }
 
