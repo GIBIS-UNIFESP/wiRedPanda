@@ -42,6 +42,10 @@ class Simulation : public QObject
     friend class TestDanglingPointer;
 
 public:
+    /// Maximum iteration count for post-commit combinational re-settle passes.
+    /// Matches iterativeSettle()'s default and the "did not converge" warning threshold.
+    static constexpr int kMaxSettleIterations = 10;
+
     // --- Lifecycle ---
 
     /**
@@ -127,7 +131,7 @@ public:
 
     /// Runs updateLogic() iteratively on \a elements until outputs converge or \a maxIterations is reached.
     /// \return \c true if the circuit converged.
-    static bool iterativeSettle(const QVector<GraphicElement *> &elements, int maxIterations = 10);
+    static bool iterativeSettle(const QVector<GraphicElement *> &elements, int maxIterations = kMaxSettleIterations);
 
 signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
