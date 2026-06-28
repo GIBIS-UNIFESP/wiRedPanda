@@ -16,7 +16,7 @@ struct SrLatchFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *setIn = nullptr, *resetIn = nullptr;
-    Led *ledQ = nullptr;
+    Led *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -27,8 +27,9 @@ struct SrLatchFixture {
         setIn = new InputSwitch();
         resetIn = new InputSwitch();
         ledQ = new Led();
+        ledQBar = new Led();
 
-        builder.add(setIn, resetIn, ledQ);
+        builder.add(setIn, resetIn, ledQ, ledQBar);
 
         ic = loadBuildingBlockIC("level1_sr_latch.panda");
         builder.add(ic);
@@ -36,6 +37,7 @@ struct SrLatchFixture {
         builder.connect(setIn, 0, ic, "S");
         builder.connect(resetIn, 0, ic, "R");
         builder.connect(ic, "Q", ledQ, 0);
+        builder.connect(ic, "Q_bar", ledQBar, 0);
 
         sim = builder.initSimulation();
         sim->update();
@@ -87,30 +89,36 @@ void TestLevel1SRLatch::testSRLatchSequential()
     f.setIn->setOn(false);
     f.resetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 after reset
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 after reset
+    QCOMPARE(getInputStatus(f.ledQBar), true);   // Q_bar is the complement
 
     // Step 2: Release reset, verify hold (Q should stay 0)
     f.resetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 held
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 held
+    QCOMPARE(getInputStatus(f.ledQBar), true);
 
     // Step 3: Set the latch to Q=1
     f.setIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q=1 after set
+    QCOMPARE(getInputStatus(f.ledQ), true);      // Q=1 after set
+    QCOMPARE(getInputStatus(f.ledQBar), false);
 
     // Step 4: Release set, verify hold (Q should stay 1)
     f.setIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q=1 held
+    QCOMPARE(getInputStatus(f.ledQ), true);      // Q=1 held
+    QCOMPARE(getInputStatus(f.ledQBar), false);
 
     // Step 5: Reset again to verify we can change state
     f.resetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 after reset
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 after reset
+    QCOMPARE(getInputStatus(f.ledQBar), true);
 
     // Step 6: Release reset, verify hold again
     f.resetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 held
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 held
+    QCOMPARE(getInputStatus(f.ledQBar), true);
 }
