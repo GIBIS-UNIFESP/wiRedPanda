@@ -22,8 +22,6 @@ struct DecodeStageFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<InputSwitch *> opcodeInputs;
-    InputSwitch *clk = nullptr;
-    InputSwitch *reset = nullptr;
     QVector<Led *> aluopLeds;
     Led *regwriteLed = nullptr;
     Led *memreadLed = nullptr;
@@ -41,8 +39,6 @@ struct DecodeStageFixture {
         for (int i = 0; i < 5; i++) {
             auto *sw = new InputSwitch(); builder.add(sw); opcodeInputs.append(sw);
         }
-        clk = new InputSwitch(); builder.add(clk);
-        reset = new InputSwitch(); builder.add(reset);
 
         for (int i = 0; i < 3; i++) {
             auto *led = new Led(); builder.add(led); aluopLeds.append(led);
@@ -54,8 +50,6 @@ struct DecodeStageFixture {
         for (int i = 0; i < 5; i++) {
             builder.connect(opcodeInputs[i], 0, ic, QString("OpCode[%1]").arg(i));
         }
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(reset, 0, ic, "Reset");
 
         for (int i = 0; i < 3; i++) {
             builder.connect(ic, QString("ALUOp[%1]").arg(i), aluopLeds[i], 0);
@@ -142,6 +136,8 @@ void TestLevel8DecodeStage::testDecodeStageStructure()
     auto &f = *s_level8DecodeStage;
 
     QVERIFY(f.ic != nullptr);
-    QCOMPARE(f.ic->inputSize(), 7);
+    // OpCode[5] only (F33: the unused Clock element and dead Reset switch
+    // were removed — the stage is purely combinational)
+    QCOMPARE(f.ic->inputSize(), 5);
     QCOMPARE(f.ic->outputSize(), 6);
 }

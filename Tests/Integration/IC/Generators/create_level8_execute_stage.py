@@ -11,8 +11,9 @@ Inputs:
   OperandA[0..7] (first operand from register file)
   OperandB[0..7] (second operand from register file)
   ALUOp[0..2] (3-bit ALU operation selector from decode stage)
-  Clock (synchronization signal)
-  Reset (reset flag outputs)
+
+(F33: the stage is purely combinational — the unused Clock element and
+Reset switch it used to embed were removed.)
 
 Outputs:
   Result[0..7] (8-bit ALU result)
@@ -101,18 +102,8 @@ class ExecuteStageBuilder(ICBuilderBase):
             aluop_inputs.append(aluop_id)
         await self.log("  ✓ Created 3 ALUOp inputs")
 
-        # ---- Create control signals ----
-        clock_id = await self.create_element("Clock", control_x + HORIZONTAL_GATE_SPACING, input_y, "Clock")
-        if clock_id is None:
-            return False
-
-        reset_id = await self.create_element(
-            "InputSwitch", control_x + HORIZONTAL_GATE_SPACING, input_y + VERTICAL_STAGE_SPACING / 2, "Reset"
-        )
-        if reset_id is None:
-            return False
-
-        await self.log("  ✓ Created control signals (Clock, Reset)")
+        # (F33: the stage is purely combinational — the unused Clock element
+        # and Reset switch it used to embed were removed.)
 
         # ---- Instantiate Execution Datapath ----
         if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_execution_datapath")):

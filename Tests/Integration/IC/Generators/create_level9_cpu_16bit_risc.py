@@ -28,9 +28,9 @@ Outputs:
 
 Architecture:
   - 16-bit Fetch stage: Outputs 16-bit instruction with decoded fields
-  - 16-bit ALU: Full arithmetic and logic operations
+  - 16-bit ALU computing OpCode[0..2](SrcBits, DestReg): OperandA =
+    zero-extended SrcBits, OperandB = zero-extended DestReg
   - 16-bit program counter and data paths
-  - Pipeline: Fetch → Decode → Execute → Memory
 
 RISC Characteristics:
   - Load/Store architecture
@@ -107,6 +107,31 @@ class CPU16BitRISCBuilder(ICBuilderBase):
             return False
 
         await self.log("  ✓ Instantiated 16-bit ALU")
+
+        # ---- Wire fetch instruction fields into the ALU (F26) ----
+        # OperandA = zero-extended SrcBits (6 bits), OperandB = zero-extended
+        # DestReg (5 bits), ALUOp = OpCode[0..2]. The unconnected high
+        # OperandA/OperandB bits default to the ALU IC's saved-off switches
+        # (0), giving the zero extension implicitly.
+        for i in range(6):
+            if not await self.connect(
+                fetch_id, alu_id, source_port_label=f"SrcBits[{i}]", target_port_label=f"OperandA[{i}]"
+            ):
+                return False
+
+        for i in range(5):
+            if not await self.connect(
+                fetch_id, alu_id, source_port_label=f"DestReg[{i}]", target_port_label=f"OperandB[{i}]"
+            ):
+                return False
+
+        for i in range(3):
+            if not await self.connect(
+                fetch_id, alu_id, source_port_label=f"OpCode[{i}]", target_port_label=f"ALUOp[{i}]"
+            ):
+                return False
+
+        await self.log("  ✓ Wired instruction fields to ALU operands")
 
         # ---- Create Output: PC ----
         for i in range(8):

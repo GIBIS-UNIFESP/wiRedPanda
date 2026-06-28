@@ -377,9 +377,8 @@ wire w_level6_ripple_adder_8bit_inst_2_sum5;
 wire w_level6_ripple_adder_8bit_inst_2_sum6;
 wire w_level6_ripple_adder_8bit_inst_2_sum7;
 wire w_level6_ripple_adder_8bit_inst_2_carryout;
-wire aux_not_4;
-wire aux_and_5;
-reg aux_mux_6 = 1'b0;
+wire aux_not_5;
+wire aux_and_6;
 reg aux_mux_7 = 1'b0;
 reg aux_mux_8 = 1'b0;
 reg aux_mux_9 = 1'b0;
@@ -395,21 +394,22 @@ reg aux_mux_18 = 1'b0;
 reg aux_mux_19 = 1'b0;
 reg aux_mux_20 = 1'b0;
 reg aux_mux_21 = 1'b0;
-wire aux_or_22;
+reg aux_mux_22 = 1'b0;
+wire aux_or_23;
 
 // Internal logic
 level6_register_8bit level6_register_8bit_inst_1 (
-    .data0(aux_mux_14),
+    .data0(aux_mux_15),
     .clock(clock),
-    .data1(aux_mux_15),
-    .writeenable(aux_or_22),
-    .data2(aux_mux_16),
+    .data1(aux_mux_16),
+    .writeenable(aux_or_23),
+    .data2(aux_mux_17),
     .reset(reset),
-    .data3(aux_mux_17),
-    .data4(aux_mux_18),
-    .data5(aux_mux_19),
-    .data6(aux_mux_20),
-    .data7(aux_mux_21),
+    .data3(aux_mux_18),
+    .data4(aux_mux_19),
+    .data5(aux_mux_20),
+    .data6(aux_mux_21),
+    .data7(aux_mux_22),
     .q0(w_level6_register_8bit_inst_1_q0),
     .q1(w_level6_register_8bit_inst_1_q1),
     .q2(w_level6_register_8bit_inst_1_q2),
@@ -447,24 +447,14 @@ level6_ripple_adder_8bit level6_ripple_adder_8bit_inst_2 (
     .sum7(w_level6_ripple_adder_8bit_inst_2_sum7),
     .carryout(w_level6_ripple_adder_8bit_inst_2_carryout)
 );
-assign aux_not_4 = ~load;
-assign aux_and_5 = (inc & aux_not_4);
+assign aux_not_5 = ~load;
+assign aux_and_6 = (inc & aux_not_5);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_6 = w_level6_register_8bit_inst_1_q0;
-            1'd1: aux_mux_6 = w_level6_ripple_adder_8bit_inst_2_sum0;
-            default: aux_mux_6 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({aux_and_5})
-            1'd0: aux_mux_7 = w_level6_register_8bit_inst_1_q1;
-            1'd1: aux_mux_7 = w_level6_ripple_adder_8bit_inst_2_sum1;
+        case({aux_and_6})
+            1'd0: aux_mux_7 = w_level6_register_8bit_inst_1_q0;
+            1'd1: aux_mux_7 = w_level6_ripple_adder_8bit_inst_2_sum0;
             default: aux_mux_7 = 1'b0;
         endcase
     end
@@ -472,9 +462,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_8 = w_level6_register_8bit_inst_1_q2;
-            1'd1: aux_mux_8 = w_level6_ripple_adder_8bit_inst_2_sum2;
+        case({aux_and_6})
+            1'd0: aux_mux_8 = w_level6_register_8bit_inst_1_q1;
+            1'd1: aux_mux_8 = w_level6_ripple_adder_8bit_inst_2_sum1;
             default: aux_mux_8 = 1'b0;
         endcase
     end
@@ -482,9 +472,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_9 = w_level6_register_8bit_inst_1_q3;
-            1'd1: aux_mux_9 = w_level6_ripple_adder_8bit_inst_2_sum3;
+        case({aux_and_6})
+            1'd0: aux_mux_9 = w_level6_register_8bit_inst_1_q2;
+            1'd1: aux_mux_9 = w_level6_ripple_adder_8bit_inst_2_sum2;
             default: aux_mux_9 = 1'b0;
         endcase
     end
@@ -492,9 +482,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_10 = w_level6_register_8bit_inst_1_q4;
-            1'd1: aux_mux_10 = w_level6_ripple_adder_8bit_inst_2_sum4;
+        case({aux_and_6})
+            1'd0: aux_mux_10 = w_level6_register_8bit_inst_1_q3;
+            1'd1: aux_mux_10 = w_level6_ripple_adder_8bit_inst_2_sum3;
             default: aux_mux_10 = 1'b0;
         endcase
     end
@@ -502,9 +492,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_11 = w_level6_register_8bit_inst_1_q5;
-            1'd1: aux_mux_11 = w_level6_ripple_adder_8bit_inst_2_sum5;
+        case({aux_and_6})
+            1'd0: aux_mux_11 = w_level6_register_8bit_inst_1_q4;
+            1'd1: aux_mux_11 = w_level6_ripple_adder_8bit_inst_2_sum4;
             default: aux_mux_11 = 1'b0;
         endcase
     end
@@ -512,9 +502,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_12 = w_level6_register_8bit_inst_1_q6;
-            1'd1: aux_mux_12 = w_level6_ripple_adder_8bit_inst_2_sum6;
+        case({aux_and_6})
+            1'd0: aux_mux_12 = w_level6_register_8bit_inst_1_q5;
+            1'd1: aux_mux_12 = w_level6_ripple_adder_8bit_inst_2_sum5;
             default: aux_mux_12 = 1'b0;
         endcase
     end
@@ -522,9 +512,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({aux_and_5})
-            1'd0: aux_mux_13 = w_level6_register_8bit_inst_1_q7;
-            1'd1: aux_mux_13 = w_level6_ripple_adder_8bit_inst_2_sum7;
+        case({aux_and_6})
+            1'd0: aux_mux_13 = w_level6_register_8bit_inst_1_q6;
+            1'd1: aux_mux_13 = w_level6_ripple_adder_8bit_inst_2_sum6;
             default: aux_mux_13 = 1'b0;
         endcase
     end
@@ -532,9 +522,9 @@ assign aux_and_5 = (inc & aux_not_4);
     //Multiplexer
     always @(*)
     begin
-        case({load})
-            1'd0: aux_mux_14 = aux_mux_6;
-            1'd1: aux_mux_14 = loadvalue0;
+        case({aux_and_6})
+            1'd0: aux_mux_14 = w_level6_register_8bit_inst_1_q7;
+            1'd1: aux_mux_14 = w_level6_ripple_adder_8bit_inst_2_sum7;
             default: aux_mux_14 = 1'b0;
         endcase
     end
@@ -544,7 +534,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_15 = aux_mux_7;
-            1'd1: aux_mux_15 = loadvalue1;
+            1'd1: aux_mux_15 = loadvalue0;
             default: aux_mux_15 = 1'b0;
         endcase
     end
@@ -554,7 +544,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_16 = aux_mux_8;
-            1'd1: aux_mux_16 = loadvalue2;
+            1'd1: aux_mux_16 = loadvalue1;
             default: aux_mux_16 = 1'b0;
         endcase
     end
@@ -564,7 +554,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_17 = aux_mux_9;
-            1'd1: aux_mux_17 = loadvalue3;
+            1'd1: aux_mux_17 = loadvalue2;
             default: aux_mux_17 = 1'b0;
         endcase
     end
@@ -574,7 +564,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_18 = aux_mux_10;
-            1'd1: aux_mux_18 = loadvalue4;
+            1'd1: aux_mux_18 = loadvalue3;
             default: aux_mux_18 = 1'b0;
         endcase
     end
@@ -584,7 +574,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_19 = aux_mux_11;
-            1'd1: aux_mux_19 = loadvalue5;
+            1'd1: aux_mux_19 = loadvalue4;
             default: aux_mux_19 = 1'b0;
         endcase
     end
@@ -594,7 +584,7 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_20 = aux_mux_12;
-            1'd1: aux_mux_20 = loadvalue6;
+            1'd1: aux_mux_20 = loadvalue5;
             default: aux_mux_20 = 1'b0;
         endcase
     end
@@ -604,12 +594,22 @@ assign aux_and_5 = (inc & aux_not_4);
     begin
         case({load})
             1'd0: aux_mux_21 = aux_mux_13;
-            1'd1: aux_mux_21 = loadvalue7;
+            1'd1: aux_mux_21 = loadvalue6;
             default: aux_mux_21 = 1'b0;
         endcase
     end
     //End of Multiplexer
-assign aux_or_22 = (load | inc);
+    //Multiplexer
+    always @(*)
+    begin
+        case({load})
+            1'd0: aux_mux_22 = aux_mux_14;
+            1'd1: aux_mux_22 = loadvalue7;
+            default: aux_mux_22 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+assign aux_or_23 = (load | inc);
 
 assign pc0 = w_level6_register_8bit_inst_1_q0;
 assign pc_plus_10 = w_level6_ripple_adder_8bit_inst_2_sum0;

@@ -254,11 +254,14 @@ class RamBuilder(ICBuilderBase):
 class RegisterFileBuilder(ICBuilderBase):
     """Register file with N registers of W bits. Covers register_file_4x4 and 8x8."""
 
-    def __init__(self, mcp, num_registers: int, data_width: int, address_bits: int, verbose: bool = True) -> None:
+    def __init__(
+        self, mcp, num_registers: int, data_width: int, address_bits: int, level: int = 5, verbose: bool = True
+    ) -> None:
         super().__init__(mcp, verbose)
         self.num_registers = num_registers
         self.data_width = data_width
         self.address_bits = address_bits
+        self.level = level
 
     async def create(self) -> bool:
         """Create a register file IC."""
@@ -266,7 +269,9 @@ class RegisterFileBuilder(ICBuilderBase):
         data_width = self.data_width
         address_bits = self.address_bits
         display = f"Register File {num_registers}×{data_width}"
-        output_name = f"level5_register_file_{num_registers}x{data_width}"
+        # F32: the level-5 and level-6 8×8 register-file fixtures are the same
+        # circuit — only the output filename's level prefix differs.
+        output_name = f"level{self.level}_register_file_{num_registers}x{data_width}"
         decoder_name = str(IC_COMPONENTS_DIR / f"level2_decoder_{address_bits}to{num_registers}")
 
         await self.begin_build(display)

@@ -24,8 +24,6 @@ struct ExecuteStageFixture {
     QVector<InputSwitch *> operandAInputs;
     QVector<InputSwitch *> operandBInputs;
     QVector<InputSwitch *> aluopInputs;
-    InputSwitch *clk = nullptr;
-    InputSwitch *reset = nullptr;
     QVector<Led *> resultLeds;
     Led *zeroLed = nullptr;
     Led *signLed = nullptr;
@@ -47,8 +45,6 @@ struct ExecuteStageFixture {
         for (int i = 0; i < 3; i++) {
             auto *sw = new InputSwitch(); builder.add(sw); aluopInputs.append(sw);
         }
-        clk = new InputSwitch(); builder.add(clk);
-        reset = new InputSwitch(); builder.add(reset);
         zeroLed = new Led(); builder.add(zeroLed);
         signLed = new Led(); builder.add(signLed);
 
@@ -60,8 +56,6 @@ struct ExecuteStageFixture {
         for (int i = 0; i < 3; i++) {
             builder.connect(aluopInputs[i], 0, ic, QString("ALUOp[%1]").arg(i));
         }
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(reset, 0, ic, "Reset");
         builder.connect(ic, "Zero", zeroLed, 0);
         builder.connect(ic, "Sign", signLed, 0);
 
@@ -165,6 +159,8 @@ void TestLevel8ExecuteStage::testExecuteStageStructure()
     auto &f = *s_level8ExecuteStage;
 
     QVERIFY(f.ic != nullptr);
-    QCOMPARE(f.ic->inputSize(), 21);
+    // OperandA[8] + OperandB[8] + ALUOp[3] (F33: the unused Clock element
+    // and dead Reset switch were removed — the stage is purely combinational)
+    QCOMPARE(f.ic->inputSize(), 19);
     QCOMPARE(f.ic->outputSize(), 10);
 }

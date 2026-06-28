@@ -9,8 +9,9 @@ Implements the decode stage of a CPU pipeline.
 
 Inputs:
   OpCode[0..4] (5-bit instruction opcode from fetch stage)
-  Clock (synchronization signal)
-  Reset (reset all outputs to 0)
+
+(F33: the stage is purely combinational — the unused Clock element and
+Reset switch it used to embed were removed.)
 
 Outputs:
   ALUOp[0..2] (3-bit ALU operation selector)
@@ -79,18 +80,9 @@ class DecodeStageBuilder(ICBuilderBase):
             opcode_inputs.append(opcode_id)
         await self.log("  ✓ Created 5 opcode inputs")
 
-        # ---- Create clock input ----
+        # (F33: the stage is purely combinational — the unused Clock element
+        # and Reset switch it used to embed were removed.)
         control_x = input_x + (6 * HORIZONTAL_GATE_SPACING)
-
-        clock_id = await self.create_element("Clock", control_x, input_y, "Clock")
-        if clock_id is None:
-            return False
-
-        reset_id = await self.create_element("InputSwitch", control_x, input_y + VERTICAL_STAGE_SPACING / 2, "Reset")
-        if reset_id is None:
-            return False
-
-        await self.log("  ✓ Created control signals (Clock, Reset)")
 
         # ---- Create combinational logic for control signals ----
 
