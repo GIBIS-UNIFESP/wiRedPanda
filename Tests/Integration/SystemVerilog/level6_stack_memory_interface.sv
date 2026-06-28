@@ -445,16 +445,11 @@ level2_mux_8to1 level2_mux_8to1_inst_26 (
 assign dataout = w_level2_mux_8to1_inst_26_p_output;
 endmodule
 
-// Module for StackRAM (generated from level6_ram_256x8.panda)
-module level6_ram_256x8 (
+// Module for StackRAM (generated from level6_ram_8x8.panda)
+module level6_ram_8x8 (
     input address0,
     input address1,
     input address2,
-    input address3,
-    input address4,
-    input address5,
-    input address6,
-    input address7,
     input datain0,
     input datain1,
     input datain2,
@@ -713,7 +708,6 @@ module level6_stack_pointer_8bit (
     input loadvalue4,
     input reset,
     input loadvalue5,
-    input enable,
     input loadvalue6,
     input loadvalue7,
     output sp0,
@@ -776,26 +770,35 @@ wire w_level2_priority_mux_3to1_inst_23_out;
 wire w_level2_priority_mux_3to1_inst_24_out;
 // IC instance: SPMux[7] (level2_priority_mux_3to1)
 wire w_level2_priority_mux_3to1_inst_25_out;
+wire aux_or_26;
+reg aux_mux_27 = 1'b0;
+reg aux_mux_28 = 1'b0;
+reg aux_mux_29 = 1'b0;
+reg aux_mux_30 = 1'b0;
+reg aux_mux_31 = 1'b0;
+reg aux_mux_32 = 1'b0;
+reg aux_mux_33 = 1'b0;
+reg aux_mux_34 = 1'b0;
 
 // Internal logic
 level6_ripple_adder_8bit level6_ripple_adder_8bit_inst_1 (
     .a0(w_level1_d_flip_flop_inst_2_q),
-    .b0(1'b0),
+    .b0(aux_or_26),
     .carryin(1'b0),
     .a1(w_level1_d_flip_flop_inst_3_q),
-    .b1(1'b0),
+    .b1(push),
     .a2(w_level1_d_flip_flop_inst_4_q),
-    .b2(1'b0),
+    .b2(push),
     .a3(w_level1_d_flip_flop_inst_5_q),
-    .b3(1'b0),
+    .b3(push),
     .a4(w_level1_d_flip_flop_inst_6_q),
-    .b4(1'b0),
+    .b4(push),
     .a5(w_level1_d_flip_flop_inst_7_q),
-    .b5(1'b0),
+    .b5(push),
     .a6(w_level1_d_flip_flop_inst_8_q),
-    .b6(1'b0),
+    .b6(push),
     .a7(w_level1_d_flip_flop_inst_9_q),
-    .b7(1'b0),
+    .b7(push),
     .sum0(w_level6_ripple_adder_8bit_inst_1_sum0),
     .sum1(w_level6_ripple_adder_8bit_inst_1_sum1),
     .sum2(w_level6_ripple_adder_8bit_inst_1_sum2),
@@ -875,7 +878,7 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_18 (
     .sel0(reset),
     .data1(loadvalue0),
     .sel1(load),
-    .data2(w_level6_ripple_adder_8bit_inst_1_sum0),
+    .data2(aux_mux_27),
     .out(w_level2_priority_mux_3to1_inst_18_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_19 (
@@ -883,7 +886,7 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_19 (
     .sel0(reset),
     .data1(loadvalue1),
     .sel1(load),
-    .data2(w_level6_ripple_adder_8bit_inst_1_sum1),
+    .data2(aux_mux_28),
     .out(w_level2_priority_mux_3to1_inst_19_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_20 (
@@ -891,7 +894,7 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_20 (
     .sel0(reset),
     .data1(loadvalue2),
     .sel1(load),
-    .data2(w_level6_ripple_adder_8bit_inst_1_sum2),
+    .data2(aux_mux_29),
     .out(w_level2_priority_mux_3to1_inst_20_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_21 (
@@ -899,7 +902,7 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_21 (
     .sel0(reset),
     .data1(loadvalue3),
     .sel1(load),
-    .data2(w_level6_ripple_adder_8bit_inst_1_sum3),
+    .data2(aux_mux_30),
     .out(w_level2_priority_mux_3to1_inst_21_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_22 (
@@ -907,7 +910,7 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_22 (
     .sel0(reset),
     .data1(loadvalue4),
     .sel1(load),
-    .data2(w_level6_ripple_adder_8bit_inst_1_sum4),
+    .data2(aux_mux_31),
     .out(w_level2_priority_mux_3to1_inst_22_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_23 (
@@ -915,7 +918,7 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_23 (
     .sel0(reset),
     .data1(loadvalue5),
     .sel1(load),
-    .data2(w_level6_ripple_adder_8bit_inst_1_sum5),
+    .data2(aux_mux_32),
     .out(w_level2_priority_mux_3to1_inst_23_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_24 (
@@ -923,7 +926,7 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_24 (
     .sel0(reset),
     .data1(loadvalue6),
     .sel1(load),
-    .data2(w_level6_ripple_adder_8bit_inst_1_sum6),
+    .data2(aux_mux_33),
     .out(w_level2_priority_mux_3to1_inst_24_out)
 );
 level2_priority_mux_3to1 level2_priority_mux_3to1_inst_25 (
@@ -931,9 +934,90 @@ level2_priority_mux_3to1 level2_priority_mux_3to1_inst_25 (
     .sel0(reset),
     .data1(loadvalue7),
     .sel1(load),
-    .data2(w_level6_ripple_adder_8bit_inst_1_sum7),
+    .data2(aux_mux_34),
     .out(w_level2_priority_mux_3to1_inst_25_out)
 );
+assign aux_or_26 = (push | pop);
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_26})
+            1'd0: aux_mux_27 = w_level1_d_flip_flop_inst_2_q;
+            1'd1: aux_mux_27 = w_level6_ripple_adder_8bit_inst_1_sum0;
+            default: aux_mux_27 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_26})
+            1'd0: aux_mux_28 = w_level1_d_flip_flop_inst_3_q;
+            1'd1: aux_mux_28 = w_level6_ripple_adder_8bit_inst_1_sum1;
+            default: aux_mux_28 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_26})
+            1'd0: aux_mux_29 = w_level1_d_flip_flop_inst_4_q;
+            1'd1: aux_mux_29 = w_level6_ripple_adder_8bit_inst_1_sum2;
+            default: aux_mux_29 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_26})
+            1'd0: aux_mux_30 = w_level1_d_flip_flop_inst_5_q;
+            1'd1: aux_mux_30 = w_level6_ripple_adder_8bit_inst_1_sum3;
+            default: aux_mux_30 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_26})
+            1'd0: aux_mux_31 = w_level1_d_flip_flop_inst_6_q;
+            1'd1: aux_mux_31 = w_level6_ripple_adder_8bit_inst_1_sum4;
+            default: aux_mux_31 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_26})
+            1'd0: aux_mux_32 = w_level1_d_flip_flop_inst_7_q;
+            1'd1: aux_mux_32 = w_level6_ripple_adder_8bit_inst_1_sum5;
+            default: aux_mux_32 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_26})
+            1'd0: aux_mux_33 = w_level1_d_flip_flop_inst_8_q;
+            1'd1: aux_mux_33 = w_level6_ripple_adder_8bit_inst_1_sum6;
+            default: aux_mux_33 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_or_26})
+            1'd0: aux_mux_34 = w_level1_d_flip_flop_inst_9_q;
+            1'd1: aux_mux_34 = w_level6_ripple_adder_8bit_inst_1_sum7;
+            default: aux_mux_34 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
 
 assign sp0 = w_level1_d_flip_flop_inst_2_q;
 assign sp1 = w_level1_d_flip_flop_inst_3_q;
@@ -977,9 +1061,7 @@ module level6_stack_memory_interface_ic (
     input datain6,
     input datain7,
     input memwrite,
-    input memread,
     input clock,
-    input enable,
     output sp0,
     output sp1,
     output sp2,
@@ -1015,15 +1097,15 @@ wire w_level6_stack_pointer_8bit_inst_1_sp4;
 wire w_level6_stack_pointer_8bit_inst_1_sp5;
 wire w_level6_stack_pointer_8bit_inst_1_sp6;
 wire w_level6_stack_pointer_8bit_inst_1_sp7;
-// IC instance: StackRAM (level6_ram_256x8)
-wire w_level6_ram_256x8_inst_2_dataout0;
-wire w_level6_ram_256x8_inst_2_dataout1;
-wire w_level6_ram_256x8_inst_2_dataout2;
-wire w_level6_ram_256x8_inst_2_dataout3;
-wire w_level6_ram_256x8_inst_2_dataout4;
-wire w_level6_ram_256x8_inst_2_dataout5;
-wire w_level6_ram_256x8_inst_2_dataout6;
-wire w_level6_ram_256x8_inst_2_dataout7;
+// IC instance: StackRAM (level6_ram_8x8)
+wire w_level6_ram_8x8_inst_2_dataout0;
+wire w_level6_ram_8x8_inst_2_dataout1;
+wire w_level6_ram_8x8_inst_2_dataout2;
+wire w_level6_ram_8x8_inst_2_dataout3;
+wire w_level6_ram_8x8_inst_2_dataout4;
+wire w_level6_ram_8x8_inst_2_dataout5;
+wire w_level6_ram_8x8_inst_2_dataout6;
+wire w_level6_ram_8x8_inst_2_dataout7;
 // IC instance: AddrMux[0] (level2_mux_2to1)
 wire w_level2_mux_2to1_inst_3_p_output;
 // IC instance: AddrMux[1] (level2_mux_2to1)
@@ -1054,7 +1136,6 @@ level6_stack_pointer_8bit level6_stack_pointer_8bit_inst_1 (
     .loadvalue4(sp_loadvalue4),
     .reset(sp_reset),
     .loadvalue5(sp_loadvalue5),
-    .enable(1'b0),
     .loadvalue6(sp_loadvalue6),
     .loadvalue7(sp_loadvalue7),
     .sp0(w_level6_stack_pointer_8bit_inst_1_sp0),
@@ -1066,15 +1147,10 @@ level6_stack_pointer_8bit level6_stack_pointer_8bit_inst_1 (
     .sp6(w_level6_stack_pointer_8bit_inst_1_sp6),
     .sp7(w_level6_stack_pointer_8bit_inst_1_sp7)
 );
-level6_ram_256x8 level6_ram_256x8_inst_2 (
+level6_ram_8x8 level6_ram_8x8_inst_2 (
     .address0(w_level2_mux_2to1_inst_3_p_output),
     .address1(w_level2_mux_2to1_inst_4_p_output),
     .address2(w_level2_mux_2to1_inst_5_p_output),
-    .address3(w_level2_mux_2to1_inst_6_p_output),
-    .address4(w_level2_mux_2to1_inst_7_p_output),
-    .address5(w_level2_mux_2to1_inst_8_p_output),
-    .address6(w_level2_mux_2to1_inst_9_p_output),
-    .address7(w_level2_mux_2to1_inst_10_p_output),
     .datain0(datain0),
     .datain1(datain1),
     .datain2(datain2),
@@ -1085,14 +1161,14 @@ level6_ram_256x8 level6_ram_256x8_inst_2 (
     .datain7(datain7),
     .writeenable(memwrite),
     .clock(clock),
-    .dataout0(w_level6_ram_256x8_inst_2_dataout0),
-    .dataout1(w_level6_ram_256x8_inst_2_dataout1),
-    .dataout2(w_level6_ram_256x8_inst_2_dataout2),
-    .dataout3(w_level6_ram_256x8_inst_2_dataout3),
-    .dataout4(w_level6_ram_256x8_inst_2_dataout4),
-    .dataout5(w_level6_ram_256x8_inst_2_dataout5),
-    .dataout6(w_level6_ram_256x8_inst_2_dataout6),
-    .dataout7(w_level6_ram_256x8_inst_2_dataout7)
+    .dataout0(w_level6_ram_8x8_inst_2_dataout0),
+    .dataout1(w_level6_ram_8x8_inst_2_dataout1),
+    .dataout2(w_level6_ram_8x8_inst_2_dataout2),
+    .dataout3(w_level6_ram_8x8_inst_2_dataout3),
+    .dataout4(w_level6_ram_8x8_inst_2_dataout4),
+    .dataout5(w_level6_ram_8x8_inst_2_dataout5),
+    .dataout6(w_level6_ram_8x8_inst_2_dataout6),
+    .dataout7(w_level6_ram_8x8_inst_2_dataout7)
 );
 level2_mux_2to1 level2_mux_2to1_inst_3 (
     .data0(address0),
@@ -1151,14 +1227,14 @@ assign sp4 = w_level6_stack_pointer_8bit_inst_1_sp4;
 assign sp5 = w_level6_stack_pointer_8bit_inst_1_sp5;
 assign sp6 = w_level6_stack_pointer_8bit_inst_1_sp6;
 assign sp7 = w_level6_stack_pointer_8bit_inst_1_sp7;
-assign dataout0 = w_level6_ram_256x8_inst_2_dataout0;
-assign dataout1 = w_level6_ram_256x8_inst_2_dataout1;
-assign dataout2 = w_level6_ram_256x8_inst_2_dataout2;
-assign dataout3 = w_level6_ram_256x8_inst_2_dataout3;
-assign dataout4 = w_level6_ram_256x8_inst_2_dataout4;
-assign dataout5 = w_level6_ram_256x8_inst_2_dataout5;
-assign dataout6 = w_level6_ram_256x8_inst_2_dataout6;
-assign dataout7 = w_level6_ram_256x8_inst_2_dataout7;
+assign dataout0 = w_level6_ram_8x8_inst_2_dataout0;
+assign dataout1 = w_level6_ram_8x8_inst_2_dataout1;
+assign dataout2 = w_level6_ram_8x8_inst_2_dataout2;
+assign dataout3 = w_level6_ram_8x8_inst_2_dataout3;
+assign dataout4 = w_level6_ram_8x8_inst_2_dataout4;
+assign dataout5 = w_level6_ram_8x8_inst_2_dataout5;
+assign dataout6 = w_level6_ram_8x8_inst_2_dataout6;
+assign dataout7 = w_level6_ram_8x8_inst_2_dataout7;
 assign finaladdress0 = w_level2_mux_2to1_inst_3_p_output;
 assign finaladdress1 = w_level2_mux_2to1_inst_4_p_output;
 assign finaladdress2 = w_level2_mux_2to1_inst_5_p_output;
@@ -1202,10 +1278,10 @@ input input_switch28,
 input input_switch29,
 input input_switch30,
 input input_switch31,
-input input_switch32,
-input input_switch33,
 
 /* ========= Outputs ========== */
+output led33_1,
+output led34_1,
 output led35_1,
 output led36_1,
 output led37_1,
@@ -1227,9 +1303,7 @@ output led52_1,
 output led53_1,
 output led54_1,
 output led55_1,
-output led56_1,
-output led57_1,
-output led58_1
+output led56_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL6_STACK_MEMORY_INTERFACE (level6_stack_memory_interface_ic)
@@ -1291,9 +1365,7 @@ level6_stack_memory_interface_ic level6_stack_memory_interface_ic_inst_1 (
     .datain6(input_switch28),
     .datain7(input_switch29),
     .memwrite(input_switch30),
-    .memread(input_switch31),
-    .clock(input_switch32),
-    .enable(input_switch33),
+    .clock(input_switch31),
     .sp0(w_level6_stack_memory_interface_ic_inst_1_sp0),
     .sp1(w_level6_stack_memory_interface_ic_inst_1_sp1),
     .sp2(w_level6_stack_memory_interface_ic_inst_1_sp2),
@@ -1321,28 +1393,28 @@ level6_stack_memory_interface_ic level6_stack_memory_interface_ic_inst_1 (
 );
 
 // Writing output data. //
-assign led35_1 = w_level6_stack_memory_interface_ic_inst_1_sp0;
-assign led36_1 = w_level6_stack_memory_interface_ic_inst_1_sp1;
-assign led37_1 = w_level6_stack_memory_interface_ic_inst_1_sp2;
-assign led38_1 = w_level6_stack_memory_interface_ic_inst_1_sp3;
-assign led39_1 = w_level6_stack_memory_interface_ic_inst_1_sp4;
-assign led40_1 = w_level6_stack_memory_interface_ic_inst_1_sp5;
-assign led41_1 = w_level6_stack_memory_interface_ic_inst_1_sp6;
-assign led42_1 = w_level6_stack_memory_interface_ic_inst_1_sp7;
-assign led43_1 = w_level6_stack_memory_interface_ic_inst_1_dataout0;
-assign led44_1 = w_level6_stack_memory_interface_ic_inst_1_dataout1;
-assign led45_1 = w_level6_stack_memory_interface_ic_inst_1_dataout2;
-assign led46_1 = w_level6_stack_memory_interface_ic_inst_1_dataout3;
-assign led47_1 = w_level6_stack_memory_interface_ic_inst_1_dataout4;
-assign led48_1 = w_level6_stack_memory_interface_ic_inst_1_dataout5;
-assign led49_1 = w_level6_stack_memory_interface_ic_inst_1_dataout6;
-assign led50_1 = w_level6_stack_memory_interface_ic_inst_1_dataout7;
-assign led51_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress0;
-assign led52_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress1;
-assign led53_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress2;
-assign led54_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress3;
-assign led55_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress4;
-assign led56_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress5;
-assign led57_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress6;
-assign led58_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress7;
+assign led33_1 = w_level6_stack_memory_interface_ic_inst_1_sp0;
+assign led34_1 = w_level6_stack_memory_interface_ic_inst_1_sp1;
+assign led35_1 = w_level6_stack_memory_interface_ic_inst_1_sp2;
+assign led36_1 = w_level6_stack_memory_interface_ic_inst_1_sp3;
+assign led37_1 = w_level6_stack_memory_interface_ic_inst_1_sp4;
+assign led38_1 = w_level6_stack_memory_interface_ic_inst_1_sp5;
+assign led39_1 = w_level6_stack_memory_interface_ic_inst_1_sp6;
+assign led40_1 = w_level6_stack_memory_interface_ic_inst_1_sp7;
+assign led41_1 = w_level6_stack_memory_interface_ic_inst_1_dataout0;
+assign led42_1 = w_level6_stack_memory_interface_ic_inst_1_dataout1;
+assign led43_1 = w_level6_stack_memory_interface_ic_inst_1_dataout2;
+assign led44_1 = w_level6_stack_memory_interface_ic_inst_1_dataout3;
+assign led45_1 = w_level6_stack_memory_interface_ic_inst_1_dataout4;
+assign led46_1 = w_level6_stack_memory_interface_ic_inst_1_dataout5;
+assign led47_1 = w_level6_stack_memory_interface_ic_inst_1_dataout6;
+assign led48_1 = w_level6_stack_memory_interface_ic_inst_1_dataout7;
+assign led49_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress0;
+assign led50_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress1;
+assign led51_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress2;
+assign led52_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress3;
+assign led53_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress4;
+assign led54_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress5;
+assign led55_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress6;
+assign led56_1 = w_level6_stack_memory_interface_ic_inst_1_finaladdress7;
 endmodule

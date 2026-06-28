@@ -28,9 +28,7 @@ struct StackMemoryInterfaceFixture {
     InputSwitch *spReset = nullptr;
     InputSwitch *addressSelect = nullptr;
     InputSwitch *memWrite = nullptr;
-    InputSwitch *memRead = nullptr;
     InputSwitch *clk = nullptr;
-    InputSwitch *enable = nullptr;
     Led *spOut[8] = {};
     Led *dataOutLeds[8] = {};
     Led *finalAddrLeds[8] = {};
@@ -49,12 +47,10 @@ struct StackMemoryInterfaceFixture {
         spReset = new InputSwitch();
         addressSelect = new InputSwitch();
         memWrite = new InputSwitch();
-        memRead = new InputSwitch();
         clk = new InputSwitch();
-        enable = new InputSwitch();
 
         builder.add(spLoad, spPush, spPop, spReset, addressSelect,
-                    memWrite, memRead, clk, enable, ic);
+                    memWrite, clk, ic);
 
         for (int i = 0; i < 8; ++i) {
             dataInSwitches[i] = new InputSwitch();
@@ -79,9 +75,7 @@ struct StackMemoryInterfaceFixture {
         builder.connect(spReset, 0, ic, "SP_Reset");
         builder.connect(addressSelect, 0, ic, "AddressSelect");
         builder.connect(memWrite, 0, ic, "MemWrite");
-        builder.connect(memRead, 0, ic, "MemRead");
         builder.connect(clk, 0, ic, "Clock");
-        builder.connect(enable, 0, ic, "Enable");
 
         sim = builder.initSimulation();
         sim->update();
@@ -132,13 +126,11 @@ void TestLevel6StackMemoryInterface::testStackMemoryInterface()
 
     // Initialize
     f.clk->setOn(false);
-    f.enable->setOn(true);
     f.spLoad->setOn(false);
     f.spPush->setOn(false);
     f.spPop->setOn(false);
     f.spReset->setOn(false);
     f.memWrite->setOn(false);
-    f.memRead->setOn(false);
     f.sim->update();
 
     // Set address select
@@ -161,9 +153,8 @@ void TestLevel6StackMemoryInterface::testStackMemoryInterface()
     f.sim->update();
     clockCycle(f.sim, f.clk);
 
-    // Disable write and enable read
+    // Disable write (reads are asynchronous — no MemRead gate)
     f.memWrite->setOn(false);
-    f.memRead->setOn(true);
     f.sim->update();
     clockCycle(f.sim, f.clk);
 

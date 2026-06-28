@@ -1321,9 +1321,9 @@ void TestSystemVerilogExport::testSystemVerilogExportProgramCounter8BitArithmeti
     testSystemVerilogExportHelper("level6_program_counter_8bit_arithmetic.panda");
 }
 
-void TestSystemVerilogExport::testSystemVerilogExportRam256x8()
+void TestSystemVerilogExport::testSystemVerilogExportRam8x8()
 {
-    testSystemVerilogExportHelper("level6_ram_256x8.panda");
+    testSystemVerilogExportHelper("level6_ram_8x8.panda");
 }
 
 void TestSystemVerilogExport::testSystemVerilogExportRegister8Bit()

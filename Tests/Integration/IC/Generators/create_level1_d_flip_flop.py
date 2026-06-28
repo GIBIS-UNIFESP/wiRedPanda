@@ -109,14 +109,17 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not_clear_id is None:
             return False
 
-        # OR gate for S (slave_and1 OR NOT(clear))
-        or_s_id = await self.create_element("Or", master_not_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "or_s")
-        if or_s_id is None:
+        # OR gate for R: injects the data reset path and NOT(Clear) into the
+        # Q NOR — driving it high forces Q=0. (F31: this gate was labelled
+        # "or_s" although it performs the Reset function.)
+        or_r_id = await self.create_element("Or", master_not_x, bottom_y + (2 * VERTICAL_STAGE_SPACING), "or_r")
+        if or_r_id is None:
             return False
 
-        # OR gate for R (slave_and2 OR NOT(preset))
-        or_r_id = await self.create_element("Or", master_not_x, bottom_y + (3 * VERTICAL_STAGE_SPACING), "or_r")
-        if or_r_id is None:
+        # OR gate for S: injects the data set path and NOT(Preset) into the
+        # Q_bar NOR — driving it high forces Q_bar=0, i.e. Q=1.
+        or_s_id = await self.create_element("Or", master_not_x, bottom_y + (3 * VERTICAL_STAGE_SPACING), "or_s")
+        if or_s_id is None:
             return False
 
         # Connect Preset to NOT gate
@@ -255,32 +258,32 @@ class DFlipFlopBuilder(ICBuilderBase):
         if not await self.connect(input_clk_id, slave_and2_id, target_port=1):
             return False
 
-        # Connect slave AND2 to OR S gate (input 0)
-        if not await self.connect(slave_and2_id, or_s_id):
+        # Connect slave AND2 to OR R gate (input 0)
+        if not await self.connect(slave_and2_id, or_r_id):
             return False
 
-        # Connect NOT Preset to OR R gate (input 1)
-        if not await self.connect(not_preset_id, or_r_id, target_port=1):
+        # Connect NOT Preset to OR S gate (input 1)
+        if not await self.connect(not_preset_id, or_s_id, target_port=1):
             return False
 
-        # Connect OR R to slave NOR2 (R forces Q_bar=0 to make Q=1)
-        if not await self.connect(or_r_id, slave_nor2_id):
+        # Connect OR S to slave NOR2 (S forces Q_bar=0 to make Q=1)
+        if not await self.connect(or_s_id, slave_nor2_id):
             return False
 
         # Connect slave NOR2 to slave NOR1 (feedback)
         if not await self.connect(slave_nor2_id, slave_nor1_id, target_port=1):
             return False
 
-        # Connect slave AND1 to OR R gate (input 0)
-        if not await self.connect(slave_and1_id, or_r_id):
+        # Connect slave AND1 to OR S gate (input 0)
+        if not await self.connect(slave_and1_id, or_s_id):
             return False
 
-        # Connect NOT Clear to OR S gate (input 1)
-        if not await self.connect(not_clear_id, or_s_id, target_port=1):
+        # Connect NOT Clear to OR R gate (input 1)
+        if not await self.connect(not_clear_id, or_r_id, target_port=1):
             return False
 
-        # Connect OR S to slave NOR1 (S forces Q=0 to make Q_bar=1)
-        if not await self.connect(or_s_id, slave_nor1_id):
+        # Connect OR R to slave NOR1 (R forces Q=0 to make Q_bar=1)
+        if not await self.connect(or_r_id, slave_nor1_id):
             return False
 
         # Connect slave NOR1 to slave NOR2 (feedback)
