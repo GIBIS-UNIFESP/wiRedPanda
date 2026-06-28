@@ -16,7 +16,7 @@ struct DLatchFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *dataIn = nullptr, *enableIn = nullptr;
-    Led *ledQ = nullptr;
+    Led *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -27,8 +27,9 @@ struct DLatchFixture {
         dataIn = new InputSwitch();
         enableIn = new InputSwitch();
         ledQ = new Led();
+        ledQBar = new Led();
 
-        builder.add(dataIn, enableIn, ledQ);
+        builder.add(dataIn, enableIn, ledQ, ledQBar);
 
         ic = loadBuildingBlockIC("level1_d_latch.panda");
         builder.add(ic);
@@ -36,6 +37,7 @@ struct DLatchFixture {
         builder.connect(dataIn, 0, ic, "D");
         builder.connect(enableIn, 0, ic, "Enable");
         builder.connect(ic, "Q", ledQ, 0);
+        builder.connect(ic, "Q_bar", ledQBar, 0);
 
         sim = builder.initSimulation();
         sim->update();
@@ -85,30 +87,36 @@ void TestLevel1DLatch::testDLatchSequential()
     f.dataIn->setOn(false);
     f.enableIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q follows D=0
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q follows D=0
+    QCOMPARE(getInputStatus(f.ledQBar), true);   // Q_bar is the complement
 
     // Step 2: Enable=1, D=1 -> Q should follow D (Q=1)
     f.dataIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q follows D=1
+    QCOMPARE(getInputStatus(f.ledQ), true);      // Q follows D=1
+    QCOMPARE(getInputStatus(f.ledQBar), false);
 
     // Step 3: Enable=0, D=1 -> Q should hold (Q=1, even though D=1)
     f.enableIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q held at 1
+    QCOMPARE(getInputStatus(f.ledQ), true);      // Q held at 1
+    QCOMPARE(getInputStatus(f.ledQBar), false);
 
     // Step 4: Enable=0, D=0 -> Q should still hold previous (Q=1)
     f.dataIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q still held at 1
+    QCOMPARE(getInputStatus(f.ledQ), true);      // Q still held at 1
+    QCOMPARE(getInputStatus(f.ledQBar), false);
 
     // Step 5: Enable=1 again -> Q should follow D (Q=0)
     f.enableIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q follows D=0
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q follows D=0
+    QCOMPARE(getInputStatus(f.ledQBar), true);
 
     // Step 6: Enable=0 -> Q should hold (Q=0)
     f.enableIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q held at 0
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q held at 0
+    QCOMPARE(getInputStatus(f.ledQBar), true);
 }

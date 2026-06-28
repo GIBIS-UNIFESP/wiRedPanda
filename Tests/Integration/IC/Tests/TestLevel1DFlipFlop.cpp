@@ -16,7 +16,7 @@ struct DFlipFlopFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *dataIn = nullptr, *clockIn = nullptr, *presetIn = nullptr, *clearIn = nullptr;
-    Led *ledQ = nullptr;
+    Led *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -29,8 +29,9 @@ struct DFlipFlopFixture {
         presetIn = new InputSwitch();
         clearIn = new InputSwitch();
         ledQ = new Led();
+        ledQBar = new Led();
 
-        builder.add(dataIn, clockIn, presetIn, clearIn, ledQ);
+        builder.add(dataIn, clockIn, presetIn, clearIn, ledQ, ledQBar);
 
         presetIn->setOn(true);
         clearIn->setOn(true);
@@ -43,6 +44,7 @@ struct DFlipFlopFixture {
         builder.connect(presetIn, 0, ic, "Preset");
         builder.connect(clearIn, 0, ic, "Clear");
         builder.connect(ic, "Q", ledQ, 0);
+        builder.connect(ic, "Q_bar", ledQBar, 0);
 
         sim = builder.initSimulation();
         sim->update();
@@ -133,4 +135,56 @@ void TestLevel1DFlipFlop::testDFlipFlopSequential()
     f.clockIn->setOn(false);
     f.sim->update();
     QCOMPARE(getInputStatus(f.ledQ), false);  // Q held at 0
+}
+
+// Async Preset/Clear must override the data path even while Clock=1 with the
+// master latch holding the opposite value (7474 semantics — F56: before the
+// fix, Preset/Clear were injected into the slave latch only, so this
+// scenario drove both slave NORs low: the invalid Q=Q_bar=0 state).
+void TestLevel1DFlipFlop::testAsyncPresetClearUnderClockHigh()
+{
+    auto &f = *s_level1DFlipFlop;
+
+    // Establish Q=0 with the master holding 0, then keep Clock HIGH
+    f.presetIn->setOn(true);
+    f.clearIn->setOn(true);
+    f.dataIn->setOn(false);
+    f.clockIn->setOn(false);
+    f.sim->update();
+    f.clockIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+
+    // Assert Preset (active LOW) while Clock=1: Q must be forced to 1
+    f.presetIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), true);
+    QCOMPARE(getInputStatus(f.ledQBar), false);
+
+    // Release Preset with Clock still HIGH: Q must hold at 1 (the master was
+    // forced too, so the open slave keeps transferring 1)
+    f.presetIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), true);
+    QCOMPARE(getInputStatus(f.ledQBar), false);
+
+    // Symmetric: establish Q=1 with the master holding 1, Clock HIGH
+    f.dataIn->setOn(true);
+    f.clockIn->setOn(false);
+    f.sim->update();
+    f.clockIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), true);
+
+    // Assert Clear (active LOW) while Clock=1: Q must be forced to 0
+    f.clearIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+    QCOMPARE(getInputStatus(f.ledQBar), true);
+
+    // Release Clear with Clock still HIGH: Q must hold at 0
+    f.clearIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+    QCOMPARE(getInputStatus(f.ledQBar), true);
 }

@@ -16,4 +16,5 @@ private slots:
 
     // D Flip-Flop IC tests - sequential design for proper edge-triggered testing
     void testDFlipFlopSequential();
+    void testAsyncPresetClearUnderClockHigh();
 };

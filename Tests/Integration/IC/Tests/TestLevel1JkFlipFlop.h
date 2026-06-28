@@ -17,6 +17,7 @@ private slots:
     void testResetAndSet();
     void testHold();
     void testToggle();
+    void testHoldDuringClockHigh();
     void testAsyncPreset();
     void testAsyncClear();
     void testPresetClearOverrideClock();

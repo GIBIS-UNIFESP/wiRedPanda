@@ -19,13 +19,15 @@ using CPUTestUtils::loadBuildingBlockIC;
 // Inputs: J, K, Clock, Preset (active LOW), Clear (active LOW)
 // Outputs: Q, Q_bar
 //
-// Truth table (on rising clock edge):
+// Classic pulse-triggered master-slave JK (7476-style, F55): the master
+// samples J/K (with slave feedback) while Clock=1; Q changes on the FALLING
+// edge, i.e. by the end of a full clock pulse:
 //   J=0, K=0 -> Hold (Q unchanged)
 //   J=0, K=1 -> Reset (Q=0)
 //   J=1, K=0 -> Set (Q=1)
 //   J=1, K=1 -> Toggle (Q inverts)
 //
-// Async controls (active LOW, override clock):
+// Async controls (active LOW, override clock, forced into BOTH latches):
 //   Preset=0 -> Q=1 (asynchronous set)
 //   Clear=0  -> Q=0 (asynchronous clear)
 
@@ -207,6 +209,48 @@ void TestLevel1JKFlipFlop::testToggle()
 
     // Toggle once more: Q=1
     f.clockPulse();
+    QCOMPARE(f.q(), true);
+    QCOMPARE(f.qBar(), false);
+}
+
+// Q must not change while the clock is held high, even if J/K flip during
+// the high phase — the slave is locked until the falling edge. (Before F55
+// the slave was transparent during CLK=1, so J/K changes leaked straight
+// to Q.)
+void TestLevel1JKFlipFlop::testHoldDuringClockHigh()
+{
+    auto &f = *s_level1JkFlipFlop;
+    f.resetToKnownState();
+
+    // Reset to known state: Q=0
+    f.jIn->setOn(false);
+    f.kIn->setOn(true);
+    f.clockPulse();
+    QCOMPARE(f.q(), false);
+
+    // Raise the clock with J=1, K=0: the master samples, but Q holds
+    f.jIn->setOn(true);
+    f.kIn->setOn(false);
+    f.clockIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+    QCOMPARE(f.qBar(), true);
+
+    // Flip J/K mid-high-phase: Q must still hold (output only moves on the
+    // falling edge; the master may catch pulses — textbook MS behavior)
+    f.jIn->setOn(false);
+    f.kIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+
+    f.jIn->setOn(true);
+    f.kIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+
+    // Falling edge: the set command present during the high phase lands
+    f.clockIn->setOn(false);
+    f.sim->update();
     QCOMPARE(f.q(), true);
     QCOMPARE(f.qBar(), false);
 }
