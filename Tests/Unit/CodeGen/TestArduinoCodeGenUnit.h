@@ -17,4 +17,7 @@ private slots:
     void testMuxCircuit();
     void testDemuxCircuit();
     void testEmptyScene();
+
+    // Regression: F19 — every TruthTable output gets emitted, not just 0
+    void testTruthTableMultiOutput();
 };

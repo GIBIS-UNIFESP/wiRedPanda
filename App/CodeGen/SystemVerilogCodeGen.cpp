@@ -33,7 +33,10 @@ SystemVerilogCodeGen::SystemVerilogCodeGen(const QString &fileName, const QVecto
     , m_elements(elements)
 {
     if (!m_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        return;
+        // Same contract as ArduinoCodeGen: a silent return would leave the
+        // stream device-less, generate() would write into the void, and the
+        // UI would report success with no file on disk.
+        throw PANDACEPTION("Could not open file for writing: %1", fileName);
     }
     m_stream.setDevice(&m_file);
 
@@ -720,7 +723,7 @@ void SystemVerilogCodeGen::declareInputs()
         if (elm->elementGroup() == ElementGroup::Output) {
             totalOutputs = INT_MAX;
             break;
-        } else if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch) || (type == ElementType::Clock)) {
+        } else if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch) || (type == ElementType::Clock) || (type == ElementType::InputRotary)) {
             totalOutputs += static_cast<int>(elm->outputs().size());
         }
     }
@@ -730,27 +733,35 @@ void SystemVerilogCodeGen::declareInputs()
     for (auto *elm : m_elements) {
         const auto type = elm->elementType();
 
-        if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch) || (type == ElementType::Clock)) {
-            QString varName = elm->objectName() + QString::number(counter);
+        if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch) || (type == ElementType::Clock) || (type == ElementType::InputRotary)) {
+            QString baseName = elm->objectName() + QString::number(counter);
             const QString label = elm->label();
 
             if (!label.isEmpty()) {
-                varName += "_" + label;
+                baseName += "_" + label;
             }
 
-            varName = CodeGenUtils::stripAccents(varName);
-            varName = removeForbiddenChars(varName);
+            baseName = CodeGenUtils::stripAccents(baseName);
+            baseName = removeForbiddenChars(baseName);
 
-            currentOutput++;
-            if (currentOutput < totalOutputs) {
-                m_stream << QString("input %1,").arg(varName) << Qt::endl;
-            } else {
-                m_stream << QString("input %1").arg(varName) << Qt::endl;
+            // One module input per output port. Button/Switch/Clock have a
+            // single port and keep their unsuffixed name; a rotary (F23)
+            // contributes one one-hot input per position — previously its
+            // ports got undriven aux wires and the module floated.
+            for (int port = 0; port < elm->outputSize(); ++port) {
+                QString varName = (elm->outputSize() > 1) ? QString("%1_%2").arg(baseName).arg(port) : baseName;
+
+                currentOutput++;
+                if (currentOutput < totalOutputs) {
+                    m_stream << QString("input %1,").arg(varName) << Qt::endl;
+                } else {
+                    m_stream << QString("input %1").arg(varName) << Qt::endl;
+                }
+
+                m_inputMap.append(MappedPinSystemVerilog(elm, "", varName, elm->outputPort(port), port));
+                // [ISSUE-9] Map directly to input name, no _val indirection
+                m_varMap[elm->outputPort(port)] = varName;
             }
-
-            m_inputMap.append(MappedPinSystemVerilog(elm, "", varName, elm->outputPort(0), 0));
-            // [ISSUE-9] Map directly to input name, no _val indirection
-            m_varMap[elm->outputPort()] = varName;
             ++counter;
         }
     }
@@ -833,7 +844,8 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
             const auto type = elm->elementType();
             if ((type == ElementType::InputButton ||
                  type == ElementType::InputSwitch ||
-                 type == ElementType::Clock) &&
+                 type == ElementType::Clock ||
+                 type == ElementType::InputRotary) &&
                 !m_varMap.value(elm->outputPort()).isEmpty()) {
                 continue;
             }
@@ -1348,11 +1360,6 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                 const int nInputs = elm->inputSize();
                 const int rows = 1 << nInputs;
 
-                QString outputVarName = m_varMap.value(elm->outputPort(0));
-                if (outputVarName.isEmpty()) {
-                    throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName());
-                }
-
                 // Resolve input signal names
                 QStringList inputSignalNames;
                 for (int i = 0; i < nInputs; ++i) {
@@ -1382,19 +1389,34 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                 }
 
                 QString indexCalculation = bitExpressions.join("");
-                m_stream << QString("    //TruthTable") << Qt::endl;
-                m_stream << QString("    always @(*)") << Qt::endl;
-                m_stream << QString("    begin") << Qt::endl;
-                m_stream << QString("        case(%1)").arg(indexCalculation) << Qt::endl;
 
-                for (int i = 0; i < rows; ++i) {
-                    m_stream << QString("            %1'b").arg(nInputs) << QString::number(i, 2).rightJustified(nInputs, '0') << ": " << outputVarName << " = 1'b" << (propositions.testBit(i) ? "1" : "0") << ";" << Qt::endl;
+                // One always block per output (F19): output k reads key bits 256*k + row.
+                // Emitting per-output keeps the single-output text byte-identical to the
+                // historical form.
+                for (int out = 0; out < elm->outputSize(); ++out) {
+                    QString outputVarName = m_varMap.value(elm->outputPort(out));
+                    if (outputVarName.isEmpty()) {
+                        if (out == 0) {
+                            throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName());
+                        }
+                        m_stream << "// TruthTable '" << elm->objectName() << "' output " << out << " is disconnected — no code emitted." << Qt::endl;
+                        continue;
+                    }
+
+                    m_stream << QString("    //TruthTable") << Qt::endl;
+                    m_stream << QString("    always @(*)") << Qt::endl;
+                    m_stream << QString("    begin") << Qt::endl;
+                    m_stream << QString("        case(%1)").arg(indexCalculation) << Qt::endl;
+
+                    for (int i = 0; i < rows; ++i) {
+                        m_stream << QString("            %1'b").arg(nInputs) << QString::number(i, 2).rightJustified(nInputs, '0') << ": " << outputVarName << " = 1'b" << (propositions.testBit(256 * out + i) ? "1" : "0") << ";" << Qt::endl;
+                    }
+                    // [ISSUE-8] Defensive default for X/Z input states
+                    m_stream << QString("            default: %1 = 1'b0;").arg(outputVarName) << Qt::endl;
+                    m_stream << QString("        endcase") << Qt::endl;
+                    m_stream << QString("    end") << Qt::endl;
+                    m_stream << QString("    //End TruthTable") << Qt::endl;
                 }
-                // [ISSUE-8] Defensive default for X/Z input states
-                m_stream << QString("            default: %1 = 1'b0;").arg(outputVarName) << Qt::endl;
-                m_stream << QString("        endcase") << Qt::endl;
-                m_stream << QString("    end") << Qt::endl;
-                m_stream << QString("    //End TruthTable") << Qt::endl;
 
                 break;
             }
