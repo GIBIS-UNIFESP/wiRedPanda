@@ -164,6 +164,13 @@ void TestLevel6StackMemoryInterface::testStackMemoryInterface()
     f.memWrite->setOn(false);
     f.sim->update();
 
+    // Reset the stack pointer to its initial 0xFF (top of descending stack)
+    f.spReset->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.spReset->setOn(false);
+    f.sim->update();
+
     // Set address select
     f.addressSelect->setOn(useStackPointer);
 
@@ -184,7 +191,8 @@ void TestLevel6StackMemoryInterface::testStackMemoryInterface()
     f.sim->update();
     clockCycle(f.sim, f.clk);
 
-    // Disable write (reads are asynchronous — no MemRead gate)
+    // Disable write; reads are always active (F26: the dangling MemRead
+    // input was removed — DataOut continuously reflects the addressed word)
     f.memWrite->setOn(false);
     f.sim->update();
     clockCycle(f.sim, f.clk);
