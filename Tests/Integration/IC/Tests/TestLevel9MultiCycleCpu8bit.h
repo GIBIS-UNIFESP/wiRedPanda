@@ -22,4 +22,11 @@ private slots:
     void testInstructionVisibleDuringFetch();
     void testResultRegisterReadable();
     void testInstructionStabilityAcrossPipelineStages();
+
+    // Real program execution (enabled by the new programming interface)
+    void testALUExecution_data();
+    void testALUExecution();
+    void testHighRegisterOperand();
+    void testMultipleInstructions();
+    void testStoreLoad();
 };

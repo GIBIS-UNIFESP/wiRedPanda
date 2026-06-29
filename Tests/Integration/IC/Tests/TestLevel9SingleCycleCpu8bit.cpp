@@ -10,6 +10,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
+#include "Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
@@ -17,30 +18,6 @@ using TestUtils::setMultiBitInput;
 using TestUtils::getInputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
-
-/// ALU operation codes
-enum ALUOp { ADD = 0, SUB = 1, AND = 2, OR = 3, XOR = 4, NOT = 5, SHL = 6, SHR = 7 };
-
-/// Encode an 8-bit ALU instruction: ALUOp in bits [5:3], regAddr in bits [2:0].
-/// Bit 7 = 0, bit 6 = 0 for ALU/register operations.
-static int encodeInstruction(int aluOp, int regAddr)
-{
-    return ((aluOp & 0x7) << 3) | (regAddr & 0x7);
-}
-
-/// Encode a STORE instruction: write R0 to data memory at address regAddr.
-/// Bit 7 = 1, bit 6 = 1 → MemWrite=1, RegWrite=0.
-static int encodeStore(int regAddr)
-{
-    return 0xC0 | (regAddr & 0x7);
-}
-
-/// Encode a LOAD instruction: read data memory at address regAddr.
-/// Bit 7 = 1, bit 6 = 0 → MemRead=1, RegWrite=0.
-static int encodeLoad(int regAddr)
-{
-    return 0x80 | (regAddr & 0x7);
-}
 
 /// Fixture holding the full CPU test harness.
 struct CPUFixture {
@@ -577,6 +554,55 @@ void TestLevel9SingleCycleCPU8Bit::testMultipleInstructions()
 
     // Instruction at address 2: AND R1 -> R0 = 0x2B & 0x20 = 0x20
     QCOMPARE(f.readResult(), 0x20);
+}
+
+// ---------------------------------------------------------------------------
+// High register operands: the ISA tests only ever address R1/R2, so the high
+// register-address bit (instruction bit 2 -> RawInstr[2] -> register file
+// Read_Addr2[2]) was never exercised. Drive operands from R3/R5/R6/R7 so a
+// stuck or miswired high address bit would be caught.
+// ---------------------------------------------------------------------------
+
+void TestLevel9SingleCycleCPU8Bit::testHighRegisterOperand()
+{
+    auto &f = *s_cpu;
+
+    const int regs[] = {3, 5, 6, 7};
+    for (int reg : regs) {
+        f.sim->restart();
+        f.sim->update();
+
+        const int operandB = 0x10 + reg;   // distinct per register
+        f.programRegister(reg, operandB);
+        f.programRegister(0, 0x10);         // R0 accumulator
+        f.programInstruction(0, encodeInstruction(ADD, reg));
+        f.resetCPU();
+
+        QVERIFY2(f.readResult() == (0x10 + operandB),
+            qPrintable(QString("ADD R%1: expected 0x%2, got 0x%3")
+                .arg(reg).arg(0x10 + operandB, 0, 16).arg(f.readResult(), 0, 16)));
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Instruction output: the registered Instruction[0-7] port reflects the word
+// fetched at the current PC (the fixture exposed readInstruction() but no test
+// asserted it).
+// ---------------------------------------------------------------------------
+
+void TestLevel9SingleCycleCPU8Bit::testInstructionOutput()
+{
+    auto &f = *s_cpu;
+    f.sim->restart();
+    f.sim->update();
+
+    const int instr = encodeInstruction(XOR, 3);
+    f.programInstruction(0, instr);
+    f.resetCPU();
+    clockCycle(f.sim, f.clk);   // latch the fetched word into the instruction register
+    f.sim->update();
+
+    QCOMPARE(f.readInstruction(), instr);
 }
 
 // ---------------------------------------------------------------------------

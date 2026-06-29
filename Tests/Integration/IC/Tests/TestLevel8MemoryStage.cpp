@@ -148,3 +148,134 @@ void TestLevel8MemoryStage::testMemoryStageStructure()
     QCOMPARE(f.ic->inputSize(), 28);
     QCOMPARE(f.ic->outputSize(), 8);
 }
+
+// Reset clears the backing memory (F54: the Reset input used to be dead —
+// created and documented but wired to nothing). Implemented as an async
+// clear down the RAM stack (the ram_8x1 cells' ~Clear).
+void TestLevel8MemoryStage::testMemoryStageReset()
+{
+    auto &f = *s_level8MemoryStage;
+
+    // Write 0x5A to address 3
+    setMultiBitInput(f.addressInputs, 0x03);
+    setMultiBitInput(f.datainInputs, 0x5A);
+    setMultiBitInput(f.resultInputs, 0x00);
+    f.memread->setOn(false);
+    f.memwrite->setOn(true);
+    f.reset->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+
+    // Read it back
+    f.memwrite->setOn(false);
+    f.memread->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x5A);
+
+    // Assert Reset: the stored word must clear (async, no clock needed)
+    f.reset->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x00);
+
+    // Release Reset: memory stays cleared
+    f.reset->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x00);
+}
+
+// Distinct words must be stored at distinct addresses and read back
+// independently — the existing tests only ever round-trip a single address, so a
+// bug aliasing all addresses to one word would pass. Also asserts the documented
+// partial decode (only Address[0:2] reach the 8-word RAM; high bits alias mod 8).
+void TestLevel8MemoryStage::testMultiAddressStorage()
+{
+    auto &f = *s_level8MemoryStage;
+
+    auto writeAt = [&](int addr, int data) {
+        setMultiBitInput(f.addressInputs, addr);
+        setMultiBitInput(f.datainInputs, data);
+        setMultiBitInput(f.resultInputs, 0x00);
+        f.memread->setOn(false);
+        f.memwrite->setOn(true);
+        f.sim->update();
+        clockCycle(f.sim, f.clk);
+        f.memwrite->setOn(false);
+        f.sim->update();
+    };
+    auto readAt = [&](int addr) {
+        setMultiBitInput(f.addressInputs, addr);
+        f.memread->setOn(true);
+        f.sim->update();
+        int v = f.readDataOut();
+        f.memread->setOn(false);
+        f.sim->update();
+        return v;
+    };
+
+    writeAt(0x02, 0x11);
+    writeAt(0x05, 0x22);
+
+    // Each address holds its own word
+    QCOMPARE(readAt(0x02), 0x11);
+    QCOMPARE(readAt(0x05), 0x22);
+
+    // Partial decode: Address[3..7] are ignored, so 0x0A (= 0x02 + 8) aliases 0x02
+    QCOMPARE(readAt(0x0A), 0x11);
+}
+
+void TestLevel8MemoryStage::testResultPassthroughBitIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("result_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel8MemoryStage::testResultPassthroughBitIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level8MemoryStage;
+
+    // Passthrough mode (MemRead=0, MemWrite=0): a one-hot Result must appear as a
+    // one-hot DataOut at the same position — no bit-lane cross-wiring in the
+    // output mux's In0 path.
+    f.memread->setOn(false);
+    f.memwrite->setOn(false);
+    setMultiBitInput(f.resultInputs, 1 << bitPosition);
+    f.sim->update();
+
+    QCOMPARE(f.readDataOut(), 1 << bitPosition);
+}
+
+void TestLevel8MemoryStage::testStoredDataBitIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("data_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel8MemoryStage::testStoredDataBitIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level8MemoryStage;
+
+    // Store a one-hot DataIn, then read it back: the word must round-trip as a
+    // one-hot DataOut — proving DataIn[i] -> memory -> DataOut[i] with no
+    // cross-wiring through the RAM and read mux.
+    setMultiBitInput(f.addressInputs, 0x04);
+    setMultiBitInput(f.datainInputs, 1 << bitPosition);
+    setMultiBitInput(f.resultInputs, 0x00);
+    f.memread->setOn(false);
+    f.memwrite->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.memwrite->setOn(false);
+
+    f.memread->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 1 << bitPosition);
+    f.memread->setOn(false);
+}
