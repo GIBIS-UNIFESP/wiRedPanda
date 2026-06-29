@@ -34,9 +34,11 @@ bool aux_level3_register_1bit_0_not_4 = LOW;
 bool aux_level3_register_1bit_0_not_5 = LOW;
 bool aux_level3_register_1bit_0_mux_6 = LOW;
 bool aux_level3_register_1bit_0_d_flip_flop_7_0_q = LOW;
+bool aux_level3_register_1bit_0_d_flip_flop_7_0_q_next = LOW;
 bool aux_level3_register_1bit_0_d_flip_flop_7_0_q_inclk = LOW;
 bool aux_level3_register_1bit_0_d_flip_flop_7_0_q_last = LOW;
 bool aux_level3_register_1bit_0_d_flip_flop_7_1_q = HIGH;
+bool aux_level3_register_1bit_0_d_flip_flop_7_1_q_next = HIGH;
 bool aux_level3_register_1bit_0_d_flip_flop_7_1_q_inclk = LOW;
 bool aux_level3_register_1bit_0_d_flip_flop_7_1_q_last = LOW;
 bool aux_level3_register_1bit_0_node_9 = LOW;
@@ -46,6 +48,8 @@ bool aux_ic_input_level3_register_1bit_0_1 = LOW;
 bool aux_ic_input_level3_register_1bit_0_2 = LOW;
 bool aux_ic_input_level3_register_1bit_0_3 = LOW;
 // End IC: LEVEL3_REGISTER_1BIT
+
+bool g_sample = true;
 
 void setup() {
     pinMode(input_switch1, INPUT);
@@ -79,22 +83,29 @@ void computeLogic() {
     }
     //End of Multiplexer
     //D FlipFlop
+    if (g_sample) {
     if (aux_level3_register_1bit_0_node_1 && !aux_level3_register_1bit_0_d_flip_flop_7_0_q_inclk) { 
-        aux_level3_register_1bit_0_d_flip_flop_7_0_q = aux_level3_register_1bit_0_d_flip_flop_7_0_q_last;
-        aux_level3_register_1bit_0_d_flip_flop_7_1_q = !aux_level3_register_1bit_0_d_flip_flop_7_0_q_last;
+        aux_level3_register_1bit_0_d_flip_flop_7_0_q_next = aux_level3_register_1bit_0_d_flip_flop_7_0_q_last;
+        aux_level3_register_1bit_0_d_flip_flop_7_1_q_next = !aux_level3_register_1bit_0_d_flip_flop_7_0_q_last;
     }
     if (!HIGH || !aux_level3_register_1bit_0_not_4) { 
-        aux_level3_register_1bit_0_d_flip_flop_7_0_q = !HIGH; //Preset
-        aux_level3_register_1bit_0_d_flip_flop_7_1_q = !aux_level3_register_1bit_0_not_4; //Clear
+        aux_level3_register_1bit_0_d_flip_flop_7_0_q_next = !HIGH; //Preset
+        aux_level3_register_1bit_0_d_flip_flop_7_1_q_next = !aux_level3_register_1bit_0_not_4; //Clear
     }
     aux_level3_register_1bit_0_d_flip_flop_7_0_q_inclk = aux_level3_register_1bit_0_node_1;
+        aux_level3_register_1bit_0_d_flip_flop_7_0_q_last = aux_level3_register_1bit_0_mux_6;
+    }
     //End of D FlipFlop
-    aux_level3_register_1bit_0_d_flip_flop_7_0_q_last = aux_level3_register_1bit_0_mux_6;
     aux_level3_register_1bit_0_node_9 = aux_level3_register_1bit_0_d_flip_flop_7_0_q;
     aux_level3_register_1bit_0_node_10 = aux_level3_register_1bit_0_d_flip_flop_7_1_q;
     aux_level3_register_1bit_0_q = aux_level3_register_1bit_0_node_9;
     aux_level3_register_1bit_0_notq_1 = aux_level3_register_1bit_0_node_10;
     // End IC: LEVEL3_REGISTER_1BIT
+}
+
+void commitFlipFlops() {
+    aux_level3_register_1bit_0_d_flip_flop_7_0_q = aux_level3_register_1bit_0_d_flip_flop_7_0_q_next;
+    aux_level3_register_1bit_0_d_flip_flop_7_1_q = aux_level3_register_1bit_0_d_flip_flop_7_1_q_next;
 }
 
 void loop() {
@@ -106,7 +117,11 @@ void loop() {
 
     // Updating clocks. //
 
-    computeLogic();
+    g_sample = true;
+    for (int s = 0; s < 10; s++) { computeLogic(); }
+    commitFlipFlops();
+    g_sample = false;
+    for (int s = 0; s < 10; s++) { computeLogic(); }
 
     // Writing output data. //
     digitalWrite(led1_1, aux_level3_register_1bit_0_q);
