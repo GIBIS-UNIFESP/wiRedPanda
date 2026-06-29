@@ -22,10 +22,12 @@ struct RegFile8x8Fixture {
     IC *ic = nullptr;
     InputSwitch *writeAddr[3] = {};
     InputSwitch *readAddr[3] = {};
+    InputSwitch *readAddr2[3] = {};
     InputSwitch *writeData[8] = {};
     InputSwitch *writeEnable = nullptr;
     InputSwitch *clock = nullptr;
     Led *readData[8] = {};
+    Led *readData2[8] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -43,17 +45,20 @@ struct RegFile8x8Fixture {
         for (int i = 0; i < 3; ++i) {
             writeAddr[i] = new InputSwitch();
             readAddr[i] = new InputSwitch();
-            builder.add(writeAddr[i], readAddr[i]);
+            readAddr2[i] = new InputSwitch();
+            builder.add(writeAddr[i], readAddr[i], readAddr2[i]);
         }
         for (int i = 0; i < 8; ++i) {
             writeData[i] = new InputSwitch();
             readData[i] = new Led();
-            builder.add(writeData[i], readData[i]);
+            readData2[i] = new Led();
+            builder.add(writeData[i], readData[i], readData2[i]);
         }
 
         for (int i = 0; i < 3; ++i) {
             builder.connect(writeAddr[i], 0, ic, QString("Write_Addr[%1]").arg(i));
             builder.connect(readAddr[i], 0, ic, QString("Read_Addr1[%1]").arg(i));
+            builder.connect(readAddr2[i], 0, ic, QString("Read_Addr2[%1]").arg(i));
         }
         for (int i = 0; i < 8; ++i) {
             builder.connect(writeData[i], 0, ic, QString("Data_In[%1]").arg(i));
@@ -63,6 +68,7 @@ struct RegFile8x8Fixture {
 
         for (int i = 0; i < 8; ++i) {
             builder.connect(ic, QString("Read_Data1[%1]").arg(i), readData[i], 0);
+            builder.connect(ic, QString("Read_Data2[%1]").arg(i), readData2[i], 0);
         }
 
         sim = builder.initSimulation();
@@ -105,6 +111,17 @@ struct RegFile8x8Fixture {
         int value = 0;
         for (int bit = 0; bit < 8; ++bit) {
             if (getInputStatus(readData[bit])) {
+                value |= (1 << bit);
+            }
+        }
+        return value;
+    }
+
+    int readPort2()
+    {
+        int value = 0;
+        for (int bit = 0; bit < 8; ++bit) {
+            if (getInputStatus(readData2[bit])) {
                 value |= (1 << bit);
             }
         }
@@ -191,5 +208,30 @@ void TestLevel5RegisterFile8X8::testBoundary8x8()
 
     for (int regIdx = 0; regIdx < 8; ++regIdx) {
         QCOMPARE(f.readReg(regIdx), boundaryValue);
+    }
+}
+
+// The register file has two independent read ports, but every other test reads
+// only port 1, leaving port 2 (Read_Addr2 / Read_Data2) unexercised. Write a
+// distinct value to each of the 8 registers, then read every (port1, port2)
+// address pair concurrently and confirm each port returns its own register.
+void TestLevel5RegisterFile8X8::testDualReadPorts()
+{
+    auto &f = *s_level5RegFile8x8;
+
+    for (int reg = 0; reg < 8; ++reg) {
+        f.writeReg(reg, (reg * 31 + 7) & 0xFF);  // distinct per register
+    }
+
+    for (int a = 0; a < 8; ++a) {
+        for (int b = 0; b < 8; ++b) {
+            f.setReadAddr(a);
+            for (int i = 0; i < 3; ++i) {
+                f.readAddr2[i]->setOn((b >> i) & 1);
+            }
+            f.sim->update();
+            QCOMPARE(f.readReg(a), (a * 31 + 7) & 0xFF);   // port 1 → register a
+            QCOMPARE(f.readPort2(), (b * 31 + 7) & 0xFF);  // port 2 → register b
+        }
     }
 }
