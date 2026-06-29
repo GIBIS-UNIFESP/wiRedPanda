@@ -16,6 +16,10 @@ private slots:
     // Functional Tests
     void testALU8Bit();
 
+    // Arithmetic (ADD/SUB across the nibble boundary) + Zero/Negative/Carry flags
+    void testArithmetic_data();
+    void testArithmetic();
+
     // Structure Tests
     void testALU8BitStructure();
 

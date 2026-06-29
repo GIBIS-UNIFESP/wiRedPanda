@@ -102,6 +102,16 @@ void TestLevel7ALU16Bit::testALU16Bit_data()
     QTest::newRow("add_0x1000_0x2000") << 0x1000 << 0x2000 << 0 << 0x3000;
     QTest::newRow("add_0x0100_0x0200") << 0x0100 << 0x0200 << 0 << 0x0300;
 
+    // Cross-byte carry propagation (F26: the byte halves' carry chains are
+    // now connected, so a low-byte carry reaches the high byte)
+    QTest::newRow("add_carry_0x00FF_0x0001") << 0x00FF << 0x0001 << 0 << 0x0100;
+    QTest::newRow("add_carry_0x80FF_0x0101") << 0x80FF << 0x0101 << 0 << 0x8200;
+
+    // Cross-byte borrow propagation in SUB (A - B, two's complement)
+    QTest::newRow("sub_0x0300_0x0001") << 0x0300 << 0x0001 << 1 << 0x02FF;
+    QTest::newRow("sub_0x1234_0x0234") << 0x1234 << 0x0234 << 1 << 0x1000;
+    QTest::newRow("sub_same_is_zero") << 0x4242 << 0x4242 << 1 << 0x0000;
+
     QTest::newRow("and_0xFFFF_0x00FF") << 0xFFFF << 0x00FF << 2 << 0x00FF;
     QTest::newRow("and_0x1234_0x5678") << 0x1234 << 0x5678 << 2 << 0x1230;
 
@@ -110,6 +120,19 @@ void TestLevel7ALU16Bit::testALU16Bit_data()
 
     QTest::newRow("xor_0xFFFF_0x00FF") << 0xFFFF << 0x00FF << 4 << 0xFF00;
     QTest::newRow("xor_0x1234_0x5678") << 0x1234 << 0x5678 << 4 << 0x444C;
+
+    // NOT (op 5): ~A, B ignored. Each half NOTs its own byte independently, so
+    // there is no cross-byte interaction — but the op was untested at 16-bit.
+    QTest::newRow("not_0xAAAA") << 0xAAAA << 0x0000 << 5 << 0x5555;
+    QTest::newRow("not_0x0000") << 0x0000 << 0x0000 << 5 << 0xFFFF;
+
+    // Cross-byte shift propagation (F61: the byte halves used to shift
+    // independently with zero fill, losing A[7] -> Result[8] on SHL and
+    // A[8] -> Result[7] on SHR)
+    QTest::newRow("shl_cross_byte_0x0080") << 0x0080 << 0x0000 << 6 << 0x0100;
+    QTest::newRow("shl_0x4321") << 0x4321 << 0x0000 << 6 << 0x8642;
+    QTest::newRow("shr_cross_byte_0x0100") << 0x0100 << 0x0000 << 7 << 0x0080;
+    QTest::newRow("shr_0x8642") << 0x8642 << 0x0000 << 7 << 0x4321;
 }
 
 void TestLevel7ALU16Bit::testALU16Bit()
@@ -139,4 +162,124 @@ void TestLevel7ALU16Bit::testALU16Bit()
     }
 
     QCOMPARE(actualResult & 0xFFFF, expectedResult & 0xFFFF);
+}
+
+void TestLevel7ALU16Bit::testFlags16Bit_data()
+{
+    QTest::addColumn<int>("opA");
+    QTest::addColumn<int>("opB");
+    QTest::addColumn<int>("aluOp");
+    QTest::addColumn<bool>("expectedZero");
+    QTest::addColumn<bool>("expectedSign");
+    QTest::addColumn<bool>("expectedCarry");
+
+    // Zero asserts only when BOTH byte halves are zero (F26: AND of the per-half
+    // Zero flags). A high-byte-only zero must NOT raise the 16-bit Zero flag.
+    // (Carry is wired from the high ALU's ADD carry-out, so it is meaningful only
+    // for ADD and reads 0 during SUB.)
+    QTest::newRow("sub_equal_is_zero")  << 0x4242 << 0x4242 << 1 << true  << false << false;
+    QTest::newRow("add_low_only_zero")  << 0x0100 << 0x0000 << 0 << false << false << false;
+    QTest::newRow("add_high_only_zero") << 0x0001 << 0x0000 << 0 << false << false << false;
+
+    // Sign = Result[15] (high half's Negative).
+    QTest::newRow("add_sign_set")  << 0x8000 << 0x0000 << 0 << false << true  << false;
+    QTest::newRow("add_sign_clear") << 0x7FFF << 0x0000 << 0 << false << false << false;
+
+    // Carry = carry-out of bit 15 (high half), proving the low->high carry chain
+    // reaches the top of the word.
+    QTest::newRow("add_carry_out")  << 0xFFFF << 0x0001 << 0 << true  << false << true;
+    QTest::newRow("add_no_carry")   << 0x0001 << 0x0001 << 0 << false << false << false;
+}
+
+void TestLevel7ALU16Bit::testFlags16Bit()
+{
+    QFETCH(int, opA);
+    QFETCH(int, opB);
+    QFETCH(int, aluOp);
+    QFETCH(bool, expectedZero);
+    QFETCH(bool, expectedSign);
+    QFETCH(bool, expectedCarry);
+
+    auto &f = *s_level7Alu16bit;
+
+    for (int i = 0; i < 16; ++i) {
+        f.opAIn[i]->setOn((opA >> i) & 1);
+        f.opBIn[i]->setOn((opB >> i) & 1);
+    }
+    for (int i = 0; i < 3; ++i) {
+        f.opIn[i]->setOn((aluOp >> i) & 1);
+    }
+
+    f.sim->update();
+
+    QCOMPARE(getInputStatus(f.zeroFlag), expectedZero);
+    QCOMPARE(getInputStatus(f.signFlag), expectedSign);
+    QCOMPARE(getInputStatus(f.carryFlag), expectedCarry);
+}
+
+void TestLevel7ALU16Bit::testInputPortIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 16; ++i) {
+        QTest::newRow(QString("input_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel7ALU16Bit::testInputPortIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level7Alu16bit;
+
+    // AND (ALUOp 010): each A bit is gated against B = 0xFFFF, so a one-hot A
+    // must yield a one-hot result at the same position.
+    f.opIn[0]->setOn(false);
+    f.opIn[1]->setOn(true);
+    f.opIn[2]->setOn(false);
+    for (int i = 0; i < 16; ++i) {
+        f.opBIn[i]->setOn(true);
+        f.opAIn[i]->setOn(i == bitPosition);
+    }
+
+    f.sim->update();
+
+    int result = 0;
+    for (int i = 0; i < 16; ++i) {
+        if (getInputStatus(f.resultOut[i])) {
+            result |= (1 << i);
+        }
+    }
+
+    QCOMPARE(result, 1 << bitPosition);
+}
+
+void TestLevel7ALU16Bit::testOutputPortIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 16; ++i) {
+        QTest::newRow(QString("output_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel7ALU16Bit::testOutputPortIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level7Alu16bit;
+
+    // OR (ALUOp 011) with B = 0x0000: a one-hot A drives exactly one result bit,
+    // and every other result bit must stay low (no output cross-wiring).
+    f.opIn[0]->setOn(true);
+    f.opIn[1]->setOn(true);
+    f.opIn[2]->setOn(false);
+    for (int i = 0; i < 16; ++i) {
+        f.opAIn[i]->setOn(i == bitPosition);
+        f.opBIn[i]->setOn(false);
+    }
+
+    f.sim->update();
+
+    for (int i = 0; i < 16; ++i) {
+        QCOMPARE(getInputStatus(f.resultOut[i]), i == bitPosition);
+    }
 }
