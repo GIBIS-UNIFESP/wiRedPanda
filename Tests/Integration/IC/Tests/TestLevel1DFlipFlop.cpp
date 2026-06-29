@@ -99,42 +99,96 @@ void TestLevel1DFlipFlop::testDFlipFlopSequential()
     f.sim->update();
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 after reset pulse
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 after reset pulse
+    QCOMPARE(getInputStatus(f.ledQBar), true);   // Q_bar is the complement
 
     // Step 2: Set D=1 while Clock=0 -> Q should not change yet
     f.dataIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q still 0 (clock low)
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q still 0 (clock low)
+    QCOMPARE(getInputStatus(f.ledQBar), true);
 
     // Step 3: Pulse clock high -> Q should capture D=1
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q=1 after clock rising edge
+    QCOMPARE(getInputStatus(f.ledQ), true);      // Q=1 after clock rising edge
+    QCOMPARE(getInputStatus(f.ledQBar), false);
 
     // Step 4: Set D=0 while Clock=1 -> Q should hold at 1
     f.dataIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q held at 1 (clock still high)
+    QCOMPARE(getInputStatus(f.ledQ), true);      // Q held at 1 (clock still high)
+    QCOMPARE(getInputStatus(f.ledQBar), false);
 
     // Step 5: Clock goes low -> Q should still hold at 1
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q held at 1
+    QCOMPARE(getInputStatus(f.ledQ), true);      // Q held at 1
+    QCOMPARE(getInputStatus(f.ledQBar), false);
 
     // Step 6: D=0 while Clock=0 -> no change yet
     // (already set in step 4)
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);   // Q still 1
+    QCOMPARE(getInputStatus(f.ledQ), true);      // Q still 1
+    QCOMPARE(getInputStatus(f.ledQBar), false);
 
     // Step 7: Clock rises again -> Q captures D=0
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q=0 after clock rising edge
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 after clock rising edge
+    QCOMPARE(getInputStatus(f.ledQBar), true);
 
     // Step 8: Clock low -> Q holds at 0
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);  // Q held at 0
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q held at 0
+    QCOMPARE(getInputStatus(f.ledQBar), true);
+}
+
+// Async Preset/Clear must override a clock edge that would otherwise capture the
+// opposite value (active-LOW controls win over the synchronous data path).
+void TestLevel1DFlipFlop::testPresetClearOverrideClock()
+{
+    auto &f = *s_level1DFlipFlop;
+
+    // Start cleared: Q=0.
+    f.presetIn->setOn(true);
+    f.clearIn->setOn(true);
+    f.dataIn->setOn(false);
+    f.clockIn->setOn(true);
+    f.sim->update();
+    f.clockIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+
+    // D=1 would set Q=1 on the rising edge, but assert Clear=0: Q stays forced 0.
+    f.dataIn->setOn(true);
+    f.clearIn->setOn(false);
+    f.clockIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+    QCOMPARE(getInputStatus(f.ledQBar), true);
+    f.clockIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+
+    // Release Clear, assert Preset=0: Q forced to 1 regardless of D=1/clock.
+    f.clearIn->setOn(true);
+    f.presetIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), true);
+    QCOMPARE(getInputStatus(f.ledQBar), false);
+
+    // Release Preset, D=0: a rising edge now captures D normally (Q=0).
+    // The master samples D while Clock=LOW, so settle the low phase before the edge.
+    f.presetIn->setOn(true);
+    f.dataIn->setOn(false);
+    f.clockIn->setOn(false);
+    f.sim->update();
+    f.clockIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+    QCOMPARE(getInputStatus(f.ledQBar), true);
 }
 
 // Async Preset/Clear must override the data path even while Clock=1 with the
