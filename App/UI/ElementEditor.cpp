@@ -564,7 +564,10 @@ void ElementEditor::apply()
     sentryBreadcrumb("ui", QStringLiteral("Element properties applied"));
     qCDebug(three) << "Apply.";
 
-    if (m_elements.isEmpty() || !isEnabled()) {
+    // m_scene can be null while m_elements still holds the previous tab's
+    // selection (setScene(nullptr) on tab change) — applying would dereference
+    // the null scene below.
+    if (m_elements.isEmpty() || !isEnabled() || !m_scene) {
         return;
     }
 
