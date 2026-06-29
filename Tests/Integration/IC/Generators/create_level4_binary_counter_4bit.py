@@ -7,13 +7,13 @@ Create 4-bit Binary Counter IC
 
 Inputs:
   - CLK (Clock)
-  - CountEnable, Load, Clear (74161-style controls, all active-HIGH)
+  - CountEnable, Load, Reset (74161-style controls, all active-HIGH)
   - Data[0:3] (parallel-load value, captured on the next edge when Load=1)
 Outputs: Q[0:3] (Counter Output, 0-15)
 
-74161-style controls (all active-HIGH; tie CountEnable high, Load/Clear low for a
+74161-style controls (all active-HIGH; tie CountEnable high, Load/Reset low for a
 free-running counter):
-  - Clear=1: asynchronously zeroes the counter
+  - Reset=1: asynchronously zeroes the counter
   - Load=1: synchronously loads Data[0:3] on the next rising edge
   - CountEnable=0: holds the current value (pause); =1 counts
 
@@ -73,15 +73,15 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         # 74161-style control inputs (all active-HIGH):
         #   CountEnable : when low the counter holds its value
         #   Load        : synchronous parallel load of Data[0-3] on the next edge
-        #   Clear       : asynchronous clear to 0
-        # Tie CountEnable high (and Load/Clear low) for a free-running counter.
+        #   Reset       : asynchronous clear to 0
+        # Tie CountEnable high (and Load/Reset low) for a free-running counter.
         ce_id = await self.create_element("InputSwitch", input_x, 60.0, "CountEnable")
         if ce_id is None:
             return False
         load_id = await self.create_element("InputSwitch", input_x, 20.0, "Load")
         if load_id is None:
             return False
-        clear_id = await self.create_element("InputSwitch", input_x, -20.0, "Clear")
+        clear_id = await self.create_element("InputSwitch", input_x, -20.0, "Reset")
         if clear_id is None:
             return False
         data_in_ids = []
@@ -222,9 +222,9 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
                 return False
 
-        # ========== Connect Preset (inactive) and asynchronous Clear ==========
-        # Preset is unused -> tied high (active-LOW inactive). The Clear input is
-        # active-HIGH; invert it so Clear=1 drives the FFs' active-LOW Clear,
+        # ========== Connect Preset (inactive) and asynchronous Reset ==========
+        # Preset is unused -> tied high (active-LOW inactive). The Reset input is
+        # active-HIGH; invert it so Reset=1 drives the FFs' active-LOW Clear,
         # asynchronously zeroing the counter.
         clear_not = await self.create_element("Not", input_x + HORIZONTAL_GATE_SPACING, -20.0, "clear_not")
         if clear_not is None:
@@ -236,7 +236,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
                 return False
 
-            # Clear from NOT(Clear input): Clear input high -> FF Clear low -> zero
+            # FF Clear from NOT(Reset input): Reset high -> FF Clear low -> zero
             if not await self.connect(clear_not, dff_ids[i], target_port_label="Clear"):
                 return False
 

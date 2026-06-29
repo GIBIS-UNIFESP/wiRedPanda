@@ -3,37 +3,55 @@
 // ==================================================================== //
 
 
-// Behavioral module for level1_d_flip_flop (generated from level1_d_flip_flop.panda)
+// Module for SP[0] (generated from level1_d_flip_flop.panda)
 module level1_d_flip_flop (
     input d,
     input clock,
     input preset,
     input clear,
-    output reg q,
-    output reg q_bar
+    output q,
+    output q_bar
 );
-    initial begin
-        q = 1'b1;
-        q_bar = 1'b0;
-    end
-    always @(posedge clock or negedge preset or negedge clear)
-    begin
-        if (~preset)
-        begin
-            q <= 1'b1;
-            q_bar <= 1'b0;
-        end
-        else if (~clear)
-        begin
-            q <= 1'b0;
-            q_bar <= 1'b1;
-        end
-        else
-        begin
-            q <= d;
-            q_bar <= ~d;
-        end
-    end
+
+/* verilator lint_off UNOPTFLAT */ // intentional latch feedback
+wire aux_not_1;
+wire aux_not_2;
+wire aux_not_3;
+wire aux_or_4;
+wire aux_or_5;
+wire aux_or_6;
+wire aux_or_7;
+wire aux_not_8;
+wire aux_and_9;
+wire aux_and_10;
+reg aux_nor_11 = 1'b0;
+reg aux_nor_12 = 1'b0;
+wire aux_and_13;
+wire aux_and_14;
+reg aux_nor_15 = 1'b0;
+reg aux_nor_16 = 1'b0;
+
+// Internal logic
+assign aux_not_1 = ~clock;
+assign aux_not_2 = ~preset;
+assign aux_not_3 = ~clear;
+assign aux_or_4 = (aux_and_14 | aux_not_3);
+assign aux_or_5 = (aux_and_13 | aux_not_2);
+assign aux_or_6 = (aux_and_10 | aux_not_3);
+assign aux_or_7 = (aux_and_9 | aux_not_2);
+assign aux_not_8 = ~d;
+assign aux_and_9 = (d & aux_not_1);
+assign aux_and_10 = (aux_not_8 & aux_not_1);
+always @(*) aux_nor_11 = ~(aux_or_6 | aux_nor_12);
+always @(*) aux_nor_12 = ~(aux_or_7 | aux_nor_11);
+assign aux_and_13 = (aux_nor_11 & clock);
+assign aux_and_14 = (aux_nor_12 & clock);
+always @(*) aux_nor_15 = ~(aux_or_4 | aux_nor_16);
+always @(*) aux_nor_16 = ~(aux_or_5 | aux_nor_15);
+
+assign q = aux_nor_15;
+assign q_bar = aux_nor_16;
+/* verilator lint_on UNOPTFLAT */
 endmodule
 
 // Module for AddrDecoder (generated from level2_decoder_3to8.panda)
