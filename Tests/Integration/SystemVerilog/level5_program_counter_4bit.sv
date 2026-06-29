@@ -115,7 +115,8 @@ endmodule
 // Module for Register4bit (generated from level4_register_4bit.panda)
 module level4_register_4bit (
     input clk,
-    input en,
+    input enable,
+    input reset,
     input d0,
     input d1,
     input d2,
@@ -140,6 +141,7 @@ reg aux_d_flip_flop_4_1_q = 1'b1;
 reg aux_d_flip_flop_5_0_q = 1'b0;
 reg aux_d_flip_flop_5_1_q = 1'b1;
 wire aux_not_6;
+wire aux_not_7;
 
 // Internal logic
 level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
@@ -151,41 +153,74 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     .in11(aux_d_flip_flop_3_0_q),
     .in12(aux_d_flip_flop_4_0_q),
     .in13(aux_d_flip_flop_5_0_q),
-    .sel(aux_not_6),
+    .sel(aux_not_7),
     .out0(w_level4_bus_mux_4bit_inst_1_out0),
     .out1(w_level4_bus_mux_4bit_inst_1_out1),
     .out2(w_level4_bus_mux_4bit_inst_1_out2),
     .out3(w_level4_bus_mux_4bit_inst_1_out3)
 );
     //D FlipFlop
-    always @(posedge clk)
+    always @(posedge clk or negedge aux_not_6)
     begin
+        if (~aux_not_6)
+        begin
+            aux_d_flip_flop_2_0_q <= 1'b0;
+            aux_d_flip_flop_2_1_q <= 1'b1;
+        end
+        else
+        begin
             aux_d_flip_flop_2_0_q <= w_level4_bus_mux_4bit_inst_1_out0;
             aux_d_flip_flop_2_1_q <= ~w_level4_bus_mux_4bit_inst_1_out0;
+        end
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk)
+    always @(posedge clk or negedge aux_not_6)
     begin
+        if (~aux_not_6)
+        begin
+            aux_d_flip_flop_3_0_q <= 1'b0;
+            aux_d_flip_flop_3_1_q <= 1'b1;
+        end
+        else
+        begin
             aux_d_flip_flop_3_0_q <= w_level4_bus_mux_4bit_inst_1_out1;
             aux_d_flip_flop_3_1_q <= ~w_level4_bus_mux_4bit_inst_1_out1;
+        end
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk)
+    always @(posedge clk or negedge aux_not_6)
     begin
+        if (~aux_not_6)
+        begin
+            aux_d_flip_flop_4_0_q <= 1'b0;
+            aux_d_flip_flop_4_1_q <= 1'b1;
+        end
+        else
+        begin
             aux_d_flip_flop_4_0_q <= w_level4_bus_mux_4bit_inst_1_out2;
             aux_d_flip_flop_4_1_q <= ~w_level4_bus_mux_4bit_inst_1_out2;
+        end
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk)
+    always @(posedge clk or negedge aux_not_6)
     begin
+        if (~aux_not_6)
+        begin
+            aux_d_flip_flop_5_0_q <= 1'b0;
+            aux_d_flip_flop_5_1_q <= 1'b1;
+        end
+        else
+        begin
             aux_d_flip_flop_5_0_q <= w_level4_bus_mux_4bit_inst_1_out3;
             aux_d_flip_flop_5_1_q <= ~w_level4_bus_mux_4bit_inst_1_out3;
+        end
     end
     //End of D FlipFlop
-assign aux_not_6 = ~en;
+assign aux_not_6 = ~reset;
+assign aux_not_7 = ~enable;
 
 assign q0 = aux_d_flip_flop_2_0_q;
 assign q1 = aux_d_flip_flop_3_0_q;
@@ -292,23 +327,26 @@ wire w_level4_ripple_adder_4bit_inst_2_sum1;
 wire w_level4_ripple_adder_4bit_inst_2_sum2;
 wire w_level4_ripple_adder_4bit_inst_2_carryout;
 wire w_level4_ripple_adder_4bit_inst_2_sum3;
-reg aux_mux_3 = 1'b0;
-reg aux_mux_4 = 1'b0;
+wire aux_not_3;
+wire aux_and_4;
 reg aux_mux_5 = 1'b0;
 reg aux_mux_6 = 1'b0;
 reg aux_mux_7 = 1'b0;
 reg aux_mux_8 = 1'b0;
 reg aux_mux_9 = 1'b0;
 reg aux_mux_10 = 1'b0;
+reg aux_mux_11 = 1'b0;
+reg aux_mux_12 = 1'b0;
 
 // Internal logic
 level4_register_4bit level4_register_4bit_inst_1 (
     .clk(clock),
-    .en(1'b1),
-    .d0(aux_mux_4),
-    .d1(aux_mux_6),
-    .d2(aux_mux_8),
-    .d3(aux_mux_10),
+    .enable(1'b1),
+    .reset(reset),
+    .d0(aux_mux_6),
+    .d1(aux_mux_8),
+    .d2(aux_mux_10),
+    .d3(aux_mux_12),
     .q0(w_level4_register_4bit_inst_1_q0),
     .q1(w_level4_register_4bit_inst_1_q1),
     .q2(w_level4_register_4bit_inst_1_q2),
@@ -330,32 +368,14 @@ level4_ripple_adder_4bit level4_ripple_adder_4bit_inst_2 (
     .carryout(w_level4_ripple_adder_4bit_inst_2_carryout),
     .sum3(w_level4_ripple_adder_4bit_inst_2_sum3)
 );
+assign aux_not_3 = ~load;
+assign aux_and_4 = (inc & aux_not_3);
     //Multiplexer
     always @(*)
     begin
-        case({load})
-            1'd0: aux_mux_3 = w_level4_register_4bit_inst_1_q0;
-            1'd1: aux_mux_3 = loadvalue0;
-            default: aux_mux_3 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({inc})
-            1'd0: aux_mux_4 = aux_mux_3;
-            1'd1: aux_mux_4 = w_level4_ripple_adder_4bit_inst_2_sum0;
-            default: aux_mux_4 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({load})
-            1'd0: aux_mux_5 = w_level4_register_4bit_inst_1_q1;
-            1'd1: aux_mux_5 = loadvalue1;
+        case({aux_and_4})
+            1'd0: aux_mux_5 = w_level4_register_4bit_inst_1_q0;
+            1'd1: aux_mux_5 = w_level4_ripple_adder_4bit_inst_2_sum0;
             default: aux_mux_5 = 1'b0;
         endcase
     end
@@ -363,9 +383,9 @@ level4_ripple_adder_4bit level4_ripple_adder_4bit_inst_2 (
     //Multiplexer
     always @(*)
     begin
-        case({inc})
+        case({load})
             1'd0: aux_mux_6 = aux_mux_5;
-            1'd1: aux_mux_6 = w_level4_ripple_adder_4bit_inst_2_sum1;
+            1'd1: aux_mux_6 = loadvalue0;
             default: aux_mux_6 = 1'b0;
         endcase
     end
@@ -373,9 +393,9 @@ level4_ripple_adder_4bit level4_ripple_adder_4bit_inst_2 (
     //Multiplexer
     always @(*)
     begin
-        case({load})
-            1'd0: aux_mux_7 = w_level4_register_4bit_inst_1_q2;
-            1'd1: aux_mux_7 = loadvalue2;
+        case({aux_and_4})
+            1'd0: aux_mux_7 = w_level4_register_4bit_inst_1_q1;
+            1'd1: aux_mux_7 = w_level4_ripple_adder_4bit_inst_2_sum1;
             default: aux_mux_7 = 1'b0;
         endcase
     end
@@ -383,9 +403,9 @@ level4_ripple_adder_4bit level4_ripple_adder_4bit_inst_2 (
     //Multiplexer
     always @(*)
     begin
-        case({inc})
+        case({load})
             1'd0: aux_mux_8 = aux_mux_7;
-            1'd1: aux_mux_8 = w_level4_ripple_adder_4bit_inst_2_sum2;
+            1'd1: aux_mux_8 = loadvalue1;
             default: aux_mux_8 = 1'b0;
         endcase
     end
@@ -393,9 +413,9 @@ level4_ripple_adder_4bit level4_ripple_adder_4bit_inst_2 (
     //Multiplexer
     always @(*)
     begin
-        case({load})
-            1'd0: aux_mux_9 = w_level4_register_4bit_inst_1_q3;
-            1'd1: aux_mux_9 = loadvalue3;
+        case({aux_and_4})
+            1'd0: aux_mux_9 = w_level4_register_4bit_inst_1_q2;
+            1'd1: aux_mux_9 = w_level4_ripple_adder_4bit_inst_2_sum2;
             default: aux_mux_9 = 1'b0;
         endcase
     end
@@ -403,10 +423,30 @@ level4_ripple_adder_4bit level4_ripple_adder_4bit_inst_2 (
     //Multiplexer
     always @(*)
     begin
-        case({inc})
+        case({load})
             1'd0: aux_mux_10 = aux_mux_9;
-            1'd1: aux_mux_10 = w_level4_ripple_adder_4bit_inst_2_sum3;
+            1'd1: aux_mux_10 = loadvalue2;
             default: aux_mux_10 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({aux_and_4})
+            1'd0: aux_mux_11 = w_level4_register_4bit_inst_1_q3;
+            1'd1: aux_mux_11 = w_level4_ripple_adder_4bit_inst_2_sum3;
+            default: aux_mux_11 = 1'b0;
+        endcase
+    end
+    //End of Multiplexer
+    //Multiplexer
+    always @(*)
+    begin
+        case({load})
+            1'd0: aux_mux_12 = aux_mux_11;
+            1'd1: aux_mux_12 = loadvalue3;
+            default: aux_mux_12 = 1'b0;
         endcase
     end
     //End of Multiplexer

@@ -18,4 +18,6 @@ private slots:
     void testProgramCounter4Bit();
 
     void testProgramCounter4BitStructure();
+    void testProgramCounter4BitReset();
+    void testProgramCounter4BitLoadBeatsInc();
 };
