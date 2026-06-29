@@ -2689,6 +2689,18 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
 {
     requireLinuxForArduinoTools();
 
+    // Unlike the export tests above (which only compare goldens), this test
+    // compiles and runs an actual Arduino sketch under simavr, so it needs
+    // arduino-cli + simavr. They are present in the dev container but not on the
+    // stock CI runners — skip gracefully there instead of hard-failing, matching
+    // testSimavrFunctionalSimulation().
+    if (QStandardPaths::findExecutable("arduino-cli").isEmpty()) {
+        QSKIP("arduino-cli not found — skipping multi-cycle CPU testbench validation");
+    }
+    if (QStandardPaths::findExecutable("simavr").isEmpty()) {
+        QSKIP("simavr not found — skipping multi-cycle CPU testbench validation");
+    }
+
     std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
     QVERIFY(workspace != nullptr);
     auto *scene = workspace->scene();
