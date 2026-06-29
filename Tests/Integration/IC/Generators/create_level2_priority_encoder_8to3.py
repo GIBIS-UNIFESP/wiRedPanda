@@ -103,8 +103,9 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         # Create remaining OR gates with increasing input counts
         # or_chain[5] = 3-input OR(data[7], data[6], data[5])
         # or_chain[4] = 4-input OR(data[7], data[6], data[5], data[4])
-        # ... etc
-        for i in range(5, -1, -1):
+        # ... down to OR(data[7..1]), which feeds inhibit0. An OR of all
+        # eight bits is never needed (F58: it used to be built and left dead).
+        for i in range(5, 0, -1):
             num_inputs = 8 - i  # Number of data inputs to OR together
 
             or_gate = await self.create_element("Or", or_chain_x + (7 - i) * 15.0, or_chain_y, f"or_{7}_to_{i}")
@@ -191,11 +192,10 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         addr2_gate = await self.create_element("Or", addr_or_x, output_base_y, "addr2")
         if addr2_gate is None:
             return False
-        for idx, sel_src in enumerate([sel4, sel5]):
-            if idx >= 2:
-                break  # OR gate has only 2 inputs
-            if not await self.connect(sel_src, addr2_gate, target_port=idx):
-                return False
+        if not await self.connect(sel4, addr2_gate):
+            return False
+        if not await self.connect(sel5, addr2_gate, target_port=1):
+            return False
 
         # Need more OR gates for addr[2] = selected[4] OR selected[5] OR selected[6] OR selected[7]
         or_addr2_56 = await self.create_element(
