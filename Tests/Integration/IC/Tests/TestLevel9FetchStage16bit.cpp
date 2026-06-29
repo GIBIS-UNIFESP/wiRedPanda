@@ -26,8 +26,12 @@ struct FetchStage16bitFixture {
     InputSwitch *pcInc = nullptr;
     InputSwitch *instrLoad = nullptr;
     InputSwitch *pcDataIn[8] = {};
+    InputSwitch *progAddr[8] = {};
+    InputSwitch *progData[16] = {};
+    InputSwitch *progWrite = nullptr;
     Led *pc[8] = {};
     Led *instruction[16] = {};
+    Led *rawInstr[16] = {};
     Led *opCode[5] = {};
     Led *destReg[5] = {};
     Led *srcBits[6] = {};
@@ -50,11 +54,16 @@ struct FetchStage16bitFixture {
         for (int i = 0; i < 8; ++i) {
             pcDataIn[i] = new InputSwitch();
             pc[i] = new Led();
-            builder.add(pcDataIn[i], pc[i]);
+            progAddr[i] = new InputSwitch();
+            builder.add(pcDataIn[i], pc[i], progAddr[i]);
         }
+        progWrite = new InputSwitch();
+        builder.add(progWrite);
         for (int i = 0; i < 16; ++i) {
             instruction[i] = new Led();
-            builder.add(instruction[i]);
+            rawInstr[i] = new Led();
+            progData[i] = new InputSwitch();
+            builder.add(instruction[i], rawInstr[i], progData[i]);
         }
         for (int i = 0; i < 5; ++i) {
             opCode[i] = new Led();
@@ -75,9 +84,13 @@ struct FetchStage16bitFixture {
         for (int i = 0; i < 8; ++i) {
             builder.connect(pcDataIn[i], 0, ic, QString("PCData[%1]").arg(i));
             builder.connect(ic, QString("PC[%1]").arg(i), pc[i], 0);
+            builder.connect(progAddr[i], 0, ic, QString("ProgAddr[%1]").arg(i));
         }
+        builder.connect(progWrite, 0, ic, "ProgWrite");
         for (int i = 0; i < 16; ++i) {
             builder.connect(ic, QString("Instruction[%1]").arg(i), instruction[i], 0);
+            builder.connect(ic, QString("RawInstr[%1]").arg(i), rawInstr[i], 0);
+            builder.connect(progData[i], 0, ic, QString("ProgData[%1]").arg(i));
         }
         for (int i = 0; i < 5; ++i) {
             builder.connect(ic, QString("OpCode[%1]").arg(i), opCode[i], 0);
@@ -128,6 +141,32 @@ struct FetchStage16bitFixture {
         return readMultiBitOutput(QVector<GraphicElement *>({
             srcBits[0], srcBits[1], srcBits[2], srcBits[3], srcBits[4], srcBits[5]
         }));
+    }
+
+    int readRawInstr()
+    {
+        return readMultiBitOutput(QVector<GraphicElement *>({
+            rawInstr[0], rawInstr[1], rawInstr[2], rawInstr[3],
+            rawInstr[4], rawInstr[5], rawInstr[6], rawInstr[7],
+            rawInstr[8], rawInstr[9], rawInstr[10], rawInstr[11],
+            rawInstr[12], rawInstr[13], rawInstr[14], rawInstr[15]
+        }));
+    }
+
+    // Write a 16-bit word into instruction memory at the given address
+    void programWord(int address, int word)
+    {
+        for (int i = 0; i < 8; ++i) {
+            progAddr[i]->setOn((address >> i) & 1);
+        }
+        for (int i = 0; i < 16; ++i) {
+            progData[i]->setOn((word >> i) & 1);
+        }
+        progWrite->setOn(true);
+        sim->update();
+        clockCycle(sim, clk);
+        progWrite->setOn(false);
+        sim->update();
     }
 
     void resetCpu()
@@ -237,25 +276,92 @@ void TestLevel9FetchStage16Bit::testPCLoadValue()
     QCOMPARE(f.readPC(), TARGET_PC);
 }
 
+// Program a known word and verify the fetched fields are decoded LSB-first
+// (F53: the fields used to be emitted MSB-first, and with no programming
+// interface the memory was always blank, so the old field assertions only
+// ever compared 0 == 0).
 void TestLevel9FetchStage16Bit::testInstructionFieldsDecoded()
 {
     auto &f = *s_level9FetchStage16bit;
 
     f.resetCpu();
 
-    f.pcInc->setOn(true);
+    // OpCode=0b10101 (0x15), DestReg=0b01010 (0x0A), SrcBits=0b101010 (0x2A)
+    constexpr int WORD = (0x15 << 11) | (0x0A << 6) | 0x2A;  // 0xAAAA
+    f.programWord(0x00, WORD);
+
+    // PC=0 after reset; the unregistered word is visible immediately
+    QCOMPARE(f.readRawInstr(), WORD);
+
+    // Load the instruction register
+    f.instrLoad->setOn(true);
     f.sim->update();
     clockCycle(f.sim, f.clk);
+    f.instrLoad->setOn(false);
+    f.sim->update();
 
-    int instrWord = f.readInstr();
-    int opCodeVal = f.readOpCode();
-    int destRegVal = f.readDestReg();
+    QCOMPARE(f.readInstr(), WORD);
+    QCOMPARE(f.readOpCode(), 0x15);
+    QCOMPARE(f.readDestReg(), 0x0A);
+    QCOMPARE(f.readSrcBits(), 0x2A);
 
-    int expectedOpCode = (instrWord >> 11) & 0x1F;
-    QCOMPARE(opCodeVal, expectedOpCode);
+    // A byte-ASYMMETRIC word catches a low/high byte-lane swap between the two
+    // instruction_memory_interface lanes — 0xAAAA above is byte-symmetric, so a
+    // swap would be invisible. 0x1234 = low byte 0x34, high byte 0x12 ->
+    // OpCode 0x02, DestReg 0x08, SrcBits 0x34.
+    constexpr int WORD2 = 0x1234;
+    f.programWord(0x00, WORD2);
+    QCOMPARE(f.readRawInstr(), WORD2);
 
-    int expectedDestReg = (instrWord >> 6) & 0x1F;
-    QCOMPARE(destRegVal, expectedDestReg);
+    f.instrLoad->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.instrLoad->setOn(false);
+    f.sim->update();
+
+    QCOMPARE(f.readInstr(), WORD2);
+    QCOMPARE(f.readOpCode(), 0x02);
+    QCOMPARE(f.readDestReg(), 0x08);
+    QCOMPARE(f.readSrcBits(), 0x34);
+}
+
+// The instruction register holds its word while InstrLoad=0 and loads the
+// fetched word on the next rising edge when InstrLoad=1 (F53: InstrLoad
+// used to be a dead input — there was no IR at all).
+void TestLevel9FetchStage16Bit::testInstructionRegisterHold()
+{
+    auto &f = *s_level9FetchStage16bit;
+
+    f.resetCpu();
+
+    constexpr int WORD_A = 0xAAAA;
+    constexpr int WORD_B = (0x0A << 11) | (0x15 << 6) | 0x15;  // 0x5555
+
+    // Load WORD_A through the IR
+    f.programWord(0x00, WORD_A);
+    f.instrLoad->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.instrLoad->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readInstr(), WORD_A);
+
+    // Overwrite memory at the same address: RawInstr follows, the IR holds
+    f.programWord(0x00, WORD_B);
+    QCOMPARE(f.readRawInstr(), WORD_B);
+    QCOMPARE(f.readInstr(), WORD_A);
+
+    // A clock edge with InstrLoad still low: the IR keeps holding
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(f.readInstr(), WORD_A);
+
+    // Raise InstrLoad: the next edge loads the new word
+    f.instrLoad->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.instrLoad->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readInstr(), WORD_B);
 }
 
 void TestLevel9FetchStage16Bit::testSrcBitsMatchInstruction()
@@ -264,6 +370,12 @@ void TestLevel9FetchStage16Bit::testSrcBitsMatchInstruction()
 
     f.resetCpu();
 
+    // Program distinct SrcBits patterns at addresses 0..4 and walk the PC
+    for (int addr = 0; addr < 5; ++addr) {
+        f.programWord(addr, ((addr + 1) << 11) | (addr << 6) | (0x3F - addr));
+    }
+
+    f.instrLoad->setOn(true);
     f.pcInc->setOn(true);
     f.sim->update();
 

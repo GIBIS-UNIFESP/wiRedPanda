@@ -19,6 +19,7 @@ private slots:
     void testPCIncrement();
     void testPCLoadValue();
     void testInstructionFieldsDecoded();
+    void testInstructionRegisterHold();
     void testSrcBitsMatchInstruction();
     void testResetClearsPC();
     void testPCWrapAround();
