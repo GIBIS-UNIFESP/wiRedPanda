@@ -10,7 +10,6 @@
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::getInputStatus;
-using TestUtils::getOutputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Decoder4to16Fixture {
