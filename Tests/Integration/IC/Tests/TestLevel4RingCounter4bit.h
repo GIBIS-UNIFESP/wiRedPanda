@@ -16,4 +16,6 @@ private slots:
 
     void testRingCounter_data();
     void testRingCounter();
+    void testCountEnableHold();
+    void testParallelLoad();
 };
