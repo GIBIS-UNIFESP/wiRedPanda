@@ -15,6 +15,7 @@ private slots:
 
     // Functional Tests
     void testInstructionRegister8Bit();
+    void testHold();
 
     // Structure Tests
     void testInstructionRegister8BitStructure();
