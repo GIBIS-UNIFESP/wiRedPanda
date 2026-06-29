@@ -53,7 +53,7 @@ void TestArduinoCodeGenUnit::testAndGateCircuit()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("void setup()"));
@@ -85,7 +85,7 @@ void TestArduinoCodeGenUnit::testMultiGateCircuit()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("void setup()"));
@@ -116,7 +116,7 @@ void TestArduinoCodeGenUnit::testMuxCircuit()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("void setup()"));
@@ -146,7 +146,7 @@ void TestArduinoCodeGenUnit::testDemuxCircuit()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("void setup()"));
@@ -163,7 +163,7 @@ void TestArduinoCodeGenUnit::testEmptyScene()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("void setup()"));
@@ -202,7 +202,7 @@ void TestArduinoCodeGenUnit::testTruthTableMultiOutput()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     const QString content = file.readAll();
 
     // Two emitted chains; rows 1 and 2 are HIGH only for the OR output,
