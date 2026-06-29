@@ -75,6 +75,12 @@ public:
     static QString updateCheckSkippedVersion();
     static void setUpdateCheckSkippedVersion(const QString &version);
 
+    // Minimap preferences
+    static bool minimapVisible();
+    static void setMinimapVisible(bool visible);
+    static QString minimapCorner();
+    static void setMinimapCorner(const QString &corner);
+
 private:
     static QVariant value(const QString &key);
     static void setValue(const QString &key, const QVariant &value);

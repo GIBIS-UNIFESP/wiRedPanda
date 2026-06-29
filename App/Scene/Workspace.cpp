@@ -45,6 +45,8 @@ bool isReadOnlyFailure(QFileDevice::FileError error)
 #include "App/UI/FileDialogProvider.h"
 #include "App/Versions.h"
 
+#include "App/UI/MinimapWidget.h"
+
 WorkSpace::WorkSpace(QWidget *parent)
     : QWidget(parent)
 {
@@ -55,6 +57,13 @@ WorkSpace::WorkSpace(QWidget *parent)
     m_scene.setSceneRect(m_view.rect());
     setLayout(new QHBoxLayout());
     layout()->addWidget(&m_view);
+
+    // Minimap overview: small widget overlayed on the workspace so it remains
+    // static even when the view's zoom changes. Positioning is computed
+    // relative to the view geometry in resizeEvent().
+    m_minimap = new MinimapWidget(&m_scene, &m_view, this);
+    m_minimap->setObjectName("minimap");
+    m_minimap->raise();
 
     // Adjust the scene rect after every zoom so that all items remain reachable
     // via panning, even when zoomed in very close
@@ -101,6 +110,67 @@ WorkSpace::~WorkSpace()
         QFile::remove(m_autosaveFileName);
         m_autosaveFileName.clear();
     }
+}
+
+void WorkSpace::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+
+    if (!m_minimap)
+        return;
+
+    // Position minimap according to user preference (corner) with a small margin.
+    const int margin = 12;
+    const QRect viewGeom = m_view.geometry();
+    const QString corner = Settings::minimapCorner();
+    int x = viewGeom.right() - m_minimap->width() - margin;
+    int y = viewGeom.bottom() - m_minimap->height() - margin;
+
+    if (corner == QLatin1String("bottom-left")) {
+        x = viewGeom.left() + margin;
+        y = viewGeom.bottom() - m_minimap->height() - margin;
+    } else if (corner == QLatin1String("top-left")) {
+        x = viewGeom.left() + margin;
+        y = viewGeom.top() + margin;
+    } else if (corner == QLatin1String("top-right")) {
+        x = viewGeom.right() - m_minimap->width() - margin;
+        y = viewGeom.top() + margin;
+    } else {
+        // default bottom-right
+        x = viewGeom.right() - m_minimap->width() - margin;
+        y = viewGeom.bottom() - m_minimap->height() - margin;
+    }
+
+    m_minimap->move(qMax(x, margin), qMax(y, margin));
+}
+
+void WorkSpace::setMinimapVisible(bool visible)
+{
+    if (!m_minimap) return;
+    m_minimap->setVisible(visible);
+}
+
+void WorkSpace::setMinimapCorner(const QString &corner)
+{
+    Settings::setMinimapCorner(corner);
+    // reposition immediately
+    if (!m_minimap) return;
+    const int margin = 12;
+    const QRect viewGeom = m_view.geometry();
+    int x = viewGeom.right() - m_minimap->width() - margin;
+    int y = viewGeom.bottom() - m_minimap->height() - margin;
+
+    if (corner == QLatin1String("bottom-left")) {
+        x = viewGeom.left() + margin;
+        y = viewGeom.bottom() - m_minimap->height() - margin;
+    } else if (corner == QLatin1String("top-left")) {
+        x = viewGeom.left() + margin;
+        y = viewGeom.top() + margin;
+    } else if (corner == QLatin1String("top-right")) {
+        x = viewGeom.right() - m_minimap->width() - margin;
+        y = viewGeom.top() + margin;
+    }
+    m_minimap->move(qMax(x, margin), qMax(y, margin));
 }
 
 Scene *WorkSpace::scene()

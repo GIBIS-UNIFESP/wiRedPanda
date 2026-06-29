@@ -88,6 +88,10 @@ public:
     /// Removes all IC instances with the given blob name.
     void removeEmbeddedIC(const QString &blobName);
 
+    // Minimap control
+    void setMinimapVisible(bool visible);
+    void setMinimapCorner(const QString &corner);
+
     // --- Waveform Integration ---
 
     /// Returns the path of the associated BeWavedDolphin waveform file.
@@ -108,6 +112,9 @@ public:
      * \param newLastId New minimum ID for the next allocated item.
      */
     void setLastId(int newLastId);
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 signals:
     /**
@@ -143,6 +150,9 @@ private:
     QTimer m_autosaveDebounceTimer;
     QVersionNumber m_loadedVersion;
     int m_lastId = 0;
+
+    // Minimap overview widget (small, shows full scene and viewport)
+    class MinimapWidget *m_minimap = nullptr;
 
     // Inline IC tab state
     bool m_isInlineIC = false;

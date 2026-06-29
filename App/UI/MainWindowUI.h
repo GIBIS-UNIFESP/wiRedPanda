@@ -81,6 +81,11 @@ public:
     QAction *actionZoomIn = nullptr;
     QAction *actionZoomOut = nullptr;
     QAction *actionResetZoom = nullptr;
+    QAction *actionShowMinimap = nullptr;
+    QAction *actionMinimapTopLeft = nullptr;
+    QAction *actionMinimapTopRight = nullptr;
+    QAction *actionMinimapBottomLeft = nullptr;
+    QAction *actionMinimapBottomRight = nullptr;
     QAction *actionFullscreen = nullptr;
     QAction *actionFastMode = nullptr;
     QAction *actionGates = nullptr;
@@ -221,6 +226,7 @@ public:
     QMenu *menuEdit = nullptr;
     QMenu *menuView = nullptr;
     QMenu *menuTheme = nullptr;
+    QMenu *menuMinimapPosition = nullptr;
     QMenu *menuLanguage = nullptr;
     QMenu *menuTranslation = nullptr;
     QMenu *menuSimulation = nullptr;
