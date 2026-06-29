@@ -3,25 +3,31 @@
 // ==================================================================== //
 
 
-// Behavioral module for level1_d_latch_ic (generated from level1_d_latch.panda)
+// Module for LEVEL1_D_LATCH (generated from level1_d_latch.panda)
 module level1_d_latch_ic (
     input d,
     input enable,
-    output reg q,
-    output reg q_bar
+    output q,
+    output q_bar
 );
-    initial begin
-        q = 1'b1;
-        q_bar = 1'b0;
-    end
-    always_latch
-    begin
-        if (enable)
-        begin
-            q = d;
-            q_bar = ~d;
-        end
-    end
+
+/* verilator lint_off UNOPTFLAT */ // intentional latch feedback
+wire aux_not_1;
+wire aux_and_2;
+wire aux_and_3;
+reg aux_nor_4 = 1'b0;
+reg aux_nor_5 = 1'b0;
+
+// Internal logic
+assign aux_not_1 = ~d;
+assign aux_and_2 = (d & enable);
+assign aux_and_3 = (aux_not_1 & enable);
+always @(*) aux_nor_4 = ~(aux_and_3 | aux_nor_5);
+always @(*) aux_nor_5 = ~(aux_and_2 | aux_nor_4);
+
+assign q = aux_nor_4;
+assign q_bar = aux_nor_5;
+/* verilator lint_on UNOPTFLAT */
 endmodule
 
 module level1_d_latch (

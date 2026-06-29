@@ -81,7 +81,13 @@ static PortRoles detectPortRoles(IC *ic)
         const QString name = ic->inputPort(i)->name().toLower().trimmed();
         if (name == "clock" || name == "clk") {
             roles.clockIdx = i;
-        } else if (name == "reset" || name == "sp_reset") {
+        } else if (name == "reset" || name == "sp_reset" || name == "init") {
+            // "init" is an active-HIGH seed input (e.g. Johnson/ring counters
+            // load a known non-zero state). Treating it like a reset lets the
+            // harness assert it to establish a defined power-on state, so the
+            // engine and the exported SystemVerilog agree on the first sample
+            // instead of diverging on the master-slave DFF's ambiguous cold
+            // start.
             roles.resetIdx = i;
         } else if (name == "preset") {
             roles.presetIdx = i;

@@ -262,7 +262,6 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
             info.outputNames.append(portName);
         }
 
-        info.detectedType = detectSequentialICType(info);
         m_icModules.insert(key, info);
 
         // Recurse into internal elements to discover nested IC types
@@ -270,38 +269,63 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
     }
 }
 
-// Match IC port signature against known sequential element patterns.
-// Returns the matching ElementType, or Unknown if no match.
-ElementType SystemVerilogCodeGen::detectSequentialICType(const ICModuleInfo &info)
+// Returns the internal gate elements that sit on a combinational feedback loop
+// (cross-coupled NOR/NAND latches). A plain `assign` comb loop x-locks at
+// power-on in SystemVerilog and trips Verilator's UNOPTFLAT; these nodes are
+// instead emitted as `reg` + `always @(*)` with a seed, so the simulator settles
+// them. Detection is a reachability check over the gate graph: an element is on a
+// loop iff it can reach itself following output→input edges.
+QSet<GraphicElement *> SystemVerilogCodeGen::findFeedbackElements(const QVector<GraphicElement *> &elements)
 {
-    const auto &in = info.inputNames;
-    const auto &out = info.outputNames;
+    const QSet<GraphicElement *> elementSet(elements.cbegin(), elements.cend());
 
-    // All 6 sequential ICs have exactly {q, q_bar} outputs
-    if (out.size() != 2 || out[0] != "q" || out[1] != "q_bar") {
-        return ElementType::Unknown;
-    }
+    auto isGate = [](GraphicElement *e) {
+        switch (e->elementType()) {
+        case ElementType::And:  case ElementType::Or:   case ElementType::Nand:
+        case ElementType::Nor:  case ElementType::Xor:  case ElementType::Xnor:
+        case ElementType::Not:  case ElementType::Node:
+            return true;
+        default:
+            return false;
+        }
+    };
 
-    if (in.size() == 2 && in[0] == "s" && in[1] == "r") {
-        return ElementType::SRLatch;
-    }
-    if (in.size() == 2 && in[0] == "d" && in[1] == "enable") {
-        return ElementType::DLatch;
-    }
-    if (in.size() == 4 && in[0] == "d" && in[1] == "clock" && in[2] == "preset" && in[3] == "clear") {
-        return ElementType::DFlipFlop;
-    }
-    if (in.size() == 5 && in[0] == "j" && in[1] == "k" && in[2] == "clock" && in[3] == "preset" && in[4] == "clear") {
-        return ElementType::JKFlipFlop;
-    }
-    if (in.size() == 5 && in[0] == "s" && in[1] == "clock" && in[2] == "r" && in[3] == "preset" && in[4] == "clear") {
-        return ElementType::SRFlipFlop;
-    }
-    if (in.size() == 4 && in[0] == "t" && in[1] == "clock" && in[2] == "preset" && in[3] == "clear") {
-        return ElementType::TFlipFlop;
-    }
+    // Gates driven by elm's outputs (restricted to this IC's internal gates).
+    auto successors = [&](GraphicElement *elm) {
+        QVector<GraphicElement *> succ;
+        for (auto *outPort : elm->outputs()) {
+            const auto conns = outPort->connections();
+            for (auto *conn : conns) {
+                if (!conn) continue;
+                QNEPort *other = conn->otherPort(outPort);
+                if (!other) continue;
+                GraphicElement *h = other->graphicElement();
+                if (h && elementSet.contains(h) && isGate(h)) {
+                    succ.append(h);
+                }
+            }
+        }
+        return succ;
+    };
 
-    return ElementType::Unknown;
+    QSet<GraphicElement *> feedback;
+    for (auto *start : elements) {
+        if (!isGate(start)) continue;
+        // Depth-first: can `start` reach itself?
+        QSet<GraphicElement *> seen;
+        QVector<GraphicElement *> stack = successors(start);
+        while (!stack.isEmpty()) {
+            GraphicElement *n = stack.takeLast();
+            if (n == start) {
+                feedback.insert(start);
+                break;
+            }
+            if (seen.contains(n)) continue;
+            seen.insert(n);
+            stack += successors(n);
+        }
+    }
+    return feedback;
 }
 
 // Generate IC modules in topological order (leaves first).
@@ -364,17 +388,10 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
 
     IC *ic = info.prototypeIC;
 
-    // Try behavioral emission for recognized sequential IC types
-    if (emitBehavioralICModule(info)) {
-        // Restore context
-        m_varMap = savedVarMap;
-        m_instanceNames = savedInstanceNames;
-        m_globalCounter = savedCounter;
-        m_generatingICModule = false;
-        return;
-    }
-
-    // Structural (gate-level) emission — fallback for unrecognized patterns
+    // Structural (gate-level) emission: every IC is translated from its actual
+    // internal gate netlist — there is no behavioral/port-signature shortcut, so
+    // the export can never drift from what the circuit does. Cross-coupled
+    // feedback gates are handled by findFeedbackElements() (reg + always @(*)).
 
     // Emit module header
     const QString source = ic->isEmbedded() ? ic->blobName() : QFileInfo(ic->file()).fileName();
@@ -426,8 +443,16 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
         }
     }
 
+    // Identify cross-coupled feedback gates so they're emitted as settling
+    // `reg` + `always @(*)` instead of x-locking comb-loop `assign`s.
+    m_feedbackElements = findFeedbackElements(internalElements);
+    const bool hasFeedback = !m_feedbackElements.isEmpty();
+
     // Declare internal variables
     m_stream << Qt::endl;
+    if (hasFeedback) {
+        m_stream << "/* verilator lint_off UNOPTFLAT */ // intentional latch feedback" << Qt::endl;
+    }
     declareAuxVariablesRec(internalElements);
     m_stream << Qt::endl;
 
@@ -448,6 +473,11 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
         m_stream << "assign " << info.outputNames[i] << " = " << value << ";" << Qt::endl;
     }
 
+    if (hasFeedback) {
+        m_stream << "/* verilator lint_on UNOPTFLAT */" << Qt::endl;
+    }
+    m_feedbackElements.clear();
+
     m_stream << "endmodule" << Qt::endl;
     m_stream << Qt::endl;
 
@@ -456,216 +486,6 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     m_instanceNames = savedInstanceNames;
     m_globalCounter = savedCounter;
     m_generatingICModule = false;
-}
-
-// Emit a behavioral SystemVerilog module for a recognized sequential IC type.
-// Returns true if behavioral emission was performed, false if not recognized.
-bool SystemVerilogCodeGen::emitBehavioralICModule(ICModuleInfo &info)
-{
-    if (info.detectedType == ElementType::Unknown) {
-        return false;
-    }
-
-    const auto &in = info.inputNames;
-    const auto &out = info.outputNames;
-    const QString &q = out[0];
-    const QString &q_bar = out[1];
-
-    m_stream << "// Behavioral module for " << info.moduleName
-             << " (generated from " << QFileInfo(info.sourceFile).fileName() << ")" << Qt::endl;
-    m_stream << "module " << info.moduleName << " (" << Qt::endl;
-
-    // Emit port list with 'output reg' for behavioral outputs
-    QStringList portDecls;
-    for (const auto &name : in) {
-        portDecls << QString("    input %1").arg(name);
-    }
-    for (const auto &name : out) {
-        portDecls << QString("    output reg %1").arg(name);
-    }
-    m_stream << portDecls.join(",\n") << Qt::endl;
-    m_stream << ");" << Qt::endl;
-
-    // Initialize outputs to match wiRedPanda's gate-level settled state.
-    // The master-slave NOR-gate DFF settles to q=1, q_bar=0 at startup.
-    // Without this, SystemVerilog reg defaults to x, causing x-lock in circuits without reset.
-    m_stream << "    initial begin" << Qt::endl;
-    m_stream << "        " << q << " = 1'b1;" << Qt::endl;
-    m_stream << "        " << q_bar << " = 1'b0;" << Qt::endl;
-    m_stream << "    end" << Qt::endl;
-
-    switch (info.detectedType) {
-
-    case ElementType::SRLatch: {
-        const QString &s = in[0];
-        const QString &r = in[1];
-        m_stream << "    always_latch" << Qt::endl;
-        m_stream << "    begin" << Qt::endl;
-        m_stream << "        if (" << s << " && " << r << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " = 1'b0;" << Qt::endl;
-        m_stream << "            " << q_bar << " = 1'b0;" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "        else if (" << s << " != " << r << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " = " << s << ";" << Qt::endl;
-        m_stream << "            " << q_bar << " = " << r << ";" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "    end" << Qt::endl;
-        break;
-    }
-
-    case ElementType::DLatch: {
-        const QString &d = in[0];
-        const QString &enable = in[1];
-        m_stream << "    always_latch" << Qt::endl;
-        m_stream << "    begin" << Qt::endl;
-        m_stream << "        if (" << enable << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " = " << d << ";" << Qt::endl;
-        m_stream << "            " << q_bar << " = ~" << d << ";" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "    end" << Qt::endl;
-        break;
-    }
-
-    case ElementType::DFlipFlop: {
-        const QString &d = in[0];
-        const QString &clk = in[1];
-        const QString &prst = in[2];
-        const QString &clr = in[3];
-        m_stream << "    always @(posedge " << clk << " or negedge " << prst << " or negedge " << clr << ")" << Qt::endl;
-        m_stream << "    begin" << Qt::endl;
-        m_stream << "        if (~" << prst << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " <= 1'b1;" << Qt::endl;
-        m_stream << "            " << q_bar << " <= 1'b0;" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "        else if (~" << clr << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " <= 1'b0;" << Qt::endl;
-        m_stream << "            " << q_bar << " <= 1'b1;" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "        else" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " <= " << d << ";" << Qt::endl;
-        m_stream << "            " << q_bar << " <= ~" << d << ";" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "    end" << Qt::endl;
-        break;
-    }
-
-    case ElementType::JKFlipFlop: {
-        const QString &j = in[0];
-        const QString &k = in[1];
-        const QString &clk = in[2];
-        const QString &prst = in[3];
-        const QString &clr = in[4];
-        m_stream << "    always @(posedge " << clk << " or negedge " << prst << " or negedge " << clr << ")" << Qt::endl;
-        m_stream << "    begin" << Qt::endl;
-        m_stream << "        if (~" << prst << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " <= 1'b1;" << Qt::endl;
-        m_stream << "            " << q_bar << " <= 1'b0;" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "        else if (~" << clr << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " <= 1'b0;" << Qt::endl;
-        m_stream << "            " << q_bar << " <= 1'b1;" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "        else" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            if (" << j << " && " << k << ")" << Qt::endl;
-        m_stream << "            begin" << Qt::endl;
-        m_stream << "                " << q << " <= " << q_bar << ";" << Qt::endl;
-        m_stream << "                " << q_bar << " <= " << q << ";" << Qt::endl;
-        m_stream << "            end" << Qt::endl;
-        m_stream << "            else if (" << j << " && ~" << k << ")" << Qt::endl;
-        m_stream << "            begin" << Qt::endl;
-        m_stream << "                " << q << " <= 1'b1;" << Qt::endl;
-        m_stream << "                " << q_bar << " <= 1'b0;" << Qt::endl;
-        m_stream << "            end" << Qt::endl;
-        m_stream << "            else if (~" << j << " && " << k << ")" << Qt::endl;
-        m_stream << "            begin" << Qt::endl;
-        m_stream << "                " << q << " <= 1'b0;" << Qt::endl;
-        m_stream << "                " << q_bar << " <= 1'b1;" << Qt::endl;
-        m_stream << "            end" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "    end" << Qt::endl;
-        break;
-    }
-
-    case ElementType::SRFlipFlop: {
-        const QString &s = in[0];
-        const QString &clk = in[1];
-        const QString &r = in[2];
-        const QString &prst = in[3];
-        const QString &clr = in[4];
-        m_stream << "    always @(posedge " << clk << " or negedge " << prst << " or negedge " << clr << ")" << Qt::endl;
-        m_stream << "    begin" << Qt::endl;
-        m_stream << "        if (~" << prst << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " <= 1'b1;" << Qt::endl;
-        m_stream << "            " << q_bar << " <= 1'b0;" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "        else if (~" << clr << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " <= 1'b0;" << Qt::endl;
-        m_stream << "            " << q_bar << " <= 1'b1;" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "        else" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            if (" << s << " && ~" << r << ")" << Qt::endl;
-        m_stream << "            begin" << Qt::endl;
-        m_stream << "                " << q << " <= 1'b1;" << Qt::endl;
-        m_stream << "                " << q_bar << " <= 1'b0;" << Qt::endl;
-        m_stream << "            end" << Qt::endl;
-        m_stream << "            else if (~" << s << " && " << r << ")" << Qt::endl;
-        m_stream << "            begin" << Qt::endl;
-        m_stream << "                " << q << " <= 1'b0;" << Qt::endl;
-        m_stream << "                " << q_bar << " <= 1'b1;" << Qt::endl;
-        m_stream << "            end" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "    end" << Qt::endl;
-        break;
-    }
-
-    case ElementType::TFlipFlop: {
-        const QString &t = in[0];
-        const QString &clk = in[1];
-        const QString &prst = in[2];
-        const QString &clr = in[3];
-        m_stream << "    always @(posedge " << clk << " or negedge " << prst << " or negedge " << clr << ")" << Qt::endl;
-        m_stream << "    begin" << Qt::endl;
-        m_stream << "        if (~" << prst << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " <= 1'b1;" << Qt::endl;
-        m_stream << "            " << q_bar << " <= 1'b0;" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "        else if (~" << clr << ")" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            " << q << " <= 1'b0;" << Qt::endl;
-        m_stream << "            " << q_bar << " <= 1'b1;" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "        else" << Qt::endl;
-        m_stream << "        begin" << Qt::endl;
-        m_stream << "            if (" << t << ")" << Qt::endl;
-        m_stream << "            begin" << Qt::endl;
-        m_stream << "                " << q << " <= " << q_bar << ";" << Qt::endl;
-        m_stream << "                " << q_bar << " <= " << q << ";" << Qt::endl;
-        m_stream << "            end" << Qt::endl;
-        m_stream << "        end" << Qt::endl;
-        m_stream << "    end" << Qt::endl;
-        break;
-    }
-
-    default:
-        return false;
-    }
-
-    m_stream << "endmodule" << Qt::endl;
-    m_stream << Qt::endl;
-    return true;
 }
 
 void SystemVerilogCodeGen::generate()
@@ -950,7 +770,14 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                 }
 
                 default:
-                    m_stream << "wire " << varName2 << ";" << Qt::endl;
+                    if (m_feedbackElements.contains(elm)) {
+                        // Cross-coupled feedback node: a `reg` driven by
+                        // `always @(*)` (below), seeded so it settles from a
+                        // defined power-on state instead of x-locking.
+                        m_stream << "reg " << varName2 << " = " << highLow(port->status()) << ";" << Qt::endl;
+                    } else {
+                        m_stream << "wire " << varName2 << ";" << Qt::endl;
+                    }
                     break;
                 }
             }
@@ -1093,8 +920,16 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
             for (auto *port : elm->outputs()) {
                 QString existingVar = m_varMap.value(port);
                 if (!existingVar.isEmpty() && m_generatingICModule) {
-                    // IC module internal: wire was declared, emit assign statement
-                    m_stream << "assign " << existingVar << " = " << expr << ";" << Qt::endl;
+                    const bool isFeedback = m_feedbackElements.contains(elm);
+                    if (isFeedback) {
+                        // Cross-coupled feedback node: drive the seeded `reg`
+                        // combinationally so the loop settles (vs. a comb-loop
+                        // `assign` that x-locks / trips Verilator UNOPTFLAT).
+                        m_stream << "always @(*) " << existingVar << " = " << expr << ";" << Qt::endl;
+                    } else {
+                        // IC module internal: wire was declared, emit assign statement
+                        m_stream << "assign " << existingVar << " = " << expr << ";" << Qt::endl;
+                    }
                 } else {
                     // Top-level: inline the expression
                     m_varMap[port] = expr;
