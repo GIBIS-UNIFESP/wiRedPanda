@@ -7,18 +7,20 @@ Create 4-bit Register IC
 
 Implements a parallel load register with enable control using proper IC composition.
 
-Inputs: CLK (Clock), EN (Enable), D[0:3] (Data Input)
+Inputs: CLK (Clock), EN (Enable), Reset (async clear, active HIGH), D[0:3] (Data Input)
 Outputs: Q[0:3] (Data Output)
 
 Circuit Architecture:
 - 1× level4_bus_mux_4bit IC: Selects between load (D) and hold (Q_feedback) paths
 - 4× DFlipFlop elements: State storage
 - Clock input: Shared by all flip-flops
+- Reset input: inverted into the flip-flops' ~Clear (async, the
+  level3_register_1bit pattern — F52)
 
 Register Behavior:
+- When Reset=1: Q forced to 0 asynchronously (overrides load)
 - When EN=1: D inputs loaded into register on clock rising edge
 - When EN=0: Current register value held (data inputs ignored)
-- No reset/clear control for simplicity
 
 Internal Structure:
 - Load path: D[0-3] connected to Mux In0[0-3]
@@ -57,10 +59,15 @@ class RegisterBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created input CLK (id={clk_id})")
 
-        en_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "EN")
+        en_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "Enable")
         if en_id is None:
             return False
         await self.log(f"  ✓ Created input EN (id={en_id})")
+
+        reset_id = await self.create_element("InputSwitch", input_x, 100.0 + (1.5 * VERTICAL_STAGE_SPACING), "Reset")
+        if reset_id is None:
+            return False
+        await self.log(f"  ✓ Created input Reset (id={reset_id})")
 
         # Create data inputs (4-bit)
         data_in_ids = []
@@ -73,9 +80,6 @@ class RegisterBuilder(ICBuilderBase):
 
         # Instantiate 4-bit Bus Multiplexer IC (replaces manual AND/OR gates)
         mux_x = input_x + HORIZONTAL_GATE_SPACING
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")):
-            return False
-
         mux_ic_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), mux_x, 100.0 + VERTICAL_STAGE_SPACING, "BusMux_LoadHold"
         )
@@ -113,6 +117,22 @@ class RegisterBuilder(ICBuilderBase):
         for i in range(4):
             if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
                 return False
+
+        # ========== Async reset: Reset (active HIGH) -> NOT -> ~Clear ==========
+        # The level3_register_1bit pattern (F52).
+        not_reset_id = await self.create_element(
+            "Not", input_x + (1.5 * HORIZONTAL_GATE_SPACING), 100.0 + (1.5 * VERTICAL_STAGE_SPACING), "NOT_Reset"
+        )
+        if not_reset_id is None:
+            return False
+
+        if not await self.connect(reset_id, not_reset_id):
+            return False
+
+        for i in range(4):
+            if not await self.connect(not_reset_id, dff_ids[i], target_port_label="~Clear"):
+                return False
+        await self.log("  ✓ Connected async Reset to all flip-flops' ~Clear")
 
         # ========== Connect mux output to flip-flop D inputs ==========
         for i in range(4):
@@ -157,7 +177,7 @@ class RegisterBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 4-bit Register IC"
+            f"✅ Successfully created 4-bit Register IC "
             f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")

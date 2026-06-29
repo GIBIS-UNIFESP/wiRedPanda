@@ -16,4 +16,5 @@ private slots:
 
     void test4BitRegister_data();
     void test4BitRegister();
+    void test4BitRegisterReset();
 };

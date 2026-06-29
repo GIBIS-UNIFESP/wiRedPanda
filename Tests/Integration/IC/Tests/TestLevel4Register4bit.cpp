@@ -20,7 +20,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Register4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr, *en = nullptr;
+    InputSwitch *clk = nullptr, *en = nullptr, *reset = nullptr;
     InputSwitch *dataIn[4] = {};
     Led *dataOut[4] = {};
     Simulation *sim = nullptr;
@@ -32,13 +32,15 @@ struct Register4bitFixture {
 
         clk = new InputSwitch();
         en = new InputSwitch();
-        builder.add(clk, en);
+        reset = new InputSwitch();
+        builder.add(clk, en, reset);
 
         ic = loadBuildingBlockIC("level4_register_4bit.panda");
         builder.add(ic);
 
         builder.connect(clk, 0, ic, "CLK");
-        builder.connect(en, 0, ic, "EN");
+        builder.connect(en, 0, ic, "Enable");
+        builder.connect(reset, 0, ic, "Reset");
 
         for (int i = 0; i < 4; ++i) {
             dataIn[i] = new InputSwitch();
@@ -133,4 +135,50 @@ void TestLevel4Register4Bit::test4BitRegister()
     }));
 
     QCOMPARE(result, expectedAfterLoad);
+}
+
+// Reset (active HIGH) clears the register asynchronously and overrides a
+// pending load (F52: the register previously had no reset at all).
+void TestLevel4Register4Bit::test4BitRegisterReset()
+{
+    auto &f = *s_level4Register4bit;
+
+    auto readQ = [&f] {
+        return readMultiBitOutput(QVector<GraphicElement *>({
+            f.dataOut[0], f.dataOut[1], f.dataOut[2], f.dataOut[3]
+        }));
+    };
+
+    // Load 0xB
+    f.clk->setOn(false);
+    f.en->setOn(true);
+    f.reset->setOn(false);
+    for (int i = 0; i < 4; ++i) {
+        f.dataIn[i]->setOn((0xB >> i) & 1);
+    }
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readQ(), 0xB);
+
+    // Assert Reset: clears without a clock edge (async ~Clear path)
+    f.reset->setOn(true);
+    f.sim->update();
+    QCOMPARE(readQ(), 0x0);
+
+    // Reset dominates a simultaneous load attempt
+    for (int i = 0; i < 4; ++i) {
+        f.dataIn[i]->setOn(true);
+    }
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readQ(), 0x0);
+
+    // Release Reset: value stays 0, loading works again
+    f.reset->setOn(false);
+    f.sim->update();
+    QCOMPARE(readQ(), 0x0);
+
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readQ(), 0xF);
 }

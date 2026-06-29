@@ -8,10 +8,10 @@ Create 4-bit Program Counter IC
 Composes level4_register_4bit and level4_ripple_adder_4bit for PC functionality.
 
 Inputs:
-  loadValue[0..3] (4-bit load value)
+  LoadValue[0..3] (4-bit load value)
   load (Load enable signal)
   inc (Increment enable signal)
-  reset (Reset to 0)
+  reset (Reset to 0, asynchronous, active HIGH)
   clock (Clock signal)
 
 Outputs:
@@ -19,9 +19,11 @@ Outputs:
   pc_plus_1[0..3] (Next PC = current PC + 1)
 
 Architecture:
-  - Instantiate level4_register_4bit: 4-bit register with reset
+  - Instantiate level4_register_4bit: 4-bit register with async reset
   - Instantiate level4_ripple_adder_4bit: 4-bit PC + 1 logic
-  - Add mux layer for load/increment control with priority
+  - Mux layer mirrors the 8-bit PC: Mux1 sel = inc AND NOT(load) (Sum vs
+    hold), Mux2 sel = load (loadValue vs Mux1) — priority
+    reset > load > increment > hold (F52)
 
 Usage:
     python create_level5_program_counter_4bit.py
@@ -46,11 +48,11 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         # Input positions
         input_x = 50.0
 
-        # Create loadValue[0-3] inputs
+        # Create LoadValue[0-3] inputs
         load_value_inputs = []
         for i in range(4):
             lv_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"loadValue[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"LoadValue[{i}]"
             )
             if lv_id is None:
                 return False
@@ -60,7 +62,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         # Control inputs: load, inc, reset, clock
         ctrl_x = input_x + (4 * HORIZONTAL_GATE_SPACING) + HORIZONTAL_GATE_SPACING
 
-        load_id = await self.create_element("InputSwitch", ctrl_x, 100.0, "load")
+        load_id = await self.create_element("InputSwitch", ctrl_x, 100.0, "Load")
         if load_id is None:
             return False
 
@@ -68,7 +70,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if inc_id is None:
             return False
 
-        reset_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "reset")
+        reset_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "Reset")
         if reset_id is None:
             return False
 
@@ -79,9 +81,6 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created control inputs (load, inc, reset, clock)")
 
         # Instantiate level4_register_4bit
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_register_4bit")):
-            return False
-
         reg_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level4_register_4bit"),
             input_x + (2 * HORIZONTAL_GATE_SPACING),
@@ -93,9 +92,6 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated 4-bit Register")
 
         # Instantiate level4_ripple_adder_4bit
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit")):
-            return False
-
         adder_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit"),
             input_x + (2 * HORIZONTAL_GATE_SPACING),
@@ -106,57 +102,79 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Instantiated 4-bit Adder")
 
-        # Create mux layer for load/increment control
+        # Create mux layer for load/increment control, mirroring the 8-bit PC
+        # (F52: the old order put the inc mux last, so inc beat load).
         # Priority: load > increment > hold
-        # Mux1[i]: Select between loadValue[i] (load=1) and hold (load=0)
-        # Mux2[i]: Select between Mux1[i] (inc=0) and increment_value[i] (inc=1)
+        # Mux1[i]: Sum (when inc AND NOT load) vs hold (register Q)
+        # Mux2[i]: loadValue (when load) vs Mux1[i]
 
         mux_x = input_x
         mux_y = 250.0
+
+        # Control: AND(inc, NOT(load)) gates the increment path
+        not_load_id = await self.create_element("Not", mux_x, mux_y - VERTICAL_STAGE_SPACING, "NotLoad")
+        if not_load_id is None:
+            return False
+
+        and_inc_id = await self.create_element(
+            "And", mux_x + HORIZONTAL_GATE_SPACING, mux_y - VERTICAL_STAGE_SPACING, "AndIncNotLoad"
+        )
+        if and_inc_id is None:
+            return False
+
+        if not await self.connect(load_id, not_load_id):
+            return False
+
+        if not await self.connect(inc_id, and_inc_id, target_port=0):
+            return False
+
+        if not await self.connect(not_load_id, and_inc_id, target_port=1):
+            return False
 
         mux1_outputs = []
         mux2_outputs = []
 
         for i in range(4):
-            # Mux1: Select between register output (hold, Sel=0) or loadValue (load, Sel=1)
-            mux1_id = await self.create_element("Mux", mux_x + (i * HORIZONTAL_GATE_SPACING), mux_y, f"Mux1_Load[{i}]")
+            # Mux1: Select between register output (hold, Sel=0) and adder Sum
+            # (increment, Sel=1), gated so load wins over inc
+            mux1_id = await self.create_element("Mux", mux_x + (i * HORIZONTAL_GATE_SPACING), mux_y, f"Mux1_Inc[{i}]")
             if mux1_id is None:
                 return False
             mux1_outputs.append(mux1_id)
 
-            # Hold path: Register Q output to Mux1 In0 (selected when load=0)
+            # Hold path: Register Q output to Mux1 In0
             if not await self.connect(reg_id, mux1_id, source_port_label=f"Q{i}", target_port_label="In0"):
                 return False
 
-            # Load path: loadValue[i] to Mux1 In1 (selected when load=1)
-            if not await self.connect(load_value_inputs[i], mux1_id, target_port_label="In1"):
+            # Increment path: Adder Sum[i] to Mux1 In1
+            if not await self.connect(adder_id, mux1_id, source_port_label=f"Sum[{i}]", target_port_label="In1"):
                 return False
 
-            # Mux1 Select: load signal controls path selection
-            if not await self.connect(load_id, mux1_id, target_port_label="S0"):
+            # Mux1 Select: AND(inc, NOT load)
+            if not await self.connect(and_inc_id, mux1_id, target_port_label="S0"):
                 return False
 
-            # Mux2: Select between Mux1 output (no increment, Sel=0) or adder output (increment, Sel=1)
+            # Mux2: Select between Mux1 output (Sel=0) and loadValue (load, Sel=1)
             mux2_id = await self.create_element(
-                "Mux", mux_x + (i * HORIZONTAL_GATE_SPACING), mux_y + VERTICAL_STAGE_SPACING, f"Mux2_Inc[{i}]"
+                "Mux", mux_x + (i * HORIZONTAL_GATE_SPACING), mux_y + VERTICAL_STAGE_SPACING, f"Mux2_Load[{i}]"
             )
             if mux2_id is None:
                 return False
             mux2_outputs.append(mux2_id)
 
-            # No-increment path: Mux1 output to Mux2 In0 (selected when inc=0)
+            # Hold-or-increment path: Mux1 output to Mux2 In0
             if not await self.connect(mux1_id, mux2_id, target_port_label="In0"):
                 return False
 
-            # Increment path: Adder Sum[i] to Mux2 In1 (selected when inc=1)
-            if not await self.connect(adder_id, mux2_id, source_port_label=f"Sum[{i}]", target_port_label="In1"):
+            # Load path: LoadValue[i] to Mux2 In1 (load has priority)
+            if not await self.connect(load_value_inputs[i], mux2_id, target_port_label="In1"):
                 return False
 
-            # Mux2 Select: inc signal controls increment path
-            if not await self.connect(inc_id, mux2_id, target_port_label="S0"):
+            # Mux2 Select: load
+            if not await self.connect(load_id, mux2_id, target_port_label="S0"):
                 return False
 
-        await self.log("  ✓ Created mux layer for load/increment control")
+        await self.log("  ✓ Created mux layer (load > increment > hold)")
 
         # Connect Mux2 outputs to register inputs
         for i in range(4):
@@ -167,6 +185,11 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if not await self.connect(clock_id, reg_id, target_port_label="CLK"):
             return False
 
+        # Connect reset to the register's async Reset (F52: this input used
+        # to be dead — the register had no reset port to receive it)
+        if not await self.connect(reset_id, reg_id, target_port_label="Reset"):
+            return False
+
         # Connect enable signal to register (EN port) - always 1 to allow updates
         # Note: The load/increment/reset control is handled by the mux layer above the register
         # The register EN is always high so it captures whatever the mux provides on each clock edge
@@ -174,7 +197,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if en_vcc_id is None:
             return False
 
-        if not await self.connect(en_vcc_id, reg_id, target_port_label="EN"):
+        if not await self.connect(en_vcc_id, reg_id, target_port_label="Enable"):
             return False
 
         await self.log("  ✓ Connected register data and control inputs")
@@ -239,7 +262,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 4-bit Program Counter IC"
+            f"✅ Successfully created 4-bit Program Counter IC "
             f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
