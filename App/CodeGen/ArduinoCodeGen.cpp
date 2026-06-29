@@ -710,11 +710,6 @@ void ArduinoCodeGen::emitTruthTable(GraphicElement *elm)
     const QBitArray propositions = ttGraphic->key();
     const int nInputs = elm->inputSize();
     const int rows = 1 << nInputs;
-    const QString outputVarName = m_varMap.value(elm->outputPort(0));
-    if (outputVarName.isEmpty()) {
-        throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName());
-    }
-
     QStringList inputSignalNames;
     for (int i = 0; i < nInputs; ++i) {
         QString signalName = otherPortName(elm->inputPort(i));
@@ -738,19 +733,33 @@ void ArduinoCodeGen::emitTruthTable(GraphicElement *elm)
         }
     }
 
-    m_stream << QString("    //TruthTable") << Qt::endl;
-    for (int i = 0; i < rows; ++i) {
-        if (i == 0) {
-            m_stream << QString("    if ((%1) == %2) {").arg(indexCalculation).arg(i) << Qt::endl;
-        } else {
-            m_stream << QString("    } else if ((%1) == %2) {").arg(indexCalculation).arg(i) << Qt::endl;
+    // One if/else chain per output (F19): output k reads key bits 256*k + row.
+    // Emitting per-output keeps the single-output text byte-identical to the
+    // historical form.
+    for (int out = 0; out < elm->outputSize(); ++out) {
+        const QString outputVarName = m_varMap.value(elm->outputPort(out));
+        if (outputVarName.isEmpty()) {
+            if (out == 0) {
+                throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName());
+            }
+            m_stream << "// TruthTable '" << elm->objectName() << "' output " << out << " is disconnected — no code emitted." << Qt::endl;
+            continue;
         }
-        m_stream << QString("        %1 = %2;").arg(outputVarName, propositions.testBit(i) ? "HIGH" : "LOW") << Qt::endl;
+
+        m_stream << QString("    //TruthTable") << Qt::endl;
+        for (int i = 0; i < rows; ++i) {
+            if (i == 0) {
+                m_stream << QString("    if ((%1) == %2) {").arg(indexCalculation).arg(i) << Qt::endl;
+            } else {
+                m_stream << QString("    } else if ((%1) == %2) {").arg(indexCalculation).arg(i) << Qt::endl;
+            }
+            m_stream << QString("        %1 = %2;").arg(outputVarName, propositions.testBit(256 * out + i) ? "HIGH" : "LOW") << Qt::endl;
+        }
+        m_stream << QString("    } else {") << Qt::endl;
+        m_stream << QString("        %1 = LOW;").arg(outputVarName) << Qt::endl;
+        m_stream << QString("    }") << Qt::endl;
+        m_stream << QString("    //End TruthTable") << Qt::endl;
     }
-    m_stream << QString("    } else {") << Qt::endl;
-    m_stream << QString("        %1 = LOW;").arg(outputVarName) << Qt::endl;
-    m_stream << QString("    }") << Qt::endl;
-    m_stream << QString("    //End TruthTable") << Qt::endl;
 }
 
 QVector<ArduinoBoardConfig> ArduinoCodeGen::getAvailableBoards()

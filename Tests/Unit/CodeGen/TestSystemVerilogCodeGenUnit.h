@@ -18,4 +18,11 @@ private slots:
     void testMuxCircuit();
     void testDemuxCircuit();
     void testEmptyScene();
+
+    // Regression: F22 — constructor must throw on unwritable output path
+    void testUnwritablePathThrows();
+    // Regression: F19 — every TruthTable output gets emitted, not just 0
+    void testTruthTableMultiOutput();
+    // Regression: F23 — rotary positions become module inputs, not floating wires
+    void testRotaryInputsDeclared();
 };
