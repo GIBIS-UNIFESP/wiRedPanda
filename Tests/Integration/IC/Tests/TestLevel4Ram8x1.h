@@ -20,4 +20,5 @@ private slots:
     void testRamBasic();
     void testRamEdgeCases_data();
     void testRamEdgeCases();
+    void testReset();
 };
