@@ -154,6 +154,62 @@ void TestLevel7ExecutionDatapath::testExecutionDatapath()
     QCOMPARE(sign, expectedSign);
 }
 
+void TestLevel7ExecutionDatapath::testInputPortIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("input_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel7ExecutionDatapath::testInputPortIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level7ExecDatapath;
+
+    // AND (OpCode 010): a one-hot OperandA gated against OperandB = 0xFF must
+    // yield a one-hot result at the same position (no bit-lane cross-wiring).
+    setMultiBitInput(f.operandBInputs, 0xFF);
+    for (int i = 0; i < 8; ++i) {
+        f.operandAInputs[i]->setOn(i == bitPosition);
+    }
+    setMultiBitInput(f.opcodeInputs, 2);
+
+    f.sim->update();
+
+    QCOMPARE(f.readResult(), 1 << bitPosition);
+}
+
+void TestLevel7ExecutionDatapath::testOutputPortIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("output_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel7ExecutionDatapath::testOutputPortIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    auto &f = *s_level7ExecDatapath;
+
+    // OR (OpCode 011) with OperandB = 0x00: a one-hot OperandA drives exactly
+    // one result bit; every other result bit must stay low.
+    setMultiBitInput(f.operandBInputs, 0x00);
+    for (int i = 0; i < 8; ++i) {
+        f.operandAInputs[i]->setOn(i == bitPosition);
+    }
+    setMultiBitInput(f.opcodeInputs, 3);
+
+    f.sim->update();
+
+    for (int i = 0; i < 8; ++i) {
+        QCOMPARE(getInputStatus(f.resultLeds[i], 0), i == bitPosition);
+    }
+}
+
 void TestLevel7ExecutionDatapath::testExecutionDatapathStructure()
 {
     auto &f = *s_level7ExecDatapath;

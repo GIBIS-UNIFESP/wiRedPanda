@@ -17,5 +17,11 @@ private slots:
     void testExecutionDatapath_data();
     void testExecutionDatapath();
 
+    // Per-bit lane isolation through the embedded 8-bit ALU.
+    void testInputPortIsolation_data();
+    void testInputPortIsolation();
+    void testOutputPortIsolation_data();
+    void testOutputPortIsolation();
+
     void testExecutionDatapathStructure();
 };
