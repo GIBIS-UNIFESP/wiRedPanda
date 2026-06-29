@@ -175,6 +175,35 @@ void TestLevel7CPUProgramCounter8Bit::testIncrement() {
     QCOMPARE(f.readAddress(), 0x12);
 }
 
+// With Load, Inc and Reset all low the level-6 PC's write-enable = OR(Load, Inc)
+// is 0, so the count must survive clock edges unchanged. The wrapper only passed
+// these signals through; hold was never asserted at this level.
+void TestLevel7CPUProgramCounter8Bit::testHold() {
+    auto &f = *s_level7CpuPC8bit;
+
+    // Seed a known value via load
+    setMultiBitInput(f.dataInputs, 0x55);
+    f.load->setOn(true);
+    f.inc->setOn(false);
+    f.reset->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    f.sim->update();
+    QCOMPARE(f.readAddress(), 0x55);
+
+    // Drop load: with no control asserted the value holds across clock edges,
+    // even while the (now ignored) Data bus changes.
+    f.load->setOn(false);
+    for (int i = 0; i < 3; ++i) {
+        f.clock->setOn(false);
+        setMultiBitInput(f.dataInputs, 0xAA);
+        f.sim->update();
+        clockCycle(f.sim, f.clock);
+        f.sim->update();
+        QCOMPARE(f.readAddress(), 0x55);
+    }
+}
+
 void TestLevel7CPUProgramCounter8Bit::testProgramCounter8BitStructure() {
     auto &f = *s_level7CpuPC8bit;
 
