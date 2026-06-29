@@ -16,4 +16,6 @@ private slots:
 
     void testJohnsonCounter_data();
     void testJohnsonCounter();
+    void testCountEnableHold();
+    void testParallelLoad();
 };

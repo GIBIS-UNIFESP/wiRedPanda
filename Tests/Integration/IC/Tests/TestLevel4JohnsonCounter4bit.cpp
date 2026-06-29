@@ -20,7 +20,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct JohnsonCounter4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr, *preset = nullptr;
+    InputSwitch *clk = nullptr, *preset = nullptr, *ce = nullptr, *load = nullptr;
+    InputSwitch *data[4] = {};
     Led *counterOut[4] = {};
     Simulation *sim = nullptr;
 
@@ -31,13 +32,24 @@ struct JohnsonCounter4bitFixture {
 
         clk = new InputSwitch();
         preset = new InputSwitch();
-        builder.add(clk, preset);
+        ce = new InputSwitch();
+        load = new InputSwitch();
+        builder.add(clk, preset, ce, load);
+        for (int i = 0; i < 4; ++i) {
+            data[i] = new InputSwitch();
+            builder.add(data[i]);
+        }
 
         ic = loadBuildingBlockIC("level4_johnson_counter_4bit.panda");
         builder.add(ic);
 
         builder.connect(clk, 0, ic, "CLK");
-        builder.connect(preset, 0, ic, "PRESET");
+        builder.connect(preset, 0, ic, "Init");
+        builder.connect(ce, 0, ic, "CountEnable");
+        builder.connect(load, 0, ic, "Load");
+        for (int i = 0; i < 4; ++i) {
+            builder.connect(data[i], 0, ic, QString("Data[%1]").arg(i));
+        }
 
         for (int i = 0; i < 4; ++i) {
             counterOut[i] = new Led();
@@ -48,6 +60,33 @@ struct JohnsonCounter4bitFixture {
         sim = builder.initSimulation();
         sim->update();
         return true;
+    }
+
+    // Normal-operation tie-off: counting enabled, no parallel load.
+    void tieRun()
+    {
+        ce->setOn(true);
+        load->setOn(false);
+        for (int i = 0; i < 4; ++i) {
+            data[i]->setOn(false);
+        }
+    }
+
+    void presetPulse()
+    {
+        preset->setOn(false);  // inactive (active-HIGH)
+        sim->update();
+        preset->setOn(true);   // active -> init to 0001
+        sim->update();
+        preset->setOn(false);  // release
+        sim->update();
+    }
+
+    int readCount()
+    {
+        return readMultiBitOutput(QVector<GraphicElement *>({
+            counterOut[0], counterOut[1], counterOut[2], counterOut[3]
+        })) & 0xF;
     }
 };
 
@@ -96,26 +135,64 @@ void TestLevel4JohnsonCounter4Bit::testJohnsonCounter()
 
     auto &f = *s_level4JohnsonCounter4bit;
 
-    // Initialize
+    f.tieRun();          // counting enabled, no load
     f.clk->setOn(false);
-    f.preset->setOn(true);  // PRESET = HIGH (inactive)
     f.sim->update();
-
-    // Activate preset
-    f.preset->setOn(false);  // PRESET = LOW (active)
-    f.sim->update();
-
-    // Release preset
-    f.preset->setOn(true);  // PRESET = HIGH (inactive)
-    f.sim->update();
+    f.presetPulse();     // initialise to 0001
 
     for (int cycle = 0; cycle < cycleNumber; ++cycle) {
         clockCycle(f.sim, f.clk);
     }
 
-    int result = readMultiBitOutput(QVector<GraphicElement *>({
-        f.counterOut[0], f.counterOut[1], f.counterOut[2], f.counterOut[3]
-    }));
+    QCOMPARE(f.readCount(), expectedPattern & 0xF);
+}
 
-    QCOMPARE(result & 0xF, expectedPattern & 0xF);
+// CountEnable=0 freezes the twisted-ring sequence; =1 resumes it.
+void TestLevel4JohnsonCounter4Bit::testCountEnableHold()
+{
+    auto &f = *s_level4JohnsonCounter4bit;
+    f.tieRun();
+    f.clk->setOn(false);
+    f.sim->update();
+    f.presetPulse();              // 0001
+
+    clockCycle(f.sim, f.clk);     // 0011
+    QCOMPARE(f.readCount(), 0x3);
+
+    // Pause: edges with CountEnable low hold the pattern.
+    f.ce->setOn(false);
+    f.sim->update();
+    for (int i = 0; i < 3; ++i) {
+        clockCycle(f.sim, f.clk);
+    }
+    QCOMPARE(f.readCount(), 0x3);
+
+    // Resume: next edge advances to 0111.
+    f.ce->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(f.readCount(), 0x7);
+}
+
+// Synchronous parallel Load captures an arbitrary value on the next edge.
+void TestLevel4JohnsonCounter4Bit::testParallelLoad()
+{
+    auto &f = *s_level4JohnsonCounter4bit;
+    f.tieRun();
+    f.clk->setOn(false);
+    f.preset->setOn(false);       // keep Init inactive
+    f.sim->update();
+
+    // Load 0x5 = 0101.
+    f.data[0]->setOn(true);
+    f.data[1]->setOn(false);
+    f.data[2]->setOn(true);
+    f.data[3]->setOn(false);
+    f.load->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(f.readCount(), 0x5);
+
+    f.load->setOn(false);
+    f.sim->update();
 }
