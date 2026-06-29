@@ -81,6 +81,37 @@ struct StackMemoryInterfaceFixture {
         sim->update();
         return true;
     }
+
+    int readSP()
+    {
+        int v = 0;
+        for (int i = 0; i < 8; ++i) {
+            if (TestUtils::getInputStatus(spOut[i])) {
+                v |= (1 << i);
+            }
+        }
+        return v;
+    }
+
+    int readDataOut()
+    {
+        int v = 0;
+        for (int i = 0; i < 8; ++i) {
+            if (TestUtils::getInputStatus(dataOutLeds[i])) {
+                v |= (1 << i);
+            }
+        }
+        return v;
+    }
+
+    void pulse(InputSwitch *ctrl)
+    {
+        ctrl->setOn(true);
+        sim->update();
+        clockCycle(sim, clk);
+        ctrl->setOn(false);
+        sim->update();
+    }
 };
 
 static std::unique_ptr<StackMemoryInterfaceFixture> s_level6StackMemIface;
@@ -168,4 +199,51 @@ void TestLevel6StackMemoryInterface::testStackMemoryInterface()
 
     int expectedAddress = useStackPointer ? 0xFF : externalAddress;
     QCOMPARE(finalAddress & 0xFF, expectedAddress & 0xFF);
+}
+
+// End-to-end stack semantics through this IC: push decrements SP, a write lands
+// at the SP-addressed word, and popping returns values in LIFO order. The
+// components (stack pointer, RAM, address mux) are tested separately, but the
+// push -> write-via-SP -> pop -> read-via-SP round-trip was never exercised here.
+void TestLevel6StackMemoryInterface::testStackLifoRoundTrip()
+{
+    auto &f = *s_level6StackMemIface;
+
+    f.spLoad->setOn(false);
+    f.spPush->setOn(false);
+    f.spPop->setOn(false);
+    f.memWrite->setOn(false);
+    f.addressSelect->setOn(true);  // address comes from the stack pointer
+    f.sim->update();
+    f.pulse(f.spReset);
+    QCOMPARE(f.readSP(), 0xFF);
+
+    auto writeAtSp = [&](int value) {
+        for (int i = 0; i < 8; ++i) {
+            f.dataInSwitches[i]->setOn((value >> i) & 1);
+        }
+        f.sim->update();
+        f.pulse(f.memWrite);
+    };
+
+    // Push, then store 0xAB at SP = 0xFE
+    f.pulse(f.spPush);
+    QCOMPARE(f.readSP(), 0xFE);
+    writeAtSp(0xAB);
+    QCOMPARE(f.readDataOut(), 0xAB);  // DataOut reflects the SP-addressed word
+
+    // Push, then store 0xCD at SP = 0xFD
+    f.pulse(f.spPush);
+    QCOMPARE(f.readSP(), 0xFD);
+    writeAtSp(0xCD);
+    QCOMPARE(f.readDataOut(), 0xCD);
+
+    // Pop -> SP = 0xFE: the word read back must be the earlier 0xAB (LIFO)
+    f.pulse(f.spPop);
+    QCOMPARE(f.readSP(), 0xFE);
+    QCOMPARE(f.readDataOut(), 0xAB);
+
+    // Pop -> SP = 0xFF (stack emptied back to its reset top)
+    f.pulse(f.spPop);
+    QCOMPARE(f.readSP(), 0xFF);
 }
