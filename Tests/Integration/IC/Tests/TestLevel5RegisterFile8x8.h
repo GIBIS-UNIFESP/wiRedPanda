@@ -21,4 +21,7 @@ private slots:
     // Boundary tests (from test_memory_boundary, 8x8 rows only)
     void testBoundary8x8_data();
     void testBoundary8x8();
+
+    // Both read ports exercised concurrently (port 2 was previously untested)
+    void testDualReadPorts();
 };
