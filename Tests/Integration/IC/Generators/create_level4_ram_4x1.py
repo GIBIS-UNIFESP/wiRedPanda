@@ -9,6 +9,7 @@ Inputs:
   - Address[0], Address[1]: 2-bit address
   - DataIn: 1-bit data input
   - WriteEnable: Write control signal
+  - Reset: async clear of all cells (active-high; matches level4_ram_8x1 F54)
   - Clock: Clock signal for synchronous write
 
 Outputs:
@@ -19,6 +20,7 @@ Architecture:
   - 4 AND gates: Write control for each cell
   - 4× (MUX + DFlipFlop): Data path and storage
   - level2_mux_4to1 IC: Read multiplexer
+  - Reset NOT gate: drives every cell's active-low async ~Clear
 
 Usage:
     python create_level4_ram_4x1.py
@@ -28,6 +30,12 @@ import asyncio
 
 from element_spacing import HORIZONTAL_GATE_SPACING
 from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
+
+# The 4x1 and 8x1 RAMs are the same cell-array architecture at two sizes; their
+# builders share the address/data/write/reset wiring scaffold, differing only in
+# address_bits/num_cells. The duplication is intentional (each generator stays a
+# self-contained, readable script) rather than hoisted into a shared base method.
+# pylint: disable=duplicate-code
 
 
 class RAM4x1Builder(ICBuilderBase):
@@ -88,6 +96,23 @@ class RAM4x1Builder(ICBuilderBase):
         if clock_id is None:
             return False
         await self.log("  ✓ Created Clock")
+
+        # Reset input (async clear of all cells — matches level4_ram_8x1 F54).
+        # Active-HIGH at the boundary; inverted to drive each cell's active-low ~Clear.
+        reset_id = await self.create_element(
+            "InputSwitch", 50.0 + (address_bits + 3) * HORIZONTAL_GATE_SPACING, input_y, "Reset"
+        )
+        if reset_id is None:
+            return False
+        await self.log("  ✓ Created Reset")
+
+        not_reset_id = await self.create_element(
+            "Not", 50.0 + (address_bits + 4) * HORIZONTAL_GATE_SPACING, input_y, "NOT_Reset"
+        )
+        if not_reset_id is None:
+            return False
+        if not await self.connect(reset_id, not_reset_id):
+            return False
 
         # ========== Create Write Control AND Gates ==========
         write_control_ands = []
@@ -179,6 +204,10 @@ class RAM4x1Builder(ICBuilderBase):
 
             # Connect Clock to DFlipFlop
             if not await self.connect(clock_id, storage_ffs[i], target_port_label="Clock"):
+                return False
+
+            # Connect inverted Reset to the cell's async ~Clear (Reset=1 -> ~Clear=0 -> cell cleared)
+            if not await self.connect(not_reset_id, storage_ffs[i], target_port_label="~Clear"):
                 return False
 
             # Connect DFlipFlop Q output to read multiplexer input
