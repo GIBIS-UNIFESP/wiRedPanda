@@ -3,13 +3,14 @@
 
 #include "Tests/Common/TestUtils.h"
 
-#include <QDir>
-#include <QSettings>
+#include <QRandomGenerator>
+#include <QSet>
 #include <QTest>
 
 #include "App/Core/Application.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Simulation/Simulation.h"
@@ -18,8 +19,6 @@ namespace TestUtils {
 
 void setupTestEnvironment()
 {
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
-                       QDir::tempPath() + "/wiredpanda_tests");
 #ifdef Q_OS_LINUX
     qputenv("QT_QPA_PLATFORM", "offscreen");
     // Disable input method plugins — ibus daemon is single-threaded and serializes
@@ -181,6 +180,174 @@ void clockToggle(Simulation *simulation, InputSwitch *clk)
     // Single edge toggle for fine-grained clock control
     clk->setOn(!clk->isOn());
     simulation->update();
+}
+
+bool pixmapHasInk(const QPixmap &pixmap)
+{
+    const QImage image = pixmap.toImage();
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            if (qAlpha(image.pixel(x, y)) != 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+QVector<DiffStep> generateDifferentialVectors(
+    const QVector<InputSwitch *> &switches,
+    const QVector<Led *> &leds,
+    Simulation *sim,
+    const int clockIdx,
+    const QVector<int> &asyncLowIdx,
+    const QVector<int> &asyncHighIdx,
+    const quint32 seed,
+    const int numSteps)
+{
+    QVector<DiffStep> steps;
+    QRandomGenerator rng(seed);
+    const QSet<int> asyncSet(asyncLowIdx.cbegin(), asyncLowIdx.cend());
+    const QSet<int> asyncHighSet(asyncHighIdx.cbegin(), asyncHighIdx.cend());
+
+    auto captureInputs = [&]() {
+        QVector<int> bits;
+        bits.reserve(switches.size());
+        for (auto *sw : switches) {
+            bits.append(sw->isOn() ? 1 : 0);
+        }
+        return bits;
+    };
+    auto captureOutputs = [&]() {
+        QVector<int> bits;
+        bits.reserve(leds.size());
+        for (auto *led : leds) {
+            bits.append(getInputStatus(led, 0) ? 1 : 0);
+        }
+        return bits;
+    };
+    auto record = [&]() {
+        steps.append({captureInputs(), captureOutputs()});
+    };
+    // A setup step drives inputs but records no expected output, so the testbench
+    // replays it without checking. Used for the reset preamble, which brings a
+    // freshly seeded comb-loop latch to a defined state both the engine and the
+    // export agree on before the checked stimulus begins.
+    auto recordSetup = [&]() {
+        steps.append({captureInputs(), {}});
+    };
+    // Settle the engine to a fixed point after each input change before sampling.
+    // A SINGLE update is not enough for gated-clock multi-cycle designs: the
+    // combinational path that feeds the flip-flops (cycle-counter → decode →
+    // enable) needs several passes to converge, and a non-settled D would be
+    // captured at the next clock edge, drifting the engine's state one cycle off
+    // the exported (non-blocking) SystemVerilog. The committed engine semantics
+    // are validated against iverilog only at the settled fixed point, so we
+    // reproduce the same multi-pass settle the original stimulus used.
+    constexpr int kSettleIterations = 20;
+    auto settle = [&]() {
+        for (int u = 0; u < kSettleIterations; ++u) {
+            sim->update();
+        }
+    };
+
+    // Initial (unrecorded) settle: clock and data LOW, active-low async controls
+    // HIGH (inactive). This matches the testbench's t=0 init.
+    for (int i = 0; i < switches.size(); ++i) {
+        switches[i]->setOn(asyncSet.contains(i));
+    }
+    settle();
+
+    // Reset preamble (SETUP, not checked): a cross-coupled flip-flop powers on
+    // into a free-running bistable state the engine and a faithful gate-level
+    // export resolve to *opposite* values. The export's seeded latch regs start
+    // at the metastable (0,0) point, and a *single* async assert can't climb out
+    // of it (and a clock pulse there only corrupts it). Asserting BOTH controls
+    // at once injects the input events that drive the latch off (0,0); releasing
+    // all but one then leaves a single async control asserted, which forces a
+    // defined state the engine and export agree on. No clock pulse is needed —
+    // async preset/clear set the latch directly. These steps are replayed by the
+    // testbench but not checked, so checks begin from the settled state.
+    if (!asyncLowIdx.isEmpty()) {
+        for (const int idx : asyncLowIdx) {
+            switches[idx]->setOn(false);              // assert all (active-low)
+        }
+        settle();
+        recordSetup();
+        for (int i = 1; i < asyncLowIdx.size(); ++i) {
+            switches[asyncLowIdx[i]]->setOn(true);    // release all but the first
+        }
+        settle();
+        recordSetup();
+        switches[asyncLowIdx.first()]->setOn(true);   // release; state now held
+        settle();
+        recordSetup();
+    }
+
+    // Active-high reset/seed preamble (SETUP, not checked): a counter or register
+    // exposes an active-HIGH Reset/Init that drives its embedded flip-flops to a
+    // defined state (0 for Reset, the seed pattern for Init). Without it the
+    // run starts from the flip-flops' ambiguous power-on value, which the engine
+    // (settles q=1) and a faithful gate-level export (settles q=0) resolve
+    // oppositely. Pulse it HIGH then release so both begin the checked stimulus
+    // from the same defined state; it stays inactive (LOW) for the random body.
+    if (!asyncHighIdx.isEmpty()) {
+        for (const int idx : asyncHighIdx) {
+            switches[idx]->setOn(true);               // assert reset/seed
+        }
+        settle();
+        recordSetup();
+        for (const int idx : asyncHighIdx) {
+            switches[idx]->setOn(false);              // release; state now held
+        }
+        settle();
+        recordSetup();
+    }
+
+    for (int s = 0; s < numSteps; ++s) {
+        // Randomise non-clock, non-async inputs (stable across the clock pulse so
+        // an edge-triggered element captures a defined value).
+        for (int i = 0; i < switches.size(); ++i) {
+            if (i == clockIdx || asyncSet.contains(i) || asyncHighSet.contains(i)) {
+                continue;
+            }
+            switches[i]->setOn((rng.generate() & 1U) != 0U);
+        }
+        // Hold async controls inactive during synchronous operation: the preamble
+        // already established a defined state, so the random body exercises the
+        // clocked data path. (Asserting async mid-run only adds metastable corners
+        // where iverilog's comb-loop evaluation and the engine's settle diverge on
+        // undefined behaviour — not export defects.)
+        for (const int idx : asyncLowIdx) {
+            switches[idx]->setOn(true);
+        }
+        // Hold active-high reset/seed inactive (LOW) during synchronous operation.
+        for (const int idx : asyncHighIdx) {
+            switches[idx]->setOn(false);
+        }
+
+        if (clockIdx >= 0) {
+            // Change data ONLY while the clock is stable (currently LOW), then
+            // pulse the clock. This keeps every clock edge — rising AND falling —
+            // free of a simultaneous data change, so an edge-triggered element
+            // captures deterministically (no setup-time race between the engine's
+            // and the export's evaluation order). Sampling at clock-HIGH also
+            // makes the check edge-polarity sensitive.
+            settle();
+            record();                       // new data, clock LOW
+            switches[clockIdx]->setOn(true);
+            settle();
+            record();                       // rising edge (data stable)
+            switches[clockIdx]->setOn(false);
+            settle();
+            record();                       // falling edge (data stable)
+        } else {
+            settle();
+            record();
+        }
+    }
+
+    return steps;
 }
 } // namespace TestUtils
 

@@ -55,7 +55,7 @@ void TestSystemVerilogCodeGenUnit::testAndGateCircuit()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("module"));
@@ -92,7 +92,7 @@ void TestSystemVerilogCodeGenUnit::testOrNotCircuit()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("module"));
@@ -130,7 +130,7 @@ void TestSystemVerilogCodeGenUnit::testMultiGateChain()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("module"));
@@ -163,7 +163,7 @@ void TestSystemVerilogCodeGenUnit::testMuxCircuit()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("module"));
@@ -195,7 +195,7 @@ void TestSystemVerilogCodeGenUnit::testDemuxCircuit()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("module"));
@@ -213,7 +213,7 @@ void TestSystemVerilogCodeGenUnit::testEmptyScene()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     QString content = file.readAll();
 
     QVERIFY(content.contains("module"));
@@ -268,7 +268,7 @@ void TestSystemVerilogCodeGenUnit::testTruthTableMultiOutput()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     const QString content = file.readAll();
 
     // Two emitted blocks, with the per-output truth values: row 01 is true
@@ -304,7 +304,7 @@ void TestSystemVerilogCodeGenUnit::testRotaryInputsDeclared()
     codegen.generate();
 
     QFile file(path);
-    QVERIFY(file.open(QIODevice::ReadOnly));
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     const QString content = file.readAll();
 
     for (int i = 0; i < 4; ++i) {
