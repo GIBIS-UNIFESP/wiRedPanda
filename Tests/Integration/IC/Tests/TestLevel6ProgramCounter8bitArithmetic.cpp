@@ -160,3 +160,33 @@ void TestLevel6ProgramCounter8BitArithmetic::testProgramCounter8BitWithPCPlus1()
     QCOMPARE(f.readPC(), 0xFF);
     QCOMPARE(f.readPCPlus1(), 0x00);
 }
+
+// Reset clears the PC to 0. It is wired through level6_register_8bit into each
+// level3_register_1bit's async ~Clear, but no test exercised it (reset was held
+// low everywhere). Verify a non-zero PC clears, and normal counting resumes
+// after release.
+void TestLevel6ProgramCounter8BitArithmetic::testReset() {
+    auto &f = *s_level6PC8bitArith;
+
+    // Load a non-zero value
+    setMultiBitInput(f.dataInputs, 0x42);
+    f.load->setOn(true);
+    f.inc->setOn(false);
+    f.reset->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(f.readPC(), 0x42);
+
+    // Assert reset: PC clears to 0 asynchronously (register_1bit ~Clear path)
+    f.load->setOn(false);
+    f.reset->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readPC(), 0x00);
+
+    // Release reset and increment: counting resumes from 0
+    f.reset->setOn(false);
+    f.inc->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(f.readPC(), 0x01);
+}
