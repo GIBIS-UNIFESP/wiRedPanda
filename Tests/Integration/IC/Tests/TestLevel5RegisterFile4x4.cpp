@@ -22,10 +22,12 @@ struct RegFile4x4Fixture {
     IC *ic = nullptr;
     InputSwitch *writeAddr[2] = {};
     InputSwitch *readAddr[2] = {};
+    InputSwitch *readAddr2[2] = {};
     InputSwitch *writeData[4] = {};
     InputSwitch *writeEnable = nullptr;
     InputSwitch *clock = nullptr;
     Led *readData[4] = {};
+    Led *readData2[4] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -43,17 +45,20 @@ struct RegFile4x4Fixture {
         for (int i = 0; i < 2; ++i) {
             writeAddr[i] = new InputSwitch();
             readAddr[i] = new InputSwitch();
-            builder.add(writeAddr[i], readAddr[i]);
+            readAddr2[i] = new InputSwitch();
+            builder.add(writeAddr[i], readAddr[i], readAddr2[i]);
         }
         for (int i = 0; i < 4; ++i) {
             writeData[i] = new InputSwitch();
             readData[i] = new Led();
-            builder.add(writeData[i], readData[i]);
+            readData2[i] = new Led();
+            builder.add(writeData[i], readData[i], readData2[i]);
         }
 
         for (int i = 0; i < 2; ++i) {
             builder.connect(writeAddr[i], 0, ic, QString("Write_Addr[%1]").arg(i));
             builder.connect(readAddr[i], 0, ic, QString("Read_Addr1[%1]").arg(i));
+            builder.connect(readAddr2[i], 0, ic, QString("Read_Addr2[%1]").arg(i));
         }
         for (int i = 0; i < 4; ++i) {
             builder.connect(writeData[i], 0, ic, QString("Data_In[%1]").arg(i));
@@ -63,6 +68,7 @@ struct RegFile4x4Fixture {
 
         for (int i = 0; i < 4; ++i) {
             builder.connect(ic, QString("Read_Data1[%1]").arg(i), readData[i], 0);
+            builder.connect(ic, QString("Read_Data2[%1]").arg(i), readData2[i], 0);
         }
 
         sim = builder.initSimulation();
@@ -105,6 +111,17 @@ struct RegFile4x4Fixture {
         int value = 0;
         for (int bit = 0; bit < 4; ++bit) {
             if (getInputStatus(readData[bit])) {
+                value |= (1 << bit);
+            }
+        }
+        return value;
+    }
+
+    int readPort2()
+    {
+        int value = 0;
+        for (int bit = 0; bit < 4; ++bit) {
+            if (getInputStatus(readData2[bit])) {
                 value |= (1 << bit);
             }
         }
@@ -1309,5 +1326,32 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         QVERIFY((readValue == 3) || (readValue == 12));
     } else {
         QFAIL(qPrintable(QString("Invalid timingTest: %1").arg(timingTest)));
+    }
+}
+
+// The register file has two independent read ports. Every other test reads only
+// port 1, leaving port 2 (Read_Addr2 / Read_Data2) entirely unexercised. Write
+// distinct values to all four registers, then read two different registers
+// through the two ports simultaneously and confirm each port returns its own
+// addressed register's value (independent, concurrent reads).
+void TestLevel5RegisterFile4X4::testDualReadPorts()
+{
+    auto &f = *s_level5RegFile4x4;
+
+    const int values[4] = {5, 10, 15, 7};
+    for (int reg = 0; reg < 4; ++reg) {
+        f.writeReg(reg, values[reg]);
+    }
+
+    for (int a = 0; a < 4; ++a) {
+        for (int b = 0; b < 4; ++b) {
+            f.setReadAddr(a);
+            for (int i = 0; i < 2; ++i) {
+                f.readAddr2[i]->setOn((b >> i) & 1);
+            }
+            f.sim->update();
+            QCOMPARE(f.readReg(a), values[a]);   // port 1 → register a
+            QCOMPARE(f.readPort2(), values[b]);  // port 2 → register b, concurrently
+        }
     }
 }

@@ -37,4 +37,7 @@ private slots:
     // Timing edge case tests (from test_memory_timing_edges)
     void testRegisterFileTimingEdges_data();
     void testRegisterFileTimingEdges();
+
+    // Both read ports exercised concurrently (port 2 was previously untested)
+    void testDualReadPorts();
 };
