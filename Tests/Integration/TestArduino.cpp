@@ -2273,7 +2273,7 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
 // Testbench Runner (Phase 4)
 // ============================================================================
 
-bool TestArduino::runTestbench(const QString &tbInoPath, int timeoutMs)
+bool TestArduino::runTestbench(const QString &tbInoPath, int timeoutMs, const QString &fqbn, const QString &simavrMcu)
 {
     const QString cliPath = QStandardPaths::findExecutable("arduino-cli");
     if (cliPath.isEmpty()) {
@@ -2297,7 +2297,7 @@ bool TestArduino::runTestbench(const QString &tbInoPath, int timeoutMs)
         return false;
     }
 
-    QStringList tbArgs = {"compile", "--fqbn", "arduino:avr:uno",
+    QStringList tbArgs = {"compile", "--fqbn", fqbn,
                           "--output-dir", outDir.path()};
     if (!s_cliCachePath.isEmpty())
         tbArgs << "--build-cache-path" << s_cliCachePath;
@@ -2308,8 +2308,9 @@ bool TestArduino::runTestbench(const QString &tbInoPath, int timeoutMs)
     compile.start(cliPath, tbArgs);
     if (!compile.waitForFinished(120000) || compile.exitCode() != 0) {
         const QString compileOut = QString::fromUtf8(compile.readAllStandardOutput());
-        if (compileOut.contains("data section exceeds") || compileOut.contains("Not enough memory")) {
-            qInfo() << "Testbench skipped — too large for Arduino Uno RAM:" << tbInoPath;
+        if (compileOut.contains("data section exceeds") || compileOut.contains("Not enough memory")
+            || compileOut.contains("text section exceeds") || compileOut.contains("Sketch too big")) {
+            qInfo() << "Testbench skipped — too large for target board (" << fqbn << "):" << tbInoPath;
             return true;
         }
         qWarning() << "arduino-cli testbench compile failed:" << compileOut;
@@ -2327,7 +2328,7 @@ bool TestArduino::runTestbench(const QString &tbInoPath, int timeoutMs)
     // Stream output and kill simavr as soon as a verdict line appears.
     QProcess sim;
     sim.setProcessChannelMode(QProcess::MergedChannels);
-    sim.start(simavrPath, {"-m", "atmega328p", "-f", "16000000", elfPath});
+    sim.start(simavrPath, {"-m", simavrMcu, "-f", "16000000", elfPath});
 
     QString output;
     const QStringList verdicts = {"ALL PASS", "SOME FAILED", "FAIL vector"};
@@ -2675,6 +2676,146 @@ void TestArduino::testArduinoExportBinaryCounter4Bit()
 {
     requireLinuxForArduinoTools();
     testArduinoExportHelper("level4_binary_counter_4bit.panda");
+}
+
+// Sequential (clocked) functional validation: drive a reset+clock sequence
+// through the engine, capture outputs each step, then run the generated Arduino
+// sketch against that same sequence under simavr. The multi-cycle CPU gates its
+// PC/state flip-flop clocks with the cycle counter, exercising:
+//   (A) globally-unique variable naming (register file / RAM repeated sub-ICs),
+//   (B) recursive testbench state declaration (nested flip-flops),
+//   (C) non-blocking computeLogic() (gated-clock faithfulness to the engine).
+void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
+{
+    requireLinuxForArduinoTools();
+
+    std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
+    QVERIFY(workspace != nullptr);
+    auto *scene = workspace->scene();
+    QVERIFY(scene != nullptr);
+    CircuitBuilder builder(scene);
+
+    IC *ic = nullptr;
+    try {
+        ic = CPUTestUtils::loadBuildingBlockIC("level9_multi_cycle_cpu_8bit.panda");
+    } catch (const std::exception &ex) {
+        QFAIL(qPrintable(QString("Failed to load IC: %1").arg(QString::fromStdString(ex.what()))));
+        return;
+    }
+    builder.add(ic);
+    // The programmable multi-cycle CPU exposes Clock + Reset followed by the
+    // instruction/register programming bus (ProgAddr/ProgData/ProgWrite +
+    // Reg* equivalents). This clocked validation leaves the programming bus
+    // LOW (no programming) so the CPU runs its zero-initialised program — that
+    // still exercises the phase counter and clock-enable flip-flops, which is
+    // what the non-blocking-FF Arduino semantics must reproduce.
+    QCOMPARE(ic->inputSize(), 31); // input 0 = Clock, input 1 = Reset, 2..30 = programming bus
+
+    InputSwitch *clk = nullptr;
+    InputSwitch *rst = nullptr;
+    for (int i = 0; i < ic->inputSize(); ++i) {
+        auto *sw = new InputSwitch();
+        builder.add(sw);
+        builder.connect(sw, 0, ic, i);
+        if (i == 0) {
+            clk = sw;
+        } else if (i == 1) {
+            rst = sw;
+        }
+        // Programming-bus switches (i >= 2) stay LOW for the whole run.
+    }
+    QVector<Led *> leds;
+    for (int i = 0; i < ic->outputSize(); ++i) {
+        auto *led = new Led();
+        builder.add(led);
+        leds.append(led);
+        builder.connect(ic, i, led, 0);
+    }
+
+    // Collect inputs/outputs in scene-scan order so the captured vector layout
+    // matches the Arduino codegen's input/output pin order exactly.
+    QVector<GraphicElement *> allElements;
+    QVector<InputSwitch *> scanInputs;
+    QVector<Led *> scanOutputs;
+    for (auto *item : scene->items()) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+            allElements.append(elm);
+            if (auto *sw = qobject_cast<InputSwitch *>(elm)) {
+                scanInputs.append(sw);
+            } else if (auto *led = qobject_cast<Led *>(elm)) {
+                scanOutputs.append(led);
+            }
+        }
+    }
+    QCOMPARE(scanInputs.size(), 31);
+    QCOMPARE(scanOutputs.size(), ic->outputSize());
+
+    Simulation *sim = builder.initSimulation();
+    QVERIFY(sim != nullptr);
+
+    QVector<ArduinoCodeGen::TestVector> vectors;
+    auto step = [&](bool clkOn, bool rstOn) {
+        clk->setOn(clkOn);
+        rst->setOn(rstOn);
+        sim->update();
+
+        ArduinoCodeGen::TestVector v;
+        v.inputs.reserve(scanInputs.size());
+        for (auto *sw : std::as_const(scanInputs)) {
+            v.inputs.append(sw->isOn());
+        }
+        v.outputs.reserve(scanOutputs.size());
+        for (auto *led : std::as_const(scanOutputs)) {
+            v.outputs.append(led->inputPort(0)->status() == Status::Active);
+        }
+        vectors.append(v);
+    };
+
+    step(false, true);
+    step(false, false);
+    for (int cycle = 0; cycle < 10; ++cycle) {
+        step(true, false);
+        step(false, false);
+    }
+
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString inoPath = tempDir.filePath("mccpu.ino");
+    ArduinoCodeGen generator(inoPath, allElements);
+    generator.generate();
+
+    // (A) The production sketch must have no duplicate variable declarations.
+    QFile inoFile(inoPath);
+    QVERIFY(inoFile.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QStringList inoLines = QString::fromUtf8(inoFile.readAll()).split('\n');
+    inoFile.close();
+    QSet<QString> declared;
+    QStringList dups;
+    const QRegularExpression declRe(QStringLiteral("^\\s*bool\\s+(\\w+)\\s*="));
+    for (const auto &line : inoLines) {
+        const auto m = declRe.match(line);
+        if (m.hasMatch()) {
+            const QString name = m.captured(1);
+            if (declared.contains(name)) dups.append(name);
+            declared.insert(name);
+        }
+    }
+    QVERIFY2(dups.isEmpty(), qPrintable(QString("Duplicate variable declarations in production sketch: %1")
+        .arg(dups.mid(0, 5).join(", "))));
+
+    // (B+C) Generate a testbench keyed to the captured sequence and run it.
+    const QString tbName = "mccpu_seq_tb";
+    const QString tbFolder = tempDir.filePath(tbName);
+    QVERIFY(QDir().mkdir(tbFolder));
+    const QString tbPath = tbFolder + "/" + tbName + ".ino";
+    generator.generateTestbench(tbPath, vectors);
+
+    // The flattened CPU is far too large for an Uno (58 KB > 32 KB flash); target
+    // an Arduino Mega 2560 (256 KB flash, 8 KB RAM) for these large sketches.
+    const bool ok = runTestbench(tbPath, /*timeoutMs*/ 90000,
+                                 QStringLiteral("arduino:avr:mega"), QStringLiteral("atmega2560"));
+    QVERIFY2(ok, "Arduino sketch diverged from the engine over the clock sequence "
+                 "(blocking computeLogic vs. non-blocking engine on gated clocks)");
 }
 
 // ============================================================================

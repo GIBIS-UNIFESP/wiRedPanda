@@ -127,7 +127,20 @@ private:
     QString otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &visited);
     void emitFlipFlopBlock(GraphicElement *elm, const QString &typeName, const QString &firstOut,
                            const QString &secondOut, int clockInputIndex, int presetInputIndex,
-                           int clearInputIndex, const std::function<void()> &normalLogic);
+                           int clearInputIndex, const std::function<void()> &edgeLogic,
+                           const std::function<void()> &stateEpilogue = {});
+    /// Returns true if \a elements contains (recursively, through ICs) any native
+    /// sequential element (ElementGroup::Memory). When true the sketch uses the
+    /// non-blocking tick driver (sample → commit → re-settle).
+    static bool hasNativeMemory(const QVector<GraphicElement *> &elements);
+    /// Emits the commitFlipFlops() function: publishes every staged `<out>_next`
+    /// onto `<out>` across the hierarchy (the Arduino analogue of the engine's
+    /// synchronous sequential commit).
+    void emitCommitFlipFlops();
+    void emitCommitFlipFlopsRec(const QVector<GraphicElement *> &elements);
+    /// Emits the per-tick driver (settle computeLogic → commitFlipFlops →
+    /// re-settle) for sequential sketches, or a single computeLogic() otherwise.
+    void emitTickDriver();
     void emitDFlipFlop(GraphicElement *elm, const QString &firstOut);
     void emitDLatch(GraphicElement *elm, const QString &firstOut);
     void emitJKFlipFlop(GraphicElement *elm, const QString &firstOut);
@@ -173,4 +186,5 @@ private:
     const QVector<GraphicElement *> m_elements; ///< Topologically sorted circuit elements.
     IC *m_currentIC = nullptr;                 ///< IC currently being flattened (null at top level).
     ArduinoBoardConfig m_selectedBoard;        ///< Board configuration selected during generation.
+    bool m_hasSequential = false;              ///< True when the circuit has native flip-flops/latches (enables the non-blocking tick driver).
 };
