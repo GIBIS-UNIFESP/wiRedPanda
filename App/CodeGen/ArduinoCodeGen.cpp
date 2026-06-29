@@ -288,7 +288,10 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
 
             m_stream << "// IC: " << ic->label() << Qt::endl;
 
-            QString baseVarName = QString("aux_%1_%2").arg(removeForbiddenChars(ic->label()), QString::number(counter++));
+            // Include the full ancestor path (icPrefix) so names stay globally
+            // unique across repeated/nested sub-IC instances (register files, RAM,
+            // CPUs). Without it, structurally-identical sub-trees collide.
+            QString baseVarName = QString("aux_%1%2_%3").arg(icPrefix, removeForbiddenChars(ic->label()), QString::number(counter++));
 
             for (int i = 0; i < ic->outputSize(); ++i) {
                 QNEPort *externalPort = ic->outputPort(i);
@@ -312,13 +315,13 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
             }
 
             if (!ic->internalElements().isEmpty()) {
-                const QString nestedPrefix = QString("%1_%2_").arg(removeForbiddenChars(ic->label()), QString::number(counter - 1));
+                const QString nestedPrefix = QString("%1%2_%3_").arg(icPrefix, removeForbiddenChars(ic->label()), QString::number(counter - 1));
                 declareAuxVariablesRec(ic->internalElements(), true, nestedPrefix);
 
                 for (int i = 0; i < ic->internalInputs().size(); ++i) {
                     QNEPort *internalPort = ic->internalInputs().at(i);
                     if (m_varMap.value(internalPort).isEmpty()) {
-                        const QString portVarName = QString("aux_ic_input_%1_%2_%3").arg(removeForbiddenChars(ic->label()), QString::number(counter - 1), QString::number(i));
+                        const QString portVarName = QString("aux_ic_input_%1%2_%3_%4").arg(icPrefix, removeForbiddenChars(ic->label()), QString::number(counter - 1), QString::number(i));
                         m_varMap[internalPort] = portVarName;
                         if (!m_declaredVariables.contains(portVarName)) {
                             m_stream << "bool " << portVarName << " = LOW;" << Qt::endl;
@@ -401,6 +404,48 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
             default:
                 break;
             }
+        }
+    }
+}
+
+void ArduinoCodeGen::declareSequentialStateRec(const QVector<GraphicElement *> &elements, const bool topLevel)
+{
+    for (auto *elm : elements) {
+        if (elm->elementType() == ElementType::IC) {
+            if (auto *ic = qobject_cast<IC *>(elm)) {
+                declareSequentialStateRec(ic->internalElements(), false);
+            }
+            continue;
+        }
+
+        const auto outputs = elm->outputs();
+        if (outputs.isEmpty()) {
+            continue;
+        }
+        const QString varName = m_varMap.value(outputs.constFirst());
+        if (varName.isEmpty()) {
+            continue;
+        }
+
+        switch (elm->elementType()) {
+        case ElementType::Clock:
+            // Mirror declareAuxVariablesRec: only top-level clocks are time-driven.
+            if (topLevel) {
+                m_stream << "elapsedMillis " << varName << "_elapsed = 0;" << Qt::endl;
+                m_stream << "int " << varName << "_interval = 1000;" << Qt::endl;
+            }
+            break;
+        case ElementType::DFlipFlop:
+            m_stream << "bool " << varName << "_inclk = LOW;" << Qt::endl;
+            m_stream << "bool " << varName << "_last = LOW;" << Qt::endl;
+            break;
+        case ElementType::TFlipFlop:
+        case ElementType::SRFlipFlop:
+        case ElementType::JKFlipFlop:
+            m_stream << "bool " << varName << "_inclk = LOW;" << Qt::endl;
+            break;
+        default:
+            break;
         }
     }
 }
@@ -1018,34 +1063,10 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
         for (const auto &varName : std::as_const(m_declaredVariables)) {
             m_stream << "bool " << varName << " = LOW;" << Qt::endl;
         }
-        // Extra state variables for clocks and flip-flops
-        for (auto *elm : std::as_const(m_elements)) {
-            const auto outputs = elm->outputs();
-            if (outputs.isEmpty()) {
-                continue;
-            }
-            const QString varName = m_varMap.value(outputs.constFirst());
-            if (varName.isEmpty()) {
-                continue;
-            }
-            switch (elm->elementType()) {
-            case ElementType::Clock:
-                m_stream << "elapsedMillis " << varName << "_elapsed = 0;" << Qt::endl;
-                m_stream << "int " << varName << "_interval = 1000;" << Qt::endl;
-                break;
-            case ElementType::DFlipFlop:
-                m_stream << "bool " << varName << "_inclk = LOW;" << Qt::endl;
-                m_stream << "bool " << varName << "_last = LOW;" << Qt::endl;
-                break;
-            case ElementType::TFlipFlop:
-            case ElementType::SRFlipFlop:
-            case ElementType::JKFlipFlop:
-                m_stream << "bool " << varName << "_inclk = LOW;" << Qt::endl;
-                break;
-            default:
-                break;
-            }
-        }
+        // Extra state variables for clocks and flip-flops, including those nested
+        // inside ICs — computeLogic() recurses into them, so their _inclk/_last
+        // state must be declared at every depth (not just top level).
+        declareSequentialStateRec(m_elements, /*topLevel*/ true);
         m_stream << Qt::endl;
 
         // computeLogic() function — identical to production sketch
