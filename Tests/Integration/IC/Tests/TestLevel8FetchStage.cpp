@@ -14,7 +14,153 @@
 
 using TestUtils::setMultiBitInput;
 using TestUtils::readMultiBitOutput;
+using TestUtils::getInputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
+
+// Fully-wired fetch-stage harness (the inline testFetchStage above leaves the
+// program-write path and the OpCode/RegisterAddr/RawInstr outputs unconnected).
+// Mirrors the DecodeStage/ExecuteStage/MemoryStage fixtures in this directory.
+struct FetchStageFixture {
+    std::unique_ptr<WorkSpace> workspace;
+    IC *ic = nullptr;
+    InputSwitch *pcData[8] = {};
+    InputSwitch *progAddr[8] = {};
+    InputSwitch *progData[8] = {};
+    InputSwitch *clk = nullptr;
+    InputSwitch *reset = nullptr;
+    InputSwitch *pcLoad = nullptr;
+    InputSwitch *pcInc = nullptr;
+    InputSwitch *instrLoad = nullptr;
+    InputSwitch *progWrite = nullptr;
+    Led *pc[8] = {};
+    Led *instr[8] = {};
+    Led *raw[8] = {};
+    Led *opcode[5] = {};
+    Led *regAddr[3] = {};
+    Simulation *sim = nullptr;
+
+    bool build()
+    {
+        workspace = std::make_unique<WorkSpace>();
+        CircuitBuilder builder(workspace->scene());
+
+        ic = loadBuildingBlockIC("level8_fetch_stage.panda");
+
+        clk = new InputSwitch();
+        reset = new InputSwitch();
+        pcLoad = new InputSwitch();
+        pcInc = new InputSwitch();
+        instrLoad = new InputSwitch();
+        progWrite = new InputSwitch();
+        builder.add(ic, clk, reset, pcLoad, pcInc, instrLoad, progWrite);
+
+        for (int i = 0; i < 8; ++i) {
+            pcData[i] = new InputSwitch();
+            progAddr[i] = new InputSwitch();
+            progData[i] = new InputSwitch();
+            pc[i] = new Led();
+            instr[i] = new Led();
+            raw[i] = new Led();
+            builder.add(pcData[i], progAddr[i], progData[i], pc[i], instr[i], raw[i]);
+        }
+        for (int i = 0; i < 5; ++i) {
+            opcode[i] = new Led();
+            builder.add(opcode[i]);
+        }
+        for (int i = 0; i < 3; ++i) {
+            regAddr[i] = new Led();
+            builder.add(regAddr[i]);
+        }
+
+        for (int i = 0; i < 8; ++i) {
+            builder.connect(pcData[i], 0, ic, QString("PCData[%1]").arg(i));
+            builder.connect(progAddr[i], 0, ic, QString("ProgAddr[%1]").arg(i));
+            builder.connect(progData[i], 0, ic, QString("ProgData[%1]").arg(i));
+            builder.connect(ic, QString("PC[%1]").arg(i), pc[i], 0);
+            builder.connect(ic, QString("Instruction[%1]").arg(i), instr[i], 0);
+            builder.connect(ic, QString("RawInstr[%1]").arg(i), raw[i], 0);
+        }
+        for (int i = 0; i < 5; ++i) {
+            builder.connect(ic, QString("OpCode[%1]").arg(i), opcode[i], 0);
+        }
+        for (int i = 0; i < 3; ++i) {
+            builder.connect(ic, QString("RegisterAddr[%1]").arg(i), regAddr[i], 0);
+        }
+        builder.connect(clk, 0, ic, "Clock");
+        builder.connect(reset, 0, ic, "Reset");
+        builder.connect(pcLoad, 0, ic, "PCLoad");
+        builder.connect(pcInc, 0, ic, "PCInc");
+        builder.connect(instrLoad, 0, ic, "InstrLoad");
+        builder.connect(progWrite, 0, ic, "ProgWrite");
+
+        sim = builder.initSimulation();
+        sim->update();
+        return true;
+    }
+
+    // One clock pulse, matching the inline testFetchStage's known-good ordering.
+    void pulse()
+    {
+        clk->setOn(true);
+        sim->update();
+        clk->setOn(false);
+        sim->update();
+    }
+
+    // ProgWrite routes ProgAddr->mux->imem and enables the imem write; a clock
+    // edge stores ProgData at that address.
+    void program(int addr, int data)
+    {
+        for (int i = 0; i < 8; ++i) {
+            progAddr[i]->setOn((addr >> i) & 1);
+            progData[i]->setOn((data >> i) & 1);
+        }
+        progWrite->setOn(true);
+        sim->update();
+        pulse();
+        progWrite->setOn(false);
+        sim->update();
+    }
+
+    void setPC(int addr)
+    {
+        for (int i = 0; i < 8; ++i) {
+            pcData[i]->setOn((addr >> i) & 1);
+        }
+        pcLoad->setOn(true);
+        sim->update();
+        pulse();
+        pcLoad->setOn(false);
+        sim->update();
+    }
+
+    // Latch the memory-addressed instruction into the instruction register.
+    void latch()
+    {
+        instrLoad->setOn(true);
+        sim->update();
+        pulse();
+        instrLoad->setOn(false);
+        sim->update();
+    }
+
+    static int readBits(Led *const *leds, int n)
+    {
+        int v = 0;
+        for (int i = 0; i < n; ++i) {
+            if (getInputStatus(leds[i])) {
+                v |= (1 << i);
+            }
+        }
+        return v;
+    }
+
+    int readPC() { return readBits(pc, 8); }
+    int readInstr() { return readBits(instr, 8); }
+    int readRaw() { return readBits(raw, 8); }
+    int readOpCode() { return readBits(opcode, 5); }
+    int readRegAddr() { return readBits(regAddr, 3); }
+};
 
 void TestLevel8FetchStage::initTestCase()
 {
@@ -156,6 +302,155 @@ void TestLevel8FetchStage::testFetchStage()
     // Verify
     QCOMPARE(pc, expectedPC);
     QCOMPARE(instr, expectedInstr);
+}
+
+// Program real instructions into the stage's instruction memory and fetch them
+// back, exercising the program-write path and the OpCode/RegisterAddr/RawInstr
+// outputs that the original test (which only ever saw 0x00) never touched.
+void TestLevel8FetchStage::testProgramAndFetch()
+{
+    FetchStageFixture f;
+    QVERIFY(f.build());
+
+    // Word at low address 5: 0xB5 -> OpCode = 0xB5>>3 = 22, RegisterAddr = 0xB5&7 = 5
+    f.program(0x05, 0xB5);
+    f.setPC(0x05);
+    QCOMPARE(f.readRaw(), 0xB5);  // unregistered async read reflects memory immediately
+
+    f.latch();
+    QCOMPARE(f.readInstr(), 0xB5);
+    QCOMPARE(f.readOpCode(), 22);
+    QCOMPARE(f.readRegAddr(), 5);
+
+    // A second, independent word at low address 2: 0x73 -> OpCode 14, RegisterAddr 3
+    f.program(0x02, 0x73);
+    f.setPC(0x02);
+    QCOMPARE(f.readRaw(), 0x73);
+
+    f.latch();
+    QCOMPARE(f.readInstr(), 0x73);
+    QCOMPARE(f.readOpCode(), 14);
+    QCOMPARE(f.readRegAddr(), 3);
+}
+
+// PCInc advances the program counter — the core fetch-advance behavior, wired in
+// the fixture but never asserted by the original test.
+void TestLevel8FetchStage::testPCIncrement()
+{
+    FetchStageFixture f;
+    QVERIFY(f.build());
+
+    f.setPC(0x10);
+    QCOMPARE(f.readPC(), 0x10);
+
+    f.pcInc->setOn(true);
+    f.sim->update();
+    f.pulse();
+    QCOMPARE(f.readPC(), 0x11);
+
+    f.pulse();
+    QCOMPARE(f.readPC(), 0x12);
+
+    f.pcInc->setOn(false);
+}
+
+// Reset clears the PC and the instruction register (both wired to the stage's
+// Reset). Async — no clock needed. Normal counting resumes after release.
+void TestLevel8FetchStage::testReset()
+{
+    FetchStageFixture f;
+    QVERIFY(f.build());
+
+    f.program(0x03, 0x99);
+    f.setPC(0x03);
+    f.latch();
+    QCOMPARE(f.readInstr(), 0x99);
+    QVERIFY(f.readPC() != 0x00);
+
+    // Assert Reset: PC and the latched instruction both clear asynchronously
+    f.reset->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readPC(), 0x00);
+    QCOMPARE(f.readInstr(), 0x00);
+
+    // Release and resume: increment counts up from 0
+    f.reset->setOn(false);
+    f.pcInc->setOn(true);
+    f.sim->update();
+    f.pulse();
+    QCOMPARE(f.readPC(), 0x01);
+    f.pcInc->setOn(false);
+}
+
+// With every control input low (PCLoad/PCInc/InstrLoad/ProgWrite = 0) a clock
+// edge must be a no-op: both the program counter and the latched instruction
+// hold. The level-7 PC/IR hold paths are tested individually (F74), but the
+// integrated stage was never checked for spurious clocking.
+void TestLevel8FetchStage::testHold()
+{
+    FetchStageFixture f;
+    QVERIFY(f.build());
+
+    // Establish known state: instruction 0xB5 at PC 0x05
+    f.program(0x05, 0xB5);
+    f.setPC(0x05);
+    f.latch();
+    QCOMPARE(f.readPC(), 0x05);
+    QCOMPARE(f.readInstr(), 0xB5);
+
+    // All controls already low after the helpers; pulse the clock repeatedly and
+    // confirm neither the PC nor the registered instruction changes.
+    for (int i = 0; i < 3; ++i) {
+        f.pulse();
+        QCOMPARE(f.readPC(), 0x05);
+        QCOMPARE(f.readInstr(), 0xB5);
+    }
+}
+
+void TestLevel8FetchStage::testPCDataBitIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("pc_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel8FetchStage::testPCDataBitIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    FetchStageFixture f;
+    QVERIFY(f.build());
+
+    // A one-hot PCData must load to a one-hot PC at the same position.
+    f.setPC(1 << bitPosition);
+    QCOMPARE(f.readPC(), 1 << bitPosition);
+}
+
+void TestLevel8FetchStage::testInstructionBitIsolation_data()
+{
+    QTest::addColumn<int>("bitPosition");
+    for (int i = 0; i < 8; ++i) {
+        QTest::newRow(QString("instr_bit_%1").arg(i).toLatin1()) << i;
+    }
+}
+
+void TestLevel8FetchStage::testInstructionBitIsolation()
+{
+    QFETCH(int, bitPosition);
+
+    FetchStageFixture f;
+    QVERIFY(f.build());
+
+    // A one-hot instruction must round-trip one-hot through both the async read
+    // (RawInstr) and the registered output (Instruction) — no bit-lane
+    // cross-wiring across the program/memory/register path.
+    f.program(0x04, 1 << bitPosition);
+    f.setPC(0x04);
+    QCOMPARE(f.readRaw(), 1 << bitPosition);
+
+    f.latch();
+    QCOMPARE(f.readInstr(), 1 << bitPosition);
 }
 
 void TestLevel8FetchStage::testFetchStageStructure()
