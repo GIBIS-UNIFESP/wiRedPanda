@@ -23,6 +23,7 @@ struct Ram4x1Fixture {
     InputSwitch *dataIn = nullptr;
     InputSwitch *writeEnable = nullptr;
     InputSwitch *clock = nullptr;
+    InputSwitch *reset = nullptr;
     Led *dataOut = nullptr;
     Simulation *sim = nullptr;
 
@@ -38,8 +39,9 @@ struct Ram4x1Fixture {
         dataIn = new InputSwitch();
         writeEnable = new InputSwitch();
         clock = new InputSwitch();
+        reset = new InputSwitch();
         dataOut = new Led();
-        builder.add(dataIn, writeEnable, clock, dataOut);
+        builder.add(dataIn, writeEnable, clock, reset, dataOut);
 
         ramIC = loadBuildingBlockIC("level4_ram_4x1.panda");
         builder.add(ramIC);
@@ -49,7 +51,10 @@ struct Ram4x1Fixture {
         builder.connect(dataIn, 0, ramIC, "DataIn");
         builder.connect(writeEnable, 0, ramIC, "WriteEnable");
         builder.connect(clock, 0, ramIC, "Clock");
+        builder.connect(reset, 0, ramIC, "Reset");
         builder.connect(ramIC, "DataOut", dataOut, 0);
+
+        reset->setOn(false);  // async clear inactive by default
 
         sim = builder.initSimulation();
         sim->update();
@@ -196,4 +201,31 @@ void TestLevel4RAM4X1::testSequentialWrite()
         f.writeData(writeSequence[writeIdx], 0);
         QCOMPARE(getInputStatus(f.dataOut), writeSequence[writeIdx]);
     }
+}
+
+// Async Reset: asserting Reset clears every cell to 0 without a clock edge,
+// matching level4_ram_8x1. Writes resume normally once Reset is released.
+void TestLevel4RAM4X1::testReset()
+{
+    auto &f = *s_level4Ram4x1;
+
+    // Fill all 4 cells with 1
+    for (int addr = 0; addr < 4; ++addr) {
+        f.writeData(true, addr);
+        QCOMPARE(f.readData(addr), true);
+    }
+
+    // Assert Reset (active-high): all cells forced to 0 asynchronously
+    f.reset->setOn(true);
+    f.sim->update();
+    for (int addr = 0; addr < 4; ++addr) {
+        QCOMPARE(f.readData(addr), false);
+    }
+
+    // Release Reset: the array accepts writes again
+    f.reset->setOn(false);
+    f.sim->update();
+    f.writeData(true, 2);
+    QCOMPARE(f.readData(2), true);
+    QCOMPARE(f.readData(0), false);  // other cells stayed cleared
 }
