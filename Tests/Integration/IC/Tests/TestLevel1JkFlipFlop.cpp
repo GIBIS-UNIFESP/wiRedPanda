@@ -334,3 +334,102 @@ void TestLevel1JKFlipFlop::testPresetClearOverrideClock()
     f.sim->update();
     QCOMPARE(f.q(), true);
 }
+
+// Async Preset/Clear asserted *while the clock is held HIGH*, then carried
+// through the falling edge (F65). For the JK, Clock=1 opens the MASTER and
+// locks the slave — the opposite phase from the D-FF. So the async injection
+// must force the slave directly (visible immediately) AND force the master
+// (F56 dual-latch injection), otherwise the master would carry a stale value
+// that corrupts Q on the falling-edge transfer. With J=K=0 there is no
+// competing command, so the forced value must survive the edge.
+void TestLevel1JKFlipFlop::testAsyncPresetClearUnderClockHigh()
+{
+    auto &f = *s_level1JkFlipFlop;
+    f.resetToKnownState();   // Q=0, clock low
+
+    // Hold Clock HIGH, J=K=0 (hold) — master transparent, slave locked
+    f.jIn->setOn(false);
+    f.kIn->setOn(false);
+    f.clockIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+
+    // Assert Preset while Clock=1 -> Q forced to 1 immediately
+    f.presetIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.q(), true);
+    QCOMPARE(f.qBar(), false);
+
+    // Release Preset, Clock still HIGH -> Q holds 1 (slave locked)
+    f.presetIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.q(), true);
+
+    // Falling edge with J=K=0: the master was preset too, so the transfer
+    // keeps Q=1 (a slave-only force would let a stale master corrupt Q here)
+    f.clockIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.q(), true);
+    QCOMPARE(f.qBar(), false);
+
+    // Symmetric Clear branch: set Q=1, hold Clock HIGH, clear, ride the edge
+    f.jIn->setOn(true);
+    f.kIn->setOn(false);
+    f.clockPulse();
+    QCOMPARE(f.q(), true);
+
+    f.jIn->setOn(false);
+    f.kIn->setOn(false);
+    f.clockIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.q(), true);
+
+    f.clearIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+    QCOMPARE(f.qBar(), true);
+
+    f.clearIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+
+    f.clockIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+    QCOMPARE(f.qBar(), true);
+}
+
+// Preset AND Clear asserted simultaneously — the documented "don't" input.
+// Deterministic, not undefined: both injection ORs go HIGH in both latches, so
+// both slave NORs are LOW -> Q=Q_bar=0. Pins that defined output and confirms a
+// clean resolution when one control is released.
+void TestLevel1JKFlipFlop::testPresetClearBothAsserted()
+{
+    auto &f = *s_level1JkFlipFlop;
+    f.resetToKnownState();   // clock low
+
+    f.jIn->setOn(false);
+    f.kIn->setOn(false);
+    f.clockIn->setOn(false);
+    f.presetIn->setOn(false);
+    f.clearIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+    QCOMPARE(f.qBar(), false);
+
+    // Release Clear (Preset still asserted): Preset wins -> Q=1
+    f.clearIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.q(), true);
+    QCOMPARE(f.qBar(), false);
+
+    // Re-assert both, then release Preset: Clear wins -> Q=0
+    f.clearIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+    QCOMPARE(f.qBar(), false);
+    f.presetIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.q(), false);
+    QCOMPARE(f.qBar(), true);
+}

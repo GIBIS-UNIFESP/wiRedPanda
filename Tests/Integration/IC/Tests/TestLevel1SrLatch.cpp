@@ -122,3 +122,37 @@ void TestLevel1SRLatch::testSRLatchSequential()
     QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 held
     QCOMPARE(getInputStatus(f.ledQBar), true);
 }
+
+// S=R=1 is the "forbidden" SR-latch input. It is NOT undefined in this
+// zero-delay NOR implementation: a NOR with any HIGH input is 0, so both
+// cross-coupled outputs are driven LOW deterministically (Q=Q_bar=0). This
+// pins that defined contention output and verifies the latch resolves cleanly
+// when one input is released (the classic race is only an issue if BOTH are
+// released simultaneously, which this engine settles deterministically too).
+void TestLevel1SRLatch::testInvalidStateBothHigh()
+{
+    auto &f = *s_level1SrLatch;
+
+    // Drive S=R=1: both NOR gates see a HIGH input -> both outputs LOW
+    f.setIn->setOn(true);
+    f.resetIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 (NOR with a HIGH input)
+    QCOMPARE(getInputStatus(f.ledQBar), false);  // Q_bar=0 too — the contention state
+
+    // Release R (S still 1): latch resolves to the Set state Q=1
+    f.resetIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), true);
+    QCOMPARE(getInputStatus(f.ledQBar), false);
+
+    // Drive S=R=1 again, then release S: latch resolves to the Reset state Q=0
+    f.resetIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+    QCOMPARE(getInputStatus(f.ledQBar), false);
+    f.setIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledQ), false);
+    QCOMPARE(getInputStatus(f.ledQBar), true);
+}

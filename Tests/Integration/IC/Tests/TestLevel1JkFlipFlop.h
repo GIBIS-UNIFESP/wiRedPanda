@@ -21,4 +21,6 @@ private slots:
     void testAsyncPreset();
     void testAsyncClear();
     void testPresetClearOverrideClock();
+    void testAsyncPresetClearUnderClockHigh();
+    void testPresetClearBothAsserted();
 };

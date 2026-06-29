@@ -77,6 +77,13 @@ void TestLevel1DLatch::cleanup()
 // - When Enable=1: Q follows D input (transparent)
 // - When Enable=0: Q holds last value (latched)
 //
+// Note: the internal SR latch's forbidden S=R=1 state is unreachable from the
+// D/Enable interface — S=D·Enable and R=D_bar·Enable are mutually exclusive
+// (S and R can never both be HIGH), so there is no contention test here. Adding
+// one would require driving the internal nodes directly, which would
+// misrepresent the part. The SR-latch contention itself is covered by
+// TestLevel1SRLatch::testInvalidStateBothHigh.
+//
 // This test uses sequential design - single circuit with multiple steps
 // to properly test both transparent and hold modes.
 void TestLevel1DLatch::testDLatchSequential()
