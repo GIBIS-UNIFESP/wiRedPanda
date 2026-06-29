@@ -21,4 +21,5 @@ private slots:
     void testHoldBehavior();
     void testIsolation();
     void testSequentialWrite();
+    void testReset();
 };
