@@ -1034,7 +1034,7 @@ QString msg = tr("New translatable message");
 
 ## The Test System
 
-wiRedPanda has a comprehensive test suite with **137 test classes**.
+wiRedPanda has a comprehensive test suite with **176 test classes**.
 
 ### Test Organization
 
