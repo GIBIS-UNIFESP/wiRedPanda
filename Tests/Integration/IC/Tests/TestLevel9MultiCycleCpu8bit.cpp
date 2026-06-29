@@ -11,6 +11,7 @@
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
+#include "Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
@@ -23,6 +24,12 @@ struct MultiCycleCpu8bitFixture {
     IC *ic = nullptr;
     InputSwitch *clk = nullptr;
     InputSwitch *reset = nullptr;
+    InputSwitch *progWrite = nullptr;
+    QVector<InputSwitch *> progAddr;
+    QVector<InputSwitch *> progData;
+    InputSwitch *regProgWrite = nullptr;
+    QVector<InputSwitch *> regProgAddr;
+    QVector<InputSwitch *> regProgData;
     QVector<Led *> pcLeds;
     QVector<Led *> resultLeds;
     QVector<Led *> counterLeds;
@@ -39,6 +46,17 @@ struct MultiCycleCpu8bitFixture {
 
         clk = new InputSwitch(); builder.add(clk);
         reset = new InputSwitch(); builder.add(reset);
+        progWrite = new InputSwitch(); builder.add(progWrite);
+        regProgWrite = new InputSwitch(); builder.add(regProgWrite);
+
+        for (int i = 0; i < 8; ++i) {
+            auto *pa = new InputSwitch(); builder.add(pa); progAddr.append(pa);
+            auto *pd = new InputSwitch(); builder.add(pd); progData.append(pd);
+            auto *rpd = new InputSwitch(); builder.add(rpd); regProgData.append(rpd);
+        }
+        for (int i = 0; i < 3; ++i) {
+            auto *rpa = new InputSwitch(); builder.add(rpa); regProgAddr.append(rpa);
+        }
 
         for (int i = 0; i < 8; i++) {
             auto *p = new Led(); builder.add(p); pcLeds.append(p);
@@ -51,6 +69,17 @@ struct MultiCycleCpu8bitFixture {
 
         builder.connect(clk, 0, ic, "Clock");
         builder.connect(reset, 0, ic, "Reset");
+        builder.connect(progWrite, 0, ic, "ProgWrite");
+        builder.connect(regProgWrite, 0, ic, "RegProgWrite");
+
+        for (int i = 0; i < 8; ++i) {
+            builder.connect(progAddr[i], 0, ic, QString("ProgAddr[%1]").arg(i));
+            builder.connect(progData[i], 0, ic, QString("ProgData[%1]").arg(i));
+            builder.connect(regProgData[i], 0, ic, QString("RegProgData[%1]").arg(i));
+        }
+        for (int i = 0; i < 3; ++i) {
+            builder.connect(regProgAddr[i], 0, ic, QString("RegProgAddr[%1]").arg(i));
+        }
 
         for (int i = 0; i < 8; i++) {
             builder.connect(ic, QString("PC[%1]").arg(i), pcLeds[i], 0);
@@ -77,6 +106,55 @@ struct MultiCycleCpu8bitFixture {
         sim->update();
         reset->setOn(false);
         sim->update();
+    }
+
+    // Hold reset (freezes the cycle counter at phase 0, so the fetch stage's
+    // gated clock passes the full clock) while loading program/registers.
+    void beginProgramming()
+    {
+        progWrite->setOn(false);
+        regProgWrite->setOn(false);
+        reset->setOn(true);
+        sim->update();
+    }
+
+    void programInstruction(int addr, int instrByte)
+    {
+        setMultiBitInput(progAddr, addr);
+        setMultiBitInput(progData, instrByte);
+        progWrite->setOn(true);
+        sim->update();
+        clockCycle(sim, clk);   // counter frozen at 00 -> fetch gated clock = clock
+        progWrite->setOn(false);
+        sim->update();
+    }
+
+    void programRegister(int regIdx, int value)
+    {
+        setMultiBitInput(regProgAddr, regIdx);
+        setMultiBitInput(regProgData, value);
+        regProgWrite->setOn(true);
+        sim->update();
+        clockCycle(sim, clk);   // regfile writes on the main clock
+        regProgWrite->setOn(false);
+        sim->update();
+    }
+
+    // Release reset and run one full 4-phase instruction starting from phase 0.
+    // The ALU result of the instruction at PC is observable once the fetch phase
+    // latches the instruction register (one clock edge after release).
+    void run()
+    {
+        reset->setOn(false);
+        sim->update();
+    }
+
+    // Run a full instruction (4 phases) so its write-back completes.
+    void stepInstruction()
+    {
+        for (int i = 0; i < 4; ++i) {
+            clockCycle(sim, clk);
+        }
     }
 };
 
@@ -105,7 +183,10 @@ void TestLevel9MultiCycleCPU8Bit::testCPUStructure()
 {
     auto &f = *s_level9MultiCycleCpu;
     QVERIFY(f.ic != nullptr);
-    QCOMPARE(f.ic->inputSize(), 2);
+    // Clock + Reset + ProgAddr[8] + ProgData[8] + ProgWrite
+    //       + RegProgAddr[3] + RegProgData[8] + RegProgWrite = 31 (matches single-cycle)
+    QCOMPARE(f.ic->inputSize(), 31);
+    // PC[8] + Result[8] + Instruction[8] + CycleCounter[2] = 26
     QCOMPARE(f.ic->outputSize(), 26);
 }
 
@@ -116,11 +197,8 @@ void TestLevel9MultiCycleCPU8Bit::testCycleCounter_data()
     QTest::addColumn<int>("expectedPC");
 
     // PC increments at the START of each 4-cycle instruction group (when the
-    // cycle counter leaves phase 0), not at the wrap. Under the engine's
-    // synchronous (non-blocking) semantics the PC's gated clock samples the
-    // counter's pre-edge state, so the increment lands one phase earlier than the
-    // old blocking engine reported — i.e. PC = ceil(cycles / 4). This matches the
-    // exported SystemVerilog (validated by testSystemVerilogExportMultiCycleCpu8Bit).
+    // cycle counter leaves phase 0); PC = ceil(cycles / 4) under the engine's
+    // synchronous semantics. Matches the exported SystemVerilog.
     QTest::newRow("initial (00, PC=0)") << 0 << 0x0 << 0x0;
     QTest::newRow("cycle 1 (01, PC=1)") << 1 << 0x1 << 0x1;
     QTest::newRow("cycle 2 (10, PC=1)") << 2 << 0x2 << 0x1;
@@ -176,57 +254,169 @@ void TestLevel9MultiCycleCPU8Bit::testPipelineStageSequence()
     }
 }
 
+// Program a known instruction and confirm the fetch stage actually fetches it
+// (previously a vacuous range check on blank memory).
 void TestLevel9MultiCycleCPU8Bit::testInstructionVisibleDuringFetch()
 {
     auto &f = *s_level9MultiCycleCpu;
 
-    f.resetCpu();
+    const int instr = encodeInstruction(ADD, 1);
+    f.beginProgramming();
+    f.programInstruction(0x00, instr);
+    f.run();
 
-    for (int i = 0; i < 4; i++) {
-        clockCycle(f.sim, f.clk);
-    }
-
-    QCOMPARE(f.readCounter(), 0);
-
-    int instr = f.readInstr();
-    QVERIFY2(instr >= 0 && instr <= 255,
-        qPrintable(QString("Instruction %1 out of 8-bit range [0,255]").arg(instr)));
+    // Phase 0: the fetched word is available; latch it into the IR
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(f.readInstr(), instr);
 }
 
+// Program operands + an ADD and confirm the deterministic computed result
+// (previously a vacuous range check on the blank-memory result).
 void TestLevel9MultiCycleCPU8Bit::testResultRegisterReadable()
 {
     auto &f = *s_level9MultiCycleCpu;
 
-    f.resetCpu();
+    f.beginProgramming();
+    f.programRegister(0, 0x12);   // R0 (accumulator)
+    f.programRegister(1, 0x34);   // R1
+    f.programInstruction(0x00, encodeInstruction(ADD, 1));
+    f.run();
 
-    for (int cycle = 0; cycle < 8; ++cycle) {
-        clockCycle(f.sim, f.clk);
-
-        int counter = f.readCounter();
-        if (counter == 0) {
-            int result = f.readResult();
-            QVERIFY2(result >= 0 && result <= 255,
-                qPrintable(QString("Cycle %1: Result %2 out of 8-bit range [0,255]").arg(cycle).arg(result)));
-        }
-    }
+    clockCycle(f.sim, f.clk);     // latch IR -> decode/execute combinational
+    QCOMPARE(f.readResult(), 0x46);
 }
 
 void TestLevel9MultiCycleCPU8Bit::testInstructionStabilityAcrossPipelineStages()
 {
     auto &f = *s_level9MultiCycleCpu;
 
-    f.resetCpu();
+    // Program a known instruction so the stability check is meaningful
+    f.beginProgramming();
+    f.programInstruction(0x00, encodeInstruction(XOR, 2));
+    f.run();
 
-    QCOMPARE(f.readCounter(), 0);
-
-    int instrFetch = f.readInstr();
+    // Latch the instruction in the fetch phase, then hold it across decode/
+    // execute/memory phases of the same instruction.
+    clockCycle(f.sim, f.clk);
+    int instrFetched = f.readInstr();
 
     for (int stage = 1; stage < 4; ++stage) {
-        clockCycle(f.sim, f.clk);
-
         QCOMPARE(f.readCounter(), stage);
-
         int instrStage = f.readInstr();
-        QCOMPARE(instrStage, instrFetch);
+        QCOMPARE(instrStage, instrFetched);
+        clockCycle(f.sim, f.clk);
     }
+}
+
+// Full ISA: program R0/R1 and one ALU instruction, run it, and verify the
+// computed result. The accumulator model is identical to the single-cycle CPU
+// (OperandA=R0, OperandB=R1).
+void TestLevel9MultiCycleCPU8Bit::testALUExecution_data()
+{
+    QTest::addColumn<int>("aluOp");
+    QTest::addColumn<int>("operandA");
+    QTest::addColumn<int>("operandB");
+    QTest::addColumn<int>("expectedResult");
+
+    QTest::newRow("ADD 3+5=8")        << static_cast<int>(ADD) << 3    << 5    << 8;
+    QTest::newRow("ADD 0xFF+1=0x00")  << static_cast<int>(ADD) << 0xFF << 0x01 << 0x00;
+    QTest::newRow("SUB 9-5=4")        << static_cast<int>(SUB) << 9    << 5    << 4;
+    QTest::newRow("SUB 0-1=0xFF")     << static_cast<int>(SUB) << 0    << 1    << 0xFF;
+    QTest::newRow("AND 0xF0&0x0F=0")  << static_cast<int>(AND) << 0xF0 << 0x0F << 0x00;
+    QTest::newRow("AND 0xFF&0x42")    << static_cast<int>(AND) << 0xFF << 0x42 << 0x42;
+    QTest::newRow("OR 0xF0|0x0F=0xFF") << static_cast<int>(OR) << 0xF0 << 0x0F << 0xFF;
+    QTest::newRow("XOR 0xAA^0x55=0xFF") << static_cast<int>(XOR) << 0xAA << 0x55 << 0xFF;
+    QTest::newRow("XOR N^N=0")        << static_cast<int>(XOR) << 0x42 << 0x42 << 0x00;
+    QTest::newRow("NOT ~0x42=0xBD")   << static_cast<int>(NOT) << 0x42 << 0x00 << 0xBD;
+    QTest::newRow("NOT ~0x00=0xFF")   << static_cast<int>(NOT) << 0x00 << 0x00 << 0xFF;
+    QTest::newRow("SHL 0x42<<1=0x84") << static_cast<int>(SHL) << 0x42 << 0x00 << 0x84;
+    QTest::newRow("SHL 0x80<<1=0x00") << static_cast<int>(SHL) << 0x80 << 0x00 << 0x00;
+    QTest::newRow("SHR 0x84>>1=0x42") << static_cast<int>(SHR) << 0x84 << 0x00 << 0x42;
+    QTest::newRow("SHR 0x01>>1=0x00") << static_cast<int>(SHR) << 0x01 << 0x00 << 0x00;
+}
+
+void TestLevel9MultiCycleCPU8Bit::testALUExecution()
+{
+    QFETCH(int, aluOp);
+    QFETCH(int, operandA);
+    QFETCH(int, operandB);
+    QFETCH(int, expectedResult);
+
+    auto &f = *s_level9MultiCycleCpu;
+
+    f.beginProgramming();
+    f.programRegister(1, operandB);
+    f.programRegister(0, operandA);
+    f.programInstruction(0x00, encodeInstruction(aluOp, 1));
+    f.run();
+
+    clockCycle(f.sim, f.clk);     // latch IR; ALU result is combinational
+    QCOMPARE(f.readResult(), expectedResult);
+}
+
+// Drive an ALU operand from a high register (R3/R5/R6/R7) so the high
+// register-address bit (Instruction[2] -> register file Read_Addr2[2]) is
+// exercised — the ISA test above only ever addresses R1.
+void TestLevel9MultiCycleCPU8Bit::testHighRegisterOperand()
+{
+    auto &f = *s_level9MultiCycleCpu;
+
+    const int regs[] = {3, 5, 6, 7};
+    for (int reg : regs) {
+        f.sim->restart();
+        f.sim->update();
+
+        const int operandB = 0x10 + reg;
+        f.beginProgramming();
+        f.programRegister(reg, operandB);
+        f.programRegister(0, 0x10);
+        f.programInstruction(0x00, encodeInstruction(ADD, reg));
+        f.run();
+
+        clockCycle(f.sim, f.clk);   // latch IR; ALU result combinational
+        QVERIFY2(f.readResult() == (0x10 + operandB),
+            qPrintable(QString("ADD R%1: expected 0x%2, got 0x%3")
+                .arg(reg).arg(0x10 + operandB, 0, 16).arg(f.readResult(), 0, 16)));
+    }
+}
+
+// A 3-instruction program threading the accumulator through the register
+// write-back path: R0 = ((R0+R1)-R2) & R1.
+void TestLevel9MultiCycleCPU8Bit::testMultipleInstructions()
+{
+    auto &f = *s_level9MultiCycleCpu;
+
+    f.beginProgramming();
+    f.programRegister(0, 0x10);   // R0 accumulator
+    f.programRegister(1, 0x20);   // R1
+    f.programRegister(2, 0x05);   // R2
+    f.programInstruction(0, encodeInstruction(ADD, 1));  // R0 = 0x10 + 0x20 = 0x30
+    f.programInstruction(1, encodeInstruction(SUB, 2));  // R0 = 0x30 - 0x05 = 0x2B
+    f.programInstruction(2, encodeInstruction(AND, 1));  // R0 = 0x2B & 0x20 = 0x20
+    f.run();
+
+    f.stepInstruction();          // execute instruction 0 (writes R0=0x30)
+    f.stepInstruction();          // execute instruction 1 (writes R0=0x2B)
+    f.stepInstruction();          // execute instruction 2 (writes R0=0x20)
+
+    // Verify by reading R0 back through a STORE/LOAD is overkill; the AND result
+    // is observable on the final instruction's execute phase. Re-run a NOP-free
+    // check: fetch instruction 2 result directly.
+    QCOMPARE(f.readResult(), 0x20);
+}
+
+// STORE the accumulator to data memory, then LOAD it back.
+void TestLevel9MultiCycleCPU8Bit::testStoreLoad()
+{
+    auto &f = *s_level9MultiCycleCpu;
+
+    f.beginProgramming();
+    f.programRegister(0, 0xAB);
+    f.programInstruction(0, encodeStore(3));   // mem[3] = R0 = 0xAB
+    f.programInstruction(1, encodeLoad(3));    // Result = mem[3]
+    f.run();
+
+    f.stepInstruction();          // execute STORE
+    f.stepInstruction();          // execute LOAD
+    QCOMPARE(f.readResult(), 0xAB);
 }

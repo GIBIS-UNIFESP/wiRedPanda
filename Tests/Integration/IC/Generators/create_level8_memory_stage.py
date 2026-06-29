@@ -14,7 +14,7 @@ Inputs:
   MemRead (memory read enable signal)
   MemWrite (memory write enable signal)
   Clock (synchronization signal)
-  Reset (reset signal)
+  Reset (async clear of the backing memory, active HIGH — F54)
 
 Outputs:
   DataOut[0..7] (8-bit output: memory read data or pass-through result)
@@ -128,9 +128,6 @@ class MemoryStageBuilder(ICBuilderBase):
         await self.log("  ✓ Created control signals")
 
         # ---- Instantiate RAM ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ram_8x8")):
-            return False
-
         ram_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level6_ram_8x8"), input_x + (3 * HORIZONTAL_GATE_SPACING), 300.0, "RAM"
         )
@@ -156,6 +153,12 @@ class MemoryStageBuilder(ICBuilderBase):
 
         # ---- Connect MemWrite to RAM WriteEnable ----
         if not await self.connect(memwrite_id, ram_id, target_port_label="WriteEnable"):
+            return False
+
+        # ---- Connect Reset to RAM Reset (async memory clear — F54) ----
+        # (This input used to be dead: created and documented but wired to
+        # nothing.)
+        if not await self.connect(reset_id, ram_id, target_port_label="Reset"):
             return False
 
         await self.log("  ✓ Connected RAM inputs")
@@ -209,7 +212,7 @@ class MemoryStageBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created Memory Stage IC"
+            f"✅ Successfully created Memory Stage IC "
             f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")

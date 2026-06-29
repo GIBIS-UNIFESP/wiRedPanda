@@ -598,7 +598,7 @@ level6_ram_8x8 level6_ram_8x8_inst_1 (
     .datain7(datain7),
     .writeenable(memwrite),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout0(w_level6_ram_8x8_inst_1_dataout0),
     .dataout1(w_level6_ram_8x8_inst_1_dataout1),
     .dataout2(w_level6_ram_8x8_inst_1_dataout2),

@@ -23,6 +23,7 @@ struct DecodeStageFixture {
     IC *ic = nullptr;
     QVector<InputSwitch *> opcodeInputs;
     QVector<Led *> aluopLeds;
+    QVector<Led *> decodedLineLeds;
     Led *regwriteLed = nullptr;
     Led *memreadLed = nullptr;
     Led *memwriteLed = nullptr;
@@ -39,7 +40,6 @@ struct DecodeStageFixture {
         for (int i = 0; i < 5; i++) {
             auto *sw = new InputSwitch(); builder.add(sw); opcodeInputs.append(sw);
         }
-
         for (int i = 0; i < 3; i++) {
             auto *led = new Led(); builder.add(led); aluopLeds.append(led);
         }
@@ -50,13 +50,16 @@ struct DecodeStageFixture {
         for (int i = 0; i < 5; i++) {
             builder.connect(opcodeInputs[i], 0, ic, QString("OpCode[%1]").arg(i));
         }
-
         for (int i = 0; i < 3; i++) {
             builder.connect(ic, QString("ALUOp[%1]").arg(i), aluopLeds[i], 0);
         }
         builder.connect(ic, "RegWrite", regwriteLed, 0);
         builder.connect(ic, "MemRead", memreadLed, 0);
         builder.connect(ic, "MemWrite", memwriteLed, 0);
+        for (int i = 0; i < 32; i++) {
+            auto *led = new Led(); builder.add(led); decodedLineLeds.append(led);
+            builder.connect(ic, QString("InstrDecodedLines[%1]").arg(i), decodedLineLeds[i], 0);
+        }
 
         sim = builder.initSimulation();
         sim->update();
@@ -110,6 +113,12 @@ void TestLevel8DecodeStage::testDecodeStage_data()
     QTest::newRow("STORE (0x18)") << 0x18 << 0 << false << false << true;
     QTest::newRow("LOAD-ALUOp5 (0x15)") << 0x15 << 5 << false << true << false;
     QTest::newRow("STORE-ALUOp7 (0x1F)") << 0x1F << 7 << false << false << true;
+
+    // OpCode[4:3] = 01 quadrant (0x08-0x0F): OpCode[4]=0 so RegWrite=1 and no
+    // memory op (these decode as register-writing ALU ops). This quadrant was
+    // the one untested combination of the MemRead/MemWrite control space.
+    QTest::newRow("ALU-reg 0x0A (ALUOp2)") << 0x0A << 2 << true << false << false;
+    QTest::newRow("ALU-reg 0x0F (ALUOp7)") << 0x0F << 7 << true << false << false;
 }
 
 void TestLevel8DecodeStage::testDecodeStage()
@@ -139,5 +148,25 @@ void TestLevel8DecodeStage::testDecodeStageStructure()
     // OpCode[5] only (F33: the unused Clock element and dead Reset switch
     // were removed — the stage is purely combinational)
     QCOMPARE(f.ic->inputSize(), 5);
-    QCOMPARE(f.ic->outputSize(), 6);
+    // ALUOp[3] + RegWrite + MemRead + MemWrite + InstrDecodedLines[32]
+    // (the one-hot decode was documented from the start, built now)
+    QCOMPARE(f.ic->outputSize(), 38);
+}
+
+// Exactly one InstrDecodedLines line fires per opcode, and it is line
+// number == opcode (one-hot decode, hierarchical 4-to-16 + OpCode[4] gate)
+void TestLevel8DecodeStage::testInstrDecodedLinesOneHot()
+{
+    auto &f = *s_level8DecodeStage;
+
+    for (int opcode = 0; opcode < 32; ++opcode) {
+        setMultiBitInput(f.opcodeInputs, opcode);
+        f.sim->update();
+
+        for (int line = 0; line < 32; ++line) {
+            QVERIFY2(getInputStatus(f.decodedLineLeds[line]) == (line == opcode),
+                qPrintable(QString("opcode %1: line %2 should be %3")
+                    .arg(opcode).arg(line).arg(line == opcode ? "active" : "inactive")));
+        }
+    }
 }

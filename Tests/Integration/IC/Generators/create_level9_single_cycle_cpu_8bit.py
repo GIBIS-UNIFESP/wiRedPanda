@@ -5,7 +5,8 @@
 """
 Create 8-bit Single-Cycle CPU IC
 
-Implements a complete 8-bit single-cycle CPU with 4 pipeline stages integrated:
+Implements a complete 8-bit single-cycle CPU with 4 combinational datapath
+stages integrated (no pipeline — one instruction completes per clock):
 - Fetch Stage: Instruction retrieval and program counter management
 - Decode Stage: Opcode to control signal conversion
 - Execute Stage: ALU operations with 8 supported operations
@@ -147,9 +148,7 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created register file programming inputs")
 
-        # ---- Instantiate pipeline stages ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level8_fetch_stage")):
-            return False
+        # ---- Instantiate datapath stages ----
         fetch_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level8_fetch_stage"), stage_x_offsets[0], stage_y, "Fetch"
         )
@@ -157,8 +156,6 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Instantiated Fetch Stage")
 
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level8_decode_stage")):
-            return False
         decode_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level8_decode_stage"), stage_x_offsets[1], stage_y, "Decode"
         )
@@ -166,8 +163,6 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Instantiated Decode Stage")
 
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level8_execute_stage")):
-            return False
         execute_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level8_execute_stage"), stage_x_offsets[2], stage_y, "Execute"
         )
@@ -175,8 +170,6 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Instantiated Execute Stage")
 
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level8_memory_stage")):
-            return False
         memory_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level8_memory_stage"), stage_x_offsets[3], stage_y, "Memory"
         )
@@ -185,8 +178,6 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated Memory Stage")
 
         # ---- Instantiate Register File ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_register_file_8x8")):
-            return False
         regfile_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level6_register_file_8x8"), 425.0, reg_file_y, "RegFile"
         )
@@ -196,8 +187,6 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         # ---- Instantiate register file programming muxes ----
         # Write data mux: In0=Memory DataOut (normal), In1=RegProgData (programming)
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_8bit")):
-            return False
         write_data_mux_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level4_bus_mux_8bit"), 425.0, reg_file_y - 150.0, "WriteDataMux"
         )
@@ -215,7 +204,7 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
             write_addr_mux_ids.append(mux_id)
 
         # Write enable logic: (RegWrite AND NOT(ProgWrite) AND NOT(Reset)) OR RegProgWrite
-        # This prevents the normal pipeline from writing registers during programming or reset
+        # This prevents the normal datapath from writing registers during programming or reset
         prog_not_id = await self.create_element("Not", 500.0, reg_file_y - 200.0, "ProgWriteNOT")
         if prog_not_id is None:
             return False
@@ -278,6 +267,11 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         if not await self.connect(clock_id, memory_id, target_port_label="Clock"):
             return False
         if not await self.connect(clock_id, regfile_id, target_port_label="Clock"):
+            return False
+
+        # Reset clears the data memory too (F54 — the memory stage's Reset
+        # used to be dead; the CPU now drives it)
+        if not await self.connect(reset_id, memory_id, target_port_label="Reset"):
             return False
 
         await self.log("  ✓ Connected Clock, Reset, and programming inputs")
@@ -482,7 +476,7 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 8-bit Single-Cycle CPU IC"
+            f"✅ Successfully created 8-bit Single-Cycle CPU IC "
             f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
