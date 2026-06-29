@@ -16,4 +16,5 @@ private slots:
 
     void testStackMemoryInterface_data();
     void testStackMemoryInterface();
+    void testStackLifoRoundTrip();
 };
