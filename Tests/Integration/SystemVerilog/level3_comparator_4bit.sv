@@ -13,6 +13,9 @@ module level3_comparator_4bit_ic (
     input b1,
     input b2,
     input b3,
+    input greaterin,
+    input equalin,
+    input lessin,
     output greater,
     output equal,
     output less
@@ -51,6 +54,11 @@ wire aux_and_30;
 wire aux_or_31;
 wire aux_and_32;
 wire aux_or_33;
+wire aux_and_34;
+wire aux_or_35;
+wire aux_and_36;
+wire aux_and_37;
+wire aux_or_38;
 
 // Internal logic
 assign aux_not_1 = ~a0;
@@ -86,10 +94,15 @@ assign aux_and_30 = (aux_xnor_18 & aux_or_27);
 assign aux_or_31 = (aux_and_19 | aux_and_30);
 assign aux_and_32 = (aux_xnor_18 & aux_or_29);
 assign aux_or_33 = (aux_and_20 | aux_and_32);
+assign aux_and_34 = (aux_and_21 & greaterin);
+assign aux_or_35 = (aux_or_31 | aux_and_34);
+assign aux_and_36 = (aux_and_21 & equalin);
+assign aux_and_37 = (aux_and_21 & lessin);
+assign aux_or_38 = (aux_or_33 | aux_and_37);
 
-assign greater = aux_or_31;
-assign equal = aux_and_21;
-assign less = aux_or_33;
+assign greater = aux_or_35;
+assign equal = aux_and_36;
+assign less = aux_or_38;
 endmodule
 
 module level3_comparator_4bit (
@@ -102,11 +115,14 @@ input input_switch5,
 input input_switch6,
 input input_switch7,
 input input_switch8,
+input input_switch9,
+input input_switch10,
+input input_switch11,
 
 /* ========= Outputs ========== */
-output led10_1,
-output led11_1,
-output led12_1
+output led13_1,
+output led14_1,
+output led15_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL3_COMPARATOR_4BIT (level3_comparator_4bit_ic)
@@ -125,13 +141,16 @@ level3_comparator_4bit_ic level3_comparator_4bit_ic_inst_1 (
     .b1(input_switch6),
     .b2(input_switch7),
     .b3(input_switch8),
+    .greaterin(input_switch9),
+    .equalin(input_switch10),
+    .lessin(input_switch11),
     .greater(w_level3_comparator_4bit_ic_inst_1_greater),
     .equal(w_level3_comparator_4bit_ic_inst_1_equal),
     .less(w_level3_comparator_4bit_ic_inst_1_less)
 );
 
 // Writing output data. //
-assign led10_1 = w_level3_comparator_4bit_ic_inst_1_greater;
-assign led11_1 = w_level3_comparator_4bit_ic_inst_1_equal;
-assign led12_1 = w_level3_comparator_4bit_ic_inst_1_less;
+assign led13_1 = w_level3_comparator_4bit_ic_inst_1_greater;
+assign led14_1 = w_level3_comparator_4bit_ic_inst_1_equal;
+assign led15_1 = w_level3_comparator_4bit_ic_inst_1_less;
 endmodule

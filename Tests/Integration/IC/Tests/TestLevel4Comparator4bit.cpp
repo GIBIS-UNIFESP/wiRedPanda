@@ -18,6 +18,7 @@ struct Level4Comparator4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *swA[4] = {}, *swB[4] = {};
+    InputSwitch *swGtIn = nullptr, *swEqIn = nullptr, *swLtIn = nullptr;
     Led *ledGreater = nullptr, *ledEqual = nullptr, *ledLess = nullptr;
     Simulation *sim = nullptr;
 
@@ -36,6 +37,13 @@ struct Level4Comparator4bitFixture {
             builder.connect(swA[i], 0, ic, QString("A[%1]").arg(i));
             builder.connect(swB[i], 0, ic, QString("B[%1]").arg(i));
         }
+        swGtIn = new InputSwitch();
+        swEqIn = new InputSwitch();
+        swLtIn = new InputSwitch();
+        builder.add(swGtIn, swEqIn, swLtIn);
+        builder.connect(swGtIn, 0, ic, "GreaterIn");
+        builder.connect(swEqIn, 0, ic, "EqualIn");
+        builder.connect(swLtIn, 0, ic, "LessIn");
 
         ledGreater = new Led();
         ledEqual = new Led();
@@ -49,6 +57,14 @@ struct Level4Comparator4bitFixture {
         sim = builder.initSimulation();
         sim->update();
         return true;
+    }
+
+    // 74LS85 standalone tie-off: EqualIn high, GreaterIn/LessIn low.
+    void tieStandalone()
+    {
+        swGtIn->setOn(false);
+        swEqIn->setOn(true);
+        swLtIn->setOn(false);
     }
 };
 
@@ -110,6 +126,7 @@ void TestLevel4Comparator4Bit::testComparator4Bit()
 
     auto &f = *s_level4Comparator4bit;
 
+    f.tieStandalone();
     for (int i = 0; i < 4; ++i) {
         f.swA[i]->setOn((aValue >> i) & 1);
         f.swB[i]->setOn((bValue >> i) & 1);
@@ -119,4 +136,46 @@ void TestLevel4Comparator4Bit::testComparator4Bit()
     QCOMPARE(getInputStatus(f.ledGreater), expectedGreater);
     QCOMPARE(getInputStatus(f.ledEqual), expectedEqual);
     QCOMPARE(getInputStatus(f.ledLess), expectedLess);
+}
+
+// 74LS85 cascade behaviour (same as the level-3 fixture): equal nibbles defer
+// to the cascade inputs; unequal nibbles let the local comparison dominate.
+void TestLevel4Comparator4Bit::testComparator4BitCascade()
+{
+    auto &f = *s_level4Comparator4bit;
+
+    auto setAB = [&](int a, int b) {
+        for (int i = 0; i < 4; ++i) {
+            f.swA[i]->setOn((a >> i) & 1);
+            f.swB[i]->setOn((b >> i) & 1);
+        }
+    };
+    auto setCascade = [&](bool gt, bool eq, bool lt) {
+        f.swGtIn->setOn(gt);
+        f.swEqIn->setOn(eq);
+        f.swLtIn->setOn(lt);
+    };
+
+    setAB(0xA, 0xA);                    // equal nibbles
+    setCascade(true, false, false);
+    f.sim->update();
+    QVERIFY(getInputStatus(f.ledGreater) && !getInputStatus(f.ledEqual) && !getInputStatus(f.ledLess));
+
+    setCascade(false, true, false);
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.ledGreater) && getInputStatus(f.ledEqual) && !getInputStatus(f.ledLess));
+
+    setCascade(false, false, true);
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.ledGreater) && !getInputStatus(f.ledEqual) && getInputStatus(f.ledLess));
+
+    setAB(0xC, 0x3);                    // A > B locally; cascade says less — ignored
+    setCascade(false, false, true);
+    f.sim->update();
+    QVERIFY(getInputStatus(f.ledGreater) && !getInputStatus(f.ledEqual) && !getInputStatus(f.ledLess));
+
+    setAB(0x3, 0xC);                    // A < B locally; cascade says greater — ignored
+    setCascade(true, false, false);
+    f.sim->update();
+    QVERIFY(!getInputStatus(f.ledGreater) && !getInputStatus(f.ledEqual) && getInputStatus(f.ledLess));
 }
