@@ -163,6 +163,6 @@ void TestLevel6RAM8X8::testRAMStructure()
 
     QVERIFY(f.ic != nullptr);
 
-    QCOMPARE(f.ic->inputSize(), 13);
+    QCOMPARE(f.ic->inputSize(), 14);
     QCOMPARE(f.ic->outputSize(), 8);
 }

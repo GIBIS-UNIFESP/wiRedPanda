@@ -1523,6 +1523,7 @@ module level6_ram_8x8 (
     input datain7,
     input writeenable,
     input clock,
+    input reset,
     output dataout0,
     output dataout1,
     output dataout2,
@@ -1558,7 +1559,7 @@ level4_ram_8x1 level4_ram_8x1_inst_1 (
     .datain(datain0),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_1_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_2 (
@@ -1568,7 +1569,7 @@ level4_ram_8x1 level4_ram_8x1_inst_2 (
     .datain(datain1),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_2_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_3 (
@@ -1578,7 +1579,7 @@ level4_ram_8x1 level4_ram_8x1_inst_3 (
     .datain(datain2),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_3_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_4 (
@@ -1588,7 +1589,7 @@ level4_ram_8x1 level4_ram_8x1_inst_4 (
     .datain(datain3),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_4_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_5 (
@@ -1598,7 +1599,7 @@ level4_ram_8x1 level4_ram_8x1_inst_5 (
     .datain(datain4),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_5_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_6 (
@@ -1608,7 +1609,7 @@ level4_ram_8x1 level4_ram_8x1_inst_6 (
     .datain(datain5),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_6_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_7 (
@@ -1618,7 +1619,7 @@ level4_ram_8x1 level4_ram_8x1_inst_7 (
     .datain(datain6),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_7_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_8 (
@@ -1628,7 +1629,7 @@ level4_ram_8x1 level4_ram_8x1_inst_8 (
     .datain(datain7),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_8_dataout)
 );
 
@@ -3707,6 +3708,7 @@ level6_ram_8x8 level6_ram_8x8_inst_1 (
     .datain7(datain7),
     .writeenable(writeenable),
     .clock(clock),
+    .reset(1'b0),
     .dataout0(w_level6_ram_8x8_inst_1_dataout0),
     .dataout1(w_level6_ram_8x8_inst_1_dataout1),
     .dataout2(w_level6_ram_8x8_inst_1_dataout2),
@@ -4006,6 +4008,7 @@ level6_ram_8x8 level6_ram_8x8_inst_1 (
     .datain7(datain7),
     .writeenable(memwrite),
     .clock(clock),
+    .reset(1'b0),
     .dataout0(w_level6_ram_8x8_inst_1_dataout0),
     .dataout1(w_level6_ram_8x8_inst_1_dataout1),
     .dataout2(w_level6_ram_8x8_inst_1_dataout2),
