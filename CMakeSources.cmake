@@ -461,6 +461,7 @@ set(TEST_WIREDPANDA_SOURCES
 )
 
 set(TEST_WIREDPANDA_HEADERS
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/CpuCommon.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/CpuHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUAlu.h
