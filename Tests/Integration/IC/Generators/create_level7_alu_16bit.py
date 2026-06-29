@@ -32,8 +32,10 @@ Operations (same as 8-bit ALU):
   011 (3): OR  - Bitwise OR
   100 (4): XOR - Bitwise XOR
   101 (5): NOT - Bitwise NOT (~A, B ignored)
-  110 (6): SHL - Shift left (A << 1)
-  111 (7): SHR - Shift right (A >> 1)
+  110 (6): SHL - Shift left (true 16-bit A << 1; the byte halves' fills are
+           chained, so A[7] crosses into Result[8] — F61)
+  111 (7): SHR - Shift right (true 16-bit A >> 1; A[8] crosses into
+           Result[7] — F61)
 
 Usage:
     python create_level7_alu_16bit.py
@@ -95,17 +97,11 @@ class ALU16bitBuilder(ICBuilderBase):
 
         # ---- Instantiate two 8-bit ALUs ----
         # Low byte ALU (bits 0-7)
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_alu_8bit")):
-            return False
-
         alu_low_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_alu_8bit"), alu_low_x, 150.0, "ALU_Low")
         if alu_low_id is None:
             return False
 
         # High byte ALU (bits 8-15)
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_alu_8bit")):
-            return False
-
         alu_high_id = await self.instantiate_ic(
             str(IC_COMPONENTS_DIR / "level6_alu_8bit"), alu_high_x, 150.0, "ALU_High"
         )
@@ -157,6 +153,19 @@ class ALU16bitBuilder(ICBuilderBase):
             return False
 
         await self.log("  ✓ Chained ADD and SUB carries between the byte halves")
+
+        # ---- Chain the shift fills between the halves (F61) ----
+        # 16-bit SHL: Result[8] = A[7] — the high half's bit-0 fill is the
+        # low half's MSB. 16-bit SHR: Result[7] = A[8] — the low half's
+        # bit-7 fill is the high half's LSB. Both fills are plain operand
+        # bits, available right here. The outer fills keep their saved-off
+        # defaults (zero fill).
+        if not await self.connect(op_a_inputs[7], alu_high_id, target_port_label="ShlIn"):
+            return False
+        if not await self.connect(op_a_inputs[8], alu_low_id, target_port_label="ShrIn"):
+            return False
+
+        await self.log("  ✓ Chained SHL/SHR fills between the byte halves")
 
         # ---- Create output LEDs ----
         # Result[0-15]
@@ -221,7 +230,8 @@ class ALU16bitBuilder(ICBuilderBase):
             return False
 
         await self.log(
-            f"✅ Successfully created 16-bit ALU IC({self.element_count} elements, {self.connection_count} connections)"
+            f"✅ Successfully created 16-bit ALU IC "
+            f"({self.element_count} elements, {self.connection_count} connections)"
         )
         await self.log(f"   Saved to: {output_file}")
         return True
