@@ -405,6 +405,7 @@ module level6_ram_8x8_ic (
     input datain7,
     input writeenable,
     input clock,
+    input reset,
     output dataout0,
     output dataout1,
     output dataout2,
@@ -440,7 +441,7 @@ level4_ram_8x1 level4_ram_8x1_inst_1 (
     .datain(datain0),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_1_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_2 (
@@ -450,7 +451,7 @@ level4_ram_8x1 level4_ram_8x1_inst_2 (
     .datain(datain1),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_2_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_3 (
@@ -460,7 +461,7 @@ level4_ram_8x1 level4_ram_8x1_inst_3 (
     .datain(datain2),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_3_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_4 (
@@ -470,7 +471,7 @@ level4_ram_8x1 level4_ram_8x1_inst_4 (
     .datain(datain3),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_4_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_5 (
@@ -480,7 +481,7 @@ level4_ram_8x1 level4_ram_8x1_inst_5 (
     .datain(datain4),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_5_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_6 (
@@ -490,7 +491,7 @@ level4_ram_8x1 level4_ram_8x1_inst_6 (
     .datain(datain5),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_6_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_7 (
@@ -500,7 +501,7 @@ level4_ram_8x1 level4_ram_8x1_inst_7 (
     .datain(datain6),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_7_dataout)
 );
 level4_ram_8x1 level4_ram_8x1_inst_8 (
@@ -510,7 +511,7 @@ level4_ram_8x1 level4_ram_8x1_inst_8 (
     .datain(datain7),
     .writeenable(writeenable),
     .clock(clock),
-    .reset(1'b0),
+    .reset(reset),
     .dataout(w_level4_ram_8x1_inst_8_dataout)
 );
 
@@ -539,16 +540,17 @@ input input_switch10,
 input input_switch11,
 input input_switch12,
 input input_switch13,
+input input_switch14,
 
 /* ========= Outputs ========== */
-output led15_1,
 output led16_1,
 output led17_1,
 output led18_1,
 output led19_1,
 output led20_1,
 output led21_1,
-output led22_1
+output led22_1,
+output led23_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL6_RAM_8X8 (level6_ram_8x8_ic)
@@ -577,6 +579,7 @@ level6_ram_8x8_ic level6_ram_8x8_ic_inst_1 (
     .datain7(input_switch11),
     .writeenable(input_switch12),
     .clock(input_switch13),
+    .reset(input_switch14),
     .dataout0(w_level6_ram_8x8_ic_inst_1_dataout0),
     .dataout1(w_level6_ram_8x8_ic_inst_1_dataout1),
     .dataout2(w_level6_ram_8x8_ic_inst_1_dataout2),
@@ -588,12 +591,12 @@ level6_ram_8x8_ic level6_ram_8x8_ic_inst_1 (
 );
 
 // Writing output data. //
-assign led15_1 = w_level6_ram_8x8_ic_inst_1_dataout0;
-assign led16_1 = w_level6_ram_8x8_ic_inst_1_dataout1;
-assign led17_1 = w_level6_ram_8x8_ic_inst_1_dataout2;
-assign led18_1 = w_level6_ram_8x8_ic_inst_1_dataout3;
-assign led19_1 = w_level6_ram_8x8_ic_inst_1_dataout4;
-assign led20_1 = w_level6_ram_8x8_ic_inst_1_dataout5;
-assign led21_1 = w_level6_ram_8x8_ic_inst_1_dataout6;
-assign led22_1 = w_level6_ram_8x8_ic_inst_1_dataout7;
+assign led16_1 = w_level6_ram_8x8_ic_inst_1_dataout0;
+assign led17_1 = w_level6_ram_8x8_ic_inst_1_dataout1;
+assign led18_1 = w_level6_ram_8x8_ic_inst_1_dataout2;
+assign led19_1 = w_level6_ram_8x8_ic_inst_1_dataout3;
+assign led20_1 = w_level6_ram_8x8_ic_inst_1_dataout4;
+assign led21_1 = w_level6_ram_8x8_ic_inst_1_dataout5;
+assign led22_1 = w_level6_ram_8x8_ic_inst_1_dataout6;
+assign led23_1 = w_level6_ram_8x8_ic_inst_1_dataout7;
 endmodule

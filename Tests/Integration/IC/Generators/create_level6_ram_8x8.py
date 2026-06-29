@@ -83,7 +83,15 @@ class RAM8x8Builder(ICBuilderBase):
         )
         if clk_id is None:
             return False
-        await self.log("  ✓ Created WriteEnable and Clock inputs")
+
+        # Reset input: async clear of all cells, fanned out to every ram_8x1
+        # column's own Reset (F54, matching the RAM family).
+        reset_id = await self.create_element(
+            "InputSwitch", input_x + (8 * HORIZONTAL_GATE_SPACING), 100.0 + (3 * VERTICAL_STAGE_SPACING), "Reset"
+        )
+        if reset_id is None:
+            return False
+        await self.log("  ✓ Created WriteEnable, Clock and Reset inputs")
 
         # Instantiate 8 RAM 8×1 modules (one for each data bit)
         # This creates an 8×1 by 8 parallel structure for 8×8 total
@@ -121,6 +129,10 @@ class RAM8x8Builder(ICBuilderBase):
 
             # Connect clock
             if not await self.connect(clk_id, ram_id, target_port_label="Clock"):
+                return False
+
+            # Connect Reset (async clear of every column — F54)
+            if not await self.connect(reset_id, ram_id, target_port_label="Reset"):
                 return False
         await self.log("  ✓ Connected control signals to RAM modules")
 
