@@ -17,4 +17,5 @@ private slots:
     // Clock Gated Decoder Tests
     void testClockGatedDecoder_data();
     void testClockGatedDecoder();
+    void testWriteEnableGating();
 };

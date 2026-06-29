@@ -113,14 +113,12 @@ void TestICInline::initTestCase()
     QVERIFY(m_tempDir.isValid());
     m_fixtureDir = m_tempDir.path();
 
-    // Copy simple_and from IC Components
-    const QString srcPath = TestUtils::cpuComponentsDir() + "level2_half_adder.panda";
-    const QString dstPath = m_fixtureDir + "/simple_and.panda";
-    QVERIFY2(QFile::exists(srcPath), qPrintable("Fixture not found: " + srcPath));
-    QVERIFY(QFile::copy(srcPath, dstPath));
-
-    // Copy additional fixtures
-    const QStringList fixtures = {"nested_and.panda", "chain_a.panda", "chain_b.panda", "chain_c.panda"};
+    // Copy the base fixtures into the writable temp dir. simple_and.panda is a
+    // 2-input AND gate (see Tests/Fixtures/generate_inline_ic_fixtures.py);
+    // nested_and.panda instantiates it by that exact filename, so the name must
+    // be preserved here.
+    const QStringList fixtures = {"simple_and.panda", "nested_and.panda",
+                                  "chain_a.panda", "chain_b.panda", "chain_c.panda"};
     for (const QString &f : fixtures) {
         QVERIFY2(copyFixture(f), qPrintable("Failed to copy fixture: " + f));
     }
@@ -759,15 +757,15 @@ void TestICInline::testEmbedSimulatesCorrectly()
 
     auto *sim = builder.initSimulation();
 
-    // simple_and is a half adder — output 0 is Sum (A XOR B)
+    // simple_and is a 2-input AND gate — output is A AND B
     const bool truthTable[4][2] = {{false, false}, {false, true}, {true, false}, {true, true}};
-    const bool expectedXOR[4]   = { false,          true,          true,          false};
+    const bool expectedAND[4]   = { false,          false,         false,         true};
 
     for (int i = 0; i < 4; ++i) {
         swA.setOn(truthTable[i][0]);
         swB.setOn(truthTable[i][1]);
         sim->update();
-        QCOMPARE(TestUtils::getInputStatus(&led), expectedXOR[i]);
+        QCOMPARE(TestUtils::getInputStatus(&led), expectedAND[i]);
     }
 }
 

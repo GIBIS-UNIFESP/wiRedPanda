@@ -165,3 +165,31 @@ void TestLevel5ClockGatedDecoder::testClockGatedDecoder()
         }
     }
 }
+
+// The decoder is gated by clock AND writeEnable. The data-driven test above
+// exercises the clock=0 path; this covers the symmetric writeEnable=0 path:
+// with the clock high and a valid address, deasserting writeEnable must still
+// force every output low, and reasserting it restores the one-hot decode.
+void TestLevel5ClockGatedDecoder::testWriteEnableGating()
+{
+    auto &f = *s_level5ClockGatedDecoder;
+
+    f.clockGate->setOn(true);
+    for (int i = 0; i < 3; ++i) {
+        f.addressBits[i]->setOn((5 >> i) & 1);  // address = 5
+    }
+
+    // writeEnable=0: all outputs low despite clock high and a valid address
+    f.writeEnable->setOn(false);
+    f.sim->update();
+    for (int i = 0; i < 8; i++) {
+        QCOMPARE(getInputStatus(f.outputs[i]), false);
+    }
+
+    // writeEnable=1: output 5 active (one-hot decode restored)
+    f.writeEnable->setOn(true);
+    f.sim->update();
+    for (int i = 0; i < 8; i++) {
+        QCOMPARE(getInputStatus(f.outputs[i]), i == 5);
+    }
+}
