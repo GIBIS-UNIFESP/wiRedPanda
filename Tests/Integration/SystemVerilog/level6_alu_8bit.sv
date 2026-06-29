@@ -67,54 +67,42 @@ module level3_alu_selector_5way (
     output out
 );
 
-reg aux_mux_1 = 1'b0;
-reg aux_mux_2 = 1'b0;
-reg aux_mux_3 = 1'b0;
-reg aux_mux_4 = 1'b0;
+// IC instance: l1_mux1 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_1_p_output;
+// IC instance: l1_mux2 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_2_p_output;
+// IC instance: l2_mux1 (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_3_p_output;
+// IC instance: l3_mux (level2_mux_2to1)
+wire w_level2_mux_2to1_inst_4_p_output;
 
 // Internal logic
-    //Multiplexer
-    always @(*)
-    begin
-        case({op0})
-            1'd0: aux_mux_1 = result0;
-            1'd1: aux_mux_1 = result1;
-            default: aux_mux_1 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({op0})
-            1'd0: aux_mux_2 = result2;
-            1'd1: aux_mux_2 = result3;
-            default: aux_mux_2 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({op1})
-            1'd0: aux_mux_3 = aux_mux_1;
-            1'd1: aux_mux_3 = aux_mux_2;
-            default: aux_mux_3 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
-    //Multiplexer
-    always @(*)
-    begin
-        case({op2})
-            1'd0: aux_mux_4 = aux_mux_3;
-            1'd1: aux_mux_4 = result4;
-            default: aux_mux_4 = 1'b0;
-        endcase
-    end
-    //End of Multiplexer
+level2_mux_2to1 level2_mux_2to1_inst_1 (
+    .data0(result0),
+    .data1(result1),
+    .sel0(op0),
+    .p_output(w_level2_mux_2to1_inst_1_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_2 (
+    .data0(result2),
+    .data1(result3),
+    .sel0(op0),
+    .p_output(w_level2_mux_2to1_inst_2_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_3 (
+    .data0(w_level2_mux_2to1_inst_1_p_output),
+    .data1(w_level2_mux_2to1_inst_2_p_output),
+    .sel0(op1),
+    .p_output(w_level2_mux_2to1_inst_3_p_output)
+);
+level2_mux_2to1 level2_mux_2to1_inst_4 (
+    .data0(w_level2_mux_2to1_inst_3_p_output),
+    .data1(result4),
+    .sel0(op2),
+    .p_output(w_level2_mux_2to1_inst_4_p_output)
+);
 
-assign out = aux_mux_4;
+assign out = w_level2_mux_2to1_inst_4_p_output;
 endmodule
 
 // Module for Adder (generated from level4_ripple_adder_4bit.panda)

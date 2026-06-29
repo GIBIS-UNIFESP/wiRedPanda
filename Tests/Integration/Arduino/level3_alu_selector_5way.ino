@@ -40,10 +40,50 @@ bool aux_level3_alu_selector_5way_0_node_4 = LOW;
 bool aux_level3_alu_selector_5way_0_node_5 = LOW;
 bool aux_level3_alu_selector_5way_0_node_6 = LOW;
 bool aux_level3_alu_selector_5way_0_node_7 = LOW;
-bool aux_level3_alu_selector_5way_0_mux_8 = LOW;
-bool aux_level3_alu_selector_5way_0_mux_9 = LOW;
-bool aux_level3_alu_selector_5way_0_mux_10 = LOW;
-bool aux_level3_alu_selector_5way_0_mux_11 = LOW;
+// IC: l1_mux1
+bool aux_l1_mux1_8_output = LOW;
+bool aux_l1_mux1_8_node_0 = LOW;
+bool aux_l1_mux1_8_node_1 = LOW;
+bool aux_l1_mux1_8_node_2 = LOW;
+bool aux_l1_mux1_8_mux_3 = LOW;
+bool aux_l1_mux1_8_node_4 = LOW;
+bool aux_ic_input_l1_mux1_8_0 = LOW;
+bool aux_ic_input_l1_mux1_8_1 = LOW;
+bool aux_ic_input_l1_mux1_8_2 = LOW;
+// End IC: l1_mux1
+// IC: l1_mux2
+bool aux_l1_mux2_9_output = LOW;
+bool aux_l1_mux2_9_node_0 = LOW;
+bool aux_l1_mux2_9_node_1 = LOW;
+bool aux_l1_mux2_9_node_2 = LOW;
+bool aux_l1_mux2_9_mux_3 = LOW;
+bool aux_l1_mux2_9_node_4 = LOW;
+bool aux_ic_input_l1_mux2_9_0 = LOW;
+bool aux_ic_input_l1_mux2_9_1 = LOW;
+bool aux_ic_input_l1_mux2_9_2 = LOW;
+// End IC: l1_mux2
+// IC: l2_mux1
+bool aux_l2_mux1_10_output = LOW;
+bool aux_l2_mux1_10_node_0 = LOW;
+bool aux_l2_mux1_10_node_1 = LOW;
+bool aux_l2_mux1_10_node_2 = LOW;
+bool aux_l2_mux1_10_mux_3 = LOW;
+bool aux_l2_mux1_10_node_4 = LOW;
+bool aux_ic_input_l2_mux1_10_0 = LOW;
+bool aux_ic_input_l2_mux1_10_1 = LOW;
+bool aux_ic_input_l2_mux1_10_2 = LOW;
+// End IC: l2_mux1
+// IC: l3_mux
+bool aux_l3_mux_11_output = LOW;
+bool aux_l3_mux_11_node_0 = LOW;
+bool aux_l3_mux_11_node_1 = LOW;
+bool aux_l3_mux_11_node_2 = LOW;
+bool aux_l3_mux_11_mux_3 = LOW;
+bool aux_l3_mux_11_node_4 = LOW;
+bool aux_ic_input_l3_mux_11_0 = LOW;
+bool aux_ic_input_l3_mux_11_1 = LOW;
+bool aux_ic_input_l3_mux_11_2 = LOW;
+// End IC: l3_mux
 bool aux_level3_alu_selector_5way_0_node_12 = LOW;
 bool aux_ic_input_level3_alu_selector_5way_0_0 = LOW;
 bool aux_ic_input_level3_alu_selector_5way_0_1 = LOW;
@@ -86,43 +126,83 @@ void computeLogic() {
     aux_level3_alu_selector_5way_0_node_6 = aux_ic_input_level3_alu_selector_5way_0_6;
     aux_level3_alu_selector_5way_0_node_4 = aux_ic_input_level3_alu_selector_5way_0_4;
     aux_level3_alu_selector_5way_0_node_7 = aux_ic_input_level3_alu_selector_5way_0_7;
+    // IC: l1_mux1
+    aux_ic_input_l1_mux1_8_0 = aux_level3_alu_selector_5way_0_node_0;
+    aux_ic_input_l1_mux1_8_1 = aux_level3_alu_selector_5way_0_node_1;
+    aux_ic_input_l1_mux1_8_2 = aux_level3_alu_selector_5way_0_node_5;
+    aux_l1_mux1_8_node_0 = aux_ic_input_l1_mux1_8_0;
+    aux_l1_mux1_8_node_1 = aux_ic_input_l1_mux1_8_1;
+    aux_l1_mux1_8_node_2 = aux_ic_input_l1_mux1_8_2;
     //Multiplexer
-    if ((aux_level3_alu_selector_5way_0_node_5) == 0) {
-        aux_level3_alu_selector_5way_0_mux_8 = aux_level3_alu_selector_5way_0_node_0;
-    } else if ((aux_level3_alu_selector_5way_0_node_5) == 1) {
-        aux_level3_alu_selector_5way_0_mux_8 = aux_level3_alu_selector_5way_0_node_1;
+    if ((aux_l1_mux1_8_node_2) == 0) {
+        aux_l1_mux1_8_mux_3 = aux_l1_mux1_8_node_0;
+    } else if ((aux_l1_mux1_8_node_2) == 1) {
+        aux_l1_mux1_8_mux_3 = aux_l1_mux1_8_node_1;
     } else {
-        aux_level3_alu_selector_5way_0_mux_8 = LOW;
+        aux_l1_mux1_8_mux_3 = LOW;
     }
     //End of Multiplexer
+    aux_l1_mux1_8_node_4 = aux_l1_mux1_8_mux_3;
+    aux_l1_mux1_8_output = aux_l1_mux1_8_node_4;
+    // End IC: l1_mux1
+    // IC: l1_mux2
+    aux_ic_input_l1_mux2_9_0 = aux_level3_alu_selector_5way_0_node_2;
+    aux_ic_input_l1_mux2_9_1 = aux_level3_alu_selector_5way_0_node_3;
+    aux_ic_input_l1_mux2_9_2 = aux_level3_alu_selector_5way_0_node_5;
+    aux_l1_mux2_9_node_0 = aux_ic_input_l1_mux2_9_0;
+    aux_l1_mux2_9_node_1 = aux_ic_input_l1_mux2_9_1;
+    aux_l1_mux2_9_node_2 = aux_ic_input_l1_mux2_9_2;
     //Multiplexer
-    if ((aux_level3_alu_selector_5way_0_node_5) == 0) {
-        aux_level3_alu_selector_5way_0_mux_9 = aux_level3_alu_selector_5way_0_node_2;
-    } else if ((aux_level3_alu_selector_5way_0_node_5) == 1) {
-        aux_level3_alu_selector_5way_0_mux_9 = aux_level3_alu_selector_5way_0_node_3;
+    if ((aux_l1_mux2_9_node_2) == 0) {
+        aux_l1_mux2_9_mux_3 = aux_l1_mux2_9_node_0;
+    } else if ((aux_l1_mux2_9_node_2) == 1) {
+        aux_l1_mux2_9_mux_3 = aux_l1_mux2_9_node_1;
     } else {
-        aux_level3_alu_selector_5way_0_mux_9 = LOW;
+        aux_l1_mux2_9_mux_3 = LOW;
     }
     //End of Multiplexer
+    aux_l1_mux2_9_node_4 = aux_l1_mux2_9_mux_3;
+    aux_l1_mux2_9_output = aux_l1_mux2_9_node_4;
+    // End IC: l1_mux2
+    // IC: l2_mux1
+    aux_ic_input_l2_mux1_10_0 = aux_l1_mux1_8_output;
+    aux_ic_input_l2_mux1_10_1 = aux_l1_mux2_9_output;
+    aux_ic_input_l2_mux1_10_2 = aux_level3_alu_selector_5way_0_node_6;
+    aux_l2_mux1_10_node_0 = aux_ic_input_l2_mux1_10_0;
+    aux_l2_mux1_10_node_1 = aux_ic_input_l2_mux1_10_1;
+    aux_l2_mux1_10_node_2 = aux_ic_input_l2_mux1_10_2;
     //Multiplexer
-    if ((aux_level3_alu_selector_5way_0_node_6) == 0) {
-        aux_level3_alu_selector_5way_0_mux_10 = aux_level3_alu_selector_5way_0_mux_8;
-    } else if ((aux_level3_alu_selector_5way_0_node_6) == 1) {
-        aux_level3_alu_selector_5way_0_mux_10 = aux_level3_alu_selector_5way_0_mux_9;
+    if ((aux_l2_mux1_10_node_2) == 0) {
+        aux_l2_mux1_10_mux_3 = aux_l2_mux1_10_node_0;
+    } else if ((aux_l2_mux1_10_node_2) == 1) {
+        aux_l2_mux1_10_mux_3 = aux_l2_mux1_10_node_1;
     } else {
-        aux_level3_alu_selector_5way_0_mux_10 = LOW;
+        aux_l2_mux1_10_mux_3 = LOW;
     }
     //End of Multiplexer
+    aux_l2_mux1_10_node_4 = aux_l2_mux1_10_mux_3;
+    aux_l2_mux1_10_output = aux_l2_mux1_10_node_4;
+    // End IC: l2_mux1
+    // IC: l3_mux
+    aux_ic_input_l3_mux_11_0 = aux_l2_mux1_10_output;
+    aux_ic_input_l3_mux_11_1 = aux_level3_alu_selector_5way_0_node_4;
+    aux_ic_input_l3_mux_11_2 = aux_level3_alu_selector_5way_0_node_7;
+    aux_l3_mux_11_node_0 = aux_ic_input_l3_mux_11_0;
+    aux_l3_mux_11_node_1 = aux_ic_input_l3_mux_11_1;
+    aux_l3_mux_11_node_2 = aux_ic_input_l3_mux_11_2;
     //Multiplexer
-    if ((aux_level3_alu_selector_5way_0_node_7) == 0) {
-        aux_level3_alu_selector_5way_0_mux_11 = aux_level3_alu_selector_5way_0_mux_10;
-    } else if ((aux_level3_alu_selector_5way_0_node_7) == 1) {
-        aux_level3_alu_selector_5way_0_mux_11 = aux_level3_alu_selector_5way_0_node_4;
+    if ((aux_l3_mux_11_node_2) == 0) {
+        aux_l3_mux_11_mux_3 = aux_l3_mux_11_node_0;
+    } else if ((aux_l3_mux_11_node_2) == 1) {
+        aux_l3_mux_11_mux_3 = aux_l3_mux_11_node_1;
     } else {
-        aux_level3_alu_selector_5way_0_mux_11 = LOW;
+        aux_l3_mux_11_mux_3 = LOW;
     }
     //End of Multiplexer
-    aux_level3_alu_selector_5way_0_node_12 = aux_level3_alu_selector_5way_0_mux_11;
+    aux_l3_mux_11_node_4 = aux_l3_mux_11_mux_3;
+    aux_l3_mux_11_output = aux_l3_mux_11_node_4;
+    // End IC: l3_mux
+    aux_level3_alu_selector_5way_0_node_12 = aux_l3_mux_11_output;
     aux_level3_alu_selector_5way_0_out = aux_level3_alu_selector_5way_0_node_12;
     // End IC: LEVEL3_ALU_SELECTOR_5WAY
 }
