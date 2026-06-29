@@ -16,5 +16,7 @@ private slots:
     void testInstructionMemoryInterface_data();
     void testInstructionMemoryInterface();
 
+    void testInstructionMemoryWriteRead();
+
     void testInstructionMemoryInterfaceStructure();
 };
