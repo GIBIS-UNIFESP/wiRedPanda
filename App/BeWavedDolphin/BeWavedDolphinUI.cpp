@@ -97,6 +97,21 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     actionSetLength->setObjectName("actionSetLength");
     actionSetLength->setIcon(QIcon(":/Interface/Dolphin/range.svg"));
 
+    actionTemporalMode = new QAction(BewavedDolphin);
+    actionTemporalMode->setObjectName("actionTemporalMode");
+    actionTemporalMode->setCheckable(true);
+    actionTemporalMode->setIcon(QIcon(":/Components/Input/clock1.svg"));
+
+    comboTimeResolution = new QComboBox(BewavedDolphin);
+    comboTimeResolution->setObjectName("comboTimeResolution");
+    // ns of sim-time advanced per waveform column. Small values (relative to the 5-20 ns gate
+    // delays) make a single gate's delay span several visible columns.
+    comboTimeResolution->addItem("1 ns/col", 1);
+    comboTimeResolution->addItem("2 ns/col", 2);
+    comboTimeResolution->addItem("5 ns/col", 5);
+    comboTimeResolution->addItem("10 ns/col", 10);
+    comboTimeResolution->setCurrentIndex(1); // 2 ns/col
+
     actionAboutQt = new QAction(BewavedDolphin);
     actionAboutQt->setObjectName("actionAboutQt");
     actionAboutQt->setIcon(QIcon(":/Interface/Toolbar/helpQt.svg"));
@@ -205,6 +220,10 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     mainToolBar->addAction(actionFitScreen);
     mainToolBar->addAction(actionSetLength);
     mainToolBar->addSeparator();
+    mainToolBar->addAction(actionTemporalMode);
+    actionTimeResolution = mainToolBar->addWidget(comboTimeResolution);
+    actionTimeResolution->setVisible(false); // shown only while Temporal mode is on
+    mainToolBar->addSeparator();
     mainToolBar->addAction(actionExit);
     menubar->addAction(menuFile->menuAction());
     menubar->addAction(menuEdit->menuAction());
@@ -294,6 +313,13 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     actionExportToPng->setShortcut(QStringLiteral("Ctrl+Shift+P"));
     actionSetLength->setText(QCoreApplication::translate("BewavedDolphin", "Set Length"));
     actionSetLength->setShortcut(QStringLiteral("Alt+L"));
+    actionTemporalMode->setText(QCoreApplication::translate("BewavedDolphin", "Temporal"));
+    actionTemporalMode->setToolTip(QCoreApplication::translate("BewavedDolphin",
+        "Temporal mode: simulate per-element propagation delays, so outputs lag their cause by "
+        "whole columns. Hold a signal steady for at least its gate delay to see the effect "
+        "(narrower pulses are absorbed)."));
+    comboTimeResolution->setToolTip(QCoreApplication::translate("BewavedDolphin",
+        "Simulation time advanced per waveform column (temporal mode)."));
     actionAboutQt->setText(QCoreApplication::translate("BewavedDolphin", "About Qt"));
     actionAboutQt->setShortcut(QStringLiteral("Ctrl+Shift+H"));
     actionZoomIn->setText(QCoreApplication::translate("BewavedDolphin", "Zoom In"));

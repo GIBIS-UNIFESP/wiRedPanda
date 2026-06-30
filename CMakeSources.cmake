@@ -91,6 +91,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationRecordingSuspender.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.cpp
@@ -248,6 +249,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimTime.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationRecordingSuspender.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/WaveformRecorder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.h

@@ -161,7 +161,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
             if (m_elements.isEmpty()) return;
             auto *elm = m_elements.first();
             if (elm->elementType() == ElementType::IC) {
-                Application::instance()->mainWindow()->watchICInternals(static_cast<IC *>(elm));
+                emit watchICInternalsRequested(static_cast<IC *>(elm));
             }
         }
     );
