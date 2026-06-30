@@ -187,7 +187,7 @@ class DecodeStageBuilder(ICBuilderBase):
         # level2_decoder_4to16 on OpCode[0..3] -> 16 lines, each ANDed with
         # NOT(OpCode[4]) (lines 0-15) or OpCode[4] (lines 16-31).
         decoder_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level2_decoder_4to16"),
+            "level2_decoder_4to16",
             input_x + HORIZONTAL_GATE_SPACING,
             input_y + (2 * VERTICAL_STAGE_SPACING),
             "Decoder4to16",

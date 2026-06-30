@@ -120,11 +120,8 @@ class DataForwardingUnitBuilder(ICBuilderBase):
         mux_ids = []
         for bit_idx in range(8):
             # Instantiate level2_mux_4to1 IC for this bit
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_mux_4to1")):
-                return False
-
             mux_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level2_mux_4to1"),
+                "level2_mux_4to1",
                 output_x + (bit_idx * HORIZONTAL_GATE_SPACING),
                 250.0,
                 f"Mux4to1_{bit_idx}",

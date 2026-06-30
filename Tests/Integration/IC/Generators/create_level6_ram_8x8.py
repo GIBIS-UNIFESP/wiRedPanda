@@ -98,11 +98,8 @@ class RAM8x8Builder(ICBuilderBase):
         ram_ics = []
         ram_x = input_x + (10 * HORIZONTAL_GATE_SPACING)
         for bit_idx in range(8):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_ram_8x1")):
-                return False
-
             ram_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level4_ram_8x1"),
+                "level4_ram_8x1",
                 ram_x + (bit_idx * HORIZONTAL_GATE_SPACING),
                 250.0,
                 f"RAM_Bit{bit_idx}",

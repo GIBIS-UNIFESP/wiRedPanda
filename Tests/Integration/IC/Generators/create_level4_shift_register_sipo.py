@@ -62,11 +62,8 @@ class ShiftRegisterSIPOBuilder(ICBuilderBase):
         dff_ids = []
         dff_x = input_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level1_d_flip_flop")):
-                return False
-
             ff_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}"
+                "level1_d_flip_flop", dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}"
             )
             if ff_id is None:
                 return False

@@ -78,12 +78,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         await self.log("  ✓ Created all inputs (3 address + 2 control)")
 
         # ========== Instantiate 3-to-8 Decoder IC ==========
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_decoder_3to8")):
-            return False
-
-        decoder_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level2_decoder_3to8"), decoder_gates_x, addr_y, "Decoder_3to8"
-        )
+        decoder_id = await self.instantiate_ic("level2_decoder_3to8", decoder_gates_x, addr_y, "Decoder_3to8")
         if decoder_id is None:
             return False
 

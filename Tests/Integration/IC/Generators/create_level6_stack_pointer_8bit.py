@@ -80,10 +80,7 @@ class StackPointer8BitBuilder(ICBuilderBase):
         # ========== LOGIC ELEMENTS ==========
 
         # Instantiate RippleCarryAdder8bit for SP ±1 operations
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ripple_adder_8bit")):
-            return False
-
-        adder_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_ripple_adder_8bit"), 300.0, 200.0, "Adder")
+        adder_id = await self.instantiate_ic("level6_ripple_adder_8bit", 300.0, 200.0, "Adder")
         if adder_id is None:
             return False
 
@@ -91,11 +88,8 @@ class StackPointer8BitBuilder(ICBuilderBase):
         sp_flipflops = []
         ff_x = 550.0
         for i in range(8):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level1_d_flip_flop")):
-                return False
-
             element_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), ff_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"SP[{i}]"
+                "level1_d_flip_flop", ff_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"SP[{i}]"
             )
             if element_id is None:
                 return False
@@ -114,11 +108,8 @@ class StackPointer8BitBuilder(ICBuilderBase):
         priority_muxes = []
         mux_x = 900.0
         for i in range(8):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_priority_mux_3to1")):
-                return False
-
             element_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level2_priority_mux_3to1"),
+                "level2_priority_mux_3to1",
                 mux_x + (i * HORIZONTAL_GATE_SPACING),
                 200.0,
                 f"SPMux[{i}]",

@@ -87,11 +87,8 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
         await self.log("  ✓ Created clock input")
 
         # Instantiate 8×8 RAM for instruction memory
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ram_8x8")):
-            return False
-
         ram_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level6_ram_8x8"),
+            "level6_ram_8x8",
             input_x + (4 * HORIZONTAL_GATE_SPACING),
             250.0,
             "InstructionMemory",

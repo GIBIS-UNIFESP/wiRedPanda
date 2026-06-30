@@ -101,11 +101,8 @@ class FlagRegisterBuilder(ICBuilderBase):
         # Create D flip-flops for flag storage (one per flag) using level1_d_flip_flop IC
         ff_ids = []
         for i in range(4):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level1_d_flip_flop")):
-                return False
-
             ff_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level1_d_flip_flop"),
+                "level1_d_flip_flop",
                 input_x + (i * HORIZONTAL_GATE_SPACING),
                 300.0,
                 f"FlagFF{i}",

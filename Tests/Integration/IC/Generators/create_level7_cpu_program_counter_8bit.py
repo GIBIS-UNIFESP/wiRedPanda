@@ -87,12 +87,7 @@ class ProgramCounter7BitBuilder(ICBuilderBase):
         pc_x = data_input_x + (4 * HORIZONTAL_GATE_SPACING)
         pc_y = control_input_y + (6 * VERTICAL_STAGE_SPACING)
 
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_program_counter_8bit_arithmetic")):
-            return False
-
-        pc_ic = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level6_program_counter_8bit_arithmetic"), pc_x, pc_y, "PC"
-        )
+        pc_ic = await self.instantiate_ic("level6_program_counter_8bit_arithmetic", pc_x, pc_y, "PC")
         if pc_ic is None:
             return False
         await self.log("  ✓ Instantiated Level 6 Program Counter IC")

@@ -121,8 +121,8 @@ class RamBuilder(ICBuilderBase):
         num_cells = self.num_cells
         display = f"RAM {num_cells}x1"
         output_name = f"level4_ram_{num_cells}x1"
-        decoder_name = str(IC_COMPONENTS_DIR / f"level2_decoder_{address_bits}to{num_cells}")
-        mux_name = str(IC_COMPONENTS_DIR / f"level2_mux_{num_cells}to1")
+        decoder_name = f"level2_decoder_{address_bits}to{num_cells}"
+        mux_name = f"level2_mux_{num_cells}to1"
 
         await self.begin_build(display)
         if not await self.create_new_circuit():
@@ -194,8 +194,6 @@ class RamBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Created output LED")
 
-        if not self.check_dependency(decoder_name):
-            return False
         decoder_ic = await self.instantiate_ic(decoder_name, 150.0, 150.0, "AddrDecoder")
         if decoder_ic is None:
             return False
@@ -205,8 +203,6 @@ class RamBuilder(ICBuilderBase):
             if not await self.connect(address_inputs[i], decoder_ic, target_port_label=f"addr[{i}]"):
                 return False
 
-        if not self.check_dependency(mux_name):
-            return False
         read_mux_ic = await self.instantiate_ic(mux_name, 500.0, 250.0, "ReadMux")
         if read_mux_ic is None:
             return False
@@ -272,7 +268,7 @@ class RegisterFileBuilder(ICBuilderBase):
         # F32: the level-5 and level-6 8×8 register-file fixtures are the same
         # circuit — only the output filename's level prefix differs.
         output_name = f"level{self.level}_register_file_{num_registers}x{data_width}"
-        decoder_name = str(IC_COMPONENTS_DIR / f"level2_decoder_{address_bits}to{num_registers}")
+        decoder_name = f"level2_decoder_{address_bits}to{num_registers}"
 
         await self.begin_build(display)
         if not await self.create_new_circuit():
@@ -355,8 +351,6 @@ class RegisterFileBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created output LEDs")
 
-        if not self.check_dependency(decoder_name):
-            return False
         decoder_ic = await self.instantiate_ic(decoder_name, decoder_x, write_addr_y, "Write_Decoder")
         if decoder_ic is None:
             return False
@@ -571,10 +565,7 @@ class BarrelShiftBuilder(ICBuilderBase):
                 return False
             gnd = ground_elem
 
-        bus_mux = str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit")
-        if not self.check_dependency(bus_mux):
-            return False
-
+        bus_mux = "level4_bus_mux_4bit"
         left_s1 = await self.instantiate_ic(
             bus_mux, input_x_start + HORIZONTAL_GATE_SPACING, left_stage1_y, "BusMux_Left_S1"
         )
@@ -845,9 +836,7 @@ class CounterBuilder(ICBuilderBase):
             dff_x = mux_x + HORIZONTAL_GATE_SPACING
         elif mode == "modulo":
             comparator_x = xor_or_x + HORIZONTAL_GATE_SPACING
-            comp_name = str(IC_COMPONENTS_DIR / "level3_comparator_4bit_equality")
-            if not self.check_dependency(comp_name):
-                return False
+            comp_name = "level3_comparator_4bit_equality"
             comparator_id = await self.instantiate_ic(comp_name, comparator_x, 100.0, "Comparator")
             if comparator_id is None:
                 return False
@@ -868,9 +857,7 @@ class CounterBuilder(ICBuilderBase):
 
         dff_ids = []
         for i in range(4):
-            dff_dep = str(IC_COMPONENTS_DIR / "level1_d_flip_flop")
-            if not self.check_dependency(dff_dep):
-                return False
+            dff_dep = "level1_d_flip_flop"
             ff_id = await self.instantiate_ic(dff_dep, dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}")
             if ff_id is None:
                 return False
@@ -1492,12 +1479,10 @@ class RingJohnsonCounterBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Created input PRESET")
 
-        dff_dep = str(IC_COMPONENTS_DIR / "level1_d_flip_flop")
+        dff_dep = "level1_d_flip_flop"
         dff_ids = []
         dff_x = input_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            if not self.check_dependency(dff_dep):
-                return False
             ff_id = await self.instantiate_ic(dff_dep, dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}")
             if ff_id is None:
                 return False

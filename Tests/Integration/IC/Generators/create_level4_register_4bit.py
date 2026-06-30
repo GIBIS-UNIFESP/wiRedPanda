@@ -81,7 +81,7 @@ class RegisterBuilder(ICBuilderBase):
         # Instantiate 4-bit Bus Multiplexer IC (replaces manual AND/OR gates)
         mux_x = input_x + HORIZONTAL_GATE_SPACING
         mux_ic_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level4_bus_mux_4bit"), mux_x, 100.0 + VERTICAL_STAGE_SPACING, "BusMux_LoadHold"
+            "level4_bus_mux_4bit", mux_x, 100.0 + VERTICAL_STAGE_SPACING, "BusMux_LoadHold"
         )
         if mux_ic_id is None:
             return False

@@ -150,10 +150,7 @@ class RAM8x1Builder(ICBuilderBase):
         await self.log("  ✓ Created output LED")
 
         # ========== Create Decoder IC Instance ==========
-        decoder_ic_name = str(IC_COMPONENTS_DIR / "level2_decoder_3to8")
-        if not self.check_dependency(decoder_ic_name):
-            return False
-
+        decoder_ic_name = "level2_decoder_3to8"
         decoder_ic = await self.instantiate_ic(decoder_ic_name, 150.0, 150.0, "AddrDecoder")
         if decoder_ic is None:
             return False
@@ -165,10 +162,7 @@ class RAM8x1Builder(ICBuilderBase):
                 return False
 
         # ========== Create Multiplexer IC Instance ==========
-        mux_ic_name = str(IC_COMPONENTS_DIR / "level2_mux_8to1")
-        if not self.check_dependency(mux_ic_name):
-            return False
-
+        mux_ic_name = "level2_mux_8to1"
         read_mux_ic = await self.instantiate_ic(mux_ic_name, 500.0, 250.0, "ReadMux")
         if read_mux_ic is None:
             return False

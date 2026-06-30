@@ -106,11 +106,8 @@ class ExecuteStageBuilder(ICBuilderBase):
         # and Reset switch it used to embed were removed.)
 
         # ---- Instantiate Execution Datapath ----
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_execution_datapath")):
-            return False
-
         datapath_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level7_execution_datapath"),
+            "level7_execution_datapath",
             input_x + (3 * HORIZONTAL_GATE_SPACING),
             300.0,
             "Datapath",
