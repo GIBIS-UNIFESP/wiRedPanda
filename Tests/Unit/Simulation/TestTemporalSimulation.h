@@ -61,4 +61,9 @@ private slots:
     // --- Waveform widget ---
     void testWidgetSizeHint();
     void testWaveformWidgetZoom();
+
+    // --- Temporal example circuits (Examples/temporal_*.panda) ---
+    void testExampleRingOscillator();
+    void testExampleStaticHazard();
+    void testExampleGateDelayChain();
 };
