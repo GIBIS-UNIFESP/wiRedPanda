@@ -117,4 +117,8 @@ private slots:
 
     /// MUX and DEMUX route correctly and with propagation delay in temporal mode.
     void testMuxDemuxUnderDelay();
+
+    /// Restarting mid-temporal-run resets sim time, re-seeds the whole network, and preserves
+    /// temporal mode + the element's propagation delay so the second run is timed identically.
+    void testRestartDuringTemporalRun();
 };
