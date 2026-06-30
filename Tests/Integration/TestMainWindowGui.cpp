@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QComboBox>
+#include <QDockWidget>
 #include <QFile>
 #include <QLabel>
 #include <QLineEdit>
@@ -485,9 +486,9 @@ void TestMainWindowGui::testRestartSimulation()
 void TestMainWindowGui::testTemporalModeSelector()
 {
     // The toolbar sim-mode selector switches the current tab's simulation between functional and
-    // temporal mode (the engine behaviour itself is covered in TestUnifiedTimed; the waveform
-    // widget's controls are covered in TestTemporalSimulation::testWaveformWidgetZoom — the full
-    // MainWindow dock-open path is not reliably driveable under the offscreen platform).
+    // temporal mode (the engine behaviour itself is covered in TestUnifiedTimed; the dock open/close
+    // lifecycle in testWaveformDockOpensAndClosesCleanly; the widget controls in
+    // TestTemporalSimulation::testWaveformWidgetZoom).
     std::unique_ptr<MainWindow> window(createMW());
     auto *scene = window->currentTab()->scene();
 
@@ -521,6 +522,30 @@ void TestMainWindowGui::testTemporalModeSelector()
     sim->update();
     sim->update();
     QCOMPARE(sim->currentTime(), t1);
+}
+
+void TestMainWindowGui::testWaveformDockOpensAndClosesCleanly()
+{
+    // The temporal-waveform action lazily creates and shows the timing-diagram dock. Regression:
+    // with the dock open, destroying the window used to crash — hiding the dock during
+    // ~MainWindow emitted visibilityChanged → actionTemporalWaveform::setChecked → toggled →
+    // toggleTemporalWaveformDock() on the already-destroyed window. ~MainWindow now severs the
+    // dock's signals first. This test opens the dock and lets the window destruct at scope end;
+    // a crash here is the regression.
+    std::unique_ptr<MainWindow> window(createMW());
+
+    QVERIFY2(window->findChild<QDockWidget *>("temporalWaveformDock") == nullptr,
+             "Waveform dock should not exist before the action is triggered");
+
+    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    QVERIFY2(waveAction, "actionTemporalWaveform not found");
+    waveAction->trigger();
+
+    auto *dock = window->findChild<QDockWidget *>("temporalWaveformDock");
+    QVERIFY2(dock != nullptr, "Temporal waveform dock did not open");
+    QVERIFY2(waveAction->isChecked(), "Action should be checked while the dock is open");
+
+    // window destructs here — must not crash (the regression).
 }
 
 // ===========================================================================

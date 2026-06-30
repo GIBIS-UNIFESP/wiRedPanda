@@ -462,6 +462,15 @@ void MainWindow::connectSceneAction(QAction *action, void (Scene::*method)())
 
 MainWindow::~MainWindow()
 {
+    // Sever the dock→action visibility sync before the QWidget base destructor hides and destroys
+    // child widgets. Otherwise hiding the open dock emits QDockWidget::visibilityChanged →
+    // actionTemporalWaveform::setChecked → toggled → toggleTemporalWaveformDock(), re-entering
+    // this already-destroyed MainWindow (Qt aborts: "class destructor may have already run").
+    if (m_waveformDock) {
+        disconnect(m_waveformDock, &QDockWidget::visibilityChanged,
+                   m_ui->actionTemporalWaveform, &QAction::setChecked);
+    }
+
     // Tear down the active tab's chrome wiring before child objects are destroyed.
     m_binder->unbind();
 }
