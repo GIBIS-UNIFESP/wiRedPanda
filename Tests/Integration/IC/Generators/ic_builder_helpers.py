@@ -1428,6 +1428,26 @@ class ParityBuilder(ICBuilderBase):
             stage_num += 1
             stage_x += HORIZONTAL_GATE_SPACING
 
+        # Cascade input (74180-style): XOR a chained parity bit from a less-
+        # significant block into this block's parity. Tied low (the default) it
+        # is a no-op, so a single block behaves exactly as before; to build a
+        # wider parity tree, feed another block's parity output in here.
+        cascade_in = await self.create_element(
+            "InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "CascadeIn"
+        )
+        if cascade_in is None:
+            return False
+        cascade_xor = await self.create_element(
+            "Xor", stage_x, 100.0 + (width // 2) * VERTICAL_STAGE_SPACING, "cascade_xor"
+        )
+        if cascade_xor is None:
+            return False
+        if not await self.connect(current_stage[0], cascade_xor):
+            return False
+        if not await self.connect(cascade_in, cascade_xor, target_port=1):
+            return False
+        current_stage = [cascade_xor]
+
         parity_led = await self.create_element(
             "Led", output_x, 100.0 + (width // 2) * VERTICAL_STAGE_SPACING, out_label
         )

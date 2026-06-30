@@ -16,4 +16,5 @@ private slots:
 
     void testOddParityChecker_data();
     void testOddParityChecker();
+    void testCascadeIn();
 };

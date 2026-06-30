@@ -16,6 +16,7 @@ struct ParityGeneratorFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *dataInputs[4] = {};
+    InputSwitch *cascadeIn = nullptr;
     Led *parityOutput = nullptr;
     Simulation *sim = nullptr;
 
@@ -28,6 +29,8 @@ struct ParityGeneratorFixture {
             dataInputs[i] = new InputSwitch();
             builder.add(dataInputs[i]);
         }
+        cascadeIn = new InputSwitch();
+        builder.add(cascadeIn);
         parityOutput = new Led();
         builder.add(parityOutput);
 
@@ -37,6 +40,7 @@ struct ParityGeneratorFixture {
         for (int i = 0; i < 4; ++i) {
             builder.connect(dataInputs[i], 0, ic, QString("Data[%1]").arg(i));
         }
+        builder.connect(cascadeIn, 0, ic, "CascadeIn");
         builder.connect(ic, "Parity", parityOutput, 0);
 
         sim = builder.initSimulation();
@@ -109,4 +113,24 @@ void TestLevel2ParityGenerator::testParityGenerator()
     f.sim->update();
 
     QCOMPARE(getInputStatus(f.parityOutput), expectedParity);
+}
+
+// 74180 cascade-in XORs a chained parity bit into this block's parity, so
+// toggling CascadeIn flips the output for any fixed data.
+void TestLevel2ParityGenerator::testCascadeIn()
+{
+    auto &f = *s_level2ParityGenerator;
+
+    // Fixed data 0x1 → tree parity = 1 (odd number of ones).
+    for (int i = 0; i < 4; ++i) {
+        f.dataInputs[i]->setOn(i == 0);
+    }
+
+    f.cascadeIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.parityOutput), true);    // 1 XOR 0 = 1
+
+    f.cascadeIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.parityOutput), false);   // 1 XOR 1 = 0
 }

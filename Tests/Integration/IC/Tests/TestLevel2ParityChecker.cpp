@@ -19,6 +19,7 @@ struct ParityCheckerFixture {
     IC *ic = nullptr;
     InputSwitch *swD[4] = {};
     InputSwitch *swP = nullptr;
+    InputSwitch *cascadeIn = nullptr;
     Led *ledResult = nullptr;
     Simulation *sim = nullptr;
 
@@ -32,8 +33,9 @@ struct ParityCheckerFixture {
             builder.add(swD[i]);
         }
         swP = new InputSwitch();
+        cascadeIn = new InputSwitch();
         ledResult = new Led();
-        builder.add(swP, ledResult);
+        builder.add(swP, cascadeIn, ledResult);
 
         ic = loadBuildingBlockIC("level2_parity_checker.panda");
         builder.add(ic);
@@ -42,6 +44,7 @@ struct ParityCheckerFixture {
             builder.connect(swD[i], 0, ic, QString("data[%1]").arg(i));
         }
         builder.connect(swP, 0, ic, "data[4]");
+        builder.connect(cascadeIn, 0, ic, "CascadeIn");
         builder.connect(ic, "parity", ledResult, 0);
 
         sim = builder.initSimulation();
@@ -117,4 +120,25 @@ void TestLevel2ParityChecker::testOddParityChecker()
     f.sim->update();
 
     QCOMPARE(getInputStatus(f.ledResult) ? 1 : 0, expectedResult);
+}
+
+// 74180 cascade-in XORs a chained parity bit into the check result, so toggling
+// CascadeIn flips the output for any fixed input.
+void TestLevel2ParityChecker::testCascadeIn()
+{
+    auto &f = *s_level2ParityChecker;
+
+    // Single 1 on the parity bit → tree parity = 1.
+    for (int i = 0; i < 4; ++i) {
+        f.swD[i]->setOn(false);
+    }
+    f.swP->setOn(true);
+
+    f.cascadeIn->setOn(false);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledResult), true);    // 1 XOR 0 = 1
+
+    f.cascadeIn->setOn(true);
+    f.sim->update();
+    QCOMPARE(getInputStatus(f.ledResult), false);   // 1 XOR 1 = 0
 }

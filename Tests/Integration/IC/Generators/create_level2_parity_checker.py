@@ -10,6 +10,8 @@ Output is 1 when the total number of 1-bits is odd (valid odd parity).
 
 Inputs:
   - data[0] to data[7]: 8 input bits (data + parity bit)
+  - CascadeIn: 74180-style cascade input, XORed into the result. Tie low for
+    standalone use; for a wider parity tree feed another block's parity here.
 
 Outputs:
   - parity: 1-bit check result (1 = valid odd parity, 0 = error)
