@@ -7,6 +7,7 @@
 module level2_decoder_2to4_ic (
     input addr0,
     input addr1,
+    input enable,
     output out0,
     output out1,
     output out2,
@@ -23,10 +24,10 @@ wire aux_and_6;
 // Internal logic
 assign aux_not_1 = ~addr0;
 assign aux_not_2 = ~addr1;
-assign aux_and_3 = (aux_not_1 & aux_not_2);
-assign aux_and_4 = (addr0 & aux_not_2);
-assign aux_and_5 = (aux_not_1 & addr1);
-assign aux_and_6 = (addr0 & addr1);
+assign aux_and_3 = (aux_not_1 & aux_not_2 & enable);
+assign aux_and_4 = (addr0 & aux_not_2 & enable);
+assign aux_and_5 = (aux_not_1 & addr1 & enable);
+assign aux_and_6 = (addr0 & addr1 & enable);
 
 assign out0 = aux_and_3;
 assign out1 = aux_and_4;
@@ -38,12 +39,13 @@ module level2_decoder_2to4 (
 /* ========= Inputs ========== */
 input input_switch1,
 input input_switch2,
+input input_switch3,
 
 /* ========= Outputs ========== */
-output led4_1,
 output led5_1,
 output led6_1,
-output led7_1
+output led7_1,
+output led8_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL2_DECODER_2TO4 (level2_decoder_2to4_ic)
@@ -57,6 +59,7 @@ wire w_level2_decoder_2to4_ic_inst_1_out3;
 level2_decoder_2to4_ic level2_decoder_2to4_ic_inst_1 (
     .addr0(input_switch1),
     .addr1(input_switch2),
+    .enable(input_switch3),
     .out0(w_level2_decoder_2to4_ic_inst_1_out0),
     .out1(w_level2_decoder_2to4_ic_inst_1_out1),
     .out2(w_level2_decoder_2to4_ic_inst_1_out2),
@@ -64,8 +67,8 @@ level2_decoder_2to4_ic level2_decoder_2to4_ic_inst_1 (
 );
 
 // Writing output data. //
-assign led4_1 = w_level2_decoder_2to4_ic_inst_1_out0;
-assign led5_1 = w_level2_decoder_2to4_ic_inst_1_out1;
-assign led6_1 = w_level2_decoder_2to4_ic_inst_1_out2;
-assign led7_1 = w_level2_decoder_2to4_ic_inst_1_out3;
+assign led5_1 = w_level2_decoder_2to4_ic_inst_1_out0;
+assign led6_1 = w_level2_decoder_2to4_ic_inst_1_out1;
+assign led7_1 = w_level2_decoder_2to4_ic_inst_1_out2;
+assign led8_1 = w_level2_decoder_2to4_ic_inst_1_out3;
 endmodule

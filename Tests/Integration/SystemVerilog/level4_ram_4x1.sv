@@ -7,6 +7,7 @@
 module level2_decoder_2to4 (
     input addr0,
     input addr1,
+    input enable,
     output out0,
     output out1,
     output out2,
@@ -23,10 +24,10 @@ wire aux_and_6;
 // Internal logic
 assign aux_not_1 = ~addr0;
 assign aux_not_2 = ~addr1;
-assign aux_and_3 = (aux_not_1 & aux_not_2);
-assign aux_and_4 = (addr0 & aux_not_2);
-assign aux_and_5 = (aux_not_1 & addr1);
-assign aux_and_6 = (addr0 & addr1);
+assign aux_and_3 = (aux_not_1 & aux_not_2 & enable);
+assign aux_and_4 = (addr0 & aux_not_2 & enable);
+assign aux_and_5 = (aux_not_1 & addr1 & enable);
+assign aux_and_6 = (addr0 & addr1 & enable);
 
 assign out0 = aux_and_3;
 assign out1 = aux_and_4;
@@ -209,6 +210,7 @@ assign aux_and_5 = (w_level2_decoder_2to4_inst_14_out3 & writeenable);
 level2_decoder_2to4 level2_decoder_2to4_inst_14 (
     .addr0(address0),
     .addr1(address1),
+    .enable(1'b1),
     .out0(w_level2_decoder_2to4_inst_14_out0),
     .out1(w_level2_decoder_2to4_inst_14_out1),
     .out2(w_level2_decoder_2to4_inst_14_out2),

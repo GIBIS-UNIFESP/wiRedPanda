@@ -154,3 +154,49 @@ void TestLevel2Decoder2To4::testMutualExclusivity()
         QCOMPARE(activeCount, 1);
     }
 }
+
+// Active-high Enable (74138-style chip select): Enable=0 forces every output
+// low; Enable=1 restores normal decoding. Built standalone with Enable wired so
+// the shared fixture (which leaves Enable unconnected → defaulted high) is
+// untouched.
+void TestLevel2Decoder2To4::testEnableGating()
+{
+    auto workspace = std::make_unique<WorkSpace>();
+    CircuitBuilder builder(workspace->scene());
+
+    auto *a0 = new InputSwitch();
+    auto *a1 = new InputSwitch();
+    auto *en = new InputSwitch();
+    builder.add(a0, a1, en);
+    Led *outs[4] = {};
+    for (auto &o : outs) {
+        o = new Led();
+        builder.add(o);
+    }
+
+    auto *ic = loadBuildingBlockIC("level2_decoder_2to4.panda");
+    builder.add(ic);
+    builder.connect(a0, 0, ic, "addr[0]");
+    builder.connect(a1, 0, ic, "addr[1]");
+    builder.connect(en, 0, ic, "Enable");
+    for (int i = 0; i < 4; ++i) {
+        builder.connect(ic, QString("out[%1]").arg(i), outs[i], 0);
+    }
+    auto *sim = builder.initSimulation();
+
+    // Address 2 selected, Enable low → all outputs forced low.
+    a0->setOn(false);
+    a1->setOn(true);
+    en->setOn(false);
+    sim->update();
+    for (auto *o : outs) {
+        QVERIFY(!getInputStatus(o));
+    }
+
+    // Enable high → output 2 active, the rest low.
+    en->setOn(true);
+    sim->update();
+    for (int i = 0; i < 4; ++i) {
+        QCOMPARE(getInputStatus(outs[i]), i == 2);
+    }
+}

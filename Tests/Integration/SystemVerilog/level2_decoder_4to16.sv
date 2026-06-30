@@ -9,6 +9,7 @@ module level2_decoder_4to16_ic (
     input addr1,
     input addr2,
     input addr3,
+    input enable,
     output out0,
     output out1,
     output out2,
@@ -53,22 +54,22 @@ assign aux_not_1 = ~addr0;
 assign aux_not_2 = ~addr1;
 assign aux_not_3 = ~addr2;
 assign aux_not_4 = ~addr3;
-assign aux_and_5 = (aux_not_1 & aux_not_2 & aux_not_3 & aux_not_4);
-assign aux_and_6 = (addr0 & aux_not_2 & aux_not_3 & aux_not_4);
-assign aux_and_7 = (aux_not_1 & addr1 & aux_not_3 & aux_not_4);
-assign aux_and_8 = (addr0 & addr1 & aux_not_3 & aux_not_4);
-assign aux_and_9 = (aux_not_1 & aux_not_2 & addr2 & aux_not_4);
-assign aux_and_10 = (addr0 & aux_not_2 & addr2 & aux_not_4);
-assign aux_and_11 = (aux_not_1 & addr1 & addr2 & aux_not_4);
-assign aux_and_12 = (addr0 & addr1 & addr2 & aux_not_4);
-assign aux_and_13 = (aux_not_1 & aux_not_2 & aux_not_3 & addr3);
-assign aux_and_14 = (addr0 & aux_not_2 & aux_not_3 & addr3);
-assign aux_and_15 = (aux_not_1 & addr1 & aux_not_3 & addr3);
-assign aux_and_16 = (addr0 & addr1 & aux_not_3 & addr3);
-assign aux_and_17 = (aux_not_1 & aux_not_2 & addr2 & addr3);
-assign aux_and_18 = (addr0 & aux_not_2 & addr2 & addr3);
-assign aux_and_19 = (aux_not_1 & addr1 & addr2 & addr3);
-assign aux_and_20 = (addr0 & addr1 & addr2 & addr3);
+assign aux_and_5 = (aux_not_1 & aux_not_2 & aux_not_3 & aux_not_4 & enable);
+assign aux_and_6 = (addr0 & aux_not_2 & aux_not_3 & aux_not_4 & enable);
+assign aux_and_7 = (aux_not_1 & addr1 & aux_not_3 & aux_not_4 & enable);
+assign aux_and_8 = (addr0 & addr1 & aux_not_3 & aux_not_4 & enable);
+assign aux_and_9 = (aux_not_1 & aux_not_2 & addr2 & aux_not_4 & enable);
+assign aux_and_10 = (addr0 & aux_not_2 & addr2 & aux_not_4 & enable);
+assign aux_and_11 = (aux_not_1 & addr1 & addr2 & aux_not_4 & enable);
+assign aux_and_12 = (addr0 & addr1 & addr2 & aux_not_4 & enable);
+assign aux_and_13 = (aux_not_1 & aux_not_2 & aux_not_3 & addr3 & enable);
+assign aux_and_14 = (addr0 & aux_not_2 & aux_not_3 & addr3 & enable);
+assign aux_and_15 = (aux_not_1 & addr1 & aux_not_3 & addr3 & enable);
+assign aux_and_16 = (addr0 & addr1 & aux_not_3 & addr3 & enable);
+assign aux_and_17 = (aux_not_1 & aux_not_2 & addr2 & addr3 & enable);
+assign aux_and_18 = (addr0 & aux_not_2 & addr2 & addr3 & enable);
+assign aux_and_19 = (aux_not_1 & addr1 & addr2 & addr3 & enable);
+assign aux_and_20 = (addr0 & addr1 & addr2 & addr3 & enable);
 
 assign out0 = aux_and_5;
 assign out1 = aux_and_6;
@@ -94,9 +95,9 @@ input input_switch1,
 input input_switch2,
 input input_switch3,
 input input_switch4,
+input input_switch5,
 
 /* ========= Outputs ========== */
-output led6_1,
 output led7_1,
 output led8_1,
 output led9_1,
@@ -111,7 +112,8 @@ output led17_1,
 output led18_1,
 output led19_1,
 output led20_1,
-output led21_1
+output led21_1,
+output led22_1
 );
 /* ====== Aux. Variables ====== */
 // IC instance: LEVEL2_DECODER_4TO16 (level2_decoder_4to16_ic)
@@ -139,6 +141,7 @@ level2_decoder_4to16_ic level2_decoder_4to16_ic_inst_1 (
     .addr1(input_switch2),
     .addr2(input_switch3),
     .addr3(input_switch4),
+    .enable(input_switch5),
     .out0(w_level2_decoder_4to16_ic_inst_1_out0),
     .out1(w_level2_decoder_4to16_ic_inst_1_out1),
     .out2(w_level2_decoder_4to16_ic_inst_1_out2),
@@ -158,20 +161,20 @@ level2_decoder_4to16_ic level2_decoder_4to16_ic_inst_1 (
 );
 
 // Writing output data. //
-assign led6_1 = w_level2_decoder_4to16_ic_inst_1_out0;
-assign led7_1 = w_level2_decoder_4to16_ic_inst_1_out1;
-assign led8_1 = w_level2_decoder_4to16_ic_inst_1_out2;
-assign led9_1 = w_level2_decoder_4to16_ic_inst_1_out3;
-assign led10_1 = w_level2_decoder_4to16_ic_inst_1_out4;
-assign led11_1 = w_level2_decoder_4to16_ic_inst_1_out5;
-assign led12_1 = w_level2_decoder_4to16_ic_inst_1_out6;
-assign led13_1 = w_level2_decoder_4to16_ic_inst_1_out7;
-assign led14_1 = w_level2_decoder_4to16_ic_inst_1_out8;
-assign led15_1 = w_level2_decoder_4to16_ic_inst_1_out9;
-assign led16_1 = w_level2_decoder_4to16_ic_inst_1_out10;
-assign led17_1 = w_level2_decoder_4to16_ic_inst_1_out11;
-assign led18_1 = w_level2_decoder_4to16_ic_inst_1_out12;
-assign led19_1 = w_level2_decoder_4to16_ic_inst_1_out13;
-assign led20_1 = w_level2_decoder_4to16_ic_inst_1_out14;
-assign led21_1 = w_level2_decoder_4to16_ic_inst_1_out15;
+assign led7_1 = w_level2_decoder_4to16_ic_inst_1_out0;
+assign led8_1 = w_level2_decoder_4to16_ic_inst_1_out1;
+assign led9_1 = w_level2_decoder_4to16_ic_inst_1_out2;
+assign led10_1 = w_level2_decoder_4to16_ic_inst_1_out3;
+assign led11_1 = w_level2_decoder_4to16_ic_inst_1_out4;
+assign led12_1 = w_level2_decoder_4to16_ic_inst_1_out5;
+assign led13_1 = w_level2_decoder_4to16_ic_inst_1_out6;
+assign led14_1 = w_level2_decoder_4to16_ic_inst_1_out7;
+assign led15_1 = w_level2_decoder_4to16_ic_inst_1_out8;
+assign led16_1 = w_level2_decoder_4to16_ic_inst_1_out9;
+assign led17_1 = w_level2_decoder_4to16_ic_inst_1_out10;
+assign led18_1 = w_level2_decoder_4to16_ic_inst_1_out11;
+assign led19_1 = w_level2_decoder_4to16_ic_inst_1_out12;
+assign led20_1 = w_level2_decoder_4to16_ic_inst_1_out13;
+assign led21_1 = w_level2_decoder_4to16_ic_inst_1_out14;
+assign led22_1 = w_level2_decoder_4to16_ic_inst_1_out15;
 endmodule

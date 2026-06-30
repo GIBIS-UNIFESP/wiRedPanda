@@ -781,8 +781,10 @@ inline std::unique_ptr<WorkSpace> buildDecoder3to8Debug(InputSwitch* addr[3],
         throw std::runtime_error(QString("Failed to load decoder IC: %1").arg(e.what()).toStdString());
     }
 
-    // Verify IC has correct port counts
-    if (decoder->inputSize() != 3 || decoder->outputSize() != 8) {
+    // Verify IC has correct port counts (3 address + 1 Enable inputs, 8 outputs).
+    // Enable is left unconnected below — it defaults high, so the decoder stays
+    // enabled and behaves exactly as before this test was written.
+    if (decoder->inputSize() != 4 || decoder->outputSize() != 8) {
         throw std::runtime_error(QString("Decoder IC has incorrect port counts: %1 inputs, %2 outputs")
                                 .arg(decoder->inputSize())
                                 .arg(decoder->outputSize())

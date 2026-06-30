@@ -21,4 +21,5 @@ private slots:
     // Edge Cases
     void test4to16DecoderMaxAddress_data();
     void test4to16DecoderMaxAddress();
+    void testEnableGating();
 };

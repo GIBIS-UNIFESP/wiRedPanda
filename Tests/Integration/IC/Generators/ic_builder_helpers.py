@@ -58,6 +58,21 @@ class DecoderBuilder(ICBuilderBase):
 
         await self.log(f"  ✓ Created {width} NOT gates")
 
+        # Active-high Enable, defaulted HIGH: every decoded output is ANDed with
+        # Enable, so Enable=0 forces all outputs to 0 (74138-style chip select).
+        # Defaulting it high means a decoder embedded WITHOUT an explicit Enable
+        # connection behaves exactly as before — both the engine (internal switch
+        # holds its saved value) and the SV/Arduino export (an unconnected IC
+        # input resolves to the port's default value) see Enable=1.
+        enable_id = await self.create_element("InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "Enable")
+        if enable_id is None:
+            return False
+        set_en = await self.mcp.send_command("set_input_value", {"element_id": enable_id, "value": True})
+        if not set_en.success:
+            self.log_error("Failed to default Enable high")
+            return False
+        await self.log("  ✓ Created Enable input (default high)")
+
         output_leds = []
         and_gates = []
         for i in range(num_outputs):
@@ -71,16 +86,18 @@ class DecoderBuilder(ICBuilderBase):
                 return False
             and_gates.append(gate_id)
 
-            if width > 2:
-                set_props = await self.mcp.send_command("change_input_size", {"element_id": gate_id, "size": width})
-                if not set_props.success:
-                    self.log_error(f"Failed to set input_size={width} for AND gate {i}")
-                    return False
+            # width address bits + Enable on the last port.
+            set_props = await self.mcp.send_command("change_input_size", {"element_id": gate_id, "size": width + 1})
+            if not set_props.success:
+                self.log_error(f"Failed to set input_size={width + 1} for AND gate {i}")
+                return False
 
             for bit_pos in range(width):
                 source_id = addr_inputs[bit_pos] if i & 1 << bit_pos != 0 else not_gates[bit_pos]
                 if not await self.connect(source_id, gate_id, target_port=bit_pos):
                     return False
+            if not await self.connect(enable_id, gate_id, target_port=width):
+                return False
 
             led_id = await self.create_element(
                 "Led",
