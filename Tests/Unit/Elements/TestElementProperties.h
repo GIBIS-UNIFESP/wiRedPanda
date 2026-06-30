@@ -36,6 +36,10 @@ private slots:
     void testFrequencyProperty();
     void testFrequencyValidation();
 
+    // Propagation delay (2 tests)
+    void testPropagationDelayBoundsGuard();
+    void testPropagationDelayLoadRejectsOutOfRange();
+
     // Serialization (1 test)
     void testPropertiesSaveLoad();
 
