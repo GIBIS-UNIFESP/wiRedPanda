@@ -281,4 +281,9 @@ void ThemeAttributes::setTheme(const Theme theme)
     m_portOutputPen = QColor(Qt::darkRed);
 
     m_portHoverPort = QColor(Qt::yellow); // bright yellow on hover for high visibility regardless of theme
+
+    // Hover-label chips reuse the forced tooltip palette (see the QToolTip stylesheet above):
+    // #2a82da background with white text, theme-invariant so the labels read clearly on both themes.
+    m_portHoverLabelBg = QColor(0x2a, 0x82, 0xda);
+    m_portHoverLabelText = QColor(Qt::white);
 }

@@ -319,6 +319,8 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     /// \reimp
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    /// \reimp
+    void helpEvent(QGraphicsSceneHelpEvent *event) override;
 
 private:
     // --- Helpers ---

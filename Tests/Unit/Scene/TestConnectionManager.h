@@ -16,4 +16,9 @@ private slots:
     void testConnectionValidation();
     void testConnectionDeletion();
     void testMultiPortConnection();
+    void testHoverShowsConnectedPortLabels();
+    void testHoverSkipsUnnamedPortLabels();
+    void testHoverFanOutShowsAllPeerLabels();
+    void testHoverLabelExcludedFromHitTesting();
+    void testHoverReleaseClearsPeerHighlightAfterWireDeleted();
 };
