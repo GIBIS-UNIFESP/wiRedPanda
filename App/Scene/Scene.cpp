@@ -9,6 +9,7 @@
 #include <QClipboard>
 #include <QDrag>
 #include <QGraphicsSceneDragDropEvent>
+#include <QGraphicsSceneHelpEvent>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QPolygon>
@@ -807,6 +808,20 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     if (!m_interaction.mouseDoubleClick(event)) {
         QGraphicsScene::mouseDoubleClickEvent(event);
     }
+}
+
+void Scene::helpEvent(QGraphicsSceneHelpEvent *event)
+{
+    // A help event fires exactly when Qt is about to show a tooltip (after the wake-up
+    // delay). If the cursor is over a port, show its own label plus its connected peers'
+    // labels in situ instead of the native tooltip, so they all appear together at the
+    // same wake-up delay a tooltip would use. Other items keep their native tooltip.
+    if (auto *port = qgraphicsitem_cast<QNEPort *>(itemAt(event->scenePos()))) {
+        m_connectionManager.showHoverLabels(port);
+        return;
+    }
+
+    QGraphicsScene::helpEvent(event);
 }
 
 void Scene::addItem(QMimeData *mimeData)

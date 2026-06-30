@@ -7,9 +7,13 @@
 
 #pragma once
 
+#include <QList>
+#include <QPair>
 #include <QPointF>
+#include <QPointer>
 
 class GraphicElement;
+class PortHoverLabel;
 class QNEConnection;
 class QNEInputPort;
 class QNEOutputPort;
@@ -26,6 +30,8 @@ class Scene;
  */
 class ConnectionManager
 {
+    friend class TestConnectionManager;
+
 public:
     explicit ConnectionManager(Scene *scene);
 
@@ -74,6 +80,14 @@ public:
     /// Clears the current hover state (unhighlights the port, resets cursor).
     void clearHover();
 
+    /**
+     * \brief Shows in-situ label chips for \a port itself and every port connected to it.
+     *
+     * Called from Scene::helpEvent in place of the native tooltip, so the chips appear and
+     * disappear at the same wake-up delay a tooltip would. Replaces any chips already shown.
+     */
+    void showHoverLabels(QNEPort *port);
+
     // --- Validation ---
 
     /**
@@ -96,6 +110,12 @@ private:
     void releaseHoverPort();
     [[nodiscard]] QNEPort *hoverPort();
 
+    /// Returns the ports on the far end of every wire attached to \a port (skips dangling ends).
+    [[nodiscard]] static QList<QNEPort *> connectedPeers(QNEPort *port);
+
+    /// Removes and deletes all live label chips spawned by the current hover.
+    void clearHoverLabels();
+
     Scene *m_scene = nullptr;
 
     /// ID of the in-progress wire (looked up via Scene::itemById).
@@ -104,4 +124,14 @@ private:
     /// Hover-port tracking stored as element ID + port index so it survives undo/redo.
     int m_hoverPortElmId = 0;
     int m_hoverPortNumber = 0;
+
+    /// Transient label chips shown for the hovered port and its connected peers.
+    QList<QPointer<PortHoverLabel>> m_peerLabels;
+
+    /// Peers actually given hoverEnter() by the current hover, stored as element ID + port
+    /// index (same scheme as m_hoverPortElmId/m_hoverPortNumber — QNEPort isn't a QObject,
+    /// so it can't be tracked with QPointer, and a raw pointer would dangle if the peer's
+    /// element is deleted mid-hover) so releaseHoverPort() can hoverLeave() exactly this set
+    /// even if connectivity changes mid-hover.
+    QList<QPair<int, int>> m_highlightedPeers;
 };

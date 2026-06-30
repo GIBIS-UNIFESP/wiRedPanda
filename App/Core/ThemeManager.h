@@ -73,6 +73,11 @@ public:
     // --- Members: Port Hover ---
 
     QColor m_portHoverPort;
+
+    // --- Members: Port Hover Label ---
+
+    QColor m_portHoverLabelBg;
+    QColor m_portHoverLabelText;
 };
 
 /**
