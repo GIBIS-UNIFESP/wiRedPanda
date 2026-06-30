@@ -884,6 +884,7 @@ add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRE
 add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogExport WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestTemporalSimulation COMMAND test_wiredpanda TestTemporalSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTruthTable COMMAND test_wiredpanda TestTruthTable WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestUnifiedTimed COMMAND test_wiredpanda TestUnifiedTimed WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1024,7 +1025,7 @@ set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
 
 # Core Functionality Tests - Unit category
 foreach(TEST TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings
-        TestThemeManager TestUnifiedTimed)
+        TestTemporalSimulation TestThemeManager TestUnifiedTimed)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
@@ -1086,7 +1087,7 @@ set(ALL_TESTS
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
-    TestICFixtureLayout TestUnifiedTimed)
+    TestICFixtureLayout TestUnifiedTimed TestTemporalSimulation)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()

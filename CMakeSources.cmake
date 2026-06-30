@@ -507,6 +507,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestTemporalSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestUnifiedTimed.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.cpp
@@ -708,6 +709,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestTemporalSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestUnifiedTimed.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.h
