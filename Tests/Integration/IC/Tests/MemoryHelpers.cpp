@@ -43,7 +43,7 @@ void buildRegisterFile4x4(RegisterFile4x4Output &out)
     for (int i = 0; i < 4; i++) {
         builder.connect(&out.writeData[i], 0, regFileIC, QString("Data_In[%1]").arg(i));
     }
-    builder.connect(&out.writeEnable, 0, regFileIC, "Write_Enable");
+    builder.connect(&out.writeEnable, 0, regFileIC, "WriteEnable");
     builder.connect(&out.clock, 0, regFileIC, "Clock");
 
     // Connect IC outputs to LEDs
@@ -81,7 +81,7 @@ void buildRegisterFile8x8(RegisterFile8x8Output &out)
     for (int i = 0; i < 8; i++) {
         builder.connect(&out.writeData[i], 0, regFileIC, QString("Data_In[%1]").arg(i));
     }
-    builder.connect(&out.writeEnable, 0, regFileIC, "Write_Enable");
+    builder.connect(&out.writeEnable, 0, regFileIC, "WriteEnable");
     builder.connect(&out.clock, 0, regFileIC, "Clock");
 
     // Connect IC outputs to LEDs

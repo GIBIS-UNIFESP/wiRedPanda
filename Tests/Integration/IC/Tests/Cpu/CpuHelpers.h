@@ -87,10 +87,10 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
     for (int i = 0; i < 8; i++) {
         builder.connect(loadValue[i], 0, pcIC, QString("loadValue[%1]").arg(i));
     }
-    builder.connect(load, 0, pcIC, "load");
-    builder.connect(inc, 0, pcIC, "inc");
+    builder.connect(load, 0, pcIC, "Load");
+    builder.connect(inc, 0, pcIC, "Inc");
     builder.connect(reset, 0, pcIC, "reset");
-    builder.connect(clock, 0, pcIC, "clock");
+    builder.connect(clock, 0, pcIC, "Clock");
 
     // Connect IC outputs to LEDs
     for (int i = 0; i < 8; i++) {
@@ -1027,7 +1027,7 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
     for (int i = 0; i < 3; i++) {
         builder.connect(writeAddr[i], 0, clockGatedDecoder, QString("addr%1").arg(i));
     }
-    builder.connect(clock, 0, clockGatedDecoder, "clock");
+    builder.connect(clock, 0, clockGatedDecoder, "Clock");
     builder.connect(writeEnable, 0, clockGatedDecoder, "writeEnable");
 
     // Connect each Register8bit IC to receive:

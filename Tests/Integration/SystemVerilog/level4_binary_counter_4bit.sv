@@ -88,7 +88,7 @@ module level4_binary_counter_4bit_ic (
     input load,
     input countenable,
     input data0,
-    input clk,
+    input clock,
     input data1,
     input data2,
     input data3,
@@ -167,7 +167,7 @@ assign aux_or_18 = (aux_and_13 | aux_and_14);
 assign aux_or_19 = (aux_and_15 | aux_and_16);
 level1_d_flip_flop level1_d_flip_flop_inst_20 (
     .d(w_level2_mux_2to1_inst_25_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(aux_not_32),
     .q(w_level1_d_flip_flop_inst_20_q),
@@ -175,7 +175,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_20 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_21 (
     .d(w_level2_mux_2to1_inst_27_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(aux_not_32),
     .q(w_level1_d_flip_flop_inst_21_q),
@@ -183,7 +183,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_21 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_22 (
     .d(w_level2_mux_2to1_inst_29_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(aux_not_32),
     .q(w_level1_d_flip_flop_inst_22_q),
@@ -191,7 +191,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_22 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_23 (
     .d(w_level2_mux_2to1_inst_31_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(aux_not_32),
     .q(w_level1_d_flip_flop_inst_23_q),
@@ -292,7 +292,7 @@ level4_binary_counter_4bit_ic level4_binary_counter_4bit_ic_inst_1 (
     .load(input_switch2),
     .countenable(input_switch3),
     .data0(input_switch4),
-    .clk(input_switch5),
+    .clock(input_switch5),
     .data1(input_switch6),
     .data2(input_switch7),
     .data3(input_switch8),

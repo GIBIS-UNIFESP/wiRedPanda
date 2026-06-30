@@ -37,7 +37,7 @@ struct LoadableCounter4bitFixture {
         ic = loadBuildingBlockIC("level5_loadable_counter_4bit.panda");
         builder.add(ic);
 
-        builder.connect(clk, 0, ic, "CLK");
+        builder.connect(clk, 0, ic, "Clock");
         builder.connect(load, 0, ic, "Load");
 
         for (int i = 0; i < 4; ++i) {

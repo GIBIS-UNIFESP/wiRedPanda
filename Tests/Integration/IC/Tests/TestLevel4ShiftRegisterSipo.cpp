@@ -36,8 +36,8 @@ struct ShiftRegisterSipoFixture {
         ic = loadBuildingBlockIC("level4_shift_register_sipo.panda");
         builder.add(ic);
 
-        builder.connect(clk, 0, ic, "CLK");
-        builder.connect(serialIn, 0, ic, "SIN");
+        builder.connect(clk, 0, ic, "Clock");
+        builder.connect(serialIn, 0, ic, "Sin");
 
         for (int i = 0; i < 4; ++i) {
             dataOut[i] = new Led();

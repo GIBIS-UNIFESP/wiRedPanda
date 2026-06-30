@@ -146,7 +146,7 @@ endmodule
 
 // Module for LEVEL4_SHIFT_REGISTER_PISO (generated from level4_shift_register_piso.panda)
 module level4_shift_register_piso_ic (
-    input clk,
+    input clock,
     input load,
     input d0,
     input d1,
@@ -191,7 +191,7 @@ wire w_level2_mux_2to1_inst_11_p_output;
 assign aux_not_1 = ~load;
 level1_d_flip_flop level1_d_flip_flop_inst_2 (
     .d(w_level2_mux_2to1_inst_8_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_2_q),
@@ -199,7 +199,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_2 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_3 (
     .d(w_level2_mux_2to1_inst_9_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_3_q),
@@ -207,7 +207,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_3 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_4 (
     .d(w_level2_mux_2to1_inst_10_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_4_q),
@@ -215,7 +215,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_4 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_5 (
     .d(w_level2_mux_2to1_inst_11_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_5_q),
@@ -302,7 +302,7 @@ wire w_level4_shift_register_piso_ic_inst_1_sout;
 
 // Assigning aux variables. //
 level4_shift_register_piso_ic level4_shift_register_piso_ic_inst_1 (
-    .clk(input_switch1),
+    .clock(input_switch1),
     .load(input_switch2),
     .d0(input_switch3),
     .d1(input_switch4),

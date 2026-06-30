@@ -66,7 +66,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if load_id is None:
             return False
 
-        inc_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + VERTICAL_STAGE_SPACING, "inc")
+        inc_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + VERTICAL_STAGE_SPACING, "Inc")
         if inc_id is None:
             return False
 
@@ -74,7 +74,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if reset_id is None:
             return False
 
-        clock_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (3 * VERTICAL_STAGE_SPACING), "clock")
+        clock_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (3 * VERTICAL_STAGE_SPACING), "Clock")
         if clock_id is None:
             return False
 
@@ -182,7 +182,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
                 return False
 
         # Connect clock to register (CLK port)
-        if not await self.connect(clock_id, reg_id, target_port_label="CLK"):
+        if not await self.connect(clock_id, reg_id, target_port_label="Clock"):
             return False
 
         # Connect reset to the register's async Reset (F52: this input used

@@ -56,7 +56,7 @@ endmodule
 
 // Module for LEVEL5_LOADABLE_COUNTER_4BIT (generated from level5_loadable_counter_4bit.panda)
 module level5_loadable_counter_4bit_ic (
-    input clk,
+    input clock,
     input load,
     input d0,
     input d1,
@@ -170,7 +170,7 @@ assign aux_or_22 = (aux_and_17 | aux_and_18);
     //End of Multiplexer
 level1_d_flip_flop level1_d_flip_flop_inst_27 (
     .d(aux_mux_23),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_27_q),
@@ -178,7 +178,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_27 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_28 (
     .d(aux_mux_24),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_28_q),
@@ -186,7 +186,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_28 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_29 (
     .d(aux_mux_25),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_29_q),
@@ -194,7 +194,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_29 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_30 (
     .d(aux_mux_26),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_30_q),
@@ -232,7 +232,7 @@ wire w_level5_loadable_counter_4bit_ic_inst_1_q3;
 
 // Assigning aux variables. //
 level5_loadable_counter_4bit_ic level5_loadable_counter_4bit_ic_inst_1 (
-    .clk(input_switch1),
+    .clock(input_switch1),
     .load(input_switch2),
     .d0(input_switch3),
     .d1(input_switch4),

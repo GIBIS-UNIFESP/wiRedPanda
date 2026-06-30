@@ -37,7 +37,7 @@ struct UpDownCounter4bitFixture {
         ic = loadBuildingBlockIC("level5_up_down_counter_4bit.panda");
         builder.add(ic);
 
-        builder.connect(clk, 0, ic, "CLK");
+        builder.connect(clk, 0, ic, "Clock");
         builder.connect(dir, 0, ic, "Direction");
         builder.connect(en, 0, ic, "Enable");
 

@@ -63,7 +63,7 @@ struct RegFile8x8Fixture {
         for (int i = 0; i < 8; ++i) {
             builder.connect(writeData[i], 0, ic, QString("Data_In[%1]").arg(i));
         }
-        builder.connect(writeEnable, 0, ic, "Write_Enable");
+        builder.connect(writeEnable, 0, ic, "WriteEnable");
         builder.connect(clock, 0, ic, "Clock");
 
         for (int i = 0; i < 8; ++i) {

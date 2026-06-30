@@ -1897,7 +1897,7 @@ module level6_register_file_8x8 (
     input data_in5,
     input data_in6,
     input data_in7,
-    input write_enable,
+    input writeenable,
     input clock,
     output read_data10,
     output read_data11,
@@ -2158,14 +2158,14 @@ level2_decoder_3to8 level2_decoder_3to8_inst_1 (
     .out6(w_level2_decoder_3to8_inst_1_out6),
     .out7(w_level2_decoder_3to8_inst_1_out7)
 );
-assign aux_and_2 = (w_level2_decoder_3to8_inst_1_out0 & write_enable);
-assign aux_and_3 = (w_level2_decoder_3to8_inst_1_out1 & write_enable);
-assign aux_and_4 = (w_level2_decoder_3to8_inst_1_out2 & write_enable);
-assign aux_and_5 = (w_level2_decoder_3to8_inst_1_out3 & write_enable);
-assign aux_and_6 = (w_level2_decoder_3to8_inst_1_out4 & write_enable);
-assign aux_and_7 = (w_level2_decoder_3to8_inst_1_out5 & write_enable);
-assign aux_and_8 = (w_level2_decoder_3to8_inst_1_out6 & write_enable);
-assign aux_and_9 = (w_level2_decoder_3to8_inst_1_out7 & write_enable);
+assign aux_and_2 = (w_level2_decoder_3to8_inst_1_out0 & writeenable);
+assign aux_and_3 = (w_level2_decoder_3to8_inst_1_out1 & writeenable);
+assign aux_and_4 = (w_level2_decoder_3to8_inst_1_out2 & writeenable);
+assign aux_and_5 = (w_level2_decoder_3to8_inst_1_out3 & writeenable);
+assign aux_and_6 = (w_level2_decoder_3to8_inst_1_out4 & writeenable);
+assign aux_and_7 = (w_level2_decoder_3to8_inst_1_out5 & writeenable);
+assign aux_and_8 = (w_level2_decoder_3to8_inst_1_out6 & writeenable);
+assign aux_and_9 = (w_level2_decoder_3to8_inst_1_out7 & writeenable);
     //D FlipFlop
     always @(posedge clock)
     begin
@@ -5414,7 +5414,7 @@ level6_register_file_8x8 level6_register_file_8x8_inst_5 (
     .data_in5(w_level4_bus_mux_8bit_inst_6_out5),
     .data_in6(w_level4_bus_mux_8bit_inst_6_out6),
     .data_in7(w_level4_bus_mux_8bit_inst_6_out7),
-    .write_enable(aux_or_14),
+    .writeenable(aux_or_14),
     .clock(clock),
     .read_data10(w_level6_register_file_8x8_inst_5_read_data10),
     .read_data11(w_level6_register_file_8x8_inst_5_read_data11),

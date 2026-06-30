@@ -38,7 +38,7 @@ struct ModuloCounter4bitFixture {
         ic = loadBuildingBlockIC("level5_modulo_counter_4bit.panda");
         builder.add(ic);
 
-        builder.connect(clk, 0, ic, "CLK");
+        builder.connect(clk, 0, ic, "Clock");
 
         for (int i = 0; i < 4; ++i) {
             moduloIn[i] = new InputSwitch();

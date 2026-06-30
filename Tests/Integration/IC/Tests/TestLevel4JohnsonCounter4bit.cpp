@@ -43,7 +43,7 @@ struct JohnsonCounter4bitFixture {
         ic = loadBuildingBlockIC("level4_johnson_counter_4bit.panda");
         builder.add(ic);
 
-        builder.connect(clk, 0, ic, "CLK");
+        builder.connect(clk, 0, ic, "Clock");
         builder.connect(preset, 0, ic, "Init");
         builder.connect(ce, 0, ic, "CountEnable");
         builder.connect(load, 0, ic, "Load");

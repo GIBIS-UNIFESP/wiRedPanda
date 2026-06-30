@@ -93,13 +93,13 @@ class ProgramCounter7BitBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated Level 6 Program Counter IC")
 
         # Connect all inputs to Level 6 PC
-        if not await self.connect(clock, pc_ic, target_port_label="clock"):
+        if not await self.connect(clock, pc_ic, target_port_label="Clock"):
             return False
 
-        if not await self.connect(load, pc_ic, target_port_label="load"):
+        if not await self.connect(load, pc_ic, target_port_label="Load"):
             return False
 
-        if not await self.connect(inc, pc_ic, target_port_label="inc"):
+        if not await self.connect(inc, pc_ic, target_port_label="Inc"):
             return False
 
         if not await self.connect(reset, pc_ic, target_port_label="reset"):

@@ -342,7 +342,7 @@ class RegisterFileBuilder(ICBuilderBase):
                 return False
             data_in.append(elem_id)
 
-        write_enable = await self.create_element("InputSwitch", input_x_start, control_y, "Write_Enable")
+        write_enable = await self.create_element("InputSwitch", input_x_start, control_y, "WriteEnable")
         if write_enable is None:
             return False
 
@@ -753,7 +753,7 @@ class CounterBuilder(ICBuilderBase):
 
         input_x = 50.0
 
-        clk_id = await self.create_element("InputSwitch", input_x, 100.0, "CLK")
+        clk_id = await self.create_element("InputSwitch", input_x, 100.0, "Clock")
         if clk_id is None:
             return False
 
@@ -1528,12 +1528,12 @@ class RingJohnsonCounterBuilder(ICBuilderBase):
             return False
 
         input_x = 50.0
-        clk_id = await self.create_element("InputSwitch", input_x, 100.0, "CLK")
+        clk_id = await self.create_element("InputSwitch", input_x, 100.0, "Clock")
         if clk_id is None:
             return False
         await self.log("  ✓ Created input CLK")
 
-        preset_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "PRESET")
+        preset_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "Preset")
         if preset_id is None:
             return False
         await self.log("  ✓ Created input PRESET")

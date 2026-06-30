@@ -121,7 +121,7 @@ endmodule
 
 // Module for Register4bit (generated from level4_register_4bit.panda)
 module level4_register_4bit (
-    input clk,
+    input clock,
     input enable,
     input reset,
     input d0,
@@ -167,7 +167,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     .out3(w_level4_bus_mux_4bit_inst_1_out3)
 );
     //D FlipFlop
-    always @(posedge clk or negedge aux_not_6)
+    always @(posedge clock or negedge aux_not_6)
     begin
         if (~aux_not_6)
         begin
@@ -182,7 +182,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk or negedge aux_not_6)
+    always @(posedge clock or negedge aux_not_6)
     begin
         if (~aux_not_6)
         begin
@@ -197,7 +197,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk or negedge aux_not_6)
+    always @(posedge clock or negedge aux_not_6)
     begin
         if (~aux_not_6)
         begin
@@ -212,7 +212,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk or negedge aux_not_6)
+    always @(posedge clock or negedge aux_not_6)
     begin
         if (~aux_not_6)
         begin
@@ -347,7 +347,7 @@ reg aux_mux_12 = 1'b0;
 
 // Internal logic
 level4_register_4bit level4_register_4bit_inst_1 (
-    .clk(clock),
+    .clock(clock),
     .enable(1'b1),
     .reset(reset),
     .d0(aux_mux_6),
