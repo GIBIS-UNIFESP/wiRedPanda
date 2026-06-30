@@ -31,7 +31,7 @@ Implementation:
 - Simple cascade interconnections
 
 Usage:
-    python create_johnson_counter.py
+    python create_level4_johnson_counter_4bit.py
 """
 
 import asyncio

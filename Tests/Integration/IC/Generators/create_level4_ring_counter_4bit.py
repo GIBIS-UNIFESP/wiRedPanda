@@ -29,7 +29,7 @@ Implementation:
 - PRESET signal connected to FF[0] PRESET input (port 2)
 
 Usage:
-    python create_ring_counter.py
+    python create_level4_ring_counter_4bit.py
 """
 
 import asyncio

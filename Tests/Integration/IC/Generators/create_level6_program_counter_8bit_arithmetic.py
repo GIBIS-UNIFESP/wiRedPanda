@@ -21,7 +21,7 @@ Architecture:
   - Add mux layer for load/increment control
 
 Usage:
-    python create_level6_program_counter_8bit.py
+    python create_level6_program_counter_8bit_arithmetic.py
 """
 
 import asyncio

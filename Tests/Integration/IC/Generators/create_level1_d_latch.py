@@ -19,7 +19,7 @@ D Latch behavior:
 - When Enable=0: Q holds last value (latch holds state)
 
 Usage:
-    python create_d_latch.py
+    python create_level1_d_latch.py
 """
 
 import asyncio

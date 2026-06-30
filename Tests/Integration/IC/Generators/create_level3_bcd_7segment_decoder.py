@@ -33,7 +33,7 @@ Digit   BCD   a b c d e f g
 9      1001  1 1 1 1 0 1 1
 
 Usage:
-    python create_bcd_7segment_decoder.py
+    python create_level3_bcd_7segment_decoder.py
 """
 
 import asyncio

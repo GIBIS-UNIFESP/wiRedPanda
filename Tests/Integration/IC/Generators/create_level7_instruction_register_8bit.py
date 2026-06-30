@@ -17,7 +17,7 @@ Outputs:
   RegisterAddr[0..2] (lower 3 bits: bits 2-0)
 
 Usage:
-    python create_cpu_instruction_register_8bit.py
+    python create_level7_instruction_register_8bit.py
 """
 
 import asyncio

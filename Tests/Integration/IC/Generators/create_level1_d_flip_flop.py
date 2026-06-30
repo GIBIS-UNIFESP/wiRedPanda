@@ -30,7 +30,7 @@ D Flip-Flop behavior:
 - Clear (active LOW): Forces Q=0, Q_bar=1
 
 Usage:
-    python create_d_flip_flop.py
+    python create_level1_d_flip_flop.py
 """
 
 import asyncio

@@ -24,7 +24,7 @@ Circuit Logic:
 - addr bits encode the selected input using combinational logic
 
 Usage:
-    python create_priority_encoder_8to3.py
+    python create_level2_priority_encoder_8to3.py
 """
 
 import asyncio

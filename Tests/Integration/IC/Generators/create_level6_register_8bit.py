@@ -17,7 +17,7 @@ Architecture:
 - Bit 7: 1-bit Register(Data[7], Clock, WriteEnable, Reset) → Q[7]
 
 Usage:
-    python create_cpu_8bit_register.py
+    python create_level6_register_8bit.py
 """
 
 import asyncio

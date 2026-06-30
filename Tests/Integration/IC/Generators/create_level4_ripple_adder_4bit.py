@@ -23,7 +23,7 @@ This refactoring demonstrates IC composition hierarchy:
 - level4: Multi-bit composed ICs (4-bit adder using 4× FA ICs)
 
 Usage:
-    python create_level4_adder_4bit.py
+    python create_level4_ripple_adder_4bit.py
 """
 
 import asyncio

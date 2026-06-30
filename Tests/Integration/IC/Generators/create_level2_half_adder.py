@@ -13,7 +13,7 @@ Circuit:
 - 1 AND gate (Carry = A AND B)
 
 Usage:
-    python create_half_adder.py
+    python create_level2_half_adder.py
 """
 
 import asyncio
