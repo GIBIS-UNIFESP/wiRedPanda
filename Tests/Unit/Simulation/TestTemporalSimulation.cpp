@@ -5,6 +5,7 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QVersionNumber>
 
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -13,13 +14,47 @@
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
+#include "App/IO/Serialization.h"
+#include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
 #include "App/Simulation/SimEvent.h"
+#include "App/Simulation/SimTime.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/WaveformRecorder.h"
 #include "App/UI/TemporalWaveformWidget.h"
 #include "Tests/Common/TestUtils.h"
 
 using namespace TestUtils;
+
+namespace {
+
+/// Loads a top-level example circuit from Examples/ into \a ws. Returns false if the file is
+/// missing/unreadable (callers QSKIP), matching how the other fixture-loading tests guard.
+bool loadExample(WorkSpace &ws, const QString &fileName)
+{
+    const QString path = TestUtils::examplesDir() + fileName;
+    QFile file(path);
+    if (!file.exists() || !file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+    QDataStream stream(&file);
+    const QVersionNumber version = Serialization::readPandaHeader(stream);
+    ws.load(stream, version, QFileInfo(path).absolutePath());
+    return true;
+}
+
+/// Returns the first scene element labelled \a label, or nullptr.
+GraphicElement *byLabel(WorkSpace &ws, const QString &label)
+{
+    for (auto *elm : ws.scene()->elements()) {
+        if (elm && elm->label() == label) {
+            return elm;
+        }
+    }
+    return nullptr;
+}
+
+} // namespace
 
 // ============================================================================
 // EventQueue unit tests
@@ -952,4 +987,133 @@ void TestTemporalSimulation::testWaveformWidgetZoom()
 
     widget.zoomOut(); // ÷2 again
     QCOMPARE(widget.pixelsPerNs(), 2.0);
+}
+
+// ============================================================================
+// Temporal example circuits (Examples/temporal_*.panda)
+// ============================================================================
+
+void TestTemporalSimulation::testExampleRingOscillator()
+{
+    // The shipped ring-oscillator example: three inverters in a loop. In functional mode the
+    // zero-delay loop has no stable value and canonicalizes to Unknown; in temporal mode the
+    // per-gate delays spread the toggles over time, so it oscillates cleanly.
+    WorkSpace ws;
+    if (!loadExample(ws, "temporal_ring_oscillator.panda")) {
+        QSKIP("temporal_ring_oscillator.panda not found");
+    }
+    auto *sim = ws.scene()->simulation();
+    auto *n1 = byLabel(ws, "n1");
+    QVERIFY2(n1 && n1->elementType() == ElementType::Not, "ring inverter n1 missing");
+
+    // Functional mode: the loop collapses to Unknown.
+    sim->initialize();
+    sim->update();
+    QCOMPARE(n1->outputValue(0), Status::Unknown);
+
+    // Temporal mode, settled fresh (initialize resets outputs to Inactive so it can start):
+    // watch n1 and let it run; it must oscillate (>=3 transitions) and never go Unknown.
+    sim->setTimePerTick(1);
+    sim->initialize();
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("n1", n1, 0);
+    recorder.setRecording(true);
+    for (int i = 0; i < 150; ++i) {
+        sim->update();
+    }
+
+    const auto &transitions = recorder.trace(0).transitions;
+    bool sawUnknown = false;
+    for (const auto &tr : transitions) {
+        if (tr.second == Status::Unknown) {
+            sawUnknown = true;
+        }
+    }
+    QVERIFY2(!sawUnknown, "temporal ring went Unknown (hit the oscillation cap)");
+    QVERIFY2(transitions.size() >= 4, qPrintable(QString(
+        "ring did not oscillate: only %1 recorded values").arg(transitions.size())));
+}
+
+void TestTemporalSimulation::testExampleStaticHazard()
+{
+    // The shipped static-hazard example: F = A OR (NOT A), a tautology, but the inverted path is
+    // slower (tuned via per-element propagation delays) so a falling A produces a transient glitch
+    // on F that only appears in temporal mode.
+    WorkSpace ws;
+    if (!loadExample(ws, "temporal_static_hazard.panda")) {
+        QSKIP("temporal_static_hazard.panda not found");
+    }
+    auto *sim = ws.scene()->simulation();
+    auto *swA = byLabel(ws, "A");
+    auto *orGate = byLabel(ws, "reconv");
+    auto *notGate = byLabel(ws, "inv");
+    QVERIFY2(swA && orGate && notGate, "hazard elements missing");
+
+    // The tuned delays must have round-tripped through the .panda.
+    QCOMPARE(notGate->propagationDelay(), SimTime(10));
+    QCOMPARE(orGate->propagationDelay(), SimTime(3));
+
+    sim->setTimePerTick(100); // one wide tick drains the whole transient
+    sim->initialize();
+    static_cast<InputSwitch *>(swA)->setOn(true);
+    sim->update(); // settle F = 1
+    QCOMPARE(orGate->outputValue(0), Status::Active);
+
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("F", orGate, 0);
+    recorder.setRecording(true);
+
+    static_cast<InputSwitch *>(swA)->setOn(false); // hazardous falling edge
+    sim->update();
+
+    bool sawLow = false;
+    for (const auto &tr : recorder.trace(0).transitions) {
+        if (tr.second == Status::Inactive) {
+            sawLow = true;
+        }
+    }
+    QVERIFY2(sawLow, "static-1 hazard glitch was not produced");
+    QCOMPARE(orGate->outputValue(0), Status::Active); // tautology: settles back to 1
+}
+
+void TestTemporalSimulation::testExampleGateDelayChain()
+{
+    // The shipped gate-delay-chain example: A -> n1 -> n2 -> n3 -> n4. An edge on A reaches n4
+    // only after the cumulative delay of all four inverters, strictly later than it reaches n1.
+    WorkSpace ws;
+    if (!loadExample(ws, "temporal_gate_delay_chain.panda")) {
+        QSKIP("temporal_gate_delay_chain.panda not found");
+    }
+    auto *sim = ws.scene()->simulation();
+    auto *swA = byLabel(ws, "A");
+    auto *n1 = byLabel(ws, "n1");
+    auto *n4 = byLabel(ws, "n4");
+    QVERIFY2(swA && n1 && n4, "chain elements missing");
+
+    sim->setTimePerTick(1);
+    sim->initialize();
+    static_cast<InputSwitch *>(swA)->setOn(false);
+    for (int i = 0; i < 30; ++i) {
+        sim->update(); // settle: n1 = high, n4 = low
+    }
+    const Status n1Base = n1->outputValue(0);
+    const Status n4Base = n4->outputValue(0);
+
+    // Rising edge on A; poll each tap so we record the sim-time at which it first changes.
+    static_cast<InputSwitch *>(swA)->setOn(true);
+    SimTime tN1 = SIM_TIME_UNSET;
+    SimTime tN4 = SIM_TIME_UNSET;
+    for (int i = 0; i < 60; ++i) {
+        sim->update();
+        if (tN1 == SIM_TIME_UNSET && n1->outputValue(0) != n1Base) {
+            tN1 = sim->currentTime();
+        }
+        if (tN4 == SIM_TIME_UNSET && n4->outputValue(0) != n4Base) {
+            tN4 = sim->currentTime();
+        }
+    }
+
+    QVERIFY2(tN1 != SIM_TIME_UNSET && tN4 != SIM_TIME_UNSET, "chain taps never changed");
+    QVERIFY2(tN4 > tN1, qPrintable(QString(
+        "n4 (%1 ns) did not lag n1 (%2 ns): cumulative delay not observed").arg(tN4).arg(tN1)));
 }

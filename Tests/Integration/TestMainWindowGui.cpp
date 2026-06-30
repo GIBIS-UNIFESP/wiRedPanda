@@ -40,6 +40,7 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
+#include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -539,6 +540,60 @@ void TestMainWindowGui::testTemporalModeSelector()
     sim->update();
     sim->update();
     QCOMPARE(sim->currentTime(), t1);
+}
+
+void TestMainWindowGui::testTemporalModeReinitializesFeedback()
+{
+    // Switching to Temporal must re-settle the circuit, not merely swap the tick window: a feedback
+    // ring that canonicalized to Unknown in functional mode must recover and oscillate once Temporal
+    // is selected (the mode handler re-initializes, resetting element state to Inactive). Without the
+    // re-init, NOT(Unknown)=Unknown is a fixed point and the ring would stay stuck.
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+
+    auto *n1 = new Not();
+    auto *n2 = new Not();
+    auto *n3 = new Not();
+    scene->addItem(n1);
+    scene->addItem(n2);
+    scene->addItem(n3);
+    CircuitBuilder builder(scene);
+    builder.connect(n1, 0, n2, 0);
+    builder.connect(n2, 0, n3, 0);
+    builder.connect(n3, 0, n1, 0); // close the inverter loop
+    auto *sim = builder.initSimulation();
+
+    // Functional: the zero-delay ring collapses to Unknown.
+    sim->update();
+    QCOMPARE(n1->outputValue(0), Status::Unknown);
+
+    // Use the slowest speed so each tick is a small ns window (fast, deterministic), then switch
+    // to Temporal — the handler re-initializes and the ring re-settles from a defined state.
+    auto *speed = window->findChild<QComboBox *>("comboSimSpeed");
+    QVERIFY(speed);
+    speed->setCurrentIndex(0);
+    auto *mode = window->findChild<QComboBox *>("comboSimMode");
+    QVERIFY(mode);
+    mode->setCurrentIndex(1);
+
+    bool sawDefinite = false;
+    bool sawHigh = false;
+    bool sawLow = false;
+    for (int i = 0; i < 40; ++i) {
+        sim->update();
+        const Status s = n1->outputValue(0);
+        if (s != Status::Unknown) {
+            sawDefinite = true;
+        }
+        if (s == Status::Active) {
+            sawHigh = true;
+        }
+        if (s == Status::Inactive) {
+            sawLow = true;
+        }
+    }
+    QVERIFY2(sawDefinite, "ring stayed Unknown after switching to Temporal (no re-settle)");
+    QVERIFY2(sawHigh && sawLow, "ring did not oscillate in Temporal mode after the switch");
 }
 
 void TestMainWindowGui::testWaveformDockOpensAndClosesCleanly()
