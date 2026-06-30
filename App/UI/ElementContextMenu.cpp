@@ -41,7 +41,8 @@ void ElementContextMenu::exec(QPoint screenPos,
                               const std::function<void()> &onFrequencyFocus,
                               const std::function<void()> &onEditSubcircuit,
                               const std::function<void()> &onEmbedSubcircuit,
-                              const std::function<void()> &onExtractToFile)
+                              const std::function<void()> &onExtractToFile,
+                              const std::function<void()> &onWatchInternals)
 {
     QMenu menu;
     const QString changeAppearanceText(QObject::tr("Change appearance to ..."));
@@ -170,6 +171,7 @@ void ElementContextMenu::exec(QPoint screenPos,
     const QString editSubcircuitText(QObject::tr("Edit sub-circuit"));
     const QString embedSubcircuitText(QObject::tr("Embed sub-circuit"));
     const QString extractToFileText(QObject::tr("Extract to file"));
+    const QString watchInternalsText(QObject::tr("Watch internal signals"));
 
     if (onEditSubcircuit && (caps.isEmbedded || caps.isFileBacked)) {
         menu.addAction(editSubcircuitText)->setData(editSubcircuitText);
@@ -179,6 +181,9 @@ void ElementContextMenu::exec(QPoint screenPos,
     }
     if (onExtractToFile && caps.isEmbedded) {
         menu.addAction(extractToFileText)->setData(extractToFileText);
+    }
+    if (onWatchInternals && (caps.isEmbedded || caps.isFileBacked)) {
+        menu.addAction(watchInternalsText)->setData(watchInternalsText);
     }
 
     menu.addSeparator();
@@ -210,6 +215,7 @@ void ElementContextMenu::exec(QPoint screenPos,
     if (actionData == editSubcircuitText)  { onEditSubcircuit(); return; }
     if (actionData == embedSubcircuitText) { onEmbedSubcircuit(); return; }
     if (actionData == extractToFileText)   { onExtractToFile(); return; }
+    if (actionData == watchInternalsText)  { onWatchInternals(); return; }
 
     if (actionData == rotateLeftText) {
         sendCommand(new RotateCommand(elements, -90.0, scene));

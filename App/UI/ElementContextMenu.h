@@ -46,6 +46,7 @@ namespace ElementContextMenu {
  * \param onEditSubcircuit Callback for the Edit Subcircuit action (opens the IC editor).
  * \param onEmbedSubcircuit Callback for the Embed Subcircuit action (inlines the IC into the parent circuit).
  * \param onExtractToFile Callback for the Extract to File action (saves the IC definition to disk).
+ * \param onWatchInternals Callback for the Watch Internal Signals action (records the IC's internals).
  */
 void exec(QPoint screenPos,
           QGraphicsItem *itemAtMouse,
@@ -61,6 +62,7 @@ void exec(QPoint screenPos,
           const std::function<void()> &onFrequencyFocus,
           const std::function<void()> &onEditSubcircuit = {},
           const std::function<void()> &onEmbedSubcircuit = {},
-          const std::function<void()> &onExtractToFile = {});
+          const std::function<void()> &onExtractToFile = {},
+          const std::function<void()> &onWatchInternals = {});
 
 } // namespace ElementContextMenu

@@ -156,7 +156,14 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
             }
         },
         [this] { emit embedSubcircuitRequested(); },
-        [this] { emit extractToFileRequested(); }
+        [this] { emit extractToFileRequested(); },
+        [this] {
+            if (m_elements.isEmpty()) return;
+            auto *elm = m_elements.first();
+            if (elm->elementType() == ElementType::IC) {
+                Application::instance()->mainWindow()->watchICInternals(static_cast<IC *>(elm));
+            }
+        }
     );
 }
 

@@ -1323,6 +1323,73 @@ void MainWindow::watchAllSignals()
     });
 }
 
+void MainWindow::watchICInternals(IC *ic)
+{
+    Application::guardedSlot(this, [this, ic] {
+        if (!currentTab() || !ic) {
+            return;
+        }
+
+        // The dock (and with it m_waveformWidget) is created lazily on first toggle; this
+        // context-menu action must work even if the dock has never been opened this session,
+        // so reveal it first — checking the action fires toggleTemporalWaveformDock(), which
+        // builds the widgets.
+        if (!m_waveformWidget && m_ui->actionTemporalWaveform) {
+            m_ui->actionTemporalWaveform->setChecked(true);
+        }
+        if (!m_waveformWidget) {
+            return; // defensive: dock creation failed
+        }
+
+        auto &recorder = currentTab()->simulation()->waveformRecorder();
+
+        // Recursively watch every internal primitive's output ports, with a path-prefixed name
+        // ("<IC>/<sub-IC>/<element>") so nested signals stay distinguishable. Augments the current
+        // watch set rather than clearing it, so several ICs can be opened side by side.
+        const std::function<void(const QVector<GraphicElement *> &, const QString &)> watchRec =
+            [&](const QVector<GraphicElement *> &elements, const QString &prefix) {
+                for (auto *elm : elements) {
+                    if (!elm) {
+                        continue;
+                    }
+                    const QString label = elm->label().isEmpty()
+                                              ? ElementFactory::translatedName(elm->elementType())
+                                              : elm->label();
+                    if (elm->elementType() == ElementType::IC) {
+                        watchRec(static_cast<IC *>(elm)->internalElements(), prefix + label + QStringLiteral("/"));
+                        continue;
+                    }
+                    if (elm->outputSize() == 0
+                        || elm->elementType() == ElementType::InputVcc
+                        || elm->elementType() == ElementType::InputGnd) {
+                        continue;
+                    }
+                    for (int port = 0; port < elm->outputSize(); ++port) {
+                        const QString portSuffix = (elm->outputSize() > 1) ? QStringLiteral(" [%1]").arg(port) : QString();
+                        recorder.watchSignal(prefix + label + portSuffix, elm, port);
+                    }
+                }
+            };
+
+        const QString root = (ic->label().isEmpty() ? ElementFactory::translatedName(ElementType::IC) : ic->label())
+                           + QStringLiteral("/");
+        watchRec(ic->internalElements(), root);
+
+        recorder.setRecording(true);
+        m_waveformWidget->setRecorder(&recorder);
+        m_labelWidget->setRecorder(&recorder);
+
+        // Reveal the waveform dock so the user sees the newly watched internals.
+        if (m_ui->actionTemporalWaveform && !m_ui->actionTemporalWaveform->isChecked()) {
+            m_ui->actionTemporalWaveform->setChecked(true);
+        }
+        if (m_ui->comboSimMode->currentIndex() != 1) {
+            m_ui->statusBar->showMessage(tr("Switch the simulation to Temporal mode to record waveforms."), 5000);
+        }
+        m_waveformWidget->update();
+    });
+}
+
 void MainWindow::clearWatchedSignals()
 {
     Application::guardedSlot(this, [this] {

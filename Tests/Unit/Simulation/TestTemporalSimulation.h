@@ -48,6 +48,7 @@ private slots:
 
     // --- Waveform recorder ---
     void testRecorderWatchAndRecord();
+    void testRecorderWatchSignalDedups();
     void testRecorderDeduplication();
     void testRecorderStatusAt();
     void testRecorderIntegration();
