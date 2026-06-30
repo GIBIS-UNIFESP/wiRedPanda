@@ -877,3 +877,24 @@ void TestTemporalSimulation::testWidgetSizeHint()
     widget.resize(400, 200);
     widget.repaint();
 }
+
+void TestTemporalSimulation::testWaveformWidgetZoom()
+{
+    // The temporal-waveform dock's zoom controls (the +/- buttons) drive the widget's zoom level.
+    // Verify the widget-level behaviour: zoomIn doubles, zoomOut halves the pixels-per-ns scale.
+    WaveformRecorder recorder;
+    TemporalWaveformWidget widget;
+    widget.setRecorder(&recorder);
+
+    widget.setPixelsPerNs(4.0);
+    QCOMPARE(widget.pixelsPerNs(), 4.0);
+
+    widget.zoomIn();  // ×2
+    QCOMPARE(widget.pixelsPerNs(), 8.0);
+
+    widget.zoomOut(); // ÷2
+    QCOMPARE(widget.pixelsPerNs(), 4.0);
+
+    widget.zoomOut(); // ÷2 again
+    QCOMPARE(widget.pixelsPerNs(), 2.0);
+}

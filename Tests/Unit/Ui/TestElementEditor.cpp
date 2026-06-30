@@ -7,6 +7,7 @@
 
 #include <QComboBox>
 #include <QLabel>
+#include <QSpinBox>
 #include <QToolButton>
 
 #include "App/Element/GraphicElements/And.h"
@@ -197,4 +198,32 @@ void TestElementEditor::testSelectionDoesNotPushPortSizeCommandB21()
     }
 
     QCOMPARE(undoStack->count(), countBefore);
+}
+
+void TestElementEditor::testPropagationDelayField()
+{
+    // The Element Editor's "Prop. delay" spin box is the temporal-mode UI for per-element delay.
+    // Selecting an element must populate it from propagationDelay(); editing it must write the
+    // override back to the element (the field ↔ element round-trip used to configure temporal sims).
+    WorkSpace workspace;
+    auto *andGate = new And();
+    workspace.scene()->addItem(andGate);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+
+    workspace.scene()->clearSelection();
+    andGate->setSelected(true); // editor populates from the selection
+
+    auto *spin = editor.findChild<QSpinBox *>("spinBoxPropagationDelay");
+    QVERIFY2(spin != nullptr, "Propagation-delay spin box not found");
+
+    // Populated from the element's current (default) delay; no override yet.
+    QVERIFY(!andGate->hasPropagationDelayOverride());
+    QCOMPARE(spin->value(), static_cast<int>(andGate->propagationDelay()));
+
+    // Editing the field writes the override back to the element.
+    spin->setValue(42);
+    QCOMPARE(static_cast<int>(andGate->propagationDelay()), 42);
+    QVERIFY2(andGate->hasPropagationDelayOverride(), "Editing the field did not set a delay override");
 }

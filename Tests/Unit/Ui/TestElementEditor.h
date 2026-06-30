@@ -23,4 +23,7 @@ private slots:
 
     // Regression: B21 — combo-box rebuild must not push spurious port-size commands
     void testSelectionDoesNotPushPortSizeCommandB21();
+
+    // The "Prop. delay" spin box populates from the selected element and writes the override back.
+    void testPropagationDelayField();
 };

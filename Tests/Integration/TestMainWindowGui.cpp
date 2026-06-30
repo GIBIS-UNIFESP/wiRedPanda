@@ -6,6 +6,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
+#include <QComboBox>
 #include <QFile>
 #include <QLabel>
 #include <QLineEdit>
@@ -479,6 +480,47 @@ void TestMainWindowGui::testRestartSimulation()
     QVERIFY2(action, "actionRestart not found");
     action->trigger();
     QVERIFY(window->currentTab()->simulation() != nullptr);
+}
+
+void TestMainWindowGui::testTemporalModeSelector()
+{
+    // The toolbar sim-mode selector switches the current tab's simulation between functional and
+    // temporal mode (the engine behaviour itself is covered in TestUnifiedTimed; the waveform
+    // widget's controls are covered in TestTemporalSimulation::testWaveformWidgetZoom — the full
+    // MainWindow dock-open path is not reliably driveable under the offscreen platform).
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, led, 0);
+    auto *sim = builder.initSimulation(); // same object as currentTab()->simulation()
+
+    auto *combo = window->findChild<QComboBox *>("comboSimMode");
+    QVERIFY2(combo, "comboSimMode not found");
+
+    // Functional (index 0): sim time stays frozen across updates.
+    sim->update();
+    const SimTime tFunc = sim->currentTime();
+    sim->update();
+    QCOMPARE(sim->currentTime(), tFunc);
+
+    // Temporal (index 1): the combo puts the sim into temporal mode, so time now advances.
+    combo->setCurrentIndex(1);
+    const SimTime t0 = sim->currentTime();
+    sim->update();
+    sim->update();
+    QVERIFY2(sim->currentTime() > t0, "comboSimMode -> Temporal did not enable temporal time advance");
+
+    // Back to functional: time freezes again.
+    combo->setCurrentIndex(0);
+    const SimTime t1 = sim->currentTime();
+    sim->update();
+    sim->update();
+    QCOMPARE(sim->currentTime(), t1);
 }
 
 // ===========================================================================
