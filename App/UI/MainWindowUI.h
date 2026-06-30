@@ -23,6 +23,7 @@
 #include <QScrollArea>
 #include <QSpacerItem>
 #include <QPushButton>
+#include <QComboBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QToolBar>
@@ -111,6 +112,7 @@ public:
     QAction *actionMute = nullptr;
     QAction *actionRestart = nullptr;
     QAction *actionBackground_Simulation = nullptr;
+    QAction *actionTemporalWaveform = nullptr;
 
     // Export actions
     QAction *actionExportToArduino = nullptr;
@@ -227,6 +229,14 @@ public:
 
     QToolBar *mainToolBar = nullptr;
     QStatusBar *statusBar = nullptr;
+
+    // --- Temporal simulation controls ---
+
+    QComboBox *comboSimMode = nullptr;   ///< Functional / Temporal selector.
+    QComboBox *comboSimSpeed = nullptr;  ///< Speed multiplier (temporal mode only).
+    QLabel *labelSimTime = nullptr;      ///< Current simulation time display.
+    QAction *actionSimSpeed = nullptr;   ///< Toolbar action wrapping comboSimSpeed.
+    QAction *actionSimTime = nullptr;    ///< Toolbar action wrapping labelSimTime.
 
     // --- Menu Bar & Menus ---
 

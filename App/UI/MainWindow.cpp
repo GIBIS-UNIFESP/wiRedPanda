@@ -14,11 +14,13 @@
 
 #include <QActionGroup>
 #include <QCloseEvent>
+#include <QComboBox>
 #include <QDebug>
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QHBoxLayout>
 #include <QIcon>
 #include <QKeySequence>
 #include <QLocale>
@@ -27,6 +29,8 @@
 #include <QMessageBox>
 #include <QPixmapCache>
 #include <QPushButton>
+#include <QScrollArea>
+#include <QScrollBar>
 #include <QShortcut>
 #include <QStyle>
 #include <QTabBar>
@@ -64,6 +68,7 @@
 #include "App/UI/LanguageManager.h"
 #include "App/UI/MainWindowUI.h"
 #include "App/UI/SceneUiBinder.h"
+#include "App/UI/TemporalWaveformWidget.h"
 #include "App/UI/UpdateController.h"
 #include "App/UI/WorkspaceManager.h"
 #include "App/Versions.h"
@@ -132,6 +137,11 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Setting connections";
     setupConnections();
+
+    // Periodic timer to refresh the simulation-time label and waveform in temporal mode.
+    m_simTimeTimer.setInterval(100);
+    connect(&m_simTimeTimer, &QTimer::timeout, this, &MainWindow::updateSimTimeLabel);
+    m_simTimeTimer.start();
 
     qCDebug(zero) << "Checking playing simulation.";
     // Start simulation running by default so the circuit is live on open.
@@ -398,6 +408,9 @@ void MainWindow::setupConnections()
     connect(m_ui->actionSelectAll,             &QAction::triggered,       this,                &MainWindow::on_actionSelectAll_triggered);
     connect(m_ui->actionShortcutsAndTips,      &QAction::triggered,       this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionWaveform,              &QAction::triggered,       this,                &MainWindow::on_actionWaveform_triggered);
+    connect(m_ui->comboSimMode,  QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboSimMode_currentIndexChanged);
+    connect(m_ui->comboSimSpeed, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboSimSpeed_currentIndexChanged);
+    connect(m_ui->actionTemporalWaveform,      &QAction::toggled,         this,                &MainWindow::toggleTemporalWaveformDock);
     connect(m_ui->actionWires,                 &QAction::triggered,       this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,                &QAction::triggered,       this,                &MainWindow::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,               &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
@@ -796,6 +809,14 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
         m_exerciseOverlay->setParent(nullptr);
     }
 
+    // Detach the temporal-waveform viewer from the outgoing tab's recorder before leaving
+    // it: the recorder lives inside that tab's Simulation and would dangle if the tab is
+    // later closed.
+    if (m_waveformWidget) {
+        m_waveformWidget->setRecorder(nullptr);
+        m_labelWidget->setRecorder(nullptr);
+    }
+
     if (!newTab) {
         // All tabs were closed; reset state.
         m_palette->updateICList(QFileInfo());
@@ -824,6 +845,23 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
         m_exerciseOverlay->repositionToParent();
         m_exerciseOverlay->show();
         m_exerciseOverlay->raise();
+    }
+
+    // Apply the current UI sim-mode/speed to the new tab's simulation (functional ⇒ 0,
+    // temporal ⇒ the selected ns-per-tick window).
+    if (m_ui->comboSimMode->currentIndex() == 1) {
+        const SimTime nsPerTick = m_ui->comboSimSpeed->itemData(m_ui->comboSimSpeed->currentIndex()).toULongLong();
+        newTab->simulation()->setTimePerTick(nsPerTick);
+    } else {
+        newTab->simulation()->setTimePerTick(0);
+    }
+
+    // Bind the temporal-waveform viewer to the now-current tab's recorder so the diagram
+    // follows the active tab (and never points at a freed recorder from a closed tab).
+    if (m_waveformWidget) {
+        auto &recorder = newTab->simulation()->waveformRecorder();
+        m_waveformWidget->setRecorder(&recorder);
+        m_labelWidget->setRecorder(&recorder);
     }
 
     updateWindowTitle();
@@ -1075,6 +1113,227 @@ void MainWindow::on_actionRestart_triggered()
         }
 
         currentTab()->simulation()->restart();
+    });
+}
+
+void MainWindow::on_comboSimMode_currentIndexChanged(int index)
+{
+    Application::guardedSlot(this, [this, index] {
+        if (!currentTab()) {
+            return;
+        }
+
+        const bool temporal = (index == 1);
+        m_ui->actionSimSpeed->setVisible(temporal);
+        m_ui->actionSimTime->setVisible(temporal);
+
+        if (temporal) {
+            // Temporal: apply the current speed (sets the ns-per-tick window) and adapt zoom.
+            on_comboSimSpeed_currentIndexChanged(m_ui->comboSimSpeed->currentIndex());
+            m_ui->labelSimTime->setText(tr("0 ns"));
+        } else {
+            // Functional (zero-delay): every tick is a full settle at the current instant.
+            currentTab()->simulation()->setTimePerTick(0);
+        }
+
+        // Re-settle the circuit under the new mode. Without this, the mode change only swaps the tick
+        // window: a feedback circuit that canonicalized to Unknown in functional mode would stay stuck
+        // there when switched to temporal (NOT(Unknown) is a fixed point). initialize() resets every
+        // element's outputs to Inactive and forces a fresh seed, so e.g. a ring oscillator starts
+        // oscillating the moment Temporal mode is selected.
+        auto *simulation = currentTab()->simulation();
+        if (!simulation->initialize()) {
+            simulation->restart();
+        }
+    });
+}
+
+void MainWindow::on_comboSimSpeed_currentIndexChanged(int index)
+{
+    Application::guardedSlot(this, [this, index] {
+        if (!currentTab()) {
+            return;
+        }
+
+        const SimTime nsPerTick = m_ui->comboSimSpeed->itemData(index).toULongLong();
+        currentTab()->simulation()->setTimePerTick(nsPerTick);
+
+        // Auto-adapt waveform zoom so ~5 seconds of wall-clock time fits the visible width.
+        // At 1000 ticks/sec, 5 seconds = 5000 ticks worth of sim time.
+        if (m_waveformWidget) {
+            const double simNsPerWallSec = static_cast<double>(nsPerTick) * 1000.0; // ticks/sec = 1000 (1ms timer)
+            const double visibleSimNs = simNsPerWallSec * 5.0; // 5 seconds of wall time
+            const int availableWidth = m_waveformWidget->width();
+            if (availableWidth > 0 && visibleSimNs > 0) {
+                m_waveformWidget->setPixelsPerNs(static_cast<double>(availableWidth) / visibleSimNs);
+            }
+        }
+    });
+}
+
+void MainWindow::updateSimTimeLabel()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab() || !m_ui->actionSimTime->isVisible()) {
+            return;
+        }
+
+        const SimTime ns = currentTab()->simulation()->currentTime();
+
+        // Unit ladder: switch as soon as the next unit reaches 1.0, so the label reads
+        // "5.00 µs" rather than "5000 ns" (and seconds exist — at 100x speed sim time
+        // crosses 1 s of sim time within seconds of wall time).
+        QString text;
+        if (ns >= 1'000'000'000) {
+            text = QString::number(static_cast<double>(ns) / 1'000'000'000.0, 'f', 2) + " s";
+        } else if (ns >= 1'000'000) {
+            text = QString::number(static_cast<double>(ns) / 1'000'000.0, 'f', 2) + " ms";
+        } else if (ns >= 1'000) {
+            text = QString::number(static_cast<double>(ns) / 1'000.0, 'f', 2) + QString::fromUtf8(" \xC2\xB5s");
+        } else {
+            text = QString::number(ns) + " ns";
+        }
+        m_ui->labelSimTime->setText(text);
+    });
+}
+
+void MainWindow::toggleTemporalWaveformDock()
+{
+    Application::guardedSlot(this, [this] {
+        if (!m_waveformDock) {
+            // Create the dock widget on first use.
+            m_waveformDock = new QDockWidget(tr("Temporal Waveform"), this);
+            m_waveformDock->setObjectName("temporalWaveformDock");
+
+            auto *container = new QWidget(m_waveformDock);
+            auto *layout = new QVBoxLayout(container);
+            layout->setContentsMargins(0, 0, 0, 0);
+
+            // Toolbar row
+            auto *toolbar = new QHBoxLayout();
+            auto *btnWatch = new QPushButton(tr("Watch All"), container);
+            auto *btnClear = new QPushButton(tr("Clear"), container);
+            auto *btnZoomIn = new QPushButton(tr("+"), container);
+            auto *btnZoomOut = new QPushButton(tr("-"), container);
+            auto *btnFit = new QPushButton(tr("Fit"), container);
+            btnWatch->setToolTip(tr("Watch all output signals in the circuit"));
+            btnClear->setToolTip(tr("Remove all watched signals"));
+            toolbar->addWidget(btnWatch);
+            toolbar->addWidget(btnClear);
+            toolbar->addStretch();
+            toolbar->addWidget(btnZoomOut);
+            toolbar->addWidget(btnZoomIn);
+            toolbar->addWidget(btnFit);
+            layout->addLayout(toolbar);
+
+            // Label column (fixed) + waveform (scrollable) side by side.
+            auto *waveformRow = new QHBoxLayout();
+            waveformRow->setSpacing(0);
+
+            m_labelWidget = new WaveformLabelWidget(container);
+            waveformRow->addWidget(m_labelWidget);
+
+            auto *scrollArea = new QScrollArea(container);
+            scrollArea->setWidgetResizable(true);
+            scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            m_waveformWidget = new TemporalWaveformWidget(scrollArea);
+            scrollArea->setWidget(m_waveformWidget);
+            waveformRow->addWidget(scrollArea);
+
+            layout->addLayout(waveformRow);
+
+            m_waveformDock->setWidget(container);
+            addDockWidget(Qt::BottomDockWidgetArea, m_waveformDock);
+
+            connect(btnWatch, &QPushButton::clicked, this, &MainWindow::watchAllSignals);
+            connect(btnClear, &QPushButton::clicked, this, &MainWindow::clearWatchedSignals);
+            connect(btnZoomIn, &QPushButton::clicked, m_waveformWidget, &TemporalWaveformWidget::zoomIn);
+            connect(btnZoomOut, &QPushButton::clicked, m_waveformWidget, &TemporalWaveformWidget::zoomOut);
+            connect(btnFit, &QPushButton::clicked, m_waveformWidget, &TemporalWaveformWidget::zoomFit);
+
+            // Sync dock visibility with the menu action.
+            connect(m_waveformDock, &QDockWidget::visibilityChanged, m_ui->actionTemporalWaveform, &QAction::setChecked);
+
+            // Repaint the waveform periodically and follow new data — but only when the view is
+            // already at the right edge, so the user can still scroll back to inspect earlier
+            // (ns-scale) transitions while the simulation runs.
+            connect(&m_simTimeTimer, &QTimer::timeout, this, [this, scrollArea]() {
+                if (!m_waveformWidget->isVisible()) {
+                    return;
+                }
+                m_labelWidget->update();
+                m_waveformWidget->update();
+                auto *hBar = scrollArea->horizontalScrollBar();
+                if (hBar && hBar->value() >= hBar->maximum() - 4) {
+                    hBar->setValue(hBar->maximum());
+                }
+            });
+        }
+
+        m_waveformDock->setVisible(m_ui->actionTemporalWaveform->isChecked());
+    });
+}
+
+void MainWindow::watchAllSignals()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab() || !m_waveformWidget) {
+            return;
+        }
+
+        auto *sim = currentTab()->simulation();
+        auto &recorder = sim->waveformRecorder();
+        recorder.clear();
+
+        // Watch all elements that have logic and output ports.
+        // Skip VCC/GND (static constants) and decorative elements (no logic).
+        for (auto *elm : currentTab()->scene()->elements()) {
+            if (!elm || elm->outputSize() == 0) {
+                continue;
+            }
+            // Skip VCC and GND — they never change.
+            if (elm->elementType() == ElementType::InputVcc || elm->elementType() == ElementType::InputGnd) {
+                continue;
+            }
+            const QString name = elm->label().isEmpty()
+                                     ? ElementFactory::translatedName(elm->elementType())
+                                     : elm->label();
+            for (int port = 0; port < elm->outputSize(); ++port) {
+                const QString portSuffix = (elm->outputSize() > 1)
+                                               ? QString(" [%1]").arg(port)
+                                               : QString();
+                recorder.watchSignal(name + portSuffix, elm, port);
+            }
+        }
+
+        recorder.setRecording(true);
+        m_waveformWidget->setRecorder(&recorder);
+        m_labelWidget->setRecorder(&recorder);
+
+        // Apply zoom matching the current speed setting.
+        on_comboSimSpeed_currentIndexChanged(m_ui->comboSimSpeed->currentIndex());
+
+        // Recording only produces transitions on the temporal (propagation-delay) path; in
+        // functional mode the diagram stays empty, so point the user at the mode selector.
+        if (m_ui->comboSimMode->currentIndex() != 1) {
+            m_ui->statusBar->showMessage(tr("Switch the simulation to Temporal mode to record waveforms."), 5000);
+        }
+
+        m_waveformWidget->update();
+    });
+}
+
+void MainWindow::clearWatchedSignals()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab() || !m_waveformWidget) {
+            return;
+        }
+
+        auto &recorder = currentTab()->simulation()->waveformRecorder();
+        recorder.setRecording(false);
+        recorder.clear();
+        m_waveformWidget->update();
     });
 }
 

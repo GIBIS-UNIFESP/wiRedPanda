@@ -11,9 +11,11 @@
 #include <memory>
 
 #include <QDir>
+#include <QDockWidget>
 #include <QMainWindow>
 #include <QPointer>
 #include <QSpacerItem>
+#include <QTimer>
 
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/UI/MainWindowHost.h"
@@ -30,8 +32,10 @@ class LanguageManager;
 class BewavedDolphin;
 class RecentFiles;
 class SceneUiBinder;
+class TemporalWaveformWidget;
 class TourEngine;
 class TourOverlay;
+class WaveformLabelWidget;
 class WorkSpace;
 class WorkspaceManager;
 
@@ -278,6 +282,22 @@ private:
     void on_actionZoomIn_triggered() const;
     void on_actionZoomOut_triggered() const;
 
+    // --- Temporal simulation ---
+
+    /// Switches the current tab's simulation between functional (zero-delay) and temporal
+    /// (propagation-delay) mode by setting the per-tick sim-time window.
+    void on_comboSimMode_currentIndexChanged(int index);
+    /// Applies the selected playback speed (sim-time advanced per tick) in temporal mode.
+    void on_comboSimSpeed_currentIndexChanged(int index);
+    /// Refreshes the toolbar simulation-time label from the current tab's sim time.
+    void updateSimTimeLabel();
+    /// Lazily builds and toggles the dockable timing-diagram viewer.
+    void toggleTemporalWaveformDock();
+    /// Watches every output signal in the current circuit and starts recording.
+    void watchAllSignals();
+    /// Stops recording and clears all watched signals.
+    void clearWatchedSignals();
+
 #ifdef Q_OS_WASM
     /// Emscripten beforeunload callback — saves window geometry before the browser tab closes.
     static const char *onBeforeUnload(int eventType, const void *reserved, void *userData);
@@ -340,4 +360,11 @@ private:
     /// Shared IC-hover preview, parented to this MainWindow.
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.
     QPointer<ICPreviewPopup> m_icPreviewPopup;
+
+    // --- Temporal simulation members ---
+
+    QTimer m_simTimeTimer;                                ///< Periodic timer to refresh the sim-time label + waveform.
+    QDockWidget *m_waveformDock = nullptr;                ///< Lazily-created timing-diagram dock.
+    WaveformLabelWidget *m_labelWidget = nullptr;         ///< Fixed signal-name column.
+    TemporalWaveformWidget *m_waveformWidget = nullptr;   ///< Scrollable waveform traces.
 };
