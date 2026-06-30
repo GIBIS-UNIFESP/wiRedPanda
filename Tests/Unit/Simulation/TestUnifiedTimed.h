@@ -158,4 +158,10 @@ private slots:
     /// A circuit that hits the oscillation cap on more than one tick emits the
     /// non-convergence warning only once (the already-warned branch).
     void testRepeatedOscillationWarnsOnce();
+
+    /// Async ~Preset (Q→1) and ~Clear (Q→0) overrides on the JK, SR and T flip-flops — the
+    /// preset/clear polarity that mutation testing found unasserted for these three types.
+    void testJKAsyncPresetClear();
+    void testSRAsyncPresetClear();
+    void testTAsyncPresetClear();
 };
