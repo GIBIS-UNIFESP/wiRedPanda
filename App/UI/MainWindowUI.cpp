@@ -199,6 +199,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionReportTranslationError = new QAction(MainWindow);
     actionReportTranslationError->setObjectName("actionReportTranslationError");
     actionReportTranslationError->setIcon(QIcon(":/Interface/Toolbar/help.svg"));
+    actionTemporalWaveform = new QAction(MainWindow);
+    actionTemporalWaveform->setObjectName("actionTemporalWaveform");
+    actionTemporalWaveform->setCheckable(true);
     centralWidget = new QWidget(MainWindow);
     centralWidget->setObjectName("centralWidget");
     gridLayout_8 = new QGridLayout(centralWidget);
@@ -653,6 +656,39 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     mainToolBar->addAction(actionPlay);
     mainToolBar->addAction(actionRestart);
     mainToolBar->addAction(actionWaveform);
+    mainToolBar->addSeparator();
+
+    // Temporal simulation mode controls
+    comboSimMode = new QComboBox(MainWindow);
+    comboSimMode->setObjectName("comboSimMode");
+    comboSimMode->addItem(QString(), 0); // Functional — index 0
+    comboSimMode->addItem(QString(), 1); // Temporal — index 1
+    comboSimMode->setCurrentIndex(0);
+    comboSimMode->setToolTip(QString());
+    mainToolBar->addWidget(comboSimMode);
+
+    comboSimSpeed = new QComboBox(MainWindow);
+    comboSimSpeed->setObjectName("comboSimSpeed");
+    // ns of sim time advanced per 1 ms tick. The slow end (1'000 / 10'000) lets per-element
+    // gate delays (5–20 ns) be observed by running slowly and zooming in.
+    comboSimSpeed->addItem("0.001x", 1'000);
+    comboSimSpeed->addItem("0.01x",  10'000);
+    comboSimSpeed->addItem("0.1x",   100'000);
+    comboSimSpeed->addItem("0.5x",   500'000);
+    comboSimSpeed->addItem("1x",     1'000'000);
+    comboSimSpeed->addItem("2x",     2'000'000);
+    comboSimSpeed->addItem("5x",     5'000'000);
+    comboSimSpeed->addItem("10x",    10'000'000);
+    comboSimSpeed->addItem("100x",   100'000'000);
+    comboSimSpeed->setCurrentIndex(4); // 1x
+    actionSimSpeed = mainToolBar->addWidget(comboSimSpeed);
+    actionSimSpeed->setVisible(false);
+
+    labelSimTime = new QLabel(MainWindow);
+    labelSimTime->setObjectName("labelSimTime");
+    labelSimTime->setMinimumWidth(100);
+    actionSimTime = mainToolBar->addWidget(labelSimTime);
+    actionSimTime->setVisible(false);
     menuBar->addAction(menuFile->menuAction());
     menuBar->addAction(menuEdit->menuAction());
     menuBar->addAction(menuView->menuAction());
@@ -739,6 +775,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuSimulation->addAction(actionWaveform);
     menuSimulation->addAction(actionMute);
     menuSimulation->addSeparator();
+    menuSimulation->addAction(actionTemporalWaveform);
     menuSimulation->addAction(actionBackground_Simulation);
 
     retranslateUi();
@@ -885,4 +922,9 @@ void MainWindowUi::retranslateUi()
     menuLearn->setTitle(QCoreApplication::translate("MainWindow", "&Learn"));
     menuExercises->setTitle(QCoreApplication::translate("MainWindow", "&Exercises"));
     menuTours->setTitle(QCoreApplication::translate("MainWindow", "&Tours"));
+    actionTemporalWaveform->setText(QCoreApplication::translate("MainWindow", "Temporal &Waveform"));
+    comboSimMode->setItemText(0, QCoreApplication::translate("MainWindow", "Functional"));
+    comboSimMode->setItemText(1, QCoreApplication::translate("MainWindow", "Temporal"));
+    comboSimMode->setToolTip(QCoreApplication::translate("MainWindow", "Simulation mode"));
+    labelSimTime->setText(QCoreApplication::translate("MainWindow", "0 ns"));
 }
