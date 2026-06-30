@@ -248,6 +248,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/WaveformRecorder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourStep.h

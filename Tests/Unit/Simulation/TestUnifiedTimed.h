@@ -30,4 +30,14 @@ private slots:
     /// still pending must drop those events: they hold raw pointers into the old netlist, so
     /// draining one afterwards dereferences freed memory (use-after-free under ASan pre-fix).
     void testStructuralEditDropsPendingEvents();
+
+    /// A time-base reset (Simulation::restart()) must clear the waveform recorder's recorded
+    /// transition history (not just the sim clock), so a later transition never gets appended
+    /// with a smaller timestamp than one already recorded.
+    void testRestartResetsRecorderTimeline();
+
+    /// A flip-flop's recorded Q transition must carry the tick boundary at which its deferred
+    /// commit published (edge + delay at fine tick resolution) — not the timestamp of the next
+    /// event-bearing tick, which for a slow clock is half a period late.
+    void testSequentialTransitionRecordedAtCommitTime();
 };

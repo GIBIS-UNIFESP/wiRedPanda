@@ -249,3 +249,107 @@ void TestUnifiedTimed::testStructuralEditDropsPendingEvents()
     }
     QCOMPARE(keep->outputValue(0), Status::Inactive); // NOT(1), reseeded and settled
 }
+
+void TestUnifiedTimed::testRestartResetsRecorderTimeline()
+{
+    // Regression test: Simulation::restart() (and resetEventTracking()) reset the sim clock to
+    // 0 but must also clear the waveform recorder's recorded transition history — otherwise a
+    // transition recorded after the restart lands at a SMALLER timestamp than one already in
+    // the trace, violating the ascending-time order SignalTrace::statusAt() (and the waveform
+    // viewer's paint routine) both assume.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    builder.add(sw, notGate);
+    builder.connect(sw, 0, notGate, 0);
+    Simulation *sim = builder.initSimulation();
+
+    sim->waveformRecorder().watchSignal("out", notGate, 0);
+    sim->waveformRecorder().setRecording(true);
+    sim->setTimePerTick(1);
+
+    sw->setOn(false);
+    sim->update();
+    sw->setOn(true);
+    sim->update();
+    sw->setOn(false);
+    sim->update();
+
+    QVERIFY(!sim->waveformRecorder().trace(0).transitions.isEmpty());
+
+    sim->restart();
+
+    // Pre-fix: restart() reset m_currentTime to 0 but left the recorder's prior (larger-
+    // timestamp) transitions in place — the trace stayed non-empty here, and the next
+    // recorded transition (at a small post-restart timestamp) would have landed after it.
+    QVERIFY(sim->waveformRecorder().trace(0).transitions.isEmpty());
+
+    // Recording after the restart must produce a clean, monotonic trace of its own.
+    sim->initialize();
+    sim->update();
+    sw->setOn(true);
+    sim->update();
+    QVERIFY(!sim->waveformRecorder().trace(0).transitions.isEmpty());
+    const auto &transitions = sim->waveformRecorder().trace(0).transitions;
+    for (int i = 1; i < transitions.size(); ++i) {
+        QVERIFY(transitions.at(i).first >= transitions.at(i - 1).first);
+    }
+}
+
+void TestUnifiedTimed::testSequentialTransitionRecordedAtCommitTime()
+{
+    // recordAll() runs inside processEvents(), always BEFORE commitDeferredOutputs()
+    // publishes a flip-flop's staged Q — and a steady tick drains no events at all. Without
+    // update()'s post-commit capture, Q's transition would be recorded only at the NEXT
+    // event-bearing timestamp (the next clock edge — half a period late for a slow clock).
+    // The recorded timestamp must be the tick boundary at which the commit published: at this
+    // test's 1-unit tick resolution, exactly edge time + the flip-flop's delay.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *d = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *ff = new DFlipFlop();
+    builder.add(d, clk, ff);
+    builder.connect(d, 0, ff, 0);   // Data
+    builder.connect(clk, 0, ff, 1); // Clock
+    Simulation *sim = builder.initSimulation();
+
+    d->setOn(true);
+    clk->setOn(false);
+    sim->update(); // functional baseline: no edge yet, Q=0, Data=1 captured as pre-edge value
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+
+    const SimTime delay = 10;
+    sim->setElementDelay(ff, delay);
+    sim->setTimePerTick(1);
+
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("Q", ff, 0);
+    recorder.setRecording(true);
+
+    for (SimTime i = 0; i < 2 * delay; ++i) {
+        sim->update(); // settle into temporal mode; no events, nothing recorded yet
+    }
+
+    const SimTime tEdge = sim->currentTime();
+    clk->setOn(true); // rising edge: the flip-flop evaluates and commits at tEdge + delay
+
+    // Run WELL past the edge with no further circuit activity. Pre-fix there is no later
+    // event-bearing tick inside this window, so the rise would never be recorded here.
+    for (SimTime i = 0; i < 5 * delay; ++i) {
+        sim->update();
+    }
+    QCOMPARE(ff->outputValue(0), Status::Active); // the value itself is long since published
+
+    const auto &transitions = recorder.trace(0).transitions;
+    SimTime riseTime = SIM_TIME_UNSET;
+    for (const auto &tr : transitions) {
+        if (tr.second == Status::Active) {
+            riseTime = tr.first;
+            break;
+        }
+    }
+    QVERIFY2(riseTime != SIM_TIME_UNSET, "Q's rise was never recorded");
+    QCOMPARE(riseTime, tEdge + delay);
+}
