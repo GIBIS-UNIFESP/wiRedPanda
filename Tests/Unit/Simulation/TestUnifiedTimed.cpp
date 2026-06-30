@@ -1509,3 +1509,141 @@ void TestUnifiedTimed::testNoSetupHoldViolation()
     sim->update();
     QCOMPARE(ff->outputValue(0), Status::Active);
 }
+
+void TestUnifiedTimed::testDelayEqualToTickBoundary()
+{
+    // The drain processes events with time <= currentTime + timePerTick. So an event landing
+    // EXACTLY on the tick boundary (delay == timePerTick) fires within that tick — the gate
+    // settles in a single update; a delay one unit larger spills into the next tick.
+
+    // Case A: delay == tick ⇒ settles in ONE update.
+    {
+        WorkSpace workspace;
+        CircuitBuilder builder(workspace.scene());
+        auto *sw = new InputSwitch();
+        auto *notGate = new Not();
+        builder.add(sw, notGate);
+        builder.connect(sw, 0, notGate, 0);
+        Simulation *sim = builder.initSimulation();
+
+        sw->setOn(false);
+        sim->update();
+        QCOMPARE(notGate->outputValue(0), Status::Active); // ~0 = 1
+
+        sim->setElementDelay(notGate, 5);
+        sim->setTimePerTick(5);
+        sw->setOn(true); // event scheduled at t+5 == this tick's targetTime
+        sim->update();
+        QCOMPARE(notGate->outputValue(0), Status::Inactive); // fired exactly on the boundary
+    }
+
+    // Case B: delay one unit past the tick ⇒ needs TWO updates.
+    {
+        WorkSpace workspace;
+        CircuitBuilder builder(workspace.scene());
+        auto *sw = new InputSwitch();
+        auto *notGate = new Not();
+        builder.add(sw, notGate);
+        builder.connect(sw, 0, notGate, 0);
+        Simulation *sim = builder.initSimulation();
+
+        sw->setOn(false);
+        sim->update();
+        QCOMPARE(notGate->outputValue(0), Status::Active);
+
+        sim->setElementDelay(notGate, 6);
+        sim->setTimePerTick(5);
+        sw->setOn(true); // event at t+6 > this tick's targetTime (t+5)
+        sim->update();
+        QVERIFY2(notGate->outputValue(0) == Status::Active, "Event past the tick boundary fired too early");
+        sim->update(); // next tick's window reaches t+6
+        QCOMPARE(notGate->outputValue(0), Status::Inactive);
+    }
+}
+
+void TestUnifiedTimed::testMixedDelayFeedbackLoopOscillates()
+{
+    // A ring mixing zero- and non-zero-delay gates: the zero-delay gate settles within a
+    // timestamp, while the non-zero gates spread events across future timestamps and pace the
+    // oscillation. So the loop oscillates over time (never the per-timestamp cap) — the middle
+    // ground between the all-delayed ring (testRingOscillatorTemporal) and the all-zero-delay
+    // ring (testZeroDelayLoopOscillatesToUnknownInTemporalMode, which caps to Unknown).
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *n1 = new Not();
+    auto *n2 = new Not();
+    auto *n3 = new Not();
+    builder.add(n1, n2, n3);
+    builder.connect(n1, 0, n2, 0);
+    builder.connect(n2, 0, n3, 0);
+    builder.connect(n3, 0, n1, 0);
+    Simulation *sim = builder.initSimulation();
+
+    sim->setTimePerTick(1);
+    sim->setElementDelay(n1, 6);
+    sim->setElementDelay(n2, 3);
+    sim->setElementDelay(n3, 0); // mixed: one zero-delay gate in the loop
+
+    int transitions = 0;
+    bool sawUnknown = false;
+    Status prev = n1->outputValue(0);
+    for (int i = 0; i < 150; ++i) {
+        sim->update();
+        const Status now = n1->outputValue(0);
+        if (now == Status::Unknown) {
+            sawUnknown = true;
+        }
+        if (now != prev) {
+            ++transitions;
+            prev = now;
+        }
+    }
+
+    QVERIFY2(!sawUnknown, "Mixed-delay loop hit the oscillation cap and went Unknown");
+    QVERIFY2(transitions >= 3, qPrintable(
+        QString("Mixed-delay loop did not oscillate: only %1 transitions").arg(transitions)));
+}
+
+void TestUnifiedTimed::testAsyncClearDominatesSimultaneousClockEdge()
+{
+    // When ~Clear is asserted in the SAME tick as a rising clock edge, the asynchronous clear
+    // wins: DFlipFlop::updateLogic applies the clock capture, then the preset/clear override runs
+    // afterwards and forces Q low. Functional mode (one settle per update).
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *data = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *nClear = new InputSwitch();
+    auto *ff = new DFlipFlop();
+    builder.add(data, clk, nClear, ff);
+    builder.connect(data, 0, ff, 0);   // Data
+    builder.connect(clk, 0, ff, 1);    // Clock
+    builder.connect(nClear, 0, ff, 3); // ~Clear (active low)
+    Simulation *sim = builder.initSimulation();
+
+    // Clock a 1 into Q with ~Clear deasserted.
+    nClear->setOn(true);
+    data->setOn(true);
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true);
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Active); // Q = 1
+
+    // Coincident rising edge + ~Clear assertion in ONE update.
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true);   // rising edge that would capture Data=1...
+    nClear->setOn(false); // ...but ~Clear is asserted in the same tick
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Inactive); // clear dominates the edge
+    QCOMPARE(ff->outputValue(1), Status::Active);   // ~Q
+
+    // With ~Clear released, a fresh edge captures Data=1 again — the FF is otherwise live.
+    nClear->setOn(true);
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true);
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Active);
+}
