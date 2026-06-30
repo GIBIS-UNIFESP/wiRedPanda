@@ -118,6 +118,17 @@ private slots:
     /// MUX and DEMUX route correctly and with propagation delay in temporal mode.
     void testMuxDemuxUnderDelay();
 
+    /// Boundary: an event landing exactly on the tick boundary (delay == timePerTick) fires that
+    /// tick (settles in one update); delay > tick needs two updates.
+    void testDelayEqualToTickBoundary();
+
+    /// A feedback loop mixing zero- and non-zero-delay elements still oscillates (the non-zero
+    /// gates pace it) rather than hitting the per-timestamp cap like an all-zero-delay loop.
+    void testMixedDelayFeedbackLoopOscillates();
+
+    /// An asynchronous ~Clear asserted in the same tick as a rising clock edge dominates (Q low).
+    void testAsyncClearDominatesSimultaneousClockEdge();
+
     /// Restarting mid-temporal-run resets sim time, re-seeds the whole network, and preserves
     /// temporal mode + the element's propagation delay so the second run is timed identically.
     void testRestartDuringTemporalRun();
