@@ -73,11 +73,8 @@ class Adder8BitBuilder(ICBuilderBase):
 
         for bit in range(8):
             # Instantiate 1-bit Full Adder IC from file
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_full_adder_1bit")):
-                return False
-
             fa_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level2_full_adder_1bit"),
+                "level2_full_adder_1bit",
                 fa_x + bit * HORIZONTAL_GATE_SPACING,
                 fa_y,
                 f"FA[{bit}]",

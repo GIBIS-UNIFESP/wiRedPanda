@@ -152,11 +152,8 @@ class FetchStageBuilder(ICBuilderBase):
         # ---- Instantiate Level 7 components ----
 
         # Program Counter
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_cpu_program_counter_8bit")):
-            return False
-
         pc_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level7_cpu_program_counter_8bit"),
+            "level7_cpu_program_counter_8bit",
             input_x + (2 * HORIZONTAL_GATE_SPACING),
             250.0,
             "PC",
@@ -166,11 +163,8 @@ class FetchStageBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated Program Counter")
 
         # Instruction Memory Interface
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface")):
-            return False
-
         imem_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level7_instruction_memory_interface"),
+            "level7_instruction_memory_interface",
             input_x + (6 * HORIZONTAL_GATE_SPACING),
             250.0,
             "InstrMem",
@@ -180,22 +174,16 @@ class FetchStageBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated Instruction Memory Interface")
 
         # Address Mux: selects between PC address (In0) and ProgAddr (In1)
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level4_bus_mux_8bit")):
-            return False
-
         addr_mux_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level4_bus_mux_8bit"), input_x + (4 * HORIZONTAL_GATE_SPACING), 250.0, "AddrMux"
+            "level4_bus_mux_8bit", input_x + (4 * HORIZONTAL_GATE_SPACING), 250.0, "AddrMux"
         )
         if addr_mux_id is None:
             return False
         await self.log("  ✓ Instantiated Address Mux (PC vs ProgAddr)")
 
         # Instruction Register
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level7_instruction_register_8bit")):
-            return False
-
         ir_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level7_instruction_register_8bit"),
+            "level7_instruction_register_8bit",
             input_x + (10 * HORIZONTAL_GATE_SPACING),
             250.0,
             "InstrReg",

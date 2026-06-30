@@ -76,22 +76,16 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         await self.log("  ✓ Created load, inc, reset, clock control inputs")
 
         # Instantiate 8-bit Register IC
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_register_8bit")):
-            return False
-
         register_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level6_register_8bit"), ctrl_x + HORIZONTAL_GATE_SPACING, 100.0, "Register8bit"
+            "level6_register_8bit", ctrl_x + HORIZONTAL_GATE_SPACING, 100.0, "Register8bit"
         )
         if register_id is None:
             return False
         await self.log("  ✓ Instantiated 8-bit Register IC")
 
         # Instantiate 8-bit Adder IC (for PC + 1)
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ripple_adder_8bit")):
-            return False
-
         adder_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level6_ripple_adder_8bit"),
+            "level6_ripple_adder_8bit",
             ctrl_x + (2 * HORIZONTAL_GATE_SPACING),
             100.0,
             "Adder8bit",

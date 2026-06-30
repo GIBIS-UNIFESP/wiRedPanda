@@ -90,7 +90,7 @@ class JohnsonCounterBuilder(ICBuilderBase):
         dff_x = input_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
             ff_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}"
+                "level1_d_flip_flop", dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}"
             )
             if ff_id is None:
                 return False
@@ -110,9 +110,7 @@ class JohnsonCounterBuilder(ICBuilderBase):
         hold_mux_ids = []
         mux_x = input_x + 0.5 * HORIZONTAL_GATE_SPACING
         for i in range(4):
-            hm = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level2_mux_2to1"), mux_x, 220.0 + (i * 30.0), f"hold_mux{i}"
-            )
+            hm = await self.instantiate_ic("level2_mux_2to1", mux_x, 220.0 + (i * 30.0), f"hold_mux{i}")
             if hm is None:
                 return False
             hold_mux_ids.append(hm)
@@ -122,7 +120,7 @@ class JohnsonCounterBuilder(ICBuilderBase):
                 return False
 
             lm = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level2_mux_2to1"),
+                "level2_mux_2to1",
                 mux_x + HORIZONTAL_GATE_SPACING,
                 225.0 + (i * 30.0),
                 f"load_mux{i}",

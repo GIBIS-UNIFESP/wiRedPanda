@@ -126,11 +126,20 @@ class ICBuilderBase:
             self.element_count += 1
         return elem_id
 
-    async def instantiate_ic(self, ic_name: str, x: float, y: float, label: str = "") -> "int | None":
-        """Instantiate an IC component. Returns element_id, or None on failure."""
-        response = await self.mcp.send_command("instantiate_ic", {"ic_name": ic_name, "x": x, "y": y, "label": label})
+    async def instantiate_ic(self, component: str, x: float, y: float, label: str = "") -> "int | None":
+        """Instantiate an IC component by bare name (e.g. "level1_d_flip_flop").
+
+        Resolves the name under IC_COMPONENTS_DIR and verifies the dependency
+        exists before instantiating, so every call site is a single uniform line
+        and the dependency check can't be forgotten. Returns element_id, or None
+        on failure (missing dependency or MCP error).
+        """
+        ic_path = str(IC_COMPONENTS_DIR / component)
+        if not self.check_dependency(ic_path):
+            return None
+        response = await self.mcp.send_command("instantiate_ic", {"ic_name": ic_path, "x": x, "y": y, "label": label})
         if not response.success:
-            self.log_error(f"instantiate IC '{label}' ({ic_name})")
+            self.log_error(f"instantiate IC '{label}' ({component})")
             return None
         elem_id = response.result.get("element_id") if response.result else None
         if elem_id is not None:

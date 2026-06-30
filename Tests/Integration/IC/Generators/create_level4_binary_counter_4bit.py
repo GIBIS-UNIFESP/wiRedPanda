@@ -162,7 +162,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         dff_x = xor_or_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
             ff_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level1_d_flip_flop"), dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}"
+                "level1_d_flip_flop", dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}"
             )
             if ff_id is None:
                 return False
@@ -179,7 +179,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         load_mux_x = xor_or_x + 0.75 * HORIZONTAL_GATE_SPACING
         for i in range(4):
             m = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level2_mux_2to1"), mux_x, 110.0 + (i * VERTICAL_STAGE_SPACING), f"hold_mux{i}"
+                "level2_mux_2to1", mux_x, 110.0 + (i * VERTICAL_STAGE_SPACING), f"hold_mux{i}"
             )
             if m is None:
                 return False
@@ -191,7 +191,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
 
             # Synchronous load mux: select external Data when Load is high
             lm = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level2_mux_2to1"),
+                "level2_mux_2to1",
                 load_mux_x,
                 115.0 + (i * VERTICAL_STAGE_SPACING),
                 f"load_mux{i}",

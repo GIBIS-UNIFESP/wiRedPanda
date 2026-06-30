@@ -82,7 +82,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
 
         # Instantiate level4_register_4bit
         reg_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level4_register_4bit"),
+            "level4_register_4bit",
             input_x + (2 * HORIZONTAL_GATE_SPACING),
             200.0,
             "Register4bit",
@@ -93,7 +93,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
 
         # Instantiate level4_ripple_adder_4bit
         adder_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level4_ripple_adder_4bit"),
+            "level4_ripple_adder_4bit",
             input_x + (2 * HORIZONTAL_GATE_SPACING),
             300.0,
             "Adder4bit",

@@ -116,21 +116,13 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
 
         # Instantiate Stack Pointer (just created)
         await self.log("📦 Instantiating Stack Pointer 8-bit...")
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_stack_pointer_8bit")):
-            return False
-
-        sp_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level6_stack_pointer_8bit"), 300.0, 200.0, "StackPointer"
-        )
+        sp_id = await self.instantiate_ic("level6_stack_pointer_8bit", 300.0, 200.0, "StackPointer")
         if sp_id is None:
             return False
 
         # Instantiate RAM (8x8 stack memory)
         await self.log("📦 Instantiating 8×8 stack RAM...")
-        if not self.check_dependency(str(IC_COMPONENTS_DIR / "level6_ram_8x8")):
-            return False
-
-        ram_id = await self.instantiate_ic(str(IC_COMPONENTS_DIR / "level6_ram_8x8"), 750.0, 200.0, "StackRAM")
+        ram_id = await self.instantiate_ic("level6_ram_8x8", 750.0, 200.0, "StackRAM")
         if ram_id is None:
             return False
 
@@ -139,11 +131,8 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
         address_muxes = []
         mux_x = 600.0
         for i in range(8):
-            if not self.check_dependency(str(IC_COMPONENTS_DIR / "level2_mux_2to1")):
-                return False
-
             element_id = await self.instantiate_ic(
-                str(IC_COMPONENTS_DIR / "level2_mux_2to1"),
+                "level2_mux_2to1",
                 mux_x + (i * HORIZONTAL_GATE_SPACING),
                 200.0,
                 f"AddrMux[{i}]",

@@ -74,15 +74,13 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         # Result selected: opcode[2:0] determines which of 5 inputs (only need 5 of 8 possible positions)
 
         # Level 1: 2:1 mux between result0/result1 using op0
-        l1_mux1 = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level2_mux_2to1"), level1_x, input_y + VERTICAL_STAGE_SPACING, "l1_mux1"
-        )
+        l1_mux1 = await self.instantiate_ic("level2_mux_2to1", level1_x, input_y + VERTICAL_STAGE_SPACING, "l1_mux1")
         if l1_mux1 is None:
             return False
 
         # Level 1: 2:1 mux between result2/result3 using op0
         l1_mux2 = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level2_mux_2to1"), level1_x, input_y + (2 * VERTICAL_STAGE_SPACING), "l1_mux2"
+            "level2_mux_2to1", level1_x, input_y + (2 * VERTICAL_STAGE_SPACING), "l1_mux2"
         )
         if l1_mux2 is None:
             return False
@@ -108,7 +106,7 @@ class ALUSelector5wayBuilder(ICBuilderBase):
         # Level 2: Mux between l1_mux1, l1_mux2, result4 (need special logic for 5 inputs)
         # Use cascaded structure: first select between l1_mux1 and l1_mux2 using op1
         l2_mux1 = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level2_mux_2to1"), level2_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l2_mux1"
+            "level2_mux_2to1", level2_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l2_mux1"
         )
         if l2_mux1 is None:
             return False
@@ -127,7 +125,7 @@ class ALUSelector5wayBuilder(ICBuilderBase):
 
         # Level 3: Mux between l2_mux1 and result4 using op2
         l3_mux = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level2_mux_2to1"), level3_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l3_mux"
+            "level2_mux_2to1", level3_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "l3_mux"
         )
         if l3_mux is None:
             return False

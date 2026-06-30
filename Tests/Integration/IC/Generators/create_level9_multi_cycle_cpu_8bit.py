@@ -171,50 +171,38 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         await self.log("  ✓ Created Gnd for control signals")
 
         # ---- Instantiate Fetch Stage ----
-        fetch_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level8_fetch_stage"), stage_x_offsets[0], stage_y, "Fetch"
-        )
+        fetch_id = await self.instantiate_ic("level8_fetch_stage", stage_x_offsets[0], stage_y, "Fetch")
         if fetch_id is None:
             return False
         await self.log("  ✓ Instantiated Fetch Stage")
 
         # ---- Instantiate Decode Stage ----
-        decode_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level8_decode_stage"), stage_x_offsets[1], stage_y, "Decode"
-        )
+        decode_id = await self.instantiate_ic("level8_decode_stage", stage_x_offsets[1], stage_y, "Decode")
         if decode_id is None:
             return False
         await self.log("  ✓ Instantiated Decode Stage")
 
         # ---- Instantiate Execute Stage ----
-        execute_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level8_execute_stage"), stage_x_offsets[2], stage_y, "Execute"
-        )
+        execute_id = await self.instantiate_ic("level8_execute_stage", stage_x_offsets[2], stage_y, "Execute")
         if execute_id is None:
             return False
         await self.log("  ✓ Instantiated Execute Stage")
 
         # ---- Instantiate Memory Stage ----
-        memory_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level8_memory_stage"), stage_x_offsets[3], stage_y, "Memory"
-        )
+        memory_id = await self.instantiate_ic("level8_memory_stage", stage_x_offsets[3], stage_y, "Memory")
         if memory_id is None:
             return False
         await self.log("  ✓ Instantiated Memory Stage")
 
         # ---- Instantiate Register File ----
-        regfile_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level6_register_file_8x8"), 425.0, reg_file_y, "RegFile"
-        )
+        regfile_id = await self.instantiate_ic("level6_register_file_8x8", 425.0, reg_file_y, "RegFile")
         if regfile_id is None:
             return False
         await self.log("  ✓ Instantiated Register File")
 
         # ---- Instantiate register file programming muxes (mirrors single-cycle) ----
         # Write data mux: In0=Memory DataOut (normal writeback), In1=RegProgData
-        write_data_mux_id = await self.instantiate_ic(
-            str(IC_COMPONENTS_DIR / "level4_bus_mux_8bit"), 425.0, reg_file_y - 150.0, "WriteDataMux"
-        )
+        write_data_mux_id = await self.instantiate_ic("level4_bus_mux_8bit", 425.0, reg_file_y - 150.0, "WriteDataMux")
         if write_data_mux_id is None:
             return False
 
