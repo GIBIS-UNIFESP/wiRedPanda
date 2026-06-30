@@ -1828,3 +1828,107 @@ void TestUnifiedTimed::testRepeatedOscillationWarnsOnce()
     sim->update();                       // re-oscillates ⇒ caps again, but already warned
     QCOMPARE(spy.count(), 1);            // still exactly one warning for the whole run
 }
+
+void TestUnifiedTimed::testJKAsyncPresetClear()
+{
+    // JK flip-flop asynchronous active-low overrides: ~Clear forces Q=0/~Q=1, ~Preset forces
+    // Q=1/~Q=0, independent of the clock. (Mutation testing found this polarity unasserted.)
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *j = new InputSwitch();
+    auto *k = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *nPre = new InputSwitch();
+    auto *nClr = new InputSwitch();
+    auto *ff = new JKFlipFlop();
+    builder.add(j, k, clk, nPre, nClr, ff);
+    builder.connect(j, 0, ff, 0);
+    builder.connect(clk, 0, ff, 1);
+    builder.connect(k, 0, ff, 2);
+    builder.connect(nPre, 0, ff, 3); // ~Preset
+    builder.connect(nClr, 0, ff, 4); // ~Clear
+    Simulation *sim = builder.initSimulation();
+
+    j->setOn(false); k->setOn(false); clk->setOn(false);
+    nPre->setOn(true); nClr->setOn(true); // both deasserted
+    sim->update();
+
+    nClr->setOn(false); // assert ~Clear ⇒ Q=0, ~Q=1
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+    QCOMPARE(ff->outputValue(1), Status::Active);
+
+    nClr->setOn(true);
+    nPre->setOn(false); // assert ~Preset ⇒ Q=1, ~Q=0
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Active);
+    QCOMPARE(ff->outputValue(1), Status::Inactive);
+}
+
+void TestUnifiedTimed::testSRAsyncPresetClear()
+{
+    // SR flip-flop asynchronous active-low overrides (same convention; ~Preset=3, ~Clear=4).
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *s = new InputSwitch();
+    auto *r = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *nPre = new InputSwitch();
+    auto *nClr = new InputSwitch();
+    auto *ff = new SRFlipFlop();
+    builder.add(s, r, clk, nPre, nClr, ff);
+    builder.connect(s, 0, ff, 0);
+    builder.connect(clk, 0, ff, 1);
+    builder.connect(r, 0, ff, 2);
+    builder.connect(nPre, 0, ff, 3);
+    builder.connect(nClr, 0, ff, 4);
+    Simulation *sim = builder.initSimulation();
+
+    s->setOn(false); r->setOn(false); clk->setOn(false);
+    nPre->setOn(true); nClr->setOn(true);
+    sim->update();
+
+    nClr->setOn(false); // ~Clear ⇒ Q=0
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+    QCOMPARE(ff->outputValue(1), Status::Active);
+
+    nClr->setOn(true);
+    nPre->setOn(false); // ~Preset ⇒ Q=1
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Active);
+    QCOMPARE(ff->outputValue(1), Status::Inactive);
+}
+
+void TestUnifiedTimed::testTAsyncPresetClear()
+{
+    // T flip-flop asynchronous active-low overrides (T-layout: ~Preset=2, ~Clear=3).
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *t = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *nPre = new InputSwitch();
+    auto *nClr = new InputSwitch();
+    auto *ff = new TFlipFlop();
+    builder.add(t, clk, nPre, nClr, ff);
+    builder.connect(t, 0, ff, 0);
+    builder.connect(clk, 0, ff, 1);
+    builder.connect(nPre, 0, ff, 2); // ~Preset
+    builder.connect(nClr, 0, ff, 3); // ~Clear
+    Simulation *sim = builder.initSimulation();
+
+    t->setOn(false); clk->setOn(false);
+    nPre->setOn(true); nClr->setOn(true);
+    sim->update();
+
+    nClr->setOn(false); // ~Clear ⇒ Q=0
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+    QCOMPARE(ff->outputValue(1), Status::Active);
+
+    nClr->setOn(true);
+    nPre->setOn(false); // ~Preset ⇒ Q=1
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Active);
+    QCOMPARE(ff->outputValue(1), Status::Inactive);
+}
