@@ -614,6 +614,7 @@ bool Simulation::initialize()
     m_inputs.clear();
     m_sortedElements.clear();
     m_sequentialElements.clear();
+    m_delays.clear(); // repopulated below from each element's propagationDelay()
 
     QVector<GraphicElement *> elements;
     auto items = m_host->simulationItems();
@@ -682,9 +683,12 @@ bool Simulation::initialize()
         return false;
     }
 
-    // Initialize simulation vectors on all scene-level elements
+    // Initialize simulation vectors on all scene-level elements, and seed each
+    // element's propagation delay for the temporal (event-driven) engine.  This is
+    // the baseline; setElementDelay() may still override an entry at runtime.
     for (auto *elm : std::as_const(elements)) {
         elm->initSimulationVectors(elm->inputSize(), elm->outputSize());
+        m_delays[elm] = elm->propagationDelay();
     }
 
     // Build connection graph

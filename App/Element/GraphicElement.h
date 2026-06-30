@@ -23,6 +23,7 @@
 #include "App/Element/ElementPorts.h"
 #include "App/Element/ElementSimState.h"
 #include "App/Element/PropertyDescriptor.h"
+#include "App/Simulation/SimTime.h"
 
 struct SerializationContext;
 struct SerializationOptions;
@@ -272,6 +273,26 @@ public:
 
     /// Sets the clock phase delay to \a delay (overridden by clock elements).
     virtual void setDelay(const double delay);
+
+    // --- Propagation delay (temporal simulation) ---
+
+    /// Propagation delay in simulation-time units (nanoseconds) used by the event-driven
+    /// engine in temporal mode.  Returns the per-element override when one has been set,
+    /// otherwise the per-type default.  Unrelated to delay(), which is the Clock phase
+    /// delay measured in seconds.
+    SimTime propagationDelay() const;
+
+    /// Sets a per-element propagation-delay override (nanoseconds).  Pass SIM_TIME_UNSET
+    /// to clear the override and fall back to the type default.
+    void setPropagationDelay(SimTime ns);
+
+    /// Returns \c true if a per-element propagation-delay override has been set.
+    bool hasPropagationDelayOverride() const { return m_propagationDelay != SIM_TIME_UNSET; }
+
+    /// Per-type default propagation delay (nanoseconds) for \a type.  Sources, sinks,
+    /// nodes, ICs, and decorative elements default to 0; logic gates and sequential
+    /// elements have non-zero defaults.
+    static SimTime defaultPropagationDelay(ElementType type);
 
     /**
      * \brief Returns the list of editable properties this element exposes in the ElementEditor.
@@ -696,6 +717,11 @@ private:
     /// the item and its ports; this element forwards its orientation interface here.
     /// See ElementOrientation.
     ElementOrientation m_orientation{this};
+
+    // --- Members: Temporal simulation ---
+
+    /// Per-element propagation-delay override in ns; SIM_TIME_UNSET ⇒ use the type default.
+    SimTime m_propagationDelay = SIM_TIME_UNSET;
 
     // --- Members: Port Size Constraints ---
 

@@ -727,6 +727,50 @@ void GraphicElement::setDelay(const double delay)
     Q_UNUSED(delay)
 }
 
+SimTime GraphicElement::propagationDelay() const
+{
+    return (m_propagationDelay != SIM_TIME_UNSET) ? m_propagationDelay : defaultPropagationDelay(m_elementType);
+}
+
+void GraphicElement::setPropagationDelay(const SimTime ns)
+{
+    // SIM_TIME_UNSET is the documented "clear the override" sentinel (see the header) — let it
+    // through unconditionally. Any other huge value is nonsensical as a real delay and would
+    // risk colliding with that sentinel's meaning if it were ever reached, so reject anything
+    // above the existing "Prop. delay" spin box's maximum (ElementEditorUI::setupUi(),
+    // 1,000,000 ns / 1 ms) — the native API and the UI then enforce the same bound.
+    if (ns != SIM_TIME_UNSET && ns > 1000000) {
+        return;
+    }
+    m_propagationDelay = ns;
+}
+
+SimTime GraphicElement::defaultPropagationDelay(const ElementType type)
+{
+    // Inertial-delay defaults (ns) used by the unified engine in temporal mode.
+    // Faster primitives get smaller delays; sources, sinks, nodes, ICs, and
+    // decorative elements stay at 0 (they introduce no propagation delay).
+    switch (type) {
+    case ElementType::Not:        return 5;
+    case ElementType::Nand:       return 8;
+    case ElementType::Nor:        return 8;
+    case ElementType::And:        return 10;
+    case ElementType::Or:         return 10;
+    case ElementType::TruthTable: return 10;
+    case ElementType::Xor:        return 12;
+    case ElementType::Xnor:       return 12;
+    case ElementType::Mux:        return 12;
+    case ElementType::Demux:      return 12;
+    case ElementType::DLatch:     return 15;
+    case ElementType::SRLatch:    return 15;
+    case ElementType::DFlipFlop:  return 20;
+    case ElementType::JKFlipFlop: return 20;
+    case ElementType::SRFlipFlop: return 20;
+    case ElementType::TFlipFlop:  return 20;
+    default:                      return 0;
+    }
+}
+
 void GraphicElement::updateLogic()
 {
     // Default no-op — decorative elements (Line, Text) have no simulation behaviour.

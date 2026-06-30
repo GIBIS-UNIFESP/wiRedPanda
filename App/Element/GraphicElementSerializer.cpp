@@ -104,6 +104,9 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
     map.insert("trigger", element.trigger());
     if (element.isFlippedX()) { map.insert("flippedX", true); }
     if (element.isFlippedY()) { map.insert("flippedY", true); }
+    // Only persist a propagation delay when the user overrode the type default; the
+    // keyed-map format lets older readers skip the unknown key, so no version bump.
+    if (element.hasPropagationDelayOverride()) { map.insert("propagationDelay", static_cast<quint64>(element.propagationDelay())); }
     stream << map;
 
     // -------------------------------------------
@@ -238,6 +241,14 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
 
     element.m_orientation.setFlippedXRaw(map.value("flippedX", false).toBool());
     element.m_orientation.setFlippedYRaw(map.value("flippedY", false).toBool());
+
+    if (map.contains("propagationDelay")) {
+        // Through the setter, not a raw assignment: a crafted/corrupt file could carry a value
+        // above the 1,000,000 ns bound (or the SIM_TIME_UNSET sentinel itself), which would
+        // later overflow `t + delay` scheduling. Out-of-range keeps the type default, matching
+        // the format's "invalid key ⇒ skip" philosophy.
+        element.setPropagationDelay(map.value("propagationDelay").toULongLong());
+    }
 
     // -------------------------------------------
 
