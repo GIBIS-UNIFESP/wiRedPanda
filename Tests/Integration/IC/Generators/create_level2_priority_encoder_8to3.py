@@ -5,8 +5,17 @@
 """
 Create Priority Encoder 8-to-3 IC (with priority: 7 > 6 > ... > 0)
 
-Inputs: data[0..7] (8 data input bits)
-Outputs: addr[0..2] (3-bit binary output of highest priority active input)
+Inputs:
+  - data[0..7]: 8 data input bits
+  - EI: enable input (74148, active-HIGH). When low, all outputs are forced
+    inactive. Tie high for standalone use; for a 16->4 chain drive it from the
+    higher-priority encoder's EO.
+Outputs:
+  - addr[0..2]: 3-bit binary output of the highest-priority active input
+  - valid: group-select (74148 GS) = EI AND OR(data[0..7]); 1 iff enabled and
+    any input is active
+  - EO: enable output (74148) = EI AND no-input-active; chains to the next
+    (lower-priority) encoder's EI
 
 Circuit Logic:
 - Uses cascaded inhibit signals to ensure only the highest priority input is encoded
@@ -63,6 +72,15 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
                 return False
             data_inputs.append(data_id)
             await self.log(f"  Created data[{i}] (id={data_id})")
+
+        # Enable input (74148 EI, active-HIGH): when low, all outputs are forced
+        # inactive (addr=000, valid=0, EO=0). Tie high for standalone use; for
+        # chaining two encoders into 16->4, drive this from the higher-priority
+        # encoder's EO.
+        ei_input = await self.create_element("InputSwitch", input_x, 100.0 + 8 * VERTICAL_STAGE_SPACING, "EI")
+        if ei_input is None:
+            return False
+        await self.log("  Created enable input EI")
 
         # Build inhibit cascade signals
         # inhibit[i] = NOT(OR of all inputs with priority > i)
@@ -282,7 +300,63 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
 
         await self.log("  Created output encoding logic")
 
-        # Create output LEDs for the three address bits
+        # "Any input active" = OR(data[0..7]) — drives the group-select (valid)
+        # and the EO cascade output. F99 re-introduces the 8-wide OR that F58
+        # dropped as dead; here it has a real use.
+        valid_or = await self.create_element(
+            "Or", addr_or_final_x, output_base_y + (7 * VERTICAL_STAGE_SPACING), "valid_or"
+        )
+        if valid_or is None:
+            return False
+        set_props = await self.mcp.send_command("change_input_size", {"element_id": valid_or, "size": 8})
+        if not set_props.success:
+            print("Warning: Could not set input_size=8 for valid_or")
+        for i in range(8):
+            if not await self.connect(data_inputs[i], valid_or, target_port=i):
+                return False
+
+        # ========== Enable gating + cascade output (74148 EI/EO) ==========
+        # Every addr/valid output is ANDed with EI (forced to 0 when disabled).
+        # EO = EI AND no-input-active, so a chained lower-priority encoder is
+        # enabled only when this one sees nothing on its data inputs.
+        en_x = output_x - HORIZONTAL_GATE_SPACING
+        addr_finals = [addr0_final, addr1_final, addr2_final]
+        addr_gated = []
+        for i, addr_sig in enumerate(addr_finals):
+            g = await self.create_element("And", en_x, output_base_y + i * addr_output_spacing, f"addr{i}_en")
+            if g is None:
+                return False
+            if not await self.connect(addr_sig, g):
+                return False
+            if not await self.connect(ei_input, g, target_port=1):
+                return False
+            addr_gated.append(g)
+
+        valid_gated = await self.create_element("And", en_x, output_base_y + 3 * addr_output_spacing, "valid_en")
+        if valid_gated is None:
+            return False
+        if not await self.connect(valid_or, valid_gated):
+            return False
+        if not await self.connect(ei_input, valid_gated, target_port=1):
+            return False
+
+        not_any = await self.create_element("Not", en_x, output_base_y + 4 * addr_output_spacing, "not_any_active")
+        if not_any is None:
+            return False
+        if not await self.connect(valid_or, not_any):
+            return False
+
+        eo_gate = await self.create_element("And", en_x, output_base_y + 5 * addr_output_spacing, "eo")
+        if eo_gate is None:
+            return False
+        if not await self.connect(ei_input, eo_gate):
+            return False
+        if not await self.connect(not_any, eo_gate, target_port=1):
+            return False
+
+        await self.log("  Created EI gating and EO cascade output")
+
+        # Create output LEDs: three address bits, valid (GS), and EO
         output_leds = []
         for i in range(3):
             led_id = await self.create_element("Led", output_x, output_base_y + i * addr_output_spacing, f"addr[{i}]")
@@ -290,11 +364,23 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
                 return False
             output_leds.append(led_id)
 
-        # Connect address outputs to LEDs
-        addr_outputs = [addr0_final, addr1_final, addr2_final]
+        valid_led = await self.create_element("Led", output_x, output_base_y + 3 * addr_output_spacing, "valid")
+        if valid_led is None:
+            return False
+        eo_led = await self.create_element("Led", output_x, output_base_y + 4 * addr_output_spacing, "EO")
+        if eo_led is None:
+            return False
+
+        # Connect EI-gated address outputs to LEDs
         for i, led_id in enumerate(output_leds):
-            if not await self.connect(addr_outputs[i], led_id):
+            if not await self.connect(addr_gated[i], led_id):
                 return False
+
+        # Connect valid and EO outputs
+        if not await self.connect(valid_gated, valid_led):
+            return False
+        if not await self.connect(eo_gate, eo_led):
+            return False
 
         await self.log("  Created and connected output LEDs")
 
