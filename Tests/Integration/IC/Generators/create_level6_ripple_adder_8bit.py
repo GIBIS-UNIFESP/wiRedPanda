@@ -17,7 +17,7 @@ Architecture:
 - Bit 7: Full Adder(A[7], B[7], Carry[6]) → Sum[7], CarryOut
 
 Usage:
-    python create_cpu_8bit_adder.py
+    python create_level6_ripple_adder_8bit.py
 """
 
 import asyncio

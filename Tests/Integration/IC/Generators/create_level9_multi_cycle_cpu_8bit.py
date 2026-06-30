@@ -50,7 +50,7 @@ Execution Flow:
   Cycle 3 (Memory): Read/write memory, write-back result to registers
 
 Usage:
-    python create_level9_cpu_8bit_multi_cycle.py
+    python create_level9_multi_cycle_cpu_8bit.py
 """
 
 import asyncio

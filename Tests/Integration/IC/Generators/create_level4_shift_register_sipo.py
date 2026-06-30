@@ -26,7 +26,7 @@ Implementation:
 - FF[i] Q output → FF[i+1] D input
 
 Usage:
-    python create_shift_register_sipo.py
+    python create_level4_shift_register_sipo.py
 """
 
 import asyncio

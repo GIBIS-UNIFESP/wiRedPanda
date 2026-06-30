@@ -43,7 +43,7 @@ Increment Logic:
 - Bit 3: D3 = Q3 XOR (Q0 AND Q1 AND Q2)
 
 Usage:
-    python create_binary_counter_4bit.py
+    python create_level4_binary_counter_4bit.py
 """
 
 import asyncio

@@ -19,7 +19,7 @@ Inputs: Data[0-3], ShiftAmount[0-1], ShiftDirection (7 inputs)
 Outputs: ShiftedData[0-3] (4 outputs)
 
 Usage:
-    python create_barrel_shifter_4bit.py
+    python create_level5_barrel_shifter_4bit.py
 """
 
 import asyncio

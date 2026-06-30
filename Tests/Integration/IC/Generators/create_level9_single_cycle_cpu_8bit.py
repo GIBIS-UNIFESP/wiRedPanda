@@ -46,7 +46,7 @@ Execution Model (Accumulator-based):
   - Programming ports allow tests to pre-load instruction memory and registers
 
 Usage:
-    python create_level9_cpu_8bit_single_cycle.py
+    python create_level9_single_cycle_cpu_8bit.py
 """
 
 import asyncio

@@ -19,7 +19,7 @@ Inputs: Data[0-3], Rotate_Amount[0-1], Direction (7 inputs)
 Outputs: Result[0-3] (4 outputs)
 
 Usage:
-    python create_barrel_rotator.py
+    python create_level5_barrel_rotator.py
 """
 
 import asyncio

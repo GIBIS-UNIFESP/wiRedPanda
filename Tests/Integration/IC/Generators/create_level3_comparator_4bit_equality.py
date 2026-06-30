@@ -13,7 +13,7 @@ Circuit:
 - AND gate tree (all bits equal)
 
 Usage:
-    python create_comparator_4bit_equality.py
+    python create_level3_comparator_4bit_equality.py
 """
 
 import asyncio

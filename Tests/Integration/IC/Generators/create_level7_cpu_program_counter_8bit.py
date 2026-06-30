@@ -19,7 +19,7 @@ Architecture:
   - Pass through all inputs/outputs to CPU interface
 
 Usage:
-    python create_level7_program_counter_8bit_cpu.py
+    python create_level7_cpu_program_counter_8bit.py
 """
 
 import asyncio

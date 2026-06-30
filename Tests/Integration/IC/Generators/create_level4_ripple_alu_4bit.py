@@ -28,7 +28,7 @@ Architecture:
     - Direct outputs for all 4 operation results
 
 Usage:
-    python create_alu_4bit.py
+    python create_level4_ripple_alu_4bit.py
 """
 
 import asyncio

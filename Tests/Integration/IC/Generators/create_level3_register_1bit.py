@@ -12,7 +12,7 @@ Inputs: Data, Clock, WriteEnable, Reset (4 inputs)
 Outputs: Q, NotQ (2 outputs)
 
 Usage:
-    python create_cpu_1bit_register.py
+    python create_level3_register_1bit.py
 """
 
 import asyncio

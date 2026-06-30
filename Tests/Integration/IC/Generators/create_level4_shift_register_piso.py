@@ -28,7 +28,7 @@ Implementation:
 - 1 NOT gate (invert LOAD signal)
 
 Usage:
-    python create_shift_register_piso.py
+    python create_level4_shift_register_piso.py
 """
 
 import asyncio
