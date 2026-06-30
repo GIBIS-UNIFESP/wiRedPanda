@@ -11,6 +11,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/Simulation/SimulationRecordingSuspender.h"
 #include "App/Simulation/SimulationThrottleDisabler.h"
 
 WaveformSimulator::WaveformSimulator(Scene *externalScene, Simulation *simulation)
@@ -68,6 +69,13 @@ void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
     // update() call. Without this, output port statuses are stale for most columns and the
     // waveform shows incorrect values.
     SimulationThrottleDisabler throttleDisabler(m_simulation);
+    // The sweep drives m_simulation with synthetic test-vector inputs, not the live circuit
+    // state — if a Temporal Waveform dock has "Watch All" recording active on this same
+    // Simulation (BeWavedDolphin and the dock share one Simulation per scene), the sweep's
+    // resetEventTracking() call below plus every update() it drives would otherwise write
+    // these synthetic transitions straight into the dock's live traces. Recording is
+    // unconditionally off for the sweep's duration and restored to whatever it was after.
+    SimulationRecordingSuspender recordingSuspender(m_simulation);
 
     // Reset every element's sequential state (Q/~Q outputs, edge-detection variables) to
     // power-on defaults before the sweep so results are reproducible regardless of any

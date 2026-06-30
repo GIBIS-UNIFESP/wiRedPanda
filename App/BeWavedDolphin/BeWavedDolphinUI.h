@@ -9,6 +9,7 @@
 
 // Specific Qt includes instead of monolithic QtWidgets
 #include <QAction>
+#include <QComboBox>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
@@ -80,6 +81,12 @@ public:
     QAction *actionZoomOut = nullptr;
     QAction *actionFitScreen = nullptr;
     QAction *actionResetZoom = nullptr;
+
+    // --- Temporal (propagation-delay) simulation ---
+
+    QAction *actionTemporalMode = nullptr;          ///< Checkable: run the sweep with propagation delays.
+    QComboBox *comboTimeResolution = nullptr;       ///< ns of sim-time advanced per waveform column.
+    QAction *actionTimeResolution = nullptr;        ///< Toolbar action wrapping comboTimeResolution.
 
     // --- Actions: About Menu ---
 

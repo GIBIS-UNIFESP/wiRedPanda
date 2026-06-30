@@ -20,6 +20,7 @@
 #include "App/BeWavedDolphin/SignalDelegate.h"
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/SimTime.h"
 
 class DolphinHost;
 class DolphinZoom;
@@ -235,6 +236,8 @@ private:
     void on_actionSetTo1_triggered();            ///< Sets all selected input cells to 1.
     void on_actionShowNumbers_triggered();       ///< Switches the display to numeric mode.
     void on_actionShowWaveforms_triggered();     ///< Switches the display to waveform mode.
+    void on_actionTemporalMode_toggled(bool checked); ///< Enables/disables propagation-delay sweep and re-runs.
+    void on_comboTimeResolution_changed();       ///< Changes ns-per-column and re-runs (temporal mode).
     void on_actionZoomIn_triggered();            ///< Increases the waveform zoom level.
     void on_actionZoomOut_triggered();           ///< Decreases the waveform zoom level.
     void on_tableView_cellDoubleClicked();       ///< Toggles the double-clicked input cell value.
@@ -262,4 +265,6 @@ private:
     int m_inputPorts               = 0;               ///< Number of input ports in the circuit.
     int m_length                   = 32;              ///< Number of simulation time-step columns.
     ExerciseOverlay *m_exerciseOverlay = nullptr;     ///< Non-owning; repositioned on resize.
+    bool m_temporal                = false;           ///< True ⇒ run the sweep with per-element propagation delays.
+    SimTime m_nsPerColumn          = 2;               ///< Sim-time advanced per column in temporal mode.
 };

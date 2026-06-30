@@ -30,6 +30,7 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Not.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/SimulationBlocker.h"
@@ -64,6 +65,64 @@ static std::unique_ptr<WorkSpace> createAndCircuit()
     builder.connect(andGate, 0, led, 0);
 
     return ws;
+}
+
+/// InputSwitch → NOT (5 ns default delay) → Led. One input row, one output row.
+/// Caller owns the returned WorkSpace.
+static std::unique_ptr<WorkSpace> createNotCircuit()
+{
+    auto ws = std::make_unique<WorkSpace>();
+    auto *scene = ws->scene();
+
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(notGate);
+    scene->addItem(led);
+
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, notGate, 0);
+    builder.connect(notGate, 0, led, 0);
+
+    return ws;
+}
+
+/// sw → NOT(5 ns) → NOT(5 ns) → Led. Led tracks sw with a cumulative 5 + 5 = 10 ns delay.
+/// A single input row (sw), so the driven row is unambiguous. Caller owns the returned WorkSpace.
+static std::unique_ptr<WorkSpace> createDoubleNotCircuit()
+{
+    auto ws = std::make_unique<WorkSpace>();
+    auto *scene = ws->scene();
+
+    auto *sw = new InputSwitch();
+    auto *not1 = new Not();
+    auto *not2 = new Not();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(not1);
+    scene->addItem(not2);
+    scene->addItem(led);
+
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, not1, 0);
+    builder.connect(not1, 0, not2, 0);
+    builder.connect(not2, 0, led, 0);
+
+    return ws;
+}
+
+/// Returns the first column (> 0) at which the output row's value differs from its column-0 value,
+/// or -1 if it never transitions within the model's columns.
+static int firstOutputTransitionColumn(const QStandardItemModel *model, int outputRow)
+{
+    const int base = model->index(outputRow, 0).data().toInt();
+    for (int col = 1; col < model->columnCount(); ++col) {
+        if (model->index(outputRow, col).data().toInt() != base) {
+            return col;
+        }
+    }
+    return -1;
 }
 
 /// Creates a BewavedDolphin on the given workspace's scene with a blank waveform.
@@ -201,6 +260,156 @@ void TestBewavedDolphinGui::testRunSimulationFillsOutputs()
     // At column 0, both inputs are 0 → output should be 0
     int outputAt0 = model->index(outputRow, 0).data().toInt();
     QCOMPARE(outputAt0, 0);
+}
+
+void TestBewavedDolphinGui::testTemporalModeShowsPropagationLag()
+{
+    auto ws = createNotCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+    const int outputRow = static_cast<int>(dolphin->inputElements().size()); // row after the inputs
+
+    // Wide input pulse: low for cols 0..riseCol-1, high from riseCol on (held well past the NOT's
+    // 5 ns delay so the edge is not inertially absorbed).
+    const int riseCol = 8;
+    for (int col = 0; col < model->columnCount(); ++col) {
+        dolphin->setCellValue(0, col, col >= riseCol ? 1 : 0);
+    }
+
+    // Functional (zero delay): NOT output (1→0) flips in the same column the input rises.
+    dolphin->m_temporal = false;
+    dolphin->run();
+    const int functionalCol = firstOutputTransitionColumn(model, outputRow);
+    QCOMPARE(functionalCol, riseCol);
+
+    // Temporal at 1 ns/column: the 5 ns NOT delay pushes the transition several columns later.
+    dolphin->m_temporal = true;
+    dolphin->m_nsPerColumn = 1;
+    dolphin->run();
+    const int temporalCol = firstOutputTransitionColumn(model, outputRow);
+
+    qInfo() << "NOT lag: functional col" << functionalCol << "temporal col" << temporalCol;
+    QVERIFY2(temporalCol > functionalCol,
+             qPrintable(QString("Temporal output did not lag (functional %1, temporal %2)")
+                            .arg(functionalCol).arg(temporalCol)));
+    const int lag = temporalCol - functionalCol;
+    QVERIFY2(lag >= 3 && lag <= 7,
+             qPrintable(QString("Unexpected lag %1 columns (expected ~5 for a 5 ns NOT)").arg(lag)));
+}
+
+void TestBewavedDolphinGui::testTemporalModeCumulativeChainLag()
+{
+    auto ws = createDoubleNotCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+    const int outputRow = static_cast<int>(dolphin->inputElements().size());
+
+    const int riseCol = 6;
+    for (int col = 0; col < model->columnCount(); ++col) {
+        dolphin->setCellValue(0, col, col >= riseCol ? 1 : 0);
+    }
+
+    // Functional: zero delay — Led (= sw, double negation) flips in the rise column.
+    dolphin->m_temporal = false;
+    dolphin->run();
+    const int functionalCol = firstOutputTransitionColumn(model, outputRow);
+    QCOMPARE(functionalCol, riseCol);
+
+    // Temporal: the two NOTs accumulate 5 + 5 = 10 ns, so the lag is clearly larger than one gate.
+    dolphin->m_temporal = true;
+    dolphin->m_nsPerColumn = 1;
+    dolphin->run();
+    const int chainCol = firstOutputTransitionColumn(model, outputRow);
+
+    qInfo() << "double-NOT lag: functional col" << functionalCol << "temporal col" << chainCol;
+    const int chainLag = chainCol - functionalCol;
+    QVERIFY2(chainLag > 6,
+             qPrintable(QString("Chain lag %1 not greater than a single gate (~5); delays should "
+                                "compose to ~10").arg(chainLag)));
+}
+
+void TestBewavedDolphinGui::testNonTemporalSweepIgnoresLiveTemporalMode()
+{
+    // BeWavedDolphin shares its Simulation with the main window, whose mode selector may have
+    // left a temporal tick window on it. A NON-temporal sweep must still be genuinely
+    // functional — run() brackets it with a zero-width timed run instead of inheriting the
+    // live window. Pre-fix, the sweep ran at the inherited window (here deliberately smaller
+    // than the NOT's 5 ns default delay) and the output lagged its cause by whole columns.
+    auto ws = createNotCircuit();
+    auto *sim = ws->scene()->simulation();
+    sim->setTimePerTick(1); // the live (main-window) simulation is in temporal mode
+
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+    const int outputRow = static_cast<int>(dolphin->inputElements().size());
+
+    const int riseCol = 8;
+    for (int col = 0; col < model->columnCount(); ++col) {
+        dolphin->setCellValue(0, col, col >= riseCol ? 1 : 0);
+    }
+
+    dolphin->m_temporal = false; // the user did NOT ask for a temporal sweep
+    dolphin->run();
+    const int transitionCol = firstOutputTransitionColumn(model, outputRow);
+    QCOMPARE(transitionCol, riseCol); // functional semantics: same-column transition, no lag
+
+    // The live simulation's temporal window is restored after the sweep.
+    QCOMPARE(sim->timePerTick(), SimTime(1));
+}
+
+void TestBewavedDolphinGui::testRunDoesNotPolluteLiveWaveformRecorder()
+{
+    // Regression test: BeWavedDolphin's sweep (WaveformSimulator::sweep()) drives the same
+    // Simulation a main-window Temporal Waveform dock may be watching. Simulate "Watch All"
+    // being active by watching a signal directly and enabling recording, then run a dolphin
+    // sweep on the same scene. WaveformSimulator::sweep() calls resetEventTracking() (resetting
+    // the live clock to 0, same as an explicit Restart) regardless of whether recording is
+    // suspended, so the pre-sweep trace history is legitimately cleared — that's the documented,
+    // accepted trade-off (opening/running BeWavedDolphin "restarts" the live timeline). What must
+    // NOT happen is the sweep's own synthetic test-vector values leaking into the trace, and
+    // recording must resume cleanly (not left disabled) once the sweep completes.
+    auto ws = createAndCircuit();
+    auto *sim = ws->scene()->simulation();
+
+    const auto elements = ws->scene()->elements();
+    GraphicElement *ledElement = nullptr;
+    for (auto *elm : elements) {
+        if (elm->elementType() == ElementType::Led) {
+            ledElement = elm;
+            break;
+        }
+    }
+    QVERIFY2(ledElement, "AND circuit should contain a Led");
+
+    sim->waveformRecorder().watchSignal("Led_out", ledElement, 0);
+    sim->waveformRecorder().setRecording(true);
+    sim->update(); // one real tick, so the trace has genuine live data before the sweep
+    QVERIFY(!sim->waveformRecorder().trace(0).transitions.isEmpty());
+
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    dolphin->setCellValue(0, 5, 1); // a value the sweep will drive that must NOT leak into the trace
+    dolphin->setCellValue(1, 5, 1);
+    dolphin->run(); // drives the sweep on the SAME Simulation
+
+    // Recording must be restored (it was on before the sweep), and no synthetic sweep data must
+    // have been recorded — the legitimate resetEventTracking()-driven clear leaves it empty.
+    QVERIFY(sim->waveformRecorder().isRecording());
+    QVERIFY(sim->waveformRecorder().trace(0).transitions.isEmpty());
+
+    // Recording resumes correctly and cleanly after the sweep: a genuine post-sweep live tick
+    // produces exactly one fresh, correctly-valued transition — not a leftover mix of synthetic
+    // sweep values and real ones.
+    InputSwitch *sw0 = nullptr;
+    for (auto *elm : elements) {
+        if (elm->elementType() == ElementType::InputSwitch) {
+            sw0 = qobject_cast<InputSwitch *>(elm);
+            break;
+        }
+    }
+    QVERIFY2(sw0, "AND circuit should contain an InputSwitch");
+    sw0->setOn(true);
+    sim->update();
+    QCOMPARE(sim->waveformRecorder().trace(0).transitions.size(), 1);
 }
 
 void TestBewavedDolphinGui::testSetLengthChangesColumns()

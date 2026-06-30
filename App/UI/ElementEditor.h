@@ -21,6 +21,7 @@
 #include "App/UI/SelectionCapabilities.h"
 
 class ElementTabNavigator;
+class IC;
 
 /**
  * \class ElementEditor
@@ -94,6 +95,9 @@ signals:
 
     /// Emitted when the user requests extracting an embedded IC to file.
     void extractToFileRequested();
+
+    /// Emitted when the user requests watching an IC's internal signals in the waveform dock.
+    void watchICInternalsRequested(IC *ic);
 
 private:
     Q_DISABLE_COPY(ElementEditor)

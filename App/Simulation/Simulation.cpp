@@ -358,6 +358,37 @@ void Simulation::restart()
           && m_evaluatedSequentialThisTick.isEmpty() && m_recorder.timelineEmpty());
 }
 
+void Simulation::beginTimedRun(const SimTime nsPerTick)
+{
+    // Start a clean timed timeline: each update() now advances nsPerTick of sim-time. Reset the
+    // clock and drop any pending events so column 0 starts at t=0, and force a full re-seed so the
+    // first update() settles the whole network from the current input state rather than relying on
+    // incremental schedule-on-change carried over from the live run.
+    m_timePerTick = nsPerTick;
+    m_currentTime = 0;
+    m_eventQueue.clear();
+    m_eventInitDone = false;
+    // See resetEventTracking()/restart() for why: rewinding the clock to 0 without also
+    // resetting the recorder's timeline would let the sweep's transitions land at timestamps
+    // smaller than whatever the live run already recorded.
+    m_recorder.resetTimeline();
+}
+
+void Simulation::endTimedRun(const SimTime restoreTo)
+{
+    // Leave no timed state behind: events scheduled past the swept window would otherwise fire at
+    // the wrong (collapsed) instant once the live run resumes. Restore the previous mode and let
+    // the next live update() re-seed from scratch.
+    m_timePerTick = restoreTo;
+    m_eventQueue.clear();
+    m_currentTime = 0;
+    m_eventInitDone = false;
+    // The resumed live run's timeline restarts at 0 too; without this, whatever the timed sweep
+    // itself recorded (if recording happened to be enabled) would leave stale, out-of-order
+    // timestamps ahead of the live run's own.
+    m_recorder.resetTimeline();
+}
+
 bool Simulation::isRunning()
 {
     return m_timer.isActive();

@@ -398,6 +398,7 @@ void MainWindow::setupConnections()
     connect(m_ui->elementEditor, &ElementEditor::openSubcircuitFileRequested, this, &MainWindow::loadPandaFile);
     connect(m_ui->elementEditor, &ElementEditor::embedSubcircuitRequested, m_icController, &ICController::embedSelectedIC);
     connect(m_ui->elementEditor, &ElementEditor::extractToFileRequested, m_icController, &ICController::extractSelectedIC);
+    connect(m_ui->elementEditor, &ElementEditor::watchICInternalsRequested, this, &MainWindow::watchICInternals);
     connect(m_ui->actionResetZoom,             &QAction::triggered,       this,                &MainWindow::on_actionResetZoom_triggered);
     connect(m_ui->actionZoomToFit,             &QAction::triggered,       this,                &MainWindow::on_actionZoomToFit_triggered);
     connect(m_ui->actionRestart,               &QAction::triggered,       this,                &MainWindow::on_actionRestart_triggered);

@@ -536,11 +536,11 @@ void TestTemporalSimulation::testNestedICDelayAccumulation()
     sim->setTimePerTick(500);
     setOperands(false, false); // 0000 + 0000 = 0 ⇒ CarryOut 0
     sim->update();
-    QCOMPARE(getInputStatus(&ledCarryOut), false);
+    QCOMPARE(inputStatus(&ledCarryOut), false);
 
     setOperands(true, true);   // 1111 + 0001 ⇒ CarryOut 1
     sim->update();
-    QCOMPARE(getInputStatus(&ledCarryOut), true);
+    QCOMPARE(inputStatus(&ledCarryOut), true);
 
     // Now prove the carry-chain delay actually accumulates through the nested boundaries: with
     // 1 ns ticks, CarryOut must NOT flip within a few ns of the input change (the ripple has to
@@ -548,14 +548,14 @@ void TestTemporalSimulation::testNestedICDelayAccumulation()
     sim->setTimePerTick(1);
     setOperands(false, false);
     for (int i = 0; i < 600; ++i) { sim->update(); } // settle CarryOut back to 0
-    QCOMPARE(getInputStatus(&ledCarryOut), false);
+    QCOMPARE(inputStatus(&ledCarryOut), false);
 
     setOperands(true, true);
     for (int i = 0; i < 4; ++i) { sim->update(); }   // 4 ns ≪ the rippled carry-chain delay
-    QCOMPARE(getInputStatus(&ledCarryOut), false);   // nested delays not yet elapsed
+    QCOMPARE(inputStatus(&ledCarryOut), false);   // nested delays not yet elapsed
 
     for (int i = 0; i < 600; ++i) { sim->update(); } // well past the full ripple
-    QCOMPARE(getInputStatus(&ledCarryOut), true);    // carry rippled through nested ICs
+    QCOMPARE(inputStatus(&ledCarryOut), true);    // carry rippled through nested ICs
 }
 
 void TestTemporalSimulation::testNestedICDelayAccumulationDeepNesting()
@@ -619,25 +619,25 @@ void TestTemporalSimulation::testNestedICDelayAccumulationDeepNesting()
     sim->setTimePerTick(500);
     setOperands(false, false); // 0x00 + 0x00 = 0x00 ⇒ Carry 0
     sim->update();
-    QCOMPARE(getInputStatus(&carryFlag), false);
+    QCOMPARE(inputStatus(&carryFlag), false);
 
     setOperands(true, true); // 0xFF + 0x01 ⇒ Carry 1
     sim->update();
-    QCOMPARE(getInputStatus(&carryFlag), true);
+    QCOMPARE(inputStatus(&carryFlag), true);
 
     // Now prove the delay actually accumulates through all 4 nesting levels: with 1 ns ticks,
     // Carry must NOT flip within a few ns of the input change, and must settle only well after.
     sim->setTimePerTick(1);
     setOperands(false, false);
     for (int i = 0; i < 1200; ++i) { sim->update(); } // settle Carry back to 0
-    QCOMPARE(getInputStatus(&carryFlag), false);
+    QCOMPARE(inputStatus(&carryFlag), false);
 
     setOperands(true, true);
     for (int i = 0; i < 4; ++i) { sim->update(); }    // 4 ns ≪ the 4-level rippled carry delay
-    QCOMPARE(getInputStatus(&carryFlag), false);      // nested delays not yet elapsed
+    QCOMPARE(inputStatus(&carryFlag), false);      // nested delays not yet elapsed
 
     for (int i = 0; i < 1200; ++i) { sim->update(); } // well past the full 4-level ripple
-    QCOMPARE(getInputStatus(&carryFlag), true);       // carry rippled through all 4 nested ICs
+    QCOMPARE(inputStatus(&carryFlag), true);       // carry rippled through all 4 nested ICs
 }
 
 // ============================================================================

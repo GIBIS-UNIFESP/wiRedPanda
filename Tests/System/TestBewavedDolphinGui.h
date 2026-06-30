@@ -30,6 +30,24 @@ private slots:
     void testSetLengthChangesColumns();
     void testCombinationalMode();
 
+    // --- Temporal (propagation-delay) mode ---
+
+    /// In temporal mode a gate's output transition lags its cause by the gate delay, rendered as
+    /// column-lag; functional mode shows the transition in the same column (zero delay).
+    void testTemporalModeShowsPropagationLag();
+    /// Cumulative delay: a NOT→AND chain lags more than a single NOT, proving delays compose.
+    void testTemporalModeCumulativeChainLag();
+
+    /// A NON-temporal sweep stays genuinely functional (same-column transitions) even when the
+    /// main window left the shared Simulation in temporal mode — run() must not inherit the
+    /// live tick window — and the live window is restored afterwards.
+    void testNonTemporalSweepIgnoresLiveTemporalMode();
+
+    /// BeWavedDolphin shares its scene's Simulation (and WaveformRecorder) with the main
+    /// window's Temporal Waveform dock — merely opening/running a dolphin sweep must not
+    /// write synthetic test-vector transitions into a trace the dock is live-recording.
+    void testRunDoesNotPolluteLiveWaveformRecorder();
+
     // --- File I/O ---
 
     void testExportToPng();

@@ -10,8 +10,10 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QCloseEvent>
+#include <QComboBox>
 #include <QHeaderView>
 #include <QMessageBox>
+#include <QScopeGuard>
 #include <QTableView>
 #include <QTextStream>
 #include <QWheelEvent>
@@ -102,6 +104,8 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHo
     connect(m_ui->actionSetTo1,        &QAction::triggered,            this, &BewavedDolphin::on_actionSetTo1_triggered);
     connect(m_ui->actionShowNumbers,   &QAction::triggered,            this, &BewavedDolphin::on_actionShowNumbers_triggered);
     connect(m_ui->actionShowWaveforms, &QAction::triggered,            this, &BewavedDolphin::on_actionShowWaveforms_triggered);
+    connect(m_ui->actionTemporalMode,  &QAction::toggled,             this, &BewavedDolphin::on_actionTemporalMode_toggled);
+    connect(m_ui->comboTimeResolution, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &BewavedDolphin::on_comboTimeResolution_changed);
     connect(m_ui->actionZoomIn,        &QAction::triggered,            this, &BewavedDolphin::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,       &QAction::triggered,            this, &BewavedDolphin::on_actionZoomOut_triggered);
     connect(m_ui->actionAutoCrop,      &QAction::triggered,            this, &BewavedDolphin::on_actionAutoCrop_triggered);
@@ -291,6 +295,19 @@ void BewavedDolphin::run()
     if (!elementsStillLive()) {
         return;
     }
+
+    // Temporal mode: each column advances m_nsPerColumn of sim-time, so a transition scheduled at
+    // cause+delay fires (and is sampled) in a later column — propagation delay shows as column-lag.
+    // The bracket is unconditional: a NON-temporal sweep must run at 0 ns/tick (true zero-delay
+    // settling per column) rather than inheriting whatever temporal window the main window's mode
+    // selector left on the shared Simulation — otherwise flip-flop chains would ripple one column
+    // per stage in a sweep the user asked to be functional. qScopeGuard restores the live mode
+    // even if a column update throws.
+    const SimTime prevTimePerTick = m_simulation->timePerTick();
+    m_simulation->beginTimedRun(m_temporal ? m_nsPerColumn : 0);
+    auto restoreSimMode = qScopeGuard([this, prevTimePerTick] {
+        m_simulation->endTimedRun(prevTimePerTick);
+    });
 
     // Drive the circuit across every time column. Inputs are read from the model and the
     // computed outputs (isInput=false → green; changeNext=false → caller refreshes) are
@@ -965,6 +982,28 @@ void BewavedDolphin::on_actionShowWaveforms_triggered()
         sentryBreadcrumb("waveform", QStringLiteral("Show waveforms"));
         m_delegate->setPlotType(PlotType::Line);
         m_signalTableView->viewport()->update();
+    });
+}
+
+void BewavedDolphin::on_actionTemporalMode_toggled(bool checked)
+{
+    Application::guardedSlot(this, [this, checked] {
+        sentryBreadcrumb("waveform", QStringLiteral("Temporal mode toggled"));
+        m_temporal = checked;
+        // The ns/column selector is only meaningful in temporal mode.
+        m_ui->actionTimeResolution->setVisible(checked);
+        // Re-run so the displayed outputs reflect the new mode immediately.
+        run();
+    });
+}
+
+void BewavedDolphin::on_comboTimeResolution_changed()
+{
+    Application::guardedSlot(this, [this] {
+        m_nsPerColumn = static_cast<SimTime>(m_ui->comboTimeResolution->currentData().toULongLong());
+        if (m_temporal) {
+            run();
+        }
     });
 }
 

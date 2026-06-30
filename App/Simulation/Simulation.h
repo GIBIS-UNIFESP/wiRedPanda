@@ -125,6 +125,22 @@ public:
     /// events spread across future timestamps by per-element propagation delay.
     void setTimePerTick(SimTime ns) { m_timePerTick = ns; }
 
+    /// Sim-time advanced per update() tick (0 ⇒ functional). Lets a caller snapshot the
+    /// current mode before a timed sweep and restore it afterwards.
+    SimTime timePerTick() const { return m_timePerTick; }
+
+    /// Begins a deterministic timed (temporal) run that advances \a nsPerTick of sim-time per
+    /// update(): sets the per-tick window, resets sim-time to 0, drops any queued events, and
+    /// forces the next update() to re-seed the whole network from the current element state.
+    /// Pair with endTimedRun() so the live simulation resumes cleanly. Used by callers that drive
+    /// update() manually over a fixed timeline (e.g. the BeWavedDolphin column sweep).
+    void beginTimedRun(SimTime nsPerTick);
+
+    /// Ends a timed run started by beginTimedRun(): restores the per-tick window to \a restoreTo,
+    /// drops any events still queued past the swept window, and resets sim-time so the live
+    /// (un-timed) simulation resumes from a clean state.
+    void endTimedRun(SimTime restoreTo);
+
     /// Sets the propagation delay (sim-time units) for \a element. 0 ⇒ zero-delay.
     void setElementDelay(const GraphicElement *element, SimTime ns) { m_delays[element] = ns; }
 
