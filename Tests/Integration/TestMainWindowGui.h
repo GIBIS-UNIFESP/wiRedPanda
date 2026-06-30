@@ -41,6 +41,9 @@ private slots:
     void testRestartSimulation();
     void testTemporalModeSelector();
     void testWaveformDockOpensAndClosesCleanly();
+    void testWaveformDockRecorderDetachOnTabClose();
+    void testWaveformDockToggleCycle();
+    void testWatchAllSignalsRecordsOutputs();
 
     // --- View toggles ---
 

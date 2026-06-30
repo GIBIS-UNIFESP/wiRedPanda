@@ -14,6 +14,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QPushButton>
 #include <QScrollBar>
 #include <QShortcut>
 #include <QSignalSpy>
@@ -48,10 +49,12 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Simulation/WaveformRecorder.h"
 #include "App/UI/ElementEditor.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindow.h"
+#include "App/UI/TemporalWaveformWidget.h"
 #include "App/UI/TrashButton.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -78,6 +81,20 @@ static void createMWFixture(const QString &path)
 static QTabWidget *findTabs(QWidget *w)
 {
     return w->findChild<QTabWidget *>("tab");
+}
+
+// Clicks the temporal-waveform dock's "Watch All" button (the button carries no objectName, so
+// it is located by its text). Returns false if not found (dock not open).
+static bool clickWatchAllButton(QWidget *window)
+{
+    const auto buttons = window->findChildren<QPushButton *>();
+    for (auto *button : buttons) {
+        if (button->text() == QStringLiteral("Watch All")) {
+            button->click();
+            return true;
+        }
+    }
+    return false;
 }
 
 /// Creates a shown, focused MainWindow ready for keyboard/mouse input.
@@ -546,6 +563,100 @@ void TestMainWindowGui::testWaveformDockOpensAndClosesCleanly()
     QVERIFY2(waveAction->isChecked(), "Action should be checked while the dock is open");
 
     // window destructs here — must not crash (the regression).
+}
+
+void TestMainWindowGui::testWaveformDockRecorderDetachOnTabClose()
+{
+    // onCurrentTabChanged() detaches the waveform widget from the leaving tab's recorder
+    // (m_waveformWidget->setRecorder(nullptr)) because that recorder lives inside the tab's
+    // Simulation and would dangle once the tab is closed. Exercise that path: open the dock and
+    // watch a tab's signals, switch away, close the tab, then repaint the widget — no crash.
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+
+    // Build a small circuit on the first tab.
+    auto *scene = window->currentTab()->scene();
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, led, 0);
+    builder.initSimulation();
+
+    // Open the dock and watch this tab's signals so the widget holds tab 0's recorder.
+    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    QVERIFY(waveAction);
+    waveAction->trigger();
+    QVERIFY2(clickWatchAllButton(window.get()), "Watch All button not found");
+
+    // New tab → onCurrentTabChanged(tab0 leaving) detaches the widget recorder; then close tab 0.
+    QTest::keyClick(window.get(), Qt::Key_N, Qt::ControlModifier);
+    QCOMPARE(tabs->count(), 2);
+    tabs->tabCloseRequested(0); // destroys tab 0's Simulation + recorder
+    QCOMPARE(tabs->count(), 1);
+
+    // Repaint the widget — must not touch a dangling recorder.
+    auto *widget = window->findChild<TemporalWaveformWidget *>();
+    QVERIFY2(widget, "Waveform widget not found");
+    widget->repaint();
+    QVERIFY2(window->currentTab() != nullptr, "Window survived the tab close with the dock open");
+}
+
+void TestMainWindowGui::testWaveformDockToggleCycle()
+{
+    // The dock open/close action and the dock's own visibility are kept in sync
+    // (visibilityChanged ↔ toggled). Toggling open → close → reopen must converge each time and
+    // keep the action's checked state tracking the dock (no re-entrancy after the ~MainWindow fix).
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    QVERIFY(waveAction);
+
+    waveAction->trigger(); // open
+    QVERIFY2(waveAction->isChecked(), "Action should be checked after opening");
+    auto *dock = window->findChild<QDockWidget *>("temporalWaveformDock");
+    QVERIFY2(dock, "Dock should exist after first open");
+
+    waveAction->trigger(); // close
+    QVERIFY2(!waveAction->isChecked(), "Action should be unchecked after closing");
+
+    waveAction->trigger(); // reopen
+    QVERIFY2(waveAction->isChecked(), "Action should be checked after reopening");
+
+    // The dock object is created once and reused (same instance across the cycle).
+    QCOMPARE(window->findChild<QDockWidget *>("temporalWaveformDock"), dock);
+}
+
+void TestMainWindowGui::testWatchAllSignalsRecordsOutputs()
+{
+    // The dock's "Watch All" action registers every non-VCC/GND output port with the recorder
+    // and starts recording.
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+
+    auto *sw1 = new InputSwitch();
+    auto *sw2 = new InputSwitch();
+    auto *andGate = new And();
+    auto *led = new Led();
+    scene->addItem(sw1);
+    scene->addItem(sw2);
+    scene->addItem(andGate);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(sw1, 0, andGate, 0);
+    builder.connect(sw2, 0, andGate, 1);
+    builder.connect(andGate, 0, led, 0);
+    builder.initSimulation();
+
+    // watchAllSignals needs the dock open (it early-returns without m_waveformWidget).
+    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    QVERIFY(waveAction);
+    waveAction->trigger();
+    QVERIFY2(clickWatchAllButton(window.get()), "Watch All button not found");
+
+    auto &recorder = window->currentTab()->simulation()->waveformRecorder();
+    QVERIFY2(recorder.traceCount() > 0, "watchAllSignals registered no traces");
+    QVERIFY2(recorder.isRecording(), "watchAllSignals did not start recording");
 }
 
 // ===========================================================================
