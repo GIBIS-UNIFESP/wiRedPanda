@@ -179,7 +179,7 @@ void legacyCalculatePriorities(
             // intentional: it gives feedback-loop nodes a *lower* priority
             // (based only on already-computed successors) so the simulation
             // processes them *after* their non-cyclic inputs.  Because
-            // LogicElement::updateLogic() reads live predecessor outputs,
+            // GraphicElement::updateLogic() reads live predecessor outputs,
             // processing feedback nodes late ensures they see fresh values
             // from the current iteration rather than stale ones.
             if (allProcessed || hasFeedbackLoop) {
