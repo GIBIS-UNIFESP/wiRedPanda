@@ -17,4 +17,5 @@ private slots:
     // 3-to-8 Decoder Tests
     void test3to8Decoder_data();
     void test3to8Decoder();
+    void testEnableGating();
 };

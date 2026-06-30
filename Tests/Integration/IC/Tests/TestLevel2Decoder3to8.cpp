@@ -108,3 +108,53 @@ void TestLevel2Decoder3To8::test3to8Decoder()
         QCOMPARE(getInputStatus(f.ledOut[i]), expected);
     }
 }
+
+// Active-high Enable (74138-style chip select): Enable=0 forces every output
+// low; Enable=1 restores normal decoding. Built standalone with Enable wired so
+// the shared fixture (Enable unconnected → defaulted high) is untouched.
+void TestLevel2Decoder3To8::testEnableGating()
+{
+    auto workspace = std::make_unique<WorkSpace>();
+    CircuitBuilder builder(workspace->scene());
+
+    InputSwitch *addr[3] = {};
+    for (auto &a : addr) {
+        a = new InputSwitch();
+        builder.add(a);
+    }
+    auto *en = new InputSwitch();
+    builder.add(en);
+    Led *outs[8] = {};
+    for (auto &o : outs) {
+        o = new Led();
+        builder.add(o);
+    }
+
+    auto *ic = loadBuildingBlockIC("level2_decoder_3to8.panda");
+    builder.add(ic);
+    for (int i = 0; i < 3; ++i) {
+        builder.connect(addr[i], 0, ic, QString("addr[%1]").arg(i));
+    }
+    builder.connect(en, 0, ic, "Enable");
+    for (int i = 0; i < 8; ++i) {
+        builder.connect(ic, QString("out[%1]").arg(i), outs[i], 0);
+    }
+    auto *sim = builder.initSimulation();
+
+    // Address 5 selected, Enable low → all outputs forced low.
+    for (int i = 0; i < 3; ++i) {
+        addr[i]->setOn((5 >> i) & 1);
+    }
+    en->setOn(false);
+    sim->update();
+    for (auto *o : outs) {
+        QVERIFY(!getInputStatus(o));
+    }
+
+    // Enable high → output 5 active, the rest low.
+    en->setOn(true);
+    sim->update();
+    for (int i = 0; i < 8; ++i) {
+        QCOMPARE(getInputStatus(outs[i]), i == 5);
+    }
+}
