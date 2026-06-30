@@ -84,17 +84,36 @@ class Multiplexer2to1Builder(ICBuilderBase):
             return False
         await self.log("  ✓ Connected Sel[0] to Mux (S0)")
 
+        # Active-high Enable, defaulted HIGH: the mux output is ANDed with Enable,
+        # so Enable=0 forces the output low (74153-style strobe). Defaulting it
+        # high means a mux embedded WITHOUT an explicit Enable connection behaves
+        # exactly as before — both the engine and the SV/Arduino export resolve an
+        # unconnected Enable to its high default.
+        enable_x = mux_x + HORIZONTAL_GATE_SPACING
+        enable_id = await self.create_element("InputSwitch", enable_x, input_y, "Enable")
+        if enable_id is None:
+            return False
+        set_en = await self.mcp.send_command("set_input_value", {"element_id": enable_id, "value": True})
+        if not set_en.success:
+            self.log_error("Failed to default Enable high")
+            return False
+
+        en_and = await self.create_element("And", enable_x, mux_y, "out_enable")
+        if en_and is None:
+            return False
+        if not await self.connect(mux_id, en_and, source_port_label="Out", target_port=0):
+            return False
+        if not await self.connect(enable_id, en_and, target_port=1):
+            return False
+
         # Create output LED
-        output_x = mux_x + HORIZONTAL_GATE_SPACING
+        output_x = enable_x + HORIZONTAL_GATE_SPACING
         output_id = await self.create_element("Led", output_x, mux_y, "Output")
         if output_id is None:
             return False
-        await self.log(f"  ✓ Created output LED (id={output_id})")
-
-        # Connect Mux output to LED
-        if not await self.connect(mux_id, output_id, source_port_label="Out"):
+        if not await self.connect(en_and, output_id):
             return False
-        await self.log("  ✓ Connected Mux output to LED")
+        await self.log("  ✓ Connected Mux output through Enable gate to LED")
 
         # Save circuit as IC
         output_file = str(IC_COMPONENTS_DIR / "level2_mux_2to1.panda")

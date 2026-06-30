@@ -109,3 +109,41 @@ void TestLevel2MUX2To1::testMux2to1()
 
     QCOMPARE(getInputStatus(f.output), expectedOutput);
 }
+
+// Active-high Enable (74153-style strobe): Enable=0 forces the output low;
+// Enable=1 passes the selected input. Built standalone with Enable wired so the
+// shared fixture (Enable unconnected → defaulted high) is untouched.
+void TestLevel2MUX2To1::testEnableGating()
+{
+    auto workspace = std::make_unique<WorkSpace>();
+    CircuitBuilder builder(workspace->scene());
+
+    auto *d0 = new InputSwitch();
+    auto *d1 = new InputSwitch();
+    auto *sel = new InputSwitch();
+    auto *en = new InputSwitch();
+    auto *out = new Led();
+    builder.add(d0, d1, sel, en, out);
+
+    auto *ic = loadBuildingBlockIC("level2_mux_2to1.panda");
+    builder.add(ic);
+    builder.connect(d0, 0, ic, "Data[0]");
+    builder.connect(d1, 0, ic, "Data[1]");
+    builder.connect(sel, 0, ic, "Sel[0]");
+    builder.connect(en, 0, ic, "Enable");
+    builder.connect(ic, "Output", out, 0);
+    auto *sim = builder.initSimulation();
+
+    // Select Data[1]=1; Enable low → output forced low.
+    d0->setOn(false);
+    d1->setOn(true);
+    sel->setOn(true);
+    en->setOn(false);
+    sim->update();
+    QVERIFY(!getInputStatus(out));
+
+    // Enable high → output follows the selected Data[1]=1.
+    en->setOn(true);
+    sim->update();
+    QVERIFY(getInputStatus(out));
+}

@@ -136,10 +136,12 @@ module level2_mux_2to1 (
     input data0,
     input data1,
     input sel0,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -152,8 +154,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for ReadMux (generated from level2_mux_8to1.panda)
@@ -169,10 +172,12 @@ module level2_mux_8to1 (
     input sel0,
     input sel1,
     input sel2,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -191,8 +196,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for SPMux[0] (generated from level2_priority_mux_3to1.panda)
@@ -526,6 +532,7 @@ level2_mux_8to1 level2_mux_8to1_inst_27 (
     .sel0(address0),
     .sel1(address1),
     .sel2(address2),
+    .enable(1'b1),
     .p_output(w_level2_mux_8to1_inst_27_p_output)
 );
 
@@ -1271,48 +1278,56 @@ level2_mux_2to1 level2_mux_2to1_inst_3 (
     .data0(address0),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp0),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_3_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_4 (
     .data0(address1),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp1),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_4_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_5 (
     .data0(address2),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp2),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_5_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_6 (
     .data0(address3),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp3),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_6_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_7 (
     .data0(address4),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp4),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_7_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_8 (
     .data0(address5),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp5),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_8_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_9 (
     .data0(address6),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp6),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_9_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_10 (
     .data0(address7),
     .data1(w_level6_stack_pointer_8bit_inst_1_sp7),
     .sel0(addressselect),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_10_p_output)
 );
 

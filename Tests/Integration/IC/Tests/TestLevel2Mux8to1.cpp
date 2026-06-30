@@ -107,3 +107,54 @@ void TestLevel2MUX8To1::testMultiplexer8to1()
     bool expectedOutput = f.inputs[selectValue]->isOn();
     QCOMPARE(getInputStatus(f.output), expectedOutput);
 }
+
+// Active-high Enable (74153-style strobe): Enable=0 forces the output low;
+// Enable=1 passes the selected input. Built standalone with Enable wired so the
+// shared fixture (Enable unconnected → defaulted high) is untouched.
+void TestLevel2MUX8To1::testEnableGating()
+{
+    auto workspace = std::make_unique<WorkSpace>();
+    CircuitBuilder builder(workspace->scene());
+
+    InputSwitch *data[8] = {};
+    for (auto &d : data) {
+        d = new InputSwitch();
+        builder.add(d);
+    }
+    InputSwitch *sel[3] = {};
+    for (auto &s : sel) {
+        s = new InputSwitch();
+        builder.add(s);
+    }
+    auto *en = new InputSwitch();
+    auto *out = new Led();
+    builder.add(en, out);
+
+    auto *ic = loadBuildingBlockIC("level2_mux_8to1.panda");
+    builder.add(ic);
+    for (int i = 0; i < 8; ++i) {
+        builder.connect(data[i], 0, ic, QString("Data[%1]").arg(i));
+    }
+    for (int i = 0; i < 3; ++i) {
+        builder.connect(sel[i], 0, ic, QString("Sel[%1]").arg(i));
+    }
+    builder.connect(en, 0, ic, "Enable");
+    builder.connect(ic, "Output", out, 0);
+    auto *sim = builder.initSimulation();
+
+    // Select Data[5]=1 (Sel=101); Enable low → output forced low.
+    for (int i = 0; i < 8; ++i) {
+        data[i]->setOn(i == 5);
+    }
+    for (int i = 0; i < 3; ++i) {
+        sel[i]->setOn((5 >> i) & 1);
+    }
+    en->setOn(false);
+    sim->update();
+    QVERIFY(!getInputStatus(out));
+
+    // Enable high → output follows the selected Data[5]=1.
+    en->setOn(true);
+    sim->update();
+    QVERIFY(getInputStatus(out));
+}

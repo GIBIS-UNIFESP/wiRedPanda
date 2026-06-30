@@ -11,10 +11,12 @@ module level2_mux_4to1 (
     input data3,
     input sel0,
     input sel1,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -29,8 +31,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for LEVEL7_DATA_FORWARDING_UNIT (generated from level7_data_forwarding_unit.panda)
@@ -104,6 +107,7 @@ level2_mux_4to1 level2_mux_4to1_inst_1 (
     .data3(datad0),
     .sel0(select0),
     .sel1(select1),
+    .enable(1'b1),
     .p_output(w_level2_mux_4to1_inst_1_p_output)
 );
 level2_mux_4to1 level2_mux_4to1_inst_2 (
@@ -113,6 +117,7 @@ level2_mux_4to1 level2_mux_4to1_inst_2 (
     .data3(datad1),
     .sel0(select0),
     .sel1(select1),
+    .enable(1'b1),
     .p_output(w_level2_mux_4to1_inst_2_p_output)
 );
 level2_mux_4to1 level2_mux_4to1_inst_3 (
@@ -122,6 +127,7 @@ level2_mux_4to1 level2_mux_4to1_inst_3 (
     .data3(datad2),
     .sel0(select0),
     .sel1(select1),
+    .enable(1'b1),
     .p_output(w_level2_mux_4to1_inst_3_p_output)
 );
 level2_mux_4to1 level2_mux_4to1_inst_4 (
@@ -131,6 +137,7 @@ level2_mux_4to1 level2_mux_4to1_inst_4 (
     .data3(datad3),
     .sel0(select0),
     .sel1(select1),
+    .enable(1'b1),
     .p_output(w_level2_mux_4to1_inst_4_p_output)
 );
 level2_mux_4to1 level2_mux_4to1_inst_5 (
@@ -140,6 +147,7 @@ level2_mux_4to1 level2_mux_4to1_inst_5 (
     .data3(datad4),
     .sel0(select0),
     .sel1(select1),
+    .enable(1'b1),
     .p_output(w_level2_mux_4to1_inst_5_p_output)
 );
 level2_mux_4to1 level2_mux_4to1_inst_6 (
@@ -149,6 +157,7 @@ level2_mux_4to1 level2_mux_4to1_inst_6 (
     .data3(datad5),
     .sel0(select0),
     .sel1(select1),
+    .enable(1'b1),
     .p_output(w_level2_mux_4to1_inst_6_p_output)
 );
 level2_mux_4to1 level2_mux_4to1_inst_7 (
@@ -158,6 +167,7 @@ level2_mux_4to1 level2_mux_4to1_inst_7 (
     .data3(datad6),
     .sel0(select0),
     .sel1(select1),
+    .enable(1'b1),
     .p_output(w_level2_mux_4to1_inst_7_p_output)
 );
 level2_mux_4to1 level2_mux_4to1_inst_8 (
@@ -167,6 +177,7 @@ level2_mux_4to1 level2_mux_4to1_inst_8 (
     .data3(datad7),
     .sel0(select0),
     .sel1(select1),
+    .enable(1'b1),
     .p_output(w_level2_mux_4to1_inst_8_p_output)
 );
 
