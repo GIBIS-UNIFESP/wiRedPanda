@@ -53,7 +53,7 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
         input_x = 50.0
 
         # ========== Create inputs ==========
-        clk_id = await self.create_element("InputSwitch", input_x, 100.0, "CLK")
+        clk_id = await self.create_element("InputSwitch", input_x, 100.0, "Clock")
         if clk_id is None:
             return False
 

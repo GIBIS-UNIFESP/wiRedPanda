@@ -56,7 +56,7 @@ endmodule
 
 // Module for LEVEL4_SHIFT_REGISTER_SIPO (generated from level4_shift_register_sipo.panda)
 module level4_shift_register_sipo_ic (
-    input clk,
+    input clock,
     input sin,
     output q0,
     output q1,
@@ -80,7 +80,7 @@ wire w_level1_d_flip_flop_inst_4_q_bar;
 // Internal logic
 level1_d_flip_flop level1_d_flip_flop_inst_1 (
     .d(sin),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_1_q),
@@ -88,7 +88,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_1 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_2 (
     .d(w_level1_d_flip_flop_inst_1_q),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_2_q),
@@ -96,7 +96,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_2 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_3 (
     .d(w_level1_d_flip_flop_inst_2_q),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_3_q),
@@ -104,7 +104,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_3 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_4 (
     .d(w_level1_d_flip_flop_inst_3_q),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_4_q),
@@ -138,7 +138,7 @@ wire w_level4_shift_register_sipo_ic_inst_1_q3;
 
 // Assigning aux variables. //
 level4_shift_register_sipo_ic level4_shift_register_sipo_ic_inst_1 (
-    .clk(input_switch1),
+    .clock(input_switch1),
     .sin(input_switch2),
     .q0(w_level4_shift_register_sipo_ic_inst_1_q0),
     .q1(w_level4_shift_register_sipo_ic_inst_1_q1),

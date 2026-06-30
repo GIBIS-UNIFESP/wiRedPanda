@@ -95,7 +95,7 @@ endmodule
 
 // Module for LEVEL4_REGISTER_4BIT (generated from level4_register_4bit.panda)
 module level4_register_4bit_ic (
-    input clk,
+    input clock,
     input enable,
     input reset,
     input d0,
@@ -141,7 +141,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     .out3(w_level4_bus_mux_4bit_inst_1_out3)
 );
     //D FlipFlop
-    always @(posedge clk or negedge aux_not_6)
+    always @(posedge clock or negedge aux_not_6)
     begin
         if (~aux_not_6)
         begin
@@ -156,7 +156,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk or negedge aux_not_6)
+    always @(posedge clock or negedge aux_not_6)
     begin
         if (~aux_not_6)
         begin
@@ -171,7 +171,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk or negedge aux_not_6)
+    always @(posedge clock or negedge aux_not_6)
     begin
         if (~aux_not_6)
         begin
@@ -186,7 +186,7 @@ level4_bus_mux_4bit level4_bus_mux_4bit_inst_1 (
     end
     //End of D FlipFlop
     //D FlipFlop
-    always @(posedge clk or negedge aux_not_6)
+    always @(posedge clock or negedge aux_not_6)
     begin
         if (~aux_not_6)
         begin
@@ -235,7 +235,7 @@ wire w_level4_register_4bit_ic_inst_1_q3;
 
 // Assigning aux variables. //
 level4_register_4bit_ic level4_register_4bit_ic_inst_1 (
-    .clk(input_switch1),
+    .clock(input_switch1),
     .enable(input_switch2),
     .reset(input_switch3),
     .d0(input_switch4),

@@ -85,7 +85,7 @@ endmodule
 
 // Module for LEVEL5_MODULO_COUNTER_4BIT (generated from level5_modulo_counter_4bit.panda)
 module level5_modulo_counter_4bit_ic (
-    input clk,
+    input clock,
     input modulo0,
     input modulo1,
     input modulo2,
@@ -178,7 +178,7 @@ assign aux_and_27 = (aux_or_21 & aux_not_24);
 assign aux_and_28 = (aux_or_22 & aux_not_24);
 level1_d_flip_flop level1_d_flip_flop_inst_29 (
     .d(aux_and_25),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_29_q),
@@ -186,7 +186,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_29 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_30 (
     .d(aux_and_26),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_30_q),
@@ -194,7 +194,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_30 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_31 (
     .d(aux_and_27),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_31_q),
@@ -202,7 +202,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_31 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_32 (
     .d(aux_and_28),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_32_q),
@@ -242,7 +242,7 @@ wire w_level5_modulo_counter_4bit_ic_inst_1_overflow;
 
 // Assigning aux variables. //
 level5_modulo_counter_4bit_ic level5_modulo_counter_4bit_ic_inst_1 (
-    .clk(input_switch1),
+    .clock(input_switch1),
     .modulo0(input_switch2),
     .modulo1(input_switch3),
     .modulo2(input_switch4),

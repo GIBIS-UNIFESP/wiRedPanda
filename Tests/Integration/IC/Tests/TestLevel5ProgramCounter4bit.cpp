@@ -59,9 +59,9 @@ struct ProgramCounter4bitFixture {
             builder.connect(ic, QString("pc[%1]").arg(i), pcOutputs[i], 0);
             builder.connect(ic, QString("pc_plus_1[%1]").arg(i), pcPlus1Outputs[i], 0);
         }
-        builder.connect(clock, 0, ic, "clock");
+        builder.connect(clock, 0, ic, "Clock");
         builder.connect(load, 0, ic, "Load");
-        builder.connect(inc, 0, ic, "inc");
+        builder.connect(inc, 0, ic, "Inc");
         builder.connect(reset, 0, ic, "Reset");
 
         sim = builder.initSimulation();

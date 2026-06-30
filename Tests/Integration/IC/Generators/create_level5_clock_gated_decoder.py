@@ -64,7 +64,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
             addr_inputs.append(addr_id)
 
         # Clock input
-        clock_id = await self.create_element("InputSwitch", input_x, control_y, "clock")
+        clock_id = await self.create_element("InputSwitch", input_x, control_y, "Clock")
         if clock_id is None:
             return False
 

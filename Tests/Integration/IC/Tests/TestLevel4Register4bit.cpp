@@ -38,7 +38,7 @@ struct Register4bitFixture {
         ic = loadBuildingBlockIC("level4_register_4bit.panda");
         builder.add(ic);
 
-        builder.connect(clk, 0, ic, "CLK");
+        builder.connect(clk, 0, ic, "Clock");
         builder.connect(en, 0, ic, "Enable");
         builder.connect(reset, 0, ic, "Reset");
 

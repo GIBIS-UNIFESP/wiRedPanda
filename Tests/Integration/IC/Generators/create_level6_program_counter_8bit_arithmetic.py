@@ -57,11 +57,11 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Control inputs: load, inc, reset, clock (all lowercase)
         ctrl_x = input_x + (8 * HORIZONTAL_GATE_SPACING)
 
-        load_id = await self.create_element("InputSwitch", ctrl_x, 100.0, "load")
+        load_id = await self.create_element("InputSwitch", ctrl_x, 100.0, "Load")
         if load_id is None:
             return False
 
-        inc_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + VERTICAL_STAGE_SPACING, "inc")
+        inc_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + VERTICAL_STAGE_SPACING, "Inc")
         if inc_id is None:
             return False
 
@@ -69,7 +69,7 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         if reset_id is None:
             return False
 
-        clk_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (3 * VERTICAL_STAGE_SPACING), "clock")
+        clk_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (3 * VERTICAL_STAGE_SPACING), "Clock")
         if clk_id is None:
             return False
 

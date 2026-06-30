@@ -86,7 +86,7 @@ endmodule
 module level4_johnson_counter_4bit_ic (
     input load,
     input countenable,
-    input clk,
+    input clock,
     input data0,
     input data1,
     input init,
@@ -132,7 +132,7 @@ wire aux_not_15;
 // Internal logic
 level1_d_flip_flop level1_d_flip_flop_inst_1 (
     .d(w_level2_mux_2to1_inst_7_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(aux_not_15),
     .clear(1'b1),
     .q(w_level1_d_flip_flop_inst_1_q),
@@ -140,7 +140,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_1 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_2 (
     .d(w_level2_mux_2to1_inst_9_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(aux_not_15),
     .q(w_level1_d_flip_flop_inst_2_q),
@@ -148,7 +148,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_2 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_3 (
     .d(w_level2_mux_2to1_inst_11_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(aux_not_15),
     .q(w_level1_d_flip_flop_inst_3_q),
@@ -156,7 +156,7 @@ level1_d_flip_flop level1_d_flip_flop_inst_3 (
 );
 level1_d_flip_flop level1_d_flip_flop_inst_4 (
     .d(w_level2_mux_2to1_inst_13_p_output),
-    .clock(clk),
+    .clock(clock),
     .preset(1'b1),
     .clear(aux_not_15),
     .q(w_level1_d_flip_flop_inst_4_q),
@@ -256,7 +256,7 @@ wire w_level4_johnson_counter_4bit_ic_inst_1_q3;
 level4_johnson_counter_4bit_ic level4_johnson_counter_4bit_ic_inst_1 (
     .load(input_switch1),
     .countenable(input_switch2),
-    .clk(input_switch3),
+    .clock(input_switch3),
     .data0(input_switch4),
     .data1(input_switch5),
     .init(input_switch6),

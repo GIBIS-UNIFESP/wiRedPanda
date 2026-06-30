@@ -37,8 +37,8 @@ struct ShiftRegisterPisoFixture {
         ic = loadBuildingBlockIC("level4_shift_register_piso.panda");
         builder.add(ic);
 
-        builder.connect(clk, 0, ic, "CLK");
-        builder.connect(load, 0, ic, "LOAD");
+        builder.connect(clk, 0, ic, "Clock");
+        builder.connect(load, 0, ic, "Load");
 
         for (int i = 0; i < 4; ++i) {
             dataIn[i] = new InputSwitch();

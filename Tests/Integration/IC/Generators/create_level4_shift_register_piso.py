@@ -69,12 +69,12 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         data_input_spacing = 40.0
 
         # Create input controls
-        clk_id = await self.create_element("InputSwitch", input_x, input_y_clk, "CLK")
+        clk_id = await self.create_element("InputSwitch", input_x, input_y_clk, "Clock")
         if clk_id is None:
             return False
         await self.log(f"  ✓ Created input CLK (id={clk_id})")
 
-        load_id = await self.create_element("InputSwitch", input_x, input_y_load, "LOAD")
+        load_id = await self.create_element("InputSwitch", input_x, input_y_load, "Load")
         if load_id is None:
             return False
         await self.log(f"  ✓ Created input LOAD (id={load_id})")

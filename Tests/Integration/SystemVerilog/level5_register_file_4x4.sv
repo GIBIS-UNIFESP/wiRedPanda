@@ -47,7 +47,7 @@ module level5_register_file_4x4_ic (
     input data_in1,
     input data_in2,
     input data_in3,
-    input write_enable,
+    input writeenable,
     input clock,
     output read_data10,
     output read_data11,
@@ -135,10 +135,10 @@ level2_decoder_2to4 level2_decoder_2to4_inst_1 (
     .out2(w_level2_decoder_2to4_inst_1_out2),
     .out3(w_level2_decoder_2to4_inst_1_out3)
 );
-assign aux_and_2 = (w_level2_decoder_2to4_inst_1_out0 & write_enable);
-assign aux_and_3 = (w_level2_decoder_2to4_inst_1_out1 & write_enable);
-assign aux_and_4 = (w_level2_decoder_2to4_inst_1_out2 & write_enable);
-assign aux_and_5 = (w_level2_decoder_2to4_inst_1_out3 & write_enable);
+assign aux_and_2 = (w_level2_decoder_2to4_inst_1_out0 & writeenable);
+assign aux_and_3 = (w_level2_decoder_2to4_inst_1_out1 & writeenable);
+assign aux_and_4 = (w_level2_decoder_2to4_inst_1_out2 & writeenable);
+assign aux_and_5 = (w_level2_decoder_2to4_inst_1_out3 & writeenable);
     //D FlipFlop
     always @(posedge clock)
     begin
@@ -567,7 +567,7 @@ level5_register_file_4x4_ic level5_register_file_4x4_ic_inst_1 (
     .data_in1(input_switch8),
     .data_in2(input_switch9),
     .data_in3(input_switch10),
-    .write_enable(input_switch11),
+    .writeenable(input_switch11),
     .clock(input_switch12),
     .read_data10(w_level5_register_file_4x4_ic_inst_1_read_data10),
     .read_data11(w_level5_register_file_4x4_ic_inst_1_read_data11),
