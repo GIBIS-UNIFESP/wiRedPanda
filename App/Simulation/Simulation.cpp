@@ -48,6 +48,13 @@ void Simulation::setVisualThrottleEnabled(bool enabled)
     }
 }
 
+void Simulation::resetEventTracking()
+{
+    m_eventInitDone = false;
+    m_eventQueue.clear();
+    m_currentTime = 0;
+}
+
 void Simulation::update()
 {
     // Lazily build the simulation layer on the first tick after a restart so
@@ -94,136 +101,139 @@ void Simulation::update()
         }
     }
 
-    // Advance the visual throttle on every tick (skipped or not) so the phase 3-4
-    // cadence stays time-based. Non-interactive callers (tests, BeWavedDolphin's
-    // throttle disabler) flush on every tick, as before.
-    const bool visualsDue = !(m_visualThrottleEnabled && Application::interactiveMode)
-                            || (++m_visualTickCount >= m_visualTickInterval);
-    if (visualsDue) {
-        m_visualTickCount = 0;
-    }
-
-    // Skip provably-idle ticks. A completed sweep whose settle passes converged is a
-    // fixed point of the deterministic element functions; it can only be left by a
-    // clock flip, an input-element change (both flagged through setOutputValue()'s
-    // change detection -- user toggles included, they write the same way), or a
-    // structural edit (restart() clears m_atFixedPoint). Everything else recomputes
-    // bit-identical outputs 1000x/s, which on large clocked circuits is almost every
-    // tick. The flags are cleared as they are read so one flip triggers one sweep.
-    bool sourceChanged = false;
-    for (auto *clock : clocks) {
-        if (clock && clock->outputChanged()) {
-            sourceChanged = true;
-            clock->clearOutputChanged();
-        }
-    }
-    for (auto *inputElm : inputs) {
-        if (inputElm && inputElm->outputChanged()) {
-            sourceChanged = true;
-            inputElm->clearOutputChanged();
-        }
-    }
-
-    if (!sourceChanged && m_atFixedPoint) {
-        if (visualsDue && m_visualsDirty) {
-            pushVisualStatuses(elements, outputs);
-            m_visualsDirty = false;
-        }
-        return;
-    }
-
-    // Phase 2: update all GraphicElements in topological order.
+    // Phase 2: update all GraphicElements in topological order, in a bounded sequence of
+    // "delta-cycle waves". A single begin/process/commit/resettle pass (the original design)
+    // correctly gives synchronous sequential elements non-blocking semantics for the common
+    // case (multiple flip-flops all clocked directly from the same source), but it silently
+    // stops a flip-flop's committed change from ever reaching a SECOND flip-flop it feeds
+    // directly (a ripple counter, clock divider, or any Clock/Data pin wired straight to
+    // another flip-flop's Q, with no gate in between) — commitDeferredOutputs() runs once,
+    // after processEvents() has already returned for the tick, and nothing afterwards
+    // schedules that element's successors; the post-edge resettle below deliberately skips
+    // ElementGroup::Memory elements so they are never re-clocked. Looping the whole sequence,
+    // waking only sequential elements that have not yet run this tick, lets such a chain
+    // "ripple" through in as many waves as it has stages, while a flip-flop already fired via
+    // its own clock this tick is never re-invoked a second time (re-running one with an
+    // unchanged clock is not idempotent for the value it captures for the *next* edge, so
+    // re-triggering it here would corrupt ordinary same-clock-domain circuits).
     //
-    // Synchronous sequential elements (flip-flops, latches — ElementGroup::Memory,
-    // collected across the whole IC hierarchy) get non-blocking semantics: their
-    // outputs are staged during the pass and committed together afterwards, so any
-    // combinational logic between them (gated clocks especially) reads the
-    // pre-tick state. This matches real synchronous hardware and the exported
-    // SystemVerilog's non-blocking (<=) model. Gate-built feedback latches are
-    // ElementGroup::Gate, not Memory, so they are never deferred and settle
-    // through the existing path unchanged.
-    for (auto *element : sequentialElements) {
-        if (element) {
-            element->beginDeferredCommit();
-        }
-    }
+    // Bound: sequentialElements.size() + 1 waves. This is provable, not a heuristic — every
+    // wave that makes progress permanently moves at least one not-yet-evaluated element into
+    // m_evaluatedSequentialThisTick (it never shrinks), so after at most
+    // sequentialElements.size() productive waves every sequential element has run at least
+    // once; the following wave then finds nothing new to schedule and nothing changed, and
+    // exits. Genuine oscillation cannot loop this: an oscillating feedback region is caught by
+    // processEvents()'s own per-timestamp evaluation cap and canonicalized to Unknown, which
+    // is idempotent from that point on.
+    m_evaluatedSequentialThisTick.clear();
+    const SimTime tickTargetTime = m_currentTime + m_timePerTick;
+    const int maxWaves = static_cast<int>(sequentialElements.size()) + 1;
 
-    // A plain topological sweep reaches its fixed point in one pass by construction;
-    // only feedback settling can fail to converge (oscillating circuits).
-    bool sweepConverged = true;
-
-    if (m_simHasFeedbackElements) {
-        // Use iterative settling for circuits with feedback loops.
-        sweepConverged = updateWithIterativeSettling(elements);
-    } else {
-        // Phase 2: update all logic elements in topologically sorted order so
-        // every gate sees its inputs before computing its output.
-        for (auto *element : elements) {
+    for (int wave = 0; wave < maxWaves; ++wave) {
+        // Synchronous sequential elements (flip-flops, latches — ElementGroup::Memory,
+        // collected across the whole IC hierarchy) get non-blocking semantics: their
+        // outputs are staged during the pass and committed together afterwards, so any
+        // combinational logic between them (gated clocks especially) reads the
+        // pre-tick state. This matches real synchronous hardware and the exported
+        // SystemVerilog's non-blocking (<=) model. Gate-built feedback latches are
+        // ElementGroup::Gate, not Memory, so they are never deferred and settle
+        // through the existing path unchanged. Re-arming an element that already
+        // committed in an earlier wave this tick is harmless: beginDeferredCommit()
+        // seeds the staging buffer from the CURRENT (already-published) output.
+        for (auto *element : sequentialElements) {
             if (element) {
-                element->updateLogic();
+                element->beginDeferredCommit();
             }
         }
-    }
 
-    // Publish every staged sequential output simultaneously (global commit).
-    bool anySequentialChanged = false;
-    for (auto *element : sequentialElements) {
-        if (element) {
-            element->clearOutputChanged();
-            element->commitDeferredOutputs();
-            if (element->outputChanged()) {
-                anySequentialChanged = true;
-            }
-        }
-    }
+        // Evaluate logic via the unified event-driven engine — one code path for
+        // combinational and feedback circuits. Reproduces the old iterative settling at zero
+        // delay and supports propagation-delay (temporal) simulation when delays are set.
+        // Sequential elements were just bracketed with beginDeferredCommit() above, so their
+        // setOutputValue() calls here stage silently and don't trigger successor scheduling
+        // until the post-edge resettle pass below, after commitDeferredOutputs() runs. Wave 0
+        // seeds/drains exactly as before; later waves drain only what the previous wave's
+        // "wake not-yet-run sequential elements" step scheduled below.
+        processEvents(tickTargetTime, elements, inputs, clocks);
 
-    // Post-edge settle (the second half of a clock cycle / a bounded delta
-    // cycle): once flip-flops have committed, re-propagate their new outputs
-    // through combinational logic and IC output boundaries so the end-of-tick
-    // state is a true fixed point — and so asynchronous overrides (preset/clear)
-    // surface immediately rather than lagging a tick behind. Sequential elements
-    // are skipped here so they are not re-clocked. Only needed on ticks where an
-    // edge or async override actually changed sequential state; steady-state
-    // ticks pay nothing. Feed-forward logic settles in one topological sweep;
-    // iterate only when combinational feedback is present.
-    if (anySequentialChanged) {
-        const int maxPasses = m_simHasFeedbackElements ? kMaxSettleIterations : 1;
-        for (int pass = 0; pass < maxPasses; ++pass) {
-            bool changed = false;
-            for (auto *element : elements) {
-                if (element && element->elementGroup() != ElementGroup::Memory) {
-                    element->clearOutputChanged();
-                    element->resettleCombinational();
-                    changed = changed || element->outputChanged();
+        // Publish every staged sequential output simultaneously (global commit). Track exactly
+        // which elements changed value this wave (sequential here, combinational below) — the
+        // wake step needs the real changed set, not "every sequential element", so a steady-state
+        // tick where nothing actually changed schedules nothing (see the wake step's comment).
+        QSet<GraphicElement *> changedThisWave;
+        for (auto *element : sequentialElements) {
+            if (element) {
+                element->clearOutputChanged();
+                element->commitDeferredOutputs();
+                if (element->outputChanged()) {
+                    changedThisWave.insert(element);
                 }
             }
-            if (!changed) {
-                break;
+        }
+        const bool anySequentialChanged = !changedThisWave.isEmpty();
+
+        // Post-edge settle (the second half of a clock cycle / a bounded delta
+        // cycle): once flip-flops have committed, re-propagate their new outputs
+        // through combinational logic and IC output boundaries so the end-of-tick
+        // state is a true fixed point — and so asynchronous overrides (preset/clear)
+        // surface immediately rather than lagging a tick behind. Sequential elements
+        // are skipped here so they are not re-clocked. Only needed on ticks where an
+        // edge or async override actually changed sequential state; steady-state
+        // ticks pay nothing.
+        bool resettleChanged = false;
+        if (anySequentialChanged) {
+            resettleChanged = resettleCombinationalOnce(elements, changedThisWave);
+        }
+
+        // Wake every Memory-group successor of something that GENUINELY changed this wave
+        // (via commit or resettle) and that has not yet been scheduled at all this tick. This
+        // is what lets a flip-flop driven by another flip-flop's Q — directly, or through
+        // intervening combinational gates already re-propagated by resettleCombinationalOnce()
+        // above — get its own evaluate/stage/commit wave, in as many hops as the chain has
+        // stages. Targeting only real successors of real changes (not "every sequential element,
+        // unconditionally") matters: an earlier draft woke every not-yet-evaluated sequential
+        // element every wave regardless of relevance, which on a steady-state tick (nothing
+        // changed) still scheduled each one at t+delay — a spurious event that, once its delay
+        // finally elapsed ticks later, caused a bogus re-evaluation with no real edge behind it,
+        // corrupting edge-detection state. Marking a woken successor into
+        // m_evaluatedSequentialThisTick the moment it's scheduled here (not only once
+        // processEvents() actually pops and evaluates it) matters in temporal mode: if its delay
+        // pushes the scheduled time past this tick's target, processEvents() correctly leaves the
+        // event pending in the persistent queue for a later tick to drain (exactly like any other
+        // delayed successor) rather than evaluating it prematurely — without this early marking,
+        // a later wave this same tick would see it as still "not yet run" and schedule a
+        // duplicate event for it on every remaining wave.
+        bool newlyScheduled = false;
+        for (auto *changed : std::as_const(changedThisWave)) {
+            const auto it = m_successorGraph.constFind(changed);
+            if (it == m_successorGraph.constEnd()) {
+                continue;
             }
-            if (pass == maxPasses - 1) {
-                // Exhausted the budget while still changing: not a fixed point.
-                sweepConverged = false;
+            for (auto *successor : *it) {
+                if (successor && successor->elementGroup() == ElementGroup::Memory
+                    && !m_evaluatedSequentialThisTick.contains(successor)) {
+                    schedule(m_currentTime + delayTo(successor), successor);
+                    m_evaluatedSequentialThisTick.insert(successor);
+                    newlyScheduled = true;
+                }
             }
+        }
+
+        if (!anySequentialChanged && !resettleChanged && !newlyScheduled) {
+            break;
         }
     }
 
-    // This sweep's result is a fixed point unless a settle pass ran out of budget while
-    // still changing (an oscillating feedback circuit, which must keep sweeping).
-    m_atFixedPoint = sweepConverged;
-    m_visualsDirty = true;
-
-    // Visual updates only need to run at display-refresh rate, not at simulation
-    // rate (1000 Hz) — skipping most ticks avoids dirtying QGraphicsItems that would
-    // be overwritten before the next repaint. In non-interactive (test) mode every
-    // tick flushes so tests see immediate visual state after each step.
-    if (visualsDue) {
-        pushVisualStatuses(elements, outputs);
-        m_visualsDirty = false;
+    // Visual updates only need to run at display-refresh rate (~5 fps),
+    // not at simulation rate (1000 Hz).  Skip phases 3-4 on most ticks
+    // to avoid dirtying QGraphicsItems that will be overwritten before
+    // the next repaint.  In non-interactive (test) mode, always update
+    // so that tests see immediate visual state after each step.
+    if (m_visualThrottleEnabled && Application::interactiveMode && ++m_visualTickCount < m_visualTickInterval) {
+        return;
     }
-}
+    m_visualTickCount = 0;
 
-void Simulation::pushVisualStatuses(const QVector<GraphicElement *> &elements, const QVector<GraphicElement *> &outputs)
-{
     // Phase 3: push computed logic values onto all output port visuals.
     // Iterating elements (not connections) ensures unconnected output ports
     // (e.g. -Q of a flip-flop with no wire attached) are also updated.
@@ -291,21 +301,23 @@ void Simulation::restart()
     // element we've already freed faults on its vtable read. Drop every
     // reference so the next tick's initialize() can rebuild them cleanly.
     m_initialized = false;
-    // A structural edit invalidates the fixed point: the next tick must sweep, and its
-    // visuals must flush even if the throttle boundary lands on a later skipped tick.
-    m_atFixedPoint = false;
-    m_visualsDirty = true;
     m_sortedElements.clear();
     m_sequentialElements.clear();
     m_clocks.clear();
     m_inputs.clear();
     m_outputs.clear();
+    m_successorGraph.clear(); // holds element pointers; must not outlive a rebuild
+    m_eventQueue.clear();
+    m_delays.clear();         // keyed by element pointers; must not outlive a rebuild
+    m_evaluatedSequentialThisTick.clear(); // holds element pointers; must not outlive a rebuild
+    m_currentTime = 0;
     // Bug 4 postcondition: any future cached state added to Simulation must be
     // cleared above. This assert documents the invariant for future maintainers
     // and trips immediately if a new vector is forgotten.
     Q_ASSERT(!m_initialized);
     Q_ASSERT(m_sortedElements.isEmpty() && m_sequentialElements.isEmpty()
-          && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty());
+          && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty()
+          && m_successorGraph.isEmpty() && m_evaluatedSequentialThisTick.isEmpty());
 }
 
 bool Simulation::isRunning()
@@ -363,15 +375,219 @@ bool Simulation::isUserMuted() const
     return m_userMuted;
 }
 
-bool Simulation::updateWithIterativeSettling(const QVector<GraphicElement *> &elements)
+bool Simulation::eventSettle(
+    const QVector<GraphicElement *> &seed,
+    const QHash<GraphicElement *, QVector<GraphicElement *>> &successors,
+    const QHash<const GraphicElement *, int> &priorities)
 {
-    const bool converged = iterativeSettle(elements);
-    if (!converged && !m_convergenceWarned) {
-        m_convergenceWarned = true;
-        qDebug() << "Feedback circuit did not converge after 10 iterations";
-        emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
+    const auto byPriorityDesc = [&priorities](GraphicElement *a, GraphicElement *b) {
+        return priorities.value(a, -1) > priorities.value(b, -1);
+    };
+
+    QVector<GraphicElement *> wave;
+    QSet<GraphicElement *> seen;
+    for (auto *element : seed) {
+        if (element && !seen.contains(element)) {
+            seen.insert(element);
+            wave.append(element);
+        }
     }
-    return converged;
+    std::stable_sort(wave.begin(), wave.end(), byPriorityDesc);
+
+    constexpr int maxDeltaCycles = 1000;
+    int deltaCycles = 0;
+
+    while (!wave.isEmpty()) {
+        QVector<GraphicElement *> next;
+        QSet<GraphicElement *> nextSeen;
+        for (auto *element : std::as_const(wave)) {
+            element->clearOutputChanged();
+            element->updateLogic();
+            if (!element->outputChanged()) {
+                continue;
+            }
+            const auto it = successors.constFind(element);
+            if (it == successors.constEnd()) {
+                continue;
+            }
+            for (auto *successor : *it) {
+                if (successor && !nextSeen.contains(successor)) {
+                    nextSeen.insert(successor);
+                    next.append(successor);
+                }
+            }
+        }
+        if (next.isEmpty()) {
+            return true;
+        }
+        if (++deltaCycles >= maxDeltaCycles) {
+            return false;
+        }
+        std::stable_sort(next.begin(), next.end(), byPriorityDesc);
+        wave = std::move(next);
+    }
+    return true;
+}
+
+void Simulation::processEvents(const SimTime targetTime,
+                                const QVector<GraphicElement *> &elements,
+                                const QVector<GraphicElementInput *> &inputs,
+                                const QVector<Clock *> &clocks)
+{
+    // Event-driven, BLOCKING settle — one path for both modes. A time-bucketed drain over the
+    // event queue: each element re-evaluates at t + its propagation delay, so events spread
+    // across future timestamps (real timing; inertial glitch absorption, since a refired
+    // element re-reads its now-settled live inputs). Functional mode is just this same drain
+    // with every delay forced to 0: all events then land at the current instant (m_timePerTick
+    // == 0 ⇒ targetTime == m_currentTime, no future timestamps), so the drain degenerates to a
+    // single zero-delay wave settle — the classic combinational/feedback behaviour.
+    // The network is seeded whole once (first tick), then incrementally — only the sources that
+    // changed (schedule-on-change). Within a timestamp, events are evaluated in topological-
+    // priority order with immediate (blocking) commit so feedback symmetry is broken
+    // deterministically; delta cycles repeat until the timestamp settles. \a targetTime is
+    // supplied by the caller (update()'s wave loop) rather than derived here, since a single
+    // tick may drain this more than once (each wave passes the SAME tick-wide target).
+
+    // --- Seed ---
+    if (!m_eventInitDone) {
+        // First tick after (re)init: seed the whole network so it settles to a baseline —
+        // every element evaluates once and values propagate from the sources.
+        for (auto *element : elements) {
+            if (element) {
+                schedule(m_currentTime, element);
+            }
+        }
+        m_eventInitDone = true;
+    } else {
+        // Steady state (incremental): seed only the sources whose output changed this tick
+        // (inputs via Phase 1 updateOutputs, clocks via updateClock+updateOutputs); their
+        // successors re-evaluate after their propagation delay. Re-evaluating an element with
+        // unchanged inputs is idempotent (gates; and flip-flops, since clk == m_simLastClk ⇒ no
+        // edge), so skipping unchanged elements yields the same fixed point as a full scan.
+        const auto seedChangedSource = [this](GraphicElement *source) {
+            if (!source || !source->outputChanged()) {
+                return;
+            }
+            const auto it = m_successorGraph.constFind(source);
+            if (it != m_successorGraph.constEnd()) {
+                for (auto *successor : *it) {
+                    if (successor) {
+                        schedule(m_currentTime + delayTo(successor), successor);
+                    }
+                }
+            }
+            source->clearOutputChanged();
+        };
+        for (auto *inputElm : inputs) {
+            seedChangedSource(inputElm);
+        }
+        for (auto *clock : clocks) {
+            seedChangedSource(clock);
+        }
+    }
+
+    // --- Drain ---
+    // Process one event at a time in (time, priority-desc) order: within a timestamp the highest-
+    // priority (most upstream) element always runs first, so an element is never evaluated until
+    // its upstream inputs have settled. This makes internally-generated clocks (e.g. gated clocks
+    // built from a counter) reach their final value before any downstream flip-flop samples them —
+    // no zero-delay glitches. The per-timestamp evaluation cap detects genuine oscillation.
+    const int maxEvalsPerTime = 1000 * qMax(1, static_cast<int>(elements.size()));
+    int evalsAtTime = 0;
+    SimTime lastTime = SIM_TIME_UNSET;
+
+    while (!m_eventQueue.empty() && m_eventQueue.nextTime() <= targetTime) {
+        const SimEvent event = m_eventQueue.pop();
+        const SimTime t = event.time;
+        m_currentTime = t;
+        if (t != lastTime) {
+            evalsAtTime = 0; // the cap detects oscillation within a single timestamp
+            lastTime = t;
+        }
+
+        auto *element = event.target;
+        if (!element) {
+            continue;
+        }
+        element->clearOutputChanged();
+        element->updateLogic();
+        if (element->elementGroup() == ElementGroup::Memory) {
+            // Record that this sequential element actually ran this tick, so update()'s wave
+            // loop doesn't also "wake" it again as if it were still unreached — its own change
+            // (visible once the caller's commitDeferredOutputs() publishes it) is picked up by
+            // that same wave loop's next pass instead of by the scheduling below, since a
+            // deferred element's outputChanged() stays false here regardless of what it wrote.
+            m_evaluatedSequentialThisTick.insert(element);
+        }
+        if (element->outputChanged()) {
+            const auto it = m_successorGraph.constFind(element);
+            if (it != m_successorGraph.constEnd()) {
+                for (auto *successor : *it) {
+                    if (successor) {
+                        schedule(t + delayTo(successor), successor);
+                    }
+                }
+            }
+        }
+
+        if (++evalsAtTime >= maxEvalsPerTime) {
+            if (!m_convergenceWarned) {
+                m_convergenceWarned = true;
+                qDebug() << "Feedback circuit did not converge at time" << t;
+                emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
+            }
+            // Zero-delay oscillation: the feedback region has no stable value. Freezing an
+            // arbitrary phase is meaningless and not idempotent across ticks, so
+            // canonicalize oscillating feedback nodes to Unknown (NOT(Unknown)=Unknown is a
+            // fixed point) — deterministic and stable next tick. (Timed oscillation is real
+            // and resolves over time, so it never reaches this per-timestamp cap.)
+            for (auto *feedbackElm : elements) {
+                if (feedbackElm && m_simFeedbackNodes.contains(feedbackElm)) {
+                    for (int i = 0; i < feedbackElm->outputSize(); ++i) {
+                        feedbackElm->setOutputValue(i, Status::Unknown);
+                    }
+                }
+            }
+            m_eventQueue.clear();
+            break;
+        }
+    }
+
+    m_currentTime = targetTime; // time advances to the tick boundary (temporal); stays 0 (functional)
+}
+
+bool Simulation::resettleCombinationalOnce(const QVector<GraphicElement *> &elements, QSet<GraphicElement *> &changedOut)
+{
+    // Re-propagate just-committed sequential outputs through combinational logic to a true
+    // fixed point. Sequential elements are skipped so this pass never re-clocks them — that's
+    // update()'s wave loop's job (waking a not-yet-run sequential element via the event queue,
+    // which correctly re-invokes its full edge-detection logic instead of a blind resettle).
+    // Feed-forward logic settles in one topological sweep; iterate only when combinational
+    // feedback is present. Every element that changes in ANY pass is added to \a changedOut (not
+    // just the last pass), so the caller's successor walk sees the true overall changed set
+    // across this whole multi-pass convergence, including a combinational element that changed
+    // in an early pass but happened to be stable by the final one.
+    const int maxPasses = m_simHasFeedbackElements ? kMaxSettleIterations : 1;
+    bool anyChanged = false;
+    for (int pass = 0; pass < maxPasses; ++pass) {
+        bool changed = false;
+        for (auto *element : elements) {
+            if (element && element->elementGroup() != ElementGroup::Memory) {
+                element->clearOutputChanged();
+                element->resettleCombinational();
+                if (element->outputChanged()) {
+                    changed = true;
+                    changedOut.insert(element);
+                }
+            }
+        }
+        if (changed) {
+            anyChanged = true;
+        } else {
+            break;
+        }
+    }
+    return anyChanged;
 }
 
 bool Simulation::initialize()
@@ -383,6 +599,16 @@ bool Simulation::initialize()
     // Rebuild all categorised lists from scratch so stale pointers from
     // a previous circuit state don't linger after undo/redo or file load.
     m_convergenceWarned = false;
+    m_eventInitDone = false; // first processEvents() after (re)init seeds the whole network
+    // Same invariant restart() documents: topology-derived state must not outlive a
+    // rebuild. Pending events are stale twice over — SimEvent::target raw pointers (a
+    // structural command may have freed the element: delete, morph, split-undo) and
+    // priorities baked from the OLD m_simPriorities at schedule time. In temporal mode
+    // pending cross-tick events are routine, so without this clear the next drain pops
+    // an event for a freed element (use-after-free). The full-network seed that
+    // m_eventInitDone=false forces makes the dropped events redundant anyway.
+    m_eventQueue.clear();
+    m_evaluatedSequentialThisTick.clear();
     m_clocks.clear();
     m_outputs.clear();
     m_inputs.clear();
@@ -602,31 +828,11 @@ Simulation::SortResult Simulation::topologicalSort(
     return result;
 }
 
-bool Simulation::iterativeSettle(const QVector<GraphicElement *> &elements, const int maxIterations)
-{
-    for (int iteration = 0; iteration < maxIterations; ++iteration) {
-        for (auto *element : std::as_const(elements)) {
-            if (!element) {
-                continue;
-            }
-            element->clearOutputChanged();
-            element->updateLogic();
-        }
-
-        const bool converged = std::none_of(elements.cbegin(), elements.cend(),
-            [](const auto *element) { return element && element->outputChanged(); });
-
-        if (converged) {
-            return true;
-        }
-    }
-    return false;
-}
-
 void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
 {
     const auto txMap = buildTxMap(elements);
     const auto successors = buildSuccessorGraph(elements, txMap);
+    m_successorGraph = successors; // persist for the event-driven engine (processEvents)
     const auto result = topologicalSort(elements, successors);
 
     m_simPriorities.clear();

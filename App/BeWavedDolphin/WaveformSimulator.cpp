@@ -78,6 +78,13 @@ void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
             elm->resetSimState();
         }
     }
+    // The event-driven engine tracks "what changed since last tick" via each element's
+    // outputChanged() flag, set only on a value transition. resetSimState() above just
+    // forced every element back to a baseline value without going through that change
+    // detection, so the engine's incremental tracking no longer reflects reality — without
+    // this, the next update() would only re-seed from inputs/clocks and silently miss
+    // internal elements left stale by the reset.
+    m_simulation->resetEventTracking();
 
     // --- Step through each time column and compute circuit outputs ---
     for (int column = 0; column < columns; ++column) {

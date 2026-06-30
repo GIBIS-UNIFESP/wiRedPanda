@@ -243,6 +243,8 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimEvent.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimTime.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
@@ -502,6 +504,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestUnifiedTimed.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.cpp
@@ -702,6 +705,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestUnifiedTimed.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.h

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QByteArray>
+#include <QHash>
 #include <QPixmap>
 #include <QPoint>
 #include <QSet>
@@ -181,7 +182,14 @@ private:
 
     QVector<GraphicElement *> m_sortedInternalElements;
     QSet<GraphicElement *> m_boundaryInputElements;
+    /// True when the internal graph has a combinational feedback loop. Still needed by
+    /// resettleCombinational()'s post-edge re-propagation pass (bounded vs single-pass),
+    /// even though updateLogic() itself now settles both cases through eventSettle().
     bool m_internalHasFeedback = false;
+    /// Internal simulation graph for the event-driven settle (eventSettle): successor adjacency
+    /// and topological priorities over the internal elements.
+    QHash<GraphicElement *, QVector<GraphicElement *>> m_internalSuccessors;
+    QHash<const GraphicElement *, int> m_internalPriorities;
 
     // --- Members: Hover preview ---
 

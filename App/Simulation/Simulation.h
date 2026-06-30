@@ -15,6 +15,9 @@
 #include <QSet>
 #include <QTimer>
 
+#include "App/Simulation/SimEvent.h"
+#include "App/Simulation/SimTime.h"
+
 class Clock;
 class GraphicElement;
 class GraphicElementInput;
@@ -28,11 +31,13 @@ class SimulationHost;
  *
  * \details The simulation runs a 1 ms periodic QTimer.  On each tick it:
  * 1. Updates all GraphicElementInput outputs (including clocks).
- * 2. Calls updateLogic() on all elements in priority order.
+ * 2. Settles all elements via the unified event-driven engine (processEvents()),
+ *    in priority order.
  * 3. Propagates values through connections to output elements.
  *
- * Feedback loops are detected during initialization and handled with an
- * iterative settling algorithm.
+ * Feedback loops are detected during initialization; the event-driven engine
+ * handles them with the same settle path as feed-forward logic, bounded by a
+ * delta-cycle cap.
  */
 class Simulation : public QObject
 {
@@ -42,7 +47,6 @@ class Simulation : public QObject
 
 public:
     /// Maximum iteration count for post-commit combinational re-settle passes.
-    /// Matches iterativeSettle()'s default and the "did not converge" warning threshold.
     static constexpr int kMaxSettleIterations = 10;
 
     // --- Lifecycle ---
@@ -104,6 +108,28 @@ public:
     /// \sa SimulationThrottleDisabler
     void setVisualThrottleEnabled(bool enabled);
 
+    /// Invalidates the event-driven engine's incremental "what changed since last tick"
+    /// tracking without rebuilding the topology (unlike restart(), which also drops the
+    /// cached graph). Call this after resetting elements' simulation state directly (e.g.
+    /// WaveformSimulator::sweep() resetting every element to power-on defaults before a
+    /// sweep) — otherwise the next update() only re-seeds from m_inputs/m_clocks and never
+    /// notices that every other element's value is now stale, since processEvents() only
+    /// does a full network seed on the first tick after initialize().
+    void resetEventTracking();
+
+    // --- Temporal (propagation-delay) simulation ---
+
+    /// Sim-time advanced per update() tick. 0 ⇒ functional (zero-delay): every event
+    /// lands at the current instant and the tick is a full settle. >0 ⇒ temporal:
+    /// events spread across future timestamps by per-element propagation delay.
+    void setTimePerTick(SimTime ns) { m_timePerTick = ns; }
+
+    /// Sets the propagation delay (sim-time units) for \a element. 0 ⇒ zero-delay.
+    void setElementDelay(const GraphicElement *element, SimTime ns) { m_delays[element] = ns; }
+
+    /// Current simulation time (advances only in temporal mode).
+    SimTime currentTime() const { return m_currentTime; }
+
     // --- Static graph building (used by IC::initializeSimulation too) ---
 
     static void buildConnectionGraph(const QVector<GraphicElement *> &elements);
@@ -130,9 +156,14 @@ public:
     static SortResult topologicalSort(const QVector<GraphicElement *> &elements,
                                       const QHash<GraphicElement *, QVector<GraphicElement *>> &successors);
 
-    /// Runs updateLogic() iteratively on \a elements until outputs converge or \a maxIterations is reached.
-    /// \return \c true if the circuit converged.
-    static bool iterativeSettle(const QVector<GraphicElement *> &elements, int maxIterations = kMaxSettleIterations);
+    /// Event-driven, BLOCKING zero-delay settle (shared engine core; used by IC-internal sim and
+    /// the top-level functional path). Evaluates \a seed in topological-priority order with
+    /// immediate output commit, schedules successors of changed elements into the next delta cycle
+    /// (dedup per cycle), repeats to a fixed point or a delta-cycle cap. Null-tolerant. Does not
+    /// canonicalize/warn (caller decides). \return \c true if converged.
+    static bool eventSettle(const QVector<GraphicElement *> &seed,
+                            const QHash<GraphicElement *, QVector<GraphicElement *>> &successors,
+                            const QHash<const GraphicElement *, int> &priorities);
 
 signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
@@ -145,17 +176,56 @@ private:
 
     static void updatePort(InputPort *port);
     static void updatePort(OutputPort *port);
-    /// Returns \c true when the feedback circuit converged within the iteration budget.
-    bool updateWithIterativeSettling(const QVector<GraphicElement *> &elements);
     void sortSimElements(const QVector<GraphicElement *> &elements);
-
-    /// Phases 3-4: pushes computed logic values onto port/output-element visuals.
-    void pushVisualStatuses(const QVector<GraphicElement *> &elements, const QVector<GraphicElement *> &outputs);
 
     /// Recursively appends every ElementGroup::Memory element in \a elements
     /// (descending into ICs) to m_sequentialElements. These get non-blocking
     /// (deferred) output commits so synchronous logic matches SystemVerilog.
     void collectSequentialElements(const QVector<GraphicElement *> &elements);
+
+    /// Delay applied when scheduling \a successor: 0 in functional mode (every event lands
+    /// at the current instant), else the successor's own propagation-delay override/default.
+    SimTime delayTo(const GraphicElement *successor) const
+    {
+        return (m_timePerTick == 0) ? SimTime{0} : m_delays.value(successor, 0);
+    }
+
+    /// Schedules \a target into the event queue at \a time, at its topological priority.
+    void schedule(SimTime time, GraphicElement *target)
+    {
+        m_eventQueue.schedule({time, m_simPriorities.value(target, -1), target});
+    }
+
+    /// The unified event-driven engine: a blocking, time-bucketed settle over the event
+    /// queue, draining up to \a targetTime. First tick seeds the whole network (\a elements);
+    /// subsequent ticks incrementally seed only the sources that changed (\a inputs, \a clocks),
+    /// with per-(delta-cycle) dedup and immediate output commit. Handles both zero-delay
+    /// (functional) and propagation-delay (temporal) simulation in one code path. Sequential
+    /// (Memory-group) elements are bracketed by the caller's
+    /// beginDeferredCommit()/commitDeferredOutputs(), so their setOutputValue() calls here
+    /// stage silently (outputChanged() stays false) until the caller's explicit commit —
+    /// this engine doesn't need to know about that mechanism to honor it. Every Memory-group
+    /// element evaluated during the drain is recorded into m_evaluatedSequentialThisTick, so
+    /// update()'s wave loop knows which sequential elements have already run this tick.
+    /// \a elements/\a inputs/\a clocks are update()'s per-tick snapshots (see the "Bug 5" /
+    /// snapshot-topology-vectors fix in update()) — this engine must not reach for
+    /// m_sortedElements/m_inputs/m_clocks directly, since a reentrant restart() mid-tick
+    /// (e.g. triggered by a QMessageBox nested loop from an updateLogic() exception) clears
+    /// and rebuilds those members out from under a live range-for.
+    void processEvents(SimTime targetTime,
+                        const QVector<GraphicElement *> &elements,
+                        const QVector<GraphicElementInput *> &inputs,
+                        const QVector<Clock *> &clocks);
+
+    /// Re-propagates freshly committed sequential outputs through combinational logic to a
+    /// fixed point (bounded by kMaxSettleIterations when feedback is present). Skips
+    /// ElementGroup::Memory elements so they are never re-clocked by this pass. Every element
+    /// that changes in any pass is inserted into \a changedOut, so update()'s wave loop can walk
+    /// successors of the true changed set (combinational elements included) rather than just the
+    /// sequential elements it committed directly. \a elements is update()'s per-tick snapshot,
+    /// for the same reentrancy reason as processEvents().
+    /// \return true if any element's output changed.
+    bool resettleCombinationalOnce(const QVector<GraphicElement *> &elements, QSet<GraphicElement *> &changedOut);
 
     // --- Members: Timer & element lists ---
 
@@ -174,17 +244,6 @@ private:
     bool m_convergenceWarned = false;
     bool m_userMuted = false;
 
-    /// \c true after a completed sweep whose settle passes converged: outputs are a fixed
-    /// point of the (deterministic) element functions, so a tick where no clock and no
-    /// input element changed is a provable no-op and update() skips the sweep entirely.
-    /// Cleared by restart() (structural edits) and by any non-converging settle
-    /// (oscillating feedback must keep sweeping).
-    bool m_atFixedPoint = false;
-
-    /// Set by every sweep; lets a skipped tick know the throttled visual phases still
-    /// owe a flush (the display-rate boundary may land on a skipped tick).
-    bool m_visualsDirty = true;
-
     // --- Members: Visual refresh throttle ---
 
     int m_visualTickCount = 0;
@@ -201,4 +260,26 @@ private:
     QHash<const GraphicElement *, int> m_simPriorities;
     QSet<const GraphicElement *> m_simFeedbackNodes;
     bool m_simHasFeedbackElements = false;
+
+    /// Persisted successor adjacency (element → its successors), built in sortSimElements().
+    /// Used by processEvents() to schedule re-evaluation on output change. Re-uses
+    /// buildSuccessorGraph() (handles wireless Tx→Rx) so it matches the sort topology.
+    QHash<GraphicElement *, QVector<GraphicElement *>> m_successorGraph;
+
+    /// Sequential (Memory-group) elements already evaluated at least once during the current
+    /// update() tick's wave loop. Cleared at the start of every tick. A ripple/derived-clock
+    /// chain (one flip-flop's Q feeding another's Clock or Data with no gate in between) needs
+    /// more than one wave to settle: the second flip-flop is woken only once the first commits,
+    /// and this set is what stops an already-fired flip-flop from being re-invoked by a later
+    /// wave (which would corrupt its edge-detection/data-capture state — re-running a flip-flop
+    /// with an unchanged clock is not idempotent for the value it captures for the *next* edge).
+    QSet<GraphicElement *> m_evaluatedSequentialThisTick;
+
+    // --- Members: Temporal (propagation-delay) simulation ---
+
+    EventQueue m_eventQueue;                          ///< Time-ordered pending re-evaluations.
+    SimTime m_currentTime = 0;                        ///< Current sim time (advances in temporal mode).
+    SimTime m_timePerTick = 0;                        ///< 0 ⇒ functional; >0 ⇒ temporal window per tick.
+    QHash<const GraphicElement *, SimTime> m_delays;  ///< Per-element propagation delay (default 0).
+    bool m_eventInitDone = false;                     ///< False until the first seed-all baseline settle.
 };

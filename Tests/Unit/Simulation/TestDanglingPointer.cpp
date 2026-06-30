@@ -376,13 +376,13 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
 // don't prevent the assertion tests above from reporting.
 // ==========================================================================
 
-// Bug 8 — iterativeSettle() iterates its input without null checks.
-void TestDanglingPointer::bug8_iterativeSettleMustTolerateNullEntry()
+// Bug 8 — eventSettle() iterates its seed; it must skip (not dereference) null entries.
+void TestDanglingPointer::bug8_eventSettleMustTolerateNullEntry()
 {
     QVector<GraphicElement *> entries;
     entries.append(nullptr);
     // Return value is meaningless for a null input; the point is survival.
-    (void)Simulation::iterativeSettle(entries, 1);
+    (void)Simulation::eventSettle(entries, {}, {});
     QVERIFY(true);
 }
 

@@ -1363,7 +1363,8 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
         // non-blocking commit: settle while flip-flops sample into _next (reading
         // pre-edge state), commit all at once, then re-settle so combinational
         // outputs reflect the new state. Combinational/gate-built circuits just
-        // settle to a fixed point (same bound as Simulation::iterativeSettle).
+        // settle to a fixed point (same bound as the unified engine's post-commit
+        // resettle passes — Simulation::kMaxSettleIterations).
         if (m_hasSequential) {
             m_stream << "        g_sample = true;" << Qt::endl;
             m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
