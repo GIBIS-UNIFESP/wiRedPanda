@@ -12,12 +12,14 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Not.h"
+#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
 #include "App/Element/GraphicElements/Xor.h"
 #include "App/Scene/Commands.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Simulation/WaveformRecorder.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestUnifiedTimed::testGateDelay()
@@ -1075,4 +1077,122 @@ void TestUnifiedTimed::testAsyncPresetUnderDelay()
     clk->setOn(true);
     advanceTo(sim->currentTime() + 2 * delay);
     QCOMPARE(ff->outputValue(0), Status::Inactive); // edge recaptures Data=0
+}
+
+void TestUnifiedTimed::testReconvergentFanoutHazard()
+{
+    // F = A OR ~A is a tautology (always 1), but reconvergent fanout with unequal path delays
+    // makes it glitch: when A falls, the direct path reaches the OR before the inverted path, so
+    // the OR momentarily sees (0,0)=0 — a static-1 hazard. The transient survives only when the
+    // OR is FASTER than the path skew (the NOT delay); otherwise the OR re-evaluates after ~A has
+    // already risen and the glitch is inertially absorbed. Run both regimes.
+    const auto glitchSeen = [](SimTime notDelay, SimTime orDelay) -> bool {
+        WorkSpace workspace;
+        CircuitBuilder builder(workspace.scene());
+        auto *a = new InputSwitch();
+        auto *notGate = new Not();
+        auto *orGate = new Or();
+        builder.add(a, notGate, orGate);
+        builder.connect(a, 0, orGate, 0);   // direct path A → OR.in0
+        builder.connect(a, 0, notGate, 0);  // inverted path A → NOT
+        builder.connect(notGate, 0, orGate, 1); // → OR.in1
+        Simulation *sim = builder.initSimulation();
+
+        sim->setTimePerTick(100); // one wide tick drains the whole transient
+        sim->setElementDelay(notGate, notDelay);
+        sim->setElementDelay(orGate, orDelay);
+
+        a->setOn(true);
+        sim->update(); // settle F = 1 (A=1 ⇒ OR(1,0)=1)
+        Q_ASSERT(orGate->outputValue(0) == Status::Active);
+
+        auto &recorder = sim->waveformRecorder();
+        recorder.watchSignal("F", orGate, 0);
+        recorder.setRecording(true);
+
+        a->setOn(false); // A: 1 → 0, the hazardous transition
+        sim->update();   // drain the transient within one tick
+
+        const auto &transitions = recorder.trace(0).transitions;
+        bool sawLow = false;
+        for (const auto &tr : transitions) {
+            if (tr.second == Status::Inactive) {
+                sawLow = true;
+            }
+        }
+        // The output must settle back to 1 either way (tautology).
+        Q_ASSERT(orGate->outputValue(0) == Status::Active);
+        return sawLow;
+    };
+
+    // OR (delay 3) faster than the skew (NOT delay 10): the static-1 hazard propagates.
+    QVERIFY2(glitchSeen(10, 3), "Reconvergent-fanout hazard glitch was not produced");
+
+    // OR (delay 10) slower than the skew (NOT delay 3): the glitch is inertially absorbed.
+    QVERIFY2(!glitchSeen(3, 10), "Hazard should have been absorbed when the gate is slower than the skew");
+}
+
+void TestUnifiedTimed::testWidePulsePropagates()
+{
+    // Inertial delay absorbs pulses NARROWER than the gate delay (testGlitchAbsorbed). The
+    // complement: a pulse WIDER than the delay must propagate. A 10-unit input pulse through a
+    // 5-unit NOT appears at the output as a (delayed) 10-unit pulse.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *a = new InputSwitch();
+    auto *notGate = new Not();
+    builder.add(a, notGate);
+    builder.connect(a, 0, notGate, 0);
+    Simulation *sim = builder.initSimulation();
+
+    a->setOn(false);
+    sim->update();
+    QCOMPARE(notGate->outputValue(0), Status::Active); // ~0 = 1
+
+    sim->setElementDelay(notGate, 5);
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+
+    // Pulse A high for 10 units — wider than the 5-unit delay, so it must reach the output.
+    const SimTime tRise = sim->currentTime();
+    a->setOn(true);
+    advanceTo(tRise + 8); // 8 > 5: the inverted pulse has propagated
+    QVERIFY2(notGate->outputValue(0) == Status::Inactive, "Wide pulse was wrongly absorbed");
+
+    a->setOn(false); // end the pulse (total high width ≈ 10 > delay)
+    advanceTo(sim->currentTime() + 8);
+    QCOMPARE(notGate->outputValue(0), Status::Active); // output pulse ended — back to ~0 = 1
+}
+
+void TestUnifiedTimed::testZeroDelayLoopOscillatesToUnknownInTemporalMode()
+{
+    // The per-timestamp oscillation cap is mode-independent. A 3-inverter ring whose gates are
+    // forced to ZERO delay while running in temporal mode collapses all its toggles into a single
+    // timestamp (exactly like functional mode), trips the cap, and canonicalizes to Unknown —
+    // the complement of testRingOscillatorTemporal, where non-zero delays spread it over time.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *n1 = new Not();
+    auto *n2 = new Not();
+    auto *n3 = new Not();
+    builder.add(n1, n2, n3);
+    builder.connect(n1, 0, n2, 0);
+    builder.connect(n2, 0, n3, 0);
+    builder.connect(n3, 0, n1, 0);
+    Simulation *sim = builder.initSimulation();
+
+    sim->setTimePerTick(10);      // temporal mode...
+    sim->setElementDelay(n1, 0);  // ...but a zero-delay loop, so events share one timestamp
+    sim->setElementDelay(n2, 0);
+    sim->setElementDelay(n3, 0);
+
+    sim->update();
+
+    QVERIFY2(sim->isInFeedbackLoop(n1), "Ring node should be detected as a feedback loop");
+    QCOMPARE(n1->outputValue(0), Status::Unknown); // cap fired, canonicalized to Unknown
 }
