@@ -115,6 +115,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TemporalWaveformWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.cpp
@@ -274,6 +275,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TemporalWaveformWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.h
