@@ -43,7 +43,202 @@ class WaveformAnalysisTests(MCPTestBase):
             self.test_waveform_not_gate_analysis,
             self.test_waveform_dlatch_sequential_behavior,
             self.test_waveform_export_formats,
+            self.test_temporal_recorder_shows_delay,
+            self.test_set_time_per_tick_requires_value,
+            self.test_create_waveform_rejects_bad_ns_per_column,
+            self.test_set_element_properties_rejects_bad_propagation_delay,
         ]
+
+    async def test_temporal_recorder_shows_delay(self) -> bool:
+        """Temporal mode + waveform recorder: a NOT output falls only after its gate delay."""
+        print("\n=== Temporal Recorder Delay Test ===")
+        self.set_test_context("test_temporal_recorder_shows_delay")
+
+        await self.send_command("new_circuit", {})
+
+        sw = await self.send_command("create_element", {"type": "InputSwitch", "x": 100.0, "y": 100.0})
+        notg = await self.send_command("create_element", {"type": "Not", "x": 240.0, "y": 100.0})
+        if not (sw.success and sw.result and notg.success and notg.result):
+            print("Failed to create elements")
+            return False
+        sw_id = sw.result["element_id"]
+        not_id = notg.result["element_id"]
+
+        conn = await self.send_command(
+            "connect_elements",
+            {"source_id": sw_id, "source_port": 0, "target_id": not_id, "target_port": 0},
+        )
+        if not conn.success:
+            print(f"connect failed: {conn.error}")
+            return False
+
+        # Watch the NOT output and switch to temporal mode (1 ns of sim-time per update).
+        watch = await self.send_command("watch_signal", {"element_id": not_id, "port": 0})
+        if not watch.success:
+            print(f"watch_signal failed: {watch.error}")
+            return False
+        tpt = await self.send_command("simulation_control", {"action": "set_time_per_tick", "time_per_tick": 1})
+        if not tpt.success or not tpt.result or tpt.result.get("time_per_tick") != 1:
+            print(f"set_time_per_tick failed: {tpt.result if tpt else None}")
+            return False
+
+        # Settle with the input low (NOT = 1), then raise it and step well past the 5 ns delay.
+        await self.send_command("set_input_value", {"element_id": sw_id, "value": False})
+        for _ in range(10):
+            await self.send_command("simulation_control", {"action": "update"})
+        await self.send_command("set_input_value", {"element_id": sw_id, "value": True})
+        for _ in range(20):
+            await self.send_command("simulation_control", {"action": "update"})
+
+        # Sim-time must have advanced in temporal mode.
+        state = await self.send_command("simulation_control", {"action": "get_state"})
+        if not state.success or not state.result or state.result.get("current_time", 0) <= 0:
+            print(f"get_state did not advance time: {state.result if state else None}")
+            return False
+        if state.result.get("time_per_tick") != 1:
+            print(f"time_per_tick not reported: {state.result}")
+            return False
+
+        # The recorder must show the NOT going low, and only after a delay (time > 0), not at t=0.
+        trace_resp = await self.send_command("get_waveform_trace", {"element_id": not_id})
+        if not trace_resp.success or not trace_resp.result:
+            print(f"get_waveform_trace failed: {trace_resp.error if trace_resp else None}")
+            return False
+        traces = trace_resp.result.get("traces", [])
+        if not traces:
+            print("no traces recorded")
+            return False
+        transitions = traces[0].get("transitions", [])
+        if not transitions:
+            print("trace has no transitions")
+            return False
+        if transitions[-1].get("value") != "low":
+            print(f"NOT output did not settle low: {transitions}")
+            return False
+        low_times = [t["time"] for t in transitions if t.get("value") == "low"]
+        if not low_times or min(low_times) <= 0:
+            print(f"NOT fell at t<=0 (delay not applied): {transitions}")
+            return False
+
+        self.infrastructure.output.success("temporal recorder shows propagation delay")
+        return True
+
+    async def test_set_time_per_tick_requires_value(self) -> bool:
+        """Regression: simulation_control action=set_time_per_tick must reject a request that
+        omits time_per_tick, rather than silently defaulting to 0 (functional mode)."""
+        print("\n=== set_time_per_tick Requires Value Test ===")
+        self.set_test_context("test_set_time_per_tick_requires_value")
+
+        await self.send_command("new_circuit", {})
+
+        # Put the simulation into a known temporal mode first, so a silent default-to-0 would be
+        # observable (not indistinguishable from an already-functional baseline).
+        primed = await self.send_command("simulation_control", {"action": "set_time_per_tick", "time_per_tick": 5})
+        if not primed.success:
+            print(f"priming set_time_per_tick failed: {primed.error}")
+            return False
+
+        resp = await self.send_command("simulation_control", {"action": "set_time_per_tick"})
+        if resp.success:
+            print(f"set_time_per_tick with no time_per_tick unexpectedly succeeded: {resp.result}")
+            return False
+
+        # The primed value must be untouched by the rejected request.
+        state = await self.send_command("simulation_control", {"action": "get_state"})
+        if not state.success or not state.result or state.result.get("time_per_tick") != 5:
+            print(f"time_per_tick changed despite rejected request: {state.result if state else None}")
+            return False
+
+        self.infrastructure.output.success("set_time_per_tick correctly requires time_per_tick")
+        return True
+
+    async def test_create_waveform_rejects_bad_ns_per_column(self) -> bool:
+        """Regression: create_waveform must reject an out-of-range ns_per_column instead of casting
+        it to SimTime — a negative wraps to ~UINT64_MAX and a huge value makes the temporal sweep's
+        drain window practically unbounded (a delayed-feedback circuit then hangs the app)."""
+        print("\n=== create_waveform ns_per_column Bounds Test ===")
+        self.set_test_context("test_create_waveform_rejects_bad_ns_per_column")
+
+        await self.send_command("new_circuit", {})
+
+        sw = await self.send_command("create_element", {"type": "InputSwitch", "x": 100.0, "y": 100.0})
+        led = await self.send_command("create_element", {"type": "Led", "x": 240.0, "y": 100.0})
+        if not (sw.success and sw.result and led.success and led.result):
+            print("Failed to create elements")
+            return False
+        conn = await self.send_command(
+            "connect_elements",
+            {
+                "source_id": sw.result["element_id"],
+                "source_port": 0,
+                "target_id": led.result["element_id"],
+                "target_port": 0,
+            },
+        )
+        if not conn.success:
+            print(f"connect failed: {conn.error}")
+            return False
+
+        for bad in (0, -1, 10**9):
+            resp = await self.send_command("create_waveform", {"duration": 4, "temporal": True, "ns_per_column": bad})
+            if resp.success:
+                print(f"create_waveform with ns_per_column={bad} unexpectedly succeeded")
+                return False
+
+        # An in-range temporal sweep must still work (guards against over-rejection).
+        resp = await self.send_command("create_waveform", {"duration": 4, "temporal": True, "ns_per_column": 2})
+        if not resp.success:
+            print(f"valid temporal create_waveform rejected: {resp.error}")
+            return False
+
+        self.infrastructure.output.success("create_waveform enforces ns_per_column bounds")
+        return True
+
+    async def test_set_element_properties_rejects_bad_propagation_delay(self) -> bool:
+        """Regression: set_element_properties must reject an out-of-range propagation_delay with an
+        error — setPropagationDelay() silently ignores such values, so without a server-side check
+        the response reported success with the unapplied value."""
+        print("\n=== set_element_properties propagation_delay Bounds Test ===")
+        self.set_test_context("test_set_element_properties_rejects_bad_propagation_delay")
+
+        await self.send_command("new_circuit", {})
+
+        notg = await self.send_command("create_element", {"type": "Not", "x": 100.0, "y": 100.0})
+        if not (notg.success and notg.result):
+            print("Failed to create element")
+            return False
+        not_id = notg.result["element_id"]
+
+        for bad in (-5, 10**9):
+            resp = await self.send_command("set_element_properties", {"element_id": not_id, "propagation_delay": bad})
+            if resp.success:
+                print(f"set_element_properties with propagation_delay={bad} unexpectedly succeeded")
+                return False
+
+        # The rejected requests must not have materialized an override: the NOT keeps its
+        # 5 ns type default.
+        listing = await self.send_command("list_elements", {})
+        if not listing.success or not listing.result:
+            print(f"list_elements failed: {listing.error if listing else None}")
+            return False
+        elems = [e for e in listing.result.get("elements", []) if e.get("element_id") == not_id]
+        if not elems or elems[0].get("propagation_delay") != 5 or elems[0].get("propagation_delay_override"):
+            print(f"propagation delay changed despite rejected requests: {elems}")
+            return False
+
+        # An in-range value must still apply (guards against over-rejection).
+        resp = await self.send_command("set_element_properties", {"element_id": not_id, "propagation_delay": 42})
+        if not resp.success:
+            print(f"valid propagation_delay rejected: {resp.error}")
+            return False
+        listing = await self.send_command("list_elements", {})
+        elems = [e for e in (listing.result or {}).get("elements", []) if e.get("element_id") == not_id]
+        if not elems or elems[0].get("propagation_delay") != 42:
+            print(f"valid propagation_delay not applied: {elems}")
+            return False
+
+        self.infrastructure.output.success("set_element_properties enforces propagation_delay bounds")
+        return True
 
     # ==================== TEST METHODS ====================
     # Method implementations
