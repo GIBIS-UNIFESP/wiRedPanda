@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Simulation/TestUnifiedTimed.h"
 
+#include <QSignalSpy>
 #include <QtTest>
 
 #include "App/Core/Enums.h"
@@ -1768,4 +1769,62 @@ void TestUnifiedTimed::testSimultaneousInputArrivalNoGlitch()
                  "XOR glitched to 0 — simultaneous input arrival should be transient-free");
     }
     QCOMPARE(xorGate->outputValue(0), Status::Active);
+}
+
+void TestUnifiedTimed::testOscillationCapLeavesNonFeedbackUntouched()
+{
+    // When the per-timestamp cap fires, only feedback nodes are canonicalized to Unknown; the
+    // loop skips non-feedback elements (the `m_simFeedbackNodes.contains(...)` false branch). A
+    // separate NOT driven by a switch must keep its real value after the ring caps.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *n1 = new Not();
+    auto *n2 = new Not();
+    auto *n3 = new Not();
+    auto *sw = new InputSwitch();
+    auto *nSep = new Not(); // non-feedback: driven only by the switch
+    builder.add(n1, n2, n3, sw, nSep);
+    builder.connect(n1, 0, n2, 0);
+    builder.connect(n2, 0, n3, 0);
+    builder.connect(n3, 0, n1, 0); // zero-delay ring → caps in functional mode
+    builder.connect(sw, 0, nSep, 0);
+    Simulation *sim = builder.initSimulation(); // functional mode (timePerTick == 0)
+
+    sw->setOn(true);
+    sim->update();
+
+    QVERIFY2(sim->isInFeedbackLoop(n1), "Ring node should be a feedback node");
+    QCOMPARE(n1->outputValue(0), Status::Unknown);            // feedback node canonicalized
+    QVERIFY2(!sim->isInFeedbackLoop(nSep), "Separate NOT should not be a feedback node");
+    QCOMPARE(nSep->outputValue(0), Status::Inactive);         // ~1 = 0, NOT clobbered to Unknown
+}
+
+void TestUnifiedTimed::testRepeatedOscillationWarnsOnce()
+{
+    // The non-convergence warning is emitted once per run, even if the cap fires on several
+    // ticks (the `!m_convergenceWarned` false branch). A gated single-gate oscillator
+    // g = AND(enable, ~g) lets us cap, quiesce, then re-cap within one run.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *en = new InputSwitch();
+    auto *andGate = new And();
+    auto *notGate = new Not();
+    builder.add(en, andGate, notGate);
+    builder.connect(en, 0, andGate, 0);      // AND.in0 = enable
+    builder.connect(notGate, 0, andGate, 1); // AND.in1 = ~g
+    builder.connect(andGate, 0, notGate, 0); // g → NOT → back to AND (zero-delay loop)
+    Simulation *sim = builder.initSimulation();
+
+    QSignalSpy spy(sim, &Simulation::simulationWarning);
+
+    en->setOn(true);
+    sim->update();                       // enable=1 ⇒ oscillates ⇒ caps ⇒ warns (1st time)
+    QCOMPARE(spy.count(), 1);
+
+    en->setOn(false);
+    sim->update();                       // enable=0 ⇒ g forced stable, no cap
+
+    en->setOn(true);
+    sim->update();                       // re-oscillates ⇒ caps again, but already warned
+    QCOMPARE(spy.count(), 1);            // still exactly one warning for the whole run
 }

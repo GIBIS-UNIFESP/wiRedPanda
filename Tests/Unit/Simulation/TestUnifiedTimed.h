@@ -150,4 +150,12 @@ private slots:
     /// Two gate inputs changing in the same tick arrive simultaneously, so the gate produces no
     /// transient glitch (the complement to the skewed reconvergent-fanout hazard).
     void testSimultaneousInputArrivalNoGlitch();
+
+    /// The oscillation cap canonicalizes only feedback nodes to Unknown; non-feedback elements
+    /// in the same circuit keep their real values (the cap loop's non-feedback branch).
+    void testOscillationCapLeavesNonFeedbackUntouched();
+
+    /// A circuit that hits the oscillation cap on more than one tick emits the
+    /// non-convergence warning only once (the already-warned branch).
+    void testRepeatedOscillationWarnsOnce();
 };
