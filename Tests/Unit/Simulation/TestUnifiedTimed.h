@@ -139,4 +139,15 @@ private slots:
     /// The model has no setup/hold window: Data changing in the same tick as the clock edge
     /// still yields a deterministic capture (never metastable/Unknown) — a deliberate omission.
     void testNoSetupHoldViolation();
+
+    /// A delay larger than 2^32 fires at its correct, un-truncated time (SimTime is 64-bit).
+    void testLargeDelayHonoredAtFullWidth();
+
+    /// A flip-flop's Q and ~Q both change at the same delayed timestamp (per-element delay
+    /// applies uniformly to every output port).
+    void testFlipFlopComplementaryOutputsChangeTogether();
+
+    /// Two gate inputs changing in the same tick arrive simultaneously, so the gate produces no
+    /// transient glitch (the complement to the skewed reconvergent-fanout hazard).
+    void testSimultaneousInputArrivalNoGlitch();
 };
