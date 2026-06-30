@@ -853,6 +853,61 @@ void TestTemporalSimulation::testRecorderSubTickResolution()
     QVERIFY(stamps.last() - stamps.first() < (tickEnd - tickStart));
 }
 
+void TestTemporalSimulation::testRecorderStatusAtEmptyTrace()
+{
+    // statusAt() on a trace with no recorded transitions returns Inactive (the documented
+    // baseline), not a crash — the empty-trace boundary of the binary search.
+    SignalTrace trace;
+    trace.name = "empty";
+    QVERIFY(trace.transitions.isEmpty());
+    QCOMPARE(trace.statusAt(0), Status::Inactive);
+    QCOMPARE(trace.statusAt(100), Status::Inactive);
+}
+
+void TestTemporalSimulation::testRecorderRecordAllSkipsNullAndCollapsesSameTime()
+{
+    // Two recordAll() edge paths:
+    //  (a) a watched signal with a null element is skipped (no transition recorded);
+    //  (b) recording the SAME timestamp twice with different values collapses into one
+    //      transition (a zero-delay element firing on a tick boundary must not emit a
+    //      zero-width glitch).
+    WaveformRecorder recorder;
+
+    // (a) null-logic trace — recordAll must skip it without recording or crashing.
+    recorder.watchSignal("null", nullptr, 0);
+    recorder.setRecording(true);
+    recorder.recordAll(10);
+    QCOMPARE(recorder.trace(0).transitions.size(), qsizetype(0));
+
+    // (b) same-timestamp collapse on a real element whose output we drive directly. The element
+    // must be sim-initialized (so its output vector exists) before setOutputValue takes effect.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *elm = new Not();
+    builder.add(sw, elm);
+    builder.connect(sw, 0, elm, 0);
+    builder.initSimulation();
+
+    const int idx = recorder.watchSignal("n", elm, 0);
+    elm->setOutputValue(0, Status::Active);
+    recorder.recordAll(20);              // appends (20, Active)
+    elm->setOutputValue(0, Status::Inactive);
+    recorder.recordAll(20);             // same time, new value → collapse, not a second entry
+
+    const auto &transitions = recorder.trace(idx).transitions;
+    int countAt20 = 0;
+    Status valueAt20 = Status::Active;
+    for (const auto &tr : transitions) {
+        if (tr.first == 20) {
+            ++countAt20;
+            valueAt20 = tr.second;
+        }
+    }
+    QCOMPARE(countAt20, 1);                 // collapsed into a single transition at t=20
+    QCOMPARE(valueAt20, Status::Inactive);  // holding the latest value
+}
+
 // ============================================================================
 // Waveform widget
 // ============================================================================

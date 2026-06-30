@@ -55,6 +55,8 @@ private slots:
     void testRecorderStatusAt();
     void testRecorderIntegration();
     void testRecorderSubTickResolution();
+    void testRecorderStatusAtEmptyTrace();
+    void testRecorderRecordAllSkipsNullAndCollapsesSameTime();
 
     // --- Waveform widget ---
     void testWidgetSizeHint();
