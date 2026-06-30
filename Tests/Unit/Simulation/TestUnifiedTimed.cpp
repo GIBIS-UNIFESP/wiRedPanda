@@ -1372,3 +1372,52 @@ void TestUnifiedTimed::testMuxDemuxUnderDelay()
     advanceTo(tEdge + delay + 3);
     QCOMPARE(mux->outputValue(0), Status::Inactive);
 }
+
+void TestUnifiedTimed::testRestartDuringTemporalRun()
+{
+    // Lifecycle: restarting mid-temporal-run must reset sim time, rebuild/re-seed the whole
+    // network, and leave temporal scheduling intact — timePerTick and the element's propagation
+    // delay survive (restart keeps m_timePerTick; initialize() re-seeds m_delays from
+    // propagationDelay()). The second run must therefore be timed identically to the first.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    builder.add(sw, notGate);
+    builder.connect(sw, 0, notGate, 0);
+    notGate->setPropagationDelay(7); // element-level override (persists across restart)
+    Simulation *sim = builder.initSimulation();
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+    const auto runAndCheckTiming = [&]() {
+        // sw=0 ⇒ NOT(0)=1; settle the (re-)seeded baseline.
+        sw->setOn(false);
+        advanceTo(sim->currentTime() + 20);
+        QCOMPARE(notGate->outputValue(0), Status::Active);
+
+        // sw→1 ⇒ NOT must fall to 0 only after its 7-unit delay.
+        const SimTime tEdge = sim->currentTime();
+        sw->setOn(true);
+        advanceTo(tEdge + 3);
+        QVERIFY2(notGate->outputValue(0) == Status::Active, "NOT flipped before its delay");
+        advanceTo(tEdge + 7 + 3);
+        QCOMPARE(notGate->outputValue(0), Status::Inactive);
+    };
+
+    // First temporal run.
+    runAndCheckTiming();
+    QVERIFY2(sim->currentTime() > 0, "Temporal time should have advanced");
+
+    // Restart in the middle of the run.
+    sim->restart();
+    QCOMPARE(sim->currentTime(), SimTime(0)); // time reset
+
+    // Second run WITHOUT re-applying timePerTick or the delay: both must have survived, and the
+    // network must re-seed correctly, giving identical timed behaviour.
+    runAndCheckTiming();
+}
