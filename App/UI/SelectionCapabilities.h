@@ -33,6 +33,7 @@ struct SelectionCapabilities {
     bool hasLabel            = false;
     bool hasOnlyInputs       = false;
     bool hasLatchedValue     = false;
+    bool hasPropagationDelay = false;
     bool hasWirelessMode     = false;
     bool hasTrigger          = false;
     bool hasTruthTable       = false;
@@ -60,6 +61,7 @@ struct SelectionCapabilities {
     bool hasSameLabel        = false;
     bool hasSameOutputSize   = false;
     bool hasSameOutputValue  = false;
+    bool hasSamePropagationDelay = false;
     bool hasSameTrigger      = false;
     bool hasSameType         = false;
     bool hasSameVolume       = false;

@@ -145,6 +145,17 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     sliderDelay->setTickInterval(1);
     gridLayoutTiming->addWidget(sliderDelay, 1, 1, 1, 1);
 
+    spinBoxPropagationDelay = new QSpinBox(groupBoxTiming);
+    spinBoxPropagationDelay->setObjectName("spinBoxPropagationDelay");
+    spinBoxPropagationDelay->setMinimum(0);
+    spinBoxPropagationDelay->setMaximum(1000000);
+    spinBoxPropagationDelay->setSingleStep(1);
+    gridLayoutTiming->addWidget(spinBoxPropagationDelay, 2, 1, 1, 1);
+
+    labelPropagationDelay = new QLabel(groupBoxTiming);
+    labelPropagationDelay->setObjectName("labelPropagationDelay");
+    gridLayoutTiming->addWidget(labelPropagationDelay, 2, 0, 1, 1);
+
     // --- Sound: Tone (Buzzer), Sound file (AudioBox), Volume ---
 
     labelAudio = new QLabel(groupBoxSound);
@@ -323,6 +334,8 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     doubleSpinBoxFrequency->setSpecialValueText(QString());
     doubleSpinBoxFrequency->setSuffix(QCoreApplication::translate("ElementEditor", " Hz"));
     labelFrequency->setText(QCoreApplication::translate("ElementEditor", "Frequency:"));
+    spinBoxPropagationDelay->setSuffix(QCoreApplication::translate("ElementEditor", " ns"));
+    labelPropagationDelay->setText(QCoreApplication::translate("ElementEditor", "Prop. delay:"));
     labelColor->setText(QCoreApplication::translate("ElementEditor", "Color:"));
     // The "..." glyph is a browse affordance, not translatable text; keep it out of the
     // catalog and give the button a real accessible name / tooltip so its purpose is clear.
