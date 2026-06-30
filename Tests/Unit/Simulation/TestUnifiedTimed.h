@@ -79,4 +79,19 @@ private slots:
     /// An asynchronous active-low ~Clear forces Q low with no clock edge (delayed by the
     /// flip-flop's own propagation delay) and holds it there while asserted.
     void testAsyncClearUnderDelay();
+
+    /// A JK flip-flop set/reset/toggles on delayed rising clock edges (its own captured-J/K
+    /// state machine), each Q change appearing only after the propagation delay.
+    void testJKFlipFlopUnderDelay();
+
+    /// An SR flip-flop set/resets on delayed rising clock edges, including the S=R=1 case
+    /// (this implementation drives both Q and ~Q Active).
+    void testSRFlipFlopUnderDelay();
+
+    /// A level-sensitive SR latch sets/resets/holds under delay; S=R=1 drives both outputs low.
+    void testSRLatchUnderDelay();
+
+    /// An asynchronous active-low ~Preset forces Q high with no clock edge (delayed) and holds
+    /// it there while asserted — the set-side mirror of ~Clear.
+    void testAsyncPresetUnderDelay();
 };
