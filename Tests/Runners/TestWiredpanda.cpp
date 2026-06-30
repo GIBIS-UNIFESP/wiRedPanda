@@ -215,6 +215,7 @@
 #include "Tests/Unit/Simulation/TestDanglingPointer.h"
 #include "Tests/Unit/Simulation/TestSimulation.h"
 #include "Tests/Unit/Simulation/TestSimulationBlocker.h"
+#include "Tests/Unit/Simulation/TestUnifiedTimed.h"
 // unit/tour
 #include "Tests/Unit/Tour/TestTourEngine.h"
 // unit/ui
@@ -445,6 +446,7 @@ int main(int argc, char **argv)
         {"TestPort", []() -> QObject * { return new TestPort; }},
         {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
+        {"TestUnifiedTimed", []() -> QObject * { return new TestUnifiedTimed; }},
         {"TestTourEngine", []() -> QObject * { return new TestTourEngine; }},
         {"TestDanglingPointer", []() -> QObject * { return new TestDanglingPointer; }},
         {"TestCircuitExporter", []() -> QObject * { return new TestCircuitExporter; }},

@@ -73,8 +73,8 @@ private slots:
 
     // --- Crash-triggering tests (process dies pre-fix) ---------------
 
-    /// Bug 8 — iterativeSettle() iterates without null checks.
-    void bug8_iterativeSettleMustTolerateNullEntry();
+    /// Bug 8 — eventSettle() must skip null seed entries, not dereference them.
+    void bug8_eventSettleMustTolerateNullEntry();
 
     /// Hardening — Simulation::update() Phase 3 now walks m_sortedElements
     /// (rewritten to cover unconnected output ports too). Inject a null

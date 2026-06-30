@@ -225,6 +225,8 @@ void IC::resetInternalState()
     m_sortedInternalElements.clear();
     m_boundaryInputElements.clear();
     m_internalHasFeedback = false;
+    m_internalSuccessors.clear();
+    m_internalPriorities.clear();
     qDeleteAll(m_internalConnections);
     m_internalConnections.clear();
     qDeleteAll(m_internalElements);

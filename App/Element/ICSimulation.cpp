@@ -14,6 +14,8 @@ void ICSimulation::initialize(IC &ic)
     ic.m_sortedInternalElements.clear();
     ic.m_boundaryInputElements.clear();
     ic.m_internalHasFeedback = false;
+    ic.m_internalSuccessors.clear();
+    ic.m_internalPriorities.clear();
 
     if (ic.m_internalElements.isEmpty()) {
         return;
@@ -47,6 +49,13 @@ void ICSimulation::initialize(IC &ic)
     const auto successors = Simulation::buildSuccessorGraph(ic.m_internalElements, txMap);
     const auto result = Simulation::topologicalSort(ic.m_internalElements, successors);
     ic.m_internalHasFeedback = !result.feedbackNodes.isEmpty();
+
+    // Persist the internal graph for the event-driven settle (eventSettle) in updateLogic().
+    ic.m_internalSuccessors = successors;
+    ic.m_internalPriorities.clear();
+    for (auto *elm : std::as_const(ic.m_internalElements)) {
+        ic.m_internalPriorities[elm] = result.priorities.value(elm, -1);
+    }
 
     // Remove boundary input elements so the hot loop in updateLogic()
     // doesn't need a per-element QSet lookup on every simulation tick.
@@ -90,17 +99,12 @@ void ICSimulation::update(IC &ic)
 
     pushInputsToBoundary(ic);
 
-    // Run internal elements in topological order.
-    // Boundary input nodes are already excluded from m_sortedInternalElements.
-    if (ic.m_internalHasFeedback) {
-        Simulation::iterativeSettle(ic.m_sortedInternalElements);
-    } else {
-        for (auto *element : std::as_const(ic.m_sortedInternalElements)) {
-            if (element) {
-                element->updateLogic();
-            }
-        }
-    }
+    // Settle the internal elements with the shared event-driven engine (one code path for
+    // combinational and feedback ICs). Boundary input nodes are already excluded from the seed.
+    // Internal sequential elements were already bracketed with beginDeferredCommit() by the
+    // top-level Simulation::update() (collectSequentialElements() recurses into ICs), so this
+    // call honors non-blocking semantics the same way the top-level processEvents() does.
+    Simulation::eventSettle(ic.m_sortedInternalElements, ic.m_internalSuccessors, ic.m_internalPriorities);
 
     pullOutputsFromBoundary(ic);
 }
