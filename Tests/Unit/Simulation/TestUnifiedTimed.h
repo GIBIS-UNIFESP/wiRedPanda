@@ -94,4 +94,16 @@ private slots:
     /// An asynchronous active-low ~Preset forces Q high with no clock edge (delayed) and holds
     /// it there while asserted — the set-side mirror of ~Clear.
     void testAsyncPresetUnderDelay();
+
+    /// Reconvergent fanout with unequal path delays produces a transient output glitch (a static
+    /// hazard) when the reconverging gate is faster than the path skew, and absorbs it otherwise.
+    void testReconvergentFanoutHazard();
+
+    /// A pulse wider than the gate delay propagates to the output (the transport complement to
+    /// the inertial absorption of a narrow pulse).
+    void testWidePulsePropagates();
+
+    /// A zero-delay feedback loop simulated in temporal mode still collapses to one timestamp,
+    /// hits the per-timestamp oscillation cap, and canonicalizes to Unknown.
+    void testZeroDelayLoopOscillatesToUnknownInTemporalMode();
 };
