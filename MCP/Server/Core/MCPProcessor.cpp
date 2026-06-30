@@ -125,7 +125,8 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
         "connect_elements", "disconnect_elements", "list_connections", "split_connection"
     });
     addRoutes(m_simulationHandler.get(), {
-        "simulation_control", "create_waveform", "export_waveform"
+        "simulation_control", "create_waveform", "export_waveform",
+        "watch_signal", "clear_watched_signals", "get_waveform_trace"
     });
     addRoutes(m_icHandler.get(), {
         "create_ic", "instantiate_ic", "list_ics",

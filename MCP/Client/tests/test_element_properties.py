@@ -24,6 +24,7 @@ class ElementPropertiesTests(MCPTestBase):
     def tests(self) -> list[Callable[[], Awaitable[bool]]]:
         return [
             self.test_delay_property,
+            self.test_propagation_delay_property,
             self.test_trigger_property,
             self.test_volume_property,
             self.test_locked_property,
@@ -31,6 +32,46 @@ class ElementPropertiesTests(MCPTestBase):
             self.test_appearance_index_property,
             self.test_list_elements_extended,
         ]
+
+    async def test_propagation_delay_property(self) -> bool:
+        """Test setting/reading propagation_delay (temporal inertial delay) on a gate."""
+        print("\n=== Propagation Delay Property Test ===")
+        self.set_test_context("test_propagation_delay_property")
+
+        await self.send_command("new_circuit", {})
+
+        and_resp = await self.send_command("create_element", {"type": "And", "x": 100.0, "y": 100.0})
+        if not and_resp.success or not and_resp.result:
+            print("Failed to create And")
+            return False
+        and_id = and_resp.result["element_id"]
+
+        # Set a per-element propagation-delay override (ns).
+        resp = await self.send_command("set_element_properties", {"element_id": and_id, "propagation_delay": 12})
+        if not resp.success:
+            print(f"Failed to set propagation_delay: {resp.error}")
+            return False
+        new_props = resp.result.get("new_properties", {}) if resp.result else {}
+        if new_props.get("propagation_delay") != 12:
+            print(f"propagation_delay not set correctly: {new_props}")
+            return False
+
+        # It must read back through list_elements, flagged as an override.
+        list_resp = await self.send_command("list_elements", {})
+        if not list_resp.success or not list_resp.result:
+            print("list_elements failed")
+            return False
+        elements = list_resp.result.get("elements", [])
+        element = next((e for e in elements if e.get("element_id") == and_id), None)
+        if element is None:
+            print("AND element missing from list_elements")
+            return False
+        if element.get("propagation_delay") != 12 or element.get("propagation_delay_override") is not True:
+            print(f"propagation_delay not reflected in list_elements: {element}")
+            return False
+
+        self.infrastructure.output.success("propagation_delay property works")
+        return True
 
     async def test_delay_property(self) -> bool:
         """Test setting delay on a Clock element."""

@@ -51,7 +51,9 @@
         "start",
         "stop",
         "restart",
-        "update"
+        "update",
+        "set_time_per_tick",
+        "get_state"
       ]
     },
     "ImageExportFormat": {
@@ -136,6 +138,15 @@
           "type": "number",
           "minimum": 0
         },
+        "propagation_delay": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Inertial propagation delay in ns for temporal simulation"
+        },
+        "propagation_delay_override": {
+          "type": "boolean",
+          "description": "True if propagation_delay is a per-element override (not the type default)"
+        },
         "trigger": {
           "type": "string"
         },
@@ -155,6 +166,29 @@
         "x",
         "y"
       ],
+      "additionalProperties": false
+    },
+    "WaveformTrace": {
+      "type": "object",
+      "description": "A recorded temporal waveform for one watched signal",
+      "properties": {
+        "name": { "type": "string" },
+        "element_id": { "type": "integer", "minimum": 1 },
+        "port": { "type": "integer", "minimum": 0 },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "time": { "type": "integer", "minimum": 0, "description": "Simulation time in ns" },
+              "value": { "type": "string", "enum": [ "low", "high", "unknown" ] }
+            },
+            "required": [ "time", "value" ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [ "name", "element_id", "port", "transitions" ],
       "additionalProperties": false
     },
     "CommandRequest": {
@@ -659,12 +693,24 @@
               "properties": {
                 "action": {
                   "$ref": "#/definitions/SimulationAction"
+                },
+                "time_per_tick": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000,
+                  "description": "ns of sim-time advanced per update() (0 = functional, >0 = temporal). Required when action=set_time_per_tick. Capped at 1,000,000 ns (1 ms), matching the propagation-delay bound."
                 }
               },
               "required": [
                 "action"
               ],
-              "additionalProperties": false
+              "additionalProperties": false,
+              "if": {
+                "properties": { "action": { "const": "set_time_per_tick" } }
+              },
+              "then": {
+                "required": ["action", "time_per_tick"]
+              }
             },
             "id": {
               "oneOf": [
@@ -789,6 +835,58 @@
             "jsonrpc",
             "method"
           ],
+          "additionalProperties": false
+        },
+        "watch_signal": {
+          "type": "object",
+          "description": "Watch an element output port in the temporal waveform recorder and start recording",
+          "properties": {
+            "jsonrpc": { "type": "string", "const": "2.0" },
+            "method": { "const": "watch_signal" },
+            "params": {
+              "type": "object",
+              "properties": {
+                "element_id": { "type": "integer", "minimum": 1 },
+                "port": { "type": "integer", "minimum": 0, "description": "Output port index (default 0)" },
+                "name": { "type": "string", "description": "Display name (defaults to the element label/type)" }
+              },
+              "required": [ "element_id" ],
+              "additionalProperties": false
+            },
+            "id": { "oneOf": [ { "type": "string" }, { "type": "number" }, { "type": "null" } ] }
+          },
+          "required": [ "jsonrpc", "method" ],
+          "additionalProperties": false
+        },
+        "clear_watched_signals": {
+          "type": "object",
+          "description": "Stop recording and remove all watched signals from the temporal waveform recorder",
+          "properties": {
+            "jsonrpc": { "type": "string", "const": "2.0" },
+            "method": { "const": "clear_watched_signals" },
+            "params": { "type": "object", "additionalProperties": false },
+            "id": { "oneOf": [ { "type": "string" }, { "type": "number" }, { "type": "null" } ] }
+          },
+          "required": [ "jsonrpc", "method" ],
+          "additionalProperties": false
+        },
+        "get_waveform_trace": {
+          "type": "object",
+          "description": "Read recorded temporal-waveform transitions for watched signals",
+          "properties": {
+            "jsonrpc": { "type": "string", "const": "2.0" },
+            "method": { "const": "get_waveform_trace" },
+            "params": {
+              "type": "object",
+              "properties": {
+                "element_id": { "type": "integer", "minimum": 1, "description": "Filter to this element (optional)" },
+                "port": { "type": "integer", "minimum": 0, "description": "Filter to this output port (optional)" }
+              },
+              "additionalProperties": false
+            },
+            "id": { "oneOf": [ { "type": "string" }, { "type": "number" }, { "type": "null" } ] }
+          },
+          "required": [ "jsonrpc", "method" ],
           "additionalProperties": false
         },
         "set_input_value": {
@@ -1291,6 +1389,18 @@
                     },
                     "description": "Array of 0/1 values for this input signal"
                   }
+                },
+                "temporal": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Sweep with per-element propagation delays, so outputs lag their cause by whole columns"
+                },
+                "ns_per_column": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000,
+                  "default": 2,
+                  "description": "Sim-time (ns) advanced per waveform column in temporal mode. Capped at 1,000,000 ns (1 ms), matching the time_per_tick and propagation-delay bounds."
                 }
               },
               "additionalProperties": false
@@ -1641,6 +1751,12 @@
                   "type": "number",
                   "minimum": 0
                 },
+                "propagation_delay": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000,
+                  "description": "Inertial propagation delay in ns for temporal simulation (gates/sequential elements); 0 = zero-delay. Capped at 1,000,000 ns (1 ms), matching the native setPropagationDelay() bound and the Element Editor's spin box."
+                },
                 "trigger": {
                   "type": "string",
                   "description": "Keyboard shortcut for input elements"
@@ -1836,6 +1952,12 @@
                 "delay": {
                   "type": "number",
                   "description": "Phase delay as fraction of period (Clock elements)"
+                },
+                "propagation_delay": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000,
+                  "description": "Inertial propagation delay in ns for temporal simulation (gates/sequential elements); 0 = zero-delay. Capped at 1,000,000 ns (1 ms), matching the native setPropagationDelay() bound and the Element Editor's spin box."
                 },
                 "trigger": {
                   "type": "string",
@@ -3095,7 +3217,11 @@
         "simulation_control_response": {
           "allOf": [
             { "$ref": "#/definitions/CommandResponse" },
-            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+            { "properties": { "result": { "type": "object", "properties": {
+              "running": { "type": "boolean" },
+              "current_time": { "type": "integer", "minimum": 0 },
+              "time_per_tick": { "type": "integer", "minimum": 0 }
+            }, "additionalProperties": false } } }
           ]
         },
         "split_connection_response": {
@@ -3284,6 +3410,50 @@
                     "undo_index": { "type": "integer", "minimum": 0 }
                   },
                   "required": ["can_undo", "can_redo", "undo_text", "redo_text", "undo_limit", "undo_count", "undo_index"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "watch_signal_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "trace_index": { "type": "integer", "minimum": 0 },
+                    "name": { "type": "string" }
+                  },
+                  "required": [ "trace_index", "name" ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        },
+        "clear_watched_signals_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+          ]
+        },
+        "get_waveform_trace_response": {
+          "allOf": [
+            { "$ref": "#/definitions/CommandResponse" },
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "traces": {
+                      "type": "array",
+                      "items": { "$ref": "#/definitions/WaveformTrace" }
+                    }
+                  },
+                  "required": [ "traces" ],
                   "additionalProperties": false
                 }
               }

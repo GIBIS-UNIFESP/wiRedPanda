@@ -13,6 +13,7 @@ from beartype import beartype
 from .commands import (
     ChangeInputSizeCommand,
     ChangeOutputSizeCommand,
+    ClearWatchedSignalsCommand,
     CloseCircuitCommand,
     ConnectElementsCommand,
     CreateElementCommand,
@@ -29,6 +30,7 @@ from .commands import (
     GetServerInfoCommand,
     GetTabCountCommand,
     GetUndoStackCommand,
+    GetWaveformTraceCommand,
     InstantiateIcCommand,
     ListConnectionsCommand,
     ListElementsCommand,
@@ -47,6 +49,7 @@ from .commands import (
     ToggleTruthTableOutputCommand,
     UndoCommand,
     UpdateElementCommand,
+    WatchSignalCommand,
 )
 from .core import MCPResponse
 
@@ -87,6 +90,9 @@ MCPCommandTypes = (
     | RedoCommand
     | GetUndoStackCommand
     | GetServerInfoCommand
+    | WatchSignalCommand
+    | ClearWatchedSignalsCommand
+    | GetWaveformTraceCommand
 )
 
 
@@ -132,6 +138,9 @@ def parse_mcp_command(data: dict[str, Any]) -> MCPCommandTypes:
         "redo": RedoCommand,
         "get_undo_stack": GetUndoStackCommand,
         "get_server_info": GetServerInfoCommand,
+        "watch_signal": WatchSignalCommand,
+        "clear_watched_signals": ClearWatchedSignalsCommand,
+        "get_waveform_trace": GetWaveformTraceCommand,
     }
 
     model_class = command_map.get(command_type)

@@ -55,6 +55,9 @@ constexpr CommandEntry kCommandTable[] = {
     {"simulation_control", "simulation"},
     {"create_waveform",    "simulation"},
     {"export_waveform",    "simulation"},
+    {"watch_signal",            "simulation"},
+    {"clear_watched_signals",   "simulation"},
+    {"get_waveform_trace",      "simulation"},
     // IC
     {"create_ic",          "ic"},
     {"instantiate_ic",     "ic"},

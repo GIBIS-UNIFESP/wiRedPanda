@@ -14,6 +14,7 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QScopeGuard>
+#include <QSignalBlocker>
 #include <QTableView>
 #include <QTextStream>
 #include <QWheelEvent>
@@ -985,13 +986,33 @@ void BewavedDolphin::on_actionShowWaveforms_triggered()
     });
 }
 
+void BewavedDolphin::setTemporalMode(bool on, SimTime nsPerColumn)
+{
+    m_temporal = on;
+    if (nsPerColumn > 0) {
+        m_nsPerColumn = nsPerColumn;
+    }
+
+    // Sync the toolbar controls to match, without re-entering their handlers.
+    {
+        const QSignalBlocker blockAction(m_ui->actionTemporalMode);
+        m_ui->actionTemporalMode->setChecked(on);
+    }
+    m_ui->actionTimeResolution->setVisible(on); // the ns/column selector is only meaningful when temporal
+    {
+        const QSignalBlocker blockCombo(m_ui->comboTimeResolution);
+        const int idx = m_ui->comboTimeResolution->findData(static_cast<int>(m_nsPerColumn));
+        if (idx >= 0) {
+            m_ui->comboTimeResolution->setCurrentIndex(idx);
+        }
+    }
+}
+
 void BewavedDolphin::on_actionTemporalMode_toggled(bool checked)
 {
     Application::guardedSlot(this, [this, checked] {
         sentryBreadcrumb("waveform", QStringLiteral("Temporal mode toggled"));
-        m_temporal = checked;
-        // The ns/column selector is only meaningful in temporal mode.
-        m_ui->actionTimeResolution->setVisible(checked);
+        setTemporalMode(checked, m_nsPerColumn);
         // Re-run so the displayed outputs reflect the new mode immediately.
         run();
     });

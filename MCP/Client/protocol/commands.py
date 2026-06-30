@@ -133,6 +133,20 @@ class SimulationControlCommand(MCPCommand):
 
     class Parameters(BaseModel):
         action: SimulationAction = Field(description="Simulation action to perform")
+        time_per_tick: Annotated[int, Field(ge=0, le=1_000_000)] | None = Field(
+            default=None,
+            description="ns of sim-time per update (0=functional, >0=temporal); required with "
+            "action=set_time_per_tick. Capped at 1,000,000 ns (1 ms), matching the "
+            "propagation-delay bound.",
+        )
+
+        @model_validator(mode="after")
+        def require_time_per_tick_for_set_action(self) -> "SimulationControlCommand.Parameters":
+            """time_per_tick is required (not just optional) when action=set_time_per_tick — an
+            omitted value would otherwise silently default to 0 (functional mode) server-side."""
+            if self.action == SimulationAction.SET_TIME_PER_TICK and self.time_per_tick is None:
+                raise ValueError("time_per_tick is required when action=set_time_per_tick")
+            return self
 
         model_config = ConfigDict(extra="forbid")
 
@@ -238,6 +252,12 @@ class CreateWaveformCommand(MCPCommand):
         input_patterns: dict[str, list[Annotated[int, Field(ge=0, le=1)]]] | None = Field(
             default=None, description="Input patterns for specific input elements"
         )
+        temporal: bool | None = Field(
+            default=None, description="Sweep with per-element propagation delays (column-lag)"
+        )
+        ns_per_column: Annotated[int, Field(ge=1, le=1_000_000)] | None = Field(
+            default=None, description="Sim-time (ns) advanced per waveform column in temporal mode"
+        )
 
         model_config = ConfigDict(extra="forbid")
 
@@ -250,6 +270,41 @@ class ExportWaveformCommand(MCPCommand):
     class Parameters(BaseModel):
         filename: Annotated[str, Field(min_length=1)]
         format: WaveformExportFormat = Field(description="Export format")
+
+        model_config = ConfigDict(extra="forbid")
+
+    params: Parameters
+
+
+class WatchSignalCommand(MCPCommand):
+    """Model for watch_signal command"""
+
+    class Parameters(BaseModel):
+        element_id: Annotated[int, Field(gt=0)]
+        port: Annotated[int, Field(ge=0)] | None = Field(default=None, description="Output port index (default 0)")
+        name: str | None = Field(default=None, description="Display name (defaults to the element label/type)")
+
+        model_config = ConfigDict(extra="forbid")
+
+    params: Parameters
+
+
+class ClearWatchedSignalsCommand(MCPCommand):
+    """Model for clear_watched_signals command"""
+
+    params: EmptyParameters = Field(default_factory=EmptyParameters)
+
+
+class GetWaveformTraceCommand(MCPCommand):
+    """Model for get_waveform_trace command"""
+
+    class Parameters(BaseModel):
+        element_id: Annotated[int, Field(gt=0)] | None = Field(
+            default=None, description="Filter to this element (optional)"
+        )
+        port: Annotated[int, Field(ge=0)] | None = Field(
+            default=None, description="Filter to this output port (optional)"
+        )
 
         model_config = ConfigDict(extra="forbid")
 
@@ -338,6 +393,11 @@ class SetElementPropertiesCommand(MCPCommand):
         frequency: Annotated[float, Field(ge=0)] | None = None
         rotation: float | None = Field(default=None)
         delay: Annotated[float, Field(ge=0)] | None = None
+        propagation_delay: Annotated[int, Field(ge=0, le=1_000_000)] | None = Field(
+            default=None,
+            description="Inertial propagation delay in ns for temporal simulation. Capped at "
+            "1,000,000 ns (1 ms), matching the native setPropagationDelay() bound.",
+        )
         trigger: str | None = Field(default=None, description="Keyboard shortcut for input elements")
         audio: str | None = Field(default=None)
         locked: bool | None = Field(default=None, description="Lock state for input elements")
@@ -388,6 +448,11 @@ class UpdateElementCommand(MCPCommand):
         color: str | None = Field(default=None)
         frequency: Annotated[float, Field(ge=0)] | None = None
         rotation: float | None = Field(default=None)
+        propagation_delay: Annotated[int, Field(ge=0, le=1_000_000)] | None = Field(
+            default=None,
+            description="Inertial propagation delay in ns for temporal simulation. Capped at "
+            "1,000,000 ns (1 ms), matching the native setPropagationDelay() bound.",
+        )
 
         model_config = ConfigDict(extra="forbid")
 

@@ -29,5 +29,10 @@ private:
     QJsonObject handleCreateWaveform(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleExportWaveform(const QJsonObject &params, const QJsonValue &requestId);
 
+    // --- Temporal waveform recorder (live, ns-resolution) ---
+    QJsonObject handleWatchSignal(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleClearWatchedSignals(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleGetWaveformTrace(const QJsonObject &params, const QJsonValue &requestId);
+
     BewavedDolphin *m_persistentDolphin;
 };

@@ -107,6 +107,12 @@ public:
     /// Runs the simulation for all input combinations and fills output rows.
     void run();
 
+    /// Sets the sweep mode programmatically (used by the MCP server and the toolbar toggle):
+    /// \a on enables temporal (propagation-delay) sweeping, \a nsPerColumn (when > 0) sets the
+    /// sim-time advanced per column. Syncs the toolbar controls but does not re-run — the caller
+    /// runs when ready.
+    void setTemporalMode(bool on, SimTime nsPerColumn = 0);
+
     /**
      * \brief Sets the number of time-step columns.
      * \param simLength     Number of columns.

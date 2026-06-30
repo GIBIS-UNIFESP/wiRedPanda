@@ -502,6 +502,30 @@ class NegativeCaseTests(MCPTestBase):
                 print(f"Update not reflected: labels = {labels}")
                 all_passed = False
 
+        # Regression: update_element must accept propagation_delay too (it's a thin wrapper
+        # around set_element_properties, which already supports it — this was previously
+        # rejected by schema validation before the handler ever ran). Needs a gate element:
+        # hasPropagationDelay() gates on the type's nonzero default, and InputButton (used
+        # above) is a source with no propagation delay by design.
+        gate_id = await self.create_element_checked("And", 300, 200, "Create gate for propagation_delay update")
+        if gate_id is None:
+            return False
+        resp = await self.send_command("update_element", {"element_id": gate_id, "propagation_delay": 25})
+        result = await self.assert_success_and_get_result(resp, "Update element propagation_delay")
+        if result:
+            resp = await self.send_command("list_elements", {})
+            result = await self.assert_success_and_get_result(resp, "List after propagation_delay update")
+            if result:
+                elements = result.get("elements", [])
+                matched = any(e.get("element_id") == gate_id and e.get("propagation_delay") == 25 for e in elements)
+                if matched:
+                    self.infrastructure.output.success("update_element propagation_delay reflected correctly")
+                else:
+                    print(f"propagation_delay not reflected via update_element: {elements}")
+                    all_passed = False
+        else:
+            all_passed = False
+
         # Test update on nonexistent element
         resp = await self.send_command("update_element", {"element_id": 99999, "label": "NoSuchElement"})
         all_passed &= await self.assert_failure(resp, "Update nonexistent element")

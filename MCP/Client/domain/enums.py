@@ -16,6 +16,8 @@ class SimulationAction(str, Enum):
     STOP = "stop"
     RESTART = "restart"
     UPDATE = "update"
+    SET_TIME_PER_TICK = "set_time_per_tick"
+    GET_STATE = "get_state"
 
 
 class ElementType(str, Enum):

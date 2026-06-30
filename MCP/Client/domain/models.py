@@ -30,6 +30,8 @@ class ElementInfo(BaseModel):
     color: str | None = None
     frequency: Annotated[float, Field(ge=0)] | None = None
     delay: Annotated[float, Field(ge=0)] | None = None
+    propagation_delay: Annotated[int, Field(ge=0)] | None = None
+    propagation_delay_override: bool | None = None
     trigger: str | None = None
     audio: str | None = None
     volume: float | None = None
