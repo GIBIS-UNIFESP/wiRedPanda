@@ -37,10 +37,10 @@ QVector<ExerciseBrowserDialog::ExerciseEntry> ExerciseBrowserDialog::availableEx
 {
     return {
         {
-            ":/Exercises/basic-and-gate.json",
-            tr("Building an AND Gate Circuit"),
-            "basic-and-gate",
-            tr("Learn to place logic gates, add inputs and outputs, and wire them together.")
+          ":/Exercises/basic-and-gate.json",
+          tr("Building an AND Gate Circuit"),
+          "basic-and-gate",
+          tr("Learn to place logic gates, add inputs and outputs, and wire them together.")
         },
         {
           ":/Exercises/basic-or-not-gates.json",
@@ -67,10 +67,28 @@ QVector<ExerciseBrowserDialog::ExerciseEntry> ExerciseBrowserDialog::availableEx
           tr("Learn how to build an adder circuit.")
         },
         {
-            ":/Exercises/clock-led-waveform.json",
-            tr("Clock and LED: Waveform Basics"),
-            "clock-led-waveform",
-            tr("Build a minimal Clock–LED circuit and explore the waveform viewer: combinational mode and manual cell editing.")
+          ":/Exercises/clock-led-waveform.json",
+          tr("Clock and LED: Waveform Basics"),
+          "clock-led-waveform",
+          tr("Build a minimal Clock–LED circuit and explore the waveform viewer: combinational mode and manual cell editing.")
+        },
+        {
+          ":/Exercises/sequential-circuits-one.json",
+          tr("Sequential Circuits I: Latches"),
+          "sequential-circuits-one",
+          tr("Learn how to use Latches.")
+        },
+        {
+          ":/Exercises/sequential-circuits-two.json",
+          tr("Sequential Circuits II: Flip-Flops"),
+          "sequential-circuits-two",
+          tr("Learn about Flip-Flops.")
+        },
+        {
+          ":/Exercises/sequential-circuits-three.json",
+          tr("Sequential Circuits III: Counter"),
+          "sequential-circuits-three",
+          tr("Learn how to build a counter circuit.")
         },
     };
 }

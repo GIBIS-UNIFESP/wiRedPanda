@@ -1,0 +1,66 @@
+{
+  "id": "sequential-circuits-one",
+  "title": "Sequential Circuits I: Latches",
+  "steps": [
+    {
+      "instruction": "Add an SR latch, two InputSwitches, and two LEDs to the canvas",
+      "hint": "Use the Memory tab to add an SR latch. Then use the I/O tab to add two InputSwitches and two LEDs.",
+      "requiredElements": [
+        { "type": "SRLatch", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [],
+      "click": ["memoryTab"]
+    },
+    {
+      "instruction": "Connect the InputSwitches to the S and R inputs of the SR latch. Then connect the Q and Q̅ outputs to the LEDs",
+      "hint": "Connect one InputSwitch to the Set (S) input and the other to the Reset (R) input. Connect each output of the latch to a different LED.",
+      "requiredElements": [
+        { "type": "SRLatch", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "SRLatch", "minCount": 2 },
+        { "fromType": "SRLatch", "toType": "Led", "minCount": 2 }
+      ]
+    },
+    {
+      "instruction": "Toggle the InputSwitches and observe how the SR latch stores its state. Setting the S input to 1 causes the Q output to become 1, while setting the R input to 1 resets Q to 0. When both inputs return to 0, the latch remembers its last state until it is set or reset again",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    },
+    {
+      "instruction": "Remove the SR latch while keeping the InputSwitches and LEDs. Then add a D latch",
+      "hint": "The D latch stores a single input value and avoids the invalid input combination of an SR latch.",
+      "requiredElements": [
+        { "type": "DLatch", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [],
+      "click": ["memoryTab"]
+    },
+    {
+      "instruction": "Connect one InputSwitch to the D input and the other to the Enable (E) input. Connect the Q and Q̅ outputs to the LEDs",
+      "hint": "The D input is the value to be stored. The Enable input determines when the latch updates its stored value.",
+      "requiredElements": [
+        { "type": "DLatch", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "DLatch", "minCount": 2 },
+        { "fromType": "DLatch", "toType": "Led", "minCount": 2 }
+      ]
+    },
+    {
+      "instruction": "Toggle the InputSwitches and observe the D latch. When Enable is 1, the output follows the D input. When Enable is 0, the latch remembers its previous value",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    }
+  ]
+}

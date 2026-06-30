@@ -2,5 +2,12 @@
     <qresource prefix="/Exercises">
         <file>basic-and-gate.json</file>
         <file>clock-led-waveform.json</file>
+        <file>basic-or-not-gates.json</file>
+        <file>combinational-circuits-one.json</file>
+        <file>combinational-circuits-two.json</file>
+        <file>combinational-circuits-three.json</file>
+        <file>sequential-circuits-one.json</file>
+        <file>sequential-circuits-two.json</file>
+        <file>sequential-circuits-three.json</file>
     </qresource>
 </RCC>
