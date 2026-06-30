@@ -17,6 +17,7 @@
 
 #include "App/Simulation/SimEvent.h"
 #include "App/Simulation/SimTime.h"
+#include "App/Simulation/WaveformRecorder.h"
 
 class Clock;
 class GraphicElement;
@@ -129,6 +130,11 @@ public:
 
     /// Current simulation time (advances only in temporal mode).
     SimTime currentTime() const { return m_currentTime; }
+
+    /// Waveform recorder for the temporal timing-diagram viewer. Watched signals are
+    /// captured at each temporal tick boundary while recording is enabled.
+    WaveformRecorder &waveformRecorder() { return m_recorder; }
+    const WaveformRecorder &waveformRecorder() const { return m_recorder; }
 
     // --- Static graph building (used by IC::initializeSimulation too) ---
 
@@ -282,4 +288,5 @@ private:
     SimTime m_timePerTick = 0;                        ///< 0 ⇒ functional; >0 ⇒ temporal window per tick.
     QHash<const GraphicElement *, SimTime> m_delays;  ///< Per-element propagation delay (default 0).
     bool m_eventInitDone = false;                     ///< False until the first seed-all baseline settle.
+    WaveformRecorder m_recorder;                       ///< Timing-diagram trace recorder (temporal mode).
 };

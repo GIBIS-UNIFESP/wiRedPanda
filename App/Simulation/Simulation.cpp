@@ -53,6 +53,11 @@ void Simulation::resetEventTracking()
     m_eventInitDone = false;
     m_eventQueue.clear();
     m_currentTime = 0;
+    // The recorder's traces are keyed to absolute sim-time; rewinding the clock to 0 without
+    // clearing them would let a later recordAll() append transitions with SMALLER timestamps
+    // than what's already recorded, breaking the ascending-order invariant statusAt() and the
+    // waveform viewer both rely on. This preserves the watch list, only the recorded history.
+    m_recorder.resetTimeline();
 }
 
 void Simulation::update()
@@ -185,6 +190,18 @@ void Simulation::update()
             resettleChanged = resettleCombinationalOnce(elements, changedThisWave);
         }
 
+        // Capture the just-published sequential outputs (and their re-settled combinational
+        // cone) at the tick boundary. processEvents()'s own captures all run BEFORE
+        // commitDeferredOutputs() publishes the staged values, and a steady tick drains no
+        // events at all — without this capture, a flip-flop's Q transition would be recorded
+        // only at the NEXT event-bearing timestamp (for a slow clock, half a period late).
+        // m_currentTime is when every observer (wires, LEDs, downstream logic) actually sees
+        // the new values, so that is the truthful timestamp; recordAll()'s same-time collapse
+        // merges multi-wave commits at one boundary.
+        if (anySequentialChanged && m_recorder.isRecording()) {
+            m_recorder.recordAll(m_currentTime);
+        }
+
         // Wake every Memory-group successor of something that GENUINELY changed this wave
         // (via commit or resettle) and that has not yet been scheduled at all this tick. This
         // is what lets a flip-flop driven by another flip-flop's Q — directly, or through
@@ -311,13 +328,23 @@ void Simulation::restart()
     m_delays.clear();         // keyed by element pointers; must not outlive a rebuild
     m_evaluatedSequentialThisTick.clear(); // holds element pointers; must not outlive a rebuild
     m_currentTime = 0;
+    // m_recorder's watch LIST is deliberately NOT cleared here: its traces hold QPointers, so a
+    // freed element auto-nulls (crash-safe) and the dead trace is reaped by m_recorder.pruneStale()
+    // on the next initialize() — restart() fires on the explicit Restart action, an IC reload, or a
+    // fallback path when initialize() can't rebuild a valid topology, and discarding the user's
+    // whole watch list on those would be surprising. Its recorded DATA is a different matter:
+    // resetTimeline() clears just the transition history, since the clock is about to restart at 0
+    // and appending new transitions to the old timeline would violate the ascending-time order
+    // statusAt() and the waveform viewer both assume.
+    m_recorder.resetTimeline();
     // Bug 4 postcondition: any future cached state added to Simulation must be
     // cleared above. This assert documents the invariant for future maintainers
     // and trips immediately if a new vector is forgotten.
     Q_ASSERT(!m_initialized);
     Q_ASSERT(m_sortedElements.isEmpty() && m_sequentialElements.isEmpty()
           && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty()
-          && m_successorGraph.isEmpty() && m_evaluatedSequentialThisTick.isEmpty());
+          && m_successorGraph.isEmpty() && m_evaluatedSequentialThisTick.isEmpty()
+          && m_recorder.timelineEmpty());
 }
 
 bool Simulation::isRunning()
@@ -501,6 +528,12 @@ void Simulation::processEvents(const SimTime targetTime,
         const SimTime t = event.time;
         m_currentTime = t;
         if (t != lastTime) {
+            // The previous timestamp has fully settled — capture watched signals at it before
+            // advancing. Recording per distinct timestamp gives the waveform ns-resolution
+            // transitions, so per-element propagation delays are visible regardless of tick size.
+            if (lastTime != SIM_TIME_UNSET && m_recorder.isRecording()) {
+                m_recorder.recordAll(lastTime);
+            }
             evalsAtTime = 0; // the cap detects oscillation within a single timestamp
             lastTime = t;
         }
@@ -551,6 +584,12 @@ void Simulation::processEvents(const SimTime targetTime,
             m_eventQueue.clear();
             break;
         }
+    }
+
+    // Capture the final settled timestamp for the waveform viewer. recordAll() dedups
+    // unchanged values, so steady-state ticks add nothing and the trace simply extends.
+    if (lastTime != SIM_TIME_UNSET && m_recorder.isRecording()) {
+        m_recorder.recordAll(lastTime);
     }
 
     m_currentTime = targetTime; // time advances to the tick boundary (temporal); stays 0 (functional)
@@ -615,6 +654,11 @@ bool Simulation::initialize()
     m_sortedElements.clear();
     m_sequentialElements.clear();
     m_delays.clear(); // repopulated below from each element's propagationDelay()
+
+    // The recorder holds QPointers to watched elements, so freed elements have already auto-nulled;
+    // reap those dead traces here so the watch list tracks the rebuilt netlist (live watches, whose
+    // element survives the rebuild, keep their pointer and continue recording).
+    m_recorder.pruneStale();
 
     QVector<GraphicElement *> elements;
     auto items = m_host->simulationItems();

@@ -28,6 +28,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Simulation/WaveformRecorder.h"
 #include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -371,10 +372,112 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
     QVERIFY(!TestUtils::inputStatus(led));
 }
 
+// Finding 1 (positive) — pruneStale() must keep a trace whose element survives a rebuild.
+void TestDanglingPointer::recorder_watchSurvivesUnrelatedStructuralEdit()
+{
+    WorkSpace ws;
+    auto *sim = ws.scene()->simulation();
+
+    auto *sw = new InputSwitch();
+    ws.scene()->addItem(sw);
+    sim->initialize();
+
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("sw", sw, 0);
+    recorder.setRecording(true);
+    sim->setTimePerTick(1);
+    sim->update();
+    QCOMPARE(recorder.traceCount(), 1);
+
+    // An unrelated structural edit (add another element) rebuilds the netlist via initialize().
+    // The watched element is still alive, so its trace must persist — pruneStale() reaps only
+    // dead (null-QPointer) traces, never live ones.
+    auto *other = new Led();
+    ws.scene()->addItem(other);
+    sim->initialize();
+    sim->update();
+    QCOMPARE(recorder.traceCount(), 1);
+    QVERIFY2(!recorder.trace(0).logic.isNull(), "pruneStale() wrongly dropped a live watch");
+}
+
 // ==========================================================================
 // Crash-triggering tests — these SIGSEGV pre-fix. Kept at the end so they
 // don't prevent the assertion tests above from reporting.
 // ==========================================================================
+
+// Finding 1 — a watched element freed outright must not dangle.
+void TestDanglingPointer::recorder_toleratesFreedWatchedElement()
+{
+    WorkSpace ws;
+    auto *sim = ws.scene()->simulation();
+
+    // `watched` is the signal we free; `keep` stays alive so the drain keeps firing recordAll()
+    // afterwards — that is what would actually dereference the freed `watched` trace pre-fix.
+    auto *watched = new InputSwitch();
+    auto *keep = new InputSwitch();
+    ws.scene()->addItem(watched);
+    ws.scene()->addItem(keep);
+    sim->initialize();
+
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("watched", watched, 0);
+    recorder.watchSignal("keep", keep, 0);
+    recorder.setRecording(true);
+    sim->setTimePerTick(1);
+    keep->setOn(true);
+    sim->update(); // records both while alive
+    QCOMPARE(recorder.traceCount(), 2);
+
+    // Free only `watched` outright — mirrors the undo-stack truncation that finally frees a deleted
+    // element. Its QPointer auto-nulls; `keep` lives on.
+    ws.scene()->removeItem(watched);
+    delete watched;
+
+    // Rebuild prunes the now-dead `watched` trace, then a tick whose drain runs recordAll() (driven
+    // by the live `keep`) must iterate only live traces — never dereferencing freed `watched`
+    // (pre-fix, with a raw pointer, recordAll() reads the freed element → ASan use-after-free).
+    keep->setOn(false);
+    sim->initialize();
+    sim->update();
+    QCOMPARE(recorder.traceCount(), 1);
+    QVERIFY2(!recorder.trace(0).logic.isNull(), "the surviving watch must still be live");
+}
+
+// Finding 1 — the concrete IC-reload trigger (watchICInternals → resetInternalState frees the
+// watched internals via qDeleteAll).
+void TestDanglingPointer::recorder_toleratesICResetWhileWatching()
+{
+    WorkSpace ws;
+    auto *sim = ws.scene()->simulation();
+    auto *ic = loadInitializedIC(ws);
+    QVERIFY2(ic, "jkflipflop.panda not found in examples — fixture missing");
+
+    // Watch an internal primitive of the IC (these are exactly what watchICInternals records and
+    // what the flat netlist simulates).
+    GraphicElement *watched = nullptr;
+    for (auto *internal : ic->internalElements()) {
+        if (internal && internal->elementType() != ElementType::IC && internal->outputSize() > 0) {
+            watched = internal;
+            break;
+        }
+    }
+    QVERIFY2(watched, "IC exposes no internal primitive to watch");
+
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("internal", watched, 0);
+    recorder.setRecording(true);
+    sim->setTimePerTick(1);
+    sim->update();
+    QCOMPARE(recorder.traceCount(), 1);
+
+    // The reload path frees the IC internals the recorder points at (real qDeleteAll); the watched
+    // QPointer auto-nulls. resetInternalState() restarts the sim; a rebuild + tick must not touch
+    // the freed internals (pre-fix: use-after-free, caught by ASan).
+    ic->resetInternalState();
+    sim->initialize();
+    sim->update();
+    QCOMPARE(recorder.traceCount(), 0); // dead trace reaped by pruneStale()
+}
 
 // Bug 8 — eventSettle() iterates its seed; it must skip (not dereference) null entries.
 void TestDanglingPointer::bug8_eventSettleMustTolerateNullEntry()

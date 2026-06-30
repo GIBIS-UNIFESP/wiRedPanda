@@ -71,7 +71,21 @@ private slots:
     /// during a re-initialize must not corrupt or crash the simulation.
     void jd_initializeMustSkipIncompleteConnections();
 
+    /// Finding 1 (positive) — WaveformRecorder::pruneStale() must reap ONLY dead traces: a watched
+    /// element that survives a netlist rebuild (e.g. an unrelated structural edit) keeps its trace.
+    void recorder_watchSurvivesUnrelatedStructuralEdit();
+
     // --- Crash-triggering tests (process dies pre-fix) ---------------
+
+    /// Finding 1 — a watched element freed outright (the undo-stack-truncation tail of a deletion)
+    /// must not dangle: its SignalTrace::logic QPointer auto-nulls, the next initialize() prunes the
+    /// dead trace, and a temporal tick must not dereference freed memory. (UAF under ASan pre-fix.)
+    void recorder_toleratesFreedWatchedElement();
+
+    /// Finding 1 — the concrete IC-reload trigger: watching an IC's internal primitive, then
+    /// IC::resetInternalState() qDeleteAll's those internals while recording. The recorder must not
+    /// dereference the freed internals on the next tick. (UAF under ASan pre-fix.)
+    void recorder_toleratesICResetWhileWatching();
 
     /// Bug 8 — eventSettle() must skip null seed entries, not dereference them.
     void bug8_eventSettleMustTolerateNullEntry();
