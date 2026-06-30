@@ -294,6 +294,10 @@ public:
     /// elements have non-zero defaults.
     static SimTime defaultPropagationDelay(ElementType type);
 
+    /// Returns \c true if this element type exposes a configurable propagation delay
+    /// (i.e. its per-type default is non-zero — gates and sequential elements).
+    bool hasPropagationDelay() const;
+
     /**
      * \brief Returns the list of editable properties this element exposes in the ElementEditor.
      * \details Derived from metadata flags; no override needed in subclasses.

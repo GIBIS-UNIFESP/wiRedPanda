@@ -62,6 +62,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_ui->comboBoxValue->installEventFilter(m_tabNavigator);
     m_ui->sliderDelay->installEventFilter(m_tabNavigator);
     m_ui->doubleSpinBoxFrequency->installEventFilter(m_tabNavigator);
+    m_ui->spinBoxPropagationDelay->installEventFilter(m_tabNavigator);
     m_ui->sliderVolume->installEventFilter(m_tabNavigator);
     m_ui->comboBoxWirelessMode->installEventFilter(m_tabNavigator);
     m_ui->lineEditElementLabel->installEventFilter(m_tabNavigator);
@@ -86,6 +87,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxValue,          &QComboBox::currentTextChanged,                   this, &ElementEditor::outputValueChanged);
     connect(m_ui->sliderDelay,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::apply);
     connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
+    connect(m_ui->spinBoxPropagationDelay, qOverload<int>(&QSpinBox::valueChanged),          this, &ElementEditor::apply);
     connect(m_ui->sliderVolume,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::apply);
     connect(m_ui->comboBoxWirelessMode,   qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
@@ -393,6 +395,22 @@ void ElementEditor::applyCapabilitiesToUi()
         m_ui->sliderDelay->setValue(c.hasSameDelay ? static_cast<int>(firstElement->delay() * 8.0) : 0);
     }
 
+    /* Propagation delay (temporal simulation) */
+    setSection(c.hasPropagationDelay, m_ui->labelPropagationDelay, m_ui->spinBoxPropagationDelay);
+    if (c.hasPropagationDelay) {
+        if (c.hasSamePropagationDelay) {
+            // 0 ns is a legitimate value (forces zero-delay), so the "many values" sentinel
+            // is -1 (shown via special text) rather than 0 as with frequency.
+            m_ui->spinBoxPropagationDelay->setMinimum(0);
+            m_ui->spinBoxPropagationDelay->setSpecialValueText({});
+            m_ui->spinBoxPropagationDelay->setValue(static_cast<int>(firstElement->propagationDelay()));
+        } else {
+            m_ui->spinBoxPropagationDelay->setMinimum(-1);
+            m_ui->spinBoxPropagationDelay->setSpecialValueText(m_manyPropDelay);
+            m_ui->spinBoxPropagationDelay->setValue(-1);
+        }
+    }
+
     /* Input size */
     {
         // Block signals while rebuilding so the synthetic addItem/setCurrentIndex
@@ -580,6 +598,18 @@ void ElementEditor::applyProperty(GraphicElement *elm, PropertyDescriptor::Type 
         // Convert slider value (-4 to 4) to phase delay (-0.5 to 0.5 as fraction of period).
         const double delayFraction = m_ui->sliderDelay->value() / 8.0;
         elm->setDelay(delayFraction);
+        break;
+    }
+    case PropertyDescriptor::Type::PropagationDelay: {
+        // value() == -1 is the "many values" sentinel — leave each element untouched.
+        // Only write when the shown value differs from this element's resolved delay, so
+        // editing an unrelated field doesn't materialize the type default into an explicit
+        // per-element override (which would defeat override-only serialization and freeze
+        // the value against future default changes).
+        const int ns = m_ui->spinBoxPropagationDelay->value();
+        if (ns >= 0 && static_cast<SimTime>(ns) != elm->propagationDelay()) {
+            elm->setPropagationDelay(static_cast<SimTime>(ns));
+        }
         break;
     }
     case PropertyDescriptor::Type::Audio:

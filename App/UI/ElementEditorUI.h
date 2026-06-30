@@ -19,6 +19,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSlider>
+#include <QSpinBox>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -96,6 +97,10 @@ public:
     // Delay
     QLabel *labelDelay = nullptr;
     LabeledSlider *sliderDelay = nullptr;
+
+    // Propagation delay (temporal simulation)
+    QLabel *labelPropagationDelay = nullptr;
+    QSpinBox *spinBoxPropagationDelay = nullptr;
 
     // Trigger
     QLabel *labelTrigger = nullptr;

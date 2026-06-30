@@ -645,6 +645,7 @@ QList<PropertyDescriptor> GraphicElement::editableProperties() const
     if (hasColors())     props.append({PropertyDescriptor::Type::Color});
     if (hasFrequency())  props.append({PropertyDescriptor::Type::Frequency});
     if (hasDelay())      props.append({PropertyDescriptor::Type::Delay});
+    if (hasPropagationDelay()) props.append({PropertyDescriptor::Type::PropagationDelay});
     if (hasAudio())      props.append({PropertyDescriptor::Type::Audio});
     if (hasAudioBox())   props.append({PropertyDescriptor::Type::AudioBox});
     if (hasVolume())     props.append({PropertyDescriptor::Type::Volume});
@@ -743,6 +744,11 @@ void GraphicElement::setPropagationDelay(const SimTime ns)
         return;
     }
     m_propagationDelay = ns;
+}
+
+bool GraphicElement::hasPropagationDelay() const
+{
+    return defaultPropagationDelay(m_elementType) > 0;
 }
 
 SimTime GraphicElement::defaultPropagationDelay(const ElementType type)
