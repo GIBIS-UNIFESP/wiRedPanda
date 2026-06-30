@@ -1647,3 +1647,125 @@ void TestUnifiedTimed::testAsyncClearDominatesSimultaneousClockEdge()
     sim->update();
     QCOMPARE(ff->outputValue(0), Status::Active);
 }
+
+void TestUnifiedTimed::testLargeDelayHonoredAtFullWidth()
+{
+    // SimTime is uint64_t. A delay above 2^32 must fire at its true time, not a 32-bit-truncated
+    // one. The drain is event-based, so a multi-billion-ns delay costs only a few updates here.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    builder.add(sw, notGate);
+    builder.connect(sw, 0, notGate, 0);
+    Simulation *sim = builder.initSimulation();
+
+    sw->setOn(false);
+    sim->update();
+    QCOMPARE(notGate->outputValue(0), Status::Active); // ~0 = 1
+
+    const SimTime bigDelay = 5'000'000'000ULL;   // > 2^32 (4'294'967'296)
+    const SimTime tick = 1'000'000'000ULL;
+    sim->setElementDelay(notGate, bigDelay);
+    sim->setTimePerTick(tick);
+    sw->setOn(true); // event scheduled at t + 5e9
+
+    // After one tick (currentTime 1e9) the event has NOT fired. A 32-bit-truncated delay
+    // (≈ 705 M) would already have flipped the NOT here — proving the full width is honored.
+    sim->update();
+    QCOMPARE(sim->currentTime(), tick);
+    QVERIFY2(notGate->outputValue(0) == Status::Active, "Large delay fired too early (truncated?)");
+
+    // Reach 5e9: the event fires on the fifth tick.
+    for (int i = 0; i < 4; ++i) {
+        sim->update();
+    }
+    QCOMPARE(sim->currentTime(), bigDelay); // no overflow/truncation
+    QCOMPARE(notGate->outputValue(0), Status::Inactive); // ~1 = 0, exactly at t + 5e9
+}
+
+void TestUnifiedTimed::testFlipFlopComplementaryOutputsChangeTogether()
+{
+    // A flip-flop sets Q and ~Q in one updateLogic, so under a propagation delay both outputs
+    // must flip at the SAME delayed timestamp — the per-element delay applies to every port.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *data = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *ff = new DFlipFlop();
+    builder.add(data, clk, ff);
+    builder.connect(data, 0, ff, 0);
+    builder.connect(clk, 0, ff, 1);
+    Simulation *sim = builder.initSimulation();
+
+    // Baseline: Q=0, ~Q=1.
+    data->setOn(true);
+    clk->setOn(false);
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+    QCOMPARE(ff->outputValue(1), Status::Active);
+
+    const SimTime delay = 10;
+    sim->setElementDelay(ff, delay);
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+    advanceTo(sim->currentTime() + 2 * delay); // settle into temporal mode, capture Data=1
+
+    const SimTime tEdge = sim->currentTime();
+    clk->setOn(true); // rising edge ⇒ Q→1, ~Q→0 after the delay
+
+    // Before the delay: BOTH outputs unchanged.
+    advanceTo(tEdge + (delay - 2));
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+    QCOMPARE(ff->outputValue(1), Status::Active);
+
+    // After the delay: BOTH outputs flipped, together.
+    advanceTo(tEdge + delay + 3);
+    QCOMPARE(ff->outputValue(0), Status::Active);
+    QCOMPARE(ff->outputValue(1), Status::Inactive);
+}
+
+void TestUnifiedTimed::testSimultaneousInputArrivalNoGlitch()
+{
+    // Two inputs changing in the SAME tick arrive at the gate simultaneously (equal direct
+    // paths), so the gate evaluates with both already settled — no transient. This is the
+    // complement to testReconvergentFanoutHazard, where unequal path delays DO glitch.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *a = new InputSwitch();
+    auto *b = new InputSwitch();
+    auto *xorGate = new Xor();
+    builder.add(a, b, xorGate);
+    builder.connect(a, 0, xorGate, 0);
+    builder.connect(b, 0, xorGate, 1);
+    Simulation *sim = builder.initSimulation();
+
+    sim->setTimePerTick(100);
+    sim->setElementDelay(xorGate, 5);
+    a->setOn(true);
+    b->setOn(false);
+    sim->update(); // A^B = 1
+    QCOMPARE(xorGate->outputValue(0), Status::Active);
+
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("XOR", xorGate, 0);
+    recorder.setRecording(true);
+
+    // Flip BOTH inputs in one update: A→0 and B→1 simultaneously. 0^1 == 1, so XOR is unchanged —
+    // but only if both inputs are seen settled. A skewed evaluation would briefly read (0,0)=0.
+    a->setOn(false);
+    b->setOn(true);
+    sim->update();
+
+    const auto &transitions = recorder.trace(0).transitions;
+    for (const auto &tr : transitions) {
+        QVERIFY2(tr.second != Status::Inactive,
+                 "XOR glitched to 0 — simultaneous input arrival should be transient-free");
+    }
+    QCOMPARE(xorGate->outputValue(0), Status::Active);
+}
