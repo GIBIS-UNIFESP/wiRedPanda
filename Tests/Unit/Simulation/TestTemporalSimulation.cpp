@@ -535,11 +535,32 @@ void TestTemporalSimulation::testRecorderWatchAndRecord()
     QCOMPARE(recorder.traceCount(), 1);
     QCOMPARE(recorder.trace(0).name, QString("sig0"));
 
-    recorder.watchSignal("sig1", nullptr, 0);
+    // A genuinely distinct signal (different port on the same — here null — element) gets its
+    // own trace.
+    recorder.watchSignal("sig1", nullptr, 1);
     QCOMPARE(recorder.traceCount(), 2);
 
     recorder.clear();
     QCOMPARE(recorder.traceCount(), 0);
+}
+
+void TestTemporalSimulation::testRecorderWatchSignalDedups()
+{
+    // Regression test: watching the exact same (element, port) signal twice must not create a
+    // duplicate trace — e.g. re-invoking "Watch internal signals" on the same IC.
+    WaveformRecorder recorder;
+
+    Not notGate;
+    const int first = recorder.watchSignal("NOT_out", &notGate, 0);
+    QCOMPARE(recorder.traceCount(), 1);
+
+    const int second = recorder.watchSignal("NOT_out", &notGate, 0);
+    QCOMPARE(second, first);
+    QCOMPARE(recorder.traceCount(), 1);
+
+    // A different port on the SAME element is still a distinct signal.
+    recorder.watchSignal("NOT_out2", &notGate, 1);
+    QCOMPARE(recorder.traceCount(), 2);
 }
 
 void TestTemporalSimulation::testRecorderDeduplication()

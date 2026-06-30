@@ -25,6 +25,7 @@ class ElementPalette;
 class ExerciseEngine;
 class ExerciseOverlay;
 class ExportController;
+class IC;
 class ICController;
 class ICPreviewPopup;
 class LanguageManager;
@@ -86,6 +87,9 @@ public:
      * \param fileName Absolute path to the .panda file.
      */
     void loadPandaFile(const QString &fileName);
+
+    /// Watches all of \a ic's internal signals (recursively, path-prefixed) and starts recording.
+    void watchICInternals(IC *ic);
 
     /// Opens an embedded IC blob for editing in a new tab.
     void openICInTab(const QString &blobName, int icElementId, const QByteArray &blob);

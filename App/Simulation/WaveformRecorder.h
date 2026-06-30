@@ -68,10 +68,18 @@ public:
 
     // --- Signal management ---
 
-    /// Adds a signal to the watch list.
-    /// \return Index of the new trace.
+    /// Adds a signal to the watch list, or returns the existing trace's index if this exact
+    /// (logic, portIndex) pair is already watched. Without this, a caller that can be invoked
+    /// more than once for the same signal (e.g. re-opening "Watch internal signals" on the same
+    /// IC) would keep appending duplicate, identically-recording rows with no bound.
+    /// \return Index of the new (or already-existing) trace.
     int watchSignal(const QString &name, GraphicElement *logic, int portIndex)
     {
+        for (int i = 0; i < m_traces.size(); ++i) {
+            if (m_traces.at(i).logic == logic && m_traces.at(i).portIndex == portIndex) {
+                return i;
+            }
+        }
         const int idx = static_cast<int>(m_traces.size());
         m_traces.append({name, logic, portIndex, {}});
         return idx;
