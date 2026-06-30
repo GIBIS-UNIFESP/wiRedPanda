@@ -33,37 +33,37 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="30"/>
         <source>Could not open file for writing: %1</source>
         <translation>无法打开文件进行写入: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="202"/>
         <source>Not enough pins available for all input elements</source>
         <translation>可用引脚不足以连接所有输入元件</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="229"/>
         <source>Not enough pins available for all rotary switch positions</source>
         <translation>可用引脚不足以连接旋转开关的所有位置</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="264"/>
         <source>Not enough pins available for all output elements</source>
         <translation>可用引脚不足以连接所有输出元件</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="690"/>
         <source>Element type not supported: %1</source>
         <translation>不支持的元件类型：%1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="913"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>真值表的输出变量未映射: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1157"/>
         <source>Could not open testbench file: %1</source>
         <translation>无法打开测试平台文件: %1</translation>
     </message>
@@ -969,8 +969,8 @@
         <translation>音量：</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <source> Hz</source>
         <translation> Hz</translation>
     </message>
@@ -1040,29 +1040,29 @@
         <translation>紫色</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="595"/>
+        <location filename="../../UI/ElementEditor.cpp" line="598"/>
         <source>Duplicate Wireless Channel</source>
         <translation>无线通道重复</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="599"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>标签为 &quot;%1&quot; 的 Tx 节点已存在。
 每个无线通道必须有唯一的标签。</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="662"/>
+        <location filename="../../UI/ElementEditor.cpp" line="665"/>
         <source>Change wireless mode</source>
         <translation>更改无线模式</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="865"/>
+        <location filename="../../UI/ElementEditor.cpp" line="873"/>
         <source>Select any audio</source>
         <translation>选择任意音频</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="866"/>
+        <location filename="../../UI/ElementEditor.cpp" line="874"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>音频 (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1119,22 +1119,22 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="38"/>
+        <location filename="../../Element/ElementFactory.cpp" line="41"/>
         <source>MULTIPLE TYPES</source>
         <translation>多种类型</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="48"/>
+        <location filename="../../Element/ElementFactory.cpp" line="51"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
+        <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Unknown element type: %1</source>
         <translation>未知元件类型: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
+        <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>Unknown type: %1</source>
         <translation>未知类型：%1</translation>
     </message>
@@ -1222,7 +1222,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="348"/>
+        <location filename="../../Element/GraphicElement.cpp" line="360"/>
         <source>Default</source>
         <translation>默认</translation>
     </message>
@@ -1255,47 +1255,47 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="114"/>
+        <location filename="../../Element/IC.cpp" line="116"/>
         <source>IC</source>
         <translation>集成电路</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="115"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>集成电路</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="226"/>
+        <location filename="../../Element/IC.cpp" line="228"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC 加载: 序列化数据中不存在 IC 名称</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="351"/>
+        <location filename="../../Element/IC.cpp" line="354"/>
         <source>%1 not found.</source>
         <translation>找不到 %1。</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="392"/>
+        <location filename="../../Element/IC.cpp" line="399"/>
         <source>Circular IC reference detected: %1</source>
         <translation>检测到 IC 循环引用: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="399"/>
+        <location filename="../../Element/IC.cpp" line="406"/>
         <source>Error opening file: %1</source>
         <translation>打开文件时出错：%1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="453"/>
+        <location filename="../../Element/IC.cpp" line="460"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC 迁移: 无法打开文件进行写入: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
+        <location filename="../../Element/IC.cpp" line="467"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC 迁移: 无法提交重新保存的文件: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="519"/>
+        <location filename="../../Element/IC.cpp" line="526"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>已超出 IC 嵌套深度上限 (%1)——blob 可能为恶意构造</translation>
     </message>
@@ -1334,97 +1334,97 @@ Each wireless channel must have a unique label.</source>
         <translation>拖放到此处以删除。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="120"/>
+        <location filename="../../UI/ICController.cpp" line="124"/>
         <source>Error removing file: %1</source>
         <translation>删除文件时出错：%1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="137"/>
+        <location filename="../../UI/ICController.cpp" line="141"/>
         <source>Name Collision</source>
         <translation>名称冲突</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="138"/>
+        <location filename="../../UI/ICController.cpp" line="142"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>名为 &quot;%1&quot; 的嵌入式 IC 已存在。
 建议名称:</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="164"/>
-        <location filename="../../UI/ICController.cpp" line="175"/>
-        <location filename="../../UI/ICController.cpp" line="198"/>
-        <location filename="../../UI/ICController.cpp" line="229"/>
-        <location filename="../../UI/ICController.cpp" line="236"/>
-        <location filename="../../UI/ICController.cpp" line="267"/>
-        <location filename="../../UI/ICController.cpp" line="305"/>
-        <location filename="../../UI/ICController.cpp" line="333"/>
-        <location filename="../../UI/ICController.cpp" line="364"/>
+        <location filename="../../UI/ICController.cpp" line="168"/>
+        <location filename="../../UI/ICController.cpp" line="179"/>
+        <location filename="../../UI/ICController.cpp" line="202"/>
+        <location filename="../../UI/ICController.cpp" line="233"/>
+        <location filename="../../UI/ICController.cpp" line="240"/>
+        <location filename="../../UI/ICController.cpp" line="271"/>
+        <location filename="../../UI/ICController.cpp" line="309"/>
+        <location filename="../../UI/ICController.cpp" line="337"/>
+        <location filename="../../UI/ICController.cpp" line="368"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="164"/>
-        <location filename="../../UI/ICController.cpp" line="229"/>
+        <location filename="../../UI/ICController.cpp" line="168"/>
+        <location filename="../../UI/ICController.cpp" line="233"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>请先保存项目，以便解析 IC。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="175"/>
-        <location filename="../../UI/ICController.cpp" line="236"/>
-        <location filename="../../UI/ICController.cpp" line="333"/>
+        <location filename="../../UI/ICController.cpp" line="179"/>
+        <location filename="../../UI/ICController.cpp" line="240"/>
+        <location filename="../../UI/ICController.cpp" line="337"/>
         <source>Could not read IC file: %1</source>
         <translation>无法读取 IC 文件: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="183"/>
-        <location filename="../../UI/ICController.cpp" line="254"/>
+        <location filename="../../UI/ICController.cpp" line="187"/>
+        <location filename="../../UI/ICController.cpp" line="258"/>
         <source>IC embedded successfully.</source>
         <translation>IC 嵌入成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="198"/>
-        <location filename="../../UI/ICController.cpp" line="267"/>
-        <location filename="../../UI/ICController.cpp" line="305"/>
+        <location filename="../../UI/ICController.cpp" line="202"/>
+        <location filename="../../UI/ICController.cpp" line="271"/>
+        <location filename="../../UI/ICController.cpp" line="309"/>
         <source>Please save the project first.</source>
         <translation>请先保存项目。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="203"/>
-        <location filename="../../UI/ICController.cpp" line="278"/>
+        <location filename="../../UI/ICController.cpp" line="207"/>
+        <location filename="../../UI/ICController.cpp" line="282"/>
         <source>Extract IC to file...</source>
         <translation>提取 IC 到文件...</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="203"/>
-        <location filename="../../UI/ICController.cpp" line="278"/>
-        <location filename="../../UI/ICController.cpp" line="357"/>
+        <location filename="../../UI/ICController.cpp" line="207"/>
+        <location filename="../../UI/ICController.cpp" line="282"/>
+        <location filename="../../UI/ICController.cpp" line="361"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda文件 (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="216"/>
-        <location filename="../../UI/ICController.cpp" line="291"/>
+        <location filename="../../UI/ICController.cpp" line="220"/>
+        <location filename="../../UI/ICController.cpp" line="295"/>
         <source>IC extracted to %1</source>
         <translation>IC 已提取到 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="322"/>
+        <location filename="../../UI/ICController.cpp" line="326"/>
         <source>No file-based ICs to embed.</source>
         <translation>没有基于文件的 IC 可嵌入。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="348"/>
+        <location filename="../../UI/ICController.cpp" line="352"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>已嵌入 %1 个 IC。电路现在是自包含的。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="357"/>
+        <location filename="../../UI/ICController.cpp" line="361"/>
         <source>Select IC file to embed</source>
         <translation>选择要嵌入的 IC 文件</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="364"/>
+        <location filename="../../UI/ICController.cpp" line="368"/>
         <source>Could not read file: %1</source>
         <translation>无法读取文件: %1</translation>
     </message>
@@ -1624,526 +1624,531 @@ Suggested name:</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
         <source>Inputs/Outputs</source>
         <translation>输入/输出</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
         <source>Gates</source>
         <translation>逻辑门</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
         <source>Combinational</source>
         <translation>组合逻辑</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>Memory</source>
         <translation>存储器</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="802"/>
         <source>Integrated Circuits</source>
         <translation>集成电路</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Add IC files</source>
         <translation>添加IC文件</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="758"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="762"/>
         <source>&amp;Light</source>
         <translation>&amp;浅色</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>&amp;Dark</source>
         <translation>&amp;深色</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
         <source>File-based ICs</source>
         <translation>基于文件的 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="800"/>
         <source>Remove IC</source>
         <translation>移除IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
         <source>Embedded ICs</source>
         <translation>嵌入式 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Embed IC</source>
         <translation>嵌入 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Miscellaneous</source>
         <translation>杂项</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
         <source>Search:</source>
         <translation>搜索：</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="802"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>&amp;File</source>
         <translation>&amp;文件</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;最近文件：</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>&amp;Edit</source>
         <translation>&amp;编辑</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>&amp;Help</source>
         <translation>&amp;帮助</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>&amp;View</source>
         <translation>&amp;查看</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>&amp;Theme</source>
         <translation>&amp;主题</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Language</source>
         <translation>&amp;语言</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Sim&amp;ulation</source>
         <translation>&amp;仿真</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Examples</source>
         <translation>示例</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="701"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="705"/>
         <source>&amp;Open...</source>
         <translation>&amp;打开...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="702"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="706"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="703"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="707"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="704"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="708"/>
         <source>&amp;Save</source>
         <translation>&amp;保存</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="705"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="709"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="706"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="710"/>
         <source>Save &amp;As...</source>
         <translation>另存&amp;为...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="707"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="711"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="708"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="712"/>
         <source>Cu&amp;t</source>
         <translation>&amp;剪切</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="709"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="713"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="710"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="714"/>
         <source>&amp;Copy</source>
         <translation>&amp;复制</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="711"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="715"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="712"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="716"/>
         <source>&amp;Paste</source>
         <translation>&amp;粘贴</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="713"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="717"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="714"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="718"/>
         <source>&amp;Delete</source>
         <translation>&amp;删除</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="715"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="719"/>
         <source>Del</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="716"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="720"/>
         <source>&amp;New</source>
         <translation>&amp;新建</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="717"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="721"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="718"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="722"/>
         <source>Zoom &amp;in</source>
         <translation>&amp;放大</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="719"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="723"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="720"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="724"/>
         <source>Zoom &amp;out</source>
         <translation>&amp;缩小</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="721"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="725"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="722"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="726"/>
         <source>&amp;Wires</source>
         <translation>&amp;线路</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="723"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="727"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="724"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="728"/>
         <source>&amp;Gates</source>
         <translation>&amp;逻辑门</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="725"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="729"/>
         <source>Ctrl+2</source>
         <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="726"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="730"/>
         <source>&amp;About</source>
         <translation>&amp;关于</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="727"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="731"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="728"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="732"/>
         <source>&amp;Exit</source>
         <translation>&amp;退出</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="729"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="733"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="730"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
         <source>R&amp;otate right</source>
         <translation>右&amp;旋转</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="731"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="732"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="736"/>
         <source>Rotate &amp;left</source>
         <translation>&amp;左旋转</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="733"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="738"/>
         <source>About &amp;Qt</source>
         <translation>关于 &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
         <source>&amp;Select all</source>
         <translation>&amp;全选</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="736"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
         <source>Re&amp;load File</source>
         <translation>&amp;重新加载文件</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="738"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="742"/>
         <source>Ctrl+F5</source>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
         <source>E&amp;xport to Arduino</source>
         <translation>&amp;导出Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="744"/>
         <source>Ctrl+Alt+I</source>
         <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>导出为 &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="742"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="746"/>
         <source>Ctrl+Alt+O</source>
         <translation>Ctrl+Alt+O</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;重置缩放</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="744"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="748"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
         <source>Export to &amp;PDF</source>
         <translation>导出为 &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="746"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="750"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>&amp;System</source>
         <translation>系统(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="764"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>Make file self-contained</source>
         <translation>使文件自包含</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>静音/取消静音电路蜂鸣器</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <source>Show IC Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>Background Simulation</source>
         <translation>后台仿真</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>Report Translation Error</source>
         <translation>报告翻译错误</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="785"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>报告翻译错误或帮助改进 Weblate 上的翻译</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;播放/暂停</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;帮助翻译</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="748"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="752"/>
         <source>Play or Pause simulation.</source>
         <translation>播放或暂停仿真。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="750"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="754"/>
         <source>&amp;Rename</source>
         <translation>&amp;重命名</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="752"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>&amp;更改触发器</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="754"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="758"/>
         <source>Cl&amp;ear selection</source>
         <translation>&amp;清除选择</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;快速模式</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="764"/>
         <source>&amp;Waveform</source>
         <translation>&amp;波形</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="762"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="766"/>
         <source>Export to &amp;Image</source>
         <translation>导出为&amp;图像</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>Ctrl+E</source>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;水平翻转</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="766"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>Flip &amp;vertically</source>
         <translation>&amp;垂直翻转</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
         <source>F&amp;ullscreen</source>
         <translation>&amp;全屏</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
+        <location filename="../../UI/MainWindow.cpp" line="1010"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
         <source>Mute</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
         <source>Labels under icons</source>
         <translation>图标下的标签</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
         <source>About this version</source>
         <translation>关于这个版本</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Restart</source>
         <translation>&amp;重启</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="781"/>
         <source>Restart simulation.</source>
         <translation>重启仿真。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="477"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindow.cpp" line="481"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="783"/>
         <source>Shortcuts and Tips</source>
         <translation>快捷键和提示</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="801"/>
+        <location filename="../../UI/MainWindow.cpp" line="810"/>
         <source>New Project</source>
         <translation>新项目</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="396"/>
+        <location filename="../../UI/MainWindow.cpp" line="400"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2162,27 +2167,27 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 在访问 IC 和外观或运行 beWavedDolphin 仿真之前，您需要先保存新项目。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="529"/>
+        <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>Are you sure?</source>
         <translation>您确定吗？</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="456"/>
+        <location filename="../../UI/MainWindow.cpp" line="460"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda 是由圣保罗联邦大学学生开发的软件，旨在帮助学生学习逻辑电路。&lt;/p&gt;&lt;p&gt;软件版本: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;创建者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda 目前由 Prof. Fábio Cappabianco, Ph.D.、João Pedro M. Oliveira、Matheus R. Esteves 和 Maycon A. Santana 维护。&lt;/p&gt;&lt;p&gt; 如果您发现错误或想要请求新功能，请在我们的 GitHub 页面上提交报告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;访问我们的网站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="478"/>
+        <location filename="../../UI/MainWindow.cpp" line="482"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;画布快捷键&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : 放大 &lt;/li&gt;&lt;li&gt; Ctrl+- : 缩小 &lt;/li&gt;&lt;li&gt; Ctrl+1 : 隐藏/显示连线 &lt;/li&gt;&lt;li&gt; Ctrl+2 : 隐藏/显示逻辑门 &lt;/li&gt;&lt;li&gt; Ctrl+F : 搜索元件 &lt;/li&gt;&lt;li&gt; Ctrl+W : 打开 beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : 保存项目 &lt;/li&gt;&lt;li&gt; Ctrl+Q : 退出 wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : 开始/暂停仿真 &lt;/li&gt;&lt;li&gt; [ : 上一个主要元件属性 &lt;/li&gt;&lt;li&gt; ] : 下一个主要元件属性 &lt;/li&gt;&lt;li&gt; { : 上一个次要元件属性 &lt;/li&gt;&lt;li&gt; } : 下一个次要元件属性 &lt;/li&gt;&lt;li&gt; &amp;lt; : 变形为上一个元件 &lt;/li&gt;&lt;li&gt; &amp;gt; : 变形为下一个元件 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;一般提示&lt;/h1&gt;&lt;p&gt;双击连线以创建节点&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="528"/>
+        <location filename="../../UI/MainWindow.cpp" line="532"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1010"/>
         <source>Unmute</source>
         <translation>取消静音</translation>
     </message>
@@ -2292,12 +2297,12 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>在偏移量 %1 处读取连接映射时出现流错误</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>在偏移 %1 读取连接端口 ID 时出现流错误</translation>
     </message>
@@ -2305,7 +2310,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="435"/>
+        <location filename="../../Main.cpp" line="443"/>
         <source>Error!</source>
         <translation>错误！</translation>
     </message>
@@ -2391,7 +2396,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1035"/>
+        <location filename="../../Scene/Commands.cpp" line="1043"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>注册 blob &quot;%1&quot;</translation>
     </message>
@@ -2399,7 +2404,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1058"/>
+        <location filename="../../Scene/Commands.cpp" line="1066"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>移除 blob &quot;%1&quot;</translation>
     </message>
@@ -2441,19 +2446,19 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="535"/>
+        <location filename="../../Scene/Scene.cpp" line="61"/>
+        <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Undo</source>
         <translation>&amp;撤销</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="69"/>
+        <location filename="../../Scene/Scene.cpp" line="547"/>
         <source>&amp;Redo</source>
         <translation>&amp;重做</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="561"/>
+        <location filename="../../Scene/Scene.cpp" line="567"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
@@ -2543,7 +2548,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="243"/>
+        <location filename="../../Simulation/Simulation.cpp" line="297"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>警告: 反馈电路未收敛 — 电路可能在振荡。</translation>
     </message>
@@ -2584,12 +2589,17 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
+        <source>Could not open file for writing: %1</source>
+        <translation type="unfinished">无法打开文件进行写入: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1235"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>真值表的输出变量未映射: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1260"/>
         <source>Element type not supported: %1</source>
         <translation>不支持的元件类型：%1</translation>
     </message>
@@ -2632,6 +2642,11 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
         <source>Could not find truthtable element!</source>
         <translation>找不到真值表元素！</translation>
     </message>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="992"/>
+        <source>TruthTable toggle position out of range: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TrashButton</name>
@@ -2662,7 +2677,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1091"/>
+        <location filename="../../Scene/Commands.cpp" line="1099"/>
         <source>Update %1 IC blobs</source>
         <translation>更新 %1 个 IC blob</translation>
     </message>
@@ -2678,72 +2693,72 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>UpdateController</name>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="48"/>
+        <location filename="../../UI/UpdateController.cpp" line="47"/>
         <source>Update Available</source>
         <translation>有可用更新</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="56"/>
+        <location filename="../../UI/UpdateController.cpp" line="55"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 已可用。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您当前正在运行版本 %2。&lt;br&gt;单击&lt;b&gt;下载&lt;/b&gt;以保存新版本。</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="59"/>
+        <location filename="../../UI/UpdateController.cpp" line="58"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 现已推出。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您当前运行的是版本 %2。&lt;br&gt;请访问发布页面下载新版本。</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="68"/>
+        <location filename="../../UI/UpdateController.cpp" line="67"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>不再通知我关于此版本的更新</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="72"/>
+        <location filename="../../UI/UpdateController.cpp" line="71"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <location filename="../../UI/UpdateController.cpp" line="98"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>正在下载 wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <location filename="../../UI/UpdateController.cpp" line="98"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="102"/>
+        <location filename="../../UI/UpdateController.cpp" line="99"/>
         <source>Downloading Update</source>
         <translation>正在下载更新</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="126"/>
-        <location filename="../../UI/UpdateController.cpp" line="134"/>
+        <location filename="../../UI/UpdateController.cpp" line="123"/>
+        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <source>Download Failed</source>
         <translation>下载失败</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="126"/>
+        <location filename="../../UI/UpdateController.cpp" line="123"/>
         <source>Could not download the update:
 %1</source>
         <translation>无法下载更新:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="134"/>
+        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <source>Could not save the file:
 %1</source>
         <translation>无法保存文件:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="143"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Download Complete</source>
         <translation>下载完成</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="144"/>
+        <location filename="../../UI/UpdateController.cpp" line="140"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda 已下载至:
@@ -2857,7 +2872,7 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="483"/>
         <source>New Project</source>
         <translation>新项目</translation>
     </message>
@@ -2920,12 +2935,12 @@ Do you want to save your changes?</source>
         <translation>切换到标签页</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="443"/>
         <source>Error!</source>
         <translation>错误！</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="539"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -2999,12 +3014,19 @@ Do you want to save your changes?</source>
         <translation>以可见的 GUI 窗口运行 MCP 模式。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="395"/>
+        <location filename="../../Main.cpp" line="356"/>
+        <location filename="../../Main.cpp" line="368"/>
+        <location filename="../../Main.cpp" line="380"/>
+        <source>Error: no input circuit file given.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="403"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>错误：电路包含真值表元素。</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="440"/>
+        <location filename="../../Main.cpp" line="448"/>
         <source>Error: </source>
         <translation>错误: </translation>
     </message>

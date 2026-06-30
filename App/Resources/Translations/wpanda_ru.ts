@@ -33,37 +33,37 @@
 <context>
     <name>ArduinoCodeGen</name>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="27"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="30"/>
         <source>Could not open file for writing: %1</source>
         <translation>Не удалось открыть файл для записи: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="190"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="202"/>
         <source>Not enough pins available for all input elements</source>
         <translation>Недостаточно выводов для всех входных элементов</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="217"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="229"/>
         <source>Not enough pins available for all rotary switch positions</source>
         <translation>Недостаточно выводов для всех позиций поворотного переключателя</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="252"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="264"/>
         <source>Not enough pins available for all output elements</source>
         <translation>Недостаточно выводов для всех выходных элементов</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="525"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="690"/>
         <source>Element type not supported: %1</source>
         <translation>Тип элемента не поддерживается: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="696"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="913"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Выходная переменная не сопоставлена с таблицей истинности: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="959"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1157"/>
         <source>Could not open testbench file: %1</source>
         <translation>Не удалось открыть файл тестового стенда: %1</translation>
     </message>
@@ -969,8 +969,8 @@
         <translation>Громкость:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
+        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <source> Hz</source>
         <translation> Гц</translation>
     </message>
@@ -1040,29 +1040,29 @@
         <translation>Фиолетовый</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="595"/>
+        <location filename="../../UI/ElementEditor.cpp" line="598"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Дублирование беспроводного канала</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="599"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Узел Tx с меткой &quot;%1&quot; уже существует.
 Каждый беспроводной канал должен иметь уникальную метку.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="662"/>
+        <location filename="../../UI/ElementEditor.cpp" line="665"/>
         <source>Change wireless mode</source>
         <translation>Изменить беспроводной режим</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="865"/>
+        <location filename="../../UI/ElementEditor.cpp" line="873"/>
         <source>Select any audio</source>
         <translation>Выберите аудио</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="866"/>
+        <location filename="../../UI/ElementEditor.cpp" line="874"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Аудио (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
@@ -1119,22 +1119,22 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>ElementFactory</name>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="38"/>
+        <location filename="../../Element/ElementFactory.cpp" line="41"/>
         <source>MULTIPLE TYPES</source>
         <translation>МНОЖЕСТВЕННЫЕ ТИПЫ</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="48"/>
+        <location filename="../../Element/ElementFactory.cpp" line="51"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="69"/>
+        <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Unknown element type: %1</source>
         <translation>Неизвестный тип элемента: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementFactory.cpp" line="75"/>
+        <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>Unknown type: %1</source>
         <translation>Неизвестный тип: %1</translation>
     </message>
@@ -1222,7 +1222,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="348"/>
+        <location filename="../../Element/GraphicElement.cpp" line="360"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
@@ -1255,47 +1255,47 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="114"/>
+        <location filename="../../Element/IC.cpp" line="116"/>
         <source>IC</source>
         <translation>ИМС</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="113"/>
+        <location filename="../../Element/IC.cpp" line="115"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>ИНТЕГРАЛЬНАЯ МИКРОСХЕМА</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="226"/>
+        <location filename="../../Element/IC.cpp" line="228"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>Загрузка ИМС: имя ИМС отсутствует в сериализованных данных</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="351"/>
+        <location filename="../../Element/IC.cpp" line="354"/>
         <source>%1 not found.</source>
         <translation>%1 не найден.</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="392"/>
+        <location filename="../../Element/IC.cpp" line="399"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Обнаружена циклическая ссылка ИМС: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="399"/>
+        <location filename="../../Element/IC.cpp" line="406"/>
         <source>Error opening file: %1</source>
         <translation>Ошибка открытия файла: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="453"/>
+        <location filename="../../Element/IC.cpp" line="460"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Миграция ИМС: не удаётся открыть файл для записи: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
+        <location filename="../../Element/IC.cpp" line="467"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Миграция ИМС: не удалось сохранить повторно записанный файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="519"/>
+        <location filename="../../Element/IC.cpp" line="526"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Превышен предел глубины вложенности ИС (%1) — большой двоичный объект может быть вредоносным</translation>
     </message>
@@ -1334,97 +1334,97 @@ Each wireless channel must have a unique label.</source>
         <translation>Перетащите сюда для удаления.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="120"/>
+        <location filename="../../UI/ICController.cpp" line="124"/>
         <source>Error removing file: %1</source>
         <translation>Ошибка удаления файла: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="137"/>
+        <location filename="../../UI/ICController.cpp" line="141"/>
         <source>Name Collision</source>
         <translation>Конфликт имён</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="138"/>
+        <location filename="../../UI/ICController.cpp" line="142"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Suggested name:</source>
         <translation>Встроенная ИМС с именем &quot;%1&quot; уже существует.
 Предлагаемое имя:</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="164"/>
-        <location filename="../../UI/ICController.cpp" line="175"/>
-        <location filename="../../UI/ICController.cpp" line="198"/>
-        <location filename="../../UI/ICController.cpp" line="229"/>
-        <location filename="../../UI/ICController.cpp" line="236"/>
-        <location filename="../../UI/ICController.cpp" line="267"/>
-        <location filename="../../UI/ICController.cpp" line="305"/>
-        <location filename="../../UI/ICController.cpp" line="333"/>
-        <location filename="../../UI/ICController.cpp" line="364"/>
+        <location filename="../../UI/ICController.cpp" line="168"/>
+        <location filename="../../UI/ICController.cpp" line="179"/>
+        <location filename="../../UI/ICController.cpp" line="202"/>
+        <location filename="../../UI/ICController.cpp" line="233"/>
+        <location filename="../../UI/ICController.cpp" line="240"/>
+        <location filename="../../UI/ICController.cpp" line="271"/>
+        <location filename="../../UI/ICController.cpp" line="309"/>
+        <location filename="../../UI/ICController.cpp" line="337"/>
+        <location filename="../../UI/ICController.cpp" line="368"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="164"/>
-        <location filename="../../UI/ICController.cpp" line="229"/>
+        <location filename="../../UI/ICController.cpp" line="168"/>
+        <location filename="../../UI/ICController.cpp" line="233"/>
         <source>Please save the project first so ICs can be resolved.</source>
         <translation>Сначала сохраните проект, чтобы ИМС можно было найти.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="175"/>
-        <location filename="../../UI/ICController.cpp" line="236"/>
-        <location filename="../../UI/ICController.cpp" line="333"/>
+        <location filename="../../UI/ICController.cpp" line="179"/>
+        <location filename="../../UI/ICController.cpp" line="240"/>
+        <location filename="../../UI/ICController.cpp" line="337"/>
         <source>Could not read IC file: %1</source>
         <translation>Не удалось прочитать файл ИМС: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="183"/>
-        <location filename="../../UI/ICController.cpp" line="254"/>
+        <location filename="../../UI/ICController.cpp" line="187"/>
+        <location filename="../../UI/ICController.cpp" line="258"/>
         <source>IC embedded successfully.</source>
         <translation>ИМС успешно встроен.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="198"/>
-        <location filename="../../UI/ICController.cpp" line="267"/>
-        <location filename="../../UI/ICController.cpp" line="305"/>
+        <location filename="../../UI/ICController.cpp" line="202"/>
+        <location filename="../../UI/ICController.cpp" line="271"/>
+        <location filename="../../UI/ICController.cpp" line="309"/>
         <source>Please save the project first.</source>
         <translation>Сначала сохраните проект.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="203"/>
-        <location filename="../../UI/ICController.cpp" line="278"/>
+        <location filename="../../UI/ICController.cpp" line="207"/>
+        <location filename="../../UI/ICController.cpp" line="282"/>
         <source>Extract IC to file...</source>
         <translation>Извлечь ИМС в файл...</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="203"/>
-        <location filename="../../UI/ICController.cpp" line="278"/>
-        <location filename="../../UI/ICController.cpp" line="357"/>
+        <location filename="../../UI/ICController.cpp" line="207"/>
+        <location filename="../../UI/ICController.cpp" line="282"/>
+        <location filename="../../UI/ICController.cpp" line="361"/>
         <source>Panda files (*.panda)</source>
         <translation>Файлы Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="216"/>
-        <location filename="../../UI/ICController.cpp" line="291"/>
+        <location filename="../../UI/ICController.cpp" line="220"/>
+        <location filename="../../UI/ICController.cpp" line="295"/>
         <source>IC extracted to %1</source>
         <translation>ИМС извлечён в %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="322"/>
+        <location filename="../../UI/ICController.cpp" line="326"/>
         <source>No file-based ICs to embed.</source>
         <translation>Нет ИМС на основе файлов для встраивания.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="348"/>
+        <location filename="../../UI/ICController.cpp" line="352"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>Встроено %1 ИМС. Схема теперь автономна.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="357"/>
+        <location filename="../../UI/ICController.cpp" line="361"/>
         <source>Select IC file to embed</source>
         <translation>Выберите файл ИМС для встраивания</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="364"/>
+        <location filename="../../UI/ICController.cpp" line="368"/>
         <source>Could not read file: %1</source>
         <translation>Не удалось прочитать файл: %1</translation>
     </message>
@@ -1624,526 +1624,531 @@ Suggested name:</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
         <source>Inputs/Outputs</source>
         <translation>Входы/Выходы</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
         <source>Gates</source>
         <translation>Логические элементы</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
         <source>Combinational</source>
         <translation>Комбинационный</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>Memory</source>
         <translation>Память</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="802"/>
         <source>Integrated Circuits</source>
         <translation>Интегральные микросхемы</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Add IC files</source>
         <translation>Добавить файлы ИМС</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="758"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="762"/>
         <source>&amp;Light</source>
         <translation>&amp;Светлая</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>&amp;Dark</source>
         <translation>&amp;Тёмная</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
         <source>File-based ICs</source>
         <translation>ИМС на основе файлов</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="800"/>
         <source>Remove IC</source>
         <translation>Удалить ИМС</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
         <source>Embedded ICs</source>
         <translation>Встроенные ИМС</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Embed IC</source>
         <translation>Встроить ИМС</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Miscellaneous</source>
         <translation>Разное</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
         <source>Search:</source>
         <translation>Поиск:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="802"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Последние файлы:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>&amp;Edit</source>
         <translation>&amp;Правка</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>&amp;Help</source>
         <translation>&amp;Помощь</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>&amp;View</source>
         <translation>&amp;Вид</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>&amp;Theme</source>
         <translation>&amp;Тема</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Language</source>
         <translation>&amp;Язык</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Sim&amp;ulation</source>
         <translation>Сим&amp;уляция</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Examples</source>
         <translation>Примеры</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="701"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="705"/>
         <source>&amp;Open...</source>
         <translation>&amp;Открыть...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="702"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="706"/>
         <source>Open</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="703"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="707"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="704"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="708"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="705"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="709"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="706"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="710"/>
         <source>Save &amp;As...</source>
         <translation>Сохранить &amp;как...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="707"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="711"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="708"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="712"/>
         <source>Cu&amp;t</source>
         <translation>Вы&amp;резать</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="709"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="713"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="710"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="714"/>
         <source>&amp;Copy</source>
         <translation>&amp;Копировать</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="711"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="715"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="712"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="716"/>
         <source>&amp;Paste</source>
         <translation>&amp;Вставить</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="713"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="717"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="714"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="718"/>
         <source>&amp;Delete</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="715"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="719"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="716"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="720"/>
         <source>&amp;New</source>
         <translation>&amp;Новый</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="717"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="721"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="718"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="722"/>
         <source>Zoom &amp;in</source>
         <translation>&amp;Приблизить</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="719"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="723"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="720"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="724"/>
         <source>Zoom &amp;out</source>
         <translation>&amp;Отдалить</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="721"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="725"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="722"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="726"/>
         <source>&amp;Wires</source>
         <translation>&amp;Провода</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="723"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="727"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="724"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="728"/>
         <source>&amp;Gates</source>
         <translation>&amp;Логические элементы</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="725"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="729"/>
         <source>Ctrl+2</source>
         <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="726"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="730"/>
         <source>&amp;About</source>
         <translation>&amp;О программе</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="727"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="731"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="728"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="732"/>
         <source>&amp;Exit</source>
         <translation>&amp;Выход</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="729"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="733"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="730"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
         <source>R&amp;otate right</source>
         <translation>По&amp;вернуть вправо</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="731"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="732"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="736"/>
         <source>Rotate &amp;left</source>
         <translation>Повернуть в&amp;лево</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="733"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="738"/>
         <source>About &amp;Qt</source>
         <translation>О &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
         <source>&amp;Select all</source>
         <translation>&amp;Выделить все</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="736"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
         <source>Re&amp;load File</source>
         <translation>Пере&amp;загрузить файл</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="738"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="742"/>
         <source>Ctrl+F5</source>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
         <source>E&amp;xport to Arduino</source>
         <translation>Э&amp;кспорт в Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="744"/>
         <source>Ctrl+Alt+I</source>
         <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>Экспорт в &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="742"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="746"/>
         <source>Ctrl+Alt+O</source>
         <translation>Ctrl+Alt+O</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Сбросить масштаб</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="744"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="748"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
         <source>Export to &amp;PDF</source>
         <translation>Экспорт в &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="746"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="750"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>&amp;System</source>
         <translation>&amp;Система</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="764"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>Make file self-contained</source>
         <translation>Сделать файл автономным</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>Включить/выключить звук зуммеров</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <source>Show IC Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>Background Simulation</source>
         <translation>Фоновая симуляция</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>Report Translation Error</source>
         <translation>Сообщить об ошибке перевода</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="785"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Сообщите об ошибках перевода или помогите улучшить переводы на Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Пуск/Пауза</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;Помочь с Переводом</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="748"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="752"/>
         <source>Play or Pause simulation.</source>
         <translation>Запустить или приостановить симуляцию.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="750"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="754"/>
         <source>&amp;Rename</source>
         <translation>&amp;Переименовать</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="752"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Изменить &amp;триггер</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="754"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="758"/>
         <source>Cl&amp;ear selection</source>
         <translation>Очистить &amp;выделение</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Быстрый режим</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="764"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Сигнал</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="762"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="766"/>
         <source>Export to &amp;Image</source>
         <translation>Экспорт в &amp;изображение</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>Ctrl+E</source>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Отразить по горизонтали</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="766"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>Flip &amp;vertically</source>
         <translation>Отразить по &amp;вертикали</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
         <source>F&amp;ullscreen</source>
         <translation>Полно&amp;экранный режим</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
+        <location filename="../../UI/MainWindow.cpp" line="1010"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
         <source>Mute</source>
         <translation>Отключить звук</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
         <source>Labels under icons</source>
         <translation>Подписи под иконками</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
         <source>About this version</source>
         <translation>Об этой версии</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Restart</source>
         <translation>&amp;Перезапуск</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="781"/>
         <source>Restart simulation.</source>
         <translation>Перезапустить симуляцию.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="477"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindow.cpp" line="481"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="783"/>
         <source>Shortcuts and Tips</source>
         <translation>Горячие клавиши и советы</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="801"/>
+        <location filename="../../UI/MainWindow.cpp" line="810"/>
         <source>New Project</source>
         <translation>Новый проект</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="396"/>
+        <location filename="../../UI/MainWindow.cpp" line="400"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2162,27 +2167,27 @@ wiRedPanda %1 автоматически отобразит все осталь�
 Необходимо сохранить новые проекты перед доступом к ИС и внешним видам или запуском симуляций beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="529"/>
+        <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>Are you sure?</source>
         <translation>Вы уверены?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="456"/>
+        <location filename="../../UI/MainWindow.cpp" line="460"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda — программное обеспечение, разработанное студентами Федерального университета Сан-Паулу, чтобы помочь студентам изучать логические схемы.&lt;/p&gt;&lt;p&gt;Версия программы: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Создатели:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda в настоящее время поддерживается Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves и Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Пожалуйста, отправьте отчёт на нашей странице GitHub, если вы нашли ошибку или хотите запросить новую функцию.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Посетите наш сайт!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="478"/>
+        <location filename="../../UI/MainWindow.cpp" line="482"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Горячие клавиши холста&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Увеличить &lt;/li&gt;&lt;li&gt; Ctrl+- : Уменьшить &lt;/li&gt;&lt;li&gt; Ctrl+1 : Скрыть/Показать провода &lt;/li&gt;&lt;li&gt; Ctrl+2 : Скрыть/Показать вентили &lt;/li&gt;&lt;li&gt; Ctrl+F : Поиск элементов &lt;/li&gt;&lt;li&gt; Ctrl+W : Открыть beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Сохранить проект &lt;/li&gt;&lt;li&gt; Ctrl+Q : Выйти из wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Запуск/Пауза симуляции &lt;/li&gt;&lt;li&gt; [ : Предыдущее основное свойство элемента &lt;/li&gt;&lt;li&gt; ] : Следующее основное свойство элемента &lt;/li&gt;&lt;li&gt; { : Предыдущее вторичное свойство элемента &lt;/li&gt;&lt;li&gt; } : Следующее вторичное свойство элемента &lt;/li&gt;&lt;li&gt; &amp;lt; : Преобразовать в предыдущий элемент &lt;/li&gt;&lt;li&gt; &amp;gt; : Преобразовать в следующий элемент &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Общие советы&lt;/h1&gt;&lt;p&gt;Дважды щёлкните по проводу, чтобы создать узел&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="528"/>
+        <location filename="../../UI/MainWindow.cpp" line="532"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1010"/>
         <source>Unmute</source>
         <translation>Включить звук</translation>
     </message>
@@ -2292,12 +2297,12 @@ wiRedPanda %1 автоматически отобразит все осталь�
 <context>
     <name>QNEConnection</name>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="202"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
         <source>Stream error reading connection map at offset %1</source>
         <translation>Ошибка потока при чтении карты соединений на смещении %1</translation>
     </message>
     <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="213"/>
+        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Ошибка потока при чтении ID портов соединения на смещении %1</translation>
     </message>
@@ -2305,7 +2310,7 @@ wiRedPanda %1 автоматически отобразит все осталь�
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="435"/>
+        <location filename="../../Main.cpp" line="443"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
@@ -2391,7 +2396,7 @@ wiRedPanda %1 автоматически отобразит все осталь�
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1035"/>
+        <location filename="../../Scene/Commands.cpp" line="1043"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Зарегистрировать blob &quot;%1&quot;</translation>
     </message>
@@ -2399,7 +2404,7 @@ wiRedPanda %1 автоматически отобразит все осталь�
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1058"/>
+        <location filename="../../Scene/Commands.cpp" line="1066"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Удалить blob «%1»</translation>
     </message>
@@ -2441,19 +2446,19 @@ wiRedPanda %1 автоматически отобразит все осталь�
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="60"/>
-        <location filename="../../Scene/Scene.cpp" line="535"/>
+        <location filename="../../Scene/Scene.cpp" line="61"/>
+        <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Undo</source>
         <translation>&amp;Отменить</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="68"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="69"/>
+        <location filename="../../Scene/Scene.cpp" line="547"/>
         <source>&amp;Redo</source>
         <translation>&amp;Повторить</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="561"/>
+        <location filename="../../Scene/Scene.cpp" line="567"/>
         <source>Paste</source>
         <translation>Вставить</translation>
     </message>
@@ -2543,7 +2548,7 @@ wiRedPanda %1 автоматически отобразит все осталь�
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="243"/>
+        <location filename="../../Simulation/Simulation.cpp" line="297"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Предупреждение: схема обратной связи не сошлась — схема может осциллировать.</translation>
     </message>
@@ -2584,12 +2589,17 @@ wiRedPanda %1 автоматически отобразит все осталь�
 <context>
     <name>SystemVerilogCodeGen</name>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
+        <source>Could not open file for writing: %1</source>
+        <translation type="unfinished">Не удалось открыть файл для записи: %1</translation>
+    </message>
+    <message>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1235"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Выходная переменная не сопоставлена с таблицей истинности: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1403"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1260"/>
         <source>Element type not supported: %1</source>
         <translation>Тип элемента не поддерживается: %1</translation>
     </message>
@@ -2632,6 +2642,11 @@ wiRedPanda %1 автоматически отобразит все осталь�
         <source>Could not find truthtable element!</source>
         <translation>Не удалось найти элемент таблицы истинности!</translation>
     </message>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="992"/>
+        <source>TruthTable toggle position out of range: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TrashButton</name>
@@ -2662,7 +2677,7 @@ wiRedPanda %1 автоматически отобразит все осталь�
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1091"/>
+        <location filename="../../Scene/Commands.cpp" line="1099"/>
         <source>Update %1 IC blobs</source>
         <translation>Обновить %1 ИМС-блобов</translation>
     </message>
@@ -2678,72 +2693,72 @@ wiRedPanda %1 автоматически отобразит все осталь�
 <context>
     <name>UpdateController</name>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="48"/>
+        <location filename="../../UI/UpdateController.cpp" line="47"/>
         <source>Update Available</source>
         <translation>Доступно обновление</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="56"/>
+        <location filename="../../UI/UpdateController.cpp" line="55"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;Доступна версия wiRedPanda %1.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Вы используете версию %2.&lt;br&gt;Нажмите &lt;b&gt;Загрузить&lt;/b&gt;, чтобы сохранить новую версию.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="59"/>
+        <location filename="../../UI/UpdateController.cpp" line="58"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 доступна.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Вы используете версию %2.&lt;br&gt;Посетите страницу релизов, чтобы скачать новую версию.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="68"/>
+        <location filename="../../UI/UpdateController.cpp" line="67"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Не уведомлять об этой версии снова</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="72"/>
+        <location filename="../../UI/UpdateController.cpp" line="71"/>
         <source>Download</source>
         <translation>Скачать</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <location filename="../../UI/UpdateController.cpp" line="98"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Загрузка wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <location filename="../../UI/UpdateController.cpp" line="98"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="102"/>
+        <location filename="../../UI/UpdateController.cpp" line="99"/>
         <source>Downloading Update</source>
         <translation>Загрузка обновления</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="126"/>
-        <location filename="../../UI/UpdateController.cpp" line="134"/>
+        <location filename="../../UI/UpdateController.cpp" line="123"/>
+        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <source>Download Failed</source>
         <translation>Ошибка загрузки</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="126"/>
+        <location filename="../../UI/UpdateController.cpp" line="123"/>
         <source>Could not download the update:
 %1</source>
         <translation>Не удалось загрузить обновление:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="134"/>
+        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <source>Could not save the file:
 %1</source>
         <translation>Не удалось сохранить файл:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="143"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Download Complete</source>
         <translation>Загрузка завершена</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="144"/>
+        <location filename="../../UI/UpdateController.cpp" line="140"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda загружен в:
@@ -2857,7 +2872,7 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="481"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="483"/>
         <source>New Project</source>
         <translation>Новый проект</translation>
     </message>
@@ -2920,12 +2935,12 @@ Do you want to save your changes?</source>
         <translation>Перейти на вкладку</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="441"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="443"/>
         <source>Error!</source>
         <translation>Ошибка!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="537"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="539"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -2999,12 +3014,19 @@ Do you want to save your changes?</source>
         <translation>Запуск режима MCP с видимым окном графического интерфейса.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="395"/>
+        <location filename="../../Main.cpp" line="356"/>
+        <location filename="../../Main.cpp" line="368"/>
+        <location filename="../../Main.cpp" line="380"/>
+        <source>Error: no input circuit file given.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Main.cpp" line="403"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Ошибка: Схема содержит элементы Таблицы Истинности.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="440"/>
+        <location filename="../../Main.cpp" line="448"/>
         <source>Error: </source>
         <translation>Ошибка: </translation>
     </message>
