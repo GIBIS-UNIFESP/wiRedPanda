@@ -35,6 +35,10 @@ private slots:
     /// last column produced -- a read-only-looking create_waveform mutating the user's circuit.
     /// Sequential state is where that shows: a flip-flop driven high live comes back low.
     void testRunLeavesLiveSequentialStateUnchanged();
+    /// The sweep's pre-run reset must reach sequential elements nested inside ICs (the flat
+    /// netlist simulates them directly) — a flip-flop's live-run state must not leak into a
+    /// sweep that promises power-on reproducibility.
+    void testRunResetsICInternalSequentialState();
 
     // --- File I/O ---
 

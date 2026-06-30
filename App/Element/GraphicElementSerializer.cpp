@@ -123,6 +123,9 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
     }
     if (element.isFlippedX()) { map.insert("flippedX", true); }
     if (element.isFlippedY()) { map.insert("flippedY", true); }
+    // Only persist a propagation delay when the user overrode the type default; the
+    // keyed-map format lets older readers skip the unknown key, so no version bump.
+    if (element.hasPropagationDelayOverride()) { map.insert("propagationDelay", static_cast<quint64>(element.propagationDelay())); }
     stream << map;
 
     // -------------------------------------------
@@ -290,6 +293,28 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
 
     element.m_orientation.setFlippedXRaw(map.value("flippedX", false).toBool());
     element.m_orientation.setFlippedYRaw(map.value("flippedY", false).toBool());
+
+    if (map.contains("propagationDelay")) {
+        // Through the setter, not a raw assignment: a crafted/corrupt file could carry a value
+        // above the 1,000,000 ns bound (or the SIM_TIME_UNSET sentinel itself), which would
+        // later overflow `t + delay` scheduling. Out-of-range keeps the type default, matching
+        // the format's "invalid key ⇒ skip" philosophy.
+        element.setPropagationDelay(map.value("propagationDelay").toULongLong());
+        if (!element.hasPropagationDelay()) {
+            // Delay-free by design (sources, sinks, Nodes, ICs). The engine ignores the value,
+            // so say so rather than dropping it silently: a write that cannot take effect must
+            // not pass without a word.
+            qCWarning(zero) << "Propagation-delay override on a delay-free element type"
+                            << static_cast<int>(element.elementType()) << "- ignored";
+        }
+    } else {
+        // Absent key ⇒ no override. Clearing rather than leaving the current value matters for
+        // the in-memory snapshots UpdateCommand restores: this is the one property serialized
+        // only when overridden, so "keep what's there" would make undoing the FIRST delay edit
+        // on an element impossible — the pre-edit snapshot has no key to put back. Loading a
+        // file is unaffected: a freshly constructed element is already SIM_TIME_UNSET.
+        element.setPropagationDelay(SIM_TIME_UNSET);
+    }
 
     // Slim PortableFile streams store one "id" per element instead of a
     // serialId per port; the loops below re-derive each port's serialId from

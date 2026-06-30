@@ -97,61 +97,129 @@ Advanced development features supported:
 
 ## Digital Logic Simulation
 
-### Simulation Type: Hybrid Synchronous Cycle-Based with Event-Driven Clocks
+### Simulation Type: Unified Event-Driven Engine (functional + temporal modes)
 
-- **Primary Model**: Synchronous cycle-based simulation with fixed 1ms update intervals
-- **Secondary Model**: Event-driven clock elements with real-time timing
-- **Design Goal**: Educational simplicity prioritizing correctness over timing accuracy
+- **One engine, two modes**: a single event-driven drain (`Simulation::processEvents()`)
+  reproduces the classic zero-delay behavior AND simulates real propagation delays. The ONLY
+  difference between modes is the per-element delay applied when scheduling: functional mode
+  forces every delay to 0; temporal mode uses `propagationDelay()`. There is no separate
+  functional code path.
+- **Functional mode** (`m_timePerTick == 0`, the default): every event lands at the current
+  instant, so the drain degenerates to a full zero-delay settle — combinational and feedback
+  circuits converge to a fixed point now. This is the educational default.
+- **Temporal mode** (`m_timePerTick > 0`): events spread across future timestamps by
+  per-element propagation delay, drained from a time-ordered `EventQueue`.
+- **One flat netlist**: ICs do NOT simulate themselves. `Simulation::initialize()` flattens
+  the IC hierarchy — every internal primitive (recursively, through nested ICs) joins the
+  top-level netlist, with IC boundary ports spliced to their boundary Nodes. So per-element
+  delays apply uniformly, including inside ICs, and internal signals are watchable.
+- **Glitch-free by phase separation**: each timestamp runs three regions — **ACTIVE**
+  (combinational settles to a fixed point via delta cycles), **SAMPLE** (Memory-group elements
+  read their now-settled inputs and stage), **PUBLISH** (staged values apply and wake their
+  readers). A flip-flop therefore never samples a cone that is still rippling, so
+  internally-generated (e.g. gated) clocks reach their final value before anything downstream
+  samples them. Events drain in `(time, kind, priority-desc)` order, but the topological
+  priority is a tie-break, not the correctness mechanism: within the active region every
+  evaluation reads only published values, so the result is order-independent.
+- **Design Goal**: Educational simplicity (functional mode) without giving up the option to
+  show propagation-delay/timing behavior (temporal mode).
 
 ### Core Architecture (`App/Simulation/Simulation.cpp`)
 
-- **Fixed Update Cycle**: 1ms intervals via QTimer for consistent simulation steps
-- **Sequential Update Phases** per cycle:
-  1. Update input elements (`updateOutputs()`)
-  2. Update all logic elements (`updateLogic()`)
-  3. Update connections (`updatePort()`)
-  4. Update output elements
-- **Topological Sorting**: Elements ordered by dependency depth for correct propagation
+- **Fixed Update Cycle**: 1ms `QTimer` tick drives `update()`.
+- **`update()` phases per tick**:
+  1. Advance event-driven clocks (`updateClock()`, real wall-clock time)
+  2. Propagate user inputs (`updateOutputs()`)
+  3. Evaluate logic via `processEvents()` — the unified engine (both modes)
+  4. Push values onto wires / refresh output visuals (throttled to display rate)
+- **Unified drain, publish-side delay**: `processEvents()` drains `m_eventQueue` over
+  `[currentTime, currentTime + timePerTick]` (`SimEvent`/`SimTime` in `App/Simulation/`).
+  The delay is paid on **publication**, not on waking: an element evaluates *immediately*
+  when an input it reads is published, stages its result, and schedules its own `Publish` at
+  `t + its own delay` (0 in functional mode). This is what lets it sample its inputs at the
+  instant they actually changed. A per-timestamp evaluation cap detects oscillation and
+  canonicalizes feedback nodes to `Unknown`. Blocking and deterministic.
+- **Inertial delay by supersession**: only one `Publish` per element is live at a time —
+  scheduling another bumps a per-element generation stamp and the stale one is dropped when
+  popped. An input that reverts within the delay re-stages the already-published value, so
+  the superseding publish changes nothing and the pulse is absorbed. No value plumbing, and
+  a pulse strictly **narrower** than the delay is absorbed; one exactly as wide as the delay
+  (`w == delay`) **propagates**, which is the conventional inertial-delay rule. Pinned by
+  `testPropertyPulseExactlyEqualToDelayPropagates`.
+- **IC flattening**: `Simulation::initialize()` builds one flat primitive netlist via
+  `collectFlatElements()` + `spliceICBoundaries()`; `IC::initializeSimulation()` only wires
+  an IC's internal connections (it does not settle). `mirrorICOutputValues()` copies each IC's
+  settled internal outputs onto its external ports for wire rendering.
+- **Topological Sorting**: `topologicalSort()` orders elements by dependency depth and
+  detects feedback loops; `sortSimElements()` builds the flat successor graph from output
+  connections (with IC boundaries mapped to boundary Nodes) so adjacency order matches the
+  priority system.
+- **Non-blocking sequential commit**: synchronous elements (`ElementGroup::Memory`) are held
+  out of the active region and sampled in the SAMPLE phase — they all read before any of them
+  publishes, which is exactly SystemVerilog's non-blocking (`<=`) model. Commits are ordinary
+  `Publish` events, so nothing has to re-propagate them afterwards: there is no tick-wide
+  commit bracket and no post-edge re-settle pass. A ripple chain advances by element delays
+  within a tick rather than one hop per tick.
+- **Phase separation is load-bearing mainly at zero delay**: with any non-zero delay,
+  publication at `edge + delay` already orders after every evaluation at the edge instant.
+  The explicit phases are what preserve functional mode's simultaneity.
 
 ### Logic Element Behavior
 
-- **Combinational Logic**: Zero-delay immediate updates (AND, OR, NOT, etc.)
-- **Sequential Logic**: Synchronous state changes on clock edges (flip-flops, latches)
-- **No Propagation Delays**: Logic gates update instantaneously
+- **Combinational Logic**: zero-delay in functional mode; inertial propagation delay in
+  temporal mode (a pulse shorter than the gate delay is absorbed).
+- **Sequential Logic**: edge-triggered state changes (flip-flops, latches), committed
+  non-blocking (see above) so combinational logic between them reads pre-tick state.
+- **Propagation delay** (temporal mode): `GraphicElement::propagationDelay()` returns a
+  per-element override or a per-type default (NOT 5 ns, AND/OR 10 ns, NAND/NOR 8 ns,
+  sequential ~15-20 ns; sources/sinks/nodes/ICs 0). `Simulation::initialize()` seeds
+  `m_delays` from it; `setElementDelay()` overrides at runtime.
 
 ### Timing Characteristics
 
-- **Clock Elements**: Only true event-driven components with configurable frequencies
-- **Logic Gates**: Immediate response, no timing simulation
-- **Sequential Elements**: Edge-triggered state changes without setup/hold timing
-- **Update Order**: Priority-based topological sorting prevents race conditions
+- **Clock Elements**: real-time, wall-clock driven (independent of sim mode).
+- **Logic Gates**: immediate (functional) or delayed by `propagationDelay()` (temporal).
+- **Sequential Elements**: edge-triggered; no setup/hold modeling.
+- **Update Order**: events drain one at a time in topological-priority order within each
+  timestamp, so upstream logic settles before downstream samples it — preventing race
+  conditions and zero-delay clock glitches.
 
 ### Code Evidence
 
 ```cpp
-// Fixed 1ms simulation cycle (App/Simulation/Simulation.cpp)
+// 1 ms tick drives update()
 m_timer.setInterval(1ms);
 
-// Immediate combinational logic with 4-state Status (And::updateLogic)
-if (!simUpdateInputsAllowUnknown()) {
-    return;
-}
-setOutputValue(StatusOps::statusAndAll(simInputs()));  // Zero delay
+// Publish-side delay: evaluate NOW (stage), publish one own-delay later.
+// Functional mode is the same path with every delay forced to 0.
+element->beginDeferredCommit();
+element->updateLogic();
+schedulePublish(t + delayTo(element), element);
 
-// Real-time clock timing (Clock::updateOutputs) — advance by exactly one
-// half-period so accumulated drift doesn't skew the frequency
+// Sequential elements are held back and sampled only once the active region settles,
+// then all publish together — non-blocking semantics without a commit bracket.
+for (auto *element : std::as_const(pendingSamples)) {
+    element->beginDeferredCommit();
+    element->updateLogic();
+    schedulePublish(t + delayTo(element), element);
+}
+
+// Real-time clock timing (both modes)
 if (elapsed > m_interval) {
-    m_startTime += m_interval;
-    setOn(!m_isOn);
+    setOn(!m_isOn);  // Toggle based on frequency
 }
 ```
 
 ### Implementation Classification
 
-- **Abstraction Level**: Functional simulation (no timing details)
-- **Update Model**: Synchronous with topological ordering
-- **Delay Model**: Zero-delay for logic, real-time for clocks
-- **Target Audience**: Educational/demonstration use
+- **Abstraction Level**: functional simulation by default; optional propagation-delay
+  (temporal) simulation.
+- **Update Model**: unified event-driven engine over one flat primitive netlist — a single
+  priority-ordered drain for combinational, feedback, and timed circuits, with ICs flattened
+  in (no separate IC-internal settle).
+- **Delay Model**: zero-delay (functional) or per-element inertial delay (temporal); clocks
+  always real-time.
+- **Target Audience**: Educational/demonstration use.
 - **IMPORTANT**: Always prefer fixing code logic over changing tests to conform to incorrect behavior
 
 ### Conceptual Correctness Assessment
@@ -166,27 +234,27 @@ if (elapsed > m_interval) {
 
 #### ✅ **Correct Abstractions for Learning**
 
-- **Zero-delay model** eliminates timing complexity for beginners
+- **Zero-delay model** (functional mode) eliminates timing complexity for beginners
 - **Immediate feedback** enhances educational interaction
 - **Race condition prevention** via priority-based update ordering
+- **Optional temporal mode** introduces propagation delays when timing behavior is wanted
 
 #### ⚠️ **Deliberate Real-World Omissions**
 
-- **No propagation delays**: Real gates have nanosecond delays
 - **No setup/hold constraints**: Real flip-flops need timing margins
-- **No hazards/glitches**: Real circuits can have temporary incorrect outputs
+- **Inertial (not transport) delay**: sub-delay pulses are absorbed, not propagated
 - **No clock domain issues**: Real systems have multiple clocks and skew
 - **No physical limitations**: Missing fan-out, drive strength, power concerns
 
 #### 🎯 **Educational Target Alignment**
 
-- **Perfect for**: Boolean algebra, combinational design, sequential concepts
-- **Not intended for**: Timing analysis, synchronization, physical implementation
-- **Design Philosophy**: Teach logic functionality before implementation complexity
+- **Perfect for**: Boolean algebra, combinational design, sequential concepts; basic propagation-delay/timing intuition via temporal mode
+- **Not intended for**: precise timing analysis, synchronization, physical implementation
+- **Design Philosophy**: Teach logic functionality first (functional mode); reveal timing behavior on demand (temporal mode)
 
 #### **Verdict: Conceptually Correct for Educational Purpose**
 
-The simulation accurately represents **ideal digital logic behavior** while deliberately abstracting **physical implementation details**. This approach is pedagogically sound - students learn fundamental concepts correctly without being overwhelmed by timing complexities that would obscure the core logic principles.
+The simulation accurately represents **ideal digital logic behavior** in functional mode and **inertial-delay timing behavior** in temporal mode, while deliberately abstracting deeper **physical implementation details**. This approach is pedagogically sound - students learn fundamental concepts correctly, then can explore propagation-delay timing without switching tools.
 
 ## Exercise/Tour Content
 

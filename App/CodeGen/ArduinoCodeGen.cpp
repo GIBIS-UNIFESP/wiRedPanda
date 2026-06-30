@@ -578,6 +578,8 @@ void ArduinoCodeGen::emitCommitFlipFlopsRec(const QVector<GraphicElement *> &ele
         for (auto *port : elm->outputs()) {
             const QString varName = m_varMap.value(port);
             if (!varName.isEmpty()) {
+                m_stream << "    if (" << varName << " != " << varName << "_next) { changed = true; }"
+                         << Qt::endl;
                 m_stream << "    " << varName << " = " << varName << "_next;" << Qt::endl;
             }
         }
@@ -586,21 +588,33 @@ void ArduinoCodeGen::emitCommitFlipFlopsRec(const QVector<GraphicElement *> &ele
 
 void ArduinoCodeGen::emitCommitFlipFlops()
 {
-    m_stream << "void commitFlipFlops() {" << Qt::endl;
+    // Reports whether any flip-flop output actually moved, so the tick driver can tell a
+    // settled tick from one where a commit has just changed another flip-flop's clock.
+    m_stream << "bool commitFlipFlops() {" << Qt::endl;
+    m_stream << "    bool changed = false;" << Qt::endl;
     emitCommitFlipFlopsRec(m_elements);
+    m_stream << "    return changed;" << Qt::endl;
     m_stream << "}" << Qt::endl << Qt::endl;
 }
 
 void ArduinoCodeGen::emitTickDriver()
 {
-    // One simulation tick. Sequential sketches mirror the engine's non-blocking
-    // semantics: settle combinational logic while flip-flops sample into staging
-    // (_next) reading pre-edge state, commit all flip-flops at once, then settle
-    // again so combinational outputs reflect the new committed state.
+    // One simulation tick. Sequential sketches mirror the engine's non-blocking semantics:
+    // settle combinational logic while flip-flops sample into staging (_next) reading pre-edge
+    // state, then commit all of them at once.
+    //
+    // Repeated until nothing commits, because a commit can move ANOTHER flip-flop's clock. The
+    // engine advances a whole ripple chain within one update() -- testRippleFlipFlopReevaluation
+    // pins that -- while a single sample/commit advances exactly one stage per tick, which would
+    // make an exported ripple counter count at a different rate than the simulator the circuit
+    // was drawn in. Edge detection updates its stored clock level inside the sampling guard, so
+    // a repeat pass sees no edge on a held clock and only genuinely-changed clocks re-fire.
     if (m_hasSequential) {
-        m_stream << "    g_sample = true;" << Qt::endl;
-        m_stream << "    for (int s = 0; s < " << Simulation::kMaxSettleIterations << "; s++) { computeLogic(); }" << Qt::endl;
-        m_stream << "    commitFlipFlops();" << Qt::endl;
+        m_stream << "    for (int p = 0; p < " << Simulation::kMaxSettleIterations << "; p++) {" << Qt::endl;
+        m_stream << "        g_sample = true;" << Qt::endl;
+        m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations << "; s++) { computeLogic(); }" << Qt::endl;
+        m_stream << "        if (!commitFlipFlops()) { break; }" << Qt::endl;
+        m_stream << "    }" << Qt::endl;
         m_stream << "    g_sample = false;" << Qt::endl;
         m_stream << "    for (int s = 0; s < " << Simulation::kMaxSettleIterations << "; s++) { computeLogic(); }" << Qt::endl;
     } else {
@@ -1401,12 +1415,17 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
         // non-blocking commit: settle while flip-flops sample into _next (reading
         // pre-edge state), commit all at once, then re-settle so combinational
         // outputs reflect the new state. Combinational/gate-built circuits just
-        // settle to a fixed point (same bound as Simulation::iterativeSettle).
+        // settle to a fixed point, bounded by Simulation::kMaxSettleIterations. The engine has
+        // no iterative settle of its own -- it propagates commits as ordinary events -- so this
+        // bound governs the generated loop only, which does settle iteratively.
         if (m_hasSequential) {
-            m_stream << "        g_sample = true;" << Qt::endl;
-            m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
+            m_stream << "        for (int p = 0; p < " << Simulation::kMaxSettleIterations
+                     << "; p++) {" << Qt::endl;
+            m_stream << "            g_sample = true;" << Qt::endl;
+            m_stream << "            for (int s = 0; s < " << Simulation::kMaxSettleIterations
                      << "; s++) { computeLogic(); }" << Qt::endl;
-            m_stream << "        commitFlipFlops();" << Qt::endl;
+            m_stream << "            if (!commitFlipFlops()) { break; }" << Qt::endl;
+            m_stream << "        }" << Qt::endl;
             m_stream << "        g_sample = false;" << Qt::endl;
             m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
                      << "; s++) { computeLogic(); }" << Qt::endl;

@@ -33,6 +33,7 @@
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Simulation/Simulation.h"
 #include "App/Versions.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -221,13 +222,16 @@ void TestICUnit::testDoubleClickOpensSubCircuitNotInlineEditor()
 
 void TestICUnit::testUnloadedIcSimulationMethodsAreNoOps()
 {
-    // A freshly-constructed, never-loaded IC has 0 internal elements -- ICSimulation::initialize()/
-    // update()/resettle() must all recognize this and return immediately rather than operate on
-    // an empty m_sortedInternalElements/m_internalElements.
+    // A freshly-constructed, never-loaded IC has 0 internal elements --
+    // ICSimulation::initialize() must recognize this and return immediately rather than operate
+    // on an empty m_internalElements.
+    //
+    // Deliberately does NOT call updateLogic()/resettleCombinational(): ICs are pure structure
+    // (Simulation::initialize() flattens them into one netlist), so IC has no overrides for
+    // either -- calling them would exercise GraphicElement's base implementations and assert
+    // nothing about ICs.
     IC ic;
     ic.initializeSimulation();
-    ic.updateLogic();
-    ic.resettleCombinational();
 
     QCOMPARE(ic.inputSize(), 0);
     QCOMPARE(ic.outputSize(), 0);
@@ -236,9 +240,12 @@ void TestICUnit::testUnloadedIcSimulationMethodsAreNoOps()
 void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
 {
     // Build a tiny real sub-circuit (the established WorkSpace::save() + IC::loadFile()
-    // technique) so the loaded IC has genuine internal elements and m_sortedInternalElements is
-    // non-empty, then drive it with its own input port left disconnected, exercising
-    // ICSimulation::update()'s/resettle()'s "!simUpdateInputsAllowUnknown()" guard.
+    // technique) so the loaded IC has genuine internal elements, then embed it in a real
+    // top-level circuit with its own input port left disconnected (no driving wire) and run it
+    // through the actual engine. ICs are pure structure -- Simulation::initialize() flattens
+    // every IC into the flat netlist rather than the IC self-simulating -- so there is no
+    // IC::updateLogic()/IC::resettleCombinational(); a disconnected InputPort falls back to its
+    // own defaultStatus(), which the flat netlist propagates to the IC's mirrored output.
     QTemporaryDir subDir;
     QVERIFY(subDir.isValid());
 
@@ -252,24 +259,27 @@ void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
     const QString subPath = subDir.path() + "/disconnected_input_probe.panda";
     QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
 
-    auto ic = std::make_unique<IC>();
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *ic = new IC();
     ic->loadFile(subPath, subDir.path());
     QVERIFY(ic->inputSize() >= 1);
     QVERIFY(ic->outputSize() >= 1);
 
-    // ICLoader derives an input port's default status from its internal boundary element's
-    // status *at load time* (Inactive here, since InputSwitch defaults off) -- force it to
-    // Unknown directly so the disconnected port genuinely fails simUpdateInputsAllowUnknown(),
-    // rather than "successfully" resolving to a definite level nothing actually drove.
-    ic->inputPort(0)->setDefaultStatus(Status::Unknown);
+    // ICLoader::loadBoundaryElement() derives the internal proxy Node's input default from the
+    // internal boundary element's own output status *at load time* (Inactive here, since
+    // InputSwitch defaults off) -- and spliceICBoundaries() explicitly leaves that Node's
+    // default untouched when the IC's external input port is unconnected ("boundary Node keeps
+    // its default"). Force the proxy Node's own default directly so the disconnected port
+    // genuinely propagates undefined, rather than "successfully" resolving to a definite level
+    // nothing actually drove.
+    ic->internalInputs().at(0)->setDefaultStatus(Status::Unknown);
+    ic->internalInputs().at(0)->setStatus(Status::Unknown);
 
-    TestUtils::initElm(*ic); // allocate the IC's own sim vectors without connecting its ports
-    ic->initializeSimulation();
+    builder.add(ic);
+    // Input port 0 is deliberately left unconnected -- no InputSwitch/wire feeds it.
 
-    ic->updateLogic();
-    QCOMPARE(ic->outputValue(0), Status::Unknown);
-
-    ic->resettleCombinational();
+    workspace.scene()->simulation()->update();
     QCOMPARE(ic->outputValue(0), Status::Unknown);
 }
 

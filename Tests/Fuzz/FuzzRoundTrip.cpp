@@ -98,7 +98,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     }
 
     // Run two simulation ticks on ws1 to exercise Simulation::update() paths
-    // (topologicalSort, iterative settling, connection/output port updates).
+    // (topologicalSort, the event-driven drain, connection/output port updates).
     ws1.scene()->simulation()->update();
     ws1.scene()->simulation()->update();
 

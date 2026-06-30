@@ -23,6 +23,7 @@
 #include "App/Element/ElementPorts.h"
 #include "App/Element/ElementSimState.h"
 #include "App/Element/PropertyDescriptor.h"
+#include "App/Simulation/SimTime.h"
 
 struct SerializationContext;
 struct SerializationOptions;
@@ -274,6 +275,30 @@ public:
     /// Sets the clock phase delay to \a delay (overridden by clock elements).
     virtual void setDelay(const double delay);
 
+    // --- Propagation delay (temporal simulation) ---
+
+    /// Propagation delay in simulation-time units (nanoseconds) used by the event-driven
+    /// engine in temporal mode.  Returns the per-element override when one has been set,
+    /// otherwise the per-type default.  Unrelated to delay(), which is the Clock phase
+    /// delay measured in seconds.
+    SimTime propagationDelay() const;
+
+    /// Sets a per-element propagation-delay override (nanoseconds).  Pass SIM_TIME_UNSET
+    /// to clear the override and fall back to the type default.
+    void setPropagationDelay(SimTime ns);
+
+    /// Returns \c true if this element type has a propagation delay at all (a non-zero
+    /// per-type default), and therefore exposes one for editing.
+    bool hasPropagationDelay() const;
+
+    /// Returns \c true if a per-element propagation-delay override has been set.
+    bool hasPropagationDelayOverride() const { return m_propagationDelay != SIM_TIME_UNSET; }
+
+    /// Per-type default propagation delay (nanoseconds) for \a type.  Sources, sinks,
+    /// nodes, ICs, and decorative elements default to 0; logic gates and sequential
+    /// elements have non-zero defaults.
+    static SimTime defaultPropagationDelay(ElementType type);
+
     /**
      * \brief Returns the list of editable properties this element exposes in the ElementEditor.
      * \details Derived from metadata flags; no override needed in subclasses.
@@ -388,17 +413,6 @@ public:
     virtual void resetSimState();
 
     /**
-     * \brief Re-evaluates combinational outputs after the synchronous sequential
-     * commit, propagating just-committed flip-flop/latch state to downstream
-     * logic and IC output boundaries within the same tick.
-     * \details Called only on non-sequential elements (the simulation skips
-     * ElementGroup::Memory so their edge state is not disturbed). The default
-     * recomputes via updateLogic(); IC overrides it to recurse through its
-     * internals while skipping its own sequential elements.
-     */
-    virtual void resettleCombinational() { updateLogic(); }
-
-    /**
      * \brief Appends this element's full simulation state to \a out.
      * \details The exact counterpart of resetSimState(): whatever a subclass clears there, it
      * must save here and put back in restoreSimState(). The base handles the output values;
@@ -449,6 +463,18 @@ public:
     /// normal change-detecting path so visuals refresh correctly.
     void commitDeferredOutputs() { m_sim.commitDeferredOutputs(); }
 
+    /// \c true while a staged result is awaiting publication.
+    bool isDeferCommitOpen() const { return m_sim.isDeferCommitOpen(); }
+
+    /// \c true if a staged write changed a value since clearStagedChanged().
+    bool stagedChanged() const { return m_sim.stagedChanged(); }
+
+    /// Clears the staged-changed flag; call immediately before re-evaluating.
+    void clearStagedChanged() { m_sim.clearStagedChanged(); }
+
+    /// Closes a deferred-commit window, discarding what it staged.
+    void discardDeferredCommit() { m_sim.discardDeferredCommit(); }
+
     /// Allocates simulation I/O vectors with \a inputs inputs and \a outputs outputs.
     void initSimulationVectors(const int inputCount, const int outputCount);
 
@@ -498,6 +524,14 @@ public:
 
     /// Read-only view of the cached simulation input values.
     const QVector<Status> &simInputs() const { return m_sim.inputs(); }
+
+    /// Number of simulation input slots (predecessor links).
+    int simInputCount() const { return m_sim.connectionCount(); }
+
+    /// Element feeding simulation input slot \a index, or \c nullptr if unconnected.
+    /// Reflects the live simulation graph (physical, wireless, and spliced IC boundaries),
+    /// so inverting these links yields the engine's successor graph.
+    GraphicElement *simPredecessor(const int index) const { return m_sim.predecessor(index); }
 
     /// Read-only view of the current simulation output values.
     const QVector<Status> &simOutputs() const { return m_sim.outputs(); }
@@ -718,6 +752,11 @@ private:
     /// the item and its ports; this element forwards its orientation interface here.
     /// See ElementOrientation.
     ElementOrientation m_orientation{this};
+
+    // --- Members: Temporal simulation ---
+
+    /// Per-element propagation-delay override in ns; SIM_TIME_UNSET ⇒ use the type default.
+    SimTime m_propagationDelay = SIM_TIME_UNSET;
 
     // --- Members: Port Size Constraints ---
 

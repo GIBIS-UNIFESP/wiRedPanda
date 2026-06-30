@@ -25,8 +25,39 @@ private slots:
     void testInitializeReturnsFalseWithNoHost();
     void testInitializeSkipsNullItemsAndFailsWithNoElements();
     void testUpdatePortWithNullPortsAreNoOps();
-    void testCollectSequentialElementsSkipsNullElements();
     void testUpdateFlushesPendingVisualsOnLaterIdleTick();
+    /// The provably-idle tick skip: once a drain leaves the event queue empty, a tick with no
+    /// source change must not recompute. Pinned as a state-machine assertion rather than left
+    /// to the flush assertions, which pass whether or not the skip happens.
+    void testIdleTicksAreSkippedOnceAtFixedPoint();
+    /// restart() documents that "any future cached state added to Simulation must be cleared
+    /// above" and asserts it. Every pointer-keyed container is checked BY NAME here --
+    /// m_simFeedbackComponent and m_simFeedbackComponents hold raw GraphicElement* vectors that
+    /// canonicalizeOscillation() dereferences -- so the next container added fails here rather
+    /// than silently outliving a rebuild.
+    void testRestartClearsEveryPointerKeyedContainer();
+    void testEvaluationCapGrowsAlongEveryCrossComponentEdge();
+
+    /// An IC's externally visible value must be correct as soon as the drain settles, not when
+    /// the visual throttle next fires. mirrorICOutputValues() is the only thing that writes
+    /// ic->outputValue() -- the IC container is excluded from the flat netlist -- so running it
+    /// inside pushVisualStatuses() would put a logic value behind a presentation gate. The rest
+    /// of the suite cannot see that: Application::interactiveMode is false in tests, which makes
+    /// every tick visuals-due.
+    void testIcOutputValueIsFreshBeforeTheVisualPush();
+
+    /// m_atFixedPoint must be cleared on ENTRY to the drain, not only assigned at the end of a
+    /// successful one: an exception escaping updateLogic() would otherwise leave it holding the
+    /// previous tick's `true` while the queue is non-empty. Application::notify() catches and
+    /// the app keeps ticking, so every later tick with no source change would be skipped as idle
+    /// WITH EVENTS PENDING -- the circuit stalling silently until the user touches an input.
+    void testAbortedDrainDoesNotLeaveTheFixedPointFlagSet();
+
+    /// Types whose default propagation delay is 0 are delay-free by design (sources, sinks,
+    /// Nodes, ICs), and every writer refuses to set one on them -- the editor hides the field,
+    /// UpdateCommand skips the push, MCP rejects it. Reading the resolved value ungated would
+    /// let a hand-edited .panda inject a delay the engine honours and no UI ever shows.
+    void testDelayFreeTypesIgnoreAPropagationDelayOverride();
 
     /// A SimulationBlocker pause/resume cycle (every UpdateCommand redo/undo, including a
     /// plain InputSwitch click) must not force clocks HIGH or restart their phase.

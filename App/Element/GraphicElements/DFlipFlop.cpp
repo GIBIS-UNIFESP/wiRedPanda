@@ -94,8 +94,13 @@ void DFlipFlop::updateLogic()
     const Status clr = simInputs().at(3);
 
     if (clk == Status::Active && m_simLastClk == Status::Inactive) {
-        q0 = m_simLastValue;
-        q1 = (m_simLastValue == Status::Active) ? Status::Inactive : Status::Active;
+        // Sample D LIVE at the edge. Latching m_simLastValue — D as of the previous evaluation —
+        // is unnecessary here: under publish-side delay the element runs AT the edge and its
+        // result is not visible until it publishes, so the pre-edge value is guaranteed by phase
+        // separation rather than by hoarding a copy. Reading a stale D would just capture the
+        // wrong bit.
+        q0 = D;
+        q1 = (D == Status::Active) ? Status::Inactive : Status::Active;
     }
 
     if (prst == Status::Inactive || clr == Status::Inactive) {

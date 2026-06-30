@@ -20,6 +20,7 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
+#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -213,18 +214,18 @@ void IC::load(QDataStream &stream, SerializationContext &context)
 
 void IC::resetInternalState()
 {
+    // The top-level Simulation flattens this IC's internal primitives into its netlist, so its
+    // cached vectors reference the elements we are about to free. Invalidate it first (it
+    // rebuilds on the next tick) so no dangling pointers survive the qDeleteAll() below.
+    if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+        scene_->simulation()->restart();
+    }
+
     m_internalInputs.clear();
     m_internalOutputs.clear();
     // No setInputSize(0)/setOutputSize(0) here: after the first load,
     // loadBoundaryPorts locks min == max, making those calls silent no-ops —
     // the boundary port counts are re-established by the next load anyway.
-    // Clear derived simulation state BEFORE freeing the elements those
-    // vectors reference. If we freed first, a simulation tick between the
-    // free and the clear (via Application::notify + QMessageBox spinning
-    // a nested event loop) would dereference dangling pointers.
-    m_sortedInternalElements.clear();
-    m_boundaryInputElements.clear();
-    m_internalHasFeedback = false;
     qDeleteAll(m_internalConnections);
     m_internalConnections.clear();
     qDeleteAll(m_internalElements);
@@ -233,11 +234,9 @@ void IC::resetInternalState()
     // with its parent. If a future change adds a new internal vector and forgets
     // to clear it here, this assert trips immediately.
     Q_ASSERT(m_internalElements.isEmpty());
-    Q_ASSERT(m_sortedInternalElements.isEmpty());
     Q_ASSERT(m_internalConnections.isEmpty());
     Q_ASSERT(m_internalInputs.isEmpty());
     Q_ASSERT(m_internalOutputs.isEmpty());
-    Q_ASSERT(m_boundaryInputElements.isEmpty());
 }
 
 void IC::loadFile(const QString &fileName, const QString &contextDir)
@@ -346,14 +345,20 @@ void IC::initializeSimulation()
     ICSimulation::initialize(*this);
 }
 
-void IC::updateLogic()
+void IC::resetSimState()
 {
-    ICSimulation::update(*this);
-}
+    GraphicElement::resetSimState();
 
-void IC::resettleCombinational()
-{
-    ICSimulation::resettle(*this);
+    // The IC contributes only structure, but its internal primitives are simulated directly
+    // by the flat netlist and carry sequential state (flip-flop Q outputs, edge-detection
+    // history) across runs. A reset that skipped them would leave e.g. a BeWavedDolphin
+    // sweep starting from stale live-run state instead of power-on defaults. Nested ICs
+    // recurse through their own override.
+    for (auto *internal : std::as_const(m_internalElements)) {
+        if (internal) {
+            internal->resetSimState();
+        }
+    }
 }
 
 void IC::saveSimState(QVector<Status> &out) const

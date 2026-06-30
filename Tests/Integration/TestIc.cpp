@@ -355,9 +355,14 @@ void TestIC::testICStatusPropagation()
     QVERIFY2(sim != nullptr, "Simulation should initialize successfully");
 
     // IC input port 0 is "-Preset" (active-low, async): switch OFF drives it Inactive/low,
-    // asserting preset and forcing Q high; switch ON drives it Active/high, deasserting
-    // preset. With the clock (C) left unconnected (defaultValue, never edges), Q tracks
-    // -Preset directly -- confirmed empirically: off->true, on->false, off->true.
+    // asserting preset and forcing Q high; switch ON drives it Active/high, deasserting preset.
+    // With the clock (C), J and K left unconnected (defaultValue, never edges), a real
+    // flip-flop must HOLD Q once the async override releases -- there is no clock edge to
+    // sample a new value, so Q keeps whatever the override last forced it to (DFlipFlop's own
+    // updateLogic() only writes Q on a clock edge or while Preset/Clear is asserted). The
+    // IC-flattened netlist settles this glitch-free: the J/K-to-D conversion gates cannot
+    // present a spurious edge, because nothing downstream samples them until the active region
+    // has settled.
 
     // Test 1: Set switch OFF (preset asserted) -- Q must be forced high.
     inputSwitch.setOn(false);
@@ -365,10 +370,10 @@ void TestIC::testICStatusPropagation()
     bool ledStateWhenSwitchOff = TestUtils::inputStatus(&outputLed);
     QVERIFY2(ledStateWhenSwitchOff, "Asserting -Preset (switch off) must force the Q output high");
 
-    // Test 2: Set switch ON (preset deasserted) -- Q must actually change, not just hold.
+    // Test 2: Set switch ON (preset deasserted, no clock edge) -- Q must HOLD, not glitch.
     inputSwitch.setOn(true);
     sim->update();
-    QVERIFY2(!TestUtils::inputStatus(&outputLed), "Deasserting -Preset must change Q, not leave it stuck at the forced value");
+    QVERIFY2(TestUtils::inputStatus(&outputLed), "Deasserting -Preset with no clock edge must hold Q, not glitch to a new value");
 
     // Test 3: Toggle back to OFF (preset re-asserted) -- Q must be forced high again.
     inputSwitch.setOn(false);

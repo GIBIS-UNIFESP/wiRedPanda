@@ -45,6 +45,16 @@ public:
     /// Records that simulation input \a inputIndex is driven by \a source output \a outputPort.
     void connectPredecessor(int inputIndex, GraphicElement *source, int outputPort);
 
+    /// Number of simulation input slots (predecessor links).
+    int connectionCount() const { return static_cast<int>(m_connections.size()); }
+
+    /// Element feeding simulation input slot \a index, or \c nullptr if unconnected or out of range.
+    GraphicElement *predecessor(int index) const
+    {
+        if (index >= m_connections.size()) { return nullptr; }
+        return m_connections[index].sourceElement;
+    }
+
     /**
      * \brief Snapshots each predecessor's output into the input cache, reading \a inputPorts
      * for unconnected-input defaults and multi-driver conflict detection.
@@ -73,6 +83,7 @@ public:
         if (m_deferCommit) {
             // Synchronous sequential element mid-tick: stage the value so peers
             // still read the old output. commitDeferredOutputs() publishes it.
+            if (m_staged[index] != value) { m_stagedChanged = true; }
             m_staged[index] = value;
             return;
         }
@@ -102,6 +113,15 @@ public:
     /// from current outputs and routes subsequent setOutputValue() calls to it.
     void beginDeferredCommit()
     {
+        // IDEMPOTENT while a window is already open. The engine calls this before EVERY
+        // evaluation, so re-seeding the staging buffer here would discard a result still
+        // awaiting publication -- a flip-flop re-evaluated inside its own propagation delay
+        // would lose the value it had just captured, and the guarantee outputs() documents
+        // below ("sees the value it already staged") could not hold. Reopening is only correct
+        // once the pending publish has committed, which is exactly when m_deferCommit is false
+        // again.
+        if (m_deferCommit) { return; }
+
         // Element-wise copy into persistent storage, deliberately NOT `m_staged =
         // m_outputs`: assignment CoW-shares the two buffers, so every staged write and
         // every commit write into m_outputs pays a detach (malloc + deep copy) -- per
@@ -113,6 +133,21 @@ public:
         std::copy(m_outputs.cbegin(), m_outputs.cend(), m_staged.begin());
         m_deferCommit = true;
     }
+
+    /// Returns \c true while a deferred-commit window is open (a staged result is awaiting
+    /// publication). Lets the engine tell "first evaluation after a commit" from "another
+    /// evaluation inside a delay that has not elapsed yet".
+    bool isDeferCommitOpen() const { return m_deferCommit; }
+
+    /// Returns \c true if a staged write changed a value since clearStagedChanged().
+    bool stagedChanged() const { return m_stagedChanged; }
+
+    /// Clears the staged-changed flag; call immediately before re-evaluating.
+    void clearStagedChanged() { m_stagedChanged = false; }
+
+    /// Closes a deferred-commit window and DISCARDS what it staged. For callers that write
+    /// m_outputs directly and must not have their write routed into staging.
+    void discardDeferredCommit() { m_deferCommit = false; m_stagedChanged = false; }
 
     /// Ends the deferred-commit window and publishes staged outputs via the
     /// normal change-detecting path so visuals refresh correctly.
@@ -134,4 +169,5 @@ private:
     QVector<Status> m_staged;
     bool m_outputChanged = false;
     bool m_deferCommit = false;
+    bool m_stagedChanged = false;
 };

@@ -1519,3 +1519,35 @@ void TestSimulation::testDanglingConnectionGraceful()
     sim->update();
     QCOMPARE(inputStatus(&led), false);
 }
+
+void TestSimulation::testWirelessOverrideDoesNotFabricateFeedbackLoop()
+{
+    // rx.out -> gate, gate.out -> rx.in (PHYSICAL), tx.out -> rx (WIRELESS).
+    // The real dataflow is acyclic: rx reads tx, so nothing feeds back.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch src;
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    QVERIFY(tx && rx);
+    Not gate;
+
+    tx->setLabel("CH");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("CH");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(&src, tx, rx, &gate);
+    builder.connect(&src, 0, tx, 0);    // drive the transmitter
+    builder.connect(rx, 0, &gate, 0);   // rx -> gate
+    builder.connect(&gate, 0, rx, 0);   // gate -> rx, physically; wireless overrides it
+
+    auto *sim = builder.initSimulation();
+
+    QVERIFY2(!sim->isInFeedbackLoop(rx),
+             "the Rx reads its Tx, not the physical wire: the overridden edge must not appear "
+             "in the successor graph");
+    QVERIFY2(!sim->isInFeedbackLoop(&gate),
+             "and the gate downstream of it is not in a loop either");
+}

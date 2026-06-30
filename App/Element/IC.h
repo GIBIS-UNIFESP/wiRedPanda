@@ -10,7 +10,6 @@
 #include <QByteArray>
 #include <QPixmap>
 #include <QPoint>
-#include <QSet>
 
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
@@ -106,20 +105,20 @@ public:
 
     // --- Visual ---
 
-    /// \reimp Simulates the IC's internal circuit and propagates results.
-    void updateLogic() override;
-
-    /// \reimp Re-propagates committed sequential state through the IC's internal
-    /// combinational logic and refreshes its output boundary, without re-clocking
-    /// internal flip-flops/latches.
-    void resettleCombinational() override;
-
-    /// Builds the internal simulation graph (connection graph + sort) for direct simulation.
+    /// Wires the IC's internal primitives so Simulation::initialize() can splice them into the
+    /// top-level flat netlist. The IC does not settle itself: it has no updateLogic override.
     void initializeSimulation();
+
+    /// \reimp Resets the IC's own ports AND every internal primitive (recursively through
+    /// nested ICs). The flat netlist simulates the internals directly, so they carry
+    /// sequential state (flip-flop Q, edge detection) that a reset must not skip — e.g. a
+    /// BeWavedDolphin sweep would otherwise start from whatever state the live run left.
+    void resetSimState() override;
 
     /// \reimp Saves/restores every internal primitive's state too (recursively through nested
     /// ICs), so a BeWavedDolphin sweep hands the live circuit back exactly as it found it.
     void saveSimState(QVector<Status> &out) const override;
+    /// \reimp
     void restoreSimState(const QVector<Status> &in, int &cursor) override;
 
     /// \reimp
@@ -182,12 +181,6 @@ private:
     QVector<Connection *> m_internalConnections;
     QVector<Port *> m_internalInputs;
     QVector<Port *> m_internalOutputs;
-
-    // --- Members: Direct simulation ---
-
-    QVector<GraphicElement *> m_sortedInternalElements;
-    QSet<GraphicElement *> m_boundaryInputElements;
-    bool m_internalHasFeedback = false;
 
     // --- Members: Hover preview ---
 

@@ -6111,7 +6111,7 @@ void TestICInline::testEmbedICsByFileWithSequentialElementWhileSimulationRunning
     // Regression: embedICsByFile() previously mutated a live, already-in-scene IC with no
     // SimulationBlocker at all, unlike sibling onFileChanged(). If the embedded sub-circuit
     // contains a sequential element, resetInternalState() frees exactly the objects
-    // Simulation::m_sequentialElements points to while the simulation timer could still be
+    // Simulation::m_sortedElements points to while the simulation timer could still be
     // running. This can't reproduce the real UAF deterministically in single-threaded QtTest
     // (see TestDanglingPointer's bug6/bug7 for the same limitation) — this test instead
     // exercises the guarded path end to end with the simulation actively started, and confirms

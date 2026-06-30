@@ -18,6 +18,12 @@ void ElementSimState::reset(const QVector<OutputPort *> &outputPorts)
                                : Status::Inactive;
         m_outputs[i] = (def == Status::Unknown) ? Status::Inactive : def;
     }
+    // Close any deferred-commit window this element was left in. reset() writes m_outputs
+    // directly, so a still-open window would leave outputs() (staged) and outputValue()
+    // (committed) disagreeing until the element's next evaluation, and a later stray commit
+    // could republish the pre-reset values over the power-on defaults just written.
+    m_deferCommit = false;
+    m_stagedChanged = false;
     m_outputChanged = true;
 }
 
@@ -36,6 +42,7 @@ void ElementSimState::initVectors(int inputCount, int outputCount, const QVector
     m_outputs.resize(outputCount);
     m_staged.resize(outputCount);
     m_deferCommit = false;
+    m_stagedChanged = false;
     // Initialize outputs from port default statuses when they're explicitly set
     // (e.g., flip-flop Q'=Active), otherwise default to Inactive.
     // Using Inactive (not Unknown) ensures gate-level feedback loops can settle.
@@ -71,11 +78,12 @@ bool ElementSimState::updateInputs(bool allowUnknown, const QVector<InputPort *>
         const bool shouldFail = allowUnknown ? (val == Status::Unknown && !pred)
                                              : (val == Status::Unknown || val == Status::Error);
         if (shouldFail) {
-            for (auto &out : m_outputs) {
-                if (out != Status::Unknown) {
-                    m_outputChanged = true;
-                }
-                out = Status::Unknown;
+            // Route through setOutputValue() rather than writing m_outputs directly: the
+            // engine stages every element's evaluation, so a direct write here would be
+            // overwritten by the staged (pre-evaluation) snapshot on commit -- an undefined
+            // input would silently resolve to whatever the output held before.
+            for (int out = 0; out < m_outputs.size(); ++out) {
+                setOutputValue(out, Status::Unknown);
             }
             return false;
         }

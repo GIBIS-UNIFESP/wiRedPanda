@@ -3,16 +3,21 @@
 
 #include "Tests/Unit/Simulation/TestSimulation.h"
 
+#include <QDir>
 #include <QElapsedTimer>
+#include <QFileInfo>
 
 #include "App/Core/Application.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Not.h"
+#include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -250,15 +255,55 @@ void TestSimulationUnit::testUpdatePortWithNullPortsAreNoOps()
     Simulation::updatePort(static_cast<InputPort *>(nullptr));
 }
 
-void TestSimulationUnit::testCollectSequentialElementsSkipsNullElements()
+void TestSimulationUnit::testIdleTicksAreSkippedOnceAtFixedPoint()
 {
-    StubSimulationHost host;
-    Simulation sim(&host);
+    // Discriminating a skipped tick from a drained one needs care. Corrupting an element's
+    // output and checking it survives does NOT work: the incremental seed only wakes successors
+    // of sources whose outputChanged() is set, so with no source change a *drained* tick
+    // re-evaluates nothing either and the corruption survives both ways -- such a test passes
+    // with the skip disabled, so it discriminates nothing.
+    //
+    // What genuinely differs is the visual bookkeeping: a drained tick always sets
+    // m_visualsDirty (a flush is owed), while a skipped tick leaves it alone. That is only
+    // observable while the throttle is engaged, so the flush isn't performed immediately.
+    TestUtils::ScopedInteractiveMode interactiveGuard;
+    Application::interactiveMode = true;
 
-    QVector<GraphicElement *> elements{nullptr};
-    sim.collectSequentialElements(elements);
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(notGate);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, notGate, 0);
+    builder.connect(notGate, 0, led, 0);
 
-    QVERIFY(sim.m_sequentialElements.isEmpty());
+    Simulation sim(scene);
+    sim.setVisualThrottleEnabled(true);
+    sim.m_visualTickInterval = 4; // friend seam: deterministic, not screen-derived
+
+    sw->setOn(true);
+    sim.m_visualTickCount = 3;    // next tick is visualsDue: it flushes and clears the flag
+    sim.update();
+    QVERIFY2(sim.m_atFixedPoint,
+             "a drain that empties the event queue must be recognised as a fixed point");
+    QVERIFY2(!sim.m_visualsDirty, "precondition: that tick flushed, so nothing is owed");
+    QCOMPARE(notGate->outputValue(0), Status::Inactive); // NOT(1)
+
+    // Now a tick with no source change, while a flush is NOT due. If it is skipped, nothing is
+    // owed afterwards. If it drains, it owes a flush.
+    sim.update();
+    QVERIFY2(!sim.m_visualsDirty,
+             "an idle tick at a fixed point must be skipped, not drained");
+
+    // A real source change must leave the fixed point and do actual work.
+    sw->setOn(false);
+    sim.update();
+    QCOMPARE(notGate->outputValue(0), Status::Active); // NOT(0)
+    QVERIFY2(sim.m_visualsDirty, "a tick that really drained owes a visual flush");
 }
 
 void TestSimulationUnit::testUpdateFlushesPendingVisualsOnLaterIdleTick()
@@ -342,4 +387,262 @@ void TestSimulationUnit::testBlockerCyclePreservesClockLevel()
              "resume after a SimulationBlocker cycle forced the clock HIGH mid-LOW-phase");
 
     sim->stop();
+}
+
+void TestSimulationUnit::testRestartClearsEveryPointerKeyedContainer()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *n1 = ElementFactory::buildElement(ElementType::Nand);
+    auto *n2 = ElementFactory::buildElement(ElementType::Nand);
+    scene->addItem(sw);
+    scene->addItem(n1);
+    scene->addItem(n2);
+    sw->setPos(0, 0);
+    n1->setPos(100, 0);
+    n2->setPos(200, 0);
+
+    const auto wire = [scene](GraphicElement *a, int ap, GraphicElement *b, int bp) {
+        auto *c = new Connection();
+        scene->addItem(c);
+        c->setStartPort(a->outputPort(ap));
+        c->setEndPort(b->inputPort(bp));
+    };
+    wire(sw, 0, n1, 0);
+    wire(n1, 0, n2, 0);   // cross-coupled latch, so the component containers get populated
+    wire(n2, 0, n1, 1);
+
+    auto &sim = *scene->simulation();
+    QVERIFY(sim.initialize());
+    QVERIFY2(!sim.m_simFeedbackComponents.isEmpty(), "precondition: a cycle must be detected");
+    QVERIFY(!sim.m_simFeedbackComponent.isEmpty());
+    QVERIFY(!sim.m_simEvalCaps.isEmpty());
+    QVERIFY(!sim.m_simPriorities.isEmpty());
+    QVERIFY(!sim.m_delays.isEmpty());
+
+    sim.restart();
+
+    QVERIFY2(sim.m_simFeedbackComponents.isEmpty(), "m_simFeedbackComponents must not survive restart()");
+    QVERIFY2(sim.m_simFeedbackComponent.isEmpty(), "m_simFeedbackComponent must not survive restart()");
+    QVERIFY2(sim.m_simEvalCaps.isEmpty(), "m_simEvalCaps must not survive restart()");
+    QVERIFY(sim.m_simPriorities.isEmpty());
+    QVERIFY(sim.m_simFeedbackNodes.isEmpty());
+    QVERIFY(sim.m_delays.isEmpty());
+    QVERIFY(sim.m_publishGeneration.isEmpty());
+}
+
+void TestSimulationUnit::testEvaluationCapGrowsAlongEveryCrossComponentEdge()
+{
+    // THE invariant the per-element evaluation cap has to satisfy, stated directly instead of
+    // being inferred from one circuit's numbers: along every edge that leaves a condensation
+    // node, the consumer's cap must STRICTLY exceed the producer's. That is what guarantees a
+    // member of an oscillating region trips before anything reading it. A trip landing on a
+    // reader instead makes the drain abandon the timestamp with nothing canonicalised, leaving
+    // a self-inconsistent circuit.
+    //
+    // The cap is kEvalCapSlack * (depth + 1) * (rounds + 1), so the invariant holds as long as
+    // the longest-path depth is computed correctly: a cross-node edge means depth[to] >=
+    // depth[from] + 1 and rounds[to] >= rounds[from]. It fails as soon as the relaxation visits
+    // a node before one of its predecessors and under-estimates its depth.
+    //
+    // Driven over a REAL circuit of a few hundred elements with several cyclic components,
+    // because only that scale discriminates: relaxing in priority order rather than the
+    // condensation's own topological order under-estimates depth by up to 41 levels on the CPU
+    // fixtures, while every hand-built circuit small enough to reason about comes out right.
+    const QString icPath = TestUtils::cpuComponentsDir() + "level6_program_counter_8bit_arithmetic.panda";
+    if (!QFileInfo::exists(icPath)) {
+        QSKIP("CPU component fixture missing");
+    }
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *ic = new IC();
+    scene->addItem(ic);
+    ic->loadFile(QFileInfo(icPath).absoluteFilePath(), QFileInfo(icPath).absolutePath());
+    ic->setPos(0, 0);
+
+    auto &sim = *scene->simulation();
+    QVERIFY(sim.initialize());
+    QVERIFY2(sim.m_simFeedbackComponents.size() > 1,
+             "precondition: the fixture must contain several cyclic components, which is the "
+             "shape that made the relaxation order matter");
+    QVERIFY2(sim.m_sortedElements.size() > 100,
+             "precondition: a circuit large enough for the condensation to be deep");
+
+    int checked = 0;
+    for (auto it = sim.m_successorGraph.cbegin(); it != sim.m_successorGraph.cend(); ++it) {
+        auto *from = it.key();
+        const int fromComponent = sim.m_simFeedbackComponent.value(from, -1);
+        const int fromCap = sim.m_simEvalCaps.value(from, -1);
+        QVERIFY2(fromCap > 0, "every element in the successor graph must have a cap");
+
+        for (auto *to : it.value()) {
+            const int toComponent = sim.m_simFeedbackComponent.value(to, -1);
+            // Inside one cyclic component every member shares a cap by construction; the
+            // invariant is about edges that leave it.
+            if (to == from || (fromComponent >= 0 && fromComponent == toComponent)) {
+                continue;
+            }
+            const int toCap = sim.m_simEvalCaps.value(to, -1);
+            QVERIFY2(toCap > 0, "every successor must have a cap too");
+            QVERIFY2(toCap > fromCap,
+                     qPrintable(QStringLiteral("cap did not grow across a condensation edge: "
+                                               "%1 (cap %2, component %3) -> %4 (cap %5, component %6)")
+                                    .arg(from->label().isEmpty() ? QStringLiteral("<unlabelled>") : from->label())
+                                    .arg(fromCap).arg(fromComponent)
+                                    .arg(to->label().isEmpty() ? QStringLiteral("<unlabelled>") : to->label())
+                                    .arg(toCap).arg(toComponent)));
+            ++checked;
+        }
+    }
+
+    QVERIFY2(checked > 100,
+             qPrintable(QStringLiteral("precondition: too few cross-component edges to be "
+                                       "meaningful (%1)").arg(checked)));
+}
+
+void TestSimulationUnit::testIcOutputValueIsFreshBeforeTheVisualPush()
+{
+    TestUtils::ScopedInteractiveMode interactiveGuard;
+    Application::interactiveMode = true;   // the throttle only applies interactively
+
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    const QString icFile = QDir::current().filePath("Tests/Fixtures/simple_and.panda");
+    if (!QFileInfo::exists(icFile)) {
+        QSKIP("simple_and.panda fixture missing");
+    }
+
+    auto *ic = new IC();
+    scene->addItem(ic);
+    ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
+    ic->setPos(200, 0);
+    QVERIFY2(ic->inputSize() >= 2, "fixture should be a 2-input AND");
+
+    QVector<GraphicElementInput *> switches;
+    for (int i = 0; i < ic->inputSize(); ++i) {
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+        scene->addItem(sw);
+        sw->setPos(0, i * 60);
+        auto *c = new Connection();
+        scene->addItem(c);
+        c->setStartPort(sw->outputPort(0));
+        c->setEndPort(ic->inputPort(i));
+        switches.append(qobject_cast<GraphicElementInput *>(sw));
+    }
+
+    auto &sim = *scene->simulation();
+    sim.setVisualThrottleEnabled(true);
+    sim.m_visualTickInterval = 50;         // friend seam: make the throttle actually bite
+    QVERIFY(sim.initialize());
+
+    for (auto *sw : switches) { sw->setOn(false, 0); }
+    sim.m_visualTickCount = 49;            // consume the pending flush
+    sim.update();
+    QCOMPARE(ic->outputValue(0), Status::Inactive);
+
+    // Drive the AND high. The drain settles the internal boundary node on this tick; the
+    // visual push is throttled away. The AND's settled value (Active) deliberately DIFFERS
+    // from its power-on default, or the assertion could not tell stale from fresh.
+    for (auto *sw : switches) { sw->setOn(true, 0); }
+    sim.update();
+
+    QVERIFY2(ic->outputValue(0) == Status::Active,
+             "ic->outputValue() must reflect the settled drain immediately: it is what MCP "
+             "get_output_value reads, and mirroring is logic, not presentation");
+}
+
+namespace {
+
+/// A NOT gate that throws from updateLogic(). No shipped element does, and the exception path
+/// is documented behaviour -- Application::notify() catches it and the app keeps running -- so
+/// the drain's failure mode needs one to be observable at all.
+class ThrowingNot : public Not
+{
+public:
+    void updateLogic() override { throw std::runtime_error("probe: updateLogic failed"); }
+};
+
+} // namespace
+
+void TestSimulationUnit::testAbortedDrainDoesNotLeaveTheFixedPointFlagSet()
+{
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *bad = new ThrowingNot();
+    scene->addItem(sw);
+    scene->addItem(bad);
+    sw->setPos(0, 0);
+    bad->setPos(100, 0);
+    auto *c = new Connection();
+    scene->addItem(c);
+    c->setStartPort(sw->outputPort(0));
+    c->setEndPort(bad->inputPort(0));
+
+    auto &sim = *scene->simulation();
+    QVERIFY(sim.initialize());
+
+    // Pretend the previous tick concluded a fixed point, which is what makes this a
+    // discriminator: assigning the flag only at the end of the drain would leave it true.
+    // A source change is required as well, or the idle skip returns before the drain and
+    // nothing is evaluated at all.
+    sim.m_atFixedPoint = true;
+    qobject_cast<GraphicElementInput *>(sw)->setOn(true, 0);
+
+    bool threw = false;
+    try {
+        sim.update();
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "precondition: the drain must actually have been aborted");
+
+    QVERIFY2(!sim.m_atFixedPoint,
+             "an aborted drain must not leave the fixed-point conclusion standing: later ticks "
+             "would be skipped as idle while events are still pending");
+}
+
+void TestSimulationUnit::testDelayFreeTypesIgnoreAPropagationDelayOverride()
+{
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *node = ElementFactory::buildElement(ElementType::Node);
+    auto *gate = ElementFactory::buildElement(ElementType::Not);
+    scene->addItem(sw);
+    scene->addItem(node);
+    scene->addItem(gate);
+    sw->setPos(0, 0);
+    node->setPos(100, 0);
+    gate->setPos(200, 0);
+
+    const auto wire = [scene](GraphicElement *a, int ap, GraphicElement *b, int bp) {
+        auto *c = new Connection();
+        scene->addItem(c);
+        c->setStartPort(a->outputPort(ap));
+        c->setEndPort(b->inputPort(bp));
+    };
+    wire(sw, 0, node, 0);
+    wire(node, 0, gate, 0);
+
+    // Exactly what GraphicElementSerializer::load() does for a file carrying the key.
+    node->setPropagationDelay(500);
+    gate->setPropagationDelay(42);
+    QVERIFY(node->hasPropagationDelayOverride());
+
+    auto &sim = *scene->simulation();
+    QVERIFY(sim.initialize());
+
+    QVERIFY2(sim.m_delays.value(node, 999) == SimTime{0},
+             "a Node is delay-free by design: the engine must not honour an override no UI or "
+             "API is willing to create");
+    QCOMPARE(sim.m_delays.value(gate, 0), SimTime{42});   // a real gate still honours its override
+
+    // The runtime channel obeys the same rule, so the map cannot acquire one later either.
+    sim.setElementDelay(node, 500);
+    QCOMPARE(sim.m_delays.value(node, 999), SimTime{0});
+    sim.setElementDelay(gate, 7);
+    QCOMPARE(sim.m_delays.value(gate, 0), SimTime{7});
 }

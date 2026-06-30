@@ -15,22 +15,27 @@
 #include <QVector>
 
 /**
- * \brief Finds all nodes that participate in feedback loops (cycles).
+ * \brief Finds the strongly connected components that are cycles, as a PARTITION.
  *
- * Uses Tarjan's iterative SCC algorithm.  Every node belonging to a
- * strongly connected component of size > 1 (or with a self-loop) is
- * returned in the output set.
+ * Uses Tarjan's iterative SCC algorithm.  Every component of size > 1, and every
+ * single node with a self-loop, is returned as its own group.  Acyclic nodes are
+ * not returned at all.
+ *
+ * findFeedbackNodes() is the flattened view of this and is implemented in terms of
+ * it.  The grouping matters wherever "which cycle" is the question rather than
+ * "is this in a cycle": canonicalising one oscillating region must not disturb an
+ * unrelated, settled one.
  *
  * \param elements    All nodes to process.
  * \param successors  Adjacency list (node -> its successors).
- * \return Set of all nodes that are part of at least one cycle.
+ * \return One inner vector per cyclic component.
  */
 template<typename T>
-QSet<T *> findFeedbackNodes(
+QVector<QVector<T *>> findFeedbackComponents(
     const QVector<T *> &elements,
     const QHash<T *, QVector<T *>> &successors)
 {
-    QSet<T *> feedbackNodes;
+    QVector<QVector<T *>> components;
 
     int indexCounter = 0;
     QHash<T *, int> nodeIndex;
@@ -89,11 +94,9 @@ QSet<T *> findFeedbackNodes(
                     } while (w != node);
 
                     if (scc.size() > 1) {
-                        for (auto *n : std::as_const(scc)) {
-                            feedbackNodes.insert(n);
-                        }
+                        components.append(scc);
                     } else if ((it != successors.constEnd()) && it->contains(node)) {
-                        feedbackNodes.insert(node); // self-loop
+                        components.append(QVector<T *>{node}); // self-loop
                     }
                 }
 
@@ -107,6 +110,31 @@ QSet<T *> findFeedbackNodes(
         }
     }
 
+    return components;
+}
+
+/**
+ * \brief Finds all nodes that participate in feedback loops (cycles).
+ *
+ * The flattened view of findFeedbackComponents(): every node of every cyclic
+ * component, in one set.  Use this when only membership matters.
+ *
+ * \param elements    All nodes to process.
+ * \param successors  Adjacency list (node -> its successors).
+ * \return Set of all nodes that are part of at least one cycle.
+ */
+template<typename T>
+QSet<T *> findFeedbackNodes(
+    const QVector<T *> &elements,
+    const QHash<T *, QVector<T *>> &successors)
+{
+    QSet<T *> feedbackNodes;
+    const auto components = findFeedbackComponents(elements, successors);
+    for (const auto &component : components) {
+        for (auto *node : component) {
+            feedbackNodes.insert(node);
+        }
+    }
     return feedbackNodes;
 }
 

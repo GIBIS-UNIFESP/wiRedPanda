@@ -16,6 +16,7 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
+#include "App/Simulation/SimTime.h"
 #include "Tests/Common/TestUtils.h"
 
 // Input Size Tests
@@ -389,6 +390,89 @@ void TestElementProperties::testFrequencyValidation()
     double before = clock.frequency();
     clock.setFrequency(1000000.0);
     QCOMPARE(clock.frequency(), before);
+}
+
+// Propagation Delay Test
+
+void TestElementProperties::testPropagationDelayBoundsGuard()
+{
+    And andGate;
+
+    // SIM_TIME_UNSET is the documented "clear the override" sentinel: setting it must fall
+    // back to the type default, not be rejected as an out-of-range value.
+    andGate.setPropagationDelay(500);
+    QVERIFY(andGate.hasPropagationDelayOverride());
+    andGate.setPropagationDelay(SIM_TIME_UNSET);
+    QVERIFY(!andGate.hasPropagationDelayOverride());
+    QCOMPARE(andGate.propagationDelay(), andGate.defaultPropagationDelay(ElementType::And));
+
+    // A valid override within bounds is accepted.
+    andGate.setPropagationDelay(1000000);
+    QVERIFY(andGate.hasPropagationDelayOverride());
+    QCOMPARE(andGate.propagationDelay(), SimTime{1000000});
+
+    // A value above the 1,000,000 ns (1 ms) bound — the same maximum the "Prop. delay" spin
+    // box already enforces in the UI — is rejected, leaving the prior override untouched.
+    andGate.setPropagationDelay(1000001);
+    QCOMPARE(andGate.propagationDelay(), SimTime{1000000});
+}
+
+void TestElementProperties::testPropagationDelayLoadRejectsOutOfRange()
+{
+    // The load path must route the stored value through setPropagationDelay(), so a
+    // crafted/corrupt .panda carrying an out-of-range delay degrades to the type default
+    // instead of adopting a value that would overflow `t + delay` event scheduling.
+    // Craft the stream by saving a legitimate override, then binary-patching its stored
+    // quint64 (QDataStream is big-endian) to something far above the bound. The saved file's
+    // payload is zlib-compressed (Serialization::writePayload()), so the patch has to happen
+    // on the decompressed bytes -- searching the compressed stream for a raw marker would
+    // never match.
+    WorkSpace workspace1;
+    auto *gate = new And();
+    gate->setPropagationDelay(999999); // in-range marker, findable in the decompressed payload
+    workspace1.scene()->addItem(gate);
+
+    QByteArray data;
+    {
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        workspace1.save(stream);
+    }
+
+    QDataStream headerStream(&data, QIODevice::ReadOnly);
+    const QVersionNumber savedVersion = Serialization::readPandaHeader(headerStream);
+    QByteArray payload = Serialization::readPayload(headerStream, savedVersion);
+
+    QByteArray marker;
+    {
+        QDataStream m(&marker, QIODevice::WriteOnly);
+        m << quint64(999999);
+    }
+    const auto pos = payload.indexOf(marker);
+    QVERIFY2(pos >= 0, "marker delay not found in the decompressed payload");
+    QVERIFY2(payload.indexOf(marker, pos + 1) < 0, "marker delay is not unique in the payload");
+    payload.replace(pos, marker.size(), QByteArray::fromHex("7fffffffffffffff"));
+
+    QByteArray patchedData;
+    {
+        QDataStream stream(&patchedData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        Serialization::writePayload(stream, payload);
+    }
+
+    WorkSpace workspace2;
+    QDataStream loadStream(&patchedData, QIODevice::ReadOnly);
+    const QVersionNumber version = Serialization::readPandaHeader(loadStream);
+    workspace2.load(loadStream, version, {});
+
+    And *loaded = nullptr;
+    const auto elements = workspace2.scene()->elements();
+    for (auto *elm : elements) {
+        if (auto *a = dynamic_cast<And *>(elm)) { loaded = a; }
+    }
+    QVERIFY2(loaded != nullptr, "AND gate should have reloaded");
+    QVERIFY2(!loaded->hasPropagationDelayOverride(), "Out-of-range delay must not become an override");
+    QCOMPARE(loaded->propagationDelay(), And().defaultPropagationDelay(ElementType::And));
 }
 
 // Serialization Test

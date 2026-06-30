@@ -103,9 +103,13 @@ void computeLogic() {
     // End IC: LEVEL3_REGISTER_1BIT
 }
 
-void commitFlipFlops() {
+bool commitFlipFlops() {
+    bool changed = false;
+    if (aux_level3_register_1bit_0_d_flip_flop_7_0_q != aux_level3_register_1bit_0_d_flip_flop_7_0_q_next) { changed = true; }
     aux_level3_register_1bit_0_d_flip_flop_7_0_q = aux_level3_register_1bit_0_d_flip_flop_7_0_q_next;
+    if (aux_level3_register_1bit_0_d_flip_flop_7_1_q != aux_level3_register_1bit_0_d_flip_flop_7_1_q_next) { changed = true; }
     aux_level3_register_1bit_0_d_flip_flop_7_1_q = aux_level3_register_1bit_0_d_flip_flop_7_1_q_next;
+    return changed;
 }
 
 void loop() {
@@ -117,9 +121,11 @@ void loop() {
 
     // Updating clocks. //
 
-    g_sample = true;
-    for (int s = 0; s < 10; s++) { computeLogic(); }
-    commitFlipFlops();
+    for (int p = 0; p < 10; p++) {
+        g_sample = true;
+        for (int s = 0; s < 10; s++) { computeLogic(); }
+        if (!commitFlipFlops()) { break; }
+    }
     g_sample = false;
     for (int s = 0; s < 10; s++) { computeLogic(); }
 

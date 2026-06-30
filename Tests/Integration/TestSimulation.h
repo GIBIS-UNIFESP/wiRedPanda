@@ -62,6 +62,14 @@ private slots:
     void testWirelessOrphanedTxDoesNotCrash();
     void testWirelessOrphanedRxWithPhysicalWire();
     void testWirelessOverridesPhysicalWire();
+
+    /// The graph-level half of the override. connectWirelessElements() repoints an Rx at its
+    /// Tx, while sortSimElements() builds edges by walking output-port CONNECTIONS -- so the
+    /// overridden physical wire must be dropped from m_successorGraph, or it stays as an edge
+    /// the engine never reads. Route that wire from downstream and such an edge fabricates a
+    /// cycle in an acyclic circuit, dropping calculatePriorities() onto the legacy walk for the
+    /// WHOLE circuit and making the phantom component a canonicalisation target.
+    void testWirelessOverrideDoesNotFabricateFeedbackLoop();
     void testWirelessFeedbackLoop();
     void testWirelessUnicodeLabels();
 

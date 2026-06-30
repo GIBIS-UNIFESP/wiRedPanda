@@ -392,15 +392,25 @@ void computeLogic() {
     // End IC: LEVEL4_REGISTER_4BIT
 }
 
-void commitFlipFlops() {
+bool commitFlipFlops() {
+    bool changed = false;
+    if (aux_level4_register_4bit_0_d_flip_flop_8_0_q != aux_level4_register_4bit_0_d_flip_flop_8_0_q_next) { changed = true; }
     aux_level4_register_4bit_0_d_flip_flop_8_0_q = aux_level4_register_4bit_0_d_flip_flop_8_0_q_next;
+    if (aux_level4_register_4bit_0_d_flip_flop_8_1_q != aux_level4_register_4bit_0_d_flip_flop_8_1_q_next) { changed = true; }
     aux_level4_register_4bit_0_d_flip_flop_8_1_q = aux_level4_register_4bit_0_d_flip_flop_8_1_q_next;
+    if (aux_level4_register_4bit_0_d_flip_flop_9_0_q != aux_level4_register_4bit_0_d_flip_flop_9_0_q_next) { changed = true; }
     aux_level4_register_4bit_0_d_flip_flop_9_0_q = aux_level4_register_4bit_0_d_flip_flop_9_0_q_next;
+    if (aux_level4_register_4bit_0_d_flip_flop_9_1_q != aux_level4_register_4bit_0_d_flip_flop_9_1_q_next) { changed = true; }
     aux_level4_register_4bit_0_d_flip_flop_9_1_q = aux_level4_register_4bit_0_d_flip_flop_9_1_q_next;
+    if (aux_level4_register_4bit_0_d_flip_flop_10_0_q != aux_level4_register_4bit_0_d_flip_flop_10_0_q_next) { changed = true; }
     aux_level4_register_4bit_0_d_flip_flop_10_0_q = aux_level4_register_4bit_0_d_flip_flop_10_0_q_next;
+    if (aux_level4_register_4bit_0_d_flip_flop_10_1_q != aux_level4_register_4bit_0_d_flip_flop_10_1_q_next) { changed = true; }
     aux_level4_register_4bit_0_d_flip_flop_10_1_q = aux_level4_register_4bit_0_d_flip_flop_10_1_q_next;
+    if (aux_level4_register_4bit_0_d_flip_flop_11_0_q != aux_level4_register_4bit_0_d_flip_flop_11_0_q_next) { changed = true; }
     aux_level4_register_4bit_0_d_flip_flop_11_0_q = aux_level4_register_4bit_0_d_flip_flop_11_0_q_next;
+    if (aux_level4_register_4bit_0_d_flip_flop_11_1_q != aux_level4_register_4bit_0_d_flip_flop_11_1_q_next) { changed = true; }
     aux_level4_register_4bit_0_d_flip_flop_11_1_q = aux_level4_register_4bit_0_d_flip_flop_11_1_q_next;
+    return changed;
 }
 
 void loop() {
@@ -415,9 +425,11 @@ void loop() {
 
     // Updating clocks. //
 
-    g_sample = true;
-    for (int s = 0; s < 10; s++) { computeLogic(); }
-    commitFlipFlops();
+    for (int p = 0; p < 10; p++) {
+        g_sample = true;
+        for (int s = 0; s < 10; s++) { computeLogic(); }
+        if (!commitFlipFlops()) { break; }
+    }
     g_sample = false;
     for (int s = 0; s < 10; s++) { computeLogic(); }
 
