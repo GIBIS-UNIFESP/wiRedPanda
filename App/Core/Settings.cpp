@@ -114,6 +114,16 @@ void Settings::setLabelsUnderIcons(bool enabled)
     setValue("labelsUnderIcons", enabled);
 }
 
+bool Settings::icPreviewDisabled()
+{
+    return value("icPreviewDisabled").toBool();
+}
+
+void Settings::setIcPreviewDisabled(bool disabled)
+{
+    setValue("icPreviewDisabled", disabled);
+}
+
 // Language
 
 QString Settings::language()

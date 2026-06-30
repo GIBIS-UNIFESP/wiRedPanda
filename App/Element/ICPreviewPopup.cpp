@@ -8,6 +8,7 @@
 #include <QScreen>
 #include <QVBoxLayout>
 
+#include "App/Core/Settings.h"
 #include "App/Element/IC.h"
 
 ICPreviewPopup::ICPreviewPopup(QWidget *parent)
@@ -74,6 +75,10 @@ ICPreviewPopup::ICPreviewPopup(QWidget *parent)
 
 void ICPreviewPopup::showForIC(IC *ic, const QPoint &screenPos)
 {
+    if (Settings::icPreviewDisabled()) {
+        return;
+    }
+
     cancelHide();
 
     if (!ic) {

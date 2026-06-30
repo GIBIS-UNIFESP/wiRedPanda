@@ -3,7 +3,9 @@
 
 #include "Tests/Unit/Elements/TestIC.h"
 
+#include "App/Core/Settings.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICPreviewPopup.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestICUnit::testICLoadFromFile()
@@ -33,4 +35,24 @@ void TestICUnit::testICInvalidFile()
 {
     IC ic;
     QVERIFY(ic.file().isEmpty());
+}
+
+void TestICUnit::testICPreviewPopupRespectsDisabledSetting()
+{
+    const bool originalIcPreviewDisabled = Settings::icPreviewDisabled();
+
+    IC ic;
+    ICPreviewPopup popup;
+
+    Settings::setIcPreviewDisabled(true);
+    popup.showForIC(&ic, QPoint(0, 0));
+    QVERIFY(popup.pendingIC() == nullptr);
+    QVERIFY(!popup.isShowActiveFor(&ic));
+
+    Settings::setIcPreviewDisabled(false);
+    popup.showForIC(&ic, QPoint(0, 0));
+    QCOMPARE(popup.pendingIC(), &ic);
+    QVERIFY(popup.isShowActiveFor(&ic));
+
+    Settings::setIcPreviewDisabled(originalIcPreviewDisabled);
 }
