@@ -67,10 +67,12 @@ module level2_mux_8to1 (
     input sel0,
     input sel1,
     input sel2,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -89,8 +91,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for RAM_Bit0 (generated from level4_ram_8x1.panda)
@@ -386,6 +389,7 @@ level2_mux_8to1 level2_mux_8to1_inst_27 (
     .sel0(address0),
     .sel1(address1),
     .sel2(address2),
+    .enable(1'b1),
     .p_output(w_level2_mux_8to1_inst_27_p_output)
 );
 

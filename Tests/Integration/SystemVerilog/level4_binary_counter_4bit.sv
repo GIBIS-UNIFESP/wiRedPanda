@@ -59,10 +59,12 @@ module level2_mux_2to1 (
     input data0,
     input data1,
     input sel0,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -75,8 +77,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for LEVEL4_BINARY_COUNTER_4BIT (generated from level4_binary_counter_4bit.panda)
@@ -198,48 +201,56 @@ level2_mux_2to1 level2_mux_2to1_inst_24 (
     .data0(w_level1_d_flip_flop_inst_20_q),
     .data1(aux_not_2),
     .sel0(countenable),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_24_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_25 (
     .data0(w_level2_mux_2to1_inst_24_p_output),
     .data1(data0),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_25_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_26 (
     .data0(w_level1_d_flip_flop_inst_21_q),
     .data1(aux_or_17),
     .sel0(countenable),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_26_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_27 (
     .data0(w_level2_mux_2to1_inst_26_p_output),
     .data1(data1),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_27_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_28 (
     .data0(w_level1_d_flip_flop_inst_22_q),
     .data1(aux_or_18),
     .sel0(countenable),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_28_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_29 (
     .data0(w_level2_mux_2to1_inst_28_p_output),
     .data1(data2),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_29_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_30 (
     .data0(w_level1_d_flip_flop_inst_23_q),
     .data1(aux_or_19),
     .sel0(countenable),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_30_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_31 (
     .data0(w_level2_mux_2to1_inst_30_p_output),
     .data1(data3),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_31_p_output)
 );
 assign aux_not_32 = ~reset;

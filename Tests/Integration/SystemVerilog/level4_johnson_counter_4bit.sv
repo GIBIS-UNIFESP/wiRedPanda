@@ -59,10 +59,12 @@ module level2_mux_2to1 (
     input data0,
     input data1,
     input sel0,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -75,8 +77,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for LEVEL4_JOHNSON_COUNTER_4BIT (generated from level4_johnson_counter_4bit.panda)
@@ -163,48 +166,56 @@ level2_mux_2to1 level2_mux_2to1_inst_6 (
     .data0(w_level1_d_flip_flop_inst_1_q),
     .data1(aux_not_14),
     .sel0(countenable),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_6_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_7 (
     .data0(w_level2_mux_2to1_inst_6_p_output),
     .data1(data0),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_7_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_8 (
     .data0(w_level1_d_flip_flop_inst_2_q),
     .data1(w_level1_d_flip_flop_inst_1_q),
     .sel0(countenable),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_8_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_9 (
     .data0(w_level2_mux_2to1_inst_8_p_output),
     .data1(data1),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_9_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_10 (
     .data0(w_level1_d_flip_flop_inst_3_q),
     .data1(w_level1_d_flip_flop_inst_2_q),
     .sel0(countenable),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_10_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_11 (
     .data0(w_level2_mux_2to1_inst_10_p_output),
     .data1(data2),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_11_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_12 (
     .data0(w_level1_d_flip_flop_inst_4_q),
     .data1(w_level1_d_flip_flop_inst_3_q),
     .sel0(countenable),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_12_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_13 (
     .data0(w_level2_mux_2to1_inst_12_p_output),
     .data1(data3),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_13_p_output)
 );
 assign aux_not_14 = ~w_level1_d_flip_flop_inst_4_q;

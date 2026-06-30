@@ -43,10 +43,12 @@ module level2_mux_4to1 (
     input data3,
     input sel0,
     input sel1,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -61,8 +63,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for LEVEL4_RAM_4X1 (generated from level4_ram_4x1.panda)
@@ -223,6 +226,7 @@ level2_mux_4to1 level2_mux_4to1_inst_15 (
     .data3(aux_d_flip_flop_13_0_q),
     .sel0(address0),
     .sel1(address1),
+    .enable(1'b1),
     .p_output(w_level2_mux_4to1_inst_15_p_output)
 );
 

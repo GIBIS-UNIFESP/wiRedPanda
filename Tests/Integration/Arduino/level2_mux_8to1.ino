@@ -3,7 +3,7 @@
 // ==================================================================== //
 //
 // Target Board: Arduino UNO R3/R4
-// Pin Usage: 12/18 pins
+// Pin Usage: 13/18 pins
 //
 
 
@@ -20,9 +20,10 @@ const int input_switch8 = 3;
 const int input_switch9 = 4;
 const int input_switch10 = 5;
 const int input_switch11 = 6;
+const int input_switch12 = 7;
 
 /* ========= Outputs ========== */
-const int led1_1 = 7;
+const int led1_1 = 8;
 
 /* ====== Aux. Variables ====== */
 bool input_switch1_val = LOW;
@@ -36,6 +37,7 @@ bool input_switch8_val = LOW;
 bool input_switch9_val = LOW;
 bool input_switch10_val = LOW;
 bool input_switch11_val = LOW;
+bool input_switch12_val = LOW;
 // IC: LEVEL2_MUX_8TO1
 bool aux_level2_mux_8to1_0_output = LOW;
 bool aux_level2_mux_8to1_0_node_0 = LOW;
@@ -51,6 +53,8 @@ bool aux_level2_mux_8to1_0_node_9 = LOW;
 bool aux_level2_mux_8to1_0_node_10 = LOW;
 bool aux_level2_mux_8to1_0_mux_11 = LOW;
 bool aux_level2_mux_8to1_0_node_12 = LOW;
+bool aux_level2_mux_8to1_0_and_13 = LOW;
+bool aux_level2_mux_8to1_0_node_14 = LOW;
 bool aux_ic_input_level2_mux_8to1_0_0 = LOW;
 bool aux_ic_input_level2_mux_8to1_0_1 = LOW;
 bool aux_ic_input_level2_mux_8to1_0_2 = LOW;
@@ -62,6 +66,7 @@ bool aux_ic_input_level2_mux_8to1_0_7 = LOW;
 bool aux_ic_input_level2_mux_8to1_0_8 = LOW;
 bool aux_ic_input_level2_mux_8to1_0_9 = LOW;
 bool aux_ic_input_level2_mux_8to1_0_10 = LOW;
+bool aux_ic_input_level2_mux_8to1_0_11 = LOW;
 // End IC: LEVEL2_MUX_8TO1
 
 void setup() {
@@ -76,6 +81,7 @@ void setup() {
     pinMode(input_switch9, INPUT);
     pinMode(input_switch10, INPUT);
     pinMode(input_switch11, INPUT);
+    pinMode(input_switch12, INPUT);
     pinMode(led1_1, OUTPUT);
 }
 
@@ -93,6 +99,7 @@ void computeLogic() {
     aux_ic_input_level2_mux_8to1_0_8 = input_switch9_val;
     aux_ic_input_level2_mux_8to1_0_9 = input_switch10_val;
     aux_ic_input_level2_mux_8to1_0_10 = input_switch11_val;
+    aux_ic_input_level2_mux_8to1_0_11 = input_switch12_val;
     aux_level2_mux_8to1_0_node_0 = aux_ic_input_level2_mux_8to1_0_0;
     aux_level2_mux_8to1_0_node_1 = aux_ic_input_level2_mux_8to1_0_1;
     aux_level2_mux_8to1_0_node_2 = aux_ic_input_level2_mux_8to1_0_2;
@@ -104,6 +111,7 @@ void computeLogic() {
     aux_level2_mux_8to1_0_node_8 = aux_ic_input_level2_mux_8to1_0_8;
     aux_level2_mux_8to1_0_node_9 = aux_ic_input_level2_mux_8to1_0_9;
     aux_level2_mux_8to1_0_node_10 = aux_ic_input_level2_mux_8to1_0_10;
+    aux_level2_mux_8to1_0_node_12 = aux_ic_input_level2_mux_8to1_0_11;
     //Multiplexer
     if ((aux_level2_mux_8to1_0_node_8 + (aux_level2_mux_8to1_0_node_9 + (aux_level2_mux_8to1_0_node_10 << 1) << 1)) == 0) {
         aux_level2_mux_8to1_0_mux_11 = aux_level2_mux_8to1_0_node_0;
@@ -125,8 +133,9 @@ void computeLogic() {
         aux_level2_mux_8to1_0_mux_11 = LOW;
     }
     //End of Multiplexer
-    aux_level2_mux_8to1_0_node_12 = aux_level2_mux_8to1_0_mux_11;
-    aux_level2_mux_8to1_0_output = aux_level2_mux_8to1_0_node_12;
+    aux_level2_mux_8to1_0_and_13 = aux_level2_mux_8to1_0_mux_11 && aux_level2_mux_8to1_0_node_12;
+    aux_level2_mux_8to1_0_node_14 = aux_level2_mux_8to1_0_and_13;
+    aux_level2_mux_8to1_0_output = aux_level2_mux_8to1_0_node_14;
     // End IC: LEVEL2_MUX_8TO1
 }
 
@@ -143,6 +152,7 @@ void loop() {
     input_switch9_val = digitalRead(input_switch9);
     input_switch10_val = digitalRead(input_switch10);
     input_switch11_val = digitalRead(input_switch11);
+    input_switch12_val = digitalRead(input_switch12);
 
     // Updating clocks. //
 

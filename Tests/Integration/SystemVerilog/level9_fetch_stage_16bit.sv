@@ -85,10 +85,12 @@ module level2_mux_2to1 (
     input data0,
     input data1,
     input sel0,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -101,8 +103,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for ReadMux (generated from level2_mux_8to1.panda)
@@ -118,10 +121,12 @@ module level2_mux_8to1 (
     input sel0,
     input sel1,
     input sel2,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -140,8 +145,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for Reg[0] (generated from level3_register_1bit.panda)
@@ -224,24 +230,28 @@ level2_mux_2to1 level2_mux_2to1_inst_1 (
     .data0(in00),
     .data1(in10),
     .sel0(sel),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_1_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_2 (
     .data0(in01),
     .data1(in11),
     .sel0(sel),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_2_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_3 (
     .data0(in02),
     .data1(in12),
     .sel0(sel),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_3_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_4 (
     .data0(in03),
     .data1(in13),
     .sel0(sel),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_4_p_output)
 );
 
@@ -626,6 +636,7 @@ level2_mux_8to1 level2_mux_8to1_inst_27 (
     .sel0(address0),
     .sel1(address1),
     .sel2(address2),
+    .enable(1'b1),
     .p_output(w_level2_mux_8to1_inst_27_p_output)
 );
 

@@ -59,10 +59,12 @@ module level2_mux_2to1 (
     input data0,
     input data1,
     input sel0,
+    input enable,
     output p_output
 );
 
 reg aux_mux_1 = 1'b0;
+wire aux_and_2;
 
 // Internal logic
     //Multiplexer
@@ -75,8 +77,9 @@ reg aux_mux_1 = 1'b0;
         endcase
     end
     //End of Multiplexer
+assign aux_and_2 = (aux_mux_1 & enable);
 
-assign p_output = aux_mux_1;
+assign p_output = aux_and_2;
 endmodule
 
 // Module for BusMux_Load (generated from level4_bus_mux_4bit.panda)
@@ -110,24 +113,28 @@ level2_mux_2to1 level2_mux_2to1_inst_1 (
     .data0(in00),
     .data1(in10),
     .sel0(sel),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_1_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_2 (
     .data0(in01),
     .data1(in11),
     .sel0(sel),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_2_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_3 (
     .data0(in02),
     .data1(in12),
     .sel0(sel),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_3_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_4 (
     .data0(in03),
     .data1(in13),
     .sel0(sel),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_4_p_output)
 );
 
@@ -248,24 +255,28 @@ level2_mux_2to1 level2_mux_2to1_inst_8 (
     .data0(w_level4_bus_mux_4bit_inst_7_out0),
     .data1(w_level4_bus_mux_4bit_inst_6_out0),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_8_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_9 (
     .data0(w_level4_bus_mux_4bit_inst_7_out1),
     .data1(w_level4_bus_mux_4bit_inst_6_out1),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_9_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_10 (
     .data0(w_level4_bus_mux_4bit_inst_7_out2),
     .data1(w_level4_bus_mux_4bit_inst_6_out2),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_10_p_output)
 );
 level2_mux_2to1 level2_mux_2to1_inst_11 (
     .data0(w_level4_bus_mux_4bit_inst_7_out3),
     .data1(w_level4_bus_mux_4bit_inst_6_out3),
     .sel0(load),
+    .enable(1'b1),
     .p_output(w_level2_mux_2to1_inst_11_p_output)
 );
 

@@ -17,4 +17,5 @@ private slots:
     // 2-to-1 Multiplexer Tests
     void testMux2to1_data();
     void testMux2to1();
+    void testEnableGating();
 };

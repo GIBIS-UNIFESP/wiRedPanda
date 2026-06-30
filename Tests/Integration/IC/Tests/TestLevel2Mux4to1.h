@@ -17,4 +17,5 @@ private slots:
     // 4-to-1 Multiplexer Tests
     void testMultiplexer4to1_data();
     void testMultiplexer4to1();
+    void testEnableGating();
 };
