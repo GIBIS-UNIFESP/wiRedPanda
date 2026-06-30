@@ -17,4 +17,5 @@ private slots:
     // Parity Generator Tests
     void testParityGenerator_data();
     void testParityGenerator();
+    void testCascadeIn();
 };

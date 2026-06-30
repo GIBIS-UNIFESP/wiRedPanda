@@ -10,9 +10,11 @@ Output is 1 when the number of 1-bits is odd (odd parity).
 
 Inputs:
   - Data[0] to Data[3]: 4 data input bits
+  - CascadeIn: 74180-style cascade input, XORed into the parity. Tie low for
+    standalone use; for a wider parity tree feed another block's Parity here.
 
 Outputs:
-  - Parity: 1-bit parity output
+  - Parity: 1-bit parity output (XOR of all inputs and CascadeIn)
 
 Architecture:
   - Binary tree of XOR gates (2 stages)
