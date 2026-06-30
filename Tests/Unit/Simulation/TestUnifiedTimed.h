@@ -106,4 +106,15 @@ private slots:
     /// A zero-delay feedback loop simulated in temporal mode still collapses to one timestamp,
     /// hits the per-timestamp oscillation cap, and canonicalizes to Unknown.
     void testZeroDelayLoopOscillatesToUnknownInTemporalMode();
+
+    /// A wireless Tx→Rx hop carries a timed signal: the element downstream of the Rx still
+    /// incurs its propagation delay, proving wireless edges join the timed successor graph.
+    void testWirelessHopUnderDelay();
+
+    /// XOR and NOR gates produce correct, delayed outputs in temporal mode (breadth: same
+    /// delay mechanism, different truth tables).
+    void testXorNorUnderDelay();
+
+    /// MUX and DEMUX route correctly and with propagation delay in temporal mode.
+    void testMuxDemuxUnderDelay();
 };

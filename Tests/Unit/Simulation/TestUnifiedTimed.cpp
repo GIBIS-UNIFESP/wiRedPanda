@@ -6,11 +6,16 @@
 #include <QtTest>
 
 #include "App/Core/Enums.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/JKFlipFlop.h"
+#include "App/Element/GraphicElements/Mux.h"
+#include "App/Element/GraphicElements/Node.h"
+#include "App/Element/GraphicElements/Nor.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/SRFlipFlop.h"
@@ -1195,4 +1200,175 @@ void TestUnifiedTimed::testZeroDelayLoopOscillatesToUnknownInTemporalMode()
 
     QVERIFY2(sim->isInFeedbackLoop(n1), "Ring node should be detected as a feedback loop");
     QCOMPARE(n1->outputValue(0), Status::Unknown); // cap fired, canonicalized to Unknown
+}
+
+void TestUnifiedTimed::testWirelessHopUnderDelay()
+{
+    // Wireless Tx→Rx edges are spliced into the successor graph by a separate path
+    // (connectWirelessElements). Verify the timed drain still treats them as real edges: a NOT
+    // placed downstream of the Rx incurs its propagation delay exactly as it would on a wire.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *notGate = new Not();
+    QVERIFY(tx && rx);
+    tx->setLabel("SIG");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("SIG");
+    rx->setWirelessMode(WirelessMode::Rx);
+    builder.add(sw, tx, rx, notGate);
+    builder.connect(sw, 0, tx, 0);      // physical wire into Tx
+    builder.connect(rx, 0, notGate, 0); // Rx output → NOT (wireless hop is sw → … → notGate)
+    Simulation *sim = builder.initSimulation();
+
+    // Baseline: sw=0 ⇒ (wirelessly) NOT input 0 ⇒ NOT out = 1.
+    sw->setOn(false);
+    sim->update();
+    QCOMPARE(notGate->outputValue(0), Status::Active);
+
+    const SimTime delay = 5;
+    sim->setElementDelay(notGate, delay);
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+
+    // Toggle the switch: the signal crosses the wireless hop (Node delay 0) and the downstream
+    // NOT flips only after ITS delay — so the wireless edge is genuinely in the timed graph.
+    const SimTime tEdge = sim->currentTime();
+    sw->setOn(true);
+    advanceTo(tEdge + 2);
+    QVERIFY2(notGate->outputValue(0) == Status::Active, "NOT flipped before its delay across the wireless hop");
+    advanceTo(tEdge + delay + 3);
+    QCOMPARE(notGate->outputValue(0), Status::Inactive); // ~1 = 0, after the delay
+}
+
+void TestUnifiedTimed::testXorNorUnderDelay()
+{
+    // Breadth: XOR and NOR have their own updateLogic (different truth tables) but inherit the
+    // element-agnostic delay scheduling. Verify correct, delayed outputs in temporal mode.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *a = new InputSwitch();
+    auto *b = new InputSwitch();
+    auto *xorGate = new Xor();
+    auto *norGate = new Nor();
+    builder.add(a, b, xorGate, norGate);
+    builder.connect(a, 0, xorGate, 0);
+    builder.connect(b, 0, xorGate, 1);
+    builder.connect(a, 0, norGate, 0);
+    builder.connect(b, 0, norGate, 1);
+    Simulation *sim = builder.initSimulation();
+
+    sim->setTimePerTick(100); // wide ticks settle each combination
+    const SimTime delay = 7;
+    a->setOn(false);
+    b->setOn(false);
+    sim->update();
+    sim->setElementDelay(xorGate, delay);
+    sim->setElementDelay(norGate, delay);
+
+    const auto settle = [&](bool av, bool bv) {
+        a->setOn(av);
+        b->setOn(bv);
+        sim->update();
+    };
+
+    settle(true, false); // (1,0): XOR=1, NOR=0
+    QCOMPARE(xorGate->outputValue(0), Status::Active);
+    QCOMPARE(norGate->outputValue(0), Status::Inactive);
+
+    settle(true, true);  // (1,1): XOR=0, NOR=0
+    QCOMPARE(xorGate->outputValue(0), Status::Inactive);
+    QCOMPARE(norGate->outputValue(0), Status::Inactive);
+
+    settle(false, false); // (0,0): XOR=0, NOR=1
+    QCOMPARE(xorGate->outputValue(0), Status::Inactive);
+    QCOMPARE(norGate->outputValue(0), Status::Active);
+
+    // Confirm the delay actually applies to these element types: with fine ticks, an input
+    // change must not flip XOR before its 7-unit delay.
+    sim->setTimePerTick(1);
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+    const SimTime tEdge = sim->currentTime();
+    a->setOn(true); // (1,0) ⇒ XOR should become 1, but only after the delay
+    advanceTo(tEdge + 3);
+    QVERIFY2(xorGate->outputValue(0) == Status::Inactive, "XOR flipped before its delay");
+    advanceTo(tEdge + delay + 3);
+    QCOMPARE(xorGate->outputValue(0), Status::Active);
+}
+
+void TestUnifiedTimed::testMuxDemuxUnderDelay()
+{
+    // Breadth: MUX (2:1) and DEMUX (1:2) are select-driven combinational elements. Verify
+    // correct routing and propagation delay in temporal mode.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *in0 = new InputSwitch();
+    auto *in1 = new InputSwitch();
+    auto *muxSel = new InputSwitch();
+    auto *mux = new Mux();
+    auto *demuxIn = new InputSwitch();
+    auto *demuxSel = new InputSwitch();
+    auto *demux = new Demux();
+    builder.add(in0, in1, muxSel, mux);
+    builder.add(demuxIn, demuxSel, demux);
+    builder.connect(in0, 0, mux, 0);    // In0
+    builder.connect(in1, 0, mux, 1);    // In1
+    builder.connect(muxSel, 0, mux, 2); // S0
+    builder.connect(demuxIn, 0, demux, 0);  // In
+    builder.connect(demuxSel, 0, demux, 1); // S0
+    Simulation *sim = builder.initSimulation();
+
+    sim->setTimePerTick(100);
+    const SimTime delay = 6;
+    in0->setOn(false); // Out = S0 ? In1(1) : In0(0)  ⇒ Out tracks S0
+    in1->setOn(true);
+    muxSel->setOn(false);
+    demuxIn->setOn(true);
+    demuxSel->setOn(false);
+    sim->update();
+    sim->setElementDelay(mux, delay);
+    sim->setElementDelay(demux, delay);
+
+    // MUX: S0=0 ⇒ Out=In0=0; S0=1 ⇒ Out=In1=1.
+    muxSel->setOn(false);
+    sim->update();
+    QCOMPARE(mux->outputValue(0), Status::Inactive);
+    muxSel->setOn(true);
+    sim->update();
+    QCOMPARE(mux->outputValue(0), Status::Active);
+
+    // DEMUX: In=1; S0=0 ⇒ Out0=1,Out1=0; S0=1 ⇒ Out0=0,Out1=1.
+    demuxSel->setOn(false);
+    sim->update();
+    QCOMPARE(demux->outputValue(0), Status::Active);
+    QCOMPARE(demux->outputValue(1), Status::Inactive);
+    demuxSel->setOn(true);
+    sim->update();
+    QCOMPARE(demux->outputValue(0), Status::Inactive);
+    QCOMPARE(demux->outputValue(1), Status::Active);
+
+    // Confirm the MUX delay applies: flip S0 back to 0 with fine ticks; Out must not switch early.
+    sim->setTimePerTick(1);
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+    const SimTime tEdge = sim->currentTime();
+    muxSel->setOn(false); // Out should fall 1→0, after the delay
+    advanceTo(tEdge + 2);
+    QVERIFY2(mux->outputValue(0) == Status::Active, "MUX switched before its delay");
+    advanceTo(tEdge + delay + 3);
+    QCOMPARE(mux->outputValue(0), Status::Inactive);
 }
