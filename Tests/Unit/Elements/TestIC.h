@@ -16,4 +16,5 @@ private slots:
     void testICPortLabelResolution();
     void testICNestedSaveLoad();
     void testICInvalidFile();
+    void testICPreviewPopupRespectsDisabledSetting();
 };

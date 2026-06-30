@@ -86,6 +86,7 @@ public:
     QAction *actionGates = nullptr;
     QAction *actionWires = nullptr;
     QAction *actionLabelsUnderIcons = nullptr;
+    QAction *actionICPreview = nullptr;
     QAction *actionLightTheme = nullptr;
     QAction *actionDarkTheme = nullptr;
     QAction *actionSystemTheme = nullptr;

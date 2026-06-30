@@ -48,6 +48,8 @@ public:
     static void setFastMode(bool enabled);
     static bool labelsUnderIcons();
     static void setLabelsUnderIcons(bool enabled);
+    static bool icPreviewDisabled();
+    static void setIcPreviewDisabled(bool disabled);
 
     // Language
     static QString language();
