@@ -10,7 +10,10 @@
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Not.h"
+#include "App/Element/GraphicElements/SRFlipFlop.h"
+#include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
 #include "App/Element/GraphicElements/Xor.h"
 #include "App/Scene/Commands.h"
@@ -822,4 +825,254 @@ void TestUnifiedTimed::testAsyncClearUnderDelay()
     clk->setOn(true);
     advanceTo(sim->currentTime() + 2 * delay);
     QCOMPARE(ff->outputValue(0), Status::Active); // edge re-captures Data=1
+}
+
+void TestUnifiedTimed::testJKFlipFlopUnderDelay()
+{
+    // The JK flip-flop has its own captured-J/K state machine (independent of D/T): on a rising
+    // edge J=1,K=0 sets, J=0,K=1 resets, J=K=1 toggles. Verify each across delayed edges — Q must
+    // change only after the flip-flop's propagation delay, and from the J/K sampled before it.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *j = new InputSwitch();
+    auto *k = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *ff = new JKFlipFlop();
+    builder.add(j, k, clk, ff);
+    builder.connect(j, 0, ff, 0);   // J
+    builder.connect(clk, 0, ff, 1); // Clock
+    builder.connect(k, 0, ff, 2);   // K
+    Simulation *sim = builder.initSimulation();
+
+    // Functional baseline: reset to a known Q=0 (J=0,K=1, one clock).
+    j->setOn(false);
+    k->setOn(true);
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true);
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+
+    const SimTime delay = 10;
+    sim->setElementDelay(ff, delay);
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+    // Drive J/K to the next operation, settle so they are captured, then pulse one delayed edge.
+    const auto clockOnce = [&](bool jv, bool kv) {
+        clk->setOn(false);
+        j->setOn(jv);
+        k->setOn(kv);
+        advanceTo(sim->currentTime() + 2 * delay); // capture J/K, no edge
+        clk->setOn(true);                           // rising edge → acts after the delay
+    };
+
+    // Set: J=1,K=0 ⇒ Q=1, only after the delay.
+    clockOnce(true, false);
+    const SimTime tSet = sim->currentTime();
+    advanceTo(tSet + 2);
+    QVERIFY2(ff->outputValue(0) == Status::Inactive, "JK set took effect before the delay");
+    advanceTo(tSet + delay + 3);
+    QCOMPARE(ff->outputValue(0), Status::Active);
+
+    // Reset: J=0,K=1 ⇒ Q=0.
+    clockOnce(false, true);
+    advanceTo(sim->currentTime() + delay + 4);
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+
+    // Toggle: J=K=1 ⇒ Q flips on each edge.
+    clockOnce(true, true);
+    advanceTo(sim->currentTime() + delay + 4);
+    QCOMPARE(ff->outputValue(0), Status::Active);
+    clockOnce(true, true);
+    advanceTo(sim->currentTime() + delay + 4);
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+}
+
+void TestUnifiedTimed::testSRFlipFlopUnderDelay()
+{
+    // The clocked SR flip-flop captures S/R on a rising edge: S=1,R=0 sets, S=0,R=1 resets, and
+    // (in this implementation) S=R=1 drives both Q and ~Q Active. Verify each under delay.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *s = new InputSwitch();
+    auto *r = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *ff = new SRFlipFlop();
+    builder.add(s, r, clk, ff);
+    builder.connect(s, 0, ff, 0);   // S
+    builder.connect(clk, 0, ff, 1); // Clock
+    builder.connect(r, 0, ff, 2);   // R
+    Simulation *sim = builder.initSimulation();
+
+    // Functional baseline: reset to Q=0.
+    s->setOn(false);
+    r->setOn(true);
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true);
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+
+    const SimTime delay = 10;
+    sim->setElementDelay(ff, delay);
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+    const auto clockOnce = [&](bool sv, bool rv) {
+        clk->setOn(false);
+        s->setOn(sv);
+        r->setOn(rv);
+        advanceTo(sim->currentTime() + 2 * delay);
+        clk->setOn(true);
+    };
+
+    // Set: S=1,R=0 ⇒ Q=1, only after the delay.
+    clockOnce(true, false);
+    const SimTime tSet = sim->currentTime();
+    advanceTo(tSet + 2);
+    QVERIFY2(ff->outputValue(0) == Status::Inactive, "SR set took effect before the delay");
+    advanceTo(tSet + delay + 3);
+    QCOMPARE(ff->outputValue(0), Status::Active);
+
+    // Reset: S=0,R=1 ⇒ Q=0.
+    clockOnce(false, true);
+    advanceTo(sim->currentTime() + delay + 4);
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+
+    // S=R=1 case: this implementation drives both outputs Active.
+    clockOnce(true, true);
+    advanceTo(sim->currentTime() + delay + 4);
+    QCOMPARE(ff->outputValue(0), Status::Active);
+    QCOMPARE(ff->outputValue(1), Status::Active);
+}
+
+void TestUnifiedTimed::testSRLatchUnderDelay()
+{
+    // A level-sensitive SR latch (no clock): Set=1 ⇒ Q=1, Reset=1 ⇒ Q=0, S=R=0 ⇒ hold,
+    // S=R=1 ⇒ both outputs Inactive. Verify the delayed timing and the hold behaviour.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *set = new InputSwitch();
+    auto *reset = new InputSwitch();
+    auto *latch = new SRLatch();
+    builder.add(set, reset, latch);
+    builder.connect(set, 0, latch, 0);   // Set
+    builder.connect(reset, 0, latch, 1); // Reset
+    Simulation *sim = builder.initSimulation();
+
+    // Functional baseline: S=R=0 ⇒ hold (initial Q=0).
+    set->setOn(false);
+    reset->setOn(false);
+    sim->update();
+    QCOMPARE(latch->outputValue(0), Status::Inactive);
+
+    const SimTime delay = 8;
+    sim->setElementDelay(latch, delay);
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+
+    // Set=1 ⇒ Q=1, only after the delay.
+    const SimTime tSet = sim->currentTime();
+    set->setOn(true);
+    advanceTo(tSet + (delay - 2));
+    QVERIFY2(latch->outputValue(0) == Status::Inactive, "SR latch set before the delay");
+    advanceTo(tSet + delay + 3);
+    QCOMPARE(latch->outputValue(0), Status::Active);
+
+    // Drop Set (S=R=0) ⇒ Q holds 1.
+    set->setOn(false);
+    advanceTo(sim->currentTime() + 3 * delay);
+    QCOMPARE(latch->outputValue(0), Status::Active);
+
+    // Reset=1 ⇒ Q=0, after the delay.
+    const SimTime tReset = sim->currentTime();
+    reset->setOn(true);
+    advanceTo(tReset + (delay - 2));
+    QVERIFY2(latch->outputValue(0) == Status::Active, "SR latch reset before the delay");
+    advanceTo(tReset + delay + 3);
+    QCOMPARE(latch->outputValue(0), Status::Inactive);
+
+    // S=R=1 ⇒ both outputs Inactive.
+    set->setOn(true);
+    reset->setOn(true);
+    advanceTo(sim->currentTime() + 2 * delay);
+    QCOMPARE(latch->outputValue(0), Status::Inactive);
+    QCOMPARE(latch->outputValue(1), Status::Inactive);
+}
+
+void TestUnifiedTimed::testAsyncPresetUnderDelay()
+{
+    // The active-low ~Preset is the set-side mirror of ~Clear: it forces Q high without a clock
+    // edge, delayed by the flip-flop's own propagation delay, and dominates while asserted.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *data = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *nPreset = new InputSwitch();
+    auto *ff = new DFlipFlop();
+    builder.add(data, clk, nPreset, ff);
+    builder.connect(data, 0, ff, 0);    // Data
+    builder.connect(clk, 0, ff, 1);     // Clock
+    builder.connect(nPreset, 0, ff, 2); // ~Preset (active low)
+    Simulation *sim = builder.initSimulation();
+
+    // Functional baseline: ~Preset deasserted (high), clock a 0 into Q.
+    nPreset->setOn(true);
+    data->setOn(false);
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true); // rising edge captures Data=0
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+
+    const SimTime delay = 10;
+    sim->setElementDelay(ff, delay);
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+    advanceTo(sim->currentTime() + 2 * delay);
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+
+    // Assert ~Preset with no clock edge: Q rises to 1, only after the flip-flop delay.
+    const SimTime tPreset = sim->currentTime();
+    nPreset->setOn(false);
+    advanceTo(tPreset + 2);
+    QVERIFY2(ff->outputValue(0) == Status::Inactive, "~Preset took effect immediately — delay ignored");
+    advanceTo(tPreset + delay + 3);
+    QCOMPARE(ff->outputValue(0), Status::Active); // async-preset (delayed)
+
+    // While ~Preset is held low, Q stays 1 even if Data=0 and a clock edge arrives.
+    data->setOn(false);
+    clk->setOn(false);
+    advanceTo(sim->currentTime() + 2 * delay);
+    clk->setOn(true);
+    advanceTo(sim->currentTime() + 2 * delay);
+    QCOMPARE(ff->outputValue(0), Status::Active); // preset dominates
+
+    // Release ~Preset: Q stays 1 until the next genuine rising edge recaptures Data=0.
+    nPreset->setOn(true);
+    clk->setOn(false);
+    advanceTo(sim->currentTime() + 2 * delay);
+    QCOMPARE(ff->outputValue(0), Status::Active); // no edge yet
+    clk->setOn(true);
+    advanceTo(sim->currentTime() + 2 * delay);
+    QCOMPARE(ff->outputValue(0), Status::Inactive); // edge recaptures Data=0
 }
