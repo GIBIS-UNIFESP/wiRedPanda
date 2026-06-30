@@ -72,4 +72,6 @@ private slots:
     void testAudioBoxGuardsNonAudioBoxSelection();
     void testAudioBoxCancelledDialogIsNoOp();
     void testAudioBoxSetsAudioAndUpdatesLabel();
+    // The "Prop. delay" spin box populates from the selected element and writes the override back.
+    void testPropagationDelayField();
 };

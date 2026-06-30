@@ -21,6 +21,7 @@
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
+#include "App/Element/GraphicElements/Xnor.h"
 #include "App/Element/GraphicElements/Xor.h"
 #include "App/Scene/Commands.h"
 #include "App/Simulation/Simulation.h"
@@ -1420,4 +1421,91 @@ void TestUnifiedTimed::testRestartDuringTemporalRun()
     // Second run WITHOUT re-applying timePerTick or the delay: both must have survived, and the
     // network must re-seed correctly, giving identical timed behaviour.
     runAndCheckTiming();
+}
+
+void TestUnifiedTimed::testXnorUnderDelay()
+{
+    // The last combinational gate not yet exercised under delay. XNOR(A,B) = (A == B).
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *a = new InputSwitch();
+    auto *b = new InputSwitch();
+    auto *xnorGate = new Xnor();
+    builder.add(a, b, xnorGate);
+    builder.connect(a, 0, xnorGate, 0);
+    builder.connect(b, 0, xnorGate, 1);
+    Simulation *sim = builder.initSimulation();
+
+    sim->setTimePerTick(100);
+    const SimTime delay = 7;
+    a->setOn(false);
+    b->setOn(false);
+    sim->update();
+    sim->setElementDelay(xnorGate, delay);
+
+    const auto settle = [&](bool av, bool bv) {
+        a->setOn(av);
+        b->setOn(bv);
+        sim->update();
+    };
+
+    settle(true, true);   // equal ⇒ 1
+    QCOMPARE(xnorGate->outputValue(0), Status::Active);
+    settle(true, false);  // differ ⇒ 0
+    QCOMPARE(xnorGate->outputValue(0), Status::Inactive);
+    settle(false, false); // equal ⇒ 1
+    QCOMPARE(xnorGate->outputValue(0), Status::Active);
+
+    // Delay applies: with fine ticks, making the inputs differ must not flip the output early.
+    sim->setTimePerTick(1);
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+    const SimTime tEdge = sim->currentTime();
+    a->setOn(true); // now (1,0) ⇒ XNOR should fall 1→0, after the delay
+    advanceTo(tEdge + 3);
+    QVERIFY2(xnorGate->outputValue(0) == Status::Active, "XNOR flipped before its delay");
+    advanceTo(tEdge + delay + 3);
+    QCOMPARE(xnorGate->outputValue(0), Status::Inactive);
+}
+
+void TestUnifiedTimed::testNoSetupHoldViolation()
+{
+    // Deliberate omission, characterized: the model has no setup/hold window. Changing Data in the
+    // SAME tick as the rising clock edge is not a violation — the flip-flop's delayed-capture
+    // (m_simLastValue holds the pre-edge Data) yields a DEFINITE result, never metastable/Unknown.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *data = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *ff = new DFlipFlop();
+    builder.add(data, clk, ff);
+    builder.connect(data, 0, ff, 0);
+    builder.connect(clk, 0, ff, 1);
+    Simulation *sim = builder.initSimulation(); // functional mode (timePerTick == 0)
+
+    // Baseline: Data=0, clock low ⇒ Q=0, and the flip-flop has captured Data=0 as its pre-edge value.
+    data->setOn(false);
+    clk->setOn(false);
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+
+    // Simultaneous edge: raise Data AND the clock in the SAME update().
+    data->setOn(true);
+    clk->setOn(true);
+    sim->update();
+
+    // No metastability: Q is a definite value (not Unknown), and equals the pre-edge Data (0) —
+    // the deterministic delayed-capture semantics, independent of within-tick evaluation order.
+    QVERIFY2(ff->outputValue(0) != Status::Unknown, "Flip-flop went metastable — model should have no setup/hold");
+    QCOMPARE(ff->outputValue(0), Status::Inactive);
+
+    // The next clean edge (Data stable = 1) captures normally, confirming the FF is otherwise live.
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true);
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Active);
 }

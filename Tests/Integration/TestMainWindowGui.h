@@ -39,6 +39,7 @@ private slots:
 
     void testPlayPauseToggle();
     void testRestartSimulation();
+    void testTemporalModeSelector();
 
     // --- View toggles ---
 

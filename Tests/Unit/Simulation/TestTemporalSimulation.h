@@ -58,4 +58,5 @@ private slots:
 
     // --- Waveform widget ---
     void testWidgetSizeHint();
+    void testWaveformWidgetZoom();
 };

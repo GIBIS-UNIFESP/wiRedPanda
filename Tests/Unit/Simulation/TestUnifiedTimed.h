@@ -121,4 +121,11 @@ private slots:
     /// Restarting mid-temporal-run resets sim time, re-seeds the whole network, and preserves
     /// temporal mode + the element's propagation delay so the second run is timed identically.
     void testRestartDuringTemporalRun();
+
+    /// XNOR produces correct, delayed outputs in temporal mode (the last combinational gate).
+    void testXnorUnderDelay();
+
+    /// The model has no setup/hold window: Data changing in the same tick as the clock edge
+    /// still yields a deterministic capture (never metastable/Unknown) — a deliberate omission.
+    void testNoSetupHoldViolation();
 };
