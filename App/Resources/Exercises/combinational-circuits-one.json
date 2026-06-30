@@ -1,0 +1,86 @@
+{
+  "id": "combinational-circuits-one",
+  "title": "Combinational Circuits I: MUX and DEMUX",
+  "steps": [
+    {
+      "instruction": "Place a MUX circuit on the canvas",
+      "hint": "Click the Combinational tab in the left panel, then drag the MUX circuit onto the canvas.",
+      "requiredElements": [
+        { "type": "Mux", "minCount": 1 }
+      ],
+      "requiredConnections": [],
+      "click": ["combinational"]
+    },
+    {
+      "instruction": "Add three InputSwitch elements to the canvas",
+      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the MUX circuit.",
+      "requiredElements": [
+        { "type": "Mux", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 3 }
+      ],
+      "requiredConnections": [],
+      "click": ["ioTab"]
+    },
+    {
+      "instruction": "Connect all input switches to the MUX circuit",
+      "hint": "Click and drag from an InputSwitch output port (right side) to one of the MUX gate input ports (left side). Repeat for the second switch. Then, connect the third input switch to the MUX selection port (bottom)",
+      "requiredElements": [
+        { "type": "Mux", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 3 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Mux", "minCount": 3 }
+      ]
+    },
+    {
+      "instruction": "Add an LED and connect it to the MUX circuit output",
+      "hint": "Drag an LED from the I/O tab and place it to the right of the MUX circuit. Then connect the MUX circuit output port (right side) to the LED input port (left side).",
+      "click": ["ioTab"],
+      "requiredElements": [
+        { "type": "Mux", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 3 },
+        { "type": "Led", "minCount": 1 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Mux", "minCount": 3 },
+        { "fromType": "Mux", "toType": "Led" }
+      ]
+    },
+    {
+      "instruction": "The S0 port at the bottom of the MUX selects which input is routed to the output. When S0 = 0, the signal from Input 0 is sent to the output. When S0 = 1, the signal from Input 1 is sent to the output.",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    },
+    {
+      "instruction": "Delete the MUX circuit and one of the InputSwitches. Then add another LED",
+      "hint": "Your circuit should have two InputSwitches and two LEDs at this point",
+      "click": ["ioTab"],
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": []
+    },
+    {
+      "instruction": "Add a DEMUX circuit and connect the InputSwitches to its In and S0 ports. Then connect each of the DEMUX's outputs to a different LED",
+      "hint": "Your circuit should have two InputSwitches, two LEDs and one DEMUX circuit at this point",
+      "click": ["combinational"],
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Led", "minCount": 2 },
+        { "type": "Demux", "minCount": 1 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Demux", "minCount": 2 },
+        { "fromType": "Demux", "toType": "Led", "minCount": 2 }
+      ]
+    },
+    {
+      "instruction": "The S0 port at the bottom of the DEMUX selects which output will receive the input's signal. When S0 = 0, Out0 = In0. When S0 = 1, Out1 = In0",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    }
+  ]
+}
