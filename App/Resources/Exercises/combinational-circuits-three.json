@@ -1,0 +1,94 @@
+{
+  "id": "combinational-circuits-three",
+  "title": "Combinational Circuits III: Adder",
+  "steps": [
+    {
+      "instruction": "Add two InputSwitch elements to the canvas",
+      "hint": "Click the I/O tab in the left panel, then drag three InputSwitch elements onto the canvas. The third InputSwitch will be used later as the carry-in (Cin).",
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 2 }
+      ],
+      "requiredConnections": [],
+      "click": ["ioTab"]
+    },
+    {
+      "instruction": "Add an XOR gate, an AND gate, and two LEDs to the canvas. Then connect each gate to a different LED",
+      "hint": "Use the Gates tab to add the XOR and AND gates, then use the I/O tab to add two LEDs.",
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Xor", "minCount": 1 },
+        { "type": "And", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "Xor", "toType": "Led" },
+        { "fromType": "And", "toType": "Led" }
+      ],
+      "click": ["gatesTab"]
+    },
+    {
+      "instruction": "Connect the two InputSwitches to the XOR gate and the AND gate. Each InputSwitch should connect to both gates. The XOR gate produces the Sum output, while the AND gate produces the Carry output",
+      "hint": "Connect the outputs of the InputSwitches into the inputs of the gates.",
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Xor", "minCount": 1 },
+        { "type": "And", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Xor", "minCount": 2 },
+        { "fromType": "InputSwitch", "toType": "And", "minCount": 2 },
+        { "fromType": "Xor", "toType": "Led" },
+        { "fromType": "And", "toType": "Led" }
+      ]
+    },
+    {
+      "instruction": "Give the LED connected to the XOR gate the label Sum, then give the LED connected to the AND gate the label Cout. This circuit forms a half adder, which adds two single-bit inputs",
+      "hint": "Click on an LED and type in the label text box at the bottom left of the screen to give an LED a label.",
+      "requiredElements": [],
+      "requiredConnections": []
+    },
+    {
+      "instruction": "Add another InputSwitch to the canvas and give it the label Cin. Then add an XOR gate, an AND gate and an OR gate",
+      "hint": "Connect the outputs of the InputSwitches into the inputs of the gates.",
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 3 },
+        { "type": "Xor", "minCount": 2 },
+        { "type": "And", "minCount": 2 },
+        { "type": "Or", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Xor", "minCount": 2 },
+        { "fromType": "InputSwitch", "toType": "And", "minCount": 2 },
+        { "fromType": "Xor", "toType": "Led" },
+        { "fromType": "And", "toType": "Led" }
+      ]
+    },
+    {
+      "instruction": "Connect the old XOR gate and the Cin switch to the new XOR gate, then connect the new XOR gate to the Sum output. Also connect the old XOR gate and the Cin switch to the new AND gate. Finish by connecting both AND gates to the OR gate and the OR gate into Cout",
+      "hint": "Remove the old connections to the LEDs to be able to add the new ones.",
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 3 },
+        { "type": "Xor", "minCount": 2 },
+        { "type": "And", "minCount": 2 },
+        { "type": "Or", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Xor", "minCount": 3 },
+        { "fromType": "InputSwitch", "toType": "And", "minCount": 3 },
+        { "fromType": "And", "toType": "Or", "minCount": 2 },
+        { "fromType": "Xor", "toType": "Xor" },
+        { "fromType": "Xor", "toType": "Led" },
+        { "fromType": "Or", "toType": "Led" }
+      ]
+    },
+    {
+      "instruction": "This circuit forms a full adder. Unlike a half adder, a full adder accepts a carry-in (Cin) from a previous addition and produces a carry-out (Cout) for the next stage. By connecting the Cout of one full adder to the Cin of another, multiple full adders can be chained together to add binary numbers of any length",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    }
+  ]
+}
