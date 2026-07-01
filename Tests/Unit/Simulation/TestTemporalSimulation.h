@@ -42,6 +42,8 @@ private slots:
     // --- Temporal engine: delays apply inside ICs (flattened netlist) ---
     void testICInternalDelayPropagation();
     void testWatchedICOutputPinNotOneTickStale();
+    void testNestedICDelayAccumulation();
+    void testNestedICDelayAccumulationDeepNesting();
 
     // --- Temporal engine: input change detection ---
     void testInputSwitchSchedulesEvent();
@@ -52,6 +54,7 @@ private slots:
     void testRecorderDeduplication();
     void testRecorderStatusAt();
     void testRecorderIntegration();
+    void testRecorderSubTickResolution();
 
     // --- Waveform widget ---
     void testWidgetSizeHint();
