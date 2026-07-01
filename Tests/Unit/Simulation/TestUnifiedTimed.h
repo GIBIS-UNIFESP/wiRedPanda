@@ -71,4 +71,12 @@ private slots:
     /// elapsing temporal delay: the second flip-flop samples the first's PRE-edge value on the
     /// same clock edge that updates it, exactly matching real hardware pipeline behavior.
     void testTwoStagePipelineDifferentDelaysNonBlocking();
+
+    /// A level-sensitive D-latch is transparent (delayed) while Enable is high and opaque while
+    /// Enable is low — distinct from the edge-triggered flip-flop, verified under propagation delay.
+    void testLatchTransparencyUnderDelay();
+
+    /// An asynchronous active-low ~Clear forces Q low with no clock edge (delayed by the
+    /// flip-flop's own propagation delay) and holds it there while asserted.
+    void testAsyncClearUnderDelay();
 };
