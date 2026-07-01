@@ -40,4 +40,35 @@ private slots:
     /// commit published (edge + delay at fine tick resolution) — not the timestamp of the next
     /// event-bearing tick, which for a slow clock is half a period late.
     void testSequentialTransitionRecordedAtCommitTime();
+
+    /// A clocked D-flip-flop captures Data only on the rising clock edge, and its Q settles
+    /// exactly one propagation delay after that edge (exercises the delayed-capture trick
+    /// under event scheduling — the first temporal-mode test of sequential logic).
+    void testFlipFlopClockedUnderDelay();
+
+    /// A T-flip-flop (T=1) toggles Q exactly once per delayed rising clock edge — never twice
+    /// per edge — confirming edge detection holds under per-element propagation delay.
+    void testCounterBitTogglesUnderDelay();
+
+    /// A 3-inverter ring with per-gate delays oscillates over time: a single wide tick drains a
+    /// run of transitions at distinct, evenly spaced timestamps (it never hits the per-timestamp
+    /// oscillation cap, unlike the functional zero-delay ring which canonicalizes to Unknown).
+    void testRingOscillatorTemporal();
+
+    /// A gated clock (enable AND master-clock) feeding a downstream flip-flop produces no
+    /// spurious clocking when the enable and clock edges collide at one timestamp — the
+    /// (time, priority-desc) drain settles the gate before the flip-flop samples it.
+    void testGatedClockNoGlitchTemporal();
+
+    /// Two independent same-delay branches from a shared source collide at the exact same
+    /// SimTime with different priorities; the priority-descending tie-break must still drain the
+    /// higher-priority (upstream) predecessor first, so a downstream edge-triggered element
+    /// never latches a transient produced by evaluating them in the wrong order.
+    void testEqualPriorityTieBreakSettlesBeforeDownstream();
+
+    /// A two-stage synchronous pipeline (both stages clocked from the same source, but with
+    /// DIFFERENT nonzero propagation delays) must hold non-blocking commit semantics under real,
+    /// elapsing temporal delay: the second flip-flop samples the first's PRE-edge value on the
+    /// same clock edge that updates it, exactly matching real hardware pipeline behavior.
+    void testTwoStagePipelineDifferentDelaysNonBlocking();
 };

@@ -489,6 +489,157 @@ void TestTemporalSimulation::testWatchedICOutputPinNotOneTickStale()
     QCOMPARE(transitions.last().second, direct); // trace must match the same-tick direct read
 }
 
+void TestTemporalSimulation::testNestedICDelayAccumulation()
+{
+    // The 4-bit ripple adder is a genuinely NESTED IC: it instantiates level2_full_adder_1bit
+    // sub-ICs, each itself built from gates. Loading it flattens recursively (IC → IC → gates),
+    // so propagation delays must accumulate down the carry chain across TWO IC boundary levels.
+    // We drive a worst-case ripple (1111 + 0001 = 10000): CarryOut depends on the carry rippling
+    // through all four nested full-adders, the deepest path — its delay must be far longer than a
+    // single gate, proving delays survive nested flattening rather than collapsing to a black box.
+    const QString icPath = cpuComponentsDir() + QStringLiteral("level4_ripple_adder_4bit.panda");
+    if (!QFile::exists(icPath)) {
+        QSKIP("level4_ripple_adder_4bit.panda fixture not found");
+    }
+
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swA[4], swB[4], carryIn;
+    Led ledCarryOut;
+    builder.add(&swA[0], &swA[1], &swA[2], &swA[3]);
+    builder.add(&swB[0], &swB[1], &swB[2], &swB[3]);
+    builder.add(&carryIn, &ledCarryOut);
+
+    auto *ic = new IC();
+    ic->loadFile(icPath, QFileInfo(icPath).absolutePath());
+    builder.add(ic);
+
+    for (int i = 0; i < 4; ++i) {
+        builder.connect(&swA[i], 0, ic, QStringLiteral("A[%1]").arg(i));
+        builder.connect(&swB[i], 0, ic, QStringLiteral("B[%1]").arg(i));
+    }
+    builder.connect(&carryIn, 0, ic, QStringLiteral("CarryIn"));
+    builder.connect(ic, QStringLiteral("CarryOut"), &ledCarryOut, 0);
+
+    auto *sim = builder.initSimulation();
+
+    const auto setOperands = [&](bool aHigh, bool bLow) {
+        for (int i = 0; i < 4; ++i) {
+            swA[i].setOn(aHigh);                 // A = 1111 when aHigh
+            swB[i].setOn(bLow && i == 0);        // B = 0001 when bLow, else 0000
+        }
+        carryIn.setOn(false);
+    };
+
+    // A wide tick settles the whole nested netlist: 1111 + 0001 = 10000 ⇒ CarryOut = 1.
+    sim->setTimePerTick(500);
+    setOperands(false, false); // 0000 + 0000 = 0 ⇒ CarryOut 0
+    sim->update();
+    QCOMPARE(getInputStatus(&ledCarryOut), false);
+
+    setOperands(true, true);   // 1111 + 0001 ⇒ CarryOut 1
+    sim->update();
+    QCOMPARE(getInputStatus(&ledCarryOut), true);
+
+    // Now prove the carry-chain delay actually accumulates through the nested boundaries: with
+    // 1 ns ticks, CarryOut must NOT flip within a few ns of the input change (the ripple has to
+    // cross four nested full-adders), and must settle only well after that.
+    sim->setTimePerTick(1);
+    setOperands(false, false);
+    for (int i = 0; i < 600; ++i) { sim->update(); } // settle CarryOut back to 0
+    QCOMPARE(getInputStatus(&ledCarryOut), false);
+
+    setOperands(true, true);
+    for (int i = 0; i < 4; ++i) { sim->update(); }   // 4 ns ≪ the rippled carry-chain delay
+    QCOMPARE(getInputStatus(&ledCarryOut), false);   // nested delays not yet elapsed
+
+    for (int i = 0; i < 600; ++i) { sim->update(); } // well past the full ripple
+    QCOMPARE(getInputStatus(&ledCarryOut), true);    // carry rippled through nested ICs
+}
+
+void TestTemporalSimulation::testNestedICDelayAccumulationDeepNesting()
+{
+    // testNestedICDelayAccumulation only exercises 2 levels of IC nesting (ripple-adder IC ->
+    // full-adder IC -> gates). level6_alu_8bit nests 4 levels deep: level6_alu_8bit ->
+    // level4_ripple_alu_4bit -> level4_ripple_adder_4bit -> level2_full_adder_1bit -> gates.
+    // Drive a worst-case ripple-carry ADD (0xFF + 0x01, opcode 0) and prove the Carry output's
+    // delay survives flattening through all 4 boundary levels, not just 2.
+    const QString icPath = cpuComponentsDir() + QStringLiteral("level6_alu_8bit.panda");
+    if (!QFile::exists(icPath)) {
+        QSKIP("level6_alu_8bit.panda fixture not found");
+    }
+
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    QVector<InputSwitch *> aInputs, bInputs, opcodeInputs;
+    for (int i = 0; i < 8; ++i) {
+        auto *a = new InputSwitch();
+        builder.add(a);
+        aInputs.append(a);
+        auto *b = new InputSwitch();
+        builder.add(b);
+        bInputs.append(b);
+    }
+    for (int i = 0; i < 3; ++i) {
+        auto *op = new InputSwitch();
+        builder.add(op);
+        opcodeInputs.append(op);
+    }
+    Led carryFlag;
+    builder.add(&carryFlag);
+
+    auto *ic = new IC();
+    ic->loadFile(icPath, QFileInfo(icPath).absolutePath());
+    builder.add(ic);
+
+    for (int i = 0; i < 8; ++i) {
+        builder.connect(aInputs[i], 0, ic, QStringLiteral("A[%1]").arg(i));
+        builder.connect(bInputs[i], 0, ic, QStringLiteral("B[%1]").arg(i));
+    }
+    for (int i = 0; i < 3; ++i) {
+        builder.connect(opcodeInputs[i], 0, ic, QStringLiteral("OpCode[%1]").arg(i));
+    }
+    builder.connect(ic, QStringLiteral("Carry"), &carryFlag, 0);
+
+    auto *sim = builder.initSimulation();
+
+    const auto setOperands = [&](bool aHigh, bool bLow) {
+        for (int i = 0; i < 8; ++i) {
+            aInputs[i]->setOn(aHigh);         // A = 0xFF when aHigh
+            bInputs[i]->setOn(bLow && i == 0); // B = 0x01 when bLow, else 0x00
+        }
+        for (auto *op : opcodeInputs) {
+            op->setOn(false); // OpCode = 0 (ADD)
+        }
+    };
+
+    // A wide tick settles the whole 4-level-nested netlist: 0xFF + 0x01 = 0x00, Carry = 1.
+    sim->setTimePerTick(500);
+    setOperands(false, false); // 0x00 + 0x00 = 0x00 ⇒ Carry 0
+    sim->update();
+    QCOMPARE(getInputStatus(&carryFlag), false);
+
+    setOperands(true, true); // 0xFF + 0x01 ⇒ Carry 1
+    sim->update();
+    QCOMPARE(getInputStatus(&carryFlag), true);
+
+    // Now prove the delay actually accumulates through all 4 nesting levels: with 1 ns ticks,
+    // Carry must NOT flip within a few ns of the input change, and must settle only well after.
+    sim->setTimePerTick(1);
+    setOperands(false, false);
+    for (int i = 0; i < 1200; ++i) { sim->update(); } // settle Carry back to 0
+    QCOMPARE(getInputStatus(&carryFlag), false);
+
+    setOperands(true, true);
+    for (int i = 0; i < 4; ++i) { sim->update(); }    // 4 ns ≪ the 4-level rippled carry delay
+    QCOMPARE(getInputStatus(&carryFlag), false);      // nested delays not yet elapsed
+
+    for (int i = 0; i < 1200; ++i) { sim->update(); } // well past the full 4-level ripple
+    QCOMPARE(getInputStatus(&carryFlag), true);       // carry rippled through all 4 nested ICs
+}
+
 // ============================================================================
 // Temporal engine: input change detection
 // ============================================================================
@@ -646,6 +797,60 @@ void TestTemporalSimulation::testRecorderIntegration()
     // The last recorded value should reflect NOT(1) = Inactive.
     QCOMPARE(transitions.last().second, Status::Inactive);
     QVERIFY(recorder.maxTime() > 0);
+}
+
+void TestTemporalSimulation::testRecorderSubTickResolution()
+{
+    // recordAll() runs once per DISTINCT timestamp during the drain, not once per tick — so even a
+    // single wide tick captures every ns-resolution transition inside it. A 3-inverter ring with
+    // per-gate delays is a clean source of many transitions per tick: one 100 ns update must record
+    // several transitions at distinct timestamps within that one tick (unlike testRecorderIntegration,
+    // whose 100 ns ticks each hold a single change).
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    Not n1, n2, n3;
+    builder.add(&n1, &n2, &n3);
+    builder.connect(&n1, 0, &n2, 0);
+    builder.connect(&n2, 0, &n3, 0);
+    builder.connect(&n3, 0, &n1, 0); // ring oscillator
+
+    auto *sim = builder.initSimulation();
+    sim->setTimePerTick(100);
+    sim->setElementDelay(&n1, 5);
+    sim->setElementDelay(&n2, 5);
+    sim->setElementDelay(&n3, 5);
+
+    sim->update(); // init + first oscillating window (not yet recorded)
+
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("n1", &n1, 0);
+    recorder.setRecording(true);
+
+    const SimTime tickStart = sim->currentTime();
+    sim->update(); // exactly ONE 100 ns tick, fully recorded
+    const SimTime tickEnd = sim->currentTime();
+
+    const auto &transitions = recorder.trace(0).transitions;
+
+    // Collect the distinct timestamps captured during this single tick.
+    QVector<SimTime> stamps;
+    for (const auto &tr : transitions) {
+        if (tr.first > tickStart && tr.first <= tickEnd && (stamps.isEmpty() || stamps.last() != tr.first)) {
+            stamps.append(tr.first);
+        }
+    }
+
+    QVERIFY2(stamps.size() >= 3, qPrintable(QString(
+        "Expected ≥3 distinct-timestamp transitions within one %1 ns tick, got %2")
+        .arg(static_cast<long long>(tickEnd - tickStart)).arg(stamps.size())));
+
+    // Those timestamps must be strictly increasing and all inside the single tick window —
+    // i.e. genuine sub-tick (ns) resolution, not one transition pinned per tick boundary.
+    for (int i = 1; i < stamps.size(); ++i) {
+        QVERIFY(stamps[i] > stamps[i - 1]);
+    }
+    QVERIFY(stamps.last() - stamps.first() < (tickEnd - tickStart));
 }
 
 // ============================================================================
