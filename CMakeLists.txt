@@ -49,9 +49,14 @@ add_compile_definitions(
     QT_MESSAGELOGCONTEXT
 )
 
-# MCP Server - disabled on tagged release CI builds, enabled on development branches
+# MCP Server - disabled on tagged release CI builds, enabled on development branches.
+# Coverage builds are CI-only instrumentation artifacts that specifically exist to
+# measure MCP/Server coverage (see MCP/Client/run_tests.py in coverage.yml), so always
+# enable it there regardless of branch — the Coverage workflow only ever runs on master.
 if(DEFINED ENV{GITHUB_REF} AND "$ENV{GITHUB_REF}" MATCHES "^refs/tags/")
     # Tagged release CI build — MCP disabled
+elseif(ENABLE_COVERAGE)
+    add_compile_definitions(ENABLE_MCP_SERVER)
 else()
     find_package(Git QUIET)
     if(GIT_FOUND)
