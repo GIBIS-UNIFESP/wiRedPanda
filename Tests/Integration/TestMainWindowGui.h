@@ -45,6 +45,7 @@ private slots:
     void testWaveformDockRecorderDetachOnTabClose();
     void testWaveformDockToggleCycle();
     void testWatchAllSignalsRecordsOutputs();
+    void testWatchICInternalsRecordsSignals();
 
     // --- View toggles ---
 
