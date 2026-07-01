@@ -45,6 +45,16 @@ public:
     /// Records that simulation input \a inputIndex is driven by \a source output \a outputPort.
     void connectPredecessor(int inputIndex, GraphicElement *source, int outputPort);
 
+    /// Number of simulation input slots (predecessor links).
+    int connectionCount() const { return static_cast<int>(m_connections.size()); }
+
+    /// Element feeding simulation input slot \a index, or \c nullptr if unconnected or out of range.
+    GraphicElement *predecessor(int index) const
+    {
+        if (index >= m_connections.size()) { return nullptr; }
+        return m_connections[index].sourceElement;
+    }
+
     /**
      * \brief Snapshots each predecessor's output into the input cache, reading \a inputPorts
      * for unconnected-input defaults and multi-driver conflict detection.

@@ -3,12 +3,16 @@
 
 #include "Tests/Unit/Simulation/TestTemporalSimulation.h"
 
+#include <QFile>
+#include <QFileInfo>
+
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Nand.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
+#include "App/Element/IC.h"
 #include "App/Simulation/SimEvent.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/WaveformRecorder.h"
@@ -168,7 +172,7 @@ void TestTemporalSimulation::testFunctionalModeDefault()
 
     sw.setOn(true);
     sim->update();
-    QCOMPARE(getInputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), true);
 }
 
 void TestTemporalSimulation::testTemporalModeAdvancesTime()
@@ -218,17 +222,17 @@ void TestTemporalSimulation::testZeroDelayAndGate()
     // 0 AND 0 = 0
     sw1.setOn(false); sw2.setOn(false);
     sim->update();
-    QCOMPARE(getInputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), false);
 
     // 1 AND 1 = 1
     sw1.setOn(true); sw2.setOn(true);
     sim->update();
-    QCOMPARE(getInputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), true);
 
     // 1 AND 0 = 0
     sw2.setOn(false);
     sim->update();
-    QCOMPARE(getInputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), false);
 }
 
 void TestTemporalSimulation::testZeroDelayCascadedGates()
@@ -257,12 +261,12 @@ void TestTemporalSimulation::testZeroDelayCascadedGates()
     // sw1=0 → NOT=1, sw2=1 → AND(1,1) = 1
     sw1.setOn(false); sw2.setOn(true);
     sim->update();
-    QCOMPARE(getInputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), true);
 
     // sw1=1 → NOT=0 → AND(0,1) = 0
     sw1.setOn(true);
     sim->update();
-    QCOMPARE(getInputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), false);
 }
 
 void TestTemporalSimulation::testZeroDelayFeedbackConverges()
@@ -292,17 +296,17 @@ void TestTemporalSimulation::testZeroDelayFeedbackConverges()
     setBtn.setOn(false);
     resetBtn.setOn(true);
     sim->update();
-    QCOMPARE(getInputStatus(&qLed), true);
+    QCOMPARE(inputStatus(&qLed), true);
 
     // Hold: S=1, R=1 → Q should stay 1
     setBtn.setOn(true);
     sim->update();
-    QCOMPARE(getInputStatus(&qLed), true);
+    QCOMPARE(inputStatus(&qLed), true);
 
     // Reset: S=1, R=0 (active) → Q should be 0
     resetBtn.setOn(false);
     sim->update();
-    QCOMPARE(getInputStatus(&qLed), false);
+    QCOMPARE(inputStatus(&qLed), false);
 }
 
 // ============================================================================
@@ -381,7 +385,108 @@ void TestTemporalSimulation::testChainedGatesCumulativeDelay()
     sim->update();
 
     QCOMPARE(andGate.outputValue(), Status::Active);
-    QCOMPARE(getInputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), true);
+}
+
+void TestTemporalSimulation::testICInternalDelayPropagation()
+{
+    // The half-adder IC wraps an XOR (Sum) and an AND (Carry, 10 ns). After flattening, those
+    // internal gates are real participants in the temporal netlist, so their propagation delays
+    // must apply through the IC boundary — a pre-flatten IC was a zero-delay black box.
+    const QString icPath = cpuComponentsDir() + QStringLiteral("level2_half_adder.panda");
+    if (!QFile::exists(icPath)) {
+        QSKIP("level2_half_adder.panda fixture not found");
+    }
+
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swA, swB;
+    Led ledSum, ledCarry;
+    builder.add(&swA, &swB, &ledSum, &ledCarry);
+
+    auto *ic = new IC();
+    ic->loadFile(icPath, QFileInfo(icPath).absolutePath());
+    builder.add(ic); // adds the IC to the scene
+
+    builder.connect(&swA, 0, ic, QStringLiteral("A"));
+    builder.connect(&swB, 0, ic, QStringLiteral("B"));
+    builder.connect(ic, QStringLiteral("Sum"), &ledSum, 0);
+    builder.connect(ic, QStringLiteral("Carry"), &ledCarry, 0);
+
+    auto *sim = builder.initSimulation();
+
+    // A wide tick (≥ the internal delays) settles the IC outputs correctly through the boundary.
+    sim->setTimePerTick(100);
+    swA.setOn(false); swB.setOn(false);
+    sim->update();
+    QCOMPARE(inputStatus(&ledCarry), false);
+
+    swA.setOn(true); swB.setOn(true);
+    sim->update();
+    QCOMPARE(inputStatus(&ledCarry), true);  // Carry = A·B = 1
+    QCOMPARE(inputStatus(&ledSum), false);   // Sum = A⊕B = 0
+
+    // Prove the internal AND's 10 ns delay actually applies through the IC boundary: with 1 ns
+    // ticks the Carry output must NOT change within a few ns of an input change, and must settle
+    // only after the delay elapses. A zero-delay black box would flip in a single tick.
+    sim->setTimePerTick(1);
+    swA.setOn(false); swB.setOn(false);
+    for (int i = 0; i < 40; ++i) { sim->update(); } // settle Carry back to 0
+    QCOMPARE(inputStatus(&ledCarry), false);
+
+    swA.setOn(true); swB.setOn(true);
+    for (int i = 0; i < 3; ++i) { sim->update(); }  // 3 ns ≪ 10 ns AND delay
+    QCOMPARE(inputStatus(&ledCarry), false);     // internal delay not yet elapsed
+
+    for (int i = 0; i < 40; ++i) { sim->update(); } // well past 10 ns
+    QCOMPARE(inputStatus(&ledCarry), true);      // internal delay applied, Carry settled
+}
+
+void TestTemporalSimulation::testWatchedICOutputPinNotOneTickStale()
+{
+    // Regression test: a directly-watched IC output port's waveform trace must reflect the
+    // SAME tick's settled value as a direct outputValue() read — not the previous tick's,
+    // since recordAll() runs inside processEvents() while mirrorICOutputs() (the only thing
+    // that keeps an IC's own outputValue() in sync with its now-flattened internal
+    // simulation) used to only run once, at the very end of update().
+    const QString icPath = cpuComponentsDir() + QStringLiteral("level2_half_adder.panda");
+    if (!QFile::exists(icPath)) {
+        QSKIP("level2_half_adder.panda fixture not found");
+    }
+
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swA, swB;
+    builder.add(&swA, &swB);
+
+    auto *ic = new IC();
+    ic->loadFile(icPath, QFileInfo(icPath).absolutePath());
+    builder.add(ic);
+
+    builder.connect(&swA, 0, ic, QStringLiteral("A"));
+    builder.connect(&swB, 0, ic, QStringLiteral("B"));
+
+    auto *sim = builder.initSimulation();
+    sim->setTimePerTick(100); // wide enough for the IC's internal delays to settle in one tick
+
+    // Watch the IC's own Carry output port directly (not an internal primitive).
+    const int carryPortIndex = ic->outputSize() - 1; // Carry is the IC's last output port
+    sim->waveformRecorder().watchSignal("Carry", ic, carryPortIndex);
+    sim->waveformRecorder().setRecording(true);
+
+    swA.setOn(false); swB.setOn(false);
+    sim->update();
+
+    swA.setOn(true); swB.setOn(true); // Carry = A·B should settle to Active this tick
+    sim->update();
+
+    const Status direct = ic->outputValue(carryPortIndex);
+    QCOMPARE(direct, Status::Active);
+    const auto &transitions = sim->waveformRecorder().trace(0).transitions;
+    QVERIFY(!transitions.isEmpty());
+    QCOMPARE(transitions.last().second, direct); // trace must match the same-tick direct read
 }
 
 // ============================================================================
@@ -406,15 +511,15 @@ void TestTemporalSimulation::testInputSwitchSchedulesEvent()
 
     sw.setOn(false);
     sim->update();
-    QCOMPARE(getInputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), false);
 
     sw.setOn(true);
     sim->update();
-    QCOMPARE(getInputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), true);
 
     sw.setOn(false);
     sim->update();
-    QCOMPARE(getInputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), false);
 }
 
 // ============================================================================
