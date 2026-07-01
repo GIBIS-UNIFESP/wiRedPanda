@@ -8,6 +8,7 @@
 #include "App/Core/Enums.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
@@ -577,7 +578,6 @@ void TestUnifiedTimed::testGatedClockNoGlitchTemporal()
     pulseClock();
     QCOMPARE(ff->outputValue(0), Status::Inactive); // one more toggle — never a glitchy double
 }
-
 void TestUnifiedTimed::testEqualPriorityTieBreakSettlesBeforeDownstream()
 {
     // Two independent branches off the same clk, both with a cumulative 6 ns delay, land their
@@ -706,4 +706,120 @@ void TestUnifiedTimed::testTwoStagePipelineDifferentDelaysNonBlocking()
     advanceTo(t1 + 20);
     QCOMPARE(ff1->outputValue(0), Status::Inactive); // ff1 finally captures D=Inactive
     QCOMPARE(ff2->outputValue(0), Status::Inactive); // unchanged: already committed this edge
+}
+
+void TestUnifiedTimed::testLatchTransparencyUnderDelay()
+{
+    // A D-latch is level-sensitive, not edge-triggered: Q tracks Data (after the latch delay)
+    // while Enable is HIGH, and freezes the last value while Enable is LOW. This is the
+    // complementary case to the flip-flop tests — same delay machinery, transparent semantics.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *data = new InputSwitch();
+    auto *enable = new InputSwitch();
+    auto *latch = new DLatch();
+    builder.add(data, enable, latch);
+    builder.connect(data, 0, latch, 0);   // Data
+    builder.connect(enable, 0, latch, 1); // Enable
+    Simulation *sim = builder.initSimulation();
+
+    // Functional baseline: Enable=1, Data=0 ⇒ Q transparent = 0.
+    enable->setOn(true);
+    data->setOn(false);
+    sim->update();
+    QCOMPARE(latch->outputValue(0), Status::Inactive);
+
+    const SimTime delay = 8;
+    sim->setElementDelay(latch, delay);
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+
+    // Enable HIGH: Data 0->1 is passed through, but only after the latch delay.
+    const SimTime tData = sim->currentTime();
+    data->setOn(true);
+    advanceTo(tData + (delay - 2));
+    QVERIFY2(latch->outputValue(0) == Status::Inactive, "Latch passed Data before its delay");
+    advanceTo(tData + delay + 3);
+    QCOMPARE(latch->outputValue(0), Status::Active); // transparent (delayed)
+
+    // Enable LOW: the latch becomes opaque — Q must hold 1 no matter what Data does.
+    enable->setOn(false);
+    advanceTo(sim->currentTime() + 2 * delay); // settle the Enable edge
+    data->setOn(false);
+    advanceTo(sim->currentTime() + 4 * delay); // give Data plenty of time to (not) propagate
+    QCOMPARE(latch->outputValue(0), Status::Active); // held — level-sensitive opacity
+
+    // Enable HIGH again: Q becomes transparent and follows the now-low Data (after the delay).
+    enable->setOn(true);
+    advanceTo(sim->currentTime() + 2 * delay);
+    QCOMPARE(latch->outputValue(0), Status::Inactive);
+}
+
+void TestUnifiedTimed::testAsyncClearUnderDelay()
+{
+    // The active-low ~Clear is asynchronous: it forces Q low without a clock edge. Under temporal
+    // mode the override still takes the flip-flop's own propagation delay to appear (the flip-flop
+    // re-evaluates delay-units after ~Clear changes), and holds Q low while asserted.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *data = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *nClear = new InputSwitch();
+    auto *ff = new DFlipFlop();
+    builder.add(data, clk, nClear, ff);
+    builder.connect(data, 0, ff, 0);   // Data
+    builder.connect(clk, 0, ff, 1);    // Clock
+    builder.connect(nClear, 0, ff, 3); // ~Clear (active low)
+    Simulation *sim = builder.initSimulation();
+
+    // Functional baseline: ~Clear deasserted (high), clock a 1 into Q.
+    nClear->setOn(true);
+    data->setOn(true);
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true); // rising edge captures Data=1
+    sim->update();
+    QCOMPARE(ff->outputValue(0), Status::Active);
+
+    const SimTime delay = 10;
+    sim->setElementDelay(ff, delay);
+    sim->setTimePerTick(1);
+
+    const auto advanceTo = [sim](SimTime target) {
+        while (sim->currentTime() < target) {
+            sim->update();
+        }
+    };
+    advanceTo(sim->currentTime() + 2 * delay); // settle into temporal mode; Q still 1
+    QCOMPARE(ff->outputValue(0), Status::Active);
+
+    // Assert ~Clear with NO clock edge: Q must drop to 0, but only after the flip-flop delay.
+    const SimTime tClear = sim->currentTime();
+    nClear->setOn(false);
+    advanceTo(tClear + 2);
+    QVERIFY2(ff->outputValue(0) == Status::Active, "~Clear took effect immediately — delay ignored");
+    advanceTo(tClear + delay + 3);
+    QCOMPARE(ff->outputValue(0), Status::Inactive); // async-cleared (delayed)
+
+    // While ~Clear is held low, Q stays 0 even if Data is high and a clock edge arrives.
+    data->setOn(true);
+    clk->setOn(false);
+    advanceTo(sim->currentTime() + 2 * delay);
+    clk->setOn(true);
+    advanceTo(sim->currentTime() + 2 * delay);
+    QCOMPARE(ff->outputValue(0), Status::Inactive); // clear dominates
+
+    // Release ~Clear: Q stays 0 until the next genuine rising edge re-captures Data.
+    nClear->setOn(true);
+    clk->setOn(false);
+    advanceTo(sim->currentTime() + 2 * delay);
+    QCOMPARE(ff->outputValue(0), Status::Inactive); // no edge yet
+    clk->setOn(true);
+    advanceTo(sim->currentTime() + 2 * delay);
+    QCOMPARE(ff->outputValue(0), Status::Active); // edge re-captures Data=1
 }

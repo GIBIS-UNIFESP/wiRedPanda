@@ -217,6 +217,49 @@ void TestElementProperties::testLabelPersistence()
     QCOMPARE(loaded->label(), label);
 }
 
+void TestElementProperties::testPropagationDelayPersistence()
+{
+    // A user-overridden propagation delay must survive a save/load round-trip; an element left at
+    // its type default must reload WITHOUT an override (the serializer only writes the field when
+    // it differs from the default — GraphicElementSerializer.cpp).
+    WorkSpace workspace1;
+    auto *overridden = new And();
+    overridden->setPropagationDelay(42); // non-default override
+    QVERIFY(overridden->hasPropagationDelayOverride());
+    auto *plain = new Or(); // left at its type default — no override
+    QVERIFY(!plain->hasPropagationDelayOverride());
+    workspace1.scene()->addItem(overridden);
+    workspace1.scene()->addItem(plain);
+
+    // Save to memory.
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    workspace1.save(stream);
+
+    // Load into a fresh workspace.
+    WorkSpace workspace2;
+    QDataStream loadStream(&data, QIODevice::ReadOnly);
+    const QVersionNumber version = Serialization::readPandaHeader(loadStream);
+    workspace2.load(loadStream, version, {});
+
+    // Locate the two elements by type and verify the delay override round-tripped exactly.
+    And *loadedAnd = nullptr;
+    Or *loadedOr = nullptr;
+    const auto elements = workspace2.scene()->elements();
+    for (auto *elm : elements) {
+        if (auto *a = dynamic_cast<And *>(elm)) { loadedAnd = a; }
+        if (auto *o = dynamic_cast<Or *>(elm)) { loadedOr = o; }
+    }
+    QVERIFY2(loadedAnd != nullptr, "AND gate should have reloaded");
+    QVERIFY2(loadedOr != nullptr, "OR gate should have reloaded");
+
+    QVERIFY2(loadedAnd->hasPropagationDelayOverride(), "Overridden delay must survive save/load");
+    QCOMPARE(loadedAnd->propagationDelay(), SimTime(42));
+
+    QVERIFY2(!loadedOr->hasPropagationDelayOverride(), "Default-delay element must reload without an override");
+}
+
 // Color Tests
 
 void TestElementProperties::testColorProperty()

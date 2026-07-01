@@ -23,6 +23,7 @@ private slots:
     // Label Tests (2 tests)
     void testLabelProperty();
     void testLabelPersistence();
+    void testPropagationDelayPersistence();
 
     // Color Tests (2 tests)
     void testColorProperty();
