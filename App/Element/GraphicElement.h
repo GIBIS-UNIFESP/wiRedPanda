@@ -508,6 +508,14 @@ public:
     /// Read-only view of the cached simulation input values.
     const QVector<Status> &simInputs() const { return m_sim.inputs(); }
 
+    /// Number of simulation input slots (predecessor links).
+    int simInputCount() const { return m_sim.connectionCount(); }
+
+    /// Element feeding simulation input slot \a index, or \c nullptr if unconnected.
+    /// Reflects the live simulation graph (physical, wireless, and spliced IC boundaries),
+    /// so inverting these links yields the engine's successor graph.
+    GraphicElement *simPredecessor(const int index) const { return m_sim.predecessor(index); }
+
     /// Read-only view of the current simulation output values.
     const QVector<Status> &simOutputs() const { return m_sim.outputs(); }
 

@@ -162,15 +162,6 @@ public:
     static SortResult topologicalSort(const QVector<GraphicElement *> &elements,
                                       const QHash<GraphicElement *, QVector<GraphicElement *>> &successors);
 
-    /// Event-driven, BLOCKING zero-delay settle (shared engine core; used by IC-internal sim and
-    /// the top-level functional path). Evaluates \a seed in topological-priority order with
-    /// immediate output commit, schedules successors of changed elements into the next delta cycle
-    /// (dedup per cycle), repeats to a fixed point or a delta-cycle cap. Null-tolerant. Does not
-    /// canonicalize/warn (caller decides). \return \c true if converged.
-    static bool eventSettle(const QVector<GraphicElement *> &seed,
-                            const QHash<GraphicElement *, QVector<GraphicElement *>> &successors,
-                            const QHash<const GraphicElement *, int> &priorities);
-
 signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
     void simulationWarning(const QString &message);
@@ -182,6 +173,25 @@ private:
 
     static void updatePort(InputPort *port);
     static void updatePort(OutputPort *port);
+
+    /// Recursively collects every primitive (non-IC) element, descending through ICs, into \a out.
+    /// IC boundary Nodes are primitives and are included; IC container nodes are not.
+    static void collectFlatElements(const QVector<GraphicElement *> &elements,
+                                    QVector<GraphicElement *> &out);
+
+    /// Splices every IC's boundary into the flat netlist: routes each IC input port's external
+    /// driver to the matching boundary input Node, repoints external consumers of each IC output
+    /// port to the matching boundary output Node, and records (IC, port, boundary Node) for
+    /// output mirroring. Recurses into nested ICs.
+    void spliceICBoundaries(const QVector<GraphicElement *> &elements);
+
+    /// Copies each boundary output Node's value back onto its IC's external output port so wire
+    /// rendering and ic->outputValue() stay correct (the IC no longer settles itself). Also
+    /// pushes the value onto the IC's own output port visual directly, since the IC container
+    /// node is excluded from m_sortedElements (Phase 3's element-output loop never visits it).
+    void mirrorICOutputs();
+
+    /// Builds m_successorGraph by inverting the flat elements' predecessor links, then topo-sorts.
     void sortSimElements(const QVector<GraphicElement *> &elements);
 
     /// Recursively appends every ElementGroup::Memory element in \a elements
@@ -267,9 +277,9 @@ private:
     QSet<const GraphicElement *> m_simFeedbackNodes;
     bool m_simHasFeedbackElements = false;
 
-    /// Persisted successor adjacency (element → its successors), built in sortSimElements().
-    /// Used by processEvents() to schedule re-evaluation on output change. Re-uses
-    /// buildSuccessorGraph() (handles wireless Tx→Rx) so it matches the sort topology.
+    /// Persisted successor adjacency (element → its successors), built in sortSimElements() by
+    /// inverting each flat element's predecessor links (physical, wireless, and spliced IC
+    /// boundaries), so it matches exactly the data flow the engine reads in updateLogic().
     QHash<GraphicElement *, QVector<GraphicElement *>> m_successorGraph;
 
     /// Sequential (Memory-group) elements already evaluated at least once during the current
@@ -280,6 +290,15 @@ private:
     /// wave (which would corrupt its edge-detection/data-capture state — re-running a flip-flop
     /// with an unchanged clock is not idempotent for the value it captures for the *next* edge).
     QSet<GraphicElement *> m_evaluatedSequentialThisTick;
+
+    /// (IC, output port, boundary output Node) triples for mirrorICOutputs(). Built in
+    /// initialize() while splicing IC boundaries; the IC element itself is not simulated.
+    struct ICOutputMirror {
+        GraphicElement *ic = nullptr;
+        int outIndex = 0;
+        GraphicElement *boundaryNode = nullptr;
+    };
+    QVector<ICOutputMirror> m_icOutputMirror;
 
     // --- Members: Temporal (propagation-delay) simulation ---
 

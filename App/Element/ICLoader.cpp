@@ -121,7 +121,7 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     // Fallback: direct file load (IC not yet in a scene, e.g. during deserialization).
     // loadFileDirectly() mirrors deserializeAndLoad()'s parse-first, reset-after shape:
     // a failed parse (corrupt file, missing dependency, circular reference) propagates
-    // without ever leaving m_sortedInternalElements pointing at freed elements.
+    // without ever leaving m_internalElements pointing at freed elements.
     loadFileDirectly(ic, fileInfo);
     ic.m_file = fileInfo.absoluteFilePath();
     // Name is carried by the hover preview popup, not a Qt tooltip — see above.

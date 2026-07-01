@@ -2170,7 +2170,7 @@ bool TestArduino::isCombinationalCircuit(const QVector<GraphicElement *> &elemen
 // ============================================================================
 
 QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
-    const QVector<GraphicElement *> &elements, int maxInputBits)
+    const QVector<GraphicElement *> &elements, int maxInputBits, Simulation *sim)
 {
     struct InputEntry { GraphicElement *elm; int portIndex; };
     struct OutputEntry { GraphicElement *elm; int portIndex; };
@@ -2201,6 +2201,40 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
     const int N = static_cast<int>(inputs.size());
     if (N == 0 || N > maxInputBits) {
         return {};
+    }
+
+    if (sim) {
+        // Circuits containing ICs must be driven through the production Simulation: ICs are pure
+        // structure (Simulation::initialize() flattens them into the netlist rather than
+        // self-simulating), so there is no standalone per-element settle left to replicate here.
+        // This also correctly resolves gate-level feedback (e.g. a latch built from cross-coupled
+        // gates rather than a dedicated flip-flop element type).
+        const int combos = 1 << N;
+        QVector<ArduinoCodeGen::TestVector> table;
+        table.reserve(combos);
+        for (int i = 0; i < combos; ++i) {
+            for (int j = 0; j < N; ++j) {
+                const bool bit = (i >> j) & 1;
+                if (auto *sw = qobject_cast<InputSwitch *>(inputs[j].elm)) {
+                    sw->setOn(bit);
+                } else {
+                    inputs[j].elm->setOutputValue(inputs[j].portIndex, bit);
+                }
+            }
+            sim->update();
+
+            ArduinoCodeGen::TestVector entry;
+            entry.inputs.resize(N);
+            for (int j = 0; j < N; ++j) {
+                entry.inputs[j] = (i >> j) & 1;
+            }
+            entry.outputs.resize(outputs.size());
+            for (int k = 0; k < outputs.size(); ++k) {
+                entry.outputs[k] = outputs[k].elm->simInputs().at(outputs[k].portIndex) == Status::Active;
+            }
+            table.append(entry);
+        }
+        return table;
     }
 
     // Build direct simulation graph
@@ -2502,7 +2536,7 @@ void TestArduino::testArduinoExportHelper(const QString &icFile)
     if (generateMode) {
         // Functional testbench validation for combinational circuits (Phase 5)
         if (isCombinationalCircuit(allElements)) {
-            const auto truthTable = generateTruthTable(allElements);
+            const auto truthTable = generateTruthTable(allElements, 12, builder.initSimulation());
             if (!truthTable.isEmpty()) {
                 const QString tbSketchName = baseName + "_tb";
                 const QString tbSketchFolder = tempDir.filePath(tbSketchName);

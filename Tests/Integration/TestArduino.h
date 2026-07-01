@@ -10,6 +10,7 @@
 class GraphicElement;
 class IC;
 class Connection;
+class Simulation;
 
 class TestArduino : public QObject
 {
@@ -34,8 +35,13 @@ private:
 
     static QString s_cliCachePath;
 
-    // Truth table generation from the wiRedPanda simulator
-    static QVector<ArduinoCodeGen::TestVector> generateTruthTable(const QVector<GraphicElement *> &elements, int maxInputBits = 12);
+    // Truth table generation from the wiRedPanda simulator. When \a sim is non-null, inputs are
+    // driven through the production Simulation (required for circuits containing ICs, since ICs
+    // are pure structure — Simulation::initialize() flattens them into the netlist rather than
+    // self-simulating); otherwise elements are settled directly via updateLogic() (sim-free path,
+    // used by plain gate circuits with no IC).
+    static QVector<ArduinoCodeGen::TestVector> generateTruthTable(const QVector<GraphicElement *> &elements,
+                                                                   int maxInputBits = 12, Simulation *sim = nullptr);
     static bool isCombinationalCircuit(const QVector<GraphicElement *> &elements);
 
     // Flip-flop specific helpers

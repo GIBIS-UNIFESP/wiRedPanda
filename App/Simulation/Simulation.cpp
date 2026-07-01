@@ -197,8 +197,12 @@ void Simulation::update()
         // only at the NEXT event-bearing timestamp (for a slow clock, half a period late).
         // m_currentTime is when every observer (wires, LEDs, downstream logic) actually sees
         // the new values, so that is the truthful timestamp; recordAll()'s same-time collapse
-        // merges multi-wave commits at one boundary.
+        // merges multi-wave commits at one boundary. mirrorICOutputs() first, for the same
+        // reason as the drain-side captures: a directly-watched IC output pin is read via the
+        // IC's own outputValue(), which only mirrorICOutputs() keeps in sync with the
+        // flattened boundary Node that actually carries the committed value.
         if (anySequentialChanged && m_recorder.isRecording()) {
+            mirrorICOutputs();
             m_recorder.recordAll(m_currentTime);
         }
 
@@ -250,6 +254,12 @@ void Simulation::update()
         return;
     }
     m_visualTickCount = 0;
+
+    // Mirror each IC's settled internal outputs onto its external output ports so the wire
+    // visuals below (and ic->outputValue()) reflect the flat-netlist result — the IC element
+    // itself is not simulated (excluded from m_sortedElements below), so mirrorICOutputs()
+    // also pushes the value onto the IC's own output port visuals directly.
+    mirrorICOutputs();
 
     // Phase 3: push computed logic values onto all output port visuals.
     // Iterating elements (not connections) ensures unconnected output ports
@@ -324,6 +334,7 @@ void Simulation::restart()
     m_inputs.clear();
     m_outputs.clear();
     m_successorGraph.clear(); // holds element pointers; must not outlive a rebuild
+    m_icOutputMirror.clear(); // holds IC + boundary-node pointers; must not outlive a rebuild
     m_eventQueue.clear();
     m_delays.clear();         // keyed by element pointers; must not outlive a rebuild
     m_evaluatedSequentialThisTick.clear(); // holds element pointers; must not outlive a rebuild
@@ -343,8 +354,8 @@ void Simulation::restart()
     Q_ASSERT(!m_initialized);
     Q_ASSERT(m_sortedElements.isEmpty() && m_sequentialElements.isEmpty()
           && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty()
-          && m_successorGraph.isEmpty() && m_evaluatedSequentialThisTick.isEmpty()
-          && m_recorder.timelineEmpty());
+          && m_successorGraph.isEmpty() && m_icOutputMirror.isEmpty()
+          && m_evaluatedSequentialThisTick.isEmpty() && m_recorder.timelineEmpty());
 }
 
 bool Simulation::isRunning()
@@ -400,60 +411,6 @@ void Simulation::setUserMuted(const bool muted)
 bool Simulation::isUserMuted() const
 {
     return m_userMuted;
-}
-
-bool Simulation::eventSettle(
-    const QVector<GraphicElement *> &seed,
-    const QHash<GraphicElement *, QVector<GraphicElement *>> &successors,
-    const QHash<const GraphicElement *, int> &priorities)
-{
-    const auto byPriorityDesc = [&priorities](GraphicElement *a, GraphicElement *b) {
-        return priorities.value(a, -1) > priorities.value(b, -1);
-    };
-
-    QVector<GraphicElement *> wave;
-    QSet<GraphicElement *> seen;
-    for (auto *element : seed) {
-        if (element && !seen.contains(element)) {
-            seen.insert(element);
-            wave.append(element);
-        }
-    }
-    std::stable_sort(wave.begin(), wave.end(), byPriorityDesc);
-
-    constexpr int maxDeltaCycles = 1000;
-    int deltaCycles = 0;
-
-    while (!wave.isEmpty()) {
-        QVector<GraphicElement *> next;
-        QSet<GraphicElement *> nextSeen;
-        for (auto *element : std::as_const(wave)) {
-            element->clearOutputChanged();
-            element->updateLogic();
-            if (!element->outputChanged()) {
-                continue;
-            }
-            const auto it = successors.constFind(element);
-            if (it == successors.constEnd()) {
-                continue;
-            }
-            for (auto *successor : *it) {
-                if (successor && !nextSeen.contains(successor)) {
-                    nextSeen.insert(successor);
-                    next.append(successor);
-                }
-            }
-        }
-        if (next.isEmpty()) {
-            return true;
-        }
-        if (++deltaCycles >= maxDeltaCycles) {
-            return false;
-        }
-        std::stable_sort(next.begin(), next.end(), byPriorityDesc);
-        wave = std::move(next);
-    }
-    return true;
 }
 
 void Simulation::processEvents(const SimTime targetTime,
@@ -531,7 +488,14 @@ void Simulation::processEvents(const SimTime targetTime,
             // The previous timestamp has fully settled — capture watched signals at it before
             // advancing. Recording per distinct timestamp gives the waveform ns-resolution
             // transitions, so per-element propagation delays are visible regardless of tick size.
+            // mirrorICOutputs() must run first: it's normally only called once, at the very end
+            // of update(), but a directly-watched IC output pin is read via the IC's own
+            // outputValue() (its actual simulation happens on the flattened internal boundary
+            // node) — without refreshing the mirror here too, recordAll() would sample the
+            // PREVIOUS tick's mirrored value, one tick stale. The copy is cheap and idempotent,
+            // so refreshing it more often than strictly necessary for rendering is harmless.
             if (lastTime != SIM_TIME_UNSET && m_recorder.isRecording()) {
+                mirrorICOutputs();
                 m_recorder.recordAll(lastTime);
             }
             evalsAtTime = 0; // the cap detects oscillation within a single timestamp
@@ -588,7 +552,9 @@ void Simulation::processEvents(const SimTime targetTime,
 
     // Capture the final settled timestamp for the waveform viewer. recordAll() dedups
     // unchanged values, so steady-state ticks add nothing and the trace simply extends.
+    // mirrorICOutputs() first, for the same reason as the per-timestamp capture above.
     if (lastTime != SIM_TIME_UNSET && m_recorder.isRecording()) {
+        mirrorICOutputs();
         m_recorder.recordAll(lastTime);
     }
 
@@ -653,7 +619,6 @@ bool Simulation::initialize()
     m_inputs.clear();
     m_sortedElements.clear();
     m_sequentialElements.clear();
-    m_delays.clear(); // repopulated below from each element's propagationDelay()
 
     // The recorder holds QPointers to watched elements, so freed elements have already auto-nulled;
     // reap those dead traces here so the watch list tracks the rebuilt netlist (live watches, whose
@@ -727,27 +692,42 @@ bool Simulation::initialize()
         return false;
     }
 
-    // Initialize simulation vectors on all scene-level elements, and seed each
-    // element's propagation delay for the temporal (event-driven) engine.  This is
-    // the baseline; setElementDelay() may still override an entry at runtime.
+    // Initialize simulation vectors on all scene-level elements.
     for (auto *elm : std::as_const(elements)) {
         elm->initSimulationVectors(elm->inputSize(), elm->outputSize());
-        m_delays[elm] = elm->propagationDelay();
     }
 
     // Build connection graph
     buildConnectionGraph(elements);
     connectWirelessElements(elements);
 
-    // Initialize IC internal simulation graphs
+    // Wire each IC's internal primitives (connections + nested ICs). The IC itself no longer
+    // simulates; its internals join the top-level flat netlist below.
     for (auto *elm : std::as_const(elements)) {
         if (elm->elementType() == ElementType::IC) {
             static_cast<IC *>(elm)->initializeSimulation();
         }
     }
 
-    // Topological sort with feedback detection
-    sortSimElements(elements);
+    // Flatten the IC hierarchy into one netlist of primitive elements: collect every primitive
+    // (descending through ICs), splice each IC boundary so internal gates read external drivers
+    // and external consumers read internal outputs, then seed per-element propagation delays so
+    // temporal mode applies them uniformly — including inside (nested) ICs.
+    QVector<GraphicElement *> flatElements;
+    collectFlatElements(elements, flatElements);
+
+    m_icOutputMirror.clear();
+    spliceICBoundaries(elements);
+
+    // Seed each flat element's propagation delay for the temporal engine. This is the baseline;
+    // setElementDelay() may still override an entry at runtime.
+    m_delays.clear();
+    for (auto *elm : std::as_const(flatElements)) {
+        m_delays[elm] = elm->propagationDelay();
+    }
+
+    // Topological sort with feedback detection over the flat netlist
+    sortSimElements(flatElements);
 
     // Collect every synchronous sequential element (across the IC hierarchy) so
     // Phase 2 can give them non-blocking commit semantics.
@@ -878,8 +858,63 @@ Simulation::SortResult Simulation::topologicalSort(
 
 void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
 {
-    const auto txMap = buildTxMap(elements);
-    const auto successors = buildSuccessorGraph(elements, txMap);
+    // Build the flat successor adjacency the same way buildSuccessorGraph() does — walking each
+    // element's output connections in port/connection order — so the adjacency ORDER matches the
+    // legacy per-scope graphs. That order matters: calculatePriorities() assigns a feedback
+    // node's priority from its already-processed successors, so a different successor order would
+    // change which feedback symmetry is broken first (e.g. gated-clock races inside ICs). IC
+    // boundaries are mapped to their boundary Nodes so the graph is flat and edge-complete.
+    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
+    const auto addEdge = [&successors](GraphicElement *src, GraphicElement *dst) {
+        if (src && dst) {
+            auto &succ = successors[src];
+            if (!succ.contains(dst)) {
+                succ.append(dst);
+            }
+        }
+    };
+    // Maps an input port to the primitive that actually consumes the signal: an IC input port
+    // resolves to that IC's matching boundary input Node.
+    const auto mapConsumer = [](InputPort *endPort) -> GraphicElement * {
+        auto *consumer = endPort->graphicElement();
+        if (consumer && consumer->elementType() == ElementType::IC) {
+            auto *ic = static_cast<IC *>(consumer);
+            const int idx = endPort->index();
+            if (idx >= 0 && idx < ic->internalInputs().size()) {
+                return ic->internalInputs().at(idx)->graphicElement();
+            }
+        }
+        return consumer;
+    };
+
+    // 1. Physical edges, in output-port/connection order (driver → consumer, IC inputs mapped to
+    //    their boundary Nodes). Boundary input Nodes' internal fan-out is covered here too.
+    for (auto *elm : std::as_const(elements)) {
+        for (auto *outputPort : elm->outputs()) {
+            for (auto *conn : outputPort->connections()) {
+                if (auto *endPort = conn ? conn->endPort() : nullptr) {
+                    addEdge(elm, mapConsumer(endPort));
+                }
+            }
+        }
+    }
+    // 2. Boundary output edges: a boundary output Node feeds the external consumers wired to its
+    //    IC's output port (those connections live on the IC port, not the Node).
+    for (const auto &m : std::as_const(m_icOutputMirror)) {
+        for (auto *conn : m.ic->outputPort(m.outIndex)->connections()) {
+            if (auto *endPort = conn ? conn->endPort() : nullptr) {
+                addEdge(m.boundaryNode, mapConsumer(endPort));
+            }
+        }
+    }
+    // 3. Wireless Tx→Rx edges (label-matched, no Connection object), appended after physical edges to
+    //    match buildSuccessorGraph()'s ordering. connectWirelessElements() set each Rx's
+    //    predecessor to its Tx.
+    for (auto *elm : std::as_const(elements)) {
+        if (elm->wirelessMode() == WirelessMode::Rx && elm->simInputCount() > 0) {
+            addEdge(elm->simPredecessor(0), elm);
+        }
+    }
     m_successorGraph = successors; // persist for the event-driven engine (processEvents)
     const auto result = topologicalSort(elements, successors);
 
@@ -893,6 +928,112 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
     }
     m_simHasFeedbackElements = !m_simFeedbackNodes.isEmpty();
     m_sortedElements = result.sorted;
+}
+
+void Simulation::collectFlatElements(const QVector<GraphicElement *> &elements,
+                                     QVector<GraphicElement *> &out)
+{
+    for (auto *elm : std::as_const(elements)) {
+        if (!elm) {
+            continue;
+        }
+        if (elm->elementType() == ElementType::IC) {
+            // Descend into the IC's primitives (including its boundary Nodes); the IC container
+            // node itself does not participate in simulation.
+            collectFlatElements(static_cast<IC *>(elm)->internalElements(), out);
+        } else {
+            out.append(elm);
+        }
+    }
+}
+
+namespace {
+
+/// Resolves \a startPort to its driving primitive (element, output index). If the driver is an
+/// IC output port, maps it to that IC's matching boundary output Node — the real primitive that
+/// carries the value in the flat netlist.
+std::pair<GraphicElement *, int> resolveDriver(OutputPort *startPort)
+{
+    auto *element = startPort->graphicElement();
+    if (element && element->elementType() == ElementType::IC) {
+        auto *ic = static_cast<IC *>(element);
+        const int idx = startPort->index();
+        if (idx >= 0 && idx < ic->internalOutputs().size()) {
+            auto *boundaryOut = ic->internalOutputs().at(idx);
+            return {boundaryOut->graphicElement(), boundaryOut->index()};
+        }
+    }
+    return {element, startPort->index()};
+}
+
+} // namespace
+
+void Simulation::spliceICBoundaries(const QVector<GraphicElement *> &elements)
+{
+    for (auto *elm : std::as_const(elements)) {
+        if (!elm || elm->elementType() != ElementType::IC) {
+            continue;
+        }
+        auto *ic = static_cast<IC *>(elm);
+        const auto &boundaryInputs = ic->internalInputs();
+        const auto &boundaryOutputs = ic->internalOutputs();
+
+        // Inputs: each boundary input Node reads the IC input port's external driver.
+        for (int i = 0; i < ic->inputSize() && i < boundaryInputs.size(); ++i) {
+            const auto &conns = ic->inputPort(i)->connections();
+            if (conns.size() != 1 || !conns.constFirst()) {
+                continue; // unconnected (or ambiguous) IC input — boundary Node keeps its default
+            }
+            auto *startPort = conns.constFirst()->startPort();
+            if (!startPort) {
+                continue;
+            }
+            const auto [srcElm, srcPort] = resolveDriver(startPort);
+            auto *boundaryPort = boundaryInputs.at(i);
+            if (srcElm && boundaryPort && boundaryPort->graphicElement()) {
+                boundaryPort->graphicElement()->connectPredecessor(boundaryPort->index(), srcElm, srcPort);
+            }
+        }
+
+        // Outputs: external consumers read the boundary output Node; record it for mirroring.
+        for (int j = 0; j < ic->outputSize() && j < boundaryOutputs.size(); ++j) {
+            auto *boundaryPort = boundaryOutputs.at(j);
+            auto *boundaryNode = boundaryPort ? boundaryPort->graphicElement() : nullptr;
+            if (!boundaryNode) {
+                continue;
+            }
+            for (auto *conn : ic->outputPort(j)->connections()) {
+                if (!conn) {
+                    continue;
+                }
+                auto *endPort = conn->endPort();
+                auto *consumer = endPort ? endPort->graphicElement() : nullptr;
+                // IC consumers are repointed by their own input splice (resolveDriver maps this
+                // IC output to its boundary Node), so skip them here.
+                if (!consumer || consumer->elementType() == ElementType::IC) {
+                    continue;
+                }
+                consumer->connectPredecessor(endPort->index(), boundaryNode, boundaryPort->index());
+            }
+            m_icOutputMirror.append({ic, j, boundaryNode});
+        }
+
+        // Recurse into nested ICs.
+        spliceICBoundaries(ic->internalElements());
+    }
+}
+
+void Simulation::mirrorICOutputs()
+{
+    for (const auto &m : std::as_const(m_icOutputMirror)) {
+        if (m.ic && m.boundaryNode) {
+            m.ic->setOutputValue(m.outIndex, m.boundaryNode->outputValue(0));
+            // The IC container node is excluded from the flat m_sortedElements (it is pure
+            // structure, not simulated), so Phase 3's element-output loop never visits its
+            // ports. Push the mirrored value onto the wire visual here instead, at the source.
+            updatePort(m.ic->outputPort(m.outIndex));
+        }
+    }
 }
 
 void Simulation::collectSequentialElements(const QVector<GraphicElement *> &elements)

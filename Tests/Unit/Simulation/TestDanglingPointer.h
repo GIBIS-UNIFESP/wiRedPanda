@@ -25,13 +25,14 @@ private slots:
 
     // --- Assertion-based tests (safe: no SIGSEGV pre-fix) -------------
 
-    /// Bug 1 — IC::resetInternalState() must clear every vector it owns,
-    /// not just m_internalElements.
-    void bug1_resetInternalStateMustClearSortedVector();
+    /// Bug 1 — IC::resetInternalState() frees the internal primitives that the
+    /// top-level flat netlist references, so it must invalidate the owning
+    /// Simulation (restart) before freeing, leaving no dangling m_sortedElements.
+    void bug1_resetInternalStateMustInvalidateSimulation();
 
     /// Bug 3 — IC::loadFile() PATH 2 resets internals before loadFileDirectly()
-    /// can throw. After a failed load, m_sortedInternalElements must stay
-    /// in sync with m_internalElements.
+    /// can throw. After a failed load, the IC's owned vectors (m_internalElements
+    /// and m_internalConnections) must stay consistent (both cleared together).
     void bug3_failedLoadMustLeaveConsistentState();
 
     /// Bug 4 — Simulation::restart() currently only flips m_initialized,
@@ -87,17 +88,18 @@ private slots:
     /// dereference the freed internals on the next tick. (UAF under ASan pre-fix.)
     void recorder_toleratesICResetWhileWatching();
 
-    /// Bug 8 — eventSettle() must skip null seed entries, not dereference them.
-    void bug8_eventSettleMustTolerateNullEntry();
+    /// Bug 8 — processEvents() must skip an event whose SimEvent::target is null, not dereference it.
+    void bug8_processEventsMustTolerateNullTarget();
 
     /// Hardening — Simulation::update() Phase 3 now walks m_sortedElements
     /// (rewritten to cover unconnected output ports too). Inject a null
     /// entry and call update() to verify the existing guard tolerates it.
     void hardening_phase3MustTolerateNullElement();
 
-    /// Bug 2 — IC::updateLogic() dereferences m_sortedInternalElements
-    /// entries without a null guard.
-    void bug2_icUpdateLogicMustTolerateNullEntry();
+    /// Bug 2 (post-flatten) — the IC is pure structure: after initialize() its
+    /// internal primitives join the flat netlist (m_sortedElements) while the IC
+    /// container node itself is excluded (it no longer simulates).
+    void bug2_flatNetlistExcludesICContainerNode();
 
     /// Bug 7 — ICRegistry::onFileChanged() reloads without a
     /// SimulationBlocker and uses restart() (Bug 4) instead of a full

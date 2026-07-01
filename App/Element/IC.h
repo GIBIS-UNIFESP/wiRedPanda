@@ -8,10 +8,8 @@
 #pragma once
 
 #include <QByteArray>
-#include <QHash>
 #include <QPixmap>
 #include <QPoint>
-#include <QSet>
 
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
@@ -106,15 +104,8 @@ public:
 
     // --- Visual ---
 
-    /// \reimp Simulates the IC's internal circuit and propagates results.
-    void updateLogic() override;
-
-    /// \reimp Re-propagates committed sequential state through the IC's internal
-    /// combinational logic and refreshes its output boundary, without re-clocking
-    /// internal flip-flops/latches.
-    void resettleCombinational() override;
-
-    /// Builds the internal simulation graph (connection graph + sort) for direct simulation.
+    /// Wires the IC's internal primitives so Simulation::initialize() can splice them into the
+    /// top-level flat netlist. The IC no longer settles itself (no updateLogic override).
     void initializeSimulation();
 
     /// \reimp
@@ -177,19 +168,6 @@ private:
     QVector<Connection *> m_internalConnections;
     QVector<Port *> m_internalInputs;
     QVector<Port *> m_internalOutputs;
-
-    // --- Members: Direct simulation ---
-
-    QVector<GraphicElement *> m_sortedInternalElements;
-    QSet<GraphicElement *> m_boundaryInputElements;
-    /// True when the internal graph has a combinational feedback loop. Still needed by
-    /// resettleCombinational()'s post-edge re-propagation pass (bounded vs single-pass),
-    /// even though updateLogic() itself now settles both cases through eventSettle().
-    bool m_internalHasFeedback = false;
-    /// Internal simulation graph for the event-driven settle (eventSettle): successor adjacency
-    /// and topological priorities over the internal elements.
-    QHash<GraphicElement *, QVector<GraphicElement *>> m_internalSuccessors;
-    QHash<const GraphicElement *, int> m_internalPriorities;
 
     // --- Members: Hover preview ---
 

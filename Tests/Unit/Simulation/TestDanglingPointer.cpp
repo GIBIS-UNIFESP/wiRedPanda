@@ -35,9 +35,9 @@
 namespace {
 
 // Loads jkflipflop (5 inputs, 2 outputs) onto the scene, runs the outer
-// Simulation::initialize() so IC::initializeSimulation() populates
-// m_sortedInternalElements, and returns the IC. Returns nullptr if the
-// fixture file is missing.
+// Simulation::initialize() so the IC's internal primitives are flattened into
+// the top-level netlist (Simulation::m_sortedElements), and returns the IC.
+// Returns nullptr if the fixture file is missing.
 IC *loadInitializedIC(WorkSpace &ws)
 {
     auto *ic = new IC();
@@ -64,31 +64,33 @@ void TestDanglingPointer::initTestCase()
 // Assertion-based tests — these FAIL pre-fix without crashing the process.
 // ==========================================================================
 
-// Bug 1 — IC::resetInternalState() leaves m_sortedInternalElements dangling.
-// qDeleteAll(m_internalElements) frees the elements; the sorted vector that
-// references those same objects is never cleared, leaving every entry as
-// a freed pointer.
-void TestDanglingPointer::bug1_resetInternalStateMustClearSortedVector()
+// Bug 1 — IC::resetInternalState() frees m_internalElements, which the top-level
+// flat netlist (Simulation::m_sortedElements) now references. It must invalidate
+// the owning Simulation first, so no freed pointer survives in the engine.
+void TestDanglingPointer::bug1_resetInternalStateMustInvalidateSimulation()
 {
     WorkSpace ws;
+    auto *sim = ws.scene()->simulation();
     auto *ic = loadInitializedIC(ws);
     QVERIFY2(ic, "jkflipflop.panda not found in examples — fixture missing");
     QVERIFY(!ic->m_internalElements.isEmpty());
-    QVERIFY(!ic->m_sortedInternalElements.isEmpty());
+    QVERIFY(sim->m_initialized);
+    QVERIFY(!sim->m_sortedElements.isEmpty()); // flat netlist references the IC internals
 
     ic->resetInternalState();
 
-    // After the fix, every piece of state referring to m_internalElements
-    // must be cleared in the same atomic step.
+    // The IC's own vectors are cleared atomically, and the Simulation has been
+    // invalidated so its now-stale flat netlist is dropped before the free.
     QCOMPARE(ic->m_internalElements.size(), 0);
-    QCOMPARE(ic->m_sortedInternalElements.size(), 0); // FAILS pre-fix
-    QCOMPARE(ic->m_boundaryInputElements.size(), 0);
-    QVERIFY(!ic->m_internalHasFeedback);
+    QVERIFY2(!sim->m_initialized,
+             "resetInternalState() must invalidate the owning Simulation so "
+             "m_sortedElements cannot dereference the freed IC internals.");
 }
 
 // Bug 3 — IC::loadFile() PATH 2 calls resetInternalState() BEFORE
-// loadFileDirectly(), which throws on corrupt input. The throw leaves
-// m_internalElements empty but m_sortedInternalElements dangling.
+// loadFileDirectly(), which throws on corrupt input. After a failed load, the
+// IC's owned vectors (m_internalElements and m_internalConnections) must stay
+// consistent (both cleared together).
 //
 // PATH 2 is only reached when qobject_cast<Scene *>(scene()) returns
 // nullptr — so the IC must live outside any Scene for this test.
@@ -102,7 +104,7 @@ void TestDanglingPointer::bug3_failedLoadMustLeaveConsistentState()
     ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
     ic->initializeSimulation();
     QVERIFY(!ic->m_internalElements.isEmpty());
-    QVERIFY(!ic->m_sortedInternalElements.isEmpty());
+    QVERIFY(!ic->m_internalConnections.isEmpty());
 
     // Empty .panda file: exists + opens but readPandaHeader falls through
     // all three format paths (no magic, empty legacy string, null-center
@@ -128,16 +130,16 @@ void TestDanglingPointer::bug3_failedLoadMustLeaveConsistentState()
     }
     QVERIFY2(threw, "loadFile() on corrupt bytes must throw");
 
-    // Invariant: either rollback (both populated) or clean reset (both empty).
-    // Pre-fix the two diverge: internals cleared, sorted dangling.
+    // Invariant: the IC's owned vectors are cleared together — either both
+    // populated (rollback) or both empty (clean reset), never half-torn.
     const bool elementsEmpty = ic->m_internalElements.isEmpty();
-    const bool sortedEmpty = ic->m_sortedInternalElements.isEmpty();
-    QVERIFY2(elementsEmpty == sortedEmpty,
+    const bool connectionsEmpty = ic->m_internalConnections.isEmpty();
+    QVERIFY2(elementsEmpty == connectionsEmpty,
              qPrintable(QString("Inconsistent post-throw state: "
                                 "m_internalElements.isEmpty()=%1 vs "
-                                "m_sortedInternalElements.isEmpty()=%2")
+                                "m_internalConnections.isEmpty()=%2")
                             .arg(elementsEmpty)
-                            .arg(sortedEmpty)));
+                            .arg(connectionsEmpty)));
 }
 
 // Bug 4 — Simulation::restart() must not leave a stale m_sortedElements
@@ -479,13 +481,15 @@ void TestDanglingPointer::recorder_toleratesICResetWhileWatching()
     QCOMPARE(recorder.traceCount(), 0); // dead trace reaped by pruneStale()
 }
 
-// Bug 8 — eventSettle() iterates its seed; it must skip (not dereference) null entries.
-void TestDanglingPointer::bug8_eventSettleMustTolerateNullEntry()
+// Bug 8 — the unified drain (processEvents) pops queued events with a per-event target; it must
+// skip (not dereference) an event whose SimEvent::target is null. Schedule a null-target event and
+// drain — the point is survival.
+void TestDanglingPointer::bug8_processEventsMustTolerateNullTarget()
 {
-    QVector<GraphicElement *> entries;
-    entries.append(nullptr);
-    // Return value is meaningless for a null input; the point is survival.
-    (void)Simulation::eventSettle(entries, {}, {});
+    WorkSpace ws;
+    auto *sim = ws.scene()->simulation();
+    sim->m_eventQueue.schedule({0, -1, nullptr});
+    sim->processEvents(0, {}, {}, {});
     QVERIFY(true);
 }
 
@@ -511,22 +515,29 @@ void TestDanglingPointer::hardening_phase3MustTolerateNullElement()
     QVERIFY(true);
 }
 
-// Bug 2 — IC::updateLogic() dereferences m_sortedInternalElements without
-// a null guard. Inject a null directly and call updateLogic.
-void TestDanglingPointer::bug2_icUpdateLogicMustTolerateNullEntry()
+// Bug 2 (post-flatten) — the IC is pure structure: after initialize() its
+// internal primitives join the flat netlist (m_sortedElements) while the IC
+// container node itself is excluded (it no longer simulates).
+void TestDanglingPointer::bug2_flatNetlistExcludesICContainerNode()
 {
     WorkSpace ws;
+    auto *sim = ws.scene()->simulation();
     auto *ic = loadInitializedIC(ws);
     QVERIFY2(ic, "jkflipflop.panda not found in examples — fixture missing");
-    QVERIFY(!ic->m_sortedInternalElements.isEmpty());
+    QVERIFY(sim->m_initialized);
 
-    // Inject a nullptr — mirrors the dangling state left by Bug 1/Bug 3
-    // but deterministically, without relying on heap poisoning patterns.
-    const qsizetype mid = ic->m_sortedInternalElements.size() / 2;
-    ic->m_sortedInternalElements.insert(mid, nullptr);
+    // The IC container node is pure structure — it must not be simulated.
+    QVERIFY2(!sim->m_sortedElements.contains(ic),
+             "IC container node must be excluded from the flat simulation netlist.");
 
-    ic->updateLogic();  // pre-fix: null deref
-    QVERIFY(true);      // reaching here is the pass condition
+    // Its internal primitives are simulated directly in the flat netlist.
+    QVERIFY(!ic->internalElements().isEmpty());
+    for (auto *internal : ic->internalElements()) {
+        if (internal && internal->elementType() != ElementType::IC) {
+            QVERIFY2(sim->m_sortedElements.contains(internal),
+                     "IC internal primitive must be part of the flat simulation netlist.");
+        }
+    }
 }
 
 // Bug 7 — ICRegistry::onFileChanged() must reload IC instances under a
@@ -580,10 +591,8 @@ void TestDanglingPointer::bug7_icRegistryFileChangedMustNotLeaveDanglingPointers
 
     QVERIFY2(body.contains("setCircuitUpdateRequired"),
              "ICRegistry::onFileChanged must call setCircuitUpdateRequired() "
-             "to drive a full Simulation::initialize() after the reload. "
-             "The previous simulation()->restart() was too weak — it only "
-             "invalidated the outer Simulation::m_sortedElements, leaving "
-             "each IC's m_sortedInternalElements untouched.");
+             "to drive a full Simulation::initialize() after the reload, so the "
+             "flat netlist is rebuilt from the freshly loaded IC internals.");
 }
 
 // Hardening — embedICsByFile()/extractToFile() reload live, already-in-scene
@@ -663,23 +672,24 @@ void TestDanglingPointer::hardening_icRegistryReloadHelpersMustUseSimulationBloc
                             .arg(missingCall.join("\n  - "))));
 }
 
-// Combined integration reproduction of WIREDPANDA-H2. Same tick path the
-// production crash took: outer Simulation::update() → element->updateLogic()
-// on the IC → IC::updateLogic() iterates m_sortedInternalElements → reads
-// the vtable of a freed entry.
+// Combined integration reproduction of WIREDPANDA-H2, post-flatten. The IC's internal
+// primitives now live in the top-level flat netlist (Simulation::m_sortedElements), so
+// resetInternalState() frees elements the engine references. Exercise the real flow:
+// reset the internals, then tick — without the resetInternalState() Simulation invalidation
+// the next update() would read a freed entry's vtable.
 void TestDanglingPointer::integration_simulationTickAfterResetMustNotCrash()
 {
     WorkSpace ws;
+    auto *sim = ws.scene()->simulation();
     auto *ic = loadInitializedIC(ws);
     QVERIFY2(ic, "jkflipflop.panda not found in examples — fixture missing");
-    QVERIFY(!ic->m_sortedInternalElements.isEmpty());
+    QVERIFY(sim->m_initialized);
+    QVERIFY(!sim->m_sortedElements.isEmpty());
 
-    // Snap-freeze the crash state: one null sentinel in the sorted vector,
-    // mirroring the dangling state Bug 1 / Bug 3 produce, deterministically.
-    const qsizetype mid = ic->m_sortedInternalElements.size() / 2;
-    ic->m_sortedInternalElements.insert(mid, nullptr);
+    // Free the IC internals the flat netlist points at; the engine must not dereference them.
+    ic->resetInternalState();
 
-    ws.scene()->simulation()->update();
+    sim->update(); // re-initializes cleanly instead of touching freed pointers
     QVERIFY(true);
 }
 

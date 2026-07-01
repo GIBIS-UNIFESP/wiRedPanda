@@ -39,6 +39,10 @@ private slots:
     void testNotGateDelayPropagation();
     void testChainedGatesCumulativeDelay();
 
+    // --- Temporal engine: delays apply inside ICs (flattened netlist) ---
+    void testICInternalDelayPropagation();
+    void testWatchedICOutputPinNotOneTickStale();
+
     // --- Temporal engine: input change detection ---
     void testInputSwitchSchedulesEvent();
 
