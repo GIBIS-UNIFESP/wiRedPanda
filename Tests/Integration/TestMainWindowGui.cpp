@@ -1649,6 +1649,42 @@ static int countEmbeddedICsInScene(Scene *scene, const QString &blobName = {})
     return count;
 }
 
+void TestMainWindowGui::testWatchICInternalsRecordsSignals()
+{
+    // watchICInternals() recursively watches an embedded IC's internal primitives, with a
+    // path-prefixed trace name ("<IC>/<element>"), skipping VCC/GND and elements with no
+    // output ports. Only the underlying recorder mechanism was covered before (TestDanglingPointer);
+    // this exercises watchICInternals() itself.
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->setContextDir(m_fixtureDir);
+
+    auto *ic = placeEmbeddedIC(scene, m_fixtureDir, "watch_internals_test");
+    QVERIFY2(window->currentTab()->simulation()->initialize(), "simulation failed to initialize");
+
+    // Deliberately do NOT open the Temporal Waveform dock first: the context-menu action must
+    // work on first use in a session, so watchICInternals() itself has to create and reveal the
+    // lazily-built dock (regression: it used to early-return silently without m_waveformWidget).
+    QVERIFY2(!window->findChild<QDockWidget *>("temporalWaveformDock"),
+             "precondition: the dock must not exist before the first watchICInternals call");
+
+    window->watchICInternals(ic);
+
+    QVERIFY2(window->findChild<QDockWidget *>("temporalWaveformDock"),
+             "watchICInternals must create the waveform dock on first use");
+    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    QVERIFY(waveAction);
+    QVERIFY2(waveAction->isChecked(), "watchICInternals must reveal the waveform dock");
+
+    auto &recorder = window->currentTab()->simulation()->waveformRecorder();
+    QVERIFY2(recorder.traceCount() > 0, "watchICInternals registered no traces");
+    QVERIFY2(recorder.isRecording(), "watchICInternals did not start recording");
+    for (int i = 0; i < recorder.traceCount(); ++i) {
+        QVERIFY2(recorder.trace(i).name.contains(QLatin1Char('/')),
+                  "trace name must carry the IC as a path prefix");
+    }
+}
+
 void TestMainWindowGui::testEmbeddedICCopyPaste()
 {
     std::unique_ptr<MainWindow> window(createMW());
