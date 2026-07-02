@@ -6,6 +6,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QImage>
+#include <QPainter>
 #include <QScopeGuard>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
@@ -921,4 +923,94 @@ void TestIC::testICFileMigrationDisabledSkips()
     // Original file must be byte-for-byte unchanged
     QFile f2(subDst); QVERIFY(f2.open(QIODevice::ReadOnly));
     QCOMPARE(f2.readAll(), originalBytes);
+}
+
+// Rendering under rotation
+
+namespace {
+
+/// Loads the jkflipflop example into a fresh IC added to \a scene.
+IC *loadExampleIC(Scene *scene)
+{
+    auto *ic = new IC();
+    scene->addItem(ic);
+
+    const QString icFile = TestUtils::examplesDir() + "jkflipflop.panda";
+    if (!QFile::exists(icFile)) {
+        return nullptr;
+    }
+    ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
+    return ic;
+}
+
+} // namespace
+
+void TestIC::testICRotationKeepsSizingPixmap()
+{
+    // IC::drawBody() computes the whole body geometry from pixmap().rect(), and the IC has
+    // no base pixmap (its metadata pixmapPath is empty) — only the sizing pixmap installed
+    // by generatePixmap(). Rotating must not replace it, or the body collapses to a
+    // degenerate rect and the mascot lands on the element's top-left corner.
+    // pixmapCenter() is the public window onto that pixmap's geometry.
+    WorkSpace workspace;
+    auto *ic = loadExampleIC(workspace.scene());
+    QVERIFY(ic);
+
+    const QPointF footprintCenter = ic->pixmapCenter();
+    QVERIFY(footprintCenter != QPointF(0, 0));
+
+    ic->setRotation(90);
+    QVERIFY2(ic->pixmapCenter() != QPointF(0, 0),
+             "Rotation replaced the IC sizing pixmap with the null base pixmap");
+    QCOMPARE(ic->pixmapCenter(), footprintCenter);
+
+    ic->setRotation(0);
+    QCOMPARE(ic->pixmapCenter(), footprintCenter);
+}
+
+void TestIC::testICRotationPivotsAtFootprintCenter()
+{
+    // The transform origin is normally set when a base pixmap is loaded; the IC only ever
+    // installs a sizing pixmap, so it must set the origin itself or rotation orbits (0,0).
+    WorkSpace workspace;
+    auto *ic = loadExampleIC(workspace.scene());
+    QVERIFY(ic);
+
+    QCOMPARE(ic->transformOriginPoint(), ic->pixmapCenter());
+}
+
+void TestIC::testICRotatedBodyStillPaintsMascot()
+{
+    // End-to-end: after a 180° rotation the mascot must still be painted at the body
+    // centre. The centre pixel is on the panda's beige face (red channel well above
+    // blue), which distinguishes it from the flat body gray, the white background, and
+    // the dark body outline. The exact centre is invariant under a 180° rotation, so this
+    // holds whether or not the mascot itself is counter-rotated upright.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *ic = loadExampleIC(scene);
+    QVERIFY(ic);
+
+    ic->setRotation(180);
+
+    const QRectF source = ic->sceneBoundingRect();
+    QImage image(source.size().toSize(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::white);
+
+    QPainter painter(&image);
+    scene->render(&painter, QRectF(image.rect()), source);
+    painter.end();
+
+    const QPoint center(image.width() / 2, image.height() / 2);
+    bool mascotFound = false;
+
+    // Sample a small neighbourhood so a 1px rounding shift can't land between features.
+    for (int dy = -2; dy <= 2 && !mascotFound; ++dy) {
+        for (int dx = -2; dx <= 2 && !mascotFound; ++dx) {
+            const QColor c = image.pixelColor(center + QPoint(dx, dy));
+            mascotFound = (c.red() - c.blue()) > 30;
+        }
+    }
+
+    QVERIFY2(mascotFound, "No mascot pixels at the rotated IC's body centre — the body collapsed");
 }

@@ -53,4 +53,9 @@ private slots:
     void testICFileMigrationCreatesBackup();         // old sub-circuit file gets versioned backup
     void testICFileMigrationUpdatesSubcircuitVersion(); // sub-circuit re-saved at current version
     void testICFileMigrationDisabledSkips();         // no backup when migration disabled
+
+    // Rendering under rotation (3 tests)
+    void testICRotationKeepsSizingPixmap();          // drawBody() sizes the body from pixmap().rect()
+    void testICRotationPivotsAtFootprintCenter();
+    void testICRotatedBodyStillPaintsMascot();
 };

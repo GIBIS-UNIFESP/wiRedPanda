@@ -65,7 +65,9 @@ public:
     void setPixmap(const QString &pixmapPath);
 
     /// Replaces the displayed pixmap with a procedurally-built one (Mux/Demux/TruthTable/IC).
-    void setRenderPixmap(const QPixmap &pixmap) { m_pixmap = pixmap; }
+    /// From then on the owner draws its own body from this pixmap's footprint: orientation
+    /// changes leave it untouched, and the owner's transform origin is kept at its centre.
+    void setRenderPixmap(const QPixmap &pixmap);
 
     /// Re-derives the displayed pixmap (and SVG renderer) from the owner's current orientation.
     void applyOrientation();
@@ -125,6 +127,7 @@ private:
 
     QPixmap m_pixmap;     ///< Currently displayed pixmap.
     QPixmap m_basePixmap; ///< Upright, unflipped pixmap; m_pixmap is derived from this.
+    bool m_hasCustomRenderPixmap = false; ///< True while m_pixmap is a procedural render pixmap, not derived from m_basePixmap.
     std::unique_ptr<QSvgRenderer> m_svgRenderer; ///< Vector renderer for the current SVG appearance (null for raster).
 
     QString m_pixmapPath;         ///< Resource/file path of the default pixmap (from metadata).
