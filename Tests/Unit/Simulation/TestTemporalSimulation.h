@@ -49,6 +49,10 @@ private slots:
     void testInputSwitchSchedulesEvent();
 
     // --- Waveform recorder ---
+    /// beginTimedRun()/endTimedRun() (the dolphin sweep bracket) must be invisible to a
+    /// live recording: the bracket itself suspends recording, and endTimedRun restores
+    /// the live clock — not rewind it to 0 — so the preserved history keeps ascending.
+    void testTimedRunPreservesRecorderTimeline();
     void testRecorderWatchAndRecord();
     void testRecorderWatchSignalDedups();
     void testRecorderDeduplication();

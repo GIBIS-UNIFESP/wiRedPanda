@@ -715,6 +715,67 @@ void TestTemporalSimulation::testInputSwitchSchedulesEvent()
 // Waveform recorder
 // ============================================================================
 
+void TestTemporalSimulation::testTimedRunPreservesRecorderTimeline()
+{
+    // A dolphin sweep brackets itself with beginTimedRun()/endTimedRun() on the SAME
+    // Simulation the Live Analyzer records from. The bracket owns the time-base swap, so
+    // it must also own making it invisible to the live session: suspend recording for the
+    // sweep's duration, and afterwards restore the live clock — NOT rewind it to 0 —
+    // so the preserved history keeps ascending. (Previously both ends wiped the recorder
+    // and zeroed the clock: every sweep, including the one at tool-open, silently
+    // destroyed the analyzer session, leaving flat seed lines and a dead zoom.)
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *inv = new Not();
+    builder.add(sw, inv);
+    builder.connect(sw, 0, inv, 0);
+    builder.initSimulation();
+
+    auto *sim = workspace.scene()->simulation();
+    sim->setTimePerTick(1'000'000); // temporal 1x
+    auto &recorder = sim->waveformRecorder();
+    recorder.watchSignal("n", inv, 0);
+    recorder.setRecording(true);
+
+    sim->update();
+    sw->setOn(true);
+    sim->update();
+    sim->update();
+    const auto before = recorder.trace(0).transitions;
+    QVERIFY2(before.size() >= 2, "live run should have recorded an edge");
+    const SimTime liveTime = sim->currentTime();
+    QVERIFY(liveTime > 0);
+
+    // The bracket suspends recording itself (a caller-side suspender just nests
+    // harmlessly) and swaps to a fresh 0-based timeline for the sweep.
+    sim->beginTimedRun(500);
+    QVERIFY2(!recorder.isRecording(), "beginTimedRun must suspend recording itself");
+    QCOMPARE(sim->currentTime(), SimTime(0));
+    sw->setOn(false); // synthetic sweep vector
+    sim->update();
+    sim->update();
+
+    sim->endTimedRun(1'000'000);
+    QVERIFY2(recorder.isRecording(), "endTimedRun must restore the recording flag");
+    QCOMPARE(recorder.trace(0).transitions, before); // history intact, nothing leaked
+    QCOMPARE(sim->currentTime(), liveTime);          // live clock resumes, not rewound
+
+    // Mimic WaveformSimulator::restoreInputs(): the reseed settles back to the pre-sweep
+    // state and the dedup records nothing — the sweep stays invisible.
+    sw->setOn(true);
+    sim->update();
+    QCOMPARE(recorder.trace(0).transitions, before);
+
+    // The live session then continues the SAME timeline monotonically.
+    sw->setOn(false);
+    sim->update();
+    sim->update();
+    const auto &after = recorder.trace(0).transitions;
+    QVERIFY2(after.size() > before.size(), "post-sweep live edge must keep recording");
+    QVERIFY2(after.last().first > before.last().first, "timestamps must stay ascending");
+}
+
 void TestTemporalSimulation::testRecorderWatchAndRecord()
 {
     WaveformRecorder recorder;
