@@ -108,6 +108,12 @@ public:
     /// top-level flat netlist. The IC no longer settles itself (no updateLogic override).
     void initializeSimulation();
 
+    /// \reimp Resets the IC's own ports AND every internal primitive (recursively through
+    /// nested ICs). The flat netlist simulates the internals directly, so they carry
+    /// sequential state (flip-flop Q, edge detection) that a reset must not skip — e.g. a
+    /// BeWavedDolphin sweep would otherwise start from whatever state the live run left.
+    void resetSimState() override;
+
     /// \reimp
     QRectF boundingRect() const override;
     /// \reimp

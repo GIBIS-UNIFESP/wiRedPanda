@@ -345,6 +345,22 @@ void IC::initializeSimulation()
     ICSimulation::initialize(*this);
 }
 
+void IC::resetSimState()
+{
+    GraphicElement::resetSimState();
+
+    // The IC contributes only structure, but its internal primitives are simulated directly
+    // by the flat netlist and carry sequential state (flip-flop Q outputs, edge-detection
+    // history) across runs. A reset that skipped them would leave e.g. a BeWavedDolphin
+    // sweep starting from stale live-run state instead of power-on defaults. Nested ICs
+    // recurse through their own override.
+    for (auto *internal : std::as_const(m_internalElements)) {
+        if (internal) {
+            internal->resetSimState();
+        }
+    }
+}
+
 void IC::refresh()
 {
 }

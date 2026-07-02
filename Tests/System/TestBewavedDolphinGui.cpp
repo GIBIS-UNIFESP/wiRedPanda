@@ -28,13 +28,16 @@
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/DolphinZoom.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Not.h"
+#include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/FileDialogProvider.h"
+#include "Tests/Common/ICTestHelpers.h"
 #include "Tests/Common/StubFileDialogProvider.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -410,6 +413,87 @@ void TestBewavedDolphinGui::testRunDoesNotPolluteLiveWaveformRecorder()
     sw0->setOn(true);
     sim->update();
     QCOMPARE(sim->waveformRecorder().trace(0).transitions.size(), 1);
+}
+
+void TestBewavedDolphinGui::testRunResetsICInternalSequentialState()
+{
+    // Regression test: the sweep's pre-run reset (WaveformSimulator::sweep()) walked only
+    // scene-level elements, so a flip-flop nested inside an IC kept whatever state the live
+    // run left — the sweep was not reproducible ("power-on defaults") for hierarchical
+    // circuits. IC::resetSimState() now recurses into the internals.
+
+    // Fixture .panda: sw(data), sw(clock) → DFF → Led. Its switches/led become the IC's
+    // boundary ports (sorted by Y position: data = port 0, clock = port 1).
+    const QString icPath = m_tempDir.path() + "/dff_ic.panda";
+    {
+        WorkSpace fixture;
+        auto *scene = fixture.scene();
+        auto *data = new InputSwitch();
+        auto *clk = new InputSwitch();
+        auto *dff = new DFlipFlop();
+        auto *q = new Led();
+        data->setPos(0, 0);
+        clk->setPos(0, 100);
+        dff->setPos(150, 50);
+        q->setPos(300, 50);
+        scene->addItem(data);
+        scene->addItem(clk);
+        scene->addItem(dff);
+        scene->addItem(q);
+        CircuitBuilder builder(scene);
+        builder.connect(data, 0, dff, 0); // Data
+        builder.connect(clk, 0, dff, 1);  // Clock
+        builder.connect(dff, 0, q, 0);    // Q
+        fixture.save(icPath);
+    }
+
+    // Outer circuit: two switches drive the IC's (data, clock) ports; its Q drives a Led.
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *data = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *ic = new IC();
+    ICTestHelpers::embedIC(ic, ICTestHelpers::readFile(icPath), "dff_ic", m_tempDir.path(), scene->icRegistry());
+    auto *led = new Led();
+    data->setPos(0, 0);
+    clk->setPos(0, 100);
+    ic->setPos(150, 50);
+    led->setPos(300, 50);
+    scene->addItem(data);
+    scene->addItem(clk);
+    scene->addItem(ic);
+    scene->addItem(led);
+    QCOMPARE(ic->inputSize(), 2);
+    QVERIFY(ic->outputSize() >= 1);
+    CircuitBuilder builder(scene);
+    builder.connect(data, 0, ic, 0);
+    builder.connect(clk, 0, ic, 1);
+    builder.connect(ic, 0, led, 0);
+
+    // Live run: clock a 1 into the internal flip-flop so its Q ends HIGH.
+    auto *sim = scene->simulation();
+    QVERIFY(sim->initialize());
+    data->setOn(true);
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true); // rising edge captures Data = 1
+    sim->update();
+    sim->update();
+    QCOMPARE(ic->outputValue(0), Status::Active);
+
+    // A blank waveform drives every input LOW in every column: no clock edge ever fires
+    // during the sweep, so the only way the Q output row can read 0 is the sweep resetting
+    // the IC-INTERNAL flip-flop to power-on state (pre-fix it held the live-run 1 for the
+    // whole sweep).
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(&ws));
+    dolphin->run();
+
+    auto *model = dolphin->getModel();
+    const int outputRow = static_cast<int>(dolphin->getInputElements().size());
+    for (int col = 0; col < model->columnCount(); ++col) {
+        QVERIFY2(model->index(outputRow, col).data().toInt() == 0,
+                 qPrintable(QString("column %1: IC-internal flip-flop state leaked into the sweep").arg(col)));
+    }
 }
 
 void TestBewavedDolphinGui::testSetLengthChangesColumns()

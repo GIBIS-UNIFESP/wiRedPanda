@@ -48,6 +48,11 @@ private slots:
     /// write synthetic test-vector transitions into a trace the dock is live-recording.
     void testRunDoesNotPolluteLiveWaveformRecorder();
 
+    /// The sweep's pre-run reset must reach sequential elements nested inside ICs (the flat
+    /// netlist simulates them directly) — a flip-flop's live-run state must not leak into a
+    /// sweep that promises power-on reproducibility.
+    void testRunResetsICInternalSequentialState();
+
     // --- File I/O ---
 
     void testExportToPng();
