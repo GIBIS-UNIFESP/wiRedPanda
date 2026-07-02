@@ -105,6 +105,18 @@ void Simulation::update()
         }
     }
 
+    // Stamp input- and clock-driven edges at the tick boundary where they take effect.
+    // The drain-side captures below only run at event timestamps, and a toggled input's
+    // earliest downstream event is its first successor's evaluation at t + that gate's
+    // delay — without this capture the input's edge and the first gate's edge share a
+    // timestamp, so the first gate appears delay-free in the timing diagram. recordAll()
+    // dedups, so steady ticks record nothing. Skipped on a reseed tick (m_eventInitDone
+    // false): element outputs may hold unsettled values there (e.g. sweep-clobbered state
+    // before the reseed corrects it) and snapshotting them would record phantom glitches.
+    if (m_eventInitDone && m_recorder.isRecording()) {
+        m_recorder.recordAll(m_currentTime);
+    }
+
     // Phase 2: update all GraphicElements in topological order, in a bounded sequence of
     // "delta-cycle waves". A single begin/process/commit/resettle pass (the original design)
     // correctly gives synchronous sequential elements non-blocking semantics for the common
