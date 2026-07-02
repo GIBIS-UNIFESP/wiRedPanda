@@ -258,6 +258,8 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     }
 
     m_resolvedPixmapPath = path;
+    // Loading a base pixmap hands display ownership back to the derived-pixmap flow.
+    m_hasCustomRenderPixmap = false;
     // Derive the displayed pixmap from the base, swapping in a text-corrected variant when the
     // element is rotated or flipped.
     applyOrientation();
@@ -270,8 +272,25 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     m_currentPixmapPath = pixmapPath;
 }
 
+void ElementAppearance::setRenderPixmap(const QPixmap &pixmap)
+{
+    m_pixmap = pixmap;
+    m_hasCustomRenderPixmap = true;
+    // The owner's body is drawn from this footprint, so rotation must pivot on its centre —
+    // the base-pixmap flow gets the same guarantee from setPixmap().
+    m_owner->setTransformOriginPoint(pixmapCenter());
+}
+
 void ElementAppearance::applyOrientation()
 {
+    // A procedural render pixmap (IC, TruthTable, Mux, Demux) is the owner's body-sizing/body
+    // canvas and is not derived from m_basePixmap — re-deriving here would replace it with the
+    // stale (or null) base skin. Orientation is handled by the item transform alone.
+    if (m_hasCustomRenderPixmap) {
+        m_owner->update();
+        return;
+    }
+
     // Only rotatable elements transform their graphic, so only they need the baked <text> labels
     // counter-oriented. A non-rotatable element keeps its icon upright (it moves only its ports),
     // so its text — if any — must render as authored and never be counter-oriented.

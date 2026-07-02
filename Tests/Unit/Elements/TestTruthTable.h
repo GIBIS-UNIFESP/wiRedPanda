@@ -32,4 +32,7 @@ private slots:
     void testSaveKey();
     void testLoadKeyVersion42();
     void testLoadKeyOldVersion();
+
+    // Rendering under rotation
+    void testRotationKeepsSizingPixmap();
 };

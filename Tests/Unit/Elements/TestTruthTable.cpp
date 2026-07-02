@@ -352,3 +352,26 @@ void TestTruthTable::testLoadKeyOldVersion()
     // because load() returns early when version < 4.2
     QCOMPARE(truthTable2.key().count(true), 0);
 }
+
+// ============================================================================
+// Rendering Under Rotation Tests
+// ============================================================================
+
+void TestTruthTable::testRotationKeepsSizingPixmap()
+{
+    // TruthTable::drawBody() sizes its body from pixmap().rect() — the sizing pixmap
+    // installed by generatePixmap(), which grows with the port count. Rotating must not
+    // swap it back for the fixed 64×64 base skin, or the body is drawn at the wrong size.
+    // pixmapCenter() is the public window onto that pixmap's geometry.
+    TruthTable truthTable;
+    truthTable.setInputSize(8);
+
+    const QPointF footprintCenter = truthTable.pixmapCenter();
+    QVERIFY(footprintCenter != QPointF(32, 32)); // taller than the 64×64 base skin
+
+    truthTable.setRotation(90);
+    QCOMPARE(truthTable.pixmapCenter(), footprintCenter);
+
+    truthTable.setRotation(0);
+    QCOMPARE(truthTable.pixmapCenter(), footprintCenter);
+}
