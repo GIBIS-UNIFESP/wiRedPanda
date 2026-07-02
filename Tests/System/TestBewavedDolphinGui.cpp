@@ -2035,7 +2035,7 @@ void TestBewavedDolphinGui::testLiveAnalyzerZoomKeepsAnchor()
                             .arg(before, 0, 'f', 0).arg(after, 0, 'f', 0)));
 }
 
-void TestBewavedDolphinGui::testLiveAnalyzerCtrlWheelZoomsAtCursor()
+void TestBewavedDolphinGui::testLiveAnalyzerWheelZoomsAtCursor()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
@@ -2065,17 +2065,74 @@ void TestBewavedDolphinGui::testLiveAnalyzerCtrlWheelZoomsAtCursor()
 
     const double ppnBefore = panel->canvas()->pixelsPerNs();
     const double before = timeAtCursor();
+    // A bare wheel, no modifier — the stimulus-editor page zooms on any wheel, and both
+    // pages of the tool must agree.
     const QPointF canvasPos(hBar->value() + vx, 10);
     QWheelEvent wheel(canvasPos, canvasPos, QPoint(), QPoint(0, 120),
-                      Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false);
+                      Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
     QCoreApplication::sendEvent(panel->canvas(), &wheel);
     panel->canvas()->grab(QRect(0, 0, 50, 50));
 
     QCOMPARE(panel->canvas()->pixelsPerNs(), ppnBefore * 2.0);
     const double after = timeAtCursor();
     QVERIFY2(std::abs(after - before) <= 3.0 / panel->canvas()->pixelsPerNs() + 1.0,
-             qPrintable(QString("Ctrl+wheel moved the time under the cursor from %1 ns to %2 ns")
+             qPrintable(QString("wheel zoom moved the time under the cursor from %1 ns to %2 ns")
                             .arg(before, 0, 'f', 0).arg(after, 0, 'f', 0)));
+}
+
+void TestBewavedDolphinGui::testLiveAnalyzerButtonZoomFollowsTail()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY(panel);
+    QCOMPARE(recordSquareWaveHistory(ws.get()), SimTime(1'000'000'000));
+
+    dolphin->showLiveAnalyzer();
+    dolphin->resize(600, 300);
+    dolphin->show();
+    QApplication::processEvents();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+
+    auto *hBar = panel->scrollArea()->horizontalScrollBar();
+    const int viewport = panel->scrollArea()->viewport()->width();
+    QVERIFY(viewport > 0);
+
+    // Span ~4 viewports and pin the view at the tail, engaging the sticky follow.
+    panel->canvas()->setPixelsPerNs(4.0 * viewport / 1e9);
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+    QVERIFY(hBar->maximum() > 0);
+    hBar->setValue(hBar->maximum());
+
+    auto *btnZoomIn = panel->findChild<QPushButton *>("analyzerZoomInButton");
+    auto *btnZoomOut = panel->findChild<QPushButton *>("analyzerZoomOutButton");
+    QVERIFY(btnZoomIn && btnZoomOut);
+
+    // While tracking the newest data, +/- must zoom around the tracked tail (scope-style):
+    // stay pinned at the right edge with the newest sample (1e9 ns) still in view.
+    auto assertTailPinned = [&](const char *when) {
+        QVERIFY2(hBar->value() == hBar->maximum(),
+                 qPrintable(QString("%1: view must stay pinned at the tail (value %2, max %3)")
+                                .arg(when).arg(hBar->value()).arg(hBar->maximum())));
+        const double ppn = panel->canvas()->pixelsPerNs();
+        const double visibleStart = static_cast<double>(panel->canvas()->timeOrigin()) + hBar->value() / ppn;
+        const double visibleEnd = visibleStart + viewport / ppn;
+        QVERIFY2(visibleStart <= 1e9 && 1e9 <= visibleEnd,
+                 qPrintable(QString("%1: newest sample (1e9 ns) outside visible window [%2, %3] ns")
+                                .arg(when).arg(visibleStart, 0, 'f', 0).arg(visibleEnd, 0, 'f', 0)));
+    };
+
+    btnZoomIn->click();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+    assertTailPinned("first zoom-in");
+
+    btnZoomIn->click();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+    assertTailPinned("second zoom-in");
+
+    btnZoomOut->click();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+    assertTailPinned("zoom-out");
 }
 
 void TestBewavedDolphinGui::testLiveAnalyzerFitSpansViewport()
@@ -2110,4 +2167,17 @@ void TestBewavedDolphinGui::testLiveAnalyzerFitSpansViewport()
     QCOMPARE(panel->canvas()->pixelsPerNs(), (viewport - 20) / 1e9);
     QCOMPARE(hBar->value(), 0);
     QCOMPARE(hBar->maximum(), 0);
+
+    // Fit shows the whole recording including the tail, so it re-engages the sticky
+    // follow: a subsequent zoom-in keeps the newest data pinned at the right instead of
+    // centering (and dropping) it.
+    auto *btnZoomIn = panel->findChild<QPushButton *>("analyzerZoomInButton");
+    QVERIFY(btnZoomIn);
+    btnZoomIn->click();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+    QCOMPARE(hBar->value(), hBar->maximum());
+    const double ppn = panel->canvas()->pixelsPerNs();
+    const double visibleStart = static_cast<double>(panel->canvas()->timeOrigin()) + hBar->value() / ppn;
+    QVERIFY2(visibleStart <= 1e9 && 1e9 <= visibleStart + viewport / ppn,
+             "the newest sample must stay in view after zooming in from Fit");
 }

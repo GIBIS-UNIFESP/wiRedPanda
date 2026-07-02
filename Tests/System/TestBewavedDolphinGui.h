@@ -75,8 +75,12 @@ private slots:
     /// (the scroll area preserves the raw PIXEL value across the canvas rescale, which slid
     /// the view exponentially toward t = 0 on every zoom-in — traces then read all-low).
     void testLiveAnalyzerZoomKeepsAnchor();
-    /// Ctrl+wheel zooms around the sim-time under the cursor.
-    void testLiveAnalyzerCtrlWheelZoomsAtCursor();
+    /// The wheel (no modifier — stimulus-editor parity) zooms around the sim-time under
+    /// the cursor.
+    void testLiveAnalyzerWheelZoomsAtCursor();
+    /// While the view tracks the newest data (sticky tail), the +/- buttons zoom around
+    /// the tracked tail — scope-style — instead of centering (and dropping) it.
+    void testLiveAnalyzerButtonZoomFollowsTail();
     /// Fit spans the whole recording across the VIEWPORT — not the canvas's own width,
     /// which no longer fits anything once the canvas has grown past the viewport.
     void testLiveAnalyzerFitSpansViewport();

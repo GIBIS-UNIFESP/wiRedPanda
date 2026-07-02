@@ -58,3 +58,24 @@ feature.
   request-signal contract (plain wheel ignored, no self-rescale).
 - `TestTemporalSimulation::testCanvasPreRecordRegionBlank` — no trace pixels before the
   first recorded sample.
+
+## Follow-up (user feedback on the first iteration)
+
+1. **Wheel zoom required Ctrl, unlike the stimulus editor.** The grid page consumes ANY
+   plain wheel as zoom (`BewavedDolphin::eventFilter`, "the original beWavedDolphin
+   behavior"); the analyzer page ignored a bare wheel, so it appeared to have no wheel
+   zoom. Now any wheel over the canvas emits the cursor-anchored zoom request — the wheel
+   never scrolls the trace list (same convention as the grid: scrollbars pan).
+2. **Button zoom centered even while following the tail.** With `m_followTail` engaged
+   (the normal state after Watch All / Fit), a center anchor slid the newest data off the
+   right edge and silently disengaged the follow. `buttonZoomStep()` is follow-aware:
+   while following, rescale + re-pin at the scroll maximum (scope-style, zooming in and
+   out alike); otherwise center-anchor as before.
+3. **`zoomFit()` now sets `m_followTail = true` explicitly** — `setValue(0)` emits no
+   `valueChanged` when the bar is already at 0, so the recompute-on-scroll hook alone
+   could leave the follow stale.
+
+Tests: `testLiveAnalyzerButtonZoomFollowsTail` (failing-first: "first zoom-in: view must
+stay pinned at the tail (value 3121, max 3338)"), `testLiveAnalyzerWheelZoomsAtCursor`
+(plain wheel), `testCanvasWheelZoomAlwaysRequests`, and a post-Fit pinned zoom-in step in
+`testLiveAnalyzerFitSpansViewport`.

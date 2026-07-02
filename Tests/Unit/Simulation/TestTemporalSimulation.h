@@ -69,9 +69,10 @@ private slots:
     /// Per-channel palette: first 8 channels pairwise distinct, cycling at 8; label names
     /// share their trace's color.
     void testAnalyzerTraceColorPalette();
-    /// Plain wheel is ignored (scroll area scrolls); Ctrl+wheel emits a cursor-anchored
-    /// zoom request for the hosting panel (the canvas does not rescale itself).
-    void testCanvasWheelZoomRequiresCtrl();
+    /// Any wheel (no modifier needed — stimulus-editor parity) is consumed as a
+    /// cursor-anchored zoom request for the hosting panel; the canvas never rescales
+    /// itself and the wheel never scrolls the trace list (the scrollbars pan).
+    void testCanvasWheelZoomAlwaysRequests();
     /// Nothing is known before a trace's first recorded sample (watching typically starts
     /// mid-run): that region must render blank, not as a definite LOW.
     void testCanvasPreRecordRegionBlank();
