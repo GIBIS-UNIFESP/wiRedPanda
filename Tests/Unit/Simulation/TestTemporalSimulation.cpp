@@ -5,6 +5,8 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QPixmap>
+#include <QRegularExpression>
 #include <QVersionNumber>
 
 #include "App/Element/GraphicElements/And.h"
@@ -987,6 +989,58 @@ void TestTemporalSimulation::testWaveformWidgetZoom()
 
     widget.zoomOut(); // ÷2 again
     QCOMPARE(widget.pixelsPerNs(), 2.0);
+}
+
+void TestTemporalSimulation::testWidgetCanvasClampedAtQtLimit()
+{
+    // Any attempt to set a minimum size beyond QWIDGETSIZE_MAX makes Qt emit this warning —
+    // with the pre-fix code that happened on EVERY repaint of a long recording. Fail the
+    // test if a single one appears.
+    QTest::failOnWarning(QRegularExpression(".*largest allowed size.*"));
+
+    // A recording whose timeline (6 s of sim time) at maximum zoom (10 px/ns) demands a
+    // 6e10 px canvas — far beyond QWIDGETSIZE_MAX (16'777'215).
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *elm = new Not();
+    builder.add(sw, elm);
+    builder.connect(sw, 0, elm, 0);
+    builder.initSimulation();
+
+    WaveformRecorder recorder;
+    recorder.watchSignal("n", elm, 0);
+    recorder.setRecording(true);
+    elm->setOutputValue(0, Status::Active);
+    recorder.recordAll(0);
+    elm->setOutputValue(0, Status::Inactive);
+    recorder.recordAll(6'000'000'000);
+
+    TemporalWaveformWidget widget;
+    widget.setRecorder(&recorder);
+    widget.setPixelsPerNs(10.0);
+
+    // The size hint clamps at the Qt limit instead of demanding the impossible width.
+    const QSize hint = widget.sizeHint();
+    QCOMPARE(hint.width(), QWIDGETSIZE_MAX);
+
+    // The canvas window slides to keep the NEWEST data on-canvas at the chosen zoom.
+    const SimTime origin = widget.timeOrigin();
+    QVERIFY(origin > 0);
+    QVERIFY(origin < recorder.maxTime());
+    QVERIFY(static_cast<double>(recorder.maxTime() - origin) * widget.pixelsPerNs()
+            <= static_cast<double>(QWIDGETSIZE_MAX));
+
+    // Painting an exposed strip must neither warn nor render the whole 16.7M px canvas.
+    // grab() with an explicit rect drives paintEvent() with that exposed region.
+    const QPixmap strip = widget.grab(QRect(0, 0, 400, 100));
+    QVERIFY(!strip.isNull());
+
+    // A short recording keeps the classic fixed mapping (origin pinned at t = 0).
+    recorder.resetTimeline();
+    elm->setOutputValue(0, Status::Active);
+    recorder.recordAll(100);
+    QCOMPARE(widget.timeOrigin(), SimTime(0));
 }
 
 // ============================================================================

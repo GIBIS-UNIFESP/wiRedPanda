@@ -61,6 +61,11 @@ private slots:
     // --- Waveform widget ---
     void testWidgetSizeHint();
     void testWaveformWidgetZoom();
+    /// Regression: a long recording at high zoom demanded a canvas wider than Qt's
+    /// QWIDGETSIZE_MAX — every repaint re-called setMinimumSize() with the over-limit hint,
+    /// spamming a qWarning per frame and re-invalidating layout until the UI froze. The hint
+    /// must clamp at the Qt limit and timeOrigin() must slide the window to the newest data.
+    void testWidgetCanvasClampedAtQtLimit();
 
     // --- Temporal example circuits (Examples/temporal_*.panda) ---
     void testExampleRingOscillator();

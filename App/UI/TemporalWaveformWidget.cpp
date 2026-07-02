@@ -3,6 +3,8 @@
 
 #include "App/UI/TemporalWaveformWidget.h"
 
+#include <algorithm>
+
 #include <QPainter>
 #include <QWheelEvent>
 
@@ -102,15 +104,33 @@ QSize TemporalWaveformWidget::sizeHint() const
 
     int w = 400;
     if (m_recorder && m_recorder->maxTime() > 0) {
+        // Qt hard-caps widget dimensions at QWIDGETSIZE_MAX; a minimum size beyond it is
+        // rejected with a qWarning on EVERY setMinimumSize() call and re-invalidates layout,
+        // so a long recording at high zoom must clamp here (timeOrigin() then slides the
+        // canvas window over the newest data instead of growing the widget).
         const double pixels = static_cast<double>(m_recorder->maxTime()) * m_pixelsPerNs;
-        w = static_cast<int>(qMin(pixels, static_cast<double>(INT_MAX - 20))) + 20;
+        w = static_cast<int>(qMin(pixels, static_cast<double>(QWIDGETSIZE_MAX - 20))) + 20;
     }
-    return {qMax(w, 100), qMax(h, WaveformLayout::RulerHeight + WaveformLayout::TraceHeight)};
+    return {qBound(100, w, QWIDGETSIZE_MAX),
+            qBound(WaveformLayout::RulerHeight + WaveformLayout::TraceHeight, h, QWIDGETSIZE_MAX)};
 }
 
 QSize TemporalWaveformWidget::minimumSizeHint() const
 {
     return {100, WaveformLayout::RulerHeight + WaveformLayout::TraceHeight};
+}
+
+SimTime TemporalWaveformWidget::timeOrigin() const
+{
+    if (!m_recorder || m_pixelsPerNs <= 0) {
+        return 0;
+    }
+    const SimTime maxTime = m_recorder->maxTime();
+    const double capPixels = static_cast<double>(QWIDGETSIZE_MAX - 20);
+    if (static_cast<double>(maxTime) * m_pixelsPerNs <= capPixels) {
+        return 0;
+    }
+    return maxTime - static_cast<SimTime>(capPixels / m_pixelsPerNs);
 }
 
 // ============================================================================
@@ -119,9 +139,9 @@ QSize TemporalWaveformWidget::minimumSizeHint() const
 
 void TemporalWaveformWidget::paintEvent(QPaintEvent *event)
 {
-    Q_UNUSED(event)
-
-    // Resize to fit content so the parent QScrollArea shows scrollbars.
+    // Resize to fit content so the parent QScrollArea shows scrollbars. sizeHint() is
+    // clamped to QWIDGETSIZE_MAX, so this settles instead of re-requesting an over-limit
+    // minimum (which Qt rejects with a qWarning) on every repaint.
     const QSize hint = sizeHint();
     if (hint != size()) {
         setMinimumSize(hint);
@@ -130,7 +150,7 @@ void TemporalWaveformWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, false);
 
-    painter.fillRect(rect(), palette().base());
+    painter.fillRect(event->rect(), palette().base());
 
     if (!m_recorder || m_recorder->traceCount() == 0) {
         painter.setPen(palette().color(QPalette::Disabled, QPalette::Text));
@@ -139,16 +159,28 @@ void TemporalWaveformWidget::paintEvent(QPaintEvent *event)
     }
 
     const int traceWidth = width();
-    const SimTime visibleStart = 0;
-    const SimTime visibleEnd = (traceWidth > 0 && m_pixelsPerNs > 0)
-                                   ? static_cast<SimTime>(traceWidth / m_pixelsPerNs)
-                                   : 0;
+    if (traceWidth <= 0 || m_pixelsPerNs <= 0) {
+        return;
+    }
 
-    drawTimeRuler(painter, traceWidth, visibleStart, visibleEnd);
+    // Convert the exposed paint region to a sim-time window so drawing costs O(viewport)
+    // instead of O(recorded history). The margin absorbs ruler labels and 2px trace edges
+    // anchored just outside the exposed rect, keeping partial-expose repaints seamless.
+    constexpr int kExposeMargin = 120;
+    const SimTime origin = timeOrigin();
+    const int exposedLeft = qMax(0, event->rect().left() - kExposeMargin);
+    const int exposedRight = qMin(traceWidth, event->rect().right() + kExposeMargin);
+    const SimTime visibleStart = origin + static_cast<SimTime>(exposedLeft / m_pixelsPerNs);
+    const SimTime visibleEnd = origin + static_cast<SimTime>(exposedRight / m_pixelsPerNs);
+
+    drawTimeRuler(painter, traceWidth, origin, visibleStart, visibleEnd);
 
     for (int i = 0; i < m_recorder->traceCount(); ++i) {
         const int y = WaveformLayout::RulerHeight + i * (WaveformLayout::TraceHeight + WaveformLayout::TraceMargin);
-        drawTrace(painter, i, y, traceWidth, WaveformLayout::TraceHeight, visibleStart, visibleEnd);
+        if (y > event->rect().bottom() || y + WaveformLayout::TraceHeight < event->rect().top()) {
+            continue; // row entirely outside the exposed region
+        }
+        drawTrace(painter, i, y, traceWidth, WaveformLayout::TraceHeight, origin, visibleStart, visibleEnd);
     }
 }
 
@@ -157,7 +189,7 @@ void TemporalWaveformWidget::paintEvent(QPaintEvent *event)
 // ============================================================================
 
 void TemporalWaveformWidget::drawTimeRuler(QPainter &painter, int traceWidth,
-                                           SimTime visibleStart, SimTime visibleEnd)
+                                           SimTime origin, SimTime visibleStart, SimTime visibleEnd)
 {
     painter.fillRect(0, 0, traceWidth, WaveformLayout::RulerHeight, palette().window());
     painter.setPen(palette().color(QPalette::Text));
@@ -194,7 +226,7 @@ void TemporalWaveformWidget::drawTimeRuler(QPainter &painter, int traceWidth,
     }
 
     for (SimTime t = firstTick; t <= visibleEnd; t += tickInterval) {
-        const int x = timeToX(t, visibleStart);
+        const int x = timeToX(t, origin);
         if (x < 0 || x > traceWidth) {
             continue;
         }
@@ -213,7 +245,7 @@ void TemporalWaveformWidget::drawTimeRuler(QPainter &painter, int traceWidth,
 
 void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int y0,
                                        int traceWidth, int height,
-                                       SimTime visibleStart, SimTime visibleEnd)
+                                       SimTime origin, SimTime visibleStart, SimTime visibleEnd)
 {
     const auto &trace = m_recorder->trace(traceIndex);
     const auto &transitions = trace.transitions;
@@ -236,25 +268,24 @@ void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int y0
         return y0 + (s == Status::Active ? HIGH_Y_OFFSET : LOW_Y_OFFSET);
     };
 
-    Status currentStatus = Status::Inactive;
+    // Signal level entering the window (Inactive before the first transition), then only the
+    // transitions inside the window — located by binary search, NOT a scan from t = 0, so a
+    // repaint touches O(log n + visible) of a history that can hold hours of transitions.
+    Status currentStatus = trace.statusAt(visibleStart);
     SimTime currentTime = visibleStart;
 
-    if (visibleStart >= transitions.first().first) {
-        currentStatus = trace.statusAt(visibleStart);
-    }
+    const auto firstVisible = std::lower_bound(
+        transitions.cbegin(), transitions.cend(), visibleStart,
+        [](const QPair<SimTime, Status> &tr, SimTime t) { return tr.first < t; });
 
-    for (const auto &[tTime, tStatus] : transitions) {
+    for (auto it = firstVisible; it != transitions.cend(); ++it) {
+        const auto &[tTime, tStatus] = *it;
         if (tTime > visibleEnd) {
             break;
         }
-        if (tTime < visibleStart) {
-            currentStatus = tStatus;
-            currentTime = tTime;
-            continue;
-        }
 
-        const int xFrom = timeToX(qMax(currentTime, visibleStart), visibleStart);
-        const int xTo = timeToX(tTime, visibleStart);
+        const int xFrom = timeToX(currentTime, origin);
+        const int xTo = timeToX(tTime, origin);
         const int yCurrent = yForStatus(currentStatus);
 
         if (xTo > xFrom) {
@@ -270,8 +301,9 @@ void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int y0
         currentTime = tTime;
     }
 
-    const int xFrom = timeToX(qMax(currentTime, visibleStart), visibleStart);
-    const int xEnd = traceWidth;
+    // Extend the last known level to the window's right edge (clamped to the canvas).
+    const int xFrom = timeToX(currentTime, origin);
+    const int xEnd = qMin(traceWidth, timeToX(visibleEnd, origin));
     if (xEnd > xFrom) {
         painter.drawLine(xFrom, yForStatus(currentStatus), xEnd, yForStatus(currentStatus));
     }
@@ -281,10 +313,14 @@ void TemporalWaveformWidget::drawTrace(QPainter &painter, int traceIndex, int y0
 // Coordinate conversion
 // ============================================================================
 
-int TemporalWaveformWidget::timeToX(SimTime time, SimTime visibleStart) const
+int TemporalWaveformWidget::timeToX(SimTime time, SimTime origin) const
 {
-    const double pixels = static_cast<double>(time - visibleStart) * m_pixelsPerNs;
-    return static_cast<int>(qBound(-1e8, pixels, 1e8));
+    // SimTime is unsigned: subtract in the right order so a pre-origin time (e.g. a ruler
+    // tick rounded down past the window start) maps to a negative x and gets culled, instead
+    // of wrapping around to a huge positive coordinate.
+    const double delta = (time >= origin) ? static_cast<double>(time - origin)
+                                          : -static_cast<double>(origin - time);
+    return static_cast<int>(qBound(-1e8, delta * m_pixelsPerNs, 1e8));
 }
 
 // ============================================================================
