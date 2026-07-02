@@ -50,22 +50,6 @@ void AnalyzerCanvas::zoomOut()
     setPixelsPerNs(m_pixelsPerNs / 2.0);
 }
 
-void AnalyzerCanvas::zoomFit()
-{
-    if (!m_recorder || m_recorder->traceCount() == 0) {
-        return;
-    }
-    const SimTime maxTime = m_recorder->maxTime();
-    if (maxTime == 0) {
-        return;
-    }
-    const int availableWidth = width();
-    if (availableWidth <= 0) {
-        return;
-    }
-    setPixelsPerNs(static_cast<double>(availableWidth) / static_cast<double>(maxTime));
-}
-
 QSize AnalyzerCanvas::sizeHint() const
 {
     const int traceCount = m_recorder ? m_recorder->traceCount() : 0;
@@ -110,10 +94,14 @@ void AnalyzerCanvas::paintEvent(QPaintEvent *event)
 {
     // Resize to fit content so the parent QScrollArea shows scrollbars. sizeHint() is
     // clamped to QWIDGETSIZE_MAX, so this settles instead of re-requesting an over-limit
-    // minimum (which Qt rejects with a qWarning) on every repaint.
+    // minimum (which Qt rejects with a qWarning) on every repaint. The explicit resize()
+    // covers the SHRINK direction (zoom-out, Fit): a smaller minimum alone never shrinks
+    // an already-grown canvas — the scroll area immediately re-expands to the viewport if
+    // the hint is narrower than it.
     const QSize hint = sizeHint();
     if (hint != size()) {
         setMinimumSize(hint);
+        resize(hint);
     }
 
     QPainter painter(this);
@@ -242,10 +230,10 @@ void AnalyzerCanvas::wheelEvent(QWheelEvent *event)
         event->ignore(); // let the scroll area scroll
         return;
     }
-    if (event->angleDelta().y() > 0) {
-        zoomIn();
-    } else if (event->angleDelta().y() < 0) {
-        zoomOut();
+    // Request, don't rescale: anchoring the zoom on the sim-time under the cursor needs
+    // the scroll position and viewport, which only the hosting panel knows.
+    if (const int dy = event->angleDelta().y(); dy != 0) {
+        emit zoomStepRequested(dy > 0 ? 1 : -1, event->position().x());
     }
     event->accept();
 }
@@ -412,6 +400,12 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
     auto *btnZoomOut = new QPushButton(tr("-"), this);
     auto *btnFit = new QPushButton(tr("Fit"), this);
     auto *btnLatestEdge = new QPushButton(tr("Latest Edge"), this);
+    btnWatch->setObjectName("analyzerWatchAllButton");
+    btnClear->setObjectName("analyzerClearButton");
+    btnZoomIn->setObjectName("analyzerZoomInButton");
+    btnZoomOut->setObjectName("analyzerZoomOutButton");
+    btnFit->setObjectName("analyzerFitButton");
+    btnLatestEdge->setObjectName("analyzerLatestEdgeButton");
     btnWatch->setToolTip(tr("Watch all output signals in the circuit"));
     btnClear->setToolTip(tr("Remove all watched signals"));
     btnLatestEdge->setToolTip(tr("Zoom to the newest recorded transition at nanosecond scale — pause the simulation to hold the view"));
@@ -456,11 +450,19 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
 
     connect(btnWatch, &QPushButton::clicked, this, &LiveAnalyzerPanel::watchAllSignals);
     connect(btnClear, &QPushButton::clicked, this, &LiveAnalyzerPanel::clearWatchedSignals);
-    connect(btnZoomIn, &QPushButton::clicked, m_canvas, &AnalyzerCanvas::zoomIn);
-    connect(btnZoomOut, &QPushButton::clicked, m_canvas, &AnalyzerCanvas::zoomOut);
-    connect(btnFit, &QPushButton::clicked, m_canvas, &AnalyzerCanvas::zoomFit);
+    connect(btnZoomIn, &QPushButton::clicked, this, &LiveAnalyzerPanel::zoomIn);
+    connect(btnZoomOut, &QPushButton::clicked, this, &LiveAnalyzerPanel::zoomOut);
+    connect(btnFit, &QPushButton::clicked, this, &LiveAnalyzerPanel::zoomFit);
     connect(btnLatestEdge, &QPushButton::clicked, this, &LiveAnalyzerPanel::zoomToLatestEdge);
     connect(m_canvas, &AnalyzerCanvas::zoomChanged, m_ruler, qOverload<>(&QWidget::update));
+
+    // Ctrl+wheel: zoom anchored on the sim-time under the cursor (the canvas only reports
+    // the cursor position; the anchor math needs the scroll position, known here).
+    connect(m_canvas, &AnalyzerCanvas::zoomStepRequested, this, [this](int direction, double canvasX) {
+        const double anchorViewportX = canvasX - m_scrollArea->horizontalScrollBar()->value();
+        const double factor = (direction > 0) ? 2.0 : 0.5;
+        applyAnchoredZoom(m_canvas->pixelsPerNs() * factor, anchorViewportX);
+    });
 
     // Frozen-pane sync: the ruler follows horizontal scrolling, the labels vertical.
     auto *hBar = m_scrollArea->horizontalScrollBar();
@@ -623,6 +625,61 @@ void LiveAnalyzerPanel::watchICInternals(IC *ic)
     m_labels->update();
 }
 
+void LiveAnalyzerPanel::settleCanvasGeometry()
+{
+    // grab() renders synchronously, driving the paint-time canvas resize that feeds the
+    // scroll area's ranges (update() alone lands on the next event-loop cycle).
+    m_canvas->grab(QRect(0, 0, 1, 1));
+}
+
+void LiveAnalyzerPanel::applyAnchoredZoom(double targetPpn, double anchorViewportX)
+{
+    auto *hBar = m_scrollArea->horizontalScrollBar();
+
+    // The instant under the anchor point at the CURRENT scale (double: SimTime values are
+    // far below 2^53, so the mantissa holds them exactly).
+    const double anchorTime = static_cast<double>(m_canvas->timeOrigin())
+                            + (hBar->value() + anchorViewportX) / m_canvas->pixelsPerNs();
+
+    m_canvas->setPixelsPerNs(targetPpn);
+    settleCanvasGeometry();
+
+    // Re-derive the scroll position that puts the anchor instant back under the anchor
+    // point. Both the applied scale (qBound may clamp the request) and the sliding-window
+    // origin are re-read AFTER the rescale; the subtraction stays signed so an anchor that
+    // slid out of the window clamps to the near edge instead of wrapping.
+    const double newPpn = m_canvas->pixelsPerNs();
+    const double delta = anchorTime - static_cast<double>(m_canvas->timeOrigin());
+    hBar->setValue(qRound(delta * newPpn - anchorViewportX));
+}
+
+void LiveAnalyzerPanel::zoomIn()
+{
+    applyAnchoredZoom(m_canvas->pixelsPerNs() * 2.0, m_scrollArea->viewport()->width() / 2.0);
+}
+
+void LiveAnalyzerPanel::zoomOut()
+{
+    applyAnchoredZoom(m_canvas->pixelsPerNs() * 0.5, m_scrollArea->viewport()->width() / 2.0);
+}
+
+void LiveAnalyzerPanel::zoomFit()
+{
+    const auto *rec = recorder();
+    const SimTime maxTime = rec ? rec->maxTime() : 0;
+    const int viewportWidth = m_scrollArea->viewport()->width();
+    if (maxTime == 0 || viewportWidth <= 20) {
+        return;
+    }
+    // The canvas pads its width by +20 px past the newest sample (sizeHint), so fitting
+    // [0, maxTime] across the viewport means scaling to viewport − 20: the whole recording
+    // plus the pad land exactly in view and the horizontal scroll range collapses to 0 —
+    // which also re-engages the sticky-tail follow while the simulation runs.
+    m_canvas->setPixelsPerNs(static_cast<double>(viewportWidth - 20) / static_cast<double>(maxTime));
+    settleCanvasGeometry();
+    m_scrollArea->horizontalScrollBar()->setValue(0);
+}
+
 void LiveAnalyzerPanel::zoomToLatestEdge()
 {
     const auto *rec = recorder();
@@ -644,10 +701,7 @@ void LiveAnalyzerPanel::zoomToLatestEdge()
     // staircase at tens of pixels (setPixelsPerNs clamps to 10 px/ns for huge viewports).
     constexpr double kEdgeWindowNs = 250.0;
     m_canvas->setPixelsPerNs(viewportWidth / kEdgeWindowNs);
-
-    // Force the paint-time canvas resize NOW so the scroll range reflects the new zoom
-    // before we position the view (update() alone is asynchronous).
-    m_canvas->grab(QRect(0, 0, 1, 1));
+    settleCanvasGeometry();
 
     // Center the newest transition (the scroll bar clamps to its range: when the newest
     // edge sits at the canvas's right end — the usual case, since recording dedups — the

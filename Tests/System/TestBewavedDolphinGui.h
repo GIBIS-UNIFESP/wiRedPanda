@@ -71,6 +71,15 @@ private slots:
     /// "Latest Edge" zooms to a ns-resolving scale with the newest recorded transition in
     /// view (gate delays are sub-pixel at any live-following zoom); empty recorder = no-op.
     void testLiveAnalyzerZoomToLatestEdge();
+    /// Zoom must anchor the viewed time: +/- keep the sim-time at the viewport center fixed
+    /// (the scroll area preserves the raw PIXEL value across the canvas rescale, which slid
+    /// the view exponentially toward t = 0 on every zoom-in — traces then read all-low).
+    void testLiveAnalyzerZoomKeepsAnchor();
+    /// Ctrl+wheel zooms around the sim-time under the cursor.
+    void testLiveAnalyzerCtrlWheelZoomsAtCursor();
+    /// Fit spans the whole recording across the VIEWPORT — not the canvas's own width,
+    /// which no longer fits anything once the canvas has grown past the viewport.
+    void testLiveAnalyzerFitSpansViewport();
 
     // --- File I/O ---
 

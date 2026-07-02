@@ -16,6 +16,7 @@
 #include <QImage>
 #include <QItemSelectionModel>
 #include <QKeySequence>
+#include <QPushButton>
 #include <QRegularExpression>
 #include <QScrollBar>
 #include <QSet>
@@ -24,6 +25,7 @@
 #include <QTabWidget>
 #include <QTest>
 #include <QTextStream>
+#include <QWheelEvent>
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/BeWavedDolphin/DolphinHost.h"
@@ -1948,4 +1950,164 @@ void TestBewavedDolphinGui::testLiveAnalyzerZoomToLatestEdge()
     QVERIFY2(visibleStart <= 2'000'000.0 && 2'000'000.0 <= visibleEnd,
              qPrintable(QString("latest edge (2e6 ns) outside visible window [%1, %2] ns")
                             .arg(visibleStart).arg(visibleEnd)));
+}
+
+/// Records a 1-second (1e9 ns) square-wave history on the circuit's first InputSwitch:
+/// an edge every 100 ms of sim time, so the zoom/anchor tests have a long timeline with
+/// data everywhere. Returns the recorded maxTime (1e9 ns), 0 if no switch was found.
+static SimTime recordSquareWaveHistory(WorkSpace *ws)
+{
+    GraphicElement *elm = nullptr;
+    for (auto *sceneElm : ws->scene()->elements()) {
+        if (sceneElm && sceneElm->elementType() == ElementType::InputSwitch) {
+            elm = sceneElm;
+            break;
+        }
+    }
+    if (!elm) {
+        return 0;
+    }
+    auto &recorder = ws->scene()->simulation()->waveformRecorder();
+    recorder.watchSignal("sw", elm, 0);
+    recorder.setRecording(true);
+    for (int i = 0; i <= 10; ++i) {
+        elm->setOutputValue(0, (i % 2 != 0) ? Status::Active : Status::Inactive);
+        recorder.recordAll(static_cast<SimTime>(i) * 100'000'000);
+    }
+    return recorder.maxTime();
+}
+
+void TestBewavedDolphinGui::testLiveAnalyzerZoomKeepsAnchor()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY(panel);
+    QCOMPARE(recordSquareWaveHistory(ws.get()), SimTime(1'000'000'000));
+
+    dolphin->showLiveAnalyzer();
+    dolphin->resize(600, 300);
+    dolphin->show();
+    QApplication::processEvents();
+    panel->canvas()->grab(QRect(0, 0, 50, 50)); // settle canvas geometry
+
+    auto *hBar = panel->scrollArea()->horizontalScrollBar();
+    const int viewport = panel->scrollArea()->viewport()->width();
+    QVERIFY(viewport > 0);
+
+    // Start with the recording spanning ~4 viewports and a mid-recording instant (t = 5e8 ns)
+    // at the viewport center — zooming must magnify around THAT instant, not around whatever
+    // the raw pixel scroll value happens to map to after the canvas rescales.
+    panel->canvas()->setPixelsPerNs(4.0 * viewport / 1e9);
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+    hBar->setValue(qRound(5e8 * panel->canvas()->pixelsPerNs() - viewport / 2.0));
+    QVERIFY2(hBar->value() > 0 && hBar->value() < hBar->maximum(),
+             "test setup: the anchor must start mid-range");
+
+    auto *btnZoomIn = panel->findChild<QPushButton *>("analyzerZoomInButton");
+    auto *btnZoomOut = panel->findChild<QPushButton *>("analyzerZoomOutButton");
+    QVERIFY(btnZoomIn && btnZoomOut);
+
+    auto centerTime = [&]() {
+        return static_cast<double>(panel->canvas()->timeOrigin())
+             + (hBar->value() + viewport / 2.0) / panel->canvas()->pixelsPerNs();
+    };
+
+    for (int step = 0; step < 5; ++step) {
+        const double before = centerTime();
+        btnZoomIn->click();
+        panel->canvas()->grab(QRect(0, 0, 50, 50)); // settle the paint-time canvas resize
+        const double after = centerTime();
+        // Scroll bars round to whole pixels: allow a few px worth of ns at the new zoom.
+        const double tolerance = 3.0 / panel->canvas()->pixelsPerNs() + 1.0;
+        QVERIFY2(std::abs(after - before) <= tolerance,
+                 qPrintable(QString("zoom-in step %1 moved the viewport center from %2 ns to %3 ns")
+                                .arg(step).arg(before, 0, 'f', 0).arg(after, 0, 'f', 0)));
+    }
+
+    // Zoom out re-widens around the same anchor.
+    const double before = centerTime();
+    btnZoomOut->click();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+    const double after = centerTime();
+    QVERIFY2(std::abs(after - before) <= 3.0 / panel->canvas()->pixelsPerNs() + 1.0,
+             qPrintable(QString("zoom-out moved the viewport center from %1 ns to %2 ns")
+                            .arg(before, 0, 'f', 0).arg(after, 0, 'f', 0)));
+}
+
+void TestBewavedDolphinGui::testLiveAnalyzerCtrlWheelZoomsAtCursor()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY(panel);
+    QCOMPARE(recordSquareWaveHistory(ws.get()), SimTime(1'000'000'000));
+
+    dolphin->showLiveAnalyzer();
+    dolphin->resize(600, 300);
+    dolphin->show();
+    QApplication::processEvents();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+
+    auto *hBar = panel->scrollArea()->horizontalScrollBar();
+    const int viewport = panel->scrollArea()->viewport()->width();
+    QVERIFY(viewport > 0);
+    panel->canvas()->setPixelsPerNs(4.0 * viewport / 1e9);
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+    hBar->setValue(hBar->maximum() / 2);
+
+    // An off-center cursor position distinguishes cursor anchoring from center anchoring.
+    const double vx = viewport / 4.0;
+    auto timeAtCursor = [&]() {
+        return static_cast<double>(panel->canvas()->timeOrigin())
+             + (hBar->value() + vx) / panel->canvas()->pixelsPerNs();
+    };
+
+    const double ppnBefore = panel->canvas()->pixelsPerNs();
+    const double before = timeAtCursor();
+    const QPointF canvasPos(hBar->value() + vx, 10);
+    QWheelEvent wheel(canvasPos, canvasPos, QPoint(), QPoint(0, 120),
+                      Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false);
+    QCoreApplication::sendEvent(panel->canvas(), &wheel);
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+
+    QCOMPARE(panel->canvas()->pixelsPerNs(), ppnBefore * 2.0);
+    const double after = timeAtCursor();
+    QVERIFY2(std::abs(after - before) <= 3.0 / panel->canvas()->pixelsPerNs() + 1.0,
+             qPrintable(QString("Ctrl+wheel moved the time under the cursor from %1 ns to %2 ns")
+                            .arg(before, 0, 'f', 0).arg(after, 0, 'f', 0)));
+}
+
+void TestBewavedDolphinGui::testLiveAnalyzerFitSpansViewport()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY(panel);
+    QCOMPARE(recordSquareWaveHistory(ws.get()), SimTime(1'000'000'000));
+
+    dolphin->showLiveAnalyzer();
+    dolphin->resize(600, 300);
+    dolphin->show();
+    QApplication::processEvents();
+
+    // Deep-zoom first so the canvas is far wider than the viewport (the regression: Fit
+    // computed its scale from THAT width, so it never actually fit anything again).
+    panel->canvas()->setPixelsPerNs(0.01); // 1e9 ns × 0.01 px/ns = 1e7 px canvas
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+    auto *hBar = panel->scrollArea()->horizontalScrollBar();
+    QVERIFY2(hBar->maximum() > panel->scrollArea()->viewport()->width(),
+             "test setup: the canvas must be far wider than the viewport");
+
+    auto *btnFit = panel->findChild<QPushButton *>("analyzerFitButton");
+    QVERIFY(btnFit);
+    btnFit->click();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+
+    // The whole recording spans the viewport: scale derived from the viewport width (minus
+    // the canvas's +20 px tail pad), scrolled home, nothing left to scroll horizontally.
+    const int viewport = panel->scrollArea()->viewport()->width();
+    QCOMPARE(panel->canvas()->pixelsPerNs(), (viewport - 20) / 1e9);
+    QCOMPARE(hBar->value(), 0);
+    QCOMPARE(hBar->maximum(), 0);
 }

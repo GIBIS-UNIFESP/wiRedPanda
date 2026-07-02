@@ -82,14 +82,12 @@ public:
     /// Sets the zoom level.
     void setPixelsPerNs(double ppn);
 
-    /// Zooms in by a factor of 2.
+    /// Zooms in by a factor of 2. Raw scale step — view anchoring (keeping the looked-at
+    /// instant in place) is the panel's job, which knows the viewport.
     void zoomIn();
 
     /// Zooms out by a factor of 2.
     void zoomOut();
-
-    /// Resets zoom to fit all recorded data in the current width.
-    void zoomFit();
 
     /// Returns the desired size based on trace count and time span, clamped to Qt's
     /// QWIDGETSIZE_MAX widget-dimension limit (a larger minimum size is rejected with a
@@ -110,11 +108,17 @@ signals:
     /// Emitted whenever the zoom level changes, so the ruler can repaint in sync.
     void zoomChanged();
 
+    /// Ctrl+wheel zoom request: \a direction is +1 (in) / -1 (out), \a canvasX the cursor's
+    /// canvas x-coordinate. The canvas does NOT rescale itself — the panel applies the zoom
+    /// anchored on the sim-time under the cursor, which needs the viewport geometry.
+    void zoomStepRequested(int direction, double canvasX);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 
-    /// Ctrl+wheel zooms; a plain wheel is ignored so the surrounding scroll area scrolls
-    /// (the standard waveform-tool convention once vertical scrolling exists).
+    /// Ctrl+wheel requests a cursor-anchored zoom (see zoomStepRequested()); a plain wheel
+    /// is ignored so the surrounding scroll area scrolls (the standard waveform-tool
+    /// convention once vertical scrolling exists).
     void wheelEvent(QWheelEvent *event) override;
 
 private:
@@ -220,6 +224,20 @@ public:
     /// so several ICs can be watched side by side.
     void watchICInternals(IC *ic);
 
+    /// Anchored zoom: doubles the scale while keeping the sim-time at the viewport center
+    /// fixed. Without the anchor, the scroll area preserves the raw PIXEL scroll value
+    /// across the canvas rescale, so every zoom-in halves the timestamp at the view's left
+    /// edge — the view slides exponentially toward t = 0 instead of magnifying what's on
+    /// screen (traces then read as all-low: the region before the first recorded sample).
+    void zoomIn();
+
+    /// Anchored zoom out (halves the scale around the viewport-center instant).
+    void zoomOut();
+
+    /// Fits the whole recording across the VIEWPORT and scrolls home. (The canvas cannot
+    /// fit itself: its own width is the zoom-dependent quantity being reset.)
+    void zoomFit();
+
     /// Jumps to the newest recorded transition at a nanosecond-resolving zoom (a few
     /// hundred ns across the viewport), like a scope jumping to its trigger. A live
     /// free-running view can never SHOW gate delays — at 1x the timeline grows 1e9 ns per
@@ -249,6 +267,16 @@ protected:
     void hideEvent(QHideEvent *event) override;
 
 private:
+    /// Rescales to \a targetPpn keeping the sim-time under viewport x = \a anchorViewportX
+    /// fixed on screen: capture that instant at the old scale, rescale, settle the canvas
+    /// geometry, then re-derive the scroll position from the instant (the sliding-window
+    /// origin is zoom-dependent, so it is re-read after the rescale).
+    void applyAnchoredZoom(double targetPpn, double anchorViewportX);
+
+    /// Forces the paint-time canvas resize NOW so the scroll ranges reflect the current
+    /// zoom before positioning the view (update() alone is asynchronous).
+    void settleCanvasGeometry();
+
     /// Re-derives the zoom so ~5 seconds of wall-clock time fits the visible width
     /// (at 1000 ticks/sec, 5 s = 5000 ticks of sim time). Called when the simulation
     /// speed changes and when watching starts.
