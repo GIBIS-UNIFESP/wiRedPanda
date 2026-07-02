@@ -2079,6 +2079,17 @@ bool TestArduino::isCombinationalCircuit(const QVector<GraphicElement *> &elemen
             break;
         }
     }
+
+    // A gate-level circuit with a feedback loop (e.g. a flip-flop built from cross-coupled NOR
+    // latches) is sequential even though it contains no flip-flop *elements*. Detect such loops
+    // via the engine's own cycle detection so the combinational-only functional testbench is not
+    // invalidly applied to them.
+    const auto txMap = Simulation::buildTxMap(elements);
+    const auto successors = Simulation::buildSuccessorGraph(elements, txMap);
+    if (!Simulation::topologicalSort(elements, successors).feedbackNodes.isEmpty()) {
+        return false;
+    }
+
     return true;
 }
 
