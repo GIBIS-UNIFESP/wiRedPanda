@@ -104,6 +104,18 @@ public:
     /// out). Public so the ruler and tests share the sliding-window mapping.
     SimTime timeOrigin() const;
 
+    /// Tells the canvas whether the hosting simulation is in functional (zero-delay) mode,
+    /// where the sim clock never advances — selects which degenerate-state hint to paint.
+    void setFunctionalHint(bool functional);
+
+    /// The persistent on-canvas explanation for a degenerate timeline: traces are watched
+    /// but maxTime() == 0, so there are no edges and nothing to zoom into — because
+    /// functional mode records no timeline, or because no input has toggled yet. Empty when
+    /// real data exists (the unrelated zero-traces case has its own "No signals watched"
+    /// text). Painted centered over the traces; exposed so tests can assert the state
+    /// machine without pixel-matching text.
+    QString degenerateStateText() const;
+
 signals:
     /// Emitted whenever the zoom level changes, so the ruler can repaint in sync.
     void zoomChanged();
@@ -134,7 +146,8 @@ private:
     static constexpr int LOW_Y_OFFSET = 26;
 
     const WaveformRecorder *m_recorder = nullptr;
-    double m_pixelsPerNs = 0.001; ///< Default: 1 pixel per 1000 ns (1 µs).
+    double m_pixelsPerNs = 0.001;  ///< Default: 1 pixel per 1000 ns (1 µs).
+    bool m_functionalHint = false; ///< Hosting simulation is functional-mode (no timeline).
 };
 
 /**
@@ -292,6 +305,10 @@ private:
 
     /// Points the user at Temporal mode when recording cannot advance a timeline.
     void hintIfFunctionalMode();
+
+    /// Pushes the current sim mode into the canvas's persistent degenerate-state hint
+    /// (the status-bar hint above is a transient nudge; the canvas text stays visible).
+    void updateDegenerateHint();
 
     WaveformRecorder *recorder() const;
 

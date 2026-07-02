@@ -73,6 +73,28 @@ QSize AnalyzerCanvas::minimumSizeHint() const
     return {100, AnalyzerLayout::TraceHeight};
 }
 
+void AnalyzerCanvas::setFunctionalHint(const bool functional)
+{
+    if (m_functionalHint == functional) {
+        return;
+    }
+    m_functionalHint = functional;
+    update();
+}
+
+QString AnalyzerCanvas::degenerateStateText() const
+{
+    if (!m_recorder || m_recorder->traceCount() == 0 || m_recorder->maxTime() > 0) {
+        return {};
+    }
+    // Watched traces whose timeline never advanced: every sample sits at t = 0, so the
+    // view degenerates to flat lines with nothing to zoom into. Say WHY, persistently —
+    // this state used to be silent (a 5 s status-bar blip) and read as a broken viewer.
+    return m_functionalHint
+        ? tr("Functional mode records no timeline — switch the simulation to Temporal.")
+        : tr("No transitions recorded yet — toggle an input to capture edges.");
+}
+
 SimTime AnalyzerCanvas::timeOrigin() const
 {
     if (!m_recorder || m_pixelsPerNs <= 0) {
@@ -136,6 +158,13 @@ void AnalyzerCanvas::paintEvent(QPaintEvent *event)
             continue; // row entirely outside the exposed region
         }
         drawTrace(painter, i, y, traceWidth, AnalyzerLayout::TraceHeight, origin, visibleStart, visibleEnd);
+    }
+
+    // A never-advancing timeline paints its explanation over the (flat, live-level) traces.
+    const QString degenerate = degenerateStateText();
+    if (!degenerate.isEmpty()) {
+        painter.setPen(palette().color(QPalette::Disabled, QPalette::Text));
+        painter.drawText(rect(), Qt::AlignCenter | Qt::TextWordWrap, degenerate);
     }
 }
 
@@ -502,12 +531,17 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
     }
 
     // Periodic repaint so new transitions appear as they record (started while visible).
+    // The degenerate-state hint rides along: the sim mode can change while the panel is
+    // idle, and a bool push per 100 ms is free.
     m_refreshTimer.setInterval(100);
     connect(&m_refreshTimer, &QTimer::timeout, this, [this] {
+        updateDegenerateHint();
         m_labels->update();
         m_canvas->update();
         m_ruler->update();
     });
+
+    updateDegenerateHint();
 }
 
 WaveformRecorder *LiveAnalyzerPanel::recorder() const
@@ -562,6 +596,7 @@ void LiveAnalyzerPanel::watchAllSignals()
 
     adaptZoomToTickWindow(m_scene->simulation()->timePerTick());
     hintIfFunctionalMode();
+    updateDegenerateHint();
 
     m_labels->updateGeometry();
     m_canvas->update();
@@ -626,6 +661,7 @@ void LiveAnalyzerPanel::watchICInternals(IC *ic)
     m_labels->setRecorder(rec);
 
     hintIfFunctionalMode();
+    updateDegenerateHint();
 
     m_labels->updateGeometry();
     m_canvas->update();
@@ -763,4 +799,9 @@ void LiveAnalyzerPanel::hintIfFunctionalMode()
     if (m_scene && m_scene->simulation()->timePerTick() == 0) {
         emit statusMessage(tr("Switch the simulation to Temporal mode to record waveforms."), 5000);
     }
+}
+
+void LiveAnalyzerPanel::updateDegenerateHint()
+{
+    m_canvas->setFunctionalHint(m_scene && m_scene->simulation()->timePerTick() == 0);
 }
