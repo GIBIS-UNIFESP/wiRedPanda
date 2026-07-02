@@ -338,6 +338,13 @@ void Simulation::restart()
     m_eventQueue.clear();
     m_delays.clear();         // keyed by element pointers; must not outlive a rebuild
     m_evaluatedSequentialThisTick.clear(); // holds element pointers; must not outlive a rebuild
+    // Keyed by element pointers too. sortSimElements() re-clears them on the next successful
+    // initialize(), but if that never runs (e.g. the whole circuit was deleted, so initialize()
+    // bails early), a freed element's reused address could inherit a stale priority or
+    // feedback-node marking through schedule()/isInFeedbackLoop().
+    m_simPriorities.clear();
+    m_simFeedbackNodes.clear();
+    m_simHasFeedbackElements = false;
     m_currentTime = 0;
     // m_recorder's watch LIST is deliberately NOT cleared here: its traces hold QPointers, so a
     // freed element auto-nulls (crash-safe) and the dead trace is reaped by m_recorder.pruneStale()
@@ -355,7 +362,8 @@ void Simulation::restart()
     Q_ASSERT(m_sortedElements.isEmpty() && m_sequentialElements.isEmpty()
           && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty()
           && m_successorGraph.isEmpty() && m_icOutputMirror.isEmpty()
-          && m_evaluatedSequentialThisTick.isEmpty() && m_recorder.timelineEmpty());
+          && m_evaluatedSequentialThisTick.isEmpty() && m_recorder.timelineEmpty()
+          && m_simPriorities.isEmpty() && m_simFeedbackNodes.isEmpty() && !m_simHasFeedbackElements);
 }
 
 void Simulation::beginTimedRun(const SimTime nsPerTick)
