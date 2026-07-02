@@ -6,6 +6,7 @@
 #include <limits>
 
 #include <QAbstractButton>
+#include <QDir>
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QRandomGenerator>
@@ -45,7 +46,8 @@ void setupTestEnvironment()
     // (recent files, theme, language, autosave lists) reads and WRITES the
     // developer's real ~/.config/GIBIS-UNIFESP/wiRedPanda.ini. Must run before
     // the first QSettings instance is created (this function is called at the
-    // top of runTestSuite(), before Application is constructed).
+    // top of runTestSuite(), before Application is constructed); guarded by
+    // TestSettings::testSettingsRedirectedAwayFromUserConfig.
     static QTemporaryDir settingsDir;
     if (settingsDir.isValid()) {
         QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsDir.path());

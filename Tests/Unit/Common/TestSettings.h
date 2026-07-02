@@ -10,11 +10,15 @@ class TestSettings : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase();
     void init();
     void cleanup();
 
     // Basic Operations
+    /// The whole test process must resolve the Settings singleton to the temp-dir
+    /// redirect installed by TestUtils::setupTestEnvironment() — never to the user's
+    /// real config file, which tests would otherwise overwrite (language, theme,
+    /// geometry, recent files).
+    void testSettingsRedirectedAwayFromUserConfig();
     void testSettingsFileName();
 
     // Typed Accessors

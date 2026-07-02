@@ -10,14 +10,6 @@
 #include "App/Core/ThemeManager.h"
 #include "Tests/Common/TestUtils.h"
 
-void TestSettings::initTestCase()
-{
-    // The whole harness is redirected to a temporary QSettings path by
-    // TestUtils::setupTestEnvironment() (called in runTestSuite() before the
-    // Application is constructed), so the tests below can freely mutate the
-    // Settings:: store without touching the developer's real configuration.
-}
-
 void TestSettings::init()
 {
     // Clear the (redirected) application settings store before each test so
@@ -41,6 +33,16 @@ void TestSettings::cleanup()
 // ============================================================
 // Basic Operations Tests
 // ============================================================
+
+void TestSettings::testSettingsRedirectedAwayFromUserConfig()
+{
+    // Relies on the process-wide redirect from TestUtils::setupTestEnvironment() (a per-process
+    // QTemporaryDir, so parallel test binaries never collide on one shared ini file) — no
+    // class-local QSettings::setPath() here, so this fails the moment that redirect is
+    // missing for any test class in the suite.
+    QVERIFY2(Settings::fileName().startsWith(QDir::tempPath()),
+             qPrintable("Settings resolve to the user's real config: " + Settings::fileName()));
+}
 
 void TestSettings::testSettingsFileName()
 {
