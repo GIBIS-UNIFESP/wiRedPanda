@@ -326,6 +326,15 @@ jobs:
         echo "Running --appimage-extract-and-run --version..."
         if ! QT_QPA_PLATFORM=offscreen "./$APPIMAGE_FILE" --appimage-extract-and-run --version; then
           echo "Error: AppImage failed to run in no-FUSE (extract-and-run) mode"
+          echo "--- diagnostics: RUNPATHs ---"
+          patchelf --print-rpath squashfs-root/usr/bin/wiredpanda || true
+          find squashfs-root -name 'libQt6Multimedia.so.6' -exec patchelf --print-rpath {} \; || true
+          echo "--- diagnostics: loader and pulse files ---"
+          find squashfs-root \( -name 'ld-*.so.*' -o -name 'libpulse*' -o -name 'libQt6Multimedia*' \) -exec ls -l {} \;
+          echo "--- diagnostics: loader search trace (last 120 lines) ---"
+          cd squashfs-root
+          OWD="$PWD" APPIMAGE="dummy" QT_QPA_PLATFORM=offscreen LD_DEBUG=libs ./AppRun --version 2>&1 | tail -120 || true
+          cd ..
           exit 1
         fi
         echo "✓ AppImage runs without FUSE (extract-and-run)"
