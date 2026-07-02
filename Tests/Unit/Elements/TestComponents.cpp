@@ -53,7 +53,10 @@ void TestComponents::testICData(IC *ic)
     QCOMPARE(ic->inputPort(4)->isRequired(), false);
 
     QCOMPARE(ic->inputPort(0)->status(), Status::Active);
-    QCOMPARE(ic->inputPort(1)->status(), Status::Active);
+    // Port 1 is J: fixed to default to 0 (Reset mode, J=0/K=1) so the flip-flop's D input is
+    // unconditionally 0 and the circuit self-resolves from an Unknown power-on state, instead
+    // of the old J=1/K=1 default (toggle mode, which could stay stuck at Unknown).
+    QCOMPARE(ic->inputPort(1)->status(), Status::Inactive);
     QCOMPARE(ic->inputPort(2)->status(), Status::Error);
     QCOMPARE(ic->inputPort(3)->status(), Status::Active);
     QCOMPARE(ic->inputPort(4)->status(), Status::Active);
