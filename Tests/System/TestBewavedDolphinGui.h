@@ -65,6 +65,9 @@ private slots:
     /// watchICInternals() reveals the analyzer page and registers path-prefixed traces for
     /// the IC's internal primitives.
     void testLiveAnalyzerWatchICInternals();
+    /// The frozen label column follows the vertical scrollbar (rows stay aligned with
+    /// traces) and its preferred height stays capped for long watch lists.
+    void testLiveAnalyzerVerticalScrollSyncsLabels();
 
     // --- File I/O ---
 

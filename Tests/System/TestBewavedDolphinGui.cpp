@@ -1846,3 +1846,47 @@ void TestBewavedDolphinGui::testLiveAnalyzerWatchICInternals()
                  "trace name must carry the IC as a path prefix");
     }
 }
+
+void TestBewavedDolphinGui::testLiveAnalyzerVerticalScrollSyncsLabels()
+{
+    // With more watched signals than fit the viewport, the analyzer grows a vertical
+    // scrollbar; the frozen label column must follow the scroll offset so names stay
+    // aligned with their traces, and its own preferred height stays capped (a long watch
+    // list must not balloon the whole tool's preferred size).
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY(panel);
+
+    // 12 distinct traces: null-logic watches with distinct port indices are kept apart by
+    // watchSignal()'s (logic, port) dedup and are enough for pure geometry.
+    auto &recorder = ws->scene()->simulation()->waveformRecorder();
+    for (int i = 0; i < 12; ++i) {
+        recorder.watchSignal(QStringLiteral("sig%1").arg(i), nullptr, i);
+    }
+    QCOMPARE(recorder.traceCount(), 12);
+
+    // Preferred height of the label column is capped regardless of the watch-list size.
+    QVERIFY2(panel->labelColumn()->sizeHint().height()
+                 <= 6 * (AnalyzerLayout::TraceHeight + AnalyzerLayout::TraceMargin),
+             "label column preferred height must stay capped");
+
+    // Lay the tool out small enough that 12 rows cannot fit (layout only runs for shown
+    // widgets), then force a canvas paint (grab drives the paint-time resize that feeds the
+    // scroll area's ranges).
+    dolphin->showLiveAnalyzer();
+    dolphin->resize(600, 300);
+    dolphin->show();
+    QApplication::processEvents();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+
+    auto *vBar = panel->scrollArea()->verticalScrollBar();
+    QVERIFY(vBar);
+    QVERIFY2(vBar->maximum() > 0, "12 rows in a 200 px panel must produce vertical scroll range");
+
+    vBar->setValue(vBar->maximum());
+    QCOMPARE(panel->labelColumn()->verticalOffset(), vBar->maximum());
+
+    vBar->setValue(0);
+    QCOMPARE(panel->labelColumn()->verticalOffset(), 0);
+}
