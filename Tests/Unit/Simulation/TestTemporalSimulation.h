@@ -66,6 +66,9 @@ private slots:
     /// spamming a qWarning per frame and re-invalidating layout until the UI froze. The hint
     /// must clamp at the Qt limit and timeOrigin() must slide the window to the newest data.
     void testWidgetCanvasClampedAtQtLimit();
+    /// Per-channel palette: first 8 channels pairwise distinct, cycling at 8; label names
+    /// share their trace's color.
+    void testAnalyzerTraceColorPalette();
 
     // --- Temporal example circuits (Examples/temporal_*.panda) ---
     void testExampleRingOscillator();
