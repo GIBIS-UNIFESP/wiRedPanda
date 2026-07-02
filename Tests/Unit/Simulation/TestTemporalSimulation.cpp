@@ -1189,6 +1189,47 @@ void TestTemporalSimulation::testCanvasPreRecordRegionBlank()
              "the recorded region must draw the trace");
 }
 
+void TestTemporalSimulation::testCanvasDegenerateStateHint()
+{
+    // Traces watched but the timeline never advanced (every sample at t = 0): the canvas
+    // must SAY why instead of silently showing flat lines with a dead zoom. Two causes,
+    // two texts: functional mode (no timeline by design) vs no input edges yet.
+    WaveformRecorder recorder;
+    AnalyzerCanvas canvas;
+    canvas.setRecorder(&recorder);
+
+    // Zero traces is a different state with its own "No signals watched" text.
+    QVERIFY(canvas.degenerateStateText().isEmpty());
+
+    recorder.watchSignal("sig0", nullptr, 0);
+    QVERIFY2(canvas.degenerateStateText().contains("No transitions recorded"),
+             "empty temporal timeline must explain that no edges were captured yet");
+
+    canvas.setFunctionalHint(true);
+    QVERIFY2(canvas.degenerateStateText().contains("Functional mode"),
+             "functional mode must explain that no timeline can be recorded");
+
+    // Painting the hint must not crash (smoke; the exact pixels are the theme's business).
+    canvas.resize(400, 100);
+    QVERIFY(!canvas.grab().isNull());
+
+    // Real data ends the degenerate state regardless of the mode flag.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *elm = new Not();
+    builder.add(sw, elm);
+    builder.connect(sw, 0, elm, 0);
+    builder.initSimulation();
+    const int idx = recorder.watchSignal("n", elm, 0);
+    recorder.setRecording(true);
+    elm->setOutputValue(0, Status::Active);
+    recorder.recordAll(500);
+    QVERIFY(!recorder.trace(idx).transitions.isEmpty());
+    QVERIFY2(canvas.degenerateStateText().isEmpty(),
+             "a recorded transition must clear the degenerate-state hint");
+}
+
 void TestTemporalSimulation::testAnalyzerTraceColorPalette()
 {
     // Per-channel colors like a real logic analyzer: the first 8 channels are pairwise

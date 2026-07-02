@@ -80,6 +80,9 @@ private slots:
     /// Nothing is known before a trace's first recorded sample (watching typically starts
     /// mid-run): that region must render blank, not as a definite LOW.
     void testCanvasPreRecordRegionBlank();
+    /// A watched-but-never-advancing timeline (maxTime == 0) explains itself persistently
+    /// on the canvas: functional mode vs no-edges-yet; cleared once real data lands.
+    void testCanvasDegenerateStateHint();
 
     // --- Temporal example circuits (Examples/temporal_*.panda) ---
     void testExampleRingOscillator();
