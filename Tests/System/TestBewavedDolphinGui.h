@@ -68,6 +68,9 @@ private slots:
     /// The frozen label column follows the vertical scrollbar (rows stay aligned with
     /// traces) and its preferred height stays capped for long watch lists.
     void testLiveAnalyzerVerticalScrollSyncsLabels();
+    /// "Latest Edge" zooms to a ns-resolving scale with the newest recorded transition in
+    /// view (gate delays are sub-pixel at any live-following zoom); empty recorder = no-op.
+    void testLiveAnalyzerZoomToLatestEdge();
 
     // --- File I/O ---
 

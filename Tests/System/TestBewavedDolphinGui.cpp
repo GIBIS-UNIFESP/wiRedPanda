@@ -1890,3 +1890,62 @@ void TestBewavedDolphinGui::testLiveAnalyzerVerticalScrollSyncsLabels()
     vBar->setValue(0);
     QCOMPARE(panel->labelColumn()->verticalOffset(), 0);
 }
+
+void TestBewavedDolphinGui::testLiveAnalyzerZoomToLatestEdge()
+{
+    // "Latest Edge" jumps to the newest recorded transition at a nanosecond-resolving
+    // zoom — the only practical way to observe 5-20 ns gate delays, which are sub-pixel
+    // at any zoom that keeps up with a live timeline (1e9 ns per wall-second at 1x).
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY(panel);
+
+    dolphin->showLiveAnalyzer();
+    dolphin->resize(600, 300);
+    dolphin->show();
+    QApplication::processEvents();
+
+    // Empty recorder → no-op (no crash, zoom untouched).
+    const double ppnBefore = panel->canvas()->pixelsPerNs();
+    panel->zoomToLatestEdge();
+    QCOMPARE(panel->canvas()->pixelsPerNs(), ppnBefore);
+
+    // Record a few transitions; the newest lands at T* = 2'000'000 ns.
+    auto &recorder = ws->scene()->simulation()->waveformRecorder();
+    GraphicElement *elm = nullptr;
+    for (auto *sceneElm : ws->scene()->elements()) {
+        if (sceneElm && sceneElm->elementType() == ElementType::InputSwitch) {
+            elm = sceneElm;
+            break;
+        }
+    }
+    QVERIFY2(elm, "no switch found in the AND circuit");
+    recorder.watchSignal("sw", elm, 0);
+    recorder.setRecording(true);
+    elm->setOutputValue(0, Status::Active);
+    recorder.recordAll(0);
+    elm->setOutputValue(0, Status::Inactive);
+    recorder.recordAll(1'000'000);
+    elm->setOutputValue(0, Status::Active);
+    recorder.recordAll(2'000'000);
+    panel->canvas()->grab(QRect(0, 0, 50, 50)); // settle canvas geometry
+
+    panel->zoomToLatestEdge();
+
+    // Delay-resolving zoom: ~250 ns across the viewport (clamped at 10 px/ns).
+    const int viewport = panel->scrollArea()->viewport()->width();
+    QVERIFY(viewport > 0);
+    const double expectedPpn = qMin(10.0, viewport / 250.0);
+    QCOMPARE(panel->canvas()->pixelsPerNs(), expectedPpn);
+
+    // The newest transition must be inside the visible sim-time window.
+    const double ppn = panel->canvas()->pixelsPerNs();
+    const SimTime origin = panel->canvas()->timeOrigin();
+    auto *hBar = panel->scrollArea()->horizontalScrollBar();
+    const double visibleStart = static_cast<double>(origin) + hBar->value() / ppn;
+    const double visibleEnd = static_cast<double>(origin) + (hBar->value() + viewport) / ppn;
+    QVERIFY2(visibleStart <= 2'000'000.0 && 2'000'000.0 <= visibleEnd,
+             qPrintable(QString("latest edge (2e6 ns) outside visible window [%1, %2] ns")
+                            .arg(visibleStart).arg(visibleEnd)));
+}
