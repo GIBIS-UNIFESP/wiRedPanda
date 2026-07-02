@@ -15,6 +15,7 @@
 #include <QMap>
 #include <QMimeData>
 #include <QPoint>
+#include <QPointer>
 #include <QTimer>
 #include <QUndoCommand>
 #include <QVersionNumber>
@@ -336,6 +337,15 @@ public:
     Simulation *simulation();
     /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
+
+    /// Sets the step debugger's "current instruction" cursor: the elements changed by the
+    /// last step, each drawn with a foreground ring. Pass an empty vector to clear (Play
+    /// resume, Restart). Elements are held by QPointer, so a deleted element's ring simply
+    /// vanishes.
+    void setSteppedElements(const QVector<GraphicElement *> &elements);
+
+    /// The elements currently marked by the step cursor (deleted ones filtered out).
+    QVector<GraphicElement *> steppedElements() const;
     /// Refreshes visuals and marks the scene dirty without rebuilding the simulation
     /// graph, for property-only edits (label, color, delay, ...) that don't add,
     /// remove, or reconnect elements.
@@ -457,6 +467,7 @@ private:
     void updateUndoText(const QString &text);
     void updateRedoText(const QString &text);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
+    void drawForeground(QPainter *painter, const QRectF &rect) override;
     void rotate(const int angle);
     void setDots(const QPen &dots);
 
@@ -483,6 +494,9 @@ private:
 
     // Rendering
     QPen m_dots;
+
+    // Step debugger cursor: elements changed by the last step, ringed in drawForeground().
+    QVector<QPointer<GraphicElement>> m_steppedElements;
 
     // Mouse-move re-entrancy guard. Stays on Scene (not SceneInteraction) because it
     // must wrap the base QGraphicsScene::mouseMoveEvent call, where the re-entrancy

@@ -108,6 +108,8 @@ public:
 
     // Simulation actions
     QAction *actionPlay = nullptr;
+    QAction *actionStepForward = nullptr;
+    QAction *actionStepBack = nullptr;
     QAction *actionWaveform = nullptr;
     QAction *actionMute = nullptr;
     QAction *actionRestart = nullptr;

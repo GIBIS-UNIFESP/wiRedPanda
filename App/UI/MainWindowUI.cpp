@@ -111,6 +111,14 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     QIcon icon22(":/Interface/Toolbar/play.svg");
     icon22.addFile(":/Interface/Toolbar/pause.svg", QSize(), QIcon::Normal, QIcon::On);
     actionPlay->setIcon(icon22);
+    actionStepForward = new QAction(MainWindow);
+    actionStepForward->setObjectName("actionStepForward");
+    actionStepForward->setIcon(QIcon(":/Interface/Toolbar/stepForward.svg"));
+    actionStepBack = new QAction(MainWindow);
+    actionStepBack->setObjectName("actionStepBack");
+    actionStepBack->setIcon(QIcon(":/Interface/Toolbar/stepBack.svg"));
+    // No rewind history until a forward step lands; MainWindow keeps this in sync.
+    actionStepBack->setEnabled(false);
     actionRename = new QAction(MainWindow);
     actionRename->setObjectName("actionRename");
     actionRename->setIcon(QIcon(":/Interface/Toolbar/rename.svg"));
@@ -651,6 +659,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     mainToolBar->addAction(actionZoomToFit);
     mainToolBar->addSeparator();
     mainToolBar->addAction(actionPlay);
+    mainToolBar->addAction(actionStepForward);
+    mainToolBar->addAction(actionStepBack);
     mainToolBar->addAction(actionRestart);
     mainToolBar->addAction(actionWaveform);
     mainToolBar->addSeparator();
@@ -768,6 +778,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuTheme->addAction(actionLightTheme);
     menuTheme->addAction(actionDarkTheme);
     menuSimulation->addAction(actionPlay);
+    menuSimulation->addAction(actionStepForward);
+    menuSimulation->addAction(actionStepBack);
     menuSimulation->addAction(actionRestart);
     menuSimulation->addAction(actionWaveform);
     menuSimulation->addAction(actionMute);
@@ -843,6 +855,12 @@ void MainWindowUi::retranslateUi()
     actionPlay->setText(QCoreApplication::translate("MainWindow", "&Play/Pause"));
     actionPlay->setToolTip(QCoreApplication::translate("MainWindow", "Play or Pause simulation."));
     actionPlay->setShortcut(QStringLiteral("F5"));
+    actionStepForward->setText(QCoreApplication::translate("MainWindow", "Step &Forward"));
+    actionStepForward->setToolTip(QCoreApplication::translate("MainWindow", "Advance the paused simulation to the next signal change."));
+    actionStepForward->setShortcut(QStringLiteral("F6"));
+    actionStepBack->setText(QCoreApplication::translate("MainWindow", "Step &Back"));
+    actionStepBack->setToolTip(QCoreApplication::translate("MainWindow", "Rewind the last simulation step."));
+    actionStepBack->setShortcut(QStringLiteral("Shift+F6"));
     actionRename->setText(QCoreApplication::translate("MainWindow", "&Rename"));
     actionRename->setShortcut(QStringLiteral("F2"));
     actionChangeTrigger->setText(QCoreApplication::translate("MainWindow", "Cha&nge Trigger"));

@@ -19,6 +19,7 @@
 #include <QTimer>
 
 #include "App/BeWavedDolphin/DolphinHost.h"
+#include "App/Simulation/Simulation.h"
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
@@ -273,6 +274,11 @@ private:
     void on_actionMute_triggered(const bool checked);
     void on_actionPlay_toggled(const bool checked);
     void on_actionReportTranslationError_triggered();
+    /// Circuit debugger "step": pauses the simulation if it is running, then advances it
+    /// to the next signal change, ringing the changed elements in the scene.
+    void on_actionStepForward_triggered();
+    /// Circuit debugger "step back": rewinds the last forward step.
+    void on_actionStepBack_triggered();
     void on_actionResetZoom_triggered() const;
     void on_actionZoomToFit_triggered() const;
     void on_actionRestart_triggered();
@@ -306,6 +312,12 @@ private:
     /// as needed). The dock is floatable — undocked it behaves like the former standalone
     /// window, docked it sits under the circuit like a bench instrument.
     void showDolphinDock(WorkSpace *tab);
+
+    // --- Step debugger ---
+
+    /// Applies a stepPropagation()/stepBack() result to the UI: scene step-cursor rings,
+    /// status-bar message, Step Back enabled state, and the sim-time label.
+    void reportStepResult(const Simulation::StepResult &result);
 
 #ifdef Q_OS_WASM
     /// Emscripten beforeunload callback — saves window geometry before the browser tab closes.

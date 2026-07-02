@@ -23,10 +23,12 @@
 #include <QTabBar>
 #include <QTemporaryDir>
 #include <QSlider>
+#include <QStatusBar>
 #include <QTabWidget>
 #include <QTest>
 #include <QToolBar>
 #include <QTimer>
+#include <QToolBar>
 #include <QTranslator>
 #include <QWheelEvent>
 
@@ -477,6 +479,129 @@ void TestMainWindowGui::testPlayPauseToggle()
 
     QTest::keyClick(window.get(), Qt::Key_F5);
     QCOMPARE(sim->isRunning(), initialRunning);
+}
+
+void TestMainWindowGui::testStepActionsPresentAndOrdered()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    auto *play = window->findChild<QAction *>("actionPlay");
+    auto *stepForward = window->findChild<QAction *>("actionStepForward");
+    auto *stepBack = window->findChild<QAction *>("actionStepBack");
+    QVERIFY(play && stepForward && stepBack);
+
+    QCOMPARE(stepForward->shortcut(), QKeySequence(Qt::Key_F6));
+    QCOMPARE(stepBack->shortcut(), QKeySequence(Qt::SHIFT | Qt::Key_F6));
+    QVERIFY2(!stepBack->isEnabled(), "Step Back must start disabled — no history to rewind");
+
+    // Toolbar order: Play, then Step Forward, then Step Back (the debugger cluster).
+    auto *toolbar = window->findChild<QToolBar *>("mainToolBar");
+    QVERIFY(toolbar);
+    const auto actions = toolbar->actions();
+    const int playIndex = static_cast<int>(actions.indexOf(play));
+    QVERIFY(playIndex >= 0);
+    QCOMPARE(actions.indexOf(stepForward), playIndex + 1);
+    QCOMPARE(actions.indexOf(stepBack), playIndex + 2);
+}
+
+void TestMainWindowGui::testStepForwardWalksAndRingsCircuit()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(notGate);
+    scene->addItem(led);
+
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, notGate, 0);
+    builder.connect(notGate, 0, led, 0);
+    auto *sim = builder.initSimulation();
+
+    window->findChild<QAction *>("actionPlay")->setChecked(false); // pause: debugger mode
+    sw->setOn(false);
+    sim->update(); // baseline settle
+    QCOMPARE(notGate->outputValue(), Status::Active);
+
+    sw->setOn(true);
+    auto *stepForward = window->findChild<QAction *>("actionStepForward");
+    auto *stepBack = window->findChild<QAction *>("actionStepBack");
+    stepForward->trigger();
+
+    QCOMPARE(notGate->outputValue(), Status::Inactive);
+    QCOMPARE(scene->steppedElements(), QVector<GraphicElement *>{notGate});
+    QVERIFY(stepBack->isEnabled());
+    QVERIFY2(window->statusBar()->currentMessage().contains("Stepped"),
+             qPrintable("status bar said: " + window->statusBar()->currentMessage()));
+
+    // Propagation exhausted: the next step reports a settled circuit and clears the ring.
+    stepForward->trigger();
+    QVERIFY(window->statusBar()->currentMessage().contains("settled"));
+    QVERIFY(scene->steppedElements().isEmpty());
+}
+
+void TestMainWindowGui::testStepWhileRunningPausesFirst()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *play = window->findChild<QAction *>("actionPlay");
+    auto *sim = window->currentTab()->simulation();
+
+    QVERIFY(play->isChecked()); // MainWindow starts with the simulation playing
+    QVERIFY(sim->isRunning());
+
+    window->findChild<QAction *>("actionStepForward")->trigger();
+
+    QVERIFY2(!play->isChecked(), "stepping while running must act as a debugger break");
+    QVERIFY(!sim->isRunning());
+}
+
+void TestMainWindowGui::testStepBackRewindsUi()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(notGate);
+    scene->addItem(led);
+
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, notGate, 0);
+    builder.connect(notGate, 0, led, 0);
+    auto *sim = builder.initSimulation();
+
+    auto *play = window->findChild<QAction *>("actionPlay");
+    auto *stepForward = window->findChild<QAction *>("actionStepForward");
+    auto *stepBack = window->findChild<QAction *>("actionStepBack");
+
+    play->setChecked(false);
+    sw->setOn(false);
+    sim->update();
+    sw->setOn(true);
+    stepForward->trigger();
+    QCOMPARE(notGate->outputValue(), Status::Inactive);
+    QVERIFY(stepBack->isEnabled());
+
+    // Rewind: the gate's output rolls back (and the switch's published sim output with it —
+    // the step's snapshot predates its input preamble), and the history empties.
+    stepBack->trigger();
+    QCOMPARE(notGate->outputValue(), Status::Active);
+    const QVector<GraphicElement *> rewound{sw, notGate};
+    QCOMPARE(scene->steppedElements(), rewound);
+    QVERIFY2(!stepBack->isEnabled(), "history is empty after rewinding the only step");
+
+    // Resuming Play is a debugger 'continue': cursor cleared, nothing left to rewind.
+    stepForward->trigger(); // take a fresh step so there is state to clear
+    QVERIFY(stepBack->isEnabled());
+    play->setChecked(true);
+    QVERIFY(!stepBack->isEnabled());
+    QVERIFY(scene->steppedElements().isEmpty());
+    play->setChecked(false);
 }
 
 void TestMainWindowGui::testRestartSimulation()

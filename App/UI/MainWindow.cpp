@@ -385,6 +385,8 @@ void MainWindow::setupConnections()
     connect(m_ui->actionNew,                   &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::newTab);
     connect(m_ui->actionOpen,                  &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::openFile);
     connect(m_ui->actionPlay,                  &QAction::toggled,         this,                &MainWindow::on_actionPlay_toggled);
+    connect(m_ui->actionStepForward,           &QAction::triggered,       this,                &MainWindow::on_actionStepForward_triggered);
+    connect(m_ui->actionStepBack,              &QAction::triggered,       this,                &MainWindow::on_actionStepBack_triggered);
     connect(m_ui->actionReloadFile,            &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::reloadFile);
     connect(m_ui->actionRename,                &QAction::triggered,       m_ui->elementEditor, &ElementEditor::renameAction);
 
@@ -1111,6 +1113,40 @@ void MainWindow::populateLanguageMenu()
     }
 }
 
+namespace {
+
+/// Human-readable sim-time with the same unit ladder as the toolbar label: switch as soon
+/// as the next unit reaches 1.0, so it reads "5.00 µs" rather than "5000 ns".
+QString formatSimTime(const SimTime ns)
+{
+    if (ns >= 1'000'000'000) {
+        return QString::number(static_cast<double>(ns) / 1'000'000'000.0, 'f', 2) + " s";
+    }
+    if (ns >= 1'000'000) {
+        return QString::number(static_cast<double>(ns) / 1'000'000.0, 'f', 2) + " ms";
+    }
+    if (ns >= 1'000) {
+        return QString::number(static_cast<double>(ns) / 1'000.0, 'f', 2) + QString::fromUtf8(" \xC2\xB5s");
+    }
+    return QString::number(ns) + " ns";
+}
+
+/// Display names for the status bar: the user's label when set, else the element type name.
+QString stepElementNames(const QVector<GraphicElement *> &elements)
+{
+    QStringList names;
+    for (auto *element : elements) {
+        if (!element) {
+            continue;
+        }
+        const QString label = element->label();
+        names.append(label.isEmpty() ? ElementFactory::translatedName(element->elementType()) : label);
+    }
+    return names.join(QStringLiteral(", "));
+}
+
+} // namespace
+
 void MainWindow::on_actionPlay_toggled(const bool checked)
 {
     sentryBreadcrumb("simulation", QStringLiteral("Play toggled: %1").arg(checked));
@@ -1122,6 +1158,72 @@ void MainWindow::on_actionPlay_toggled(const bool checked)
 
     // The action is checkable; its toggled(bool) signal drives start/stop directly.
     checked ? simulation->start() : simulation->stop();
+
+    // start() ends any step-debugger session (a "continue"): reflect that in the UI.
+    if (checked) {
+        m_ui->actionStepBack->setEnabled(false);
+        currentTab()->scene()->setSteppedElements({});
+    }
+}
+
+void MainWindow::on_actionStepForward_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("simulation", QStringLiteral("Step forward"));
+        if (!currentTab()) {
+            return;
+        }
+
+        // A debugger break: stepping while running pauses first, then takes the step.
+        if (m_ui->actionPlay->isChecked()) {
+            m_ui->actionPlay->setChecked(false); // toggled() drives simulation->stop()
+        }
+
+        reportStepResult(currentTab()->simulation()->stepPropagation());
+    });
+}
+
+void MainWindow::on_actionStepBack_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("simulation", QStringLiteral("Step back"));
+        if (!currentTab()) {
+            return;
+        }
+
+        reportStepResult(currentTab()->simulation()->stepBack());
+    });
+}
+
+void MainWindow::reportStepResult(const Simulation::StepResult &result)
+{
+    if (!currentTab()) {
+        return;
+    }
+    auto *simulation = currentTab()->simulation();
+    auto *scene = currentTab()->scene();
+
+    switch (result.status) {
+    case Simulation::StepStatus::Stepped: {
+        scene->setSteppedElements(result.changed);
+        QString message = tr("Stepped: %1").arg(stepElementNames(result.changed));
+        if (simulation->timePerTick() > 0) {
+            message += tr(" — t = %1").arg(formatSimTime(simulation->currentTime()));
+        }
+        showStatusMessage(message, 5000);
+        break;
+    }
+    case Simulation::StepStatus::Settled:
+        scene->setSteppedElements({});
+        showStatusMessage(tr("Circuit settled — toggle an input to continue stepping."), 5000);
+        break;
+    case Simulation::StepStatus::NotReady:
+        showStatusMessage(tr("Nothing to step — the circuit has no simulation yet."), 5000);
+        break;
+    }
+
+    m_ui->actionStepBack->setEnabled(simulation->canStepBack());
+    updateSimTimeLabel();
 }
 
 void MainWindow::on_actionRestart_triggered()
@@ -1133,6 +1235,10 @@ void MainWindow::on_actionRestart_triggered()
         }
 
         currentTab()->simulation()->restart();
+
+        // restart() wipes the step-debugger session along with the timeline.
+        m_ui->actionStepBack->setEnabled(false);
+        currentTab()->scene()->setSteppedElements({});
     });
 }
 
@@ -1188,22 +1294,7 @@ void MainWindow::updateSimTimeLabel()
             return;
         }
 
-        const SimTime ns = currentTab()->simulation()->currentTime();
-
-        // Unit ladder: switch as soon as the next unit reaches 1.0, so the label reads
-        // "5.00 µs" rather than "5000 ns" (and seconds exist — at 100x speed sim time
-        // crosses 1 s of sim time within seconds of wall time).
-        QString text;
-        if (ns >= 1'000'000'000) {
-            text = QString::number(static_cast<double>(ns) / 1'000'000'000.0, 'f', 2) + " s";
-        } else if (ns >= 1'000'000) {
-            text = QString::number(static_cast<double>(ns) / 1'000'000.0, 'f', 2) + " ms";
-        } else if (ns >= 1'000) {
-            text = QString::number(static_cast<double>(ns) / 1'000.0, 'f', 2) + QString::fromUtf8(" \xC2\xB5s");
-        } else {
-            text = QString::number(ns) + " ns";
-        }
-        m_ui->labelSimTime->setText(text);
+        m_ui->labelSimTime->setText(formatSimTime(currentTab()->simulation()->currentTime()));
     });
 }
 

@@ -280,6 +280,56 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
     painter->drawPoints(points);
 }
 
+void Scene::drawForeground(QPainter *painter, const QRectF &rect)
+{
+    QGraphicsScene::drawForeground(painter, rect);
+
+    if (m_steppedElements.isEmpty()) {
+        return;
+    }
+
+    // The step debugger's "current instruction" cursor: ring every element the last step
+    // changed. Orange reads clearly against both themes and against the red/blue port dots.
+    QPen ring(QColor(0xff, 0x98, 0x00), 2.5);
+    ring.setCosmetic(true); // constant on-screen width regardless of zoom
+    painter->setPen(ring);
+    painter->setBrush(Qt::NoBrush);
+
+    for (const auto &element : m_steppedElements) {
+        if (!element) {
+            continue; // deleted mid-session; its ring simply vanishes
+        }
+        const QRectF bounds = element->sceneBoundingRect().adjusted(-4, -4, 4, 4);
+        if (bounds.intersects(rect)) {
+            painter->drawRoundedRect(bounds, 6, 6);
+        }
+    }
+}
+
+void Scene::setSteppedElements(const QVector<GraphicElement *> &elements)
+{
+    m_steppedElements.clear();
+    m_steppedElements.reserve(elements.size());
+    for (auto *element : elements) {
+        if (element) {
+            m_steppedElements.append(QPointer<GraphicElement>(element));
+        }
+    }
+    update(); // repaint the foreground layer
+}
+
+QVector<GraphicElement *> Scene::steppedElements() const
+{
+    QVector<GraphicElement *> alive;
+    alive.reserve(m_steppedElements.size());
+    for (const auto &element : m_steppedElements) {
+        if (element) {
+            alive.append(element.data());
+        }
+    }
+    return alive;
+}
+
 void Scene::setDots(const QPen &dots)
 {
     m_dots = dots;
