@@ -93,7 +93,7 @@ Advanced development features supported:
 - Main project file: `CMakeLists.txt`
 - App code: `App/` directory
 - Tests: `Tests/` directory with comprehensive test suite
-- Test executable: single unified `test_wiredpanda` binary with 176 test classes (run via `ctest --preset debug`)
+- Test executable: single unified `test_wiredpanda` binary with 178 test classes (run via `ctest --preset debug`)
 
 ## Digital Logic Simulation
 
