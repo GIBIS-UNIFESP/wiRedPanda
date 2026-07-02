@@ -323,8 +323,12 @@ jobs:
 
         # Functional no-FUSE check: judge servers, containers, and other
         # locked-down hosts run the AppImage via extract-and-run.
+        # env -i: the job exports LD_LIBRARY_PATH/QT_PLUGIN_PATH pointing at
+        # the CI Qt install (needed for building); inside the AppImage they
+        # hijack library/plugin resolution away from the bundle.  An end-user
+        # machine has neither, so the check must run with a clean environment.
         echo "Running --appimage-extract-and-run --version..."
-        if ! QT_QPA_PLATFORM=offscreen "./$APPIMAGE_FILE" --appimage-extract-and-run --version; then
+        if ! env -i HOME="$HOME" PATH="$PATH" QT_QPA_PLATFORM=offscreen "./$APPIMAGE_FILE" --appimage-extract-and-run --version; then
           echo "Error: AppImage failed to run in no-FUSE (extract-and-run) mode"
           echo "--- diagnostics: RUNPATHs ---"
           patchelf --print-rpath squashfs-root/usr/bin/wiredpanda || true
@@ -333,7 +337,7 @@ jobs:
           find squashfs-root \( -name 'ld-*.so.*' -o -name 'libpulse*' -o -name 'libQt6Multimedia*' \) -exec ls -l {} \;
           echo "--- diagnostics: loader search trace (last 120 lines) ---"
           cd squashfs-root
-          OWD="$PWD" APPIMAGE="dummy" QT_QPA_PLATFORM=offscreen LD_DEBUG=libs ./AppRun --version 2>&1 | tail -120 || true
+          env -i HOME="$HOME" PATH="$PATH" OWD="$PWD" APPIMAGE="dummy" QT_QPA_PLATFORM=offscreen LD_DEBUG=libs ./AppRun --version 2>&1 | tail -120 || true
           cd ..
           exit 1
         fi
