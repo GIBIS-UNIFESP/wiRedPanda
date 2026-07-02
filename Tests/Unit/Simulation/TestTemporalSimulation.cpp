@@ -7,6 +7,7 @@
 #include <QFileInfo>
 #include <QPixmap>
 #include <QRegularExpression>
+#include <QSignalSpy>
 #include <QVersionNumber>
 
 #include "App/BeWavedDolphin/LiveAnalyzer.h"
@@ -1047,26 +1048,37 @@ void TestTemporalSimulation::testCanvasWheelZoomRequiresCtrl()
 {
     // With vertical scrolling in the analyzer, a plain wheel must SCROLL (the canvas
     // ignores it so the surrounding scroll area handles it) — only Ctrl+wheel zooms,
-    // the standard waveform-tool convention.
+    // the standard waveform-tool convention. The canvas does not rescale itself: it
+    // emits a zoomStepRequested carrying the cursor position, and the hosting panel
+    // applies the zoom anchored on the sim-time under the cursor.
     WaveformRecorder recorder;
     AnalyzerCanvas canvas;
     canvas.setRecorder(&recorder);
     canvas.setPixelsPerNs(1.0);
+    QSignalSpy requests(&canvas, &AnalyzerCanvas::zoomStepRequested);
 
-    auto sendWheel = [&canvas](Qt::KeyboardModifiers modifiers) {
-        QWheelEvent event(QPointF(10, 10), QPointF(10, 10), QPoint(), QPoint(0, 120),
+    auto sendWheel = [&canvas](Qt::KeyboardModifiers modifiers, int deltaY) {
+        QWheelEvent event(QPointF(10, 10), QPointF(10, 10), QPoint(), QPoint(0, deltaY),
                           Qt::NoButton, modifiers, Qt::NoScrollPhase, false);
         QCoreApplication::sendEvent(&canvas, &event);
         return event.isAccepted();
     };
 
-    const bool plainAccepted = sendWheel(Qt::NoModifier);
+    const bool plainAccepted = sendWheel(Qt::NoModifier, 120);
     QVERIFY2(!plainAccepted, "plain wheel must be ignored so the scroll area scrolls");
+    QCOMPARE(requests.count(), 0);
     QCOMPARE(canvas.pixelsPerNs(), 1.0);
 
-    const bool ctrlAccepted = sendWheel(Qt::ControlModifier);
-    QVERIFY2(ctrlAccepted, "Ctrl+wheel must be consumed by the zoom");
-    QCOMPARE(canvas.pixelsPerNs(), 2.0);
+    const bool ctrlAccepted = sendWheel(Qt::ControlModifier, 120);
+    QVERIFY2(ctrlAccepted, "Ctrl+wheel must be consumed by the zoom request");
+    QCOMPARE(requests.count(), 1);
+    QCOMPARE(requests.last().at(0).toInt(), 1);      // wheel up → zoom in
+    QCOMPARE(requests.last().at(1).toDouble(), 10.0); // cursor's canvas x
+    QCOMPARE(canvas.pixelsPerNs(), 1.0);              // the panel rescales, not the canvas
+
+    sendWheel(Qt::ControlModifier, -120);
+    QCOMPARE(requests.count(), 2);
+    QCOMPARE(requests.last().at(0).toInt(), -1);      // wheel down → zoom out
 }
 
 void TestTemporalSimulation::testAnalyzerTraceColorPalette()
