@@ -16,4 +16,6 @@ private slots:
     void testControlUnit();
     void testControlUnitFlagWrite();
     void testControlUnit_data();
+    void testControlUnitSignals();
+    void testControlUnitResetClears();
 };

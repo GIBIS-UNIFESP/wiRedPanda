@@ -701,9 +701,17 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     builder.add(resetNot);
     builder.connect(reset, 0, resetNot, 0);
 
+    // Reset must CLEAR the state to 0. The mux selects port 0 when reset is
+    // asserted (resetNot=0) and port 1 (the incremented next state) otherwise.
+    // Tie port 0 to GND so reset forces 0 — previously port 0 was the current Q,
+    // so reset merely *held* the state and only appeared to work because the
+    // register powers up at 0 (it would not clear a non-zero state).
+    InputGnd *stateGnd = new InputGnd();
+    builder.add(stateGnd);
+
     // Set up muxes
     for (int i = 0; i < 3; i++) {
-        builder.connect(stateReg[i], 0, stateMuxes[i], 0);  // Port 0: Q (current state)
+        builder.connect(stateGnd, 0, stateMuxes[i], 0);     // Port 0: 0 (reset clears state)
         builder.connect(stateMuxes[i], 0, stateReg[i], 0);  // Mux output to D input
         builder.connect(stateReg[i], 0, state[i], 0);       // Q output to LED
     }
@@ -718,12 +726,41 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
         builder.connect(resetNot, 0, stateMuxes[i], 2);   // Select line
     }
 
-    // Control signals based on state
-    // Connect FROM flip-flop outputs (logic elements), not FROM LED outputs
-    builder.connect(stateReg[0], 0, pcInc, 0);    // PC increment in FETCH (state bit 0)
-    builder.connect(stateReg[0], 0, irLoad, 0);   // IR load in FETCH (state bit 0)
-    builder.connect(stateReg[2], 0, aluEnable, 0); // ALU enable in EXECUTE (state bit 2)
-    builder.connect(stateReg[1], 0, regWrite, 0);  // Register write in DECODE (state bit 1)
+    // Control signals, each DECODED from the binary state (FETCH=000, DECODE=001,
+    // EXECUTE=010, WRITEBACK=011, HALT=100). The previous version wired each
+    // signal to a raw state *bit*, e.g. aluEnable to bit 2 — which is set in HALT
+    // (100), not EXECUTE (010) — and pcInc/irLoad/regWrite were likewise wrong.
+    Not *notBit2cs = new Not();
+    builder.add(notBit2cs);
+    builder.connect(stateReg[2], 0, notBit2cs, 0);
+
+    // pcInc and irLoad assert in FETCH (000): NOT(b2) AND NOT(b1) AND NOT(b0).
+    And *detectFetch = new And();
+    detectFetch->setInputSize(3);
+    builder.add(detectFetch);
+    builder.connect(notBit2cs, 0, detectFetch, 0);
+    builder.connect(notBit1, 0, detectFetch, 1);
+    builder.connect(notBit0, 0, detectFetch, 2);
+    builder.connect(detectFetch, 0, pcInc, 0);
+    builder.connect(detectFetch, 0, irLoad, 0);
+
+    // aluEnable asserts in EXECUTE (010): NOT(b2) AND b1 AND NOT(b0).
+    And *detectExecuteCs = new And();
+    detectExecuteCs->setInputSize(3);
+    builder.add(detectExecuteCs);
+    builder.connect(notBit2cs, 0, detectExecuteCs, 0);
+    builder.connect(stateReg[1], 0, detectExecuteCs, 1);
+    builder.connect(notBit0, 0, detectExecuteCs, 2);
+    builder.connect(detectExecuteCs, 0, aluEnable, 0);
+
+    // regWrite asserts in WRITEBACK (011): NOT(b2) AND b1 AND b0.
+    And *detectWriteback = new And();
+    detectWriteback->setInputSize(3);
+    builder.add(detectWriteback);
+    builder.connect(notBit2cs, 0, detectWriteback, 0);
+    builder.connect(stateReg[1], 0, detectWriteback, 1);
+    builder.connect(stateReg[0], 0, detectWriteback, 2);
+    builder.connect(detectWriteback, 0, regWrite, 0);
 
     // FlagWrite signal: assert during EXECUTE state (state 2 = 010)
     // EXECUTE = NOT(bit2) AND bit1 AND NOT(bit0)
