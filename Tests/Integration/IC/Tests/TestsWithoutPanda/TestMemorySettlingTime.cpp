@@ -18,6 +18,13 @@ using TestUtils::inputStatus;
 // settlingTime in [1,100], etc.) were all tautologies. The tests now verify what
 // these decoders can actually be checked for: correct one-hot decoding.
 
+// NOTE: these were originally "settling time" benchmarks, but the simulator runs
+// in functional (zero-delay) mode where every combinational circuit settles in a
+// single update() regardless of logic depth. There is therefore no multi-cycle
+// settling to measure, and the old timing comparisons (cascaded >= single-stage,
+// settlingTime in [1,100], etc.) were all tautologies. The tests now verify what
+// these decoders can actually be checked for: correct one-hot decoding.
+
 // ============================================================
 // Helper: Single-Stage 6-bit Decoder
 // ============================================================
