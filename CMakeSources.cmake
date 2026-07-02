@@ -8,6 +8,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/LiveAnalyzer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
@@ -116,7 +117,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TemporalWaveformWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.cpp
@@ -147,6 +147,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/LiveAnalyzer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
@@ -277,7 +278,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TemporalWaveformWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.h

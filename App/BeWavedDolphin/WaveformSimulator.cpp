@@ -70,10 +70,10 @@ void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
     // waveform shows incorrect values.
     SimulationThrottleDisabler throttleDisabler(m_simulation);
     // The sweep drives m_simulation with synthetic test-vector inputs, not the live circuit
-    // state — if a Temporal Waveform dock has "Watch All" recording active on this same
-    // Simulation (BeWavedDolphin and the dock share one Simulation per scene), the sweep's
+    // state — if the Live Analyzer has "Watch All" recording active on this same Simulation
+    // (the stimulus editor and the analyzer share one Simulation per scene), the sweep's
     // resetEventTracking() call below plus every update() it drives would otherwise write
-    // these synthetic transitions straight into the dock's live traces. Recording is
+    // these synthetic transitions straight into the analyzer's live traces. Recording is
     // unconditionally off for the sweep's duration and restored to whatever it was after.
     SimulationRecordingSuspender recordingSuspender(m_simulation);
 

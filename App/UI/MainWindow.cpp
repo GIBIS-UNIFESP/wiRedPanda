@@ -68,7 +68,6 @@
 #include "App/UI/LanguageManager.h"
 #include "App/UI/MainWindowUI.h"
 #include "App/UI/SceneUiBinder.h"
-#include "App/UI/TemporalWaveformWidget.h"
 #include "App/UI/UpdateController.h"
 #include "App/UI/WorkspaceManager.h"
 #include "App/Versions.h"
@@ -411,7 +410,6 @@ void MainWindow::setupConnections()
     connect(m_ui->actionWaveform,              &QAction::triggered,       this,                &MainWindow::on_actionWaveform_triggered);
     connect(m_ui->comboSimMode,  QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboSimMode_currentIndexChanged);
     connect(m_ui->comboSimSpeed, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_comboSimSpeed_currentIndexChanged);
-    connect(m_ui->actionTemporalWaveform,      &QAction::toggled,         this,                &MainWindow::toggleTemporalWaveformDock);
     connect(m_ui->actionWires,                 &QAction::triggered,       this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,                &QAction::triggered,       this,                &MainWindow::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,               &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
@@ -463,13 +461,14 @@ void MainWindow::connectSceneAction(QAction *action, void (Scene::*method)())
 
 MainWindow::~MainWindow()
 {
-    // Sever the dock→action visibility sync before the QWidget base destructor hides and destroys
-    // child widgets. Otherwise hiding the open dock emits QDockWidget::visibilityChanged →
-    // actionTemporalWaveform::setChecked → toggled → toggleTemporalWaveformDock(), re-entering
-    // this already-destroyed MainWindow (Qt aborts: "class destructor may have already run").
-    if (m_waveformDock) {
-        disconnect(m_waveformDock, &QDockWidget::visibilityChanged,
-                   m_ui->actionTemporalWaveform, &QAction::setChecked);
+    // Sever the per-tab destroyed→cleanup hooks (dolphinForTab()) while members are still
+    // alive: QWidget's destructor deletes child widgets (the tabs) BEFORE ~QObject severs
+    // signal connections, so a WorkSpace::destroyed fired during teardown would run the
+    // cleanup lambda against the already-destructed m_dolphins hash.
+    for (auto it = m_dolphins.cbegin(); it != m_dolphins.cend(); ++it) {
+        if (it.key()) {
+            disconnect(it.key(), &QObject::destroyed, this, nullptr);
+        }
     }
 
     // Tear down the active tab's chrome wiring before child objects are destroyed.
@@ -819,12 +818,31 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
         m_exerciseOverlay->setParent(nullptr);
     }
 
-    // Detach the temporal-waveform viewer from the outgoing tab's recorder before leaving
-    // it: the recorder lives inside that tab's Simulation and would dangle if the tab is
-    // later closed.
-    if (m_waveformWidget) {
-        m_waveformWidget->setRecorder(nullptr);
-        m_labelWidget->setRecorder(nullptr);
+    // The waveform dock shows the CURRENT tab's BewavedDolphin. Swap in the new tab's
+    // instance (its grid document and analyzer watch list persist inside it); if this tab
+    // never opened the tool, auto-hide the dock and remember why, so returning to a tab
+    // that has one re-reveals it — but a dock the USER closed stays closed.
+    if (m_dolphinDock) {
+        BewavedDolphin *dolphin = newTab ? m_dolphins.value(newTab).data() : nullptr;
+        if (dolphin) {
+            if (m_dolphinDock->widget() != dolphin) {
+                if (auto *old = m_dolphinDock->widget()) {
+                    old->setParent(this); // keep the swapped-out instance alive, hidden
+                    old->hide();
+                }
+                m_dolphinDock->setWidget(dolphin);
+            }
+            if (m_dolphinDockAutoHidden) {
+                m_dolphinDock->show();
+                m_dolphinDockAutoHidden = false;
+            }
+            // Tour/exercise "bwd" context always targets whichever instance the dock is
+            // currently showing (see showDolphinDock()).
+            m_bwd = dolphin;
+        } else if (m_dolphinDock->isVisible()) {
+            m_dolphinDock->hide();
+            m_dolphinDockAutoHidden = true;
+        }
     }
 
     if (!newTab) {
@@ -864,14 +882,6 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
         newTab->simulation()->setTimePerTick(nsPerTick);
     } else {
         newTab->simulation()->setTimePerTick(0);
-    }
-
-    // Bind the temporal-waveform viewer to the now-current tab's recorder so the diagram
-    // follows the active tab (and never points at a freed recorder from a closed tab).
-    if (m_waveformWidget) {
-        auto &recorder = newTab->simulation()->waveformRecorder();
-        m_waveformWidget->setRecorder(&recorder);
-        m_labelWidget->setRecorder(&recorder);
     }
 
     updateWindowTitle();
@@ -1165,19 +1175,9 @@ void MainWindow::on_comboSimSpeed_currentIndexChanged(int index)
             return;
         }
 
+        // The Live Analyzer adapts its zoom itself via Simulation::timePerTickChanged.
         const SimTime nsPerTick = m_ui->comboSimSpeed->itemData(index).toULongLong();
         currentTab()->simulation()->setTimePerTick(nsPerTick);
-
-        // Auto-adapt waveform zoom so ~5 seconds of wall-clock time fits the visible width.
-        // At 1000 ticks/sec, 5 seconds = 5000 ticks worth of sim time.
-        if (m_waveformWidget) {
-            const double simNsPerWallSec = static_cast<double>(nsPerTick) * 1000.0; // ticks/sec = 1000 (1ms timer)
-            const double visibleSimNs = simNsPerWallSec * 5.0; // 5 seconds of wall time
-            const int availableWidth = m_waveformWidget->width();
-            if (availableWidth > 0 && visibleSimNs > 0) {
-                m_waveformWidget->setPixelsPerNs(static_cast<double>(availableWidth) / visibleSimNs);
-            }
-        }
     });
 }
 
@@ -1207,141 +1207,66 @@ void MainWindow::updateSimTimeLabel()
     });
 }
 
-void MainWindow::toggleTemporalWaveformDock()
+BewavedDolphin *MainWindow::dolphinForTab(WorkSpace *tab)
 {
-    Application::guardedSlot(this, [this] {
-        if (!m_waveformDock) {
-            // Create the dock widget on first use.
-            m_waveformDock = new QDockWidget(tr("Temporal Waveform"), this);
-            m_waveformDock->setObjectName("temporalWaveformDock");
-
-            auto *container = new QWidget(m_waveformDock);
-            auto *layout = new QVBoxLayout(container);
-            layout->setContentsMargins(0, 0, 0, 0);
-
-            // Toolbar row
-            auto *toolbar = new QHBoxLayout();
-            auto *btnWatch = new QPushButton(tr("Watch All"), container);
-            auto *btnClear = new QPushButton(tr("Clear"), container);
-            auto *btnZoomIn = new QPushButton(tr("+"), container);
-            auto *btnZoomOut = new QPushButton(tr("-"), container);
-            auto *btnFit = new QPushButton(tr("Fit"), container);
-            btnWatch->setToolTip(tr("Watch all output signals in the circuit"));
-            btnClear->setToolTip(tr("Remove all watched signals"));
-            toolbar->addWidget(btnWatch);
-            toolbar->addWidget(btnClear);
-            toolbar->addStretch();
-            toolbar->addWidget(btnZoomOut);
-            toolbar->addWidget(btnZoomIn);
-            toolbar->addWidget(btnFit);
-            layout->addLayout(toolbar);
-
-            // Label column (fixed) + waveform (scrollable) side by side.
-            auto *waveformRow = new QHBoxLayout();
-            waveformRow->setSpacing(0);
-
-            m_labelWidget = new WaveformLabelWidget(container);
-            waveformRow->addWidget(m_labelWidget);
-
-            auto *scrollArea = new QScrollArea(container);
-            scrollArea->setWidgetResizable(true);
-            scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-            m_waveformWidget = new TemporalWaveformWidget(scrollArea);
-            scrollArea->setWidget(m_waveformWidget);
-            waveformRow->addWidget(scrollArea);
-
-            layout->addLayout(waveformRow);
-
-            m_waveformDock->setWidget(container);
-            addDockWidget(Qt::BottomDockWidgetArea, m_waveformDock);
-
-            connect(btnWatch, &QPushButton::clicked, this, &MainWindow::watchAllSignals);
-            connect(btnClear, &QPushButton::clicked, this, &MainWindow::clearWatchedSignals);
-            connect(btnZoomIn, &QPushButton::clicked, m_waveformWidget, &TemporalWaveformWidget::zoomIn);
-            connect(btnZoomOut, &QPushButton::clicked, m_waveformWidget, &TemporalWaveformWidget::zoomOut);
-            connect(btnFit, &QPushButton::clicked, m_waveformWidget, &TemporalWaveformWidget::zoomFit);
-
-            // Sync dock visibility with the menu action.
-            connect(m_waveformDock, &QDockWidget::visibilityChanged, m_ui->actionTemporalWaveform, &QAction::setChecked);
-
-            // Follow new data with a sticky tail. The canvas grows during paint, which lands
-            // as a rangeChanged on the scroll bar — pinning there can never miss a growth
-            // step. (A fixed-threshold check on the refresh timer raced the paint: any growth
-            // beyond its slack per tick left the value behind the new maximum and permanently
-            // disengaged the follow.) Scrolling away from the right edge releases the pin so
-            // earlier (ns-scale) transitions stay inspectable while the simulation runs;
-            // scrolling back to the edge re-engages it.
-            auto *hBar = scrollArea->horizontalScrollBar();
-            connect(hBar, &QAbstractSlider::valueChanged, this, [this, hBar](int value) {
-                m_waveformFollowTail = (value >= hBar->maximum() - 4); // slack absorbs drag/wheel jitter
-            });
-            connect(hBar, &QAbstractSlider::rangeChanged, this, [this, hBar](int, int max) {
-                if (m_waveformFollowTail) {
-                    hBar->setValue(max);
-                }
-            });
-
-            // Repaint the waveform periodically so new transitions appear as they record.
-            connect(&m_simTimeTimer, &QTimer::timeout, this, [this]() {
-                if (!m_waveformWidget->isVisible()) {
-                    return;
-                }
-                m_labelWidget->update();
-                m_waveformWidget->update();
-            });
+    if (!tab) {
+        return nullptr;
+    }
+    auto &entry = m_dolphins[tab];
+    if (!entry) {
+        entry = new BewavedDolphin(tab->scene(), true, this);
+        try {
+            entry->createWaveform(tab->dolphinFileName());
+        } catch (const Pandaception &) {
+            // The stimulus grid needs top-level inputs/outputs; a scene without them (e.g.
+            // only an IC being probed) must still get the waveform tool — the Live Analyzer
+            // works regardless, so host in analyzer-only mode instead of failing.
+            entry->disableStimulusEditor();
+            m_ui->statusBar->showMessage(tr("No inputs/outputs for the stimulus editor — opening the Live Analyzer."), 5000);
         }
 
-        m_waveformDock->setVisible(m_ui->actionTemporalWaveform->isChecked());
-    });
+        // The instance is bound to this tab's scene/simulation; when the tab dies, its
+        // waveform tool dies with it (and vacates the dock if it was showing there).
+        // ~MainWindow severs this hook explicitly — see the destructor for why.
+        connect(tab, &QObject::destroyed, this, [this, tab] {
+            BewavedDolphin *dolphin = m_dolphins.take(tab);
+            if (dolphin) {
+                if (m_dolphinDock && m_dolphinDock->widget() == dolphin) {
+                    m_dolphinDock->setWidget(nullptr);
+                    m_dolphinDock->hide();
+                }
+                dolphin->deleteLater();
+            }
+        });
+    }
+    return entry;
 }
 
-void MainWindow::watchAllSignals()
+void MainWindow::showDolphinDock(WorkSpace *tab)
 {
-    Application::guardedSlot(this, [this] {
-        if (!currentTab() || !m_waveformWidget) {
-            return;
+    if (!tab) {
+        return;
+    }
+    if (!m_dolphinDock) {
+        m_dolphinDock = new QDockWidget(tr("Waveform"), this);
+        m_dolphinDock->setObjectName("waveformDock");
+        addDockWidget(Qt::BottomDockWidgetArea, m_dolphinDock);
+    }
+
+    auto *dolphin = dolphinForTab(tab);
+    if (m_dolphinDock->widget() != dolphin) {
+        if (auto *old = m_dolphinDock->widget()) {
+            old->setParent(this); // keep the swapped-out instance alive, hidden
+            old->hide();
         }
-
-        auto *sim = currentTab()->simulation();
-        auto &recorder = sim->waveformRecorder();
-        recorder.clear();
-
-        // Watch all elements that have logic and output ports.
-        // Skip VCC/GND (static constants) and decorative elements (no logic).
-        for (auto *elm : currentTab()->scene()->elements()) {
-            if (!elm || elm->outputSize() == 0) {
-                continue;
-            }
-            // Skip VCC and GND — they never change.
-            if (elm->elementType() == ElementType::InputVcc || elm->elementType() == ElementType::InputGnd) {
-                continue;
-            }
-            const QString name = elm->label().isEmpty()
-                                     ? ElementFactory::translatedName(elm->elementType())
-                                     : elm->label();
-            for (int port = 0; port < elm->outputSize(); ++port) {
-                const QString portSuffix = (elm->outputSize() > 1)
-                                               ? QString(" [%1]").arg(port)
-                                               : QString();
-                recorder.watchSignal(name + portSuffix, elm, port);
-            }
-        }
-
-        recorder.setRecording(true);
-        m_waveformWidget->setRecorder(&recorder);
-        m_labelWidget->setRecorder(&recorder);
-
-        // Apply zoom matching the current speed setting.
-        on_comboSimSpeed_currentIndexChanged(m_ui->comboSimSpeed->currentIndex());
-
-        // Recording only produces transitions on the temporal (propagation-delay) path; in
-        // functional mode the diagram stays empty, so point the user at the mode selector.
-        if (m_ui->comboSimMode->currentIndex() != 1) {
-            m_ui->statusBar->showMessage(tr("Switch the simulation to Temporal mode to record waveforms."), 5000);
-        }
-
-        m_waveformWidget->update();
-    });
+        m_dolphinDock->setWidget(dolphin);
+    }
+    m_dolphinDock->show();
+    m_dolphinDockAutoHidden = false;
+    // Tour/exercise steps with a "bwd" context target whichever instance is currently
+    // visible in the dock (QPointer, so it auto-nulls if this tab's instance is later freed).
+    m_bwd = dolphin;
+    dolphin->show(); // BewavedDolphin::show() also re-applies the table zoom
 }
 
 void MainWindow::watchICInternals(IC *ic)
@@ -1351,77 +1276,12 @@ void MainWindow::watchICInternals(IC *ic)
             return;
         }
 
-        // The dock (and with it m_waveformWidget) is created lazily on first toggle; this
-        // context-menu action must work even if the dock has never been opened this session,
-        // so reveal it first — checking the action fires toggleTemporalWaveformDock(), which
-        // builds the widgets.
-        if (!m_waveformWidget && m_ui->actionTemporalWaveform) {
-            m_ui->actionTemporalWaveform->setChecked(true);
+        // Route to the tab's waveform tool: reveal the dock on its Live Analyzer page and
+        // let the panel do the recursive watching.
+        showDolphinDock(currentTab());
+        if (auto *dolphin = m_dolphins.value(currentTab()).data()) {
+            dolphin->watchICInternals(ic);
         }
-        if (!m_waveformWidget) {
-            return; // defensive: dock creation failed
-        }
-
-        auto &recorder = currentTab()->simulation()->waveformRecorder();
-
-        // Recursively watch every internal primitive's output ports, with a path-prefixed name
-        // ("<IC>/<sub-IC>/<element>") so nested signals stay distinguishable. Augments the current
-        // watch set rather than clearing it, so several ICs can be opened side by side.
-        const std::function<void(const QVector<GraphicElement *> &, const QString &)> watchRec =
-            [&](const QVector<GraphicElement *> &elements, const QString &prefix) {
-                for (auto *elm : elements) {
-                    if (!elm) {
-                        continue;
-                    }
-                    const QString label = elm->label().isEmpty()
-                                              ? ElementFactory::translatedName(elm->elementType())
-                                              : elm->label();
-                    if (elm->elementType() == ElementType::IC) {
-                        watchRec(static_cast<IC *>(elm)->internalElements(), prefix + label + QStringLiteral("/"));
-                        continue;
-                    }
-                    if (elm->outputSize() == 0
-                        || elm->elementType() == ElementType::InputVcc
-                        || elm->elementType() == ElementType::InputGnd) {
-                        continue;
-                    }
-                    for (int port = 0; port < elm->outputSize(); ++port) {
-                        const QString portSuffix = (elm->outputSize() > 1) ? QStringLiteral(" [%1]").arg(port) : QString();
-                        recorder.watchSignal(prefix + label + portSuffix, elm, port);
-                    }
-                }
-            };
-
-        const QString root = (ic->label().isEmpty() ? ElementFactory::translatedName(ElementType::IC) : ic->label())
-                           + QStringLiteral("/");
-        watchRec(ic->internalElements(), root);
-
-        recorder.setRecording(true);
-        m_waveformWidget->setRecorder(&recorder);
-        m_labelWidget->setRecorder(&recorder);
-
-        // Reveal the waveform dock so the user sees the newly watched internals.
-        if (m_ui->actionTemporalWaveform && !m_ui->actionTemporalWaveform->isChecked()) {
-            m_ui->actionTemporalWaveform->setChecked(true);
-        }
-        if (m_ui->comboSimMode->currentIndex() != 1) {
-            m_ui->statusBar->showMessage(tr("Switch the simulation to Temporal mode to record waveforms."), 5000);
-        }
-        m_waveformWidget->update();
-    });
-}
-
-void MainWindow::clearWatchedSignals()
-{
-    Application::guardedSlot(this, [this] {
-        if (!currentTab() || !m_waveformWidget) {
-            return;
-        }
-
-        auto &recorder = currentTab()->simulation()->waveformRecorder();
-        recorder.setRecording(false);
-        recorder.clear();
-        m_waveformWidget->update();
     });
 }
 
@@ -1455,27 +1315,13 @@ void MainWindow::on_actionFastMode_triggered(const bool checked)
 void MainWindow::on_actionWaveform_triggered()
 {
     Application::guardedSlot(this, [this] {
-        if (m_bwd) {
-            m_bwd->raise();
-            m_bwd->activateWindow();
-            return;
-        }
         if (!currentTab()) {
             return;
         }
 
-        sentryBreadcrumb("ui", QStringLiteral("Waveform dialog opened"));
+        sentryBreadcrumb("ui", QStringLiteral("Waveform dock opened"));
         qCDebug(zero) << "BD fileName: " << currentTab()->dolphinFileName();
-        auto *bwd = new BewavedDolphin(currentTab()->scene(), true, this, this);
-        bwd->createWaveform(currentTab()->dolphinFileName());
-        m_bwd = bwd;
-        connect(bwd, &QObject::destroyed, this, [this] {
-            if (m_exerciseOverlay && m_exerciseEngine && m_exerciseEngine->isActive()) {
-                m_exerciseOverlay->hide();
-                m_exerciseOverlay->setParent(nullptr);
-            }
-        });
-        bwd->show();
+        showDolphinDock(currentTab());
     });
 }
 

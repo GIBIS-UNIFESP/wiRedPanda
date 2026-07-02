@@ -43,15 +43,28 @@ private slots:
     /// live tick window — and the live window is restored afterwards.
     void testNonTemporalSweepIgnoresLiveTemporalMode();
 
-    /// BeWavedDolphin shares its scene's Simulation (and WaveformRecorder) with the main
-    /// window's Temporal Waveform dock — merely opening/running a dolphin sweep must not
-    /// write synthetic test-vector transitions into a trace the dock is live-recording.
+    /// BeWavedDolphin's sweep drives the same Simulation (and WaveformRecorder) its own
+    /// Live Analyzer page may be watching — merely opening/running a dolphin sweep must not
+    /// write synthetic test-vector transitions into a trace being live-recorded.
     void testRunDoesNotPolluteLiveWaveformRecorder();
 
     /// The sweep's pre-run reset must reach sequential elements nested inside ICs (the flat
     /// netlist simulates them directly) — a flip-flop's live-run state must not leak into a
     /// sweep that promises power-on reproducibility.
     void testRunResetsICInternalSequentialState();
+
+    // --- Live Analyzer page ---
+
+    /// BD hosts two pages (Stimulus Editor | Live Analyzer); switching to the analyzer gates
+    /// the grid-document actions off and restores their exact prior state on return — the
+    /// permanently-disabled Merge/Split must not be resurrected by the round trip.
+    void testLiveAnalyzerTabGatesGridActions();
+    /// Watch All registers every non-VCC/GND output port with the scene's recorder and
+    /// starts recording; Clear stops and empties it.
+    void testLiveAnalyzerWatchAllAndClear();
+    /// watchICInternals() reveals the analyzer page and registers path-prefixed traces for
+    /// the IC's internal primitives.
+    void testLiveAnalyzerWatchICInternals();
 
     // --- File I/O ---
 
@@ -126,10 +139,6 @@ private slots:
     // Behavioral companion: deleting a tracked element and then calling run()/saveToTxt()
     // must not crash and must fail cleanly, not silently export garbage.
     void testRunAndSaveToTxtHandleDeletedTrackedElement();
-    // Regression: BewavedDolphin's Qt::WindowModal setting was a no-op because the window
-    // was never given a real Qt parent (host is a non-QWidget interface) — the comment
-    // claiming "the user cannot interact with the main circuit" was false as implemented.
-    void testConstructorWithParentEnablesWindowModality();
 
     // Regression: saveToTxt()'s column count had no cap, unlike its sibling
     // on_actionCombinational_triggered — 12 input ports (2^12 = 4096 combinations) must

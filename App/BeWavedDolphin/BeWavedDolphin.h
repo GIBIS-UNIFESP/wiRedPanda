@@ -11,6 +11,7 @@
 #include <memory>
 
 #include <QFileInfo>
+#include <QHash>
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QTableView>
@@ -25,18 +26,24 @@
 class DolphinHost;
 class DolphinZoom;
 class ExerciseOverlay;
+class IC;
+class LiveAnalyzerPanel;
+class QAction;
+class QTabWidget;
 class WaveformSimulator;
 
 namespace DolphinSerializer { struct WaveformData; }
 
 /**
  * \class BewavedDolphin
- * \brief Waveform editor main window for creating and analyzing digital signal sequences.
+ * \brief Waveform tool: stimulus editor and Live Analyzer under one roof.
  *
- * \details BewavedDolphin displays a table where rows represent circuit I/O signals and
- * columns represent simulation time steps.  Users can set input values and then run the
- * associated wiRedPanda circuit to observe output responses.  The waveform can be saved
- * to a .dolphin file, printed, or exported to PDF/PNG.
+ * \details Two complementary pages. The Stimulus Editor displays a table where rows
+ * represent circuit I/O signals and columns represent simulation time steps; users set
+ * input values and run the associated wiRedPanda circuit from power-on to observe output
+ * responses, and can save the waveform to a .dolphin file, print it, or export to
+ * PDF/PNG. The Live Analyzer (LiveAnalyzerPanel) passively probes the RUNNING interactive
+ * simulation instead, recording watched signals as live timing diagrams.
  *
  * A subset of methods is also accessible via the MCP server for automated testing.
  */
@@ -71,6 +78,23 @@ public:
 
     /// Prints the waveform table to the system printer.
     void print();
+
+    // --- Live Analyzer hosting ---
+
+    /// Switches to the Live Analyzer tab (the passive probe of the running simulation).
+    void showLiveAnalyzer();
+
+    /// Reveals the Live Analyzer and watches \a ic's internal signals (host router target
+    /// for the scene's "watch internals" context-menu action).
+    void watchICInternals(IC *ic);
+
+    /// Switches to analyzer-only mode: disables the Stimulus Editor page and shows the Live
+    /// Analyzer. Used by the host when the stimulus grid cannot be built for this circuit
+    /// (no top-level inputs/outputs) — the analyzer works regardless.
+    void disableStimulusEditor();
+
+    /// The hosted Live Analyzer page (exposed for the host and tests).
+    LiveAnalyzerPanel *liveAnalyzer() const { return m_analyzerPanel; }
 
     /**
      * \brief Exports the waveform data as plain text to \a stream.
@@ -248,6 +272,7 @@ private:
     void on_actionZoomOut_triggered();           ///< Decreases the waveform zoom level.
     void on_tableView_cellDoubleClicked();       ///< Toggles the double-clicked input cell value.
     void on_tableView_selectionChanged();        ///< Updates toolbar button state for the new selection.
+    void onMainTabChanged(int index);            ///< Gates grid-document actions off on the Live Analyzer tab.
 
     // --- Members ---
 
@@ -273,4 +298,7 @@ private:
     ExerciseOverlay *m_exerciseOverlay = nullptr;     ///< Non-owning; repositioned on resize.
     bool m_temporal                = false;           ///< True ⇒ run the sweep with per-element propagation delays.
     SimTime m_nsPerColumn          = 2;               ///< Sim-time advanced per column in temporal mode.
+    QTabWidget *m_mainTabs         = nullptr;         ///< Stimulus Editor | Live Analyzer pages.
+    LiveAnalyzerPanel *m_analyzerPanel = nullptr;     ///< Live probe of the running simulation.
+    QHash<QAction *, bool> m_gridActionStates;        ///< Enabled-state snapshot while the Live Analyzer tab is active.
 };

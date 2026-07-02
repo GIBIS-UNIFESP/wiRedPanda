@@ -12,6 +12,7 @@
 
 #include <QDir>
 #include <QDockWidget>
+#include <QHash>
 #include <QMainWindow>
 #include <QPointer>
 #include <QSpacerItem>
@@ -21,6 +22,7 @@
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
+class BewavedDolphin;
 class ElementLabel;
 class ElementPalette;
 class ExerciseEngine;
@@ -33,10 +35,8 @@ class LanguageManager;
 class BewavedDolphin;
 class RecentFiles;
 class SceneUiBinder;
-class TemporalWaveformWidget;
 class TourEngine;
 class TourOverlay;
-class WaveformLabelWidget;
 class WorkSpace;
 class WorkspaceManager;
 
@@ -295,12 +295,17 @@ private:
     void on_comboSimSpeed_currentIndexChanged(int index);
     /// Refreshes the toolbar simulation-time label from the current tab's sim time.
     void updateSimTimeLabel();
-    /// Lazily builds and toggles the dockable timing-diagram viewer.
-    void toggleTemporalWaveformDock();
-    /// Watches every output signal in the current circuit and starts recording.
-    void watchAllSignals();
-    /// Stops recording and clears all watched signals.
-    void clearWatchedSignals();
+
+    // --- Waveform tool hosting ---
+
+    /// Returns (creating on first use) \a tab's BewavedDolphin instance. One waveform tool
+    /// per circuit tab: its stimulus grid and analyzer watch list persist across tab
+    /// switches; the instance dies with its tab.
+    BewavedDolphin *dolphinForTab(WorkSpace *tab);
+    /// Reveals the waveform dock showing \a tab's BewavedDolphin (creating dock/instance
+    /// as needed). The dock is floatable — undocked it behaves like the former standalone
+    /// window, docked it sits under the circuit like a bench instrument.
+    void showDolphinDock(WorkSpace *tab);
 
 #ifdef Q_OS_WASM
     /// Emscripten beforeunload callback — saves window geometry before the browser tab closes.
@@ -365,11 +370,10 @@ private:
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.
     QPointer<ICPreviewPopup> m_icPreviewPopup;
 
-    // --- Temporal simulation members ---
+    // --- Temporal simulation / waveform tool members ---
 
-    QTimer m_simTimeTimer;                                ///< Periodic timer to refresh the sim-time label + waveform.
-    QDockWidget *m_waveformDock = nullptr;                ///< Lazily-created timing-diagram dock.
-    WaveformLabelWidget *m_labelWidget = nullptr;         ///< Fixed signal-name column.
-    TemporalWaveformWidget *m_waveformWidget = nullptr;   ///< Scrollable waveform traces.
-    bool m_waveformFollowTail = true;                     ///< View pinned to the newest data (sticky tail; a fresh view at 0 == an empty range's end).
+    QTimer m_simTimeTimer;                                ///< Periodic timer to refresh the sim-time label.
+    QDockWidget *m_dolphinDock = nullptr;                 ///< Hosts the current tab's BewavedDolphin (dockable / floatable).
+    QHash<WorkSpace *, QPointer<BewavedDolphin>> m_dolphins; ///< One waveform tool per circuit tab, swapped into the dock on tab switch.
+    bool m_dolphinDockAutoHidden = false;                 ///< Dock hidden only because the current tab has no waveform tool yet (re-shown when one exists).
 };

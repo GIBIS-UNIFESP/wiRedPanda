@@ -124,7 +124,15 @@ public:
     /// Sim-time advanced per update() tick. 0 ⇒ functional (zero-delay): every event
     /// lands at the current instant and the tick is a full settle. >0 ⇒ temporal:
     /// events spread across future timestamps by per-element propagation delay.
-    void setTimePerTick(SimTime ns) { m_timePerTick = ns; }
+    /// Emits timePerTickChanged() so observers (e.g. the Live Analyzer's zoom) can adapt.
+    void setTimePerTick(SimTime ns)
+    {
+        if (m_timePerTick == ns) {
+            return;
+        }
+        m_timePerTick = ns;
+        emit timePerTickChanged(ns);
+    }
 
     /// Sim-time advanced per update() tick (0 ⇒ functional). Lets a caller snapshot the
     /// current mode before a timed sweep and restore it afterwards.
@@ -182,6 +190,11 @@ public:
 signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
     void simulationWarning(const QString &message);
+
+    /// Emitted when setTimePerTick() changes the tick window (mode/speed selection). NOT
+    /// emitted by beginTimedRun()/endTimedRun() — their temporary swap is a sweep-internal
+    /// detail that observers (e.g. the Live Analyzer's zoom) must not react to.
+    void timePerTickChanged(SimTime nsPerTick);
 
 private:
     Q_DISABLE_COPY(Simulation)

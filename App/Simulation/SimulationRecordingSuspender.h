@@ -17,9 +17,9 @@ class Simulation;
  * restores its prior recording state on destruction.
  *
  * \details A synthetic sweep (e.g. BeWavedDolphin's column-by-column re-evaluation) drives the
- * same Simulation the live Temporal Waveform dock may be watching. Without this guard, a sweep's
- * synthetic transitions would be written into the same traces the dock displays — polluting a
- * live circuit trace with unrelated test-vector data. Guarding recording (not just clearing the
+ * same Simulation the Live Analyzer may be watching. Without this guard, a sweep's synthetic
+ * transitions would be written into the same traces the analyzer displays — polluting a live
+ * circuit trace with unrelated test-vector data. Guarding recording (not just clearing the
  * timeline afterward) means the sweep's data is never recorded in the first place.
  *
  * Example:

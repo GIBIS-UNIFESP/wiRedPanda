@@ -31,6 +31,7 @@
 #include <QWheelEvent>
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
+#include "App/BeWavedDolphin/LiveAnalyzer.h"
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
@@ -56,7 +57,6 @@
 #include "App/UI/ElementPalette.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindow.h"
-#include "App/UI/TemporalWaveformWidget.h"
 #include "App/UI/TrashButton.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -599,34 +599,40 @@ void TestMainWindowGui::testTemporalModeReinitializesFeedback()
 
 void TestMainWindowGui::testWaveformDockOpensAndClosesCleanly()
 {
-    // The temporal-waveform action lazily creates and shows the timing-diagram dock. Regression:
-    // with the dock open, destroying the window used to crash — hiding the dock during
-    // ~MainWindow emitted visibilityChanged → actionTemporalWaveform::setChecked → toggled →
-    // toggleTemporalWaveformDock() on the already-destroyed window. ~MainWindow now severs the
-    // dock's signals first. This test opens the dock and lets the window destruct at scope end;
-    // a crash here is the regression.
+    // The Waveform action lazily creates the dock hosting the current tab's BewavedDolphin
+    // (stimulus editor + live analyzer). The dock must not exist before first use, must host
+    // a BewavedDolphin after it, and destroying the window with the dock open must not crash.
     std::unique_ptr<MainWindow> window(createMW());
 
-    QVERIFY2(window->findChild<QDockWidget *>("temporalWaveformDock") == nullptr,
+    // A non-empty scene: on_actionWaveform on an empty scene takes the warning path instead.
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    window->currentTab()->scene()->addItem(sw);
+    window->currentTab()->scene()->addItem(led);
+    CircuitBuilder builder(window->currentTab()->scene());
+    builder.connect(sw, 0, led, 0);
+
+    QVERIFY2(window->findChild<QDockWidget *>("waveformDock") == nullptr,
              "Waveform dock should not exist before the action is triggered");
 
-    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
-    QVERIFY2(waveAction, "actionTemporalWaveform not found");
+    auto *waveAction = window->findChild<QAction *>("actionWaveform");
+    QVERIFY2(waveAction, "actionWaveform not found");
     waveAction->trigger();
 
-    auto *dock = window->findChild<QDockWidget *>("temporalWaveformDock");
-    QVERIFY2(dock != nullptr, "Temporal waveform dock did not open");
-    QVERIFY2(waveAction->isChecked(), "Action should be checked while the dock is open");
+    auto *dock = window->findChild<QDockWidget *>("waveformDock");
+    QVERIFY2(dock != nullptr, "Waveform dock did not open");
+    QVERIFY2(qobject_cast<BewavedDolphin *>(dock->widget()) != nullptr,
+             "Dock must host the tab's BewavedDolphin");
 
-    // window destructs here — must not crash (the regression).
+    // window destructs here — must not crash with the dock open.
 }
 
-void TestMainWindowGui::testWaveformDockRecorderDetachOnTabClose()
+void TestMainWindowGui::testWaveformToolDiesWithItsTab()
 {
-    // onCurrentTabChanged() detaches the waveform widget from the leaving tab's recorder
-    // (m_waveformWidget->setRecorder(nullptr)) because that recorder lives inside the tab's
-    // Simulation and would dangle once the tab is closed. Exercise that path: open the dock and
-    // watch a tab's signals, switch away, close the tab, then repaint the widget — no crash.
+    // A tab's BewavedDolphin is bound to that tab's scene/Simulation (its live analyzer
+    // reads the tab's WaveformRecorder), so it cannot outlive the tab. Exercise: open the tool and
+    // watch a tab's signals, then close the tab — its BewavedDolphin must die with it and
+    // vacate the dock, and the window must survive.
     std::unique_ptr<MainWindow> window(createMW());
     auto *tabs = findTabs(window.get());
 
@@ -640,47 +646,81 @@ void TestMainWindowGui::testWaveformDockRecorderDetachOnTabClose()
     builder.connect(sw, 0, led, 0);
     builder.initSimulation();
 
-    // Open the dock and watch this tab's signals so the widget holds tab 0's recorder.
-    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    // Open the waveform tool and watch this tab's signals (the recorder lives in this tab's
+    // Simulation; the tool's live analyzer holds its traces).
+    auto *waveAction = window->findChild<QAction *>("actionWaveform");
     QVERIFY(waveAction);
     waveAction->trigger();
     QVERIFY2(clickWatchAllButton(window.get()), "Watch All button not found");
 
-    // New tab → onCurrentTabChanged(tab0 leaving) detaches the widget recorder; then close tab 0.
+    auto *dock = window->findChild<QDockWidget *>("waveformDock");
+    QVERIFY2(dock && dock->widget(), "Dock should host tab 0's waveform tool");
+
+    // New tab, then close tab 0: the tab's scene/Simulation die, so its waveform tool must
+    // be torn down with it instead of dangling in the dock.
     QTest::keyClick(window.get(), Qt::Key_N, Qt::ControlModifier);
     QCOMPARE(tabs->count(), 2);
-    tabs->tabCloseRequested(0); // destroys tab 0's Simulation + recorder
+    tabs->tabCloseRequested(0); // destroys tab 0's Simulation + recorder + waveform tool
     QCOMPARE(tabs->count(), 1);
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
 
-    // Repaint the widget — must not touch a dangling recorder.
-    auto *widget = window->findChild<TemporalWaveformWidget *>();
-    QVERIFY2(widget, "Waveform widget not found");
-    widget->repaint();
+    QVERIFY2(dock->widget() == nullptr, "Dock must vacate the closed tab's waveform tool");
     QVERIFY2(window->currentTab() != nullptr, "Window survived the tab close with the dock open");
 }
 
-void TestMainWindowGui::testWaveformDockToggleCycle()
+void TestMainWindowGui::testWaveformDockSwapsPerTabInstances()
 {
-    // The dock open/close action and the dock's own visibility are kept in sync
-    // (visibilityChanged ↔ toggled). Toggling open → close → reopen must converge each time and
-    // keep the action's checked state tracking the dock (no re-entrancy after the ~MainWindow fix).
+    // One BewavedDolphin per circuit tab, one dock showing the CURRENT tab's instance:
+    // switching tabs swaps the dock's widget (state persists per tab), re-triggering the
+    // action reuses the existing instance, and a tab without an instance auto-hides the dock
+    // until one exists again.
     std::unique_ptr<MainWindow> window(createMW());
-    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    auto *tabs = findTabs(window.get());
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    window->currentTab()->scene()->addItem(sw);
+    window->currentTab()->scene()->addItem(led);
+    CircuitBuilder builder0(window->currentTab()->scene());
+    builder0.connect(sw, 0, led, 0);
+
+    auto *waveAction = window->findChild<QAction *>("actionWaveform");
     QVERIFY(waveAction);
+    waveAction->trigger();
 
-    waveAction->trigger(); // open
-    QVERIFY2(waveAction->isChecked(), "Action should be checked after opening");
-    auto *dock = window->findChild<QDockWidget *>("temporalWaveformDock");
+    auto *dock = window->findChild<QDockWidget *>("waveformDock");
     QVERIFY2(dock, "Dock should exist after first open");
+    auto *dolphin0 = qobject_cast<BewavedDolphin *>(dock->widget());
+    QVERIFY2(dolphin0, "Dock must host tab 0's instance");
 
-    waveAction->trigger(); // close
-    QVERIFY2(!waveAction->isChecked(), "Action should be unchecked after closing");
+    // A new tab has no waveform tool yet → the dock auto-hides.
+    QTest::keyClick(window.get(), Qt::Key_N, Qt::ControlModifier);
+    QCOMPARE(tabs->count(), 2);
+    QVERIFY2(!dock->isVisible(), "Dock should auto-hide on a tab without a waveform tool");
 
-    waveAction->trigger(); // reopen
-    QVERIFY2(waveAction->isChecked(), "Action should be checked after reopening");
+    // Opening the tool on tab 1 creates a SECOND instance (per-tab state).
+    auto *sw2 = new InputSwitch();
+    auto *led2 = new Led();
+    window->currentTab()->scene()->addItem(sw2);
+    window->currentTab()->scene()->addItem(led2);
+    CircuitBuilder builder1(window->currentTab()->scene());
+    builder1.connect(sw2, 0, led2, 0);
+    waveAction->trigger();
+    auto *dolphin1 = qobject_cast<BewavedDolphin *>(dock->widget());
+    QVERIFY2(dolphin1 && dolphin1 != dolphin0, "Each tab gets its own instance");
+    QVERIFY2(dock->isVisible(), "Dock should be visible after opening on tab 1");
 
-    // The dock object is created once and reused (same instance across the cycle).
-    QCOMPARE(window->findChild<QDockWidget *>("temporalWaveformDock"), dock);
+    // Switching back to tab 0 swaps its instance in and auto-reveals the dock.
+    tabs->setCurrentIndex(0);
+    QCOMPARE(qobject_cast<BewavedDolphin *>(dock->widget()), dolphin0);
+    QVERIFY2(dock->isVisible(), "Dock should re-reveal for a tab that has an instance");
+
+    // Re-triggering the action REUSES tab 0's instance — no third window.
+    waveAction->trigger();
+    QCOMPARE(qobject_cast<BewavedDolphin *>(dock->widget()), dolphin0);
+
+    // The same dock object served throughout.
+    QCOMPARE(window->findChild<QDockWidget *>("waveformDock"), dock);
 }
 
 void TestMainWindowGui::testWatchAllSignalsRecordsOutputs()
@@ -704,8 +744,8 @@ void TestMainWindowGui::testWatchAllSignalsRecordsOutputs()
     builder.connect(andGate, 0, led, 0);
     builder.initSimulation();
 
-    // watchAllSignals needs the dock open (it early-returns without m_waveformWidget).
-    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    // The Watch All button lives in the waveform tool's Live Analyzer page.
+    auto *waveAction = window->findChild<QAction *>("actionWaveform");
     QVERIFY(waveAction);
     waveAction->trigger();
     QVERIFY2(clickWatchAllButton(window.get()), "Watch All button not found");
@@ -728,16 +768,21 @@ void TestMainWindowGui::testWaveformViewerFollowsNewestData()
     builder.connect(sw, 0, led, 0);
     builder.initSimulation();
 
-    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    auto *waveAction = window->findChild<QAction *>("actionWaveform");
     QVERIFY(waveAction);
     waveAction->trigger();
 
-    auto *dock = window->findChild<QDockWidget *>("temporalWaveformDock");
+    auto *dock = window->findChild<QDockWidget *>("waveformDock");
     QVERIFY2(dock, "Dock should exist after opening");
-    auto *scrollArea = dock->findChild<QScrollArea *>();
-    QVERIFY2(scrollArea, "Waveform scroll area not found");
-    auto *widget = dock->findChild<TemporalWaveformWidget *>();
-    QVERIFY2(widget, "Waveform widget not found");
+    auto *dolphin = qobject_cast<BewavedDolphin *>(dock->widget());
+    QVERIFY2(dolphin, "Dock must host the waveform tool");
+    dolphin->showLiveAnalyzer();
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY2(panel, "Live Analyzer panel not found");
+    auto *scrollArea = panel->scrollArea();
+    QVERIFY2(scrollArea, "Analyzer scroll area not found");
+    auto *widget = panel->canvas();
+    QVERIFY2(widget, "Analyzer canvas not found");
     auto *hBar = scrollArea->horizontalScrollBar();
     QVERIFY(hBar);
 
@@ -1468,12 +1513,13 @@ void TestMainWindowGui::testOpenWaveformEditor()
     CircuitBuilder builder(window->currentTab()->scene());
     builder.connect(sw, 0, led, 0);
 
-    // keyClick invokes on_actionWaveform_triggered synchronously, so m_bwd is
-    // already set by the time it returns.
+    // The shortcut opens the waveform tool docked in the main window (no separate
+    // top-level window to clean up anymore).
     QTest::keyClick(window.get(), Qt::Key_W, Qt::ControlModifier);
 
-    QVERIFY2(window->m_bwd, "Ctrl+W should open the waveform editor");
-    window->m_bwd->close();
+    auto *dock = window->findChild<QDockWidget *>("waveformDock");
+    QVERIFY2(dock && qobject_cast<BewavedDolphin *>(dock->widget()),
+             "shortcut must open the docked waveform tool");
 
     QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
     QCoreApplication::processEvents();
@@ -1728,19 +1774,19 @@ void TestMainWindowGui::testWatchICInternalsRecordsSignals()
     auto *ic = placeEmbeddedIC(scene, m_fixtureDir, "watch_internals_test");
     QVERIFY2(window->currentTab()->simulation()->initialize(), "simulation failed to initialize");
 
-    // Deliberately do NOT open the Temporal Waveform dock first: the context-menu action must
-    // work on first use in a session, so watchICInternals() itself has to create and reveal the
-    // lazily-built dock (regression: it used to early-return silently without m_waveformWidget).
-    QVERIFY2(!window->findChild<QDockWidget *>("temporalWaveformDock"),
+    // Deliberately do NOT open the waveform tool first: the context-menu action must work on
+    // first use in a session, so watchICInternals() itself has to create the dock + the tab's
+    // BewavedDolphin and reveal its Live Analyzer page.
+    QVERIFY2(!window->findChild<QDockWidget *>("waveformDock"),
              "precondition: the dock must not exist before the first watchICInternals call");
 
     window->watchICInternals(ic);
 
-    QVERIFY2(window->findChild<QDockWidget *>("temporalWaveformDock"),
-             "watchICInternals must create the waveform dock on first use");
-    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
-    QVERIFY(waveAction);
-    QVERIFY2(waveAction->isChecked(), "watchICInternals must reveal the waveform dock");
+    auto *dock = window->findChild<QDockWidget *>("waveformDock");
+    QVERIFY2(dock, "watchICInternals must create the waveform dock on first use");
+    auto *dolphin = qobject_cast<BewavedDolphin *>(dock->widget());
+    QVERIFY2(dolphin, "watchICInternals must create the tab's waveform tool");
+    QVERIFY2(dolphin->liveAnalyzer(), "waveform tool must carry a Live Analyzer page");
 
     auto &recorder = window->currentTab()->simulation()->waveformRecorder();
     QVERIFY2(recorder.traceCount() > 0, "watchICInternals registered no traces");
