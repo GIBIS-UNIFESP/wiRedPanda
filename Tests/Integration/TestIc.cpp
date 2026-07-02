@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QGraphicsSimpleTextItem>
 #include <QHash>
 #include <QImage>
 #include <QLineF>
