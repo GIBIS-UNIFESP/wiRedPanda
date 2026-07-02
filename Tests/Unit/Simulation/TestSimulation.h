@@ -21,4 +21,8 @@ private slots:
 
     // Regression: Phase 3 must refresh output-port visuals even with no wire attached
     void testUnconnectedOutputPortVisualUpdates();
+
+    // Regression: a SimulationBlocker pause/resume cycle (every UpdateCommand redo/undo,
+    // including a plain InputSwitch click) must not force clocks HIGH / restart their phase
+    void testBlockerCyclePreservesClockLevel();
 };

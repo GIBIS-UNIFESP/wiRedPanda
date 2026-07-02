@@ -401,6 +401,12 @@ bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
 
 void Simulation::stop()
 {
+    // Record when the pause began (only when actually running) so start() can shift the
+    // clocks' phase reference by the pause duration instead of resetting them.
+    if (m_timer.isActive()) {
+        m_pausedAt = std::chrono::steady_clock::now();
+        m_hasPausedAt = true;
+    }
     m_timer.stop();
     if (m_host) {
         m_host->setMuted(true);
@@ -413,9 +419,26 @@ void Simulation::start()
 
     if (!m_initialized) {
         initialize();
+    } else if (m_hasPausedAt) {
+        // Resuming after a stop(): the wall clock advanced while paused, so shift each
+        // clock's phase reference by the pause duration. This prevents the burst of missed
+        // toggles a stale reference would cause, WITHOUT resetting the clocks — resetClock()
+        // forces the output HIGH and restarts the phase, which injected a spurious rising
+        // edge into every clock-driven circuit on each SimulationBlocker cycle (every
+        // UpdateCommand redo/undo, including a plain InputSwitch click). Level and phase
+        // now survive any pause/resume; only initialize() (Restart, rebuilds) still gives
+        // clocks a fresh HIGH start via resetClock().
+        const auto pause = std::chrono::steady_clock::now() - m_pausedAt;
+        for (auto *clock : std::as_const(m_clocks)) {
+            if (clock) {
+                clock->shiftClock(pause);
+            }
+        }
+        m_hasPausedAt = false; // consumed; a repeated start() must not double-shift
     } else {
-        // After a pause the wall clock has advanced, so clocks must be reset
-        // to "now" — otherwise they would fire many missed ticks immediately.
+        // Initialized but with no recorded pause (e.g. initialize() ran directly via a
+        // structural edit while stopped): the clocks' references are stale by an unknown
+        // amount, so fall back to the historical reset-to-now behavior.
         const auto globalTime = std::chrono::steady_clock::now();
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
@@ -718,6 +741,10 @@ bool Simulation::initialize()
     }
 
     qCDebug(zero) << "Elements read: " << elements.size();
+
+    // Every clock was just reset to "now" above, so any pause recorded by stop() is stale —
+    // a later start() must not additionally shift the fresh references by the old pause.
+    m_hasPausedAt = false;
 
     if (elements.empty()) {
         return false;

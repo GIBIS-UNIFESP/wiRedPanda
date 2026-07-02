@@ -225,6 +225,16 @@ void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
     m_startTime -= std::chrono::microseconds(delayMicroseconds);
 }
 
+void Clock::shiftClock(std::chrono::steady_clock::duration pause)
+{
+    // Resume-after-pause: the wall clock advanced by `pause` while the simulation was
+    // stopped, so move the phase reference forward by the same amount. updateClock() then
+    // sees the same elapsed-within-interval it saw at the moment of the pause — the output
+    // level is untouched (no forced HIGH, no injected edge) and no missed toggles fire in
+    // a burst.
+    m_startTime += pause;
+}
+
 QString Clock::genericProperties()
 {
     return QString::number(frequency()) + " Hz";

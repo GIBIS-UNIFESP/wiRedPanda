@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <memory>
 
 #include <QGraphicsItem>
@@ -262,6 +263,12 @@ private:
     // --- Members: Timer & element lists ---
 
     QTimer m_timer;
+    /// When stop() paused a running simulation. start() shifts each clock's phase
+    /// reference by the elapsed pause instead of resetting it, so a pause/resume cycle
+    /// (SimulationBlocker around every UpdateCommand, or the user's Play toggle) neither
+    /// injects a spurious clock edge nor loses the phase. Invalidated by initialize().
+    std::chrono::steady_clock::time_point m_pausedAt;
+    bool m_hasPausedAt = false;
     QVector<Clock *> m_clocks;
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;

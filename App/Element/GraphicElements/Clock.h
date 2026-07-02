@@ -57,6 +57,11 @@ public:
 
     /// Resets the clock phase reference to \a globalTime.
     void resetClock(std::chrono::steady_clock::time_point globalTime);
+    /// Shifts the clock phase reference forward by \a pause, preserving the current output
+    /// level and the position within the period. Used to resume after a pause: unlike
+    /// resetClock(), which forces the output HIGH and restarts the phase, this keeps the
+    /// waveform exactly where it stopped while still preventing a burst of missed toggles.
+    void shiftClock(std::chrono::steady_clock::duration pause);
     /// Advances the clock state based on elapsed time since \a globalTime.
     void updateClock(std::chrono::steady_clock::time_point globalTime);
 
