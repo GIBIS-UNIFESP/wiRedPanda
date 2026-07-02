@@ -1,5 +1,11 @@
 # Temporal Waveform canvas overflow — UI freeze + setMinimumSize warning spam
 
+> **Relocation note:** the widgets described here were later restructured into the Live
+> Analyzer page of BeWavedDolphin (`App/BeWavedDolphin/LiveAnalyzer.{h,cpp}`:
+> `AnalyzerCanvas` / `AnalyzerTimeRuler` / `AnalyzerLabelColumn` / `LiveAnalyzerPanel`);
+> the standalone Temporal Waveform dock no longer exists. The fixes below (canvas clamp,
+> sliding `timeOrigin()`, exposed-region painting, sticky-tail follow) carried over intact.
+
 ## Symptom
 
 Testing the binary with `ic.panda`: open the Temporal Waveform dock, Watch All, run in

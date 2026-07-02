@@ -15,7 +15,9 @@
 #include <QMessageBox>
 #include <QScopeGuard>
 #include <QSignalBlocker>
+#include <QStatusBar>
 #include <QTableView>
+#include <QTabWidget>
 #include <QTextStream>
 #include <QWheelEvent>
 
@@ -27,6 +29,7 @@
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/DolphinModelBuilder.h"
 #include "App/BeWavedDolphin/DolphinZoom.h"
+#include "App/BeWavedDolphin/LiveAnalyzer.h"
 #include "App/BeWavedDolphin/Serializer.h"
 #include "App/BeWavedDolphin/WaveformSimulator.h"
 #include "App/Core/Application.h"
@@ -54,11 +57,9 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHo
     m_ui->setupUi(this);
     m_ui->retranslateUi(this);
 
-    // WA_DeleteOnClose ensures the window is freed when closed without the caller
-    // needing to track its lifetime
-    setAttribute(Qt::WA_DeleteOnClose);
-    // Modal so the user cannot interact with the main circuit while the waveform is open
-    setWindowModality(Qt::WindowModal);
+    // NOT modal and NOT delete-on-close: the window hosts the Live Analyzer, whose whole
+    // point is probing the circuit WHILE the user interacts with it, and the host keeps one
+    // instance per circuit tab alive (docked or floating) instead of recreating it per open.
     setWindowTitle(tr("beWavedDolphin Simulator"));
 
     resize(800, 500);
@@ -76,7 +77,17 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHo
     // Native scrollbars let long waveforms scroll; zoom changes row/column metrics instead
     m_signalTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_signalTableView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    m_ui->verticalLayout->addWidget(m_signalTableView);
+
+    // Two pages under one roof: the stimulus-editor grid (author input vectors, batch-sweep
+    // the response from power-on) and the Live Analyzer (passively probe the running
+    // interactive simulation). One "Waveform" tool, two complementary instruments.
+    m_mainTabs = new QTabWidget(this);
+    m_mainTabs->addTab(m_signalTableView, tr("Stimulus Editor"));
+    m_analyzerPanel = new LiveAnalyzerPanel(scene, this);
+    m_mainTabs->addTab(m_analyzerPanel, tr("Live Analyzer"));
+    m_ui->verticalLayout->addWidget(m_mainTabs);
+    connect(m_mainTabs, &QTabWidget::currentChanged, this, &BewavedDolphin::onMainTabChanged);
+    connect(m_analyzerPanel, &LiveAnalyzerPanel::statusMessage, m_ui->statusbar, &QStatusBar::showMessage);
 
     // The mouse wheel over the table zooms the columns (see eventFilter)
     m_signalTableView->viewport()->installEventFilter(this);
@@ -155,6 +166,63 @@ void BewavedDolphin::createWaveform(const QString &fileName)
     // have pushed/undone entries as part of setting up the document; undo history should start
     // clean from here, not from whatever internal setup happened to do.
     m_undoStack.clear();
+}
+
+void BewavedDolphin::showLiveAnalyzer()
+{
+    m_mainTabs->setCurrentWidget(m_analyzerPanel);
+}
+
+void BewavedDolphin::disableStimulusEditor()
+{
+    // Degraded hosting mode for circuits whose stimulus grid cannot be built (no top-level
+    // inputs/outputs — e.g. a scene holding only an IC): the Live Analyzer needs no scene
+    // I/O and stays fully functional, so the tool opens on it instead of failing outright.
+    m_mainTabs->setTabEnabled(m_mainTabs->indexOf(m_signalTableView), false);
+    showLiveAnalyzer();
+}
+
+void BewavedDolphin::watchICInternals(IC *ic)
+{
+    showLiveAnalyzer();
+    m_analyzerPanel->watchICInternals(ic);
+}
+
+void BewavedDolphin::onMainTabChanged(int index)
+{
+    // The grid-document actions act on the stimulus editor; on the Live Analyzer tab they
+    // would edit an invisible document, so gate them off (the analyzer has its own
+    // controls). Enabled-state is SNAPSHOT and restored — not blanket re-enabled — because
+    // several actions carry their own state machines (selection-dependent edits, the
+    // permanently-disabled Merge/Split) that a blind setEnabled(true) would corrupt.
+    const QVector<QAction *> gridActions = {
+        m_ui->actionLoad, m_ui->actionSave, m_ui->actionSaveAs,
+        m_ui->actionExportToPdf, m_ui->actionExportToPng,
+        m_ui->actionCopy, m_ui->actionCut, m_ui->actionPaste,
+        m_ui->actionClear, m_ui->actionInvert, m_ui->actionSetTo0, m_ui->actionSetTo1,
+        m_ui->actionSetClockWave, m_ui->actionSetLength, m_ui->actionCombinational,
+        m_ui->actionAutoCrop, m_ui->actionMerge, m_ui->actionSplit,
+        m_ui->actionShowNumbers, m_ui->actionShowWaveforms,
+        m_ui->actionZoomIn, m_ui->actionZoomOut, m_ui->actionFitScreen, m_ui->actionResetZoom,
+        m_ui->actionTemporalMode, m_ui->actionTimeResolution,
+    };
+
+    if (m_mainTabs->widget(index) == m_analyzerPanel) {
+        m_gridActionStates.clear();
+        for (auto *action : gridActions) {
+            if (action) {
+                m_gridActionStates.insert(action, action->isEnabled());
+                action->setEnabled(false);
+            }
+        }
+    } else {
+        for (auto it = m_gridActionStates.cbegin(); it != m_gridActionStates.cend(); ++it) {
+            if (it.key()) {
+                it.key()->setEnabled(it.value());
+            }
+        }
+        m_gridActionStates.clear();
+    }
 }
 
 void BewavedDolphin::createWaveform()

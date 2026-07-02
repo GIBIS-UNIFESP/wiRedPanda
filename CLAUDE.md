@@ -109,7 +109,7 @@ Advanced development features supported:
   circuits converge to a fixed point now. This is the educational default.
 - **Temporal mode** (`m_timePerTick > 0`): events spread across future timestamps by
   per-element propagation delay, drained from a time-ordered `EventQueue`. Drives the
-  Temporal Waveform viewer.
+  Live Analyzer timing diagrams.
 - **One flat netlist**: ICs do NOT simulate themselves. `Simulation::initialize()` flattens
   the IC hierarchy — every internal primitive (recursively, through nested ICs) joins the
   top-level netlist, with IC boundary ports spliced to their boundary Nodes. So per-element
@@ -173,9 +173,12 @@ Advanced development features supported:
 ### Waveform Recording (temporal mode)
 
 - `WaveformRecorder` (owned by `Simulation`) captures timestamped transitions of watched
-  output ports during the temporal drain; the `TemporalWaveformWidget` dock renders the
-  timing diagram. Toggle Functional/Temporal via the toolbar selector; `Simulation ▸
-  Temporal Waveform` opens the dock.
+  output ports during the temporal drain; the Live Analyzer (`LiveAnalyzerPanel` in
+  `App/BeWavedDolphin/LiveAnalyzer.{h,cpp}`) renders the timing diagram. It is the second
+  page of BeWavedDolphin (Stimulus Editor | Live Analyzer), which `Simulation ▸ Waveform`
+  opens hosted in a bottom `QDockWidget` (floatable; one BewavedDolphin instance per
+  circuit tab, swapped into the dock on tab switch). Toggle Functional/Temporal via the
+  toolbar selector.
 
 ### Code Evidence
 

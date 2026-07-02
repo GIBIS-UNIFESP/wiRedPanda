@@ -42,8 +42,8 @@ private slots:
     void testTemporalModeSelector();
     void testTemporalModeReinitializesFeedback();
     void testWaveformDockOpensAndClosesCleanly();
-    void testWaveformDockRecorderDetachOnTabClose();
-    void testWaveformDockToggleCycle();
+    void testWaveformToolDiesWithItsTab();
+    void testWaveformDockSwapsPerTabInstances();
     void testWatchAllSignalsRecordsOutputs();
     void testWatchICInternalsRecordsSignals();
     /// Regression: the viewer's auto-follow used a fixed-threshold check on the refresh

@@ -9,6 +9,7 @@
 #include <QRegularExpression>
 #include <QVersionNumber>
 
+#include "App/BeWavedDolphin/LiveAnalyzer.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -23,7 +24,6 @@
 #include "App/Simulation/SimTime.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/WaveformRecorder.h"
-#include "App/UI/TemporalWaveformWidget.h"
 #include "Tests/Common/TestUtils.h"
 
 using namespace TestUtils;
@@ -946,24 +946,24 @@ void TestTemporalSimulation::testRecorderRecordAllSkipsNullAndCollapsesSameTime(
 }
 
 // ============================================================================
-// Waveform widget
+// Live Analyzer canvas
 // ============================================================================
 
 void TestTemporalSimulation::testWidgetSizeHint()
 {
     WaveformRecorder recorder;
-    TemporalWaveformWidget widget;
+    AnalyzerCanvas widget;
     widget.setRecorder(&recorder);
 
-    // No traces → at least the minimum size.
+    // No traces → at least the minimum size (one trace row; the ruler is a separate widget).
     QSize hint = widget.sizeHint();
     QVERIFY(hint.width() >= 100);
-    QVERIFY(hint.height() >= 54);
+    QVERIFY(hint.height() >= AnalyzerLayout::TraceHeight);
 
     // Adding a trace keeps a valid size.
     recorder.watchSignal("sig0", nullptr, 0);
     hint = widget.sizeHint();
-    QVERIFY(hint.height() >= 54);
+    QVERIFY(hint.height() >= AnalyzerLayout::TraceHeight);
 
     // Painting with no recorded data must not crash.
     widget.resize(400, 200);
@@ -972,10 +972,10 @@ void TestTemporalSimulation::testWidgetSizeHint()
 
 void TestTemporalSimulation::testWaveformWidgetZoom()
 {
-    // The temporal-waveform dock's zoom controls (the +/- buttons) drive the widget's zoom level.
+    // The Live Analyzer's zoom controls (the +/- buttons) drive the canvas zoom level.
     // Verify the widget-level behaviour: zoomIn doubles, zoomOut halves the pixels-per-ns scale.
     WaveformRecorder recorder;
-    TemporalWaveformWidget widget;
+    AnalyzerCanvas widget;
     widget.setRecorder(&recorder);
 
     widget.setPixelsPerNs(4.0);
@@ -1016,7 +1016,7 @@ void TestTemporalSimulation::testWidgetCanvasClampedAtQtLimit()
     elm->setOutputValue(0, Status::Inactive);
     recorder.recordAll(6'000'000'000);
 
-    TemporalWaveformWidget widget;
+    AnalyzerCanvas widget;
     widget.setRecorder(&recorder);
     widget.setPixelsPerNs(10.0);
 

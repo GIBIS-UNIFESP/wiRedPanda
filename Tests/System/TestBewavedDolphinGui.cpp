@@ -24,6 +24,7 @@
 #include <QSpinBox>
 #include <QStandardItemModel>
 #include <QTableView>
+#include <QTabWidget>
 #include <QTest>
 #include <QTextStream>
 #include <QWheelEvent>
@@ -32,6 +33,7 @@
 #include "App/BeWavedDolphin/DolphinFile.h"
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/DolphinZoom.h"
+#include "App/BeWavedDolphin/LiveAnalyzer.h"
 #include "App/Core/Application.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
@@ -45,7 +47,9 @@
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
+#include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/Simulation/WaveformRecorder.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
 #include "Tests/Common/ICTestHelpers.h"
@@ -416,7 +420,7 @@ void TestBewavedDolphinGui::testNonTemporalSweepIgnoresLiveTemporalMode()
 void TestBewavedDolphinGui::testRunDoesNotPolluteLiveWaveformRecorder()
 {
     // Regression test: BeWavedDolphin's sweep (WaveformSimulator::sweep()) drives the same
-    // Simulation a main-window Temporal Waveform dock may be watching. Simulate "Watch All"
+    // Simulation its own Live Analyzer page may be watching. Simulate "Watch All"
     // being active by watching a signal directly and enabling recording, then run a dolphin
     // sweep on the same scene. WaveformSimulator::sweep() calls resetEventTracking() (resetting
     // the live clock to 0, same as an explicit Restart) regardless of whether recording is
@@ -541,8 +545,8 @@ void TestBewavedDolphinGui::testRunResetsICInternalSequentialState()
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(&ws));
     dolphin->run();
 
-    auto *model = dolphin->getModel();
-    const int outputRow = static_cast<int>(dolphin->getInputElements().size());
+    auto *model = dolphin->model();
+    const int outputRow = static_cast<int>(dolphin->inputElements().size());
     for (int col = 0; col < model->columnCount(); ++col) {
         QVERIFY2(model->index(outputRow, col).data().toInt() == 0,
                  qPrintable(QString("column %1: IC-internal flip-flop state leaked into the sweep").arg(col)));
@@ -1514,18 +1518,6 @@ void TestBewavedDolphinGui::testRunAndSaveToTxtHandleDeletedTrackedElement()
     QString text;
     QTextStream stream(&text);
     QVERIFY_THROWS(std::exception, dolphin->saveToTxt(stream));
-}
-
-void TestBewavedDolphinGui::testConstructorWithParentEnablesWindowModality()
-{
-    auto ws = createAndCircuit();
-    QWidget parentWidget;
-
-    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, nullptr, &parentWidget));
-    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
-
-    QCOMPARE(dolphin->parentWidget(), &parentWidget);
-    QCOMPARE(dolphin->windowModality(), Qt::WindowModal);
 }
 
 void TestBewavedDolphinGui::testSaveToTxtClampsColumnCountForManyInputPorts()
@@ -2666,4 +2658,113 @@ void TestBewavedDolphinGui::testActionExportToPdfCancelledAndBareNameAppendsExte
     ScopedFileDialogStub guard;
     guard.stub.saveResult = {"", ""};
     dolphin->findChild<QAction *>("actionExportToPdf")->trigger();
+}
+
+// ============================================================================
+// Live Analyzer page
+// ============================================================================
+
+void TestBewavedDolphinGui::testLiveAnalyzerTabGatesGridActions()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    auto *tabs = dolphin->findChild<QTabWidget *>();
+    QVERIFY2(tabs, "BewavedDolphin must host a Stimulus Editor | Live Analyzer tab widget");
+    QCOMPARE(tabs->count(), 2);
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY2(panel, "Live Analyzer panel missing");
+    QCOMPARE(tabs->indexOf(panel), 1);
+
+    // Two representative document actions: Save is normally enabled; Merge is permanently
+    // disabled (feature off) and must NOT be resurrected by the tab round trip.
+    auto *actionSave = dolphin->findChild<QAction *>("actionSave");
+    auto *actionMerge = dolphin->findChild<QAction *>("actionMerge");
+    QVERIFY(actionSave && actionMerge);
+    QVERIFY(actionSave->isEnabled());
+    QVERIFY(!actionMerge->isEnabled());
+
+    dolphin->showLiveAnalyzer();
+    QCOMPARE(tabs->currentWidget(), static_cast<QWidget *>(panel));
+    QVERIFY2(!actionSave->isEnabled(), "document actions must be gated off on the analyzer page");
+    QVERIFY(!actionMerge->isEnabled());
+
+    tabs->setCurrentIndex(0);
+    QVERIFY2(actionSave->isEnabled(), "document actions must be restored on return to the grid");
+    QVERIFY2(!actionMerge->isEnabled(),
+             "Merge must stay disabled after the round trip (state snapshot, not blanket enable)");
+}
+
+void TestBewavedDolphinGui::testLiveAnalyzerWatchAllAndClear()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY(panel);
+
+    auto &recorder = ws->scene()->simulation()->waveformRecorder();
+    QCOMPARE(recorder.traceCount(), 0);
+
+    panel->watchAllSignals();
+    // The AND circuit's elements with output ports: 2 switches + the AND gate (Led has none).
+    QCOMPARE(recorder.traceCount(), 3);
+    QVERIFY2(recorder.isRecording(), "Watch All must start recording");
+
+    panel->clearWatchedSignals();
+    QCOMPARE(recorder.traceCount(), 0);
+    QVERIFY2(!recorder.isRecording(), "Clear must stop recording");
+}
+
+void TestBewavedDolphinGui::testLiveAnalyzerWatchICInternals()
+{
+    // Fixture .panda (sw → NOT → led) embedded as an IC: watching internals must register
+    // path-prefixed traces for the IC's internal primitives and reveal the analyzer page.
+    const QString icPath = m_tempDir.path() + "/not_ic.panda";
+    {
+        WorkSpace fixture;
+        auto *scene = fixture.scene();
+        auto *in = new InputSwitch();
+        auto *inv = new Not();
+        auto *out = new Led();
+        in->setPos(0, 0);
+        inv->setPos(150, 0);
+        out->setPos(300, 0);
+        scene->addItem(in);
+        scene->addItem(inv);
+        scene->addItem(out);
+        CircuitBuilder builder(scene);
+        builder.connect(in, 0, inv, 0);
+        builder.connect(inv, 0, out, 0);
+        fixture.save(icPath);
+    }
+
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *sw = new InputSwitch();
+    auto *ic = new IC();
+    ICTestHelpers::embedIC(ic, ICTestHelpers::readFile(icPath), "not_ic", m_tempDir.path(), scene->icRegistry());
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(ic);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, ic, 0);
+    builder.connect(ic, 0, led, 0);
+    builder.initSimulation();
+
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(&ws));
+    auto *tabs = dolphin->findChild<QTabWidget *>();
+    QVERIFY(tabs);
+    QCOMPARE(tabs->currentIndex(), 0);
+
+    dolphin->watchICInternals(ic);
+
+    QCOMPARE(tabs->currentIndex(), 1); // analyzer page revealed
+    auto &recorder = ws.scene()->simulation()->waveformRecorder();
+    QVERIFY2(recorder.traceCount() > 0, "watchICInternals registered no traces");
+    QVERIFY2(recorder.isRecording(), "watchICInternals did not start recording");
+    for (int i = 0; i < recorder.traceCount(); ++i) {
+        QVERIFY2(recorder.trace(i).name.contains(QLatin1Char('/')),
+                 "trace name must carry the IC as a path prefix");
+    }
 }
