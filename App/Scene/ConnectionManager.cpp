@@ -3,9 +3,9 @@
 
 #include "App/Scene/ConnectionManager.h"
 
-#include <QGraphicsView>
-
 #include <utility>
+
+#include <QGraphicsView>
 
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"

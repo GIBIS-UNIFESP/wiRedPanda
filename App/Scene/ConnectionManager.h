@@ -9,8 +9,8 @@
 
 #include <QList>
 #include <QPair>
-#include <QPointF>
 #include <QPointer>
+#include <QPointF>
 
 class GraphicElement;
 class PortHoverLabel;
