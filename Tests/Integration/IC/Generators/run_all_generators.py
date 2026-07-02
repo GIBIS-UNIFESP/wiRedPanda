@@ -24,6 +24,7 @@ Level Structure:
 - Level 9: Complete CPUs (3 generators)
 """
 
+import ast
 import asyncio
 import collections
 import os
@@ -76,40 +77,52 @@ def extract_component_names(script_path: Path) -> list[str]:
 def extract_dependencies(script_path: Path) -> set[str]:
     """Extract IC component dependencies from a generator script.
 
-    Looks for patterns like 'level6_stack_pointer_8bit' in the script,
-    excluding the script's own output components and comments.
+    Dependencies are always written as plain string literals naming another
+    component, e.g. ``instantiate_ic(str(IC_COMPONENTS_DIR / "level2_full_adder_1bit"))``.
+    We parse the script with ``ast`` and scan only *value* string literals,
+    skipping docstrings (a bare string-expression statement) and ignoring
+    comments for free. This is why we don't strip text by hand: a single-line
+    docstring opens and closes a triple-quoted string on one line, which
+    defeats naive line-by-line toggling — that would flip the "inside a string"
+    state and silently drop every dependency in the rest of the file.
+
+    The script's own output components are excluded.
     """
-    dependencies = set()
+    dependencies: set[str] = set()
     output_components = set(extract_component_names(script_path))
+    component_pattern = re.compile(r"level\d+_[a-z0-9_]+")
 
     try:
         content = script_path.read_text()
-        # Remove comments and docstrings to avoid false matches
-        lines = content.split("\n")
-        code_lines = []
-        in_multiline_string = False
-        for line in lines:
-            # Skip pure comment lines
-            stripped = line.lstrip()
-            if stripped.startswith("#"):
-                continue
-            # Toggle multiline string state (basic detection)
-            if '"""' in line or "'''" in line:
-                in_multiline_string = not in_multiline_string
-                continue
-            if not in_multiline_string:
-                code_lines.append(line)
-
-        code_content = "\n".join(code_lines)
-        # Find all level[0-9]_component patterns, excluding variable assignments (levelN_name = ...)
-        # Use negative lookbehind to exclude patterns preceded by assignment
-        matches = re.findall(r"(?<![a-z_=\s])level\d+_[a-z_0-9]+(?!\s*=)(?!\w)", code_content)
-        for match in matches:
-            # Skip the script's own output components
-            if match not in output_components:
-                dependencies.add(match)
     except OSError as e:
         print(f"⚠️  Could not read {script_path.name}: {e}")
+        return dependencies
+
+    try:
+        tree = ast.parse(content, filename=str(script_path))
+    except SyntaxError as e:
+        print(f"⚠️  Could not parse {script_path.name}: {e}")
+        return dependencies
+
+    # Collect docstring nodes (the first statement of a module/class/function
+    # when it is a bare string literal) so prose like "Level 9: Complete CPUs"
+    # is never mistaken for a dependency.
+    docstring_nodes = set()
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
+            first = node.body[0] if node.body else None
+            if (
+                isinstance(first, ast.Expr)
+                and isinstance(first.value, ast.Constant)
+                and isinstance(first.value.value, str)
+            ):
+                docstring_nodes.add(first.value)
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str) and node not in docstring_nodes:
+            for match in component_pattern.findall(node.value):
+                if match not in output_components:
+                    dependencies.add(match)
 
     return dependencies
 
