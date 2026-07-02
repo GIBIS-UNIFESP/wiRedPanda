@@ -69,6 +69,8 @@ private slots:
     /// Per-channel palette: first 8 channels pairwise distinct, cycling at 8; label names
     /// share their trace's color.
     void testAnalyzerTraceColorPalette();
+    /// Plain wheel is ignored (scroll area scrolls); Ctrl+wheel zooms.
+    void testCanvasWheelZoomRequiresCtrl();
 
     // --- Temporal example circuits (Examples/temporal_*.panda) ---
     void testExampleRingOscillator();

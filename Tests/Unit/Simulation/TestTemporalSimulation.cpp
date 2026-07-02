@@ -1043,6 +1043,32 @@ void TestTemporalSimulation::testWidgetCanvasClampedAtQtLimit()
     QCOMPARE(widget.timeOrigin(), SimTime(0));
 }
 
+void TestTemporalSimulation::testCanvasWheelZoomRequiresCtrl()
+{
+    // With vertical scrolling in the analyzer, a plain wheel must SCROLL (the canvas
+    // ignores it so the surrounding scroll area handles it) — only Ctrl+wheel zooms,
+    // the standard waveform-tool convention.
+    WaveformRecorder recorder;
+    AnalyzerCanvas canvas;
+    canvas.setRecorder(&recorder);
+    canvas.setPixelsPerNs(1.0);
+
+    auto sendWheel = [&canvas](Qt::KeyboardModifiers modifiers) {
+        QWheelEvent event(QPointF(10, 10), QPointF(10, 10), QPoint(), QPoint(0, 120),
+                          Qt::NoButton, modifiers, Qt::NoScrollPhase, false);
+        QCoreApplication::sendEvent(&canvas, &event);
+        return event.isAccepted();
+    };
+
+    const bool plainAccepted = sendWheel(Qt::NoModifier);
+    QVERIFY2(!plainAccepted, "plain wheel must be ignored so the scroll area scrolls");
+    QCOMPARE(canvas.pixelsPerNs(), 1.0);
+
+    const bool ctrlAccepted = sendWheel(Qt::ControlModifier);
+    QVERIFY2(ctrlAccepted, "Ctrl+wheel must be consumed by the zoom");
+    QCOMPARE(canvas.pixelsPerNs(), 2.0);
+}
+
 void TestTemporalSimulation::testAnalyzerTraceColorPalette()
 {
     // Per-channel colors like a real logic analyzer: the first 8 channels are pairwise

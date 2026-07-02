@@ -360,7 +360,10 @@ void AnalyzerLabelColumn::setVerticalOffset(int offset)
 
 QSize AnalyzerLabelColumn::sizeHint() const
 {
-    const int traceCount = m_recorder ? m_recorder->traceCount() : 0;
+    // PREFERRED height only — the layout stretches the column to the viewport, and painting
+    // is offset-driven. Capping at a handful of rows keeps a long watch list from ballooning
+    // the whole tool's preferred size; the vertical scrollbar reaches the rest.
+    const int traceCount = m_recorder ? qMin(m_recorder->traceCount(), 6) : 0;
     const int h = traceCount * (AnalyzerLayout::TraceHeight + AnalyzerLayout::TraceMargin);
     return {AnalyzerLayout::LabelWidth, qMax(h, AnalyzerLayout::TraceHeight)};
 }
@@ -437,7 +440,7 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
     grid->setSpacing(0);
     grid->addWidget(corner, 0, 0);
     grid->addWidget(m_ruler, 0, 1);
-    grid->addWidget(m_labels, 1, 0, Qt::AlignTop);
+    grid->addWidget(m_labels, 1, 0); // fills the cell: rows below the fold paint when scrolled
     grid->addWidget(m_scrollArea, 1, 1);
     grid->setRowStretch(1, 1);
     grid->setColumnStretch(1, 1);
