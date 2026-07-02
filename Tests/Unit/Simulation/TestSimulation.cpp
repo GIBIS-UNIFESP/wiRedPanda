@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Simulation/TestSimulation.h"
 
+#include <QElapsedTimer>
+
 #include "App/Core/Application.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Element/ElementFactory.h"
@@ -14,6 +16,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Simulation/SimulationBlocker.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -299,4 +302,44 @@ void TestSimulationUnit::testUpdateFlushesPendingVisualsOnLaterIdleTick()
     sim.update(); // tick 5/5: interval elapses, flush happens
     QVERIFY2(!sim.m_visualsDirty,
               "A pending visual flush must happen on an idle tick once the throttle interval elapses");
+}
+
+void TestSimulationUnit::testBlockerCyclePreservesClockLevel()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sim = scene->simulation();
+
+    auto *clock = qobject_cast<Clock *>(ElementFactory::buildElement(ElementType::Clock));
+    QVERIFY(clock);
+    // 10 Hz ⇒ 50 ms per phase: slow enough that the post-resume assertion below runs well
+    // inside the LOW phase, fast enough for the first falling edge to land quickly.
+    clock->setFrequency(10.0);
+    scene->addItem(clock);
+
+    sim->start();
+    QVERIFY(sim->isRunning());
+
+    // Clocks start HIGH (resetClock in initialize()); spin the event loop until the first
+    // real falling edge lands so the clock is observably mid-LOW-phase. A plain qWait loop
+    // instead of QTRY_VERIFY_WITH_TIMEOUT: Qt 6.8/6.9's QTRY macros expand with a
+    // long→int chrono conversion that trips -Werror=conversion on the CI compilers.
+    QElapsedTimer waitForLow;
+    waitForLow.start();
+    while (clock->isOn() && waitForLow.elapsed() < 2000) {
+        QTest::qWait(10);
+    }
+    QVERIFY2(!clock->isOn(), "clock never fell within 2 s of starting");
+
+    // A SimulationBlocker cycle brackets every UpdateCommand redo/undo — including a plain
+    // InputSwitch click on a running circuit. The resume must preserve the level: resetClock()
+    // forces the output HIGH, which is an out-of-thin-air rising edge for every clock-driven
+    // element, advancing counters without a real edge.
+    {
+        SimulationBlocker blocker(sim);
+    }
+    QVERIFY2(!clock->isOn(),
+             "resume after a SimulationBlocker cycle forced the clock HIGH mid-LOW-phase");
+
+    sim->stop();
 }
