@@ -165,14 +165,23 @@ void AnalyzerCanvas::drawTrace(QPainter &painter, int traceIndex, int y0,
         return y0 + (s == Status::Active ? HIGH_Y_OFFSET : LOW_Y_OFFSET);
     };
 
-    // Signal level entering the window (Inactive before the first transition), then only the
-    // transitions inside the window — located by binary search, NOT a scan from t = 0, so a
-    // repaint touches O(log n + visible) of a history that can hold hours of transitions.
-    Status currentStatus = trace.statusAt(visibleStart);
-    SimTime currentTime = visibleStart;
+    // Nothing is known before the trace's first recorded sample (watching typically starts
+    // mid-run): leave that region blank — only the dotted row baseline — instead of
+    // asserting a LOW that was never observed.
+    const SimTime firstSample = transitions.first().first;
+    if (visibleEnd < firstSample) {
+        return;
+    }
+
+    // Signal level entering the window (or at the first sample if the window starts before
+    // it), then only the transitions inside the window — located by binary search, NOT a
+    // scan from t = 0, so a repaint touches O(log n + visible) of a history that can hold
+    // hours of transitions.
+    SimTime currentTime = qMax(visibleStart, firstSample);
+    Status currentStatus = trace.statusAt(currentTime);
 
     const auto firstVisible = std::lower_bound(
-        transitions.cbegin(), transitions.cend(), visibleStart,
+        transitions.cbegin(), transitions.cend(), currentTime,
         [](const QPair<SimTime, Status> &tr, SimTime t) { return tr.first < t; });
 
     for (auto it = firstVisible; it != transitions.cend(); ++it) {
