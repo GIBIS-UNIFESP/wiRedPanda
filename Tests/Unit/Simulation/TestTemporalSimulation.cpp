@@ -1082,16 +1082,20 @@ void TestTemporalSimulation::testWidgetCanvasClampedAtQtLimit()
     widget.setRecorder(&recorder);
     widget.setPixelsPerNs(10.0);
 
-    // The size hint clamps at the Qt limit instead of demanding the impossible width.
+    // The size hint clamps at the canvas cap instead of demanding the impossible width.
+    // The cap sits strictly below QWIDGETSIZE_MAX: Qt treats a minimum size of exactly
+    // that value as its "unconstrained" sentinel and collapses the scroll-area child to
+    // the viewport — the regression that made deep zoom lose the canvas entirely.
     const QSize hint = widget.sizeHint();
-    QCOMPARE(hint.width(), QWIDGETSIZE_MAX);
+    QCOMPARE(hint.width(), AnalyzerLayout::MaxCanvasWidth);
+    QVERIFY(hint.width() < QWIDGETSIZE_MAX);
 
     // The canvas window slides to keep the NEWEST data on-canvas at the chosen zoom.
     const SimTime origin = widget.timeOrigin();
     QVERIFY(origin > 0);
     QVERIFY(origin < recorder.maxTime());
     QVERIFY(static_cast<double>(recorder.maxTime() - origin) * widget.pixelsPerNs()
-            <= static_cast<double>(QWIDGETSIZE_MAX));
+            <= static_cast<double>(AnalyzerLayout::MaxCanvasWidth));
 
     // Painting an exposed strip must neither warn nor render the whole 16.7M px canvas.
     // grab() with an explicit rect drives paintEvent() with that exposed region.
@@ -1228,6 +1232,22 @@ void TestTemporalSimulation::testCanvasDegenerateStateHint()
     QVERIFY(!recorder.trace(idx).transitions.isEmpty());
     QVERIFY2(canvas.degenerateStateText().isEmpty(),
              "a recorded transition must clear the degenerate-state hint");
+}
+
+void TestTemporalSimulation::testRulerLabelsDistinctAtNsScale()
+{
+    // ns-scale ticks near a multi-ms absolute time: 'g'-rounding used to collapse
+    // 4'000'000 and 4'000'010 into the same "4e+06 ns" — the axis was unreadable at
+    // exactly the zoom where gate delays resolve.
+    const QString a = AnalyzerLayout::formatRulerLabel(4'000'000, 10);
+    const QString b = AnalyzerLayout::formatRulerLabel(4'000'010, 10);
+    QVERIFY2(a != b, qPrintable(QString("adjacent ns ticks share the label '%1'").arg(a)));
+    QCOMPARE(a, QStringLiteral("4000000 ns"));
+    QCOMPARE(b, QStringLiteral("4000010 ns"));
+
+    // The unit follows the tick spacing.
+    QCOMPARE(AnalyzerLayout::formatRulerLabel(4'000, 2'000), QStringLiteral("4 µs"));
+    QCOMPARE(AnalyzerLayout::formatRulerLabel(8'000'000, 2'000'000), QStringLiteral("8 ms"));
 }
 
 void TestTemporalSimulation::testAnalyzerTraceColorPalette()

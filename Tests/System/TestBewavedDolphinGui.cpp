@@ -2191,3 +2191,172 @@ void TestBewavedDolphinGui::testLiveAnalyzerFitSpansViewport()
     QVERIFY2(visibleStart <= 1e9 && 1e9 <= visibleStart + viewport / ppn,
              "the newest sample must stay in view after zooming in from Fit");
 }
+
+/// Saves a panel snapshot for visual inspection and returns the file path (empty on
+/// failure). Snapshots land in ANALYZER_SNAPSHOT_DIR when set — so a developer (or an
+/// AI assistant re-running one test) can LOOK at what the user would see — otherwise in
+/// \a fallbackDir.
+static QString saveAnalyzerSnapshot(LiveAnalyzerPanel *panel, const QString &fallbackDir, const QString &name)
+{
+    const QString dirPath = qEnvironmentVariable("ANALYZER_SNAPSHOT_DIR", fallbackDir);
+    QDir().mkpath(dirPath);
+    const QString path = dirPath + "/" + name + ".png";
+    return panel->exportImage(path) ? path : QString();
+}
+
+void TestBewavedDolphinGui::testLiveAnalyzerExportImage()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY(panel);
+    QCOMPARE(recordSquareWaveHistory(ws.get()), SimTime(1'000'000'000));
+
+    dolphin->showLiveAnalyzer();
+    dolphin->resize(600, 300);
+    dolphin->show();
+    QApplication::processEvents();
+    panel->canvas()->grab(QRect(0, 0, 50, 50));
+
+    const QString path = m_tempDir.path() + "/analyzer_view.png";
+    QVERIFY2(panel->exportImage(path), "exportImage must report success for a writable path");
+
+    QImage img(path);
+    QVERIFY2(!img.isNull(), "the exported file must load back as an image");
+    QCOMPARE(img.size(), panel->size());
+
+    // Non-blank: the view holds a toolbar, labels and traces — some pixel must differ.
+    const QRgb first = img.pixel(0, 0);
+    bool anyDifferent = false;
+    for (int y = 0; y < img.height() && !anyDifferent; y += 3) {
+        for (int x = 0; x < img.width() && !anyDifferent; x += 3) {
+            anyDifferent = (img.pixel(x, y) != first);
+        }
+    }
+    QVERIFY2(anyDifferent, "the exported image must not be blank");
+}
+
+void TestBewavedDolphinGui::testGateDelayStaircaseReachableByZoom()
+{
+    // End-to-end reproduction of the user's session through the REAL pipeline: a 4-NOT
+    // chain in temporal 1x, driven by genuine Simulation::update() ticks and genuine
+    // InputSwitch toggles — no synthetic recorder feeding. The 5 ns default NOT delays
+    // must land in the recorder as a +5/+10/+15/+20 ns staircase, and tail-pinned zoom to
+    // saturation must put that staircase ON-SCREEN, pixels apart.
+    auto ws = std::make_unique<WorkSpace>();
+    auto *scene = ws->scene();
+    auto *sw = new InputSwitch();
+    auto *n1 = new Not();
+    auto *n2 = new Not();
+    auto *n3 = new Not();
+    auto *n4 = new Not();
+    auto *led = new Led(); // grid output — the stimulus editor needs top-level I/O
+    sw->setLabel("A");
+    n1->setLabel("n1");
+    n2->setLabel("n2");
+    n3->setLabel("n3");
+    n4->setLabel("n4");
+    scene->addItem(sw);
+    scene->addItem(n1);
+    scene->addItem(n2);
+    scene->addItem(n3);
+    scene->addItem(n4);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, n1, 0);
+    builder.connect(n1, 0, n2, 0);
+    builder.connect(n2, 0, n3, 0);
+    builder.connect(n3, 0, n4, 0);
+    builder.connect(n4, 0, led, 0);
+    builder.initSimulation();
+
+    auto *sim = scene->simulation();
+    sim->setTimePerTick(1'000'000); // temporal 1x: 1 ms of sim time per tick
+
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *panel = dolphin->liveAnalyzer();
+    QVERIFY(panel);
+    dolphin->showLiveAnalyzer();
+    dolphin->resize(800, 400);
+    dolphin->show();
+    QApplication::processEvents();
+
+    panel->watchAllSignals();
+    auto &recorder = sim->waveformRecorder();
+    QCOMPARE(recorder.traceCount(), 5); // A + n1..n4
+
+    // The user's session: run, toggle, run — every edge through the real engine.
+    sim->update();
+    sim->update();
+    sw->setOn(true);
+    sim->update();
+    sim->update();
+    sw->setOn(false);
+    sim->update();
+    sim->update();
+    panel->canvas()->grab(QRect(0, 0, 50, 50)); // settle canvas geometry to the recording
+
+    // The staircase must be in the recorded data with sub-tick (ns) resolution.
+    auto traceFor = [&](const QString &name) -> const SignalTrace * {
+        for (int i = 0; i < recorder.traceCount(); ++i) {
+            if (recorder.trace(i).name == name) {
+                return &recorder.trace(i);
+            }
+        }
+        return nullptr;
+    };
+    auto dumpTraces = [&]() {
+        QString out;
+        for (int i = 0; i < recorder.traceCount(); ++i) {
+            const auto &tr = recorder.trace(i);
+            out += tr.name + ":";
+            for (const auto &t : tr.transitions) {
+                out += QString(" %1@%2").arg(t.second == Status::Active ? "H" : "L").arg(t.first);
+            }
+            out += "\n";
+        }
+        return out;
+    };
+    const auto *traceA = traceFor("A");
+    QVERIFY(traceA && !traceA->transitions.isEmpty());
+    const SimTime edgeA = traceA->transitions.last().first;
+    const char *stages[] = {"n1", "n2", "n3", "n4"};
+    for (int stage = 0; stage < 4; ++stage) {
+        const auto *trace = traceFor(stages[stage]);
+        QVERIFY2(trace && !trace->transitions.isEmpty(), stages[stage]);
+        const SimTime expected = edgeA + 5 * static_cast<SimTime>(stage + 1);
+        QVERIFY2(trace->transitions.last().first == expected,
+                 qPrintable(QString("%1's edge at %2 ns, expected %3 ns (A at %4).\nRecorded:\n%5")
+                                .arg(stages[stage]).arg(trace->transitions.last().first)
+                                .arg(expected).arg(edgeA).arg(dumpTraces())));
+    }
+    QVERIFY(!saveAnalyzerSnapshot(panel, m_tempDir.path(), "e2e-1-recorded").isEmpty());
+
+    // Tail-pinned zoom to saturation, exactly like the user hammering "+".
+    auto *btnZoomIn = panel->findChild<QPushButton *>("analyzerZoomInButton");
+    QVERIFY(btnZoomIn);
+    auto *hBar = panel->scrollArea()->horizontalScrollBar();
+    hBar->setValue(hBar->maximum()); // engage the tail follow (a no-op if already there)
+    for (int i = 0; i < 40 && panel->canvas()->pixelsPerNs() < 10.0; ++i) {
+        btnZoomIn->click();
+    }
+    QCOMPARE(panel->canvas()->pixelsPerNs(), 10.0); // 5 ns of delay = 50 px
+
+    // The whole staircase sits inside the visible window, resolvable steps apart.
+    const int viewport = panel->scrollArea()->viewport()->width();
+    const double ppn = panel->canvas()->pixelsPerNs();
+    const double visibleStart = static_cast<double>(panel->canvas()->timeOrigin()) + hBar->value() / ppn;
+    const double visibleEnd = visibleStart + viewport / ppn;
+    QVERIFY2(visibleStart <= static_cast<double>(edgeA) && static_cast<double>(edgeA + 20) <= visibleEnd,
+             qPrintable(QString("staircase [%1, %2] ns outside visible window [%3, %4] ns "
+                                "(hBar %5/%6, canvas %7 px, origin %8)")
+                            .arg(edgeA).arg(edgeA + 20)
+                            .arg(visibleStart, 0, 'f', 0).arg(visibleEnd, 0, 'f', 0)
+                            .arg(hBar->value()).arg(hBar->maximum())
+                            .arg(panel->canvas()->width()).arg(panel->canvas()->timeOrigin())));
+    QVERIFY2((5.0 * ppn) >= 40.0, "each 5 ns delay step must span tens of pixels");
+
+    const QString snapshot = saveAnalyzerSnapshot(panel, m_tempDir.path(), "e2e-2-staircase");
+    QVERIFY(!snapshot.isEmpty());
+    qInfo("staircase snapshot: %s", qPrintable(snapshot));
+}

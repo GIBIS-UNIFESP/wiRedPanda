@@ -87,6 +87,15 @@ private slots:
     /// Fit spans the whole recording across the VIEWPORT — not the canvas's own width,
     /// which no longer fits anything once the canvas has grown past the viewport.
     void testLiveAnalyzerFitSpansViewport();
+    /// exportImage() writes a loadable, non-blank image of the panel exactly as displayed
+    /// (the autonomous-debugging capability: tests export snapshots and the images are
+    /// inspected directly).
+    void testLiveAnalyzerExportImage();
+    /// End-to-end through the REAL pipeline (real Simulation ticks at temporal 1x, real
+    /// InputSwitch toggles): a 4-NOT chain's 5/10/15/20 ns staircase is recorded with
+    /// sub-tick timestamps AND is on-screen, pixels apart, after tail-pinned zoom to
+    /// saturation. Exports PNG snapshots at each phase for visual inspection.
+    void testGateDelayStaircaseReachableByZoom();
 
     // --- File I/O ---
 

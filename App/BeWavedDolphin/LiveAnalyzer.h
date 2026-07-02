@@ -17,6 +17,7 @@
 
 #include <QColor>
 #include <QPointer>
+#include <QString>
 #include <QTimer>
 #include <QWidget>
 
@@ -36,6 +37,13 @@ inline constexpr int TraceMargin = 4;  ///< Vertical gap between consecutive row
 inline constexpr int RulerHeight = 24; ///< Pixel height of the time-ruler row.
 inline constexpr int LabelWidth = 120; ///< Pixel width of the signal-name column.
 
+/// Hard cap on the canvas width. Strictly BELOW QWIDGETSIZE_MAX: Qt's layout machinery
+/// treats a min/max size of exactly QWIDGETSIZE_MAX as its "unconstrained" sentinel, so a
+/// scroll-area child whose minimum width equals it silently collapses to the viewport
+/// (verified: 16'777'214 stays, 16'777'215 collapses). The margin also absorbs any
+/// frame/margin arithmetic a style might add on top.
+inline constexpr int MaxCanvasWidth = QWIDGETSIZE_MAX - 1024;
+
 /// Stable per-channel color, like a real logic analyzer: channel N's trace AND its name in
 /// the label column share palette entry N % 8, so adjacent traces stay distinguishable and
 /// a name is visually tied to its waveform. Medium-lightness hues readable on both the
@@ -54,6 +62,25 @@ inline QColor traceColor(const int channel)
     };
     return palette[static_cast<std::size_t>(channel < 0 ? 0 : channel) % palette.size()];
 }
+
+/// Formats an absolute ruler tick label. The unit follows the tick SPACING (ns/µs/ms) and
+/// the value prints exactly ('f', no rounding): adjacent ticks always get distinct labels.
+/// The previous 'g'-with-4-significant-digits rounding collapsed every ns-scale tick into
+/// the same "4e+06 ns" at delay-resolving zoom — precisely where the axis matters most.
+inline QString formatRulerLabel(const SimTime time, const SimTime tickInterval)
+{
+    const char *unit = "ns";
+    double unitDiv = 1.0;
+    if (tickInterval >= 1'000'000) {
+        unit = "ms";
+        unitDiv = 1'000'000.0;
+    } else if (tickInterval >= 1'000) {
+        unit = "\xC2\xB5s";
+        unitDiv = 1'000.0;
+    }
+    return QString::number(static_cast<double>(time) / unitDiv, 'f', 0)
+         + QLatin1Char(' ') + QString::fromUtf8(unit);
+}
 } // namespace AnalyzerLayout
 
 /**
@@ -61,7 +88,7 @@ inline QColor traceColor(const int channel)
  * \brief Scrollable canvas drawing one horizontal trace per watched signal.
  *
  * \details Lives inside the panel's QScrollArea. The canvas width follows the recorded
- * timeline at the current zoom, clamped to Qt's QWIDGETSIZE_MAX; past the clamp,
+ * timeline at the current zoom, clamped to AnalyzerLayout::MaxCanvasWidth; past the clamp,
  * timeOrigin() slides a window over the newest data so live following keeps working at any
  * zoom. Painting is restricted to the exposed region, so a repaint costs O(viewport)
  * regardless of how much history has accumulated.
@@ -89,19 +116,20 @@ public:
     /// Zooms out by a factor of 2.
     void zoomOut();
 
-    /// Returns the desired size based on trace count and time span, clamped to Qt's
-    /// QWIDGETSIZE_MAX widget-dimension limit (a larger minimum size is rejected with a
-    /// qWarning on every repaint and the canvas cannot grow past it anyway).
+    /// Returns the desired size based on trace count and time span, clamped to
+    /// AnalyzerLayout::MaxCanvasWidth (Qt cannot host a wider scroll-area child; see the
+    /// constant's doc for the QWIDGETSIZE_MAX sentinel trap).
     QSize sizeHint() const override;
 
     /// Returns the minimum size.
     QSize minimumSizeHint() const override;
 
     /// Returns the simulation time mapped to canvas x = 0. Zero while the whole recording
-    /// fits within QWIDGETSIZE_MAX at the current zoom; once it no longer fits, the canvas
-    /// freezes at the maximum width and this origin advances so the window always covers the
-    /// NEWEST data at the user's chosen zoom (older data becomes reachable again by zooming
-    /// out). Public so the ruler and tests share the sliding-window mapping.
+    /// fits within AnalyzerLayout::MaxCanvasWidth at the current zoom; once it no longer
+    /// fits, the canvas freezes at the maximum width and this origin advances so the window
+    /// always covers the NEWEST data at the user's chosen zoom (older data becomes
+    /// reachable again by zooming out). Public so the ruler and tests share the
+    /// sliding-window mapping.
     SimTime timeOrigin() const;
 
     /// Tells the canvas whether the hosting simulation is in functional (zero-delay) mode,
@@ -262,6 +290,14 @@ public:
     /// Scrolling off the right edge disengages the sticky-tail follow, so the view holds
     /// while the simulation is paused.
     void zoomToLatestEdge();
+
+    /// Renders the panel exactly as displayed — toolbar, ruler, label column and the
+    /// visible slice of the trace canvas — and saves it to \a filePath (format from the
+    /// extension, PNG typical). This is what a bug report needs, and what lets automated
+    /// tooling SEE the analyzer state instead of inferring it from numbers: tests export
+    /// snapshots at key steps and the images are inspected directly. Returns false when
+    /// the file could not be written.
+    bool exportImage(const QString &filePath);
 
     /// The trace canvas (exposed for the host's tests and zoom bookkeeping).
     AnalyzerCanvas *canvas() const { return m_canvas; }
