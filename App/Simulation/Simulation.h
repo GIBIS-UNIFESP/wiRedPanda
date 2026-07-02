@@ -117,6 +117,8 @@ public:
     /// sweep) — otherwise the next update() only re-seeds from m_inputs/m_clocks and never
     /// notices that every other element's value is now stale, since processEvents() only
     /// does a full network seed on the first tick after initialize().
+    /// Deliberately does NOT touch the sim clock or the waveform recorder: the timeline
+    /// belongs to the live session or to an enclosing beginTimedRun()/endTimedRun() bracket.
     void resetEventTracking();
 
     // --- Temporal (propagation-delay) simulation ---
@@ -141,13 +143,17 @@ public:
     /// Begins a deterministic timed (temporal) run that advances \a nsPerTick of sim-time per
     /// update(): sets the per-tick window, resets sim-time to 0, drops any queued events, and
     /// forces the next update() to re-seed the whole network from the current element state.
+    /// The bracket is invisible to a live recording: it captures the live clock and suspends
+    /// the waveform recorder itself (restored by endTimedRun()), so a sweep can neither
+    /// pollute nor destroy the Live Analyzer's recorded history.
     /// Pair with endTimedRun() so the live simulation resumes cleanly. Used by callers that drive
     /// update() manually over a fixed timeline (e.g. the BeWavedDolphin column sweep).
     void beginTimedRun(SimTime nsPerTick);
 
     /// Ends a timed run started by beginTimedRun(): restores the per-tick window to \a restoreTo,
-    /// drops any events still queued past the swept window, and resets sim-time so the live
-    /// (un-timed) simulation resumes from a clean state.
+    /// drops any events still queued past the swept window, and restores the live sim clock and
+    /// recording flag captured by beginTimedRun() — the live timeline (and any recorded
+    /// history) resumes exactly where it left off.
     void endTimedRun(SimTime restoreTo);
 
     /// Sets the propagation delay (sim-time units) for \a element. 0 ⇒ zero-delay.
@@ -344,4 +350,6 @@ private:
     QHash<const GraphicElement *, SimTime> m_delays;  ///< Per-element propagation delay (default 0).
     bool m_eventInitDone = false;                     ///< False until the first seed-all baseline settle.
     WaveformRecorder m_recorder;                       ///< Timing-diagram trace recorder (temporal mode).
+    SimTime m_liveTimeBeforeTimedRun = 0;             ///< Live clock captured by beginTimedRun(), restored by endTimedRun().
+    bool m_wasRecordingBeforeTimedRun = false;        ///< Recording flag captured/restored across a timed run.
 };

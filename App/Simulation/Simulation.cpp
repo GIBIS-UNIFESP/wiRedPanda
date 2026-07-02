@@ -50,14 +50,13 @@ void Simulation::setVisualThrottleEnabled(bool enabled)
 
 void Simulation::resetEventTracking()
 {
+    // PURE tracking invalidation: the next update() reseeds the whole network instead of
+    // trusting incremental change detection. The time-base and the recorder deliberately
+    // stay untouched — they belong to whoever owns the timeline (the live session, or a
+    // beginTimedRun()/endTimedRun() bracket around a sweep, which suspends recording and
+    // restores the live clock so the recorded history survives).
     m_eventInitDone = false;
     m_eventQueue.clear();
-    m_currentTime = 0;
-    // The recorder's traces are keyed to absolute sim-time; rewinding the clock to 0 without
-    // clearing them would let a later recordAll() append transitions with SMALLER timestamps
-    // than what's already recorded, breaking the ascending-order invariant statusAt() and the
-    // waveform viewer both rely on. This preserves the watch list, only the recorded history.
-    m_recorder.resetTimeline();
 }
 
 void Simulation::update()
@@ -372,14 +371,20 @@ void Simulation::beginTimedRun(const SimTime nsPerTick)
     // clock and drop any pending events so column 0 starts at t=0, and force a full re-seed so the
     // first update() settles the whole network from the current input state rather than relying on
     // incremental schedule-on-change carried over from the live run.
+    //
+    // The bracket must be INVISIBLE to the live session sharing this Simulation: the Live
+    // Analyzer may be recording, and a sweep runs on every stimulus-grid interaction —
+    // including merely opening the waveform tool. So the bracket itself captures the live
+    // clock and suspends recording (owning this here means preservation cannot depend on
+    // the caller remembering a suspender); endTimedRun() restores both, keeping the
+    // recorded history valid and its timestamps ascending.
+    m_liveTimeBeforeTimedRun = m_currentTime;
+    m_wasRecordingBeforeTimedRun = m_recorder.isRecording();
+    m_recorder.setRecording(false);
     m_timePerTick = nsPerTick;
     m_currentTime = 0;
     m_eventQueue.clear();
     m_eventInitDone = false;
-    // See resetEventTracking()/restart() for why: rewinding the clock to 0 without also
-    // resetting the recorder's timeline would let the sweep's transitions land at timestamps
-    // smaller than whatever the live run already recorded.
-    m_recorder.resetTimeline();
 }
 
 void Simulation::endTimedRun(const SimTime restoreTo)
@@ -389,12 +394,16 @@ void Simulation::endTimedRun(const SimTime restoreTo)
     // the next live update() re-seed from scratch.
     m_timePerTick = restoreTo;
     m_eventQueue.clear();
-    m_currentTime = 0;
     m_eventInitDone = false;
-    // The resumed live run's timeline restarts at 0 too; without this, whatever the timed sweep
-    // itself recorded (if recording happened to be enabled) would leave stale, out-of-order
-    // timestamps ahead of the live run's own.
-    m_recorder.resetTimeline();
+    // Resume the LIVE timeline where it left off. Rewinding to 0 here (the old behavior)
+    // forced wiping the recorder's history (the ascending-timestamp invariant statusAt()
+    // relies on) — which silently destroyed the Live Analyzer session on every sweep.
+    // With the clock restored, the history stays valid as-is and recording (suspended by
+    // beginTimedRun()) simply picks up where it left off; the reseed on the next live
+    // tick re-settles to the restored input state and the recorder's dedup keeps the
+    // sweep invisible.
+    m_currentTime = m_liveTimeBeforeTimedRun;
+    m_recorder.setRecording(m_wasRecordingBeforeTimedRun);
 }
 
 bool Simulation::isRunning()

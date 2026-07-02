@@ -366,59 +366,69 @@ void TestBewavedDolphinGui::testNonTemporalSweepIgnoresLiveTemporalMode()
     QCOMPARE(sim->timePerTick(), SimTime(1));
 }
 
-void TestBewavedDolphinGui::testRunDoesNotPolluteLiveWaveformRecorder()
+void TestBewavedDolphinGui::testRunPreservesLiveAnalyzerTimeline()
 {
     // Regression test: BeWavedDolphin's sweep (WaveformSimulator::sweep()) drives the same
-    // Simulation its own Live Analyzer page may be watching. Simulate "Watch All"
-    // being active by watching a signal directly and enabling recording, then run a dolphin
-    // sweep on the same scene. WaveformSimulator::sweep() calls resetEventTracking() (resetting
-    // the live clock to 0, same as an explicit Restart) regardless of whether recording is
-    // suspended, so the pre-sweep trace history is legitimately cleared — that's the documented,
-    // accepted trade-off (opening/running BeWavedDolphin "restarts" the live timeline). What must
-    // NOT happen is the sweep's own synthetic test-vector values leaking into the trace, and
-    // recording must resume cleanly (not left disabled) once the sweep completes.
+    // Simulation its own Live Analyzer page may be watching. The sweep must be INVISIBLE
+    // to a live recording: no synthetic test-vector values may leak into a trace, the
+    // recorded history must survive intact (previously begin/endTimedRun wiped it and
+    // rewound the clock to 0 — every run(), including the one at tool-open, silently
+    // collapsed the analyzer to flat seed lines with a dead zoom), the live clock must
+    // resume where it left off, and recording must keep appending monotonically after.
     auto ws = createAndCircuit();
     auto *sim = ws->scene()->simulation();
+    sim->setTimePerTick(1'000'000); // temporal 1x, like the interactive session
 
     const auto elements = ws->scene()->elements();
-    GraphicElement *ledElement = nullptr;
+    GraphicElement *andElement = nullptr;
+    InputSwitch *sw0 = nullptr;
     for (auto *elm : elements) {
-        if (elm->elementType() == ElementType::Led) {
-            ledElement = elm;
-            break;
+        if (elm->elementType() == ElementType::And && !andElement) {
+            andElement = elm;
+        } else if (elm->elementType() == ElementType::InputSwitch && !sw0) {
+            sw0 = qobject_cast<InputSwitch *>(elm);
         }
     }
-    QVERIFY2(ledElement, "AND circuit should contain a Led");
+    QVERIFY2(andElement && sw0, "AND circuit should contain an And gate and an InputSwitch");
 
-    sim->waveformRecorder().watchSignal("Led_out", ledElement, 0);
+    // Live session: watch the AND output, tick, and capture genuine history (both
+    // switches get driven high so the output actually transitions).
+    sim->waveformRecorder().watchSignal("And_out", andElement, 0);
     sim->waveformRecorder().setRecording(true);
-    sim->update(); // one real tick, so the trace has genuine live data before the sweep
-    QVERIFY(!sim->waveformRecorder().trace(0).transitions.isEmpty());
+    sim->update();
+    for (auto *elm : elements) {
+        if (auto *sw = qobject_cast<InputSwitch *>(elm)) {
+            sw->setOn(true);
+        }
+    }
+    sim->update();
+    sim->update();
+    const auto before = sim->waveformRecorder().trace(0).transitions;
+    QVERIFY2(before.size() >= 2, "live session should have recorded a real transition");
+    const SimTime liveTimeBefore = sim->currentTime();
+    QVERIFY(liveTimeBefore > 0);
 
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
     dolphin->setCellValue(0, 5, 1); // a value the sweep will drive that must NOT leak into the trace
     dolphin->setCellValue(1, 5, 1);
     dolphin->run(); // drives the sweep on the SAME Simulation
 
-    // Recording must be restored (it was on before the sweep), and no synthetic sweep data must
-    // have been recorded — the legitimate resetEventTracking()-driven clear leaves it empty.
+    // The sweep left no trace of itself: recording restored, history byte-identical
+    // (preserved AND unpolluted), live clock back where it was.
     QVERIFY(sim->waveformRecorder().isRecording());
-    QVERIFY(sim->waveformRecorder().trace(0).transitions.isEmpty());
+    QCOMPARE(sim->waveformRecorder().trace(0).transitions, before);
+    QCOMPARE(sim->currentTime(), liveTimeBefore);
 
-    // Recording resumes correctly and cleanly after the sweep: a genuine post-sweep live tick
-    // produces exactly one fresh, correctly-valued transition — not a leftover mix of synthetic
-    // sweep values and real ones.
-    InputSwitch *sw0 = nullptr;
-    for (auto *elm : elements) {
-        if (elm->elementType() == ElementType::InputSwitch) {
-            sw0 = qobject_cast<InputSwitch *>(elm);
-            break;
-        }
-    }
-    QVERIFY2(sw0, "AND circuit should contain an InputSwitch");
-    sw0->setOn(true);
+    // And the live session continues monotonically: a real post-sweep edge appends with a
+    // timestamp strictly beyond the preserved history.
+    sw0->setOn(false);
     sim->update();
-    QCOMPARE(sim->waveformRecorder().trace(0).transitions.size(), 1);
+    sim->update();
+    const auto &after = sim->waveformRecorder().trace(0).transitions;
+    QVERIFY2(after.size() > before.size(), "post-sweep live edge must keep recording");
+    QVERIFY2(after.last().first > before.last().first,
+             qPrintable(QString("post-sweep timestamp %1 must exceed preserved history end %2")
+                            .arg(after.last().first).arg(before.last().first)));
 }
 
 void TestBewavedDolphinGui::testRunResetsICInternalSequentialState()

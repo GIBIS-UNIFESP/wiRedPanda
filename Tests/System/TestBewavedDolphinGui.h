@@ -44,9 +44,12 @@ private slots:
     void testNonTemporalSweepIgnoresLiveTemporalMode();
 
     /// BeWavedDolphin's sweep drives the same Simulation (and WaveformRecorder) its own
-    /// Live Analyzer page may be watching — merely opening/running a dolphin sweep must not
-    /// write synthetic test-vector transitions into a trace being live-recorded.
-    void testRunDoesNotPolluteLiveWaveformRecorder();
+    /// Live Analyzer page may be watching — a sweep must neither write synthetic
+    /// test-vector transitions into a live trace NOR destroy it: the recorded history and
+    /// the live time-base survive the sweep intact and keep appending monotonically after
+    /// (previously every run() — including the one at tool-open — wiped the recording and
+    /// rewound the clock to 0, silently collapsing the analyzer to flat seed lines).
+    void testRunPreservesLiveAnalyzerTimeline();
 
     /// The sweep's pre-run reset must reach sequential elements nested inside ICs (the flat
     /// netlist simulates them directly) — a flip-flop's live-run state must not leak into a

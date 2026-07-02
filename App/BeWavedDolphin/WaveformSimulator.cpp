@@ -70,11 +70,11 @@ void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
     // waveform shows incorrect values.
     SimulationThrottleDisabler throttleDisabler(m_simulation);
     // The sweep drives m_simulation with synthetic test-vector inputs, not the live circuit
-    // state — if the Live Analyzer has "Watch All" recording active on this same Simulation
-    // (the stimulus editor and the analyzer share one Simulation per scene), the sweep's
-    // resetEventTracking() call below plus every update() it drives would otherwise write
-    // these synthetic transitions straight into the analyzer's live traces. Recording is
-    // unconditionally off for the sweep's duration and restored to whatever it was after.
+    // state. The beginTimedRun()/endTimedRun() bracket around this sweep already suspends
+    // the shared WaveformRecorder itself (and preserves the live clock and recorded
+    // history — the stimulus editor and the Live Analyzer share one Simulation per scene),
+    // so this suspender is defense-in-depth for any caller driving sweep() outside such a
+    // bracket; nested save/restore is harmless.
     SimulationRecordingSuspender recordingSuspender(m_simulation);
 
     // Reset every element's sequential state (Q/~Q outputs, edge-detection variables) to
