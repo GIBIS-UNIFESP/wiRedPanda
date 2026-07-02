@@ -227,9 +227,10 @@ private:
     static bool wirelessStateDiffers(const QVector<WirelessState> &before,
                                      const QVector<WirelessState> &after);
 
-    /// Refreshes visuals/dirty-state without a full simulation rebuild — unless the edit
-    /// changed wireless routing (m_wirelessTopologyChange), which lives in the simulation
-    /// topology and needs one. Shared by redo() and undo().
+    /// Refreshes visuals/dirty-state and pushes any property that has a runtime-visible
+    /// Simulation-side cache (currently: propagation delay), without a full simulation
+    /// rebuild — unless the edit changed wireless routing (m_wirelessTopologyChange), which
+    /// lives in the simulation topology and needs one. Shared by redo() and undo().
     void refreshRuntimeState();
 
     // --- Members ---
