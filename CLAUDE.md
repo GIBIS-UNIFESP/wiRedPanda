@@ -180,6 +180,26 @@ Advanced development features supported:
   circuit tab, swapped into the dock on tab switch). Toggle Functional/Temporal via the
   toolbar selector.
 
+### Step Debugger (circuit "line-by-line" stepping)
+
+- `Simulation::stepPropagation()`/`stepBack()` (paused-only; `NotReady` while the timer
+  runs): each forward step advances the circuit to the next visible signal change, driving
+  the SAME seed/drain/wave primitives as `update()` (`seedTickEvents()`, `drainOneEvent()`,
+  `finishDrain()`, `beginWave()`/`finishWave()` — no forked engine). Combinational changes
+  step one element at a time in causal order; a synchronous flip-flop commit (plus its
+  resettled combinational cone) publishes as ONE step. Clocks stay wall-clock frozen while
+  stepping; manual input toggles are picked up by the stepped tick's preamble.
+- Each visible step pushes a full-state snapshot (per-element `ElementSimState` copies,
+  flip-flop `simInternalState()` edge state, event queue, sim clock, recorder
+  `TimelineMark`) onto a session-bounded rewind stack (cap 512). `start()` (Play resume),
+  `beginTimedRun()` (dolphin sweeps), `setTimePerTick()`, `restart()`, and `initialize()`
+  are "continue" boundaries: they end the session (`finishStepSession()` completes any open
+  tick so a deferred-commit bracket never leaks) and clear the history.
+- UI: Step Forward (F6) / Step Back (Shift+F6) next to Play/Pause; stepping while running
+  pauses first. The scene rings the changed elements (`Scene::setSteppedElements()`,
+  orange `drawForeground` cursor); the status bar names them and, in temporal mode, the
+  sim time.
+
 ### Code Evidence
 
 ```cpp
