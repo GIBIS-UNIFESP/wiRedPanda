@@ -38,20 +38,17 @@ void TestCPUIntegration::testProgramCounterIncrement()
     }
     InputSwitch *pc_load = new InputSwitch();
     InputSwitch *pc_inc = new InputSwitch();
-    InputSwitch *pc_enable = new InputSwitch();
     std::unique_ptr<WorkSpace> workspace_pc(buildProgramCounter8bit(
-        pc_load_val.data(), pc_load, pc_inc, reset, pc_enable, pc_clock, pc_out.data()));
+        pc_load_val.data(), pc_load, pc_inc, reset, pc_clock, pc_out.data()));
     auto *sim_pc = workspace_pc->simulation();
     // Reset system to initial state
     reset->setOn(true);
-    pc_enable->setOn(false);
     pc_inc->setOn(false);
     sim_pc->update();
     clockCycle(sim_pc, pc_clock);
     sim_pc->update();
     reset->setOn(false);
-    // Enable PC for execution
-    pc_enable->setOn(true);
+    // Increment PC for execution
     pc_inc->setOn(true);
     sim_pc->update();
     int pc_value = 0;

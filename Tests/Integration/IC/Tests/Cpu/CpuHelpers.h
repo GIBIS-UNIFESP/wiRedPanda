@@ -38,7 +38,7 @@
  * - 8x PriorityMux3to1 ICs (priority: reset > load > inc/hold)
  *
  * Port mapping:
- * - Inputs: loadValue[7:0], load, inc, reset, enable, clock
+ * - Inputs: loadValue[7:0], load, inc, reset, clock
  * - Outputs: pc[7:0]
  *
  * Control flow (per clock cycle):
@@ -51,7 +51,6 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
                                                            InputSwitch* load,
                                                            InputSwitch* inc,
                                                            InputSwitch* reset,
-                                                           InputSwitch* enable,
                                                            InputSwitch* clock,
                                                            Led* pc[8])
 {
@@ -77,8 +76,8 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
         throw std::runtime_error(QString("Failed to load ProgramCounter8bit IC: %1").arg(e.what()).toStdString());
     }
 
-    // Add all elements to scene (enable is unused but kept for API compatibility)
-    builder.add(load, inc, reset, enable, clock, pcIC);
+    // Add all elements to scene
+    builder.add(load, inc, reset, clock, pcIC);
     for (int i = 0; i < 8; i++) {
         builder.add(loadValue[i], pc[i]);
     }
@@ -113,7 +112,7 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
  * - 8x Mux gates (select between hold and load)
  *
  * Port mapping:
- * - Inputs: instruction[7:0], load, enable, clock
+ * - Inputs: instruction[7:0], load, clock
  * - Outputs: ir[7:0]
  *
  * Control flow (per clock cycle):
@@ -122,7 +121,6 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
  */
 inline std::unique_ptr<WorkSpace> buildInstructionRegister8bit(InputSwitch* instruction[8],
                                                 InputSwitch* load,
-                                                InputSwitch* enable,
                                                 InputSwitch* clock,
                                                 Led* ir[8])
 {
@@ -141,7 +139,7 @@ inline std::unique_ptr<WorkSpace> buildInstructionRegister8bit(InputSwitch* inst
     for (int i = 0; i < 8; i++) {
         builder.add(instruction[i], ir[i], irStorage[i], irMuxes[i]);
     }
-    builder.add(load, enable, clock);
+    builder.add(load, clock);
 
     // Connect clock to all flip-flops
     for (int i = 0; i < 8; i++) {

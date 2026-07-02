@@ -34,7 +34,7 @@ void TestCPUInstructionFetch::testInstructionFetch()
     // This is an integration test combining PC + Memory + IR
     QVector<InputSwitch *> pcLoadVal;
     QVector<Led *> pcOut;
-    InputSwitch *pcLoad, *pcInc, *pcReset, *pcEnable;
+    InputSwitch *pcLoad, *pcInc, *pcReset;
     InputSwitch *clock;
     for (int i = 0; i < 8; i++) {
         pcLoadVal.append(new InputSwitch());
@@ -43,13 +43,10 @@ void TestCPUInstructionFetch::testInstructionFetch()
     pcLoad = new InputSwitch();
     pcInc = new InputSwitch();
     pcReset = new InputSwitch();
-    pcEnable = new InputSwitch();
     clock = new InputSwitch();
     // Build integrated fetch circuit
-    std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(pcLoadVal.data(), pcLoad, pcInc, pcReset, pcEnable, clock, pcOut.data()));
+    std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(pcLoadVal.data(), pcLoad, pcInc, pcReset, clock, pcOut.data()));
     auto *sim = workspace->simulation();
-    // Initialize PC enable (required for PC operations)
-    pcEnable->setOn(true);
     pcInc->setOn(false);
     pcLoad->setOn(false);
     pcReset->setOn(false);
@@ -59,7 +56,7 @@ void TestCPUInstructionFetch::testInstructionFetch()
         pcLoadVal[i]->setOn((initialPC >> i) & 1);
     }
     sim->update();
-    // Load initial PC value (requires two clock cycles for complete load)
+    // Load initial PC value (mux->register path; completes on a single clock edge)
     pcLoad->setOn(true);
     sim->update();
     clockCycle(sim, clock);  // Complete clock cycle (HIGH->settle->LOW->settle)
@@ -92,6 +89,6 @@ void TestCPUInstructionFetch::testInstructionFetch_data()
     QTest::newRow("fetch_from_mid_addr") << 0x80 << 1;
     QTest::newRow("fetch_wrap_ff") << 0xFF << 1;
     QTest::newRow("fetch_increment_test") << 0x00 << 2;
-    QTest::newRow("fetch_hold_enable") << 0x00 << 1;
-    QTest::newRow("fetch_timing") << 0x00 << 1;
+    QTest::newRow("fetch_mid_multi_cycle") << 0x40 << 4;  // mid-range start, multi-cycle
+    QTest::newRow("fetch_wrap_multi") << 0xFE << 3;       // 0xFE + 3 wraps to 0x01
 }

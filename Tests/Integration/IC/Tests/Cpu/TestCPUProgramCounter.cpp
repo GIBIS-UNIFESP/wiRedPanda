@@ -35,7 +35,7 @@ void TestCPUProgramCounter::testProgramCounter()
     QFETCH(int, incrementCount);
     QFETCH(int, expectedResult);
     QVector<InputSwitch *> loadValueBits;
-    InputSwitch *load, *inc, *reset, *enable, *clock;
+    InputSwitch *load, *inc, *reset, *clock;
     QVector<Led *> pcBits;
     for (int i = 0; i < 8; i++) {
         loadValueBits.append(new InputSwitch());
@@ -44,9 +44,8 @@ void TestCPUProgramCounter::testProgramCounter()
     load = new InputSwitch();
     inc = new InputSwitch();
     reset = new InputSwitch();
-    enable = new InputSwitch();
     clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(loadValueBits.data(), load, inc, reset, enable, clock, pcBits.data()));
+    std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(loadValueBits.data(), load, inc, reset, clock, pcBits.data()));
     auto *sim = workspace->simulation();
     // Test setup - set initial load values using setOn(bool) instead of setMultiBitInput
     for (int i = 0; i < 8; i++) {
@@ -134,7 +133,7 @@ void TestCPUProgramCounter::testProgramCounterPriority()
     QFETCH(int, loadValue);
     QFETCH(int, expectedResult);
     QVector<InputSwitch *> loadValueBits;
-    InputSwitch *loadSwitch, *incSwitch, *resetSwitch, *enable, *clock;
+    InputSwitch *loadSwitch, *incSwitch, *resetSwitch, *clock;
     QVector<Led *> pcBits;
     for (int i = 0; i < 8; i++) {
         loadValueBits.append(new InputSwitch());
@@ -143,9 +142,8 @@ void TestCPUProgramCounter::testProgramCounterPriority()
     loadSwitch = new InputSwitch();
     incSwitch = new InputSwitch();
     resetSwitch = new InputSwitch();
-    enable = new InputSwitch();
     clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(loadValueBits.data(), loadSwitch, incSwitch, resetSwitch, enable, clock, pcBits.data()));
+    std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(loadValueBits.data(), loadSwitch, incSwitch, resetSwitch, clock, pcBits.data()));
     auto *sim = workspace->simulation();
     // Set up load value
     for (int i = 0; i < 8; i++) {
