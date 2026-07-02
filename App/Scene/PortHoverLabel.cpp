@@ -3,11 +3,11 @@
 
 #include "App/Scene/PortHoverLabel.h"
 
-#include "App/Core/ThemeManager.h"
-
 #include <QFontMetricsF>
 #include <QPainter>
 #include <QToolTip>
+
+#include "App/Core/ThemeManager.h"
 
 namespace {
 constexpr qreal kPaddingX = 5.0;   ///< Horizontal text padding inside the chip.
