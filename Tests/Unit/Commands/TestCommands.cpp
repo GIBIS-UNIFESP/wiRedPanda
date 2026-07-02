@@ -8,6 +8,7 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
+#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputButton.h"
@@ -820,6 +821,108 @@ void TestCommands::testUpdateCommand()
     // Redo should apply new label again
     undoStack->redo();
     QCOMPARE(andGate->label(), newLabel);
+}
+
+void TestCommands::testUpdateCommandPreservesClockPhase()
+{
+    // UpdateCommand covers property-only edits (label, color, delay...). It must not force a
+    // full Simulation::initialize(), which calls Clock::resetClock() (forcing every Clock back
+    // to its HIGH power-on phase) for every clock in the scene — collateral damage from editing
+    // something unrelated while a clock is running. Regression for the bug fixed by
+    // Scene::setPropertyUpdateRequired().
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *clock = new Clock();
+    auto *andGate = new And();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, andGate}, scene));
+
+    // AddItemsCommand's structural reinit already ran resetClock(), forcing the clock HIGH.
+    // Force it LOW to give an unambiguous signal: only a resetClock() call would flip it back.
+    clock->setOn(false);
+    QCOMPARE(clock->isOn(), false);
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    andGate->save(stream);
+
+    andGate->setLabel("Renamed"); // unrelated, non-structural property edit
+    scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{andGate}, oldData, scene));
+
+    QCOMPARE(clock->isOn(), false);
+}
+
+void TestCommands::testUpdateCommandWirelessLabelRewiresChannel()
+{
+    // A wireless label IS the Tx→Rx channel, and the channel graph is resolved only inside
+    // Simulation::initialize() (buildTxMap()/connectWirelessElements()). Renaming an Rx's
+    // label via UpdateCommand must therefore escalate to a full rebuild — on the
+    // property-only fast path the Rx silently keeps listening to the OLD channel until an
+    // unrelated structural edit.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    CircuitBuilder builder(scene);
+    auto *swA = new InputSwitch();
+    auto *swB = new InputSwitch();
+    auto *txA = new Node();
+    auto *txB = new Node();
+    auto *rx = new Node();
+    builder.add(swA, swB, txA, txB, rx);
+    txA->setLabel("A");
+    txA->setWirelessMode(WirelessMode::Tx);
+    txB->setLabel("B");
+    txB->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("A");
+    rx->setWirelessMode(WirelessMode::Rx);
+    builder.connect(swA, 0, txA, 0);
+    builder.connect(swB, 0, txB, 0);
+    auto *sim = builder.initSimulation();
+
+    swA->setOn(true);
+    swB->setOn(false);
+    sim->update();
+    QCOMPARE(rx->outputValue(0), Status::Active); // listening on channel "A"
+
+    // Rename the Rx's channel to "B" through the same UpdateCommand path the editor uses.
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    rx->save(stream);
+    rx->setLabel("B");
+    scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{rx}, oldData, scene));
+
+    sim->update();
+    QCOMPARE(rx->outputValue(0), Status::Inactive); // now listening on channel "B"
+
+    // Undo restores the old channel — again a genuine wireless change, again a rebuild.
+    scene->undoStack()->undo();
+    sim->update();
+    QCOMPARE(rx->outputValue(0), Status::Active);
+}
+
+void TestCommands::testUpdateCommandNonWirelessNodeEditKeepsFastPath()
+{
+    // The wireless escalation must be precise: editing a NON-wireless property of a
+    // selection that merely contains a plain (mode None) Node keeps the property-only fast
+    // path — a blanket "any Node ⇒ rebuild" would reintroduce the clock-phase reset this
+    // command's fast path exists to prevent (see testUpdateCommandPreservesClockPhase).
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *clock = new Clock();
+    auto *node = new Node(); // plain junction, WirelessMode::None
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, node}, scene));
+
+    clock->setOn(false); // unambiguous signal: only a resetClock() would flip it back HIGH
+    QCOMPARE(clock->isOn(), false);
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    node->save(stream);
+    node->setLabel("junction-42"); // decorative label on a None-mode node — not a channel
+    scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{node}, oldData, scene));
+
+    QCOMPARE(clock->isOn(), false); // no Simulation::initialize(), no resetClock()
 }
 
 void TestCommands::testToggleTruthTableOutputCommandBounds()

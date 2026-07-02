@@ -33,6 +33,9 @@ private slots:
     void testMorphPreservesFlip();
     void testMorphPreservesVolume();
     void testUpdateCommand();
+    void testUpdateCommandPreservesClockPhase();
+    void testUpdateCommandWirelessLabelRewiresChannel();
+    void testUpdateCommandNonWirelessNodeEditKeepsFastPath();
 
     // Connection commands
     void testConnectionPreservation();

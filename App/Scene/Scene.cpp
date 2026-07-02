@@ -225,11 +225,7 @@ void Scene::setAutosaveRequired()
 
 void Scene::setCircuitUpdateRequired()
 {
-    // Re-applying visibility ensures newly-added ports/wires respect the current
-    // show/hide state; without this, ports on fresh elements would always appear visible
-    m_visibilityManager.reapply();
-
-    update();
+    setPropertyUpdateRequired();
 
     // Re-initialize topological sort and simulation graph after any structural change.
     // If initialize() bails (e.g. the scene dropped to just the border rect), it left
@@ -239,6 +235,15 @@ void Scene::setCircuitUpdateRequired()
     if (!m_simulation.initialize()) {
         m_simulation.restart();
     }
+}
+
+void Scene::setPropertyUpdateRequired()
+{
+    // Re-applying visibility ensures newly-added ports/wires respect the current
+    // show/hide state; without this, ports on fresh elements would always appear visible
+    m_visibilityManager.reapply();
+
+    update();
 
     m_autosaveRequired = true;
 }
