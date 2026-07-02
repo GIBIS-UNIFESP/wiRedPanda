@@ -233,6 +233,14 @@ jobs:
         APPIMAGE_EXTRACT_AND_RUN=1 QTDIR=$QT_ROOT_DIR \
           ./appimagetool -s deploy appimage/usr/share/applications/wiredpanda.desktop
 
+        # go-appimage deploys copies of the dynamic loader (lib*/ and usr/lib*/)
+        # without the exec bit.  The FUSE mount doesn't enforce mode bits on
+        # exec, but a real filesystem does: --appimage-extract-and-run and
+        # extracted-AppRun runs exec the loader directly and fail with EACCES
+        # unless it is executable.  Same ld-*.so.* pattern AppRun uses to
+        # locate the loader, so it covers every arch's loader name and path.
+        find appimage -name 'ld-*.so.*' -exec chmod 755 {} +
+
         # go-appimage hardcodes deploying only libqxcb.so from Qt's platforms/
         # directory (probonopd/go-appimage#322), copying it to the AppDir under
         # the CI host path (home/runner/work/…).  This creates a second
@@ -296,6 +304,31 @@ jobs:
           echo "Error: AppImage extraction failed - corrupt AppImage"
           exit 1
         fi
+
+        # The dynamic loader must be executable: AppRun execs it directly, and
+        # while the FUSE mount doesn't enforce mode bits, a real filesystem
+        # does (--appimage-extract-and-run, extracted-AppRun runs).
+        LOADERS=$(find squashfs-root -name 'ld-*.so.*')
+        if [ -z "$LOADERS" ]; then
+          echo "Error: no dynamic loader (ld-*.so.*) found in AppImage"
+          exit 1
+        fi
+        NONEXEC=$(find squashfs-root -name 'ld-*.so.*' ! -perm -u+x)
+        if [ -n "$NONEXEC" ]; then
+          echo "Error: dynamic loader not executable - AppImage cannot run without FUSE:"
+          echo "$NONEXEC"
+          exit 1
+        fi
+        echo "✓ Dynamic loader executable: $(echo "$LOADERS" | tr '\n' ' ')"
+
+        # Functional no-FUSE check: judge servers, containers, and other
+        # locked-down hosts run the AppImage via extract-and-run.
+        echo "Running --appimage-extract-and-run --version..."
+        if ! QT_QPA_PLATFORM=offscreen "./$APPIMAGE_FILE" --appimage-extract-and-run --version; then
+          echo "Error: AppImage failed to run in no-FUSE (extract-and-run) mode"
+          exit 1
+        fi
+        echo "✓ AppImage runs without FUSE (extract-and-run)"
 
         echo "AppImage structure validation:"
 
