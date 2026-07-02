@@ -30,6 +30,8 @@
         <file>Toolbar/rotateR.svg</file>
         <file>Toolbar/save.svg</file>
         <file>Toolbar/selectAll.svg</file>
+        <file>Toolbar/stepBack.svg</file>
+        <file>Toolbar/stepForward.svg</file>
         <file>Toolbar/stop.svg</file>
         <file>Toolbar/trashcan.svg</file>
         <file>Toolbar/undo.svg</file>

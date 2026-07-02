@@ -208,6 +208,9 @@ void SceneUiBinder::bind(WorkSpace *tab)
     m_ui->actionZoomIn->setEnabled(tab->view()->canZoomIn());
     m_ui->actionZoomOut->setEnabled(tab->view()->canZoomOut());
 
+    // Synchronise the step-debugger rewind availability to the new tab's session.
+    m_ui->actionStepBack->setEnabled(tab->simulation()->canStepBack());
+
     // Synchronise the mute button state to the newly visible tab's mute intent.
     const bool muted = tab->simulation()->isUserMuted();
     m_ui->actionMute->setChecked(muted);

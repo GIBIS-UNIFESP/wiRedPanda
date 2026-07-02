@@ -38,6 +38,18 @@ private slots:
     // --- Simulation controls ---
 
     void testPlayPauseToggle();
+    /// Step Forward/Step Back actions sit next to Play in the toolbar and the Simulation
+    /// menu (F6 / Shift+F6); Step Back starts disabled — there is nothing to rewind yet.
+    void testStepActionsPresentAndOrdered();
+    /// Pausing, toggling a switch, and triggering Step Forward advances exactly one gate,
+    /// rings it with the scene step cursor, enables Step Back, and reports via status bar.
+    void testStepForwardWalksAndRingsCircuit();
+    /// Triggering Step Forward while the simulation runs acts as a debugger break: it
+    /// unchecks Play (pausing the timer) before stepping.
+    void testStepWhileRunningPausesFirst();
+    /// Step Back rewinds the last step (gate output restored, rewound elements ringed) and
+    /// disables itself once the history is empty; resuming Play clears cursor and history.
+    void testStepBackRewindsUi();
     void testRestartSimulation();
     void testTemporalModeSelector();
     void testTemporalModeReinitializesFeedback();
