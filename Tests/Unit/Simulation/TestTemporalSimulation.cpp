@@ -1081,6 +1081,55 @@ void TestTemporalSimulation::testCanvasWheelZoomRequiresCtrl()
     QCOMPARE(requests.last().at(0).toInt(), -1);      // wheel down → zoom out
 }
 
+void TestTemporalSimulation::testCanvasPreRecordRegionBlank()
+{
+    // Watching typically starts mid-run: nothing is known before a trace's first recorded
+    // sample, so that region must stay blank. The pre-fix renderer drew a definite LOW
+    // there (statusAt() returns Inactive before the first sample), which made any view of
+    // the pre-record region — e.g. the unanchored-zoom drift to t = 0 — read as "every
+    // signal is low" instead of "no data here".
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *elm = new Not();
+    builder.add(sw, elm);
+    builder.connect(sw, 0, elm, 0);
+    builder.initSimulation();
+
+    WaveformRecorder recorder;
+    recorder.watchSignal("n", elm, 0);
+    recorder.setRecording(true);
+    elm->setOutputValue(0, Status::Active);
+    recorder.recordAll(600); // first sample: HIGH at t = 600 ns
+    elm->setOutputValue(0, Status::Inactive);
+    recorder.recordAll(800);
+
+    AnalyzerCanvas canvas;
+    canvas.setRecorder(&recorder);
+    canvas.setPixelsPerNs(1.0);     // x == t in pixels
+    canvas.grab(QRect(0, 0, 1, 1)); // settle the canvas to its hint (maxTime + pad wide)
+    const QImage img = canvas.grab().toImage();
+    QVERIFY(img.width() >= 800);
+
+    const QRgb traceRgb = AnalyzerLayout::traceColor(0).rgb();
+    auto columnRangeHasTraceColor = [&](int x0, int x1) {
+        for (int x = x0; x <= x1 && x < img.width(); ++x) {
+            for (int y = 0; y < img.height(); ++y) {
+                if (img.pixel(x, y) == traceRgb) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    // ±20 px margins around the first sample absorb the 2 px pen and rounding.
+    QVERIFY2(!columnRangeHasTraceColor(0, 580),
+             "the region before the first recorded sample must stay blank");
+    QVERIFY2(columnRangeHasTraceColor(620, 780),
+             "the recorded region must draw the trace");
+}
+
 void TestTemporalSimulation::testAnalyzerTraceColorPalette()
 {
     // Per-channel colors like a real logic analyzer: the first 8 channels are pairwise
