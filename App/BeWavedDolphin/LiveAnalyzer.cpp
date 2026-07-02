@@ -171,10 +171,7 @@ void AnalyzerCanvas::drawTrace(QPainter &painter, int traceIndex, int y0,
         return;
     }
 
-    const QColor signalColor = (trace.logic && trace.logic->propagationDelay() > 0)
-                                   ? QColor(0, 180, 0)
-                                   : QColor(0, 100, 220);
-    painter.setPen(QPen(signalColor, 2));
+    painter.setPen(QPen(AnalyzerLayout::traceColor(traceIndex), 2));
 
     auto yForStatus = [&](Status s) -> int {
         return y0 + (s == Status::Active ? HIGH_Y_OFFSET : LOW_Y_OFFSET);
@@ -386,7 +383,7 @@ void AnalyzerLabelColumn::paintEvent(QPaintEvent *event)
         }
 
         painter.fillRect(0, y, AnalyzerLayout::LabelWidth - 2, AnalyzerLayout::TraceHeight, palette().alternateBase());
-        painter.setPen(palette().color(QPalette::Text));
+        painter.setPen(AnalyzerLayout::traceColor(i)); // name colored like its trace
         painter.drawText(QRect(4, y, AnalyzerLayout::LabelWidth - 8, AnalyzerLayout::TraceHeight),
                          Qt::AlignVCenter | Qt::AlignRight,
                          m_recorder->trace(i).name);

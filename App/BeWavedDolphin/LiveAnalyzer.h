@@ -13,6 +13,9 @@
 
 #pragma once
 
+#include <array>
+
+#include <QColor>
 #include <QPointer>
 #include <QTimer>
 #include <QWidget>
@@ -32,6 +35,25 @@ inline constexpr int TraceHeight = 30; ///< Pixel height of one signal row.
 inline constexpr int TraceMargin = 4;  ///< Vertical gap between consecutive rows.
 inline constexpr int RulerHeight = 24; ///< Pixel height of the time-ruler row.
 inline constexpr int LabelWidth = 120; ///< Pixel width of the signal-name column.
+
+/// Stable per-channel color, like a real logic analyzer: channel N's trace AND its name in
+/// the label column share palette entry N % 8, so adjacent traces stay distinguishable and
+/// a name is visually tied to its waveform. Medium-lightness hues readable on both the
+/// light and dark themes.
+inline QColor traceColor(const int channel)
+{
+    static const std::array<QColor, 8> palette = {
+        QColor(0xe6, 0x19, 0x4b), // red
+        QColor(0x1e, 0x88, 0xe5), // blue
+        QColor(0x43, 0xa0, 0x47), // green
+        QColor(0xfb, 0x8c, 0x00), // orange
+        QColor(0x8e, 0x24, 0xaa), // purple
+        QColor(0x00, 0xac, 0xc1), // cyan
+        QColor(0xd8, 0x1b, 0x60), // pink
+        QColor(0x9e, 0x9d, 0x24), // olive
+    };
+    return palette[static_cast<std::size_t>(channel < 0 ? 0 : channel) % palette.size()];
+}
 } // namespace AnalyzerLayout
 
 /**

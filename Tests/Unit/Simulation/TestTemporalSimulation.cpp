@@ -1043,6 +1043,20 @@ void TestTemporalSimulation::testWidgetCanvasClampedAtQtLimit()
     QCOMPARE(widget.timeOrigin(), SimTime(0));
 }
 
+void TestTemporalSimulation::testAnalyzerTraceColorPalette()
+{
+    // Per-channel colors like a real logic analyzer: the first 8 channels are pairwise
+    // distinct (adjacent traces distinguishable) and the palette cycles at 8.
+    for (int i = 0; i < 8; ++i) {
+        for (int j = i + 1; j < 8; ++j) {
+            QVERIFY2(AnalyzerLayout::traceColor(i) != AnalyzerLayout::traceColor(j),
+                     qPrintable(QString("channels %1 and %2 share a color").arg(i).arg(j)));
+        }
+    }
+    QCOMPARE(AnalyzerLayout::traceColor(8), AnalyzerLayout::traceColor(0));
+    QCOMPARE(AnalyzerLayout::traceColor(15), AnalyzerLayout::traceColor(7));
+}
+
 // ============================================================================
 // Temporal example circuits (Examples/temporal_*.panda)
 // ============================================================================
