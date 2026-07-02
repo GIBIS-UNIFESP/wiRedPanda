@@ -48,6 +48,18 @@ public:
     void saveSimState(QVector<Status> &out) const override;
     /// \reimp
     void restoreSimState(const QVector<Status> &in, int &cursor) override;
+
+    /// \reimp Edge-detection state for step-debugger snapshots: {lastClk, lastValue}.
+    QVector<Status> simInternalState() const override { return {m_simLastClk, m_simLastValue}; }
+    /// \reimp
+    void setSimInternalState(const QVector<Status> &state) override
+    {
+        if (state.size() == 2) {
+            m_simLastClk = state.at(0);
+            m_simLastValue = state.at(1);
+        }
+    }
+
 private:
     Status m_simLastClk = Status::Inactive;
     Status m_simLastValue = Status::Active;

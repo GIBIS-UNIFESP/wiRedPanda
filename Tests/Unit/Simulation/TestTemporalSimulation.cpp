@@ -12,6 +12,7 @@
 
 #include "App/BeWavedDolphin/LiveAnalyzer.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Nand.h"
@@ -1262,6 +1263,426 @@ void TestTemporalSimulation::testAnalyzerTraceColorPalette()
     }
     QCOMPARE(AnalyzerLayout::traceColor(8), AnalyzerLayout::traceColor(0));
     QCOMPARE(AnalyzerLayout::traceColor(15), AnalyzerLayout::traceColor(7));
+}
+
+// ============================================================================
+// Step debugger (Simulation::stepPropagation()/stepBack())
+// ============================================================================
+
+void TestTemporalSimulation::testStepWalksChangeInCausalOrder()
+{
+    // switch → NOT → NOT → LED in functional mode: after a toggle, each step must surface
+    // exactly one changed gate, in causal (topological) order, then report Settled.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not n1, n2;
+    Led led;
+
+    builder.add(&sw, &n1, &n2, &led);
+    builder.connect(&sw, 0, &n1, 0);
+    builder.connect(&n1, 0, &n2, 0);
+    builder.connect(&n2, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sw.setOn(false);
+    sim->update(); // baseline settle: n1=1, n2=0
+    QCOMPARE(n1.outputValue(), Status::Active);
+    QCOMPARE(n2.outputValue(), Status::Inactive);
+
+    sw.setOn(true);
+
+    const auto step1 = sim->stepPropagation();
+    QCOMPARE(step1.status, Simulation::StepStatus::Stepped);
+    QCOMPARE(step1.changed, QVector<GraphicElement *>{&n1});
+    QCOMPARE(n1.outputValue(), Status::Inactive); // NOT(1) landed
+    QCOMPARE(n2.outputValue(), Status::Inactive); // ...but has NOT propagated further yet
+
+    const auto step2 = sim->stepPropagation();
+    QCOMPARE(step2.status, Simulation::StepStatus::Stepped);
+    QCOMPARE(step2.changed, QVector<GraphicElement *>{&n2});
+    QCOMPARE(n2.outputValue(), Status::Active);
+
+    // The LED is a sink (no outputs) — evaluating it is not a visible change, so the
+    // propagation is exhausted: Settled, and nothing moved.
+    const auto step3 = sim->stepPropagation();
+    QCOMPARE(step3.status, Simulation::StepStatus::Settled);
+    QVERIFY(step3.changed.isEmpty());
+    QCOMPARE(n1.outputValue(), Status::Inactive);
+    QCOMPARE(n2.outputValue(), Status::Active);
+}
+
+void TestTemporalSimulation::testStepTemporalAdvancesSimTime()
+{
+    // Four chained NOTs at 5 ns each: stepping must land the sim clock on each gate's
+    // event timestamp — the +5/+10/+15/+20 staircase the Live Analyzer renders.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not n1, n2, n3, n4;
+    Led led;
+
+    builder.add(&sw, &n1, &n2, &n3, &n4, &led);
+    builder.connect(&sw, 0, &n1, 0);
+    builder.connect(&n1, 0, &n2, 0);
+    builder.connect(&n2, 0, &n3, 0);
+    builder.connect(&n3, 0, &n4, 0);
+    builder.connect(&n4, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->setTimePerTick(1'000'000); // temporal 1x
+    sw.setOn(false);
+    sim->update(); // baseline settle
+    const SimTime base = sim->currentTime();
+
+    sw.setOn(true);
+
+    GraphicElement *const expected[] = {&n1, &n2, &n3, &n4};
+    for (int i = 0; i < 4; ++i) {
+        const auto step = sim->stepPropagation();
+        QCOMPARE(step.status, Simulation::StepStatus::Stepped);
+        QCOMPARE(step.changed.size(), 1);
+        QCOMPARE(step.changed.constFirst(), expected[i]);
+        QCOMPARE(sim->currentTime(), base + SimTime(5) * SimTime(i + 1));
+    }
+
+    QCOMPARE(sim->stepPropagation().status, Simulation::StepStatus::Settled);
+}
+
+void TestTemporalSimulation::testStepEquivalentToUpdate()
+{
+    // Engine preservation: stepping to Settled must reach exactly the state one update()
+    // reaches on an identical circuit — same primitives, same fixed point.
+    const auto build = [](CircuitBuilder &builder, InputSwitch *sw, Not *n1, And *a1, Not *n2, Led *led) {
+        builder.add(sw, n1, a1, n2, led);
+        builder.connect(sw, 0, n1, 0);
+        builder.connect(sw, 0, a1, 0);
+        builder.connect(n1, 0, a1, 1);
+        builder.connect(a1, 0, n2, 0);
+        builder.connect(n2, 0, led, 0);
+    };
+
+    WorkSpace wsStep;
+    CircuitBuilder builderStep(wsStep.scene());
+    InputSwitch swStep;
+    Not n1Step, n2Step;
+    And a1Step;
+    Led ledStep;
+    build(builderStep, &swStep, &n1Step, &a1Step, &n2Step, &ledStep);
+    auto *simStep = builderStep.initSimulation();
+    swStep.setOn(false);
+    simStep->update();
+
+    WorkSpace wsRun;
+    CircuitBuilder builderRun(wsRun.scene());
+    InputSwitch swRun;
+    Not n1Run, n2Run;
+    And a1Run;
+    Led ledRun;
+    build(builderRun, &swRun, &n1Run, &a1Run, &n2Run, &ledRun);
+    auto *simRun = builderRun.initSimulation();
+    swRun.setOn(false);
+    simRun->update();
+
+    swStep.setOn(true);
+    int guard = 0;
+    while (simStep->stepPropagation().status == Simulation::StepStatus::Stepped) {
+        QVERIFY2(++guard < 32, "stepping did not reach Settled");
+    }
+
+    swRun.setOn(true);
+    simRun->update();
+
+    QCOMPARE(n1Step.outputValue(), n1Run.outputValue());
+    QCOMPARE(a1Step.outputValue(), a1Run.outputValue());
+    QCOMPARE(n2Step.outputValue(), n2Run.outputValue());
+}
+
+void TestTemporalSimulation::testStepSequentialCommitIsOneStep()
+{
+    // Two D flip-flops sharing one manual clock, ff1.Q → ff2.D (a shift register stage).
+    // Their synchronous commit must publish as ONE step containing both elements, and ff2
+    // must capture ff1's PRE-edge value — stepping must not break non-blocking semantics.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swD, swClk;
+    DFlipFlop ff1, ff2;
+
+    builder.add(&swD, &swClk, &ff1, &ff2);
+    builder.connect(&swD, 0, &ff1, 0);   // D
+    builder.connect(&swClk, 0, &ff1, 1); // Clock
+    builder.connect(&ff1, 0, &ff2, 0);   // ff1.Q → ff2.D
+    builder.connect(&swClk, 0, &ff2, 1); // shared Clock
+
+    auto *sim = builder.initSimulation();
+    swD.setOn(true);
+    swClk.setOn(false);
+    sim->update(); // baseline: both at power-on defaults
+    QCOMPARE(ff1.outputValue(0), Status::Inactive);
+    QCOMPARE(ff2.outputValue(0), Status::Inactive);
+
+    // Preload ff1.Q = 1 with a first clock pulse (run mode; not the behavior under test).
+    swClk.setOn(true);
+    sim->update();
+    swClk.setOn(false);
+    sim->update();
+    QCOMPARE(ff1.outputValue(0), Status::Active);
+    QCOMPARE(ff2.outputValue(0), Status::Inactive);
+
+    // Now D=0 and a stepped rising edge: ff1 1→0 and ff2 0→1 must land TOGETHER.
+    // The flip-flop samples the D it saw at its PREVIOUS evaluation (m_simLastValue —
+    // setup-time modeling), so settle one tick with D=0 before producing the edge.
+    swD.setOn(false);
+    sim->update();
+    swClk.setOn(true);
+    const auto step = sim->stepPropagation();
+    QCOMPARE(step.status, Simulation::StepStatus::Stepped);
+    QCOMPARE(step.changed.size(), 2);
+    QVERIFY(step.changed.contains(&ff1));
+    QVERIFY(step.changed.contains(&ff2));
+    QCOMPARE(ff1.outputValue(0), Status::Inactive); // captured D=0
+    QCOMPARE(ff2.outputValue(0), Status::Active);   // captured ff1's PRE-edge Q=1 (shift!)
+}
+
+void TestTemporalSimulation::testStepBackRestoresState()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not n1, n2;
+    Led led;
+
+    builder.add(&sw, &n1, &n2, &led);
+    builder.connect(&sw, 0, &n1, 0);
+    builder.connect(&n1, 0, &n2, 0);
+    builder.connect(&n2, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->setTimePerTick(1'000'000);
+    sw.setOn(false);
+    sim->update();
+
+    const SimTime timeBefore = sim->currentTime();
+    const Status n1Before = n1.outputValue();
+    const Status n2Before = n2.outputValue();
+    QVERIFY(!sim->canStepBack());
+
+    sw.setOn(true);
+    QCOMPARE(sim->stepPropagation().status, Simulation::StepStatus::Stepped);
+    QCOMPARE(sim->stepPropagation().status, Simulation::StepStatus::Stepped);
+    QVERIFY(sim->canStepBack());
+    QCOMPARE(n1.outputValue(), Status::Inactive);
+    QCOMPARE(n2.outputValue(), Status::Active);
+
+    // Rewind step 2: n2's change (and the clock hop) must roll back; n1's must remain.
+    const auto back2 = sim->stepBack();
+    QCOMPARE(back2.status, Simulation::StepStatus::Stepped);
+    QCOMPARE(back2.changed, QVector<GraphicElement *>{&n2});
+    QCOMPARE(n1.outputValue(), Status::Inactive);
+    QCOMPARE(n2.outputValue(), n2Before);
+    QCOMPARE(sim->currentTime(), timeBefore + 5);
+
+    // Rewind step 1: everything back at the pre-toggle fixed point. Step 1's snapshot
+    // predates its preamble, so the switch's PUBLISHED sim output rolls back too (the wire
+    // reads low again while the widget stays on — exactly the toggled-but-not-yet-stepped
+    // state); the diff reports it alongside n1, most-upstream first.
+    const auto back1 = sim->stepBack();
+    QCOMPARE(back1.status, Simulation::StepStatus::Stepped);
+    const QVector<GraphicElement *> expectedBack1{&sw, &n1};
+    QCOMPARE(back1.changed, expectedBack1);
+    QCOMPARE(n1.outputValue(), n1Before);
+    QCOMPARE(n2.outputValue(), n2Before);
+    QCOMPARE(sim->currentTime(), timeBefore);
+    QVERIFY(!sim->canStepBack());
+    QCOMPARE(sim->stepBack().status, Simulation::StepStatus::NotReady);
+
+    // Determinism: stepping forward again reproduces the identical sequence.
+    const auto redo1 = sim->stepPropagation();
+    QCOMPARE(redo1.status, Simulation::StepStatus::Stepped);
+    QCOMPARE(redo1.changed, QVector<GraphicElement *>{&n1});
+    QCOMPARE(sim->currentTime(), timeBefore + 5);
+    const auto redo2 = sim->stepPropagation();
+    QCOMPARE(redo2.status, Simulation::StepStatus::Stepped);
+    QCOMPARE(redo2.changed, QVector<GraphicElement *>{&n2});
+    QCOMPARE(sim->currentTime(), timeBefore + 10);
+}
+
+void TestTemporalSimulation::testStepBackTruncatesRecorder()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not n1;
+    Led led;
+
+    builder.add(&sw, &n1, &led);
+    builder.connect(&sw, 0, &n1, 0);
+    builder.connect(&n1, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->setTimePerTick(1'000'000);
+    auto &recorder = sim->waveformRecorder();
+    const int trace = recorder.watchSignal("n1", &n1, 0);
+    recorder.setRecording(true);
+    sw.setOn(false);
+    sim->update();
+
+    const auto transitionsBefore = recorder.trace(trace).transitions;
+
+    sw.setOn(true);
+    QCOMPARE(sim->stepPropagation().status, Simulation::StepStatus::Stepped);
+    QVERIFY2(recorder.trace(trace).transitions.size() > transitionsBefore.size(),
+             "the step should have recorded n1's transition");
+
+    QCOMPARE(sim->stepBack().status, Simulation::StepStatus::Stepped);
+    QCOMPARE(recorder.trace(trace).transitions, transitionsBefore);
+}
+
+void TestTemporalSimulation::testStepHistoryLifecycle()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not n1;
+    Led led;
+
+    builder.add(&sw, &n1, &led);
+    builder.connect(&sw, 0, &n1, 0);
+    builder.connect(&n1, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sw.setOn(false);
+    sim->update();
+
+    const auto stepOnce = [&](bool on) {
+        sw.setOn(on);
+        QCOMPARE(sim->stepPropagation().status, Simulation::StepStatus::Stepped);
+        QVERIFY(sim->canStepBack());
+    };
+
+    // start() — the debugger's "continue" — clears the history.
+    stepOnce(true);
+    sim->start();
+    sim->stop();
+    QVERIFY(!sim->canStepBack());
+
+    // A dolphin-style timed-run bracket clears it too.
+    stepOnce(false);
+    sim->beginTimedRun(1000);
+    sim->endTimedRun(0);
+    QVERIFY(!sim->canStepBack());
+
+    // Mode/speed change.
+    stepOnce(true);
+    sim->setTimePerTick(1'000'000);
+    QVERIFY(!sim->canStepBack());
+
+    // restart() (topology invalidation).
+    sw.setOn(false);
+    sim->update();
+    stepOnce(true);
+    sim->restart();
+    QVERIFY(!sim->canStepBack());
+
+    // No leaked deferred-commit bracket anywhere above: a plain follow-up run still works.
+    sw.setOn(false);
+    sim->update();
+    QCOMPARE(n1.outputValue(), Status::Active);
+    sw.setOn(true);
+    sim->update();
+    QCOMPARE(n1.outputValue(), Status::Inactive);
+}
+
+void TestTemporalSimulation::testStepWhileRunningNotReady()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not n1;
+    Led led;
+
+    builder.add(&sw, &n1, &led);
+    builder.connect(&sw, 0, &n1, 0);
+    builder.connect(&n1, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sw.setOn(false);
+    sim->update();
+    const Status before = n1.outputValue();
+
+    sim->start();
+    sw.setOn(true);
+    const auto refused = sim->stepPropagation();
+    QCOMPARE(refused.status, Simulation::StepStatus::NotReady);
+    QVERIFY(refused.changed.isEmpty());
+    QCOMPARE(n1.outputValue(), before); // the refused call must not have driven the engine
+    sim->stop();
+}
+
+void TestTemporalSimulation::testStepSettledNoTimeCreep()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not n1;
+    Led led;
+
+    builder.add(&sw, &n1, &led);
+    builder.connect(&sw, 0, &n1, 0);
+    builder.connect(&n1, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->setTimePerTick(1'000'000);
+    sw.setOn(false);
+    sim->update();
+    const SimTime settled = sim->currentTime();
+
+    for (int i = 0; i < 3; ++i) {
+        const auto step = sim->stepPropagation();
+        QCOMPARE(step.status, Simulation::StepStatus::Settled);
+        QVERIFY(step.changed.isEmpty());
+        QCOMPARE(sim->currentTime(), settled);
+        QVERIFY(!sim->canStepBack()); // a no-op click must not pollute the rewind history
+    }
+}
+
+void TestTemporalSimulation::testStepFastForwardsToPendingEvent()
+{
+    // 1 ns tick window vs a 5 ns NOT delay: the toggled event lands 5 windows out. A single
+    // step must fast-forward the empty windows arithmetically and surface the change, not
+    // demand one click per empty tick.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    Not n1;
+    Led led;
+
+    builder.add(&sw, &n1, &led);
+    builder.connect(&sw, 0, &n1, 0);
+    builder.connect(&n1, 0, &led, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->setTimePerTick(1);
+    sw.setOn(false);
+    sim->update();
+    const SimTime base = sim->currentTime();
+    QCOMPARE(n1.outputValue(), Status::Active);
+
+    sw.setOn(true);
+    const auto step = sim->stepPropagation();
+    QCOMPARE(step.status, Simulation::StepStatus::Stepped);
+    QCOMPARE(step.changed, QVector<GraphicElement *>{&n1});
+    QCOMPARE(n1.outputValue(), Status::Inactive);
+    QCOMPARE(sim->currentTime(), base + 5);
 }
 
 // ============================================================================

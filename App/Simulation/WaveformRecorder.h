@@ -160,6 +160,57 @@ public:
         }
     }
 
+    // --- Step-debugger rewind ---
+
+    /// A rewindable position in every trace's history: the entry count plus a copy of the
+    /// then-last entry per trace. Counts alone are not enough — recordAll()'s same-time
+    /// collapse can MUTATE the last entry in place rather than append, so rewinding by
+    /// count would keep a value from the rolled-back future; restoring the saved last
+    /// entry undoes that too.
+    struct TimelineMark {
+        QVector<qsizetype> counts;
+        QVector<QPair<SimTime, Status>> lastEntries;
+    };
+
+    /// Captures the current end of every trace (cheap: one count + one entry per trace).
+    TimelineMark markTimeline() const
+    {
+        TimelineMark mark;
+        mark.counts.reserve(m_traces.size());
+        mark.lastEntries.reserve(m_traces.size());
+        for (const auto &tr : m_traces) {
+            mark.counts.append(tr.transitions.size());
+            mark.lastEntries.append(tr.transitions.isEmpty() ? QPair<SimTime, Status>{0, Status::Inactive}
+                                                             : tr.transitions.last());
+        }
+        return mark;
+    }
+
+    /// Rewinds every trace to \a mark: drops transitions recorded after it and restores the
+    /// then-last entry (undoing an in-place same-time collapse). Traces added after the mark
+    /// was taken (watching can start mid step-session) have no anchor in it, so they fall
+    /// back to dropping entries newer than \a fallbackTime — the sim time being rewound to.
+    /// Indices stay aligned because the watch list only grows within a session: removal
+    /// happens via clear()/pruneStale(), whose call sites also clear the step history.
+    void rewindTimeline(const TimelineMark &mark, SimTime fallbackTime)
+    {
+        for (int i = 0; i < m_traces.size(); ++i) {
+            auto &transitions = m_traces[i].transitions;
+            if (i < mark.counts.size()) {
+                if (transitions.size() > mark.counts.at(i)) {
+                    transitions.resize(mark.counts.at(i));
+                }
+                if (!transitions.isEmpty() && transitions.size() == mark.counts.at(i)) {
+                    transitions.last() = mark.lastEntries.at(i);
+                }
+            } else {
+                transitions.removeIf([fallbackTime](const QPair<SimTime, Status> &entry) {
+                    return entry.first > fallbackTime;
+                });
+            }
+        }
+    }
+
     // --- Query ---
 
     /// Returns the latest recorded time across all traces (0 if empty).

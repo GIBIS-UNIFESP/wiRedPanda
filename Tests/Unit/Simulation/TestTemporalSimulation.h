@@ -87,6 +87,40 @@ private slots:
     /// every ns-scale tick into the same "4e+06 ns" at delay-resolving zoom.
     void testRulerLabelsDistinctAtNsScale();
 
+    // --- Step debugger (Simulation::stepPropagation()/stepBack()) ---
+    /// Functional mode, switch→NOT→NOT→LED: each step yields exactly one changed element,
+    /// walking the toggled input's fallout through the netlist in causal order; once the
+    /// propagation is exhausted the next step reports Settled.
+    void testStepWalksChangeInCausalOrder();
+    /// Temporal mode: each step lands on the changed gate's event timestamp, so the sim
+    /// clock hops by the per-element propagation delays (5/10/15/20 ns staircase).
+    void testStepTemporalAdvancesSimTime();
+    /// Engine-preservation contract: stepping a circuit to Settled must end in exactly the
+    /// state a plain update() run reaches on an identical circuit.
+    void testStepEquivalentToUpdate();
+    /// Two D flip-flops on one manual clock: their synchronous commit publishes as ONE step
+    /// (both elements together), and the downstream one captures the pre-edge value —
+    /// stepping must not break non-blocking semantics.
+    void testStepSequentialCommitIsOneStep();
+    /// N steps forward + N steps back restore outputs, sim time, and history emptiness
+    /// exactly; stepping forward again reproduces the identical sequence.
+    void testStepBackRestoresState();
+    /// Temporal + recording: rewinding a step also rewinds the recorded timeline to the
+    /// step's mark (transitions recorded by the rolled-back step disappear).
+    void testStepBackTruncatesRecorder();
+    /// start(), beginTimedRun()/endTimedRun(), setTimePerTick(), and restart() are all
+    /// "continue" boundaries: they clear the rewind history and leave no open
+    /// deferred-commit bracket behind (a follow-up update() behaves normally).
+    void testStepHistoryLifecycle();
+    /// Stepping while the timer runs is refused (NotReady) and mutates nothing.
+    void testStepWhileRunningNotReady();
+    /// Stepping a settled circuit reports Settled without advancing the sim clock —
+    /// repeated clicks must not creep time forward.
+    void testStepSettledNoTimeCreep();
+    /// Temporal mode with a tick window smaller than the gate delay: one step fast-forwards
+    /// whole tick windows to the pending event instead of needing one click per empty tick.
+    void testStepFastForwardsToPendingEvent();
+
     // --- Temporal example circuits (Examples/temporal_*.panda) ---
     void testExampleRingOscillator();
     void testExampleStaticHazard();
