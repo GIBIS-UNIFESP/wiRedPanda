@@ -158,10 +158,19 @@ void TruthTable::drawBody(QPainter *painter)
     painter->drawRoundedRect(finalRect, 3, 3);
 
     // Centre the truth-table icon inside the body, rendered as vectors at its native size.
+    // The icon is decoration, like the baked-in SVG pin text: counter-orient it about its own
+    // centre (rotate outer, flip inner — the inverse of the item's Flip∘Rotate) so it reads
+    // upright at any element orientation.
     QSvgRenderer &logo = truthTableLogoRenderer();
     const QSizeF logoSize = logo.defaultSize();
     const QRectF logoRect(finalRect.center() - QPointF(logoSize.width() / 2, logoSize.height() / 2), logoSize);
+    painter->save();
+    painter->translate(logoRect.center());
+    painter->rotate(-rotation());
+    painter->scale(isFlippedX() ? -1 : 1, isFlippedY() ? -1 : 1);
+    painter->translate(-logoRect.center());
     logo.render(painter, logoRect);
+    painter->restore();
 
     // Shadow strip at the bottom of the body for a subtle 3-D depth effect.
     painter->setBrush(QColor(78, 78, 78));

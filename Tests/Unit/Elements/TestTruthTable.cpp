@@ -3,7 +3,12 @@
 
 #include "Tests/Unit/Elements/TestTruthTable.h"
 
+#include <limits>
+
 #include <QDataStream>
+#include <QGraphicsScene>
+#include <QImage>
+#include <QPainter>
 #include <QTest>
 
 #include "App/Element/GraphicElements/TruthTable.h"
@@ -374,4 +379,82 @@ void TestTruthTable::testRotationKeepsSizingPixmap()
 
     truthTable.setRotation(0);
     QCOMPARE(truthTable.pixmapCenter(), footprintCenter);
+}
+
+namespace {
+
+/// Renders \a elm's scene footprint into an image; \a logoCenterOut receives the centre of the
+/// element's body (where drawBody() centres its icon) in image coordinates.
+QImage renderTruthTableElement(QGraphicsScene *scene, GraphicElement *elm, QPoint &logoCenterOut)
+{
+    // Render 1:1 from an integer-aligned source rect so every orientation rasterises scene
+    // content at the same scale and sub-pixel phase — a fractional source origin would shift
+    // antialiasing between renders and defeat pixel comparison.
+    const QRect source = elm->sceneBoundingRect().toAlignedRect();
+    QImage image(source.size(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::white);
+
+    QPainter painter(&image);
+    scene->render(&painter, QRectF(image.rect()), source);
+    painter.end();
+
+    const QPointF logoScene = elm->mapToScene(elm->boundingRect().topLeft() + elm->pixmapCenter());
+    logoCenterOut = (logoScene - source.topLeft()).toPoint();
+    return image;
+}
+
+/// Compares \a halfSize-radius crops of \a a around \a ca and \a b around \a cb, trying small
+/// alignment offsets so sub-pixel crop rounding can't fail the comparison. Returns the smallest
+/// count of pixels whose channels differ by more than \a tolerance.
+int truthTableAlignedMismatch(const QImage &a, const QPoint ca, const QImage &b, const QPoint cb,
+                               const int halfSize, const int tolerance)
+{
+    int best = std::numeric_limits<int>::max();
+
+    for (int oy = -2; oy <= 2; ++oy) {
+        for (int ox = -2; ox <= 2; ++ox) {
+            int count = 0;
+            for (int dy = -halfSize; dy < halfSize; ++dy) {
+                for (int dx = -halfSize; dx < halfSize; ++dx) {
+                    const QColor pa = a.pixelColor(ca + QPoint(dx, dy));
+                    const QColor pb = b.pixelColor(cb + QPoint(dx + ox, dy + oy));
+                    if (qAbs(pa.red() - pb.red()) > tolerance
+                        || qAbs(pa.green() - pb.green()) > tolerance
+                        || qAbs(pa.blue() - pb.blue()) > tolerance) {
+                        ++count;
+                    }
+                }
+            }
+            best = qMin(best, count);
+        }
+    }
+
+    return best;
+}
+
+} // namespace
+
+void TestTruthTable::testRotatedIconStaysUpright()
+{
+    // The table icon is decoration, like the baked-in SVG pin text: it must read upright at any
+    // element orientation. Its rendering around the icon centre must therefore be identical at
+    // 0° and 180°; the icon's dot-grid rows sit asymmetrically about the centre, so an icon
+    // that rotates with the body produces a large mismatch. (180° rather than 90° so the
+    // fractional footprint centre maps back onto the pixel grid — a 90° mapping lands on
+    // half-pixels and antialiasing legitimately differs.)
+    QGraphicsScene scene;
+    auto *truthTable = new TruthTable(); // the scene takes ownership
+    scene.addItem(truthTable);
+
+    QPoint uprightCenter;
+    const QImage upright = renderTruthTableElement(&scene, truthTable, uprightCenter);
+
+    truthTable->setRotation(180);
+    QPoint rotatedCenter;
+    const QImage rotated = renderTruthTableElement(&scene, truthTable, rotatedCenter);
+
+    const int mismatch = truthTableAlignedMismatch(upright, uprightCenter, rotated, rotatedCenter, 10, 32);
+    QVERIFY2(mismatch <= 20,
+             qPrintable(QString("Icon is not upright after a 180° rotation: %1 mismatching pixels")
+                            .arg(mismatch)));
 }

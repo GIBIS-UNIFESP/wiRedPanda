@@ -55,10 +55,19 @@ void ICRenderer::drawBody(IC &ic, QPainter *painter)
     painter->drawRoundedRect(finalRect, 3, 3);
 
     // Centre the wiRedPanda mascot logo on the body, rendered as vectors at its native size.
+    // The mascot is decoration, like the baked-in SVG pin text: counter-orient it about its own
+    // centre (rotate outer, flip inner — the inverse of the item's Flip∘Rotate) so it reads
+    // upright at any element orientation.
     QSvgRenderer &logo = icLogoRenderer();
     const QSizeF logoSize = logo.defaultSize();
     const QRectF logoRect(finalRect.center() - QPointF(logoSize.width() / 2, logoSize.height() / 2), logoSize);
+    painter->save();
+    painter->translate(logoRect.center());
+    painter->rotate(-ic.rotation());
+    painter->scale(ic.isFlippedX() ? -1 : 1, ic.isFlippedY() ? -1 : 1);
+    painter->translate(-logoRect.center());
     logo.render(painter, logoRect);
+    painter->restore();
 
     // Thin dark strip at the bottom edge to simulate the package shadow/bevel.
     painter->setBrush(outlineColor);
