@@ -422,6 +422,28 @@ public:
      */
     virtual void resettleCombinational() { updateLogic(); }
 
+    /// Whole-value access to the element's simulation runtime state (cached inputs, outputs,
+    /// deferred-commit staging, change flag). Used by the step debugger to snapshot and
+    /// restore the netlist: ElementSimState is a plain copyable value, and its predecessor
+    /// links are topology that outlives any snapshot (step history is cleared on rebuilds).
+    const ElementSimState &simRuntimeState() const { return m_sim; }
+
+    /// Restores a state previously captured via simRuntimeState().
+    void setSimRuntimeState(const ElementSimState &state) { m_sim = state; }
+
+    /**
+     * \brief Element-internal simulation state beyond the runtime vectors — the
+     * edge-detection variables of sequential elements (m_simLastClk etc.).
+     * \details Default: none. The four flip-flops override both methods so the step
+     * debugger's snapshots restore edge detection exactly (a rewound flip-flop must
+     * re-arm on the same clock level it originally saw). An override pair must use one
+     * consistent field order.
+     */
+    virtual QVector<Status> simInternalState() const { return {}; }
+
+    /// Restores state previously captured via simInternalState().
+    virtual void setSimInternalState(const QVector<Status> &state) { Q_UNUSED(state) }
+
     /// Returns the four-state signal value on simulation output port \a index.
     inline Status outputValue(const int index = 0) const { return m_sim.outputValue(index); }
 

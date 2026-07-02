@@ -8,6 +8,7 @@
 #pragma once
 
 #include <chrono>
+#include <deque>
 #include <memory>
 
 #include <QGraphicsItem>
@@ -16,6 +17,7 @@
 #include <QSet>
 #include <QTimer>
 
+#include "App/Element/ElementSimState.h"
 #include "App/Simulation/SimEvent.h"
 #include "App/Simulation/SimTime.h"
 #include "App/Simulation/WaveformRecorder.h"
@@ -127,11 +129,14 @@ public:
     /// lands at the current instant and the tick is a full settle. >0 ⇒ temporal:
     /// events spread across future timestamps by per-element propagation delay.
     /// Emits timePerTickChanged() so observers (e.g. the Live Analyzer's zoom) can adapt.
+    /// Ends any open step-debugger session first: a stepped tick mid-flight was opened
+    /// under the old tick window, and rewinding across a mode/speed change is undefined.
     void setTimePerTick(SimTime ns)
     {
         if (m_timePerTick == ns) {
             return;
         }
+        finishStepSession();
         m_timePerTick = ns;
         emit timePerTickChanged(ns);
     }
@@ -155,6 +160,42 @@ public:
     /// recording flag captured by beginTimedRun() — the live timeline (and any recorded
     /// history) resumes exactly where it left off.
     void endTimedRun(SimTime restoreTo);
+
+    // --- Step debugger ---
+
+    /// Outcome of a stepPropagation()/stepBack() call.
+    enum class StepStatus {
+        Stepped,  ///< At least one element's output visibly changed (see StepResult::changed).
+        Settled,  ///< Nothing to step: no pending input change and no reachable queued event.
+        NotReady, ///< Stepping unavailable: the timer is running, or no valid topology exists.
+    };
+
+    /// Result of one debugger step: the status plus the elements whose outputs changed
+    /// (highlight targets), most-upstream first.
+    struct StepResult {
+        StepStatus status = StepStatus::NotReady;
+        QVector<GraphicElement *> changed;
+    };
+
+    /// Advances the PAUSED simulation to the next signal change — the circuit debugger's
+    /// "step". Drives the same engine primitives as update(), suspended one visible change
+    /// per call: combinational changes step one element at a time in causal order, while a
+    /// synchronous commit (flip-flops sharing a clock edge, plus its resettled combinational
+    /// cone) publishes as ONE step, exactly like hardware. Clocks stay frozen (they are
+    /// wall-clock driven and the timer is stopped); pending manual input toggles are picked
+    /// up by the stepped tick's phase-1 preamble. Each visible step pushes a rewind snapshot
+    /// for stepBack(). Requires the timer to be paused (returns NotReady otherwise).
+    StepResult stepPropagation();
+
+    /// Rewinds the last forward step: restores every element's runtime + internal state, the
+    /// event queue, the sim clock, and the step bookkeeping from the snapshot, and rewinds
+    /// the waveform recorder to its matching mark. Returns the elements whose visible
+    /// outputs changed by the rewind. History is session-bounded: resuming Play, sweeps,
+    /// mode changes, and topology rebuilds all clear it (you can't rewind past a "continue").
+    StepResult stepBack();
+
+    /// True when step history is available for stepBack().
+    bool canStepBack() const { return !m_stepHistory.empty(); }
 
     /// Sets the propagation delay (sim-time units) for \a element. 0 ⇒ zero-delay.
     void setElementDelay(const GraphicElement *element, SimTime ns) { m_delays[element] = ns; }
@@ -322,6 +363,48 @@ private:
     /// the step debugger after every step (stepping is inherently low-rate).
     void refreshVisuals();
 
+    // --- Step debugger internals ---
+
+    /// Everything needed to rewind one forward step. Element pointers inside (predecessor
+    /// links in ElementSimState, the evaluated-sequential set) are topology, valid for the
+    /// snapshot's whole lifetime: every rebuild path (restart()/initialize()) clears the
+    /// step history before elements can be freed.
+    struct StepSnapshot {
+        QVector<ElementSimState> elementStates;   ///< Parallel to m_sortedElements.
+        QVector<QVector<Status>> internalStates;  ///< Parallel to m_sortedElements (flip-flop edge state).
+        EventQueue eventQueue;
+        SimTime currentTime = 0;
+        bool eventInitDone = false;
+        QSet<GraphicElement *> evaluatedSequentialThisTick;
+        int drainEvalsAtTime = 0;
+        SimTime drainLastTime = SIM_TIME_UNSET;
+        bool stepTickActive = false;
+        int stepWave = 0;
+        SimTime stepTickTarget = 0;
+        WaveformRecorder::TimelineMark timelineMark;
+    };
+
+    /// Captures the full engine state (cheap value copies) for one rewind level.
+    StepSnapshot captureStepSnapshot() const;
+
+    /// Restores engine state from \a snapshot (elements, queue, clock, step bookkeeping).
+    /// The recorder is rewound separately by stepBack() — it needs the snapshot's mark.
+    void restoreStepSnapshot(const StepSnapshot &snapshot);
+
+    /// Pushes one rewind level, dropping the oldest beyond kMaxStepHistory.
+    void pushStepHistory(StepSnapshot &&snapshot);
+
+    /// Drops the step history and tick bookkeeping WITHOUT draining — only for topology
+    /// rebuild paths (restart()/initialize()), where the netlist the open tick referred to
+    /// is being discarded anyway (initialize() re-runs initSimulationVectors(), which also
+    /// resets every element's deferred-commit staging).
+    void clearStepState();
+
+    /// Ends a step session at a "continue" boundary: completes any open stepped tick with
+    /// the same primitives update() uses (never leaks an open deferred-commit bracket into
+    /// a live run or a sweep), then clears the rewind history.
+    void finishStepSession();
+
     /// Re-propagates freshly committed sequential outputs through combinational logic to a
     /// fixed point (bounded by kMaxSettleIterations when feedback is present). Skips
     /// ElementGroup::Memory elements so they are never re-clocked by this pass. Every element
@@ -409,4 +492,13 @@ private:
     WaveformRecorder m_recorder;                       ///< Timing-diagram trace recorder (temporal mode).
     SimTime m_liveTimeBeforeTimedRun = 0;             ///< Live clock captured by beginTimedRun(), restored by endTimedRun().
     bool m_wasRecordingBeforeTimedRun = false;        ///< Recording flag captured/restored across a timed run.
+
+    // --- Members: Step debugger ---
+
+    /// Rewind stack: one snapshot per visible forward step, oldest dropped past the cap.
+    static constexpr int kMaxStepHistory = 512;
+    std::deque<StepSnapshot> m_stepHistory;
+    bool m_stepTickActive = false; ///< A stepped tick is mid-flight (deferred-commit bracket open).
+    int m_stepWave = 0;            ///< Waves completed within the open stepped tick (update()'s bound applies).
+    SimTime m_stepTickTarget = 0;  ///< The open stepped tick's drain boundary.
 };

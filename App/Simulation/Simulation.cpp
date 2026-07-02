@@ -373,6 +373,10 @@ void Simulation::restart()
     m_simPriorities.clear();
     m_simFeedbackNodes.clear();
     m_simHasFeedbackElements = false;
+    // Step snapshots hold element pointers (predecessor links, evaluated-sequential sets)
+    // and must not outlive the topology; the open-tick bookkeeping refers to a netlist
+    // that is being discarded, so there is nothing left to drain — clear, don't finish.
+    clearStepState();
     m_currentTime = 0;
     // m_recorder's watch LIST is deliberately NOT cleared here: its traces hold QPointers, so a
     // freed element auto-nulls (crash-safe) and the dead trace is reaped by m_recorder.pruneStale()
@@ -391,11 +395,17 @@ void Simulation::restart()
           && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty()
           && m_successorGraph.isEmpty() && m_icOutputMirror.isEmpty()
           && m_evaluatedSequentialThisTick.isEmpty() && m_recorder.timelineEmpty()
-          && m_simPriorities.isEmpty() && m_simFeedbackNodes.isEmpty() && !m_simHasFeedbackElements);
+          && m_simPriorities.isEmpty() && m_simFeedbackNodes.isEmpty() && !m_simHasFeedbackElements
+          && m_stepHistory.empty() && !m_stepTickActive);
 }
 
 void Simulation::beginTimedRun(const SimTime nsPerTick)
 {
+    // A dolphin sweep is a "continue" boundary for the step debugger: complete any open
+    // stepped tick (the sweep is about to clobber element state anyway) and drop the
+    // rewind history before the timed window replaces the live one.
+    finishStepSession();
+
     // Start a clean timed timeline: each update() now advances nsPerTick of sim-time. Reset the
     // clock and drop any pending events so column 0 starts at t=0, and force a full re-seed so the
     // first update() settles the whole network from the current input state rather than relying on
@@ -435,6 +445,270 @@ void Simulation::endTimedRun(const SimTime restoreTo)
     m_recorder.setRecording(m_wasRecordingBeforeTimedRun);
 }
 
+Simulation::StepResult Simulation::stepPropagation()
+{
+    // The step debugger drives the PAUSED engine one visible change per call. While the
+    // timer runs, update() owns the tick pipeline — a concurrent partial drain would corrupt
+    // the open wave — so stepping requires an explicit pause first.
+    if (m_timer.isActive()) {
+        return {};
+    }
+    if (!m_initialized && !initialize()) {
+        return {};
+    }
+
+    StepSnapshot snapshot = captureStepSnapshot();
+
+    if (!m_stepTickActive) {
+        // Open a stepped tick: the same preamble update() runs, minus clocks — the timer is
+        // stopped, so wall-clock time is frozen and stepping propagates MANUAL input changes
+        // (the debugger workflow: pause, toggle a switch, step through the fallout).
+        for (auto *inputElm : std::as_const(m_inputs)) {
+            if (inputElm) {
+                inputElm->updateOutputs();
+            }
+        }
+        // Same boundary stamping (and the same reseed-tick guard) as update()'s phase 1.
+        if (m_eventInitDone && m_recorder.isRecording()) {
+            m_recorder.recordAll(m_currentTime);
+        }
+        m_evaluatedSequentialThisTick.clear();
+        m_stepTickTarget = m_currentTime + m_timePerTick;
+        m_stepWave = 0;
+        // Seeding only schedules events (nothing evaluates), so it may safely run before
+        // beginWave() — that lets a settled circuit bail out below with no bracket opened.
+        seedTickEvents();
+        resetDrainCursor();
+
+        if (m_eventQueue.empty()
+            || (m_timePerTick == 0 && m_eventQueue.nextTime() > m_stepTickTarget)) {
+            // Fully settled: nothing pending, nothing reachable. (In functional mode an
+            // event beyond the current instant — leftovers from a temporal session driven
+            // through the raw API — is unreachable for update() too.) Deliberately no
+            // history push and no m_currentTime advance: clicking Step on a settled
+            // circuit is a no-op, not time creeping forward.
+            return {StepStatus::Settled, {}};
+        }
+
+        // Temporal fast-forward: when every queued event lies beyond this tick's window,
+        // update() would burn whole ticks pushing the boundary forward until the earliest
+        // event becomes reachable. Those ticks are pure time advancement (unchanged inputs
+        // seed nothing), so jump the equivalent number of windows arithmetically.
+        if (m_timePerTick > 0 && m_eventQueue.nextTime() > m_stepTickTarget) {
+            const SimTime deficit = m_eventQueue.nextTime() - m_stepTickTarget;
+            const SimTime ticksToSkip = (deficit + m_timePerTick - 1) / m_timePerTick;
+            m_currentTime += ticksToSkip * m_timePerTick;
+            m_stepTickTarget += ticksToSkip * m_timePerTick;
+        }
+
+        beginWave();
+        m_stepTickActive = true;
+    }
+
+    const int maxWaves = static_cast<int>(m_sequentialElements.size()) + 1;
+
+    while (true) {
+        const DrainResult drained = drainOneEvent(m_stepTickTarget);
+
+        if (drained.status == DrainResult::Status::Evaluated) {
+            if (drained.changed && drained.element) {
+                pushStepHistory(std::move(snapshot));
+                refreshVisuals();
+                // Capture the change NOW instead of waiting for the drain to move past this
+                // timestamp (which may only happen on a later click) — the Live Analyzer must
+                // extend on every step. Same-time captures collapse, so if later events at
+                // this timestamp refine the value, the trace converges to the settled one.
+                if (m_recorder.isRecording()) {
+                    m_recorder.recordAll(m_currentTime);
+                }
+                return {StepStatus::Stepped, {drained.element}};
+            }
+            continue; // a no-op evaluation is not a step
+        }
+
+        // Exhausted or OscillationCapped: this wave's drain is done — close it exactly as
+        // update() does. (After the cap the queue was cleared, so Exhausted follows anyway.)
+        finishDrain(m_stepTickTarget);
+        QSet<GraphicElement *> changedThisWave;
+        const bool moreWaves = finishWave(changedThisWave);
+        ++m_stepWave;
+
+        const bool tickDone = !moreWaves || m_stepWave >= maxWaves;
+        if (tickDone) {
+            m_stepTickActive = false;
+        } else {
+            beginWave();
+            seedTickEvents(); // no-op parity with update()'s per-wave processEvents() call
+            resetDrainCursor();
+        }
+
+        if (!changedThisWave.isEmpty()) {
+            // The synchronous commit (plus its resettled combinational cone) is ONE step:
+            // flip-flops sharing a clock edge publish together, exactly like hardware.
+            pushStepHistory(std::move(snapshot));
+            refreshVisuals();
+            QVector<GraphicElement *> changed(changedThisWave.cbegin(), changedThisWave.cend());
+            std::sort(changed.begin(), changed.end(),
+                      [this](const GraphicElement *a, const GraphicElement *b) {
+                          return m_simPriorities.value(a, -1) > m_simPriorities.value(b, -1);
+                      });
+            return {StepStatus::Stepped, changed};
+        }
+
+        if (tickDone) {
+            // The tick closed without any visible change in this call (its earlier steps,
+            // if any, already returned from earlier calls). Rather than bothering the user
+            // with an empty "tick boundary" click, roll straight into the next tick: either
+            // something is reachable there (pending delayed events after fast-forward) and
+            // the recursion steps it, or nothing is and it reports Settled. Terminates
+            // because every cycle drains at least one queued event or ends Settled. The
+            // unused snapshot is simply dropped — only visible steps enter the history.
+            // Refresh visuals first: the oscillation cap canonicalizes feedback nodes to
+            // Unknown outside the changed-set tracking, and that must not linger stale.
+            refreshVisuals();
+            return stepPropagation();
+        }
+        // The wave closed silently but scheduled more work (e.g. a woken flip-flop) — keep
+        // draining inside this same call until something visible happens.
+    }
+}
+
+Simulation::StepResult Simulation::stepBack()
+{
+    if (m_timer.isActive() || m_stepHistory.empty()) {
+        return {};
+    }
+
+    const StepSnapshot snapshot = std::move(m_stepHistory.back());
+    m_stepHistory.pop_back();
+
+    // Diff the visible outputs across the restore so the caller can highlight what rewound.
+    QVector<QVector<Status>> before;
+    before.reserve(m_sortedElements.size());
+    for (auto *element : std::as_const(m_sortedElements)) {
+        QVector<Status> outs;
+        if (element) {
+            const auto count = element->simOutputSize();
+            outs.reserve(count);
+            for (int p = 0; p < count; ++p) {
+                outs.append(element->outputValue(p));
+            }
+        }
+        before.append(outs);
+    }
+
+    restoreStepSnapshot(snapshot);
+
+    QVector<GraphicElement *> changed;
+    for (int i = 0; i < m_sortedElements.size(); ++i) {
+        auto *element = m_sortedElements.at(i);
+        if (!element) {
+            continue;
+        }
+        const auto &prev = before.at(i);
+        for (int p = 0; p < prev.size(); ++p) {
+            if (element->outputValue(p) != prev.at(p)) {
+                changed.append(element);
+                break;
+            }
+        }
+    }
+
+    // Rewind the recorded timeline to the snapshot's mark — everything captured by the
+    // rolled-back step (and any same-time collapse it caused) disappears with it.
+    m_recorder.rewindTimeline(snapshot.timelineMark, m_currentTime);
+    refreshVisuals();
+    return {StepStatus::Stepped, changed};
+}
+
+Simulation::StepSnapshot Simulation::captureStepSnapshot() const
+{
+    StepSnapshot snapshot;
+    snapshot.elementStates.reserve(m_sortedElements.size());
+    snapshot.internalStates.reserve(m_sortedElements.size());
+    for (auto *element : std::as_const(m_sortedElements)) {
+        snapshot.elementStates.append(element ? element->simRuntimeState() : ElementSimState{});
+        snapshot.internalStates.append(element ? element->simInternalState() : QVector<Status>{});
+    }
+    snapshot.eventQueue = m_eventQueue;
+    snapshot.currentTime = m_currentTime;
+    snapshot.eventInitDone = m_eventInitDone;
+    snapshot.evaluatedSequentialThisTick = m_evaluatedSequentialThisTick;
+    snapshot.drainEvalsAtTime = m_drainEvalsAtTime;
+    snapshot.drainLastTime = m_drainLastTime;
+    snapshot.stepTickActive = m_stepTickActive;
+    snapshot.stepWave = m_stepWave;
+    snapshot.stepTickTarget = m_stepTickTarget;
+    snapshot.timelineMark = m_recorder.markTimeline();
+    return snapshot;
+}
+
+void Simulation::restoreStepSnapshot(const StepSnapshot &snapshot)
+{
+    for (int i = 0; i < m_sortedElements.size() && i < snapshot.elementStates.size(); ++i) {
+        auto *element = m_sortedElements.at(i);
+        if (element) {
+            element->setSimRuntimeState(snapshot.elementStates.at(i));
+            element->setSimInternalState(snapshot.internalStates.at(i));
+        }
+    }
+    m_eventQueue = snapshot.eventQueue;
+    m_currentTime = snapshot.currentTime;
+    m_eventInitDone = snapshot.eventInitDone;
+    m_evaluatedSequentialThisTick = snapshot.evaluatedSequentialThisTick;
+    m_drainEvalsAtTime = snapshot.drainEvalsAtTime;
+    m_drainLastTime = snapshot.drainLastTime;
+    m_stepTickActive = snapshot.stepTickActive;
+    m_stepWave = snapshot.stepWave;
+    m_stepTickTarget = snapshot.stepTickTarget;
+}
+
+void Simulation::pushStepHistory(StepSnapshot &&snapshot)
+{
+    m_stepHistory.push_back(std::move(snapshot));
+    while (m_stepHistory.size() > kMaxStepHistory) {
+        m_stepHistory.pop_front();
+    }
+}
+
+void Simulation::clearStepState()
+{
+    m_stepHistory.clear();
+    m_stepTickActive = false;
+    m_stepWave = 0;
+    m_stepTickTarget = 0;
+}
+
+void Simulation::finishStepSession()
+{
+    // Complete any mid-flight stepped tick with the exact primitives update() uses, bounded
+    // the same way, so the deferred-commit bracket always closes before a live run or a
+    // sweep touches the elements. Doing nothing here would leave flip-flops with staged
+    // outputs that the next beginWave() would silently re-seed — consistent but surprising;
+    // finishing the tick lands on the same state a Play-through would have reached.
+    if (m_stepTickActive) {
+        const int maxWaves = static_cast<int>(m_sequentialElements.size()) + 1;
+        while (m_stepTickActive) {
+            while (drainOneEvent(m_stepTickTarget).status == DrainResult::Status::Evaluated) {
+                // Drain to exhaustion — same blocking settle as processEvents().
+            }
+            finishDrain(m_stepTickTarget);
+            QSet<GraphicElement *> changedThisWave;
+            const bool moreWaves = finishWave(changedThisWave);
+            ++m_stepWave;
+            if (!moreWaves || m_stepWave >= maxWaves) {
+                m_stepTickActive = false;
+            } else {
+                beginWave();
+                seedTickEvents();
+                resetDrainCursor();
+            }
+        }
+        refreshVisuals();
+    }
+    clearStepState();
+}
+
 bool Simulation::isRunning()
 {
     return m_timer.isActive();
@@ -462,6 +736,11 @@ void Simulation::stop()
 void Simulation::start()
 {
     qCDebug(zero) << "Starting simulation.";
+
+    // Resuming Play is the step debugger's "continue": complete any open stepped tick so
+    // the live run starts from a closed, settled state, and drop the rewind history — you
+    // cannot step back past a continue, exactly like a code debugger.
+    finishStepSession();
 
     if (!m_initialized) {
         initialize();
@@ -726,6 +1005,9 @@ bool Simulation::initialize()
     // m_eventInitDone=false forces makes the dropped events redundant anyway.
     m_eventQueue.clear();
     m_evaluatedSequentialThisTick.clear();
+    // Same pointer-lifetime invariant as restart(): step snapshots reference the old
+    // netlist and cannot survive a rebuild.
+    clearStepState();
     m_clocks.clear();
     m_outputs.clear();
     m_inputs.clear();
