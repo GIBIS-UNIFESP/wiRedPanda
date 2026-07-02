@@ -79,11 +79,20 @@ public:
     /// Resets zoom to fit all recorded data in the current width.
     void zoomFit();
 
-    /// Returns the desired size based on trace count and time span.
+    /// Returns the desired size based on trace count and time span, clamped to Qt's
+    /// QWIDGETSIZE_MAX widget-dimension limit (a larger minimum size is rejected with a
+    /// qWarning on every repaint and the canvas cannot grow past it anyway).
     QSize sizeHint() const override;
 
     /// Returns the minimum size.
     QSize minimumSizeHint() const override;
+
+    /// Returns the simulation time mapped to canvas x = 0. Zero while the whole recording
+    /// fits within QWIDGETSIZE_MAX at the current zoom; once it no longer fits, the canvas
+    /// freezes at the maximum width and this origin advances so the window always covers the
+    /// NEWEST data at the user's chosen zoom (older data becomes reachable again by zooming
+    /// out). Public so tests can assert the sliding-window mapping.
+    SimTime timeOrigin() const;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -91,12 +100,14 @@ protected:
 
 private:
     // --- Drawing helpers ---
-    void drawTimeRuler(QPainter &painter, int width, SimTime visibleStart, SimTime visibleEnd);
+    /// \a visibleStart / \a visibleEnd bound the exposed paint region (in sim time) so a
+    /// repaint costs O(viewport), not O(recorded history); \a origin is timeOrigin().
+    void drawTimeRuler(QPainter &painter, int width, SimTime origin, SimTime visibleStart, SimTime visibleEnd);
     void drawTrace(QPainter &painter, int traceIndex, int y0, int width, int height,
-                   SimTime visibleStart, SimTime visibleEnd);
+                   SimTime origin, SimTime visibleStart, SimTime visibleEnd);
 
     // --- Coordinate conversion ---
-    int timeToX(SimTime time, SimTime visibleStart) const;
+    int timeToX(SimTime time, SimTime origin) const;
 
     // --- Constants --- (shared row geometry lives in namespace WaveformLayout, above)
     static constexpr int HIGH_Y_OFFSET = 4;
