@@ -259,25 +259,77 @@ private:
     /// this engine doesn't need to know about that mechanism to honor it. Every Memory-group
     /// element evaluated during the drain is recorded into m_evaluatedSequentialThisTick, so
     /// update()'s wave loop knows which sequential elements have already run this tick.
-    /// \a elements/\a inputs/\a clocks are update()'s per-tick snapshots (see the "Bug 5" /
-    /// snapshot-topology-vectors fix in update()) — this engine must not reach for
-    /// m_sortedElements/m_inputs/m_clocks directly, since a reentrant restart() mid-tick
-    /// (e.g. triggered by a QMessageBox nested loop from an updateLogic() exception) clears
-    /// and rebuilds those members out from under a live range-for.
-    void processEvents(SimTime targetTime,
-                        const QVector<GraphicElement *> &elements,
-                        const QVector<GraphicElementInput *> &inputs,
-                        const QVector<Clock *> &clocks);
+    /// Composed entirely from the resumable primitives below (seedTickEvents(),
+    /// drainOneEvent(), finishDrain()) so the step debugger can drive the SAME engine one
+    /// event at a time.
+    void processEvents(SimTime targetTime);
+
+    // --- Engine primitives (shared by update()/processEvents() and the step debugger) ---
+
+    /// Outcome of a single drainOneEvent() call.
+    struct DrainResult {
+        enum class Status {
+            Exhausted,         ///< No event at or before the target time — the drain is done.
+            Evaluated,         ///< One event was popped (element may be null for a dead event).
+            OscillationCapped, ///< The per-timestamp cap tripped; feedback canonicalized, queue cleared.
+        };
+        Status status = Status::Exhausted;
+        GraphicElement *element = nullptr; ///< The evaluated element (null for a dead event).
+        bool changed = false;              ///< Whether the evaluation changed the element's output.
+    };
+
+    /// Seeds the event queue for this tick: whole-network on the first tick after (re)init,
+    /// incrementally (changed inputs/clocks only) afterwards. Idempotent within a tick —
+    /// wave ≥ 1 calls find the sources' change flags already cleared and seed nothing.
+    void seedTickEvents();
+
+    /// Pops and evaluates ONE event at or before \a targetTime (the drain-loop body of the
+    /// unified engine). Advances m_currentTime to the event's timestamp, captures the
+    /// previous timestamp into the waveform recorder when time moves, schedules changed
+    /// elements' successors, and trips the per-timestamp oscillation cap. The drain cursor
+    /// (m_drainEvalsAtTime/m_drainLastTime) persists across calls so the step debugger can
+    /// resume a drain one event per user click; reset it via resetDrainCursor() at the start
+    /// of each wave's drain.
+    DrainResult drainOneEvent(SimTime targetTime);
+
+    /// Ends a wave's drain: captures the final settled timestamp into the recorder and
+    /// advances m_currentTime to \a targetTime (the tick boundary; stays put in functional
+    /// mode where the target equals the current instant).
+    void finishDrain(SimTime targetTime);
+
+    /// Resets the drain cursor for a fresh wave drain (matches the per-processEvents()
+    /// initialization the cursor had when it was a pair of locals).
+    void resetDrainCursor()
+    {
+        m_drainEvalsAtTime = 0;
+        m_drainLastTime = SIM_TIME_UNSET;
+    }
+
+    /// Opens a wave: brackets every synchronous sequential element with
+    /// beginDeferredCommit() so their outputs stage silently until finishWave() commits.
+    void beginWave();
+
+    /// Closes a wave: commits all staged sequential outputs simultaneously (non-blocking
+    /// semantics), re-settles combinational logic once when anything committed, captures the
+    /// tick boundary into the recorder, and wakes not-yet-run Memory successors of the
+    /// changed set. \a changedThisWave must be empty on entry; on return it holds every
+    /// element whose output changed in this wave (sequential commits and resettled
+    /// combinational elements alike). Returns \c true when another wave is needed.
+    bool finishWave(QSet<GraphicElement *> &changedThisWave);
+
+    /// Pushes settled values onto the visuals: IC output mirroring, wire (phase 3) and
+    /// output-element (phase 4) port statuses. Called by update() at display rate and by
+    /// the step debugger after every step (stepping is inherently low-rate).
+    void refreshVisuals();
 
     /// Re-propagates freshly committed sequential outputs through combinational logic to a
     /// fixed point (bounded by kMaxSettleIterations when feedback is present). Skips
     /// ElementGroup::Memory elements so they are never re-clocked by this pass. Every element
     /// that changes in any pass is inserted into \a changedOut, so update()'s wave loop can walk
     /// successors of the true changed set (combinational elements included) rather than just the
-    /// sequential elements it committed directly. \a elements is update()'s per-tick snapshot,
-    /// for the same reentrancy reason as processEvents().
+    /// sequential elements it committed directly.
     /// \return true if any element's output changed.
-    bool resettleCombinationalOnce(const QVector<GraphicElement *> &elements, QSet<GraphicElement *> &changedOut);
+    bool resettleCombinationalOnce(QSet<GraphicElement *> &changedOut);
 
     // --- Members: Timer & element lists ---
 
@@ -346,6 +398,11 @@ private:
 
     EventQueue m_eventQueue;                          ///< Time-ordered pending re-evaluations.
     SimTime m_currentTime = 0;                        ///< Current sim time (advances in temporal mode).
+    /// Drain cursor: evaluations at the current timestamp (oscillation-cap counter) and the
+    /// last drained timestamp (recorder-capture edge detector). Members rather than locals so
+    /// a drain can be suspended and resumed across step-debugger calls.
+    int m_drainEvalsAtTime = 0;
+    SimTime m_drainLastTime = SIM_TIME_UNSET;
     SimTime m_timePerTick = 0;                        ///< 0 ⇒ functional; >0 ⇒ temporal window per tick.
     QHash<const GraphicElement *, SimTime> m_delays;  ///< Per-element propagation delay (default 0).
     bool m_eventInitDone = false;                     ///< False until the first seed-all baseline settle.

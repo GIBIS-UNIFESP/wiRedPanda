@@ -489,7 +489,7 @@ void TestDanglingPointer::bug8_processEventsMustTolerateNullTarget()
     WorkSpace ws;
     auto *sim = ws.scene()->simulation();
     sim->m_eventQueue.schedule({0, -1, nullptr});
-    sim->processEvents(0, {}, {}, {});
+    sim->processEvents(0);
     QVERIFY(true);
 }
 
