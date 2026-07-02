@@ -439,6 +439,21 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
         elm->save(stream);
     }
 
+    // Precompute once whether old→new changes wireless routing (a mode, or the label of a
+    // Tx/Rx node — the label IS the channel). The live elements currently hold the NEW
+    // state, so briefly round-trip through oldData to observe the OLD one. This cannot be
+    // detected inside redo()/undo() around loadData(): the first redo()'s load is a no-op
+    // (the caller mutated the elements before pushing), so old and new would compare equal
+    // exactly when the escalation matters most. Only selections containing a
+    // wireless-capable element pay for the round-trip.
+    const auto newState = snapshotWirelessState();
+    if (!newState.isEmpty()) {
+        SimulationBlocker blocker(m_scene->simulation());
+        loadData(m_oldData);
+        m_wirelessTopologyChange = wirelessStateDiffers(snapshotWirelessState(), newState);
+        loadData(m_newData);
+    }
+
     setText(tr("Update %1 elements").arg(elements.size()));
 }
 
@@ -446,11 +461,11 @@ void UpdateCommand::undo()
 {
     qCDebug(zero) << text();
     // elm->load() can free and replace an IC's internal graph; a simulation
-    // tick firing between that free and setCircuitUpdateRequired()'s rebuild
-    // (via Application::notify + QMessageBox nested event loop) would fault.
+    // tick firing between that free and setPropertyUpdateRequired() (via
+    // Application::notify + QMessageBox nested event loop) would fault.
     SimulationBlocker blocker(m_scene->simulation());
     loadData(m_oldData);
-    m_scene->setCircuitUpdateRequired();
+    refreshRuntimeState();
 }
 
 void UpdateCommand::redo()
@@ -458,7 +473,59 @@ void UpdateCommand::redo()
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
     loadData(m_newData);
-    m_scene->setCircuitUpdateRequired();
+    refreshRuntimeState();
+}
+
+QVector<UpdateCommand::WirelessState> UpdateCommand::snapshotWirelessState() const
+{
+    QVector<WirelessState> state;
+    const auto elements = this->elements();
+    for (auto *elm : elements) {
+        if (elm && elm->hasWirelessMode()) {
+            state.append({elm, elm->wirelessMode(), elm->label()});
+        }
+    }
+    return state;
+}
+
+bool UpdateCommand::wirelessStateDiffers(const QVector<WirelessState> &before,
+                                         const QVector<WirelessState> &after)
+{
+    // The wireless channel graph is built only inside Simulation::initialize()
+    // (buildTxMap()/connectWirelessElements() read labels and modes there and nowhere
+    // else), so a change here re-routes nothing until a full rebuild. A label change on
+    // a node whose mode is None on both sides is decorative and keeps the fast path.
+    if (before.size() != after.size()) {
+        return true; // defensive: the set of wireless-capable elements itself changed
+    }
+    for (int i = 0; i < before.size(); ++i) {
+        const auto &b = before.at(i);
+        const auto &a = after.at(i);
+        if (b.element != a.element || b.mode != a.mode) {
+            return true;
+        }
+        if (b.label != a.label && a.mode != WirelessMode::None) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void UpdateCommand::refreshRuntimeState()
+{
+    // A wireless mode/label edit IS a topology change (the label is the Tx→Rx channel),
+    // and the running simulation resolves channels only during initialize() — without a
+    // full rebuild the old routing silently stays live.
+    if (m_wirelessTopologyChange) {
+        m_scene->setCircuitUpdateRequired();
+        return;
+    }
+
+    // Everything else this command carries is property-only (label, color, ...) — never
+    // topology — so it must not force a full Simulation::initialize(), which would rebuild
+    // every Clock's phase from scratch and disrupt a running simulation over an unrelated
+    // edit. setPropertyUpdateRequired() refreshes visuals/dirty-state only.
+    m_scene->setPropertyUpdateRequired();
 }
 
 void UpdateCommand::loadData(QByteArray &itemData)

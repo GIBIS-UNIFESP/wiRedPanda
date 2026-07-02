@@ -213,9 +213,33 @@ private:
     // --- Helpers ---
     void loadData(QByteArray &itemData);
 
+    /// One wireless-capable element's channel-relevant state (mode + label), used to detect
+    /// whether the old→new edit changes wireless routing (a genuine topology change).
+    struct WirelessState {
+        GraphicElement *element = nullptr;
+        WirelessMode mode = WirelessMode::None;
+        QString label;
+    };
+    /// Snapshots the wireless state of every wireless-capable command element.
+    QVector<WirelessState> snapshotWirelessState() const;
+    /// Returns true when an element's wireless mode differs between the two snapshots, or its
+    /// label differs while the element is (or was) a wireless Tx/Rx — the label IS the channel.
+    static bool wirelessStateDiffers(const QVector<WirelessState> &before,
+                                     const QVector<WirelessState> &after);
+
+    /// Refreshes visuals/dirty-state without a full simulation rebuild — unless the edit
+    /// changed wireless routing (m_wirelessTopologyChange), which lives in the simulation
+    /// topology and needs one. Shared by redo() and undo().
+    void refreshRuntimeState();
+
     // --- Members ---
     QByteArray m_newData;
     QByteArray m_oldData;
+    /// True when old→new changes wireless routing. Precomputed once in the constructor (the
+    /// (m_oldData, m_newData) pair is immutable, so undo()/redo() flip between the same two
+    /// states forever) — computing it around loadData() instead would miss the FIRST redo(),
+    /// whose load is a no-op because the caller mutated the elements before pushing.
+    bool m_wirelessTopologyChange = false;
 };
 
 /**

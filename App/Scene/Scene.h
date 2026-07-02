@@ -237,6 +237,10 @@ public:
     Simulation *simulation();
     /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
+    /// Refreshes visuals and marks the scene dirty without rebuilding the simulation
+    /// graph, for property-only edits (label, color, delay, ...) that don't add,
+    /// remove, or reconnect elements.
+    void setPropertyUpdateRequired();
 
     /// \reimp SimulationHost
     QList<QGraphicsItem *> simulationItems() const override { return items(); }
