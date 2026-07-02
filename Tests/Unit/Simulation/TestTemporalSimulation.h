@@ -83,6 +83,9 @@ private slots:
     /// A watched-but-never-advancing timeline (maxTime == 0) explains itself persistently
     /// on the canvas: functional mode vs no-edges-yet; cleared once real data lands.
     void testCanvasDegenerateStateHint();
+    /// Adjacent ruler ticks always get distinct labels — 'g'-rounded labels collapsed
+    /// every ns-scale tick into the same "4e+06 ns" at delay-resolving zoom.
+    void testRulerLabelsDistinctAtNsScale();
 
     // --- Temporal example circuits (Examples/temporal_*.panda) ---
     void testExampleRingOscillator();

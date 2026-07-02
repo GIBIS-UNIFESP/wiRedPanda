@@ -20,6 +20,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/WaveformRecorder.h"
+#include "App/UI/FileDialogProvider.h"
 
 // ============================================================================
 // AnalyzerCanvas — scrollable signal traces
@@ -57,14 +58,15 @@ QSize AnalyzerCanvas::sizeHint() const
 
     int w = 400;
     if (m_recorder && m_recorder->maxTime() > 0) {
-        // Qt hard-caps widget dimensions at QWIDGETSIZE_MAX; a minimum size beyond it is
-        // rejected with a qWarning on EVERY setMinimumSize() call and re-invalidates layout,
-        // so a long recording at high zoom must clamp here (timeOrigin() then slides the
-        // canvas window over the newest data instead of growing the widget).
+        // A long recording at high zoom must clamp at MaxCanvasWidth (strictly below
+        // QWIDGETSIZE_MAX — Qt treats a minimum size of exactly that as "unconstrained"
+        // and collapses the widget to the viewport; beyond it every setMinimumSize()
+        // warns and re-invalidates layout). timeOrigin() then slides the canvas window
+        // over the newest data instead of growing the widget.
         const double pixels = static_cast<double>(m_recorder->maxTime()) * m_pixelsPerNs;
-        w = static_cast<int>(qMin(pixels, static_cast<double>(QWIDGETSIZE_MAX - 20))) + 20;
+        w = static_cast<int>(qMin(pixels, static_cast<double>(AnalyzerLayout::MaxCanvasWidth - 20))) + 20;
     }
-    return {qBound(100, w, QWIDGETSIZE_MAX),
+    return {qBound(100, w, AnalyzerLayout::MaxCanvasWidth),
             qBound(AnalyzerLayout::TraceHeight, h, QWIDGETSIZE_MAX)};
 }
 
@@ -101,7 +103,7 @@ SimTime AnalyzerCanvas::timeOrigin() const
         return 0;
     }
     const SimTime maxTime = m_recorder->maxTime();
-    const double capPixels = static_cast<double>(QWIDGETSIZE_MAX - 20);
+    const double capPixels = static_cast<double>(AnalyzerLayout::MaxCanvasWidth - 20);
     if (static_cast<double>(maxTime) * m_pixelsPerNs <= capPixels) {
         return 0;
     }
@@ -335,16 +337,6 @@ void AnalyzerTimeRuler::paintEvent(QPaintEvent *event)
     const auto tickInterval = static_cast<SimTime>(qMax(niceInterval, 1.0));
     const SimTime firstTick = (visibleStart / tickInterval) * tickInterval;
 
-    const char *unit = "ns";
-    double unitDiv = 1.0;
-    if (tickInterval >= 1'000'000) {
-        unit = "ms";
-        unitDiv = 1'000'000.0;
-    } else if (tickInterval >= 1'000) {
-        unit = "\xC2\xB5s";
-        unitDiv = 1'000.0;
-    }
-
     for (SimTime t = firstTick; t <= visibleEnd; t += tickInterval) {
         // Ruler-local x; firstTick can round below visibleStart, mapping to a culled x < 0.
         const double delta = (t >= origin) ? static_cast<double>(t - origin)
@@ -354,9 +346,8 @@ void AnalyzerTimeRuler::paintEvent(QPaintEvent *event)
             continue;
         }
         painter.drawLine(x, AnalyzerLayout::RulerHeight - 6, x, AnalyzerLayout::RulerHeight);
-
-        const QString label = QString::number(static_cast<double>(t) / unitDiv, 'g', 4) + " " + unit;
-        painter.drawText(x + 2, AnalyzerLayout::RulerHeight - 8, label);
+        painter.drawText(x + 2, AnalyzerLayout::RulerHeight - 8,
+                         AnalyzerLayout::formatRulerLabel(t, tickInterval));
     }
 
     painter.drawLine(0, AnalyzerLayout::RulerHeight - 1, width(), AnalyzerLayout::RulerHeight - 1);
@@ -436,15 +427,18 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
     auto *btnZoomOut = new QPushButton(tr("-"), this);
     auto *btnFit = new QPushButton(tr("Fit"), this);
     auto *btnLatestEdge = new QPushButton(tr("Latest Edge"), this);
+    auto *btnExport = new QPushButton(tr("Export Image"), this);
     btnWatch->setObjectName("analyzerWatchAllButton");
     btnClear->setObjectName("analyzerClearButton");
     btnZoomIn->setObjectName("analyzerZoomInButton");
     btnZoomOut->setObjectName("analyzerZoomOutButton");
     btnFit->setObjectName("analyzerFitButton");
     btnLatestEdge->setObjectName("analyzerLatestEdgeButton");
+    btnExport->setObjectName("analyzerExportImageButton");
     btnWatch->setToolTip(tr("Watch all output signals in the circuit"));
     btnClear->setToolTip(tr("Remove all watched signals"));
     btnLatestEdge->setToolTip(tr("Zoom to the newest recorded transition at nanosecond scale — pause the simulation to hold the view"));
+    btnExport->setToolTip(tr("Save the current analyzer view as an image"));
     toolbar->addWidget(btnWatch);
     toolbar->addWidget(btnClear);
     toolbar->addStretch();
@@ -452,6 +446,7 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
     toolbar->addWidget(btnZoomIn);
     toolbar->addWidget(btnFit);
     toolbar->addWidget(btnLatestEdge);
+    toolbar->addWidget(btnExport);
     layout->addLayout(toolbar);
 
     // Frozen-pane grid: ruler row pinned on top, label column pinned on the left, traces in
@@ -490,6 +485,16 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
     connect(btnZoomOut, &QPushButton::clicked, this, &LiveAnalyzerPanel::zoomOut);
     connect(btnFit, &QPushButton::clicked, this, &LiveAnalyzerPanel::zoomFit);
     connect(btnLatestEdge, &QPushButton::clicked, this, &LiveAnalyzerPanel::zoomToLatestEdge);
+    connect(btnExport, &QPushButton::clicked, this, [this] {
+        const QString file = FileDialogs::provider()
+                                 ->getSaveFileName(this, tr("Export Image"), QString(), tr("PNG files (*.png)"))
+                                 .fileName;
+        if (file.isEmpty()) {
+            return;
+        }
+        emit statusMessage(exportImage(file) ? tr("Image saved to %1.").arg(file)
+                                             : tr("Could not save the image."), 5000);
+    });
     connect(m_canvas, &AnalyzerCanvas::zoomChanged, m_ruler, qOverload<>(&QWidget::update));
 
     // Wheel: zoom anchored on the sim-time under the cursor (the canvas only reports
@@ -547,6 +552,14 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
 WaveformRecorder *LiveAnalyzerPanel::recorder() const
 {
     return m_scene ? &m_scene->simulation()->waveformRecorder() : nullptr;
+}
+
+bool LiveAnalyzerPanel::exportImage(const QString &filePath)
+{
+    // grab() composes the panel exactly as displayed — toolbar, ruler, label column and
+    // the visible slice of the trace canvas — which is precisely what a bug report (or an
+    // automated check reading the image back) needs to see.
+    return grab().save(filePath);
 }
 
 void LiveAnalyzerPanel::showEvent(QShowEvent *event)

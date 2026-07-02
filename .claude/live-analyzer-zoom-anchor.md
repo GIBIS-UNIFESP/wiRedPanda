@@ -79,3 +79,28 @@ Tests: `testLiveAnalyzerButtonZoomFollowsTail` (failing-first: "first zoom-in: v
 stay pinned at the tail (value 3121, max 3338)"), `testLiveAnalyzerWheelZoomsAtCursor`
 (plain wheel), `testCanvasWheelZoomAlwaysRequests`, and a post-Fit pinned zoom-in step in
 `testLiveAnalyzerFitSpansViewport`.
+
+## Follow-up 2 ("I still can't see the delay; the scrollbar disappears at some zoom")
+
+Diagnosed end-to-end with a real-pipeline test (`testGateDelayStaircaseReachableByZoom`:
+real Simulation ticks at temporal 1x, real InputSwitch toggles, PNG snapshots via the new
+`LiveAnalyzerPanel::exportImage()`; set `ANALYZER_SNAPSHOT_DIR` to inspect them). Four
+independent defects:
+
+1. **Every dolphin sweep destroyed the live session** — `beginTimedRun`/`endTimedRun`
+   (plus `resetEventTracking`) rewound the clock to 0 and wiped the recorder; `run()`
+   fires at tool-open and from ~12 grid actions. Fixed: the bracket suspends recording
+   itself and restores the live clock; timeline survives (`fix(sim)` 8f30e1bf7).
+2. **Canvas collapsed at the QWIDGETSIZE_MAX sentinel** — Qt treats a minimum size of
+   exactly QWIDGETSIZE_MAX as "unconstrained": the moment the deep-zoom hint hit it, the
+   canvas snapped to viewport size (scrollbar gone — the reported symptom; probe:
+   16'777'214 holds, 16'777'215 collapses). Fixed with
+   `AnalyzerLayout::MaxCanvasWidth = QWIDGETSIZE_MAX - 1024` (8a4aa18c9).
+3. **Input edges stamped late** — recorded at the first downstream event (t + first
+   gate's delay), so the first gate looked delay-free. Fixed: phase-1 boundary capture in
+   `Simulation::update()`, skipped on reseed ticks (917034c48).
+4. **Ruler unreadable at ns zoom** — 'g'/4-digit labels collapsed all ticks to
+   "4e+06 ns". Fixed: `AnalyzerLayout::formatRulerLabel` (exact, unit from tick spacing).
+
+Degenerate timelines (functional mode / nothing recorded) now explain themselves
+persistently on the canvas (`degenerateStateText()`, fa393ee4e).
