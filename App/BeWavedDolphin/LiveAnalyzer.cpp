@@ -235,12 +235,10 @@ int AnalyzerCanvas::timeToX(SimTime time, SimTime origin) const
 
 void AnalyzerCanvas::wheelEvent(QWheelEvent *event)
 {
-    if (!event->modifiers().testFlag(Qt::ControlModifier)) {
-        event->ignore(); // let the scroll area scroll
-        return;
-    }
-    // Request, don't rescale: anchoring the zoom on the sim-time under the cursor needs
-    // the scroll position and viewport, which only the hosting panel knows.
+    // Any wheel zooms, no modifier — parity with the stimulus-editor grid, whose event
+    // filter consumes every wheel as zoom (the original beWavedDolphin behavior); the
+    // scrollbars pan. Request, don't rescale: anchoring the zoom on the sim-time under
+    // the cursor needs the scroll position and viewport, which only the panel knows.
     if (const int dy = event->angleDelta().y(); dy != 0) {
         emit zoomStepRequested(dy > 0 ? 1 : -1, event->position().x());
     }
@@ -465,7 +463,7 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
     connect(btnLatestEdge, &QPushButton::clicked, this, &LiveAnalyzerPanel::zoomToLatestEdge);
     connect(m_canvas, &AnalyzerCanvas::zoomChanged, m_ruler, qOverload<>(&QWidget::update));
 
-    // Ctrl+wheel: zoom anchored on the sim-time under the cursor (the canvas only reports
+    // Wheel: zoom anchored on the sim-time under the cursor (the canvas only reports
     // the cursor position; the anchor math needs the scroll position, known here).
     connect(m_canvas, &AnalyzerCanvas::zoomStepRequested, this, [this](int direction, double canvasX) {
         const double anchorViewportX = canvasX - m_scrollArea->horizontalScrollBar()->value();
@@ -662,14 +660,31 @@ void LiveAnalyzerPanel::applyAnchoredZoom(double targetPpn, double anchorViewpor
     hBar->setValue(qRound(delta * newPpn - anchorViewportX));
 }
 
+void LiveAnalyzerPanel::buttonZoomStep(double factor)
+{
+    if (m_followTail) {
+        // Tracking the newest data: zoom around the tracked tail, scope-style — rescale
+        // and re-pin so the newest edges hold the right side of the view and the follow
+        // stays engaged, zooming in and out alike. (A center anchor here would slide the
+        // tail off-screen and silently disengage the follow.)
+        m_canvas->setPixelsPerNs(m_canvas->pixelsPerNs() * factor);
+        settleCanvasGeometry();
+        auto *hBar = m_scrollArea->horizontalScrollBar();
+        hBar->setValue(hBar->maximum());
+        return;
+    }
+    // Browsing history: magnify around the instant at the viewport center.
+    applyAnchoredZoom(m_canvas->pixelsPerNs() * factor, m_scrollArea->viewport()->width() / 2.0);
+}
+
 void LiveAnalyzerPanel::zoomIn()
 {
-    applyAnchoredZoom(m_canvas->pixelsPerNs() * 2.0, m_scrollArea->viewport()->width() / 2.0);
+    buttonZoomStep(2.0);
 }
 
 void LiveAnalyzerPanel::zoomOut()
 {
-    applyAnchoredZoom(m_canvas->pixelsPerNs() * 0.5, m_scrollArea->viewport()->width() / 2.0);
+    buttonZoomStep(0.5);
 }
 
 void LiveAnalyzerPanel::zoomFit()
@@ -682,11 +697,15 @@ void LiveAnalyzerPanel::zoomFit()
     }
     // The canvas pads its width by +20 px past the newest sample (sizeHint), so fitting
     // [0, maxTime] across the viewport means scaling to viewport − 20: the whole recording
-    // plus the pad land exactly in view and the horizontal scroll range collapses to 0 —
-    // which also re-engages the sticky-tail follow while the simulation runs.
+    // plus the pad land exactly in view and the horizontal scroll range collapses to 0.
     m_canvas->setPixelsPerNs(static_cast<double>(viewportWidth - 20) / static_cast<double>(maxTime));
     settleCanvasGeometry();
     m_scrollArea->horizontalScrollBar()->setValue(0);
+
+    // Fit shows the whole recording including the tail: re-engage the follow explicitly.
+    // setValue(0) emits no valueChanged when the bar was already at 0, so the usual
+    // recompute-on-scroll cannot be relied on here.
+    m_followTail = true;
 }
 
 void LiveAnalyzerPanel::zoomToLatestEdge()
