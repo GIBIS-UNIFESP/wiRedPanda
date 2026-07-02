@@ -84,8 +84,46 @@ void TestCPURegisters::testFlagRegister_data()
     QTest::newRow("store_no_flags") << false << false << true << false << false;
     // Test 5: Write disable - no change (flags should be 0 initially)
     QTest::newRow("write_disabled") << true << true << false << false << false;
-    // Test 6: Flag persistence (store then verify hold)
-    QTest::newRow("flag_persistence") << true << false << true << true << false;
+    // (the former "flag_persistence" row duplicated "store_zero_flag"; real
+    //  cross-cycle persistence is covered by testFlagRegisterPersistence below.)
+}
+
+void TestCPURegisters::testFlagRegisterPersistence()
+{
+    // Store a known non-zero flag state, then drive the OPPOSITE inputs while
+    // write is disabled and clock repeatedly: the latched values must persist.
+    // (A transparent latch or a missing write-gate would leak the new inputs.)
+    InputSwitch *zeroInput = new InputSwitch();
+    InputSwitch *negativeInput = new InputSwitch();
+    InputSwitch *flagWrite = new InputSwitch();
+    InputSwitch *clock = new InputSwitch();
+    Led *zeroOut = new Led();
+    Led *negativeOut = new Led();
+    std::unique_ptr<WorkSpace> workspace(buildFlagRegister(zeroInput, negativeInput, flagWrite, clock, zeroOut, negativeOut));
+    auto *sim = workspace->simulation();
+
+    // Store zero=1, negative=0 with write enabled.
+    zeroInput->setOn(true);
+    negativeInput->setOn(false);
+    flagWrite->setOn(true);
+    sim->update();
+    TestUtils::clockCycle(sim, clock);
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(zeroOut, 0), true);
+    QCOMPARE(TestUtils::inputStatus(negativeOut, 0), false);
+
+    // Disable write, present the opposite inputs, and clock several times.
+    flagWrite->setOn(false);
+    zeroInput->setOn(false);
+    negativeInput->setOn(true);
+    sim->update();
+    for (int i = 0; i < 3; ++i) {
+        TestUtils::clockCycle(sim, clock);
+        sim->update();
+    }
+    // Stored state must be retained, not overwritten by the new inputs.
+    QCOMPARE(TestUtils::inputStatus(zeroOut, 0), true);
+    QCOMPARE(TestUtils::inputStatus(negativeOut, 0), false);
 }
 
 void TestCPURegisters::testInstructionRegister()
@@ -94,16 +132,15 @@ void TestCPURegisters::testInstructionRegister()
     QFETCH(bool, shouldLoad);
     QFETCH(int, expectedIR);
     QVector<InputSwitch *> instruction;
-    InputSwitch *load, *enable, *clock;
+    InputSwitch *load, *clock;
     QVector<Led *> ir;
     for (int i = 0; i < 8; i++) {
         instruction.append(new InputSwitch());
         ir.append(new Led());
     }
     load = new InputSwitch();
-    enable = new InputSwitch();
     clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildInstructionRegister8bit(instruction.data(), load, enable, clock, ir.data()));
+    std::unique_ptr<WorkSpace> workspace(buildInstructionRegister8bit(instruction.data(), load, clock, ir.data()));
     auto *sim = workspace->simulation();
     // Load initial value using setOn(bool)
     for (int i = 0; i < 8; i++) {

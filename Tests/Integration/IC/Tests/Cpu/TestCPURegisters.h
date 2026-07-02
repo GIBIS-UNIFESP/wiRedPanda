@@ -15,6 +15,7 @@ private slots:
 
     void testFlagRegister();
     void testFlagRegister_data();
+    void testFlagRegisterPersistence();
     void testInstructionRegister();
     void testInstructionRegister_data();
     void testSingleGatedRegister();

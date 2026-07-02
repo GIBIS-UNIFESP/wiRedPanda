@@ -109,10 +109,9 @@ void TestCPUBranch::testBranchIntegration()
     }
     InputSwitch *pc_load = new InputSwitch();
     InputSwitch *pc_inc = new InputSwitch();
-    InputSwitch *pc_enable = new InputSwitch();
     // Build PC using existing function (creates its own workspace/simulation)
     std::unique_ptr<WorkSpace> workspace_pc(buildProgramCounter8bit(
-        pc_load_val.data(), pc_load, pc_inc, reset, pc_enable, pc_clock, pc_out.data()));
+        pc_load_val.data(), pc_load, pc_inc, reset, pc_clock, pc_out.data()));
     auto *sim_pc = workspace_pc->simulation();
     // === Instruction Decoder (4-to-16) ===
     QVector<InputSwitch *> opcode_bits;
@@ -153,7 +152,6 @@ void TestCPUBranch::testBranchIntegration()
     // === Initialize System ===
     // Reset PC
     reset->setOn(true);
-    pc_enable->setOn(false);
     pc_inc->setOn(false);
     pc_load->setOn(false);
     sim_pc->update();
@@ -205,7 +203,6 @@ void TestCPUBranch::testBranchIntegration()
             pc_load_val[i]->setOn((targetAddr >> i) & 1);
         }
         pc_load->setOn(true);
-        pc_enable->setOn(true);
         sim_pc->update();
         clockCycle(sim_pc, pc_clock);  // Complete clock cycle (HIGH->settle->LOW->settle)
         sim_pc->update();
@@ -216,7 +213,6 @@ void TestCPUBranch::testBranchIntegration()
     } else {
         // No branch - just increment PC
         pc_inc->setOn(true);
-        pc_enable->setOn(true);
         sim_pc->update();
         clockCycle(sim_pc, pc_clock);  // Complete clock cycle (HIGH->settle->LOW->settle)
         sim_pc->update();
