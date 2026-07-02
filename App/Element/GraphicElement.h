@@ -700,6 +700,11 @@ private:
     /// old appearance behind the new one. Call only on an actual size change.
     void invalidateRenderCache();
 
+    /// Counter-orients the name label about its own centre for the current rotation + flip
+    /// state, so the text reads upright and unmirrored at any element orientation. Recomputed
+    /// whenever the orientation or the label text (which moves the pivot) changes.
+    void updateLabelOrientation();
+
     // --- Port Management Helpers ---
 
     /// Shared implementation for setInputSize() and setOutputSize(): resizes the port store
@@ -715,11 +720,6 @@ private:
      * \param isSelected true when the element has just been selected.
      */
     void highlight(const bool isSelected);
-
-    /// Counter-orients the name label about its own centre for the current rotation + flip
-    /// state, so the text reads upright and unmirrored at any element orientation. Recomputed
-    /// whenever the orientation or the label text (which moves the pivot) changes.
-    void updateLabelOrientation();
 
     // --- Members: Element Type & Identity ---
 
