@@ -6,6 +6,7 @@
 #include <cmath>
 #include <memory>
 
+#include <QGraphicsSimpleTextItem>
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
@@ -344,4 +345,39 @@ void TestGraphicelementAdvanced::testElementPositionPersistence()
     // Position should remain after rotation
     elem->setRotation(90);
     QCOMPARE(elem->pos(), pos);
+}
+
+void TestGraphicelementAdvanced::testLabelStaysUprightWhenRotatedOrFlipped()
+{
+    // The name label is a child item, so it inherits the element's rotation/flip; it must be
+    // counter-oriented so the text reads upright and unmirrored at any element orientation.
+    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    QVERIFY(elem != nullptr);
+    elem->setLabel("Q1");
+
+    QGraphicsSimpleTextItem *label = nullptr;
+    const auto children = elem->childItems();
+    for (auto *child : children) {
+        if (auto *text = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(child)) {
+            label = text;
+        }
+    }
+    QVERIFY(label != nullptr);
+
+    const auto isUpright = [](const QTransform &t) {
+        return t.m11() > 0 && t.m22() > 0 && qFuzzyIsNull(t.m12()) && qFuzzyIsNull(t.m21());
+    };
+
+    elem->setRotation(180);
+    QVERIFY2(isUpright(label->sceneTransform()), "Label is upside down at 180°");
+
+    elem->setRotation(90);
+    QVERIFY2(isUpright(label->sceneTransform()), "Label is sideways at 90°");
+
+    elem->setRotation(0);
+    elem->setFlippedX(true);
+    QVERIFY2(isUpright(label->sceneTransform()), "Label is mirrored when flipped");
+
+    elem->setFlippedX(false);
+    QVERIFY(isUpright(label->sceneTransform()));
 }

@@ -324,9 +324,10 @@ public:
     void rotatePorts();
 
     /// Forwards the appearance's orientation re-application after a rotation/flip transform
-    /// change. Public because ElementOrientation (a sibling collaborator, not a subclass)
-    /// calls it back after updating the item transform.
-    void reapplyAppearanceOrientation() { m_appearance.applyOrientation(); }
+    /// change, and keeps the name label counter-oriented to match. Public because
+    /// ElementOrientation (a sibling collaborator, not a subclass) calls it back after
+    /// updating the item transform.
+    void reapplyAppearanceOrientation() { m_appearance.applyOrientation(); updateLabelOrientation(); }
 
     // --- Flip / Mirror ---
 
@@ -604,6 +605,11 @@ private:
      * \param isSelected true when the element has just been selected.
      */
     void highlight(const bool isSelected);
+
+    /// Counter-orients the name label about its own centre for the current rotation + flip
+    /// state, so the text reads upright and unmirrored at any element orientation. Recomputed
+    /// whenever the orientation or the label text (which moves the pivot) changes.
+    void updateLabelOrientation();
 
     // --- Members: Element Type & Identity ---
 

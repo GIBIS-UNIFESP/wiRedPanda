@@ -35,4 +35,5 @@ private slots:
 
     // Rendering under rotation
     void testRotationKeepsSizingPixmap();
+    void testRotatedIconStaysUpright();
 };

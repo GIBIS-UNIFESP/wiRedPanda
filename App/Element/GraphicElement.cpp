@@ -403,6 +403,29 @@ void GraphicElement::updateLabel()
     }
 
     m_label->setText(label);
+    // The counter-orientation pivots on the label's centre, which the new text just moved.
+    updateLabelOrientation();
+}
+
+void GraphicElement::updateLabelOrientation()
+{
+    // Non-rotatable elements never transform their graphic (or its children), so their label is
+    // already upright as authored.
+    if (!rotatesGraphic()) {
+        return;
+    }
+
+    // The label is a child item and inherits the element's Flip∘Rotate; carry its inverse
+    // (rotate outer, flip inner) about the label's own centre so the text reads upright and
+    // unmirrored while still travelling with the rotated body — like ports and SVG pin text.
+    const QPointF center = m_label->boundingRect().center();
+
+    QTransform t;
+    t.translate(center.x(), center.y());
+    t.rotate(-rotation());
+    t.scale(isFlippedX() ? -1 : 1, isFlippedY() ? -1 : 1);
+    t.translate(-center.x(), -center.y());
+    m_label->setTransform(t);
 }
 
 void GraphicElement::setLabel(const QString &label)

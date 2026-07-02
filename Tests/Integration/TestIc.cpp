@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/TestIc.h"
 
+#include <limits>
+
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -943,6 +945,55 @@ IC *loadExampleIC(Scene *scene)
     return ic;
 }
 
+/// Renders \a elm's scene footprint into an image; \a logoCenterOut receives the centre of the
+/// element's body (where drawBody() centres its logo) in image coordinates.
+QImage renderElement(QGraphicsScene *scene, GraphicElement *elm, QPoint &logoCenterOut)
+{
+    // Render 1:1 from an integer-aligned source rect so every orientation rasterises scene
+    // content at the same scale and sub-pixel phase — a fractional source origin would shift
+    // antialiasing between renders and defeat pixel comparison.
+    const QRect source = elm->sceneBoundingRect().toAlignedRect();
+    QImage image(source.size(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::white);
+
+    QPainter painter(&image);
+    scene->render(&painter, QRectF(image.rect()), source);
+    painter.end();
+
+    const QPointF logoScene = elm->mapToScene(elm->boundingRect().topLeft() + elm->pixmapCenter());
+    logoCenterOut = (logoScene - source.topLeft()).toPoint();
+    return image;
+}
+
+/// Compares \a halfSize-radius crops of \a a around \a ca and \a b around \a cb, trying small
+/// alignment offsets so sub-pixel crop rounding can't fail the comparison. Returns the smallest
+/// count of pixels whose channels differ by more than \a tolerance.
+int alignedMismatch(const QImage &a, const QPoint ca, const QImage &b, const QPoint cb,
+                    const int halfSize, const int tolerance)
+{
+    int best = std::numeric_limits<int>::max();
+
+    for (int oy = -2; oy <= 2; ++oy) {
+        for (int ox = -2; ox <= 2; ++ox) {
+            int count = 0;
+            for (int dy = -halfSize; dy < halfSize; ++dy) {
+                for (int dx = -halfSize; dx < halfSize; ++dx) {
+                    const QColor pa = a.pixelColor(ca + QPoint(dx, dy));
+                    const QColor pb = b.pixelColor(cb + QPoint(dx + ox, dy + oy));
+                    if (qAbs(pa.red() - pb.red()) > tolerance
+                        || qAbs(pa.green() - pb.green()) > tolerance
+                        || qAbs(pa.blue() - pb.blue()) > tolerance) {
+                        ++count;
+                    }
+                }
+            }
+            best = qMin(best, count);
+        }
+    }
+
+    return best;
+}
+
 } // namespace
 
 void TestIC::testICRotationKeepsSizingPixmap()
@@ -1013,4 +1064,28 @@ void TestIC::testICRotatedBodyStillPaintsMascot()
     }
 
     QVERIFY2(mascotFound, "No mascot pixels at the rotated IC's body centre — the body collapsed");
+}
+
+void TestIC::testICRotatedMascotStaysUpright()
+{
+    // The mascot is decoration, like the baked-in SVG pin text: it must read upright at any
+    // element orientation. Its rendering around the logo centre must therefore be identical at
+    // 0° and 180°; the panda is 180°-asymmetric (dark eye patch right of centre), so a mascot
+    // that rotates with the body produces a large mismatch.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *ic = loadExampleIC(scene);
+    QVERIFY(ic);
+
+    QPoint uprightCenter;
+    const QImage upright = renderElement(scene, ic, uprightCenter);
+
+    ic->setRotation(180);
+    QPoint rotatedCenter;
+    const QImage rotated = renderElement(scene, ic, rotatedCenter);
+
+    const int mismatch = alignedMismatch(upright, uprightCenter, rotated, rotatedCenter, 10, 32);
+    QVERIFY2(mismatch <= 20,
+             qPrintable(QString("Mascot is not upright after a 180° rotation: %1 mismatching pixels")
+                            .arg(mismatch)));
 }
