@@ -16,12 +16,14 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
+#include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -908,6 +910,50 @@ void TestCommands::testUpdateCommandPreservesClockPhase()
     scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{andGate}, oldData, scene));
 
     QCOMPARE(clock->isOn(), false);
+}
+
+void TestCommands::testUpdateCommandAppliesPropagationDelayLive()
+{
+    // Simulation::m_delays is only ever repopulated inside Simulation::initialize(); a
+    // property-only UpdateCommand must not call that, so an edited propagation delay has to
+    // be pushed into the live simulation another way (Simulation::setElementDelay()) or the
+    // edit would silently not take effect until an unrelated structural change happened to
+    // trigger a rebuild.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *scene = workspace.scene();
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    builder.add(sw, notGate);
+    builder.connect(sw, 0, notGate, 0);
+    auto *sim = builder.initSimulation();
+
+    sw->setOn(false);
+    sim->update();
+    QCOMPARE(notGate->outputValue(0), Status::Active); // NOT(0) = 1
+
+    sim->setTimePerTick(1);
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    notGate->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+
+    notGate->setPropagationDelay(9); // override the 5 ns default, mirroring ElementEditor
+    scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{notGate}, oldData, scene));
+
+    const SimTime t0 = sim->currentTime();
+    sw->setOn(true); // input rises; NOT must not fall until t0 + 9 (the NEW delay)
+
+    for (int i = 1; i <= 8; ++i) {
+        sim->update();
+        QVERIFY2(notGate->outputValue(0) == Status::Active,
+                 qPrintable(QString("NOT changed too early at t=%1 — edited delay wasn't applied live").arg(sim->currentTime())));
+    }
+
+    sim->update(); // reaches t0 + 9
+    QCOMPARE(sim->currentTime(), t0 + 9);
+    QCOMPARE(notGate->outputValue(0), Status::Inactive);
 }
 
 void TestCommands::testUpdateCommandWirelessLabelRewiresChannel()

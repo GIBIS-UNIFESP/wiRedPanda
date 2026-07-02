@@ -517,15 +517,26 @@ void UpdateCommand::refreshRuntimeState()
     // and the running simulation resolves channels only during initialize() — without a
     // full rebuild the old routing silently stays live.
     if (m_wirelessTopologyChange) {
+        // setCircuitUpdateRequired() re-initializes, which also reseeds the per-element
+        // propagation delays — the fast path's setElementDelay() push below is subsumed.
         m_scene->setCircuitUpdateRequired();
         return;
     }
 
-    // Everything else this command carries is property-only (label, color, ...) — never
-    // topology — so it must not force a full Simulation::initialize(), which would rebuild
-    // every Clock's phase from scratch and disrupt a running simulation over an unrelated
-    // edit. setPropertyUpdateRequired() refreshes visuals/dirty-state only.
+    // Everything else this command carries is property-only (label, color, delay, ...) —
+    // never topology — so it must not force a full Simulation::initialize(), which would
+    // rebuild every Clock's phase from scratch and disrupt a running simulation over
+    // an unrelated edit. setPropertyUpdateRequired() refreshes visuals/dirty-state
+    // only. The one Simulation-side cache a property can invalidate — the per-element
+    // propagation-delay override in m_delays — is pushed directly via setElementDelay()
+    // instead, so an edited delay takes effect immediately without a full rebuild.
     m_scene->setPropertyUpdateRequired();
+
+    for (auto *elm : elements()) {
+        if (elm->hasPropagationDelay()) {
+            m_scene->simulation()->setElementDelay(elm, elm->propagationDelay());
+        }
+    }
 }
 
 void UpdateCommand::loadData(QByteArray &itemData)

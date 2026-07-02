@@ -35,6 +35,7 @@ private slots:
     void testMorphCommandUndoPreservesConnectionAddedWhileMorphed();
     void testUpdateCommand();
     void testUpdateCommandPreservesClockPhase();
+    void testUpdateCommandAppliesPropagationDelayLive();
     void testUpdateCommandWirelessLabelRewiresChannel();
     void testUpdateCommandNonWirelessNodeEditKeepsFastPath();
 
