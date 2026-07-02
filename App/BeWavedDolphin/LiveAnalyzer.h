@@ -220,6 +220,15 @@ public:
     /// so several ICs can be watched side by side.
     void watchICInternals(IC *ic);
 
+    /// Jumps to the newest recorded transition at a nanosecond-resolving zoom (a few
+    /// hundred ns across the viewport), like a scope jumping to its trigger. A live
+    /// free-running view can never SHOW gate delays — at 1x the timeline grows 1e9 ns per
+    /// wall-second, so a 5–20 ns staircase is sub-pixel at any zoom that keeps up — hence
+    /// this pairs with Play/Pause: pause (clock-phase-preserving), jump, inspect.
+    /// Scrolling off the right edge disengages the sticky-tail follow, so the view holds
+    /// while the simulation is paused.
+    void zoomToLatestEdge();
+
     /// The trace canvas (exposed for the host's tests and zoom bookkeeping).
     AnalyzerCanvas *canvas() const { return m_canvas; }
 

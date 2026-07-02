@@ -411,14 +411,17 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
     auto *btnZoomIn = new QPushButton(tr("+"), this);
     auto *btnZoomOut = new QPushButton(tr("-"), this);
     auto *btnFit = new QPushButton(tr("Fit"), this);
+    auto *btnLatestEdge = new QPushButton(tr("Latest Edge"), this);
     btnWatch->setToolTip(tr("Watch all output signals in the circuit"));
     btnClear->setToolTip(tr("Remove all watched signals"));
+    btnLatestEdge->setToolTip(tr("Zoom to the newest recorded transition at nanosecond scale — pause the simulation to hold the view"));
     toolbar->addWidget(btnWatch);
     toolbar->addWidget(btnClear);
     toolbar->addStretch();
     toolbar->addWidget(btnZoomOut);
     toolbar->addWidget(btnZoomIn);
     toolbar->addWidget(btnFit);
+    toolbar->addWidget(btnLatestEdge);
     layout->addLayout(toolbar);
 
     // Frozen-pane grid: ruler row pinned on top, label column pinned on the left, traces in
@@ -456,6 +459,7 @@ LiveAnalyzerPanel::LiveAnalyzerPanel(Scene *scene, QWidget *parent)
     connect(btnZoomIn, &QPushButton::clicked, m_canvas, &AnalyzerCanvas::zoomIn);
     connect(btnZoomOut, &QPushButton::clicked, m_canvas, &AnalyzerCanvas::zoomOut);
     connect(btnFit, &QPushButton::clicked, m_canvas, &AnalyzerCanvas::zoomFit);
+    connect(btnLatestEdge, &QPushButton::clicked, this, &LiveAnalyzerPanel::zoomToLatestEdge);
     connect(m_canvas, &AnalyzerCanvas::zoomChanged, m_ruler, qOverload<>(&QWidget::update));
 
     // Frozen-pane sync: the ruler follows horizontal scrolling, the labels vertical.
@@ -617,6 +621,46 @@ void LiveAnalyzerPanel::watchICInternals(IC *ic)
     m_labels->updateGeometry();
     m_canvas->update();
     m_labels->update();
+}
+
+void LiveAnalyzerPanel::zoomToLatestEdge()
+{
+    const auto *rec = recorder();
+    if (!rec) {
+        return;
+    }
+    const SimTime latest = rec->maxTime();
+    if (latest == 0) {
+        emit statusMessage(tr("No recorded transitions yet."), 5000);
+        return;
+    }
+
+    const int viewportWidth = m_scrollArea->viewport()->width();
+    if (viewportWidth <= 0) {
+        return;
+    }
+
+    // A delay-resolving window: a few hundred ns across the viewport puts a 5–20 ns gate
+    // staircase at tens of pixels (setPixelsPerNs clamps to 10 px/ns for huge viewports).
+    constexpr double kEdgeWindowNs = 250.0;
+    m_canvas->setPixelsPerNs(viewportWidth / kEdgeWindowNs);
+
+    // Force the paint-time canvas resize NOW so the scroll range reflects the new zoom
+    // before we position the view (update() alone is asynchronous).
+    m_canvas->grab(QRect(0, 0, 1, 1));
+
+    // Center the newest transition (the scroll bar clamps to its range: when the newest
+    // edge sits at the canvas's right end — the usual case, since recording dedups — the
+    // view pins near the tail with the edge cluster just left of the right margin). The
+    // origin depends on the zoom, so read it after. x ≤ QWIDGETSIZE_MAX, no overflow.
+    const SimTime origin = m_canvas->timeOrigin();
+    const double x = (latest >= origin) ? static_cast<double>(latest - origin) * m_canvas->pixelsPerNs() : 0.0;
+    auto *hBar = m_scrollArea->horizontalScrollBar();
+    hBar->setValue(static_cast<int>(qMax(0.0, x - viewportWidth / 2.0)));
+
+    if (m_scene && m_scene->simulation()->isRunning()) {
+        emit statusMessage(tr("Pause the simulation to hold the view."), 5000);
+    }
 }
 
 void LiveAnalyzerPanel::adaptZoomToTickWindow(SimTime nsPerTick)
