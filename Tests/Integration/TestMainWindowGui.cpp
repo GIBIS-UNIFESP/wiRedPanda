@@ -15,6 +15,7 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPushButton>
+#include <QScrollArea>
 #include <QScrollBar>
 #include <QShortcut>
 #include <QSignalSpy>
@@ -712,6 +713,71 @@ void TestMainWindowGui::testWatchAllSignalsRecordsOutputs()
     auto &recorder = window->currentTab()->simulation()->waveformRecorder();
     QVERIFY2(recorder.traceCount() > 0, "watchAllSignals registered no traces");
     QVERIFY2(recorder.isRecording(), "watchAllSignals did not start recording");
+}
+
+void TestMainWindowGui::testWaveformViewerFollowsNewestData()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, led, 0);
+    builder.initSimulation();
+
+    auto *waveAction = window->findChild<QAction *>("actionTemporalWaveform");
+    QVERIFY(waveAction);
+    waveAction->trigger();
+
+    auto *dock = window->findChild<QDockWidget *>("temporalWaveformDock");
+    QVERIFY2(dock, "Dock should exist after opening");
+    auto *scrollArea = dock->findChild<QScrollArea *>();
+    QVERIFY2(scrollArea, "Waveform scroll area not found");
+    auto *widget = dock->findChild<TemporalWaveformWidget *>();
+    QVERIFY2(widget, "Waveform widget not found");
+    auto *hBar = scrollArea->horizontalScrollBar();
+    QVERIFY(hBar);
+
+    // Drive the recorder directly (deterministic growth, no timers) and zoom in so the
+    // canvas far exceeds the viewport. grab() renders synchronously, which runs the
+    // paint-time canvas resize → the scroll bar's range grows in the same call.
+    auto &recorder = window->currentTab()->simulation()->waveformRecorder();
+    const int traceIdx = recorder.watchSignal("sw", sw, 0);
+    Q_UNUSED(traceIdx)
+    recorder.setRecording(true);
+    widget->setRecorder(&recorder);
+    widget->setPixelsPerNs(10.0);
+
+    auto growTo = [&](SimTime t, Status value) {
+        sw->setOutputValue(0, value);
+        recorder.recordAll(t);
+        widget->grab(QRect(0, 0, 50, 50)); // synchronous paint → canvas resize → rangeChanged
+    };
+
+    // (1) Recording outgrows the viewport → the view follows to the newest data.
+    growTo(0, Status::Active);
+    growTo(100'000, Status::Inactive); // 1e5 ns × 10 px/ns = 1e6 px canvas
+    QVERIFY2(hBar->maximum() > 0, "canvas never outgrew the viewport");
+    QCOMPARE(hBar->value(), hBar->maximum());
+
+    // (2) Further growth keeps the view pinned at the NEW maximum.
+    const int maxBefore = hBar->maximum();
+    growTo(200'000, Status::Active);
+    QVERIFY2(hBar->maximum() > maxBefore, "canvas did not grow");
+    QCOMPARE(hBar->value(), hBar->maximum());
+
+    // (3) User scrolls back to inspect earlier data → growth must NOT yank the view.
+    hBar->setValue(0);
+    growTo(300'000, Status::Inactive);
+    QCOMPARE(hBar->value(), 0);
+
+    // (4) User returns to the right edge → the follow re-engages.
+    hBar->setValue(hBar->maximum());
+    growTo(400'000, Status::Active);
+    QCOMPARE(hBar->value(), hBar->maximum());
 }
 
 // ===========================================================================

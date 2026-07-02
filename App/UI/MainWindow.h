@@ -371,4 +371,5 @@ private:
     QDockWidget *m_waveformDock = nullptr;                ///< Lazily-created timing-diagram dock.
     WaveformLabelWidget *m_labelWidget = nullptr;         ///< Fixed signal-name column.
     TemporalWaveformWidget *m_waveformWidget = nullptr;   ///< Scrollable waveform traces.
+    bool m_waveformFollowTail = true;                     ///< View pinned to the newest data (sticky tail; a fresh view at 0 == an empty range's end).
 };

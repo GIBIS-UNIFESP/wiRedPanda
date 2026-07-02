@@ -46,6 +46,12 @@ private slots:
     void testWaveformDockToggleCycle();
     void testWatchAllSignalsRecordsOutputs();
     void testWatchICInternalsRecordsSignals();
+    /// Regression: the viewer's auto-follow used a fixed-threshold check on the refresh
+    /// timer, racing the paint that grows the canvas — any growth beyond the 4 px slack per
+    /// tick disengaged it permanently. The sticky-tail follow (scroll bar rangeChanged /
+    /// valueChanged) must pin the view to new data, release when the user scrolls back, and
+    /// re-engage when scrolled to the right edge.
+    void testWaveformViewerFollowsNewestData();
 
     // --- View toggles ---
 

@@ -1264,19 +1264,30 @@ void MainWindow::toggleTemporalWaveformDock()
             // Sync dock visibility with the menu action.
             connect(m_waveformDock, &QDockWidget::visibilityChanged, m_ui->actionTemporalWaveform, &QAction::setChecked);
 
-            // Repaint the waveform periodically and follow new data — but only when the view is
-            // already at the right edge, so the user can still scroll back to inspect earlier
-            // (ns-scale) transitions while the simulation runs.
-            connect(&m_simTimeTimer, &QTimer::timeout, this, [this, scrollArea]() {
+            // Follow new data with a sticky tail. The canvas grows during paint, which lands
+            // as a rangeChanged on the scroll bar — pinning there can never miss a growth
+            // step. (A fixed-threshold check on the refresh timer raced the paint: any growth
+            // beyond its slack per tick left the value behind the new maximum and permanently
+            // disengaged the follow.) Scrolling away from the right edge releases the pin so
+            // earlier (ns-scale) transitions stay inspectable while the simulation runs;
+            // scrolling back to the edge re-engages it.
+            auto *hBar = scrollArea->horizontalScrollBar();
+            connect(hBar, &QAbstractSlider::valueChanged, this, [this, hBar](int value) {
+                m_waveformFollowTail = (value >= hBar->maximum() - 4); // slack absorbs drag/wheel jitter
+            });
+            connect(hBar, &QAbstractSlider::rangeChanged, this, [this, hBar](int, int max) {
+                if (m_waveformFollowTail) {
+                    hBar->setValue(max);
+                }
+            });
+
+            // Repaint the waveform periodically so new transitions appear as they record.
+            connect(&m_simTimeTimer, &QTimer::timeout, this, [this]() {
                 if (!m_waveformWidget->isVisible()) {
                     return;
                 }
                 m_labelWidget->update();
                 m_waveformWidget->update();
-                auto *hBar = scrollArea->horizontalScrollBar();
-                if (hBar && hBar->value() >= hBar->maximum() - 4) {
-                    hBar->setValue(hBar->maximum());
-                }
             });
         }
 

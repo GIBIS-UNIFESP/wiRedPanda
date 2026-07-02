@@ -53,6 +53,28 @@ the newest sample on-canvas, `QTest::failOnWarning` on the setMinimumSize messag
 `grab()` of an exposed strip renders. Verified to fail pre-fix
 (`hint.width() = 2147483647` vs 16777215).
 
+## Follow-up: auto-follow disengaged under normal growth
+
+User follow-up ("isn't the viewer supposed to auto-scroll/follow?") exposed a second,
+pre-existing defect: the follow was a fixed-threshold check on the 100 ms refresh timer
+(`hBar->value() >= hBar->maximum() - 4` → pin). The canvas only grows inside the *later*
+paint, so each tick compared a value pinned at the previous maximum against a maximum
+that had grown afterwards — at the auto-adapted zoom that's ~viewport/50 px per tick
+(≈20 px ≫ 4 px slack), so the follow disengaged permanently the moment the recording
+outgrew the viewport; the trace ran off the right edge with the view stuck at the start.
+
+Fix (`MainWindow::toggleTemporalWaveformDock()`): sticky tail on the scroll bar's own
+signals — `valueChanged` tracks whether the user is at the right edge
+(`m_waveformFollowTail`, 4 px slack), `rangeChanged` pins to the new maximum while
+engaged. Growth arrives *as* `rangeChanged`, so no step can be missed at any rate;
+scrolling back releases the pin, scrolling to the edge re-engages it. The timer lambda
+now only repaints.
+
+Regression test: `TestMainWindowGui::testWaveformViewerFollowsNewestData` (pin on
+growth / stay pinned / hold position after scroll-back / re-engage at the edge; drives
+the recorder directly and forces synchronous paints via `grab(QRect)`). Verified to fail
+pre-fix exactly like the report: value stuck at 0 vs maximum 999256.
+
 ## Residual (known, accepted)
 
 - Transition history still grows unboundedly in memory (~16 bytes/transition); painting no
