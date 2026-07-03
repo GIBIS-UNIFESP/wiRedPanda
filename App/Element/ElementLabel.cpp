@@ -98,7 +98,7 @@ void ElementLabel::startDrag()
     drag->exec(Qt::CopyAction, Qt::CopyAction);
 }
 
-QMimeData *ElementLabel::mimeData()
+QMimeData *ElementLabel::mimeData() const
 {
     QPoint offset = m_iconLabel.pixmap(Qt::ReturnByValue).rect().center();
     QByteArray itemData;

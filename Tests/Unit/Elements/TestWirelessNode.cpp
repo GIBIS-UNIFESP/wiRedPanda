@@ -89,7 +89,7 @@ void TestWirelessNode::testSaveLoadRoundTrip()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
         node2->load(in, ctx);
     }
 
@@ -188,7 +188,7 @@ void TestWirelessNode::testSaveLoadRxMode()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
         node2->load(in, ctx);
     }
 
@@ -239,7 +239,7 @@ void TestWirelessNode::testSaveLoadNoneMode()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
         node2->load(in, ctx);
     }
 
@@ -413,7 +413,7 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
     {
         QDataStream in(&finalBuffer, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
         loadNode->load(in, ctx);
     }
 
@@ -444,7 +444,7 @@ void TestWirelessNode::testLoadNegativeWirelessModeClampsToNone()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
         loadNode->load(in, ctx);
     }
 
@@ -477,7 +477,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
         node2->load(in, ctx);
     }
 
@@ -510,7 +510,7 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
         node2->load(in, ctx);
     }
 

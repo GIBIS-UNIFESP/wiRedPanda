@@ -96,7 +96,7 @@ void LanguageManager::loadTranslation(const QString &language)
 
 QStringList LanguageManager::availableLanguages() const
 {
-    QStringList languages{"en"};
+    QStringList languages = {"en"};
 
     // Qt's resource system exposes ":/i18n" as a virtual directory.
     QDir translationsDir(QStringLiteral(":/i18n"));

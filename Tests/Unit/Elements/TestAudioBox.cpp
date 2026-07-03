@@ -223,7 +223,7 @@ void TestAudioBox::testLoadVersionOld()
 
     QDataStream loadStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, FormatRev::current, {}};
+    SerializationContext context = {portMap, FormatRev::current, {}};
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded correctly
@@ -245,7 +245,7 @@ void TestAudioBox::testLoadVersionNew()
 
     QDataStream loadStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext context{portMap, FormatRev::current, {}};
+    SerializationContext context = {portMap, FormatRev::current, {}};
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded

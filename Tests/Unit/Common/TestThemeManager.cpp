@@ -129,18 +129,18 @@ void TestThemeManager::testThemeChangedSignal()
 
     // Switch to Dark - should emit signal
     ThemeManager::setTheme(Theme::Dark);
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.size(), 1);
 
     spy.clear();
 
     // Switch back to Light - should emit signal again
     ThemeManager::setTheme(Theme::Light);
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.size(), 1);
 
     // Setting the same theme again should not emit signal
     spy.clear();
     ThemeManager::setTheme(Theme::Light);
-    QCOMPARE(spy.count(), 0);  // No signal because theme didn't actually change
+    QCOMPARE(spy.size(), 0);  // No signal because theme didn't actually change
 }
 
 // ============================================================
