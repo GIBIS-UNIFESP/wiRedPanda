@@ -415,7 +415,35 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                 m_stream << "bool " << varName2 << "_inclk = LOW;" << Qt::endl;
                 break;
             }
-            default:
+            case ElementType::And:
+            case ElementType::AudioBox:
+            case ElementType::Buzzer:
+            case ElementType::DLatch:
+            case ElementType::Demux:
+            case ElementType::Display14:
+            case ElementType::Display16:
+            case ElementType::Display7:
+            case ElementType::IC:
+            case ElementType::InputButton:
+            case ElementType::InputGnd:
+            case ElementType::InputRotary:
+            case ElementType::InputSwitch:
+            case ElementType::InputVcc:
+            case ElementType::JKLatch:
+            case ElementType::Led:
+            case ElementType::Line:
+            case ElementType::Mux:
+            case ElementType::Nand:
+            case ElementType::Node:
+            case ElementType::Nor:
+            case ElementType::Not:
+            case ElementType::Or:
+            case ElementType::SRLatch:
+            case ElementType::Text:
+            case ElementType::TruthTable:
+            case ElementType::Unknown:
+            case ElementType::Xnor:
+            case ElementType::Xor:
                 break;
             }
         }
@@ -468,7 +496,35 @@ void ArduinoCodeGen::declareSequentialStateRec(const QVector<GraphicElement *> &
         case ElementType::JKFlipFlop:
             m_stream << "bool " << varName << "_inclk = LOW;" << Qt::endl;
             break;
-        default:
+        case ElementType::And:
+        case ElementType::AudioBox:
+        case ElementType::Buzzer:
+        case ElementType::DLatch:
+        case ElementType::Demux:
+        case ElementType::Display14:
+        case ElementType::Display16:
+        case ElementType::Display7:
+        case ElementType::IC:
+        case ElementType::InputButton:
+        case ElementType::InputGnd:
+        case ElementType::InputRotary:
+        case ElementType::InputSwitch:
+        case ElementType::InputVcc:
+        case ElementType::JKLatch:
+        case ElementType::Led:
+        case ElementType::Line:
+        case ElementType::Mux:
+        case ElementType::Nand:
+        case ElementType::Node:
+        case ElementType::Nor:
+        case ElementType::Not:
+        case ElementType::Or:
+        case ElementType::SRLatch:
+        case ElementType::Text:
+        case ElementType::TruthTable:
+        case ElementType::Unknown:
+        case ElementType::Xnor:
+        case ElementType::Xor:
             break;
         }
     }
@@ -687,7 +743,24 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
         case ElementType::Xnor:
         case ElementType::Not:
         case ElementType::Node: assignLogicOperator(elm); break;
-        default:                throw PANDACEPTION("Element type not supported: %1", elm->objectName());
+        case ElementType::AudioBox:
+        case ElementType::Buzzer:
+        case ElementType::Clock:
+        case ElementType::Display14:
+        case ElementType::Display16:
+        case ElementType::Display7:
+        case ElementType::IC:
+        case ElementType::InputButton:
+        case ElementType::InputGnd:
+        case ElementType::InputRotary:
+        case ElementType::InputSwitch:
+        case ElementType::InputVcc:
+        case ElementType::JKLatch:
+        case ElementType::Led:
+        case ElementType::Line:
+        case ElementType::Text:
+        case ElementType::Unknown:
+            throw PANDACEPTION("Element type not supported: %1", elm->objectName());
         }
     }
 }
@@ -1059,7 +1132,32 @@ void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
         }
         return;
     }
-    default:
+    case ElementType::AudioBox:
+    case ElementType::Buzzer:
+    case ElementType::Clock:
+    case ElementType::DFlipFlop:
+    case ElementType::DLatch:
+    case ElementType::Demux:
+    case ElementType::Display14:
+    case ElementType::Display16:
+    case ElementType::Display7:
+    case ElementType::IC:
+    case ElementType::InputButton:
+    case ElementType::InputGnd:
+    case ElementType::InputRotary:
+    case ElementType::InputSwitch:
+    case ElementType::InputVcc:
+    case ElementType::JKFlipFlop:
+    case ElementType::JKLatch:
+    case ElementType::Led:
+    case ElementType::Line:
+    case ElementType::Mux:
+    case ElementType::SRFlipFlop:
+    case ElementType::SRLatch:
+    case ElementType::TFlipFlop:
+    case ElementType::Text:
+    case ElementType::TruthTable:
+    case ElementType::Unknown:
         break;
     }
     if (elm->outputs().size() == 1) {
