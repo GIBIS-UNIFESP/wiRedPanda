@@ -300,8 +300,9 @@ QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elemen
             for (auto *conn : port->connections()) {
                 if (auto *endPort = conn->endPort()) {
                     if (auto *successor = endPort->graphicElement()) {
-                        if (!successors[elm].contains(successor)) {
-                            successors[elm].append(successor);
+                        auto &vec = successors[elm];
+                        if (!vec.contains(successor)) {
+                            vec.append(successor);
                         }
                     }
                 }
