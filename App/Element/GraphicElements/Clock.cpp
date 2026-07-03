@@ -134,7 +134,11 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
         }
 
         if (map.contains("delay")) {
-            double delayValue = map.value("delay").toDouble();
+            bool ok = false;
+            double delayValue = map.value("delay").toDouble(&ok);
+            if (!ok) {
+                delayValue = 0.0;
+            }
 
             if (!VersionInfo::hasDelayFix(context.version)) {
                 // Discard old delay data from versions < 4.3

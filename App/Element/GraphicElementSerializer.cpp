@@ -491,10 +491,11 @@ void GraphicElement::removeSurplusInputs(const quint64 inputSize_, Serialization
     // (e.g. default constructor creates minInputSize ports).  Trim the excess from the end,
     // but never go below minInputSize to avoid leaving an unusable element.
     while ((inputSize() > static_cast<int>(inputSize_)) && (inputSize_ >= m_minInputSize)) {
-        auto *deletedPort = m_inputPorts.constLast();
+        // Remove from the vector before deleting: a reentrant access during deserialization
+        // must never observe a dangling pointer still present in m_inputPorts.
+        auto *deletedPort = m_inputPorts.takeLast();
         removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
-        m_inputPorts.removeLast();
     }
 }
 
@@ -502,10 +503,11 @@ void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, Serializati
 {
     // Same trimming logic as removeSurplusInputs, applied to output ports
     while ((outputSize() > static_cast<int>(outputSize_)) && (outputSize_ >= m_minOutputSize)) {
-        auto *deletedPort = m_outputPorts.constLast();
+        // Remove from the vector before deleting: a reentrant access during deserialization
+        // must never observe a dangling pointer still present in m_outputPorts.
+        auto *deletedPort = m_outputPorts.takeLast();
         removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
-        m_outputPorts.removeLast();
     }
 }
 

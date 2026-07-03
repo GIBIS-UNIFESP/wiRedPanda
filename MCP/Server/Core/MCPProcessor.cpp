@@ -101,6 +101,10 @@ MCPProcessor::MCPProcessor(MainWindow *mainWindow, QObject *parent)
     addRoutes(m_themeHandler.get(), {
         "get_theme", "set_theme", "get_effective_theme"
     });
+
+    if (!m_validator->isSchemaLoaded()) {
+        qWarning() << "MCP schema not loaded — all requests will be rejected";
+    }
 }
 
 MCPProcessor::~MCPProcessor()

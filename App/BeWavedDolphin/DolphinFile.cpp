@@ -86,6 +86,10 @@ DolphinSerializer::WaveformData parseTerminal(QTextStream &in, const int maxInpu
     int rows = wordList.at(0).toInt();
     const int cols = wordList.at(1).toInt();
 
+    if (rows <= 0) {
+        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Invalid row count %1: must be positive.", QString::number(rows));
+    }
+
     // Clamp rows to the number of actual input ports to avoid out-of-bounds writes
     if (rows > maxInputPorts) {
         rows = maxInputPorts;

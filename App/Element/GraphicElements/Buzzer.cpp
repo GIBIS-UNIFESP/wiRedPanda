@@ -165,7 +165,11 @@ void Buzzer::load(QDataStream &stream, SerializationContext &context)
         }
 
         if (map.contains("volume")) {
-            setVolume(map.value("volume").toFloat());
+            bool ok = false;
+            const float vol = map.value("volume").toFloat(&ok);
+            if (ok) {
+                setVolume(vol);
+            }
         }
     }
 }

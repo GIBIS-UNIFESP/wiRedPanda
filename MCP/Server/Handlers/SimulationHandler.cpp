@@ -244,6 +244,11 @@ QJsonObject SimulationHandler::handleExportWaveform(const QJsonObject &params, c
 
             QTextStream stream(&file);
             m_persistentDolphin->saveToTxt(stream);
+            stream.flush();
+            if (stream.status() != QTextStream::Ok || file.error() != QFileDevice::NoError) {
+                return createErrorResponse(QString("Failed to write waveform text: %1").arg(file.errorString()),
+                                           requestId, JsonRpcError::FileError);
+            }
 
         } else if (format == "png") {
             if (!m_persistentDolphin->exportToPng(filename)) {
