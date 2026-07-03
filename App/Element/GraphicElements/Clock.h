@@ -63,7 +63,7 @@ public:
     // --- Visual ---
 
     /// \reimp
-    QList<QPair<int, QString>> appearanceStates() const override;
+    QList<std::pair<int, QString>> appearanceStates() const override;
 
     // --- Serialization ---
 

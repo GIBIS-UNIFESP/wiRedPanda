@@ -336,7 +336,7 @@ void SystemVerilogCodeGen::generateICModules()
     }
 
     // Sort keys for deterministic module emission order.
-    QList<QString> sortedKeys = m_icModules.keys();
+    QStringList sortedKeys = m_icModules.keys();
     std::sort(sortedKeys.begin(), sortedKeys.end());
 
     bool progress = true;
@@ -506,7 +506,7 @@ void SystemVerilogCodeGen::generate()
     // Iterate in sorted key order for deterministic renaming.
     QSet<QString> usedModuleNames;
     usedModuleNames.insert(m_fileName);
-    QList<QString> collisionKeys = m_icModules.keys();
+    QStringList collisionKeys = m_icModules.keys();
     std::sort(collisionKeys.begin(), collisionKeys.end());
     for (const QString &key : std::as_const(collisionKeys)) {
         QString name = m_icModules[key].moduleName;
