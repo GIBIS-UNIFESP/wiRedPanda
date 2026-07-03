@@ -543,21 +543,14 @@ void TestSequential::testFsmStateTransitions_data()
 {
     QTest::addColumn<int>("transitionCount");
 
-    // Transitions: Alternating pattern, trigger starts at 0, then alternates 1,0,1,0...
-    QTest::newRow("single_idle_to_active") << 1;
-
-    QTest::newRow("single_active_to_idle") << 1;
-
-    QTest::newRow("double_idle_active_idle") << 2;
-
-    QTest::newRow("double_active_idle_active") << 2;
-
+    // The trigger pattern is derived purely from transitionCount (starts at 0,
+    // then alternates 1,0,1,0...), so each count is one distinct case — a
+    // different starting state is not expressible with this parameterization.
+    QTest::newRow("single_transition") << 1;
+    QTest::newRow("double_transition") << 2;
     QTest::newRow("triple_alternating") << 3;
-
     QTest::newRow("rapid_four_transitions") << 4;
-
     QTest::newRow("five_transitions") << 5;
-
     QTest::newRow("six_transitions") << 6;
 }
 
@@ -629,8 +622,8 @@ void TestSequential::testFsmStateTransitions()
 
     // FIX: Assert all violations at once (not in loop)
 
-    QCOMPARE(preClockViolations, 0);
-    QCOMPARE(postClockViolations, 0);
+    QVERIFY2(preClockViolations == 0, qPrintable(violationDetails.join("\n")));
+    QVERIFY2(postClockViolations == 0, qPrintable(violationDetails.join("\n")));
 }
 
 // ============================================================
@@ -717,8 +710,8 @@ void TestSequential::testFsmTimingEdgeCases()
 
     // Timing analysis summary
 
-    QCOMPARE(preClockViolations, 0);
-    QCOMPARE(postClockViolations, 0);
+    QVERIFY2(preClockViolations == 0, qPrintable(violationDetails.join("\n")));
+    QVERIFY2(postClockViolations == 0, qPrintable(violationDetails.join("\n")));
 }
 
 // ============================================================
@@ -812,8 +805,8 @@ void TestSequential::testFsmExtendedSequences()
     // Verify steady state after sequence completes
     simulation->update();
 
-    QCOMPARE(preClockViolations, 0);
-    QCOMPARE(postClockViolations, 0);
+    QVERIFY2(preClockViolations == 0, qPrintable(violationDetails.join("\n")));
+    QVERIFY2(postClockViolations == 0, qPrintable(violationDetails.join("\n")));
 }
 
 // ============================================================
@@ -881,7 +874,7 @@ void TestSequential::testFsmQnotComplementarity()
         }
     }
 
-    QCOMPARE(complementViolations, 0);
+    QVERIFY2(complementViolations == 0, qPrintable(violationDetails.join("\n")));
 }
 
 // ============================================================
@@ -963,11 +956,6 @@ void TestSequential::testFsmLongSequenceStability()
 // ============================================================
 // Purpose: Verify that setting trigger=1 then trigger=0 locks state
 // Tests: Once set to 1, trigger=0 should hold state
-
-void TestSequential::testFsmStateLock_data()
-{
-    // No parameters needed for this test
-}
 
 void TestSequential::testFsmStateLock()
 {
@@ -1125,11 +1113,6 @@ void TestSequential::testFsmTriggerDuringClock()
 // ============================================================
 // Purpose: Verify FSM stability over very long sequences with state changes
 // Tests: 500+ cycle sequence with various patterns
-
-void TestSequential::testFsmLongTermStability_data()
-{
-    // No parameters needed for this test
-}
 
 void TestSequential::testFsmLongTermStability()
 {

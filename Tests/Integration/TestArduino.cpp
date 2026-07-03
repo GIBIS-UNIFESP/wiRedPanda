@@ -100,8 +100,10 @@ void TestArduino::verifyLogicOperator(const QString &content, const QString &log
 {
     if (negated) {
         // For negated operators, verify both negation and operator
-        // Pattern: ! followed by ( and the operator
-        QString pattern = QString("!\\s*\\([^)]*\\%1").arg(logicOp);
+        // Pattern: ! followed by ( and the operator. The operator must be
+        // regex-escaped: "||" spliced raw would leave a trailing bare "|"
+        // whose empty right alternative matches any string.
+        QString pattern = QString("!\\s*\\([^)]*%1").arg(QRegularExpression::escape(logicOp));
         QRegularExpression regex(pattern);
         QVERIFY2(regex.match(content).hasMatch(),
             qPrintable(QString("Generated code should match pattern: %1").arg(pattern)));
@@ -125,18 +127,6 @@ void TestArduino::verifyFlipFlopStructure(const QString &content, const QString 
 
     // Verify basic structure always present
     verifyBasicStructure(content);
-}
-
-void TestArduino::verifyAuxVariables(const QString &content, const QStringList &varNames)
-{
-    // Verify auxiliary variable declarations
-    for (const QString &varName : varNames) {
-        // Check for variable declaration (with or without word boundaries)
-        // Pattern: "boolean var_name" or "int var_name" or just "var_name"
-        QRegularExpression regex(varName);
-        QVERIFY2(regex.match(content).hasMatch(),
-                 QString("Aux variable %1 not found in generated code").arg(varName).toLatin1());
-    }
 }
 
 void TestArduino::verifyPresetClearLogic(const QString &content)
@@ -2020,79 +2010,6 @@ void TestArduino::testUnsupportedElementTypes()
 
         qDeleteAll(elements);
     }
-}
-
-// ============================================================================
-// arduino-cli Validation Helper
-// ============================================================================
-
-bool TestArduino::validateWithArduinoCli(const QString &inoFile)
-{
-    const QString cliPath = QStandardPaths::findExecutable("arduino-cli");
-    if (cliPath.isEmpty()) {
-        qWarning() << "FATAL: arduino-cli not found in PATH - required for validation";
-        return false;  // Fail test - tool is required
-    }
-
-    // arduino-cli requires the .ino to live in a folder whose name matches the sketch name.
-    // Create a temporary sketch directory with the correct layout.
-    QTemporaryDir sketchDir;
-    if (!sketchDir.isValid()) {
-        qWarning() << "Could not create temp directory for arduino-cli sketch";
-        return false;
-    }
-
-    QString sketchName = QFileInfo(inoFile).baseName();
-    QString sketchFolder = sketchDir.filePath(sketchName);
-    if (!QDir().mkdir(sketchFolder)) {
-        qWarning() << "Could not create sketch folder" << sketchFolder;
-        return false;
-    }
-
-    QString sketchIno = sketchFolder + "/" + sketchName + ".ino";
-    if (!QFile::copy(inoFile, sketchIno)) {
-        qWarning() << "Could not copy" << inoFile << "to" << sketchIno;
-        return false;
-    }
-
-    // Detect which board the codegen selected from the "Target Board:" comment,
-    // then pick the matching FQBN so analog pin ranges are correct.
-    QString fqbn = "arduino:avr:uno";  // default
-    QFile f(inoFile);
-    if (f.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        const QString header = QString::fromUtf8(f.read(512));
-        f.close();
-        if (header.contains("Mega 2560"))
-            fqbn = "arduino:avr:mega";
-        else if (header.contains("Arduino Nano"))
-            fqbn = "arduino:avr:nano";
-        // ESP32 would need a separate core; leave as UNO fallback
-    }
-
-    QStringList compileArgs = {"compile", "--fqbn", fqbn};
-    if (!s_cliCachePath.isEmpty())
-        compileArgs << "--build-cache-path" << s_cliCachePath;
-    compileArgs << sketchFolder;
-
-    QProcess proc;
-    proc.setProcessChannelMode(QProcess::MergedChannels);
-    proc.start(cliPath, compileArgs);
-
-    if (!proc.waitForFinished(120000)) {
-        qWarning() << "arduino-cli timed out for" << inoFile;
-        proc.kill();
-        return false;
-    }
-
-    if (proc.exitCode() != 0) {
-        QString output = QString::fromUtf8(proc.readAllStandardOutput());
-        qWarning() << "arduino-cli compilation failed for" << inoFile;
-        qWarning() << "Output:" << output;
-        return false;
-    }
-
-    qInfo() << "arduino-cli validation passed for" << inoFile;
-    return true;
 }
 
 // ============================================================================

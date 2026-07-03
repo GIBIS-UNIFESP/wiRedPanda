@@ -780,7 +780,28 @@ void TestMainWindowGui::testMouseClickEmptyDeselects()
 void TestMainWindowGui::testMousePanWithSpace()
 {
     std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
+
+    // Panning only moves the viewport when there is a scrollable range, so
+    // spread elements far beyond the viewport first and assert the range
+    // exists — otherwise this test silently degrades into a no-op drag.
+    auto *farGate = new And();
+    farGate->setPos(4000, 3000);
+    scene->addItem(farGate);
+    auto *nearGate = new And();
+    nearGate->setPos(-4000, -3000);
+    scene->addItem(nearGate);
+    QApplication::processEvents();
+    QVERIFY2(view->horizontalScrollBar()->maximum() > view->horizontalScrollBar()->minimum(),
+             "Precondition: view must have a horizontal scroll range to pan");
+
+    // Start from a mid-range scroll position so the pan can move in either axis.
+    view->horizontalScrollBar()->setValue(
+        (view->horizontalScrollBar()->minimum() + view->horizontalScrollBar()->maximum()) / 2);
+    view->verticalScrollBar()->setValue(
+        (view->verticalScrollBar()->minimum() + view->verticalScrollBar()->maximum()) / 2);
+    const QPoint scrollBefore(view->horizontalScrollBar()->value(), view->verticalScrollBar()->value());
 
     QTest::keyPress(view, Qt::Key_Space);
 
@@ -798,10 +819,12 @@ void TestMainWindowGui::testMousePanWithSpace()
 
     QTest::keyRelease(view, Qt::Key_Space);
 
-    // Verify the viewport actually scrolled (platform-dependent magnitude, but direction is reliable)
-    QPoint scrollAfter(view->horizontalScrollBar()->value(), view->verticalScrollBar()->value());
-    // Pan moved right and down, so scroll values should differ (or at least no crash)
-    Q_UNUSED(scrollAfter)
+    // The drag moved right/down, so the viewport must have scrolled.
+    const QPoint scrollAfter(view->horizontalScrollBar()->value(), view->verticalScrollBar()->value());
+    QVERIFY2(scrollAfter != scrollBefore,
+             qPrintable(QString("Space+drag did not pan the view: scroll stayed at (%1, %2)")
+                            .arg(scrollBefore.x())
+                            .arg(scrollBefore.y())));
 }
 
 // ===========================================================================

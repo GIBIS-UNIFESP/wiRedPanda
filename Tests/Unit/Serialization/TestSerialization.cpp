@@ -87,8 +87,7 @@ void TestSerialization::testSingleElementRoundTrip()
 
     // Verify element type and properties
     auto *loaded = elements.first();
-    QCOMPARE(loaded->elementType(), ElementType::And);
-    QCOMPARE(loaded->label(), QString("TestAnd"));
+    verifyElementEquality(andGate, loaded);
 }
 
 void TestSerialization::testMultipleElementsRoundTrip()

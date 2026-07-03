@@ -101,7 +101,7 @@ void TestGraphicElement::testDisplay14Paint()
     disp->paint(&painter, &option, nullptr);
     painter.end();
 
-    QVERIFY(true);
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Display14 paint() must draw visible pixels");
 }
 
 void TestGraphicElement::testDisplay16Paint()
@@ -123,5 +123,5 @@ void TestGraphicElement::testDisplay16Paint()
     disp->paint(&painter, &option, nullptr);
     painter.end();
 
-    QVERIFY(true);
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Display16 paint() must draw visible pixels");
 }

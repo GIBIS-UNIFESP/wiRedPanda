@@ -5,6 +5,8 @@
 
 #include <QRandomGenerator>
 #include <QSet>
+#include <QSettings>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include "App/Core/Application.h"
@@ -25,6 +27,16 @@ void setupTestEnvironment()
     // parallel test startup, causing 8 processes to take 4s instead of 0.06s.
     qputenv("QT_IM_MODULES", "none");
 #endif
+    // Redirect QSettings to a per-process temporary directory. Settings uses
+    // IniFormat/UserScope, so without this every test that touches Settings::
+    // (recent files, theme, language, autosave lists) reads and WRITES the
+    // developer's real ~/.config/GIBIS-UNIFESP/wiRedPanda.ini. Must run before
+    // the first QSettings instance is created (this function is called at the
+    // top of runTestSuite(), before Application is constructed).
+    static QTemporaryDir settingsDir;
+    if (settingsDir.isValid()) {
+        QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsDir.path());
+    }
     Comment::setVerbosity(-1);
     Application::interactiveMode = false;   // Suppress UI dialogs in tests
     Application::renderingEnabled = false;  // Skip wire-geometry work — tests never paint
@@ -41,27 +53,6 @@ void configureApp()
 std::unique_ptr<WorkSpace> createWorkspace()
 {
     return std::make_unique<WorkSpace>();
-}
-
-QVector<InputSwitch *> createSwitches(int count)
-{
-    QVector<InputSwitch *> switches(count);
-    for (int i = 0; i < count; ++i) {
-        switches[i] = new InputSwitch();
-    }
-    return switches;
-}
-
-void setInputValues(const QVector<InputSwitch *> &switches, const QVector<bool> &values)
-{
-    QVERIFY2(switches.size() == values.size(), "Number of switches must match number of values");
-    for (int i = 0; i < switches.size(); ++i) {
-        if (values[i]) {
-            switches[i]->setOn();
-        } else {
-            switches[i]->setOff();
-        }
-    }
 }
 
 QString examplesDir()
@@ -540,16 +531,6 @@ int CircuitBuilder::getInputPortByLabel(GraphicElement *element, const QString &
 int CircuitBuilder::getOutputPortByLabel(GraphicElement *element, const QString &label)
 {
     return getPortByLabelImpl<OutputPortTraits>(element, label);
-}
-
-QString CircuitBuilder::getAvailableInputPorts(GraphicElement *element) const
-{
-    return getAvailablePortsImpl<InputPortTraits>(element);
-}
-
-QString CircuitBuilder::getAvailableOutputPorts(GraphicElement *element) const
-{
-    return getAvailablePortsImpl<OutputPortTraits>(element);
 }
 
 QNEConnection *CircuitBuilder::connect(GraphicElement *from, const QString &fromLabel,

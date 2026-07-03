@@ -91,7 +91,10 @@ void TestFiles::testBackwardCompatibility_data()
 
     const QDir bcDir(TestUtils::backwardCompatibilityDir());
     if (!bcDir.exists()) {
-        return;
+        // Skip instead of returning zero rows: running a data-driven body with
+        // an empty table makes QFETCH hit a QFATAL assert and abort the whole
+        // test binary.
+        QSKIP("BackwardCompatibility directory not found");
     }
 
     const auto versionDirs = bcDir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);

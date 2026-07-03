@@ -29,8 +29,4 @@ private slots:
     void testTypedTheme();
     void testTypedRecentFiles();
     void testTypedAutosaveFiles();
-
-private:
-    QString m_testOrganization = "TestWiredPanda";
-    QString m_testApplication = "TestSettings";
 };

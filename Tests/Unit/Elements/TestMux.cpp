@@ -3,6 +3,9 @@
 
 #include "Tests/Unit/Elements/TestMux.h"
 
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
+
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Scene/Workspace.h"
@@ -29,7 +32,15 @@ void TestMux::testMuxPainting()
     WorkSpace workspace;
     auto *mux = new Mux;
     workspace.scene()->addItem(mux);
-    QCOMPARE(mux->elementType(), ElementType::Mux);
+
+    QPixmap pixmap(128, 128);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QStyleOptionGraphicsItem option;
+    mux->paint(&painter, &option, nullptr);
+    painter.end();
+
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Mux paint() must draw visible pixels");
 }
 
 void TestMux::testMuxOutOfRangeSelect_data()

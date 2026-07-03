@@ -3,6 +3,9 @@
 
 #include "Tests/Unit/Elements/TestDemux.h"
 
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
+
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
@@ -30,7 +33,15 @@ void TestDemux::testDemuxPainting()
     WorkSpace workspace;
     auto *demux = new Demux;
     workspace.scene()->addItem(demux);
-    QCOMPARE(demux->elementType(), ElementType::Demux);
+
+    QPixmap pixmap(128, 128);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QStyleOptionGraphicsItem option;
+    demux->paint(&painter, &option, nullptr);
+    painter.end();
+
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Demux paint() must draw visible pixels");
 }
 
 void TestDemux::testDemuxOutOfRangeSelect()

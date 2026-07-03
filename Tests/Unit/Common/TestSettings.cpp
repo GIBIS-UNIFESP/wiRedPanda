@@ -3,7 +3,7 @@
 
 #include "Tests/Unit/Common/TestSettings.h"
 
-#include <QDir>
+#include <QFileInfo>
 #include <QSettings>
 
 #include "App/Core/Settings.h"
@@ -12,26 +12,30 @@
 
 void TestSettings::initTestCase()
 {
-    // Set up test-specific QSettings paths
-    // This prevents test settings from interfering with real application settings
-    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
-                       QDir::tempPath() + "/wiredpanda_tests");
+    // The whole harness is redirected to a temporary QSettings path by
+    // TestUtils::setupTestEnvironment() (called in runTestSuite() before the
+    // Application is constructed), so the tests below can freely mutate the
+    // Settings:: store without touching the developer's real configuration.
 }
 
 void TestSettings::init()
 {
-    // Clear test settings before each test
-    QSettings testSettings(m_testOrganization, m_testApplication);
-    testSettings.clear();
-    testSettings.sync();
+    // Clear the (redirected) application settings store before each test so
+    // every test starts from a blank state. This must clear the store the
+    // Settings:: API actually uses — the test bodies mutate Settings::, not a
+    // separate test-only organization/application pair. Settings::fileName()
+    // resolves to the same ini file the Settings singleton writes.
+    QSettings appSettings(Settings::fileName(), QSettings::IniFormat);
+    appSettings.clear();
+    appSettings.sync();
 }
 
 void TestSettings::cleanup()
 {
     // Clean up after each test
-    QSettings testSettings(m_testOrganization, m_testApplication);
-    testSettings.clear();
-    testSettings.sync();
+    QSettings appSettings(Settings::fileName(), QSettings::IniFormat);
+    appSettings.clear();
+    appSettings.sync();
 }
 
 // ============================================================

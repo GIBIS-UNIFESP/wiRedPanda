@@ -34,7 +34,6 @@ private slots:
     // Mute control tests
     void testMute();
     void testUnmute();
-    void testMuteWithoutAudioDevice();
 
     // Serialization tests
     void testSaveAudioPath();

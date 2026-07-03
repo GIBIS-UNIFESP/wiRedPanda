@@ -47,6 +47,17 @@ bool isMatchingReleaseAsset(const QString &name, const QString &platform, const 
     return false;
 }
 
+bool shouldOfferUpdate(const QString &tagName, const QVersionNumber &currentVersion, const QString &skippedVersion)
+{
+    const QVersionNumber latest = QVersionNumber::fromString(tagName).normalized();
+    if (latest.isNull() || latest <= currentVersion) {
+        return false;
+    }
+
+    // Respect the user's per-version suppression.
+    return latest.toString() != skippedVersion;
+}
+
 UpdateChecker::UpdateChecker(QObject *parent)
     : QObject(parent)
 {
@@ -89,15 +100,10 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
     Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
 
     const QString tagName = doc.object().value("tag_name").toString();
+    if (!shouldOfferUpdate(tagName, AppVersion::current, Settings::updateCheckSkippedVersion())) {
+        return;
+    }
     const QVersionNumber latest = QVersionNumber::fromString(tagName).normalized();
-    if (latest.isNull() || latest <= AppVersion::current) {
-        return;
-    }
-
-    // Respect the user's per-version suppression.
-    if (latest.toString() == Settings::updateCheckSkippedVersion()) {
-        return;
-    }
 
     QUrl downloadUrl;
     const QString platform = currentPlatform();

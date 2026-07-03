@@ -52,20 +52,6 @@ void configureApp();
 std::unique_ptr<WorkSpace> createWorkspace();
 
 /**
- * @brief Create multiple input switches
- * @param count Number of switches to create
- * @return Vector of input switch pointers
- */
-QVector<InputSwitch *> createSwitches(int count);
-
-/**
- * @brief Set values on multiple input switches
- * @param switches Vector of switches to set
- * @param values Boolean values to set (must match switches size)
- */
-void setInputValues(const QVector<InputSwitch *> &switches, const QVector<bool> &values);
-
-/**
  * @brief Get the path to the examples directory
  * @return QString path to examples
  */
@@ -94,17 +80,6 @@ QString arduinoExpectedDir();
  * @return QString path to Integration/SystemVerilog/
  */
 QString systemVerilogExpectedDir();
-
-/**
- * @brief Delete all items in a container
- * @param container Container of pointers to delete
- */
-template<typename Container>
-void deleteAll(Container &container)
-{
-    qDeleteAll(container);
-    container.clear();
-}
 
 /**
  * @brief Helper to get input status as bool
@@ -430,18 +405,4 @@ private:
      * @throws std::runtime_error if port not found
      */
     int getOutputPortByLabel(GraphicElement *element, const QString &label);
-
-    /**
-     * @brief Get list of available input ports as formatted string for error messages
-     * @param element The IC element
-     * @return Formatted string of [index] label pairs
-     */
-    QString getAvailableInputPorts(GraphicElement *element) const;
-
-    /**
-     * @brief Get list of available output ports as formatted string for error messages
-     * @param element The IC element
-     * @return Formatted string of [index] label pairs
-     */
-    QString getAvailableOutputPorts(GraphicElement *element) const;
 };
