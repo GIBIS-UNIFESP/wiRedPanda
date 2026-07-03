@@ -274,6 +274,12 @@ QJsonObject SimulationHandler::handleCreateIC(const QJsonObject &params, const Q
         return createErrorResponse("IC name cannot be empty", requestId, JsonRpcError::InvalidParams);
     }
 
+    if (name == "." || name == ".." || QFileInfo(name).fileName() != name
+        || name.contains('/') || name.contains('\\')) {
+        return createErrorResponse("IC name must not contain path separators or directory components",
+                                   requestId, JsonRpcError::InvalidParams);
+    }
+
     return tryCommand([&]() -> QJsonObject {
         QString icFileName = name + ".panda";
         QString fullPath = m_mainWindow->currentDir().absoluteFilePath(icFileName);
@@ -319,6 +325,15 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
     }
 
     QString icName = params.value("ic_name").toString();
+    if (icName.isEmpty()) {
+        return createErrorResponse("Parameter 'ic_name' cannot be empty", requestId, JsonRpcError::InvalidParams);
+    }
+    if (icName == "." || icName == ".." || QFileInfo(icName).fileName() != icName
+        || icName.contains('/') || icName.contains('\\')) {
+        return createErrorResponse("IC name must not contain path separators or directory components",
+                                   requestId, JsonRpcError::InvalidParams);
+    }
+
     const int snap = Scene::gridSize / 2;
     int x = qRound(params.value("x").toDouble() / snap) * snap;
     int y = qRound(params.value("y").toDouble() / snap) * snap;

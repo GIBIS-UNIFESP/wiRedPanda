@@ -319,8 +319,14 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     }
 
     if (params.contains("frequency") && element->hasFrequency()) {
+        if (!validateNumeric(params.value("frequency"), "frequency", errorMsg)) {
+            return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
+        }
         double oldFreq = element->frequency();
         double newFreq = params.value("frequency").toDouble();
+        if (newFreq <= 0) {
+            return createErrorResponse("Parameter 'frequency' must be a positive value", requestId, JsonRpcError::ValidationError);
+        }
 
         oldProperties["frequency"] = oldFreq;
         newProperties["frequency"] = newFreq;
@@ -339,8 +345,14 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     }
 
     if (params.contains("delay") && element->hasDelay()) {
+        if (!validateNumeric(params.value("delay"), "delay", errorMsg)) {
+            return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
+        }
         double oldDelay = element->delay();
         double newDelay = params.value("delay").toDouble();
+        if (newDelay < 0) {
+            return createErrorResponse("Parameter 'delay' must be non-negative", requestId, JsonRpcError::ValidationError);
+        }
 
         oldProperties["delay"] = oldDelay;
         newProperties["delay"] = newDelay;
@@ -382,8 +394,14 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     }
 
     if (params.contains("volume") && element->hasVolume()) {
+        if (!validateNumeric(params.value("volume"), "volume", errorMsg)) {
+            return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
+        }
         float oldVolume = element->volume();
         float newVolume = static_cast<float>(params.value("volume").toDouble());
+        if (newVolume < 0.0f || newVolume > 1.0f) {
+            return createErrorResponse("Parameter 'volume' must be between 0.0 and 1.0", requestId, JsonRpcError::ValidationError);
+        }
 
         oldProperties["volume"] = static_cast<double>(oldVolume);
         newProperties["volume"] = static_cast<double>(newVolume);
