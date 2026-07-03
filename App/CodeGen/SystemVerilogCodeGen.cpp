@@ -769,7 +769,31 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                     break;
                 }
 
-                default:
+                case ElementType::And:
+                case ElementType::AudioBox:
+                case ElementType::Buzzer:
+                case ElementType::Clock:
+                case ElementType::Display14:
+                case ElementType::Display16:
+                case ElementType::Display7:
+                case ElementType::IC:
+                case ElementType::InputButton:
+                case ElementType::InputGnd:
+                case ElementType::InputRotary:
+                case ElementType::InputSwitch:
+                case ElementType::InputVcc:
+                case ElementType::JKLatch:
+                case ElementType::Led:
+                case ElementType::Line:
+                case ElementType::Nand:
+                case ElementType::Node:
+                case ElementType::Nor:
+                case ElementType::Not:
+                case ElementType::Or:
+                case ElementType::Text:
+                case ElementType::Unknown:
+                case ElementType::Xnor:
+                case ElementType::Xor:
                     if (m_feedbackElements.contains(elm)) {
                         // Cross-coupled feedback node: a `reg` driven by
                         // `always @(*)` (below), seeded so it settles from a
@@ -1256,7 +1280,31 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                 break;
             }
 
-            default:
+            case ElementType::And:
+            case ElementType::AudioBox:
+            case ElementType::Buzzer:
+            case ElementType::Clock:
+            case ElementType::Display14:
+            case ElementType::Display16:
+            case ElementType::Display7:
+            case ElementType::IC:
+            case ElementType::InputButton:
+            case ElementType::InputGnd:
+            case ElementType::InputRotary:
+            case ElementType::InputSwitch:
+            case ElementType::InputVcc:
+            case ElementType::JKLatch:
+            case ElementType::Led:
+            case ElementType::Line:
+            case ElementType::Nand:
+            case ElementType::Node:
+            case ElementType::Nor:
+            case ElementType::Not:
+            case ElementType::Or:
+            case ElementType::Text:
+            case ElementType::Unknown:
+            case ElementType::Xnor:
+            case ElementType::Xor:
                 throw PANDACEPTION("Element type not supported: %1", elm->objectName());
             }
         }
@@ -1291,7 +1339,33 @@ QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, Q
         return "~" + inner;
     }
     case ElementType::Node: return otherPortNameImpl(elm->inputPort(0), visited);
-    default: return "";
+    case ElementType::AudioBox:
+    case ElementType::Buzzer:
+    case ElementType::Clock:
+    case ElementType::DFlipFlop:
+    case ElementType::DLatch:
+    case ElementType::Demux:
+    case ElementType::Display14:
+    case ElementType::Display16:
+    case ElementType::Display7:
+    case ElementType::IC:
+    case ElementType::InputButton:
+    case ElementType::InputGnd:
+    case ElementType::InputRotary:
+    case ElementType::InputSwitch:
+    case ElementType::InputVcc:
+    case ElementType::JKFlipFlop:
+    case ElementType::JKLatch:
+    case ElementType::Led:
+    case ElementType::Line:
+    case ElementType::Mux:
+    case ElementType::SRFlipFlop:
+    case ElementType::SRLatch:
+    case ElementType::TFlipFlop:
+    case ElementType::Text:
+    case ElementType::TruthTable:
+    case ElementType::Unknown:
+        return "";
     }
 
     QString expr;

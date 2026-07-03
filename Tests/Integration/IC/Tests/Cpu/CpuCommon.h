@@ -4,7 +4,7 @@
 #pragma once
 
 // Instruction Set Architecture (Expanded 4-bit ISA - 16 opcodes)
-enum InstructionOpcode {
+enum InstructionOpcode : int {
     // Arithmetic & Logic (0-7)
     ISA_NOP = 0,    // 0000 - No operation
     ISA_LOAD = 1,   // 0001 - Load immediate/memory to register
@@ -29,7 +29,7 @@ enum InstructionOpcode {
 };
 
 // ALU Operations
-enum ALUOperation {
+enum ALUOperation : int {
     ALU_ADD = 0,
     ALU_SUB = 1,
     ALU_AND = 2,
@@ -41,7 +41,7 @@ enum ALUOperation {
 };
 
 // Control Unit States
-enum ControlUnitState {
+enum ControlUnitState : int {
     CU_FETCH = 0,
     CU_DECODE = 1,
     CU_EXECUTE = 2,
