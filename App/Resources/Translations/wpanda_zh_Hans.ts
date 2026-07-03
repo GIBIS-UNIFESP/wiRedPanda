@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="882"/>
+        <location filename="../../Scene/Commands.cpp" line="883"/>
         <source>Change input size to %1</source>
         <translation>将输入大小更改为 %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change output size to %1</source>
         <translation>将输出大小更改为 %1</translation>
     </message>
@@ -1214,7 +1214,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="823"/>
+        <location filename="../../Scene/Commands.cpp" line="824"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>在轴%2上翻转%1个元件</translation>
     </message>
@@ -1468,12 +1468,12 @@ Suggested name:</source>
 <context>
     <name>InputGnd</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputGND.cpp" line="28"/>
+        <location filename="../../Element/GraphicElements/InputGND.cpp" line="29"/>
         <source>GND</source>
         <translation>地线</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputGND.cpp" line="27"/>
+        <location filename="../../Element/GraphicElements/InputGND.cpp" line="28"/>
         <source>GROUND</source>
         <translation>地线</translation>
     </message>
@@ -1499,12 +1499,12 @@ Suggested name:</source>
         <translation>输入开关</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
         <source>Off</source>
         <translation>关</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
         <source>On</source>
         <translation>开</translation>
     </message>
@@ -2195,7 +2195,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="635"/>
+        <location filename="../../Scene/Commands.cpp" line="636"/>
         <source>Morph %1 elements to %2</source>
         <translation>将%1个元件转换为%2</translation>
     </message>
@@ -2396,7 +2396,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1043"/>
+        <location filename="../../Scene/Commands.cpp" line="1045"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>注册 blob &quot;%1&quot;</translation>
     </message>
@@ -2404,7 +2404,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1066"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>移除 blob &quot;%1&quot;</translation>
     </message>
@@ -2548,7 +2548,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="297"/>
+        <location filename="../../Simulation/Simulation.cpp" line="300"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>警告: 反馈电路未收敛 — 电路可能在振荡。</translation>
     </message>
@@ -2571,17 +2571,17 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
         <translation>导线分割</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="553"/>
+        <location filename="../../Scene/Commands.cpp" line="554"/>
         <source>Error trying to redo %1</source>
         <translation>尝试重做 %1 时出错</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="576"/>
+        <location filename="../../Scene/Commands.cpp" line="577"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>错误：SplitCommand::redo()中endPort为null</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="605"/>
+        <location filename="../../Scene/Commands.cpp" line="606"/>
         <source>Error trying to undo %1</source>
         <translation>尝试撤销 %1 时出错</translation>
     </message>
@@ -2633,17 +2633,17 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="976"/>
+        <location filename="../../Scene/Commands.cpp" line="978"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>在位置 %1 切换真值表输出</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="985"/>
+        <location filename="../../Scene/Commands.cpp" line="987"/>
         <source>Could not find truthtable element!</source>
         <translation>找不到真值表元素！</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="992"/>
+        <location filename="../../Scene/Commands.cpp" line="994"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2677,7 +2677,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1099"/>
+        <location filename="../../Scene/Commands.cpp" line="1101"/>
         <source>Update %1 IC blobs</source>
         <translation>更新 %1 个 IC blob</translation>
     </message>
