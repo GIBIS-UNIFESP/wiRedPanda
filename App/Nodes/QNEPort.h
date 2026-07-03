@@ -23,9 +23,10 @@ class QNEPort;
  * \class QNEPort
  * \brief Abstract base class for circuit element ports (connection endpoints).
  *
- * \details A port is the small diamond/circle drawn at the edge of a graphic element
- * where wires attach.  It stores a reference to the owning GraphicElement,
- * all attached QNEConnections, and its current logical status.
+ * \details A port is the small glyph drawn at the edge of a graphic element where
+ * wires attach — a circle for inputs, a right-pointing triangle for outputs.
+ * It stores a reference to the owning GraphicElement, all attached
+ * QNEConnections, and its current logical status.
  *
  * Concrete subclasses QNEInputPort and QNEOutputPort differentiate direction.
  */
@@ -36,6 +37,9 @@ public:
 
     enum { Type = QGraphicsItem::UserType + 1 };
     int type() const override { return Type; }
+
+    /// \reimp Hit-testing uses the full ±m_radius square regardless of the painted glyph.
+    QPainterPath shape() const override;
 
     // --- Lifecycle ---
 
