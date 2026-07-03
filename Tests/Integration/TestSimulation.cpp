@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/TestSimulation.h"
 
+#include <utility>
+
 #include "App/Core/Priorities.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
@@ -557,7 +559,7 @@ void TestSimulation::testSimulationGraphStability()
     // This verifies our QHash -> QMap fix for deterministic iteration
 
     constexpr int NUM_RUNS = 10;
-    QVector<QVector<QPair<int, int>>> mappingResults;
+    QVector<QVector<std::pair<int, int>>> mappingResults;
 
     for (int run = 0; run < NUM_RUNS; ++run) {
         WorkSpace workspace;
@@ -644,11 +646,11 @@ void TestSimulation::testSimulationGraphStability()
         QHash<GraphicElement *, int> priorities;
         calculatePriorities(elements, successors, priorities);
 
-        QVector<QPair<int, int>> elementProperties;
+        QVector<std::pair<int, int>> elementProperties;
         for (auto *elm : elements) {
             int priority = priorities.value(elm, -1);
             int outputSize = elm->outputSize();
-            elementProperties.append(QPair<int, int>(priority, outputSize));
+            elementProperties.append({priority, outputSize});
         }
 
         mappingResults.append(elementProperties);

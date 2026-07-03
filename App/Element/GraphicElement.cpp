@@ -354,7 +354,7 @@ void GraphicElement::setAppearanceAt(const int index, const QString &fileName)
     m_appearance.setAppearanceAt(index, fileName);
 }
 
-QList<QPair<int, QString>> GraphicElement::appearanceStates() const
+QList<std::pair<int, QString>> GraphicElement::appearanceStates() const
 {
     // Default: single appearance at index 0
     return {{0, tr("Default")}};

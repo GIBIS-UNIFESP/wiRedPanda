@@ -8,6 +8,7 @@
 #pragma once
 
 #include <memory>
+#include <utility>
 
 #include <QBitArray>
 #include <QGraphicsItem>
@@ -289,7 +290,7 @@ public:
      * Each pair is (appearance list index, human-readable state description).
      * Override in subclasses with multi-state appearances (e.g., Led).
      */
-    virtual QList<QPair<int, QString>> appearanceStates() const;
+    virtual QList<std::pair<int, QString>> appearanceStates() const;
 
     /// Loads and applies the pixmap located at \a pixmapPath.
     void setPixmap(const QString &pixmapPath);

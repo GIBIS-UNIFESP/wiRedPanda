@@ -10,9 +10,10 @@
 #include <QElapsedTimer>
 #include <QGraphicsRectItem>
 #include <QList>
-#include <QPair>
 #include <QPointer>
 #include <QPointF>
+
+#include <utility>
 
 class GraphicElement;
 class QGraphicsSceneMouseEvent;
@@ -73,7 +74,7 @@ private:
 
     /// Per-drag snapshot of (element, original position); QPointer auto-clears if an
     /// element is destroyed mid-drag (e.g. Delete shortcut while dragging).
-    QList<QPair<QPointer<GraphicElement>, QPointF>> m_dragSnapshot;
+    QList<std::pair<QPointer<GraphicElement>, QPointF>> m_dragSnapshot;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
 };
