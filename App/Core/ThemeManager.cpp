@@ -5,12 +5,15 @@
 
 #include <QCoreApplication>
 #include <QStyleHints>
+#include <QThread>
 
 #include "App/Core/Settings.h"
 
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
 {
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
+
     // Load the persisted theme preference; if not set, m_theme keeps its
     // default-initialised value (Theme::Light, as defined in the header)
     m_theme = Settings::theme();
@@ -90,6 +93,8 @@ void ThemeManager::onSystemColorSchemeChanged()
 
 void ThemeManager::setTheme(const Theme theme)
 {
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
+
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
     // For System theme, clear the explicit color scheme override first so the platform
     // re-reads the OS setting. Qt 6.9.3's requestColorScheme() posts a QWindowSystemInterface

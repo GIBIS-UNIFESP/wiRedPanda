@@ -3,6 +3,7 @@
 
 #include "App/Element/ICRegistry.h"
 
+#include <QCoreApplication>
 #include <QDataStream>
 #include <QDir>
 #include <QFileInfo>
@@ -30,6 +31,8 @@ ICRegistry::ICRegistry(Scene *scene)
 
 const QByteArray &ICRegistry::cachedFileBytes(const QString &filePath)
 {
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
+
     if (!m_fileCache.contains(filePath)) {
         QFile file(filePath);
         if (file.open(QIODevice::ReadOnly)) {

@@ -3,9 +3,11 @@
 
 #include "App/Element/GraphicElements/Display7.h"
 
+#include <QCoreApplication>
 #include <QHash>
 #include <QPainter>
 #include <QPixmap>
+#include <QThread>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
@@ -74,6 +76,8 @@ Display7::Display7(QGraphicsItem *parent)
 
 QVector<QPixmap> Display7::cachedSegmentColors(const QString &resourcePath)
 {
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
+
     static QHash<QString, QVector<QPixmap>> cache;
 
     auto it = cache.find(resourcePath);
