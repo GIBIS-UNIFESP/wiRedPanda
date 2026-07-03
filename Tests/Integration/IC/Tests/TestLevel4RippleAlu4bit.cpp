@@ -14,12 +14,109 @@
 using TestUtils::getInputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
+// The ALU computes all four operations in parallel: 10 inputs (A[0-3], B[0-3],
+// CarryIn, SubCarryIn), 18 outputs (Result_{ADD,SUB,AND,OR}[0-3] + CarryOut +
+// SubCarryOut). One shared fixture wires every output once; each test reads
+// the lanes for its operation.
+struct RippleAlu4bitFixture {
+    std::unique_ptr<WorkSpace> workspace;
+    IC *ic = nullptr;
+    InputSwitch *swA[4] = {}, *swB[4] = {};
+    InputSwitch *swCarryIn = nullptr, *swSubCarryIn = nullptr;
+    Led *ledAdd[4] = {}, *ledSub[4] = {}, *ledAnd[4] = {}, *ledOr[4] = {};
+    Led *ledCarryOut = nullptr, *ledSubCarryOut = nullptr;
+    Simulation *sim = nullptr;
+
+    bool build()
+    {
+        workspace = std::make_unique<WorkSpace>();
+        CircuitBuilder builder(workspace->scene());
+
+        ic = loadBuildingBlockIC("level4_ripple_alu_4bit.panda");
+        builder.add(ic);
+
+        for (int i = 0; i < 4; ++i) {
+            swA[i] = new InputSwitch();
+            swB[i] = new InputSwitch();
+            ledAdd[i] = new Led();
+            ledSub[i] = new Led();
+            ledAnd[i] = new Led();
+            ledOr[i] = new Led();
+            builder.add(swA[i], swB[i], ledAdd[i], ledSub[i], ledAnd[i], ledOr[i]);
+        }
+        swCarryIn = new InputSwitch();
+        swSubCarryIn = new InputSwitch();
+        ledCarryOut = new Led();
+        ledSubCarryOut = new Led();
+        builder.add(swCarryIn, swSubCarryIn, ledCarryOut, ledSubCarryOut);
+
+        for (int i = 0; i < 4; ++i) {
+            builder.connect(swA[i], 0, ic, QString("A[%1]").arg(i));
+            builder.connect(swB[i], 0, ic, QString("B[%1]").arg(i));
+            builder.connect(ic, QString("Result_ADD[%1]").arg(i), ledAdd[i], 0);
+            builder.connect(ic, QString("Result_SUB[%1]").arg(i), ledSub[i], 0);
+            builder.connect(ic, QString("Result_AND[%1]").arg(i), ledAnd[i], 0);
+            builder.connect(ic, QString("Result_OR[%1]").arg(i), ledOr[i], 0);
+        }
+        builder.connect(swCarryIn, 0, ic, "CarryIn");
+        builder.connect(swSubCarryIn, 0, ic, "SubCarryIn");
+        builder.connect(ic, "CarryOut", ledCarryOut, 0);
+        builder.connect(ic, "SubCarryOut", ledSubCarryOut, 0);
+
+        sim = builder.initSimulation();
+        sim->update();
+        return true;
+    }
+
+    // Standard operating point: CarryIn=0 (plain ADD), SubCarryIn=1 (the
+    // two's-complement +1 so Result_SUB = A - B).
+    void setOperands(int a, int b)
+    {
+        swCarryIn->setOn(false);
+        swSubCarryIn->setOn(true);
+        for (int i = 0; i < 4; ++i) {
+            swA[i]->setOn((a >> i) & 1);
+            swB[i]->setOn((b >> i) & 1);
+        }
+        sim->update();
+    }
+
+    int readLanes(Led *const *leds) const
+    {
+        int value = 0;
+        for (int i = 0; i < 4; ++i) {
+            if (getInputStatus(leds[i])) {
+                value |= (1 << i);
+            }
+        }
+        return value;
+    }
+};
+
+static std::unique_ptr<RippleAlu4bitFixture> s_level4RippleAlu4bit;
+
 void TestLevel4RippleALU4Bit::initTestCase()
 {
+    s_level4RippleAlu4bit = std::make_unique<RippleAlu4bitFixture>();
+    QVERIFY(s_level4RippleAlu4bit->build());
+
+    // 10 inputs (A, B, CarryIn, SubCarryIn), 18 outputs (4 ops × 4 bits +
+    // CarryOut + SubCarryOut)
+    QCOMPARE(s_level4RippleAlu4bit->ic->inputSize(), 10);
+    QCOMPARE(s_level4RippleAlu4bit->ic->outputSize(), 18);
+}
+
+void TestLevel4RippleALU4Bit::cleanupTestCase()
+{
+    s_level4RippleAlu4bit.reset();
 }
 
 void TestLevel4RippleALU4Bit::cleanup()
 {
+    if (s_level4RippleAlu4bit && s_level4RippleAlu4bit->sim) {
+        s_level4RippleAlu4bit->sim->restart();
+        s_level4RippleAlu4bit->sim->update();
+    }
 }
 
 // ============================================================
@@ -45,72 +142,10 @@ void TestLevel4RippleALU4Bit::testAluAdd()
     QFETCH(int, inputB);
     QFETCH(int, expectedResult);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    auto &f = *s_level4RippleAlu4bit;
 
-    // Load ALU4bit IC
-    auto *aluIC = loadBuildingBlockIC("level4_ripple_alu_4bit.panda");
-    builder.add(aluIC);
-
-    // Verify IC has correct port counts
-    // New interface: 9 inputs (A[0-3], B[0-3], CarryIn), 17 outputs (4 operations × 4 bits + CarryOut)
-    QVERIFY2(aluIC->inputSize() == 10, qPrintable(QString("ALU4bit IC should have 10 input ports (A,B,CarryIn,SubCarryIn), got %1").arg(aluIC->inputSize())));
-    QVERIFY2(aluIC->outputSize() == 18, qPrintable(QString("ALU4bit IC should have 18 output ports (4 ops + CarryOut + SubCarryOut), got %1").arg(aluIC->outputSize())));
-
-    // Input switches for A (4-bit), B (4-bit), and CarryIn
-    InputSwitch swA[4], swB[4], swCarryIn, swSubCarryIn;
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&swA[i], &swB[i]);
-    }
-    builder.add(&swCarryIn, &swSubCarryIn);
-
-    // Output LEDs for Result_ADD[0-3]
-    Led ledResult[4];
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&ledResult[i]);
-    }
-
-    // Connect inputs to IC using semantic port labels
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(&swA[i], 0, aluIC, QString("A[%1]").arg(i));
-        builder.connect(&swB[i], 0, aluIC, QString("B[%1]").arg(i));
-    }
-
-    // Connect CarryIn (set to 0 for basic ADD without carry-in)
-    builder.connect(&swCarryIn, 0, aluIC, "CarryIn");
-    builder.connect(&swSubCarryIn, 0, aluIC, "SubCarryIn");
-
-    // Connect Result_ADD outputs to LEDs
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(aluIC, QString("Result_ADD[%1]").arg(i), &ledResult[i], 0);
-    }
-
-    auto *simulation = builder.initSimulation();
-
-    // Set input values (must be after initSimulation)
-    swSubCarryIn.setOn(true);  // SubCarryIn=1 for two's complement SUB
-    for (int i = 0; i < 4; ++i) {
-        bool bitA = (inputA >> i) & 1;
-        bool bitB = (inputB >> i) & 1;
-        swA[i].setOn(bitA);
-        swB[i].setOn(bitB);
-    }
-
-    simulation->update();
-
-    // Read result bits from circuit
-    int result = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
-            result |= (1 << i);
-        }
-    }
-
-    // Compare circuit output with expected result
-    int maskedResult = result & 0x0F;
-    int maskedExpected = expectedResult & 0x0F;
-
-    QCOMPARE(maskedResult, maskedExpected);
+    f.setOperands(inputA, inputB);
+    QCOMPARE(f.readLanes(f.ledAdd), expectedResult & 0x0F);
 }
 
 // ============================================================
@@ -135,72 +170,10 @@ void TestLevel4RippleALU4Bit::testAluAnd()
     QFETCH(int, inputB);
     QFETCH(int, expectedResult);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    auto &f = *s_level4RippleAlu4bit;
 
-    // Load ALU4bit IC
-    auto *aluIC = loadBuildingBlockIC("level4_ripple_alu_4bit.panda");
-    builder.add(aluIC);
-
-    // Verify IC has correct port counts
-    // New interface: 9 inputs (A[0-3], B[0-3], CarryIn), 17 outputs (4 operations × 4 bits + CarryOut)
-    QVERIFY2(aluIC->inputSize() == 10, qPrintable(QString("ALU4bit IC should have 10 input ports (A,B,CarryIn,SubCarryIn), got %1").arg(aluIC->inputSize())));
-    QVERIFY2(aluIC->outputSize() == 18, qPrintable(QString("ALU4bit IC should have 18 output ports (4 ops + CarryOut + SubCarryOut), got %1").arg(aluIC->outputSize())));
-
-    // Input switches for A (4-bit), B (4-bit), and CarryIn
-    InputSwitch swA[4], swB[4], swCarryIn, swSubCarryIn;
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&swA[i], &swB[i]);
-    }
-    builder.add(&swCarryIn, &swSubCarryIn);
-
-    // Output LEDs for Result_AND[0-3]
-    Led ledResult[4];
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&ledResult[i]);
-    }
-
-    // Connect inputs to IC using semantic port labels
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(&swA[i], 0, aluIC, QString("A[%1]").arg(i));
-        builder.connect(&swB[i], 0, aluIC, QString("B[%1]").arg(i));
-    }
-
-    // Connect CarryIn (set to 0 for basic AND without carry-in)
-    builder.connect(&swCarryIn, 0, aluIC, "CarryIn");
-    builder.connect(&swSubCarryIn, 0, aluIC, "SubCarryIn");
-
-    // Connect Result_AND outputs to LEDs
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(aluIC, QString("Result_AND[%1]").arg(i), &ledResult[i], 0);
-    }
-
-    auto *simulation = builder.initSimulation();
-
-    // Set input values (must be after initSimulation)
-    swSubCarryIn.setOn(true);  // SubCarryIn=1 for two's complement SUB
-    for (int i = 0; i < 4; ++i) {
-        bool bitA = (inputA >> i) & 1;
-        bool bitB = (inputB >> i) & 1;
-        swA[i].setOn(bitA);
-        swB[i].setOn(bitB);
-    }
-
-    simulation->update();
-
-    // Read result bits from circuit
-    int result = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
-            result |= (1 << i);
-        }
-    }
-
-    // Compare circuit output with expected result
-    int maskedResult = result & 0x0F;
-    int maskedExpected = expectedResult & 0x0F;
-
-    QCOMPARE(maskedResult, maskedExpected);
+    f.setOperands(inputA, inputB);
+    QCOMPARE(f.readLanes(f.ledAnd), expectedResult & 0x0F);
 }
 
 // ============================================================
@@ -225,72 +198,10 @@ void TestLevel4RippleALU4Bit::testAluOr()
     QFETCH(int, inputB);
     QFETCH(int, expectedResult);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    auto &f = *s_level4RippleAlu4bit;
 
-    // Load ALU4bit IC
-    auto *aluIC = loadBuildingBlockIC("level4_ripple_alu_4bit.panda");
-    builder.add(aluIC);
-
-    // Verify IC has correct port counts
-    // New interface: 9 inputs (A[0-3], B[0-3], CarryIn), 17 outputs (4 operations × 4 bits + CarryOut)
-    QVERIFY2(aluIC->inputSize() == 10, qPrintable(QString("ALU4bit IC should have 10 input ports (A,B,CarryIn,SubCarryIn), got %1").arg(aluIC->inputSize())));
-    QVERIFY2(aluIC->outputSize() == 18, qPrintable(QString("ALU4bit IC should have 18 output ports (4 ops + CarryOut + SubCarryOut), got %1").arg(aluIC->outputSize())));
-
-    // Input switches for A (4-bit), B (4-bit), and CarryIn
-    InputSwitch swA[4], swB[4], swCarryIn, swSubCarryIn;
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&swA[i], &swB[i]);
-    }
-    builder.add(&swCarryIn, &swSubCarryIn);
-
-    // Output LEDs
-    Led ledResult[4];
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&ledResult[i]);
-    }
-
-    // Connect inputs to IC using semantic port labels
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(&swA[i], 0, aluIC, QString("A[%1]").arg(i));
-        builder.connect(&swB[i], 0, aluIC, QString("B[%1]").arg(i));
-    }
-
-    // Connect CarryIn (set to 0 for basic OR without carry-in)
-    builder.connect(&swCarryIn, 0, aluIC, "CarryIn");
-    builder.connect(&swSubCarryIn, 0, aluIC, "SubCarryIn");
-
-    // Connect IC outputs to LEDs
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(aluIC, QString("Result_OR[%1]").arg(i), &ledResult[i], 0);
-    }
-
-    auto *simulation = builder.initSimulation();
-
-    // Set input values (must be after initSimulation)
-    swSubCarryIn.setOn(true);  // SubCarryIn=1 for two's complement SUB
-    for (int i = 0; i < 4; ++i) {
-        bool bitA = (inputA >> i) & 1;
-        bool bitB = (inputB >> i) & 1;
-        swA[i].setOn(bitA);
-        swB[i].setOn(bitB);
-    }
-
-    simulation->update();
-
-    // Read result bits from circuit
-    int result = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
-            result |= (1 << i);
-        }
-    }
-
-    // Compare circuit output with expected result
-    int maskedResult = result & 0x0F;
-    int maskedExpected = expectedResult & 0x0F;
-
-    QCOMPARE(maskedResult, maskedExpected);
+    f.setOperands(inputA, inputB);
+    QCOMPARE(f.readLanes(f.ledOr), expectedResult & 0x0F);
 }
 
 // ============================================================
@@ -315,185 +226,63 @@ void TestLevel4RippleALU4Bit::testAluSub()
     QFETCH(int, inputB);
     QFETCH(int, expectedResult);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    auto &f = *s_level4RippleAlu4bit;
 
-    // Load ALU4bit IC
-    auto *aluIC = loadBuildingBlockIC("level4_ripple_alu_4bit.panda");
-    builder.add(aluIC);
-
-    // Verify IC has correct port counts
-    // New interface: 9 inputs (A[0-3], B[0-3], CarryIn), 17 outputs (4 operations × 4 bits + CarryOut)
-    QVERIFY2(aluIC->inputSize() == 10, qPrintable(QString("ALU4bit IC should have 10 input ports (A,B,CarryIn,SubCarryIn), got %1").arg(aluIC->inputSize())));
-    QVERIFY2(aluIC->outputSize() == 18, qPrintable(QString("ALU4bit IC should have 18 output ports (4 ops + CarryOut + SubCarryOut), got %1").arg(aluIC->outputSize())));
-
-    // Input switches for A (4-bit), B (4-bit), CarryIn, and SubCarryIn
-    InputSwitch swA[4], swB[4], swCarryIn, swSubCarryIn;
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&swA[i], &swB[i]);
-    }
-    builder.add(&swCarryIn, &swSubCarryIn);
-
-    // Output LEDs for Result_SUB[0-3]
-    Led ledResult[4];
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&ledResult[i]);
-    }
-
-    // Connect inputs to IC using semantic port labels
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(&swA[i], 0, aluIC, QString("A[%1]").arg(i));
-        builder.connect(&swB[i], 0, aluIC, QString("B[%1]").arg(i));
-    }
-
-    // Connect CarryIn (set to 0 for basic SUB without carry-in)
-    builder.connect(&swCarryIn, 0, aluIC, "CarryIn");
-    // Connect SubCarryIn (set to 1 for two's complement: A + ~B + 1)
-    builder.connect(&swSubCarryIn, 0, aluIC, "SubCarryIn");
-
-    // Connect Result_SUB outputs to LEDs
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(aluIC, QString("Result_SUB[%1]").arg(i), &ledResult[i], 0);
-    }
-
-    auto *simulation = builder.initSimulation();
-
-    // Set input values (must be after initSimulation)
-    swSubCarryIn.setOn(true);  // SubCarryIn=1 for two's complement SUB
-    for (int i = 0; i < 4; ++i) {
-        bool bitA = (inputA >> i) & 1;
-        bool bitB = (inputB >> i) & 1;
-        swA[i].setOn(bitA);
-        swB[i].setOn(bitB);
-    }
-
-    simulation->update();
-
-    // Read result bits from circuit
-    int result = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
-            result |= (1 << i);
-        }
-    }
-
-    // Compare circuit output with expected result
-    int maskedResult = result & 0x0F;
-    int maskedExpected = expectedResult & 0x0F;
-
-    QCOMPARE(maskedResult, maskedExpected);
+    f.setOperands(inputA, inputB);
+    QCOMPARE(f.readLanes(f.ledSub), expectedResult & 0x0F);
 }
 
 // ============================================================
-// Test: ALU 4-bit Flag verification (all operations)
+// Test: results + carry chain across all operations
 // ============================================================
 
-void TestLevel4RippleALU4Bit::testAluFlags_data()
+void TestLevel4RippleALU4Bit::testAluResultAndCarry_data()
 {
     QTest::addColumn<int>("inputA");
     QTest::addColumn<int>("inputB");
     QTest::addColumn<int>("operation");
     QTest::addColumn<int>("expectedResult");
 
-    // Status Flag Verification Test Cases
-    // ZF (Zero Flag) - Set when result = 0
-    QTest::newRow("ADD: 8 + 8 = 0 (ZF with wrap)") << 8 << 8 << 0 << 0;
+    // Operation selects which result lanes to read: 0=ADD, 1=SUB, 2=AND, 3=OR.
+    // CarryOut/SubCarryOut are checked on every row (the ALU computes them
+    // combinationally from A/B regardless of which result lanes are read).
+    QTest::newRow("ADD: 8 + 8 = 0 (wrap)") << 8 << 8 << 0 << 0;
     QTest::newRow("SUB: 0 - 1 = 15 (underflow)") << 0 << 1 << 1 << 15;
     QTest::newRow("SUB: 3 - 5 = 14 (negative result)") << 3 << 5 << 1 << 14;
-
-    // SF (Sign Flag) - Set when MSB (bit 3) = 1 (result >= 8)
-    QTest::newRow("ADD: 5 + 5 = 10 (SF set)") << 5 << 5 << 0 << 10;
-    QTest::newRow("ADD: 15 + 15 = 14 (SF with wrap)") << 15 << 15 << 0 << 14;
-    QTest::newRow("AND: 12 & 10 = 8 (SF from AND)") << 12 << 10 << 2 << 8;
-    QTest::newRow("OR: 15 | 0 = 15 (SF from OR)") << 15 << 0 << 3 << 15;
-
-    // CF (Carry Flag) - Set when result overflows past 4-bit
+    QTest::newRow("ADD: 5 + 5 = 10") << 5 << 5 << 0 << 10;
+    QTest::newRow("ADD: 15 + 15 = 14 (wrap)") << 15 << 15 << 0 << 14;
+    QTest::newRow("AND: 12 & 10 = 8") << 12 << 10 << 2 << 8;
+    QTest::newRow("OR: 15 | 0 = 15") << 15 << 0 << 3 << 15;
     QTest::newRow("ADD: 15 + 1 = 0 (carry out)") << 15 << 1 << 0 << 0;
     QTest::newRow("ADD: 7 + 9 = 0 (overflow to zero)") << 7 << 9 << 0 << 0;
-
-    // OF (Overflow Flag) - Set on signed overflow (for ADD/SUB)
-    QTest::newRow("ADD: 7 + 2 = 9 (signed overflow)") << 7 << 2 << 0 << 9;
+    QTest::newRow("ADD: 7 + 2 = 9") << 7 << 2 << 0 << 9;
 }
 
-void TestLevel4RippleALU4Bit::testAluFlags()
+void TestLevel4RippleALU4Bit::testAluResultAndCarry()
 {
     QFETCH(int, inputA);
     QFETCH(int, inputB);
     QFETCH(int, operation);
     QFETCH(int, expectedResult);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    auto &f = *s_level4RippleAlu4bit;
 
-    // Load ALU4bit IC
-    auto *aluIC = loadBuildingBlockIC("level4_ripple_alu_4bit.panda");
-    builder.add(aluIC);
+    f.setOperands(inputA, inputB);
 
-    // Verify IC has correct port counts
-    // New interface: 9 inputs (A[0-3], B[0-3], CarryIn), 17 outputs (4 operations × 4 bits + CarryOut)
-    QVERIFY2(aluIC->inputSize() == 10, qPrintable(QString("ALU4bit IC should have 10 input ports (A,B,CarryIn,SubCarryIn), got %1").arg(aluIC->inputSize())));
-    QVERIFY2(aluIC->outputSize() == 18, qPrintable(QString("ALU4bit IC should have 18 output ports (4 ops + CarryOut + SubCarryOut), got %1").arg(aluIC->outputSize())));
-
-    // Input switches for A (4-bit), B (4-bit), and CarryIn
-    InputSwitch swA[4], swB[4], swCarryIn, swSubCarryIn;
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&swA[i], &swB[i]);
-    }
-    builder.add(&swCarryIn, &swSubCarryIn);
-
-    // Output LEDs
-    Led ledResult[4];
-    for (int i = 0; i < 4; ++i) {
-        builder.add(&ledResult[i]);
-    }
-
-    // Connect inputs to IC using semantic port labels
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(&swA[i], 0, aluIC, QString("A[%1]").arg(i));
-        builder.connect(&swB[i], 0, aluIC, QString("B[%1]").arg(i));
-    }
-
-    // Connect CarryIn (set to 0 for basic operations without carry-in)
-    builder.connect(&swCarryIn, 0, aluIC, "CarryIn");
-    builder.connect(&swSubCarryIn, 0, aluIC, "SubCarryIn");
-
-    // Connect IC outputs to LEDs based on operation type
-    QString operationName;
+    Led *const *lanes = nullptr;
     switch (operation) {
-        case 0: operationName = "Result_ADD"; break;
-        case 1: operationName = "Result_SUB"; break;
-        case 2: operationName = "Result_AND"; break;
-        case 3: operationName = "Result_OR"; break;
-        default: operationName = "Result_ADD"; break;
+    case 0: lanes = f.ledAdd; break;
+    case 1: lanes = f.ledSub; break;
+    case 2: lanes = f.ledAnd; break;
+    case 3: lanes = f.ledOr; break;
+    default: QFAIL("Invalid operation selector");
     }
-    for (int i = 0; i < 4; ++i) {
-        builder.connect(aluIC, QString("%1[%2]").arg(operationName).arg(i), &ledResult[i], 0);
-    }
+    QCOMPARE(f.readLanes(lanes), expectedResult & 0x0F);
 
-    auto *simulation = builder.initSimulation();
+    // CarryOut: unsigned overflow of A + B + CarryIn(0) past 4 bits.
+    QCOMPARE(getInputStatus(f.ledCarryOut), inputA + inputB > 0x0F);
 
-    // Set input values (must be after initSimulation)
-    swSubCarryIn.setOn(true);  // SubCarryIn=1 for two's complement SUB
-    for (int i = 0; i < 4; ++i) {
-        bool bitA = (inputA >> i) & 1;
-        bool bitB = (inputB >> i) & 1;
-        swA[i].setOn(bitA);
-        swB[i].setOn(bitB);
-    }
-
-    simulation->update();
-
-    // Read result bits from circuit
-    int result = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(&ledResult[i])) {
-            result |= (1 << i);
-        }
-    }
-
-    // Compare circuit output with expected result
-    int maskedResult = result & 0x0F;
-    int maskedExpected = expectedResult & 0x0F;
-
-    QCOMPARE(maskedResult, maskedExpected);
+    // SubCarryOut: carry out of A + ~B + SubCarryIn(1) — HIGH exactly when the
+    // subtraction does NOT borrow (A >= B), the 74181-style borrow convention.
+    QCOMPARE(getInputStatus(f.ledSubCarryOut), inputA >= inputB);
 }

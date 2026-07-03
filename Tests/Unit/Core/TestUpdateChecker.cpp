@@ -8,28 +8,41 @@
 
 void TestUpdateChecker::testUpdateAvailable()
 {
-    // Test: UpdateChecker can detect when update is available
-    UpdateChecker checker;
+    // shouldOfferUpdate must offer any release strictly newer than the running
+    // version, unless the user suppressed exactly that version.
+    const QVersionNumber current(5, 1, 2);
 
-    // Create checker object - should not crash (construction reaching here is the assertion)
+    QVERIFY(shouldOfferUpdate("5.1.3", current, {}));   // newer patch
+    QVERIFY(shouldOfferUpdate("5.2", current, {}));     // newer minor
+    QVERIFY(shouldOfferUpdate("6.0", current, {}));     // newer major
+    QVERIFY(shouldOfferUpdate("5.1.3.1", current, {})); // extra segment, still newer
+
+    // Suppressing a DIFFERENT version must not swallow the new release.
+    QVERIFY(shouldOfferUpdate("5.1.3", current, "5.1.1"));
+    QVERIFY(shouldOfferUpdate("5.2", current, "5.1.3"));
 }
 
 void TestUpdateChecker::testNoUpdate()
 {
-    // Test: UpdateChecker handles case where no update is available
-    UpdateChecker checker;
+    const QVersionNumber current(5, 1, 2);
 
-    // Verify object is valid
-    QVERIFY(true);
-}
+    // Same or older releases are never offered.
+    QVERIFY(!shouldOfferUpdate("5.1.2", current, {}));
+    QVERIFY(!shouldOfferUpdate("5.1.1", current, {}));
+    QVERIFY(!shouldOfferUpdate("5.0", current, {}));
+    QVERIFY(!shouldOfferUpdate("4.9.9", current, {}));
 
-void TestUpdateChecker::testNetworkError()
-{
-    // Test: UpdateChecker handles network errors gracefully
-    UpdateChecker checker;
+    // Trailing zeros normalize away: "5.1.2.0" is the running version.
+    QVERIFY(!shouldOfferUpdate("5.1.2.0", current, {}));
 
-    // Should not crash on network error
-    QVERIFY(true);
+    // Malformed or empty tags parse to a null version — never offered.
+    QVERIFY(!shouldOfferUpdate({}, current, {}));
+    QVERIFY(!shouldOfferUpdate("not-a-version", current, {}));
+
+    // Per-version suppression: the suppressed release itself stays silent.
+    // (The suppression is matched against the NORMALIZED version string.)
+    QVERIFY(!shouldOfferUpdate("5.1.3", current, "5.1.3"));
+    QVERIFY(!shouldOfferUpdate("5.2.0", current, "5.2"));
 }
 
 void TestUpdateChecker::testAssetSelection()

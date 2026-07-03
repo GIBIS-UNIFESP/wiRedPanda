@@ -569,8 +569,13 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
                 numPatterns = 258;
             }
 
+            // Inputs are stored one bit per switch (not packed into an int):
+            // wide ICs (16-bit ALU = 35 inputs, data forwarding unit = 34)
+            // exceed the 31 addressable bits of a packed int, so a packed
+            // representation silently truncates the vector space. Per-switch
+            // bits have no width limit and give uniform coverage on every lane.
             struct TestVector {
-                int inputBits;
+                QVector<int> inputBits;  // per-input bit
                 QVector<int> outputBits; // per-output bit (supports >32 outputs)
             };
             QVector<TestVector> testVectors;
@@ -584,24 +589,35 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
                 return bits;
             };
 
+            auto collectVector = [&](const QVector<int> &bits) {
+                for (int i = 0; i < numInputs; ++i) {
+                    switches[i]->setOn(bits.at(i) != 0);
+                }
+                sim->update();
+                testVectors.append({bits, collectOutputBits()});
+            };
+
             if (numInputs <= 12) {
                 for (int v = 0; v < numPatterns; ++v) {
-                    TestUtils::setMultiBitInput(switches, v);
-                    sim->update();
-                    testVectors.append({v, collectOutputBits()});
+                    QVector<int> bits(numInputs);
+                    for (int i = 0; i < numInputs; ++i) {
+                        bits[i] = (v >> i) & 1;
+                    }
+                    collectVector(bits);
                 }
             } else {
-                auto collectVector = [&](int inputVal) {
-                    TestUtils::setMultiBitInput(switches, inputVal);
-                    sim->update();
-                    testVectors.append({inputVal, collectOutputBits()});
-                };
+                // Seeded so regeneration is reproducible (the sequential path
+                // uses the same seed for its differential vectors).
+                QRandomGenerator rng(kDiffSeed);
 
-                collectVector(0);
-                collectVector((1 << numInputs) - 1);
-                const int maxVal = 1 << numInputs;
+                collectVector(QVector<int>(numInputs, 0));  // all-zeros
+                collectVector(QVector<int>(numInputs, 1));  // all-ones
                 for (int i = 0; i < 256; ++i) {
-                    collectVector(QRandomGenerator::global()->bounded(maxVal));
+                    QVector<int> bits(numInputs);
+                    for (int b = 0; b < numInputs; ++b) {
+                        bits[b] = rng.bounded(2);
+                    }
+                    collectVector(bits);
                 }
             }
 
@@ -640,7 +656,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
 
                         tb << "        ";
                         for (int i = 0; i < inputPins.size(); ++i) {
-                            int bit = (tv.inputBits >> i) & 1;
+                            const int bit = tv.inputBits.value(i, 0);
                             tb << inputPins[i].m_varName << " = " << bit << "; ";
                         }
                         tb << "#10;\n";

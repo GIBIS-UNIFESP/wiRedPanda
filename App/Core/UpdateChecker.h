@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QString>
 #include <QUrl>
+#include <QVersionNumber>
 
 /**
  * \class UpdateChecker
@@ -58,3 +59,11 @@ private:
 /// ship a per-architecture asset, so the arch token must also match; macOS ships
 /// a single universal DMG and is matched on platform alone.
 bool isMatchingReleaseAsset(const QString &name, const QString &platform, const QString &arch);
+
+/// \brief True when the release tagged \p tagName should be offered to a user
+/// running \p currentVersion who may have suppressed \p skippedVersion.
+///
+/// \details Exposed for testing. A release is offered only when its tag parses
+/// to a valid version that is strictly newer than the running application and
+/// whose normalized string does not match the user's per-version suppression.
+bool shouldOfferUpdate(const QString &tagName, const QVersionNumber &currentVersion, const QString &skippedVersion);

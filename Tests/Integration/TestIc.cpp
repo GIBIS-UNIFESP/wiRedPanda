@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QScopeGuard>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTime>
@@ -207,6 +208,12 @@ void TestIC::testICSaveLoad()
         return;
     }
 
+    // The temp file lives in the repo's Examples/ dir (required so the IC's
+    // relative jkflipflop.panda reference resolves on reload). A scope guard
+    // removes it on EVERY exit path — a failing QVERIFY below returns from the
+    // function and would otherwise leak the file into the repo.
+    auto removeTempFile = qScopeGuard([&tempPath] { QFile::remove(tempPath); });
+
     // Verify file was created and has content
     QFileInfo fileInfo(tempPath);
     QVERIFY2(fileInfo.exists(), "Saved file should exist");
@@ -218,15 +225,12 @@ void TestIC::testICSaveLoad()
     try {
         workspace2.load(tempPath);
     } catch (const Pandaception &ex) {
-        QFile::remove(tempPath);  // Cleanup temp file
         QFAIL(qPrintable(QString("WorkSpace::load() threw exception: %1").arg(ex.what())));
         return;
     } catch (const std::exception &ex) {
-        QFile::remove(tempPath);  // Cleanup temp file
         QFAIL(qPrintable(QString("WorkSpace::load() threw std::exception: %1").arg(ex.what())));
         return;
     } catch (...) {
-        QFile::remove(tempPath);  // Cleanup temp file
         QFAIL("WorkSpace::load() threw unknown exception");
         return;
     }
@@ -240,9 +244,6 @@ void TestIC::testICSaveLoad()
             break;
         }
     }
-
-    // Cleanup temp file before verifying (so test cleanup happens even on failure)
-    QFile::remove(tempPath);
 
     QVERIFY2(ic2 != nullptr, "IC should be present after load");
 
@@ -343,15 +344,9 @@ void TestIC::testICStatusPropagation()
     sim->update();
     bool ledStateWhenSwitchOff = TestUtils::getInputStatus(&outputLed);
 
-    // Test 2: Set switch ON and verify output changes
+    // Test 2: Set switch ON so the OFF state below is reached via a real transition
     inputSwitch.setOn(true);
     sim->update();
-    bool ledStateWhenSwitchOn = TestUtils::getInputStatus(&outputLed);
-
-    // The key test: verify status actually propagated and produced defined output states
-    // Both states should be valid (either true or false, not undefined)
-    QVERIFY2(TestUtils::getInputStatus(&outputLed) == ledStateWhenSwitchOn,
-             "Output LED should maintain consistent state after switch ON");
 
     // Test 3: Toggle back to OFF and verify it changes again
     inputSwitch.setOn(false);

@@ -137,7 +137,11 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
                     "change_input_size", {"element_id": or_gate, "size": num_inputs}
                 )
                 if not set_props.success:
-                    print(f"Warning: Could not set input_size={num_inputs} for OR gate")
+                    # A gate left at its default size drops inputs silently — the
+                    # generated encoder would mis-prioritize. Fail like every
+                    # other error path so the corrupt fixture is never saved.
+                    print(f"Error: Could not set input_size={num_inputs} for OR gate")
+                    return False
 
             # Connect all required data inputs
             for port_idx in range(num_inputs):
@@ -310,7 +314,10 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
             return False
         set_props = await self.mcp.send_command("change_input_size", {"element_id": valid_or, "size": 8})
         if not set_props.success:
-            print("Warning: Could not set input_size=8 for valid_or")
+            # An under-sized valid_or drops data inputs, corrupting valid/EO.
+            # Fail like every other error path so the fixture is never saved.
+            print("Error: Could not set input_size=8 for valid_or")
+            return False
         for i in range(8):
             if not await self.connect(data_inputs[i], valid_or, target_port=i):
                 return False

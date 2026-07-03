@@ -387,8 +387,14 @@ void TestElementLogic::testJKFlipFlop_data()
     QTest::newRow("Preset=false") << false << false << false << false << false << true << false << true << false;
     QTest::newRow("Clear=false") << false << false << false << false << true << false << false << false << true;
     QTest::newRow("Clear and Preset=false") << false << false << false << true << false << false << false << true << true;
-    QTest::newRow("Clk down J=0 maintain") << true << true << false << false << true << true << false << false << true;
-    QTest::newRow("Clk down J=1 maintain") << true << true << false << false << true << true << false << false << true;
+    QTest::newRow("Clk down J=0 K=0 maintain (0)") << true << false << false << false << true << true << false << false << true;
+    QTest::newRow("Clk down J=0 K=0 maintain (1)") << true << false << false << false << true << true << true << true << false;
+    QTest::newRow("Clk down J=1 K=0 maintain (0)") << true << true << false << false << true << true << false << false << true;
+    QTest::newRow("Clk down J=1 K=0 maintain (1)") << true << true << false << false << true << true << true << true << false;
+    QTest::newRow("Clk down J=0 K=1 maintain (0)") << true << false << false << true << true << true << false << false << true;
+    QTest::newRow("Clk down J=0 K=1 maintain (1)") << true << false << false << true << true << true << true << true << false;
+    QTest::newRow("Clk down J=1 K=1 maintain (0)") << true << true << false << true << true << true << false << false << true;
+    QTest::newRow("Clk down J=1 K=1 maintain (1)") << true << true << false << true << true << true << true << true << false;
     QTest::newRow("Clk up J=1 K=1 swap (0)") << false << true << true << true << true << true << false << true << false;
     QTest::newRow("Clk up J=1 K=1 swap (1)") << false << true << true << true << true << true << true << false << true;
     QTest::newRow("Clk up J=1 K=0 (0)") << false << true << true << false << true << true << false << true << false;

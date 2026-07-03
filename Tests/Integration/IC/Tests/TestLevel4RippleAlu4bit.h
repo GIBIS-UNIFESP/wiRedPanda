@@ -11,6 +11,7 @@ class TestLevel4RippleALU4Bit : public QObject
 
 private slots:
     void initTestCase();
+    void cleanupTestCase();
     void cleanup();
 
     // ADD operation tests
@@ -29,7 +30,7 @@ private slots:
     void testAluSub_data();
     void testAluSub();
 
-    // Flag verification tests (all operations)
-    void testAluFlags_data();
-    void testAluFlags();
+    // Result + carry-chain verification across all operations
+    void testAluResultAndCarry_data();
+    void testAluResultAndCarry();
 };

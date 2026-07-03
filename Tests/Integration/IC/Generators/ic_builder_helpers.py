@@ -124,146 +124,6 @@ class DecoderBuilder(ICBuilderBase):
         return True
 
 
-class RamBuilder(ICBuilderBase):
-    """1-bit-wide RAM with N cells. Covers ram_4x1 (address_bits=2) and ram_8x1 (3)."""
-
-    def __init__(self, mcp, address_bits: int, verbose: bool = True) -> None:
-        super().__init__(mcp, verbose)
-        self.address_bits = address_bits
-        self.num_cells = 2**address_bits
-
-    async def create(self) -> bool:
-        """Create a RAM IC."""
-        address_bits = self.address_bits
-        num_cells = self.num_cells
-        display = f"RAM {num_cells}x1"
-        output_name = f"level4_ram_{num_cells}x1"
-        decoder_name = f"level2_decoder_{address_bits}to{num_cells}"
-        mux_name = f"level2_mux_{num_cells}to1"
-
-        await self.begin_build(display)
-        if not await self.create_new_circuit():
-            return False
-
-        input_y = 50.0
-        gate_spacing = 40.0
-        write_control_x = 200.0
-        data_mux_x = write_control_x + gate_spacing
-        storage_ff_x = data_mux_x + gate_spacing
-        output_x = 600.0
-        output_y = 250.0
-
-        address_inputs = []
-        for i in range(address_bits):
-            addr_id = await self.create_element(
-                "InputSwitch", 50.0 + i * HORIZONTAL_GATE_SPACING, input_y, f"Address[{i}]"
-            )
-            if addr_id is None:
-                return False
-            address_inputs.append(addr_id)
-            await self.log(f"  ✓ Created Address[{i}]")
-
-        data_in_id = await self.create_element(
-            "InputSwitch", 50.0 + address_bits * HORIZONTAL_GATE_SPACING, input_y, "DataIn"
-        )
-        if data_in_id is None:
-            return False
-        await self.log("  ✓ Created DataIn")
-
-        write_en_id = await self.create_element(
-            "InputSwitch", 50.0 + (address_bits + 1) * HORIZONTAL_GATE_SPACING, input_y, "WriteEnable"
-        )
-        if write_en_id is None:
-            return False
-        await self.log("  ✓ Created WriteEnable")
-
-        clock_id = await self.create_element(
-            "InputSwitch", 50.0 + (address_bits + 2) * HORIZONTAL_GATE_SPACING, input_y, "Clock"
-        )
-        if clock_id is None:
-            return False
-        await self.log("  ✓ Created Clock")
-
-        write_control_ands = []
-        for i in range(num_cells):
-            gate_id = await self.create_element("And", write_control_x, 100.0 + i * gate_spacing, f"write_ctrl[{i}]")
-            if gate_id is None:
-                return False
-            write_control_ands.append(gate_id)
-        await self.log(f"  ✓ Created {num_cells} write control AND gates")
-
-        storage_ffs = []
-        data_mux_gates = []
-        for i in range(num_cells):
-            mux_id = await self.create_element("Mux", data_mux_x, 100.0 + i * gate_spacing, f"data_mux[{i}]")
-            if mux_id is None:
-                return False
-            data_mux_gates.append(mux_id)
-
-            ff_id = await self.create_element("DFlipFlop", storage_ff_x, 100.0 + i * gate_spacing, f"storage[{i}]")
-            if ff_id is None:
-                return False
-            storage_ffs.append(ff_id)
-        await self.log(f"  ✓ Created {num_cells} storage DFlipFlops and data MUX gates")
-
-        output_led = await self.create_element("Led", output_x, output_y, "DataOut")
-        if output_led is None:
-            return False
-        await self.log("  ✓ Created output LED")
-
-        decoder_ic = await self.instantiate_ic(decoder_name, 150.0, 150.0, "AddrDecoder")
-        if decoder_ic is None:
-            return False
-        await self.log("  ✓ Loaded decoder IC")
-
-        for i in range(address_bits):
-            if not await self.connect(address_inputs[i], decoder_ic, target_port_label=f"addr[{i}]"):
-                return False
-
-        read_mux_ic = await self.instantiate_ic(mux_name, 500.0, 250.0, "ReadMux")
-        if read_mux_ic is None:
-            return False
-        await self.log("  ✓ Loaded multiplexer IC")
-
-        for i in range(num_cells):
-            if not await self.connect(decoder_ic, write_control_ands[i], source_port_label=f"out[{i}]"):
-                return False
-            if not await self.connect(write_en_id, write_control_ands[i], target_port=1):
-                return False
-
-        for i in range(num_cells):
-            if not await self.connect(storage_ffs[i], data_mux_gates[i], target_port_label="In0"):
-                return False
-            if not await self.connect(data_in_id, data_mux_gates[i], target_port_label="In1"):
-                return False
-            if not await self.connect(write_control_ands[i], data_mux_gates[i], target_port_label="S0"):
-                return False
-            if not await self.connect(data_mux_gates[i], storage_ffs[i], target_port_label="Data"):
-                return False
-            if not await self.connect(clock_id, storage_ffs[i], target_port_label="Clock"):
-                return False
-            if not await self.connect(
-                storage_ffs[i], read_mux_ic, target_port_label=f"Data[{i}]", source_port_label="Q"
-            ):
-                return False
-
-        for i in range(address_bits):
-            if not await self.connect(address_inputs[i], read_mux_ic, target_port_label=f"Sel[{i}]"):
-                return False
-        if not await self.connect(read_mux_ic, output_led, source_port_label="Output"):
-            return False
-
-        output_file = str(IC_COMPONENTS_DIR / f"{output_name}.panda")
-        if not await self.save_circuit(output_file):
-            return False
-
-        await self.log(
-            f"✅ Successfully created {display} IC({self.element_count} elements, {self.connection_count} connections)"
-        )
-        await self.log(f"   Saved to: {output_file}")
-        return True
-
-
 class RegisterFileBuilder(ICBuilderBase):
     """Register file with N registers of W bits. Covers register_file_4x4 and 8x8."""
 
@@ -913,24 +773,19 @@ class CounterBuilder(ICBuilderBase):
             if not await self.connect(dff_ids[i], not_q_ids[i], source_port_label="Q"):
                 return False
 
-        if mode == "binary":
-            # Bit 0: NOT(Q0) → FF.D directly
-            if not await self.connect(not_q_ids[0], dff_ids[0], target_port_label="D"):
-                return False
-        else:
-            # Bit 0: route through XOR AND/OR for consistency with multi-stage path
-            if not await self.connect(not_q_ids[0], xor_and_ids[0][0]):
-                return False
-            if not await self.connect(vcc_id, xor_and_ids[0][0], target_port=1):
-                return False
-            if not await self.connect(dff_ids[0], xor_and_ids[0][1], source_port_label="Q"):
-                return False
-            if not await self.connect(not_carry_ids[0], xor_and_ids[0][1], target_port=1):
-                return False
-            if not await self.connect(xor_and_ids[0][0], xor_or_ids[0]):
-                return False
-            if not await self.connect(xor_and_ids[0][1], xor_or_ids[0], target_port=1):
-                return False
+        # Bit 0: route through XOR AND/OR for consistency with multi-stage path
+        if not await self.connect(not_q_ids[0], xor_and_ids[0][0]):
+            return False
+        if not await self.connect(vcc_id, xor_and_ids[0][0], target_port=1):
+            return False
+        if not await self.connect(dff_ids[0], xor_and_ids[0][1], source_port_label="Q"):
+            return False
+        if not await self.connect(not_carry_ids[0], xor_and_ids[0][1], target_port=1):
+            return False
+        if not await self.connect(xor_and_ids[0][0], xor_or_ids[0]):
+            return False
+        if not await self.connect(xor_and_ids[0][1], xor_or_ids[0], target_port=1):
+            return False
 
         # Carry chain
         if not await self.connect(dff_ids[0], carry_and_ids[0], source_port_label="Q"):
@@ -977,11 +832,7 @@ class CounterBuilder(ICBuilderBase):
                 return False
 
         # Final path from xor_or to FF.D (mode-specific)
-        if mode == "binary":
-            for i in range(1, 4):
-                if not await self.connect(xor_or_ids[i], dff_ids[i], target_port_label="D"):
-                    return False
-        elif mode == "loadable":
+        if mode == "loadable":
             assert load_id is not None
             for i in range(4):
                 if not await self.connect(xor_or_ids[i], mux_ids[i], target_port_label="In0"):
@@ -1493,121 +1344,6 @@ class ParityBuilder(ICBuilderBase):
         if parity_led is None:
             return False
         if not await self.connect(current_stage[0], parity_led):
-            return False
-
-        output_file = str(IC_COMPONENTS_DIR / f"{output_name}.panda")
-        if not await self.save_circuit(output_file):
-            return False
-
-        await self.log(
-            f"✅ Successfully created {display} IC({self.element_count} elements, {self.connection_count} connections)"
-        )
-        await self.log(f"   Saved to: {output_file}")
-        return True
-
-
-class RingJohnsonCounterBuilder(ICBuilderBase):
-    """4-bit ring/Johnson counter. is_johnson=True → twisted feedback; False → circular."""
-
-    def __init__(self, mcp, is_johnson: bool, verbose: bool = True) -> None:
-        super().__init__(mcp, verbose)
-        self.is_johnson = is_johnson
-
-    async def create(self) -> bool:
-        """Create the ring or Johnson counter IC."""
-        is_johnson = self.is_johnson
-        if is_johnson:
-            display = "4-bit Johnson Counter"
-            output_name = "level4_johnson_counter_4bit"
-        else:
-            display = "4-bit Ring Counter"
-            output_name = "level4_ring_counter_4bit"
-
-        await self.begin_build(display)
-        if not await self.create_new_circuit():
-            return False
-
-        input_x = 50.0
-        clk_id = await self.create_element("InputSwitch", input_x, 100.0, "Clock")
-        if clk_id is None:
-            return False
-        await self.log("  ✓ Created input CLK")
-
-        preset_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "Preset")
-        if preset_id is None:
-            return False
-        await self.log("  ✓ Created input PRESET")
-
-        dff_dep = "level1_d_flip_flop"
-        dff_ids = []
-        dff_x = input_x + HORIZONTAL_GATE_SPACING
-        for i in range(4):
-            ff_id = await self.instantiate_ic(dff_dep, dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}")
-            if ff_id is None:
-                return False
-            dff_ids.append(ff_id)
-            await self.log(f"  ✓ Instantiated level1_d_flip_flop {i}")
-
-        not_id = None
-        if is_johnson:
-            not_id = await self.create_element(
-                "Not",
-                dff_x + (3 * HORIZONTAL_GATE_SPACING),
-                100.0 + VERTICAL_STAGE_SPACING,
-                "not_q3",
-            )
-            if not_id is None:
-                return False
-            await self.log("  ✓ Created NOT gate (twisted feedback)")
-
-        output_led_ids = []
-        output_y = 100.0 + VERTICAL_STAGE_SPACING
-        for i in range(4):
-            led_id = await self.create_element("Led", dff_x + (i * HORIZONTAL_GATE_SPACING), output_y, f"Q{i}")
-            if led_id is None:
-                return False
-            output_led_ids.append(led_id)
-            await self.log(f"  ✓ Created output Q{i}")
-
-        for i in range(4):
-            if not await self.connect(clk_id, dff_ids[i], target_port_label="Clock"):
-                return False
-
-        if is_johnson:
-            for i in range(3):
-                if not await self.connect(dff_ids[i], dff_ids[i + 1], source_port_label="Q", target_port_label="D"):
-                    return False
-            assert not_id is not None
-            if not await self.connect(dff_ids[3], not_id, source_port_label="Q"):
-                return False
-            if not await self.connect(not_id, dff_ids[0], target_port_label="D"):
-                return False
-        else:
-            for i in range(4):
-                next_idx = (i + 1) % 4
-                if not await self.connect(dff_ids[i], dff_ids[next_idx], source_port_label="Q", target_port_label="D"):
-                    return False
-
-        for i in range(4):
-            if not await self.connect(dff_ids[i], output_led_ids[i], source_port_label="Q"):
-                return False
-
-        if not await self.connect(preset_id, dff_ids[0], target_port_label="Preset"):
-            return False
-
-        vcc_id = await self.create_element(
-            "InputVcc", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "Vcc"
-        )
-        if vcc_id is None:
-            return False
-        await self.log("  ✓ Created Vcc element")
-
-        for i in range(1, 4):
-            if not await self.connect(vcc_id, dff_ids[i], target_port_label="Preset"):
-                return False
-            if not await self.connect(preset_id, dff_ids[i], target_port_label="Clear"):
-                return False
-        if not await self.connect(vcc_id, dff_ids[0], target_port_label="Clear"):
             return False
 
         output_file = str(IC_COMPONENTS_DIR / f"{output_name}.panda")

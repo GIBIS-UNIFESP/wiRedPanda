@@ -57,7 +57,6 @@ private:
     Scene *createDLatchWithFeedback();
     Scene *createRingOscillator();
     Scene *createMixedCircuit();
-    Scene *createDeepCircuit();
 
     // Verification helpers
     void verifyConvergence(Scene *scene, bool shouldConverge);

@@ -69,5 +69,5 @@ void TestDisplay7::testDisplay7Paint()
     disp->paint(&painter, &option, nullptr);
     painter.end();
 
-    QVERIFY(true);
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Display7 paint() must draw visible pixels");
 }

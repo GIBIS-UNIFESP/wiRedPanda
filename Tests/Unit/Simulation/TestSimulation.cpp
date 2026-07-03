@@ -5,9 +5,13 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Nodes/QNEConnection.h"
 #include "App/Nodes/QNEPort.h"
+#include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,39 +27,109 @@ void TestSimulationUnit::testSimulationWithNoElements()
 
 void TestSimulationUnit::testAddRemoveClockDuringSimulation()
 {
-    // Test: Clock elements can be added/removed during simulation
+    // A Clock added to (and later removed from) a RUNNING simulation must be
+    // integrated into / dropped from the clock-update list without corrupting
+    // the rest of the circuit — the dangling-clock-pointer crash class.
     WorkSpace workspace;
-    Simulation sim(workspace.scene());
+    auto *scene = workspace.scene();
+    auto *sim = scene->simulation();
 
-    Clock clock;
-    workspace.scene()->addItem(&clock);
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
 
-    // Should handle dynamic clock addition
-    QVERIFY(true);
-}
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, led, 0);
 
-void TestSimulationUnit::testFeedbackLoopDetection()
-{
-    // Test: Simulation detects combinational feedback loops
-    WorkSpace workspace;
-    Simulation sim(workspace.scene());
+    sim->start();
+    QVERIFY(sim->isRunning());
+    sim->update();
 
-    // Feedback detection should work
-    QVERIFY(true);
+    // Add a wired Clock while the simulation runs.
+    auto *clock = new Clock();
+    auto *clockLed = new Led();
+    scene->addItem(clock);
+    scene->addItem(clockLed);
+    auto *clockConn = new QNEConnection();
+    clockConn->setStartPort(clock->outputPort(0));
+    clockConn->setEndPort(clockLed->inputPort(0));
+    scene->addItem(clockConn);
+    scene->setCircuitUpdateRequired();
+    sim->update();
+
+    // The pre-existing path must keep propagating correctly with the clock in place.
+    sw->setOn(true);
+    sim->update();
+    QCOMPARE(TestUtils::getInputStatus(led), true);
+
+    // Remove the Clock (connection first, mirroring scene deletion order)
+    // while the simulation is still running.
+    scene->removeItem(clockConn);
+    delete clockConn;
+    scene->removeItem(clock);
+    delete clock;
+    scene->setCircuitUpdateRequired();
+    sim->update();
+
+    // The simulation must survive the removal and keep computing correctly.
+    QVERIFY(sim->isRunning());
+    sw->setOn(false);
+    sim->update();
+    QCOMPARE(TestUtils::getInputStatus(led), false);
+    sw->setOn(true);
+    sim->update();
+    QCOMPARE(TestUtils::getInputStatus(led), true);
 }
 
 void TestSimulationUnit::testElementRemovalMidSimulation()
 {
-    // Test: Elements can be removed during simulation
+    // Removing a wired logic element from a RUNNING simulation must not leave
+    // stale pointers in the sorted-element or connection lists (the H2-class
+    // use-after-free), and the simulation must keep computing afterwards.
     WorkSpace workspace;
-    Simulation sim(workspace.scene());
+    auto *scene = workspace.scene();
+    auto *sim = scene->simulation();
 
-    Clock clock;
-    workspace.scene()->addItem(&clock);
-    workspace.scene()->removeItem(&clock);
+    auto *sw = new InputSwitch();
+    auto *andGate = new And();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(andGate);
+    scene->addItem(led);
 
-    // Should handle mid-simulation removal
-    QVERIFY(true);
+    CircuitBuilder builder(scene);
+    auto *connIn = builder.connect(sw, 0, andGate, 0);
+    auto *connOut = builder.connect(andGate, 0, led, 0);
+
+    sim->start();
+    QVERIFY(sim->isRunning());
+    sw->setOn(true);
+    sim->update();
+    QCOMPARE(TestUtils::getInputStatus(andGate), true);
+
+    // Remove the AND gate mid-run (connections first, then the element).
+    scene->removeItem(connIn);
+    delete connIn;
+    scene->removeItem(connOut);
+    delete connOut;
+    scene->removeItem(andGate);
+    delete andGate;
+    scene->setCircuitUpdateRequired();
+    sim->update();
+    sim->update();
+
+    // The simulation must survive and still integrate NEW topology correctly:
+    // wire the switch directly to the LED and verify propagation resumes.
+    QVERIFY(sim->isRunning());
+    auto *directConn = builder.connect(sw, 0, led, 0);
+    QVERIFY(directConn != nullptr);
+    scene->setCircuitUpdateRequired();
+    sim->update();
+    QCOMPARE(TestUtils::getInputStatus(led), true);
+    sw->setOn(false);
+    sim->update();
+    QCOMPARE(TestUtils::getInputStatus(led), false);
 }
 
 void TestSimulationUnit::testSimulationStartStopNoBreadcrumbsB22()

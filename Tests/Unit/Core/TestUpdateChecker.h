@@ -14,6 +14,5 @@ private slots:
 
     void testUpdateAvailable();
     void testNoUpdate();
-    void testNetworkError();
     void testAssetSelection();
 };

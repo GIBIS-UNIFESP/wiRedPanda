@@ -681,20 +681,6 @@ Scene *TestFeedback::createMixedCircuit()
     return scene;
 }
 
-Scene *TestFeedback::createDeepCircuit()
-{
-    auto *scene = new Scene();
-
-    // Create chain of 30 AND gates
-    for (int i = 0; i < 30; ++i) {
-        auto *and1 = ElementFactory::buildElement(ElementType::And);
-        scene->addItem(and1);
-        and1->setPos(i * 20, 0);
-    }
-
-    return scene;
-}
-
 void TestFeedback::verifyConvergence(Scene *scene, bool shouldConverge)
 {
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");

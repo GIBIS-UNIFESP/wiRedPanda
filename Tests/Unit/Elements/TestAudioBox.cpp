@@ -111,16 +111,15 @@ void TestAudioBox::testSetAudioWithValidPath()
 
     // Create a temporary audio file
     QTemporaryFile tempFile;
-    if (tempFile.open()) {
-        tempFile.write("DUMMY AUDIO DATA");
-        tempFile.close();
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
 
-        // Set audio to temporary file
-        audioBox.setAudio(tempFile.fileName());
+    // Set audio to temporary file
+    audioBox.setAudio(tempFile.fileName());
 
-        // Audio path should be stored
-        QCOMPARE(audioBox.audio(), tempFile.fileName());
-    }
+    // Audio path should be stored
+    QCOMPARE(audioBox.audio(), tempFile.fileName());
 }
 
 void TestAudioBox::testAudioPathPreservedAfterMultipleSets()
@@ -185,13 +184,6 @@ void TestAudioBox::testMute()
 
 void TestAudioBox::testUnmute()
 {
-    AudioBox audioBox;
-    AudioElementTestHelpers::testUnmute(audioBox);
-}
-
-void TestAudioBox::testMuteWithoutAudioDevice()
-{
-    // Verifies mute state is tracked independently of hardware availability
     AudioBox audioBox;
     AudioElementTestHelpers::testUnmute(audioBox);
 }

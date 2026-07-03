@@ -46,7 +46,6 @@ private slots:
     void testFsmLongSequenceStability_data();
     void testFsmLongSequenceStability();
 
-    void testFsmStateLock_data();
     void testFsmStateLock();
 
     void testFsmRapidClockNoSettle_data();
@@ -55,7 +54,6 @@ private slots:
     void testFsmTriggerDuringClock_data();
     void testFsmTriggerDuringClock();
 
-    void testFsmLongTermStability_data();
     void testFsmLongTermStability();
 
     // ============================================================

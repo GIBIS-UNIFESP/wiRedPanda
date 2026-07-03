@@ -27,7 +27,6 @@ private:
     void verifyBasicStructure(const QString &content);
     void verifyLogicOperator(const QString &content, const QString &logicOp, bool negated = false);
     void testArduinoExportHelper(const QString &icFile);
-    static bool validateWithArduinoCli(const QString &inoFile);
     static bool simulateWithSimavr(const QString &elfFile, int durationMs);
     static bool runTestbench(const QString &tbInoPath, int timeoutMs = 30000,
                              const QString &fqbn = QStringLiteral("arduino:avr:uno"),
@@ -41,7 +40,6 @@ private:
 
     // Flip-flop specific helpers
     void verifyFlipFlopStructure(const QString &content, const QString &type);
-    void verifyAuxVariables(const QString &content, const QStringList &varNames);
     void verifyPresetClearLogic(const QString &content);
 
     // IC test helpers
