@@ -297,8 +297,8 @@ QByteArray buildOldPanda(FuzzedDataProvider &fdp)
         s << static_cast<int>(65538); // QNEConnection::Type = UserType + 2
         const bool useValid = fdp.ConsumeBool() && !outPtrs.isEmpty() && !inPtrs.isEmpty();
         if (useValid) {
-            s << outPtrs[fdp.ConsumeIntegralInRange<size_t>(0, static_cast<size_t>(outPtrs.size()) - 1)];
-            s << inPtrs[fdp.ConsumeIntegralInRange<size_t>(0, static_cast<size_t>(inPtrs.size()) - 1)];
+            s << outPtrs[fdp.ConsumeIntegralInRange<qsizetype>(0, outPtrs.size() - 1)];
+            s << inPtrs[fdp.ConsumeIntegralInRange<qsizetype>(0, inPtrs.size() - 1)];
         } else {
             s << fdp.ConsumeIntegral<quint64>();
             s << fdp.ConsumeIntegral<quint64>();
