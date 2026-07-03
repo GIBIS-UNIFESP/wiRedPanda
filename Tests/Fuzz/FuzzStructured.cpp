@@ -390,10 +390,10 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
                                  && !outputIds.isEmpty() && !inputIds.isEmpty();
         quint64 startId, endId;
         if (useValidIds) {
-            startId = outputIds[fdp.ConsumeIntegralInRange<size_t>(
-                0, static_cast<size_t>(outputIds.size()) - 1)];
-            endId = inputIds[fdp.ConsumeIntegralInRange<size_t>(
-                0, static_cast<size_t>(inputIds.size()) - 1)];
+            startId = outputIds[fdp.ConsumeIntegralInRange<qsizetype>(
+                0, outputIds.size() - 1)];
+            endId = inputIds[fdp.ConsumeIntegralInRange<qsizetype>(
+                0, inputIds.size() - 1)];
         } else {
             startId = fdp.ConsumeIntegral<quint64>();
             endId   = fdp.ConsumeIntegral<quint64>();
