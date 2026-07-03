@@ -63,12 +63,24 @@ void Simulation::update()
     // debug/asan/ubsan builds — much earlier than a tick-time crash.
     Q_ASSERT(m_initialized);
 
+    // Snapshot the topology vectors before iterating: if restart() is invoked
+    // reentrantly while this tick is mid-flight, it clears and rebuilds
+    // m_clocks/m_inputs/m_sequentialElements/m_sortedElements/m_outputs, which
+    // would invalidate any in-flight range-for iterator over the members
+    // themselves. Iterating local copies keeps this tick's iteration valid for
+    // its remainder even if the members mutate underneath.
+    const auto clocks = m_clocks;
+    const auto inputs = m_inputs;
+    const auto sequentialElements = m_sequentialElements;
+    const auto elements = m_sortedElements;
+    const auto outputs = m_outputs;
+
     // Clock elements are the only truly time-driven components; all other logic
     // is combinational and responds immediately to their values.
     if (m_timer.isActive()) {
         const auto globalTime = std::chrono::steady_clock::now();
 
-        for (auto *clock : std::as_const(m_clocks)) {
+        for (auto *clock : clocks) {
             if (clock) {
                 clock->updateClock(globalTime);
             }
@@ -76,7 +88,7 @@ void Simulation::update()
     }
 
     // Phase 1: propagate user-controlled inputs (switches, buttons, etc.)
-    for (auto *inputElm : std::as_const(m_inputs)) {
+    for (auto *inputElm : inputs) {
         if (inputElm) {
             inputElm->updateOutputs();
         }
@@ -92,7 +104,7 @@ void Simulation::update()
     // SystemVerilog's non-blocking (<=) model. Gate-built feedback latches are
     // ElementGroup::Gate, not Memory, so they are never deferred and settle
     // through the existing path unchanged.
-    for (auto *element : std::as_const(m_sequentialElements)) {
+    for (auto *element : sequentialElements) {
         if (element) {
             element->beginDeferredCommit();
         }
@@ -100,11 +112,11 @@ void Simulation::update()
 
     if (m_simHasFeedbackElements) {
         // Use iterative settling for circuits with feedback loops.
-        updateWithIterativeSettling();
+        updateWithIterativeSettling(elements);
     } else {
         // Phase 2: update all logic elements in topologically sorted order so
         // every gate sees its inputs before computing its output.
-        for (auto *element : std::as_const(m_sortedElements)) {
+        for (auto *element : elements) {
             if (element) {
                 element->updateLogic();
             }
@@ -113,7 +125,7 @@ void Simulation::update()
 
     // Publish every staged sequential output simultaneously (global commit).
     bool anySequentialChanged = false;
-    for (auto *element : std::as_const(m_sequentialElements)) {
+    for (auto *element : sequentialElements) {
         if (element) {
             element->clearOutputChanged();
             element->commitDeferredOutputs();
@@ -136,7 +148,7 @@ void Simulation::update()
         const int maxPasses = m_simHasFeedbackElements ? kMaxSettleIterations : 1;
         for (int pass = 0; pass < maxPasses; ++pass) {
             bool changed = false;
-            for (auto *element : std::as_const(m_sortedElements)) {
+            for (auto *element : elements) {
                 if (element && element->elementGroup() != ElementGroup::Memory) {
                     element->clearOutputChanged();
                     element->resettleCombinational();
@@ -163,7 +175,7 @@ void Simulation::update()
     // Iterating elements (not connections) ensures unconnected output ports
     // (e.g. -Q of a flip-flop with no wire attached) are also updated.
     // setStatus() fans out through any attached connections automatically.
-    for (auto *element : std::as_const(m_sortedElements)) {
+    for (auto *element : elements) {
         if (element) {
             for (auto *outputPort : element->outputs()) {
                 updatePort(outputPort);
@@ -172,7 +184,7 @@ void Simulation::update()
     }
 
     // Phase 4: refresh output element visuals (LEDs, buzzers, etc.) using their input ports
-    for (auto *outputElm : std::as_const(m_outputs)) {
+    for (auto *outputElm : outputs) {
         if (outputElm) {
             for (auto *inputPort : outputElm->inputs()) {
                 if (inputPort) {
@@ -294,9 +306,9 @@ bool Simulation::isUserMuted() const
     return m_userMuted;
 }
 
-void Simulation::updateWithIterativeSettling()
+void Simulation::updateWithIterativeSettling(const QVector<GraphicElement *> &elements)
 {
-    if (!iterativeSettle(m_sortedElements) && !m_convergenceWarned) {
+    if (!iterativeSettle(elements) && !m_convergenceWarned) {
         m_convergenceWarned = true;
         qDebug() << "Feedback circuit did not converge after 10 iterations";
         emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
