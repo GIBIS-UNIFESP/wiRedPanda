@@ -542,9 +542,9 @@ void TestIC::testICNestedCircuitSignalPropagation()
 
     QVERIFY2(ic->outputSize() > 0, "IC should have output ports");
     auto *outputPort = ic->outputPort(0);
-    const Status initialStatus = outputPort->status();
-    QVERIFY2(initialStatus == Status::Active || initialStatus == Status::Inactive,
-             "Output port should be in valid state");
+    // Nothing drives the IC's outputs before the simulation runs, so the
+    // truthful initial state is Unknown (undriven), not a definite level
+    QCOMPARE(outputPort->status(), Status::Unknown);
 }
 
 // File Dependency Resolution Tests

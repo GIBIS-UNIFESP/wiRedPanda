@@ -50,6 +50,11 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputSwitch, parent)
 {
     m_locked = false;
+
+    // A switch drives a definite level from birth: push the OFF state to the
+    // output port, which otherwise stays at the undriven Unknown default.
+    // Base-qualified because the unqualified setOn()/setOff() toggle.
+    GraphicElementInput::setOn(false);
 }
 
 bool InputSwitch::isOn(const int port) const

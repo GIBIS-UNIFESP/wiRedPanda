@@ -23,24 +23,24 @@ void TestConnectionValidity::testConnectionStatusValid()
 {
     Scene scene;
 
-    // Create two AND gates
+    // A driven source and a consumer gate
+    auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
     auto *and1 = ElementFactory::buildElement(ElementType::And);
-    auto *and2 = ElementFactory::buildElement(ElementType::And);
+    scene.addItem(vcc);
     scene.addItem(and1);
-    scene.addItem(and2);
 
     // Get their ports
-    auto *outPort1 = and1->outputPort(0);
-    auto *inPort2 = and2->inputPort(0);
+    auto *outPort = vcc->outputPort(0);
+    auto *inPort = and1->inputPort(0);
 
     // Create a connection
     auto *conn = new QNEConnection();
-    conn->setStartPort(outPort1);
-    conn->setEndPort(inPort2);
+    conn->setStartPort(outPort);
+    conn->setEndPort(inPort);
     scene.addItem(conn);
 
-    // Connection should have a valid status
-    QVERIFY2(conn->status() != Status::Unknown, "and1→and2 connection should be valid after both ports are set");
+    // Attaching both ports propagates the driver's definite level onto the wire
+    QCOMPARE(conn->status(), Status::Active);
 }
 
 void TestConnectionValidity::testConnectionStatusInvalid()
@@ -88,17 +88,17 @@ void TestConnectionValidity::testMultipleConnectionsStatus()
 {
     Scene scene;
 
-    // Create 3 AND gates
-    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    // Create a driven chain: vcc -> and2 -> and3
+    auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
     auto *and2 = ElementFactory::buildElement(ElementType::And);
     auto *and3 = ElementFactory::buildElement(ElementType::And);
-    scene.addItem(and1);
+    scene.addItem(vcc);
     scene.addItem(and2);
     scene.addItem(and3);
 
-    // Create connections: and1->and2->and3
+    // Create connections: vcc->and2->and3
     auto *conn1 = new QNEConnection();
-    conn1->setStartPort(and1->outputPort(0));
+    conn1->setStartPort(vcc->outputPort(0));
     conn1->setEndPort(and2->inputPort(0));
     scene.addItem(conn1);
 
@@ -107,9 +107,11 @@ void TestConnectionValidity::testMultipleConnectionsStatus()
     conn2->setEndPort(and3->inputPort(0));
     scene.addItem(conn2);
 
-    // Both connections should be valid
-    QVERIFY2(conn1->status() != Status::Unknown, "conn1 (and1→and2) should be valid");
-    QVERIFY2(conn2->status() != Status::Unknown, "conn2 (and2→and3) should be valid");
+    // The wire from the driven source carries its level; the wire from the
+    // gate stays Unknown because nothing computes and2's output until the
+    // simulation runs
+    QCOMPARE(conn1->status(), Status::Active);
+    QCOMPARE(conn2->status(), Status::Unknown);
 }
 
 void TestConnectionValidity::testPortValidityWithConnections()
@@ -160,56 +162,74 @@ void TestConnectionValidity::testInputPortWithMultipleConnections()
 {
     Scene scene;
 
-    // Create 3 AND gates
-    auto *and1 = ElementFactory::buildElement(ElementType::And);
-    auto *and2 = ElementFactory::buildElement(ElementType::And);
+    // Two driven sources feeding separate inputs of the same gate
+    auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
+    auto *gnd = ElementFactory::buildElement(ElementType::InputGnd);
     auto *and3 = ElementFactory::buildElement(ElementType::And);
-    scene.addItem(and1);
-    scene.addItem(and2);
+    scene.addItem(vcc);
+    scene.addItem(gnd);
     scene.addItem(and3);
 
-    // Connect both and1 and and2 output to and3 input
+    // Connect vcc and gnd outputs to separate and3 inputs
     auto *conn1 = new QNEConnection();
-    conn1->setStartPort(and1->outputPort(0));
+    conn1->setStartPort(vcc->outputPort(0));
     conn1->setEndPort(and3->inputPort(0));
     scene.addItem(conn1);
 
     auto *conn2 = new QNEConnection();
-    conn2->setStartPort(and2->outputPort(0));
+    conn2->setStartPort(gnd->outputPort(0));
     conn2->setEndPort(and3->inputPort(1));
     scene.addItem(conn2);
 
-    // Both connections should be valid
-    QVERIFY2(conn1->status() != Status::Unknown, "conn1 (and1→and3 input 0) should be valid");
-    QVERIFY2(conn2->status() != Status::Unknown, "conn2 (and2→and3 input 1) should be valid");
+    // Each wire carries its own driver's level
+    QCOMPARE(conn1->status(), Status::Active);
+    QCOMPARE(conn2->status(), Status::Inactive);
 }
 
 void TestConnectionValidity::testOutputPortWithMultipleConnections()
 {
     Scene scene;
 
-    // Create 3 AND gates
-    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    // One driven source fanning out to two gates
+    auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
     auto *and2 = ElementFactory::buildElement(ElementType::And);
     auto *and3 = ElementFactory::buildElement(ElementType::And);
-    scene.addItem(and1);
+    scene.addItem(vcc);
     scene.addItem(and2);
     scene.addItem(and3);
 
-    // Connect and1 output to both and2 and and3 inputs
+    // Connect vcc output to both and2 and and3 inputs
     auto *conn1 = new QNEConnection();
-    conn1->setStartPort(and1->outputPort(0));
+    conn1->setStartPort(vcc->outputPort(0));
     conn1->setEndPort(and2->inputPort(0));
     scene.addItem(conn1);
 
     auto *conn2 = new QNEConnection();
-    conn2->setStartPort(and1->outputPort(0));
+    conn2->setStartPort(vcc->outputPort(0));
     conn2->setEndPort(and3->inputPort(0));
     scene.addItem(conn2);
 
-    // Both connections should be valid
-    QVERIFY2(conn1->status() != Status::Unknown, "conn1 (and1→and2 input 0) should be valid");
-    QVERIFY2(conn2->status() != Status::Unknown, "conn2 (and1→and3 input 0) should be valid");
+    // Fan-out: every wire leaving the output carries the same driven level
+    QCOMPARE(conn1->status(), Status::Active);
+    QCOMPARE(conn2->status(), Status::Active);
+}
+
+void TestConnectionValidity::testPortValidityStyleAtCreation()
+{
+    // Required-but-unconnected inputs must show Error from birth — before any
+    // scene interaction runs updateConnections() — so missing connections are
+    // visible in freshly created and freshly loaded circuits (both position
+    // elements before they enter the scene).
+    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    QCOMPARE(andGate->inputPort(0)->status(), Status::Error);
+    QCOMPARE(andGate->inputPort(1)->status(), Status::Error);
+
+    // Ports marked optional after construction recover from the Error override:
+    // no configured default reads as undriven, an explicit default as its level.
+    auto sr = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::SRFlipFlop));
+    QCOMPARE(sr->inputPort(0)->status(), Status::Unknown); // S: optional, no default
+    QCOMPARE(sr->inputPort(1)->status(), Status::Error);   // Clock: required
+    QCOMPARE(sr->inputPort(3)->status(), Status::Active);  // ~Preset: optional, defaults HIGH
 }
 
 void TestConnectionValidity::testIsConnectionAllowedRejectsRxPort()

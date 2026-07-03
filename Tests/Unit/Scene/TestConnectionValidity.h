@@ -23,6 +23,9 @@ private slots:
     void testInputPortWithMultipleConnections();
     void testOutputPortWithMultipleConnections();
 
+    // Construction-time validity styling
+    void testPortValidityStyleAtCreation();
+
     // Wireless connection guard (5 tests)
     void testIsConnectionAllowedRejectsRxPort();
     void testIsConnectionAllowedRejectsTxOutputPort();
