@@ -8,6 +8,7 @@
 #include <QElapsedTimer>
 #include <QFontDatabase>
 #include <QMessageBox>
+#include <QMutex>
 
 #include "App/Core/Common.h"
 
@@ -47,6 +48,9 @@ bool shouldSendToSentry(const QString &message)
 
     static QString lastMessage;
     static QElapsedTimer timer;
+    static QMutex mutex;
+
+    QMutexLocker lock(&mutex);
 
     constexpr qint64 cooldownMs = 5000;
 

@@ -23,7 +23,7 @@ RecentFiles::RecentFiles(QObject *parent)
             m_files.removeAll(filePath);
             emit recentFilesUpdated();
         }
-    });
+    }, Qt::QueuedConnection);
 
     // Entries restored from settings were only watched once re-opened (F36);
     // register them now so the comment above is actually true.
