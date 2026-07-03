@@ -245,6 +245,13 @@ void BewavedDolphin::on_tableView_selectionChanged()
 
 void BewavedDolphin::run()
 {
+    // Guard against a caller invoking run() before prepare()/loadNewTable() has built
+    // the sweep driver and table model (every current call site prepares first, but
+    // this is a public entry point with no compile-time guarantee of that ordering).
+    if (!m_simDriver || !m_model) {
+        return;
+    }
+
     // Drive the circuit across every time column. Inputs are read from the model and the
     // computed outputs (isInput=false → green; changeNext=false → caller refreshes) are
     // written back, then the original input states are restored so the live simulation
@@ -373,6 +380,9 @@ void BewavedDolphin::show()
 
 void BewavedDolphin::print()
 {
+    if (!m_model) {
+        return;
+    }
     // Outputs in the same CSV format used by loadFromTerminal() / the CSV save path,
     // allowing round-trip scripted use without a GUI.
     std::cout << DolphinExporter::csvText(m_model).toStdString();
@@ -380,6 +390,9 @@ void BewavedDolphin::print()
 
 void BewavedDolphin::saveToTxt(QTextStream &stream)
 {
+    if (!m_model) {
+        return;
+    }
     // Dump the full combinational truth table. Build it in a throwaway model (like
     // renderWaveform() uses a throwaway view) so the live document is never mutated —
     // exporting must not clobber the user's waveform (e.g. an MCP persistent session).

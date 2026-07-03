@@ -34,6 +34,14 @@ const QByteArray &ICRegistry::cachedFileBytes(const QString &filePath)
         QFile file(filePath);
         if (file.open(QIODevice::ReadOnly)) {
             m_fileCache[filePath] = file.readAll();
+        } else {
+            // Do NOT insert into m_fileCache on failure: QMap::operator[] would
+            // default-construct and permanently cache an empty entry, silently
+            // masking the failure on every subsequent lookup (including if the
+            // file becomes readable later).
+            qCWarning(zero) << "ICRegistry: cannot open IC file:" << filePath;
+            static const QByteArray empty;
+            return empty;
         }
     }
     return m_fileCache[filePath];
@@ -372,6 +380,8 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
 
             QFile file(fi.absoluteFilePath());
             if (!file.open(QIODevice::ReadOnly)) {
+                qCWarning(zero) << "makeBlobSelfContained: cannot open dependency" << fi.absoluteFilePath()
+                                << "for blob" << name << "— blob will be incomplete.";
                 continue;
             }
             QByteArray fileBytes = file.readAll();

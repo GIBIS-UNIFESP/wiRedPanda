@@ -84,7 +84,8 @@ void writeTruthTableText(QTextStream &out, const SignalModel *model, const int i
             out << model->value(row, col);
         }
 
-        out << " : \"" << model->verticalHeaderItem(row)->text() << "\"\n";
+        const auto *header = model->verticalHeaderItem(row);
+        out << " : \"" << (header ? header->text() : QString()) << "\"\n";
     }
 
     out << "\n";
@@ -94,7 +95,8 @@ void writeTruthTableText(QTextStream &out, const SignalModel *model, const int i
             out << model->value(row, col);
         }
 
-        out << " : \"" << model->verticalHeaderItem(row)->text() << "\"\n";
+        const auto *header = model->verticalHeaderItem(row);
+        out << " : \"" << (header ? header->text() : QString()) << "\"\n";
     }
 }
 
