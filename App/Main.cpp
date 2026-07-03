@@ -255,8 +255,12 @@ int main(int argc, char *argv[])
                 if (needsUpdate) {
                     QDir().mkpath(appsDir);
                     QFile dst(desktopDst);
-                    if (dst.open(QIODevice::WriteOnly | QIODevice::Truncate))
-                        dst.write(desiredDesktop.toUtf8());
+                    if (dst.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+                        const QByteArray bytes = desiredDesktop.toUtf8();
+                        if (dst.write(bytes) != bytes.size()) {
+                            qCWarning(zero) << "Failed to write desktop entry:" << dst.errorString();
+                        }
+                    }
                 }
             }
 

@@ -469,7 +469,7 @@ void MainWindow::on_actionAbout_triggered()
                "</ul>"
                "<p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.</p>"
                "<p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p>"
-               "<p><a href=\"http://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
+               "<p><a href=\"https://gibis-unifesp.github.io/wiRedPanda/\">Visit our website!</a></p>")
                 .arg(QApplication::applicationVersion()));
     });
 }

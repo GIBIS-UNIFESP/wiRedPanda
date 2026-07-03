@@ -4,6 +4,7 @@
 #include "App/UI/UpdateController.h"
 
 #include <QCheckBox>
+#include <QDebug>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -16,6 +17,7 @@
 #include <QNetworkRequest>
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QSslError>
 #include <QStandardPaths>
 #include <QVBoxLayout>
 
@@ -102,8 +104,14 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
     progress->setValue(0);
 
     auto *network = new QNetworkAccessManager(this);
+    connect(network, &QNetworkAccessManager::sslErrors, this, [](QNetworkReply *reply, const QList<QSslError> &errors) {
+        qWarning() << "MainWindow::downloadUpdate: SSL errors, aborting reply:" << errors;
+        reply->abort();
+    });
+
     QNetworkRequest request(url);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
+    request.setTransferTimeout(60000);
     QNetworkReply *reply = network->get(request);
 
     connect(reply, &QNetworkReply::downloadProgress, progress, [progress](qint64 received, qint64 total) {
@@ -132,7 +140,12 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
             reply->deleteLater();
             return;
         }
-        file.write(reply->readAll());
+        const QByteArray payload = reply->readAll();
+        if (file.write(payload) != payload.size()) {
+            QMessageBox::warning(m_parent, tr("Download Failed"), tr("Could not write the file:\n%1").arg(savePath));
+            reply->deleteLater();
+            return;
+        }
         file.close();
         reply->deleteLater();
 

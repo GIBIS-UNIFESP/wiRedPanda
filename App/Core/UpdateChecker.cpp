@@ -4,11 +4,13 @@
 #include "App/Core/UpdateChecker.h"
 
 #include <QDate>
+#include <QDebug>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QSslError>
 #include <QSysInfo>
 #include <QVersionNumber>
 
@@ -61,6 +63,10 @@ bool shouldOfferUpdate(const QString &tagName, const QVersionNumber &currentVers
 UpdateChecker::UpdateChecker(QObject *parent)
     : QObject(parent)
 {
+    connect(&m_network, &QNetworkAccessManager::sslErrors, this, [](QNetworkReply *reply, const QList<QSslError> &errors) {
+        qWarning() << "UpdateChecker: SSL errors, aborting reply:" << errors;
+        reply->abort();
+    });
 }
 
 void UpdateChecker::checkForUpdates()
@@ -71,12 +77,22 @@ void UpdateChecker::checkForUpdates()
         return;
     }
 
-    QNetworkRequest request{QUrl(k_apiUrl)};
+    QNetworkRequest request = QNetworkRequest{QUrl(k_apiUrl)};
     request.setHeader(QNetworkRequest::UserAgentHeader, "wiRedPanda/" APP_VERSION);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                          QNetworkRequest::NoLessSafeRedirectPolicy);
+    request.setTransferTimeout(10000);
 
     QNetworkReply *reply = m_network.get(request);
+    // The GitHub API response is realistically tens of KB; cap well above that
+    // as defense-in-depth against a hostile/corrupted endpoint buffering unbounded
+    // bytes into memory before onReplyFinished ever gets a chance to react.
+    reply->setReadBufferSize(1024 * 1024 + 1);
+    connect(reply, &QNetworkReply::downloadProgress, this, [reply](qint64 received, qint64) {
+        if (received > 1024 * 1024) {
+            reply->abort();
+        }
+    });
     connect(reply, &QNetworkReply::finished, this, [this, reply] { onReplyFinished(reply); });
 }
 
@@ -84,6 +100,8 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
 
+    // Also covers QNetworkReply::OperationCanceledError produced by the
+    // read-buffer size-cap abort in checkForUpdates().
     if (reply->error() != QNetworkReply::NoError) {
         return;
     }
