@@ -113,6 +113,9 @@ private:
     /// Detaches \a oldPort and attaches \a newPort to this connection (base-pointer version).
     void changePortAttachment(QNEPort *oldPort, QNEPort *newPort);
 
+    /// Sets the pen colour and width for the current status from the cached theme colours.
+    void applyStatusPen();
+
     // --- Members: Theme colors ---
 
     QColor m_activeColor;
