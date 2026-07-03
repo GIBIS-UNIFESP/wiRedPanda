@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <algorithm>
+
 #include <QHash>
 #include <QSet>
 #include <QStack>
@@ -73,7 +75,7 @@ QSet<T *> findFeedbackNodes(
                     onStack.insert(succ);
                     callStack.push({succ, 0});
                 } else if (onStack.contains(succ)) {
-                    lowlink[node] = qMin(lowlink[node], nodeIndex[succ]);
+                    lowlink[node] = (std::min)(lowlink[node], nodeIndex[succ]);
                 }
             } else {
                 // All successors processed — check if node is root of an SCC.
@@ -99,7 +101,7 @@ QSet<T *> findFeedbackNodes(
 
                 if (!callStack.isEmpty()) {
                     T *parent = callStack.top().node;
-                    lowlink[parent] = qMin(lowlink[parent], lowlink[node]);
+                    lowlink[parent] = (std::min)(lowlink[parent], lowlink[node]);
                 }
             }
         }
@@ -167,7 +169,7 @@ void legacyCalculatePriorities(
                             hasFeedbackLoop = true;
                         }
                     } else {
-                        maxSuccessorPriority = qMax(maxSuccessorPriority, outPriorities.value(successor));
+                        maxSuccessorPriority = (std::max)(maxSuccessorPriority, outPriorities.value(successor));
                     }
                 }
             }
@@ -271,7 +273,7 @@ void calculatePriorities(
             int maxSuccessorPriority = 0;
             if (it != successors.constEnd()) {
                 for (auto *successor : *it) {
-                    maxSuccessorPriority = qMax(maxSuccessorPriority, outPriorities.value(successor));
+                    maxSuccessorPriority = (std::max)(maxSuccessorPriority, outPriorities.value(successor));
                 }
             }
 

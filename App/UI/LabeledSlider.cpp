@@ -91,8 +91,8 @@ void LabeledSlider::paintEvent(QPaintEvent *event)
             // Centre the label under its tick but clamp to a 2px inset so the
             // first and last labels don't overflow the widget rectangle
             int textX = xPos - textWidth / 2;
-            textX = qMax(textX, 2);
-            textX = qMin(textX, width() - textWidth - 2);
+            textX = (std::max)(textX, 2);
+            textX = (std::min)(textX, width() - textWidth - 2);
 
             painter.drawText(textX, height() - textHeight - 2, textWidth, textHeight, Qt::AlignLeft, labelText);
         }
