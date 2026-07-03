@@ -60,7 +60,6 @@ public:
     QColor m_portInactiveBrush;
     QColor m_portActiveBrush;
     QColor m_portErrorBrush;
-    QColor m_portOutputBrush;
 
     // --- Members: Port Pen Colors ---
 
@@ -68,7 +67,6 @@ public:
     QColor m_portInactivePen;
     QColor m_portActivePen;
     QColor m_portErrorPen;
-    QColor m_portOutputPen;
 
     // --- Members: Port Hover ---
 
@@ -106,8 +104,8 @@ public:
     /// Returns the currently active theme.
     static Theme theme();
 
-    /// Returns a copy of the current ThemeAttributes color set.
-    static ThemeAttributes attributes();
+    /// Returns the current ThemeAttributes color set.
+    static const ThemeAttributes &attributes();
 
     // --- Theme Management ---
 

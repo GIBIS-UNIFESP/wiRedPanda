@@ -193,6 +193,34 @@ void QNEPort::hoverEnter()
     setBrush(QBrush(ThemeManager::attributes().m_portHoverPort));
 }
 
+void QNEPort::updateTheme()
+{
+    const auto &theme = ThemeManager::attributes();
+
+    switch (m_status) {
+    case Status::Unknown: {
+        setPen(theme.m_portUnknownPen);
+        setCurrentBrush(theme.m_portUnknownBrush);
+        break;
+    }
+    case Status::Inactive: {
+        setPen(theme.m_portInactivePen);
+        setCurrentBrush(theme.m_portInactiveBrush);
+        break;
+    }
+    case Status::Active: {
+        setPen(theme.m_portActivePen);
+        setCurrentBrush(theme.m_portActiveBrush);
+        break;
+    }
+    case Status::Error: {
+        setPen(theme.m_portErrorPen);
+        setCurrentBrush(theme.m_portErrorBrush);
+        break;
+    }
+    }
+}
+
 void QNEPort::drainConnections(bool isInput)
 {
     while (!m_connections.isEmpty()) {
@@ -227,7 +255,7 @@ QNEInputPort::QNEInputPort(QGraphicsItem *parent)
 
     // Style directly: setStatus() would early-return here because m_status
     // already holds its final construction-time value
-    QNEInputPort::updateTheme();
+    updateTheme();
 }
 
 QNEInputPort::~QNEInputPort()
@@ -269,38 +297,12 @@ bool QNEInputPort::isValid() const
     return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
 }
 
-void QNEInputPort::updateTheme()
-{
-    const auto theme = ThemeManager::attributes();
-
-    switch (m_status) {
-    case Status::Unknown: {
-        setPen(theme.m_portUnknownPen);
-        setCurrentBrush(theme.m_portUnknownBrush);
-        break;
-    }
-    case Status::Inactive: {
-        setPen(theme.m_portInactivePen);
-        setCurrentBrush(theme.m_portInactiveBrush);
-        break;
-    }
-    case Status::Active: {
-        setPen(theme.m_portActivePen);
-        setCurrentBrush(theme.m_portActiveBrush);
-        break;
-    }
-    case Status::Error: {
-        setPen(theme.m_portErrorPen);
-        setCurrentBrush(theme.m_portErrorBrush);
-        break;
-    }
-    }
-}
-
 QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
-    QNEOutputPort::updateTheme();
+    // Apply the initial pen/brush directly: setStatus() would early-return here
+    // because m_status already holds the Unknown default
+    updateTheme();
 }
 
 QNEOutputPort::~QNEOutputPort()
@@ -317,6 +319,7 @@ void QNEOutputPort::setStatus(const Status status)
     }
 
     m_status = status;
+    updateTheme();
 
     // Fan-out: broadcast the new signal status to every wire leaving this output port;
     // each wire in turn propagates it to the input port at its far end
@@ -340,11 +343,4 @@ bool QNEOutputPort::isValid() const
     // Output ports have unrestricted fan-out and no connectivity constraints;
     // their status is the simulation engine's responsibility, not a validity concern
     return true;
-}
-
-void QNEOutputPort::updateTheme()
-{
-    const auto theme = ThemeManager::attributes();
-    setPen(theme.m_portOutputPen);
-    setCurrentBrush(theme.m_portOutputBrush);
 }

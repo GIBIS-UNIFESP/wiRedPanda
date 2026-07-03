@@ -103,6 +103,9 @@ public:
     /// Reverts hover-enter visual feedback.
     void hoverLeave();
 
+    /// Reapplies the status-based pen and brush from the current ThemeManager palette.
+    void updateTheme();
+
     /**
      * \brief Sets the brush used to fill the port shape.
      * \param currentBrush New brush.
@@ -150,9 +153,6 @@ protected:
 
     /// \reimp
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-
-    /// Refreshes port colours from the current ThemeManager palette. Pure virtual.
-    virtual void updateTheme() = 0;
 
     /**
      * \brief Drains all attached connections, breaking back-references before deletion.
@@ -207,11 +207,6 @@ public:
 
     /// \reimp
     void setStatus(const Status status) override;
-
-    // --- Theme ---
-
-    /// \reimp
-    void updateTheme() override;
 };
 
 Q_DECLARE_METATYPE(QNEInputPort)
@@ -244,11 +239,6 @@ public:
 
     /// \reimp
     void setStatus(const Status status) override;
-
-    // --- Theme ---
-
-    /// \reimp
-    void updateTheme() override;
 };
 
 Q_DECLARE_METATYPE(QNEOutputPort)
