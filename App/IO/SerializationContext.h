@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <QHash>
 #include <QMap>
 #include <QString>
 #include <QVersionNumber>
@@ -27,10 +28,10 @@ class QNEPort;
  *   serial IDs for backward compatibility.
  */
 struct SerializationContext {
-    QMap<quint64, QNEPort *> &portMap; ///< Accumulated port-pointer map built during deserialization.
+    QHash<quint64, QNEPort *> &portMap; ///< Accumulated port-pointer map built during deserialization.
     QVersionNumber version;            ///< File-format version read from the stream header.
     QString contextDir = {};           ///< Directory of the .panda file (for relative path resolution).
-    QMap<quint64, quint64> oldPtrToSerialId = {}; ///< Legacy pointer-ID → serial-ID mapping.
+    QHash<quint64, quint64> oldPtrToSerialId = {}; ///< Legacy pointer-ID → serial-ID mapping.
     /// Sequential counter used as the element-local basis for port serialId fallback
     /// (V4.1.9–V4.3 files that lack the serialId key). Incremented once per element.
     int nextLocalId = 1;

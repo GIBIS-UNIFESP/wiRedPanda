@@ -466,7 +466,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         m_scene.icRegistry()->setBlob(it.key(), it.value());
     }
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     if (!contextDir.isEmpty()) {
         m_scene.setContextDir(contextDir);
     }
@@ -661,7 +661,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
         m_scene.icRegistry()->setBlob(it.key(), it.value());
     }
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene.deserializationContext(portMap, preamble.version);
     context.contextDir = parentContextDir;
     const auto items = Serialization::deserialize(stream, context);

@@ -110,7 +110,7 @@ void SceneDropHandler::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
     QPointF ctr;    stream >> ctr;
     offset = event->scenePos() - offset;
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
     const auto itemList = Serialization::deserialize(stream, context);
 

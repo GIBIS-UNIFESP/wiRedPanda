@@ -251,7 +251,7 @@ public:
     ICRegistry *icRegistry() { return &m_icRegistry; }
 
     /// Creates a deserialization context with the scene's contextDir and blob registry.
-    SerializationContext deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version);
+    SerializationContext deserializationContext(QHash<quint64, QNEPort *> &portMap, const QVersionNumber &version);
 
     // --- Autosave ---
 
