@@ -29,6 +29,7 @@ public:
 
     explicit GraphicElementInput(ElementType type, QGraphicsItem *parent = nullptr)
         : GraphicElement(type, parent) {}
+    ~GraphicElementInput() override = default;
 
     // --- State Queries ---
 

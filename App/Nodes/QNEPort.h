@@ -45,6 +45,7 @@ public:
 
     /// Constructs the port with optional \a parent item.
     explicit QNEPort(QGraphicsItem *parent = nullptr);
+    virtual ~QNEPort() = default;
 
     // --- Element Access ---
 
@@ -196,7 +197,6 @@ public:
     /// Constructs an input port attached to \a parent.
     explicit QNEInputPort(QGraphicsItem *parent = nullptr);
     ~QNEInputPort() override;
-    QNEInputPort(const QNEInputPort &other) : QNEInputPort(other.parentItem()) {}
 
     // --- Type Queries ---
 
@@ -211,9 +211,10 @@ public:
 
     /// \reimp
     void setStatus(const Status status) override;
-};
 
-Q_DECLARE_METATYPE(QNEInputPort)
+private:
+    Q_DISABLE_COPY_MOVE(QNEInputPort)
+};
 
 /**
  * \class QNEOutputPort
@@ -228,7 +229,6 @@ public:
     /// Constructs an output port attached to \a parent.
     explicit QNEOutputPort(QGraphicsItem *parent = nullptr);
     ~QNEOutputPort() override;
-    QNEOutputPort(const QNEOutputPort &other) : QNEOutputPort(other.parentItem()) {}
 
     // --- Type Queries ---
 
@@ -243,6 +243,7 @@ public:
 
     /// \reimp
     void setStatus(const Status status) override;
-};
 
-Q_DECLARE_METATYPE(QNEOutputPort)
+private:
+    Q_DISABLE_COPY_MOVE(QNEOutputPort)
+};

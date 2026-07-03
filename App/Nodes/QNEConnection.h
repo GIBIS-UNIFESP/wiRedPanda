@@ -41,7 +41,6 @@ public:
     /// Constructs an unconnected wire.
     explicit QNEConnection(QGraphicsItem *parent = nullptr);
     ~QNEConnection() override;
-    QNEConnection(const QNEConnection &other) : QNEConnection(other.parentItem()) {}
 
     // --- Port / Endpoint Access ---
 
@@ -110,6 +109,8 @@ protected:
     bool sceneEvent(QEvent *event) override;
 
 private:
+    Q_DISABLE_COPY_MOVE(QNEConnection)
+
     /// Detaches \a oldPort and attaches \a newPort to this connection (base-pointer version).
     void changePortAttachment(QNEPort *oldPort, QNEPort *newPort);
 
@@ -136,7 +137,5 @@ private:
     Status m_status = Status::Unknown;
     bool m_highLight = false;
 };
-
-Q_DECLARE_METATYPE(QNEConnection)
 
 QDataStream &operator<<(QDataStream &stream, const QNEConnection *conn);

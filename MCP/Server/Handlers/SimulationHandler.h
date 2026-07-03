@@ -23,6 +23,8 @@ public:
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
 
 private:
+    Q_DISABLE_COPY_MOVE(SimulationHandler)
+
     QJsonObject handleSimulationControl(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleCreateWaveform(const QJsonObject &params, const QJsonValue &requestId);
     QJsonObject handleExportWaveform(const QJsonObject &params, const QJsonValue &requestId);
