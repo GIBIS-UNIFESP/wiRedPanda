@@ -340,7 +340,7 @@ void TestICInline::testChildBlobPropagation()
     // Save child (emits icBlobSaved)
     child.save(QString());
 
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.size(), 1);
 }
 
 void TestICInline::testUndoRedoEmbedExtract()
@@ -984,7 +984,7 @@ void TestICInline::testBlobNamePreservation()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         ic2->load(stream, ctx);
     }
@@ -1215,7 +1215,7 @@ void TestICInline::testBlobNameSpecialCharacters()
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
             QHash<quint64, QNEPort *> portMap;
-            SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+            SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
             ctx.blobRegistry = &registry;
             loaded->load(stream, ctx);
         }
@@ -1289,7 +1289,7 @@ void TestICInline::testWorkspaceInlineTab()
     // Save should emit icBlobSaved
     QSignalSpy spy(&child, &WorkSpace::icBlobSaved);
     child.save({});
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.size(), 1);
     QCOMPARE(spy.at(0).at(0).toInt(), icId);
 
     QByteArray emittedBlob = spy.at(0).at(1).toByteArray();
@@ -1328,7 +1328,7 @@ void TestICInline::testWorkspaceInlineSaveOrphanedParent()
 
     QSignalSpy spy(&child, &WorkSpace::icBlobSaved);
     child.save({});
-    QCOMPARE(spy.count(), 0);
+    QCOMPARE(spy.size(), 0);
 }
 
 void TestICInline::testWorkspaceAutosaveSkipsInlineIC()
@@ -1357,7 +1357,7 @@ void TestICInline::testWorkspaceAutosaveSkipsInlineIC()
 
     QSignalSpy spy(&child, &WorkSpace::icBlobSaved);
     child.save({});
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.size(), 1);
     QCOMPARE(spy.at(0).at(0).toInt(), icId);
 
     // Verify no autosave/Untitled file was created
@@ -1425,7 +1425,7 @@ void TestICInline::testInlineSaveContextDirSwitch()
 
     QSignalSpy spy(&child, &WorkSpace::icBlobSaved);
     child.save({});
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.size(), 1);
 
     QByteArray savedBlob = spy.at(0).at(1).toByteArray();
     QVERIFY(!savedBlob.isEmpty());
@@ -1478,7 +1478,7 @@ void TestICInline::testInlineTabSaveAfterModification()
     // Save
     QSignalSpy spy(&child, &WorkSpace::icBlobSaved);
     child.save({});
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.size(), 1);
 
     QByteArray modifiedBlob = spy.at(0).at(1).toByteArray();
     QVERIFY(!modifiedBlob.isEmpty());
@@ -1586,13 +1586,13 @@ void TestICInline::testNestedWorkspaceChainPropagation()
     // Save child → propagates to parent
     QSignalSpy childSpy(&child, &WorkSpace::icBlobSaved);
     child.save({});
-    QCOMPARE(childSpy.count(), 1);
+    QCOMPARE(childSpy.size(), 1);
     QCOMPARE(childSpy.at(0).at(0).toInt(), parentICId);
 
     // Save parent → propagates to grandparent
     QSignalSpy parentSpy(&parent, &WorkSpace::icBlobSaved);
     parent.save({});
-    QCOMPARE(parentSpy.count(), 1);
+    QCOMPARE(parentSpy.size(), 1);
     QCOMPARE(parentSpy.at(0).at(0).toInt(), gpICId);
 
     auto *updatedGpIC = dynamic_cast<IC *>(grandparent.scene()->itemById(gpICId));
@@ -1713,7 +1713,7 @@ void TestICInline::testLoadV41MapDirectConstruct()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         loaded->load(stream, ctx);
     }
@@ -1748,7 +1748,7 @@ void TestICInline::testLoadMismatchNoFileName()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         bool threw = false;
         try {
             loaded->load(stream, ctx);
@@ -2651,7 +2651,7 @@ void TestICInline::testSerializationMismatchFallback()
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
             QHash<quint64, QNEPort *> portMap;
-            SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+            SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
             try {
                 loaded->load(stream, ctx);
             } catch (const Pandaception &) {
@@ -2680,7 +2680,7 @@ void TestICInline::testSerializationMismatchFallback()
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
             QHash<quint64, QNEPort *> portMap;
-            SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+            SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
             try {
                 loaded->load(stream, ctx);
             } catch (const Pandaception &) {
@@ -2707,7 +2707,7 @@ void TestICInline::testSerializationMismatchFallback()
         {
             QDataStream stream(&embeddedData, QIODevice::ReadOnly);
             QHash<quint64, QNEPort *> portMap;
-            SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+            SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
             ctx.blobRegistry = &registry;
             loaded->load(stream, ctx);
         }
@@ -2741,7 +2741,7 @@ void TestICInline::testSerializationMismatchFallbackCase2State()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         bool threw = false;
         try {
             loaded->load(stream, ctx);
@@ -2916,7 +2916,7 @@ void TestICInline::testSetInlineDataEmptyBlobNameRoundTripFails()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         bool threw = false;
         try {
             loaded->load(stream, ctx);
@@ -3068,7 +3068,7 @@ void TestICInline::testCopyFileGuardDuringPaste()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         ic2->load(stream, ctx);
     }
@@ -3106,7 +3106,7 @@ void TestICInline::testCopyPasteEmbeddedICRoundTrip()
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, QNEPort *> portMap;
-        SerializationContext ctx{portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         pasted->load(stream, ctx);
     }
@@ -3683,7 +3683,7 @@ void TestICInline::testICDropZoneWiredInUI()
 
     QDropEvent dropEvent(QPointF(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&fileZone, &dropEvent);
-    QCOMPARE(extractSpy.count(), 1);
+    QCOMPARE(extractSpy.size(), 1);
     QCOMPARE(extractSpy.at(0).at(0).toString(), QString("my_ic"));
 
     // Embedded zone: file-based drop → embedByFileRequested
@@ -3703,7 +3703,7 @@ void TestICInline::testICDropZoneWiredInUI()
 
     QDropEvent dropEvent2(QPointF(10, 10), Qt::CopyAction, fileMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&embeddedZone, &dropEvent2);
-    QCOMPARE(embedSpy.count(), 1);
+    QCOMPARE(embedSpy.size(), 1);
     QCOMPARE(embedSpy.at(0).at(0).toString(), QString("test.panda"));
 }
 
@@ -3730,7 +3730,7 @@ void TestICInline::testICDropZoneDropEventSignals()
         QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&embeddedZone, &drop);
         QVERIFY(drop.isAccepted());
-        QCOMPARE(embedSpy.count(), 1);
+        QCOMPARE(embedSpy.size(), 1);
         QCOMPARE(embedSpy.at(0).at(0).toString(), QString("my_circuit.panda"));
     }
 
@@ -3755,7 +3755,7 @@ void TestICInline::testICDropZoneDropEventSignals()
         QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&fileZone, &drop);
         QVERIFY(drop.isAccepted());
-        QCOMPARE(extractSpy.count(), 1);
+        QCOMPARE(extractSpy.size(), 1);
         QCOMPARE(extractSpy.at(0).at(0).toString(), QString("my_embedded"));
     }
 
@@ -3777,7 +3777,7 @@ void TestICInline::testICDropZoneDropEventSignals()
         QCoreApplication::sendEvent(&embeddedZone, &dragEnter);
         QVERIFY(!dragEnter.isAccepted());
 
-        QCOMPARE(embedSpy.count(), 0);
+        QCOMPARE(embedSpy.size(), 0);
     }
 }
 
@@ -4799,7 +4799,7 @@ void TestICInline::testLoadICWithMissingBlobFallsBackToFile()
     auto ic2 = std::make_unique<IC>();
     QDataStream in(&elemData, QIODevice::ReadOnly);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext ctx{portMap, Serialization::readPandaHeader(in), m_fixtureDir};
+    SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), m_fixtureDir};
     // No blobRegistry → ctx.blobRegistry is nullptr
 
     bool threw = false;
@@ -4836,7 +4836,7 @@ void TestICInline::testLoadICWithNullBlobRegistry()
     auto ic2 = std::make_unique<IC>();
     QDataStream in(&elemData, QIODevice::ReadOnly);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext ctx{portMap, Serialization::readPandaHeader(in), m_fixtureDir};
+    SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), m_fixtureDir};
     // ctx.blobRegistry is nullptr by default
 
     ic2->load(in, ctx);
@@ -5074,7 +5074,7 @@ void TestICInline::testLoadICMissingAllNameFieldsThrows()
     auto ic2 = std::make_unique<IC>();
     QDataStream in(&elemData, QIODevice::ReadOnly);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext ctx{portMap, Serialization::readPandaHeader(in), m_fixtureDir};
+    SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), m_fixtureDir};
 
     bool threw = false;
     try {
@@ -5407,7 +5407,7 @@ void TestICInline::testInlineSaveConvertsFileBackedToEmbedded()
     QSignalSpy saveSpy(&childWs, &WorkSpace::icBlobSaved);
     childWs.save("");
 
-    QCOMPARE(saveSpy.count(), 1);
+    QCOMPARE(saveSpy.size(), 1);
 
     // --- Step 5: Verify the dropped IC was converted to embedded ---
     auto *savedIC = dynamic_cast<IC *>(childWs.scene()->itemById(droppedICId));
@@ -5565,7 +5565,7 @@ void TestICInline::testNestedInlineSaveAndReopen()
     // --- Step 5: Save level-2 ---
     QSignalSpy spy2(&level2Ws, &WorkSpace::icBlobSaved);
     level2Ws.save("");
-    QCOMPARE(spy2.count(), 1);
+    QCOMPARE(spy2.size(), 1);
 
     // Verify the saved blob is valid
     const QByteArray savedBlob = spy2.at(0).at(1).toByteArray();

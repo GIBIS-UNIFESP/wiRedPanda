@@ -197,7 +197,7 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         // 30.2, 8.727 = top-centre of the dial face (horizontally centred on the 64px body,
         //               placed near the rim rather than the hub so it's visible on the SVG).
         // 3.6 × 6.4 = small rectangular pip sized to match the tick marks on the SVG artwork.
-        QRectF mark{30.2, 8.727, 3.6, 6.4};
+        const QRectF mark = QRectF{30.2, 8.727, 3.6, 6.4};
 
         // Off-white / cream colour matches the dial face artwork, making the tick marks blend naturally
         painter->setBrush(QBrush{QColor{255, 246, 213}});

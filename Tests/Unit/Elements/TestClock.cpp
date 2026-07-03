@@ -381,7 +381,7 @@ void TestClock::testLoadVersionOld()
 
     QDataStream loadStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext contextOld{portMap, QVersionNumber(3, 0), {}};
+    SerializationContext contextOld = {portMap, QVersionNumber(3, 0), {}};
     bool threw = false;
     try {
         clock2->load(loadStream, contextOld);
@@ -407,7 +407,7 @@ void TestClock::testLoadVersionNew()
 
     QDataStream loadStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext contextNew{portMap, QVersionNumber(4, 1), {}};
+    SerializationContext contextNew = {portMap, QVersionNumber(4, 1), {}};
 
     clock2->load(loadStream, contextNew);
 
@@ -432,7 +432,7 @@ void TestClock::testLoadVersionVeryOld()
 
     QDataStream readStream(data);
     QHash<quint64, QNEPort *> portMap;
-    SerializationContext contextVeryOld{portMap, QVersionNumber(1, 0), {}};
+    SerializationContext contextVeryOld = {portMap, QVersionNumber(1, 0), {}};
 
     clock->load(readStream, contextVeryOld);
 

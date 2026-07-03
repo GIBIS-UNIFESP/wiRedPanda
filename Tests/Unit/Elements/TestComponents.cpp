@@ -167,7 +167,7 @@ void TestComponents::testICs()
              qPrintable(QString("Examples directory not found: %1").arg(examplesDir.absolutePath())));
 
     const auto files = examplesDir.entryInfoList(QStringList{"*.panda"});
-    QVERIFY2(files.count() > 0,
+    QVERIFY2(files.size() > 0,
              qPrintable(QString("No .panda example files found in: %1").arg(examplesDir.absolutePath())));
 
     int loadedCount = 0;
@@ -185,5 +185,5 @@ void TestComponents::testICs()
     }
 
     // Verify at least one file was successfully loaded
-    QCOMPARE(loadedCount, files.count());
+    QCOMPARE(loadedCount, files.size());
 }

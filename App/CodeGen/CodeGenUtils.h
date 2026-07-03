@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <algorithm>
+
 #include <QRegularExpression>
 #include <QString>
 
@@ -34,8 +36,9 @@ inline QString stripAccents(const QString &input)
 inline QString removeForbiddenChars(const QString &input, const bool stripFirst = false)
 {
     QString result = (stripFirst ? stripAccents(input) : input).toLower().trimmed().replace(' ', '_').replace('-', '_');
-    static const QRegularExpression re("\\W");
-    result.remove(re);
+    result.erase(std::remove_if(result.begin(), result.end(),
+                                [](const QChar c) { return !QChar::isLetterOrNumber(c.unicode()) && c != QLatin1Char('_'); }),
+                 result.end());
 
     if (result.isEmpty()) {
         result = "_unnamed";

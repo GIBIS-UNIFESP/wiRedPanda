@@ -130,7 +130,7 @@ bool WorkSpace::isFromNewerVersion() const
     return !m_loadedVersion.isNull() && m_loadedVersion > FormatRev::current;
 }
 
-QFileInfo WorkSpace::fileInfo()
+QFileInfo WorkSpace::fileInfo() const
 {
     return m_fileInfo;
 }
@@ -499,7 +499,7 @@ void WorkSpace::setDolphinFileName(const QString &fileName)
     m_dolphinFileName = fileName;
 }
 
-QString WorkSpace::dolphinFileName()
+QString WorkSpace::dolphinFileName() const
 {
     return m_dolphinFileName;
 }
