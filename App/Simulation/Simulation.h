@@ -143,7 +143,7 @@ private:
 
     static void updatePort(QNEInputPort *port);
     static void updatePort(QNEOutputPort *port);
-    void updateWithIterativeSettling();
+    void updateWithIterativeSettling(const QVector<GraphicElement *> &elements);
     void sortSimElements(const QVector<GraphicElement *> &elements);
 
     /// Recursively appends every ElementGroup::Memory element in \a elements
