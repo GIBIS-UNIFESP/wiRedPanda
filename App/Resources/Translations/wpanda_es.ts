@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="882"/>
+        <location filename="../../Scene/Commands.cpp" line="883"/>
         <source>Change input size to %1</source>
         <translation>Cambiar el tamaño de entrada a %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change output size to %1</source>
         <translation>Cambiar el tamaño de salida a %1</translation>
     </message>
@@ -1214,7 +1214,7 @@ Cada canal inalámbrico debe tener una etiqueta única.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="823"/>
+        <location filename="../../Scene/Commands.cpp" line="824"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Invertir %1 elementos en el eje %2</translation>
     </message>
@@ -1468,12 +1468,12 @@ Nombre sugerido:</translation>
 <context>
     <name>InputGnd</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputGND.cpp" line="27"/>
+        <location filename="../../Element/GraphicElements/InputGND.cpp" line="28"/>
         <source>GROUND</source>
         <translation>TIERRA</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputGND.cpp" line="28"/>
+        <location filename="../../Element/GraphicElements/InputGND.cpp" line="29"/>
         <source>GND</source>
         <translation>GND</translation>
     </message>
@@ -1504,12 +1504,12 @@ Nombre sugerido:</translation>
         <translation>Interruptor de Entrada</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
         <source>Off</source>
         <translation>Apagado</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
         <source>On</source>
         <translation>Encendido</translation>
     </message>
@@ -2195,7 +2195,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="635"/>
+        <location filename="../../Scene/Commands.cpp" line="636"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformar %1 elementos en %2</translation>
     </message>
@@ -2396,7 +2396,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1043"/>
+        <location filename="../../Scene/Commands.cpp" line="1045"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrar blob &quot;%1&quot;</translation>
     </message>
@@ -2404,7 +2404,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1066"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Eliminar blob &quot;%1&quot;</translation>
     </message>
@@ -2548,7 +2548,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="297"/>
+        <location filename="../../Simulation/Simulation.cpp" line="300"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Advertencia: el circuito de retroalimentación no convergió — el circuito puede estar oscilando.</translation>
     </message>
@@ -2571,17 +2571,17 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
         <translation>Alambre partido</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="553"/>
+        <location filename="../../Scene/Commands.cpp" line="554"/>
         <source>Error trying to redo %1</source>
         <translation>Error al intentar rehacer %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="576"/>
+        <location filename="../../Scene/Commands.cpp" line="577"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Error: endPort es null en SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="605"/>
+        <location filename="../../Scene/Commands.cpp" line="606"/>
         <source>Error trying to undo %1</source>
         <translation>Error al intentar deshacer %1</translation>
     </message>
@@ -2633,17 +2633,17 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="976"/>
+        <location filename="../../Scene/Commands.cpp" line="978"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Activar o desactivar la salida de la tabla de verdad en la posición: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="985"/>
+        <location filename="../../Scene/Commands.cpp" line="987"/>
         <source>Could not find truthtable element!</source>
         <translation>¡No se pudo encontrar el elemento de tabla de verdad!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="992"/>
+        <location filename="../../Scene/Commands.cpp" line="994"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2677,7 +2677,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1099"/>
+        <location filename="../../Scene/Commands.cpp" line="1101"/>
         <source>Update %1 IC blobs</source>
         <translation>Actualizar %1 blobs de CI</translation>
     </message>
