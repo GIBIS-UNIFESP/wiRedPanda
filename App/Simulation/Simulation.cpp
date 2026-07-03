@@ -157,10 +157,15 @@ void Simulation::update()
     }
     m_visualTickCount = 0;
 
-    // Phase 3: push computed logic values onto the wire (QNEOutputPort) visuals
-    for (auto *connection : std::as_const(m_connections)) {
-        if (connection) {
-            updatePort(connection->startPort());
+    // Phase 3: push computed logic values onto all output port visuals.
+    // Iterating elements (not connections) ensures unconnected output ports
+    // (e.g. -Q of a flip-flop with no wire attached) are also updated.
+    // setStatus() fans out through any attached connections automatically.
+    for (auto *element : std::as_const(m_sortedElements)) {
+        if (element) {
+            for (auto *outputPort : element->outputs()) {
+                updatePort(outputPort);
+            }
         }
     }
 
@@ -213,16 +218,14 @@ void Simulation::updatePort(QNEInputPort *port)
 void Simulation::restart()
 {
     // Invalidate the cached topology. Clearing the flag alone is not
-    // enough: update() iterates m_sortedElements/m_connections/m_clocks/
-    // m_inputs/m_outputs before a re-initialize can run (for instance when
-    // Application::notify() spins a QMessageBox nested event loop), and
-    // any entry that refers to an element we've already freed faults on
-    // its vtable read. Drop every reference so the next tick's
-    // initialize() can rebuild them cleanly.
+    // enough: update() iterates m_sortedElements/m_clocks/m_inputs/m_outputs
+    // before a re-initialize can run (for instance when Application::notify()
+    // spins a QMessageBox nested event loop), and any entry that refers to an
+    // element we've already freed faults on its vtable read. Drop every
+    // reference so the next tick's initialize() can rebuild them cleanly.
     m_initialized = false;
     m_sortedElements.clear();
     m_sequentialElements.clear();
-    m_connections.clear();
     m_clocks.clear();
     m_inputs.clear();
     m_outputs.clear();
@@ -230,7 +233,7 @@ void Simulation::restart()
     // cleared above. This assert documents the invariant for future maintainers
     // and trips immediately if a new vector is forgotten.
     Q_ASSERT(!m_initialized);
-    Q_ASSERT(m_sortedElements.isEmpty() && m_sequentialElements.isEmpty() && m_connections.isEmpty()
+    Q_ASSERT(m_sortedElements.isEmpty() && m_sequentialElements.isEmpty()
           && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty());
 }
 
@@ -310,7 +313,6 @@ bool Simulation::initialize()
     m_clocks.clear();
     m_outputs.clear();
     m_inputs.clear();
-    m_connections.clear();
     m_sortedElements.clear();
     m_sequentialElements.clear();
 
@@ -345,13 +347,6 @@ bool Simulation::initialize()
     for (auto *item : std::as_const(items)) {
         if (!item) {
             continue;
-        }
-
-        if (item->type() == QNEConnection::Type) {
-            auto *connection = qgraphicsitem_cast<QNEConnection *>(item);
-            if (connection && connection->startPort() && connection->endPort()) {
-                m_connections.append(connection);
-            }
         }
 
         if (item->type() == GraphicElement::Type) {

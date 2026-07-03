@@ -311,15 +311,21 @@ void TestDanglingPointer::hardening_deleteEditedConnectionMustUseSimulationBlock
     QVERIFY2(body.contains("SimulationBlocker"),
              "ConnectionManager::deleteEditedConnection must open a "
              "SimulationBlocker around the removeItem/delete pair so the "
-             "1 ms simulation timer cannot tick on a freed connection if "
-             "the in-progress wire ever ended up in Simulation::m_connections.");
+             "1 ms simulation timer cannot tick while the in-progress wire "
+             "is being torn down.");
 }
 
-// WIREDPANDA-JD — Simulation::initialize() must exclude in-progress wires
-// (connections with only one port set). Without this filter, a re-initialize
-// while a wire is being drawn adds the in-progress wire to m_connections.
-// A subsequent cancel (deleteEditedConnection) frees it without rebuilding,
-// leaving a dangling pointer that crashes on the next simulation tick.
+// WIREDPANDA-JD — historical: Simulation::initialize() used to collect every
+// QNEConnection unconditionally into Simulation::m_connections, including
+// in-progress wires (only startPort set). A subsequent cancel
+// (deleteEditedConnection) freed the wire without rebuilding, leaving a
+// dangling pointer that the old Phase 3 loop dereferenced on the next tick.
+// Simulation::m_connections was removed entirely once Phase 3 stopped
+// reading it (it now walks m_sortedElements), structurally eliminating the
+// dangling-pointer class rather than filtering it. This regression-tests
+// the resulting behavior: an in-progress wire coexisting with a real
+// connection during a re-initialize must not corrupt or crash the
+// simulation, and the real connection must keep propagating correctly.
 void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
 {
     WorkSpace ws;
@@ -338,8 +344,6 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
 
     sim->initialize();
     QVERIFY(sim->m_initialized);
-    QCOMPARE(sim->m_connections.size(), 1);
-    QCOMPARE(sim->m_connections.first(), conn);
 
     // Simulate ConnectionManager::startFromOutput: create an in-progress wire
     // with only startPort set (no endPort — the user is still dragging it).
@@ -350,21 +354,21 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
     // Re-initialize (simulates any command that calls setCircuitUpdateRequired
     // while the user is drawing a wire — e.g. undo/redo, IC hot-reload).
     sim->initialize();
+    QVERIFY(sim->m_initialized);
 
-    // The in-progress wire must NOT appear in m_connections. Pre-fix,
-    // initialize() adds all QNEConnections unconditionally, so this
-    // assertion fails: m_connections.size() == 2.
-    QVERIFY2(sim->m_connections.size() == 1,
-             qPrintable(QString("initialize() picked up an in-progress wire "
-                                "(no endPort) into m_connections: expected 1, "
-                                "got %1")
-                            .arg(sim->m_connections.size())));
+    sw->setOn(true);
+    sim->update();
+    QVERIFY(TestUtils::getInputStatus(led));
 
-    QVERIFY(!sim->m_connections.contains(inProgressWire));
-
-    // Clean up the in-progress wire
+    // Cancel the in-progress wire (mirrors ConnectionManager::deleteEditedConnection)
+    // and tick again — nothing in Simulation held onto the freed wire, so this
+    // must not crash, and the real connection must still function.
     scene->removeItem(inProgressWire);
     delete inProgressWire;
+
+    sw->setOn(false);
+    sim->update();
+    QVERIFY(!TestUtils::getInputStatus(led));
 }
 
 // ==========================================================================
@@ -382,11 +386,10 @@ void TestDanglingPointer::bug8_iterativeSettleMustTolerateNullEntry()
     QVERIFY(true);
 }
 
-// Hardening — Simulation::update() Phase 3 walks m_connections and reads
-// connection->startPort() with no null guard, unlike Phases 1, 2, and 4.
-// Inject a null and tick the simulation; without the guard this dereferences
-// nullptr and SIGSEGVs.
-void TestDanglingPointer::hardening_phase3MustTolerateNullConnection()
+// Hardening — Simulation::update() Phase 3 walks m_sortedElements and reads
+// each element's output ports; a null entry must not crash. Inject a null
+// and tick the simulation to verify the existing `if (element)` guard holds.
+void TestDanglingPointer::hardening_phase3MustTolerateNullElement()
 {
     WorkSpace ws;
     auto *sim = ws.scene()->simulation();
@@ -395,11 +398,11 @@ void TestDanglingPointer::hardening_phase3MustTolerateNullConnection()
     QVERIFY(sim->m_initialized);
 
     // Phase 3 only runs when the visual throttle lets through; force-disable
-    // so update() actually walks m_connections this tick instead of skipping
-    // straight back to Phase 2.
+    // so update() actually walks m_sortedElements this tick instead of
+    // skipping straight back to Phase 2.
     sim->setVisualThrottleEnabled(false);
 
-    sim->m_connections.append(nullptr);
+    sim->m_sortedElements.append(nullptr);
 
     sim->update();
     QVERIFY(true);
@@ -499,11 +502,16 @@ void TestDanglingPointer::integration_simulationTickAfterResetMustNotCrash()
     QVERIFY(true);
 }
 
-// WIREDPANDA-JD — full crash reproduction. An in-progress wire (startPort
-// only, no endPort) is added to the scene. A re-initialize picks it up
-// into Simulation::m_connections. The wire is then deleted (simulating
-// cancel/deleteEditedConnection), leaving a dangling pointer.  The next
-// update() dereferences the freed memory — SIGSEGV pre-fix.
+// WIREDPANDA-JD — historical crash reproduction, kept as defense in depth.
+// An in-progress wire (startPort only, no endPort) is added to the scene, a
+// re-initialize runs while it's present, and the wire is then deleted
+// (simulating cancel/deleteEditedConnection). The next update() must not
+// crash. Originally this SIGSEGVed because Simulation::m_connections
+// unconditionally collected every QNEConnection — including the in-progress
+// one — and the delete above left that entry dangling for the next Phase 3
+// pass to dereference. m_connections no longer exists (Phase 3 walks
+// m_sortedElements instead), so Simulation has no reference left to dangle;
+// this test guards against any future code path reintroducing one.
 void TestDanglingPointer::jd_cancelledWireMustNotLeaveDanglingPointer()
 {
     WorkSpace ws;
@@ -529,16 +537,14 @@ void TestDanglingPointer::jd_cancelledWireMustNotLeaveDanglingPointer()
     inProgressWire->setStartPort(sw->outputPort());
     scene->addItem(inProgressWire);
 
-    // Re-initialize — picks up the in-progress wire into m_connections.
+    // Re-initialize while the in-progress wire is present.
     sim->initialize();
 
     // Delete the in-progress wire (mirrors deleteEditedConnection's bare delete).
     scene->removeItem(inProgressWire);
     delete inProgressWire;
 
-    // Pre-fix: m_connections now holds a dangling pointer to freed memory.
-    // The next update() iterates m_connections, reads connection->startPort()
-    // from the freed object, and crashes with EXCEPTION_ACCESS_VIOLATION_READ.
+    // Must not crash.
     sim->update();
     QVERIFY(true);
 }

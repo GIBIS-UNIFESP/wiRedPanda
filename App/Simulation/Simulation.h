@@ -18,7 +18,6 @@
 class Clock;
 class GraphicElement;
 class GraphicElementInput;
-class QNEConnection;
 class QNEInputPort;
 class QNEOutputPort;
 class Scene;
@@ -158,7 +157,6 @@ private:
     QVector<Clock *> m_clocks;
     QVector<GraphicElement *> m_outputs;
     QVector<GraphicElementInput *> m_inputs;
-    QVector<QNEConnection *> m_connections;
 
     // --- Members: Scene & state ---
 
