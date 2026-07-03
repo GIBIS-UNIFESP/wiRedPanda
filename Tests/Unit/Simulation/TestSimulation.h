@@ -19,4 +19,7 @@ private slots:
 
     // Regression: B22 — Simulation::start/stop must not emit Sentry breadcrumbs
     void testSimulationStartStopNoBreadcrumbsB22();
+
+    // Regression: Phase 3 must refresh output-port visuals even with no wire attached
+    void testUnconnectedOutputPortVisualUpdates();
 };

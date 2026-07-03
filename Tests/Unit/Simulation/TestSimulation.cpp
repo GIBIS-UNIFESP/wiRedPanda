@@ -3,7 +3,11 @@
 
 #include "Tests/Unit/Simulation/TestSimulation.h"
 
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
+#include "App/Nodes/QNEConnection.h"
+#include "App/Nodes/QNEPort.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
@@ -95,4 +99,33 @@ void TestSimulationUnit::testSimulationStartStopNoBreadcrumbsB22()
     QVERIFY2(!startBody.contains("sentryBreadcrumb"),
              "Simulation::start must not emit a Sentry breadcrumb — every "
              "SimulationBlocker scope hits this and floods the buffer.");
+}
+
+void TestSimulationUnit::testUnconnectedOutputPortVisualUpdates()
+{
+    // Regression: Phase 3 must push computed values onto output-port visuals
+    // even when no wire is attached. A connection-based walk skips them, so a
+    // flip-flop's unwired -Q (or any unwired gate output) keeps a stale color.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
+    scene->addItem(vcc);
+    scene->addItem(notGate);
+
+    auto *conn = new QNEConnection();
+    conn->setStartPort(vcc->outputPort(0));
+    conn->setEndPort(notGate->inputPort(0));
+    scene->addItem(conn);
+
+    // The NOT output stays unwired: undriven (Unknown) until a tick computes it
+    QCOMPARE(notGate->outputPort(0)->status(), Status::Unknown);
+
+    Simulation sim(scene);
+    sim.update();
+
+    // NOT(1) = 0 — and the unwired output port's visual must reflect it
+    QCOMPARE(notGate->outputPort(0)->status(), Status::Inactive);
+    QCOMPARE(notGate->outputPort(0)->status(), notGate->outputValue(0));
 }

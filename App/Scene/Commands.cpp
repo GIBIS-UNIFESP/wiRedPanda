@@ -541,8 +541,9 @@ SplitCommand::SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, 
 void SplitCommand::redo()
 {
     qCDebug(zero) << text();
-    // Allocating and rewiring QNEConnections while Simulation::m_connections
-    // is still mid-iterate on the old topology faults on the dangling entry.
+    // Block the 1 ms timer while connections and the split node are
+    // deleted/rewired: a tick observing the scene mid-mutation could read a
+    // momentarily detached port or a not-yet-fully-wired element.
     SimulationBlocker blocker(m_scene->simulation());
     auto *conn1 = CommandUtils::findConn(m_scene, m_c1Id);
     auto *elm1 = CommandUtils::findElm(m_scene, m_elm1Id);
@@ -887,7 +888,8 @@ void ChangePortSizeCommand::redo()
 {
     // drainPortConnections() deletes QNEConnections for removed ports; a
     // simulation tick between that delete and setCircuitUpdateRequired()
-    // would see those freed connections in Simulation::m_connections.
+    // could still read a freed port/connection via a live element's
+    // now-stale port list before the topology is rebuilt.
     SimulationBlocker blocker(m_scene->simulation());
 
     const auto elements = this->elements();

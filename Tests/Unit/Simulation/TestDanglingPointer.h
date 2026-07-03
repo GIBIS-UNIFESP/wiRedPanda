@@ -53,17 +53,22 @@ private slots:
     void bug6_topologyCommandsMustUseSimulationBlocker();
 
     /// Hardening — ConnectionManager::deleteEditedConnection performs a
-    /// bare delete on the in-progress wire. If a re-initialize has run
-    /// while the wire is on the scene, that pointer ends up in
-    /// Simulation::m_connections and the bare delete leaves it dangling.
-    /// Source-level check, same shape as bug6.
+    /// bare delete on the in-progress wire while the 1 ms simulation timer
+    /// may still be running. A SimulationBlocker scope prevents a tick
+    /// from touching scene state mid-removal. Source-level check, same
+    /// shape as bug6.
     void hardening_deleteEditedConnectionMustUseSimulationBlocker();
 
-    /// WIREDPANDA-JD — Simulation::initialize() must skip in-progress
-    /// wires (connections without both startPort and endPort). Without
-    /// this filter, a re-initialize while a wire is being drawn adds
-    /// it to m_connections; a subsequent cancel/delete leaves a dangling
-    /// pointer that crashes on the next simulation tick.
+    /// WIREDPANDA-JD — historical: Simulation::initialize() used to collect
+    /// every QNEConnection unconditionally into Simulation::m_connections,
+    /// including in-progress wires (only startPort set). A subsequent
+    /// cancel/delete of that wire left a dangling pointer that the old
+    /// Phase 3 loop dereferenced on the next tick. Simulation::m_connections
+    /// was removed entirely once Phase 3 stopped reading it (it now walks
+    /// m_sortedElements), structurally eliminating the dangling-pointer
+    /// class rather than filtering it. This regression-tests the resulting
+    /// behavior: an in-progress wire coexisting with a real connection
+    /// during a re-initialize must not corrupt or crash the simulation.
     void jd_initializeMustSkipIncompleteConnections();
 
     // --- Crash-triggering tests (process dies pre-fix) ---------------
@@ -71,10 +76,10 @@ private slots:
     /// Bug 8 — iterativeSettle() iterates without null checks.
     void bug8_iterativeSettleMustTolerateNullEntry();
 
-    /// Hardening — Simulation::update() Phase 3 dereferences m_connections
-    /// entries without a null guard, unlike the four other phases. Inject
-    /// a null and call update() to verify the new guard.
-    void hardening_phase3MustTolerateNullConnection();
+    /// Hardening — Simulation::update() Phase 3 now walks m_sortedElements
+    /// (rewritten to cover unconnected output ports too). Inject a null
+    /// entry and call update() to verify the existing guard tolerates it.
+    void hardening_phase3MustTolerateNullElement();
 
     /// Bug 2 — IC::updateLogic() dereferences m_sortedInternalElements
     /// entries without a null guard.
@@ -99,9 +104,13 @@ private slots:
     /// FH/EW/G1/GP/HC paint-time _purecall family.
     void hcDrainConnectionsMustCleanRegistry();
 
-    /// WIREDPANDA-JD — full crash reproduction. An in-progress wire
-    /// (startPort only) enters m_connections via initialize(), is then
-    /// deleted without rebuilding the simulation, and the next update()
-    /// dereferences the dangling pointer.
+    /// WIREDPANDA-JD — historical crash reproduction, kept as defense in
+    /// depth. An in-progress wire (startPort only) survives a re-initialize
+    /// and is then deleted without rebuilding the simulation; the next
+    /// update() must not crash. Originally caused by Simulation::m_connections
+    /// holding a dangling pointer to the freed wire — that member no longer
+    /// exists (Phase 3 walks m_sortedElements instead), but this behavior-level
+    /// check remains valid against any future code path that might reintroduce
+    /// a similar dangling reference.
     void jd_cancelledWireMustNotLeaveDanglingPointer();
 };
