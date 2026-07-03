@@ -509,7 +509,7 @@ void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, Serializati
     }
 }
 
-void GraphicElement::removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap)
+void GraphicElement::removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap)
 {
     for (auto it = portMap.begin(); it != portMap.end();) {
         if (it.value() == deletedPort) {

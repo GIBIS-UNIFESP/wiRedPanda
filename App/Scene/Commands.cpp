@@ -189,7 +189,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = scene->deserializationContext(portMap, version);
 
     for (auto *elm : CommandUtils::findElements(scene, otherIds)) {
@@ -470,7 +470,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
 
     for (auto *elm : elements) {
@@ -946,7 +946,7 @@ void ChangePortSizeCommand::undo()
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
 
     for (auto *elm : serializationOrder) {
@@ -1147,7 +1147,7 @@ void UpdateBlobCommand::loadData(QByteArray &itemData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
-    QMap<quint64, QNEPort *> portMap;
+    QHash<quint64, QNEPort *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
 
     for (auto *elm : elements) {

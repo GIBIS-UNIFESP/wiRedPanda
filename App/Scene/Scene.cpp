@@ -179,7 +179,7 @@ void Scene::unregisterItem(ItemWithId *item)
     m_itemRegistry.unregisterItem(item);
 }
 
-SerializationContext Scene::deserializationContext(QMap<quint64, QNEPort *> &portMap, const QVersionNumber &version)
+SerializationContext Scene::deserializationContext(QHash<quint64, QNEPort *> &portMap, const QVersionNumber &version)
 {
     SerializationContext context{portMap, version, contextDir()};
     context.blobRegistry = &m_icRegistry.blobMapRef();

@@ -11,6 +11,7 @@
 
 #include <QBitArray>
 #include <QGraphicsItem>
+#include <QHash>
 #include <QKeySequence>
 #include <QList>
 #include <QVersionNumber>
@@ -602,7 +603,7 @@ private:
     void setPortSize(const int size, const bool isInput);
 
     /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
-    static void removePortFromMap(QNEPort *deletedPort, QMap<quint64, QNEPort *> &portMap);
+    static void removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap);
 
     /// Removes input ports beyond \a inputSize_ (used when the loaded port count exceeds current limits).
     void removeSurplusInputs(const quint64 inputSize_, SerializationContext &context);

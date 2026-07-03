@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <QMap>
+#include <QHash>
 
 class ItemWithId;
 
@@ -51,6 +51,6 @@ public:
     void unregisterItem(ItemWithId *item);
 
 private:
-    QMap<int, ItemWithId *> m_elementRegistry;
+    QHash<int, ItemWithId *> m_elementRegistry;
     int m_lastId = 0;
 };
