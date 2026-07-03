@@ -5,7 +5,7 @@
 
 #include "App/Core/ThemeManager.h"
 
-ThemeHandler::ThemeHandler(MainWindow *mainWindow, MCPValidator *validator)
+ThemeHandler::ThemeHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {
 }

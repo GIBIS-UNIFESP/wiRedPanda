@@ -17,7 +17,7 @@ class BewavedDolphin;
 class SimulationHandler : public BaseHandler
 {
 public:
-    explicit SimulationHandler(MainWindow *mainWindow, MCPValidator *validator);
+    explicit SimulationHandler(MainWindow *mainWindow, const MCPValidator *validator);
     ~SimulationHandler();
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;

@@ -16,7 +16,7 @@
 class ElementHandler : public BaseHandler
 {
 public:
-    explicit ElementHandler(MainWindow *mainWindow, MCPValidator *validator);
+    explicit ElementHandler(MainWindow *mainWindow, const MCPValidator *validator);
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
 

@@ -13,7 +13,7 @@
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 
-ConnectionHandler::ConnectionHandler(MainWindow *mainWindow, MCPValidator *validator)
+ConnectionHandler::ConnectionHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {
 }

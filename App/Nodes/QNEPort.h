@@ -50,7 +50,9 @@ public:
     // --- Element Access ---
 
     /// Returns the graphic element that owns this port.
-    GraphicElement *graphicElement() const { return m_graphicElement; }
+    GraphicElement *graphicElement() { return m_graphicElement; }
+    /// \overload
+    const GraphicElement *graphicElement() const { return m_graphicElement; }
 
     // --- Identity & Status ---
 

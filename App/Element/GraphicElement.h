@@ -127,10 +127,10 @@ public:
     // --- Port Access ---
 
     /// Returns the input port at \a index (default 0).
-    QNEInputPort *inputPort(const int index = 0);
+    QNEInputPort *inputPort(const int index = 0) const;
 
     /// Returns the output port at \a index (default 0).
-    QNEOutputPort *outputPort(const int index = 0);
+    QNEOutputPort *outputPort(const int index = 0) const;
 
     /// Returns a const reference to the vector of all input ports.
     const QVector<QNEInputPort *> &inputs() const;

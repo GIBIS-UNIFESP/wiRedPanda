@@ -164,7 +164,7 @@ public:
     // --- Hit-testing ---
 
     /// Returns the topmost item at \a pos, prioritising ports over elements.
-    QGraphicsItem *itemAt(QPointF pos);
+    QGraphicsItem *itemAt(QPointF pos) const;
 
     /// Returns the last known mouse position in scene coordinates.
     [[nodiscard]] QPointF mousePos() const { return m_interaction.lastMousePos(); }
@@ -325,8 +325,8 @@ protected:
 private:
     // --- Helpers ---
 
-    QList<QGraphicsItem *> itemsAt(const QPointF pos);
-    const QVector<QNEConnection *> connections();
+    QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
+    const QVector<QNEConnection *> connections() const;
     void checkUpdateRequest();
     void updateUndoText(const QString &text);
     void updateRedoText(const QString &text);

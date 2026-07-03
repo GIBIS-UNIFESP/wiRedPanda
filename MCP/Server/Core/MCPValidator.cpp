@@ -190,7 +190,7 @@ ValidationResult MCPValidator::validateAgainstSchema(const json &data, const jso
     }
 }
 
-json MCPValidator::findCommandSchema(const QString &commandName)
+json MCPValidator::findCommandSchema(const QString &commandName) const
 {
     if (!m_commandSchemas.is_null() && m_commandSchemas.contains(commandName.toStdString())) {
         json schema = m_commandSchemas[commandName.toStdString()];
@@ -212,7 +212,7 @@ json MCPValidator::findCommandSchema(const QString &commandName)
     return json();
 }
 
-json MCPValidator::findResponseSchema(const QString &commandName)
+json MCPValidator::findResponseSchema(const QString &commandName) const
 {
     if (!m_responseSchemas.is_null() && m_responseSchemas.contains(commandName.toStdString())) {
         json schema = m_responseSchemas[commandName.toStdString()];

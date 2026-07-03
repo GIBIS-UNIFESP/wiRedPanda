@@ -15,7 +15,7 @@
 class FileHandler : public BaseHandler
 {
 public:
-    explicit FileHandler(MainWindow *mainWindow, MCPValidator *validator);
+    explicit FileHandler(MainWindow *mainWindow, const MCPValidator *validator);
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
 
