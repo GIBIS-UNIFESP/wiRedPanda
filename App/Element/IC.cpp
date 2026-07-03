@@ -413,8 +413,26 @@ void IC::loadFileDirectly(const QFileInfo &fileInfo)
     QHash<quint64, QNEPort *> portMap;
     SerializationContext subCtx = {portMap, preamble.version, fileInfo.absolutePath()};
     subCtx.blobRegistry = fileRegistry.isEmpty() ? nullptr : &fileRegistry;
-    const auto items = Serialization::deserialize(stream, subCtx);
+    QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
     file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
+
+    // Cleans up whatever is still in `items` if an exception unwinds through
+    // migrateFile()/processLoadedItems() below. processLoadedItems() drains
+    // items via takeFirst() as ownership transfers, so on success this guard
+    // finds an empty list and does nothing. Connections are nulled out before
+    // qDeleteAll(): a QNEConnection* still owned by an element's port at this
+    // point would otherwise be deleted twice — once directly here, once via
+    // that port's destructor (~QNEInputPort/~QNEOutputPort drain their
+    // connections).
+    auto itemsGuard = qScopeGuard([&items] {
+        for (qsizetype i = 0; i < items.size(); ++i) {
+            if (items[i] && items[i]->type() == QNEConnection::Type) {
+                delete items[i];
+                items[i] = nullptr;
+            }
+        }
+        qDeleteAll(items);
+    });
 
     if ((preamble.version < FormatRev::current) && Application::migrationEnabled) {
         migrateFile(fileInfo, items, preamble.version, fileRegistry);
@@ -468,7 +486,7 @@ void IC::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &it
     }
 }
 
-void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
+void IC::processLoadedItems(QList<QGraphicsItem *> &items)
 {
     // Snapshot the preview now, while the original Input/Output elements (buttons,
     // switches, LEDs, …) are still alive in `items`.  loadBoundaryElement() below
@@ -476,7 +494,16 @@ void IC::processLoadedItems(const QList<QGraphicsItem *> &items)
     // the simulation graph.
     generatePreviewPixmap(items);
 
-    for (auto *item : items) {
+    // Drain items one at a time: as ownership of each transfers (to
+    // m_internalConnections/m_internalElements) or the item is deleted
+    // (loadBoundaryElement()'s original Input/Output element), remove it from
+    // `items` immediately. This keeps the invariant that `items` only ever
+    // holds pointers this function has NOT yet taken ownership of — the
+    // caller's qScopeGuard relies on that to avoid double-deleting/deleting a
+    // dangling pointer if an exception unwinds through this loop.
+    while (!items.isEmpty()) {
+        auto *item = items.takeFirst();
+
         if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
             m_internalConnections.append(conn);
             continue;
@@ -540,7 +567,19 @@ void IC::deserializeAndLoad(const QByteArray &bytes, const QString &contextDir)
     QHash<quint64, QNEPort *> portMap;
     SerializationContext subCtx = {portMap, preamble.version, contextDir};
     subCtx.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
-    const auto items = Serialization::deserialize(stream, subCtx);
+    QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
+
+    // See loadFileDirectly()'s itemsGuard for why this nulls connections
+    // before qDeleteAll() and why it's a no-op on the success path.
+    auto itemsGuard = qScopeGuard([&items] {
+        for (qsizetype i = 0; i < items.size(); ++i) {
+            if (items[i] && items[i]->type() == QNEConnection::Type) {
+                delete items[i];
+                items[i] = nullptr;
+            }
+        }
+        qDeleteAll(items);
+    });
 
     // Parsing succeeded — now clear old state and apply
     resetInternalState();
