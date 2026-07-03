@@ -11,7 +11,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 // The ALU computes all four operations in parallel: 10 inputs (A[0-3], B[0-3],
@@ -85,7 +85,7 @@ struct RippleAlu4bitFixture {
     {
         int value = 0;
         for (int i = 0; i < 4; ++i) {
-            if (getInputStatus(leds[i])) {
+            if (inputStatus(leds[i])) {
                 value |= (1 << i);
             }
         }
@@ -280,9 +280,9 @@ void TestLevel4RippleALU4Bit::testAluResultAndCarry()
     QCOMPARE(f.readLanes(lanes), expectedResult & 0x0F);
 
     // CarryOut: unsigned overflow of A + B + CarryIn(0) past 4 bits.
-    QCOMPARE(getInputStatus(f.ledCarryOut), inputA + inputB > 0x0F);
+    QCOMPARE(inputStatus(f.ledCarryOut), inputA + inputB > 0x0F);
 
     // SubCarryOut: carry out of A + ~B + SubCarryIn(1) — HIGH exactly when the
     // subtraction does NOT borrow (A >= B), the 74181-style borrow convention.
-    QCOMPARE(getInputStatus(f.ledSubCarryOut), inputA >= inputB);
+    QCOMPARE(inputStatus(f.ledSubCarryOut), inputA >= inputB);
 }

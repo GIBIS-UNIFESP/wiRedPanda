@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Decoder4to16Fixture {
@@ -102,7 +102,7 @@ void TestLevel2Decoder4To16::test4to16Decoder()
     f.sim->update();
 
     for (int i = 0; i < 16; ++i) {
-        bool actual = getInputStatus(f.ledOut[i]);
+        bool actual = inputStatus(f.ledOut[i]);
         bool expected = (i == expectedActive);
         QCOMPARE(actual, expected);
     }
@@ -138,7 +138,7 @@ void TestLevel2Decoder4To16::test4to16DecoderMaxAddress()
     int activeCount = 0;
     int activeIndex = -1;
     for (int i = 0; i < 16; ++i) {
-        if (getInputStatus(f.ledOut[i])) {
+        if (inputStatus(f.ledOut[i])) {
             activeCount++;
             activeIndex = i;
         }
@@ -187,13 +187,13 @@ void TestLevel2Decoder4To16::testEnableGating()
     en->setOn(false);
     sim->update();
     for (auto *o : outs) {
-        QVERIFY(!getInputStatus(o));
+        QVERIFY(!inputStatus(o));
     }
 
     // Enable high → output 10 active, the rest low.
     en->setOn(true);
     sim->update();
     for (int i = 0; i < 16; ++i) {
-        QCOMPARE(getInputStatus(outs[i]), i == 10);
+        QCOMPARE(inputStatus(outs[i]), i == 10);
     }
 }

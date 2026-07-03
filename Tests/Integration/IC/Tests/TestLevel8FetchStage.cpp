@@ -14,7 +14,7 @@
 
 using TestUtils::setMultiBitInput;
 using TestUtils::readMultiBitOutput;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 // Fully-wired fetch-stage harness (the inline testFetchStage above leaves the
@@ -148,7 +148,7 @@ struct FetchStageFixture {
     {
         int v = 0;
         for (int i = 0; i < n; ++i) {
-            if (getInputStatus(leds[i])) {
+            if (inputStatus(leds[i])) {
                 v |= (1 << i);
             }
         }

@@ -13,7 +13,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Alu16bitFixture {
@@ -156,7 +156,7 @@ void TestLevel7ALU16Bit::testALU16Bit()
 
     int actualResult = 0;
     for (int i = 0; i < 16; ++i) {
-        if (getInputStatus(f.resultOut[i])) {
+        if (inputStatus(f.resultOut[i])) {
             actualResult |= (1 << i);
         }
     }
@@ -212,9 +212,9 @@ void TestLevel7ALU16Bit::testFlags16Bit()
 
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.zeroFlag), expectedZero);
-    QCOMPARE(getInputStatus(f.signFlag), expectedSign);
-    QCOMPARE(getInputStatus(f.carryFlag), expectedCarry);
+    QCOMPARE(inputStatus(f.zeroFlag), expectedZero);
+    QCOMPARE(inputStatus(f.signFlag), expectedSign);
+    QCOMPARE(inputStatus(f.carryFlag), expectedCarry);
 }
 
 void TestLevel7ALU16Bit::testInputPortIsolation_data()
@@ -245,7 +245,7 @@ void TestLevel7ALU16Bit::testInputPortIsolation()
 
     int result = 0;
     for (int i = 0; i < 16; ++i) {
-        if (getInputStatus(f.resultOut[i])) {
+        if (inputStatus(f.resultOut[i])) {
             result |= (1 << i);
         }
     }
@@ -280,6 +280,6 @@ void TestLevel7ALU16Bit::testOutputPortIsolation()
     f.sim->update();
 
     for (int i = 0; i < 16; ++i) {
-        QCOMPARE(getInputStatus(f.resultOut[i]), i == bitPosition);
+        QCOMPARE(inputStatus(f.resultOut[i]), i == bitPosition);
     }
 }

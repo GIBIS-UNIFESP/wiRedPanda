@@ -14,7 +14,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::setMultiBitInput;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -132,7 +132,7 @@ void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8Bit()
         if (!f.opOutputs.contains(opIndex)) {
             continue;
         }
-        bool isActive = getInputStatus(f.opOutputs[opIndex], 0);
+        bool isActive = inputStatus(f.opOutputs[opIndex], 0);
 
         if (opIndex == expectedOutputLine) {
             QVERIFY2(isActive, qPrintable(QString("Expected op[%1] to be active for instruction 0x%2")

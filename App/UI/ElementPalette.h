@@ -91,7 +91,7 @@ private:
     /// Loads category icons from the theme and applies them to the tab bar.
     void setupTabIcons();
     /// Returns the tab index whose widget has the given QObject \a objectName, or -1.
-    int  getTabIndex(const QString &objectName) const;
+    int  tabIndex(const QString &objectName) const;
 
     // --- Members ---
 

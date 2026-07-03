@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Decoder3to8Fixture {
@@ -105,7 +105,7 @@ void TestLevel2Decoder3To8::test3to8Decoder()
 
     for (int i = 0; i < 8; ++i) {
         bool expected = (i == expectedActive);
-        QCOMPARE(getInputStatus(f.ledOut[i]), expected);
+        QCOMPARE(inputStatus(f.ledOut[i]), expected);
     }
 }
 
@@ -148,13 +148,13 @@ void TestLevel2Decoder3To8::testEnableGating()
     en->setOn(false);
     sim->update();
     for (auto *o : outs) {
-        QVERIFY(!getInputStatus(o));
+        QVERIFY(!inputStatus(o));
     }
 
     // Enable high → output 5 active, the rest low.
     en->setOn(true);
     sim->update();
     for (int i = 0; i < 8; ++i) {
-        QCOMPARE(getInputStatus(outs[i]), i == 5);
+        QCOMPARE(inputStatus(outs[i]), i == 5);
     }
 }

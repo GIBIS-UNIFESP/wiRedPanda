@@ -358,7 +358,7 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
 
     sw->setOn(true);
     sim->update();
-    QVERIFY(TestUtils::getInputStatus(led));
+    QVERIFY(TestUtils::inputStatus(led));
 
     // Cancel the in-progress wire (mirrors ConnectionManager::deleteEditedConnection)
     // and tick again — nothing in Simulation held onto the freed wire, so this
@@ -368,7 +368,7 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
 
     sw->setOn(false);
     sim->update();
-    QVERIFY(!TestUtils::getInputStatus(led));
+    QVERIFY(!TestUtils::inputStatus(led));
 }
 
 // ==========================================================================

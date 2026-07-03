@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct SrLatchFixture {
@@ -89,38 +89,38 @@ void TestLevel1SRLatch::testSRLatchSequential()
     f.setIn->setOn(false);
     f.resetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 after reset
-    QCOMPARE(getInputStatus(f.ledQBar), true);   // Q_bar is the complement
+    QCOMPARE(inputStatus(f.ledQ), false);     // Q=0 after reset
+    QCOMPARE(inputStatus(f.ledQBar), true);   // Q_bar is the complement
 
     // Step 2: Release reset, verify hold (Q should stay 0)
     f.resetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 held
-    QCOMPARE(getInputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), false);     // Q=0 held
+    QCOMPARE(inputStatus(f.ledQBar), true);
 
     // Step 3: Set the latch to Q=1
     f.setIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);      // Q=1 after set
-    QCOMPARE(getInputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), true);      // Q=1 after set
+    QCOMPARE(inputStatus(f.ledQBar), false);
 
     // Step 4: Release set, verify hold (Q should stay 1)
     f.setIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);      // Q=1 held
-    QCOMPARE(getInputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), true);      // Q=1 held
+    QCOMPARE(inputStatus(f.ledQBar), false);
 
     // Step 5: Reset again to verify we can change state
     f.resetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 after reset
-    QCOMPARE(getInputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), false);     // Q=0 after reset
+    QCOMPARE(inputStatus(f.ledQBar), true);
 
     // Step 6: Release reset, verify hold again
     f.resetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 held
-    QCOMPARE(getInputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), false);     // Q=0 held
+    QCOMPARE(inputStatus(f.ledQBar), true);
 }
 
 // S=R=1 is the "forbidden" SR-latch input. It is NOT undefined in this
@@ -137,22 +137,22 @@ void TestLevel1SRLatch::testInvalidStateBothHigh()
     f.setIn->setOn(true);
     f.resetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);     // Q=0 (NOR with a HIGH input)
-    QCOMPARE(getInputStatus(f.ledQBar), false);  // Q_bar=0 too — the contention state
+    QCOMPARE(inputStatus(f.ledQ), false);     // Q=0 (NOR with a HIGH input)
+    QCOMPARE(inputStatus(f.ledQBar), false);  // Q_bar=0 too — the contention state
 
     // Release R (S still 1): latch resolves to the Set state Q=1
     f.resetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), true);
-    QCOMPARE(getInputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), true);
+    QCOMPARE(inputStatus(f.ledQBar), false);
 
     // Drive S=R=1 again, then release S: latch resolves to the Reset state Q=0
     f.resetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);
-    QCOMPARE(getInputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), false);
+    QCOMPARE(inputStatus(f.ledQBar), false);
     f.setIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledQ), false);
-    QCOMPARE(getInputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), false);
+    QCOMPARE(inputStatus(f.ledQBar), true);
 }

@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Mux2to1Fixture {
@@ -107,7 +107,7 @@ void TestLevel2MUX2To1::testMux2to1()
     f.select->setOn(selectValue);
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.output), expectedOutput);
+    QCOMPARE(inputStatus(f.output), expectedOutput);
 }
 
 // Active-high Enable (74153-style strobe): Enable=0 forces the output low;
@@ -140,10 +140,10 @@ void TestLevel2MUX2To1::testEnableGating()
     sel->setOn(true);
     en->setOn(false);
     sim->update();
-    QVERIFY(!getInputStatus(out));
+    QVERIFY(!inputStatus(out));
 
     // Enable high → output follows the selected Data[1]=1.
     en->setOn(true);
     sim->update();
-    QVERIFY(getInputStatus(out));
+    QVERIFY(inputStatus(out));
 }

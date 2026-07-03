@@ -105,7 +105,7 @@ QJsonObject FileHandler::handleNewCircuit(const QJsonObject &, const QJsonValue 
     return tryCommand([&]() -> QJsonObject {
         m_mainWindow->createNewTab();
 
-        Scene *scene = getCurrentScene();
+        Scene *scene = currentScene();
         if (scene && scene->simulation()) {
             scene->simulation()->stop();
         }
@@ -130,7 +130,7 @@ QJsonObject FileHandler::handleCloseCircuit(const QJsonObject &, const QJsonValu
             return createErrorResponse("No tabs to close", requestId, JsonRpcError::OperationFailed);
         }
 
-        Scene *scene = getCurrentScene();
+        Scene *scene = currentScene();
         if (scene && scene->simulation()) {
             scene->simulation()->stop();
         }
@@ -185,7 +185,7 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
     QString format = params.value("format").toString().toLower();
     int padding = params.value("padding").toInt(20);
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }

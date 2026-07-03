@@ -14,7 +14,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 
 void TestMUXDEMUXComprehensive::initTestCase()
 {
@@ -79,7 +79,7 @@ void TestMUXDEMUXComprehensive::testMux2to1()
     sel.setOn(selectLine);
     simulation->update();
 
-    int output = getInputStatus(&out) ? 1 : 0;
+    int output = inputStatus(&out) ? 1 : 0;
     QCOMPARE(output, expectedOutput);
 }
 
@@ -152,7 +152,7 @@ void TestMUXDEMUXComprehensive::testMux4to1()
     sel1.setOn((selectValue >> 1) & 1);
     simulation->update();
 
-    int output = getInputStatus(&out) ? 1 : 0;
+    int output = inputStatus(&out) ? 1 : 0;
     QCOMPARE(output, expectedOutput);
 }
 
@@ -211,7 +211,7 @@ void TestMUXDEMUXComprehensive::testMux8to1()
     }
     simulation->update();
 
-    int output = getInputStatus(&out) ? 1 : 0;
+    int output = inputStatus(&out) ? 1 : 0;
     QCOMPARE(output, expectedOutput);
 
     // Verify all other inputs output 0 when selected (because they remain OFF)
@@ -223,7 +223,7 @@ void TestMUXDEMUXComprehensive::testMux8to1()
         }
         simulation->update();
 
-        output = getInputStatus(&out) ? 1 : 0;
+        output = inputStatus(&out) ? 1 : 0;
         QCOMPARE(output, 0); // dataIn[idx] is OFF, so output should be 0
     }
 }
@@ -285,7 +285,7 @@ void TestMUXDEMUXComprehensive::testMuxSelectLineTransitions()
     sel1.setOn((initialSelect >> 1) & 1);
     simulation->update();
 
-    int output = getInputStatus(&out) ? 1 : 0;
+    int output = inputStatus(&out) ? 1 : 0;
     QCOMPARE(output, initialExpected);
 
     // Transition to final select
@@ -293,7 +293,7 @@ void TestMUXDEMUXComprehensive::testMuxSelectLineTransitions()
     sel1.setOn((finalSelect >> 1) & 1);
     simulation->update();
 
-    output = getInputStatus(&out) ? 1 : 0;
+    output = inputStatus(&out) ? 1 : 0;
     QCOMPARE(output, finalExpected);
 }
 
@@ -361,7 +361,7 @@ void TestMUXDEMUXComprehensive::testMuxCascaded()
     sel1.setOn(secondarySelect);
     simulation->update();
 
-    int output = getInputStatus(&out) ? 1 : 0;
+    int output = inputStatus(&out) ? 1 : 0;
     QCOMPARE(output, expectedOutput);
 }
 
@@ -422,7 +422,7 @@ void TestMUXDEMUXComprehensive::testMuxDataInputPatterns()
     sel1.setOn((selectIndex >> 1) & 1);
     simulation->update();
 
-    int output = getInputStatus(&out) ? 1 : 0;
+    int output = inputStatus(&out) ? 1 : 0;
     QCOMPARE(output, expectedOutput);
 }
 
@@ -473,8 +473,8 @@ void TestMUXDEMUXComprehensive::testDemux1to2()
     sel.setOn(selectLine);
     simulation->update();
 
-    int output0 = getInputStatus(&out0) ? 1 : 0;
-    int output1 = getInputStatus(&out1) ? 1 : 0;
+    int output0 = inputStatus(&out0) ? 1 : 0;
+    int output1 = inputStatus(&out1) ? 1 : 0;
 
     QCOMPARE(output0, expectedOut0);
     QCOMPARE(output1, expectedOut1);
@@ -533,7 +533,7 @@ void TestMUXDEMUXComprehensive::testDemux1to4()
 
     // Only selected output should be on
     for (int i = 0; i < 4; ++i) {
-        int output = getInputStatus(outs[i]) ? 1 : 0;
+        int output = inputStatus(outs[i]) ? 1 : 0;
         if (i == selectIndex) {
             QCOMPARE(output, 1);
         } else {
@@ -595,7 +595,7 @@ void TestMUXDEMUXComprehensive::testDemux1to8()
 
     // Only selected output should be on
     for (int i = 0; i < 8; ++i) {
-        int output = getInputStatus(outs[i]) ? 1 : 0;
+        int output = inputStatus(outs[i]) ? 1 : 0;
         if (i == selectIndex) {
             QCOMPARE(output, 1);
         } else {
@@ -661,7 +661,7 @@ void TestMUXDEMUXComprehensive::testDemuxDataInputVariations()
 
     // Only selected output should match data value
     for (int i = 0; i < 4; ++i) {
-        int output = getInputStatus(outs[i]) ? 1 : 0;
+        int output = inputStatus(outs[i]) ? 1 : 0;
         if (i == selectIndex) {
             QCOMPARE(output, dataValue);
         } else {
@@ -726,7 +726,7 @@ void TestMUXDEMUXComprehensive::testDemuxSelectTransitions()
 
     // Verify initial state
     for (int i = 0; i < 4; ++i) {
-        int output = getInputStatus(outs[i]) ? 1 : 0;
+        int output = inputStatus(outs[i]) ? 1 : 0;
         if (i == initialSelect) {
             QCOMPARE(output, 1);
         } else {
@@ -742,7 +742,7 @@ void TestMUXDEMUXComprehensive::testDemuxSelectTransitions()
 
     // Verify final state
     for (int i = 0; i < 4; ++i) {
-        int output = getInputStatus(outs[i]) ? 1 : 0;
+        int output = inputStatus(outs[i]) ? 1 : 0;
         if (i == finalSelect) {
             QCOMPARE(output, 1);
         } else {
@@ -844,7 +844,7 @@ void TestMUXDEMUXComprehensive::testMuxDemuxChained()
 
     // Only the demux-selected output should be on
     for (int i = 0; i < 4; ++i) {
-        int output = getInputStatus(outs[i]) ? 1 : 0;
+        int output = inputStatus(outs[i]) ? 1 : 0;
         if (i == demuxSelect) {
             QCOMPARE(output, 1);
         } else {

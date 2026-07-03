@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Comparator4bitFixture {
@@ -128,9 +128,9 @@ void TestLevel3Comparator4Bit::testComparator4Bit()
     }
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.ledGreater), expectedGreater);
-    QCOMPARE(getInputStatus(f.ledEqual), expectedEqual);
-    QCOMPARE(getInputStatus(f.ledLess), expectedLess);
+    QCOMPARE(inputStatus(f.ledGreater), expectedGreater);
+    QCOMPARE(inputStatus(f.ledEqual), expectedEqual);
+    QCOMPARE(inputStatus(f.ledLess), expectedLess);
 }
 
 // 74LS85 cascade behaviour: when the two nibbles are EQUAL the result follows
@@ -157,34 +157,34 @@ void TestLevel3Comparator4Bit::testComparator4BitCascade()
     setAB(5, 5);
     setCascade(true, false, false);   // lower stage said A>B
     f.sim->update();
-    QVERIFY(getInputStatus(f.ledGreater));
-    QVERIFY(!getInputStatus(f.ledEqual));
-    QVERIFY(!getInputStatus(f.ledLess));
+    QVERIFY(inputStatus(f.ledGreater));
+    QVERIFY(!inputStatus(f.ledEqual));
+    QVERIFY(!inputStatus(f.ledLess));
 
     setCascade(false, true, false);   // lower stage said A==B
     f.sim->update();
-    QVERIFY(!getInputStatus(f.ledGreater));
-    QVERIFY(getInputStatus(f.ledEqual));
-    QVERIFY(!getInputStatus(f.ledLess));
+    QVERIFY(!inputStatus(f.ledGreater));
+    QVERIFY(inputStatus(f.ledEqual));
+    QVERIFY(!inputStatus(f.ledLess));
 
     setCascade(false, false, true);   // lower stage said A<B
     f.sim->update();
-    QVERIFY(!getInputStatus(f.ledGreater));
-    QVERIFY(!getInputStatus(f.ledEqual));
-    QVERIFY(getInputStatus(f.ledLess));
+    QVERIFY(!inputStatus(f.ledGreater));
+    QVERIFY(!inputStatus(f.ledEqual));
+    QVERIFY(inputStatus(f.ledLess));
 
     // Unequal nibbles: local comparison wins regardless of the cascade inputs.
     setAB(9, 4);                       // A > B locally
     setCascade(false, false, true);    // lower stage says A<B — must be ignored
     f.sim->update();
-    QVERIFY(getInputStatus(f.ledGreater));
-    QVERIFY(!getInputStatus(f.ledEqual));
-    QVERIFY(!getInputStatus(f.ledLess));
+    QVERIFY(inputStatus(f.ledGreater));
+    QVERIFY(!inputStatus(f.ledEqual));
+    QVERIFY(!inputStatus(f.ledLess));
 
     setAB(4, 9);                       // A < B locally
     setCascade(true, false, false);    // lower stage says A>B — must be ignored
     f.sim->update();
-    QVERIFY(!getInputStatus(f.ledGreater));
-    QVERIFY(!getInputStatus(f.ledEqual));
-    QVERIFY(getInputStatus(f.ledLess));
+    QVERIFY(!inputStatus(f.ledGreater));
+    QVERIFY(!inputStatus(f.ledEqual));
+    QVERIFY(inputStatus(f.ledLess));
 }

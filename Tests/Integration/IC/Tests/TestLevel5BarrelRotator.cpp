@@ -11,7 +11,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct BarrelRotatorFixture {
@@ -130,7 +130,7 @@ void TestLevel5BarrelRotator::testBarrelRotator()
 
     int actualResult = 0;
     for (int i = 0; i < 4; ++i) {
-        if (getInputStatus(f.resultOutputs[i])) {
+        if (inputStatus(f.resultOutputs[i])) {
             actualResult |= (1 << i);
         }
     }

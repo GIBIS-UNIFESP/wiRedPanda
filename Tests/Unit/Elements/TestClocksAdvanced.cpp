@@ -26,17 +26,17 @@ void TestClocksAdvanced::testClockBehavior()
 
     // Clock is set to ON by resetClock() during initSimulation(), LED should be ON
     sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);
+    QCOMPARE(TestUtils::inputStatus(&led), true);
 
     // Turn clock OFF, LED should be OFF
     clock.setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);
+    QCOMPARE(TestUtils::inputStatus(&led), false);
 
     // Turn clock ON, LED should be ON
     clock.setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);
+    QCOMPARE(TestUtils::inputStatus(&led), true);
 
     // Verify frequency property works
     clock.setFrequency(1000.0);

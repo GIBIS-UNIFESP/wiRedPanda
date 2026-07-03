@@ -11,7 +11,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ParityCheckerFixture {
@@ -119,7 +119,7 @@ void TestLevel2ParityChecker::testOddParityChecker()
     f.swP->setOn(static_cast<bool>(parityBit));
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.ledResult) ? 1 : 0, expectedResult);
+    QCOMPARE(inputStatus(f.ledResult) ? 1 : 0, expectedResult);
 }
 
 // 74180 cascade-in XORs a chained parity bit into the check result, so toggling
@@ -136,9 +136,9 @@ void TestLevel2ParityChecker::testCascadeIn()
 
     f.cascadeIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledResult), true);    // 1 XOR 0 = 1
+    QCOMPARE(inputStatus(f.ledResult), true);    // 1 XOR 0 = 1
 
     f.cascadeIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.ledResult), false);   // 1 XOR 1 = 0
+    QCOMPARE(inputStatus(f.ledResult), false);   // 1 XOR 1 = 0
 }

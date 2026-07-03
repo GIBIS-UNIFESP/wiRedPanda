@@ -13,7 +13,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -110,7 +110,7 @@ struct RegFile4x4Fixture {
         sim->update();
         int value = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(readData[bit])) {
+            if (inputStatus(readData[bit])) {
                 value |= (1 << bit);
             }
         }
@@ -121,7 +121,7 @@ struct RegFile4x4Fixture {
     {
         int value = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(readData2[bit])) {
+            if (inputStatus(readData2[bit])) {
                 value |= (1 << bit);
             }
         }
@@ -289,7 +289,7 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readmux()
     // Read the data
     int readValue = 0;
     for (int bit = 0; bit < 4; ++bit) {
-        bool bitValue = getInputStatus(f.readData[bit]);
+        bool bitValue = inputStatus(f.readData[bit]);
         readValue |= (bitValue ? (1 << bit) : 0);
     }
 
@@ -349,7 +349,7 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readaddr()
 
     int readValue = 0;
     for (int bit = 0; bit < 4; ++bit) {
-        bool bitVal = getInputStatus(f.readData[bit]);
+        bool bitVal = inputStatus(f.readData[bit]);
         readValue |= (bitVal ? (1 << bit) : 0);
     }
 
@@ -441,7 +441,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -466,7 +466,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -498,7 +498,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
             int readValue = 0;
             for (int bit = 0; bit < 4; ++bit) {
-                if (getInputStatus(f.readData[bit])) {
+                if (inputStatus(f.readData[bit])) {
                     readValue |= (1 << bit);
                 }
             }
@@ -536,7 +536,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.sim->update();
         int val0 = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) val0 |= (1 << bit);
+            if (inputStatus(f.readData[bit])) val0 |= (1 << bit);
         }
 
         f.readAddr[0]->setOn(true);
@@ -544,7 +544,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.sim->update();
         int val1 = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) val1 |= (1 << bit);
+            if (inputStatus(f.readData[bit])) val1 |= (1 << bit);
         }
 
         QCOMPARE(val0, 0xA);
@@ -576,7 +576,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -611,7 +611,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -641,7 +641,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -673,7 +673,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -703,7 +703,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -738,7 +738,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -776,7 +776,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readVal0 = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readVal0 |= (1 << bit);
             }
         }
@@ -796,7 +796,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readVal1 = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readVal1 |= (1 << bit);
             }
         }
@@ -826,7 +826,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -855,7 +855,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -891,7 +891,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -926,7 +926,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
             int readValue = 0;
             for (int bit = 0; bit < 4; ++bit) {
-                if (getInputStatus(f.readData[bit])) {
+                if (inputStatus(f.readData[bit])) {
                     readValue |= (1 << bit);
                 }
             }
@@ -960,7 +960,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
             int readValue = 0;
             for (int bit = 0; bit < 4; ++bit) {
-                if (getInputStatus(f.readData[bit])) {
+                if (inputStatus(f.readData[bit])) {
                     readValue |= (1 << bit);
                 }
             }
@@ -994,7 +994,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
             int readValue = 0;
             for (int bit = 0; bit < 4; ++bit) {
-                if (getInputStatus(f.readData[bit])) {
+                if (inputStatus(f.readData[bit])) {
                     readValue |= (1 << bit);
                 }
             }
@@ -1030,7 +1030,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
             int readValue = 0;
             for (int bit = 0; bit < 4; ++bit) {
-                if (getInputStatus(f.readData[bit])) {
+                if (inputStatus(f.readData[bit])) {
                     readValue |= (1 << bit);
                 }
             }
@@ -1066,7 +1066,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -1111,7 +1111,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
             int readValue = 0;
             for (int bit = 0; bit < 4; ++bit) {
-                if (getInputStatus(f.readData[bit])) {
+                if (inputStatus(f.readData[bit])) {
                     readValue |= (1 << bit);
                 }
             }
@@ -1181,7 +1181,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
 
             int readValue = 0;
             for (int bit = 0; bit < 4; ++bit) {
-                if (getInputStatus(f.readData[bit])) {
+                if (inputStatus(f.readData[bit])) {
                     readValue |= (1 << bit);
                 }
             }
@@ -1214,7 +1214,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         f.sim->update();
         int val0 = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) val0 |= (1 << bit);
+            if (inputStatus(f.readData[bit])) val0 |= (1 << bit);
         }
 
         f.readAddr[0]->setOn(true);
@@ -1222,7 +1222,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         f.sim->update();
         int val1 = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) val1 |= (1 << bit);
+            if (inputStatus(f.readData[bit])) val1 |= (1 << bit);
         }
 
         QCOMPARE(val0, 0xA);
@@ -1257,7 +1257,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }
@@ -1318,7 +1318,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
 
         int readValue = 0;
         for (int bit = 0; bit < 4; ++bit) {
-            if (getInputStatus(f.readData[bit])) {
+            if (inputStatus(f.readData[bit])) {
                 readValue |= (1 << bit);
             }
         }

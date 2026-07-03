@@ -11,7 +11,7 @@
 #include "App/Element/GraphicElements/Not.h"
 #include "Tests/Common/TestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 
 // Builds an 8-to-256 decoder circuit: 8 inputs, 8 NOTs, 256 8-input ANDs, 256 LEDs.
 // setAddress() sets the address bits and calls simulation->update().
@@ -106,7 +106,7 @@ void TestDecoder8To256::test8to256Decoder()
         // Verify one-hot property: exactly one output active at the correct address
         int activeCount = 0;
         for (int i = 0; i < 256; ++i) {
-            if (getInputStatus(&f.ledOut[i])) {
+            if (inputStatus(&f.ledOut[i])) {
                 ++activeCount;
                 QCOMPARE(i, address);
             }

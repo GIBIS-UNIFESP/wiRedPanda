@@ -11,7 +11,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Mux4to1Fixture {
@@ -114,7 +114,7 @@ void TestLevel2MUX4To1::testMultiplexer4to1()
             f.sim->update();
 
             bool expectedInput = f.inputs[s]->isOn();
-            bool actualOutput = getInputStatus(f.output);
+            bool actualOutput = inputStatus(f.output);
             QCOMPARE(actualOutput, expectedInput);
         }
     } else {
@@ -123,7 +123,7 @@ void TestLevel2MUX4To1::testMultiplexer4to1()
         f.sim->update();
 
         bool expectedInput = f.inputs[selectValue]->isOn();
-        bool actualOutput = getInputStatus(f.output);
+        bool actualOutput = inputStatus(f.output);
         QCOMPARE(actualOutput, expectedInput);
     }
 }
@@ -166,10 +166,10 @@ void TestLevel2MUX4To1::testEnableGating()
     s1->setOn(true);
     en->setOn(false);
     sim->update();
-    QVERIFY(!getInputStatus(out));
+    QVERIFY(!inputStatus(out));
 
     // Enable high → output follows the selected Data[2]=1.
     en->setOn(true);
     sim->update();
-    QVERIFY(getInputStatus(out));
+    QVERIFY(inputStatus(out));
 }

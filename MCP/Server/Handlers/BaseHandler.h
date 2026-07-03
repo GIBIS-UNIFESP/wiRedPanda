@@ -34,7 +34,7 @@ public:
                                     const QJsonValue &requestId = QJsonValue(),
                                     int code = JsonRpcError::InternalError);
     QJsonObject createSuccessResponse(const QJsonObject &result = {}, const QJsonValue &requestId = QJsonValue());
-    Scene *getCurrentScene();
+    Scene *currentScene();
     bool validateElementId(int elementId, const QString &paramName, QString &errorMsg);
     bool validateNonEmptyString(const QJsonValue &value, const QString &paramName, QString &errorMsg);
     bool validateNonNegativeInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg);
@@ -67,18 +67,18 @@ public:
      * \brief Validates \a paramName in \a params, looks up the element, and returns it.
      * \details Combines validatePositiveInteger() + validateElementId() + itemById() +
      * dynamic_cast in one call. On failure sets \a errorMsg and returns nullptr.
-     * Typical use: `auto *e = getValidatedElement(params, "element_id", errorMsg); if (!e) return createErrorResponse(errorMsg, requestId);`
+     * Typical use: `auto *e = validatedElement(params, "element_id", errorMsg); if (!e) return createErrorResponse(errorMsg, requestId);`
      */
-    GraphicElement *getValidatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg);
+    GraphicElement *validatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg);
 
     // Port lookup by label (similar to CircuitBuilder in testutils.cpp)
-    bool getInputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg);
-    bool getOutputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg);
-    QString getAvailableInputPorts(GraphicElement *element);
-    QString getAvailableOutputPorts(GraphicElement *element);
+    bool inputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg);
+    bool outputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg);
+    QString availableInputPorts(GraphicElement *element);
+    QString availableOutputPorts(GraphicElement *element);
 
 protected:
-    QString getAvailablePorts(GraphicElement *element, bool isOutput);
+    QString availablePorts(GraphicElement *element, bool isOutput);
     // Shared resources
     MainWindow *m_mainWindow;
     MCPValidator *m_validator;

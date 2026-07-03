@@ -79,7 +79,7 @@ QJsonObject SimulationHandler::handleSimulationControl(const QJsonObject &params
 
     QString action = params.value("action").toString();
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -108,7 +108,7 @@ QJsonObject SimulationHandler::handleSimulationControl(const QJsonObject &params
 
 QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, const QJsonValue &requestId)
 {
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -262,7 +262,7 @@ QJsonObject SimulationHandler::handleCreateIC(const QJsonObject &params, const Q
         return createErrorResponse("Missing required parameter: name", requestId, JsonRpcError::InvalidParams);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -313,7 +313,7 @@ QJsonObject SimulationHandler::handleInstantiateIC(const QJsonObject &params, co
         return createErrorResponse("Missing required parameters: ic_name, x, y", requestId, JsonRpcError::InvalidParams);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -452,7 +452,7 @@ QJsonObject SimulationHandler::handleListICs(const QJsonObject &, const QJsonVal
 QJsonObject SimulationHandler::handleUndo(const QJsonObject &params, const QJsonValue &requestId)
 {
     (void)params;  // Parameter not used
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -487,7 +487,7 @@ QJsonObject SimulationHandler::handleUndo(const QJsonObject &params, const QJson
 QJsonObject SimulationHandler::handleRedo(const QJsonObject &params, const QJsonValue &requestId)
 {
     (void)params;  // Parameter not used
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -522,7 +522,7 @@ QJsonObject SimulationHandler::handleRedo(const QJsonObject &params, const QJson
 QJsonObject SimulationHandler::handleGetUndoStack(const QJsonObject &params, const QJsonValue &requestId)
 {
     (void)params;  // Parameter not used
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -552,7 +552,7 @@ QJsonObject SimulationHandler::handleEmbedIC(const QJsonObject &params, const QJ
         return createErrorResponse("Missing required parameter: element_id", requestId, JsonRpcError::InvalidParams);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -629,7 +629,7 @@ QJsonObject SimulationHandler::handleExtractIC(const QJsonObject &params, const 
         return createErrorResponse("Missing required parameter: blob_name", requestId, JsonRpcError::InvalidParams);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }

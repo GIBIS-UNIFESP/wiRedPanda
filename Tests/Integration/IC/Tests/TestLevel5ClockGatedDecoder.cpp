@@ -11,7 +11,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ClockGatedDecoderFixture {
@@ -132,7 +132,7 @@ void TestLevel5ClockGatedDecoder::testClockGatedDecoder()
             int activeCount = 0;
             int activeOutput = -1;
             for (int i = 0; i < 8; i++) {
-                if (getInputStatus(f.outputs[i])) {
+                if (inputStatus(f.outputs[i])) {
                     activeCount++;
                     activeOutput = i;
                 }
@@ -156,11 +156,11 @@ void TestLevel5ClockGatedDecoder::testClockGatedDecoder()
         if (clockEnable) {
             for (int i = 0; i < 8; i++) {
                 bool expectedState = (i == expectedActiveOutput);
-                QCOMPARE(getInputStatus(f.outputs[i]), expectedState);
+                QCOMPARE(inputStatus(f.outputs[i]), expectedState);
             }
         } else {
             for (int i = 0; i < 8; i++) {
-                QCOMPARE(getInputStatus(f.outputs[i]), false);
+                QCOMPARE(inputStatus(f.outputs[i]), false);
             }
         }
     }
@@ -183,13 +183,13 @@ void TestLevel5ClockGatedDecoder::testWriteEnableGating()
     f.writeEnable->setOn(false);
     f.sim->update();
     for (int i = 0; i < 8; i++) {
-        QCOMPARE(getInputStatus(f.outputs[i]), false);
+        QCOMPARE(inputStatus(f.outputs[i]), false);
     }
 
     // writeEnable=1: output 5 active (one-hot decode restored)
     f.writeEnable->setOn(true);
     f.sim->update();
     for (int i = 0; i < 8; i++) {
-        QCOMPARE(getInputStatus(f.outputs[i]), i == 5);
+        QCOMPARE(inputStatus(f.outputs[i]), i == 5);
     }
 }
