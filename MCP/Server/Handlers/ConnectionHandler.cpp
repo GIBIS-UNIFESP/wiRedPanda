@@ -3,6 +3,8 @@
 
 #include "MCP/Server/Handlers/ConnectionHandler.h"
 
+#include <memory>
+
 #include <QJsonArray>
 
 #include "App/Element/ElementFactory.h"
@@ -88,19 +90,18 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
-    auto *connection = new QNEConnection();
+    auto connection = std::make_unique<QNEConnection>();
     connection->setStartPort(startPort);
     connection->setEndPort(endPort);
     connection->updatePath();
 
     try {
-        scene->receiveCommand(new AddItemsCommand({connection}, scene));
+        scene->receiveCommand(new AddItemsCommand({connection.get()}, scene));
+        connection.release(); // scene/command takes ownership
     } catch (const std::exception &e) {
-        delete connection;
         return createErrorResponse(QString("Failed to connect elements: %1").arg(e.what()),
                                    requestId, JsonRpcError::ConnectionFailed);
     } catch (...) {
-        delete connection;
         return createErrorResponse("Failed to connect elements: Unknown exception",
                                    requestId, JsonRpcError::ConnectionFailed);
     }

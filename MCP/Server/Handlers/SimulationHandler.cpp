@@ -30,10 +30,10 @@ SimulationHandler::SimulationHandler(MainWindow *mainWindow, const MCPValidator 
 
 SimulationHandler::~SimulationHandler()
 {
-    if (m_persistentDolphin) {
-        m_persistentDolphin->deleteLater();
-        m_persistentDolphin = nullptr;
-    }
+    // SimulationHandler is destroyed synchronously (not necessarily from within a
+    // running event loop), so deleteLater() may never fire — delete directly.
+    delete m_persistentDolphin;
+    m_persistentDolphin = nullptr;
 }
 
 QJsonObject SimulationHandler::handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId)

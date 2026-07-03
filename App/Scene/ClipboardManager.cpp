@@ -3,6 +3,8 @@
 
 #include "App/Scene/ClipboardManager.h"
 
+#include <memory>
+
 #include <QApplication>
 #include <QClipboard>
 #include <QDrag>
@@ -39,7 +41,7 @@ void ClipboardManager::copy()
     Serialization::writePandaHeader(stream);
     serializeItems(m_scene->selectedItems(), stream);
 
-    auto *mimeData = new QMimeData();
+    auto mimeData = std::make_unique<QMimeData>();
     mimeData->setData(MimeType::Clipboard, itemData);
 
     // Include only blobs used by the selected elements
@@ -68,7 +70,7 @@ void ClipboardManager::copy()
         mimeData->setData(MimeType::BlobRegistryV2, regBytesV2);
     }
 
-    QApplication::clipboard()->setMimeData(mimeData);
+    QApplication::clipboard()->setMimeData(mimeData.release());
 }
 
 void ClipboardManager::cut()
@@ -95,7 +97,7 @@ void ClipboardManager::cut()
     Serialization::writePandaHeader(stream);
     serializeAndDelete(m_scene->selectedItems(), stream);
 
-    auto *mimeData = new QMimeData();
+    auto mimeData = std::make_unique<QMimeData>();
     mimeData->setData(MimeType::Clipboard, itemData);
 
     if (!usedBlobs.isEmpty()) {
@@ -113,7 +115,7 @@ void ClipboardManager::cut()
         mimeData->setData(MimeType::BlobRegistryV2, regBytesV2);
     }
 
-    QApplication::clipboard()->setMimeData(mimeData);
+    QApplication::clipboard()->setMimeData(mimeData.release());
 }
 
 void ClipboardManager::paste()
@@ -229,11 +231,11 @@ void ClipboardManager::cloneDrag(const QPointF &mousePos)
     stream << mousePos;
     serializeItems(m_scene->selectedItems(), stream);
 
-    auto *mimeData = new QMimeData();
+    auto mimeData = std::make_unique<QMimeData>();
     mimeData->setData(MimeType::CloneDrag, itemData);
 
     auto *drag = new QDrag(m_scene);
-    drag->setMimeData(mimeData);
+    drag->setMimeData(mimeData.release());
     drag->setPixmap(QPixmap::fromImage(image));
     // Hot-spot aligns the drag image to the original element positions under the cursor
     QPointF offset = view->transform().map(mousePos - rect.topLeft());
