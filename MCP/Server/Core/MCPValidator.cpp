@@ -75,7 +75,11 @@ QString MCPValidator::schemaPath() const
 
 ValidationResult MCPValidator::validateCommand(const QJsonObject &command)
 {
-    return validateCommand(qjsonToNlohmann(command));
+    try {
+        return validateCommand(qjsonToNlohmann(command));
+    } catch (const std::exception &e) {
+        return ValidationResult(false, QString("Malformed command: %1").arg(e.what()));
+    }
 }
 
 ValidationResult MCPValidator::validateCommand(const json &command)
@@ -106,7 +110,11 @@ ValidationResult MCPValidator::validateCommand(const json &command)
 
 ValidationResult MCPValidator::validateResponse(const QJsonObject &response, const QString &expectedCommand)
 {
-    return validateResponse(qjsonToNlohmann(response), expectedCommand);
+    try {
+        return validateResponse(qjsonToNlohmann(response), expectedCommand);
+    } catch (const std::exception &e) {
+        return ValidationResult(false, QString("Malformed response: %1").arg(e.what()));
+    }
 }
 
 ValidationResult MCPValidator::validateResponse(const json &response, const QString &expectedCommand)
@@ -251,7 +259,11 @@ json MCPValidator::qjsonToNlohmann(const QJsonObject &qjson)
 {
     QJsonDocument doc(qjson);
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
-    return json::parse(jsonData.toStdString());
+    try {
+        return json::parse(jsonData.toStdString());
+    } catch (const json::parse_error &e) {
+        throw std::runtime_error(std::string("qjsonToNlohmann: JSON parse error: ") + e.what());
+    }
 }
 
 QJsonObject MCPValidator::nlohmannToQJson(const json &nlohmannJson)

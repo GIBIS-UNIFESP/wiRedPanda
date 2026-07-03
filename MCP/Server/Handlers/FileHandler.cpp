@@ -211,8 +211,17 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
             generator.setDescription("Circuit exported from wiRedPanda");
 
             QPainter painter(&generator);
+            if (!painter.isActive()) {
+                return createErrorResponse(QString("Failed to open SVG file for writing: %1").arg(filename),
+                                           requestId, JsonRpcError::FileError);
+            }
             scene->render(&painter, QRectF(), sceneRect);
             painter.end();
+
+            const QFileInfo svgInfo(filename);
+            if (!svgInfo.exists() || svgInfo.size() == 0) {
+                return createErrorResponse("SVG export failed: file was not written", requestId, JsonRpcError::FileError);
+            }
         } else if (format == "pdf") {
             QPdfWriter pdfWriter(filename);
             pdfWriter.setTitle("wiRedPanda Circuit");
