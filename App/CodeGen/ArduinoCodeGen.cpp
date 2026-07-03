@@ -400,7 +400,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                         break;
                     }
                     m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
-                    m_stream << "int " << varName2 << "_interval = " << qMax(1, static_cast<int>(1000.0 / clk->frequency())) << ";" << Qt::endl;
+                    m_stream << "int " << varName2 << "_interval = " << (std::max)(1, static_cast<int>(1000.0 / clk->frequency())) << ";" << Qt::endl;
                 }
                 break;
             }
@@ -1319,12 +1319,12 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
 
         m_stream << "/* ====== Test Vectors ====== */" << Qt::endl;
         m_stream << "struct TestVec {" << Qt::endl;
-        m_stream << "    bool in[" << qMax(1, numInputs) << "];" << Qt::endl;
-        m_stream << "    bool out[" << qMax(1, numOutputs) << "];" << Qt::endl;
+        m_stream << "    bool in[" << (std::max)(1, numInputs) << "];" << Qt::endl;
+        m_stream << "    bool out[" << (std::max)(1, numOutputs) << "];" << Qt::endl;
         m_stream << "};" << Qt::endl;
         m_stream << Qt::endl;
         m_stream << "const int NUM_TESTS = " << numTests << ";" << Qt::endl;
-        m_stream << "const TestVec VECTORS[" << qMax(1, numTests) << "] = {" << Qt::endl;
+        m_stream << "const TestVec VECTORS[" << (std::max)(1, numTests) << "] = {" << Qt::endl;
         for (const auto &v : vectors) {
             m_stream << "    {{";
             for (int j = 0; j < v.inputs.size(); ++j) {

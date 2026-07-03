@@ -3,6 +3,8 @@
 
 #include "App/Scene/SceneItemRegistry.h"
 
+#include <algorithm>
+
 #include <QtGlobal>
 
 #include "App/Core/ItemWithId.h"
@@ -24,7 +26,7 @@ int SceneItemRegistry::lastId() const
 
 void SceneItemRegistry::setLastId(const int newLastId)
 {
-    m_lastId = qMax(m_lastId, newLastId);
+    m_lastId = (std::max)(m_lastId, newLastId);
 }
 
 int SceneItemRegistry::nextId()

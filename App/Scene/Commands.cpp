@@ -3,6 +3,7 @@
 
 #include "App/Scene/Commands.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include <QCoreApplication>
@@ -833,10 +834,10 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
 
     for (auto *item : items) {
         m_positions.append(item->pos());
-        xmin = qMin(xmin, item->pos().rx());
-        ymin = qMin(ymin, item->pos().ry());
-        xmax = qMax(xmax, item->pos().rx());
-        ymax = qMax(ymax, item->pos().ry());
+        xmin = (std::min)(xmin, item->pos().rx());
+        ymin = (std::min)(ymin, item->pos().ry());
+        xmax = (std::max)(xmax, item->pos().rx());
+        ymax = (std::max)(ymax, item->pos().ry());
     }
 
     m_minPos = QPointF(xmin, ymin);

@@ -3,6 +3,8 @@
 
 #include "App/Element/ICPreviewPopup.h"
 
+#include <algorithm>
+
 #include <QFrame>
 #include <QGuiApplication>
 #include <QScreen>
@@ -137,8 +139,8 @@ void ICPreviewPopup::executeShow()
     QPoint pos = m_pendingPos + QPoint(16, 16);
     if (const auto *screen = QGuiApplication::screenAt(pos)) {
         const QRect avail = screen->availableGeometry();
-        pos.setX(qMin(pos.x(), avail.right()  - width()));
-        pos.setY(qMin(pos.y(), avail.bottom() - height()));
+        pos.setX((std::min)(pos.x(), avail.right()  - width()));
+        pos.setY((std::min)(pos.y(), avail.bottom() - height()));
     }
     move(pos);
     show();

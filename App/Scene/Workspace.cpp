@@ -3,6 +3,8 @@
 
 #include "App/Scene/Workspace.h"
 
+#include <algorithm>
+
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QSaveFile>
@@ -481,7 +483,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         // Track the highest element ID seen so that newly created elements
         // will receive IDs that don't collide with those just loaded
         if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
-            m_lastId = qMax(m_lastId, ge->id());
+            m_lastId = (std::max)(m_lastId, ge->id());
         }
     }
 
@@ -670,7 +672,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
         m_scene.addItem(item);
 
         if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
-            m_lastId = qMax(m_lastId, ge->id());
+            m_lastId = (std::max)(m_lastId, ge->id());
         }
     }
 
