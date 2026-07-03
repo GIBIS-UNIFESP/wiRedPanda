@@ -318,56 +318,69 @@ QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
 
-    // Peek the first four bytes; if they match the magic number the file was
-    // written by a modern release.  Otherwise we rewind and attempt to parse
-    // the legacy text-based header formats.
-    qint64 originalPos = stream.device()->pos();
-    quint32 magicHeader;
-    stream >> magicHeader;
+    QIODevice *device = stream.device();
+    if (!device) {
+        throw PANDACEPTION("Invalid file format.");
+    }
 
-    QVersionNumber version;
+    // Every speculative check below peeks (never consumes) so a truncated or
+    // legacy file can't latch QDataStream::status() to ReadPastEnd — that
+    // status is sticky, and device()->seek() rewinding the position does not
+    // reset it, so a later legitimate status check would see a stale error
+    // from a speculative read here instead of a real one. The live stream is
+    // only ever touched once the format is unambiguously confirmed.
+    quint32 magicHeader = 0;
+    const bool haveMagic = peekU32(stream, magicHeader);
 
-    if (magicHeader == MAGIC_HEADER_CIRCUIT) {
-        version = readVersionNumber(stream);
-    } else {
-        // Rewind — the four bytes we consumed are actually the start of a
-        // legacy header (either an app-name string or clipboard data).
-        stream.device()->seek(originalPos);
+    if (haveMagic && magicHeader == MAGIC_HEADER_CIRCUIT) {
+        stream >> magicHeader; // consume the confirmed magic
+        return readVersionNumber(stream);
+    }
 
-        // Legacy header: "WiredPanda X.Y" or similar.  Use bounded read to
-        // prevent OOM from fuzz-controlled byte-length field.
-        const QString appName = readBoundedString(stream);
+    // Not the modern magic — the same 4 peeked bytes double as the length
+    // prefix of a legacy "wiRedPanda X.Y" text header.
+    constexpr quint32 NullStringMarker = 0xFFFFFFFFu;
+    constexpr qint64 MaxLegacyHeaderBytes = 128;
 
-        if (appName.isEmpty()) {
-            // Clipboard paste streams have no file header at all; the stream
-            // starts directly with the center-point QPointF.  A null center
-            // point would indicate genuinely corrupt data.
-            stream.device()->seek(originalPos);
-
-            QPointF center;
-            stream >> center;
-
-            if (center.isNull()) {
-                throw PANDACEPTION("Invalid file format.");
+    if (haveMagic && magicHeader != NullStringMarker && magicHeader <= MaxLegacyHeaderBytes) {
+        const qint64 probeLen = sizeof(quint32) + magicHeader;
+        QByteArray strProbeBuf(static_cast<int>(probeLen), '\0');
+        if (device->peek(strProbeBuf.data(), probeLen) == probeLen) {
+            QDataStream strProbe(strProbeBuf);
+            strProbe.setVersion(QDataStream::Qt_5_12);
+            QString appName;
+            strProbe >> appName;
+            if (strProbe.status() == QDataStream::Ok && appName.startsWith("wiRedPanda", Qt::CaseInsensitive)) {
+                // Confirmed — now safe to consume the header from the live stream.
+                QString consumed;
+                stream >> consumed;
+                const QStringList split = consumed.split(' ');
+                if (split.size() < 2) {
+                    throw PANDACEPTION("Invalid legacy file header: %1", consumed);
+                }
+                return QVersionNumber::fromString(split.at(1));
             }
-
-            stream.device()->seek(originalPos);
-            // Version 4.1 is the last release that used this headerless format.
-            version = QVersionNumber(4, 1); // no version in stream, assume 4.1
-        } else if (appName.startsWith("wiRedPanda", Qt::CaseInsensitive)) {
-            // Older files encoded the version as "wiRedPanda X.Y" inside a QString.
-            QStringList split = appName.split(" ");
-            if (split.size() < 2) {
-                throw PANDACEPTION("Invalid file format.");
-            }
-            version = QVersionNumber::fromString(split.at(1));
-        } else {
-            throw PANDACEPTION("Invalid file format.");
         }
     }
 
-    return version;
- }
+    // Headerless v4.1 clipboard format: the stream starts directly with the
+    // scene's center-point QPointF (2 doubles) — no header at all.
+    char pointProbeBuf[2 * sizeof(double)];
+    if (device->peek(pointProbeBuf, sizeof(pointProbeBuf)) != static_cast<qint64>(sizeof(pointProbeBuf))) {
+        throw PANDACEPTION("Invalid file format.");
+    }
+    QDataStream pointProbe(QByteArray(pointProbeBuf, sizeof(pointProbeBuf)));
+    pointProbe.setVersion(QDataStream::Qt_5_12);
+    QPointF center;
+    pointProbe >> center;
+    if (pointProbe.status() != QDataStream::Ok || center.isNull()) {
+        throw PANDACEPTION("Invalid file format.");
+    }
+
+    // Version 4.1 is the last release that used this headerless format; the
+    // live stream is left untouched so the caller reads the QPointF itself next.
+    return QVersionNumber(4, 1);
+}
 
 void Serialization::writeDolphinHeader(QDataStream &stream)
 {
@@ -380,40 +393,47 @@ void Serialization::readDolphinHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
 
-    // Same two-phase detection as readPandaHeader: magic number for modern
-    // waveform files, legacy app-name string for older beWavedDolphin saves.
-    qint64 originalPos = stream.device()->pos();
-    quint32 magicHeader;
-    stream >> magicHeader;
-
-    if (magicHeader == MAGIC_HEADER_WAVEFORM) {
-        readVersionNumber(stream); // advance stream past version, enforce segment count bound
-    } else {
-        // Legacy beWavedDolphin format: app name as a Qt QString.
-        // The native operator>>(QString) reads a fuzz-controlled byte length with no
-        // upper bound, allowing OOM via a maliciously large length field.
-        // Instead, read the length first and reject anything implausibly large.
-        stream.device()->seek(originalPos);
-        quint32 byteLen;
-        stream >> byteLen;
-        if (stream.status() != QDataStream::Ok) {
-            throw PANDACEPTION("Invalid file format.");
-        }
-        // "beWavedDolphin X.Y" is at most ~22 chars = 44 bytes; 256 is a generous cap.
-        if (byteLen == 0xFFFFFFFFu || byteLen > 256 || byteLen % 2 != 0) {
-            throw PANDACEPTION("Invalid file format.");
-        }
-        QByteArray raw(static_cast<int>(byteLen), '\0');
-        if (stream.readRawData(raw.data(), static_cast<int>(byteLen)) != static_cast<int>(byteLen)) {
-            throw PANDACEPTION("Invalid file format.");
-        }
-        const QString appName = QString::fromUtf16(
-            reinterpret_cast<const char16_t *>(raw.constData()),
-            static_cast<int>(byteLen / 2));
-        if (!appName.startsWith("beWavedDolphin")) {
-            throw PANDACEPTION("Invalid file format.");
-        }
+    QIODevice *device = stream.device();
+    if (!device) {
+        throw PANDACEPTION("Invalid file format.");
     }
+
+    // Same probe-first approach as readPandaHeader: peek (never consume) so a
+    // truncated/legacy file's speculative read can't latch a sticky
+    // ReadPastEnd status that a later seek() wouldn't reset.
+    quint32 magicHeader = 0;
+    const bool haveMagic = peekU32(stream, magicHeader);
+
+    if (haveMagic && magicHeader == MAGIC_HEADER_WAVEFORM) {
+        stream >> magicHeader; // consume the confirmed magic
+        readVersionNumber(stream); // advance stream past version, enforce segment count bound
+        return;
+    }
+
+    // Legacy beWavedDolphin format: "<byteLen><appName>" as raw UTF-16 code
+    // units (byteLen in bytes, so byteLen/2 UTF-16 units). The same 4 peeked
+    // bytes double as byteLen. "beWavedDolphin X.Y" is at most ~22 chars =
+    // 44 bytes; 256 is a generous cap.
+    if (!haveMagic || magicHeader == 0xFFFFFFFFu || magicHeader > 256 || magicHeader % 2 != 0) {
+        throw PANDACEPTION("Invalid file format.");
+    }
+    const qint64 probeLen = sizeof(quint32) + magicHeader;
+    QByteArray strProbeBuf(static_cast<int>(probeLen), '\0');
+    if (device->peek(strProbeBuf.data(), probeLen) != probeLen) {
+        throw PANDACEPTION("Invalid file format.");
+    }
+    const QString appName = QString::fromUtf16(
+        reinterpret_cast<const char16_t *>(strProbeBuf.constData() + sizeof(quint32)),
+        static_cast<int>(magicHeader / 2));
+    if (!appName.startsWith("beWavedDolphin")) {
+        throw PANDACEPTION("Invalid file format.");
+    }
+
+    // Confirmed — now safe to consume the header from the live stream.
+    quint32 consumedLen = 0;
+    stream >> consumedLen;
+    QByteArray raw(static_cast<int>(consumedLen), '\0');
+    stream.readRawData(raw.data(), static_cast<int>(consumedLen));
 }
 
 void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream)
@@ -641,6 +661,11 @@ Serialization::Preamble Serialization::readPreamble(QDataStream &stream)
             result.metadata = readBoundedMetadata(stream);
         }
     }
+
+    if (stream.status() != QDataStream::Ok) {
+        throw PANDACEPTION("Stream error reading preamble: status %1", static_cast<int>(stream.status()));
+    }
+
     return result;
 }
 

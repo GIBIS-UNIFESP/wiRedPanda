@@ -3,12 +3,14 @@
 
 #pragma once
 
+#include <QDataStream>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QSet>
 #include <QString>
 #include <QStringList>
+#include <QtEndian>
 
 #include "App/Core/Common.h"
 #include "App/IO/Serialization.h"
@@ -63,6 +65,37 @@ inline void copyPandaDeps(const QString &pandaPath, const QString &srcDir, const
     QFile file(pandaPath);
     if (!file.open(QIODevice::ReadOnly)) {
         return;
+    }
+
+    // Quick peek-based plausibility check before attempting a full parse, so
+    // a non-panda file encountered while walking IC dependency blobs is
+    // quietly skipped without relying on readPreamble()'s exception path.
+    // Peek only — never touch the stream readPreamble() constructs next.
+    {
+        char magicBuf[sizeof(quint32)];
+        if (file.peek(magicBuf, sizeof(magicBuf)) != static_cast<qint64>(sizeof(magicBuf))) {
+            return;
+        }
+        const quint32 magicHeader = qFromBigEndian<quint32>(magicBuf);
+        if (magicHeader != Serialization::MAGIC_HEADER_CIRCUIT) {
+            constexpr quint32 NullStringMarker = 0xFFFFFFFFu;
+            constexpr qint64 MaxLegacyHeaderBytes = 128;
+            if (magicHeader == NullStringMarker || magicHeader > MaxLegacyHeaderBytes) {
+                return;
+            }
+            const qint64 probeLen = sizeof(quint32) + magicHeader;
+            QByteArray strProbeBuf(static_cast<int>(probeLen), '\0');
+            if (file.peek(strProbeBuf.data(), probeLen) != probeLen) {
+                return;
+            }
+            QDataStream strProbe(strProbeBuf);
+            strProbe.setVersion(QDataStream::Qt_5_12);
+            QString appName;
+            strProbe >> appName;
+            if (strProbe.status() != QDataStream::Ok || !appName.startsWith("wiRedPanda", Qt::CaseInsensitive)) {
+                return;
+            }
+        }
     }
 
     QDataStream stream(&file);
