@@ -30,9 +30,9 @@ QNEConnection::QNEConnection(QGraphicsItem *parent)
     // Draw wires behind elements so port dots and element bodies always render on top
     setZValue(-1);
 
+    // m_status starts at Status::Unknown; updateTheme() applies its pen via
+    // applyStatusPen(). The wire colour is updated once both ports are attached.
     updateTheme();
-    // Start in the Unknown visual state; the wire colour is updated once both ports are attached
-    setPen(QPen(m_unknownColor, 3));
 }
 
 QNEConnection::~QNEConnection()
@@ -281,16 +281,7 @@ void QNEConnection::setStatus(const Status status)
     }
 
     m_status = status;
-
-    // Error wires are drawn thicker (5 px) to draw attention to the problem;
-    // other wires are thinner (3 px) to reduce visual clutter during simulation.
-    // Unknown (undriven) wires use a distinct gray from Error (red).
-    switch (status) {
-    case Status::Unknown:  setPen(QPen(m_unknownColor,  3)); break;
-    case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
-    case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
-    case Status::Error:    setPen(QPen(m_errorColor,    5)); break;
-    }
+    applyStatusPen();
 
     // Propagate to the destination port so its fill colour also reflects the signal state
     if (endPort()) {
@@ -298,14 +289,32 @@ void QNEConnection::setStatus(const Status status)
     }
 }
 
+void QNEConnection::applyStatusPen()
+{
+    // Error wires are drawn thicker (5 px) to draw attention to the problem;
+    // other wires are thinner (3 px) to reduce visual clutter during simulation.
+    // Unknown (undriven) wires use a distinct gray from Error (red).
+    switch (m_status) {
+    case Status::Unknown:  setPen(QPen(m_unknownColor,  3)); break;
+    case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
+    case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
+    case Status::Error:    setPen(QPen(m_errorColor,    5)); break;
+    }
+}
+
 void QNEConnection::updateTheme()
 {
-    const ThemeAttributes theme = ThemeManager::attributes();
+    const auto &theme = ThemeManager::attributes();
     m_unknownColor = theme.m_connectionUnknown;
     m_inactiveColor = theme.m_connectionInactive;
     m_activeColor = theme.m_connectionActive;
     m_errorColor = theme.m_connectionError;
     m_selectedColor = theme.m_connectionSelected;
+
+    // Re-derive the pen from the refreshed palette; without this the wire keeps
+    // the previous theme's colour until its status next changes
+    applyStatusPen();
+
     update();
 }
 
