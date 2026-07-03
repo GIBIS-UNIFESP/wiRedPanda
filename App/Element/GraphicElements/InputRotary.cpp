@@ -56,6 +56,11 @@ InputRotary::InputRotary(QGraphicsItem *parent)
     setLocked(false);
 
     InputRotary::updatePortsProperties();
+
+    // The dial starts at position 0, which drives HIGH while every other
+    // position drives LOW: push those definite levels to the output ports,
+    // which otherwise stay at the undriven Unknown default.
+    InputRotary::setOn(true, 0);
 }
 
 void InputRotary::refresh()

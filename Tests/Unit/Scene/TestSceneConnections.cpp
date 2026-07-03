@@ -289,9 +289,9 @@ void TestSceneConnections::testConnectionStatusTracking()
     // Create a scene
     Scene scene;
 
-    // Create gates
-    auto *gate1 = ElementFactory::buildElement(ElementType::And);
-    scene.addItem(gate1);
+    // Create a driven source and a consumer gate
+    auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
+    scene.addItem(vcc);
 
     auto *gate2 = ElementFactory::buildElement(ElementType::Or);
     gate2->setPos(150, 0);
@@ -299,13 +299,13 @@ void TestSceneConnections::testConnectionStatusTracking()
 
     // Create connection
     auto *connection = new QNEConnection(nullptr);
-    connection->setStartPort(gate1->outputPort(0));
+    connection->setStartPort(vcc->outputPort(0));
     connection->setEndPort(gate2->inputPort(0));
     scene.addItem(connection);
 
-    // Initial status should be inactive or active
+    // The wire tracks its driver's status from the moment it is attached
     Status status = connection->status();
-    QCOMPARE(status, Status::Inactive);
+    QCOMPARE(status, Status::Active);
 }
 
 void TestSceneConnections::testConnectionRemovalUpdatesCounters()

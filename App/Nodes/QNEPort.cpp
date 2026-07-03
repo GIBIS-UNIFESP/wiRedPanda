@@ -162,6 +162,10 @@ bool QNEPort::isRequired() const
 void QNEPort::setRequired(const bool required)
 {
     m_required = required;
+
+    // Requiredness feeds isValid(): re-derive the displayed status so a port
+    // marked optional recovers from Error and a newly required one shows it
+    updateConnections();
 }
 
 void QNEPort::setSerialId(quint64 serialId)
@@ -214,7 +218,16 @@ void QNEPort::drainConnections(bool isInput)
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
-    QNEInputPort::setStatus(defaultValue());
+    // A fresh port is unconnected and required by default, so the validity rule
+    // enforced by setStatus()/updateConnections() applies from birth: show Error
+    // until a wire arrives or setRequired(false) relaxes the port. Without this,
+    // elements positioned before entering the scene (file load, scripted
+    // creation) never get a scene-position change to trigger the rule.
+    m_status = QNEInputPort::isValid() ? m_status : Status::Error;
+
+    // Style directly: setStatus() would early-return here because m_status
+    // already holds its final construction-time value
+    QNEInputPort::updateTheme();
 }
 
 QNEInputPort::~QNEInputPort()
@@ -236,6 +249,28 @@ void QNEInputPort::setStatus(const Status status)
     // Required-but-unconnected ports also become Error to make missing connections visible.
     m_status = QNEInputPort::isValid() ? status : Status::Error;
 
+    updateTheme();
+}
+
+bool QNEInputPort::isInput() const
+{
+    return true;
+}
+
+bool QNEInputPort::isOutput() const
+{
+    return false;
+}
+
+bool QNEInputPort::isValid() const
+{
+    // Valid states: unconnected and optional (default value is safe to use), OR
+    // exactly one connection (multi-driver wiring is not allowed in this simulation model)
+    return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
+}
+
+void QNEInputPort::updateTheme()
+{
     const auto theme = ThemeManager::attributes();
 
     switch (m_status) {
@@ -260,27 +295,6 @@ void QNEInputPort::setStatus(const Status status)
         break;
     }
     }
-}
-
-bool QNEInputPort::isInput() const
-{
-    return true;
-}
-
-bool QNEInputPort::isOutput() const
-{
-    return false;
-}
-
-bool QNEInputPort::isValid() const
-{
-    // Valid states: unconnected and optional (default value is safe to use), OR
-    // exactly one connection (multi-driver wiring is not allowed in this simulation model)
-    return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
-}
-
-void QNEInputPort::updateTheme()
-{
 }
 
 QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
@@ -323,9 +337,9 @@ bool QNEOutputPort::isOutput() const
 
 bool QNEOutputPort::isValid() const
 {
-    // An output port is valid as long as its driving logic element is valid;
-    // it has no connectivity constraints (fan-out is unrestricted)
-    return (m_status != Status::Unknown && m_status != Status::Error);
+    // Output ports have unrestricted fan-out and no connectivity constraints;
+    // their status is the simulation engine's responsibility, not a validity concern
+    return true;
 }
 
 void QNEOutputPort::updateTheme()
