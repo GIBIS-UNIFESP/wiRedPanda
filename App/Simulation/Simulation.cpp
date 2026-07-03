@@ -481,8 +481,11 @@ QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGra
             for (auto *conn : outputPort->connections()) {
                 if (auto *endPort = conn->endPort()) {
                     auto *successor = endPort->graphicElement();
-                    if (successor && !successors[elm].contains(successor)) {
-                        successors[elm].append(successor);
+                    if (successor) {
+                        auto &vec = successors[elm];
+                        if (!vec.contains(successor)) {
+                            vec.append(successor);
+                        }
                     }
                 }
             }
@@ -497,8 +500,9 @@ QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGra
     for (auto *elm : std::as_const(elements)) {
         if (elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
             if (auto *tx = txMap.value(elm->label(), nullptr)) {
-                if (!successors[tx].contains(elm)) {
-                    successors[tx].append(elm);
+                auto &txVec = successors[tx];
+                if (!txVec.contains(elm)) {
+                    txVec.append(elm);
                 }
             }
         }

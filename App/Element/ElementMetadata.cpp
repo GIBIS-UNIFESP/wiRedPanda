@@ -7,6 +7,12 @@
 
 QMap<ElementType, ElementMetadata> &ElementMetadataRegistry::registry()
 {
+    // QMap (not QHash): registrations happen via static-inline lambdas in each
+    // element's .cpp translation unit before QApplication::exec() runs, and
+    // iteration order over this registry is otherwise unspecified between
+    // runs/platforms unless insertion order is preserved — some serialization
+    // paths rely on that. Single-threaded at startup; concurrent access after
+    // is undefined.
     static QMap<ElementType, ElementMetadata> s_registry;
     return s_registry;
 }
