@@ -6,7 +6,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
 
 // ============================================================
@@ -61,8 +61,8 @@ void TestCPURegisters::testFlagRegister()
     flagWrite->setOn(false);
     sim->update();
     // Verify outputs
-    bool zeroResult = TestUtils::getInputStatus(zeroOut, 0);
-    bool negativeResult = TestUtils::getInputStatus(negativeOut, 0);
+    bool zeroResult = TestUtils::inputStatus(zeroOut, 0);
+    bool negativeResult = TestUtils::inputStatus(negativeOut, 0);
     QCOMPARE(zeroResult, expectedZero);
     QCOMPARE(negativeResult, expectedNegative);
 }

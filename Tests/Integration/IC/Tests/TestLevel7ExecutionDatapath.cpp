@@ -13,7 +13,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::setMultiBitInput;
 using TestUtils::readMultiBitOutput;
 using CPUTestUtils::loadBuildingBlockIC;
@@ -146,8 +146,8 @@ void TestLevel7ExecutionDatapath::testExecutionDatapath()
     f.sim->update();
 
     int result = f.readResult();
-    bool zero = getInputStatus(f.zeroLed, 0);
-    bool sign = getInputStatus(f.signLed, 0);
+    bool zero = inputStatus(f.zeroLed, 0);
+    bool sign = inputStatus(f.signLed, 0);
 
     QCOMPARE(result, expectedResult);
     QCOMPARE(zero, expectedZero);
@@ -206,7 +206,7 @@ void TestLevel7ExecutionDatapath::testOutputPortIsolation()
     f.sim->update();
 
     for (int i = 0; i < 8; ++i) {
-        QCOMPARE(getInputStatus(f.resultLeds[i], 0), i == bitPosition);
+        QCOMPARE(inputStatus(f.resultLeds[i], 0), i == bitPosition);
     }
 }
 

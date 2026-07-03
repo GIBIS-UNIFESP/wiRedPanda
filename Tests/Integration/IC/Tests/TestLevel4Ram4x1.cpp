@@ -13,7 +13,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Ram4x1Fixture {
@@ -82,7 +82,7 @@ struct Ram4x1Fixture {
     {
         setAddress(addr);
         sim->update();
-        return getInputStatus(dataOut);
+        return inputStatus(dataOut);
     }
 };
 
@@ -160,7 +160,7 @@ void TestLevel4RAM4X1::testWeGating()
     TestUtils::clockCycle(f.sim, f.clock);
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.dataOut), false);
+    QCOMPARE(inputStatus(f.dataOut), false);
 }
 
 void TestLevel4RAM4X1::testHoldBehavior()
@@ -178,7 +178,7 @@ void TestLevel4RAM4X1::testHoldBehavior()
     TestUtils::clockCycle(f.sim, f.clock);
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.dataOut), true);  // Should still hold 1
+    QCOMPARE(inputStatus(f.dataOut), true);  // Should still hold 1
 }
 
 void TestLevel4RAM4X1::testIsolation()
@@ -199,7 +199,7 @@ void TestLevel4RAM4X1::testSequentialWrite()
 
     for (int writeIdx = 0; writeIdx < 4; ++writeIdx) {
         f.writeData(writeSequence[writeIdx], 0);
-        QCOMPARE(getInputStatus(f.dataOut), writeSequence[writeIdx]);
+        QCOMPARE(inputStatus(f.dataOut), writeSequence[writeIdx]);
     }
 }
 

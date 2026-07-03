@@ -13,7 +13,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Ram8x1Fixture {
@@ -84,7 +84,7 @@ struct Ram8x1Fixture {
     {
         setAddress(addr);
         sim->update();
-        return getInputStatus(dataOut);
+        return inputStatus(dataOut);
     }
 };
 
@@ -149,7 +149,7 @@ void TestLevel4RAM8X1::testRamArray()
         f.writeEnable->setOn(false);
         TestUtils::clockCycle(f.sim, f.clock);
         f.sim->update();
-        QCOMPARE(getInputStatus(f.dataOut), false);
+        QCOMPARE(inputStatus(f.dataOut), false);
     } else if (address == -3) {
         // Hold test
         f.writeData(true, 5);
@@ -160,7 +160,7 @@ void TestLevel4RAM8X1::testRamArray()
         f.writeEnable->setOn(false);
         TestUtils::clockCycle(f.sim, f.clock);
         f.sim->update();
-        QCOMPARE(getInputStatus(f.dataOut), true);
+        QCOMPARE(inputStatus(f.dataOut), true);
     }
 }
 
@@ -218,7 +218,7 @@ void TestLevel4RAM8X1::testRamEdgeCases()
         f.writeEnable->setOn(false);
         TestUtils::clockCycle(f.sim, f.clock);
         f.sim->update();
-        QCOMPARE(getInputStatus(f.dataOut), false);
+        QCOMPARE(inputStatus(f.dataOut), false);
     } else if (address == -3) {
         // Hold test
         f.writeData(true, 5);
@@ -229,7 +229,7 @@ void TestLevel4RAM8X1::testRamEdgeCases()
         f.writeEnable->setOn(false);
         TestUtils::clockCycle(f.sim, f.clock);
         f.sim->update();
-        QCOMPARE(getInputStatus(f.dataOut), true);
+        QCOMPARE(inputStatus(f.dataOut), true);
     }
 }
 

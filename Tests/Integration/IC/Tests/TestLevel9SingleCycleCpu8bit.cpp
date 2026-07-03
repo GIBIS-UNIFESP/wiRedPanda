@@ -15,7 +15,7 @@
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -160,8 +160,8 @@ struct CPUFixture {
     int readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
     int readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
     int readInstruction() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
-    bool readZero() { return getInputStatus(zeroLed); }
-    bool readSign() { return getInputStatus(signLed); }
+    bool readZero() { return inputStatus(zeroLed); }
+    bool readSign() { return inputStatus(signLed); }
 };
 
 static std::unique_ptr<CPUFixture> s_cpu;

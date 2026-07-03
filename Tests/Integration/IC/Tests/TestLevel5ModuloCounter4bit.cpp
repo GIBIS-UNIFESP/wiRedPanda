@@ -14,7 +14,7 @@
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::clockCycle;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -145,7 +145,7 @@ void TestLevel5ModuloCounter4Bit::testOverflow()
     bool sawTerminalCount = false;
     for (int step = 0; step < 12; ++step) {
         const int q = f.readValue();
-        const bool overflow = getInputStatus(f.overflowOut);
+        const bool overflow = inputStatus(f.overflowOut);
         QCOMPARE(overflow, q == modulo - 1);
         sawTerminalCount = sawTerminalCount || overflow;
         clockCycle(f.sim, f.clk);

@@ -9,7 +9,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ParityGeneratorFixture {
@@ -112,7 +112,7 @@ void TestLevel2ParityGenerator::testParityGenerator()
     }
     f.sim->update();
 
-    QCOMPARE(getInputStatus(f.parityOutput), expectedParity);
+    QCOMPARE(inputStatus(f.parityOutput), expectedParity);
 }
 
 // 74180 cascade-in XORs a chained parity bit into this block's parity, so
@@ -128,9 +128,9 @@ void TestLevel2ParityGenerator::testCascadeIn()
 
     f.cascadeIn->setOn(false);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.parityOutput), true);    // 1 XOR 0 = 1
+    QCOMPARE(inputStatus(f.parityOutput), true);    // 1 XOR 0 = 1
 
     f.cascadeIn->setOn(true);
     f.sim->update();
-    QCOMPARE(getInputStatus(f.parityOutput), false);   // 1 XOR 1 = 0
+    QCOMPARE(inputStatus(f.parityOutput), false);   // 1 XOR 1 = 0
 }

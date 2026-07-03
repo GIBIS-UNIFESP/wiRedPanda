@@ -15,7 +15,7 @@
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ExecuteStageFixture {
@@ -150,8 +150,8 @@ void TestLevel8ExecuteStage::testExecuteStage()
     f.sim->update();
 
     QCOMPARE(f.readResult(), expectedResult);
-    QCOMPARE(getInputStatus(f.zeroLed), expectedZero);
-    QCOMPARE(getInputStatus(f.signLed), expectedSign);
+    QCOMPARE(inputStatus(f.zeroLed), expectedZero);
+    QCOMPARE(inputStatus(f.signLed), expectedSign);
 }
 
 void TestLevel8ExecuteStage::testInputPortIsolation_data()
@@ -206,7 +206,7 @@ void TestLevel8ExecuteStage::testOutputPortIsolation()
     f.sim->update();
 
     for (int i = 0; i < 8; ++i) {
-        QCOMPARE(getInputStatus(f.resultLeds[i]), i == bitPosition);
+        QCOMPARE(inputStatus(f.resultLeds[i]), i == bitPosition);
     }
 }
 

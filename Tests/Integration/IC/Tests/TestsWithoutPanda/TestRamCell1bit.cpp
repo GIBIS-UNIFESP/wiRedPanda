@@ -61,7 +61,7 @@ void TestRAMCell1Bit::testWriteZeroReadZero()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), false);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), false);
 }
 
 void TestRAMCell1Bit::testWriteOneReadOne()
@@ -72,7 +72,7 @@ void TestRAMCell1Bit::testWriteOneReadOne()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 }
 
 void TestRAMCell1Bit::testWriteOneHoldWeDisabled()
@@ -85,7 +85,7 @@ void TestRAMCell1Bit::testWriteOneHoldWeDisabled()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 
     // Hold: disable WE, change data — stored value must not change
     f.dataIn.setOn(false);
@@ -93,7 +93,7 @@ void TestRAMCell1Bit::testWriteOneHoldWeDisabled()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 }
 
 void TestRAMCell1Bit::testWriteZeroHoldWeDisabled()
@@ -106,7 +106,7 @@ void TestRAMCell1Bit::testWriteZeroHoldWeDisabled()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), false);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), false);
 
     // Hold: disable WE, change data — stored value must not change
     f.dataIn.setOn(true);
@@ -114,7 +114,7 @@ void TestRAMCell1Bit::testWriteZeroHoldWeDisabled()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), false);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), false);
 }
 
 void TestRAMCell1Bit::testWriteOneMultipleHolds()
@@ -127,7 +127,7 @@ void TestRAMCell1Bit::testWriteOneMultipleHolds()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 
     // Multiple hold cycles with alternating data on the line
     f.writeEnable.setOn(false);
@@ -136,7 +136,7 @@ void TestRAMCell1Bit::testWriteOneMultipleHolds()
         f.sim->update();
         clockCycle(f.sim, &f.clock);
         f.sim->update();
-        QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+        QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
     }
 }
 
@@ -150,7 +150,7 @@ void TestRAMCell1Bit::testWeDisabledFromStart()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), false);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), false);
 }
 
 void TestRAMCell1Bit::testRapidWeToggle()
@@ -163,14 +163,14 @@ void TestRAMCell1Bit::testRapidWeToggle()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 
     // Hold cycle
     f.writeEnable.setOn(false);
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 
     // Write 0
     f.dataIn.setOn(false);
@@ -178,7 +178,7 @@ void TestRAMCell1Bit::testRapidWeToggle()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), false);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), false);
 }
 
 void TestRAMCell1Bit::testDataChangeWithoutWe()
@@ -191,7 +191,7 @@ void TestRAMCell1Bit::testDataChangeWithoutWe()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 
     // Change data but disable WE — stored value must hold
     f.dataIn.setOn(false);
@@ -199,7 +199,7 @@ void TestRAMCell1Bit::testDataChangeWithoutWe()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 }
 
 void TestRAMCell1Bit::testHoldMultipleCycles()
@@ -212,7 +212,7 @@ void TestRAMCell1Bit::testHoldMultipleCycles()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 
     // 5 hold cycles with data=0 on the line
     f.writeEnable.setOn(false);
@@ -221,7 +221,7 @@ void TestRAMCell1Bit::testHoldMultipleCycles()
         f.sim->update();
         clockCycle(f.sim, &f.clock);
         f.sim->update();
-        QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+        QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
     }
 }
 
@@ -235,14 +235,14 @@ void TestRAMCell1Bit::testWriteZeroThenOneWithHold()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), false);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), false);
 
     // Hold cycle
     f.writeEnable.setOn(false);
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), false);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), false);
 
     // Write 1
     f.dataIn.setOn(true);
@@ -250,12 +250,12 @@ void TestRAMCell1Bit::testWriteZeroThenOneWithHold()
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 
     // Hold cycle
     f.writeEnable.setOn(false);
     f.sim->update();
     clockCycle(f.sim, &f.clock);
     f.sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&f.dataOut), true);
+    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
 }

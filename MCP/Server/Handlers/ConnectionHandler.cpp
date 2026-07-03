@@ -43,11 +43,11 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
     }
 
     QString errorMsg;
-    auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
+    auto *sourceElement = validatedElement(params, "source_id", errorMsg);
     if (!sourceElement) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
-    auto *targetElement = getValidatedElement(params, "target_id", errorMsg);
+    auto *targetElement = validatedElement(params, "target_id", errorMsg);
     if (!targetElement) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
@@ -83,7 +83,7 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
                                    requestId, JsonRpcError::ValidationError);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -115,16 +115,16 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
     }
 
     QString errorMsg;
-    auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
+    auto *sourceElement = validatedElement(params, "source_id", errorMsg);
     if (!sourceElement) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
-    auto *targetElement = getValidatedElement(params, "target_id", errorMsg);
+    auto *targetElement = validatedElement(params, "target_id", errorMsg);
     if (!targetElement) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -161,7 +161,7 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
 
 QJsonObject ConnectionHandler::handleListConnections(const QJsonObject &, const QJsonValue &requestId)
 {
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -231,16 +231,16 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
     const double x = params.value("x").toDouble();
     const double y = params.value("y").toDouble();
 
-    auto *sourceElement = getValidatedElement(params, "source_id", errorMsg);
+    auto *sourceElement = validatedElement(params, "source_id", errorMsg);
     if (!sourceElement) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
-    auto *targetElement = getValidatedElement(params, "target_id", errorMsg);
+    auto *targetElement = validatedElement(params, "target_id", errorMsg);
     if (!targetElement) {
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
-    Scene *scene = getCurrentScene();
+    Scene *scene = currentScene();
     if (!scene) {
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
@@ -305,8 +305,8 @@ bool ConnectionHandler::resolvePort(const QJsonObject &params, const QString &pr
             return false;
         }
         const QString label = params.value(labelParam).toString();
-        return isOutput ? getOutputPortByLabel(element, label, portIndex, errorMsg)
-                        : getInputPortByLabel(element, label, portIndex, errorMsg);
+        return isOutput ? outputPortByLabel(element, label, portIndex, errorMsg)
+                        : inputPortByLabel(element, label, portIndex, errorMsg);
     }
 
     if (!validateNonNegativeInteger(params.value(indexParam), indexParam, errorMsg)) {

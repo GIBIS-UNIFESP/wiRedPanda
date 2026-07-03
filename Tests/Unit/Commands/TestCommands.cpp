@@ -486,7 +486,7 @@ void TestCommands::testConnectionPreservation()
     QCOMPARE(TestUtils::countConnections(scene), 3);
 
     // Verify connections are properly connected
-    const auto restoredConnections = TestUtils::getConnections(scene);
+    const auto restoredConnections = TestUtils::sceneConnections(scene);
     for (auto *conn : std::as_const(restoredConnections)) {
         QVERIFY2(conn->startPort() != nullptr, "Connection missing start port after undo");
         QVERIFY2(conn->endPort() != nullptr, "Connection missing end port after undo");

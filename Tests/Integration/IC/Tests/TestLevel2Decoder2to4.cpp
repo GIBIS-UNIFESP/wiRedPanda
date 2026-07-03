@@ -11,7 +11,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Decoder2to4Fixture {
@@ -110,7 +110,7 @@ void TestLevel2Decoder2To4::testAddressDecoder2to4()
 
     for (int i = 0; i < 4; i++) {
         bool expectedState = (i == expectedActiveOutput);
-        QCOMPARE(getInputStatus(f.outputs[i]), expectedState);
+        QCOMPARE(inputStatus(f.outputs[i]), expectedState);
     }
 }
 
@@ -126,7 +126,7 @@ void TestLevel2Decoder2To4::testSequentialScan()
         int activeCount = 0;
         int activeOutput = -1;
         for (int i = 0; i < 4; i++) {
-            if (getInputStatus(f.outputs[i])) {
+            if (inputStatus(f.outputs[i])) {
                 activeCount++;
                 activeOutput = i;
             }
@@ -147,7 +147,7 @@ void TestLevel2Decoder2To4::testMutualExclusivity()
 
         int activeCount = 0;
         for (int i = 0; i < 4; i++) {
-            if (getInputStatus(f.outputs[i])) {
+            if (inputStatus(f.outputs[i])) {
                 activeCount++;
             }
         }
@@ -190,13 +190,13 @@ void TestLevel2Decoder2To4::testEnableGating()
     en->setOn(false);
     sim->update();
     for (auto *o : outs) {
-        QVERIFY(!getInputStatus(o));
+        QVERIFY(!inputStatus(o));
     }
 
     // Enable high → output 2 active, the rest low.
     en->setOn(true);
     sim->update();
     for (int i = 0; i < 4; ++i) {
-        QCOMPARE(getInputStatus(outs[i]), i == 2);
+        QCOMPARE(inputStatus(outs[i]), i == 2);
     }
 }

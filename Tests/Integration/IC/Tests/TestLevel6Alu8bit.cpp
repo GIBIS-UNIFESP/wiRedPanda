@@ -12,7 +12,7 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::getInputStatus;
+using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
 using CPUTestUtils::loadBuildingBlockIC;
@@ -261,7 +261,7 @@ void TestLevel6ALU8Bit::testALU8BitOutputPortIsolation()
 
     // Verify only the tested bit has the expected value
     for (int i = 0; i < 8; i++) {
-        bool bit_result = getInputStatus(f.resultOutputs[i], 0);
+        bool bit_result = inputStatus(f.resultOutputs[i], 0);
         bool expected = (i == bitPosition);
 
         QCOMPARE(bit_result, expected);
@@ -316,9 +316,9 @@ void TestLevel6ALU8Bit::testArithmetic()
     f.sim->update();
 
     QCOMPARE(f.readResult(), expectedResult);
-    QCOMPARE(getInputStatus(f.zeroFlag), expectedZero);
-    QCOMPARE(getInputStatus(f.negativeFlag), expectedNegative);
+    QCOMPARE(inputStatus(f.zeroFlag), expectedZero);
+    QCOMPARE(inputStatus(f.negativeFlag), expectedNegative);
     if (expectedCarry >= 0) {
-        QCOMPARE(getInputStatus(f.carryFlag), expectedCarry != 0);
+        QCOMPARE(inputStatus(f.carryFlag), expectedCarry != 0);
     }
 }

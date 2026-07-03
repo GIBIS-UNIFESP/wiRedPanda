@@ -310,7 +310,7 @@ Provides the test environment setup and common helpers:
 - `configureApp()`: Configure application metadata
 - `createWorkspace()`: Create isolated test workspace
 - `createSwitches()`: Create input switches for testing
-- `getInputStatus()`: Retrieve input switch states
+- `inputStatus()`: Retrieve input switch states
 
 ### CpuTestUtils (Integration/IC/Tests/CpuTestUtils.h/cpp)
 
