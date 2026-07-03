@@ -20,7 +20,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 
-ElementHandler::ElementHandler(MainWindow *mainWindow, MCPValidator *validator)
+ElementHandler::ElementHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {
 }

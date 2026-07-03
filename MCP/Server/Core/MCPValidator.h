@@ -58,7 +58,6 @@ public:
     ValidationResult validateResponse(const json &response, const QString &expectedCommand = QString());
 
     // Schema management
-    bool loadSchema(const QString &schemaPath);
     bool isSchemaLoaded() const;
     QString schemaPath() const;
 
@@ -67,10 +66,13 @@ public:
     static QJsonObject nlohmannToQJson(const json &nlohmannJson);
 
     // Schema introspection (used by describe_command)
-    json findCommandSchema(const QString &commandName);
-    json findResponseSchema(const QString &commandName);
+    json findCommandSchema(const QString &commandName) const;
+    json findResponseSchema(const QString &commandName) const;
 
 private:
+    /// Only called from the constructor — not part of the public API.
+    bool loadSchema(const QString &schemaPath);
+
     // Internal validation methods
     ValidationResult validateAgainstSchema(const json &data, const json &schema, const QString &commandType, const std::string &cacheKey);
     QString extractErrorPath(const QString &errorMsg);

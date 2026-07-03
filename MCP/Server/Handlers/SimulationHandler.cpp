@@ -22,7 +22,7 @@
 #include "App/Simulation/Simulation.h"
 #include "App/UI/MainWindow.h"
 
-SimulationHandler::SimulationHandler(MainWindow *mainWindow, MCPValidator *validator)
+SimulationHandler::SimulationHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
     , m_persistentDolphin(nullptr)
 {

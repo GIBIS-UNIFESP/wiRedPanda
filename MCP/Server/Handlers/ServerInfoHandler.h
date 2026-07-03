@@ -15,7 +15,7 @@
 class ServerInfoHandler : public BaseHandler
 {
 public:
-    explicit ServerInfoHandler(MainWindow *mainWindow, MCPValidator *validator);
+    explicit ServerInfoHandler(MainWindow *mainWindow, const MCPValidator *validator);
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
 

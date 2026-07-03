@@ -332,7 +332,7 @@ QHash<QString, QNEInputPort *> Scene::wirelessTxInputPorts(const QVector<Graphic
     return txMap;
 }
 
-const QVector<QNEConnection *> Scene::connections()
+const QVector<QNEConnection *> Scene::connections() const
 {
     const auto items_ = items();
     QVector<QNEConnection *> conns;
@@ -361,7 +361,7 @@ const QList<GraphicElement *> Scene::selectedElements() const
     return elements_;
 }
 
-QGraphicsItem *Scene::itemAt(const QPointF pos)
+QGraphicsItem *Scene::itemAt(const QPointF pos) const
 {
     auto items_ = items(pos);
     // Also check a small surrounding rectangle so port hit-testing works when
@@ -392,7 +392,7 @@ QGraphicsItem *Scene::itemAt(const QPointF pos)
     return nullptr;
 }
 
-QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos)
+QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos) const
 {
     // 9×9 pixel hit area (4px margin around the exact point) compensates for the
     // small visual size of ports and makes them easier to click precisely

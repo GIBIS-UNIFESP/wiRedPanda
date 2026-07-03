@@ -124,7 +124,7 @@ const QVector<QNEOutputPort *> &GraphicElement::outputs() const
     return m_outputPorts;
 }
 
-QNEInputPort *GraphicElement::inputPort(const int index)
+QNEInputPort *GraphicElement::inputPort(const int index) const
 {
     if (index < 0 || index >= m_inputPorts.size()) {
         return nullptr;
@@ -132,7 +132,7 @@ QNEInputPort *GraphicElement::inputPort(const int index)
     return m_inputPorts.at(index);
 }
 
-QNEOutputPort *GraphicElement::outputPort(const int index)
+QNEOutputPort *GraphicElement::outputPort(const int index) const
 {
     if (index < 0 || index >= m_outputPorts.size()) {
         return nullptr;

@@ -139,7 +139,7 @@ private:
     // --- Internal accessors (test-only; TestBewavedDolphinGui is a friend) ---
 
     /// Returns the underlying table model.
-    SignalModel* model() const { return m_model; }
+    const SignalModel* model() const { return m_model; }
     /// Returns the output element vector.
     const QVector<GraphicElement *>& outputElements() const { return m_outputs; }
     /// Returns the input element vector.

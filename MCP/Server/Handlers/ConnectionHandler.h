@@ -15,7 +15,7 @@
 class ConnectionHandler : public BaseHandler
 {
 public:
-    explicit ConnectionHandler(MainWindow *mainWindow, MCPValidator *validator);
+    explicit ConnectionHandler(MainWindow *mainWindow, const MCPValidator *validator);
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
 
