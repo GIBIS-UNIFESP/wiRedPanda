@@ -217,8 +217,13 @@ void WorkspaceManager::openFile()
             if (!fileName.isEmpty()) {
                 // Write file content to a temporary file
                 QFile file(fileName);
-                file.open(QIODevice::WriteOnly);
-                file.write(fileContent);
+                if (!file.open(QIODevice::WriteOnly)) {
+                    return;
+                }
+                if (file.write(fileContent) != fileContent.size()) {
+                    file.close();
+                    return;
+                }
                 file.close();
                 loadPandaFile(fileName);
             }
