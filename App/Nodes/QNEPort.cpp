@@ -20,14 +20,17 @@ QNEPort::QNEPort(QGraphicsItem *parent)
     // which keeps connected wires redrawn when the parent element moves
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    QPainterPath path;
+}
 
-    // Port hit-area / shape: a small square centred on the port's origin (±m_radius).
-    // m_radius = 5 px gives a 10×10 px clickable area which is large enough to hit
-    // reliably without obscuring nearby elements.  The same value is used for the
-    // visual diamond size so appearance and hit-testing stay in sync.
-    path.addPolygon(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
-    setPath(path);
+QPainterPath QNEPort::shape() const
+{
+    // Hit-area: a small square centred on the port's origin (±m_radius), independent
+    // of the painted glyph.  m_radius = 5 px gives a 10×10 px clickable area which is
+    // large enough to hit reliably without obscuring nearby elements; the direction
+    // shapes (circle/triangle) would otherwise shrink the grab target.
+    QPainterPath path;
+    path.addRect(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
+    return path;
 }
 
 const QList<QNEConnection *> &QNEPort::connections() const
@@ -246,6 +249,11 @@ void QNEPort::drainConnections(bool isInput)
 QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
+    // Circle: neutral connection point — the signal terminates here
+    QPainterPath path;
+    path.addEllipse(QRectF(-m_radius, -m_radius, 2 * m_radius, 2 * m_radius));
+    setPath(path);
+
     // A fresh port is unconnected and required by default, so the validity rule
     // enforced by setStatus()/updateConnections() applies from birth: show Error
     // until a wire arrives or setRequired(false) relaxes the port. Without this,
@@ -300,6 +308,14 @@ bool QNEInputPort::isValid() const
 QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
     : QNEPort(parent)
 {
+    // Right-pointing triangle: tip toward the wire, indicating signal flows outward
+    QPainterPath path;
+    path.moveTo(-m_radius, -m_radius);
+    path.lineTo(+m_radius, 0);
+    path.lineTo(-m_radius, +m_radius);
+    path.closeSubpath();
+    setPath(path);
+
     // Apply the initial pen/brush directly: setStatus() would early-return here
     // because m_status already holds the Unknown default
     updateTheme();
