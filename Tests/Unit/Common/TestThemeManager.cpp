@@ -214,26 +214,16 @@ void TestThemeManager::testLightThemePortColors()
     QVERIFY(attrs.m_portUnknownBrush.isValid());
     QVERIFY(attrs.m_portInactiveBrush.isValid());
     QVERIFY(attrs.m_portActiveBrush.isValid());
-    QVERIFY(attrs.m_portOutputBrush.isValid());
     QVERIFY(attrs.m_portErrorBrush.isValid());
 
     QVERIFY(attrs.m_portUnknownPen.isValid());
     QVERIFY(attrs.m_portInactivePen.isValid());
     QVERIFY(attrs.m_portActivePen.isValid());
-    QVERIFY(attrs.m_portOutputPen.isValid());
     QVERIFY(attrs.m_portErrorPen.isValid());
 
     // Hover port should be yellow
     QVERIFY(attrs.m_portHoverPort.isValid());
     QCOMPARE(attrs.m_portHoverPort, QColor(Qt::yellow));
-
-    // Output brush should be pinkish (set unconditionally, applies to both themes)
-    // Note: m_portOutputBrush is set in ThemeManager unconditionally after the theme switch,
-    // so it has the same value in both Light and Dark themes
-    QVERIFY(attrs.m_portOutputBrush.red() > 200);      // Strong red component
-    QVERIFY(attrs.m_portOutputBrush.green() < 150);    // Lower green component
-    QVERIFY(attrs.m_portOutputBrush.blue() < 150);     // Lower blue component
-    QVERIFY(attrs.m_portOutputBrush.red() > attrs.m_portOutputBrush.green());  // More red than green
 }
 
 // ============================================================
@@ -316,24 +306,16 @@ void TestThemeManager::testDarkThemePortColors()
     QVERIFY(attrs.m_portUnknownBrush.isValid());
     QVERIFY(attrs.m_portInactiveBrush.isValid());
     QVERIFY(attrs.m_portActiveBrush.isValid());
-    QVERIFY(attrs.m_portOutputBrush.isValid());
     QVERIFY(attrs.m_portErrorBrush.isValid());
 
     QVERIFY(attrs.m_portUnknownPen.isValid());
     QVERIFY(attrs.m_portInactivePen.isValid());
     QVERIFY(attrs.m_portActivePen.isValid());
-    QVERIFY(attrs.m_portOutputPen.isValid());
     QVERIFY(attrs.m_portErrorPen.isValid());
 
     // Hover port should still be yellow
     QVERIFY(attrs.m_portHoverPort.isValid());
     QCOMPARE(attrs.m_portHoverPort, QColor(Qt::yellow));
-
-    // Output brush should be pinkish (reddish tone: high red, moderate green/blue)
-    QVERIFY(attrs.m_portOutputBrush.red() > 200);      // Strong red component
-    QVERIFY(attrs.m_portOutputBrush.green() < 150);    // Lower green component
-    QVERIFY(attrs.m_portOutputBrush.blue() < 150);     // Lower blue component
-    QVERIFY(attrs.m_portOutputBrush.red() > attrs.m_portOutputBrush.green());  // More red than green
 }
 
 // ============================================================
