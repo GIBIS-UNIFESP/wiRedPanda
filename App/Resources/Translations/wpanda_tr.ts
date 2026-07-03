@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="882"/>
+        <location filename="../../Scene/Commands.cpp" line="883"/>
         <source>Change input size to %1</source>
         <translation>Giriş boyutunu %1&apos;e değiştir</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change output size to %1</source>
         <translation>Çıkış boyutunu %1&apos;e değiştir</translation>
     </message>
@@ -1214,7 +1214,7 @@ Her kablosuz kanal benzersiz bir etikete sahip olmalıdır.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="823"/>
+        <location filename="../../Scene/Commands.cpp" line="824"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%1 öğeyi %2 ekseninde çevir</translation>
     </message>
@@ -1468,12 +1468,12 @@ Suggested name:</source>
 <context>
     <name>InputGnd</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputGND.cpp" line="28"/>
+        <location filename="../../Element/GraphicElements/InputGND.cpp" line="29"/>
         <source>GND</source>
         <translation>GND</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputGND.cpp" line="27"/>
+        <location filename="../../Element/GraphicElements/InputGND.cpp" line="28"/>
         <source>GROUND</source>
         <translation>TOPRAK</translation>
     </message>
@@ -1499,12 +1499,12 @@ Suggested name:</source>
         <translation>Giriş Anahtarı</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
         <source>Off</source>
         <translation>Kapalı</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="127"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
         <source>On</source>
         <translation>Açık</translation>
     </message>
@@ -2195,7 +2195,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="635"/>
+        <location filename="../../Scene/Commands.cpp" line="636"/>
         <source>Morph %1 elements to %2</source>
         <translation>%1 öğeyi %2&apos;ye dönüştür</translation>
     </message>
@@ -2396,7 +2396,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1043"/>
+        <location filename="../../Scene/Commands.cpp" line="1045"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Blob &quot;%1&quot; kaydet</translation>
     </message>
@@ -2404,7 +2404,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1066"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>&quot;%1&quot; blob’unu kaldır</translation>
     </message>
@@ -2548,7 +2548,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="297"/>
+        <location filename="../../Simulation/Simulation.cpp" line="300"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Uyarı: geri besleme devresi yakınsamadı — devre salınım yapıyor olabilir.</translation>
     </message>
@@ -2571,17 +2571,17 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
         <translation>Kablo bölme</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="553"/>
+        <location filename="../../Scene/Commands.cpp" line="554"/>
         <source>Error trying to redo %1</source>
         <translation>%1 yeniden yapılırken hata</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="576"/>
+        <location filename="../../Scene/Commands.cpp" line="577"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Hata: SplitCommand::redo() içinde endPort null</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="605"/>
+        <location filename="../../Scene/Commands.cpp" line="606"/>
         <source>Error trying to undo %1</source>
         <translation>%1 geri alınırken hata</translation>
     </message>
@@ -2633,17 +2633,17 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="976"/>
+        <location filename="../../Scene/Commands.cpp" line="978"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>%1 pozisyonunda Doğruluk Tablosu Çıkışını değiştir</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="985"/>
+        <location filename="../../Scene/Commands.cpp" line="987"/>
         <source>Could not find truthtable element!</source>
         <translation>Doğruluk tablosu öğesi bulunamadı!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="992"/>
+        <location filename="../../Scene/Commands.cpp" line="994"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2677,7 +2677,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1099"/>
+        <location filename="../../Scene/Commands.cpp" line="1101"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 IC blob güncelle</translation>
     </message>
