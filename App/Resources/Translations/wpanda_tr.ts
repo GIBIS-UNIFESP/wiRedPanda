@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="281"/>
+        <location filename="../../Scene/Commands.cpp" line="282"/>
         <source>Add %1 elements</source>
         <translation>%1 öğe ekle</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="143"/>
+        <location filename="../../Core/Application.cpp" line="147"/>
         <source>Error!</source>
         <translation>Hata!</translation>
     </message>
@@ -53,17 +53,17 @@
         <translation>Tüm çıkış elemanları için yeterli pin yok</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="690"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="763"/>
         <source>Element type not supported: %1</source>
         <translation>Öğe türü desteklenmiyor: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="913"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="986"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Doğruluk tablosu için çıkış değişkeni eşlenmedi: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1157"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1255"/>
         <source>Could not open testbench file: %1</source>
         <translation>Test tezgahı dosyası açılamadı: %1</translation>
     </message>
@@ -160,7 +160,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="840"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="853"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Export to PDF</source>
         <translation>PDF&apos;ye Aktar</translation>
@@ -376,85 +376,85 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="57"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="119"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="715"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="781"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="728"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="794"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin Simülötürü</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="307"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="729"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="314"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="742"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="308"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="315"/>
         <source>Save simulation before closing?</source>
         <translation>Kapatmadan önce simülasyon kaydedilsin mi?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="730"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="743"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Bu beWavedDolphin dosyasını mevcut wiRedPanda dosyanıza bağlayıp kaydetmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="859"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin, São Paulo Federal Üniversitesi tarafından öğrencilerin mantık devreleri hakkında öğrenmelerine yardımcı olmak için geliştirilen wiRedPanda için bir dalga biçimi simülatörüdür.&lt;/p&gt;&lt;p&gt;Yazılım sürümü: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Yaratıcılar:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin şu anda Prof. Fábio Cappabianco, Ph.D. ve öğrencileri tarafından sürdürülmektedir.&lt;/p&gt;&lt;p&gt; Bir hata bulursanız veya yeni bir özellik talep etmek isterseniz lütfen GitHub sayfamızda rapor gönderin.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Web sitemizi ziyaret edin!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="695"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="708"/>
         <source>Save File as...</source>
         <translation>Dosyayı Farklı Kaydet...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="688"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV dosyaları (*.csv);;Dolphin dosyaları (*.dolphin);;Tüm desteklenen dosyalar (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="689"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="702"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin dosyaları (*.dolphin);;CSV dosyaları (*.csv);;Tüm desteklenen dosyalar (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="676"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="716"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="689"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="729"/>
         <source>Saved file successfully.</source>
         <translation>Dosya başarıyla kaydedildi.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="464"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="477"/>
         <source>No cells selected.</source>
         <translation>Hiçbir hücre seçilmedi.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="761"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="774"/>
         <source>Open File</source>
         <translation>Dosya Aç</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="762"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="775"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Tüm desteklenen dosyalar (*.dolphin *.csv);;Dolphin dosyaları (*.dolphin);;CSV dosyaları (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="783"/>
         <source>File loaded successfully.</source>
         <translation>Dosya başarıyla yüklendi.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="822"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="835"/>
         <source>Export to Image</source>
         <translation>Resme Aktar</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="822"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="835"/>
         <source>PNG files (*.png)</source>
         <translation>PNG dosyaları (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="840"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="853"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF dosyaları (*.pdf)</translation>
     </message>
@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change input size to %1</source>
         <translation>Giriş boyutunu %1&apos;e değiştir</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="884"/>
+        <location filename="../../Scene/Commands.cpp" line="885"/>
         <source>Change output size to %1</source>
         <translation>Çıkış boyutunu %1&apos;e değiştir</translation>
     </message>
@@ -498,12 +498,12 @@
         <translation>Saat</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
         <source>Low</source>
         <translation>Düşük</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
         <source>High</source>
         <translation>Yüksek</translation>
     </message>
@@ -570,7 +570,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="307"/>
+        <location filename="../../Scene/Commands.cpp" line="308"/>
         <source>Delete %1 elements</source>
         <translation>%1 öğeyi sil</translation>
     </message>
@@ -777,52 +777,52 @@
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="36"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="38"/>
         <source>7-SEGMENT DISPLAY</source>
         <translation>7-SEGMENT GÖSTERGE</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="39"/>
         <source>7-Segment Display</source>
         <translation>7-Segment Gösterge</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
         <source>middle</source>
         <translation>orta</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
         <source>upper left</source>
         <translation>üst sol</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
         <source>lower left</source>
         <translation>alt sol</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>bottom</source>
         <translation>alt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
         <source>top</source>
         <translation>üst</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
         <source>upper right</source>
         <translation>üst sağ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
         <source>dot</source>
         <translation>nokta</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
         <source>lower right</source>
         <translation>alt sağ</translation>
     </message>
@@ -1214,7 +1214,7 @@ Her kablosuz kanal benzersiz bir etikete sahip olmalıdır.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="824"/>
+        <location filename="../../Scene/Commands.cpp" line="825"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%1 öğeyi %2 ekseninde çevir</translation>
     </message>
@@ -1242,12 +1242,12 @@ Her kablosuz kanal benzersiz bir etikete sahip olmalıdır.</translation>
         <translation>Görünüm dizini %1 aralık dışında (boyut=%2) — akış bozulmuş olabilir</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="529"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="531"/>
         <source>Loading pixmap appearance names.</source>
         <translation>Pixmap kabuğu adları yükleniyor.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="562"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="564"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Görünüm dizini %1 aralık dışında (boyut=%2) görünüm adı &quot;%3&quot; için — akış bozuk olabilir</translation>
     </message>
@@ -1285,17 +1285,17 @@ Her kablosuz kanal benzersiz bir etikete sahip olmalıdır.</translation>
         <translation>Dosya açılırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
+        <location filename="../../Element/IC.cpp" line="478"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC geçişi: dosya yazma için açılamıyor: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="467"/>
+        <location filename="../../Element/IC.cpp" line="485"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC geçişi: yeniden kaydedilen dosya onaylanamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="526"/>
+        <location filename="../../Element/IC.cpp" line="553"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>IC iç içe geçme derinliği sınırı (%1) aşıldı — blob kötü amaçlı oluşturulmuş olabilir</translation>
     </message>
@@ -1432,12 +1432,12 @@ Suggested name:</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
+        <location filename="../../Element/ICRegistry.cpp" line="283"/>
         <source>Could not open file: %1</source>
         <translation>Dosya açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
+        <location filename="../../Element/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>Dosya kaydedilemedi: %1</translation>
     </message>
@@ -2167,14 +2167,14 @@ wiRedPanda %1 mevcut projenin aynı dizininde bulunan diğer tüm .panda dosyala
 IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonlarını çalıştırmadan önce yeni projeleri kaydetmeniz gerekir.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="460"/>
+        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>Are you sure?</source>
         <translation>Emin misiniz?</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="460"/>
-        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRedPanda, São Paulo Federal Üniversitesi öğrencileri tarafından öğrencilerin mantık devreleri hakkında öğrenmelerine yardımcı olmak için geliştirilmiş bir yazılımdır.&lt;/p&gt;&lt;p&gt;Yazılım sürümü: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Yaratıcılar:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda şu anda Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ve Maycon A. Santana tarafından sürdürülmektedir.&lt;/p&gt;&lt;p&gt; Bir hata bulursanız veya yeni bir özellik talep etmek isterseniz lütfen GitHub sayfamızda rapor gönderin.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Web sitemizi ziyaret edin!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="482"/>
@@ -2195,7 +2195,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="636"/>
+        <location filename="../../Scene/Commands.cpp" line="637"/>
         <source>Morph %1 elements to %2</source>
         <translation>%1 öğeyi %2&apos;ye dönüştür</translation>
     </message>
@@ -2203,7 +2203,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="400"/>
+        <location filename="../../Scene/Commands.cpp" line="401"/>
         <source>Move elements</source>
         <translation>Öğeleri taşı</translation>
     </message>
@@ -2289,7 +2289,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="224"/>
+        <location filename="../../Element/ICRegistry.cpp" line="235"/>
         <source>Add embedded IC</source>
         <translation>Gömülü IC ekle</translation>
     </message>
@@ -2310,7 +2310,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="443"/>
+        <location filename="../../Main.cpp" line="447"/>
         <source>Error!</source>
         <translation>Hata!</translation>
     </message>
@@ -2396,7 +2396,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1045"/>
+        <location filename="../../Scene/Commands.cpp" line="1046"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Blob &quot;%1&quot; kaydet</translation>
     </message>
@@ -2404,7 +2404,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1068"/>
+        <location filename="../../Scene/Commands.cpp" line="1069"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>&quot;%1&quot; blob’unu kaldır</translation>
     </message>
@@ -2412,7 +2412,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="332"/>
+        <location filename="../../Scene/Commands.cpp" line="333"/>
         <source>Rotate %1 degrees</source>
         <translation>%1 derece döndür</translation>
     </message>
@@ -2447,18 +2447,18 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="61"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="542"/>
         <source>&amp;Undo</source>
         <translation>&amp;Geri al</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="69"/>
-        <location filename="../../Scene/Scene.cpp" line="547"/>
+        <location filename="../../Scene/Scene.cpp" line="548"/>
         <source>&amp;Redo</source>
         <translation>&amp;Yinele</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="567"/>
+        <location filename="../../Scene/Scene.cpp" line="568"/>
         <source>Paste</source>
         <translation>Yapıştır</translation>
     </message>
@@ -2479,68 +2479,78 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
+        <location filename="../../IO/Serialization.cpp" line="275"/>
         <source>Stream error reading metadata map count</source>
         <translation>Üst veri sayısı okunurken akış hatası</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
+        <location filename="../../IO/Serialization.cpp" line="278"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>Kalan akış baytlarına göre üst veri sayısı %1 mantıksız</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
+        <location filename="../../IO/Serialization.cpp" line="295"/>
         <source>Stream error reading blob map count</source>
         <translation>Blob sayısı okunurken akış hatası</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
+        <location filename="../../IO/Serialization.cpp" line="298"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>Kalan akış baytlarına göre blob sayısı %1 mantıksız</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
+        <location filename="../../IO/Serialization.cpp" line="323"/>
+        <location filename="../../IO/Serialization.cpp" line="370"/>
+        <location filename="../../IO/Serialization.cpp" line="377"/>
+        <location filename="../../IO/Serialization.cpp" line="398"/>
+        <location filename="../../IO/Serialization.cpp" line="418"/>
+        <location filename="../../IO/Serialization.cpp" line="423"/>
+        <location filename="../../IO/Serialization.cpp" line="429"/>
         <source>Invalid file format.</source>
         <translation>Geçersiz dosya formatı.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
+        <location filename="../../IO/Serialization.cpp" line="359"/>
+        <source>Invalid legacy file header: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="542"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Konum %1&apos;de tür etiketi okunurken akış hatası: durum %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
+        <location filename="../../IO/Serialization.cpp" line="554"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Konum %1&apos;de eleman türü okunurken akış hatası: durum %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
+        <location filename="../../IO/Serialization.cpp" line="566"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Konum %1&apos;de eleman yüklenirken akış hatası: durum %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
+        <location filename="../../IO/Serialization.cpp" line="585"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Konum %1&apos;de bağlantı yüklenirken akış hatası: durum %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
+        <location filename="../../IO/Serialization.cpp" line="592"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Geçersiz tür. Veri muhtemelen bozuk.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
+        <location filename="../../IO/Serialization.cpp" line="645"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Sürümlü yedek oluşturulamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
+        <location filename="../../IO/Serialization.cpp" line="666"/>
+        <source>Stream error reading preamble: status %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="730"/>
         <source>Error copying file: %1</source>
         <translation>Dosya kopyalanırken hata oluştu: %1</translation>
     </message>
@@ -2548,7 +2558,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="300"/>
+        <location filename="../../Simulation/Simulation.cpp" line="314"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Uyarı: geri besleme devresi yakınsamadı — devre salınım yapıyor olabilir.</translation>
     </message>
@@ -2556,32 +2566,32 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="509"/>
+        <location filename="../../Scene/Commands.cpp" line="510"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>SplitCommand constructor&apos;ında geçersiz bağlantı portları</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="515"/>
+        <location filename="../../Scene/Commands.cpp" line="516"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>SplitCommand constructor&apos;ında geçersiz grafik öğeleri</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="538"/>
+        <location filename="../../Scene/Commands.cpp" line="539"/>
         <source>Wire split</source>
         <translation>Kablo bölme</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="554"/>
+        <location filename="../../Scene/Commands.cpp" line="555"/>
         <source>Error trying to redo %1</source>
         <translation>%1 yeniden yapılırken hata</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="577"/>
+        <location filename="../../Scene/Commands.cpp" line="578"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Hata: SplitCommand::redo() içinde endPort null</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="606"/>
+        <location filename="../../Scene/Commands.cpp" line="607"/>
         <source>Error trying to undo %1</source>
         <translation>%1 geri alınırken hata</translation>
     </message>
@@ -2594,12 +2604,12 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
         <translation type="unfinished">Dosya yazma için açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1235"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Doğruluk tablosu için çıkış değişkeni eşlenmedi: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1260"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1308"/>
         <source>Element type not supported: %1</source>
         <translation>Öğe türü desteklenmiyor: %1</translation>
     </message>
@@ -2633,17 +2643,17 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="978"/>
+        <location filename="../../Scene/Commands.cpp" line="979"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>%1 pozisyonunda Doğruluk Tablosu Çıkışını değiştir</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="987"/>
+        <location filename="../../Scene/Commands.cpp" line="988"/>
         <source>Could not find truthtable element!</source>
         <translation>Doğruluk tablosu öğesi bulunamadı!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="994"/>
+        <location filename="../../Scene/Commands.cpp" line="995"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2677,7 +2687,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1101"/>
+        <location filename="../../Scene/Commands.cpp" line="1102"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 IC blob güncelle</translation>
     </message>
@@ -2685,7 +2695,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="440"/>
+        <location filename="../../Scene/Commands.cpp" line="441"/>
         <source>Update %1 elements</source>
         <translation>%1 öğeyi güncelle</translation>
     </message>
@@ -2693,72 +2703,79 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>UpdateController</name>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="47"/>
+        <location filename="../../UI/UpdateController.cpp" line="49"/>
         <source>Update Available</source>
         <translation>Güncelleme mevcut</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="55"/>
+        <location filename="../../UI/UpdateController.cpp" line="57"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 mevcut.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Şu anda %2 sürümünü çalıştırıyorsunuz.&lt;br&gt;Yeni sürümü kaydetmek için &lt;b&gt;İndir&lt;/b&gt;&apos;e tıklayın.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="58"/>
+        <location filename="../../UI/UpdateController.cpp" line="60"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 mevcut.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Şu anda %2 sürümünü kullanıyorsunuz.&lt;br&gt;Yeni sürümü indirmek için yayın sayfasını ziyaret edin.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="67"/>
+        <location filename="../../UI/UpdateController.cpp" line="69"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Bu sürüm hakkında bir daha bildirme</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="71"/>
+        <location filename="../../UI/UpdateController.cpp" line="73"/>
         <source>Download</source>
         <translation>İndir</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="98"/>
+        <location filename="../../UI/UpdateController.cpp" line="100"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>wiRedPanda %1 indiriliyor…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="98"/>
+        <location filename="../../UI/UpdateController.cpp" line="100"/>
         <source>Cancel</source>
         <translation>İptal</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="99"/>
+        <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading Update</source>
         <translation>Güncelleme indiriliyor</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="123"/>
         <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Download Failed</source>
         <translation>İndirme başarısız</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="123"/>
+        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <source>Could not download the update:
 %1</source>
         <translation>Güncelleme indirilemedi:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Could not save the file:
 %1</source>
         <translation>Dosya kaydedilemedi:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <source>Could not write the file:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="152"/>
         <source>Download Complete</source>
         <translation>İndirme tamamlandı</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="140"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda şuraya indirildi:
@@ -2768,7 +2785,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="141"/>
+        <location filename="../../Scene/Workspace.cpp" line="148"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2779,50 +2796,50 @@ wiRedPanda sürümünüz (%2) dosya biçimi %3 destekliyor.
 Bu dosyadaki değişiklikleri kaydetmek için lütfen wiRedPanda&apos;yı güncelleyin.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="145"/>
+        <location filename="../../Scene/Workspace.cpp" line="152"/>
         <source>Cannot save.</source>
         <translation>Kaydedilemez.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="217"/>
+        <location filename="../../Scene/Workspace.cpp" line="224"/>
         <source>Save File</source>
         <translation>Dosya Kaydet</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="217"/>
-        <location filename="../../Scene/Workspace.cpp" line="264"/>
-        <location filename="../../Scene/Workspace.cpp" line="303"/>
+        <location filename="../../Scene/Workspace.cpp" line="224"/>
+        <location filename="../../Scene/Workspace.cpp" line="271"/>
+        <location filename="../../Scene/Workspace.cpp" line="310"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda dosyaları (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="262"/>
-        <location filename="../../Scene/Workspace.cpp" line="301"/>
+        <location filename="../../Scene/Workspace.cpp" line="269"/>
+        <location filename="../../Scene/Workspace.cpp" line="308"/>
         <source>Save File (original location is read-only)</source>
         <translation>Dosyayı Kaydet (orijinal konum salt okunur)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
+        <location filename="../../Scene/Workspace.cpp" line="277"/>
         <source>Error opening file: %1</source>
         <translation>Dosya açılırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
+        <location filename="../../Scene/Workspace.cpp" line="316"/>
         <source>Could not save file: %1</source>
         <translation>Dosya kaydedilemedi: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
+        <location filename="../../Scene/Workspace.cpp" line="390"/>
         <source>This file does not exist: %1</source>
         <translation>Bu dosya mevcut değil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
+        <location filename="../../Scene/Workspace.cpp" line="399"/>
         <source>Could not open file: %1</source>
         <translation>Dosya açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="427"/>
+        <location filename="../../Scene/Workspace.cpp" line="434"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2835,34 +2852,34 @@ Dosya açılacak ancak kaydetme engellendi.
 Bu dosyayı düzenlemek ve kaydetmek için lütfen wiRedPanda&apos;yı güncelleyin.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="432"/>
+        <location filename="../../Scene/Workspace.cpp" line="439"/>
         <source>Newer version file.</source>
         <translation>Yeni sürüm dosyası.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="435"/>
+        <location filename="../../Scene/Workspace.cpp" line="442"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Bu dosya eski bir biçimdedir (sürüm %1) ve otomatik olarak mevcut biçime (sürüm %2) yükseltilecektir.
 Orijinal dosyanın yedeği şu adla oluşturuldu: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="438"/>
+        <location filename="../../Scene/Workspace.cpp" line="445"/>
         <source>File upgraded.</source>
         <translation>Dosya yükseltildi.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
+        <location filename="../../Scene/Workspace.cpp" line="607"/>
         <source>Error opening autosave file: %1</source>
         <translation>Otomatik kaydetme dosyası açılırken hata: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
+        <location filename="../../Scene/Workspace.cpp" line="615"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Otomatik kaydetme dosyası tamamlanamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="774"/>
+        <location filename="../../Scene/Workspace.cpp" line="781"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Gömülü IC &quot;%1&quot;’yi kaldır</translation>
     </message>
@@ -2872,7 +2889,7 @@ Orijinal dosyanın yedeği şu adla oluşturuldu: %3</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="483"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="488"/>
         <source>New Project</source>
         <translation>Yeni Proje</translation>
     </message>
@@ -2899,48 +2916,48 @@ Değişikliklerinizi kaydetmek istiyor musunuz?</translation>
         <translation>Dosya başarıyla yüklendi.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
         <source>Open File</source>
         <translation>Dosya Aç</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda dosyaları (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
         <source>Save File as ...</source>
         <translation>Dosyayı Farklı Kaydet ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="282"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="337"/>
         <source>File Conflict</source>
         <translation>Dosya Çakışması</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="283"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="338"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>&quot;%1&quot; dosyası zaten başka bir sekmede açık.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="286"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="341"/>
         <source>Switch to Tab</source>
         <translation>Sekmeye Geç</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="443"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="448"/>
         <source>Error!</source>
         <translation>Hata!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="539"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="544"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
@@ -2974,74 +2991,74 @@ Değişikliklerinizi kaydetmek istiyor musunuz?</translation>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="292"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Circuit file to open.</source>
         <translation>Açılacak devre dosyası.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="300"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Ayrıntı seviyesi 0 ile 5 arası, varsayılan olarak devre dışı.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="297"/>
+        <location filename="../../Main.cpp" line="301"/>
         <source>verbosity level</source>
         <translation>ayrıntı seviyesi</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="306"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Devreyi &lt;arduino-dosyası&gt;na aktarır.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="314"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Devreyi dalga formu metin dosyasına aktarır, girdiyi terminalden okur.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="319"/>
+        <location filename="../../Main.cpp" line="323"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>-c/--terminal ile kullanıldığında, devre Doğruluk Tabloları içeriyorsa çalıştırmayı engeller.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="325"/>
+        <location filename="../../Main.cpp" line="329"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Programatik kontrol için MCP (Model Context Protocol) modunda çalıştır.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="330"/>
+        <location filename="../../Main.cpp" line="334"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>MCP modunu görünür bir GUI penceresiyle çalıştır.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="356"/>
-        <location filename="../../Main.cpp" line="368"/>
-        <location filename="../../Main.cpp" line="380"/>
+        <location filename="../../Main.cpp" line="360"/>
+        <location filename="../../Main.cpp" line="372"/>
+        <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="403"/>
+        <location filename="../../Main.cpp" line="407"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Hata: Devre Doğruluk Tablosu elemanları içeriyor.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="448"/>
+        <location filename="../../Main.cpp" line="452"/>
         <source>Error: </source>
         <translation>Hata: </translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="303"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>arduino file</source>
         <translation>arduino dosyası</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="308"/>
+        <location filename="../../Main.cpp" line="312"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Devreyi dalga formu metin dosyasına aktarır.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="309"/>
+        <location filename="../../Main.cpp" line="313"/>
         <source>waveform input text file</source>
         <translation>dalga formu giriş metin dosyası</translation>
     </message>

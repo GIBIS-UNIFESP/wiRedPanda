@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="281"/>
+        <location filename="../../Scene/Commands.cpp" line="282"/>
         <source>Add %1 elements</source>
         <translation>Добави %1 елемента</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="143"/>
+        <location filename="../../Core/Application.cpp" line="147"/>
         <source>Error!</source>
         <translation>Грешка!</translation>
     </message>
@@ -53,17 +53,17 @@
         <translation>Няма достатъчно пинове за всички изходни елементи</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="690"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="763"/>
         <source>Element type not supported: %1</source>
         <translation>Типът елемент не се поддържа: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="913"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="986"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Изходната променлива не е свързана с таблицата на истинност: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1157"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1255"/>
         <source>Could not open testbench file: %1</source>
         <translation>Файлът за тестова стенда не може да бъде отворен: %1</translation>
     </message>
@@ -160,7 +160,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="840"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="853"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Export to PDF</source>
         <translation>Експорт в PDF</translation>
@@ -376,85 +376,85 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="57"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="119"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="715"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="781"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="728"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="794"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin Симулатор</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="307"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="729"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="314"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="742"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="308"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="315"/>
         <source>Save simulation before closing?</source>
         <translation>Запази симулацията преди затваряне?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="730"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="743"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Искате ли да свържете този beWavedDolphin файл с текущия wiRedPanda файл и да го запазите?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="859"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin е симулатор на вълнови форми за wiRedPanda, разработен от Федералния университет на Сао Пауло, за да помогне на студентите да научат за логическите схеми.&lt;/p&gt;&lt;p&gt;Версия на софтуера: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Създатели:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin се поддържа в момента от Prof. Fábio Cappabianco, Ph.D. и неговите студенти.&lt;/p&gt;&lt;p&gt; Моля, подайте доклад в нашата страница в GitHub, ако намерите грешка или искате да заявите нова функция.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Посетете нашия уебсайт!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="695"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="708"/>
         <source>Save File as...</source>
         <translation>Запази файл като...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="688"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV файлове (*.csv);;Dolphin файлове (*.dolphin);;Всички поддържани файлове (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="689"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="702"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin файлове (*.dolphin);;CSV файлове (*.csv);;Всички поддържани файлове (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="676"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="716"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="689"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="729"/>
         <source>Saved file successfully.</source>
         <translation>Файлът е запазен успешно.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="464"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="477"/>
         <source>No cells selected.</source>
         <translation>Няма избрани клетки.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="761"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="774"/>
         <source>Open File</source>
         <translation>Отвори Файл</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="762"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="775"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Всички поддържани файлове (*.dolphin *.csv);;Dolphin файлове (*.dolphin);;CSV файлове (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="783"/>
         <source>File loaded successfully.</source>
         <translation>Файлът е зареден успешно.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="822"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="835"/>
         <source>Export to Image</source>
         <translation>Експорт към Изображение</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="822"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="835"/>
         <source>PNG files (*.png)</source>
         <translation>PNG файлове (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="840"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="853"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF файлове (*.pdf)</translation>
     </message>
@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change input size to %1</source>
         <translation>Промени размера на входа на %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="884"/>
+        <location filename="../../Scene/Commands.cpp" line="885"/>
         <source>Change output size to %1</source>
         <translation>Промени размера на изхода на %1</translation>
     </message>
@@ -498,12 +498,12 @@
         <translation>Тактов Сигнал</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
         <source>Low</source>
         <translation>Ниско</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
         <source>High</source>
         <translation>Високо</translation>
     </message>
@@ -570,7 +570,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="307"/>
+        <location filename="../../Scene/Commands.cpp" line="308"/>
         <source>Delete %1 elements</source>
         <translation>Изтрий %1 елемента</translation>
     </message>
@@ -777,52 +777,52 @@
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="36"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="38"/>
         <source>7-SEGMENT DISPLAY</source>
         <translation>7-СЕГМЕНТОВ ДИСПЛЕЙ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="39"/>
         <source>7-Segment Display</source>
         <translation>7-Сегментов Дисплей</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
         <source>middle</source>
         <translation>среда</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
         <source>upper left</source>
         <translation>горе ляво</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
         <source>lower left</source>
         <translation>долу ляво</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>bottom</source>
         <translation>долу</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
         <source>top</source>
         <translation>горе</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
         <source>upper right</source>
         <translation>горе дясно</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
         <source>dot</source>
         <translation>точка</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
         <source>lower right</source>
         <translation>долу дясно</translation>
     </message>
@@ -1214,7 +1214,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="824"/>
+        <location filename="../../Scene/Commands.cpp" line="825"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Обърни %1 елемента в ос %2</translation>
     </message>
@@ -1242,12 +1242,12 @@ Each wireless channel must have a unique label.</source>
         <translation>Индекс на изглед %1 извън обхвата (размер=%2) — потокът може да е повреден</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="529"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="531"/>
         <source>Loading pixmap appearance names.</source>
         <translation>Зареждане имената на облицовките на изображенията.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="562"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="564"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Индекс на скин %1 извън обхват (размер=%2) за име на скин &quot;%3&quot; — потокът може да е повреден</translation>
     </message>
@@ -1285,17 +1285,17 @@ Each wireless channel must have a unique label.</source>
         <translation>Грешка при отваряне на файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
+        <location filename="../../Element/IC.cpp" line="478"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Миграция на IC: файлът не може да бъде отворен за запис: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="467"/>
+        <location filename="../../Element/IC.cpp" line="485"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Миграция на IC: неуспешно записване на файла: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="526"/>
+        <location filename="../../Element/IC.cpp" line="553"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Превишен лимит за дълбочина на вложеност на ИС (%1) — blob може да е злонамерено създаден</translation>
     </message>
@@ -1432,12 +1432,12 @@ Suggested name:</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
+        <location filename="../../Element/ICRegistry.cpp" line="283"/>
         <source>Could not open file: %1</source>
         <translation>Не може да се отвори файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
+        <location filename="../../Element/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>Не може да се запише файл: %1</translation>
     </message>
@@ -2167,11 +2167,6 @@ wiRedPanda %1 ще изведе автоматично всички други .
 Трябва да запазите новите проекти преди да получите достъп до интегрални схеми и изгледи или да стартирате beWavedDolphin симулации.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="460"/>
-        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRedPanda е софтуер, разработен от студенти на Федералния университет на Сао Пауло, за да помогне на студентите да научат за логическите схеми.&lt;/p&gt;&lt;p&gt;Версия на софтуера: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Създатели:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda се поддържа в момента от Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves и Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Моля, подайте доклад в нашата страница в GitHub, ако намерите грешка или искате да заявите нова функция.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Посетете нашия уебсайт!&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>Are you sure?</source>
         <translation>Сигурен ли сте?</translation>
@@ -2180,6 +2175,11 @@ wiRedPanda %1 ще изведе автоматично всички други .
         <location filename="../../UI/MainWindow.cpp" line="482"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Клавишни комбинации за платното&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Увеличаване &lt;/li&gt;&lt;li&gt; Ctrl+- : Намаляване &lt;/li&gt;&lt;li&gt; Ctrl+1 : Скриване/Показване на проводници &lt;/li&gt;&lt;li&gt; Ctrl+2 : Скриване/Показване на порти &lt;/li&gt;&lt;li&gt; Ctrl+F : Търсене на елементи &lt;/li&gt;&lt;li&gt; Ctrl+W : Отваряне на beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Запазване на проекта &lt;/li&gt;&lt;li&gt; Ctrl+Q : Изход от wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Старт/Пауза на симулацията &lt;/li&gt;&lt;li&gt; [ : Предишно основно свойство на елемента &lt;/li&gt;&lt;li&gt; ] : Следващо основно свойство на елемента &lt;/li&gt;&lt;li&gt; { : Предишно вторично свойство на елемента &lt;/li&gt;&lt;li&gt; } : Следващо вторично свойство на елемента &lt;/li&gt;&lt;li&gt; &amp;lt; : Преобразуване към предишен елемент &lt;/li&gt;&lt;li&gt; &amp;gt; : Преобразуване към следващ елемент &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Общи съвети&lt;/h1&gt;&lt;p&gt;Щракнете двукратно върху проводник, за да създадете възел&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="460"/>
+        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="532"/>
@@ -2195,7 +2195,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="636"/>
+        <location filename="../../Scene/Commands.cpp" line="637"/>
         <source>Morph %1 elements to %2</source>
         <translation>Преобразувай %1 елемента в %2</translation>
     </message>
@@ -2203,7 +2203,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="400"/>
+        <location filename="../../Scene/Commands.cpp" line="401"/>
         <source>Move elements</source>
         <translation>Премести елементи</translation>
     </message>
@@ -2289,7 +2289,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="224"/>
+        <location filename="../../Element/ICRegistry.cpp" line="235"/>
         <source>Add embedded IC</source>
         <translation>Добавяне на вграден IC</translation>
     </message>
@@ -2310,7 +2310,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="443"/>
+        <location filename="../../Main.cpp" line="447"/>
         <source>Error!</source>
         <translation>Грешка!</translation>
     </message>
@@ -2396,7 +2396,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1045"/>
+        <location filename="../../Scene/Commands.cpp" line="1046"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Регистриране на блоб &quot;%1&quot;</translation>
     </message>
@@ -2404,7 +2404,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1068"/>
+        <location filename="../../Scene/Commands.cpp" line="1069"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Премахни blob „%1“</translation>
     </message>
@@ -2412,7 +2412,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="332"/>
+        <location filename="../../Scene/Commands.cpp" line="333"/>
         <source>Rotate %1 degrees</source>
         <translation>Завърти на %1 градуса</translation>
     </message>
@@ -2447,18 +2447,18 @@ wiRedPanda %1 ще изведе автоматично всички други .
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="61"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="542"/>
         <source>&amp;Undo</source>
         <translation>&amp;Отмени</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="69"/>
-        <location filename="../../Scene/Scene.cpp" line="547"/>
+        <location filename="../../Scene/Scene.cpp" line="548"/>
         <source>&amp;Redo</source>
         <translation>&amp;Повтори</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="567"/>
+        <location filename="../../Scene/Scene.cpp" line="568"/>
         <source>Paste</source>
         <translation>Постави</translation>
     </message>
@@ -2479,68 +2479,78 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
+        <location filename="../../IO/Serialization.cpp" line="275"/>
         <source>Stream error reading metadata map count</source>
         <translation>Грешка в потока при четене на броя метаданни</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
+        <location filename="../../IO/Serialization.cpp" line="278"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>Брой метаданни %1 неправдоподобен спрямо оставащите байтове в потока</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
+        <location filename="../../IO/Serialization.cpp" line="295"/>
         <source>Stream error reading blob map count</source>
         <translation>Грешка в потока при четене на броя blob</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
+        <location filename="../../IO/Serialization.cpp" line="298"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>Брой blob %1 неправдоподобен спрямо оставащите байтове в потока</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
+        <location filename="../../IO/Serialization.cpp" line="323"/>
+        <location filename="../../IO/Serialization.cpp" line="370"/>
+        <location filename="../../IO/Serialization.cpp" line="377"/>
+        <location filename="../../IO/Serialization.cpp" line="398"/>
+        <location filename="../../IO/Serialization.cpp" line="418"/>
+        <location filename="../../IO/Serialization.cpp" line="423"/>
+        <location filename="../../IO/Serialization.cpp" line="429"/>
         <source>Invalid file format.</source>
         <translation>Невалиден формат на файл.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
+        <location filename="../../IO/Serialization.cpp" line="359"/>
+        <source>Invalid legacy file header: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="542"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Грешка при четене на етикета за тип на позиция %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
+        <location filename="../../IO/Serialization.cpp" line="554"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Грешка при четене на типа елемент на позиция %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
+        <location filename="../../IO/Serialization.cpp" line="566"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Грешка при зареждане на елемент на позиция %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
+        <location filename="../../IO/Serialization.cpp" line="585"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Грешка при зареждане на връзка на позиция %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
+        <location filename="../../IO/Serialization.cpp" line="592"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Невалиден тип. Данните вероятно са повредени.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
+        <location filename="../../IO/Serialization.cpp" line="645"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Неуспешно създаване на версионно архивиране: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
+        <location filename="../../IO/Serialization.cpp" line="666"/>
+        <source>Stream error reading preamble: status %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="730"/>
         <source>Error copying file: %1</source>
         <translation>Грешка при копиране на файла: %1</translation>
     </message>
@@ -2548,7 +2558,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="300"/>
+        <location filename="../../Simulation/Simulation.cpp" line="314"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Предупреждение: обратната схема не конвергира — схемата може да осцилира.</translation>
     </message>
@@ -2556,32 +2566,32 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="509"/>
+        <location filename="../../Scene/Commands.cpp" line="510"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Невалидни портове за свързване в конструктора на SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="515"/>
+        <location filename="../../Scene/Commands.cpp" line="516"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Невалидни графични елементи в конструктора на SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="538"/>
+        <location filename="../../Scene/Commands.cpp" line="539"/>
         <source>Wire split</source>
         <translation>Разделяне на проводник</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="554"/>
+        <location filename="../../Scene/Commands.cpp" line="555"/>
         <source>Error trying to redo %1</source>
         <translation>Грешка при опит за повтаряне %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="577"/>
+        <location filename="../../Scene/Commands.cpp" line="578"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Грешка: endPort е null в SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="606"/>
+        <location filename="../../Scene/Commands.cpp" line="607"/>
         <source>Error trying to undo %1</source>
         <translation>Грешка при опит за отмяна %1</translation>
     </message>
@@ -2594,12 +2604,12 @@ wiRedPanda %1 ще изведе автоматично всички други .
         <translation type="unfinished">Файлът не може да бъде отворен за запис: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1235"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Изходната променлива не е свързана с таблицата на истинност: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1260"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1308"/>
         <source>Element type not supported: %1</source>
         <translation>Типът елемент не се поддържа: %1</translation>
     </message>
@@ -2633,17 +2643,17 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="978"/>
+        <location filename="../../Scene/Commands.cpp" line="979"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Превключи изхода на таблицата на истинност на позиция: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="987"/>
+        <location filename="../../Scene/Commands.cpp" line="988"/>
         <source>Could not find truthtable element!</source>
         <translation>Не може да се намери елемент от таблицата на истинност!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="994"/>
+        <location filename="../../Scene/Commands.cpp" line="995"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2677,7 +2687,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1101"/>
+        <location filename="../../Scene/Commands.cpp" line="1102"/>
         <source>Update %1 IC blobs</source>
         <translation>Актуализиране на %1 IC блобове</translation>
     </message>
@@ -2685,7 +2695,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="440"/>
+        <location filename="../../Scene/Commands.cpp" line="441"/>
         <source>Update %1 elements</source>
         <translation>Обнови %1 елемента</translation>
     </message>
@@ -2693,72 +2703,79 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>UpdateController</name>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="47"/>
+        <location filename="../../UI/UpdateController.cpp" line="49"/>
         <source>Update Available</source>
         <translation>Налична е актуализация</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="55"/>
+        <location filename="../../UI/UpdateController.cpp" line="57"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 е налична.&lt;/b&gt;&lt;br&gt;&lt;br&gt;В момента използвате версия %2.&lt;br&gt;Кликнете на &lt;b&gt;Изтегляне&lt;/b&gt;, за да запазите новата версия.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="58"/>
+        <location filename="../../UI/UpdateController.cpp" line="60"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 е наличен.&lt;/b&gt;&lt;br&gt;&lt;br&gt;В момента използвате версия %2.&lt;br&gt;Посетете страницата за издания, за да изтеглите новата версия.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="67"/>
+        <location filename="../../UI/UpdateController.cpp" line="69"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Не ме уведомявай за тази версия отново</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="71"/>
+        <location filename="../../UI/UpdateController.cpp" line="73"/>
         <source>Download</source>
         <translation>Изтегляне</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="98"/>
+        <location filename="../../UI/UpdateController.cpp" line="100"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Изтегляне на wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="98"/>
+        <location filename="../../UI/UpdateController.cpp" line="100"/>
         <source>Cancel</source>
         <translation>Отказ</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="99"/>
+        <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading Update</source>
         <translation>Изтегляне на актуализация</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="123"/>
         <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Download Failed</source>
         <translation>Грешка при изтеглянето</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="123"/>
+        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <source>Could not download the update:
 %1</source>
         <translation>Не може да се изтегли актуализацията:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Could not save the file:
 %1</source>
         <translation>Не може да се запази файлът:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <source>Could not write the file:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="152"/>
         <source>Download Complete</source>
         <translation>Изтеглянето завърши</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="140"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda е изтеглен в:
@@ -2768,7 +2785,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="141"/>
+        <location filename="../../Scene/Workspace.cpp" line="148"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2779,50 +2796,50 @@ Please update wiRedPanda to save changes to this file.</source>
 Моля, актуализирайте wiRedPanda, за да запазите промените в този файл.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="145"/>
+        <location filename="../../Scene/Workspace.cpp" line="152"/>
         <source>Cannot save.</source>
         <translation>Запазването е невъзможно.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="217"/>
+        <location filename="../../Scene/Workspace.cpp" line="224"/>
         <source>Save File</source>
         <translation>Запази файл</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="217"/>
-        <location filename="../../Scene/Workspace.cpp" line="264"/>
-        <location filename="../../Scene/Workspace.cpp" line="303"/>
+        <location filename="../../Scene/Workspace.cpp" line="224"/>
+        <location filename="../../Scene/Workspace.cpp" line="271"/>
+        <location filename="../../Scene/Workspace.cpp" line="310"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda файлове (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="262"/>
-        <location filename="../../Scene/Workspace.cpp" line="301"/>
+        <location filename="../../Scene/Workspace.cpp" line="269"/>
+        <location filename="../../Scene/Workspace.cpp" line="308"/>
         <source>Save File (original location is read-only)</source>
         <translation>Запиши файла (оригиналното местоположение е само за четене)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
+        <location filename="../../Scene/Workspace.cpp" line="277"/>
         <source>Error opening file: %1</source>
         <translation>Грешка при отваряне на файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
+        <location filename="../../Scene/Workspace.cpp" line="316"/>
         <source>Could not save file: %1</source>
         <translation>Не може да се запише файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
+        <location filename="../../Scene/Workspace.cpp" line="390"/>
         <source>This file does not exist: %1</source>
         <translation>Този файл не съществува: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
+        <location filename="../../Scene/Workspace.cpp" line="399"/>
         <source>Could not open file: %1</source>
         <translation>Не може да се отвори файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="427"/>
+        <location filename="../../Scene/Workspace.cpp" line="434"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2835,34 +2852,34 @@ Please update wiRedPanda to edit and save this file.</source>
 Моля, актуализирайте wiRedPanda, за да редактирате и запазите този файл.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="432"/>
+        <location filename="../../Scene/Workspace.cpp" line="439"/>
         <source>Newer version file.</source>
         <translation>Файл от по-нова версия.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="435"/>
+        <location filename="../../Scene/Workspace.cpp" line="442"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Този файл е в по-стар формат (версия %1) и ще бъде автоматично обновен до текущия формат (версия %2).
 Създадено е резервно копие на оригиналния файл с име: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="438"/>
+        <location filename="../../Scene/Workspace.cpp" line="445"/>
         <source>File upgraded.</source>
         <translation>Файлът е обновен.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
+        <location filename="../../Scene/Workspace.cpp" line="607"/>
         <source>Error opening autosave file: %1</source>
         <translation>Грешка при отваряне на автоматично запазен файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
+        <location filename="../../Scene/Workspace.cpp" line="615"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Файлът за автоматично запазване не може да бъде потвърден: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="774"/>
+        <location filename="../../Scene/Workspace.cpp" line="781"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Премахни вградена ИС „%1“</translation>
     </message>
@@ -2872,7 +2889,7 @@ A backup of the original file has been created with name: %3</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="483"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="488"/>
         <source>New Project</source>
         <translation>Нов проект</translation>
     </message>
@@ -2899,48 +2916,48 @@ Do you want to save your changes?</source>
         <translation>Файлът е зареден успешно.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
         <source>Open File</source>
         <translation>Отвори Файл</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda файлове (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
         <source>Save File as ...</source>
         <translation>Запази файл като...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="282"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="337"/>
         <source>File Conflict</source>
         <translation>Конфликт на файл</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="283"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="338"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Файлът „%1“ вече е отворен в друг раздел.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="286"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="341"/>
         <source>Switch to Tab</source>
         <translation>Превключи към раздел</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="443"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="448"/>
         <source>Error!</source>
         <translation>Грешка!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="539"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="544"/>
         <source>Error</source>
         <translation>Грешка</translation>
     </message>
@@ -2974,74 +2991,74 @@ Do you want to save your changes?</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="292"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Circuit file to open.</source>
         <translation>Файл с вериги за отваряне.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="300"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Ниво на подробност от 0 до 5, изключено по подразбиране.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="297"/>
+        <location filename="../../Main.cpp" line="301"/>
         <source>verbosity level</source>
         <translation>ниво на подробност</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="306"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Експортира схемата в &lt;arduino-файл&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="314"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Експортира схемата в текстов файл с вълнова форма, чете входа от терминала.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="319"/>
+        <location filename="../../Main.cpp" line="323"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Когато се използва с -c/--terminal, блокира изпълнението ако схемата съдържа таблици на истинност.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="325"/>
+        <location filename="../../Main.cpp" line="329"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Стартиране в режим MCP (Model Context Protocol) за програмен контрол.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="330"/>
+        <location filename="../../Main.cpp" line="334"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Стартиране на MCP режим с видим GUI прозорец.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="356"/>
-        <location filename="../../Main.cpp" line="368"/>
-        <location filename="../../Main.cpp" line="380"/>
+        <location filename="../../Main.cpp" line="360"/>
+        <location filename="../../Main.cpp" line="372"/>
+        <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="403"/>
+        <location filename="../../Main.cpp" line="407"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Грешка: Схемата съдържа елементи от таблица на истинност.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="448"/>
+        <location filename="../../Main.cpp" line="452"/>
         <source>Error: </source>
         <translation>Грешка: </translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="303"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>arduino file</source>
         <translation>arduino файл</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="308"/>
+        <location filename="../../Main.cpp" line="312"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Експортира схемата в текстов файл с вълнова форма.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="309"/>
+        <location filename="../../Main.cpp" line="313"/>
         <source>waveform input text file</source>
         <translation>входен текстов файл с вълнова форма</translation>
     </message>

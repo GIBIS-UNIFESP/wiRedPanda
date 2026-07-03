@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="281"/>
+        <location filename="../../Scene/Commands.cpp" line="282"/>
         <source>Add %1 elements</source>
         <translation>Agregar %1 elementos</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="143"/>
+        <location filename="../../Core/Application.cpp" line="147"/>
         <source>Error!</source>
         <translation>¡Error!</translation>
     </message>
@@ -53,17 +53,17 @@
         <translation>No hay suficientes pines disponibles para todos los elementos de salida</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="690"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="763"/>
         <source>Element type not supported: %1</source>
         <translation>Tipo de elemento no compatible: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="913"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="986"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Variable de salida no asignada para la tabla de verdad: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1157"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1255"/>
         <source>Could not open testbench file: %1</source>
         <translation>No se pudo abrir el archivo de banco de pruebas: %1</translation>
     </message>
@@ -160,7 +160,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="840"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="853"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Export to PDF</source>
         <translation>Exportar a PDF</translation>
@@ -376,8 +376,8 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="57"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="119"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="715"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="781"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="728"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="794"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulador beWavedDolphin</translation>
     </message>
@@ -387,79 +387,79 @@
         <translation>¡El archivo &quot;%1&quot; no existe!</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="307"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="729"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="314"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="742"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="308"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="315"/>
         <source>Save simulation before closing?</source>
         <translation>¿Guardar la simulación antes de cerrar?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="464"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="477"/>
         <source>No cells selected.</source>
         <translation>No hay celdas seleccionadas.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="676"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="716"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="689"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="729"/>
         <source>Saved file successfully.</source>
         <translation>Archivo guardado con éxito.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="695"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="708"/>
         <source>Save File as...</source>
         <translation>Guardar archivo como...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="688"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>Archivos CSV (*.csv);;Archivos Dolphin (*.dolphin);;Todos los archivos compatibles (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="689"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="702"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Archivos Dolphin (*.dolphin);;Archivos CSV (*.csv);;Todos los archivos compatibles (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="730"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="743"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>¿Desea vincular este archivo beWavedDolphin a su archivo wiRedPanda actual y guardarlo?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="761"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="774"/>
         <source>Open File</source>
         <translation>Abrir Archivo</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="762"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="775"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Todos los archivos compatibles (*.dolphin *.csv);;Archivos Dolphin (*.dolphin);;Archivos CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="783"/>
         <source>File loaded successfully.</source>
         <translation>El archivo se cargó con éxito.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="822"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="835"/>
         <source>Export to Image</source>
         <translation>Exportar a Imagen</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="822"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="835"/>
         <source>PNG files (*.png)</source>
         <translation>Archivos PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="840"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="853"/>
         <source>PDF files (*.pdf)</source>
         <translation>Archivos PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="859"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin es un simulador de formas de onda para wiRedPanda, desarrollado por la Universidad Federal de São Paulo para ayudar a los estudiantes a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versión del software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin es mantenido actualmente por el Prof. Fábio Cappabianco, Ph.D. y sus estudiantes.&lt;/p&gt;&lt;p&gt; Por favor, envíe un informe en nuestra página de GitHub si encuentra un error o desea solicitar una nueva funcionalidad.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;¡Visite nuestro sitio web!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="883"/>
+        <location filename="../../Scene/Commands.cpp" line="884"/>
         <source>Change input size to %1</source>
         <translation>Cambiar el tamaño de entrada a %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="884"/>
+        <location filename="../../Scene/Commands.cpp" line="885"/>
         <source>Change output size to %1</source>
         <translation>Cambiar el tamaño de salida a %1</translation>
     </message>
@@ -503,12 +503,12 @@
         <translation>Reloj</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
         <source>Low</source>
         <translation>Bajo</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="214"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
         <source>High</source>
         <translation>Alto</translation>
     </message>
@@ -570,7 +570,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="307"/>
+        <location filename="../../Scene/Commands.cpp" line="308"/>
         <source>Delete %1 elements</source>
         <translation>Eliminar %1 elementos</translation>
     </message>
@@ -777,52 +777,52 @@
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="36"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="38"/>
         <source>7-SEGMENT DISPLAY</source>
         <translation>PANTALLA DE 7 SEGMENTOS</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="37"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="39"/>
         <source>7-Segment Display</source>
         <translation>Pantalla de 7 Segmentos</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
         <source>middle</source>
         <translation>medio</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
         <source>upper left</source>
         <translation>superior izquierda</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
         <source>lower left</source>
         <translation>inferior izquierda</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>bottom</source>
         <translation>inferior</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
         <source>top</source>
         <translation>superior</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
         <source>upper right</source>
         <translation>superior derecha</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
         <source>dot</source>
         <translation>punto</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
         <source>lower right</source>
         <translation>inferior derecha</translation>
     </message>
@@ -1214,7 +1214,7 @@ Cada canal inalámbrico debe tener una etiqueta única.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="824"/>
+        <location filename="../../Scene/Commands.cpp" line="825"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Invertir %1 elementos en el eje %2</translation>
     </message>
@@ -1242,12 +1242,12 @@ Cada canal inalámbrico debe tener una etiqueta única.</translation>
         <translation>Índice de apariencia %1 fuera de rango (tamaño=%2) — el flujo puede estar dañado</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="529"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="531"/>
         <source>Loading pixmap appearance names.</source>
         <translation>Cargando nombres de aspectos de mapa de píxeles.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="562"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="564"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Índice de apariencia %1 fuera de rango (tamaño=%2) para nombre de apariencia &quot;%3&quot; — el flujo puede estar corrupto</translation>
     </message>
@@ -1285,17 +1285,17 @@ Cada canal inalámbrico debe tener una etiqueta única.</translation>
         <translation>Error al abrir archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="460"/>
+        <location filename="../../Element/IC.cpp" line="478"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Migración de CI: no se puede abrir el archivo para escritura: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="467"/>
+        <location filename="../../Element/IC.cpp" line="485"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Migración de CI: no se pudo confirmar el archivo reguardado: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="526"/>
+        <location filename="../../Element/IC.cpp" line="553"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Límite de profundidad de anidamiento de CI (%1) superado — el blob puede haber sido manipulado</translation>
     </message>
@@ -1432,12 +1432,12 @@ Nombre sugerido:</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="272"/>
+        <location filename="../../Element/ICRegistry.cpp" line="283"/>
         <source>Could not open file: %1</source>
         <translation>No se pudo abrir archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="276"/>
+        <location filename="../../Element/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>No se pudo guardar archivo: %1</translation>
     </message>
@@ -2167,14 +2167,14 @@ wiRedPanda %1 listará automáticamente todos los demás archivos .panda ubicado
 Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecutar simulaciones de beWavedDolphin.</translation>
     </message>
     <message>
+        <location filename="../../UI/MainWindow.cpp" line="460"/>
+        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>Are you sure?</source>
         <translation>¿Está seguro?</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="460"/>
-        <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRedPanda es un software desarrollado por estudiantes de la Universidad Federal de São Paulo para ayudar a los estudiantes a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versión del software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda es mantenido actualmente por el Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves y Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Por favor, envíe un informe en nuestra página de GitHub si encuentra un error o desea solicitar una nueva funcionalidad.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;¡Visite nuestro sitio web!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="482"/>
@@ -2195,7 +2195,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="636"/>
+        <location filename="../../Scene/Commands.cpp" line="637"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformar %1 elementos en %2</translation>
     </message>
@@ -2203,7 +2203,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="400"/>
+        <location filename="../../Scene/Commands.cpp" line="401"/>
         <source>Move elements</source>
         <translation>Mover elementos</translation>
     </message>
@@ -2289,7 +2289,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="224"/>
+        <location filename="../../Element/ICRegistry.cpp" line="235"/>
         <source>Add embedded IC</source>
         <translation>Agregar CI integrado</translation>
     </message>
@@ -2310,7 +2310,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="443"/>
+        <location filename="../../Main.cpp" line="447"/>
         <source>Error!</source>
         <translation>¡Error!</translation>
     </message>
@@ -2396,7 +2396,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1045"/>
+        <location filename="../../Scene/Commands.cpp" line="1046"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrar blob &quot;%1&quot;</translation>
     </message>
@@ -2404,7 +2404,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1068"/>
+        <location filename="../../Scene/Commands.cpp" line="1069"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Eliminar blob &quot;%1&quot;</translation>
     </message>
@@ -2412,7 +2412,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="332"/>
+        <location filename="../../Scene/Commands.cpp" line="333"/>
         <source>Rotate %1 degrees</source>
         <translation>Girar %1 grados</translation>
     </message>
@@ -2447,18 +2447,18 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="61"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="542"/>
         <source>&amp;Undo</source>
         <translation>&amp;Deshacer</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="69"/>
-        <location filename="../../Scene/Scene.cpp" line="547"/>
+        <location filename="../../Scene/Scene.cpp" line="548"/>
         <source>&amp;Redo</source>
         <translation>&amp;Rehacer</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="567"/>
+        <location filename="../../Scene/Scene.cpp" line="568"/>
         <source>Paste</source>
         <translation>Pegar</translation>
     </message>
@@ -2479,68 +2479,78 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="274"/>
+        <location filename="../../IO/Serialization.cpp" line="275"/>
         <source>Stream error reading metadata map count</source>
         <translation>Error de flujo al leer el recuento de metadatos</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
+        <location filename="../../IO/Serialization.cpp" line="278"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>Recuento de metadatos %1 inverosímil para los bytes restantes del flujo</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="294"/>
+        <location filename="../../IO/Serialization.cpp" line="295"/>
         <source>Stream error reading blob map count</source>
         <translation>Error de flujo al leer el recuento de blobs</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
+        <location filename="../../IO/Serialization.cpp" line="298"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>Recuento de blobs %1 inverosímil para los bytes restantes del flujo</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="350"/>
-        <location filename="../../IO/Serialization.cpp" line="360"/>
-        <location filename="../../IO/Serialization.cpp" line="364"/>
-        <location filename="../../IO/Serialization.cpp" line="399"/>
-        <location filename="../../IO/Serialization.cpp" line="403"/>
-        <location filename="../../IO/Serialization.cpp" line="407"/>
-        <location filename="../../IO/Serialization.cpp" line="413"/>
+        <location filename="../../IO/Serialization.cpp" line="323"/>
+        <location filename="../../IO/Serialization.cpp" line="370"/>
+        <location filename="../../IO/Serialization.cpp" line="377"/>
+        <location filename="../../IO/Serialization.cpp" line="398"/>
+        <location filename="../../IO/Serialization.cpp" line="418"/>
+        <location filename="../../IO/Serialization.cpp" line="423"/>
+        <location filename="../../IO/Serialization.cpp" line="429"/>
         <source>Invalid file format.</source>
         <translation>Formato de archivo inválido.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="521"/>
+        <location filename="../../IO/Serialization.cpp" line="359"/>
+        <source>Invalid legacy file header: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="542"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Error de flujo al leer la etiqueta de tipo en la posición %1: estado %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="533"/>
+        <location filename="../../IO/Serialization.cpp" line="554"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Error de flujo al leer el tipo de elemento en la posición %1: estado %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="545"/>
+        <location filename="../../IO/Serialization.cpp" line="566"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Error de flujo al cargar el elemento en la posición %1: estado %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="564"/>
+        <location filename="../../IO/Serialization.cpp" line="585"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Error de flujo al cargar la conexión en la posición %1: estado %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="571"/>
+        <location filename="../../IO/Serialization.cpp" line="592"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Tipo inválido. Los datos posiblemente están corruptos.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="624"/>
+        <location filename="../../IO/Serialization.cpp" line="645"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>No se pudo crear la copia de seguridad versionada: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="704"/>
+        <location filename="../../IO/Serialization.cpp" line="666"/>
+        <source>Stream error reading preamble: status %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="730"/>
         <source>Error copying file: %1</source>
         <translation>Error al copiar el archivo: %1</translation>
     </message>
@@ -2548,7 +2558,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="300"/>
+        <location filename="../../Simulation/Simulation.cpp" line="314"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Advertencia: el circuito de retroalimentación no convergió — el circuito puede estar oscilando.</translation>
     </message>
@@ -2556,32 +2566,32 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="509"/>
+        <location filename="../../Scene/Commands.cpp" line="510"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Puertos de conexión inválidos en el constructor SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="515"/>
+        <location filename="../../Scene/Commands.cpp" line="516"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Elementos gráficos inválidos en el constructor SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="538"/>
+        <location filename="../../Scene/Commands.cpp" line="539"/>
         <source>Wire split</source>
         <translation>Alambre partido</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="554"/>
+        <location filename="../../Scene/Commands.cpp" line="555"/>
         <source>Error trying to redo %1</source>
         <translation>Error al intentar rehacer %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="577"/>
+        <location filename="../../Scene/Commands.cpp" line="578"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Error: endPort es null en SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="606"/>
+        <location filename="../../Scene/Commands.cpp" line="607"/>
         <source>Error trying to undo %1</source>
         <translation>Error al intentar deshacer %1</translation>
     </message>
@@ -2594,12 +2604,12 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
         <translation type="unfinished">No se pudo abrir el archivo para escritura: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1235"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Variable de salida no asignada para la tabla de verdad: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1260"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1308"/>
         <source>Element type not supported: %1</source>
         <translation>Tipo de elemento no compatible: %1</translation>
     </message>
@@ -2633,17 +2643,17 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="978"/>
+        <location filename="../../Scene/Commands.cpp" line="979"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Activar o desactivar la salida de la tabla de verdad en la posición: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="987"/>
+        <location filename="../../Scene/Commands.cpp" line="988"/>
         <source>Could not find truthtable element!</source>
         <translation>¡No se pudo encontrar el elemento de tabla de verdad!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="994"/>
+        <location filename="../../Scene/Commands.cpp" line="995"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2677,7 +2687,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1101"/>
+        <location filename="../../Scene/Commands.cpp" line="1102"/>
         <source>Update %1 IC blobs</source>
         <translation>Actualizar %1 blobs de CI</translation>
     </message>
@@ -2685,7 +2695,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="440"/>
+        <location filename="../../Scene/Commands.cpp" line="441"/>
         <source>Update %1 elements</source>
         <translation>Actualizar %1 elementos</translation>
     </message>
@@ -2693,72 +2703,79 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>UpdateController</name>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="47"/>
+        <location filename="../../UI/UpdateController.cpp" line="49"/>
         <source>Update Available</source>
         <translation>Actualización disponible</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="55"/>
+        <location filename="../../UI/UpdateController.cpp" line="57"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 está disponible.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Está ejecutando actualmente la versión %2.&lt;br&gt;Haga clic en &lt;b&gt;Descargar&lt;/b&gt; para guardar la nueva versión.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="58"/>
+        <location filename="../../UI/UpdateController.cpp" line="60"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 está disponible.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Actualmente está ejecutando la versión %2.&lt;br&gt;Visite la página de lanzamientos para descargar la nueva versión.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="67"/>
+        <location filename="../../UI/UpdateController.cpp" line="69"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>No notificarme sobre esta versión de nuevo</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="71"/>
+        <location filename="../../UI/UpdateController.cpp" line="73"/>
         <source>Download</source>
         <translation>Descargar</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="98"/>
+        <location filename="../../UI/UpdateController.cpp" line="100"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Descargando wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="98"/>
+        <location filename="../../UI/UpdateController.cpp" line="100"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="99"/>
+        <location filename="../../UI/UpdateController.cpp" line="101"/>
         <source>Downloading Update</source>
         <translation>Descargando actualización</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="123"/>
         <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Download Failed</source>
         <translation>Error de descarga</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="123"/>
+        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <source>Could not download the update:
 %1</source>
         <translation>No se pudo descargar la actualización:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Could not save the file:
 %1</source>
         <translation>No se pudo guardar el archivo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <source>Could not write the file:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/UpdateController.cpp" line="152"/>
         <source>Download Complete</source>
         <translation>Descarga completa</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="140"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda se ha descargado en:
@@ -2768,7 +2785,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="141"/>
+        <location filename="../../Scene/Workspace.cpp" line="148"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2779,50 +2796,50 @@ Su versión de wiRedPanda (%2) admite el formato de archivo %3.
 Por favor, actualice wiRedPanda para guardar cambios en este archivo.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="145"/>
+        <location filename="../../Scene/Workspace.cpp" line="152"/>
         <source>Cannot save.</source>
         <translation>No se puede guardar.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="217"/>
+        <location filename="../../Scene/Workspace.cpp" line="224"/>
         <source>Save File</source>
         <translation>Guardar Archivo</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="217"/>
-        <location filename="../../Scene/Workspace.cpp" line="264"/>
-        <location filename="../../Scene/Workspace.cpp" line="303"/>
+        <location filename="../../Scene/Workspace.cpp" line="224"/>
+        <location filename="../../Scene/Workspace.cpp" line="271"/>
+        <location filename="../../Scene/Workspace.cpp" line="310"/>
         <source>Panda files (*.panda)</source>
         <translation>Archivos Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="262"/>
-        <location filename="../../Scene/Workspace.cpp" line="301"/>
+        <location filename="../../Scene/Workspace.cpp" line="269"/>
+        <location filename="../../Scene/Workspace.cpp" line="308"/>
         <source>Save File (original location is read-only)</source>
         <translation>Guardar archivo (la ubicación original es solo de lectura)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
+        <location filename="../../Scene/Workspace.cpp" line="277"/>
         <source>Error opening file: %1</source>
         <translation>Error al abrir archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="309"/>
+        <location filename="../../Scene/Workspace.cpp" line="316"/>
         <source>Could not save file: %1</source>
         <translation>No se pudo guardar archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="383"/>
+        <location filename="../../Scene/Workspace.cpp" line="390"/>
         <source>This file does not exist: %1</source>
         <translation>Este archivo no existe: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
+        <location filename="../../Scene/Workspace.cpp" line="399"/>
         <source>Could not open file: %1</source>
         <translation>No se pudo abrir archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="427"/>
+        <location filename="../../Scene/Workspace.cpp" line="434"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2835,34 +2852,34 @@ El archivo se abrirá pero el guardado está bloqueado.
 Por favor, actualice wiRedPanda para editar y guardar este archivo.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="432"/>
+        <location filename="../../Scene/Workspace.cpp" line="439"/>
         <source>Newer version file.</source>
         <translation>Archivo de versión más reciente.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="435"/>
+        <location filename="../../Scene/Workspace.cpp" line="442"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Este archivo está en un formato anterior (versión %1) y se actualizará automáticamente al formato actual (versión %2).
 Se ha creado una copia de seguridad del archivo original con el nombre: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="438"/>
+        <location filename="../../Scene/Workspace.cpp" line="445"/>
         <source>File upgraded.</source>
         <translation>Archivo actualizado.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="600"/>
+        <location filename="../../Scene/Workspace.cpp" line="607"/>
         <source>Error opening autosave file: %1</source>
         <translation>Error al abrir archivo de guardado automático: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="608"/>
+        <location filename="../../Scene/Workspace.cpp" line="615"/>
         <source>Could not commit autosave file: %1</source>
         <translation>No se pudo confirmar el archivo de guardado automático: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="774"/>
+        <location filename="../../Scene/Workspace.cpp" line="781"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Eliminar CI incrustado &quot;%1&quot;</translation>
     </message>
@@ -2872,7 +2889,7 @@ Se ha creado una copia de seguridad del archivo original con el nombre: %3</tran
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="483"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="488"/>
         <source>New Project</source>
         <translation>Nuevo Proyecto</translation>
     </message>
@@ -2898,48 +2915,48 @@ Do you want to save your changes?</source>
         <translation>El archivo se cargó con éxito.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
         <source>Open File</source>
         <translation>Abrir Archivo</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="229"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
         <source>Panda files (*.panda)</source>
         <translation>Archivos Panda (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="263"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="319"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
         <source>Save File as ...</source>
         <translation>Guardar Archivo como...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="277"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="332"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="282"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="337"/>
         <source>File Conflict</source>
         <translation>Conflicto de archivos</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="278"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="333"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="283"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="338"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>El archivo &quot;%1&quot; ya está abierto en otra pestaña.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="281"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="336"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="286"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="341"/>
         <source>Switch to Tab</source>
         <translation>Cambiar a la pestaña</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="443"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="448"/>
         <source>Error!</source>
         <translation>¡Error!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="539"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="544"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
@@ -2973,74 +2990,74 @@ Do you want to save your changes?</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../../Main.cpp" line="292"/>
+        <location filename="../../Main.cpp" line="296"/>
         <source>Circuit file to open.</source>
         <translation>Archivo de circuito para abrir.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="296"/>
+        <location filename="../../Main.cpp" line="300"/>
         <source>Verbosity level 0 to 5, disabled by default.</source>
         <translation>Nivel de verbosidad del 0 al 5, deshabilitado de forma predeterminada.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="297"/>
+        <location filename="../../Main.cpp" line="301"/>
         <source>verbosity level</source>
         <translation>nivel de verbosidad</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="302"/>
+        <location filename="../../Main.cpp" line="306"/>
         <source>Exports circuit to &lt;arduino-file&gt;.</source>
         <translation>Exporta el circuito a &lt;archivo-arduino&gt;.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="314"/>
+        <location filename="../../Main.cpp" line="318"/>
         <source>Exports circuit to waveform text file, reading input from terminal.</source>
         <translation>Exporta el circuito a un archivo de texto en forma de onda, leyendo la entrada desde la terminal.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="319"/>
+        <location filename="../../Main.cpp" line="323"/>
         <source>When used with -c/--terminal, block execution if the circuit contains Truth Tables.</source>
         <translation>Cuando se utiliza con -c/--terminal, bloquea la ejecución si el circuito contiene tablas de verdad.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="325"/>
+        <location filename="../../Main.cpp" line="329"/>
         <source>Run in MCP (Model Context Protocol) mode for programmatic control.</source>
         <translation>Ejecutar en modo MCP (Model Context Protocol) para control programático.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="330"/>
+        <location filename="../../Main.cpp" line="334"/>
         <source>Run MCP mode with a visible GUI window.</source>
         <translation>Ejecutar modo MCP con una ventana GUI visible.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="356"/>
-        <location filename="../../Main.cpp" line="368"/>
-        <location filename="../../Main.cpp" line="380"/>
+        <location filename="../../Main.cpp" line="360"/>
+        <location filename="../../Main.cpp" line="372"/>
+        <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="403"/>
+        <location filename="../../Main.cpp" line="407"/>
         <source>Error: Circuit contains Truth Table elements.</source>
         <translation>Error: El circuito contiene elementos de tabla de verdad.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="448"/>
+        <location filename="../../Main.cpp" line="452"/>
         <source>Error: </source>
         <translation>Error: </translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="303"/>
+        <location filename="../../Main.cpp" line="307"/>
         <source>arduino file</source>
         <translation>archivo arduino</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="308"/>
+        <location filename="../../Main.cpp" line="312"/>
         <source>Exports circuit to waveform text file.</source>
         <translation>Exporta el circuito a un archivo de texto en forma de onda.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="309"/>
+        <location filename="../../Main.cpp" line="313"/>
         <source>waveform input text file</source>
         <translation>archivo de texto de entrada de forma de onda</translation>
     </message>
