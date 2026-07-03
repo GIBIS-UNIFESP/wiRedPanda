@@ -574,6 +574,8 @@ protected:
     int decodeSelectValue(int offset, int count) const { return m_sim.decodeSelectValue(offset, count); }
 
 private:
+    Q_DISABLE_COPY_MOVE(GraphicElement)
+
     // --- Flip Transform ---
 
     /// Recomputes the QGraphicsItem transform from the current flip flags.
@@ -692,8 +694,6 @@ private:
     quint64 m_minOutputSize = 0;
     quint64 m_maxOutputSize = 0;
 };
-
-Q_DECLARE_METATYPE(GraphicElement)
 
 /// Stream insertion operator that serializes \a item to \a stream via GraphicElement::save().
 QDataStream &operator<<(QDataStream &stream, const GraphicElement *item);

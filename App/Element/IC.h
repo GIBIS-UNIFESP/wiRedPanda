@@ -40,9 +40,6 @@ public:
 
     ~IC() override;
 
-    /// Copy-constructs by delegating to the parent item constructor.
-    IC(const IC &other) : IC(other.parentItem()) {}
-
 signals:
     /// Emitted on double-click to request opening the sub-circuit in a new tab.
     void requestOpenSubCircuit(int elementId, const QString &blobName, const QString &filePath);
@@ -140,6 +137,8 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
+    Q_DISABLE_COPY_MOVE(IC)
+
     // --- Utility methods ---
 
     /// True when \a localPos (in IC item coordinates) lies over one of this IC's
