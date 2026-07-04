@@ -8,13 +8,13 @@
 #include <QSvgRenderer>
 
 #include "App/Core/Common.h"
+#include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Scene/Scene.h"
 
 template<>
 struct ElementInfo<TruthTable> {
@@ -64,7 +64,7 @@ void TruthTable::updatePortsProperties()
 {
     int index = 0;
     // step = 8px (half the 16px grid), giving ports a 16px pitch (every other grid line)
-    const int step = Scene::gridSize / 2;
+    const int step = Constants::gridSize / 2;
 
     if (!m_inputPorts.isEmpty()) {
         // Center the input port column vertically within the 64px-minimum body height.
