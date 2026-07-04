@@ -20,6 +20,7 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/ElementAppearance.h"
+#include "App/Element/ElementMetadata.h"
 #include "App/Element/ElementOrientation.h"
 #include "App/Element/ElementSimState.h"
 #include "App/Element/PropertyDescriptor.h"
@@ -661,6 +662,11 @@ private:
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
+
+    /// Cached reference to this type's compile-time metadata (registry entry is a long-lived
+    /// singleton). Backs the hasAudio()/hasTrigger()/rotatesGraphic()/... facades, replacing a
+    /// per-call registry map lookup.
+    const ElementMetadata &m_metadata;
 
     // --- Members: Direct Simulation ---
 

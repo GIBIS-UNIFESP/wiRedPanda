@@ -44,8 +44,9 @@ static const QFont &labelFont()
 GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , m_elementType(type)
+    , m_metadata(ElementMetadataRegistry::metadata(type))
 {
-    const auto &metadata = ElementMetadataRegistry::metadata(type);
+    const ElementMetadata &metadata = m_metadata;
     m_appearance.seedFromMetadata(metadata.defaultAppearances, metadata.alternativeAppearances, metadata.pixmapPath());
     m_titleText = QCoreApplication::translate(metadata.trContext, metadata.titleText);
     m_translatedName = QCoreApplication::translate(metadata.trContext, metadata.translatedName);
@@ -418,7 +419,7 @@ bool GraphicElement::sceneEvent(QEvent *event)
 
 bool GraphicElement::hasAudio() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).hasAudio;
+    return m_metadata.hasAudio;
 }
 
 QKeySequence GraphicElement::trigger() const
@@ -541,7 +542,7 @@ bool GraphicElement::hasColors() const
 
 bool GraphicElement::hasTrigger() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).hasTrigger;
+    return m_metadata.hasTrigger;
 }
 
 void GraphicElement::setColor(const QString &color)
@@ -581,32 +582,32 @@ QString GraphicElement::audio() const
 
 bool GraphicElement::hasFrequency() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).hasFrequency;
+    return m_metadata.hasFrequency;
 }
 
 bool GraphicElement::hasDelay() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).hasDelay;
+    return m_metadata.hasDelay;
 }
 
 bool GraphicElement::hasLabel() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).hasLabel;
+    return m_metadata.hasLabel;
 }
 
 bool GraphicElement::hasTruthTable() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).hasTruthTable;
+    return m_metadata.hasTruthTable;
 }
 
 bool GraphicElement::hasAudioBox() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).hasAudioBox;
+    return m_metadata.hasAudioBox;
 }
 
 bool GraphicElement::hasVolume() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).hasVolume;
+    return m_metadata.hasVolume;
 }
 
 float GraphicElement::volume() const
@@ -637,12 +638,12 @@ QList<PropertyDescriptor> GraphicElement::editableProperties() const
 
 bool GraphicElement::canChangeAppearance() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).canChangeAppearance;
+    return m_metadata.canChangeAppearance;
 }
 
 bool GraphicElement::rotatesGraphic() const
 {
-    return ElementMetadataRegistry::metadata(m_elementType).rotatesGraphic;
+    return m_metadata.rotatesGraphic;
 }
 
 int GraphicElement::inputSize() const
