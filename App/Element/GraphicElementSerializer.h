@@ -18,6 +18,7 @@
 class GraphicElement;
 class Port;
 class QDataStream;
+class QPointF;
 class QVersionNumber;
 struct SerializationContext;
 
@@ -50,6 +51,10 @@ public:
 private:
     static void loadOldFormat(GraphicElement &element, QDataStream &stream, SerializationContext &context);
     static void loadNewFormat(GraphicElement &element, QDataStream &stream, SerializationContext &context);
+
+    /// Rejects a non-finite (NaN / ±inf) element position read from a crafted file
+    /// (fuzz-hardening) — see the .cpp for why this must abort load rather than proceed.
+    static void validateFinitePos(const QPointF &pos);
 
     static void loadPos(GraphicElement &element, QDataStream &stream);
     static void loadRotation(GraphicElement &element, QDataStream &stream, const QVersionNumber &version);

@@ -1655,3 +1655,25 @@ void TestSerialization::testFuzzRegressionPandaHeaderAppNameOOM()
     }
     QVERIFY2(threw, "Implausible header app-name length must be rejected, not allocated");
 }
+
+void TestSerialization::testFuzzRegressionNonFinitePosition()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/ic_nonfinite_position.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // A malformed file-backed IC whose inner element carries a NaN position.
+    // ICRenderer::generatePreviewPixmap computes the preview from itemsBoundingRect(),
+    // and QSizeF::toSize() on a NaN rect trips Qt's qSaturateRound assertion
+    // (!qIsNaN) and aborts the process — a DoS on malformed input.  The
+    // finite-position guard in GraphicElementSerializer::loadPos/loadNewFormat
+    // must reject it before it enters the scene.
+    WorkSpace workspace;
+    bool threw = false;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Non-finite element position must be rejected, not loaded");
+}

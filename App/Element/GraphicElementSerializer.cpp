@@ -9,6 +9,8 @@
 
 #include "App/Element/GraphicElementSerializer.h"
 
+#include <cmath>
+
 #include <QDir>
 #include <QFileInfo>
 
@@ -214,7 +216,9 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
     }
 
     if (map.contains("pos")) {
-        element.setPos(map.value("pos").toPointF());
+        const QPointF pos = map.value("pos").toPointF();
+        validateFinitePos(pos);
+        element.setPos(pos);
     }
 
     if (map.contains("rotation")) {
@@ -369,9 +373,24 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
 
 // ========== Property loading helpers (old format) ==========
 
+// validateFinitePos() is a static member (not a file-local helper) so its load-error
+// PANDACEPTION throw extracts under the GraphicElementSerializer tr context.
+
+/// Rejects a non-finite (NaN / ±inf) element position read from a crafted file.
+/// A non-finite position makes the item's scene transform — and any bounding rect
+/// computed from it — non-finite, tripping the qSaturateRound assertion in
+/// QSizeF::toSize() and aborting the process.  Surfaced by libFuzzer (fuzz_ic_file).
+void GraphicElementSerializer::validateFinitePos(const QPointF &pos)
+{
+    if (!std::isfinite(pos.x()) || !std::isfinite(pos.y())) {
+        throw PANDACEPTION("Non-finite element position — stream may be corrupt");
+    }
+}
+
 void GraphicElementSerializer::loadPos(GraphicElement &element, QDataStream &stream)
 {
     QPointF pos; stream >> pos;
+    validateFinitePos(pos);
     element.setPos(pos);
 }
 

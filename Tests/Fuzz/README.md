@@ -166,3 +166,4 @@ crash/OOM/leak/timeout under ASan+UBSan).
 | `oom_dolphin_filename_large`        | OOM     | pinned            | oversized `.dolphin` filename |
 | `oom_dolphin_header_large_appname`  | OOM     | pinned            | oversized app-name string in the `.dolphin` header |
 | `oom_panda_header_large_appname`    | OOM     | pinned            | oversized app-name string in the `.panda` header |
+| `ic_nonfinite_position`             | abort   | pinned            | NaN/inf element position aborts IC preview via `qSaturateRound` assert (`fuzz_ic_file`) |
