@@ -34,7 +34,7 @@ is per-framework based on whether each library touches OS-level services:
 
 ---
 
-## Phase 0 — Build System & Dependency Infrastructure
+## Phase 0 — Build System & Dependency Infrastructure ✅
 **KDE Frameworks**: ECM (Extra CMake Modules)
 **Prerequisite for**: All subsequent phases
 
@@ -45,20 +45,61 @@ Integrate ECM into CMake so KDE Frameworks can be found and linked à la carte.
 
 **`CMakeLists.txt`**
 ```cmake
-find_package(ECM REQUIRED NO_MODULE)
-list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
-include(KDEInstallDirs)
-include(KDECMakeSettings)
-include(KDECompilerSettings NO_POLICY_SCOPE)
-```
-
-Then add per-phase `find_package(KF6 COMPONENTS ...)` blocks, each gated behind an opt-in CMake option:
-```cmake
 option(USE_KDE_FRAMEWORKS "Enable KDE Frameworks integration" OFF)
+
+if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
+    find_package(ECM REQUIRED NO_MODULE)
+    list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+    include(KDEInstallDirs)
+    include(KDECMakeSettings NO_POLICY_SCOPE)
+    include(KDECompilerSettings NO_POLICY_SCOPE)
+    # This project uses exceptions; re-enable via the ECM-provided function
+    kde_enable_exceptions()
+    message(STATUS "KDE Frameworks integration enabled (ECM ${ECM_VERSION})")
+else()
+    message(STATUS "KDE Frameworks integration disabled")
+endif()
 ```
 
-This allows the project to ship both a plain-Qt build and a KDE-enhanced build from the same
+The option gates all ECM/KDE includes, allowing plain-Qt and KDE-enhanced builds from the same
 source tree during transition. The option becomes the default ON once all phases are stable.
+WASM always stays OFF — the `NOT EMSCRIPTEN` guard prevents ECM from being required there.
+
+Per-phase `find_package(KF6 COMPONENTS ...)` blocks are added inside the same `if` block
+as each phase is implemented.
+
+### Compatibility fixes required
+
+**1. Exceptions — `kde_enable_exceptions()`**
+
+`KDECompilerSettings` disables exceptions globally by appending `-fno-exceptions` to
+`CMAKE_CXX_FLAGS`. This project uses exceptions in the MCP server and several core utilities.
+There is no skip variable to prevent the disabling upfront; the ECM-provided
+`kde_enable_exceptions()` function is the correct opt-back-in mechanism — it strips
+`-fno-exceptions` and `-DQT_NO_EXCEPTIONS` from `CMAKE_CXX_FLAGS` and appends `-fexceptions`.
+Call it immediately after `include(KDECompilerSettings NO_POLICY_SCOPE)`.
+
+**2. Symbol visibility — `nlohmann_json_schema_validator`**
+
+`KDECompilerSettings` also sets `CMAKE_CXX_VISIBILITY_PRESET hidden`, which hides all symbols
+by default. The `nlohmann_json_schema_validator` FetchContent library has no visibility
+annotations, so all its symbols become hidden and the linker cannot resolve them from
+`wiredpanda_lib`. Fix by restoring default visibility for that target after
+`FetchContent_MakeAvailable`:
+
+```cmake
+set_target_properties(nlohmann_json_schema_validator PROPERTIES
+    CXX_VISIBILITY_PRESET default
+    VISIBILITY_INLINES_HIDDEN OFF
+)
+```
+
+Note: `KDECompilerSettings` does **not** disable RTTI; no RTTI fix is needed.
+
+### CMakePresets.json
+
+Add a `kde` preset inheriting from `debug` with `USE_KDE_FRAMEWORKS=ON`, plus matching
+build and test presets. This allows `cmake --preset kde` / `ctest --preset kde`.
 
 ### Platform guard pattern (only for OS-dependent frameworks)
 ```cpp
@@ -70,9 +111,10 @@ source tree during transition. The option becomes the default ON once all phases
 Most frameworks (KConfig, KI18n, KWidgetsAddons, etc.) need no guard and work on WASM as-is.
 
 ### Verification
-- `cmake --preset debug -DUSE_KDE_FRAMEWORKS=ON` configures without error
-- `cmake --build --preset debug` produces a working binary
-- `cmake --preset debug` (without flag) still builds pure-Qt version
+- `cmake --preset kde` configures without error, prints `KDE Frameworks integration enabled (ECM x.y.z)`
+- `cmake --build --preset kde` produces a working binary
+- `ctest --preset kde` — all tests pass
+- `cmake --preset debug` (without flag) still builds pure-Qt version, prints `KDE Frameworks integration disabled`
 
 ---
 
