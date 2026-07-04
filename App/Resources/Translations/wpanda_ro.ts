@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="885"/>
+        <location filename="../../Scene/Commands.cpp" line="952"/>
         <source>Change input size to %1</source>
         <translation>Schimbă dimensiunea intrării la %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="886"/>
+        <location filename="../../Scene/Commands.cpp" line="953"/>
         <source>Change output size to %1</source>
         <translation>Schimbă dimensiunea ieșirii la %1</translation>
     </message>
@@ -1227,7 +1227,7 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="826"/>
+        <location filename="../../Scene/Commands.cpp" line="893"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Întorce %1 elemente în axa %2</translation>
     </message>
@@ -1538,22 +1538,22 @@ Nume sugerat:</translation>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="35"/>
         <source>Input Switch</source>
         <translation>Comutator de intrare</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
         <source>Off</source>
         <translation>Oprit</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
         <source>On</source>
         <translation>Pornit</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="34"/>
         <source>INPUT SWITCH</source>
         <translation>COMUTATOR DE INTRARE</translation>
     </message>
@@ -2239,7 +2239,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="638"/>
+        <location filename="../../Scene/Commands.cpp" line="705"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformă %1 elemente în %2</translation>
     </message>
@@ -2427,7 +2427,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1114"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Înregistrare blob &quot;%1&quot;</translation>
     </message>
@@ -2435,7 +2435,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1070"/>
+        <location filename="../../Scene/Commands.cpp" line="1137"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Elimină blob-ul „%1”</translation>
     </message>
@@ -2478,18 +2478,18 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="535"/>
+        <location filename="../../Scene/Scene.cpp" line="540"/>
         <source>&amp;Undo</source>
         <translation>&amp;Anulează</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="546"/>
         <source>&amp;Redo</source>
         <translation>&amp;Refacă</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="561"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>Paste</source>
         <translation>Lipește</translation>
     </message>
@@ -2597,32 +2597,32 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="511"/>
+        <location filename="../../Scene/Commands.cpp" line="578"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Porturi de conexiune nevalide în constructorul SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="517"/>
+        <location filename="../../Scene/Commands.cpp" line="584"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Elemente grafice nevalide în constructorul SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="540"/>
+        <location filename="../../Scene/Commands.cpp" line="607"/>
         <source>Wire split</source>
         <translation>Împărțirea firului</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="556"/>
+        <location filename="../../Scene/Commands.cpp" line="623"/>
         <source>Error trying to redo %1</source>
         <translation>Eroare la încercarea de a reface %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="579"/>
+        <location filename="../../Scene/Commands.cpp" line="646"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Eroare: endPort este null în SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="608"/>
+        <location filename="../../Scene/Commands.cpp" line="675"/>
         <source>Error trying to undo %1</source>
         <translation>Eroare la încercarea de a anula %1</translation>
     </message>
@@ -2674,17 +2674,17 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="980"/>
+        <location filename="../../Scene/Commands.cpp" line="1047"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Comută ieșirea TabeluluiAdevăr la poziția: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="989"/>
+        <location filename="../../Scene/Commands.cpp" line="1056"/>
         <source>Could not find truthtable element!</source>
         <translation>Nu s-a putut găsi elementul tabelul de adevăr!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="996"/>
+        <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2718,7 +2718,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1103"/>
+        <location filename="../../Scene/Commands.cpp" line="1170"/>
         <source>Update %1 IC blobs</source>
         <translation>Actualizare %1 bloburi IC</translation>
     </message>
@@ -2726,7 +2726,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="442"/>
+        <location filename="../../Scene/Commands.cpp" line="457"/>
         <source>Update %1 elements</source>
         <translation>Actualizează %1 elemente</translation>
     </message>

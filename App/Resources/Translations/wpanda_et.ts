@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="885"/>
+        <location filename="../../Scene/Commands.cpp" line="952"/>
         <source>Change input size to %1</source>
         <translation>Muuda sisendi suurus %1-ks</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="886"/>
+        <location filename="../../Scene/Commands.cpp" line="953"/>
         <source>Change output size to %1</source>
         <translation>Muuda väljundi suurus %1-ks</translation>
     </message>
@@ -1227,7 +1227,7 @@ Igal juhtmevaba kanalil peab olema unikaalne silt.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="826"/>
+        <location filename="../../Scene/Commands.cpp" line="893"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Pööra %1 elementi teljel %2</translation>
     </message>
@@ -1538,22 +1538,22 @@ Soovitatud nimi:</translation>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="35"/>
         <source>Input Switch</source>
         <translation>Sisendlüliti</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
         <source>Off</source>
         <translation>Väljas</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
         <source>On</source>
         <translation>Sees</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="34"/>
         <source>INPUT SWITCH</source>
         <translation>SISENDLÜLITI</translation>
     </message>
@@ -2239,7 +2239,7 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="638"/>
+        <location filename="../../Scene/Commands.cpp" line="705"/>
         <source>Morph %1 elements to %2</source>
         <translation>Muuda %1 elementi %2-ks</translation>
     </message>
@@ -2427,7 +2427,7 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1114"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registreeri blob &quot;%1&quot;</translation>
     </message>
@@ -2435,7 +2435,7 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1070"/>
+        <location filename="../../Scene/Commands.cpp" line="1137"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Eemalda blob „%1”</translation>
     </message>
@@ -2478,18 +2478,18 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="535"/>
+        <location filename="../../Scene/Scene.cpp" line="540"/>
         <source>&amp;Undo</source>
         <translation>&amp;Võta tagasi</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="546"/>
         <source>&amp;Redo</source>
         <translation>&amp;Tee uuesti</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="561"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>Paste</source>
         <translation>Kleebi</translation>
     </message>
@@ -2597,32 +2597,32 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="511"/>
+        <location filename="../../Scene/Commands.cpp" line="578"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Kehtetud ühenduspordid SplitCommand konstruktoris</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="517"/>
+        <location filename="../../Scene/Commands.cpp" line="584"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Kehtetud graafilised elemendid SplitCommand konstruktoris</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="540"/>
+        <location filename="../../Scene/Commands.cpp" line="607"/>
         <source>Wire split</source>
         <translation>Juhtme jagamine</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="556"/>
+        <location filename="../../Scene/Commands.cpp" line="623"/>
         <source>Error trying to redo %1</source>
         <translation>Viga ümbertegemisel: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="579"/>
+        <location filename="../../Scene/Commands.cpp" line="646"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Viga: endPort on null SplitCommand::redo() funktsioonis</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="608"/>
+        <location filename="../../Scene/Commands.cpp" line="675"/>
         <source>Error trying to undo %1</source>
         <translation>Viga tagasivõtmisel: %1</translation>
     </message>
@@ -2674,17 +2674,17 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="980"/>
+        <location filename="../../Scene/Commands.cpp" line="1047"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Lülita tõeväärtustabeli väljund positsioonil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="989"/>
+        <location filename="../../Scene/Commands.cpp" line="1056"/>
         <source>Could not find truthtable element!</source>
         <translation>Ei leidnud tõeväärtustabeli elementi!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="996"/>
+        <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2718,7 +2718,7 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1103"/>
+        <location filename="../../Scene/Commands.cpp" line="1170"/>
         <source>Update %1 IC blobs</source>
         <translation>Uuenda %1 IC blobe</translation>
     </message>
@@ -2726,7 +2726,7 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="442"/>
+        <location filename="../../Scene/Commands.cpp" line="457"/>
         <source>Update %1 elements</source>
         <translation>Uuenda %1 elementi</translation>
     </message>

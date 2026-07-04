@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="885"/>
+        <location filename="../../Scene/Commands.cpp" line="952"/>
         <source>Change input size to %1</source>
         <translation>Zmeniť veľkosť vstupu na %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="886"/>
+        <location filename="../../Scene/Commands.cpp" line="953"/>
         <source>Change output size to %1</source>
         <translation>Zmeniť veľkosť výstupu na %1</translation>
     </message>
@@ -1227,7 +1227,7 @@ Každý bezdrôtový kanál musí mať jedinečný názov.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="826"/>
+        <location filename="../../Scene/Commands.cpp" line="893"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Preklopiť %1 prvkov podľa osi %2</translation>
     </message>
@@ -1538,22 +1538,22 @@ Navrhovaný názov:</translation>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="35"/>
         <source>Input Switch</source>
         <translation>Vstupný prepênač</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
         <source>Off</source>
         <translation>Vyp.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
         <source>On</source>
         <translation>Zap.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="34"/>
         <source>INPUT SWITCH</source>
         <translation>VSTUPNÝ SPÍNAČ</translation>
     </message>
@@ -2239,7 +2239,7 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="638"/>
+        <location filename="../../Scene/Commands.cpp" line="705"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformovať %1 prvkov na %2</translation>
     </message>
@@ -2427,7 +2427,7 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1114"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrovať blob &quot;%1&quot;</translation>
     </message>
@@ -2435,7 +2435,7 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1070"/>
+        <location filename="../../Scene/Commands.cpp" line="1137"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Odstrániť blob „%1“</translation>
     </message>
@@ -2478,18 +2478,18 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="535"/>
+        <location filename="../../Scene/Scene.cpp" line="540"/>
         <source>&amp;Undo</source>
         <translation>&amp;Späť</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="546"/>
         <source>&amp;Redo</source>
         <translation>&amp;Znovu</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="561"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>Paste</source>
         <translation>Prilepiť</translation>
     </message>
@@ -2597,32 +2597,32 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="511"/>
+        <location filename="../../Scene/Commands.cpp" line="578"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Neplatné porty pripojenia v konštruktore SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="517"/>
+        <location filename="../../Scene/Commands.cpp" line="584"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Neplatné grafické prvky v konštruktore SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="540"/>
+        <location filename="../../Scene/Commands.cpp" line="607"/>
         <source>Wire split</source>
         <translation>Rozdelenie vodiča</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="556"/>
+        <location filename="../../Scene/Commands.cpp" line="623"/>
         <source>Error trying to redo %1</source>
         <translation>Chyba pri pokuse o opätovné vykonanie %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="579"/>
+        <location filename="../../Scene/Commands.cpp" line="646"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Chyba: endPort je null v SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="608"/>
+        <location filename="../../Scene/Commands.cpp" line="675"/>
         <source>Error trying to undo %1</source>
         <translation>Chyba pri pokuse o vrátenie akcie %1</translation>
     </message>
@@ -2674,17 +2674,17 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="980"/>
+        <location filename="../../Scene/Commands.cpp" line="1047"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Prepnúť výstup pravdivostnej tabuľky na pozícii: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="989"/>
+        <location filename="../../Scene/Commands.cpp" line="1056"/>
         <source>Could not find truthtable element!</source>
         <translation>Nepodarilo sa nájsť prvok tabuľky pravdivosti!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="996"/>
+        <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2718,7 +2718,7 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1103"/>
+        <location filename="../../Scene/Commands.cpp" line="1170"/>
         <source>Update %1 IC blobs</source>
         <translation>Aktualizovať %1 IC blobov</translation>
     </message>
@@ -2726,7 +2726,7 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="442"/>
+        <location filename="../../Scene/Commands.cpp" line="457"/>
         <source>Update %1 elements</source>
         <translation>Aktualizovať %1 prvkov</translation>
     </message>
