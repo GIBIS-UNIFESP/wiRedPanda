@@ -142,6 +142,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Priorities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SentryHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/SimulationHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StatusOps.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h

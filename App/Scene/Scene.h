@@ -16,6 +16,7 @@
 #include <QVersionNumber>
 
 #include "App/Core/ContextDirProvider.h"
+#include "App/Core/SimulationHost.h"
 #include "App/Element/ICRegistry.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/ClipboardManager.h"
@@ -45,7 +46,7 @@ struct SerializationContext;
  * undo/redo functionality and handles various user interface events like drag-and-drop,
  * keyboard shortcuts, and mouse operations.
  */
-class Scene : public QGraphicsScene, public ContextDirProvider
+class Scene : public QGraphicsScene, public ContextDirProvider, public SimulationHost
 {
     Q_OBJECT
 
@@ -236,6 +237,11 @@ public:
     Simulation *simulation();
     /// Marks the simulation mapping as stale so it is rebuilt on the next tick.
     void setCircuitUpdateRequired();
+
+    /// \reimp SimulationHost
+    QList<QGraphicsItem *> simulationItems() const override { return items(); }
+    /// \reimp SimulationHost
+    void setMuted(const bool muted) override { mute(muted); }
 
     // --- Context Directory ---
 
