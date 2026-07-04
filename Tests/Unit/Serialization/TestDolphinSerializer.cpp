@@ -8,6 +8,7 @@
 #include <QTemporaryDir>
 
 #include "App/BeWavedDolphin/Serializer.h"
+#include "App/IO/Serialization.h"
 #include "Tests/Common/TestUtils.h"
 
 static QStandardItemModel *makeModel(int rows, int cols)
@@ -196,4 +197,18 @@ void TestDolphinSerializer::testLoadCSVRejectsNegativeRows()
     QFile in(path);
     QVERIFY(in.open(QIODevice::ReadOnly));
     QVERIFY_THROWS(std::exception, DolphinSerializer::loadCSV(in, 8));
+}
+
+void TestDolphinSerializer::testReadDolphinHeaderRejectsLargeAppName()
+{
+    // Legacy .dolphin header whose leading app-name length field is 0x7FFFFFFF.
+    // The native operator>>(QString) would allocate ~2 GB before any check;
+    // readDolphinHeader's length guard (>256 bytes, or odd, or 0xFFFFFFFF) must
+    // reject it and throw before allocation.
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/oom_dolphin_header_large_appname.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    QDataStream stream(data);
+    QVERIFY_THROWS(std::exception, Serialization::readDolphinHeader(stream));
 }

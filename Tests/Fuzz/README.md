@@ -136,29 +136,33 @@ has found. The contract under a fix: `load()` must throw cleanly or succeed —
 never abort. Under ASan a reintroduced UAF aborts the test process, which is the
 failure signal.
 
-`Status` below:
-- **pinned** — has a dedicated test in `TestSerialization.cpp`
-  (`testFuzzRegression*`), exercised on every sanitizer CI run via `ctest`.
-- **fixed** — addressed by `fix(serial+ic+element): bound OOM/UAF/UB paths
-  surfaced by libFuzzer`, whose message verifies the `bugA`–`bugG` inputs, but
-  not individually pinned by a test.
-- **captured** — archived reproducer that no commit message ties to a fix.
-  Re-run it under its harness to confirm whether it still reproduces, and pin
-  the ones that matter (`bugJ` is a timeout, which the bounding fix does not
-  address).
+All reproducers have been re-verified clean against the current tree (no
+crash/OOM/leak/timeout under ASan+UBSan).
+
+`Status`:
+- **pinned** — guarded by a dedicated regression test that loads the fixture and
+  asserts it is rejected before allocation (OOM) or loads/throws without an ASan
+  abort (UAF/UB). Tests live in `TestSerialization.cpp` (`testFuzzRegression*`)
+  and `TestDolphinSerializer.cpp` (`.dolphin` header), run on every sanitizer CI
+  lane via `ctest`.
+- **harness-mitigated** — not a memory/correctness bug, so there is no product
+  invariant to pin. `bugJ` is the only one: `TruthTable`'s 2048-bit key makes
+  `UpdateCommand` serialization inherently multi-second, so `FuzzUndo` excludes
+  `TruthTable` from its add/morph types. The reproducer is retained as
+  documentation of why that exclusion exists.
 
 | Reproducer | Class | Status | What it reproduces |
 |------------|-------|--------|--------------------|
-| `bugA_cleanup_uaf`                  | UAF     | pinned   | `qScopeGuard` cleanup after a mid-loop throw in `deserialize` |
-| `bugB_ic_blob_shrink`               | UAF     | pinned   | IC declares more outer ports than its blob exposes; stale `portMap` |
-| `bugC_unbounded_portlist`           | OOM     | pinned   | implausible port-list count reserved before validation |
-| `bugD_oom_qneconnection_stream_map` | OOM     | fixed    | unbounded map read in the `Connection` stream |
-| `bugE_uaf_ic_boundary_orphan_conns` | UAF     | fixed    | orphan connections at an IC boundary |
-| `bugF_oom_unknown_typeid_metadata`  | OOM     | fixed    | unknown QVariant type ID in the metadata map |
-| `bugG_oom_element_stream_map`       | OOM     | fixed    | unbounded map read in the element stream |
-| `bugH_old_format_v11_elements`      | crash   | captured | pre-4.1 v1.1 element parsing |
-| `bugI_old_format_ic_skin_ref`       | crash   | captured | pre-4.1 IC skin reference |
-| `bugJ_undo_truthtable_timeout`      | timeout | captured | pathological undo/redo on a truth table |
-| `oom_dolphin_filename_large`        | OOM     | captured | oversized `.dolphin` filename |
-| `oom_dolphin_header_large_appname`  | OOM     | captured | oversized app-name string in the `.dolphin` header |
-| `oom_panda_header_large_appname`    | OOM     | captured | oversized app-name string in the `.panda` header |
+| `bugA_cleanup_uaf`                  | UAF     | pinned            | `qScopeGuard` cleanup after a mid-loop throw in `deserialize` |
+| `bugB_ic_blob_shrink`               | UAF     | pinned            | IC declares more outer ports than its blob exposes; stale `portMap` |
+| `bugC_unbounded_portlist`           | OOM     | pinned            | implausible port-list count reserved before validation |
+| `bugD_oom_qneconnection_stream_map` | OOM     | pinned            | unbounded map read in the `Connection` stream |
+| `bugE_uaf_ic_boundary_orphan_conns` | UAF     | pinned            | orphan connections at an IC boundary |
+| `bugF_oom_unknown_typeid_metadata`  | OOM     | pinned            | unknown QVariant type ID in the metadata map |
+| `bugG_oom_element_stream_map`       | OOM     | pinned            | unbounded map read in the element stream |
+| `bugH_old_format_v11_elements`      | crash   | pinned            | pre-4.1 v1.1 element parsing |
+| `bugI_old_format_ic_skin_ref`       | crash   | pinned            | pre-4.1 IC skin reference |
+| `bugJ_undo_truthtable_timeout`      | timeout | harness-mitigated | pathological undo/redo on a truth table |
+| `oom_dolphin_filename_large`        | OOM     | pinned            | oversized `.dolphin` filename |
+| `oom_dolphin_header_large_appname`  | OOM     | pinned            | oversized app-name string in the `.dolphin` header |
+| `oom_panda_header_large_appname`    | OOM     | pinned            | oversized app-name string in the `.panda` header |

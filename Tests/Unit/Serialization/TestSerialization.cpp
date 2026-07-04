@@ -1506,3 +1506,152 @@ void TestSerialization::testFuzzRegressionUnboundedPortList()
     }
     QVERIFY2(threw, "Implausible port count must be rejected, not allocated");
 }
+
+void TestSerialization::testFuzzRegressionConnectionStreamMapOOM()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugD_oom_qneconnection_stream_map.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Fuzzed input declares an implausible entry count in a QMap header read
+    // during Connection deserialization.  QDataStream's map operator>> would
+    // reserve the declared count before any application-level validation,
+    // OOM-ing the process.  The bounded reader must reject the count first.
+    WorkSpace workspace;
+    bool threw = false;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Implausible connection map count must be rejected, not allocated");
+}
+
+void TestSerialization::testFuzzRegressionICBoundaryOrphanConns()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugE_uaf_ic_boundary_orphan_conns.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Fuzzed input wires connections to IC boundary ports the embedded blob
+    // does not expose.  When the IC trims its boundary set the surplus ports
+    // are freed; without evicting their portMap entries the outer connection
+    // pass dereferences the dangling pointers → UAF.  Under ASan a reintroduced
+    // UAF aborts before the QVERIFY; passing means the eviction fix holds.
+    WorkSpace workspace;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+    }
+    QVERIFY2(true, "Reaching here means no ASan abort — fix is in place");
+}
+
+void TestSerialization::testFuzzRegressionUnknownTypeIdMetadataOOM()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugF_oom_unknown_typeid_metadata.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Fuzzed metadata map carries a value whose QVariant typeId is unknown or
+    // whose payload length is fuzz-controlled.  The bounded variant reader must
+    // reject it rather than letting QDataStream allocate against the length.
+    WorkSpace workspace;
+    bool threw = false;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Unknown/oversized metadata typeId must be rejected, not allocated");
+}
+
+void TestSerialization::testFuzzRegressionElementStreamMapOOM()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugG_oom_element_stream_map.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Fuzzed input declares an implausible entry count in an element's property
+    // QMap header; the bounded metadata reader must reject the count before
+    // QDataStream reserves it.
+    WorkSpace workspace;
+    bool threw = false;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Implausible element map count must be rejected, not allocated");
+}
+
+void TestSerialization::testFuzzRegressionOldFormatV11Elements()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugH_old_format_v11_elements.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Pre-4.1 flat-binary stream (legacy "wiRedPanda 1.1" header) with element
+    // records that drove GraphicElement::loadOldFormat() into undefined
+    // behaviour.  The bounded readers now keep every field within stream
+    // limits; load must throw cleanly or succeed, never abort under ASan/UBSan.
+    WorkSpace workspace;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+    }
+    QVERIFY2(true, "Reaching here means no ASan/UBSan abort — fix is in place");
+}
+
+void TestSerialization::testFuzzRegressionOldFormatICSkinRef()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugI_old_format_ic_skin_ref.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Pre-4.1 stream whose IC element carries a skin reference that the old
+    // loadOldFormat() path mishandled.  Must not abort under ASan/UBSan.
+    WorkSpace workspace;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+    }
+    QVERIFY2(true, "Reaching here means no ASan/UBSan abort — fix is in place");
+}
+
+void TestSerialization::testFuzzRegressionDolphinFilenameOOM()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/oom_dolphin_filename_large.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Workspace whose metadata stores a beWavedDolphin filename with a
+    // fuzz-controlled, implausibly large length prefix.  The bounded string
+    // reader must reject it before QDataStream allocates the QString.
+    WorkSpace workspace;
+    bool threw = false;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Implausible dolphin filename length must be rejected, not allocated");
+}
+
+void TestSerialization::testFuzzRegressionPandaHeaderAppNameOOM()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/oom_panda_header_large_appname.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Legacy header whose leading QString length field (~1.4 GB here) would
+    // make readPandaHeader allocate the app-name string before any validation.
+    // readBoundedString must reject the length and throw first.
+    WorkSpace workspace;
+    bool threw = false;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Implausible header app-name length must be rejected, not allocated");
+}
