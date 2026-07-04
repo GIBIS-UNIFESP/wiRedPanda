@@ -569,18 +569,46 @@ A standalone test (`/tmp/kga_test`) confirms KGlobalAccel handles a missing
 moves on. No hang. With the daemon present (KDE Plasma session), shortcuts
 become user-rebindable via System Settings → Shortcuts.
 
-### 5c — File Dialogs / Recent Files — DEFERRED 📋
+### 5c — Recent Files: KRecentFilesAction ✅
+**KDE Frameworks**: `KF6::ConfigWidgets` (already pulled in transitively via XmlGui)
 
-**Reason for deferral**:
-- **QFileDialog**: When wiRedPanda runs on KDE Plasma, the
-  `kdeplatformfiledialog` plugin already replaces `QFileDialog` with
-  `KFileWidget` transparently. The visible result is identical to a direct
-  `KFileDialog` call. Replacing `RealFileDialogProvider` adds boilerplate
-  without user-visible change.
-- **KRecentFilesAction**: Removing `App/IO/RecentFiles.{h,cpp}` and the
-  `QFileSystemWatcher`-based MRU is a substantial refactor (touches
-  `MainWindow::setupRecentFiles`, `Settings::recentFiles`, persistence
-  format). Tracked as a separate future task.
+KDE builds use `KStandardAction::openRecent` returning a `KRecentFilesAction`.
+The action is added to the action collection before `setupGUI()` so the
+`<Action name="file_open_recent"/>` reference in `wiredpandaui.rc` resolves
+into the File menu automatically. URLs persist via `KSharedConfig::openConfig()`
+under group `RecentFiles`. `loadEntries`/`saveEntries` happen on startup and
+on each new file save (via the existing `addRecentFile` signal).
+
+Non-KDE builds keep the existing `App/IO/RecentFiles` + manual menu population
+under `#ifndef USE_KDE_FRAMEWORKS`. The `m_ui->menuRecentFiles` pointer holds
+either the KRecentFilesAction's auto-built menu (KDE) or the manually-populated
+QMenu (non-KDE).
+
+**Behavioral note**: `KRecentFilesAction::addUrl` silently drops URLs under
+`QDir::tempPath()`. Tests that exercised the recent-files plumbing via a
+`QTemporaryDir` fixture were updated: KDE path verifies the action is wired
+and the menu exists; non-KDE path keeps the full save → reload-via-menu check.
+
+**Implementation note (kde-v2 recreation)**: `KRecentFilesAction`/`KSelectAction`
+builds its submenu internally and never gives it a `QObject` parent (it manages
+the `QMenu`'s lifetime itself, deleting it when the action is destroyed), so
+`window->findChild<QMenu*>("menuRecentFiles")` can never reach it — confirmed
+by instrumenting the pointer at runtime (`parent() == nullptr`). Forcibly
+reparenting it to `MainWindow` to make it discoverable would risk a double-free
+once both `MainWindow`'s child-teardown and the action's destructor try to
+delete the same `QMenu`. `TestMainWindowGui::testOpenRecentFile` was updated to
+fetch the menu via `actionCollection()->action("file_open_recent")->menu()`
+under `USE_KDE_FRAMEWORKS` instead of `findChild()`.
+
+### 5c (FileDialog part) — SKIPPED ⏭️
+
+**Reason for skip**: When wiRedPanda runs on KDE Plasma, the
+`kdeplatformfiledialog` plugin already replaces `QFileDialog` with KIO's
+`KFileWidget` transparently. KF6 itself dropped the standalone `KFileDialog`
+class — the recommended approach is `QFileDialog` + the platform plugin.
+Replacing `RealFileDialogProvider` would add boilerplate without user-visible
+change (and pulling in `KIOFileWidgets` adds a substantial dependency for
+zero benefit when the platform plugin already routes through it).
 
 ---
 
