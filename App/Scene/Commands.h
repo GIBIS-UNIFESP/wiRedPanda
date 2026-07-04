@@ -440,6 +440,34 @@ private:
 };
 
 /**
+ * \class RouteWiresCommand
+ * \brief Undo command that auto-routes orthogonal wires to avoid overlaps.
+ */
+class RouteWiresCommand : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(RouteWiresCommand)
+
+public:
+    struct Entry {
+        int connectionId;
+        QVector<QPointF> oldWaypoints;
+        QVector<QPointF> newWaypoints;
+        WireMode oldMode;
+    };
+
+    explicit RouteWiresCommand(const QVector<Entry> &entries, Scene *scene, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    void apply(bool useNew);
+
+    QVector<Entry> m_entries;
+    Scene *m_scene;
+};
+
+/**
  * \class RegisterBlobCommand
  * \brief Undo command that registers/unregisters a blob in the IC registry.
  *

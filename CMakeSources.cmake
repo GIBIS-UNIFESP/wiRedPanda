@@ -88,6 +88,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneInteraction.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/WireRouter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
@@ -242,6 +243,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneInteraction.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/WireRouter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h

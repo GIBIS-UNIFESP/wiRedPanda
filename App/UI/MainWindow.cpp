@@ -54,6 +54,7 @@
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/ICRegistry.h"
+#include "App/Scene/WireRouter.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Tour/TourEngine.h"
@@ -378,6 +379,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,                   &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::newTab);
     connect(m_ui->actionOpen,                  &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::openFile);
+    connect(m_ui->actionOrganizeWires,         &QAction::triggered,       this,                &MainWindow::on_actionOrganizeWires_triggered);
     connect(m_ui->actionOrthogonalWires,       &QAction::triggered,       this,                &MainWindow::on_actionOrthogonalWires_triggered);
     connect(m_ui->actionPlay,                  &QAction::toggled,         this,                &MainWindow::on_actionPlay_toggled);
     connect(m_ui->actionReloadFile,            &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::reloadFile);
@@ -1352,6 +1354,43 @@ void MainWindow::on_actionOrthogonalWires_triggered(const bool checked)
     Application::guardedSlot(this, [checked] {
         sentryBreadcrumb("ui", QStringLiteral("Orthogonal wires: %1").arg(checked));
         Settings::setOrthogonalWires(checked);
+    });
+}
+
+void MainWindow::on_actionOrganizeWires_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("ui", QStringLiteral("Organize wires"));
+
+        if (!currentTab()) {
+            return;
+        }
+
+        auto *scene = currentTab()->scene();
+        WireRouter router(scene);
+        const auto routeResults = router.routeAll();
+
+        if (routeResults.isEmpty()) {
+            return;
+        }
+
+        QVector<RouteWiresCommand::Entry> entries;
+        for (const auto &result : routeResults) {
+            auto *conn = CommandUtils::findConn(scene, result.connectionId);
+            if (!conn) {
+                continue;
+            }
+            RouteWiresCommand::Entry entry;
+            entry.connectionId = result.connectionId;
+            entry.oldWaypoints = conn->waypoints();
+            entry.newWaypoints = result.waypoints;
+            entry.oldMode = conn->wireMode();
+            entries.append(entry);
+        }
+
+        if (!entries.isEmpty()) {
+            scene->receiveCommand(new RouteWiresCommand(entries, scene));
+        }
     });
 }
 

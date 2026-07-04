@@ -184,6 +184,8 @@ public:
     const QList<GraphicElement *> selectedElements() const;
     /// Returns all graphic elements in the scene.
     const QVector<GraphicElement *> elements() const;
+    /// Returns all connections in the scene.
+    const QVector<Connection *> connections() const;
     /// Returns all graphic elements within \a rect.
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     /// Returns the path of the first local `.panda` file in \a mimeData's URL list (the file
@@ -452,8 +454,6 @@ private:
     /// one grid step (Shift = a larger step) as a single undoable command and returns true.
     bool nudgeSelection(QKeyEvent *event);
     QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
-    /// Returns all connections in the scene.
-    const QVector<Connection *> connections() const;
     void checkUpdateRequest();
     void updateUndoText(const QString &text);
     void updateRedoText(const QString &text);
