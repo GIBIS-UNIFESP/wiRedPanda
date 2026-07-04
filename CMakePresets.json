@@ -237,7 +237,8 @@
                 "fuzz_codegen",
                 "fuzz_round_trip",
                 "fuzz_ic_file",
-                "fuzz_copy_panda"
+                "fuzz_copy_panda",
+                "fuzz_undo"
             ]
         },
         {
@@ -255,7 +256,8 @@
                 "fuzz_codegen",
                 "fuzz_round_trip",
                 "fuzz_ic_file",
-                "fuzz_copy_panda"
+                "fuzz_copy_panda",
+                "fuzz_undo"
             ]
         },
         {
