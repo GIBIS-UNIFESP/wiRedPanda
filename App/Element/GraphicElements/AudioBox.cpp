@@ -12,7 +12,7 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 template<>
 struct ElementInfo<AudioBox> {

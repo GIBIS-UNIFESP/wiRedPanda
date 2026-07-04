@@ -27,7 +27,7 @@ If you are looking for build instructions, see [BUILD.md](BUILD.md). For contrib
   - [Simulation Loop](#simulation-loop)
   - [Topological Sorting](#topological-sorting)
   - [Feedback Loop Handling](#feedback-loop-handling)
-- [Ports and Connections (App/Nodes)](#ports-and-connections-appnodes)
+- [Ports and Connections (App/Wiring)](#ports-and-connections-appwiring)
 - [The Scene and Undo/Redo System (App/Scene)](#the-scene-and-undoredo-system-appscene)
 - [User Interface (App/UI)](#user-interface-appui)
 - [File Serialization (App/IO)](#file-serialization-appio)
@@ -186,9 +186,10 @@ wiRedPanda/
 │   ├── Simulation/                         #   Simulation engine
 │   │   ├── Simulation.cpp/h                #     Main simulation loop
 │   │   └── SimulationBlocker.cpp/h         #     Pause mechanism
-│   ├── Nodes/                              #   Ports and wire connections
-│   │   ├── QNEPort.cpp/h                   #     Input/output ports
-│   │   └── QNEConnection.cpp/h             #     Connections between ports
+│   ├── Wiring/                             #   Ports and wire connections
+│   │   ├── Port.cpp/h                      #     Input/output ports
+│   │   ├── Connection.cpp/h                #     Connections between ports
+│   │   └── ConnectionSerializer.cpp/h      #     Connection save/load
 │   ├── Scene/                              #   Graphics scene, undo/redo, workspace
 │   │   ├── Scene.cpp/h                     #     Main QGraphicsScene
 │   │   ├── Commands.cpp/h                  #     Undo/redo commands
@@ -817,19 +818,19 @@ Some circuits have feedback (e.g., an SR latch where outputs feed back to inputs
 
 ---
 
-## Ports and Connections (App/Nodes)
+## Ports and Connections (App/Wiring)
 
 ### Port Architecture
 
-- **`QNEOutputPort`** — The source end of a wire. Can fan out to multiple inputs.
-- **`QNEInputPort`** — The destination end. Accepts at most one connection (unless optional).
-- Both inherit from `QNEPort`, which is a `QGraphicsItem` positioned at the element's edge.
+- **`OutputPort`** — The source end of a wire. Can fan out to multiple inputs.
+- **`InputPort`** — The destination end. Accepts at most one connection (unless optional).
+- Both inherit from `Port`, which is a `QGraphicsItem` positioned at the element's edge.
 
 Each port carries a `Status` (the current logic value) and maintains a list of connections.
 
-### QNEConnection
+### Connection
 
-`App/Nodes/QNEConnection.h` represents a **wire** between two ports. A connection links exactly one `QNEOutputPort` to one `QNEInputPort`.
+`App/Wiring/Connection.h` represents a **wire** between two ports. A connection links exactly one `OutputPort` to one `InputPort`; `App/Wiring/ConnectionSerializer.h` handles its save/load.
 
 Properties:
 - Rendered as a Bézier curve on the QGraphicsScene
@@ -839,7 +840,7 @@ Properties:
 ### Connection Flow
 
 1. User drags from an output port.
-2. A `QNEConnection` (wire) is created and follows the cursor.
+2. A `Connection` (wire) is created and follows the cursor.
 3. On release over a valid input port, `ConnectionManager` validates the connection (no self-loops, no duplicates, no wireless conflicts).
 4. If valid, an `AddItemsCommand` is pushed to the undo stack, committing the wire.
 
@@ -1633,8 +1634,8 @@ Ordered by difficulty:
 | `App/Scene/Scene.h`                  | Main graphics scene                                  |
 | `App/Scene/Commands.h`               | All undo/redo command classes                        |
 | `App/Scene/Workspace.h`              | File and workspace management                        |
-| `App/Nodes/QNEPort.h`                | Port base class                                      |
-| `App/Nodes/QNEConnection.h`          | Wire connection class                                |
+| `App/Wiring/Port.h`                  | Port base class                                      |
+| `App/Wiring/Connection.h`            | Wire connection class                                |
 | `App/IO/Serialization.h`             | File format save/load                                |
 | `App/IO/VersionInfo.h`               | Format version history                               |
 | `Tests/Common/TestUtils.h`           | CircuitBuilder and test helpers                      |

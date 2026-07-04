@@ -13,8 +13,8 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 
 /// Returns a unique key identifying an IC for SystemVerilog code generation.
@@ -94,13 +94,13 @@ QString SystemVerilogCodeGen::ensureSimpleSignal(const QString &expr)
     return wireName;
 }
 
-QString SystemVerilogCodeGen::otherPortName(QNEPort *port)
+QString SystemVerilogCodeGen::otherPortName(Port *port)
 {
-    QSet<QNEPort *> visited;
+    QSet<Port *> visited;
     return otherPortNameImpl(port, visited);
 }
 
-QString SystemVerilogCodeGen::otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &visited)
+QString SystemVerilogCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visited)
 {
     if (!port) return "1'b0";
 
@@ -297,7 +297,7 @@ QSet<GraphicElement *> SystemVerilogCodeGen::findFeedbackElements(const QVector<
             const auto conns = outPort->connections();
             for (auto *conn : conns) {
                 if (!conn) continue;
-                QNEPort *other = conn->otherPort(outPort);
+                Port *other = conn->otherPort(outPort);
                 if (!other) continue;
                 GraphicElement *h = other->graphicElement();
                 if (h && elementSet.contains(h) && isGate(h)) {
@@ -377,7 +377,7 @@ void SystemVerilogCodeGen::generateICModules()
 void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
 {
     // Save context
-    QHash<QNEPort *, QString> savedVarMap = m_varMap;
+    QHash<Port *, QString> savedVarMap = m_varMap;
     QHash<IC *, QString> savedInstanceNames = m_instanceNames;
     int savedCounter = m_globalCounter;
 
@@ -614,7 +614,7 @@ void SystemVerilogCodeGen::declareOutputs()
                 if (!label.isEmpty()) {
                     varName = QString("%1_%2").arg(varName, label);
                 }
-                QNEPort *port = elm->inputPort(i);
+                Port *port = elm->inputPort(i);
                 if (!port->name().isEmpty()) {
                     varName = QString("%1_%2").arg(varName, port->name());
                 }
@@ -689,10 +689,10 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
             const auto outputs = elm->outputs();
 
             // Track which ports were already pre-mapped (e.g., IC module boundary ports)
-            QSet<QNEPort *> preMapped;
+            QSet<Port *> preMapped;
 
             if (outputs.size() == 1) {
-                QNEPort *port = outputs.constFirst();
+                Port *port = outputs.constFirst();
 
                 if (elm->elementType() == ElementType::InputVcc) {
                     m_varMap[port] = "1'b1";
@@ -753,7 +753,7 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
 
                 case ElementType::TruthTable:
                     if (!outputs.isEmpty()) {
-                        QNEPort *outputPort = outputs.constFirst();
+                        Port *outputPort = outputs.constFirst();
                         QString ttVarName = QString("%1_output").arg(removeForbiddenChars(elm->objectName()));
                         m_varMap[outputPort] = ttVarName;
                         m_stream << QString("reg ") << ttVarName << ";" << Qt::endl;
@@ -1222,7 +1222,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                 // Resolve input signal names
                 QStringList inputSignalNames;
                 for (int i = 0; i < nInputs; ++i) {
-                    QNEPort *ttInputPort = elm->inputPort(i);
+                    Port *ttInputPort = elm->inputPort(i);
                     QString signalName = otherPortName(ttInputPort);
 
                     if (signalName == "LOW") {
@@ -1313,12 +1313,12 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
 
 QString SystemVerilogCodeGen::generateLogicExpression(GraphicElement *elm)
 {
-    QSet<QNEPort *> visited;
+    QSet<Port *> visited;
     return generateLogicExpressionImpl(elm, visited);
 }
 
 // [BUG-2] Cancels double negations: ~~expr -> expr
-QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, QSet<QNEPort *> &visited)
+QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, QSet<Port *> &visited)
 {
     bool negate = false;
     QString logicOperator;

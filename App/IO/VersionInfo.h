@@ -74,7 +74,7 @@ inline bool hasMetadata(const QVersionNumber &v) { return v >= Versions::V_4_5; 
 /// V4.6: Dolphin filename moved into metadata map; scene rect no longer stored.
 inline bool hasUnifiedMetadata(const QVersionNumber &v) { return v >= Versions::V_4_6; }
 
-/// V4.7: QNEConnection uses QMap-based serialization format.
+/// V4.7: Connection uses QMap-based serialization format.
 inline bool hasConnectionQMap(const QVersionNumber &v) { return v >= Versions::V_4_7; }
 
 /// V5.1: Embedded IC blob registry serialized with explicit QDataStream::Qt_5_12 version.

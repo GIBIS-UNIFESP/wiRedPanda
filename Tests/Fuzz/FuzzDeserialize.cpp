@@ -77,10 +77,10 @@ constexpr VersionPatch kVersions[] = {
 
 // Item type discriminators (quint32 big-endian) for Serialization::deserialize() switch
 // GraphicElement::Type = QGraphicsItem::UserType+3 = 65539 = 0x00010003
-// QNEConnection::Type  = QGraphicsItem::UserType+2 = 65538 = 0x00010002
+// Connection::Type  = QGraphicsItem::UserType+2 = 65538 = 0x00010002
 constexpr uint8_t kItemTypes[][4] = {
     {0,1,0,3},  // GraphicElement::Type
-    {0,1,0,2},  // QNEConnection::Type
+    {0,1,0,2},  // Connection::Type
 };
 
 // Known QMetaType wire typeIds (4 bytes, big-endian) used in property maps
@@ -326,7 +326,7 @@ extern "C" size_t LLVMFuzzerCustomMutator(
         }
         break;
     }
-    case 5: { // patch_item_type: splice a GraphicElement or QNEConnection type discriminator
+    case 5: { // patch_item_type: splice a GraphicElement or Connection type discriminator
         // These 4-byte big-endian values are the switch keys in Serialization::deserialize().
         // Splicing them into the payload helps the fuzzer discover the element/connection
         // loading code paths from raw-byte mutations.

@@ -3,7 +3,7 @@
 
 #include "App/Element/GraphicElementInput.h"
 
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 void GraphicElementInput::setOn(const bool value, const int port)
 {

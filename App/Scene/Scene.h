@@ -17,7 +17,7 @@
 
 #include "App/Core/ContextDirProvider.h"
 #include "App/Core/SimulationHost.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/ICRegistry.h"
@@ -32,7 +32,7 @@ class GraphicElement;
 class GraphicsView;
 class IC;
 class ItemWithId;
-class QNEConnection;
+class Connection;
 class QPainter;
 struct SerializationContext;
 
@@ -138,7 +138,7 @@ public:
      * If two Tx nodes share the same label the first one wins.  Used by codegens
      * to resolve Rx node signals without duplicating the wireless scan.
      */
-    static QHash<QString, QNEInputPort *> wirelessTxInputPorts(const QVector<GraphicElement *> &elements);
+    static QHash<QString, InputPort *> wirelessTxInputPorts(const QVector<GraphicElement *> &elements);
     /// Returns all visible (non-hidden) graphic elements in the scene.
     const QVector<GraphicElement *> visibleElements() const;
 
@@ -146,7 +146,7 @@ public:
      * \brief Returns \c true if a wire from \a startPort to \a endPort is permitted.
      * \details Delegates to ConnectionManager::isConnectionAllowed().
      */
-    static bool isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort);
+    static bool isConnectionAllowed(OutputPort *startPort, InputPort *endPort);
 
     // --- Connection Manager ---
 
@@ -256,7 +256,7 @@ public:
     ICRegistry *icRegistry() { return &m_icRegistry; }
 
     /// Creates a deserialization context with the scene's contextDir and blob registry.
-    SerializationContext deserializationContext(QHash<quint64, QNEPort *> &portMap, const QVersionNumber &version);
+    SerializationContext deserializationContext(QHash<quint64, Port *> &portMap, const QVersionNumber &version);
 
     // --- Autosave ---
 
@@ -337,7 +337,7 @@ private:
     // --- Helpers ---
 
     QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
-    const QVector<QNEConnection *> connections() const;
+    const QVector<Connection *> connections() const;
     void checkUpdateRequest();
     void updateUndoText(const QString &text);
     void updateRedoText(const QString &text);

@@ -55,7 +55,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -98,9 +98,9 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
     // Grab the first connection already in the scene (came from g_validPanda or fuzz load).
     // SplitCommand needs this; no per-run scene::addItem is needed since the connection
     // was serialized into g_validPanda at initialization time.
-    QNEConnection *splitableConn = nullptr;
+    Connection *splitableConn = nullptr;
     for (auto *item : scene->items()) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             splitableConn = conn;
             break;
         }
@@ -338,7 +338,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         Serialization::serialize(items, s);
         qDeleteAll(items);
 
-        // Append one QNEConnection (sw1 output → And input0) as raw wire bytes.
+        // Append one Connection (sw1 output → And input0) as raw wire bytes.
         // Writing it after serialize() ensures the element port serialIds are already
         // in the stream (portMap is populated by elements before connections are wired).
         //
@@ -349,7 +349,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         {
             constexpr quint64 sw1Out0 = (quint64(2) << 16) | 0;  // sw1 output port 0
             constexpr quint64 andIn0  = (quint64(1) << 16) | 0;  // andG input port 0
-            s << static_cast<int>(QGraphicsItem::UserType + 2);   // QNEConnection::Type
+            s << static_cast<int>(QGraphicsItem::UserType + 2);   // Connection::Type
             QMap<QString, QVariant> connMap;
             connMap.insert("startPortId", QVariant::fromValue(sw1Out0));
             connMap.insert("endPortId",   QVariant::fromValue(andIn0));

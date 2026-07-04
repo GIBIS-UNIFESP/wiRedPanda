@@ -24,7 +24,7 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -316,7 +316,7 @@ void TestDanglingPointer::hardening_deleteEditedConnectionMustUseSimulationBlock
 }
 
 // WIREDPANDA-JD — historical: Simulation::initialize() used to collect every
-// QNEConnection unconditionally into Simulation::m_connections, including
+// Connection unconditionally into Simulation::m_connections, including
 // in-progress wires (only startPort set). A subsequent cancel
 // (deleteEditedConnection) freed the wire without rebuilding, leaving a
 // dangling pointer that the old Phase 3 loop dereferenced on the next tick.
@@ -337,7 +337,7 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn);
@@ -347,7 +347,7 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
 
     // Simulate ConnectionManager::startFromOutput: create an in-progress wire
     // with only startPort set (no endPort — the user is still dragging it).
-    auto *inProgressWire = new QNEConnection();
+    auto *inProgressWire = new Connection();
     inProgressWire->setStartPort(sw->outputPort());
     scene->addItem(inProgressWire);
 
@@ -507,7 +507,7 @@ void TestDanglingPointer::integration_simulationTickAfterResetMustNotCrash()
 // re-initialize runs while it's present, and the wire is then deleted
 // (simulating cancel/deleteEditedConnection). The next update() must not
 // crash. Originally this SIGSEGVed because Simulation::m_connections
-// unconditionally collected every QNEConnection — including the in-progress
+// unconditionally collected every Connection — including the in-progress
 // one — and the delete above left that entry dangling for the next Phase 3
 // pass to dereference. m_connections no longer exists (Phase 3 walks
 // m_sortedElements instead), so Simulation has no reference left to dangle;
@@ -523,7 +523,7 @@ void TestDanglingPointer::jd_cancelledWireMustNotLeaveDanglingPointer()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn);
@@ -533,7 +533,7 @@ void TestDanglingPointer::jd_cancelledWireMustNotLeaveDanglingPointer()
     sim->setVisualThrottleEnabled(false);
 
     // Add an in-progress wire (startPort only) to the scene.
-    auto *inProgressWire = new QNEConnection();
+    auto *inProgressWire = new Connection();
     inProgressWire->setStartPort(sw->outputPort());
     scene->addItem(inProgressWire);
 
@@ -564,7 +564,7 @@ void TestDanglingPointer::hcDrainConnectionsMustCleanRegistry()
     scene->addItem(sw);
     scene->addItem(led);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort());
     conn->setEndPort(led->inputPort());
     scene->addItem(conn);
@@ -573,7 +573,7 @@ void TestDanglingPointer::hcDrainConnectionsMustCleanRegistry()
     QCOMPARE(scene->itemById(connId), conn);
 
     // Out-of-band destruction: removeItem on the element only, then delete.
-    // Cascade reaches ~QNEOutputPort → drainConnections, which deletes the
+    // Cascade reaches ~OutputPort → drainConnections, which deletes the
     // wire still in m_connections.
     scene->removeItem(sw);
     delete sw;

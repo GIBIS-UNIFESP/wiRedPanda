@@ -60,7 +60,7 @@ private slots:
     void hardening_deleteEditedConnectionMustUseSimulationBlocker();
 
     /// WIREDPANDA-JD — historical: Simulation::initialize() used to collect
-    /// every QNEConnection unconditionally into Simulation::m_connections,
+    /// every Connection unconditionally into Simulation::m_connections,
     /// including in-progress wires (only startPort set). A subsequent
     /// cancel/delete of that wire left a dangling pointer that the old
     /// Phase 3 loop dereferenced on the next tick. Simulation::m_connections
@@ -96,7 +96,7 @@ private slots:
     /// Simulation.cpp:87's `element->updateLogic()` took in production.
     void integration_simulationTickAfterResetMustNotCrash();
 
-    /// WIREDPANDA-HC — QNEPort::drainConnections issued a bare
+    /// WIREDPANDA-HC — Port::drainConnections issued a bare
     /// `delete conn` during cascade-destruction. Qt's ~QGraphicsItem
     /// then dispatched to the non-virtual QGraphicsScene::removeItem,
     /// bypassing Scene::removeItem and leaving m_elementRegistry pointing

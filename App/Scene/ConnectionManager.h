@@ -14,10 +14,10 @@
 
 class GraphicElement;
 class PortHoverLabel;
-class QNEConnection;
-class QNEInputPort;
-class QNEOutputPort;
-class QNEPort;
+class Connection;
+class InputPort;
+class OutputPort;
+class Port;
 class Scene;
 
 /**
@@ -38,10 +38,10 @@ public:
     // --- Wire creation workflow ---
 
     /// Begins a new in-progress wire anchored at \a startPort (output port).
-    void startFromOutput(QNEOutputPort *startPort);
+    void startFromOutput(OutputPort *startPort);
 
     /// Begins a new in-progress wire anchored at \a endPort (input port).
-    void startFromInput(QNEInputPort *endPort);
+    void startFromInput(InputPort *endPort);
 
     /**
      * \brief Attempts to complete the in-progress wire at the port under \a scenePos.
@@ -59,7 +59,7 @@ public:
      *
      * Lets the user "grab" an existing wire and re-route it to a different input.
      */
-    void detach(QNEInputPort *endPort);
+    void detach(InputPort *endPort);
 
     // --- In-progress wire state ---
 
@@ -67,7 +67,7 @@ public:
     [[nodiscard]] bool hasEditedConnection() const;
 
     /// Returns the in-progress wire, or nullptr.
-    [[nodiscard]] QNEConnection *editedConnection() const;
+    [[nodiscard]] Connection *editedConnection() const;
 
     /// Updates the free end of the in-progress wire to follow \a scenePos.
     void updateEditedEnd(const QPointF &scenePos);
@@ -86,7 +86,7 @@ public:
      * Called from Scene::helpEvent in place of the native tooltip, so the chips appear and
      * disappear at the same wake-up delay a tooltip would. Replaces any chips already shown.
      */
-    void showHoverLabels(QNEPort *port);
+    void showHoverLabels(Port *port);
 
     // --- Validation ---
 
@@ -100,18 +100,18 @@ public:
      * - \a endPort belongs to a wireless Rx node (physical wire would be ignored by simulation).
      * - \a startPort belongs to a wireless Tx node (tunnel convention: output drives channel only).
      */
-    static bool isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort);
+    static bool isConnectionAllowed(OutputPort *startPort, InputPort *endPort);
 
 private:
-    void setEditedConnection(QNEConnection *connection);
+    void setEditedConnection(Connection *connection);
     void deleteEditedConnection();
 
-    void setHoverPort(QNEPort *port);
+    void setHoverPort(Port *port);
     void releaseHoverPort();
-    [[nodiscard]] QNEPort *hoverPort();
+    [[nodiscard]] Port *hoverPort();
 
     /// Returns the ports on the far end of every wire attached to \a port (skips dangling ends).
-    [[nodiscard]] static QList<QNEPort *> connectedPeers(QNEPort *port);
+    [[nodiscard]] static QList<Port *> connectedPeers(Port *port);
 
     /// Removes and deletes all live label chips spawned by the current hover.
     void clearHoverLabels();
@@ -129,7 +129,7 @@ private:
     QList<QPointer<PortHoverLabel>> m_peerLabels;
 
     /// Peers actually given hoverEnter() by the current hover, stored as element ID + port
-    /// index (same scheme as m_hoverPortElmId/m_hoverPortNumber — QNEPort isn't a QObject,
+    /// index (same scheme as m_hoverPortElmId/m_hoverPortNumber — Port isn't a QObject,
     /// so it can't be tracked with QPointer, and a raw pointer would dangle if the peer's
     /// element is deleted mid-hover) so releaseHoverPort() can hoverLeave() exactly this set
     /// even if connectivity changes mid-hover.

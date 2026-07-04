@@ -1,40 +1,40 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Nodes/TestQNEPort.h"
+#include "Tests/Unit/Wiring/TestPort.h"
 
 #include <algorithm>
 
 #include "App/Element/GraphicElements/Display7.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
-void TestQNEPort::testPortTooltip()
+void TestPort::testPortTooltip()
 {
-    // QNEPort is abstract — use QNEInputPort
-    QNEInputPort port;
+    // Port is abstract — use InputPort
+    InputPort port;
     port.setToolTip("Test tooltip");
     QCOMPARE(port.toolTip(), QString("Test tooltip"));
 }
 
-void TestQNEPort::testPortHoverState()
+void TestPort::testPortHoverState()
 {
-    QNEInputPort port;
+    InputPort port;
     QVERIFY(port.isInput());
     QVERIFY(!port.isOutput());
 }
 
-void TestQNEPort::testSetInputsReindexesPorts()
+void TestPort::testSetInputsReindexesPorts()
 {
     // Regression test (F18): Display7's legacy pin remap permutes the input
-    // vector via setInputs(). QNEConnection::save() derives connection serial
+    // vector via setInputs(). Connection::save() derives connection serial
     // IDs from port->index() while GraphicElement::save() uses vector
     // positions — stale indices after the permutation cross-wired the display
     // pins on the next save/load round trip. setInputs() must restore the
     // index() == position invariant for any permutation.
     Display7 display;
 
-    QVector<QNEInputPort *> reversed = display.inputs();
+    QVector<InputPort *> reversed = display.inputs();
     std::reverse(reversed.begin(), reversed.end());
     display.setInputs(reversed);
 

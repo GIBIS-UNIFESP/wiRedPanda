@@ -13,8 +13,8 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Simulation/Simulation.h"
 
 namespace TestUtils {
@@ -114,19 +114,19 @@ int countConnections(Scene *scene)
     int count = 0;
     auto items = scene->items();
     for (auto *item : std::as_const(items)) {
-        if (qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (qgraphicsitem_cast<Connection *>(item)) {
             ++count;
         }
     }
     return count;
 }
 
-QList<QNEConnection *> sceneConnections(Scene *scene)
+QList<Connection *> sceneConnections(Scene *scene)
 {
-    QList<QNEConnection *> connections;
+    QList<Connection *> connections;
     auto items = scene->items();
     for (auto *item : std::as_const(items)) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             connections.append(conn);
         }
     }
@@ -355,7 +355,7 @@ int CircuitBuilder::InputPortTraits::count(GraphicElement *elm)
     return elm->inputSize();
 }
 
-QNEPort *CircuitBuilder::InputPortTraits::port(GraphicElement *elm, int idx)
+Port *CircuitBuilder::InputPortTraits::port(GraphicElement *elm, int idx)
 {
     return elm->inputPort(idx);
 }
@@ -375,7 +375,7 @@ int CircuitBuilder::OutputPortTraits::count(GraphicElement *elm)
     return elm->outputSize();
 }
 
-QNEPort *CircuitBuilder::OutputPortTraits::port(GraphicElement *elm, int idx)
+Port *CircuitBuilder::OutputPortTraits::port(GraphicElement *elm, int idx)
 {
     return elm->outputPort(idx);
 }
@@ -457,7 +457,7 @@ void CircuitBuilder::addElement(GraphicElement *elm)
     m_scene->addItem(elm);
 }
 
-QNEConnection *CircuitBuilder::connect(GraphicElement *from, int fromPort,
+Connection *CircuitBuilder::connect(GraphicElement *from, int fromPort,
                                         GraphicElement *to, int toPort)
 {
     if (!m_scene) {
@@ -490,7 +490,7 @@ QNEConnection *CircuitBuilder::connect(GraphicElement *from, int fromPort,
                toPort);
     }
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(fromOutput);
     conn->setEndPort(toInput);
     m_scene->addItem(conn);
@@ -533,21 +533,21 @@ int CircuitBuilder::outputPortByLabel(GraphicElement *element, const QString &la
     return portByLabelImpl<OutputPortTraits>(element, label);
 }
 
-QNEConnection *CircuitBuilder::connect(GraphicElement *from, const QString &fromLabel,
+Connection *CircuitBuilder::connect(GraphicElement *from, const QString &fromLabel,
                                         GraphicElement *to, int toPort)
 {
     int fromPort = outputPortByLabel(from, fromLabel);
     return connect(from, fromPort, to, toPort);
 }
 
-QNEConnection *CircuitBuilder::connect(GraphicElement *from, int fromPort,
+Connection *CircuitBuilder::connect(GraphicElement *from, int fromPort,
                                         GraphicElement *to, const QString &toLabel)
 {
     int toPortIndex = inputPortByLabel(to, toLabel);
     return connect(from, fromPort, to, toPortIndex);
 }
 
-QNEConnection *CircuitBuilder::connect(GraphicElement *from, const QString &fromLabel,
+Connection *CircuitBuilder::connect(GraphicElement *from, const QString &fromLabel,
                                         GraphicElement *to, const QString &toLabel)
 {
     int fromPort = outputPortByLabel(from, fromLabel);

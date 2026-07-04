@@ -16,8 +16,8 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/IC.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 using namespace std::chrono_literals;
 
@@ -195,7 +195,7 @@ void Simulation::update()
     }
 }
 
-void Simulation::updatePort(QNEOutputPort *port)
+void Simulation::updatePort(OutputPort *port)
 {
     if (!port) {
         return;
@@ -210,7 +210,7 @@ void Simulation::updatePort(QNEOutputPort *port)
     port->setStatus(element->outputValue(port->index()));
 }
 
-void Simulation::updatePort(QNEInputPort *port)
+void Simulation::updatePort(InputPort *port)
 {
     if (!port) {
         return;
@@ -506,7 +506,7 @@ QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGra
 
     // Add wireless Tx→Rx edges.
     // connectWirelessElements() already set predecessors for simulation input routing,
-    // but those don't create QNEConnection objects, so the connection-walking loop above
+    // but those don't create Connection objects, so the connection-walking loop above
     // doesn't see wireless dependencies.  We must add them explicitly here for correct
     // topological ordering.
     for (auto *elm : std::as_const(elements)) {

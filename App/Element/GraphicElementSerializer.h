@@ -16,7 +16,7 @@
 #include <QtGlobal>
 
 class GraphicElement;
-class QNEPort;
+class Port;
 class QDataStream;
 class QVersionNumber;
 struct SerializationContext;
@@ -74,5 +74,5 @@ private:
     static QList<QMap<QString, QVariant>> readPortList(QDataStream &stream, const char *label);
 
     /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
-    static void removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap);
+    static void removePortFromMap(Port *deletedPort, QHash<quint64, Port *> &portMap);
 };

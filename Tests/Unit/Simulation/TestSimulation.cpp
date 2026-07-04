@@ -9,8 +9,8 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -51,7 +51,7 @@ void TestSimulationUnit::testAddRemoveClockDuringSimulation()
     auto *clockLed = new Led();
     scene->addItem(clock);
     scene->addItem(clockLed);
-    auto *clockConn = new QNEConnection();
+    auto *clockConn = new Connection();
     clockConn->setStartPort(clock->outputPort(0));
     clockConn->setEndPort(clockLed->inputPort(0));
     scene->addItem(clockConn);
@@ -188,7 +188,7 @@ void TestSimulationUnit::testUnconnectedOutputPortVisualUpdates()
     scene->addItem(vcc);
     scene->addItem(notGate);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(vcc->outputPort(0));
     conn->setEndPort(notGate->inputPort(0));
     scene->addItem(conn);

@@ -18,7 +18,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
@@ -147,13 +147,13 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     // Physical wire: InputSwitch → Tx node, Rx node → LED
     auto *swOut = sw->outputPort(0);
     auto *txIn = txNode->inputPort(0);
-    auto conn1 = std::make_unique<QNEConnection>();
+    auto conn1 = std::make_unique<Connection>();
     conn1->setStartPort(swOut);
     conn1->setEndPort(txIn);
 
     auto *rxOut = rxNode->outputPort(0);
     auto *ledIn = led->inputPort(0);
-    auto conn2 = std::make_unique<QNEConnection>();
+    auto conn2 = std::make_unique<Connection>();
     conn2->setStartPort(rxOut);
     conn2->setEndPort(ledIn);
 
@@ -200,7 +200,7 @@ void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
 
     auto led = std::make_unique<Led>();
 
-    auto conn = std::make_unique<QNEConnection>();
+    auto conn = std::make_unique<Connection>();
     conn->setStartPort(rxNode->outputPort(0));
     conn->setEndPort(led->inputPort(0));
 

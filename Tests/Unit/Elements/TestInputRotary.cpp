@@ -11,7 +11,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/IO/SerializationContext.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -386,7 +386,7 @@ void TestInputRotary::testLoadCurrentPort()
     QVERIFY(rotary2 != nullptr);
 
     QDataStream loadStream(data);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
     rotary2->load(loadStream, context);
 
@@ -415,7 +415,7 @@ void TestInputRotary::testSaveLoadPreservesState()
     QVERIFY(rotary2 != nullptr);
 
     QDataStream loadStream(data);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
     rotary2->load(loadStream, context);
 

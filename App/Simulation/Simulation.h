@@ -18,8 +18,8 @@
 class Clock;
 class GraphicElement;
 class GraphicElementInput;
-class QNEInputPort;
-class QNEOutputPort;
+class InputPort;
+class OutputPort;
 class SimulationHost;
 
 /**
@@ -143,8 +143,8 @@ private:
 
     // --- Helpers ---
 
-    static void updatePort(QNEInputPort *port);
-    static void updatePort(QNEOutputPort *port);
+    static void updatePort(InputPort *port);
+    static void updatePort(OutputPort *port);
     void updateWithIterativeSettling(const QVector<GraphicElement *> &elements);
     void sortSimElements(const QVector<GraphicElement *> &elements);
 

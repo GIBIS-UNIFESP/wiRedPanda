@@ -17,7 +17,7 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 namespace {
 
@@ -65,7 +65,7 @@ QList<QMap<QString, QVariant>> GraphicElementSerializer::readPortList(QDataStrea
     return result;
 }
 
-void GraphicElementSerializer::removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap)
+void GraphicElementSerializer::removePortFromMap(Port *deletedPort, QHash<quint64, Port *> &portMap)
 {
     for (auto it = portMap.begin(); it != portMap.end();) {
         if (it.value() == deletedPort) {
@@ -578,15 +578,4 @@ void GraphicElementSerializer::loadPixmapAppearanceName(GraphicElement &element,
             element.m_appearance.setAlternativeAppearanceAt(index, name);
         }
     }
-}
-
-// ========== Stream operator ==========
-
-QDataStream &operator<<(QDataStream &stream, const GraphicElement *item)
-{
-    // Type tags are now written by Serialization::serialize() for symmetry
-    // This is now only called from serialize(), so type is already written
-    qCDebug(four) << "Writing element.";
-    item->save(stream);
-    return stream;
 }

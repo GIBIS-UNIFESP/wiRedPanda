@@ -72,7 +72,7 @@ public:
     /// QMessageBox. Visual concerns are governed by renderingEnabled instead.
     inline static bool interactiveMode = true;
 
-    /// When false, skips wire-geometry construction (QNEConnection::updatePath)
+    /// When false, skips wire-geometry construction (Connection::updatePath)
     /// as a throughput optimization for contexts that never paint or export:
     /// unit tests and fuzz harnesses. Must stay true whenever anything can be
     /// rendered — including headless --mcp, whose export_image paints the

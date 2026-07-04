@@ -9,8 +9,8 @@
 
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/PortHoverLabel.h"
@@ -21,7 +21,7 @@
 namespace {
 /// Which side of its element \a port faces, so its label chip can be biased away from the
 /// body regardless of rotation/mirroring (ports aren't only ever on the left/right edge).
-PortHoverLabel::Side sideFor(QNEPort *port)
+PortHoverLabel::Side sideFor(Port *port)
 {
     auto *element = port->graphicElement();
     if (!element) {
@@ -37,7 +37,7 @@ PortHoverLabel::Side sideFor(QNEPort *port)
 
 /// Encodes \a port's position within \a element as a single index (inputs first, then
 /// outputs), or -1 if \a port doesn't belong to \a element. Mirrors decodePort() below.
-int encodePortIndex(GraphicElement *element, QNEPort *port)
+int encodePortIndex(GraphicElement *element, Port *port)
 {
     for (int i = 0; i < (element->inputSize() + element->outputSize()); ++i) {
         if (i < element->inputSize()) {
@@ -51,10 +51,10 @@ int encodePortIndex(GraphicElement *element, QNEPort *port)
     return -1;
 }
 
-/// Resolves an (element ID, port index) pair back to a QNEPort, or nullptr if the element
+/// Resolves an (element ID, port index) pair back to a Port, or nullptr if the element
 /// no longer exists or the index is out of range — e.g. the element (and its port) was
 /// deleted since the pair was captured. Mirrors encodePortIndex() above.
-QNEPort *decodePort(Scene *scene, const int elmId, const int portNumber)
+Port *decodePort(Scene *scene, const int elmId, const int portNumber)
 {
     auto *element = dynamic_cast<GraphicElement *>(scene->itemById(elmId));
     if (!element) {
@@ -77,10 +77,10 @@ ConnectionManager::ConnectionManager(Scene *scene)
 
 // --- Wire creation workflow ---
 
-void ConnectionManager::startFromOutput(QNEOutputPort *startPort)
+void ConnectionManager::startFromOutput(OutputPort *startPort)
 {
     sentryBreadcrumb("ui", QStringLiteral("Wire started"));
-    auto *connection = new QNEConnection();
+    auto *connection = new Connection();
     connection->setStartPort(startPort);
     connection->setEndPos(m_scene->mousePos());
 
@@ -89,9 +89,9 @@ void ConnectionManager::startFromOutput(QNEOutputPort *startPort)
     connection->updatePath();
 }
 
-void ConnectionManager::startFromInput(QNEInputPort *endPort)
+void ConnectionManager::startFromInput(InputPort *endPort)
 {
-    auto *connection = new QNEConnection();
+    auto *connection = new Connection();
     connection->setEndPort(endPort);
     connection->setStartPos(m_scene->mousePos());
 
@@ -103,23 +103,23 @@ void ConnectionManager::startFromInput(QNEInputPort *endPort)
 void ConnectionManager::tryComplete(const QPointF &scenePos)
 {
     auto *connection = editedConnection();
-    auto *port = qgraphicsitem_cast<QNEPort *>(m_scene->itemAt(scenePos));
+    auto *port = qgraphicsitem_cast<Port *>(m_scene->itemAt(scenePos));
 
     if (!port || !connection) {
         return;
     }
 
-    /* The mouse is released over a QNEPort. */
-    QNEOutputPort *startPort = nullptr;
-    QNEInputPort *endPort = nullptr;
+    /* The mouse is released over a Port. */
+    OutputPort *startPort = nullptr;
+    InputPort *endPort = nullptr;
 
     // A wire being dragged from an output needs the drop target to be an input, and vice versa.
     // The dynamic_cast returns nullptr if the port type doesn't match, which is caught below.
     if (connection->startPort() != nullptr) {
         startPort = connection->startPort();
-        endPort = dynamic_cast<QNEInputPort *>(port);
+        endPort = dynamic_cast<InputPort *>(port);
     } else if (connection->endPort() != nullptr) {
-        startPort = dynamic_cast<QNEOutputPort *>(port);
+        startPort = dynamic_cast<OutputPort *>(port);
         endPort = connection->endPort();
     }
 
@@ -147,7 +147,7 @@ void ConnectionManager::cancel()
     }
 }
 
-void ConnectionManager::detach(QNEInputPort *endPort)
+void ConnectionManager::detach(InputPort *endPort)
 {
     sentryBreadcrumb("ui", QStringLiteral("Wire detached"));
     const auto connections = endPort->connections();
@@ -173,9 +173,9 @@ bool ConnectionManager::hasEditedConnection() const
     return editedConnection() != nullptr;
 }
 
-QNEConnection *ConnectionManager::editedConnection() const
+Connection *ConnectionManager::editedConnection() const
 {
-    return dynamic_cast<QNEConnection *>(m_scene->itemById(m_editedConnectionId));
+    return dynamic_cast<Connection *>(m_scene->itemById(m_editedConnectionId));
 }
 
 void ConnectionManager::updateEditedEnd(const QPointF &scenePos)
@@ -207,7 +207,7 @@ void ConnectionManager::updateEditedEnd(const QPointF &scenePos)
 
 void ConnectionManager::updateHover(const QPointF &scenePos)
 {
-    auto *port = qgraphicsitem_cast<QNEPort *>(m_scene->itemAt(scenePos));
+    auto *port = qgraphicsitem_cast<Port *>(m_scene->itemAt(scenePos));
     auto *hoverPort_ = hoverPort();
 
     // Only tear down and rebuild the hover state when the port under the cursor
@@ -238,7 +238,7 @@ void ConnectionManager::clearHover()
 
 // --- Validation ---
 
-bool ConnectionManager::isConnectionAllowed(QNEOutputPort *startPort, QNEInputPort *endPort)
+bool ConnectionManager::isConnectionAllowed(OutputPort *startPort, InputPort *endPort)
 {
     if (!startPort || !endPort) {
         return false;
@@ -264,7 +264,7 @@ bool ConnectionManager::isConnectionAllowed(QNEOutputPort *startPort, QNEInputPo
 
 // --- Private helpers ---
 
-void ConnectionManager::setEditedConnection(QNEConnection *connection)
+void ConnectionManager::setEditedConnection(Connection *connection)
 {
     if (connection) {
         connection->setFocus();
@@ -286,7 +286,7 @@ void ConnectionManager::deleteEditedConnection()
     setEditedConnection(nullptr);
 }
 
-void ConnectionManager::setHoverPort(QNEPort *port)
+void ConnectionManager::setHoverPort(Port *port)
 {
     if (!port) {
         m_hoverPortElmId = 0;
@@ -306,7 +306,7 @@ void ConnectionManager::setHoverPort(QNEPort *port)
 
     // Highlight the connected ports immediately so the user can trace where the hovered
     // port's wires land. Track exactly which peers (same element-ID + port-index scheme as
-    // above — QNEPort isn't a QObject, so a raw pointer here could dangle if the peer's
+    // above — Port isn't a QObject, so a raw pointer here could dangle if the peer's
     // element is deleted mid-hover) so releaseHoverPort() can release the same set later
     // even if connectivity changes mid-hover. Labels are shown separately by
     // showHoverLabels(), timed to match the native tooltip via Scene::helpEvent.
@@ -319,7 +319,7 @@ void ConnectionManager::setHoverPort(QNEPort *port)
     }
 }
 
-void ConnectionManager::showHoverLabels(QNEPort *port)
+void ConnectionManager::showHoverLabels(Port *port)
 {
     clearHoverLabels();
 
@@ -332,7 +332,7 @@ void ConnectionManager::showHoverLabels(QNEPort *port)
     // Ports without a name (most basic gates) are skipped, matching the native tooltip this
     // replaces (which silently shows nothing for empty text). Each chip is anchored at its
     // port and biased away from the element body, accounting for rotation/mirroring.
-    const auto addLabel = [this](QNEPort *target) {
+    const auto addLabel = [this](Port *target) {
         if (!target || target->name().isEmpty()) {
             return;
         }
@@ -367,9 +367,9 @@ void ConnectionManager::releaseHoverPort()
     }
 }
 
-QList<QNEPort *> ConnectionManager::connectedPeers(QNEPort *port)
+QList<Port *> ConnectionManager::connectedPeers(Port *port)
 {
-    QList<QNEPort *> peers;
+    QList<Port *> peers;
     if (!port) {
         return peers;
     }
@@ -377,8 +377,8 @@ QList<QNEPort *> ConnectionManager::connectedPeers(QNEPort *port)
     const auto &connections = port->connections();
     peers.reserve(connections.size());
     for (auto *conn : connections) {
-        QNEPort *peer = (conn->startPort() == port) ? static_cast<QNEPort *>(conn->endPort())
-                                                    : static_cast<QNEPort *>(conn->startPort());
+        Port *peer = (conn->startPort() == port) ? static_cast<Port *>(conn->endPort())
+                                                    : static_cast<Port *>(conn->startPort());
         if (peer) {
             peers.append(peer);
         }
@@ -399,9 +399,9 @@ void ConnectionManager::clearHoverLabels()
     m_peerLabels.clear();
 }
 
-QNEPort *ConnectionManager::hoverPort()
+Port *ConnectionManager::hoverPort()
 {
-    QNEPort *hoverPort = decodePort(m_scene, m_hoverPortElmId, m_hoverPortNumber);
+    Port *hoverPort = decodePort(m_scene, m_hoverPortElmId, m_hoverPortNumber);
 
     if (!hoverPort) {
         setHoverPort(nullptr);
