@@ -20,6 +20,7 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/ElementAppearance.h"
+#include "App/Element/ElementOrientation.h"
 #include "App/Element/ElementSimState.h"
 #include "App/Element/PropertyDescriptor.h"
 
@@ -322,13 +323,18 @@ public:
     /// elements, which keep their pixmap fixed and move only their ports around the centre.
     void rotatePorts();
 
+    /// Forwards the appearance's orientation re-application after a rotation/flip transform
+    /// change. Public because ElementOrientation (a sibling collaborator, not a subclass)
+    /// calls it back after updating the item transform.
+    void reapplyAppearanceOrientation() { m_appearance.applyOrientation(); }
+
     // --- Flip / Mirror ---
 
     /// Returns \c true if this element is mirrored along the X axis (horizontal flip).
-    bool isFlippedX() const { return m_flippedX; }
+    bool isFlippedX() const { return m_orientation.isFlippedX(); }
 
     /// Returns \c true if this element is mirrored along the Y axis (vertical flip).
-    bool isFlippedY() const { return m_flippedY; }
+    bool isFlippedY() const { return m_orientation.isFlippedY(); }
 
     /// Sets the horizontal mirror state and updates the item transform.
     void setFlippedX(bool flipped);
@@ -581,17 +587,6 @@ protected:
 private:
     Q_DISABLE_COPY_MOVE(GraphicElement)
 
-    // --- Flip Transform ---
-
-    /// Recomputes the QGraphicsItem transform from the current flip flags.
-    void applyFlipTransform();
-
-    /// Orients \a port for the current rotation + flip state (used by non-rotatable elements,
-    /// which keep their pixmap fixed). Applies Rotate(centre, m_angle) then Flip about the
-    /// pixmap centre to the port, so the port moves to the mirrored/rotated side while the
-    /// element graphic stays upright. Recomputed from the flags each call, so it is involutive.
-    void applyPortOrientation(QNEPort *port);
-
     // --- Port Management Helpers ---
 
     /// Appends a new input port with optional \a name to the input port vector.
@@ -682,9 +677,11 @@ private:
 
     bool m_hasColors = false;
     bool m_selected = false;
-    bool m_flippedX = false;
-    bool m_flippedY = false;
-    qreal m_angle = 0;
+
+    /// Owns the rotation angle and flip flags, and the transform math that applies them to
+    /// the item and its ports; this element forwards its orientation interface here.
+    /// See ElementOrientation.
+    ElementOrientation m_orientation{this};
 
     // --- Members: Context Directory ---
 
