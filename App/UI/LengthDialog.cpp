@@ -3,6 +3,7 @@
 
 #include "App/UI/LengthDialog.h"
 
+#include "App/Core/I18n.h"
 #include "App/UI/LengthDialogUI.h"
 
 LengthDialog::LengthDialog(const int currentLength, QWidget *parent)
@@ -14,7 +15,7 @@ LengthDialog::LengthDialog(const int currentLength, QWidget *parent)
     // Pre-populate with the existing simulation length so the user sees the current value
     m_ui->lengthSpinBox->setValue(currentLength);
 
-    setWindowTitle(tr("Simulation Length Selection"));
+    setWindowTitle(i18n("Simulation Length Selection"));
 
     connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);

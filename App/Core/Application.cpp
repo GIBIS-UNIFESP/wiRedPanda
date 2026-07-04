@@ -11,6 +11,7 @@
 #include <QMutex>
 
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 
 #ifdef HAVE_SENTRY
 #include "thirdparty/sentry/include/sentry.h"
@@ -143,7 +144,7 @@ void Application::handleException(const ExceptionInfo &info, const QObject *cont
         // show() lets handleException return immediately; the dialog stays
         // visible, the user clicks OK, and WA_DeleteOnClose cleans up.
         // Slightly less intrusive UX than modal too.
-        auto *box = new QMessageBox(QMessageBox::Critical, tr("Error!"),
+        auto *box = new QMessageBox(QMessageBox::Critical, i18n("Error!"),
                                     info.what, QMessageBox::Ok,
                                     const_cast<QWidget *>(parent));
         box->setAttribute(Qt::WA_DeleteOnClose);

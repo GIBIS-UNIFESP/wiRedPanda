@@ -5,6 +5,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+#include "App/Core/I18n.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -147,5 +148,5 @@ void InputSwitch::load(QDataStream &stream, SerializationContext &context)
 
 QList<std::pair<int, QString>> InputSwitch::appearanceStates() const
 {
-    return {{0, tr("Off")}, {1, tr("On")}};
+    return {{0, i18n("Off")}, {1, i18n("On")}};
 }

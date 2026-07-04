@@ -11,6 +11,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Core/Priorities.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Element/GraphicElement.h"
@@ -369,7 +370,7 @@ bool Simulation::updateWithIterativeSettling(const QVector<GraphicElement *> &el
     if (!converged && !m_convergenceWarned) {
         m_convergenceWarned = true;
         qDebug() << "Feedback circuit did not converge after 10 iterations";
-        emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
+        emit simulationWarning(i18n("Warning: feedback circuit did not converge — the circuit may be oscillating."));
     }
     return converged;
 }

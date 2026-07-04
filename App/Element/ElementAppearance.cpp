@@ -18,6 +18,7 @@
 #include <QSvgRenderer>
 
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 
@@ -281,10 +282,10 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     if (!m_basePixmap.load(path)) {
         const QFileInfo info(path);
         const QString reason = !info.exists()
-                                   ? tr("File does not exist")
+                                   ? i18n("File does not exist")
                                    : !info.isReadable()
-                                         ? tr("File is not readable")
-                                         : tr("Unknown reason");
+                                         ? i18n("File is not readable")
+                                         : i18n("Unknown reason");
 
         // Load the default appearance so the element remains renderable before the exception unwinds
         m_basePixmap.load(m_defaultAppearances.constFirst());

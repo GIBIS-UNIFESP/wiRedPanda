@@ -71,9 +71,9 @@ QString WorkspaceManager::displayName(const WorkSpace *ws, const QFileInfo &file
     // Unsaved tab: the numbered placeholder assigned at creation (fall back for any
     // workspace not created through createNewTab), plus a marker if it was recovered from
     // an autosave so the user can tell it apart from a fresh, empty tab.
-    QString name = ws->untitledTitle().isEmpty() ? tr("New Project") : ws->untitledTitle();
+    QString name = ws->untitledTitle().isEmpty() ? i18n("New Project") : ws->untitledTitle();
     if (ws->isRecovered()) {
-        name += tr(" (recovered)");
+        name += i18n(" (recovered)");
     }
     return name;
 }
@@ -131,12 +131,12 @@ QString WorkspaceManager::nextUntitledTitle() const
         taken.append(title);
     }
 
-    const QString base = tr("New Project");
+    const QString base = i18n("New Project");
     if (!taken.contains(base)) {
         return base;
     }
     for (int n = 2;; ++n) {
-        const QString candidate = tr("New Project %1").arg(n);
+        const QString candidate = i18n("New Project %1", n);
         if (!taken.contains(candidate)) {
             return candidate;
         }
@@ -174,7 +174,7 @@ QString WorkspaceManager::promptSavePath(const QString &fileName)
     const QStringList autosaves = Settings::autosaveFiles();
     if ((resolved.isEmpty() || autosaves.contains(resolved)) && currentFile().fileName().isEmpty()) {
         const QString path = resolved.isEmpty() ? currentFile().absolutePath() : QFileInfo(resolved).absolutePath();
-        resolved = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File"), path, tr("Panda files") + " (*.panda)").fileName;
+        resolved = FileDialogs::provider()->getSaveFileName(m_host.widget(), i18n("Save File"), path, i18n("Panda files (*.panda)")).fileName;
     }
 
     if (resolved.isEmpty()) {
@@ -198,7 +198,7 @@ void WorkspaceManager::save(const QString &fileName)
         // No path needed: WorkSpace::save() serializes to a blob and emits a signal instead.
         m_currentTab->save(fileName);
         m_host.palette()->updateICList(icListFile());
-        m_host.showStatusMessage(tr("File saved successfully."), 4000);
+        m_host.showStatusMessage(i18n("File saved successfully."), 4000);
         return;
     }
 
@@ -225,9 +225,9 @@ void WorkspaceManager::save(const QString &fileName)
         // ZIP-extracted folder, network drive, write-protected attribute -- re-prompt for
         // a writable location instead of leaving the user stuck on a modal error.
         const QString newPath = FileDialogs::provider()->getSaveFileName(
-            m_host.widget(), tr("Save File (original location is read-only)"),
+            m_host.widget(), i18n("Save File (original location is read-only)"),
             QFileInfo(resolvedFileName).fileName(),
-            tr("Panda files") + " (*.panda)").fileName;
+            i18n("Panda files (*.panda)")).fileName;
         if (newPath.isEmpty()) {
             return;
         }
@@ -241,7 +241,7 @@ void WorkspaceManager::save(const QString &fileName)
     }
 
     m_host.palette()->updateICList(icListFile());
-    m_host.showStatusMessage(tr("File saved successfully."), 4000);
+    m_host.showStatusMessage(i18n("File saved successfully."), 4000);
 }
 
 int WorkspaceManager::closeTabAnyway()
@@ -249,7 +249,7 @@ int WorkspaceManager::closeTabAnyway()
     QMessageBox msgBox;
     msgBox.setParent(m_host.widget());
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    msgBox.setText(tr("File not saved. Close tab anyway?"));
+    msgBox.setText(i18n("File not saved. Close tab anyway?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::No);
     return msgBox.exec();
@@ -268,9 +268,9 @@ int WorkspaceManager::confirmSave(const bool multiple)
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
     }
 
-    const QString fileName = currentFile().fileName().isEmpty() ? tr("New Project") : currentFile().fileName();
+    const QString fileName = currentFile().fileName().isEmpty() ? i18n("New Project") : currentFile().fileName();
 
-    msgBox.setText(fileName + tr(" has been modified.\nDo you want to save your changes?"));
+    msgBox.setText(fileName + i18n(" has been modified.\nDo you want to save your changes?"));
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
     return msgBox.exec();
@@ -314,7 +314,7 @@ void WorkspaceManager::loadPandaFile(const QString &fileName)
     m_currentTab->scene()->resizeScene();
     m_host.palette()->updateICList(icListFile());
     m_host.palette()->updateEmbeddedICList(m_currentTab->scene());
-    m_host.showStatusMessage(tr("File loaded successfully."), 4000);
+    m_host.showStatusMessage(i18n("File loaded successfully."), 4000);
 }
 
 void WorkspaceManager::openICInTab(const QString &blobName, int icElementId, const QByteArray &blob)
@@ -389,7 +389,7 @@ void WorkspaceManager::openFile()
         };
         QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
     #else
-        const QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Open File"), QString(), tr("Panda files") + " (*.panda)");
+        const QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), i18n("Open File"), QString(), i18n("Panda files") + " (*.panda)");
 
         if (fileName.isEmpty()) {
             return;
@@ -423,7 +423,7 @@ void WorkspaceManager::saveFile()
         QString fileName = currentFile().absoluteFilePath();
 
         if (fileName.isEmpty()) {
-            fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File as ..."), QString(), tr("Panda files") + " (*.panda)").fileName;
+            fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), i18n("Save File as ..."), QString(), i18n("Panda files (*.panda)")).fileName;
 
             if (fileName.isEmpty()) {
                 return;
@@ -468,7 +468,7 @@ void WorkspaceManager::saveFileAs()
             QFileDialog::saveFileContent(content, suggestedName);
         }
     #else
-        QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files") + " (*.panda)").fileName;
+        QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), i18n("Save File as ..."), currentFile().absoluteFilePath(), i18n("Panda files (*.panda)")).fileName;
 
         if (fileName.isEmpty()) {
             return;
@@ -523,11 +523,11 @@ bool WorkspaceManager::warnIfOpenInAnotherTab(const QString &fileName)
     }
 
     QMessageBox msgBox(QMessageBox::Warning,
-                       tr("File Conflict"),
-                       tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
+                       i18n("File Conflict"),
+                       i18n("The file \"%1\" is already open in another tab.", QFileInfo(fileName).fileName()),
                        QMessageBox::Ok,
                        m_host.widget());
-    QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
+    QPushButton *switchBtn = msgBox.addButton(i18n("Switch to Tab"), QMessageBox::ActionRole);
     msgBox.exec();
     if (msgBox.clickedButton() == switchBtn) {
         m_tab->setCurrentIndex(conflictTab);
@@ -601,7 +601,7 @@ void WorkspaceManager::loadAutosaveFiles()
             loadPandaFile(*it);
         } catch (const std::exception &e) {
             if (Application::interactiveMode) {
-                QMessageBox::critical(nullptr, tr("Error!"), e.what());
+                QMessageBox::critical(nullptr, i18n("Error!"), e.what());
             }
             qCDebug(zero) << "Removing autosave file that is corrupted.";
             it = autosaves.erase(it);
@@ -698,7 +698,7 @@ bool WorkspaceManager::closeTab(const int tabIndex)
             try {
                 save();
             } catch (const std::exception &e) {
-                QMessageBox::critical(m_host.widget(), tr("Error"), e.what());
+                QMessageBox::critical(m_host.widget(), i18n("Error"), e.what());
 
                 // If saving failed ask whether to discard and close anyway.
                 if (closeTabAnyway() == QMessageBox::No) {

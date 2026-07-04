@@ -11,6 +11,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
+#include "App/Core/I18n.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
@@ -280,7 +281,7 @@ AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *sce
     // The second addItems call handles any wires discovered via port traversal.
     const auto items_ = CommandUtils::loadList(items, m_ids, m_otherIds);
     CommandUtils::addItems(m_scene, items_);
-    setText(tr("Add %1 elements").arg(items_.size()));
+    setText(i18n("Add %1 elements", items_.size()));
 }
 
 void AddItemsCommand::undo()
@@ -306,7 +307,7 @@ DeleteItemsCommand::DeleteItemsCommand(const QList<QGraphicsItem *> &items, Scen
     , m_scene(scene)
 {
     const auto items_ = CommandUtils::loadList(items, m_ids, m_otherIds);
-    setText(tr("Delete %1 elements").arg(items_.size()));
+    setText(i18n("Delete %1 elements", items_.size()));
 }
 
 void DeleteItemsCommand::undo()
@@ -331,7 +332,7 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int ang
     : ElementsCommand(items, scene, parent)
     , m_angle(angle)
 {
-    setText(tr("Rotate %1 degrees").arg(m_angle));
+    setText(i18n("Rotate %1 degrees", m_angle));
     m_positions.reserve(items.size());
 
     for (auto *item : items) {
@@ -399,7 +400,7 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
         m_newPositions.append(elm->pos());
     }
 
-    setText(tr("Move elements"));
+    setText(i18n("Move elements"));
 }
 
 void MoveCommand::undo()
@@ -454,7 +455,7 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
         loadData(m_newData);
     }
 
-    setText(tr("Update %1 elements").arg(elements.size()));
+    setText(i18n("Update %1 elements", elements.size()));
 }
 
 void UpdateCommand::undo()
@@ -604,7 +605,7 @@ SplitCommand::SplitCommand(Connection *conn, QPointF mousePos, Scene *scene, QUn
     m_scene->removeItem(node);
     delete node;
 
-    setText(tr("Wire split"));
+    setText(i18n("Wire split"));
 }
 
 void SplitCommand::redo()
@@ -702,7 +703,7 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
         m_types.append(oldElm->elementType());
     }
 
-    setText(tr("Morph %1 elements to %2").arg(elements.size()).arg(elements.constFirst()->objectName()));
+    setText(i18n("Morph %1 elements to %2", elements.size(), elements.constFirst()->objectName()));
 }
 
 void MorphCommand::restoreDeletedConnections(const QList<DeletedConnectionInfo> &deleted)
@@ -902,7 +903,7 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
         return;
     }
 
-    setText(tr("Flip %1 elements in axis %2").arg(items.size()).arg(axis));
+    setText(i18n("Flip %1 elements in axis %2", items.size(), axis));
     m_positions.reserve(items.size());
 
     // Compute the bounding box of all selected elements so redo() can mirror
@@ -961,8 +962,8 @@ ChangePortSizeCommand::ChangePortSizeCommand(const QList<GraphicElement *> &elem
     , m_newPortSize(newPortSize)
     , m_isInput(isInput)
 {
-    setText(isInput ? tr("Change input size to %1").arg(newPortSize)
-                    : tr("Change output size to %1").arg(newPortSize));
+    setText(isInput ? i18n("Change input size to %1", newPortSize)
+                    : i18n("Change output size to %1", newPortSize));
 }
 
 void ChangePortSizeCommand::redo()
@@ -1056,7 +1057,7 @@ ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *ele
 {
     m_id = element->id();
     m_scene = scene;
-    setText(tr("Toggle TruthTable Output at position: %1").arg(m_pos));
+    setText(i18n("Toggle TruthTable Output at position: %1", m_pos));
 }
 
 void ToggleTruthTableOutputCommand::redo()
@@ -1123,7 +1124,7 @@ RegisterBlobCommand::RegisterBlobCommand(const QString &blobName, const QByteArr
     , m_data(data)
     , m_scene(scene)
 {
-    setText(tr("Register blob \"%1\"").arg(blobName));
+    setText(i18n("Register blob \"%1\"", blobName));
 }
 
 void RegisterBlobCommand::redo()
@@ -1146,7 +1147,7 @@ RemoveBlobCommand::RemoveBlobCommand(const QString &blobName, Scene *scene, QUnd
     , m_data(scene->icRegistry()->blob(blobName))
     , m_scene(scene)
 {
-    setText(tr("Remove blob \"%1\"").arg(blobName));
+    setText(i18n("Remove blob \"%1\"", blobName));
 }
 
 void RemoveBlobCommand::redo()
@@ -1167,7 +1168,7 @@ RenameBlobCommand::RenameBlobCommand(const QString &oldName, const QString &newN
     , m_newName(newName)
     , m_scene(scene)
 {
-    setText(tr("Rename IC \"%1\" to \"%2\"").arg(oldName, newName));
+    setText(i18n("Rename IC \"%1\" to \"%2\"", oldName, newName));
 }
 
 void RenameBlobCommand::redo()
@@ -1200,7 +1201,7 @@ UpdateBlobCommand::UpdateBlobCommand(const QList<GraphicElement *> &elements, co
         m_newBlob = m_scene->icRegistry()->blob(m_blobName);
     }
 
-    setText(tr("Update %1 IC blobs").arg(elements.size()));
+    setText(i18n("Update %1 IC blobs", elements.size()));
 }
 
 void UpdateBlobCommand::redo()

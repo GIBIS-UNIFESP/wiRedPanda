@@ -255,11 +255,11 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
 
     if (isFromNewerVersion()) {
         if (Application::interactiveMode) {
-            const QString message = tr("This file was saved with a newer file format (version %1).\n"
+            const QString message = i18n("This file was saved with a newer file format (version %1).\n"
                          "Your wiRedPanda version (%2) supports file format %3.\n\n"
-                         "Please update wiRedPanda to save changes to this file.")
-                          .arg(m_loadedVersion.toString(), AppVersion::current.toString(), FormatRev::current.toString());
-            QMessageBox::warning(this, tr("Cannot save."), message);
+                         "Please update wiRedPanda to save changes to this file.",
+                          m_loadedVersion.toString(), AppVersion::current.toString(), FormatRev::current.toString());
+            QMessageBox::warning(this, i18n("Cannot save."), message);
         }
         return SaveOutcome::Saved;
     }
@@ -517,18 +517,18 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         if (version > FormatRev::current) {
             const QString fmtVersion = FormatRev::current.toString();
             const QString fileVersion = version.toString();
-            const QString message = tr("This file was saved with a newer file format (version %1).\n"
+            const QString message = i18n("This file was saved with a newer file format (version %1).\n"
                          "Your version supports file format %2.\n\n"
                          "The file will be opened but saving is blocked.\n"
-                         "Please update wiRedPanda to edit and save this file.")
-                          .arg(fileVersion, fmtVersion);
-            QMessageBox::warning(this, tr("Newer version file."), message);
+                         "Please update wiRedPanda to edit and save this file.",
+                          fileVersion, fmtVersion);
+            QMessageBox::warning(this, i18n("Newer version file."), message);
         } else if (version < FormatRev::current) {
             const QString backupFileName = m_fileInfo.completeBaseName() + ".v" + version.toString() + "." + m_fileInfo.suffix();
-            const QString message = tr("This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).\n"
-                         "A backup of the original file has been created with name: %3")
-                         .arg(version.toString(), FormatRev::current.toString(), backupFileName);
-            QMessageBox::information(this, tr("File upgraded."), message);
+            const QString message = i18n("This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).\n"
+                         "A backup of the original file has been created with name: %3",
+                         version.toString(), FormatRev::current.toString(), backupFileName);
+            QMessageBox::information(this, i18n("File upgraded."), message);
         }
     }
 
@@ -864,7 +864,7 @@ void WorkSpace::removeEmbeddedIC(const QString &blobName)
     // Pair the IC deletion with blob removal in a single macro so undo
     // restores both — eagerly removing the blob outside the command would
     // leave restored ICs pointing at a registry entry that no longer exists.
-    m_scene.undoStack()->beginMacro(tr("Remove embedded IC \"%1\"").arg(blobName));
+    m_scene.undoStack()->beginMacro(i18n("Remove embedded IC \"%1\"", blobName));
     if (!toDelete.isEmpty()) {
         m_scene.receiveCommand(new DeleteItemsCommand(toDelete, &m_scene));
     }

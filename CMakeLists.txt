@@ -37,6 +37,7 @@ if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
     # which cleanly removes -fno-exceptions from CMAKE_CXX_FLAGS and adds -fexceptions
     kde_enable_exceptions()
     find_package(KF6Config REQUIRED)   # Phase 1
+    find_package(KF6I18n REQUIRED)     # Phase 2
     add_compile_definitions(USE_KDE_FRAMEWORKS)
     message(STATUS "KDE Frameworks integration enabled (ECM ${ECM_VERSION})")
 else()
@@ -409,7 +410,7 @@ add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
 # `nlohmann_json_schema_validator` name only exists in the fetched build.
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator::validator)
 if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
-    target_link_libraries(wiredpanda_lib PUBLIC KF6::ConfigCore)
+    target_link_libraries(wiredpanda_lib PUBLIC KF6::ConfigCore KF6::I18n)
 endif()
 
 # Treat external dependencies as system headers to suppress clazy warnings.
@@ -696,6 +697,8 @@ target_compile_definitions(test_wiredpanda PRIVATE
 )
 
 if(ENABLE_PCH)
+    target_precompile_headers(test_utils      REUSE_FROM wiredpanda_lib)
+    target_precompile_headers(memory_helpers  REUSE_FROM wiredpanda_lib)
     target_precompile_headers(test_wiredpanda REUSE_FROM wiredpanda_lib)
 endif()
 

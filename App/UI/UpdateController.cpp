@@ -46,7 +46,7 @@ void UpdateController::checkForUpdates()
 void UpdateController::showUpdateDialog(const QString &latestVersion, const QUrl &downloadUrl, const QUrl &releaseUrl)
 {
     QDialog dialog(m_parent);
-    dialog.setWindowTitle(tr("Update Available"));
+    dialog.setWindowTitle(i18n("Update Available"));
     dialog.setWindowModality(Qt::WindowModal);
 
     auto *layout = new QVBoxLayout(&dialog);
@@ -54,10 +54,10 @@ void UpdateController::showUpdateDialog(const QString &latestVersion, const QUrl
     const bool hasDirectDownload = downloadUrl.isValid() && !downloadUrl.isEmpty();
     auto *label = new QLabel(
         (hasDirectDownload
-             ? tr("<b>wiRedPanda %1 is available.</b><br><br>"
+             ? i18n("<b>wiRedPanda %1 is available.</b><br><br>"
                   "You are currently running version %2.<br>"
                   "Click <b>Download</b> to save the new version to your computer.")
-             : tr("<b>wiRedPanda %1 is available.</b><br><br>"
+             : i18n("<b>wiRedPanda %1 is available.</b><br><br>"
                   "You are currently running version %2.<br>"
                   "Visit the release page to download the new version."))
             .arg(latestVersion, APP_VERSION),
@@ -66,11 +66,11 @@ void UpdateController::showUpdateDialog(const QString &latestVersion, const QUrl
     label->setWordWrap(true);
     layout->addWidget(label);
 
-    auto *skipCheckBox = new QCheckBox(tr("Don't notify me about this version again"), &dialog);
+    auto *skipCheckBox = new QCheckBox(i18n("Don't notify me about this version again"), &dialog);
     layout->addWidget(skipCheckBox);
 
     auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
-    auto *downloadButton = buttonBox->addButton(tr("Download"), QDialogButtonBox::AcceptRole);
+    auto *downloadButton = buttonBox->addButton(i18n("Download"), QDialogButtonBox::AcceptRole);
     connect(downloadButton, &QPushButton::clicked, &dialog, [&dialog] { dialog.accept(); });
     connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
     layout->addWidget(buttonBox);
@@ -97,8 +97,8 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
     const QString fileName = url.fileName();
     const QString savePath = QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)).filePath(fileName);
 
-    auto *progress = new QProgressDialog(tr("Downloading wiRedPanda %1…").arg(latestVersion), tr("Cancel"), 0, 100, m_parent);
-    progress->setWindowTitle(tr("Downloading Update"));
+    auto *progress = new QProgressDialog(i18n("Downloading wiRedPanda %1…", latestVersion), i18n("Cancel"), 0, 100, m_parent);
+    progress->setWindowTitle(i18n("Downloading Update"));
     progress->setWindowModality(Qt::WindowModal);
     progress->setMinimumDuration(0);
     progress->setValue(0);
@@ -128,7 +128,7 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
 
         if (reply->error() != QNetworkReply::NoError) {
             if (reply->error() != QNetworkReply::OperationCanceledError) {
-                QMessageBox::warning(m_parent, tr("Download Failed"), tr("Could not download the update:\n%1").arg(reply->errorString()));
+                QMessageBox::warning(m_parent, i18n("Download Failed"), i18n("Could not download the update:\n%1", reply->errorString()));
             }
             reply->deleteLater();
             return;
@@ -136,20 +136,20 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
 
         QFile file(savePath);
         if (!file.open(QIODevice::WriteOnly)) {
-            QMessageBox::warning(m_parent, tr("Download Failed"), tr("Could not save the file:\n%1").arg(savePath));
+            QMessageBox::warning(m_parent, i18n("Download Failed"), i18n("Could not save the file:\n%1", savePath));
             reply->deleteLater();
             return;
         }
         const QByteArray payload = reply->readAll();
         if (file.write(payload) != payload.size()) {
-            QMessageBox::warning(m_parent, tr("Download Failed"), tr("Could not write the file:\n%1").arg(savePath));
+            QMessageBox::warning(m_parent, i18n("Download Failed"), i18n("Could not write the file:\n%1", savePath));
             reply->deleteLater();
             return;
         }
         file.close();
         reply->deleteLater();
 
-        QMessageBox::information(m_parent, tr("Download Complete"),
-            tr("wiRedPanda has been downloaded to:\n%1").arg(savePath));
+        QMessageBox::information(m_parent, i18n("Download Complete"),
+            i18n("wiRedPanda has been downloaded to:\n%1", savePath));
     });
 }

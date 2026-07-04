@@ -3,6 +3,7 @@
 
 #include "App/UI/ClockDialog.h"
 
+#include "App/Core/I18n.h"
 #include "App/UI/ClockDialogUI.h"
 
 ClockDialog::ClockDialog(const int currentPeriod, QWidget *parent)
@@ -14,7 +15,7 @@ ClockDialog::ClockDialog(const int currentPeriod, QWidget *parent)
     // Pre-populate with the last used period so the user doesn't have to re-enter it
     m_ui->periodSpinBox->setValue(currentPeriod);
 
-    setWindowTitle(tr("Clock Period Selection"));
+    setWindowTitle(i18n("Clock Period Selection"));
 
     connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);

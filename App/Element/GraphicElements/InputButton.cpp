@@ -5,6 +5,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+#include "App/Core/I18n.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -122,5 +123,5 @@ void InputButton::setOn()
 
 QList<std::pair<int, QString>> InputButton::appearanceStates() const
 {
-    return {{0, tr("Released")}, {1, tr("Pressed")}};
+    return {{0, i18n("Released")}, {1, i18n("Pressed")}};
 }

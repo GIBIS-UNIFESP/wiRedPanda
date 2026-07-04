@@ -12,6 +12,7 @@
 #include <QUndoStack>
 
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Scene/GraphicsView.h"
@@ -57,7 +58,7 @@ void SceneUiBinder::updateStatusInfo()
     const int zoomPct = qRound(m_bound->view()->transform().m11() * 100.0);
     const int selected = static_cast<int>(scene->selectedElements().size());
     const int total = static_cast<int>(scene->elements().size());
-    m_statusInfo->setText(tr("Zoom: %1%    Selected: %2 / %3").arg(zoomPct).arg(selected).arg(total));
+    m_statusInfo->setText(i18n("Zoom: %1%    Selected: %2 / %3", zoomPct, selected, total));
 }
 
 void SceneUiBinder::addUndoRedoMenu()
@@ -211,7 +212,7 @@ void SceneUiBinder::bind(WorkSpace *tab)
     // Synchronise the mute button state to the newly visible tab's mute intent.
     const bool muted = tab->simulation()->isUserMuted();
     m_ui->actionMute->setChecked(muted);
-    m_ui->actionMute->setText(muted ? tr("Unmute") : tr("Mute"));
+    m_ui->actionMute->setText(muted ? i18n("Unmute") : i18n("Mute"));
 
     updateStatusInfo();
 }

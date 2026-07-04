@@ -68,7 +68,7 @@ void ICController::addICFromFile()
             return;
         }
 
-        const QString selectedFile = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Open File"), QString(), tr("Panda") + " (*.panda)");
+        const QString selectedFile = FileDialogs::provider()->getOpenFileName(m_host.widget(), i18n("Open File"), QString(), i18n("Panda (*.panda)"));
 
         if (selectedFile.isEmpty()) {
             return;
@@ -76,7 +76,7 @@ void ICController::addICFromFile()
 
         const QStringList files = {selectedFile};
 
-        QMessageBox::information(m_host.widget(), tr("Info"), tr("Selected files (and their dependencies) will be copied to the current project folder."));
+        QMessageBox::information(m_host.widget(), i18n("Info"), i18n("Selected files (and their dependencies) will be copied to the current project folder."));
 
         // Copy the chosen .panda file (and any ICs it depends on transitively)
         // into the project's directory so that relative paths work when reopened.
@@ -88,11 +88,11 @@ void ICController::addICFromFile()
             // copyPandaFile() skip the copy, silently binding the IC to that pre-existing
             // file's content. Warn and let the user replace it or keep the existing one.
             if (destPath.exists() && !FileUtils::filesHaveSameContent(srcInfo, destPath)) {
-                QMessageBox box(QMessageBox::Warning, tr("File name conflict"),
-                    tr("A different file named \"%1\" already exists in the project folder.").arg(srcInfo.fileName()),
+                QMessageBox box(QMessageBox::Warning, i18n("File name conflict"),
+                    i18n("A different file named \"%1\" already exists in the project folder.", srcInfo.fileName()),
                     QMessageBox::NoButton, m_host.widget());
-                auto *replaceButton = box.addButton(tr("Replace"), QMessageBox::AcceptRole);
-                auto *keepButton = box.addButton(tr("Keep Existing"), QMessageBox::RejectRole);
+                auto *replaceButton = box.addButton(i18n("Replace"), QMessageBox::AcceptRole);
+                auto *keepButton = box.addButton(i18n("Keep Existing"), QMessageBox::RejectRole);
                 box.addButton(QMessageBox::Cancel);
                 box.exec();
 
@@ -116,7 +116,7 @@ void ICController::showRemoveICHint()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("ic", QStringLiteral("Remove IC"));
-        QMessageBox::information(m_host.widget(), tr("Info"), tr("Drag here to remove."));
+        QMessageBox::information(m_host.widget(), i18n("Info"), i18n("Drag here to remove."));
     });
 }
 
@@ -165,8 +165,8 @@ QString ICController::resolveUniqueBlobName(const QString &initialName, Scene *s
     if (blobName != initialName.trimmed()) {
         bool ok = false;
         blobName = QInputDialog::getText(m_host.widget(),
-            tr("Name Collision"),
-            tr("An embedded IC named \"%1\" already exists.\nSuggested name:").arg(initialName.trimmed()),
+            i18n("Name Collision"),
+            i18n("An embedded IC named \"%1\" already exists.\nSuggested name:", initialName.trimmed()),
             QLineEdit::Normal, blobName, &ok);
         blobName = blobName.trimmed();
         if (!ok || blobName.isEmpty()) {
@@ -186,8 +186,8 @@ bool ICController::ensureProjectSaved(Scene *scene)
         return true; // already backed by a real directory
     }
 
-    const auto choice = QMessageBox::question(m_host.widget(), tr("Save required"),
-        tr("This action needs the project saved to a file first, so IC paths can be resolved.\n\nSave it now?"),
+    const auto choice = QMessageBox::question(m_host.widget(), i18n("Save required"),
+        i18n("This action needs the project saved to a file first, so IC paths can be resolved.\n\nSave it now?"),
         QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
     if (choice != QMessageBox::Save) {
         return false;
@@ -219,7 +219,7 @@ void ICController::embedSelectedIC()
 
     QFile file(QDir(contextDir).absoluteFilePath(firstIC->file()));
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+        QMessageBox::warning(m_host.widget(), i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
         return;
     }
     QByteArray fileBytes = file.readAll();
@@ -227,7 +227,7 @@ void ICController::embedSelectedIC()
 
     scene->icRegistry()->embedICsByFile(firstIC->file(), fileBytes, blobName);
     m_host.palette()->updateEmbeddedICList(scene);
-    m_host.showStatusMessage(tr("IC embedded successfully."), 4000);
+    m_host.showStatusMessage(i18n("IC embedded successfully."), 4000);
 }
 
 void ICController::extractSelectedIC()
@@ -246,7 +246,7 @@ void ICController::extractSelectedIC()
     const QString contextDir = scene->contextDir();
 
     const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
-    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
+    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), i18n("Extract IC to file..."), suggestion, i18n("Panda files (*.panda)")).fileName;
 
     if (fileName.isEmpty()) {
         return;
@@ -259,7 +259,7 @@ void ICController::extractSelectedIC()
     scene->icRegistry()->extractToFile(blobName, fileName);
     m_host.palette()->updateICList(m_host.icListFile());
     m_host.palette()->updateEmbeddedICList(scene);
-    m_host.showStatusMessage(tr("IC extracted to %1").arg(fileName), 4000);
+    m_host.showStatusMessage(i18n("IC extracted to %1", fileName), 4000);
 }
 
 void ICController::embedICByFile(const QString &fileName)
@@ -278,7 +278,7 @@ void ICController::embedICByFile(const QString &fileName)
     const QString absolutePath = QDir(contextDir).absoluteFilePath(fileName);
     QFile file(absolutePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+        QMessageBox::warning(m_host.widget(), i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
         return;
     }
     QByteArray fileBytes = file.readAll();
@@ -296,7 +296,7 @@ void ICController::embedICByFile(const QString &fileName)
     }
 
     m_host.palette()->updateEmbeddedICList(scene);
-    m_host.showStatusMessage(tr("IC embedded successfully."), 4000);
+    m_host.showStatusMessage(i18n("IC embedded successfully."), 4000);
 }
 
 void ICController::extractICByBlobName(const QString &blobName)
@@ -319,7 +319,7 @@ void ICController::extractICByBlobName(const QString &blobName)
     }
 
     const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
-    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
+    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), i18n("Extract IC to file..."), suggestion, i18n("Panda files (*.panda)")).fileName;
 
     if (fileName.isEmpty()) {
         return;
@@ -332,7 +332,7 @@ void ICController::extractICByBlobName(const QString &blobName)
     reg->extractToFile(blobName, fileName);
     m_host.palette()->updateICList(m_host.icListFile());
     m_host.palette()->updateEmbeddedICList(scene);
-    m_host.showStatusMessage(tr("IC extracted to %1").arg(fileName), 4000);
+    m_host.showStatusMessage(i18n("IC extracted to %1", fileName), 4000);
 }
 
 void ICController::makeSelfContained()
@@ -362,7 +362,7 @@ void ICController::makeSelfContained()
     }
 
     if (uniqueFiles.isEmpty()) {
-        m_host.showStatusMessage(tr("No file-based ICs to embed."), 4000);
+        m_host.showStatusMessage(i18n("No file-based ICs to embed."), 4000);
         return;
     }
 
@@ -374,7 +374,7 @@ void ICController::makeSelfContained()
         const QString fullPath = QDir(contextDir).absoluteFilePath(icFile);
         QFile file(fullPath);
         if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+            QMessageBox::warning(m_host.widget(), i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
             completed = false;
             break;
         }
@@ -395,9 +395,9 @@ void ICController::makeSelfContained()
     // read error or a cancelled prompt the loop breaks early, so report the partial result
     // honestly (or stay quiet if nothing was embedded — the error/cancel already spoke).
     if (completed) {
-        m_host.showStatusMessage(tr("Embedded %1 IC(s). Circuit is now self-contained.").arg(totalEmbedded), 4000);
+        m_host.showStatusMessage(i18n("Embedded %1 IC(s). Circuit is now self-contained.", totalEmbedded), 4000);
     } else if (totalEmbedded > 0) {
-        m_host.showStatusMessage(tr("Embedded %1 IC(s); some file-based ICs remain.").arg(totalEmbedded), 4000);
+        m_host.showStatusMessage(i18n("Embedded %1 IC(s); some file-based ICs remain.", totalEmbedded), 4000);
     }
 }
 
@@ -407,14 +407,14 @@ void ICController::addEmbeddedICFromFile()
     if (!tab) {
         return;
     }
-    QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Select IC file to embed"), m_host.currentDir().absolutePath(), tr("Panda files") + " (*.panda)");
+    QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), i18n("Select IC file to embed"), m_host.currentDir().absolutePath(), i18n("Panda files (*.panda)"));
     if (fileName.isEmpty()) {
         return;
     }
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read file: %1").arg(file.errorString()));
+        QMessageBox::warning(m_host.widget(), i18n("Error"), i18n("Could not read file: %1", file.errorString()));
         return;
     }
     QByteArray fileBytes = file.readAll();

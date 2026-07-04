@@ -282,7 +282,7 @@ void MainWindow::populateContentMenu(QMenu *menu, const QString &categoryKey,
     connect(openFolderAction, &QAction::triggered, this, [this, categoryKey, openFolderFailureText] {
         const QString dir = ExerciseTourResources::preferredContentDir(categoryKey);
         if (dir.isEmpty()) {
-            QMessageBox::warning(this, tr("Error"), openFolderFailureText);
+            QMessageBox::warning(this, i18n("Error"), openFolderFailureText);
             return;
         }
         QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
@@ -311,8 +311,8 @@ void MainWindow::setupExercisesMenu()
 {
     connect(m_ui->menuExercises, &QMenu::aboutToShow, this, [this] {
         populateContentMenu(m_ui->menuExercises, "Exercises",
-            tr("Open My Exercises Folder"),
-            tr("Could not create or access a folder for custom exercises."),
+            i18n("Open My Exercises Folder"),
+            i18n("Could not create or access a folder for custom exercises."),
             Settings::completedExercises(),
             [this](const QString &path) { startExercise(path); });
     });
@@ -322,8 +322,8 @@ void MainWindow::setupToursMenu()
 {
     connect(m_ui->menuTours, &QMenu::aboutToShow, this, [this] {
         populateContentMenu(m_ui->menuTours, "Tours",
-            tr("Open My Tours Folder"),
-            tr("Could not create or access a folder for custom tours."),
+            i18n("Open My Tours Folder"),
+            i18n("Could not create or access a folder for custom tours."),
             Settings::completedTours(),
             [this](const QString &path) { startTour(path); });
     });
@@ -505,7 +505,7 @@ void MainWindow::aboutThisVersion()
     msgBox.setIcon(QMessageBox::Icon::Information);
     msgBox.setWindowTitle("wiRedPanda " APP_VERSION);
     msgBox.setText(
-        tr("wiRedPanda %1\n\n"
+        i18n("wiRedPanda %1\n\n"
            "This version includes automatic migration of older project files.\n"
            "When you open a project file older than the current version, it will be automatically "
            "upgraded to the current format and a versioned backup will be created.\n\n"
@@ -565,7 +565,7 @@ void MainWindow::on_actionAbout_triggered()
         QMessageBox::about(
             this,
             "wiRedPanda",
-            tr("<p>wiRedPanda is software developed by students of the Federal University of São Paulo"
+            i18n("<p>wiRedPanda is software developed by students of the Federal University of São Paulo"
                " to help students learn about logic circuits.</p>"
                "<p>Software version: %1</p>"
                "<p><strong>Creators:</strong></p>"
@@ -589,8 +589,8 @@ QString MainWindow::shortcutsHelpHtml() const
 
     // Undo/Redo belong to the active Scene's stack, not this window, so findChildren()
     // can't see them; add them explicitly with the platform-standard chords.
-    byLabel.insert(tr("Redo"), QKeySequence(QKeySequence::Redo).toString(QKeySequence::NativeText));
-    byLabel.insert(tr("Undo"), QKeySequence(QKeySequence::Undo).toString(QKeySequence::NativeText));
+    byLabel.insert(i18n("Redo"), QKeySequence(QKeySequence::Redo).toString(QKeySequence::NativeText));
+    byLabel.insert(i18n("Undo"), QKeySequence(QKeySequence::Undo).toString(QKeySequence::NativeText));
 
     const auto actions = findChildren<QAction *>();
     for (const auto *action : actions) {
@@ -615,7 +615,7 @@ QString MainWindow::shortcutsHelpHtml() const
                     .arg(it.value().toHtmlEscaped(), it.key().toHtmlEscaped());
     }
 
-    return tr("<h1>Keyboard Shortcuts</h1>"
+    return i18n("<h1>Keyboard Shortcuts</h1>"
               "<table>%1</table>"
               "<h1>Element Property Navigation</h1>"
               "<ul style=\"list-style:none;\">"
@@ -629,14 +629,14 @@ QString MainWindow::shortcutsHelpHtml() const
               "<li> Drag an element from the left panel onto the canvas to add it </li>"
               "<li> Nudge the selection with the arrow keys (hold Shift for larger steps) </li>"
               "<li> Drop a .panda file onto the canvas to open it </li>"
-              "</ul>")
-        .arg(rows);
+              "</ul>",
+        rows);
 }
 
 void MainWindow::on_actionShortcuts_and_Tips_triggered()
 {
     Application::guardedSlot(this, [this] {
-        QMessageBox::information(this, tr("Shortcuts and Tips"), shortcutsHelpHtml());
+        QMessageBox::information(this, i18n("Shortcuts and Tips"), shortcutsHelpHtml());
     });
 }
 
@@ -665,8 +665,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
         auto reply =
             QMessageBox::question(
                 this,
-                tr("Exit") + " " + QApplication::applicationName(),
-                tr("Are you sure?"),
+                i18n("Exit") + " " + QApplication::applicationName(),
+                i18n("Are you sure?"),
                 QMessageBox::Cancel | QMessageBox::Yes,
                 QMessageBox::Yes);
 
@@ -840,7 +840,7 @@ void MainWindow::updateWindowTitle()
 
     // "<name>[*] — wiRedPanda <version>": Qt swaps "[*]" for "*" when the window is marked
     // modified, and drops it otherwise (a native dot on macOS).
-    setWindowTitle(tr("%1[*] — wiRedPanda %2")
+    setWindowTitle(i18n("%1[*] — wiRedPanda %2")
                        .arg(m_workspaceManager->currentTabName(), QStringLiteral(APP_VERSION)));
     setWindowModified(!tab->scene()->undoStack()->isClean());
 }
@@ -998,7 +998,7 @@ void MainWindow::retranslateUi()
             text = "[" + workspace->inlineBlobName() + "]";
         } else {
             auto fileInfo = workspace->fileInfo();
-            text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+            text = fileInfo.exists() ? fileInfo.fileName() : i18n("New Project");
         }
 
         if (!undoStack->isClean()) {
@@ -1305,7 +1305,7 @@ void MainWindow::on_actionMute_triggered(const bool checked)
         }
 
         currentTab()->simulation()->setUserMuted(checked);
-        m_ui->actionMute->setText(checked ? tr("Unmute") : tr("Mute"));
+        m_ui->actionMute->setText(checked ? i18n("Unmute") : i18n("Mute"));
     });
 }
 
