@@ -343,18 +343,7 @@ void WorkspaceManager::saveFile()
             }
         }
 
-        const int conflictTab = findTabWithFile(fileName);
-        if (conflictTab != -1) {
-            QMessageBox msgBox(QMessageBox::Warning,
-                               tr("File Conflict"),
-                               tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
-                               QMessageBox::Ok,
-                               m_host.widget());
-            QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
-            msgBox.exec();
-            if (msgBox.clickedButton() == switchBtn) {
-                m_tab->setCurrentIndex(conflictTab);
-            }
+        if (warnIfOpenInAnotherTab(fileName)) {
             return;
         }
 
@@ -398,18 +387,7 @@ void WorkspaceManager::saveFileAs()
             fileName.append(".panda");
         }
 
-        const int conflictTab = findTabWithFile(fileName);
-        if (conflictTab != -1) {
-            QMessageBox msgBox(QMessageBox::Warning,
-                               tr("File Conflict"),
-                               tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
-                               QMessageBox::Ok,
-                               m_host.widget());
-            QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
-            msgBox.exec();
-            if (msgBox.clickedButton() == switchBtn) {
-                m_tab->setCurrentIndex(conflictTab);
-            }
+        if (warnIfOpenInAnotherTab(fileName)) {
             return;
         }
 
@@ -444,6 +422,26 @@ int WorkspaceManager::findTabWithFile(const QString &fileName) const
         }
     }
     return -1;
+}
+
+bool WorkspaceManager::warnIfOpenInAnotherTab(const QString &fileName)
+{
+    const int conflictTab = findTabWithFile(fileName);
+    if (conflictTab == -1) {
+        return false;
+    }
+
+    QMessageBox msgBox(QMessageBox::Warning,
+                       tr("File Conflict"),
+                       tr("The file \"%1\" is already open in another tab.").arg(QFileInfo(fileName).fileName()),
+                       QMessageBox::Ok,
+                       m_host.widget());
+    QPushButton *switchBtn = msgBox.addButton(tr("Switch to Tab"), QMessageBox::ActionRole);
+    msgBox.exec();
+    if (msgBox.clickedButton() == switchBtn) {
+        m_tab->setCurrentIndex(conflictTab);
+    }
+    return true;
 }
 
 bool WorkspaceManager::closeFiles()
