@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="282"/>
+        <location filename="../../Scene/Commands.cpp" line="283"/>
         <source>Add %1 elements</source>
         <translation>%1টি উপাদান যোগ করুন</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="147"/>
+        <location filename="../../Core/Application.cpp" line="146"/>
         <source>Error!</source>
         <translation>ত্রুটি!</translation>
     </message>
@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="884"/>
+        <location filename="../../Scene/Commands.cpp" line="885"/>
         <source>Change input size to %1</source>
         <translation>ইনপুটের আকার %1 এ পরিবর্তন করুন</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="885"/>
+        <location filename="../../Scene/Commands.cpp" line="886"/>
         <source>Change output size to %1</source>
         <translation>আউটপুটের আকার %1 এ পরিবর্তন করুন</translation>
     </message>
@@ -542,6 +542,19 @@
     </message>
 </context>
 <context>
+    <name>ConnectionSerializer</name>
+    <message>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="40"/>
+        <source>Stream error reading connection map at offset %1</source>
+        <translation type="unfinished">অফসেট %1-এ সংযোগ মানচিত্র পড়ার সময় স্ট্রিম ত্রুটি</translation>
+    </message>
+    <message>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
+        <source>Stream error reading connection port IDs at offset %1</source>
+        <translation type="unfinished">অফসেট %1-এ সংযোগ পোর্ট আইডি পড়তে স্ট্রিম ত্রুটি</translation>
+    </message>
+</context>
+<context>
     <name>DFlipFlop</name>
     <message>
         <location filename="../../Element/GraphicElements/DFlipFlop.cpp" line="27"/>
@@ -570,7 +583,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="308"/>
+        <location filename="../../Scene/Commands.cpp" line="309"/>
         <source>Delete %1 elements</source>
         <translation>%1টি উপাদান মুছে ফেলুন</translation>
     </message>
@@ -830,22 +843,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="249"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="248"/>
         <source>File does not exist</source>
         <translation>ফাইল বিদ্যমান নেই</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="250"/>
         <source>File is not readable</source>
         <translation>ফাইল পড়া যায়না</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="252"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>Unknown reason</source>
         <translation>অজানা কারণ</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="258"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="257"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>পিক্সম্যাপ লোড করা যায়নি: %1 (%2)</translation>
     </message>
@@ -969,8 +982,8 @@
         <translation>ভলিউম:</translation>
     </message>
     <message>
+        <location filename="../../UI/ElementEditor.cpp" line="318"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <source> Hz</source>
         <translation> হার্জ</translation>
     </message>
@@ -1015,103 +1028,103 @@
         <translation>লক:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="71"/>
+        <location filename="../../UI/ElementEditor.cpp" line="69"/>
         <source>Truth Table</source>
         <translation>সত্যতালিকা</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="174"/>
+        <location filename="../../UI/ElementEditor.cpp" line="172"/>
         <source>Open File</source>
         <translation>ফাইল খুলুন</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="240"/>
+        <location filename="../../UI/ElementEditor.cpp" line="238"/>
         <source>Green</source>
         <translation>সবুজ</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="241"/>
+        <location filename="../../UI/ElementEditor.cpp" line="239"/>
         <source>Blue</source>
         <translation>নীল</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="242"/>
+        <location filename="../../UI/ElementEditor.cpp" line="240"/>
         <source>Purple</source>
         <translation>বেগুনী</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="598"/>
+        <location filename="../../UI/ElementEditor.cpp" line="596"/>
         <source>Duplicate Wireless Channel</source>
         <translation>ডুপ্লিকেট ওয়্যারলেস চ্যানেল</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="599"/>
+        <location filename="../../UI/ElementEditor.cpp" line="597"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>লেবেল &quot;%1&quot; সহ একটি Tx নোড ইতিমধ্যে বিদ্যমান।
 প্রতিটি ওয়্যারলেস চ্যানেলের একটি অনন্য লেবেল থাকতে হবে।</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="665"/>
+        <location filename="../../UI/ElementEditor.cpp" line="663"/>
         <source>Change wireless mode</source>
         <translation>ওয়্যারলেস মোড পরিবর্তন করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="873"/>
+        <location filename="../../UI/ElementEditor.cpp" line="871"/>
         <source>Select any audio</source>
         <translation>যেকোনো অডিও নির্বাচন করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="874"/>
+        <location filename="../../UI/ElementEditor.cpp" line="872"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>অডিও (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="239"/>
+        <location filename="../../UI/ElementEditor.cpp" line="237"/>
         <source>Red</source>
         <translation>লাল</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="173"/>
+        <location filename="../../UI/ElementEditor.cpp" line="171"/>
         <source>Images</source>
         <translation>ছবিগুলি</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="238"/>
+        <location filename="../../UI/ElementEditor.cpp" line="236"/>
         <source>White</source>
         <translation>সাদা</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="142"/>
+        <location filename="../../UI/ElementEditor.h" line="145"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;অনেক শব্দ&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="143"/>
+        <location filename="../../UI/ElementEditor.h" line="146"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;অনেক রঙ&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="144"/>
-        <location filename="../../UI/ElementEditor.h" line="145"/>
-        <location filename="../../UI/ElementEditor.h" line="146"/>
+        <location filename="../../UI/ElementEditor.h" line="147"/>
         <location filename="../../UI/ElementEditor.h" line="148"/>
         <location filename="../../UI/ElementEditor.h" line="149"/>
+        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;অনেক মান&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="147"/>
+        <location filename="../../UI/ElementEditor.h" line="150"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;অনেক লেবেল&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="154"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;অনেক মোড&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="153"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;অনেক ট্রিগার&gt;</translation>
     </message>
@@ -1214,7 +1227,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="825"/>
+        <location filename="../../Scene/Commands.cpp" line="826"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%2 অধ্যটাদিতে %1টি উপাদান ফ্লিপ করুন</translation>
     </message>
@@ -1222,82 +1235,80 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="360"/>
+        <location filename="../../Element/GraphicElement.cpp" line="240"/>
         <source>Default</source>
         <translation>ডিফল্ট</translation>
     </message>
+</context>
+<context>
+    <name>GraphicElementSerializer</name>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="44"/>
+        <source>Stream error reading %1 count at position %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="48"/>
+        <source>Refusing to read %1 with implausible count %2 (max %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="58"/>
+        <source>Stream error reading %1 entry %2 at position %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="212"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>অবস্থান %1-এ উপাদানের বৈশিষ্ট্য পড়তে স্ট্রিম ত্রুটি</translation>
+        <translation type="unfinished">অবস্থান %1-এ উপাদানের বৈশিষ্ট্য পড়তে স্ট্রিম ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="337"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>অবস্থান %1-এ স্কিন পড়তে স্ট্রিম ত্রুটি</translation>
+        <translation type="unfinished">অবস্থান %1-এ স্কিন পড়তে স্ট্রিম ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="345"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>উপস্থিতি সূচক %1 পরিসরের বাইরে (আকার=%2) — স্ট্রিম দূষিত হতে পারে</translation>
+        <translation type="unfinished">উপস্থিতি সূচক %1 পরিসরের বাইরে (আকার=%2) — স্ট্রিম দূষিত হতে পারে</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="531"/>
-        <source>Loading pixmap appearance names.</source>
-        <translation>পিক্সম্যাপ স্কিনের নাম লোড করছে।</translation>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="433"/>
+        <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="564"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="467"/>
+        <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
+        <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="561"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>স্কিন ইনডেক্স %1 সীমার বাইরে (আকার=%2) স্কিন নাম &quot;%3&quot;-এর জন্য — স্ট্রিম ক্ষতিগ্রস্ত হতে পারে</translation>
+        <translation type="unfinished">স্কিন ইনডেক্স %1 সীমার বাইরে (আকার=%2) স্কিন নাম &quot;%3&quot;-এর জন্য — স্ট্রিম ক্ষতিগ্রস্ত হতে পারে</translation>
     </message>
 </context>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="116"/>
+        <location filename="../../Element/IC.cpp" line="39"/>
         <source>IC</source>
         <translation>আইসি</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="115"/>
+        <location filename="../../Element/IC.cpp" line="38"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>একীভূত সার্কিট</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="228"/>
+        <location filename="../../Element/IC.cpp" line="148"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC লোড: সিরিয়ালাইজড ডেটায় IC নাম নেই</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="354"/>
-        <source>%1 not found.</source>
-        <translation>%1 পাওয়া যায়নি।</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="399"/>
-        <source>Circular IC reference detected: %1</source>
-        <translation>চক্রাকার IC রেফারেন্স সনাক্ত হয়েছে: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="406"/>
-        <source>Error opening file: %1</source>
-        <translation>ফাইল খোলতে ত্রুটি: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="478"/>
-        <source>IC migration: cannot open file for writing: %1</source>
-        <translation>IC মাইগ্রেশন: লেখার জন্য ফাইল খোলা যায়নি: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="485"/>
-        <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>IC মাইগ্রেশন: পুনরায় সংরক্ষিত ফাইল কমিট করা ব্যর্থ: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="553"/>
-        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>IC নেস্টিং গভীরতার সীমা (%1) অতিক্রান্ত — blob ক্ষতিকরভাবে তৈরি হতে পারে</translation>
     </message>
 </context>
 <context>
@@ -1430,14 +1441,47 @@ Suggested name:</source>
     </message>
 </context>
 <context>
+    <name>ICLoader</name>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="103"/>
+        <source>%1 not found.</source>
+        <translation type="unfinished">%1 পাওয়া যায়নি।</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="148"/>
+        <source>Circular IC reference detected: %1</source>
+        <translation type="unfinished">চক্রাকার IC রেফারেন্স সনাক্ত হয়েছে: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="155"/>
+        <source>Error opening file: %1</source>
+        <translation type="unfinished">ফাইল খোলতে ত্রুটি: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="227"/>
+        <source>IC migration: cannot open file for writing: %1</source>
+        <translation type="unfinished">IC মাইগ্রেশন: লেখার জন্য ফাইল খোলা যায়নি: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="234"/>
+        <source>IC migration: failed to commit re-saved file: %1</source>
+        <translation type="unfinished">IC মাইগ্রেশন: পুনরায় সংরক্ষিত ফাইল কমিট করা ব্যর্থ: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="297"/>
+        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
+        <translation type="unfinished">IC নেস্টিং গভীরতার সীমা (%1) অতিক্রান্ত — blob ক্ষতিকরভাবে তৈরি হতে পারে</translation>
+    </message>
+</context>
+<context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="283"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="283"/>
         <source>Could not open file: %1</source>
         <translation>ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="287"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>ফাইল সংরক্ষণ করা যায়নি: %1</translation>
     </message>
@@ -2091,8 +2135,8 @@ Suggested name:</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1010"/>
         <location filename="../../UI/MainWindowUI.cpp" line="774"/>
+        <location filename="../../UI/MainWindow.cpp" line="1006"/>
         <source>Mute</source>
         <translation>নিরব</translation>
     </message>
@@ -2127,8 +2171,8 @@ Suggested name:</source>
         <translation>পটভূমি সিমুলেশন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="481"/>
         <location filename="../../UI/MainWindowUI.cpp" line="783"/>
+        <location filename="../../UI/MainWindow.cpp" line="482"/>
         <source>Shortcuts and Tips</source>
         <translation>শর্টকাট এবং টিপস</translation>
     </message>
@@ -2143,12 +2187,12 @@ Suggested name:</source>
         <translation>অনুবাদ ত্রুটি রিপোর্ট করুন বা Weblate-এ অনুবাদ উন্নত করতে সাহায্য করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="810"/>
+        <location filename="../../UI/MainWindow.cpp" line="806"/>
         <source>New Project</source>
         <translation>নতুন প্রকল্প</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="400"/>
+        <location filename="../../UI/MainWindow.cpp" line="401"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2167,27 +2211,27 @@ wiRedPanda %1 বর্তমান প্রকল্পের একই ডি
 IC এবং চেহারা অ্যাক্সেস করতে বা beWavedDolphin সিমুলেশন চালাতে আপনাকে নতুন প্রকল্প সংরক্ষণ করতে হবে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="533"/>
+        <location filename="../../UI/MainWindow.cpp" line="534"/>
         <source>Are you sure?</source>
         <translation>আপনি কি নিশ্চিত?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="482"/>
+        <location filename="../../UI/MainWindow.cpp" line="483"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;ক্যানভাস শর্টকাট&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : জুম ইন &lt;/li&gt;&lt;li&gt; Ctrl+- : জুম আউট &lt;/li&gt;&lt;li&gt; Ctrl+1 : তার লুকান/দেখান &lt;/li&gt;&lt;li&gt; Ctrl+2 : গেট লুকান/দেখান &lt;/li&gt;&lt;li&gt; Ctrl+F : উপাদান খুঁজুন &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin খুলুন &lt;/li&gt;&lt;li&gt; Ctrl+S : প্রকল্প সংরক্ষণ &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda বন্ধ করুন &lt;/li&gt;&lt;li&gt; F5 : সিমুলেশন শুরু/বিরতি &lt;/li&gt;&lt;li&gt; [ : পূর্ববর্তী প্রাথমিক উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; ] : পরবর্তী প্রাথমিক উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; { : পূর্ববর্তী গৌণ উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; } : পরবর্তী গৌণ উপাদান বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; &amp;lt; : পূর্ববর্তী উপাদানে রূপান্তর &lt;/li&gt;&lt;li&gt; &amp;gt; : পরবর্তী উপাদানে রূপান্তর &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;সাধারণ টিপস&lt;/h1&gt;&lt;p&gt;একটি নোড তৈরি করতে তারে ডাবল-ক্লিক করুন&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="460"/>
+        <location filename="../../UI/MainWindow.cpp" line="461"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="532"/>
+        <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>Exit</source>
         <translation>প্রস্থান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1010"/>
+        <location filename="../../UI/MainWindow.cpp" line="1006"/>
         <source>Unmute</source>
         <translation>শব্দ চালু</translation>
     </message>
@@ -2195,7 +2239,7 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="637"/>
+        <location filename="../../Scene/Commands.cpp" line="638"/>
         <source>Morph %1 elements to %2</source>
         <translation>%1টি উপাদান %2 এ রূপান্তর করুন</translation>
     </message>
@@ -2203,7 +2247,7 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="401"/>
+        <location filename="../../Scene/Commands.cpp" line="402"/>
         <source>Move elements</source>
         <translation>উপাদান সরান</translation>
     </message>
@@ -2237,12 +2281,12 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="40"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
         <source>Node</source>
         <translation>নোড</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="38"/>
         <source>NODE</source>
         <translation>নোড</translation>
     </message>
@@ -2289,28 +2333,15 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="235"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="235"/>
         <source>Add embedded IC</source>
         <translation>এম্বেডেড IC যোগ করুন</translation>
     </message>
 </context>
 <context>
-    <name>QNEConnection</name>
-    <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
-        <source>Stream error reading connection map at offset %1</source>
-        <translation>অফসেট %1-এ সংযোগ মানচিত্র পড়ার সময় স্ট্রিম ত্রুটি</translation>
-    </message>
-    <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
-        <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>অফসেট %1-এ সংযোগ পোর্ট আইডি পড়তে স্ট্রিম ত্রুটি</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="447"/>
+        <location filename="../../Main.cpp" line="445"/>
         <source>Error!</source>
         <translation>ত্রুটি!</translation>
     </message>
@@ -2396,7 +2427,7 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1046"/>
+        <location filename="../../Scene/Commands.cpp" line="1047"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>ব্লব নিবন্ধন করুন &quot;%1&quot;</translation>
     </message>
@@ -2404,7 +2435,7 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1069"/>
+        <location filename="../../Scene/Commands.cpp" line="1070"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>blob &quot;%1&quot; সরান</translation>
     </message>
@@ -2412,7 +2443,7 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="333"/>
+        <location filename="../../Scene/Commands.cpp" line="334"/>
         <source>Rotate %1 degrees</source>
         <translation>%1 ডিগ্রি ঘুরান</translation>
     </message>
@@ -2446,19 +2477,19 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="61"/>
-        <location filename="../../Scene/Scene.cpp" line="542"/>
+        <location filename="../../Scene/Scene.cpp" line="49"/>
+        <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Undo</source>
         <translation>&amp;বাতিল</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="69"/>
-        <location filename="../../Scene/Scene.cpp" line="548"/>
+        <location filename="../../Scene/Scene.cpp" line="57"/>
+        <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Redo</source>
         <translation>&amp;পুনরায়</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="568"/>
+        <location filename="../../Scene/Scene.cpp" line="561"/>
         <source>Paste</source>
         <translation>পেস্ট</translation>
     </message>
@@ -2466,12 +2497,12 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>SceneUiBinder</name>
     <message>
-        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <location filename="../../UI/SceneUiBinder.cpp" line="173"/>
         <source>Unmute</source>
         <translation>শব্দ চালু</translation>
     </message>
     <message>
-        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <location filename="../../UI/SceneUiBinder.cpp" line="173"/>
         <source>Mute</source>
         <translation>নিরব</translation>
     </message>
@@ -2566,32 +2597,32 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="510"/>
+        <location filename="../../Scene/Commands.cpp" line="511"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>SplitCommand কনস্ট্রাক্টরে অবৈধ সংযোগ পোর্ট</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="516"/>
+        <location filename="../../Scene/Commands.cpp" line="517"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>SplitCommand কনস্ট্রাক্টরে অবৈধ গ্রাফিক এলিমেন্ট</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="539"/>
+        <location filename="../../Scene/Commands.cpp" line="540"/>
         <source>Wire split</source>
         <translation>তার বিভক্ত</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="555"/>
+        <location filename="../../Scene/Commands.cpp" line="556"/>
         <source>Error trying to redo %1</source>
         <translation>%1 পুনরায় করতে ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="578"/>
+        <location filename="../../Scene/Commands.cpp" line="579"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>ত্রুটি: SplitCommand::redo()-তে endPort null</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="607"/>
+        <location filename="../../Scene/Commands.cpp" line="608"/>
         <source>Error trying to undo %1</source>
         <translation>%1 পূর্বাবস্থায় ফিরতে ত্রুটি</translation>
     </message>
@@ -2643,17 +2674,17 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="979"/>
+        <location filename="../../Scene/Commands.cpp" line="980"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>%1 অবস্থানে সত্যতালিকা আউটপুট টগল করুন</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="988"/>
+        <location filename="../../Scene/Commands.cpp" line="989"/>
         <source>Could not find truthtable element!</source>
         <translation>সত্যতালিকা উপাদান খুঁজে পাওয়া যায়নি!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="995"/>
+        <location filename="../../Scene/Commands.cpp" line="996"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2687,7 +2718,7 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1102"/>
+        <location filename="../../Scene/Commands.cpp" line="1103"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 IC ব্লব আপডেট করুন</translation>
     </message>
@@ -2695,7 +2726,7 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="441"/>
+        <location filename="../../Scene/Commands.cpp" line="442"/>
         <source>Update %1 elements</source>
         <translation>%1টি উপাদান আপডেট করুন</translation>
     </message>
@@ -2785,7 +2816,7 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="148"/>
+        <location filename="../../Scene/Workspace.cpp" line="146"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2796,50 +2827,32 @@ Please update wiRedPanda to save changes to this file.</source>
 এই ফাইলে পরিবর্তন সংরক্ষণ করতে দয়া করে wiRedPanda আপডেট করুন।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="152"/>
+        <location filename="../../Scene/Workspace.cpp" line="150"/>
         <source>Cannot save.</source>
         <translation>সংরক্ষণ করা যাচ্ছে না।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="224"/>
-        <source>Save File</source>
-        <translation>ফাইল সংরক্ষণ</translation>
-    </message>
-    <message>
-        <location filename="../../Scene/Workspace.cpp" line="224"/>
-        <location filename="../../Scene/Workspace.cpp" line="271"/>
-        <location filename="../../Scene/Workspace.cpp" line="310"/>
-        <source>Panda files (*.panda)</source>
-        <translation>প্যান্ডা ফাইল (*.panda)</translation>
-    </message>
-    <message>
-        <location filename="../../Scene/Workspace.cpp" line="269"/>
-        <location filename="../../Scene/Workspace.cpp" line="308"/>
-        <source>Save File (original location is read-only)</source>
-        <translation>ফাইল সংরক্ষণ করুন (মূল অবস্থান কেবল পঠনযোগ্য)</translation>
-    </message>
-    <message>
-        <location filename="../../Scene/Workspace.cpp" line="277"/>
+        <location filename="../../Scene/Workspace.cpp" line="246"/>
         <source>Error opening file: %1</source>
         <translation>ফাইল খোলতে ত্রুটি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="316"/>
+        <location filename="../../Scene/Workspace.cpp" line="278"/>
         <source>Could not save file: %1</source>
         <translation>ফাইল সংরক্ষণ করা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="390"/>
+        <location filename="../../Scene/Workspace.cpp" line="347"/>
         <source>This file does not exist: %1</source>
         <translation>এই ফাইলটি বিদ্যমান নেই: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="399"/>
+        <location filename="../../Scene/Workspace.cpp" line="356"/>
         <source>Could not open file: %1</source>
         <translation>ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="434"/>
+        <location filename="../../Scene/Workspace.cpp" line="404"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2852,34 +2865,34 @@ Please update wiRedPanda to edit and save this file.</source>
 এই ফাইলটি সম্পাদনা ও সংরক্ষণ করতে দয়া করে wiRedPanda আপডেট করুন।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="439"/>
+        <location filename="../../Scene/Workspace.cpp" line="409"/>
         <source>Newer version file.</source>
         <translation>নতুন সংস্করণের ফাইল।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="442"/>
+        <location filename="../../Scene/Workspace.cpp" line="412"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>এই ফাইলটি একটি পুরানো ফরম্যাটে (সংস্করণ %1) আছে এবং স্বয়ংক্রিয়ভাবে বর্তমান ফরম্যাটে (সংস্করণ %2) আপগ্রেড হবে।
 মূল ফাইলের একটি ব্যাকআপ তৈরি করা হয়েছে: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="445"/>
+        <location filename="../../Scene/Workspace.cpp" line="415"/>
         <source>File upgraded.</source>
         <translation>ফাইল আপগ্রেড হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="607"/>
+        <location filename="../../Scene/Workspace.cpp" line="577"/>
         <source>Error opening autosave file: %1</source>
         <translation>অটোসেভ ফাইল খোলতে ত্রুটি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="615"/>
+        <location filename="../../Scene/Workspace.cpp" line="585"/>
         <source>Could not commit autosave file: %1</source>
         <translation>স্বয়ংক্রিয় সংরক্ষণ ফাইল চূড়ান্ত করা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="781"/>
+        <location filename="../../Scene/Workspace.cpp" line="751"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>অন্তর্ভুক্ত IC &quot;%1&quot; সরান</translation>
     </message>
@@ -2888,76 +2901,86 @@ A backup of the original file has been created with name: %3</source>
     <name>WorkspaceManager</name>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="488"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="190"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="553"/>
         <source>New Project</source>
         <translation>নতুন প্রকল্প</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="120"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="163"/>
         <source>File saved successfully.</source>
         <translation>ফাইল সফলভাবে সংরক্ষিত হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="171"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>ফাইল সংরক্ষিত হয়নি। তবুও ট্যাব বন্ধ করবেন?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="192"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> পরিবর্তিত হয়েছে।
 আপনি কি আপনার পরিবর্তনগুলি সংরক্ষণ করতে চান?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="236"/>
         <source>File loaded successfully.</source>
         <translation>ফাইল সফলভাবে লোড হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="301"/>
         <source>Open File</source>
         <translation>ফাইল খুলুন</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="149"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="301"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
         <source>Panda files (*.panda)</source>
         <translation>প্যান্ডা ফাইল (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <source>Save File</source>
+        <translation type="unfinished">ফাইল সংরক্ষণ</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
+        <source>Save File (original location is read-only)</source>
+        <translation type="unfinished">ফাইল সংরক্ষণ করুন (মূল অবস্থান কেবল পঠনযোগ্য)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
         <source>Save File as ...</source>
         <translation>ফাইল নামে সংরক্ষণ করুন...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="282"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="337"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="435"/>
         <source>File Conflict</source>
         <translation>ফাইল সংঘাত</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="283"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="338"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="436"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>&quot;%1&quot; ফাইলটি ইতিমধ্যে অন্য ট্যাবে খোলা রয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="286"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="341"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="439"/>
         <source>Switch to Tab</source>
         <translation>ট্যাবে যান</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="448"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="513"/>
         <source>Error!</source>
         <translation>ত্রুটি!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="544"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="609"/>
         <source>Error</source>
         <translation>ত্রুটি</translation>
     </message>
@@ -3043,7 +3066,7 @@ Do you want to save your changes?</source>
         <translation>ত্রুটি: সার্কিটে সত্যতালিকা উপাদান রয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="452"/>
+        <location filename="../../Main.cpp" line="450"/>
         <source>Error: </source>
         <translation>ত্রুটি: </translation>
     </message>
