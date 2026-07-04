@@ -101,6 +101,7 @@ private slots:
     void testFuzzRegressionDolphinFilenameOOM();        // oom_dolphin_filename_large
     void testFuzzRegressionPandaHeaderAppNameOOM();     // oom_panda_header_large_appname
     void testFuzzRegressionNonFinitePosition();         // ic_nonfinite_position (fuzz_ic_file)
+    void testFuzzRegressionNonFiniteRotation();         // ic_nonfinite_rotation (fuzz_ic_file)
 
 private:
     // Helper methods

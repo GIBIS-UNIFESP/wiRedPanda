@@ -222,7 +222,9 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
     }
 
     if (map.contains("rotation")) {
-        element.m_orientation.setAngleRaw(map.value("rotation").toReal());
+        const qreal angle = map.value("rotation").toReal();
+        validateFiniteAngle(angle);
+        element.m_orientation.setAngleRaw(angle);
     }
 
     if (map.contains("label")) {
@@ -394,9 +396,21 @@ void GraphicElementSerializer::loadPos(GraphicElement &element, QDataStream &str
     element.setPos(pos);
 }
 
+/// Rejects a non-finite (NaN / ±inf) element rotation read from a crafted file.
+/// setAngleRaw(NaN) makes the item's scene transform NaN, so its bounding rect
+/// is NaN and trips the same qSaturateRound assertion as a non-finite position
+/// does.  Surfaced by libFuzzer (fuzz_ic_file).
+void GraphicElementSerializer::validateFiniteAngle(const qreal angle)
+{
+    if (!std::isfinite(angle)) {
+        throw PANDACEPTION("Non-finite element rotation — stream may be corrupt");
+    }
+}
+
 void GraphicElementSerializer::loadRotation(GraphicElement &element, QDataStream &stream, const QVersionNumber &version)
 {
     qreal angle; stream >> angle;
+    validateFiniteAngle(angle);
     element.m_orientation.setAngleRaw(angle);
 
     // In versions before 4.1 the coordinate system for inputs and outputs was

@@ -3,6 +3,8 @@
 
 #include "App/Element/ICRenderer.h"
 
+#include <cmath>
+
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QScopeGuard>
@@ -26,8 +28,17 @@ void ICRenderer::generatePixmap(IC &ic)
     // The body is now drawn as vectors in drawBody()/paint(); m_pixmap is kept only so that the
     // base pixmapCenter()/boundingRect() have the right size (its image content is never displayed).
     // It must encompass both the 64×64 body and any ports that extend beyond it.
-    const QSize size = ic.portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
-    QPixmap sizingPixmap(size);
+    const QSizeF boundsSize = ic.portsBoundingRect().united(QRectF(0, 0, 64, 64)).size();
+
+    // Defense-in-depth: a non-finite boundary port position makes this size NaN, and
+    // QSizeF::toSize() asserts (!qIsNaN) on a NaN dimension → process abort.  The load-side
+    // guards reject non-finite element position/rotation up front; skip regenerating the
+    // sizing pixmap here for any other geometry source rather than crash.
+    if (!std::isfinite(boundsSize.width()) || !std::isfinite(boundsSize.height())) {
+        return;
+    }
+
+    QPixmap sizingPixmap(boundsSize.toSize());
     sizingPixmap.fill(Qt::transparent);
     ic.m_appearance.setRenderPixmap(sizingPixmap);
     ic.update();
@@ -127,6 +138,16 @@ void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &ite
 
     // Compute the bounding rect with some padding
     const QRectF sourceRect = tempScene.itemsBoundingRect().adjusted(-16, -16, 16, 16);
+
+    // Defense-in-depth: a non-finite item geometry makes the bounding rect NaN,
+    // and QSizeF::toSize() asserts (!qIsNaN) on a NaN dimension → process abort.
+    // The load-side guards reject non-finite element position/rotation up front;
+    // skip the (non-essential) preview here for any other geometry source rather
+    // than crash.  Surfaced by libFuzzer (fuzz_ic_file).
+    if (!std::isfinite(sourceRect.width()) || !std::isfinite(sourceRect.height())) {
+        ic.m_previewPixmap = QPixmap();
+        return;
+    }
 
     // Scale to fit within max preview dimensions while preserving aspect ratio
     QSize targetSize = sourceRect.size().toSize();

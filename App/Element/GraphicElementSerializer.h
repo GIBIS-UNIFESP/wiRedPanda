@@ -56,6 +56,10 @@ private:
     /// (fuzz-hardening) — see the .cpp for why this must abort load rather than proceed.
     static void validateFinitePos(const QPointF &pos);
 
+    /// Rejects a non-finite (NaN / ±inf) element rotation read from a crafted file
+    /// (fuzz-hardening) — see the .cpp for why this must abort load rather than proceed.
+    static void validateFiniteAngle(qreal angle);
+
     static void loadPos(GraphicElement &element, QDataStream &stream);
     static void loadRotation(GraphicElement &element, QDataStream &stream, const QVersionNumber &version);
     static void loadLabel(GraphicElement &element, QDataStream &stream, const QVersionNumber &version);
