@@ -5,6 +5,7 @@
 
 #include <bitset>
 
+#include "App/Core/I18n.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -249,15 +250,15 @@ QList<std::pair<int, QString>> Led::appearanceStates() const
     auto portStateLabel = [](const int numPorts, const int code) {
         QStringList parts;
         for (int port = 0; port < numPorts; ++port) {
-            parts << tr("Port %1=%2").arg(port + 1).arg((code >> port) & 1);
+            parts << i18n("Port %1=%2", port + 1, (code >> port) & 1);
         }
         return parts.join(QStringLiteral(", "));
     };
 
     switch (inputSize()) {
     case 1:
-        states.append({m_colorIndex, tr("Off")});
-        states.append({m_colorIndex + 1, tr("On")});
+        states.append({m_colorIndex, i18n("Off")});
+        states.append({m_colorIndex + 1, i18n("On")});
         break;
 
     case 2:
@@ -282,7 +283,7 @@ QList<std::pair<int, QString>> Led::appearanceStates() const
     default: // LCOV_EXCL_LINE
         // Unreachable for the same reason as colorIndex()'s default case above:
         // inputSize() can never be outside [1, 4].
-        states.append({0, tr("Default")}); // LCOV_EXCL_LINE
+        states.append({0, i18n("Default")}); // LCOV_EXCL_LINE
         break; // LCOV_EXCL_LINE
     }
 

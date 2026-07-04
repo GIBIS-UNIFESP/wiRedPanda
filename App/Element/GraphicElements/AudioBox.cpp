@@ -4,6 +4,7 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElement.h"
@@ -75,8 +76,8 @@ void AudioBox::setAudio(const QString &audioPath)
         const QFileInfo info(path);
         if (!info.exists() || !info.isReadable()) {
             const QString reason = !info.exists()
-                                       ? tr("File does not exist")
-                                       : tr("File is not readable");
+                                       ? i18n("File does not exist")
+                                       : i18n("File is not readable");
             qCDebug(zero) << "Problem loading audio path:" << path;
             throw PANDACEPTION("Couldn't load audio: %1 (%2)", path, reason);
         }

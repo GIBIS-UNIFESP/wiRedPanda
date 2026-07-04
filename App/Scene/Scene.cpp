@@ -19,6 +19,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
+#include "App/Core/I18n.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Core/MimeTypes.h"
 #include "App/Core/Priorities.h"
@@ -78,7 +79,7 @@ Scene::Scene(QObject *parent)
     // scene and starts its drag throttle timer.
     m_interaction.attachToScene();
 
-    m_undoAction = new QAction(tr("&Undo"), this);
+    m_undoAction = new QAction(i18n("&Undo"), this);
     m_undoAction->setEnabled(false);
     m_undoAction->setIcon(QIcon(":/Interface/Toolbar/undo.svg"));
     m_undoAction->setShortcut(QKeySequence::Undo);
@@ -86,7 +87,7 @@ Scene::Scene(QObject *parent)
     connect(&m_undoStack, &QUndoStack::undoTextChanged, this, &Scene::updateUndoText);
     connect(m_undoAction, &QAction::triggered, &m_undoStack, &QUndoStack::undo);
 
-    m_redoAction = new QAction(tr("&Redo"), this);
+    m_redoAction = new QAction(i18n("&Redo"), this);
     m_redoAction->setEnabled(false);
     m_redoAction->setIcon(QIcon(":/Interface/Toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
@@ -768,13 +769,13 @@ void Scene::retranslateUi()
 
 void Scene::updateUndoText(const QString &text)
 {
-    const QString prefix = tr("&Undo");
+    const QString prefix = i18n("&Undo");
     m_undoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
 }
 
 void Scene::updateRedoText(const QString &text)
 {
-    const QString prefix = tr("&Redo");
+    const QString prefix = i18n("&Redo");
     m_redoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
 }
 
@@ -794,7 +795,7 @@ void Scene::contextMenu(const QPoint screenPos)
     } else {
         // Right-click on empty canvas: Paste plus Select all.
         QMenu menu;
-        auto *pasteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/paste.svg")), tr("Paste"));
+        auto *pasteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/paste.svg")), i18n("Paste"));
         const auto *mimeData = QApplication::clipboard()->mimeData();
 
         if (ClipboardManager::canPaste(mimeData)) {
@@ -803,7 +804,7 @@ void Scene::contextMenu(const QPoint screenPos)
             pasteAction->setEnabled(false);
         }
 
-        auto *selectAllAction = menu.addAction(tr("Select all"));
+        auto *selectAllAction = menu.addAction(i18n("Select all"));
         selectAllAction->setEnabled(!elements().isEmpty());
         connect(selectAllAction, &QAction::triggered, this, &Scene::selectAll);
 

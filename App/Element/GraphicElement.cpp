@@ -22,6 +22,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
+#include "App/Core/I18n.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
@@ -257,7 +258,7 @@ void GraphicElement::setAppearanceAt(const int index, const QString &fileName)
 QList<std::pair<int, QString>> GraphicElement::appearanceStates() const
 {
     // Default: single appearance at index 0
-    return {{0, tr("Default")}};
+    return {{0, i18n("Default")}};
 }
 
 QPixmap GraphicElement::appearancePreviewPixmap(const int index, const QSize &size) const

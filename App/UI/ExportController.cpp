@@ -13,6 +13,7 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -54,7 +55,7 @@ void ExportController::exportToArduino(QString fileName)
 
     ArduinoCodeGen arduino(QDir::home().absoluteFilePath(fileName), elements);
     arduino.generate();
-    m_host.showStatusMessage(tr("Arduino code successfully generated."), 4000);
+    m_host.showStatusMessage(i18n("Arduino code successfully generated."), 4000);
 
     qCDebug(zero) << "Arduino code successfully generated.";
 }
@@ -84,7 +85,7 @@ void ExportController::exportToSystemVerilog(QString fileName)
 
     SystemVerilogCodeGen verilog(QDir::home().absoluteFilePath(fileName), elements);
     verilog.generate();
-    m_host.showStatusMessage(tr("SystemVerilog code successfully generated."), 4000);
+    m_host.showStatusMessage(i18n("SystemVerilog code successfully generated."), 4000);
 
     qCDebug(zero) << "SystemVerilog code successfully generated.";
 }
@@ -123,7 +124,7 @@ void ExportController::exportArduinoDialog()
             path = m_host.currentFile().absolutePath();
         }
 
-        const QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Generate Arduino Code"), path, tr("Arduino file") + " (*.ino)").fileName;
+        const QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), i18n("Generate Arduino Code"), path, i18n("Arduino file (*.ino)")).fileName;
 
         if (!fileName.isEmpty()) {
             exportToArduino(fileName);
@@ -145,7 +146,7 @@ void ExportController::exportSystemVerilogDialog()
             path = m_host.currentFile().absolutePath();
         }
 
-        const QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Generate SystemVerilog Code"), path, tr("SystemVerilog file") + " (*.sv)").fileName;
+        const QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), i18n("Generate SystemVerilog Code"), path, i18n("SystemVerilog file (*.sv)")).fileName;
 
         if (!fileName.isEmpty()) {
             exportToSystemVerilog(fileName);
@@ -166,7 +167,7 @@ void ExportController::exportPdfDialog()
         tab->scene()->clearSelection();
 
         const QString path    = m_host.currentFile().exists() ? m_host.currentFile().absolutePath() : QString();
-        QString pdfFile = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Export to PDF"), path, tr("PDF files") + " (*.pdf)").fileName;
+        QString pdfFile = FileDialogs::provider()->getSaveFileName(m_host.widget(), i18n("Export to PDF"), path, i18n("PDF files (*.pdf)")).fileName;
 
         if (pdfFile.isEmpty()) {
             return;
@@ -177,7 +178,7 @@ void ExportController::exportPdfDialog()
         }
 
         CircuitExporter::renderToPdf(tab->scene(), pdfFile);
-        m_host.showStatusMessage(tr("Exported file successfully."), 4000);
+        m_host.showStatusMessage(i18n("Exported file successfully."), 4000);
         QDesktopServices::openUrl(QUrl::fromLocalFile(pdfFile));
     });
 }
@@ -195,7 +196,7 @@ void ExportController::exportImageDialog()
         tab->scene()->clearSelection();
 
         const QString path    = m_host.currentFile().exists() ? m_host.currentFile().absolutePath() : QString();
-        QString pngFile = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Export to Image"), path, tr("PNG files") + " (*.png)").fileName;
+        QString pngFile = FileDialogs::provider()->getSaveFileName(m_host.widget(), i18n("Export to Image"), path, i18n("PNG files (*.png)")).fileName;
 
         if (pngFile.isEmpty()) {
             return;
@@ -206,7 +207,7 @@ void ExportController::exportImageDialog()
         }
 
         CircuitExporter::renderToImage(tab->scene(), pngFile);
-        m_host.showStatusMessage(tr("Exported file successfully."), 4000);
+        m_host.showStatusMessage(i18n("Exported file successfully."), 4000);
         QDesktopServices::openUrl(QUrl::fromLocalFile(pngFile));
     });
 }

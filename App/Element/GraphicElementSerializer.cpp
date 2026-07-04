@@ -12,6 +12,7 @@
 #include <cmath>
 
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"

@@ -160,4 +160,6 @@
 #include <QtGlobal>
 #include <QtTest>
 
+#include "App/Core/I18n.h"
+
 #endif
