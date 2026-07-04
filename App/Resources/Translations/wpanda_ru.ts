@@ -1243,52 +1243,62 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>GraphicElementSerializer</name>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="44"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="46"/>
         <source>Stream error reading %1 count at position %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="48"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="50"/>
         <source>Refusing to read %1 with implausible count %2 (max %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="58"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="60"/>
         <source>Stream error reading %1 entry %2 at position %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="212"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
         <source>Stream error reading element properties at position %1</source>
         <translation type="unfinished">Ошибка потока при чтении свойств элемента в позиции %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="337"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
         <source>Stream error reading appearances at position %1</source>
         <translation type="unfinished">Ошибка потока при чтении скинов в позиции %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="345"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation type="unfinished">Индекс внешнего вида %1 вне диапазона (размер=%2) — поток может быть повреждён</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="433"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
+        <source>Non-finite element position — stream may be corrupt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
+        <source>Non-finite element rotation — stream may be corrupt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="467"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="561"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation type="unfinished">Индекс скина %1 вне диапазона (размер=%2) для имени скина &quot;%3&quot; — поток может быть повреждён</translation>
     </message>
