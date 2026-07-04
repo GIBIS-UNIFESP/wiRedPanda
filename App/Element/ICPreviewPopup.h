@@ -58,15 +58,12 @@ public:
     void updatePendingPos(const QPoint &screenPos);
 
     /// Returns the IC currently pending display (may be null).
-    IC *pendingIC() const { return m_pendingIC; }
+    IC *pendingIC() const;
 
     /// True while a show is pending (timer running) or the popup is already
     /// visible for \a ic.  Used by hover-move to tell "already armed" from
     /// "needs re-arming" (e.g. after the cursor passed over a port).
-    bool isShowActiveFor(const IC *ic) const
-    {
-        return m_pendingIC == ic && (isVisible() || m_showTimer.isActive());
-    }
+    bool isShowActiveFor(const IC *ic) const;
 
 protected:
     /// \reimp Cancels a scheduled hide when the cursor enters the popup itself.

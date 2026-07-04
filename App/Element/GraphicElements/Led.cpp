@@ -208,8 +208,8 @@ void Led::updatePortsProperties()
     // inputs the color is determined entirely by the input bit pattern.
     setHasColors(inputSize() == 1);
 
-    for (auto *port : std::as_const(m_inputPorts)) {
-        port->setName(QString::number(m_inputPorts.indexOf(port) + 1));
+    for (auto *port : inputs()) {
+        port->setName(QString::number(inputs().indexOf(port) + 1));
         port->setRequired(false);
         port->setDefaultStatus(Status::Inactive);
     }

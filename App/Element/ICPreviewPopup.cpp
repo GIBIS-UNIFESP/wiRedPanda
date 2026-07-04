@@ -165,6 +165,16 @@ void ICPreviewPopup::updatePendingPos(const QPoint &screenPos)
     }
 }
 
+IC *ICPreviewPopup::pendingIC() const
+{
+    return m_pendingIC;
+}
+
+bool ICPreviewPopup::isShowActiveFor(const IC *ic) const
+{
+    return m_pendingIC == ic && (isVisible() || m_showTimer.isActive());
+}
+
 void ICPreviewPopup::enterEvent(QEnterEvent *event)
 {
     Q_UNUSED(event)

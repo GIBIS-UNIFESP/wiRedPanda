@@ -110,7 +110,7 @@ void Display14::updatePortsProperties()
     inputPort(13)->setPos(64,  88);    inputPort(13)->setName("M (" + tr("lower center vertical")   + ")");
     inputPort(14)->setPos(64, 104);    inputPort(14)->setName("N (" + tr("lower left diagonal")    + ")");
 
-    for (auto *port : std::as_const(m_inputPorts)) {
+    for (auto *port : inputs()) {
         port->setRequired(false);
         port->setDefaultStatus(Status::Inactive);
     }

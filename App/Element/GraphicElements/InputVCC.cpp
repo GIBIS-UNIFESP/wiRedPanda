@@ -44,5 +44,5 @@ InputVcc::InputVcc(QGraphicsItem *parent)
 {
     // VCC always outputs logic HIGH; set the port default so both the visual
     // wire colour and the simulation output vector are correct from the start.
-    m_outputPorts.constFirst()->setDefaultStatus(Status::Active);
+    outputs().constFirst()->setDefaultStatus(Status::Active);
 }

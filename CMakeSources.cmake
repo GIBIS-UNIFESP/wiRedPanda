@@ -25,6 +25,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.cpp
@@ -156,6 +157,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.h
