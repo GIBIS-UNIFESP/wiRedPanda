@@ -84,6 +84,17 @@ public:
     /// Returns the port's visual/logical index within the element.
     int index() const;
 
+    /// Returns this port's index within the element's combined input+output port
+    /// sequence: index() for input ports, index() + graphicElement()->inputSize()
+    /// for output ports. The single source of truth for the port-ordering half of
+    /// the serial-ID formula.
+    int globalIndex() const;
+
+    /// Packs \a elementBase and \a globalIndex into a serial ID: (elementBase << 16)
+    /// | (globalIndex & 0xFFFF). The single source of truth for the serial-ID format
+    /// used to resolve connection endpoints across save/load.
+    static quint64 makeSerialId(quint64 elementBase, int globalIndex);
+
     /// Returns \c true if this is an input port. Pure virtual.
     virtual bool isInput() const = 0;
 
@@ -156,8 +167,6 @@ public:
 
     /// Triggers a path update on all attached connections.
     void updateConnections();
-    void setSerialId(quint64 serialId);
-    quint64 serialId() const;
 
 protected:
     // --- Qt Event Handling ---
@@ -187,7 +196,6 @@ protected:
     Status m_status = Status::Unknown;
     bool m_required = true;
     int m_index = 0;
-    quint64 m_serialId = 0;
 
 private:
     QBrush currentBrush() const;

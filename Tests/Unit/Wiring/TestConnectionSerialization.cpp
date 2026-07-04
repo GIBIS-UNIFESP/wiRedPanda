@@ -93,14 +93,11 @@ void TestConnectionSerialization::testLoadWithPortMapIndirectRestore()
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     conn1->save(saveStream);
 
-    // Calculate serial IDs for fresh ports (Phase 2b serial ID formula)
+    // Calculate serial IDs for fresh ports (see Port::makeSerialId())
     // For inputs: (elementId << 16) | portIndex
     // For outputs: (elementId << 16) | (inputCount + portIndex)
     quint64 origOutputSerial = static_cast<quint64>(andGate1->id()) << 16 | static_cast<quint64>(andGate1->inputSize());
     quint64 origInputSerial = static_cast<quint64>(orGate1->id()) << 16 | 0;
-    // Assign these serial IDs to the ports before saving
-    outputPort1->setSerialId(origOutputSerial);
-    inputPort1->setSerialId(origInputSerial);
 
     // Create new elements (simulating new circuit load)
     auto andGate2 = std::make_unique<And>();
@@ -191,11 +188,9 @@ void TestConnectionSerialization::testLoadPortTypeResolution()
     QVERIFY(conn1->startPort() == outputPort);
     QVERIFY(conn1->endPort() == inputPort);
 
-    // Calculate and assign serial IDs
+    // Calculate serial IDs (see Port::makeSerialId())
     quint64 outSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
     quint64 inSerial = static_cast<quint64>(led->id()) << 16 | 0;
-    outputPort->setSerialId(outSerial);
-    inputPort->setSerialId(inSerial);
 
     // Save connection
     QByteArray data;
@@ -242,15 +237,11 @@ void TestConnectionSerialization::testLoadMultipleConnectionsOnSamePorts()
     conn2->setStartPort(sw2->outputPort());
     conn2->setEndPort(andGate->inputPort(1));
 
-    // Calculate and assign serial IDs for all ports
+    // Calculate serial IDs for all ports (see Port::makeSerialId())
     quint64 sw1OutSerial = static_cast<quint64>(sw1->id()) << 16 | static_cast<quint64>(sw1->inputSize());
     quint64 sw2OutSerial = static_cast<quint64>(sw2->id()) << 16 | static_cast<quint64>(sw2->inputSize());
     quint64 andIn0Serial = static_cast<quint64>(andGate->id()) << 16 | 0;
     quint64 andIn1Serial = static_cast<quint64>(andGate->id()) << 16 | 1;
-    sw1->outputPort()->setSerialId(sw1OutSerial);
-    sw2->outputPort()->setSerialId(sw2OutSerial);
-    andGate->inputPort(0)->setSerialId(andIn0Serial);
-    andGate->inputPort(1)->setSerialId(andIn1Serial);
 
     // Save both connections
     QByteArray data1, data2;
@@ -320,11 +311,9 @@ void TestConnectionSerialization::testSaveLoadRoundTripPreservesPorts()
     QVERIFY(outputPort->connections().contains(conn1.get()));
     QVERIFY(inputPort->connections().contains(conn1.get()));
 
-    // Calculate and assign serial IDs
+    // Calculate serial IDs (see Port::makeSerialId())
     quint64 andOutSerial = static_cast<quint64>(andGate->id()) << 16 | static_cast<quint64>(andGate->inputSize());
     quint64 orInSerial = static_cast<quint64>(orGate->id()) << 16 | 0;
-    outputPort->setSerialId(andOutSerial);
-    inputPort->setSerialId(orInSerial);
 
     // Save
     QByteArray data;
@@ -372,11 +361,9 @@ void TestConnectionSerialization::testSaveLoadPreservesConnectionStatus()
     conn1->setStatus(Status::Active);
     QCOMPARE(conn1->status(), Status::Active);
 
-    // Calculate and assign serial IDs
+    // Calculate serial IDs (see Port::makeSerialId())
     quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
     quint64 ledInSerial = static_cast<quint64>(led->id()) << 16 | 0;
-    sw->outputPort()->setSerialId(swOutSerial);
-    led->inputPort()->setSerialId(ledInSerial);
 
     // Save
     QByteArray data;
@@ -430,15 +417,11 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
     sw->setOn();
     QCOMPARE(sw->outputPort()->status(), Status::Active);
 
-    // Calculate and assign serial IDs for all ports
+    // Calculate serial IDs for all ports (see Port::makeSerialId())
     quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
     quint64 and1In0Serial = static_cast<quint64>(and1->id()) << 16 | 0;
     quint64 and1OutSerial = static_cast<quint64>(and1->id()) << 16 | static_cast<quint64>(and1->inputSize());
     quint64 and2In0Serial = static_cast<quint64>(and2->id()) << 16 | 0;
-    sw->outputPort()->setSerialId(swOutSerial);
-    and1->inputPort(0)->setSerialId(and1In0Serial);
-    and1->outputPort()->setSerialId(and1OutSerial);
-    and2->inputPort(0)->setSerialId(and2In0Serial);
 
     // Save both connections
     QByteArray data1, data2;

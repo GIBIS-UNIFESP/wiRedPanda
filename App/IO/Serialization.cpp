@@ -438,10 +438,10 @@ void Serialization::readDolphinHeader(QDataStream &stream)
 
 void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream)
 {
-    // Port serial IDs are computed as (elementId << 16) | portIndex by both
-    // GraphicElement::save() and Connection::save(). Elements with id=-1
-    // (the unassigned sentinel) would all produce the same keys, causing portMap
-    // collisions on the next load and destroying connection topology.
+    // Port serial IDs are computed from the element ID via Port::makeSerialId()
+    // (used by both GraphicElementSerializer::save() and ConnectionSerializer::save()).
+    // Elements with id=-1 (the unassigned sentinel) would all produce the same keys,
+    // causing portMap collisions on the next load and destroying connection topology.
     //
     // Only elements with id <= 0 need a temporary replacement ID. Elements that
     // already have a valid positive scene ID must keep it: callers such as
