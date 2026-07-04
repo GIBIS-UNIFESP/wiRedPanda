@@ -11,10 +11,17 @@
 #include <memory>
 
 #include <QFileInfo>
-#include <QMainWindow>
 #include <QStandardItemModel>
 #include <QTableView>
 #include <QUndoStack>
+
+#ifdef USE_KDE_FRAMEWORKS
+#include <KXmlGuiWindow>
+using BewavedDolphinBase = KXmlGuiWindow;
+#else
+#include <QMainWindow>
+using BewavedDolphinBase = QMainWindow;
+#endif
 
 #include "App/BeWavedDolphin/BeWavedDolphinUI.h"
 #include "App/BeWavedDolphin/SignalDelegate.h"
@@ -39,7 +46,7 @@ namespace DolphinSerializer { struct WaveformData; }
  *
  * A subset of methods is also accessible via the MCP server for automated testing.
  */
-class BewavedDolphin : public QMainWindow
+class BewavedDolphin : public BewavedDolphinBase
 {
     Q_OBJECT
     friend class TestBewavedDolphinGui;
@@ -158,6 +165,10 @@ protected:
 
 private:
     Q_DISABLE_COPY(BewavedDolphin)
+
+#ifdef USE_KDE_FRAMEWORKS
+    void setupKdeActions();
+#endif
 
     // --- Internal accessors (test-only; TestBewavedDolphinGui is a friend) ---
 

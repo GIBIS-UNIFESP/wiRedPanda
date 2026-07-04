@@ -400,7 +400,7 @@ UTF-16 (`u""`) and narrow (`APP_VERSION`) literals is ill-formed. Use `QString::
 
 ---
 
-## Phase 4 — Main Window: KXmlGuiWindow + KActionCollection
+## Phase 4 — Main Window: KXmlGuiWindow + KActionCollection ✅
 **KDE Frameworks**: `KF6::XmlGui`
 **Risk**: High — largest structural change in the port
 
@@ -505,6 +505,28 @@ setupGUI(Default, "wiredpandaui.rc");
 - Undo/redo shortcuts work
 - Window state persists across restarts
 - `ctest --preset debug`
+
+### Implementation notes (kde-v2 recreation)
+
+Master's later refactors split `MainWindow`/`BeWavedDolphin` into several collaborator
+classes (`WorkspaceManager`, `ICController`, `ExportController`, `SceneUiBinder`,
+`UpdateController` — see Phase 2's notes). None of them needed KDE-specific changes for
+this phase: `setupKdeActions()` still lives directly on `MainWindow`/`BewavedDolphin`,
+matching the original design, because action *creation* is a window-construction
+concern independent of where the business logic each action triggers now lives.
+
+**The original branch's "known issue" (`TestBewavedDolphinGui` findChild() failures,
+carried as WIP) is resolved here, and turned out to be mundane**: `setupKdeActions()`'s
+`addAction()` lambda creates a fresh `QAction` with Qt's default `enabled = true`, but
+the non-KDE `BeWavedDolphinUI::setupUi()` explicitly disables `actionSetClockWave` at
+construction (`// Gated on a non-empty selection — kept in sync by
+on_tableView_selectionChanged.`) since it only meaningfully applies to a selected row.
+The KDE path needs the identical explicit `setEnabled(false)` after creating that one
+action — nothing about `KXmlGuiWindow`/`KActionCollection` is at fault. Worth checking
+for on future phases: any action whose *initial* enabled/checked state in the hand-written
+`setupUi()` differs from a fresh `QAction`'s defaults needs that same state replicated
+explicitly in `setupKdeActions()`, since `KStandardAction`/`addAction()` don't know about
+the app's business rules for when an action should start disabled.
 
 ---
 
