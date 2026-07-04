@@ -24,6 +24,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     // On macOS, merging the title bar and toolbar saves vertical space.
     MainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
+#ifndef USE_KDE_FRAMEWORKS
     actionOpen = new QAction(MainWindow);
     actionOpen->setObjectName("actionOpen");
     actionOpen->setIcon(QIcon(":/Interface/Toolbar/folder.svg"));
@@ -199,6 +200,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionReportTranslationError = new QAction(MainWindow);
     actionReportTranslationError->setObjectName("actionReportTranslationError");
     actionReportTranslationError->setIcon(QIcon(":/Interface/Toolbar/help.svg"));
+#endif // USE_KDE_FRAMEWORKS (action creation block)
     centralWidget = new QWidget(MainWindow);
     centralWidget->setObjectName("centralWidget");
     gridLayout_8 = new QGridLayout(centralWidget);
@@ -587,6 +589,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     gridLayout_8->addWidget(splitter, 0, 0, 1, 1);
 
     MainWindow->setCentralWidget(centralWidget);
+#ifndef USE_KDE_FRAMEWORKS
     mainToolBar = new QToolBar(MainWindow);
     mainToolBar->setObjectName("mainToolBar");
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
@@ -749,10 +752,12 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     tab->setCurrentIndex(-1);
 
     QMetaObject::connectSlotsByName(MainWindow);
+#endif // USE_KDE_FRAMEWORKS (toolbar/menubar block)
 }
 
 void MainWindowUi::retranslateUi()
 {
+#ifndef USE_KDE_FRAMEWORKS
     actionOpen->setText(QCoreApplication::translate("MainWindow", "&Open..."));
     actionOpen->setToolTip(QCoreApplication::translate("MainWindow", "Open"));
     actionOpen->setShortcut(QStringLiteral("Ctrl+O"));
@@ -852,6 +857,7 @@ void MainWindowUi::retranslateUi()
     actionShortcutsAndTips->setText(QCoreApplication::translate("MainWindow", "Shortcuts and Tips"));
     actionReportTranslationError->setText(QCoreApplication::translate("MainWindow", "Report Translation Error"));
     actionReportTranslationError->setToolTip(QCoreApplication::translate("MainWindow", "Report translation errors or help improve translations on Weblate"));
+#endif // USE_KDE_FRAMEWORKS (action retranslation block)
     tabElements->setTabText(tabElements->indexOf(io), QString());
     tabElements->setTabToolTip(tabElements->indexOf(io), QCoreApplication::translate("MainWindow", "Inputs/Outputs"));
     tabElements->setTabText(tabElements->indexOf(gates), QString());

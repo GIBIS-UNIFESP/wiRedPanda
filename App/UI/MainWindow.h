@@ -12,13 +12,21 @@
 #include <optional>
 
 #include <QDir>
-#include <QMainWindow>
 #include <QPointer>
 
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
+#ifdef USE_KDE_FRAMEWORKS
+#include <KXmlGuiWindow>
+using MainWindowBase = KXmlGuiWindow;
+#else
+#include <QMainWindow>
+using MainWindowBase = QMainWindow;
+#endif
+
+class ElementLabel;
 class ElementPalette;
 class ExerciseEngine;
 class ExerciseOverlay;
@@ -42,7 +50,7 @@ class WorkspaceManager;
  * WorkSpace), connects undo/redo stacks, handles file open/save/export, manages translations,
  * and integrates the element palette, element editor, and IC list panel.
  */
-class MainWindow : public QMainWindow, public DolphinHost, public MainWindowHost
+class MainWindow : public MainWindowBase, public DolphinHost, public MainWindowHost
 {
     Q_OBJECT
     friend class TestMainWindowGui;
@@ -273,6 +281,11 @@ private:
 #endif
 
     // --- Constructor Setup ---
+
+#ifdef USE_KDE_FRAMEWORKS
+    /// Creates KDE actions via KActionCollection, calls setupGUI(), and wires up dynamic menus.
+    void setupKdeActions();
+#endif
 
     /// Initialises language/translation: detects system locale, loads .qm file, populates the Language menu.
     void setupLanguage();

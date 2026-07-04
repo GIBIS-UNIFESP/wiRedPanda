@@ -15,6 +15,7 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
 
     BewavedDolphin->setWindowIcon(QIcon(":/Interface/Toolbar/dolphin_icon.svg"));
 
+#ifndef USE_KDE_FRAMEWORKS
     actionAbout = new QAction(BewavedDolphin);
     actionAbout->setObjectName("actionAbout");
     actionAbout->setIcon(QIcon(":/Interface/Dolphin/help.svg"));
@@ -135,6 +136,7 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     actionAutoCrop->setObjectName("actionAutoCrop");
     actionAutoCrop->setIcon(QIcon(":/Interface/Dolphin/autoCrop.svg"));
     actionAutoCrop->setMenuRole(QAction::NoRole);
+#endif // USE_KDE_FRAMEWORKS (action creation block)
 
     centralwidget = new QWidget(BewavedDolphin);
     centralwidget->setObjectName("centralwidget");
@@ -152,6 +154,7 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     verticalLayout->setContentsMargins(0, 0, 0, 0);
     BewavedDolphin->setCentralWidget(centralwidget);
 
+#ifndef USE_KDE_FRAMEWORKS
     statusbar = new QStatusBar(BewavedDolphin);
     statusbar->setObjectName("statusbar");
     BewavedDolphin->setStatusBar(statusbar);
@@ -250,6 +253,7 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     // Connects signals to slots by naming convention (on_<objectName>_<signal>), but
     // BewavedDolphin manually connects all its actions, so this is a safety net only
     QMetaObject::connectSlotsByName(BewavedDolphin);
+#endif // USE_KDE_FRAMEWORKS (toolbar/menubar block)
 }
 
 void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
@@ -257,6 +261,7 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     // The window title is set by BewavedDolphin's constructor (and updated on file
     // load/save), so no placeholder is applied here.
     Q_UNUSED(BewavedDolphin)
+#ifndef USE_KDE_FRAMEWORKS
     actionAbout->setText(QCoreApplication::translate("BewavedDolphin", "About"));
     actionAbout->setShortcut(QStringLiteral("F1")); // match the main window (Ctrl+H is Flip there)
     actionLoad->setText(QCoreApplication::translate("BewavedDolphin", "Load"));
@@ -319,4 +324,5 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     menuAbout->setTitle(QCoreApplication::translate("BewavedDolphin", "Help"));
     menuEdit->setTitle(QCoreApplication::translate("BewavedDolphin", "Edit"));
     menuView->setTitle(QCoreApplication::translate("BewavedDolphin", "View"));
+#endif
 }

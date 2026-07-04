@@ -309,6 +309,13 @@ if(EMSCRIPTEN)
     )
 endif()
 
+if(USE_KDE_FRAMEWORKS AND NOT EMSCRIPTEN)
+    # wiredpandaui.rc / bewaveddolphinui.rc define the KXmlGuiWindow menu/toolbar layout.
+    list(APPEND RESOURCES
+        ${CMAKE_CURRENT_LIST_DIR}/App/Resources/KDE/KDE.qrc
+    )
+endif()
+
 set(TEST_UTILS_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.cpp
 )
