@@ -316,7 +316,7 @@ void TestTruthTable::testLoadKeyVersion42()
     TruthTable truthTable2;
 
     QDataStream loadStream(data);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, QVersionNumber(4, 2), {}};
     truthTable2.load(loadStream, context);
 
@@ -343,7 +343,7 @@ void TestTruthTable::testLoadKeyOldVersion()
     TruthTable truthTable2;
 
     QDataStream loadStream(data);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     // Load with version 4.1 (less than 4.2)
     SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
     truthTable2.load(loadStream, context);

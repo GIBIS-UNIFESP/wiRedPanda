@@ -17,7 +17,7 @@
 #include "App/IO/SerializationContext.h"
 
 class QGraphicsItem;
-class QNEPort;
+class Port;
 
 /**
  * \class Serialization

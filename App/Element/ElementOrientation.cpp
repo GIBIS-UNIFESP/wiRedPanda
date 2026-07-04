@@ -6,7 +6,7 @@
 #include <cmath>
 
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 void ElementOrientation::setRotation(const qreal angle)
 {
@@ -31,7 +31,7 @@ void ElementOrientation::rotatePorts()
     }
 }
 
-void ElementOrientation::orientPort(QNEPort *port)
+void ElementOrientation::orientPort(Port *port)
 {
     // Non-rotatable elements keep their pixmap fixed and instead transform each port about the
     // pixmap centre, so the port moves to the rotated/mirrored side while the graphic stays

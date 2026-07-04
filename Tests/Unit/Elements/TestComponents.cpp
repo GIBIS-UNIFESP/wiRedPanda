@@ -11,7 +11,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
@@ -86,19 +86,19 @@ void TestComponents::testIC()
     auto *led1 = new Led();
     auto *led2 = new Led();
 
-    auto *connection1 = new QNEConnection();
+    auto *connection1 = new Connection();
     connection1->setStartPort(clkButton->outputPort());
     connection1->setEndPort(ic->inputPort(2));
 
-    auto *connection2 = new QNEConnection();
+    auto *connection2 = new Connection();
     connection2->setStartPort(prstButton->outputPort());
     connection2->setEndPort(ic->inputPort(0));
 
-    auto *connection3 = new QNEConnection();
+    auto *connection3 = new Connection();
     connection3->setStartPort(ic->outputPort(0));
     connection3->setEndPort(led1->inputPort());
 
-    auto *connection4 = new QNEConnection();
+    auto *connection4 = new Connection();
     connection4->setStartPort(ic->outputPort(1));
     connection4->setEndPort(led2->inputPort());
 

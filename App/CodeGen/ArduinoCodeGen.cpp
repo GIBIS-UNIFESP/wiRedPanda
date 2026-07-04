@@ -17,8 +17,8 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 
@@ -70,13 +70,13 @@ bool ArduinoCodeGen::isArduinoReserved(const QString &name)
     return reserved.contains(name);
 }
 
-QString ArduinoCodeGen::otherPortName(QNEPort *port)
+QString ArduinoCodeGen::otherPortName(Port *port)
 {
-    QSet<QNEPort *> visited;
+    QSet<Port *> visited;
     return otherPortNameImpl(port, visited);
 }
 
-QString ArduinoCodeGen::otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &visited)
+QString ArduinoCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visited)
 {
     if (!port) {
         return "LOW";
@@ -268,7 +268,7 @@ void ArduinoCodeGen::declareOutputs()
                 if (!label.isEmpty()) {
                     varName = QString("%1_%2").arg(varName, label);
                 }
-                QNEPort *port = elm->inputPort(i);
+                Port *port = elm->inputPort(i);
                 if (port && !port->name().isEmpty()) {
                     varName = QString("%1_%2").arg(varName, port->name());
                 }
@@ -303,7 +303,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
             QString baseVarName = QString("aux_%1%2_%3").arg(icPrefix, removeForbiddenChars(ic->label()), QString::number(counter++));
 
             for (int i = 0; i < ic->outputSize(); ++i) {
-                QNEPort *externalPort = ic->outputPort(i);
+                Port *externalPort = ic->outputPort(i);
                 if (externalPort) {
                     QString portVarName = baseVarName;
                     const QString portName = externalPort->name();
@@ -328,7 +328,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                 declareAuxVariablesRec(ic->internalElements(), true, nestedPrefix);
 
                 for (int i = 0; i < ic->internalInputs().size(); ++i) {
-                    QNEPort *internalPort = ic->internalInputs().at(i);
+                    Port *internalPort = ic->internalInputs().at(i);
                     if (m_varMap.value(internalPort).isEmpty()) {
                         const QString portVarName = QString("aux_ic_input_%1%2_%3_%4").arg(icPrefix, removeForbiddenChars(ic->label()), QString::number(counter - 1), QString::number(i));
                         m_varMap[internalPort] = portVarName;
@@ -354,7 +354,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
         }
 
         if (outputs.size() == 1) {
-            QNEPort *port = outputs.constFirst();
+            Port *port = outputs.constFirst();
 
             if (elm->elementType() == ElementType::InputVcc) {
                 m_varMap[port] = "HIGH";
@@ -674,8 +674,8 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
             m_stream << "    // IC: " << ic->label() << Qt::endl;
 
             for (int i = 0; i < ic->inputSize(); ++i) {
-                QNEPort *externalPort = ic->inputPort(i);
-                QNEPort *internalPort = ic->internalInputs().at(i);
+                Port *externalPort = ic->inputPort(i);
+                Port *internalPort = ic->internalInputs().at(i);
                 const QString externalValue = otherPortName(externalPort);
                 const QString internalVar = m_varMap.value(internalPort);
                 m_stream << "    " << internalVar << " = " << externalValue << ";" << Qt::endl;
@@ -705,8 +705,8 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
             }
 
             for (int i = 0; i < ic->outputSize(); ++i) {
-                QNEPort *externalPort = ic->outputPort(i);
-                QNEPort *internalPort = ic->internalOutputs().at(i);
+                Port *externalPort = ic->outputPort(i);
+                Port *internalPort = ic->internalOutputs().at(i);
                 const QString internalValue = m_varMap.value(internalPort);
                 const QString externalVar = m_varMap.value(externalPort);
                 m_stream << "    " << externalVar << " = " << internalValue << ";" << Qt::endl;
@@ -1164,7 +1164,7 @@ void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
         auto *outputPort = elm->outputPort();
         if (!outputPort) return;
         QString varName = m_varMap.value(outputPort);
-        QNEPort *inPort = elm->inputPort();
+        Port *inPort = elm->inputPort();
         if (!inPort) return;
 
         // Build the inner expression first

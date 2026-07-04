@@ -11,7 +11,7 @@
 
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 
 /// Shared, lazily-constructed vector renderer for the IC mascot logo — one per process, drawn
 /// directly in drawBody() so the logo stays crisp at any zoom. GUI-thread only, like pixmapCache().
@@ -81,11 +81,11 @@ void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &ite
     // boundary Input/Output elements are still in their designed form here; the
     // substitution to proxy Nodes happens later in processLoadedItems().
     QVector<GraphicElement *> elements;
-    QVector<QNEConnection *> connections;
+    QVector<Connection *> connections;
     elements.reserve(items.size());
     connections.reserve(items.size());
     for (auto *item : items) {
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             connections.append(conn);
         } else if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
             elements.append(elm);

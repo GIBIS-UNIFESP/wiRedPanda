@@ -17,8 +17,8 @@
 
 class GraphicElement;
 class IC;
-class QNEInputPort;
-class QNEPort;
+class InputPort;
+class Port;
 
 /**
  * \class MappedPin
@@ -34,10 +34,10 @@ public:
      * \param elm        Owning graphic element.
      * \param pin        Arduino physical pin label (e.g. "A0", "2").
      * \param varName    Generated variable name used in the sketch.
-     * \param port       The QNEPort this mapping refers to.
+     * \param port       The Port this mapping refers to.
      * \param portNumber Index of the port within the element (default 0).
      */
-    MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, QNEPort *port, const int portNumber = 0)
+    MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, Port *port, const int portNumber = 0)
         : m_elm(elm)
         , m_port(port)
         , m_pin(pin)
@@ -47,7 +47,7 @@ public:
     }
 
     GraphicElement *m_elm = nullptr;
-    QNEPort *m_port = nullptr;
+    Port *m_port = nullptr;
     QString m_pin;
     QString m_varName;
     int m_portNumber = 0;
@@ -123,8 +123,8 @@ private:
     /// Builds a nested ternary expression for multiplexer select lines starting at \a startIndex.
     QString buildSelectExpression(GraphicElement *elm, int startIndex, int numSelectLines);
     /// Returns the variable name of the signal driving \a port.
-    QString otherPortName(QNEPort *port);
-    QString otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &visited);
+    QString otherPortName(Port *port);
+    QString otherPortNameImpl(Port *port, QSet<Port *> &visited);
     void emitFlipFlopBlock(GraphicElement *elm, const QString &typeName, const QString &firstOut,
                            const QString &secondOut, int clockInputIndex, int presetInputIndex,
                            int clearInputIndex, const std::function<void()> &edgeLogic,
@@ -176,8 +176,8 @@ private:
     // --- Members ---
 
     QFile m_file;                              ///< Output file handle.
-    QHash<QNEPort *, QString> m_varMap;        ///< Port → generated variable name mapping.
-    QHash<QString, QNEInputPort *> m_txInputPorts; ///< Wireless Tx label → input port mapping.
+    QHash<Port *, QString> m_varMap;        ///< Port → generated variable name mapping.
+    QHash<QString, InputPort *> m_txInputPorts; ///< Wireless Tx label → input port mapping.
     QStringList m_availablePins;               ///< Remaining unassigned GPIO pin labels.
     QStringList m_declaredVariables;           ///< Names of already-declared variables (duplicate guard).
     QTextStream m_stream;                      ///< Text stream writing to m_file.

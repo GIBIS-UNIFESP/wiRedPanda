@@ -12,7 +12,7 @@
 #include <QString>
 #include <QVersionNumber>
 
-class QNEPort;
+class Port;
 
 /**
  * \struct SerializationContext
@@ -28,7 +28,7 @@ class QNEPort;
  *   serial IDs for backward compatibility.
  */
 struct SerializationContext {
-    QHash<quint64, QNEPort *> &portMap; ///< Accumulated port-pointer map built during deserialization.
+    QHash<quint64, Port *> &portMap; ///< Accumulated port-pointer map built during deserialization.
     QVersionNumber version;            ///< File-format version read from the stream header.
     QString contextDir = {};           ///< Directory of the .panda file (for relative path resolution).
     QHash<quint64, quint64> oldPtrToSerialId = {}; ///< Legacy pointer-ID → serial-ID mapping.

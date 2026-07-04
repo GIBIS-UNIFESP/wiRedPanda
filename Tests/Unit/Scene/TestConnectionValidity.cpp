@@ -10,7 +10,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -34,7 +34,7 @@ void TestConnectionValidity::testConnectionStatusValid()
     auto *inPort = and1->inputPort(0);
 
     // Create a connection
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(outPort);
     conn->setEndPort(inPort);
     scene.addItem(conn);
@@ -48,7 +48,7 @@ void TestConnectionValidity::testConnectionStatusInvalid()
     Scene scene;
 
     // Create a connection with no ports set
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     scene.addItem(conn);
 
     // Connection with unset ports should be invalid
@@ -66,7 +66,7 @@ void TestConnectionValidity::testPortDeletionDeletesConnection()
     scene.addItem(and2);
 
     // Create a connection
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     auto *outPort1 = and1->outputPort(0);
     auto *inPort2 = and2->inputPort(0);
     conn->setStartPort(outPort1);
@@ -76,7 +76,7 @@ void TestConnectionValidity::testPortDeletionDeletesConnection()
     QCOMPARE(TestUtils::countConnections(&scene), 1);
 
     // When and1 is deleted, its output port is deleted, which automatically
-    // deletes the connection (see QNEOutputPort destructor)
+    // deletes the connection (see OutputPort destructor)
     scene.removeItem(and1.get());
     and1.reset();
 
@@ -97,12 +97,12 @@ void TestConnectionValidity::testMultipleConnectionsStatus()
     scene.addItem(and3);
 
     // Create connections: vcc->and2->and3
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     conn1->setStartPort(vcc->outputPort(0));
     conn1->setEndPort(and2->inputPort(0));
     scene.addItem(conn1);
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     conn2->setStartPort(and2->outputPort(0));
     conn2->setEndPort(and3->inputPort(0));
     scene.addItem(conn2);
@@ -128,7 +128,7 @@ void TestConnectionValidity::testPortValidityWithConnections()
     auto *outPort = and1->outputPort(0);
     auto *inPort = and2->inputPort(0);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(outPort);
     conn->setEndPort(inPort);
     scene.addItem(conn);
@@ -149,7 +149,7 @@ void TestConnectionValidity::testConnectionWithDisconnectedPorts()
     auto *inPort = and2->inputPort(0);
 
     // Create connection with ports not in scene
-    auto conn = std::unique_ptr<QNEConnection>(new QNEConnection());
+    auto conn = std::unique_ptr<Connection>(new Connection());
     conn->setStartPort(outPort);
     conn->setEndPort(inPort);
 
@@ -171,12 +171,12 @@ void TestConnectionValidity::testInputPortWithMultipleConnections()
     scene.addItem(and3);
 
     // Connect vcc and gnd outputs to separate and3 inputs
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     conn1->setStartPort(vcc->outputPort(0));
     conn1->setEndPort(and3->inputPort(0));
     scene.addItem(conn1);
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     conn2->setStartPort(gnd->outputPort(0));
     conn2->setEndPort(and3->inputPort(1));
     scene.addItem(conn2);
@@ -199,12 +199,12 @@ void TestConnectionValidity::testOutputPortWithMultipleConnections()
     scene.addItem(and3);
 
     // Connect vcc output to both and2 and and3 inputs
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     conn1->setStartPort(vcc->outputPort(0));
     conn1->setEndPort(and2->inputPort(0));
     scene.addItem(conn1);
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     conn2->setStartPort(vcc->outputPort(0));
     conn2->setEndPort(and3->inputPort(0));
     scene.addItem(conn2);

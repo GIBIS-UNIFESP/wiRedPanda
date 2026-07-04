@@ -28,7 +28,7 @@
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -983,7 +983,7 @@ void TestICInline::testBlobNamePreservation()
     std::unique_ptr<IC> ic2(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
-        QHash<quint64, QNEPort *> portMap;
+        QHash<quint64, Port *> portMap;
         SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         ic2->load(stream, ctx);
@@ -1214,7 +1214,7 @@ void TestICInline::testBlobNameSpecialCharacters()
         std::unique_ptr<IC> loaded(new IC());
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
-            QHash<quint64, QNEPort *> portMap;
+            QHash<quint64, Port *> portMap;
             SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
             ctx.blobRegistry = &registry;
             loaded->load(stream, ctx);
@@ -1712,7 +1712,7 @@ void TestICInline::testLoadV41MapDirectConstruct()
     std::unique_ptr<IC> loaded(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
-        QHash<quint64, QNEPort *> portMap;
+        QHash<quint64, Port *> portMap;
         SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         loaded->load(stream, ctx);
@@ -1747,7 +1747,7 @@ void TestICInline::testLoadMismatchNoFileName()
     std::unique_ptr<IC> loaded(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
-        QHash<quint64, QNEPort *> portMap;
+        QHash<quint64, Port *> portMap;
         SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         bool threw = false;
         try {
@@ -2650,7 +2650,7 @@ void TestICInline::testSerializationMismatchFallback()
         bool threw = false;
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
-            QHash<quint64, QNEPort *> portMap;
+            QHash<quint64, Port *> portMap;
             SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
             try {
                 loaded->load(stream, ctx);
@@ -2679,7 +2679,7 @@ void TestICInline::testSerializationMismatchFallback()
         bool threw = false;
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
-            QHash<quint64, QNEPort *> portMap;
+            QHash<quint64, Port *> portMap;
             SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
             try {
                 loaded->load(stream, ctx);
@@ -2706,7 +2706,7 @@ void TestICInline::testSerializationMismatchFallback()
         std::unique_ptr<IC> loaded(new IC());
         {
             QDataStream stream(&embeddedData, QIODevice::ReadOnly);
-            QHash<quint64, QNEPort *> portMap;
+            QHash<quint64, Port *> portMap;
             SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
             ctx.blobRegistry = &registry;
             loaded->load(stream, ctx);
@@ -2740,7 +2740,7 @@ void TestICInline::testSerializationMismatchFallbackCase2State()
     std::unique_ptr<IC> loaded(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
-        QHash<quint64, QNEPort *> portMap;
+        QHash<quint64, Port *> portMap;
         SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         bool threw = false;
         try {
@@ -2915,7 +2915,7 @@ void TestICInline::testSetInlineDataEmptyBlobNameRoundTripFails()
     std::unique_ptr<IC> loaded(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
-        QHash<quint64, QNEPort *> portMap;
+        QHash<quint64, Port *> portMap;
         SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         bool threw = false;
         try {
@@ -3067,7 +3067,7 @@ void TestICInline::testCopyFileGuardDuringPaste()
     std::unique_ptr<IC> ic2(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
-        QHash<quint64, QNEPort *> portMap;
+        QHash<quint64, Port *> portMap;
         SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         ic2->load(stream, ctx);
@@ -3105,7 +3105,7 @@ void TestICInline::testCopyPasteEmbeddedICRoundTrip()
     std::unique_ptr<IC> pasted(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
-        QHash<quint64, QNEPort *> portMap;
+        QHash<quint64, Port *> portMap;
         SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
         ctx.blobRegistry = &registry;
         pasted->load(stream, ctx);
@@ -4798,7 +4798,7 @@ void TestICInline::testLoadICWithMissingBlobFallsBackToFile()
     // should throw.
     auto ic2 = std::make_unique<IC>();
     QDataStream in(&elemData, QIODevice::ReadOnly);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), m_fixtureDir};
     // No blobRegistry → ctx.blobRegistry is nullptr
 
@@ -4835,7 +4835,7 @@ void TestICInline::testLoadICWithNullBlobRegistry()
     // Load with null blobRegistry — should fall back to file load successfully
     auto ic2 = std::make_unique<IC>();
     QDataStream in(&elemData, QIODevice::ReadOnly);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), m_fixtureDir};
     // ctx.blobRegistry is nullptr by default
 
@@ -4899,7 +4899,7 @@ void TestICInline::testReconnectConnectionsSkipsDeletedElement()
     sw->setPos(0, 100);
     ws.scene()->addItem(sw);
 
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     conn->setStartPort(sw->outputPort(0));
     conn->setEndPort(ic->inputPort(0));
     ws.scene()->addItem(conn);
@@ -5073,7 +5073,7 @@ void TestICInline::testLoadICMissingAllNameFieldsThrows()
 
     auto ic2 = std::make_unique<IC>();
     QDataStream in(&elemData, QIODevice::ReadOnly);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), m_fixtureDir};
 
     bool threw = false;
@@ -5757,7 +5757,7 @@ void TestICInline::testInlineSavePreservesWiresA15()
 {
     // Pre-fix the inline-IC save loop called loadFromBlob on every file-backed
     // sub-IC to "convert" it to embedded. loadFromBlob destroys and rebuilds
-    // the IC's child ports, which Qt cascade-deletes the QNEConnections
+    // the IC's child ports, which Qt cascade-deletes the Connections
     // attached to those ports — silently dropping every scene wire connected
     // to the file-backed sub-IC. The fix skips the loadFromBlob call so the
     // ports survive and the wires stay attached.
@@ -5789,14 +5789,14 @@ void TestICInline::testInlineSavePreservesWiresA15()
     sw->setPos(0, 200);
     childWs.scene()->addItem(sw);
 
-    auto *wire = new QNEConnection();
+    auto *wire = new Connection();
     wire->setStartPort(sw->outputPort());
     wire->setEndPort(droppedIC->inputPort(0));
     childWs.scene()->addItem(wire);
 
     auto wireSurvives = [&]() {
         for (auto *item : childWs.scene()->items()) {
-            if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+            if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
                 if (conn->startPort() && conn->endPort()
                     && conn->startPort()->graphicElement() == sw
                     && conn->endPort()->graphicElement() == droppedIC) {

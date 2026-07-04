@@ -4,15 +4,15 @@
 // Portions Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Port.h"
 
 #include <QPen>
 
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 
-QNEPort::QNEPort(QGraphicsItem *parent)
+Port::Port(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
     // ItemSendsScenePositionChanges triggers itemChange(ItemScenePositionHasChanged)
@@ -21,29 +21,28 @@ QNEPort::QNEPort(QGraphicsItem *parent)
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
-QPainterPath QNEPort::shape() const
+QPainterPath Port::shape() const
 {
-    // Hit-area: a small square centred on the port's origin (±m_radius), independent
-    // of the painted glyph.  m_radius = 5 px gives a 10×10 px clickable area which is
-    // large enough to hit reliably without obscuring nearby elements; the direction
-    // shapes (circle/triangle) would otherwise shrink the grab target.
+    // Hit-area: a small square centred on the port's origin (±kRadius), independent
+    // of the painted glyph — the direction shapes (circle/triangle) would otherwise
+    // shrink the grab target.
     QPainterPath path;
-    path.addRect(QRectF(QPointF(-m_radius, -m_radius), QPointF(m_radius, m_radius)));
+    path.addRect(QRectF(QPointF(-kRadius, -kRadius), QPointF(kRadius, kRadius)));
     return path;
 }
 
-const QList<QNEConnection *> &QNEPort::connections() const
+const QList<Connection *> &Port::connections() const
 {
     return m_connections;
 }
 
-void QNEPort::attachConnection(QNEConnection *conn)
+void Port::attachConnection(Connection *conn)
 {
     if (!conn) {
         return;
     }
 
-    // Guard against duplicate entries; QNEConnection::setStartPort/setEndPort call connect()
+    // Guard against duplicate entries; Connection::setStartPort/setEndPort call connect()
     // and may be called more than once during IC rewiring
     if (!m_connections.contains(conn)) {
         m_connections.append(conn);
@@ -52,7 +51,7 @@ void QNEPort::attachConnection(QNEConnection *conn)
     updateConnections();
 }
 
-void QNEPort::detachConnection(QNEConnection *conn)
+void Port::detachConnection(Connection *conn)
 {
     m_connections.removeAll(conn);
 
@@ -69,13 +68,13 @@ void QNEPort::detachConnection(QNEConnection *conn)
     updateConnections();
 }
 
-bool QNEPort::isConnected(QNEPort *otherPort)
+bool Port::isConnected(Port *otherPort)
 {
     return std::any_of(m_connections.cbegin(), m_connections.cend(),
                        [&](auto *conn) { return (conn->startPort() == otherPort) || (conn->endPort() == otherPort); });
 }
 
-void QNEPort::updateConnections()
+void Port::updateConnections()
 {
     // Redraw all wires whose geometry depends on this port's scene position
     for (auto *conn : std::as_const(m_connections)) {
@@ -104,7 +103,7 @@ void QNEPort::updateConnections()
     }
 }
 
-QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant Port::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == ItemScenePositionHasChanged) {
         updateConnections();
@@ -113,39 +112,39 @@ QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value)
     return QGraphicsPathItem::itemChange(change, value);
 }
 
-int QNEPort::index() const
+int Port::index() const
 {
     return m_index;
 }
 
-void QNEPort::setIndex(const int index)
+void Port::setIndex(const int index)
 {
     m_index = index;
 }
 
-QString QNEPort::name() const
+QString Port::name() const
 {
     return m_name;
 }
 
-void QNEPort::setName(const QString &name)
+void Port::setName(const QString &name)
 {
     m_name = name;
     setToolTip(name);
 }
 
-void QNEPort::setDefaultStatus(const Status defaultStatus)
+void Port::setDefaultStatus(const Status defaultStatus)
 {
     m_defaultStatus = defaultStatus;
     setStatus(defaultStatus);
 }
 
-QBrush QNEPort::currentBrush() const
+QBrush Port::currentBrush() const
 {
     return m_currentBrush;
 }
 
-void QNEPort::setCurrentBrush(const QBrush &currentBrush)
+void Port::setCurrentBrush(const QBrush &currentBrush)
 {
     m_currentBrush = currentBrush;
 
@@ -156,12 +155,12 @@ void QNEPort::setCurrentBrush(const QBrush &currentBrush)
     }
 }
 
-bool QNEPort::isRequired() const
+bool Port::isRequired() const
 {
     return m_required;
 }
 
-void QNEPort::setRequired(const bool required)
+void Port::setRequired(const bool required)
 {
     m_required = required;
 
@@ -170,32 +169,32 @@ void QNEPort::setRequired(const bool required)
     updateConnections();
 }
 
-void QNEPort::setSerialId(quint64 serialId)
+void Port::setSerialId(quint64 serialId)
 {
     m_serialId = serialId;
 }
 
-quint64 QNEPort::serialId() const
+quint64 Port::serialId() const
 {
     return m_serialId;
 }
 
-void QNEPort::setGraphicElement(GraphicElement *graphicElement)
+void Port::setGraphicElement(GraphicElement *graphicElement)
 {
     m_graphicElement = graphicElement;
 }
 
-void QNEPort::hoverLeave()
+void Port::hoverLeave()
 {
     setBrush(currentBrush());
 }
 
-void QNEPort::hoverEnter()
+void Port::hoverEnter()
 {
     setBrush(QBrush(ThemeManager::attributes().m_portHoverPort));
 }
 
-void QNEPort::updateTheme()
+void Port::updateTheme()
 {
     const auto &theme = ThemeManager::attributes();
 
@@ -223,7 +222,7 @@ void QNEPort::updateTheme()
     }
 }
 
-void QNEPort::drainConnections(bool isInput)
+void Port::drainConnections(bool isInput)
 {
     while (!m_connections.isEmpty()) {
         auto *conn = m_connections.constLast();
@@ -242,12 +241,12 @@ void QNEPort::drainConnections(bool isInput)
     }
 }
 
-QNEInputPort::QNEInputPort(QGraphicsItem *parent)
-    : QNEPort(parent)
+InputPort::InputPort(QGraphicsItem *parent)
+    : Port(parent)
 {
     // Circle: neutral connection point — the signal terminates here
     QPainterPath path;
-    path.addEllipse(QRectF(-m_radius, -m_radius, 2 * m_radius, 2 * m_radius));
+    path.addEllipse(QRectF(-kRadius, -kRadius, 2 * kRadius, 2 * kRadius));
     setPath(path);
 
     // A fresh port is unconnected and required by default, so the validity rule
@@ -255,14 +254,14 @@ QNEInputPort::QNEInputPort(QGraphicsItem *parent)
     // until a wire arrives or setRequired(false) relaxes the port. Without this,
     // elements positioned before entering the scene (file load, scripted
     // creation) never get a scene-position change to trigger the rule.
-    m_status = QNEInputPort::isValid() ? m_status : Status::Error;
+    m_status = InputPort::isValid() ? m_status : Status::Error;
 
     // Style directly: setStatus() would early-return here because m_status
     // already holds its final construction-time value
     updateTheme();
 }
 
-QNEInputPort::~QNEInputPort()
+InputPort::~InputPort()
 {
     // An input port owns (and must clean up) all connections that terminate here.
     // Manually remove from the list before deleting to prevent the connection destructor
@@ -270,7 +269,7 @@ QNEInputPort::~QNEInputPort()
     drainConnections(true);
 }
 
-void QNEInputPort::setStatus(const Status status)
+void InputPort::setStatus(const Status status)
 {
     if (status == m_status) {
         return;
@@ -279,36 +278,36 @@ void QNEInputPort::setStatus(const Status status)
     // If the port is invalid due to multiple drivers (bus conflict), emit Error so the
     // user sees a clear red signal instead of a silent gray Unknown.
     // Required-but-unconnected ports also become Error to make missing connections visible.
-    m_status = QNEInputPort::isValid() ? status : Status::Error;
+    m_status = InputPort::isValid() ? status : Status::Error;
 
     updateTheme();
 }
 
-bool QNEInputPort::isInput() const
+bool InputPort::isInput() const
 {
     return true;
 }
 
-bool QNEInputPort::isOutput() const
+bool InputPort::isOutput() const
 {
     return false;
 }
 
-bool QNEInputPort::isValid() const
+bool InputPort::isValid() const
 {
     // Valid states: unconnected and optional (default value is safe to use), OR
     // exactly one connection (multi-driver wiring is not allowed in this simulation model)
     return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
 }
 
-QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
-    : QNEPort(parent)
+OutputPort::OutputPort(QGraphicsItem *parent)
+    : Port(parent)
 {
     // Right-pointing triangle: tip toward the wire, indicating signal flows outward
     QPainterPath path;
-    path.moveTo(-m_radius, -m_radius);
-    path.lineTo(+m_radius, 0);
-    path.lineTo(-m_radius, +m_radius);
+    path.moveTo(-kRadius, -kRadius);
+    path.lineTo(+kRadius, 0);
+    path.lineTo(-kRadius, +kRadius);
     path.closeSubpath();
     setPath(path);
 
@@ -317,14 +316,14 @@ QNEOutputPort::QNEOutputPort(QGraphicsItem *parent)
     updateTheme();
 }
 
-QNEOutputPort::~QNEOutputPort()
+OutputPort::~OutputPort()
 {
-    // Mirror of QNEInputPort destructor: output port also owns the connections that originate
+    // Mirror of InputPort destructor: output port also owns the connections that originate
     // here and must break the back-reference before deletion to avoid re-entrant disconnect()
     drainConnections(false);
 }
 
-void QNEOutputPort::setStatus(const Status status)
+void OutputPort::setStatus(const Status status)
 {
     if (status == m_status) {
         return;
@@ -340,17 +339,17 @@ void QNEOutputPort::setStatus(const Status status)
     }
 }
 
-bool QNEOutputPort::isInput() const
+bool OutputPort::isInput() const
 {
     return false;
 }
 
-bool QNEOutputPort::isOutput() const
+bool OutputPort::isOutput() const
 {
     return true;
 }
 
-bool QNEOutputPort::isValid() const
+bool OutputPort::isValid() const
 {
     // Output ports have unrestricted fan-out and no connectivity constraints;
     // their status is the simulation engine's responsibility, not a validity concern

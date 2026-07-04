@@ -9,7 +9,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
@@ -108,22 +108,22 @@ void TestFeedback::testPureCombinationalCircuit()
     btn->setPos(0, 100);
 
     // Create simple combinational chain: btn → and1[0,1] → and2[0,1]
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     scene.addItem(conn1);
     conn1->setStartPort(btn->outputPort(0));
     conn1->setEndPort(and1->inputPort(0));
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     scene.addItem(conn2);
     conn2->setStartPort(btn->outputPort(0));
     conn2->setEndPort(and1->inputPort(1));
 
-    auto *conn3 = new QNEConnection();
+    auto *conn3 = new Connection();
     scene.addItem(conn3);
     conn3->setStartPort(and1->outputPort(0));
     conn3->setEndPort(and2->inputPort(0));
 
-    auto *conn4 = new QNEConnection();
+    auto *conn4 = new Connection();
     scene.addItem(conn4);
     conn4->setStartPort(and1->outputPort(0));
     conn4->setEndPort(and2->inputPort(1));
@@ -302,23 +302,23 @@ void TestFeedback::testMultipleIndependentFeedbackLoops()
     nand2b->setPos(200, 0);
 
     // First SR latch: nand1a ↔ nand1b
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     scene.addItem(conn1);
     conn1->setStartPort(nand1a->outputPort(0));
     conn1->setEndPort(nand1b->inputPort(0));
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     scene.addItem(conn2);
     conn2->setStartPort(nand1b->outputPort(0));
     conn2->setEndPort(nand1a->inputPort(0));
 
     // Second SR latch: nand2a ↔ nand2b
-    auto *conn3 = new QNEConnection();
+    auto *conn3 = new Connection();
     scene.addItem(conn3);
     conn3->setStartPort(nand2a->outputPort(0));
     conn3->setEndPort(nand2b->inputPort(0));
 
-    auto *conn4 = new QNEConnection();
+    auto *conn4 = new Connection();
     scene.addItem(conn4);
     conn4->setStartPort(nand2b->outputPort(0));
     conn4->setEndPort(nand2a->inputPort(0));
@@ -367,7 +367,7 @@ void TestFeedback::testSingleElementFeedback()
     notGate->setPos(50, 50);
 
     // Create feedback connection: NOT output -> NOT input (self-loop)
-    auto *conn = new QNEConnection();
+    auto *conn = new Connection();
     scene.addItem(conn);
     conn->setStartPort(notGate->outputPort(0));
     conn->setEndPort(notGate->inputPort(0));
@@ -407,7 +407,7 @@ void TestFeedback::testLargeFeedbackLoops()
 
     // Wire them as a ring: inv0 → inv1 → ... → inv9 → inv0
     for (int i = 0; i < 10; ++i) {
-        auto *conn = new QNEConnection();
+        auto *conn = new Connection();
         scene.addItem(conn);
         conn->setStartPort(inverters[i]->outputPort(0));
         conn->setEndPort(inverters[(i + 1) % 10]->inputPort(0));
@@ -470,7 +470,7 @@ void TestFeedback::testDeepCircuitsWithFeedback()
 
     // Wire them as a ring: not0 → not1 → ... → not9 → not0 (even count → converges)
     for (int i = 0; i < 10; ++i) {
-        auto *conn = new QNEConnection();
+        auto *conn = new Connection();
         scene.addItem(conn);
         conn->setStartPort(elements[i]->outputPort(0));
         conn->setEndPort(elements[(i + 1) % 10]->inputPort(0));
@@ -501,12 +501,12 @@ void TestFeedback::testMultipleSimultaneousFeedbackLoops()
         }
 
         // Wire the 2-NOT ring: not0 ↔ not1
-        auto *conn1 = new QNEConnection();
+        auto *conn1 = new Connection();
         scene.addItem(conn1);
         conn1->setStartPort(loopElements[0]->outputPort(0));
         conn1->setEndPort(loopElements[1]->inputPort(0));
 
-        auto *conn2 = new QNEConnection();
+        auto *conn2 = new Connection();
         scene.addItem(conn2);
         conn2->setStartPort(loopElements[1]->outputPort(0));
         conn2->setEndPort(loopElements[0]->inputPort(0));
@@ -542,23 +542,23 @@ Scene *TestFeedback::createSRLatchFromNAND()
     switchR->setPos(0, 50);
 
     // Wire: S → nand1[0], R → nand2[0]
-    auto *connS = new QNEConnection();
+    auto *connS = new Connection();
     scene->addItem(connS);
     connS->setStartPort(switchS->outputPort(0));
     connS->setEndPort(nand1->inputPort(0));
 
-    auto *connR = new QNEConnection();
+    auto *connR = new Connection();
     scene->addItem(connR);
     connR->setStartPort(switchR->outputPort(0));
     connR->setEndPort(nand2->inputPort(0));
 
     // Cross-feedback: nand2.out → nand1[1], nand1.out → nand2[1]
-    auto *connFeed1 = new QNEConnection();
+    auto *connFeed1 = new Connection();
     scene->addItem(connFeed1);
     connFeed1->setStartPort(nand2->outputPort(0));
     connFeed1->setEndPort(nand1->inputPort(1));
 
-    auto *connFeed2 = new QNEConnection();
+    auto *connFeed2 = new Connection();
     scene->addItem(connFeed2);
     connFeed2->setStartPort(nand1->outputPort(0));
     connFeed2->setEndPort(nand2->inputPort(1));
@@ -583,12 +583,12 @@ Scene *TestFeedback::createDLatchWithFeedback()
     switchEnable->setPos(0, 50);
 
     // Wire Data and Enable inputs
-    auto *connData = new QNEConnection();
+    auto *connData = new Connection();
     scene->addItem(connData);
     connData->setStartPort(switchData->outputPort(0));
     connData->setEndPort(dLatch->inputPort(0));
 
-    auto *connEnable = new QNEConnection();
+    auto *connEnable = new Connection();
     scene->addItem(connEnable);
     connEnable->setStartPort(switchEnable->outputPort(0));
     connEnable->setEndPort(dLatch->inputPort(1));
@@ -613,17 +613,17 @@ Scene *TestFeedback::createRingOscillator()
     not3->setPos(200, 0);
 
     // Wire as ring: NOT1 -> NOT2 -> NOT3 -> NOT1 (odd count, non-converging)
-    auto *conn1 = new QNEConnection();
+    auto *conn1 = new Connection();
     scene->addItem(conn1);
     conn1->setStartPort(not1->outputPort(0));
     conn1->setEndPort(not2->inputPort(0));
 
-    auto *conn2 = new QNEConnection();
+    auto *conn2 = new Connection();
     scene->addItem(conn2);
     conn2->setStartPort(not2->outputPort(0));
     conn2->setEndPort(not3->inputPort(0));
 
-    auto *conn3 = new QNEConnection();
+    auto *conn3 = new Connection();
     scene->addItem(conn3);
     conn3->setStartPort(not3->outputPort(0));
     conn3->setEndPort(not1->inputPort(0));
@@ -652,28 +652,28 @@ Scene *TestFeedback::createMixedCircuit()
 
     // Wire: btn → and1[0,1] → or1[0], not1.out → or1[1], or1.out → not1.in
     // Combinational path: btn → AND → OR
-    auto *connBtn1 = new QNEConnection();
+    auto *connBtn1 = new Connection();
     scene->addItem(connBtn1);
     connBtn1->setStartPort(btn->outputPort(0));
     connBtn1->setEndPort(and1->inputPort(0));
 
-    auto *connBtn2 = new QNEConnection();
+    auto *connBtn2 = new Connection();
     scene->addItem(connBtn2);
     connBtn2->setStartPort(btn->outputPort(0));
     connBtn2->setEndPort(and1->inputPort(1));
 
-    auto *connAnd = new QNEConnection();
+    auto *connAnd = new Connection();
     scene->addItem(connAnd);
     connAnd->setStartPort(and1->outputPort(0));
     connAnd->setEndPort(or1->inputPort(0));
 
     // Feedback ring: OR → NOT → OR
-    auto *connOr = new QNEConnection();
+    auto *connOr = new Connection();
     scene->addItem(connOr);
     connOr->setStartPort(or1->outputPort(0));
     connOr->setEndPort(not1->inputPort(0));
 
-    auto *connFeed = new QNEConnection();
+    auto *connFeed = new Connection();
     scene->addItem(connFeed);
     connFeed->setStartPort(not1->outputPort(0));
     connFeed->setEndPort(or1->inputPort(1));

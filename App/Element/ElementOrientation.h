@@ -10,7 +10,7 @@
 #include <QtGlobal>
 
 class GraphicElement;
-class QNEPort;
+class Port;
 
 /**
  * \class ElementOrientation
@@ -61,7 +61,7 @@ public:
      * moves to the mirrored/rotated side while the element graphic stays upright.
      * Recomputed from the flags each call, so it is involutive.
      */
-    void orientPort(QNEPort *port);
+    void orientPort(Port *port);
 
     // --- Raw setters: load-time only, no side effects (caller applies afterwards) ---
 

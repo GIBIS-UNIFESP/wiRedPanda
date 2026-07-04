@@ -355,7 +355,7 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
     // Serialization::deserialize() reads items in a while(!stream.atEnd()) loop
     // with NO preceding count field.  Each item starts with an int type tag:
     //   GraphicElement::Type = QGraphicsItem::UserType + 3 = 65539
-    //   QNEConnection::Type  = QGraphicsItem::UserType + 2 = 65538
+    //   Connection::Type  = QGraphicsItem::UserType + 2 = 65538
     // After the element type tag, ElementType is written as quint64 via
     // operator<<(QDataStream&, const ElementType&).
 
@@ -383,7 +383,7 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
     // Valid connections exercise setStartPort/setEndPort and updatePosFromPorts.
     const int connCount = fdp.ConsumeIntegralInRange<int>(0, 4);
     for (int c = 0; c < connCount; ++c) {
-        s << static_cast<int>(QGraphicsItem::UserType + 2); // QNEConnection::Type
+        s << static_cast<int>(QGraphicsItem::UserType + 2); // Connection::Type
 
         // Prefer valid port IDs when available; fall back to fuzz-controlled.
         const bool useValidIds = fdp.ConsumeBool()

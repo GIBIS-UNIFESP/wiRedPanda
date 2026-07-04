@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QTest>
 
-class TestQNEConnection : public QObject
+class TestConnection : public QObject
 {
     Q_OBJECT
 

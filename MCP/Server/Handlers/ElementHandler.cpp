@@ -15,8 +15,8 @@
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
@@ -444,8 +444,8 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
 
             // Collect connections on the port that will be hidden, so they can
             // be deleted in an undo macro (same pattern as ElementEditor::apply).
-            QNEPort *port = (newMode == WirelessMode::Rx) ? static_cast<QNEPort *>(node->inputPort())
-                          : (newMode == WirelessMode::Tx) ? static_cast<QNEPort *>(node->outputPort())
+            Port *port = (newMode == WirelessMode::Rx) ? static_cast<Port *>(node->inputPort())
+                          : (newMode == WirelessMode::Tx) ? static_cast<Port *>(node->outputPort())
                           : nullptr;
             if (port) {
                 for (auto *conn : port->connections()) {
@@ -542,13 +542,13 @@ QJsonObject ElementHandler::handleGetOutputValue(const QJsonObject &params, cons
             if (!validatePortRange(element, portIndex, false, "port", errorMsg)) {
                 return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
             }
-            QNEInputPort *inPort = element->inputPort(portIndex);
+            InputPort *inPort = element->inputPort(portIndex);
             result["value"] = inPort ? (inPort->status() == Status::Active) : false;
         } else {
             if (!validatePortRange(element, portIndex, true, "port", errorMsg)) {
                 return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
             }
-            QNEOutputPort *outPort = element->outputPort(portIndex);
+            OutputPort *outPort = element->outputPort(portIndex);
             result["value"] = outPort ? (outPort->status() == Status::Active) : false;
         }
     }

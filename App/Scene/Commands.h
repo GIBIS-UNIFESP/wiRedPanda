@@ -12,12 +12,12 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 
-class QNEConnection;
+class Connection;
 
 namespace CommandUtils {
     // Element/Connection lookup (scene-scoped)
     GraphicElement *findElm(Scene *scene, const int id);
-    QNEConnection *findConn(Scene *scene, const int id);
+    Connection *findConn(Scene *scene, const int id);
     const QList<GraphicElement *> findElements(Scene *scene, const QList<int> &ids);
     const QList<QGraphicsItem *> findItems(Scene *scene, const QList<int> &ids);
 
@@ -234,7 +234,7 @@ public:
      * \param scene    Target scene.
      * \param parent   Optional parent undo command.
      */
-    explicit SplitCommand(QNEConnection *conn, QPointF mousePos, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit SplitCommand(Connection *conn, QPointF mousePos, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Removes the node and restores the original connection.
     void undo() override;

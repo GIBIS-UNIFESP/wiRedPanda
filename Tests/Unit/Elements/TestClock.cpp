@@ -380,7 +380,7 @@ void TestClock::testLoadVersionOld()
     auto clock2 = std::make_unique<Clock>();
 
     QDataStream loadStream(data);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext contextOld = {portMap, QVersionNumber(3, 0), {}};
     bool threw = false;
     try {
@@ -406,7 +406,7 @@ void TestClock::testLoadVersionNew()
     auto clock2 = std::make_unique<Clock>();
 
     QDataStream loadStream(data);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext contextNew = {portMap, QVersionNumber(4, 1), {}};
 
     clock2->load(loadStream, contextNew);
@@ -431,7 +431,7 @@ void TestClock::testLoadVersionVeryOld()
     stream << quint64(1);  // Parent class data
 
     QDataStream readStream(data);
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext contextVeryOld = {portMap, QVersionNumber(1, 0), {}};
 
     clock->load(readStream, contextVeryOld);

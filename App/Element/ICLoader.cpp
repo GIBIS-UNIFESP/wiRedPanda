@@ -17,14 +17,14 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Nodes/QNEConnection.h"
-#include "App/Nodes/QNEPort.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 
 namespace {
 
-bool comparePorts(QNEPort *port1, QNEPort *port2)
+bool comparePorts(Port *port1, Port *port2)
 {
     auto *elem1 = port1->graphicElement();
     auto *elem2 = port2->graphicElement();
@@ -49,12 +49,12 @@ bool comparePorts(QNEPort *port1, QNEPort *port2)
     return (p1.x() < p2.x()) || (qFuzzyCompare(p1.x(), p2.x()) && (p1.y() < p2.y()));
 }
 
-void sortPorts(QVector<QNEPort *> &ports)
+void sortPorts(QVector<Port *> &ports)
 {
     std::stable_sort(ports.begin(), ports.end(), comparePorts);
 }
 
-void buildPortLabels(const QVector<QNEPort *> &ports, QVector<QString> &labels)
+void buildPortLabels(const QVector<Port *> &ports, QVector<QString> &labels)
 {
     for (int i = 0; i < ports.size(); ++i) {
         auto *port = ports.at(i);
@@ -159,7 +159,7 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     const auto preamble = Serialization::readPreamble(stream);
     auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext subCtx = {portMap, preamble.version, fileInfo.absolutePath()};
     subCtx.blobRegistry = fileRegistry.isEmpty() ? nullptr : &fileRegistry;
     QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
@@ -169,13 +169,13 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     // migrateFile()/processLoadedItems() below. processLoadedItems() drains
     // items via takeFirst() as ownership transfers, so on success this guard
     // finds an empty list and does nothing. Connections are nulled out before
-    // qDeleteAll(): a QNEConnection* still owned by an element's port at this
+    // qDeleteAll(): a Connection* still owned by an element's port at this
     // point would otherwise be deleted twice — once directly here, once via
-    // that port's destructor (~QNEInputPort/~QNEOutputPort drain their
+    // that port's destructor (~InputPort/~OutputPort drain their
     // connections).
     auto itemsGuard = qScopeGuard([&items] {
         for (qsizetype i = 0; i < items.size(); ++i) {
-            if (items[i] && items[i]->type() == QNEConnection::Type) {
+            if (items[i] && items[i]->type() == Connection::Type) {
                 delete items[i];
                 items[i] = nullptr;
             }
@@ -253,7 +253,7 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
     while (!items.isEmpty()) {
         auto *item = items.takeFirst();
 
-        if (auto *conn = qgraphicsitem_cast<QNEConnection *>(item)) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             ic.m_internalConnections.append(conn);
             continue;
         }
@@ -308,7 +308,7 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     const auto preamble = Serialization::readPreamble(stream);
     auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
-    QHash<quint64, QNEPort *> portMap;
+    QHash<quint64, Port *> portMap;
     SerializationContext subCtx = {portMap, preamble.version, contextDir};
     subCtx.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
     QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
@@ -317,7 +317,7 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     // before qDeleteAll() and why it's a no-op on the success path.
     auto itemsGuard = qScopeGuard([&items] {
         for (qsizetype i = 0; i < items.size(); ++i) {
-            if (items[i] && items[i]->type() == QNEConnection::Type) {
+            if (items[i] && items[i]->type() == Connection::Type) {
                 delete items[i];
                 items[i] = nullptr;
             }
@@ -453,7 +453,7 @@ void ICLoader::loadBoundaryPorts(IC &ic, const bool isInput, const QVector<QStri
 IC::PortMetadata ICLoader::buildPortMetadata(const QVector<GraphicElement *> &elements)
 {
     IC::PortMetadata meta;
-    QVector<QNEPort *> inputPorts, outputPorts;
+    QVector<Port *> inputPorts, outputPorts;
 
     for (auto *elm : elements) {
         if (elm->elementGroup() == ElementGroup::Input) {

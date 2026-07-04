@@ -20,8 +20,8 @@
 
 class GraphicElement;
 class IC;
-class QNEInputPort;
-class QNEPort;
+class InputPort;
+class Port;
 
 /**
  * \class MappedPinSystemVerilog
@@ -36,10 +36,10 @@ public:
      * \param elm        Owning graphic element.
      * \param pin        Top-level module port name.
      * \param varName    Internal signal/wire name in the generated code.
-     * \param port       Source QNEPort this mapping refers to.
+     * \param port       Source Port this mapping refers to.
      * \param portNumber Index of the port within the element (default 0).
      */
-    MappedPinSystemVerilog(GraphicElement *elm, const QString &pin, const QString &varName, QNEPort *port, const int portNumber = 0)
+    MappedPinSystemVerilog(GraphicElement *elm, const QString &pin, const QString &varName, Port *port, const int portNumber = 0)
         : m_elm(elm)
         , m_port(port)
         , m_pin(pin)
@@ -49,7 +49,7 @@ public:
     }
 
     GraphicElement *m_elm = nullptr; ///< Owning graphic element.
-    QNEPort *m_port = nullptr;       ///< Source port in the circuit graph.
+    Port *m_port = nullptr;       ///< Source port in the circuit graph.
     QString m_pin;                   ///< Top-level module port name.
     QString m_varName;               ///< Generated internal signal name.
     int m_portNumber = 0;            ///< Port index within the element.
@@ -108,9 +108,9 @@ private:
     // --- Signal Name Resolution ---
 
     /// Returns the variable name of the signal driving \a port (resolves through wires and nodes).
-    QString otherPortName(QNEPort *port);
+    QString otherPortName(Port *port);
     /// Recursive implementation of otherPortName() with cycle detection via \a visited.
-    QString otherPortNameImpl(QNEPort *port, QSet<QNEPort *> &visited);
+    QString otherPortNameImpl(Port *port, QSet<Port *> &visited);
     /// Returns \a expr unchanged if simple, otherwise creates a temporary wire and assigns \a expr to it.
     QString ensureSimpleSignal(const QString &expr);
 
@@ -155,7 +155,7 @@ private:
     /// Returns the combinational logic expression for \a elm's output.
     QString generateLogicExpression(GraphicElement *elm);
     /// Recursive implementation of generateLogicExpression() with cycle detection.
-    QString generateLogicExpressionImpl(GraphicElement *elm, QSet<QNEPort *> &visited);
+    QString generateLogicExpressionImpl(GraphicElement *elm, QSet<Port *> &visited);
 
     // --- Top-Level Structure ---
 
@@ -165,8 +165,8 @@ private:
     // --- Members ---
 
     QFile m_file;                              ///< Output file handle.
-    QHash<QNEPort *, QString> m_varMap;        ///< Port → generated signal name mapping.
-    QHash<QString, QNEInputPort *> m_txInputPorts; ///< Wireless Tx label → input port mapping.
+    QHash<Port *, QString> m_varMap;        ///< Port → generated signal name mapping.
+    QHash<QString, InputPort *> m_txInputPorts; ///< Wireless Tx label → input port mapping.
     QHash<QString, ICModuleInfo> m_icModules;  ///< IC source key → module metadata.
     QHash<IC *, QString> m_instanceNames;      ///< IC element → unique instance name.
     QStringList m_availablePins;               ///< Remaining unassigned top-level port names.

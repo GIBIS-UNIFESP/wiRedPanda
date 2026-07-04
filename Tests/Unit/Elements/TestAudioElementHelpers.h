@@ -10,7 +10,7 @@
 #include "App/Core/Enums.h"
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
-#include "App/Nodes/QNEConnection.h"
+#include "App/Wiring/Connection.h"
 
 // Shared test implementations for AudioBox and Buzzer.
 // Both classes expose refresh(), isPlaying(), mute(), isMuted(), and inputPort(),
@@ -29,7 +29,7 @@ template<typename T>
 inline void testPlayStopTransition(T &element)
 {
     InputVcc vcc;
-    auto connection = std::make_unique<QNEConnection>();
+    auto connection = std::make_unique<Connection>();
     connection->setStartPort(vcc.outputPort());
     connection->setEndPort(element.inputPort(0));
 
@@ -48,7 +48,7 @@ template<typename T>
 inline void testPlayIdempotency(T &element)
 {
     InputVcc vcc;
-    auto connection = std::make_unique<QNEConnection>();
+    auto connection = std::make_unique<Connection>();
     connection->setStartPort(vcc.outputPort());
     connection->setEndPort(element.inputPort(0));
 
@@ -74,7 +74,7 @@ template<typename T>
 inline void testRefreshWithActiveInput(T &element)
 {
     InputVcc vcc;
-    auto connection = std::make_unique<QNEConnection>();
+    auto connection = std::make_unique<Connection>();
     connection->setStartPort(vcc.outputPort());
     connection->setEndPort(element.inputPort(0));
 
