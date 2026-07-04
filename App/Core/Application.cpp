@@ -127,13 +127,12 @@ ExceptionInfo Application::makeExceptionInfo(const std::exception &e)
 void Application::handleException(const ExceptionInfo &info, const QObject *context)
 {
     if (Application::interactiveMode) {
-        // Prefer the slot's `this` as the dialog parent (falls back to the
-        // Application-stored main window only if context isn't a widget).
-        // See guardedSlot's call site for context.
+        // Prefer the slot's `this` as the dialog parent, falling back to
+        // whatever top-level window currently has focus if context isn't a
+        // widget. See guardedSlot's call site for context.
         const QWidget *parent = qobject_cast<const QWidget *>(context);
         if (!parent) {
-            auto *app = Application::instance();
-            parent = app ? app->mainWindow() : nullptr;
+            parent = QApplication::activeWindow();
         }
 
         // Use show() (non-modal) instead of QMessageBox::critical() (modal
@@ -152,6 +151,8 @@ void Application::handleException(const ExceptionInfo &info, const QObject *cont
     }
 
 #ifdef HAVE_SENTRY
+    sentry_set_tag("app.interactive", interactiveMode ? "true" : "false");
+
     if (!shouldSendToSentry(info.englishMessage)) {
         return;
     }
@@ -177,19 +178,5 @@ void Application::handleException(const ExceptionInfo &info, const QObject *cont
     sentry_value_set_stacktrace(exc, NULL, 0);
     sentry_event_add_exception(event_, exc);
     sentry_capture_event(event_);
-#endif
-}
-
-MainWindow *Application::mainWindow() const
-{
-    return m_mainWindow;
-}
-
-void Application::setMainWindow(MainWindow *mainWindow)
-{
-    m_mainWindow = mainWindow;
-
-#ifdef HAVE_SENTRY
-    sentry_set_tag("app.interactive", interactiveMode ? "true" : "false");
 #endif
 }
