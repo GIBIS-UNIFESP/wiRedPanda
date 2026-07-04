@@ -765,21 +765,69 @@ a server-side setup; the client implementation is complete.
 
 ---
 
-## Phase 9 — KPlotting: Waveform Viewer
+## Phase 9 — KPlotting: Waveform Viewer ⏭️ SKIPPED
 **KDE Frameworks**: `KF6::Plotting`
 
-Replace the custom `BeWavedDolphin` waveform rendering (QStandardItemModel + custom delegate)
-with KPlotting's lightweight plot widget. Reduces ~400 lines of custom painting code.
+The roadmap proposed replacing the BeWavedDolphin renderer with KPlot, claiming
+this would drop ~400 lines of custom painting code. On closer look the swap
+doesn't fit the data model:
+
+- The actual rendering code is `SignalDelegate.cpp` — **102 lines** (not 400),
+  drawing each cell procedurally via `QPainter::fillRect()` calls (a plateau
+  line plus a translucent band, and a vertical connector for rising/falling
+  edges) rather than blitting pre-rendered pixmaps. `BeWavedDolphin.cpp`'s
+  **983 lines** / 49 member functions are almost entirely **editing** logic
+  (cell selection, range copy/paste, clock-wave generation, combinational
+  table generation, set-to-0/1, invert, auto-crop, zoom, save/export) and
+  none of that touches the rendering layer.
+- The waveform surface is a `QTableView` + a custom item model of discrete
+  0/1 timesteps. KPlot is built for continuous line/scatter plots over
+  numeric axes — replacing the table loses cell-level click/select, range
+  copy/paste, and the free vertical/horizontal header labels, all of which
+  are core to the editing workflow.
+- KPlot has no built-in step-style digital waveform rendering, so a port
+  would add custom `KPlotObject` subclasses to recover what the 102-line
+  delegate already does.
+- The renderer is shared across all platforms; bolting a KPlot path on top
+  would mean maintaining two parallel implementations (KPlot for KDE
+  desktop, the existing delegate for WASM and non-KDE), with no
+  user-visible win on either side.
+
+Skipping yields no user-visible regression and avoids a substantial refactor
+with no clear payoff. Same shape of skip as Phase 6b (KSvg) and the
+FileDialog half of Phase 5c.
 
 ---
 
-## Phase 10 — ThreadWeaver: Parallel Simulation
+## Phase 10 — ThreadWeaver: Parallel Simulation ⏭️ SKIPPED
 **KDE Frameworks**: `KF6::ThreadWeaver`
 
-Break the fixed 1ms `QTimer`-driven simulation loop into a ThreadWeaver job graph.
-Each topological layer of the circuit becomes a parallel job, enabling multi-core simulation
-of large circuits. The `Simulation.cpp` architecture is well-suited for this — topological
-ordering already exists; parallelism is the only missing piece.
+The roadmap proposed splitting the topologically-ordered element list into a
+ThreadWeaver job graph so independent elements at the same depth run in
+parallel. Mechanically possible — the topological sort already exists — but
+the actual workload is far too small to amortize threading overhead:
+
+- Each `GraphicElement::updateLogic()` is a tiny boolean fold.
+  `And::updateLogic()` calls `StatusOps::statusAndAll(simInputs())`, a
+  single early-exit loop over a small `QVector<Status>` with no heap
+  allocation, locks, or I/O — nanoseconds per element. Even 1000 elements
+  complete sequentially in roughly 10 µs.
+- ThreadWeaver per-job overhead (heap-allocated `QObject` jobs, mutexes,
+  cross-thread signalling) is on the order of microseconds per job. With
+  per-element work in the nanosecond range, sync cost dominates and
+  parallelizing would make ticks **slower** by 1–2 orders of magnitude.
+- The simulator targets educational circuits (typically 10–100 elements) at
+  a 1 ms tick. The sequential update is so cheap that the per-tick budget is
+  never close to saturated — there is no bottleneck to parallelize.
+- `updateLogic()` walks the element/port/predecessor pointer graph; making it
+  concurrent-safe would require adding mutexes to per-element state, which
+  would also slow the sequential path.
+- ThreadWeaver isn't available on WASM (and we don't want to require it on
+  the non-KDE desktop path either), so we'd be maintaining two parallel
+  implementations for a feature that loses on every benchmark.
+
+Skipping yields no user-visible regression. Same shape of skip as Phase 6b,
+the FileDialog half of Phase 5c, and Phase 9.
 
 ---
 
