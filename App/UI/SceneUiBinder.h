@@ -12,6 +12,7 @@
 #include <QString>
 
 class ElementPalette;
+class ICPreviewPopup;
 class MainWindowUi;
 class QShortcut;
 class QWidget;
@@ -36,8 +37,9 @@ class SceneUiBinder : public QObject
 public:
     /// \param ui Shared UI (element editor, menus, actions, status bar).
     /// \param palette Element palette (embedded-IC list reflects the active scene).
+    /// \param previewPopup Shared IC hover-preview popup, driven off the bound scene's IC signals.
     /// \param shortcutParent Widget that parents the scene-property shortcuts (the window).
-    SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, QWidget *shortcutParent, QObject *parent = nullptr);
+    SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, ICPreviewPopup *previewPopup, QWidget *shortcutParent, QObject *parent = nullptr);
 
     /// Connects \a tab's scene/view/simulation to the chrome and syncs action state.
     void bind(WorkSpace *tab);
@@ -58,6 +60,7 @@ private:
 
     MainWindowUi *m_ui;
     ElementPalette *m_palette;
+    ICPreviewPopup *m_previewPopup;
     WorkSpace *m_bound = nullptr;
 
     // Scene-property navigation shortcuts ( [ ] { } < > ), re-targeted to the active scene.

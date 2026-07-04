@@ -11,6 +11,8 @@
 #include <QUndoStack>
 
 #include "App/Core/Common.h"
+#include "App/Element/IC.h"
+#include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRegistry.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
@@ -20,10 +22,11 @@
 #include "App/UI/ElementPalette.h"
 #include "App/UI/MainWindowUI.h"
 
-SceneUiBinder::SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, QWidget *shortcutParent, QObject *parent)
+SceneUiBinder::SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, ICPreviewPopup *previewPopup, QWidget *shortcutParent, QObject *parent)
     : QObject(parent)
     , m_ui(ui)
     , m_palette(palette)
+    , m_previewPopup(previewPopup)
 {
     // [ / ] cycle a selected element's primary property (e.g. input size).
     // { / } cycle a secondary property; < / > morph through element variants.
@@ -125,6 +128,31 @@ void SceneUiBinder::bind(WorkSpace *tab)
             emit loadFileRequested(filePath);
         }
     });
+    connect(scene, &Scene::icPreviewRequested, this, [this](IC *ic, const QPoint &screenPos) {
+        m_previewPopup->showForIC(ic, screenPos);
+    });
+    connect(scene, &Scene::icPreviewMoved, this, [this](IC *ic, const QPoint &screenPos) {
+        // Keep tracking the cursor while a show is pending, but re-arm the show
+        // when the cursor returns from a port within the same hover.
+        if (m_previewPopup->isShowActiveFor(ic)) {
+            m_previewPopup->updatePendingPos(screenPos);
+        } else {
+            m_previewPopup->showForIC(ic, screenPos);
+        }
+    });
+    connect(scene, &Scene::icPreviewHideRequested, this, [this] {
+        m_previewPopup->scheduleHide();
+    });
+    connect(scene, &Scene::icPreviewCancelRequested, this, [this](IC *ic) {
+        Q_UNUSED(ic)
+        // Unconditional, matching the pre-signal direct-call behavior: double-clicking
+        // any IC hides the one shared popup regardless of which IC it was pending/showing
+        // for (harmless no-op if it wasn't visible). A pendingIC()-gated version would
+        // leave a stale preview on screen if the user switched tabs while a popup from
+        // another tab's IC was still pending/visible (tab switch never touches the popup).
+        m_previewPopup->cancelHide();
+        m_previewPopup->hide();
+    });
 
     if (m_ui->actionPlay->isChecked()) {
         qCDebug(zero) << "Restarting simulation.";
@@ -173,6 +201,10 @@ void SceneUiBinder::unbind()
     disconnect(m_changeNextElmShortcut, nullptr, scene, nullptr);
     disconnect(scene, &Scene::openTruthTableRequested, this, nullptr);
     disconnect(scene, &Scene::icOpenRequested, this, nullptr);
+    disconnect(scene, &Scene::icPreviewRequested, this, nullptr);
+    disconnect(scene, &Scene::icPreviewMoved, this, nullptr);
+    disconnect(scene, &Scene::icPreviewHideRequested, this, nullptr);
+    disconnect(scene, &Scene::icPreviewCancelRequested, this, nullptr);
     disconnect(scene->undoStack(), &QUndoStack::indexChanged, this, nullptr);
 
     qCDebug(zero) << "Removing undo and redo actions from UI menu.";

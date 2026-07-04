@@ -11,6 +11,7 @@
 #include <QHash>
 #include <QMap>
 #include <QMimeData>
+#include <QPoint>
 #include <QUndoCommand>
 #include <QVersionNumber>
 
@@ -28,6 +29,7 @@
 
 class GraphicElement;
 class GraphicsView;
+class IC;
 class ItemWithId;
 class QNEConnection;
 class QPainter;
@@ -291,6 +293,12 @@ signals:
 
     /// Emitted when an IC element is double-clicked to request opening its sub-circuit.
     void icOpenRequested(int elementId, const QString &blobName, const QString &filePath);
+
+    // --- IC hover-preview lifecycle (re-emitted from IC; see SceneUiBinder) ---
+    void icPreviewRequested(IC *ic, const QPoint &screenPos);
+    void icPreviewMoved(IC *ic, const QPoint &screenPos);
+    void icPreviewHideRequested();
+    void icPreviewCancelRequested(IC *ic);
 
     /// Emitted when a TruthTable element is double-clicked to request opening its editor.
     void openTruthTableRequested();
