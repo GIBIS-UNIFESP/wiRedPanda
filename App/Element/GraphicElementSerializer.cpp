@@ -82,8 +82,8 @@ void GraphicElement::save(QDataStream &stream) const
     // No longer written; old files that contain these keys are harmlessly
     // ignored on load (the QMap is read as a whole, unused keys are skipped).
     map.insert("trigger", m_trigger);
-    if (m_flippedX) { map.insert("flippedX", true); }
-    if (m_flippedY) { map.insert("flippedY", true); }
+    if (isFlippedX()) { map.insert("flippedX", true); }
+    if (isFlippedY()) { map.insert("flippedY", true); }
     stream << map;
 
     // -------------------------------------------
@@ -153,8 +153,7 @@ void GraphicElement::load(QDataStream &stream, SerializationContext &context)
     updatePortsProperties();
     // Apply the deserialized angle after ports are positioned so any non-rotatable element
     // can apply its own rotatePorts() path correctly
-    setRotation(m_angle);
-    applyFlipTransform();
+    m_orientation.applyLoadedOrientation();
 
     qCDebug(four) << "Finished loading element.";
 }
@@ -201,7 +200,7 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
     }
 
     if (map.contains("rotation")) {
-        m_angle = map.value("rotation").toReal();
+        m_orientation.setAngleRaw(map.value("rotation").toReal());
     }
 
     if (map.contains("label")) {
@@ -217,8 +216,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
         setTrigger(map.value("trigger").toString());
     }
 
-    m_flippedX = map.value("flippedX", false).toBool();
-    m_flippedY = map.value("flippedY", false).toBool();
+    m_orientation.setFlippedXRaw(map.value("flippedX", false).toBool());
+    m_orientation.setFlippedYRaw(map.value("flippedY", false).toBool());
 
     // -------------------------------------------
 
@@ -365,14 +364,14 @@ void GraphicElement::loadPos(QDataStream &stream)
 void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber &version)
 {
     qreal angle; stream >> angle;
-    m_angle = angle;
+    m_orientation.setAngleRaw(angle);
 
     // In versions before 4.1 the coordinate system for inputs and outputs was
     // rotated 90° relative to the current convention.  Apply a compensating offset
     // so old files render correctly without migrating every saved angle.
     if (!VersionInfo::hasQMapFormat(version)) {
         if ((m_elementGroup == ElementGroup::Input) || (m_elementGroup == ElementGroup::StaticInput)) {
-            m_angle += 90;
+            m_orientation.setAngleRaw(m_orientation.angle() + 90);
         }
 
         if ((m_elementGroup == ElementGroup::Output) || (m_elementGroup == ElementGroup::IC) || (m_elementGroup == ElementGroup::Gate)) {
@@ -381,7 +380,7 @@ void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber &ver
                 return;
             }
 
-            m_angle -= 90;
+            m_orientation.setAngleRaw(m_orientation.angle() - 90);
         }
     }
 }
