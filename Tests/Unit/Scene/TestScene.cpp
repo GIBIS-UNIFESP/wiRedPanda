@@ -1475,16 +1475,17 @@ void TestScene::testDrainConnectionsCleansRegistryHC()
     //
     // QNEPort::drainConnections (called from ~QNEInputPort/~QNEOutputPort
     // during cascade-destruction of a deleted element) issues a bare
-    // `delete conn` without going through Scene::removeItem. Qt's
-    // ~QGraphicsItem then dispatches to the non-virtual
+    // `delete conn`. Qt's ~QGraphicsItem then dispatches to the non-virtual
     // QGraphicsScene::removeItem, which removes the connection from the
-    // BSP but skips our override — leaving m_elementRegistry pointing at
-    // freed memory. A subsequent itemById/iter that hits the stale entry
-    // dereferences a destructed object → _purecall during paint.
-    //
-    // This is the same pattern db565817c fixed for
-    // UpdateBlobCommand::reconnectConnections, scoped to that one call
-    // site.  drainConnections needs the same treatment.
+    // BSP but skips Scene's override — this alone would leave
+    // m_elementRegistry pointing at freed memory (a subsequent itemById/iter
+    // that hits the stale entry would dereference a destructed object →
+    // _purecall during paint), except that ItemWithId's own destructor
+    // (running as part of the same `delete conn` cascade) self-unregisters
+    // from whichever SceneItemRegistry it's mapped in — a structural fix
+    // that covers this and every other cascade-delete path, not just this
+    // one call site (unlike the earlier, narrower db565817c fix for
+    // UpdateBlobCommand::reconnectConnections, which is now redundant).
     WorkSpace ws;
     auto *scene = ws.scene();
     auto *sw = new InputSwitch();

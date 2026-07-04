@@ -23,6 +23,12 @@ class ItemWithId;
 class SceneItemRegistry
 {
 public:
+    /// Nulls the registry back-pointer on every item still mapped, so a later cascade-delete
+    /// (e.g. Qt's ~QGraphicsScene teardown of remaining items, which runs after this
+    /// registry -- a Scene member -- has already been destroyed) can't call back into a
+    /// dangling SceneItemRegistry via ItemWithId's destructor.
+    ~SceneItemRegistry();
+
     /// Returns the item registered under \a id, or nullptr.
     [[nodiscard]] ItemWithId *itemById(int id) const;
 
@@ -41,7 +47,10 @@ public:
     /// Pre-assigns \a newId to \a item before it is added (undo/redo restore path).
     void updateItemId(ItemWithId *item, int newId);
 
-    /// Removes the mapping for \a id without touching the item.
+    /// Removes the mapping for \a id, clearing the mapped item's registry back-pointer
+    /// if one is still found. Safe unconditionally: the RAII self-unregistration in
+    /// ItemWithId's destructor guarantees this registry never holds an entry pointing
+    /// at an already-destroyed item, so whatever is found here (if anything) is live.
     void forgetItemId(int id);
 
     /// Registers \a item under its current id.
@@ -49,6 +58,13 @@ public:
 
     /// Removes \a item's mapping from the registry.
     void unregisterItem(ItemWithId *item);
+
+    /// Removes \a item's mapping if it is still the one on file, identity-checked so a
+    /// reused id that a new item has since claimed is never evicted. Called from
+    /// ItemWithId's own destructor -- this is the structural fix for the WIREDPANDA-HC
+    /// stale-registry-entry bug family, working on ANY destruction path, not just the
+    /// ones that happen to route through unregisterItem()/forgetItemId() explicitly.
+    void forget(ItemWithId *item);
 
 private:
     QHash<int, ItemWithId *> m_elementRegistry;
