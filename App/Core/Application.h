@@ -15,8 +15,6 @@
 #include <QPointer>
 #include <QString>
 
-#include "App/UI/MainWindow.h"
-
 /**
  * \struct ExceptionInfo
  * \brief Value-captured exception details safe to forward across an event-loop
@@ -42,7 +40,6 @@ struct ExceptionInfo
  *
  * \details Overrides notify() to catch Pandaception and std::exception objects
  * thrown during event processing and display appropriate error dialogs.
- * Also provides typed access to the main window instance.
  */
 class Application : public QApplication
 {
@@ -69,17 +66,6 @@ public:
 
     /// \reimp Dispatches \a event to \a receiver, catching and reporting exceptions.
     bool notify(QObject *receiver, QEvent *event) override;
-
-    // --- Main Window Access ---
-
-    /// Returns the application's main window.
-    MainWindow *mainWindow() const;
-
-    /**
-     * \brief Sets the application's main window to \a mainWindow.
-     * \param mainWindow Pointer to the MainWindow instance.
-     */
-    void setMainWindow(MainWindow *mainWindow);
 
     /// When false, suppresses informational dialogs (e.g. version-mismatch warnings).
     /// Stays false in BOTH MCP modes: an automated session can't dismiss a
@@ -159,8 +145,4 @@ private:
     /// Extracts user-facing and Sentry-side details from a std::exception,
     /// recovering Pandaception-specific fields when applicable.
     static ExceptionInfo makeExceptionInfo(const std::exception &e);
-
-    // --- Members ---
-
-    MainWindow *m_mainWindow = nullptr;
 };

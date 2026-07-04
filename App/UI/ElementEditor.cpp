@@ -11,7 +11,6 @@
 #include <QImageReader>
 #include <QMessageBox>
 
-#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
@@ -31,7 +30,6 @@
 #include "App/UI/ElementTabNavigator.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LabeledSlider.h"
-#include "App/UI/MainWindow.h"
 #include "App/UI/SelectionCapabilities.h"
 
 ElementEditor::ElementEditor(QWidget *parent)
@@ -147,7 +145,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
                 emit editSubcircuitRequested(elm->blobName(), elm->id());
             } else if (elm->elementType() == ElementType::IC) {
                 auto *ic = static_cast<IC *>(elm);
-                Application::instance()->mainWindow()->loadPandaFile(ic->file());
+                emit openSubcircuitFileRequested(ic->file());
             }
         },
         [this] { emit embedSubcircuitRequested(); },
