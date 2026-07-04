@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="885"/>
+        <location filename="../../Scene/Commands.cpp" line="952"/>
         <source>Change input size to %1</source>
         <translation>更改輸入大小為 %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="886"/>
+        <location filename="../../Scene/Commands.cpp" line="953"/>
         <source>Change output size to %1</source>
         <translation>更改輸出大小為 %1</translation>
     </message>
@@ -1227,7 +1227,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="826"/>
+        <location filename="../../Scene/Commands.cpp" line="893"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>在軸 %2 上翻轉 %1 個元件</translation>
     </message>
@@ -1538,22 +1538,22 @@ Suggested name:</source>
 <context>
     <name>InputSwitch</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="35"/>
         <source>Input Switch</source>
         <translation>輸入開關</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
         <source>Off</source>
         <translation>關</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="132"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
         <source>On</source>
         <translation>開</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="32"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="34"/>
         <source>INPUT SWITCH</source>
         <translation>輸入開關</translation>
     </message>
@@ -2239,7 +2239,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="638"/>
+        <location filename="../../Scene/Commands.cpp" line="705"/>
         <source>Morph %1 elements to %2</source>
         <translation>將 %1 個元件變形為 %2</translation>
     </message>
@@ -2427,7 +2427,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1114"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>註冊 blob &quot;%1&quot;</translation>
     </message>
@@ -2435,7 +2435,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1070"/>
+        <location filename="../../Scene/Commands.cpp" line="1137"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>移除 blob「%1」</translation>
     </message>
@@ -2478,18 +2478,18 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="535"/>
+        <location filename="../../Scene/Scene.cpp" line="540"/>
         <source>&amp;Undo</source>
         <translation>復原(&amp;U)</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="541"/>
+        <location filename="../../Scene/Scene.cpp" line="546"/>
         <source>&amp;Redo</source>
         <translation>重做(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="561"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>Paste</source>
         <translation>貼上</translation>
     </message>
@@ -2597,32 +2597,32 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="511"/>
+        <location filename="../../Scene/Commands.cpp" line="578"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>SplitCommand建構函式中的連接埠無效</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="517"/>
+        <location filename="../../Scene/Commands.cpp" line="584"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>SplitCommand建構函式中的圖形元素無效</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="540"/>
+        <location filename="../../Scene/Commands.cpp" line="607"/>
         <source>Wire split</source>
         <translation>線路分離</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="556"/>
+        <location filename="../../Scene/Commands.cpp" line="623"/>
         <source>Error trying to redo %1</source>
         <translation>嘗試重做 %1 時發生錯誤</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="579"/>
+        <location filename="../../Scene/Commands.cpp" line="646"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>錯誤：SplitCommand::redo()中endPort為null</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="608"/>
+        <location filename="../../Scene/Commands.cpp" line="675"/>
         <source>Error trying to undo %1</source>
         <translation>嘗試復原 %1 時發生錯誤</translation>
     </message>
@@ -2674,17 +2674,17 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="980"/>
+        <location filename="../../Scene/Commands.cpp" line="1047"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>在位置 %1 切換真值表輸出</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="989"/>
+        <location filename="../../Scene/Commands.cpp" line="1056"/>
         <source>Could not find truthtable element!</source>
         <translation>找不到真值表元件！</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="996"/>
+        <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2718,7 +2718,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1103"/>
+        <location filename="../../Scene/Commands.cpp" line="1170"/>
         <source>Update %1 IC blobs</source>
         <translation>更新 %1 個 IC blob</translation>
     </message>
@@ -2726,7 +2726,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="442"/>
+        <location filename="../../Scene/Commands.cpp" line="457"/>
         <source>Update %1 elements</source>
         <translation>更新 %1 個元件</translation>
     </message>
