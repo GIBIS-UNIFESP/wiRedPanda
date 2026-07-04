@@ -20,10 +20,10 @@
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/Xor.h"
 #include "App/Element/IC.h"
-#include "App/Wiring/Connection.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::inputStatus;

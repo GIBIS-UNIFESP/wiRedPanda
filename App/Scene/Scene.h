@@ -17,7 +17,6 @@
 
 #include "App/Core/ContextDirProvider.h"
 #include "App/Core/SimulationHost.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/ICRegistry.h"
@@ -27,6 +26,7 @@
 #include "App/Scene/SceneItemRegistry.h"
 #include "App/Scene/VisibilityManager.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Wiring/Port.h"
 
 class GraphicElement;
 class GraphicsView;

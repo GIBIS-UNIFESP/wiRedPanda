@@ -9,9 +9,9 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================

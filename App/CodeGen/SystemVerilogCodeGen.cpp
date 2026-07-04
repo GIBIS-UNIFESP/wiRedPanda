@@ -13,9 +13,9 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
+#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
-#include "App/Scene/Scene.h"
 
 /// Returns a unique key identifying an IC for SystemVerilog code generation.
 /// Embedded ICs use "embedded:blobName"; file-backed ICs use their canonical file path.

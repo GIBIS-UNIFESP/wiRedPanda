@@ -30,9 +30,9 @@
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
+#include "App/Wiring/Connection.h"
 
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)

@@ -6,8 +6,8 @@
 #include <algorithm>
 
 #include "App/Element/IC.h"
-#include "App/Wiring/Port.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Wiring/Port.h"
 
 void ICSimulation::initialize(IC &ic)
 {

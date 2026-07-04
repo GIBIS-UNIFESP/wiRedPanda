@@ -28,7 +28,6 @@
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -41,6 +40,7 @@
 #include "App/UI/SelectionCapabilities.h"
 #include "App/UI/TrashButton.h"
 #include "App/Versions.h"
+#include "App/Wiring/Connection.h"
 #include "Tests/Common/ICTestHelpers.h"
 #include "Tests/Common/TestUtils.h"
 

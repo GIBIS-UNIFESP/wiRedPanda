@@ -13,8 +13,8 @@
 #include <QList>
 #include <QMap>
 #include <QString>
-#include <QVersionNumber>
 #include <QVector>
+#include <QVersionNumber>
 
 #include "App/Element/IC.h"
 

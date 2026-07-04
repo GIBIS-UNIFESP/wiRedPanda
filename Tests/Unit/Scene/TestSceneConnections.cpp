@@ -10,8 +10,8 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
+#include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestSceneConnections::initTestCase()
