@@ -90,8 +90,8 @@ void GraphicElement::save(QDataStream &stream) const
 
     QList<QMap<QString, QVariant>> inputMap;
 
-    for (int i = 0; i < m_inputPorts.size(); ++i) {
-        auto *port = m_inputPorts.at(i);
+    for (int i = 0; i < m_ports.inputs().size(); ++i) {
+        auto *port = m_ports.inputs().at(i);
         QMap<QString, QVariant> tempMap;
         // Generate deterministic serial ID: (elementId << 16) | portIndex
         // Note: We calculate but don't modify port state (no side effects in save())
@@ -108,12 +108,12 @@ void GraphicElement::save(QDataStream &stream) const
 
     QList<QMap<QString, QVariant>> outputMap;
 
-    for (int i = 0; i < m_outputPorts.size(); ++i) {
-        auto *port = m_outputPorts.at(i);
+    for (int i = 0; i < m_ports.outputs().size(); ++i) {
+        auto *port = m_ports.outputs().at(i);
         QMap<QString, QVariant> tempMap;
         // Generate deterministic serial ID: (elementId << 16) | portIndex
         // Note: We calculate but don't modify port state (no side effects in save())
-        quint64 serialId = (static_cast<quint64>(id()) << 16) | (static_cast<quint64>(m_inputPorts.size() + i) & 0xFFFF);
+        quint64 serialId = (static_cast<quint64>(id()) << 16) | (static_cast<quint64>(m_ports.inputs().size() + i) & 0xFFFF);
         tempMap.insert("serialId", serialId);
         tempMap.insert("name", port->name());
 
@@ -239,8 +239,8 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
             serialId = (static_cast<quint64>(context.nextLocalId) << 16) | (port & 0xFFFF);
         }
 
-        if (port < m_inputPorts.size()) {
-            m_inputPorts.value(port)->setSerialId(serialId);
+        if (port < m_ports.inputs().size()) {
+            m_ports.inputs().value(port)->setSerialId(serialId);
             quint64 oldPtr = input.value("ptr").toULongLong();
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
@@ -248,19 +248,19 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
             }
 
             if (elementType() == ElementType::IC) {
-                m_inputPorts.value(port)->setName(name);
+                m_ports.inputs().value(port)->setName(name);
             }
         } else {
             quint64 oldPtr = input.value("ptr").toULongLong();
-            addPort(name, false);
-            m_inputPorts.value(port)->setSerialId(serialId);
+            m_ports.addPort(name, false);
+            m_ports.inputs().value(port)->setSerialId(serialId);
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
                 context.oldPtrToSerialId[oldPtr] = serialId;
             }
         }
 
-        context.portMap[serialId] = m_inputPorts.value(port);
+        context.portMap[serialId] = m_ports.inputs().value(port);
 
         ++port;
     }
@@ -284,11 +284,11 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
         } else {
             // Old format fallback: use context.nextLocalId as element basis so that
             // serialIds remain unique even when element IDs are -1 (unassigned).
-            serialId = (static_cast<quint64>(context.nextLocalId) << 16) | ((m_inputPorts.size() + port) & 0xFFFF);
+            serialId = (static_cast<quint64>(context.nextLocalId) << 16) | ((m_ports.inputs().size() + port) & 0xFFFF);
         }
 
-        if (port < m_outputPorts.size()) {
-            m_outputPorts.value(port)->setSerialId(serialId);
+        if (port < m_ports.outputs().size()) {
+            m_ports.outputs().value(port)->setSerialId(serialId);
             quint64 oldPtr = output.value("ptr").toULongLong();
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
@@ -296,19 +296,19 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
             }
 
             if (elementType() == ElementType::IC) {
-                m_outputPorts.value(port)->setName(name);
+                m_ports.outputs().value(port)->setName(name);
             }
         } else {
             quint64 oldPtr = output.value("ptr").toULongLong();
-            addPort(name, true);
-            m_outputPorts.value(port)->setSerialId(serialId);
+            m_ports.addPort(name, true);
+            m_ports.outputs().value(port)->setSerialId(serialId);
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
                 context.oldPtrToSerialId[oldPtr] = serialId;
             }
         }
 
-        context.portMap[serialId] = m_outputPorts.value(port);
+        context.portMap[serialId] = m_ports.outputs().value(port);
 
         ++port;
     }
@@ -435,15 +435,15 @@ void GraphicElement::loadInputPort(QDataStream &stream, SerializationContext &co
     const QString name = Serialization::readBoundedString(stream);
     int flags;    stream >> flags;
 
-    if (port < m_inputPorts.size()) {
+    if (port < m_ports.inputs().size()) {
         if (elementType() == ElementType::IC) {
-            m_inputPorts.value(port)->setName(name);
+            m_ports.inputs().value(port)->setName(name);
         }
     } else {
-        addPort(name, false);
+        m_ports.addPort(name, false);
     }
 
-    context.portMap[ptr] = m_inputPorts.value(port);
+    context.portMap[ptr] = m_ports.inputs().value(port);
 }
 
 void GraphicElement::loadOutputPorts(QDataStream &stream, SerializationContext &context)
@@ -470,15 +470,15 @@ void GraphicElement::loadOutputPort(QDataStream &stream, SerializationContext &c
     const QString name = Serialization::readBoundedString(stream);
     int flags;    stream >> flags;
 
-    if (port < m_outputPorts.size()) {
+    if (port < m_ports.outputs().size()) {
         if (elementType() == ElementType::IC) {
-            m_outputPorts.value(port)->setName(name);
+            m_ports.outputs().value(port)->setName(name);
         }
     } else {
-        addPort(name, true);
+        m_ports.addPort(name, true);
     }
 
-    context.portMap[ptr] = m_outputPorts.value(port);
+    context.portMap[ptr] = m_ports.outputs().value(port);
 }
 
 // ========== Surplus port removal ==========
@@ -490,8 +490,8 @@ void GraphicElement::removeSurplusInputs(const quint64 inputSize_, Serialization
     // but never go below minInputSize to avoid leaving an unusable element.
     while ((inputSize() > static_cast<int>(inputSize_)) && (inputSize_ >= m_minInputSize)) {
         // Remove from the vector before deleting: a reentrant access during deserialization
-        // must never observe a dangling pointer still present in m_inputPorts.
-        auto *deletedPort = m_inputPorts.takeLast();
+        // must never observe a dangling pointer still present in m_ports.
+        auto *deletedPort = m_ports.takeLastInput();
         removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
     }
@@ -502,8 +502,8 @@ void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, Serializati
     // Same trimming logic as removeSurplusInputs, applied to output ports
     while ((outputSize() > static_cast<int>(outputSize_)) && (outputSize_ >= m_minOutputSize)) {
         // Remove from the vector before deleting: a reentrant access during deserialization
-        // must never observe a dangling pointer still present in m_outputPorts.
-        auto *deletedPort = m_outputPorts.takeLast();
+        // must never observe a dangling pointer still present in m_ports.
+        auto *deletedPort = m_ports.takeLastOutput();
         removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
     }
