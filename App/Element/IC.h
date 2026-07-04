@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <QFileInfo>
 #include <QPixmap>
 #include <QPoint>
 #include <QSet>
@@ -34,6 +33,13 @@ class IC : public GraphicElement
     friend class TestArduino;
     friend class TestIC;
     friend class TestDanglingPointer;
+
+    /// Reach ic's internal-element/port vectors and protected GraphicElement members
+    /// (pixmap(), portsBoundingRect(), setMax/MinInputSize/OutputSize(), etc.) directly;
+    /// see ICLoader / ICRenderer / ICSimulation.
+    friend class ICLoader;
+    friend class ICRenderer;
+    friend class ICSimulation;
 
 public:
     /// Constructs an IC element without loading a file.
@@ -153,37 +159,9 @@ private:
     /// ports.  Used to suppress the hover preview over the connection pins.
     bool isCursorOverPort(const QPointF &localPos) const;
 
-    void loadFileDirectly(const QFileInfo &fileInfo);
-    void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
-                     const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);
+    /// Clears the internal element/connection/port vectors and derived simulation state,
+    /// freeing the previously-loaded sub-circuit.  Called before loading a new one.
     void resetInternalState();
-    void deserializeAndLoad(const QByteArray &bytes, const QString &contextDir);
-
-    // --- Simulation helpers ---
-
-    /// Copies the IC's external input values onto its boundary input nodes.
-    void pushInputsToBoundary();
-    /// Copies the boundary output nodes' values onto the IC's external outputs.
-    void pullOutputsFromBoundary();
-
-    // --- Loading helpers ---
-
-    /// Transfers ownership of \a items into m_internalElements / m_internalConnections,
-    /// deleting boundary Input/Output elements after their ports are proxied. Removes
-    /// each pointer from \a items as ownership transfers so the caller's qScopeGuard
-    /// only deletes still-owned items on throw (no double-free).
-    void processLoadedItems(QList<QGraphicsItem *> &items);
-    void loadBoundaryElement(GraphicElement *elm, bool isInput);
-    void loadBoundaryPorts(bool isInput, const QVector<QString> &labels);
-
-    // --- Visual helpers ---
-
-    void generatePixmap();
-    void generatePreviewPixmap(const QList<QGraphicsItem *> &items);
-
-    /// Draws the IC body (DIP rect, mascot logo, shadow, pin-1 notch) straight onto \a painter as
-    /// vectors, so it stays crisp at any zoom instead of blitting a fixed-resolution pixmap.
-    void drawBody(QPainter *painter);
 
     // --- Members ---
 

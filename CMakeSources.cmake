@@ -63,7 +63,10 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Nodes/QNEConnection.cpp
@@ -196,7 +199,10 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
