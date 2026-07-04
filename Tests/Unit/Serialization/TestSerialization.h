@@ -92,6 +92,14 @@ private slots:
     void testFuzzRegressionCleanupUAF();
     void testFuzzRegressionICBlobShrink();
     void testFuzzRegressionUnboundedPortList();
+    void testFuzzRegressionConnectionStreamMapOOM();   // bugD
+    void testFuzzRegressionICBoundaryOrphanConns();     // bugE
+    void testFuzzRegressionUnknownTypeIdMetadataOOM();  // bugF
+    void testFuzzRegressionElementStreamMapOOM();       // bugG
+    void testFuzzRegressionOldFormatV11Elements();      // bugH
+    void testFuzzRegressionOldFormatICSkinRef();        // bugI
+    void testFuzzRegressionDolphinFilenameOOM();        // oom_dolphin_filename_large
+    void testFuzzRegressionPandaHeaderAppNameOOM();     // oom_panda_header_large_appname
 
 private:
     // Helper methods

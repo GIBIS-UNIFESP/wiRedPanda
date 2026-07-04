@@ -32,4 +32,8 @@ private slots:
     // Regression: D20 — negative row count must throw, not UB-resize
     void testLoadBinaryRejectsNegativeRows();
     void testLoadCSVRejectsNegativeRows();
+
+    // libFuzzer regression (Tests/Fuzz/regressions/) — legacy .dolphin header
+    // with a fuzz-controlled app-name length must be rejected before allocation.
+    void testReadDolphinHeaderRejectsLargeAppName();
 };
