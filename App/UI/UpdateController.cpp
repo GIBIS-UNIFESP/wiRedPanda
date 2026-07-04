@@ -21,6 +21,10 @@
 #include <QStandardPaths>
 #include <QVBoxLayout>
 
+#ifdef USE_KDE_FRAMEWORKS
+#include <KNotification>
+#endif
+
 #include "App/Core/Application.h"
 #include "App/Core/I18n.h"
 #include "App/Core/Settings.h"
@@ -47,13 +51,47 @@ void UpdateController::checkForUpdates()
 
 void UpdateController::showUpdateDialog(const QString &latestVersion, const QUrl &downloadUrl, const QUrl &releaseUrl)
 {
+    const bool hasDirectDownload = downloadUrl.isValid() && !downloadUrl.isEmpty();
+
+#ifdef USE_KDE_FRAMEWORKS
+    // Phase 7b: passive system notification instead of a modal dialog. The user
+    // can dismiss without breaking flow; clicking an action triggers download
+    // / opens the release page / records "skip this version". The last-check
+    // date is recorded by UpdateChecker::onReplyFinished — the single writer —
+    // so closing the notification doesn't need to touch it.
+    auto *notification = new KNotification(QStringLiteral("updateAvailable"));
+    notification->setTitle(i18n("wiRedPanda Update Available"));
+    notification->setText(hasDirectDownload
+        ? i18n("Version %1 is available (you have %2). Click Download to save it.",
+               latestVersion, QString::fromLatin1(APP_VERSION))
+        : i18n("Version %1 is available (you have %2). Click View Release to open the release page.",
+               latestVersion, QString::fromLatin1(APP_VERSION)));
+    notification->setFlags(KNotification::Persistent);
+
+    auto *primary = notification->addAction(hasDirectDownload ? i18n("Download") : i18n("View Release"));
+    connect(primary, &KNotificationAction::activated, this,
+            [this, latestVersion, downloadUrl, releaseUrl, hasDirectDownload] {
+                if (hasDirectDownload) {
+                    downloadUpdate(latestVersion, downloadUrl);
+                } else {
+                    QDesktopServices::openUrl(releaseUrl);
+                }
+            });
+
+    auto *skipAction = notification->addAction(i18n("Skip This Version"));
+    connect(skipAction, &KNotificationAction::activated, this, [latestVersion] {
+        Settings::setUpdateCheckSkippedVersion(latestVersion);
+    });
+
+    notification->sendEvent();
+    return;
+#else
     QDialog dialog(m_parent);
     dialog.setWindowTitle(i18n("Update Available"));
     dialog.setWindowModality(Qt::WindowModal);
 
     auto *layout = new QVBoxLayout(&dialog);
 
-    const bool hasDirectDownload = downloadUrl.isValid() && !downloadUrl.isEmpty();
     auto *label = new QLabel(
         (hasDirectDownload
              ? i18n("<b>wiRedPanda %1 is available.</b><br><br>"
@@ -92,6 +130,7 @@ void UpdateController::showUpdateDialog(const QString &latestVersion, const QUrl
             QDesktopServices::openUrl(releaseUrl);
         }
     }
+#endif
 }
 
 void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &url)
