@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="282"/>
+        <location filename="../../Scene/Commands.cpp" line="283"/>
         <source>Add %1 elements</source>
         <translation>Legg til %1 elementer</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="147"/>
+        <location filename="../../Core/Application.cpp" line="146"/>
         <source>Error!</source>
         <translation>Feil!</translation>
     </message>
@@ -480,12 +480,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="884"/>
+        <location filename="../../Scene/Commands.cpp" line="885"/>
         <source>Change input size to %1</source>
         <translation>Endre inngangsstørrelse til %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="885"/>
+        <location filename="../../Scene/Commands.cpp" line="886"/>
         <source>Change output size to %1</source>
         <translation>Endre utgangsstørrelse til %1</translation>
     </message>
@@ -542,6 +542,19 @@
     </message>
 </context>
 <context>
+    <name>ConnectionSerializer</name>
+    <message>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="40"/>
+        <source>Stream error reading connection map at offset %1</source>
+        <translation type="unfinished">Strømfeil ved lesing av tilkoblingskart ved forskyvning %1</translation>
+    </message>
+    <message>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
+        <source>Stream error reading connection port IDs at offset %1</source>
+        <translation type="unfinished">Strømfeil ved lesing av tilkoblingsport-ID-er ved offset %1</translation>
+    </message>
+</context>
+<context>
     <name>DFlipFlop</name>
     <message>
         <location filename="../../Element/GraphicElements/DFlipFlop.cpp" line="27"/>
@@ -570,7 +583,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="308"/>
+        <location filename="../../Scene/Commands.cpp" line="309"/>
         <source>Delete %1 elements</source>
         <translation>Slett %1 elementer</translation>
     </message>
@@ -830,22 +843,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="249"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="248"/>
         <source>File does not exist</source>
         <translation>Filen finnes ikke</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="250"/>
         <source>File is not readable</source>
         <translation>Filen er ikke lesbar</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="252"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
         <source>Unknown reason</source>
         <translation>Ukjent årsak</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="258"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="257"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Kunne ikke laste pixmap: %1 (%2)</translation>
     </message>
@@ -969,8 +982,8 @@
         <translation>Volum:</translation>
     </message>
     <message>
+        <location filename="../../UI/ElementEditor.cpp" line="318"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
-        <location filename="../../UI/ElementEditor.cpp" line="320"/>
         <source> Hz</source>
         <translation> Hz</translation>
     </message>
@@ -1015,103 +1028,103 @@
         <translation>Låst:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="71"/>
+        <location filename="../../UI/ElementEditor.cpp" line="69"/>
         <source>Truth Table</source>
         <translation>Sannhetstabell</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="174"/>
+        <location filename="../../UI/ElementEditor.cpp" line="172"/>
         <source>Open File</source>
         <translation>Åpne fil</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="240"/>
+        <location filename="../../UI/ElementEditor.cpp" line="238"/>
         <source>Green</source>
         <translation>Grønn</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="241"/>
+        <location filename="../../UI/ElementEditor.cpp" line="239"/>
         <source>Blue</source>
         <translation>Blå</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="242"/>
+        <location filename="../../UI/ElementEditor.cpp" line="240"/>
         <source>Purple</source>
         <translation>Lilla</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="598"/>
+        <location filename="../../UI/ElementEditor.cpp" line="596"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Duplisert trådløs kanal</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="599"/>
+        <location filename="../../UI/ElementEditor.cpp" line="597"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>En Tx-node med etikett &quot;%1&quot; eksisterer allerede.
 Hver trådløs kanal må ha en unik etikett.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="665"/>
+        <location filename="../../UI/ElementEditor.cpp" line="663"/>
         <source>Change wireless mode</source>
         <translation>Endre trådløsmodus</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="873"/>
+        <location filename="../../UI/ElementEditor.cpp" line="871"/>
         <source>Select any audio</source>
         <translation>Velg hvilken som helst lyd</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="874"/>
+        <location filename="../../UI/ElementEditor.cpp" line="872"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Lyd (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="239"/>
+        <location filename="../../UI/ElementEditor.cpp" line="237"/>
         <source>Red</source>
         <translation>Rød</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="173"/>
+        <location filename="../../UI/ElementEditor.cpp" line="171"/>
         <source>Images</source>
         <translation>Bilder</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="238"/>
+        <location filename="../../UI/ElementEditor.cpp" line="236"/>
         <source>White</source>
         <translation>Hvit</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="142"/>
+        <location filename="../../UI/ElementEditor.h" line="145"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Mange lyder&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="143"/>
+        <location filename="../../UI/ElementEditor.h" line="146"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Mange farger&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="144"/>
-        <location filename="../../UI/ElementEditor.h" line="145"/>
-        <location filename="../../UI/ElementEditor.h" line="146"/>
+        <location filename="../../UI/ElementEditor.h" line="147"/>
         <location filename="../../UI/ElementEditor.h" line="148"/>
         <location filename="../../UI/ElementEditor.h" line="149"/>
+        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Mange verdier&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="147"/>
+        <location filename="../../UI/ElementEditor.h" line="150"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Mange etiketter&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="154"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;Mange moduser&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="153"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Mange utløsere&gt;</translation>
     </message>
@@ -1214,7 +1227,7 @@ Hver trådløs kanal må ha en unik etikett.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="825"/>
+        <location filename="../../Scene/Commands.cpp" line="826"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Vend %1 elementer i akse %2</translation>
     </message>
@@ -1222,82 +1235,80 @@ Hver trådløs kanal må ha en unik etikett.</translation>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="360"/>
+        <location filename="../../Element/GraphicElement.cpp" line="240"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
+</context>
+<context>
+    <name>GraphicElementSerializer</name>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="196"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="44"/>
+        <source>Stream error reading %1 count at position %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="48"/>
+        <source>Refusing to read %1 with implausible count %2 (max %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="58"/>
+        <source>Stream error reading %1 entry %2 at position %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="212"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Strømfeil ved lesing av elementegenskaper ved posisjon %1</translation>
+        <translation type="unfinished">Strømfeil ved lesing av elementegenskaper ved posisjon %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="325"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="337"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation>Strømfeil ved lesing av utseender ved posisjon %1</translation>
+        <translation type="unfinished">Strømfeil ved lesing av utseender ved posisjon %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="333"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="345"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Utseende-indeks %1 utenfor område (størrelse=%2) — strømmen kan være skadet</translation>
+        <translation type="unfinished">Utseende-indeks %1 utenfor område (størrelse=%2) — strømmen kan være skadet</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="531"/>
-        <source>Loading pixmap appearance names.</source>
-        <translation>Laster pixmap-skinnavn.</translation>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="433"/>
+        <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="564"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="467"/>
+        <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="532"/>
+        <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="561"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Utseendeindeks %1 utenfor område (størrelse=%2) for utseendenavn &quot;%3&quot; — strømmen kan være skadet</translation>
+        <translation type="unfinished">Utseendeindeks %1 utenfor område (størrelse=%2) for utseendenavn &quot;%3&quot; — strømmen kan være skadet</translation>
     </message>
 </context>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="116"/>
+        <location filename="../../Element/IC.cpp" line="39"/>
         <source>IC</source>
         <translation>IC</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="115"/>
+        <location filename="../../Element/IC.cpp" line="38"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>INTEGRERT KRETS</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="228"/>
+        <location filename="../../Element/IC.cpp" line="148"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC-lasting: intet IC-navn i serialiserte data</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="354"/>
-        <source>%1 not found.</source>
-        <translation>%1 ikke funnet.</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="399"/>
-        <source>Circular IC reference detected: %1</source>
-        <translation>Sirkulær IC-referanse oppdaget: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="406"/>
-        <source>Error opening file: %1</source>
-        <translation>Feil ved åpning av fil: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="478"/>
-        <source>IC migration: cannot open file for writing: %1</source>
-        <translation>IC-migrering: kan ikke åpne filen for skriving: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="485"/>
-        <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation>IC-migrering: kunne ikke fullføre lagring av filen: %1</translation>
-    </message>
-    <message>
-        <location filename="../../Element/IC.cpp" line="553"/>
-        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>IC-nestingsdybdens grense (%1) overskredet — bloben kan være ondsinnet utformet</translation>
     </message>
 </context>
 <context>
@@ -1430,14 +1441,47 @@ Foreslått navn:</translation>
     </message>
 </context>
 <context>
+    <name>ICLoader</name>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="103"/>
+        <source>%1 not found.</source>
+        <translation type="unfinished">%1 ikke funnet.</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="148"/>
+        <source>Circular IC reference detected: %1</source>
+        <translation type="unfinished">Sirkulær IC-referanse oppdaget: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="155"/>
+        <source>Error opening file: %1</source>
+        <translation type="unfinished">Feil ved åpning av fil: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="227"/>
+        <source>IC migration: cannot open file for writing: %1</source>
+        <translation type="unfinished">IC-migrering: kan ikke åpne filen for skriving: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="234"/>
+        <source>IC migration: failed to commit re-saved file: %1</source>
+        <translation type="unfinished">IC-migrering: kunne ikke fullføre lagring av filen: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="297"/>
+        <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
+        <translation type="unfinished">IC-nestingsdybdens grense (%1) overskredet — bloben kan være ondsinnet utformet</translation>
+    </message>
+</context>
+<context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="283"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="283"/>
         <source>Could not open file: %1</source>
         <translation>Kunne ikke åpne fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="287"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>Kunne ikke lagre fil: %1</translation>
     </message>
@@ -2091,8 +2135,8 @@ Foreslått navn:</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1010"/>
         <location filename="../../UI/MainWindowUI.cpp" line="774"/>
+        <location filename="../../UI/MainWindow.cpp" line="1006"/>
         <source>Mute</source>
         <translation>Demp</translation>
     </message>
@@ -2127,8 +2171,8 @@ Foreslått navn:</translation>
         <translation>Bakgrunnssimulering</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="481"/>
         <location filename="../../UI/MainWindowUI.cpp" line="783"/>
+        <location filename="../../UI/MainWindow.cpp" line="482"/>
         <source>Shortcuts and Tips</source>
         <translation>Snarveier og tips</translation>
     </message>
@@ -2143,12 +2187,12 @@ Foreslått navn:</translation>
         <translation>Rapporter oversettelsesfeil eller hjelp til med å forbedre oversettelser på Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="810"/>
+        <location filename="../../UI/MainWindow.cpp" line="806"/>
         <source>New Project</source>
         <translation>Nytt prosjekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="400"/>
+        <location filename="../../UI/MainWindow.cpp" line="401"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2167,27 +2211,27 @@ wiRedPanda %1 vil automatisk liste alle andre .panda-filer i samme mappe som gje
 Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller kjører beWavedDolphin-simuleringer.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="533"/>
+        <location filename="../../UI/MainWindow.cpp" line="534"/>
         <source>Are you sure?</source>
         <translation>Er du sikker?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="482"/>
+        <location filename="../../UI/MainWindow.cpp" line="483"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Lerretssnarveier&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom inn &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom ut &lt;/li&gt;&lt;li&gt; Ctrl+1 : Skjul/Vis ledninger &lt;/li&gt;&lt;li&gt; Ctrl+2 : Skjul/Vis porter &lt;/li&gt;&lt;li&gt; Ctrl+F : Søk elementer &lt;/li&gt;&lt;li&gt; Ctrl+W : Åpne beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Lagre prosjekt &lt;/li&gt;&lt;li&gt; Ctrl+Q : Avslutt wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulering &lt;/li&gt;&lt;li&gt; [ : Forrige primær elementegenskap &lt;/li&gt;&lt;li&gt; ] : Neste primær elementegenskap &lt;/li&gt;&lt;li&gt; { : Forrige sekundær elementegenskap &lt;/li&gt;&lt;li&gt; } : Neste sekundær elementegenskap &lt;/li&gt;&lt;li&gt; &amp;lt; : Omform til forrige element &lt;/li&gt;&lt;li&gt; &amp;gt; : Omform til neste element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Generelle tips&lt;/h1&gt;&lt;p&gt;Dobbeltklikk på en ledning for å opprette en node&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="460"/>
+        <location filename="../../UI/MainWindow.cpp" line="461"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="532"/>
+        <location filename="../../UI/MainWindow.cpp" line="533"/>
         <source>Exit</source>
         <translation>Avslutt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1010"/>
+        <location filename="../../UI/MainWindow.cpp" line="1006"/>
         <source>Unmute</source>
         <translation>Opphev demping</translation>
     </message>
@@ -2195,7 +2239,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="637"/>
+        <location filename="../../Scene/Commands.cpp" line="638"/>
         <source>Morph %1 elements to %2</source>
         <translation>Forvandle %1 elementer til %2</translation>
     </message>
@@ -2203,7 +2247,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="401"/>
+        <location filename="../../Scene/Commands.cpp" line="402"/>
         <source>Move elements</source>
         <translation>Flytt elementer</translation>
     </message>
@@ -2237,12 +2281,12 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>Node</name>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="40"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
         <source>Node</source>
         <translation>Knutepunkt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Node.cpp" line="39"/>
+        <location filename="../../Element/GraphicElements/Node.cpp" line="38"/>
         <source>NODE</source>
         <translation>KNUTE</translation>
     </message>
@@ -2289,28 +2333,15 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Element/ICRegistry.cpp" line="235"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="235"/>
         <source>Add embedded IC</source>
         <translation>Legg til innebygd IC</translation>
     </message>
 </context>
 <context>
-    <name>QNEConnection</name>
-    <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="204"/>
-        <source>Stream error reading connection map at offset %1</source>
-        <translation>Strømfeil ved lesing av tilkoblingskart ved forskyvning %1</translation>
-    </message>
-    <message>
-        <location filename="../../Nodes/QNEConnection.cpp" line="215"/>
-        <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Strømfeil ved lesing av tilkoblingsport-ID-er ved offset %1</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
-        <location filename="../../Main.cpp" line="447"/>
+        <location filename="../../Main.cpp" line="445"/>
         <source>Error!</source>
         <translation>Feil!</translation>
     </message>
@@ -2396,7 +2427,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1046"/>
+        <location filename="../../Scene/Commands.cpp" line="1047"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrer blob &quot;%1&quot;</translation>
     </message>
@@ -2404,7 +2435,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1069"/>
+        <location filename="../../Scene/Commands.cpp" line="1070"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Fjern blob &quot;%1&quot;</translation>
     </message>
@@ -2412,7 +2443,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="333"/>
+        <location filename="../../Scene/Commands.cpp" line="334"/>
         <source>Rotate %1 degrees</source>
         <translation>Roter %1 grader</translation>
     </message>
@@ -2446,19 +2477,19 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="61"/>
-        <location filename="../../Scene/Scene.cpp" line="542"/>
+        <location filename="../../Scene/Scene.cpp" line="49"/>
+        <location filename="../../Scene/Scene.cpp" line="535"/>
         <source>&amp;Undo</source>
         <translation>&amp;Angre</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="69"/>
-        <location filename="../../Scene/Scene.cpp" line="548"/>
+        <location filename="../../Scene/Scene.cpp" line="57"/>
+        <location filename="../../Scene/Scene.cpp" line="541"/>
         <source>&amp;Redo</source>
         <translation>&amp;Gjør om</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="568"/>
+        <location filename="../../Scene/Scene.cpp" line="561"/>
         <source>Paste</source>
         <translation>Lim inn</translation>
     </message>
@@ -2466,12 +2497,12 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>SceneUiBinder</name>
     <message>
-        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <location filename="../../UI/SceneUiBinder.cpp" line="173"/>
         <source>Unmute</source>
         <translation>Opphev demping</translation>
     </message>
     <message>
-        <location filename="../../UI/SceneUiBinder.cpp" line="145"/>
+        <location filename="../../UI/SceneUiBinder.cpp" line="173"/>
         <source>Mute</source>
         <translation>Demp</translation>
     </message>
@@ -2566,32 +2597,32 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="510"/>
+        <location filename="../../Scene/Commands.cpp" line="511"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Ugyldige tilkoblingsporter i SplitCommand-konstruktør</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="516"/>
+        <location filename="../../Scene/Commands.cpp" line="517"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Ugyldige grafiske elementer i SplitCommand-konstruktør</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="539"/>
+        <location filename="../../Scene/Commands.cpp" line="540"/>
         <source>Wire split</source>
         <translation>Ledningsdeling</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="555"/>
+        <location filename="../../Scene/Commands.cpp" line="556"/>
         <source>Error trying to redo %1</source>
         <translation>Feil ved forsøk på å gjøre om %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="578"/>
+        <location filename="../../Scene/Commands.cpp" line="579"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Feil: endPort er null i SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="607"/>
+        <location filename="../../Scene/Commands.cpp" line="608"/>
         <source>Error trying to undo %1</source>
         <translation>Feil ved forsøk på å angre %1</translation>
     </message>
@@ -2643,17 +2674,17 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="979"/>
+        <location filename="../../Scene/Commands.cpp" line="980"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Veksle sanhetstabell-utgang på posisjon: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="988"/>
+        <location filename="../../Scene/Commands.cpp" line="989"/>
         <source>Could not find truthtable element!</source>
         <translation>Kunne ikke finne sannhetstabelelement!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="995"/>
+        <location filename="../../Scene/Commands.cpp" line="996"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2687,7 +2718,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1102"/>
+        <location filename="../../Scene/Commands.cpp" line="1103"/>
         <source>Update %1 IC blobs</source>
         <translation>Oppdater %1 IC-blober</translation>
     </message>
@@ -2695,7 +2726,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="441"/>
+        <location filename="../../Scene/Commands.cpp" line="442"/>
         <source>Update %1 elements</source>
         <translation>Oppdater %1 elementer</translation>
     </message>
@@ -2785,7 +2816,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="148"/>
+        <location filename="../../Scene/Workspace.cpp" line="146"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2796,50 +2827,32 @@ Din wiRedPanda-versjon (%2) støtter filformat %3.
 Vennligst oppdater wiRedPanda for å lagre endringer i denne filen.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="152"/>
+        <location filename="../../Scene/Workspace.cpp" line="150"/>
         <source>Cannot save.</source>
         <translation>Kan ikke lagre.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="224"/>
-        <source>Save File</source>
-        <translation>Lagre fil</translation>
-    </message>
-    <message>
-        <location filename="../../Scene/Workspace.cpp" line="224"/>
-        <location filename="../../Scene/Workspace.cpp" line="271"/>
-        <location filename="../../Scene/Workspace.cpp" line="310"/>
-        <source>Panda files (*.panda)</source>
-        <translation>Panda-filer (*.panda)</translation>
-    </message>
-    <message>
-        <location filename="../../Scene/Workspace.cpp" line="269"/>
-        <location filename="../../Scene/Workspace.cpp" line="308"/>
-        <source>Save File (original location is read-only)</source>
-        <translation>Lagre fil (opprinnelig plassering er skrivebeskyttet)</translation>
-    </message>
-    <message>
-        <location filename="../../Scene/Workspace.cpp" line="277"/>
+        <location filename="../../Scene/Workspace.cpp" line="246"/>
         <source>Error opening file: %1</source>
         <translation>Feil ved åpning av fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="316"/>
+        <location filename="../../Scene/Workspace.cpp" line="278"/>
         <source>Could not save file: %1</source>
         <translation>Kunne ikke lagre fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="390"/>
+        <location filename="../../Scene/Workspace.cpp" line="347"/>
         <source>This file does not exist: %1</source>
         <translation>Denne filen finnes ikke: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="399"/>
+        <location filename="../../Scene/Workspace.cpp" line="356"/>
         <source>Could not open file: %1</source>
         <translation>Kunne ikke åpne fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="434"/>
+        <location filename="../../Scene/Workspace.cpp" line="404"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2852,34 +2865,34 @@ Filen vil bli åpnet, men lagring er blokkert.
 Vennligst oppdater wiRedPanda for å redigere og lagre denne filen.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="439"/>
+        <location filename="../../Scene/Workspace.cpp" line="409"/>
         <source>Newer version file.</source>
         <translation>Nyere versjonsfil.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="442"/>
+        <location filename="../../Scene/Workspace.cpp" line="412"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Denne filen er i et eldre format (versjon %1) og vil automatisk oppgraderes til gjeldende format (versjon %2).
 En sikkerhetskopi av originalfilen er opprettet med navnet: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="445"/>
+        <location filename="../../Scene/Workspace.cpp" line="415"/>
         <source>File upgraded.</source>
         <translation>Filen er oppgradert.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="607"/>
+        <location filename="../../Scene/Workspace.cpp" line="577"/>
         <source>Error opening autosave file: %1</source>
         <translation>Feil ved åpning av autolagringsfil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="615"/>
+        <location filename="../../Scene/Workspace.cpp" line="585"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Kunne ikke fullføre autolagringsfilen: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="781"/>
+        <location filename="../../Scene/Workspace.cpp" line="751"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Fjern innebygd IC &quot;%1&quot;</translation>
     </message>
@@ -2888,76 +2901,86 @@ En sikkerhetskopi av originalfilen er opprettet med navnet: %3</translation>
     <name>WorkspaceManager</name>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="80"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="123"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="488"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="190"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="553"/>
         <source>New Project</source>
         <translation>Nytt prosjekt</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="120"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="163"/>
         <source>File saved successfully.</source>
         <translation>Filen ble lagret.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="104"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="171"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Filen er ikke lagret. Lukk fanen likevel?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="125"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="192"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> er blitt endret.
 Ønsker du å lagre endringene?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="169"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="236"/>
         <source>File loaded successfully.</source>
         <translation>Filen ble lastet inn.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="301"/>
         <source>Open File</source>
         <translation>Åpne fil</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="234"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="149"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="301"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
         <source>Panda files (*.panda)</source>
         <translation>Panda-filer (*.panda)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="268"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="324"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <source>Save File</source>
+        <translation type="unfinished">Lagre fil</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
+        <source>Save File (original location is read-only)</source>
+        <translation type="unfinished">Lagre fil (opprinnelig plassering er skrivebeskyttet)</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
         <source>Save File as ...</source>
         <translation>Lagre fil som ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="282"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="337"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="435"/>
         <source>File Conflict</source>
         <translation>Filkonflikt</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="283"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="338"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="436"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Filen &quot;%1&quot; er allerede åpen i en annen fane.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="286"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="341"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="439"/>
         <source>Switch to Tab</source>
         <translation>Bytt til fane</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="448"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="513"/>
         <source>Error!</source>
         <translation>Feil!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="544"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="609"/>
         <source>Error</source>
         <translation>Feil</translation>
     </message>
@@ -3043,7 +3066,7 @@ Do you want to save your changes?</source>
         <translation>Feil: Kretsen inneholder sannhetstabell-elementer.</translation>
     </message>
     <message>
-        <location filename="../../Main.cpp" line="452"/>
+        <location filename="../../Main.cpp" line="450"/>
         <source>Error: </source>
         <translation>Feil: </translation>
     </message>
