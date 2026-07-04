@@ -111,6 +111,8 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/HistoryHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ICHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.cpp
@@ -246,6 +248,8 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/HistoryHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ICHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.h
