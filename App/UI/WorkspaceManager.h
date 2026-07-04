@@ -86,6 +86,12 @@ private:
     int closeTabAnyway();
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
 
+    /// Resolves \a fileName into a non-empty, ".panda"-suffixed absolute path for the
+    /// current tab, prompting via a Save-As dialog if the tab has no path of its own yet
+    /// (a brand-new project, or one recovered from an autosave file). Returns an empty
+    /// string if there's nothing to resolve to and the user cancels the dialog.
+    QString promptSavePath(const QString &fileName);
+
     QTabWidget *m_tab;
     MainWindowHost &m_host;
     WorkSpace *m_currentTab = nullptr;

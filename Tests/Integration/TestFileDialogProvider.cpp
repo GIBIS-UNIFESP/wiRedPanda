@@ -6,8 +6,11 @@
 #include <QApplication>
 #include <QFile>
 #include <QPushButton>
+#include <QSaveFile>
+#include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -347,25 +350,122 @@ void TestFileDialogProvider::testEmbedICFromFileUsesProvider()
 // WorkSpace: Save dialog
 // ===========================================================================
 
-void TestFileDialogProvider::testWorkspaceSaveDialogUsesProvider()
+void TestFileDialogProvider::testWorkspaceSaveIsProviderFree()
 {
+    // WorkSpace::save() is pure: given an already-resolved path, it must never touch the
+    // file dialog provider — prompting for a path when none is known yet is
+    // WorkspaceManager's job (see testSaveFirstTimeUsesProvider, which exercises that
+    // path through MainWindow + Ctrl+S).
     ScopedFileDialogStub guard;
     const QString savePath = m_fixtureDir + "/ws_save.panda";
-    guard.stub.saveResult = {savePath, "Panda files (*.panda)"};
 
     WorkSpace ws;
     auto *sw = new InputSwitch();
     ws.scene()->addItem(sw);
 
-    // Save with empty path — should trigger dialog
-    ws.save(QString());
+    ws.save(savePath);
 
-    QCOMPARE(guard.stub.saveCallCount, 1);
-    QVERIFY(guard.stub.lastSaveCall.caption.contains("Save"));
-    QVERIFY(guard.stub.lastSaveCall.filter.contains("panda"));
+    QCOMPARE(guard.stub.saveCallCount, 0);
     QVERIFY(QFile::exists(savePath));
 
     QFile::remove(savePath);
+}
+
+void TestFileDialogProvider::testWorkspaceSaveRepromptsOnPermissionsErrorB24()
+{
+    // Pre-fix, Ctrl+S to a read-only path threw straight into a modal "Acesso negado"
+    // dialog with no way out. Now WorkSpace::save() reports the failure as
+    // SaveOutcome::ReadOnlyTarget instead of throwing, and WorkspaceManager::save()
+    // (the retry owner now that WorkSpace::save() is pure) prompts the user via
+    // FileDialogs::provider() for a new path and retries with it.
+    QTemporaryDir lockedDir;
+    QTemporaryDir writableDir;
+    QVERIFY(lockedDir.isValid() && writableDir.isValid());
+
+    const QString readOnlyPath = lockedDir.path() + "/locked.panda";
+    const QString writablePath = writableDir.path() + "/recovered.panda";
+
+    // Pre-create the target file as read-only AND drop write on the directory
+    // — QSaveFile uses a sibling temp file in the same dir on commit, so just
+    // making the file unwritable isn't enough; the dir must be locked too.
+    {
+        QFile f(readOnlyPath);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write("seed");
+    }
+    QFile::setPermissions(readOnlyPath, QFileDevice::ReadOwner);
+    QFile::setPermissions(lockedDir.path(),
+        QFileDevice::ReadOwner | QFileDevice::ExeOwner);
+
+    ScopedFileDialogStub guard;
+    guard.stub.saveResult = {writablePath, "Panda files (*.panda)"};
+    const bool prevInteractive = Application::interactiveMode;
+    Application::interactiveMode = true;
+
+    // Sanity: confirm QSaveFile actually fails to open the read-only target
+    // on this system before exercising the production recovery path.
+    {
+        QSaveFile probe(readOnlyPath);
+        QVERIFY(!probe.open(QIODevice::WriteOnly));
+    }
+
+    {
+        std::unique_ptr<MainWindow> window(createWindow());
+        auto *led = new Led();
+        window->currentTab()->scene()->addItem(led);
+        window->save(readOnlyPath);
+    }
+
+    Application::interactiveMode = prevInteractive;
+    QFile::setPermissions(lockedDir.path(),
+        QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+    QFile::setPermissions(readOnlyPath,
+        QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+
+    QCOMPARE(guard.stub.saveCallCount, 1);
+    QVERIFY2(QFile::exists(writablePath),
+             qPrintable("Save should have been redirected to " + writablePath));
+
+    QFile::remove(writablePath);
+}
+
+void TestFileDialogProvider::testWorkspaceManagerSaveAddsExtensionIfMissing()
+{
+    // The ".panda"-suffix logic moved from WorkSpace::save() (now pure -- it requires an
+    // already-suffixed path) to WorkspaceManager::promptSavePath(), exercised here via
+    // the public MainWindow::save() entry point.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString fileWithoutExt = tempDir.filePath("test");
+    const QString expectedFile = tempDir.filePath("test.panda");
+
+    std::unique_ptr<MainWindow> window(createWindow());
+    auto *led = new Led();
+    window->currentTab()->scene()->addItem(led);
+
+    window->save(fileWithoutExt);
+
+    QVERIFY2(QFile::exists(expectedFile),
+             qPrintable(QString("Expected file %1 not created").arg(expectedFile)));
+}
+
+void TestFileDialogProvider::testWorkspaceManagerSaveDoesNotDuplicateExtension()
+{
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString fileWithExt = tempDir.filePath("test.panda");
+
+    std::unique_ptr<MainWindow> window(createWindow());
+    auto *led = new Led();
+    window->currentTab()->scene()->addItem(led);
+
+    window->save(fileWithExt);
+
+    QVERIFY2(QFile::exists(fileWithExt), "Expected save file should exist");
+    QVERIFY2(!QFile::exists(tempDir.filePath("test.panda.panda")),
+             "Duplicate extension file should not be created");
 }
 
 // ===========================================================================

@@ -32,6 +32,14 @@ class WorkSpace : public QWidget
     Q_OBJECT
 
 public:
+    /// Outcome of a save attempt: whether it wrote to disk, or the target turned out to
+    /// be read-only/unwritable (the caller decides whether to re-prompt for a different
+    /// path or throw, depending on whether it's running interactively).
+    enum class SaveOutcome {
+        Saved,
+        ReadOnlyTarget,
+    };
+
     // --- Lifecycle ---
 
     /// Constructs the workspace with optional \a parent widget.
@@ -60,8 +68,17 @@ public:
     void load(const QString &fileName);
     /// Loads a circuit from \a stream using the given format \a version and optional \a contextDir.
     void load(QDataStream &stream, const QVersionNumber &version, const QString &contextDir);
-    /// Saves the current circuit to \a fileName.
-    void save(const QString &fileName);
+
+    /**
+     * \brief Saves the current circuit to \a fileName.
+     * \details Pure: \a fileName must already be a resolved, non-empty, ".panda"-suffixed
+     * path (inline-IC tabs are the one exception -- they ignore it and serialize to a blob
+     * instead). Shows no dialogs and never recurses; a read-only/unwritable target is
+     * reported via the return value rather than retried in place, regardless of
+     * Application::interactiveMode -- callers decide how to react to that themselves.
+     * Throws PANDACEPTION only on a genuine, non-read-only I/O error.
+     */
+    SaveOutcome save(const QString &fileName);
     /// Saves the current circuit to \a stream.
     void save(QDataStream &stream);
     /// Creates or replaces the autosave temporary file.
