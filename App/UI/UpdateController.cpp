@@ -22,6 +22,7 @@
 #include <QVBoxLayout>
 
 #include "App/Core/Application.h"
+#include "App/Core/I18n.h"
 #include "App/Core/Settings.h"
 #include "App/Core/UpdateChecker.h"
 #include "App/UI/MessageDialog.h"

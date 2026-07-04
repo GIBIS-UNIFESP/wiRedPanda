@@ -26,6 +26,10 @@
 #include <QTranslator>
 #include <QWheelEvent>
 
+#ifdef USE_KDE_FRAMEWORKS
+#include <KActionCollection>
+#endif
+
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
@@ -1126,7 +1130,15 @@ void TestMainWindowGui::testOpenRecentFile()
 
     {
         std::unique_ptr<MainWindow> window(createMW());
+#ifdef USE_KDE_FRAMEWORKS
+        // KRecentFilesAction owns its submenu privately (no QObject parent), so
+        // it isn't reachable via findChild(); fetch it through the action itself.
+        auto *recentFilesAction = window->actionCollection()->action(QStringLiteral("file_open_recent"));
+        QVERIFY2(recentFilesAction, "file_open_recent action not found");
+        auto *menuRecentFiles = recentFilesAction->menu();
+#else
         auto *menuRecentFiles = window->findChild<QMenu *>("menuRecentFiles");
+#endif
         QVERIFY2(menuRecentFiles, "Recent files menu not found");
 
         // Recent files list may be empty if QSettings doesn't persist between test

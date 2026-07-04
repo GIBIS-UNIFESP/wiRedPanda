@@ -35,12 +35,16 @@ class ICController;
 class ICPreviewPopup;
 class LanguageManager;
 class BewavedDolphin;
-class RecentFiles;
 class SceneUiBinder;
 class TourEngine;
 class TourOverlay;
 class WorkSpace;
 class WorkspaceManager;
+#ifdef USE_KDE_FRAMEWORKS
+class KRecentFilesAction;
+#else
+class RecentFiles;
+#endif
 
 /**
  * \class MainWindow
@@ -229,9 +233,11 @@ private:
 
     // --- File Helpers ---
 
+#ifndef USE_KDE_FRAMEWORKS
     void createRecentFileActions();
     void updateRecentFileActions();
     void openRecentFile();
+#endif
 
     // --- Settings & Theme ---
 
@@ -327,7 +333,11 @@ private:
 
     ElementPalette   *m_palette          = nullptr;
     LanguageManager  *m_languageManager  = nullptr;
+#ifdef USE_KDE_FRAMEWORKS
+    KRecentFilesAction *m_recentFilesAction = nullptr;
+#else
     RecentFiles      *m_recentFiles      = nullptr;
+#endif
     ExportController *m_exportController  = nullptr;
     ICController     *m_icController      = nullptr;
     SceneUiBinder    *m_binder            = nullptr;
