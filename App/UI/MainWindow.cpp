@@ -81,6 +81,8 @@
 #include <KSharedConfig>
 #include <KStandardAction>
 #include <KToolBar>
+#include <Purpose/AlternativesModel>
+#include <Purpose/Menu>
 using namespace Qt::StringLiterals;
 #endif
 
@@ -249,6 +251,28 @@ void MainWindow::setupKdeActions()
     auto *downloadAction = addAction(u"wiredpanda_download_circuits"_s, u"actionDownloadCircuits"_s,
         i18n("&Download Circuits…"), {}, {}, u"get-hot-new-stuff"_s);
     connect(downloadAction, &QAction::triggered, this, &MainWindow::downloadCircuits);
+
+    // Phase 11: Purpose "Share" submenu. The Purpose::Menu is populated by
+    // installed Export plugins (email, Telegram, Bluetooth, etc.) and is
+    // refreshed every time it opens so the URL points at the active tab.
+    auto *shareAction = addAction(u"wiredpanda_share"_s, u"actionShare"_s,
+        i18n("&Share"), {}, {}, u"document-share"_s);
+    auto *purposeMenu = new Purpose::Menu(this);
+    purposeMenu->model()->setPluginType(u"Export"_s);
+    shareAction->setMenu(purposeMenu);
+    shareAction->setEnabled(false);  // no file open at startup; refreshed below
+    connect(purposeMenu, &QMenu::aboutToShow, this, [this, purposeMenu] {
+        const QString filePath = currentFile().absoluteFilePath();
+        if (filePath.isEmpty() || !QFileInfo::exists(filePath)) {
+            purposeMenu->model()->setInputData({});
+            return;
+        }
+        purposeMenu->model()->setInputData(QJsonObject{
+            {u"urls"_s,     QJsonArray{QUrl::fromLocalFile(filePath).toString()}},
+            {u"mimeType"_s, u"application/x-wpanda"_s},
+        });
+        purposeMenu->reload();
+    });
 
     // ── Custom actions (created as window children, registered in collection) ───
 
@@ -502,6 +526,14 @@ void MainWindow::setupRecentFiles()
         // KRecentFilesAction silently drops URLs under QDir::tempPath().
         m_recentFilesAction->addUrl(QUrl::fromLocalFile(path), QFileInfo(path).fileName());
         m_recentFilesAction->saveEntries(KSharedConfig::openConfig()->group(u"RecentFiles"_s));
+
+        // Phase 11: a file may become associated with the current tab (first
+        // save) without a tab switch firing onCurrentTabChanged; re-derive
+        // from currentFile() rather than trusting path, since recentFileAdded
+        // can fire for a background tab while a different tab is active.
+        if (auto *shareAction = actionCollection()->action(u"wiredpanda_share"_s)) {
+            shareAction->setEnabled(currentFile().exists());
+        }
     });
 #else
     m_recentFiles = new RecentFiles(this);
@@ -1073,6 +1105,13 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
         m_exerciseOverlay->hide();
         m_exerciseOverlay->setParent(nullptr);
     }
+#ifdef USE_KDE_FRAMEWORKS
+    // Phase 11: the Share submenu only makes sense once the circuit is on disk;
+    // otherwise Purpose plugins have nothing to attach.
+    if (auto *shareAction = actionCollection()->action(u"wiredpanda_share"_s)) {
+        shareAction->setEnabled(currentFile().exists());
+    }
+#endif
 
     if (!newTab) {
         // All tabs were closed; reset state.
