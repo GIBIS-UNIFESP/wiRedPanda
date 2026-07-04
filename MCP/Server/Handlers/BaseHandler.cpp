@@ -9,10 +9,10 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
+#include "App/Wiring/Port.h"
 
 BaseHandler::BaseHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : m_mainWindow(mainWindow)

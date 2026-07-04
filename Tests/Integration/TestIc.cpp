@@ -23,9 +23,9 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
+#include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestIC::initTestCase()

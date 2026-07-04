@@ -8,13 +8,13 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Wiring/Connection.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/PortHoverLabel.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestConnectionManager::testConnectionCreation()

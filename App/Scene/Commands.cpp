@@ -16,12 +16,12 @@
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
-#include "App/Wiring/Connection.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 namespace CommandUtils {
 

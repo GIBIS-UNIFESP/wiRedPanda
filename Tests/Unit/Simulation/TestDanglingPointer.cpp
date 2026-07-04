@@ -24,11 +24,11 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {

@@ -18,9 +18,9 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 

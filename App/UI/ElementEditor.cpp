@@ -21,7 +21,6 @@
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -31,6 +30,7 @@
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LabeledSlider.h"
 #include "App/UI/SelectionCapabilities.h"
+#include "App/Wiring/Connection.h"
 
 ElementEditor::ElementEditor(QWidget *parent)
     : QWidget(parent)

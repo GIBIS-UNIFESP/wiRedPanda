@@ -14,11 +14,11 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Wiring/Connection.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 SceneInteraction::SceneInteraction(Scene *scene)
     : m_scene(scene)

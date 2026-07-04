@@ -11,8 +11,8 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/IO/SerializationContext.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/Workspace.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================

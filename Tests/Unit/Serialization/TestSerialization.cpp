@@ -17,10 +17,10 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
-#include "App/Wiring/Connection.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestSerialization::init()

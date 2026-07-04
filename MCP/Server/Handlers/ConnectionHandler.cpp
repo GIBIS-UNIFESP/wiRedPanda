@@ -9,11 +9,11 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Wiring/Connection.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 ConnectionHandler::ConnectionHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)

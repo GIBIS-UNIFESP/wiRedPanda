@@ -9,14 +9,14 @@
 
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Wiring/Connection.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/PortHoverLabel.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 namespace {
 /// Which side of its element \a port faces, so its label chip can be biased away from the

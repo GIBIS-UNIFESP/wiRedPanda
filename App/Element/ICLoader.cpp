@@ -17,10 +17,10 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Wiring/Connection.h"
-#include "App/Wiring/Port.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 namespace {
 

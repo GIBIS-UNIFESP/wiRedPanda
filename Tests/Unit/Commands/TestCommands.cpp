@@ -18,9 +18,9 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
+#include "App/Scene/Commands.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
-#include "App/Scene/Commands.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {

@@ -12,8 +12,8 @@
 #include <QList>
 #include <QMap>
 #include <QString>
-#include <QVariant>
 #include <QtGlobal>
+#include <QVariant>
 
 class GraphicElement;
 class Port;

@@ -4,8 +4,8 @@
 #include "App/Scene/VisibilityManager.h"
 
 #include "App/Element/GraphicElement.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Scene.h"
+#include "App/Wiring/Connection.h"
 
 VisibilityManager::VisibilityManager(Scene *scene)
     : m_scene(scene)

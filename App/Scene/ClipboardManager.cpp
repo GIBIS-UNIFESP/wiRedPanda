@@ -18,11 +18,11 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/Wiring/Connection.h"
 
 ClipboardManager::ClipboardManager(Scene *scene)
     : m_scene(scene)

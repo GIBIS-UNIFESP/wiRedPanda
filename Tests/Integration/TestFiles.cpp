@@ -7,8 +7,8 @@
 #include <QTemporaryFile>
 
 #include "App/IO/Serialization.h"
-#include "App/Wiring/Connection.h"
 #include "App/Scene/Workspace.h"
+#include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestFiles::testFiles_data()

@@ -7,13 +7,13 @@
 
 #pragma once
 
+#include <utility>
+
 #include <QElapsedTimer>
 #include <QGraphicsRectItem>
 #include <QList>
 #include <QPointer>
 #include <QPointF>
-
-#include <utility>
 
 class GraphicElement;
 class QGraphicsSceneMouseEvent;
