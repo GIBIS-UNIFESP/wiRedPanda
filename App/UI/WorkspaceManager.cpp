@@ -85,13 +85,80 @@ void WorkspaceManager::createNewTab()
     m_tab->setCurrentIndex(m_tab->count() - 1);
 }
 
+QString WorkspaceManager::promptSavePath(const QString &fileName)
+{
+    QString resolved = fileName.isEmpty() ? currentFile().absoluteFilePath() : fileName;
+
+    // If saving to an autosave path or no path at all, prompt the user for a real filename.
+    const QStringList autosaves = Settings::autosaveFiles();
+    if ((resolved.isEmpty() || autosaves.contains(resolved)) && currentFile().fileName().isEmpty()) {
+        const QString path = resolved.isEmpty() ? currentFile().absolutePath() : QFileInfo(resolved).absolutePath();
+        resolved = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File"), path, tr("Panda files (*.panda)")).fileName;
+    }
+
+    if (resolved.isEmpty()) {
+        return {};
+    }
+
+    if (!resolved.endsWith(".panda")) {
+        resolved.append(".panda");
+    }
+
+    return resolved;
+}
+
 void WorkspaceManager::save(const QString &fileName)
 {
     if (!m_currentTab) {
         return;
     }
 
-    m_currentTab->save(fileName);
+    if (m_currentTab->isInlineIC()) {
+        // No path needed: WorkSpace::save() serializes to a blob and emits a signal instead.
+        m_currentTab->save(fileName);
+        m_host.palette()->updateICList(icListFile());
+        m_host.showStatusMessage(tr("File saved successfully."), 4000);
+        return;
+    }
+
+    // Mirror the pre-refactor WorkSpace::save() bookkeeping: if the path we're about to
+    // resolve is itself a currently-tracked autosave-recovery record, forget that record
+    // once the save to the real, resolved path succeeds.
+    const QString originalFileName = fileName.isEmpty() ? currentFile().absoluteFilePath() : fileName;
+    const bool wasAutosaveRecord = !originalFileName.isEmpty() && Settings::autosaveFiles().contains(originalFileName);
+
+    QString resolvedFileName = promptSavePath(fileName);
+    if (resolvedFileName.isEmpty()) {
+        return; // Brand-new project with nothing to resolve to, or the user cancelled the dialog.
+    }
+
+    for (;;) {
+        const auto outcome = m_currentTab->save(resolvedFileName);
+        if (outcome == WorkSpace::SaveOutcome::Saved) {
+            break;
+        }
+
+        // ReadOnlyTarget: WorkSpace::save() only returns this in interactive mode (it
+        // throws instead otherwise, since there's no one to dismiss a dialog in a
+        // headless/CLI/MCP context), so prompting here is always safe. OneDrive lock,
+        // ZIP-extracted folder, network drive, write-protected attribute -- re-prompt for
+        // a writable location instead of leaving the user stuck on a modal error.
+        const QString newPath = FileDialogs::provider()->getSaveFileName(
+            m_host.widget(), tr("Save File (original location is read-only)"),
+            QFileInfo(resolvedFileName).fileName(),
+            tr("Panda files (*.panda)")).fileName;
+        if (newPath.isEmpty()) {
+            return;
+        }
+        resolvedFileName = newPath.endsWith(".panda") ? newPath : newPath + ".panda";
+    }
+
+    if (wasAutosaveRecord) {
+        QStringList autosaves = Settings::autosaveFiles();
+        autosaves.removeAll(originalFileName);
+        Settings::setAutosaveFiles(autosaves);
+    }
+
     m_host.palette()->updateICList(icListFile());
     m_host.showStatusMessage(tr("File saved successfully."), 4000);
 }

@@ -3012,7 +3012,10 @@ void TestMainWindowGui::testAddICDisabledWhenUnsavedC9()
     stub.saveResult = {m_fixtureDir + "/c9_proj.panda", "Panda files (*.panda)"};
     auto *prevProvider = FileDialogs::setProvider(&stub);
 
-    window->currentTab()->save({});
+    // Drive the save through the public MainWindow API (-> WorkspaceManager) so the
+    // brand-new-project path prompt fires: WorkSpace::save() is pure now and requires an
+    // already-resolved path, so the prompt-on-empty-path logic lives in WorkspaceManager.
+    window->save({});
     QVERIFY(window->currentTab()->fileInfo().isReadable());
 
     QVERIFY(addBtn->isEnabled());

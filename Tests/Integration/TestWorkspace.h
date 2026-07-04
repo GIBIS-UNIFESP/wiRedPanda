@@ -47,14 +47,18 @@ private slots:
     void testAutosaveCleanupWithEmptySettings();
 
     // File Operation Edge Cases
-    void testSaveAddsExtensionIfMissing();
-    void testSaveDoesNotDuplicateExtension();
+    // (testSaveAddsExtensionIfMissing / testSaveDoesNotDuplicateExtension moved to
+    //  TestFileDialogProvider as testWorkspaceManagerSave{AddsExtensionIfMissing,
+    //  DoesNotDuplicateExtension} -- the .panda-suffix logic moved to
+    //  WorkspaceManager::promptSavePath() when WorkSpace::save() became pure)
     void testLoadNonExistentFileThrows();
     void testSaveToInvalidPathThrows();
     void testSaveEmptyCircuit();
 
-    // Regression: B24 — save reprompts via Save-As on PermissionsError
-    void testSaveRepromptsOnPermissionsErrorB24();
+    // Regression: B24 — save reprompts via Save-As on PermissionsError (covered by
+    //   TestFileDialogProvider — see testWorkspaceSaveRepromptsOnPermissionsErrorB24
+    //   there; the retry loop moved to WorkspaceManager::save() when WorkSpace::save()
+    //   became pure)
 
     // Regression: B11 — loadPandaFile closes orphan tab on throw (covered by
     //   TestMainWindowGui — see testLoadPandaFileClosesOrphanedTabB11 there).

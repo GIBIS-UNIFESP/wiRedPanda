@@ -49,7 +49,10 @@ private slots:
 
     // --- WorkSpace: Save dialog ---
 
-    void testWorkspaceSaveDialogUsesProvider();
+    void testWorkspaceSaveIsProviderFree();
+    void testWorkspaceSaveRepromptsOnPermissionsErrorB24();
+    void testWorkspaceManagerSaveAddsExtensionIfMissing();
+    void testWorkspaceManagerSaveDoesNotDuplicateExtension();
 
     // --- ElementEditor: Audio ---
 
