@@ -687,44 +687,44 @@ links the runtime icon engine; bundled-resource fallbacks remain in place)
 ---
 
 ## Phase 7 — System Integration: KCrash + KNotifications
-**KDE Frameworks**: `KF6::Crash`, `KF6::Notifications`
 
-### 7a — Crash Reporting: KCrash
-**Files**: `App/Main.cpp` (Sentry initialization block)
+### 7a — Crash Reporting: KCrash ✅
+**KDE Frameworks**: `KF6::Crash` (Linux only — `find_package(KF6Crash REQUIRED)` is
+gated on `UNIX AND NOT APPLE` so macOS and Windows skip it)
+**Files modified**: `App/Main.cpp`
 
-On Linux, complement Sentry Crashpad with KCrash/DrKonqi:
-```cpp
-#ifdef Q_OS_LINUX
-KCrash::initialize();
-KCrash::setDrKonqiEnabled(true);
-#endif
-```
+`KCrash::initialize()` runs immediately after `KAboutData::setApplicationData()`
+inside the existing `USE_KDE_FRAMEWORKS` block, behind a nested `Q_OS_LINUX`
+guard. KCrash picks up the application identity from KAboutData, so DrKonqi
+(when present) presents a familiar crash dialog on KDE Plasma. Sentry's
+Crashpad backend remains the primary handler on all platforms; KCrash is
+purely additive on Linux. The roadmap suggested calling
+`KCrash::setDrKonqiEnabled(true)` — that helper was dropped in KF6
+(DrKonqi is the default sink), so just `initialize()` is needed.
 
-Sentry remains the primary backend on all platforms. KCrash adds DrKonqi as a secondary
-reporter on Linux, giving KDE users a familiar crash dialog.
+### 7b — Notifications: KNotifications ✅
+**KDE Frameworks**: `KF6::Notifications`
+**Files modified**:
+- `App/UI/UpdateController.cpp` — `showUpdateDialog()` got a KDE branch that
+  emits a persistent `KNotification` with `Download` (or `View Release`) and
+  `Skip This Version` action buttons. Non-KDE keeps the existing modal
+  QDialog.
+- `App/Resources/KDE/wiredpanda.notifyrc` — declares the `updateAvailable`
+  event with persistent flag and `system-software-update` icon; installed via
+  `${KDE_INSTALL_KNOTIFYRCDIR}` so KNotification can resolve per-event metadata.
 
-### 7b — Notifications: KNotifications
-**Files**: `App/Core/UpdateChecker.cpp` (the `updateAvailable` signal handler in `MainWindow.cpp`)
-
-Replace the current update modal with a passive system notification:
-```cpp
-// Before: QMessageBox::information(this, tr("Update available"), ...);
-
-// After:
-auto *notification = new KNotification("updateAvailable", KNotification::Persistent, this);
-notification->setTitle(i18n("wiRedPanda Update Available"));
-notification->setText(i18n("Version %1 is available. Click to download.", version));
-notification->setActions({i18n("Download"), i18n("Skip")});
-connect(notification, &KNotification::action1Activated, this, [url]{ QDesktopServices::openUrl(url); });
-notification->sendEvent();
-```
-
-Add `App/Resources/wiredpanda.notifyrc` to declare notification categories.
+**Implementation note (kde-v2 recreation)**: `showUpdateDialog()`/
+`downloadUpdate()` no longer live in `MainWindow.cpp` — master extracted them
+into `App/UI/UpdateController` before this branch was recreated. Master also
+centralized `Settings::setUpdateCheckLastDate()` into
+`UpdateChecker::onReplyFinished()` as the single writer for that field
+(removed from the dialog-closing paths to avoid redundant writes); the KDE
+notification's `closed` signal does **not** duplicate that write, matching
+the non-KDE dialog path's existing comment on the same invariant.
 
 ### Verification
-- Force an update check → notification appears in system notification area
-- Clicking "Download" opens browser
-- On crash (intentional test crash) → DrKonqi dialog appears on Linux
+- `ctest --preset kde` — all 176 tests pass
+- `ctest --preset debug` — all 176 tests pass (non-KDE QDialog path unchanged)
 
 ---
 

@@ -23,6 +23,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Workspace.h"
@@ -31,6 +32,9 @@
 
 #ifdef USE_KDE_FRAMEWORKS
 #include <KAboutData>
+#if defined(Q_OS_LINUX)
+#include <KCrash>
+#endif
 using namespace Qt::StringLiterals;
 #endif
 
@@ -226,6 +230,13 @@ int main(int argc, char *argv[])
         about.addAuthor(i18n("Lucas Santana Lellis"),                i18n("Developer"),         u"lucaslellis777@gmail.com"_s);
         about.addAuthor(i18n("Vinícius Rodrigues Miguel"),          i18n("Developer"),         u"lemao.vrm07@hotmail.com"_s);
         KAboutData::setApplicationData(about);
+
+#if defined(Q_OS_LINUX)
+        // Phase 7a: register KCrash so DrKonqi can present a familiar crash dialog
+        // alongside Sentry's Crashpad. Must run after KAboutData::setApplicationData()
+        // so DrKonqi knows the application's identity.
+        KCrash::initialize();
+#endif
     }
 #endif
     // Fusion style provides a consistent cross-platform look and is required for
