@@ -1677,3 +1677,25 @@ void TestSerialization::testFuzzRegressionNonFinitePosition()
     }
     QVERIFY2(threw, "Non-finite element position must be rejected, not loaded");
 }
+
+void TestSerialization::testFuzzRegressionNonFiniteRotation()
+{
+    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/ic_nonfinite_rotation.bin");
+    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
+    const QByteArray data = fixture.readAll();
+
+    // Sibling of the non-finite-position bug, found by the same harness: a
+    // fuzzed element carries a NaN rotation.  setAngleRaw(NaN) makes the item's
+    // scene transform — and hence the IC preview's itemsBoundingRect — NaN,
+    // tripping the same QSizeF::toSize() / qSaturateRound assertion (abort).
+    // The finite-rotation guard in GraphicElementSerializer::loadRotation /
+    // loadNewFormat must reject it before it enters the scene.
+    WorkSpace workspace;
+    bool threw = false;
+    try {
+        loadFromMemory(workspace, data);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Non-finite element rotation must be rejected, not loaded");
+}
