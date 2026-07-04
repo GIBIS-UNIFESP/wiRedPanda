@@ -10,11 +10,11 @@
 #include <QFile>
 #include <QIcon>
 #include <QImageReader>
-#include <QMessageBox>
 #include <QSize>
 #include <QToolButton>
 
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
@@ -33,6 +33,7 @@
 #include "App/UI/ElementTabNavigator.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LabeledSlider.h"
+#include "App/UI/MessageDialog.h"
 #include "App/UI/SelectionCapabilities.h"
 #include "App/Wiring/Connection.h"
 
@@ -651,10 +652,10 @@ void ElementEditor::apply()
                 auto *otherNode = qobject_cast<Node *>(other);
                 if (!otherNode || otherNode->wirelessMode() != WirelessMode::Tx) continue;
                 if (otherNode->label() == candidateLabel) {
-                    QMessageBox::warning(this,
-                        i18n("Duplicate Wireless Channel"),
+                    MessageDialog::warning(this,
                         i18n("A Tx node with label \"%1\" already exists.\n"
-                           "Each wireless channel must have a unique label.").arg(candidateLabel));
+                           "Each wireless channel must have a unique label.", candidateLabel),
+                        i18n("Duplicate Wireless Channel"));
                     update();
                     return;
                 }
@@ -742,10 +743,10 @@ void ElementEditor::blobNameEditingFinished()
     // permanently destroying it with no undo path back. Refuse before pushing anything, mirroring
     // the duplicate-wireless-Tx-channel guard above.
     if (m_scene->icRegistry()->hasBlob(newBlobName)) {
-        QMessageBox::warning(this,
-            i18n("Duplicate IC Name"),
+        MessageDialog::warning(this,
             i18n("An embedded IC named \"%1\" already exists.\n"
-               "Choose a different name.", newBlobName));
+               "Choose a different name.", newBlobName),
+            i18n("Duplicate IC Name"));
         return;
     }
 

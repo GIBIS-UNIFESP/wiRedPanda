@@ -253,6 +253,13 @@ AutoDismisser AutoDismisser::acceptMessageBox()
             msgBox->accept();
             return true;
         }
+#ifdef USE_KDE_FRAMEWORKS
+        // KMessageBox shows a plain QDialog with a QDialogButtonBox, never a QMessageBox.
+        if (auto *dialog = qobject_cast<QDialog *>(w); dialog && dialog->isModal()) {
+            dialog->accept();
+            return true;
+        }
+#endif
         return false;
     });
 }

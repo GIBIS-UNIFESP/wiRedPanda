@@ -12,7 +12,6 @@
 #include <QCommandLineParser>
 #include <QDir>
 #include <QFile>
-#include <QMessageBox>
 #include <QRegularExpression>
 #include <QStandardPaths>
 
@@ -28,6 +27,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
+#include "App/UI/MessageDialog.h"
 
 #ifdef USE_KDE_FRAMEWORKS
 #include <KAboutData>
@@ -471,7 +471,7 @@ int main(int argc, char *argv[])
         }
     } catch (const std::exception &e) {
         if (Application::interactiveMode) {
-            QMessageBox::critical(nullptr, i18n("Error!"), e.what());
+            MessageDialog::error(nullptr, e.what(), i18n("Error!"));
         } else {
             // Non-interactive (CLI / MCP) modes have no dialog to fall back on;
             // without this, the process exits silently and the user sees no

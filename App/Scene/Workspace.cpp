@@ -6,7 +6,6 @@
 #include <algorithm>
 
 #include <QHBoxLayout>
-#include <QMessageBox>
 #include <QSaveFile>
 #include <QScrollBar>
 #include <QStandardPaths>
@@ -14,6 +13,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
@@ -26,6 +26,7 @@
 #include "App/Scene/Commands.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/UI/MessageDialog.h"
 #include "App/UI/MinimapWidget.h"
 #include "App/Versions.h"
 #include "App/Wiring/Connection.h"
@@ -259,7 +260,7 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
                          "Your wiRedPanda version (%2) supports file format %3.\n\n"
                          "Please update wiRedPanda to save changes to this file.",
                           m_loadedVersion.toString(), AppVersion::current.toString(), FormatRev::current.toString());
-            QMessageBox::warning(this, i18n("Cannot save."), message);
+            MessageDialog::warning(this, message, i18n("Cannot save."));
         }
         return SaveOutcome::Saved;
     }
@@ -522,13 +523,13 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
                          "The file will be opened but saving is blocked.\n"
                          "Please update wiRedPanda to edit and save this file.",
                           fileVersion, fmtVersion);
-            QMessageBox::warning(this, i18n("Newer version file."), message);
+            MessageDialog::warning(this, message, i18n("Newer version file."));
         } else if (version < FormatRev::current) {
             const QString backupFileName = m_fileInfo.completeBaseName() + ".v" + version.toString() + "." + m_fileInfo.suffix();
             const QString message = i18n("This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).\n"
                          "A backup of the original file has been created with name: %3",
                          version.toString(), FormatRev::current.toString(), backupFileName);
-            QMessageBox::information(this, i18n("File upgraded."), message);
+            MessageDialog::information(this, message, i18n("File upgraded."));
         }
     }
 

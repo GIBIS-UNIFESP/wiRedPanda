@@ -63,6 +63,7 @@
 #include "App/UI/ICController.h"
 #include "App/UI/LanguageManager.h"
 #include "App/UI/MainWindowUI.h"
+#include "App/UI/MessageDialog.h"
 #include "App/UI/SceneUiBinder.h"
 #include "App/UI/UpdateController.h"
 #include "App/UI/WorkspaceManager.h"
@@ -492,7 +493,7 @@ void MainWindow::populateContentMenu(QMenu *menu, const QString &categoryKey,
     connect(openFolderAction, &QAction::triggered, this, [this, categoryKey, openFolderFailureText] {
         const QString dir = ExerciseTourResources::preferredContentDir(categoryKey);
         if (dir.isEmpty()) {
-            QMessageBox::warning(this, i18n("Error"), openFolderFailureText);
+            MessageDialog::warning(this, openFolderFailureText, i18n("Error"));
             return;
         }
         QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
@@ -846,7 +847,7 @@ QString MainWindow::shortcutsHelpHtml() const
 void MainWindow::on_actionShortcuts_and_Tips_triggered()
 {
     Application::guardedSlot(this, [this] {
-        QMessageBox::information(this, i18n("Shortcuts and Tips"), shortcutsHelpHtml());
+        MessageDialog::information(this, shortcutsHelpHtml(), i18n("Shortcuts and Tips"));
     });
 }
 

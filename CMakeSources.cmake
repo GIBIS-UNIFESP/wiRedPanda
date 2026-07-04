@@ -268,6 +268,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MessageDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h

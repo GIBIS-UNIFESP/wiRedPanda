@@ -15,6 +15,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Core/I18n.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/IC.h"
 #include "App/IO/FileUtils.h"
@@ -27,6 +28,7 @@
 #include "App/UI/ElementPalette.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindowHost.h"
+#include "App/UI/MessageDialog.h"
 
 ICController::ICController(MainWindowHost &host, QObject *parent)
     : QObject(parent)
@@ -76,7 +78,7 @@ void ICController::addICFromFile()
 
         const QStringList files = {selectedFile};
 
-        QMessageBox::information(m_host.widget(), i18n("Info"), i18n("Selected files (and their dependencies) will be copied to the current project folder."));
+        MessageDialog::information(m_host.widget(), i18n("Selected files (and their dependencies) will be copied to the current project folder."), i18n("Info"));
 
         // Copy the chosen .panda file (and any ICs it depends on transitively)
         // into the project's directory so that relative paths work when reopened.
@@ -116,7 +118,7 @@ void ICController::showRemoveICHint()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("ic", QStringLiteral("Remove IC"));
-        QMessageBox::information(m_host.widget(), i18n("Info"), i18n("Drag here to remove."));
+        MessageDialog::information(m_host.widget(), i18n("Drag here to remove."), i18n("Info"));
     });
 }
 
@@ -219,7 +221,7 @@ void ICController::embedSelectedIC()
 
     QFile file(QDir(contextDir).absoluteFilePath(firstIC->file()));
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(m_host.widget(), i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
+        MessageDialog::warning(m_host.widget(), i18n("Could not read IC file: %1", file.errorString()), i18n("Error"));
         return;
     }
     QByteArray fileBytes = file.readAll();
@@ -278,7 +280,7 @@ void ICController::embedICByFile(const QString &fileName)
     const QString absolutePath = QDir(contextDir).absoluteFilePath(fileName);
     QFile file(absolutePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(m_host.widget(), i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
+        MessageDialog::warning(m_host.widget(), i18n("Could not read IC file: %1", file.errorString()), i18n("Error"));
         return;
     }
     QByteArray fileBytes = file.readAll();
@@ -374,7 +376,7 @@ void ICController::makeSelfContained()
         const QString fullPath = QDir(contextDir).absoluteFilePath(icFile);
         QFile file(fullPath);
         if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::warning(m_host.widget(), i18n("Error"), i18n("Could not read IC file: %1", file.errorString()));
+            MessageDialog::warning(m_host.widget(), i18n("Could not read IC file: %1", file.errorString()), i18n("Error"));
             completed = false;
             break;
         }
@@ -414,7 +416,7 @@ void ICController::addEmbeddedICFromFile()
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(m_host.widget(), i18n("Error"), i18n("Could not read file: %1", file.errorString()));
+        MessageDialog::warning(m_host.widget(), i18n("Could not read file: %1", file.errorString()), i18n("Error"));
         return;
     }
     QByteArray fileBytes = file.readAll();

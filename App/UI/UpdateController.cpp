@@ -24,6 +24,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 #include "App/Core/UpdateChecker.h"
+#include "App/UI/MessageDialog.h"
 #include "App/Versions.h"
 
 UpdateController::UpdateController(QWidget *parent)
@@ -128,7 +129,7 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
 
         if (reply->error() != QNetworkReply::NoError) {
             if (reply->error() != QNetworkReply::OperationCanceledError) {
-                QMessageBox::warning(m_parent, i18n("Download Failed"), i18n("Could not download the update:\n%1", reply->errorString()));
+                MessageDialog::warning(m_parent, i18n("Could not download the update:\n%1", reply->errorString()), i18n("Download Failed"));
             }
             reply->deleteLater();
             return;
@@ -136,20 +137,21 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
 
         QFile file(savePath);
         if (!file.open(QIODevice::WriteOnly)) {
-            QMessageBox::warning(m_parent, i18n("Download Failed"), i18n("Could not save the file:\n%1", savePath));
+            MessageDialog::warning(m_parent, i18n("Could not save the file:\n%1", savePath), i18n("Download Failed"));
             reply->deleteLater();
             return;
         }
         const QByteArray payload = reply->readAll();
         if (file.write(payload) != payload.size()) {
-            QMessageBox::warning(m_parent, i18n("Download Failed"), i18n("Could not write the file:\n%1", savePath));
+            MessageDialog::warning(m_parent, i18n("Could not write the file:\n%1", savePath), i18n("Download Failed"));
             reply->deleteLater();
             return;
         }
         file.close();
         reply->deleteLater();
 
-        QMessageBox::information(m_parent, i18n("Download Complete"),
-            i18n("wiRedPanda has been downloaded to:\n%1", savePath));
+        MessageDialog::information(m_parent,
+            i18n("wiRedPanda has been downloaded to:\n%1", savePath),
+            i18n("Download Complete"));
     });
 }

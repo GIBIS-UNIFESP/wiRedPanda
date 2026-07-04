@@ -15,6 +15,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/I18n.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Scene/ICRegistry.h"
@@ -23,6 +24,7 @@
 #include "App/UI/ElementPalette.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindowHost.h"
+#include "App/UI/MessageDialog.h"
 
 WorkspaceManager::WorkspaceManager(QTabWidget *tab, MainWindowHost &host, QObject *parent)
     : QObject(parent)
@@ -601,7 +603,7 @@ void WorkspaceManager::loadAutosaveFiles()
             loadPandaFile(*it);
         } catch (const std::exception &e) {
             if (Application::interactiveMode) {
-                QMessageBox::critical(nullptr, i18n("Error!"), e.what());
+                MessageDialog::error(nullptr, e.what(), i18n("Error!"));
             }
             qCDebug(zero) << "Removing autosave file that is corrupted.";
             it = autosaves.erase(it);
@@ -698,7 +700,7 @@ bool WorkspaceManager::closeTab(const int tabIndex)
             try {
                 save();
             } catch (const std::exception &e) {
-                QMessageBox::critical(m_host.widget(), i18n("Error"), e.what());
+                MessageDialog::error(m_host.widget(), e.what(), i18n("Error"));
 
                 // If saving failed ask whether to discard and close anyway.
                 if (closeTabAnyway() == QMessageBox::No) {
