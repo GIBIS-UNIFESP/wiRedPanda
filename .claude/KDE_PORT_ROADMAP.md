@@ -831,18 +831,43 @@ the FileDialog half of Phase 5c, and Phase 9.
 
 ---
 
-## Phase 11 — Purpose: Circuit Sharing
-**KDE Frameworks**: `KF6::Purpose`
+## Phase 11 — Purpose: Circuit Sharing ✅
+**KDE Frameworks**: `KF6::PurposeWidgets` (`find_package(KF6Purpose REQUIRED)`,
+target `KF6::PurposeWidgets` — pulls in `KF6::Purpose` transitively)
+**Files modified**:
+- `App/UI/MainWindow.cpp` — `setupKdeActions()` registers a `wiredpanda_share`
+  action (icon: `document-share`) with a `Purpose::Menu` attached via
+  `QAction::setMenu()`. The menu's `aboutToShow` slot refreshes the
+  `AlternativesModel`'s `inputData` with the active tab's file URL plus the
+  `application/x-wpanda` mime type, then calls `reload()` so the listed
+  plugins reflect the current circuit. Plugin type is fixed to `Export`.
+- `App/Resources/KDE/wiredpandaui.rc` — `<Action name="wiredpanda_share"/>`
+  inserted into the File menu just before `wiredpanda_make_self_contained`,
+  next to the existing export entries.
+- `CMakeLists.txt` — `find_package(KF6Purpose REQUIRED)` and
+  `KF6::PurposeWidgets` linked into `wiredpanda_lib`.
 
-Add a "Share" toolbar action that lets users send `.panda` files via email, Nextcloud,
-Telegram, or any Purpose-registered handler:
-```cpp
-auto *shareMenu = new Purpose::Menu(this);
-shareMenu->model()->setInputData(QJsonObject{
-    {"url",      QUrl::fromLocalFile(currentFile).toString()},
-    {"mimeType", "application/x-wiredpanda"}
-});
-```
+The mime type matches what `wiredpanda-mime.xml` already advertises
+(`application/x-wiredpanda` is the primary `<mime-type>`; `application/x-wpanda`
+is registered as an `<alias>`). No Purpose-specific plugin is needed on the
+client side — end users get whatever Purpose Export plugins they have
+installed (KMail, Bluetooth, NextCloud, Telegram, etc.).
+
+**Implementation note (kde-v2 recreation)**: the enable/disable hook for the
+Share action originally lived in `MainWindow::setCurrentFile()`, but that
+method no longer exists on `MainWindow` — master relocated it to
+`WorkspaceManager::setCurrentFile(QFileInfo)`, which has no access to
+`MainWindow`'s `actionCollection()` and shouldn't be given a KDE-specific
+dependency. The refresh is instead wired through two existing hooks that
+re-derive from `currentFile()` (the currently active tab's file) rather than
+trusting any signal's own payload: `MainWindow::onCurrentTabChanged()`
+(covers switching tabs) and the `WorkspaceManager::recentFileAdded` handler
+inside `setupRecentFiles()` (covers the first save of the *current* tab,
+which doesn't fire a tab switch).
+
+### Verification
+- `ctest --preset kde` — all 176 tests pass
+- `ctest --preset debug` — all 176 tests pass (non-KDE path unchanged)
 
 ---
 

@@ -17,6 +17,7 @@
       <Action name="wiredpanda_export_pdf"/>
       <Action name="wiredpanda_export_image"/>
       <Separator/>
+      <Action name="wiredpanda_share"/>
       <Action name="wiredpanda_make_self_contained"/>
       <Separator/>
       <Action name="file_quit"/>
