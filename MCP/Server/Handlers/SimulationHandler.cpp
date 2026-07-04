@@ -11,6 +11,7 @@
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
+#include "App/UI/MainWindow.h"
 
 SimulationHandler::SimulationHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
