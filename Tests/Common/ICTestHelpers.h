@@ -6,7 +6,7 @@
 #include <QFile>
 
 #include "App/Element/IC.h"
-#include "App/Element/ICRegistry.h"
+#include "App/Scene/ICRegistry.h"
 
 namespace ICTestHelpers {
 

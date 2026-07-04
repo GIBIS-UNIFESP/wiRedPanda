@@ -24,8 +24,8 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Element/ICRegistry.h"
 #include "App/Nodes/QNEConnection.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -438,7 +438,7 @@ void TestDanglingPointer::bug2_icUpdateLogicMustTolerateNullEntry()
 void TestDanglingPointer::bug7_icRegistryFileChangedMustNotLeaveDanglingPointers()
 {
     const QString path =
-        QString(QUOTE(CURRENTDIR)) + "/../App/Element/ICRegistry.cpp";
+        QString(QUOTE(CURRENTDIR)) + "/../App/Scene/ICRegistry.cpp";
     QFile src(path);
     QVERIFY2(src.open(QIODevice::ReadOnly),
              qPrintable(QString("Cannot open %1").arg(src.fileName())));

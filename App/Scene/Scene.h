@@ -17,10 +17,10 @@
 
 #include "App/Core/ContextDirProvider.h"
 #include "App/Core/SimulationHost.h"
-#include "App/Element/ICRegistry.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Scene/PropertyShortcutHandler.h"
 #include "App/Scene/SceneDropHandler.h"
 #include "App/Scene/SceneInteraction.h"
