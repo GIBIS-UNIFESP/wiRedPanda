@@ -13,25 +13,14 @@
 
 void ConnectionSerializer::save(const Connection &connection, QDataStream &stream)
 {
-    // Calculate and save port serial IDs deterministically
-    // Serial ID format: (elementId << 16) | portIndex
-    // For output ports: portIndex = inputSize + outputIndex
-
+    // Calculate and save port serial IDs deterministically. See Port::makeSerialId().
     auto calculateSerialId = [](Port *port) -> quint64 {
         if (!port) return 0;
 
         GraphicElement *elem = port->graphicElement();
         if (!elem) return 0;
 
-        quint64 elementId = static_cast<quint64>(elem->id());
-        int portIndex = port->index();
-
-        // For output ports, offset by the number of input ports
-        if (port->isOutput()) {
-            portIndex += elem->inputSize();
-        }
-
-        return (elementId << 16) | (portIndex & 0xFFFF);
+        return Port::makeSerialId(static_cast<quint64>(elem->id()), port->globalIndex());
     };
 
     QMap<QString, QVariant> map;
@@ -87,16 +76,14 @@ void ConnectionSerializer::load(Connection &connection, QDataStream &stream, Ser
     auto *port2 = context.portMap.value(id2);
 
     if (port1 && port2) {
-        if (port1->isInput() && port2->isOutput()) {
-            auto *outputPort = dynamic_cast<OutputPort *>(port2);
-            auto *inputPort = dynamic_cast<InputPort *>(port1);
-            if (outputPort && inputPort) {
-                connection.setStartPort(outputPort);
-                connection.setEndPort(inputPort);
-            }
-        } else if (port1->isOutput() && port2->isInput()) {
-            auto *outputPort = dynamic_cast<OutputPort *>(port1);
-            auto *inputPort = dynamic_cast<InputPort *>(port2);
+        // Exactly one of the pair must be the output (wire start) and the other the
+        // input (wire end); which one was saved as startPortId/endPortId doesn't matter.
+        Port *outputCandidate = port1->isOutput() ? port1 : port2->isOutput() ? port2 : nullptr;
+        Port *inputCandidate = port1->isInput() ? port1 : port2->isInput() ? port2 : nullptr;
+
+        if (outputCandidate && inputCandidate && outputCandidate != inputCandidate) {
+            auto *outputPort = dynamic_cast<OutputPort *>(outputCandidate);
+            auto *inputPort = dynamic_cast<InputPort *>(inputCandidate);
             if (outputPort && inputPort) {
                 connection.setStartPort(outputPort);
                 connection.setEndPort(inputPort);

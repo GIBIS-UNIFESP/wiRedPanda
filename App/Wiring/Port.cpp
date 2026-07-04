@@ -122,6 +122,19 @@ void Port::setIndex(const int index)
     m_index = index;
 }
 
+int Port::globalIndex() const
+{
+    if (isOutput() && m_graphicElement) {
+        return m_index + m_graphicElement->inputSize();
+    }
+    return m_index;
+}
+
+quint64 Port::makeSerialId(quint64 elementBase, int globalIndex)
+{
+    return (elementBase << 16) | (static_cast<quint64>(globalIndex) & 0xFFFF);
+}
+
 QString Port::name() const
 {
     return m_name;
@@ -167,16 +180,6 @@ void Port::setRequired(const bool required)
     // Requiredness feeds isValid(): re-derive the displayed status so a port
     // marked optional recovers from Error and a newly required one shows it
     updateConnections();
-}
-
-void Port::setSerialId(quint64 serialId)
-{
-    m_serialId = serialId;
-}
-
-quint64 Port::serialId() const
-{
-    return m_serialId;
 }
 
 void Port::setGraphicElement(GraphicElement *graphicElement)
