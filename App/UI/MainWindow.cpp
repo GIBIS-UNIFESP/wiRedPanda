@@ -76,6 +76,7 @@
 #ifdef USE_KDE_FRAMEWORKS
 #include <KActionCollection>
 #include <KConfigGroup>
+#include <KNSWidgets/Dialog>
 #include <KRecentFilesAction>
 #include <KSharedConfig>
 #include <KStandardAction>
@@ -243,6 +244,12 @@ void MainWindow::setupKdeActions()
         },
         actionCollection());
 
+    // Phase 8: KNewStuff "Download Circuits" entry. The action lives only on the
+    // KDE path; non-KDE builds skip it entirely.
+    auto *downloadAction = addAction(u"wiredpanda_download_circuits"_s, u"actionDownloadCircuits"_s,
+        i18n("&Download Circuits…"), {}, {}, u"get-hot-new-stuff"_s);
+    connect(downloadAction, &QAction::triggered, this, &MainWindow::downloadCircuits);
+
     // ── Custom actions (created as window children, registered in collection) ───
 
     m_ui->actionReloadFile = addAction(u"wiredpanda_reload_file"_s, u"actionReloadFile"_s, i18n("Re&load File"),
@@ -401,6 +408,27 @@ void MainWindow::setupKdeActions()
     // KToolBar inherits QToolBar; explicit cast needed due to Qt's strict pointer rules
     m_ui->mainToolBar = qobject_cast<QToolBar *>(toolBar(u"mainToolBar"_s));
     m_ui->statusBar   = statusBar();
+}
+
+void MainWindow::downloadCircuits()
+{
+    auto *dialog = new KNSWidgets::Dialog(u"wiredpanda.knsrc"_s, this);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dialog, &QDialog::finished, this, [this, dialog](int) {
+        const auto entries = dialog->changedEntries();
+        for (const auto &entry : entries) {
+            if (entry.status() != KNSCore::Entry::Installed) {
+                continue;
+            }
+            const auto installedFiles = entry.installedFiles();
+            for (const auto &file : installedFiles) {
+                if (file.endsWith(u".panda"_s, Qt::CaseInsensitive)) {
+                    loadPandaFile(file);
+                }
+            }
+        }
+    });
+    dialog->open();
 }
 #endif // USE_KDE_FRAMEWORKS
 
