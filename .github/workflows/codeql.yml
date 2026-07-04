@@ -85,7 +85,13 @@ jobs:
     - name: Build
       if: matrix.language == 'cpp'
       run: |
-        cmake --preset release
+        # Unity builds batch multiple .cpp files into generated wrapper translation
+        # units via #include — CodeQL traces whatever the build actually compiles, so
+        # without this it extracts facts from those generated wrappers instead of the
+        # real source files, firing cpp/include-non-header false positives on every
+        # batch (paths-ignore does not apply to files compiled under build-mode:
+        # manual). Build each source file as its own translation unit instead.
+        cmake --preset release -DENABLE_UNITY=OFF -DENABLE_PCH=OFF
         cmake --build --preset release
 
     - name: Perform CodeQL Analysis
@@ -144,7 +150,9 @@ jobs:
 
     - name: Build
       run: |
-        cmake --preset release
+        # See the analyze job's Build step: Unity/PCH must stay off so CodeQL traces
+        # the real source files instead of generated Unity-batch wrapper files.
+        cmake --preset release -DENABLE_UNITY=OFF -DENABLE_PCH=OFF
         cmake --build --preset release
 
     - name: Perform CodeQL Analysis
