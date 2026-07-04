@@ -55,10 +55,6 @@ public:
     /// Shows the window and initializes child widget state.
     void show();
 
-    /// Returns the shared IC-hover preview popup.  Owned by this MainWindow as
-    /// a Qt child; auto-nulls (via QPointer) if destroyed before this window.
-    ICPreviewPopup *icPreviewPopup() const;
-
     // --- Tab Management ---
 
     /// Creates a new empty circuit tab.

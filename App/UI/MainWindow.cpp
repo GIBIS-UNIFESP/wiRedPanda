@@ -84,7 +84,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     m_exportController = new ExportController(*this, this);
     m_icController = new ICController(*this, this);
-    m_binder = new SceneUiBinder(m_ui.get(), m_palette, this, this);
+    m_binder = new SceneUiBinder(m_ui.get(), m_palette, m_icPreviewPopup, this, this);
     m_workspaceManager = new WorkspaceManager(m_ui->tab, *this, this);
 
     // The manager owns the tab model and announces active-tab changes; the shell
@@ -634,11 +634,6 @@ void MainWindow::on_actionSelectAll_triggered()
 WorkSpace *MainWindow::currentTab() const
 {
     return m_workspaceManager->currentTab();
-}
-
-ICPreviewPopup *MainWindow::icPreviewPopup() const
-{
-    return m_icPreviewPopup;
 }
 
 void MainWindow::onCurrentTabChanged(WorkSpace *newTab)

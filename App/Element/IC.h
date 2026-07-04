@@ -9,6 +9,7 @@
 
 #include <QFileInfo>
 #include <QPixmap>
+#include <QPoint>
 #include <QSet>
 
 #include "App/Element/GraphicElement.h"
@@ -43,6 +44,13 @@ public:
 signals:
     /// Emitted on double-click to request opening the sub-circuit in a new tab.
     void requestOpenSubCircuit(int elementId, const QString &blobName, const QString &filePath);
+
+    /// Hover-preview lifecycle signals. The UI layer (SceneUiBinder) drives the shared
+    /// ICPreviewPopup off these, so IC needs no dependency on MainWindow. \a ic is \c this.
+    void previewRequested(IC *ic, const QPoint &screenPos);
+    void previewMoved(IC *ic, const QPoint &screenPos);
+    void previewHideRequested();
+    void previewCancelRequested(IC *ic);
 
 public:
 
