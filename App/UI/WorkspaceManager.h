@@ -86,6 +86,10 @@ private:
     int closeTabAnyway();
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
 
+    /// Warns and offers to switch tabs if \a fileName is already open in another tab.
+    /// Returns \c true if a conflict was found (and shown), \c false if the save should proceed.
+    bool warnIfOpenInAnotherTab(const QString &fileName);
+
     /// Resolves \a fileName into a non-empty, ".panda"-suffixed absolute path for the
     /// current tab, prompting via a Save-As dialog if the tab has no path of its own yet
     /// (a brand-new project, or one recovered from an autosave file). Returns an empty
