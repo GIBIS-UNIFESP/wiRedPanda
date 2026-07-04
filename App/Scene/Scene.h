@@ -14,6 +14,7 @@
 #include <QUndoCommand>
 #include <QVersionNumber>
 
+#include "App/Core/ContextDirProvider.h"
 #include "App/Element/ICRegistry.h"
 #include "App/Nodes/QNEPort.h"
 #include "App/Scene/ClipboardManager.h"
@@ -42,7 +43,7 @@ struct SerializationContext;
  * undo/redo functionality and handles various user interface events like drag-and-drop,
  * keyboard shortcuts, and mouse operations.
  */
-class Scene : public QGraphicsScene
+class Scene : public QGraphicsScene, public ContextDirProvider
 {
     Q_OBJECT
 
@@ -87,8 +88,6 @@ public:
     /// bypassing our override and leaving the m_elementRegistry entry
     /// pointing at freed memory.
     void forgetItemId(int id);
-
-    static constexpr int gridSize = 16; ///< Scene grid unit in pixels (elements snap to gridSize/2).
 
     // --- Lifecycle ---
 
@@ -239,11 +238,9 @@ public:
     // --- Context Directory ---
 
     /// Returns the directory of the .panda file associated with this scene.
-    QString contextDir() const { return m_contextDir; }
+    QString contextDir() const override { return m_contextDir; }
     /// Sets the directory of the .panda file associated with this scene.
     void setContextDir(const QString &dir) { m_contextDir = dir; }
-    /// Returns the context directory for \a item: from its Scene if available, else the global fallback.
-    static QString resolveContextDir(const QGraphicsItem *item);
 
     // --- IC Registry ---
 

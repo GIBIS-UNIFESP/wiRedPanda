@@ -8,11 +8,11 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Nodes/QNEPort.h"
-#include "App/Scene/Scene.h"
 
 template<>
 struct ElementInfo<AudioBox> {
@@ -72,7 +72,7 @@ void AudioBox::setAudio(const QString &audioPath)
     // just the filename — handles cross-platform absolute paths from old files.
     QString path = audioPath;
     if (!path.startsWith(":/")) {
-        const QDir dir(Scene::resolveContextDir(this));
+        const QDir dir(GraphicElement::resolveContextDir(this));
         const QString resolved = dir.filePath(path);
 
         if (!QFileInfo::exists(resolved)) {

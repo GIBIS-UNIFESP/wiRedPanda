@@ -7,6 +7,7 @@
 #include <QJsonArray>
 
 #include "App/Core/Common.h"
+#include "App/Core/Constants.h"
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
@@ -227,7 +228,7 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
         return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
-    const int snap = Scene::gridSize / 2;
+    const int snap = Constants::gridSize / 2;
     const int x = qRound(params.value("x").toDouble() / snap) * snap;
     const int y = qRound(params.value("y").toDouble() / snap) * snap;
 
