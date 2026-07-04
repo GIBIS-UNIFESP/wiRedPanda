@@ -12,10 +12,8 @@
 
 #include <QBitArray>
 #include <QGraphicsItem>
-#include <QHash>
 #include <QKeySequence>
 #include <QList>
-#include <QVersionNumber>
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
@@ -587,57 +585,15 @@ protected:
 private:
     Q_DISABLE_COPY_MOVE(GraphicElement)
 
+    /// Reaches ports/orientation/appearance/context-directory state to implement save()/load();
+    /// see GraphicElementSerializer.
+    friend class GraphicElementSerializer;
+
     // --- Port Management Helpers ---
 
     /// Shared implementation for setInputSize() and setOutputSize(): resizes the port store
     /// (within min/max constraints) then re-lays-out the ports via updatePortsProperties().
     void setPortSize(const int size, const bool isInput);
-
-    /// Erases \a deletedPort's serial-ID entry from \a portMap during deserialization.
-    static void removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap);
-
-    /// Removes input ports beyond \a inputSize_ (used when the loaded port count exceeds current limits).
-    void removeSurplusInputs(const quint64 inputSize_, SerializationContext &context);
-    /// Removes output ports beyond \a outputSize_ (used when the loaded port count exceeds current limits).
-    void removeSurplusOutputs(const quint64 outputSize_, SerializationContext &context);
-
-    // --- Serialization Helpers ---
-
-    /// Deserializes element state from the V4.6+ binary format.
-    void loadNewFormat(QDataStream &stream, SerializationContext &context);
-    /// Deserializes element state from pre-V4.6 binary formats.
-    void loadOldFormat(QDataStream &stream, SerializationContext &context);
-
-    // --- Position Loading ---
-
-    /// Reads and applies the element's scene position from \a stream.
-    void loadPos(QDataStream &stream);
-
-    // --- Port Loading ---
-
-    /// Reads a single input port at \a port index from \a stream.
-    void loadInputPort(QDataStream &stream, SerializationContext &context, const int port);
-    /// Reads all input ports from \a stream.
-    void loadInputPorts(QDataStream &stream, SerializationContext &context);
-    /// Reads a single output port at \a port index from \a stream.
-    void loadOutputPort(QDataStream &stream, SerializationContext &context, const int port);
-    /// Reads all output ports from \a stream.
-    void loadOutputPorts(QDataStream &stream, SerializationContext &context);
-    /// Reads and applies input/output port counts from \a stream, clamped to current constraints.
-    void loadPortsSize(QDataStream &stream, const QVersionNumber &version);
-
-    // --- Property Loading ---
-
-    /// Reads the element label from \a stream (format depends on \a version).
-    void loadLabel(QDataStream &stream, const QVersionNumber &version);
-    /// Reads and applies a single appearance path at the given \a index from \a stream.
-    void loadPixmapAppearanceName(QDataStream &stream, const int index, const QString &contextDir);
-    /// Reads and applies all appearance paths from \a stream.
-    void loadPixmapAppearanceNames(QDataStream &stream, SerializationContext &context);
-    /// Reads and applies the element rotation from \a stream.
-    void loadRotation(QDataStream &stream, const QVersionNumber &version);
-    /// Reads and applies the keyboard trigger from \a stream.
-    void loadTrigger(QDataStream &stream, const QVersionNumber &version);
 
     // --- Display & Interaction ---
 

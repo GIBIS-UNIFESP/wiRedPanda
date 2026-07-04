@@ -2,10 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /// \file
-/// Serialization method implementations for GraphicElement (save/load).
-/// Split out from GraphicElement.cpp to decouple serialization from the
-/// rest of the element logic and avoid a transitive SerializationContext.h
-/// include for the 48+ files that depend on GraphicElement.h.
+/// GraphicElementSerializer: save/load implementation for GraphicElement.
+/// Split out from GraphicElement so persistence is a collaborator (a friend class)
+/// rather than a cluster of methods on the element, and to avoid a transitive
+/// SerializationContext.h include for the 48+ files that depend on GraphicElement.h.
+
+#include "App/Element/GraphicElementSerializer.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -28,74 +30,92 @@ namespace {
 /// any threat of memory exhaustion.  Surfaced by libFuzzer.
 constexpr quint32 kMaxPortsPerElement = 1024;
 
-/// Read a `QList<QMap<QString, QVariant>>` from \a stream while enforcing
-/// kMaxPortsPerElement before any allocation.  Equivalent on the wire to
-/// `stream >> list` (Qt also writes a leading quint32 count) but rejects
-/// nonsense counts up front instead of `reserve()`-ing them.
-QList<QMap<QString, QVariant>> readPortList(QDataStream &stream, const char *label)
+} // namespace
+
+// readPortList() and removePortFromMap() are static members (not file-local helpers) so their
+// load-error PANDACEPTION throws extract under the GraphicElementSerializer tr context.
+
+QList<QMap<QString, QVariant>> GraphicElementSerializer::readPortList(QDataStream &stream, const char *label)
 {
     const QString labelStr = QString::fromUtf8(label);
     quint32 count;
     stream >> count;
     if (stream.status() != QDataStream::Ok) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Stream error reading %1 count at position %2",
-                                        labelStr, QString::number(stream.device()->pos()));
+        throw PANDACEPTION("Stream error reading %1 count at position %2",
+                           labelStr, QString::number(stream.device()->pos()));
     }
     if (count > kMaxPortsPerElement) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Refusing to read %1 with implausible count %2 (max %3)",
-                                        labelStr,
-                                        QString::number(count),
-                                        QString::number(kMaxPortsPerElement));
+        throw PANDACEPTION("Refusing to read %1 with implausible count %2 (max %3)",
+                           labelStr,
+                           QString::number(count),
+                           QString::number(kMaxPortsPerElement));
     }
     QList<QMap<QString, QVariant>> result;
     result.reserve(static_cast<int>(count));
     for (quint32 i = 0; i < count; ++i) {
         QMap<QString, QVariant> entry = Serialization::readBoundedMetadata(stream);
         if (stream.status() != QDataStream::Ok) {
-            throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                            "Stream error reading %1 entry %2 at position %3",
-                                            labelStr,
-                                            QString::number(i),
-                                            QString::number(stream.device()->pos()));
+            throw PANDACEPTION("Stream error reading %1 entry %2 at position %3",
+                               labelStr,
+                               QString::number(i),
+                               QString::number(stream.device()->pos()));
         }
         result.append(std::move(entry));
     }
     return result;
 }
 
-} // namespace
+void GraphicElementSerializer::removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap)
+{
+    for (auto it = portMap.begin(); it != portMap.end();) {
+        if (it.value() == deletedPort) {
+            it = portMap.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
 
-// ========== save / load ==========
+// ========== GraphicElement entry points (delegate to the serializer) ==========
 
 void GraphicElement::save(QDataStream &stream) const
 {
+    GraphicElementSerializer::save(*this, stream);
+}
 
-    qCDebug(four) << "Saving element. Type: " << objectName();
+void GraphicElement::load(QDataStream &stream, SerializationContext &context)
+{
+    GraphicElementSerializer::load(*this, stream, context);
+}
+
+// ========== save / load ==========
+
+void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &stream)
+{
+    qCDebug(four) << "Saving element. Type: " << element.objectName();
 
     QMap<QString, QVariant> map;
-    map.insert("pos", pos());
-    map.insert("rotation", rotation());
-    map.insert("label", label());
+    map.insert("pos", element.pos());
+    map.insert("rotation", element.rotation());
+    map.insert("label", element.label());
     // min/max port sizes are class metadata, not per-instance state.
     // No longer written; old files that contain these keys are harmlessly
     // ignored on load (the QMap is read as a whole, unused keys are skipped).
-    map.insert("trigger", m_trigger);
-    if (isFlippedX()) { map.insert("flippedX", true); }
-    if (isFlippedY()) { map.insert("flippedY", true); }
+    map.insert("trigger", element.trigger());
+    if (element.isFlippedX()) { map.insert("flippedX", true); }
+    if (element.isFlippedY()) { map.insert("flippedY", true); }
     stream << map;
 
     // -------------------------------------------
 
     QList<QMap<QString, QVariant>> inputMap;
 
-    for (int i = 0; i < m_ports.inputs().size(); ++i) {
-        auto *port = m_ports.inputs().at(i);
+    for (int i = 0; i < element.m_ports.inputs().size(); ++i) {
+        auto *port = element.m_ports.inputs().at(i);
         QMap<QString, QVariant> tempMap;
         // Generate deterministic serial ID: (elementId << 16) | portIndex
         // Note: We calculate but don't modify port state (no side effects in save())
-        quint64 serialId = (static_cast<quint64>(id()) << 16) | (static_cast<quint64>(i) & 0xFFFF);
+        quint64 serialId = (static_cast<quint64>(element.id()) << 16) | (static_cast<quint64>(i) & 0xFFFF);
         tempMap.insert("serialId", serialId);
         tempMap.insert("name", port->name());
 
@@ -108,12 +128,12 @@ void GraphicElement::save(QDataStream &stream) const
 
     QList<QMap<QString, QVariant>> outputMap;
 
-    for (int i = 0; i < m_ports.outputs().size(); ++i) {
-        auto *port = m_ports.outputs().at(i);
+    for (int i = 0; i < element.m_ports.outputs().size(); ++i) {
+        auto *port = element.m_ports.outputs().at(i);
         QMap<QString, QVariant> tempMap;
         // Generate deterministic serial ID: (elementId << 16) | portIndex
         // Note: We calculate but don't modify port state (no side effects in save())
-        quint64 serialId = (static_cast<quint64>(id()) << 16) | (static_cast<quint64>(m_ports.inputs().size() + i) & 0xFFFF);
+        quint64 serialId = (static_cast<quint64>(element.id()) << 16) | (static_cast<quint64>(element.m_ports.inputs().size() + i) & 0xFFFF);
         tempMap.insert("serialId", serialId);
         tempMap.insert("name", port->name());
 
@@ -126,7 +146,7 @@ void GraphicElement::save(QDataStream &stream) const
 
     QList<QMap<QString, QVariant>> appearancesMap;
 
-    for (const auto &appearance : m_appearance.alternativeAppearances()) {
+    for (const auto &appearance : element.m_appearance.alternativeAppearances()) {
         QMap<QString, QVariant> tempMap;
         tempMap.insert("skinName", appearance.startsWith(":/") ? appearance : QFileInfo(appearance).fileName());
         appearancesMap << tempMap;
@@ -139,72 +159,72 @@ void GraphicElement::save(QDataStream &stream) const
     qCDebug(four) << "Finished saving element.";
 }
 
-void GraphicElement::load(QDataStream &stream, SerializationContext &context)
+void GraphicElementSerializer::load(GraphicElement &element, QDataStream &stream, SerializationContext &context)
 {
-    qCDebug(four) << "Loading element. Type: " << objectName();
+    qCDebug(four) << "Loading element. Type: " << element.objectName();
 
-    m_contextDir = context.contextDir;
+    element.m_contextDir = context.contextDir;
 
     // Files before 4.1 used a flat sequential binary format; 4.1+ use a keyed QMap
     // format that tolerates fields being added or reordered in future versions.
-    (!VersionInfo::hasQMapFormat(context.version)) ? loadOldFormat(stream, context) : loadNewFormat(stream, context);
+    (!VersionInfo::hasQMapFormat(context.version)) ? loadOldFormat(element, stream, context) : loadNewFormat(element, stream, context);
 
     qCDebug(four) << "Updating port positions.";
-    updatePortsProperties();
+    element.updatePortsProperties();
     // Apply the deserialized angle after ports are positioned so any non-rotatable element
     // can apply its own rotatePorts() path correctly
-    m_orientation.applyLoadedOrientation();
+    element.m_orientation.applyLoadedOrientation();
 
     qCDebug(four) << "Finished loading element.";
 }
 
 // ========== Old format (pre-4.1) ==========
 
-void GraphicElement::loadOldFormat(QDataStream &stream, SerializationContext &context)
+void GraphicElementSerializer::loadOldFormat(GraphicElement &element, QDataStream &stream, SerializationContext &context)
 {
-    loadPos(stream);
-    loadRotation(stream, context.version);
+    loadPos(element, stream);
+    loadRotation(element, stream, context.version);
     /* <Version1.2> */
-    loadLabel(stream, context.version);
+    loadLabel(element, stream, context.version);
     /* <\Version1.2> */
     /* <Version1.3> */
     loadPortsSize(stream, context.version);
     /* <\Version1.3> */
     /* <Version1.9> */
-    loadTrigger(stream, context.version);
+    loadTrigger(element, stream, context.version);
     /* <\Version4.01> */
     if (VersionInfo::hasUnusedPriority(context.version)) {
         quint64 unusedPriority; stream >> unusedPriority;
     }
     /* <\Version1.9> */
-    loadInputPorts(stream, context);
-    loadOutputPorts(stream, context);
+    loadInputPorts(element, stream, context);
+    loadOutputPorts(element, stream, context);
     /* <\Version2.7> */
-    loadPixmapAppearanceNames(stream, context);
+    loadPixmapAppearanceNames(element, stream, context);
 }
 
 // ========== New format (4.1+) ==========
 
-void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &context)
+void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStream &stream, SerializationContext &context)
 {
     QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
     // Check stream integrity after reading element properties map
     if (stream.status() != QDataStream::Ok) {
         throw PANDACEPTION("Stream error reading element properties at position %1",
-                          stream.device()->pos());
+                           QString::number(stream.device()->pos()));
     }
 
     if (map.contains("pos")) {
-        setPos(map.value("pos").toPointF());
+        element.setPos(map.value("pos").toPointF());
     }
 
     if (map.contains("rotation")) {
-        m_orientation.setAngleRaw(map.value("rotation").toReal());
+        element.m_orientation.setAngleRaw(map.value("rotation").toReal());
     }
 
     if (map.contains("label")) {
-        setLabel(map.value("label").toString());
+        element.setLabel(map.value("label").toString());
     }
 
     // min/max port sizes are class metadata — ignore any stale saved values.
@@ -213,11 +233,11 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
     // -------------------------------------------
 
     if (map.contains("trigger")) {
-        setTrigger(map.value("trigger").toString());
+        element.setTrigger(map.value("trigger").toString());
     }
 
-    m_orientation.setFlippedXRaw(map.value("flippedX", false).toBool());
-    m_orientation.setFlippedYRaw(map.value("flippedY", false).toBool());
+    element.m_orientation.setFlippedXRaw(map.value("flippedX", false).toBool());
+    element.m_orientation.setFlippedYRaw(map.value("flippedY", false).toBool());
 
     // -------------------------------------------
 
@@ -239,33 +259,33 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
             serialId = (static_cast<quint64>(context.nextLocalId) << 16) | (port & 0xFFFF);
         }
 
-        if (port < m_ports.inputs().size()) {
-            m_ports.inputs().value(port)->setSerialId(serialId);
+        if (port < element.m_ports.inputs().size()) {
+            element.m_ports.inputs().value(port)->setSerialId(serialId);
             quint64 oldPtr = input.value("ptr").toULongLong();
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
                 context.oldPtrToSerialId[oldPtr] = serialId;
             }
 
-            if (elementType() == ElementType::IC) {
-                m_ports.inputs().value(port)->setName(name);
+            if (element.elementType() == ElementType::IC) {
+                element.m_ports.inputs().value(port)->setName(name);
             }
         } else {
             quint64 oldPtr = input.value("ptr").toULongLong();
-            m_ports.addPort(name, false);
-            m_ports.inputs().value(port)->setSerialId(serialId);
+            element.m_ports.addPort(name, false);
+            element.m_ports.inputs().value(port)->setSerialId(serialId);
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
                 context.oldPtrToSerialId[oldPtr] = serialId;
             }
         }
 
-        context.portMap[serialId] = m_ports.inputs().value(port);
+        context.portMap[serialId] = element.m_ports.inputs().value(port);
 
         ++port;
     }
 
-    removeSurplusInputs(static_cast<quint64>(inputMap.size()), context);
+    removeSurplusInputs(element, static_cast<quint64>(inputMap.size()), context);
 
     // -------------------------------------------
 
@@ -284,36 +304,36 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
         } else {
             // Old format fallback: use context.nextLocalId as element basis so that
             // serialIds remain unique even when element IDs are -1 (unassigned).
-            serialId = (static_cast<quint64>(context.nextLocalId) << 16) | ((m_ports.inputs().size() + port) & 0xFFFF);
+            serialId = (static_cast<quint64>(context.nextLocalId) << 16) | ((element.m_ports.inputs().size() + port) & 0xFFFF);
         }
 
-        if (port < m_ports.outputs().size()) {
-            m_ports.outputs().value(port)->setSerialId(serialId);
+        if (port < element.m_ports.outputs().size()) {
+            element.m_ports.outputs().value(port)->setSerialId(serialId);
             quint64 oldPtr = output.value("ptr").toULongLong();
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
                 context.oldPtrToSerialId[oldPtr] = serialId;
             }
 
-            if (elementType() == ElementType::IC) {
-                m_ports.outputs().value(port)->setName(name);
+            if (element.elementType() == ElementType::IC) {
+                element.m_ports.outputs().value(port)->setName(name);
             }
         } else {
             quint64 oldPtr = output.value("ptr").toULongLong();
-            m_ports.addPort(name, true);
-            m_ports.outputs().value(port)->setSerialId(serialId);
+            element.m_ports.addPort(name, true);
+            element.m_ports.outputs().value(port)->setSerialId(serialId);
             // Map old pointer IDs to new serial IDs for backwards compatibility
             if (oldPtr != 0) {
                 context.oldPtrToSerialId[oldPtr] = serialId;
             }
         }
 
-        context.portMap[serialId] = m_ports.outputs().value(port);
+        context.portMap[serialId] = element.m_ports.outputs().value(port);
 
         ++port;
     }
 
-    removeSurplusOutputs(static_cast<quint64>(outputMap.size()), context);
+    removeSurplusOutputs(element, static_cast<quint64>(outputMap.size()), context);
 
     // -------------------------------------------
 
@@ -321,22 +341,22 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
 
     if (stream.status() != QDataStream::Ok) {
         throw PANDACEPTION("Stream error reading appearances at position %1",
-                          stream.device()->pos());
+                           QString::number(stream.device()->pos()));
     }
 
     int index = 0;
 
     for (const auto &entry : std::as_const(appearancesMap)) {
-        if (index >= m_appearance.alternativeAppearances().size()) {
+        if (index >= element.m_appearance.alternativeAppearances().size()) {
             throw PANDACEPTION("Appearance index %1 out of range (size=%2) — stream may be corrupt",
                                QString::number(index),
-                               QString::number(m_appearance.alternativeAppearances().size()));
+                               QString::number(element.m_appearance.alternativeAppearances().size()));
         }
 
         const QString name = entry.value("skinName").toString();
 
         if (!name.startsWith(":/")) {
-            m_appearance.setAlternativeAppearanceAt(index, name);
+            element.m_appearance.setAlternativeAppearanceAt(index, name);
         }
 
         ++index;
@@ -344,9 +364,9 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
 
     // If all alternative appearance slots still match the defaults, the user never
     // applied a custom appearance — record that so the "Reset to default" action works.
-    m_appearance.recomputeUsingDefault();
+    element.m_appearance.recomputeUsingDefault();
 
-    refresh();
+    element.refresh();
 
     // Advance the per-element counter so that the next element's fallback serialIds
     // use a different base (only relevant for V4.1.9–V4.3 files lacking serialId keys).
@@ -355,44 +375,44 @@ void GraphicElement::loadNewFormat(QDataStream &stream, SerializationContext &co
 
 // ========== Property loading helpers (old format) ==========
 
-void GraphicElement::loadPos(QDataStream &stream)
+void GraphicElementSerializer::loadPos(GraphicElement &element, QDataStream &stream)
 {
     QPointF pos; stream >> pos;
-    setPos(pos);
+    element.setPos(pos);
 }
 
-void GraphicElement::loadRotation(QDataStream &stream, const QVersionNumber &version)
+void GraphicElementSerializer::loadRotation(GraphicElement &element, QDataStream &stream, const QVersionNumber &version)
 {
     qreal angle; stream >> angle;
-    m_orientation.setAngleRaw(angle);
+    element.m_orientation.setAngleRaw(angle);
 
     // In versions before 4.1 the coordinate system for inputs and outputs was
     // rotated 90° relative to the current convention.  Apply a compensating offset
     // so old files render correctly without migrating every saved angle.
     if (!VersionInfo::hasQMapFormat(version)) {
-        if ((m_elementGroup == ElementGroup::Input) || (m_elementGroup == ElementGroup::StaticInput)) {
-            m_orientation.setAngleRaw(m_orientation.angle() + 90);
+        if ((element.elementGroup() == ElementGroup::Input) || (element.elementGroup() == ElementGroup::StaticInput)) {
+            element.m_orientation.setAngleRaw(element.m_orientation.angle() + 90);
         }
 
-        if ((m_elementGroup == ElementGroup::Output) || (m_elementGroup == ElementGroup::IC) || (m_elementGroup == ElementGroup::Gate)) {
+        if ((element.elementGroup() == ElementGroup::Output) || (element.elementGroup() == ElementGroup::IC) || (element.elementGroup() == ElementGroup::Gate)) {
             // Displays and Node never had the old convention applied, so skip them.
-            if ((m_elementType == ElementType::Display7) || (m_elementType == ElementType::Display14) || (m_elementType == ElementType::Display16) || (m_elementType == ElementType::Node)) {
+            if ((element.elementType() == ElementType::Display7) || (element.elementType() == ElementType::Display14) || (element.elementType() == ElementType::Display16) || (element.elementType() == ElementType::Node)) {
                 return;
             }
 
-            m_orientation.setAngleRaw(m_orientation.angle() - 90);
+            element.m_orientation.setAngleRaw(element.m_orientation.angle() - 90);
         }
     }
 }
 
-void GraphicElement::loadLabel(QDataStream &stream, const QVersionNumber &version)
+void GraphicElementSerializer::loadLabel(GraphicElement &element, QDataStream &stream, const QVersionNumber &version)
 {
     if (VersionInfo::hasLabels(version)) {
-        setLabel(Serialization::readBoundedString(stream));
+        element.setLabel(Serialization::readBoundedString(stream));
     }
 }
 
-void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber &version)
+void GraphicElementSerializer::loadPortsSize(QDataStream &stream, const QVersionNumber &version)
 {
     if (VersionInfo::hasPortSizes(version)) {
         // Drain the 4 saved values to advance the stream position.
@@ -401,141 +421,126 @@ void GraphicElement::loadPortsSize(QDataStream &stream, const QVersionNumber &ve
     }
 }
 
-void GraphicElement::loadTrigger(QDataStream &stream, const QVersionNumber &version)
+void GraphicElementSerializer::loadTrigger(GraphicElement &element, QDataStream &stream, const QVersionNumber &version)
 {
     if (VersionInfo::hasTrigger(version)) {
         QKeySequence trigger; stream >> trigger;
-        setTrigger(trigger);
+        element.setTrigger(trigger);
     }
 }
 
 // ========== Port loading (old format) ==========
 
-void GraphicElement::loadInputPorts(QDataStream &stream, SerializationContext &context)
+void GraphicElementSerializer::loadInputPorts(GraphicElement &element, QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading input ports.";
     quint64 inputSize; stream >> inputSize;
     if (inputSize > kMaxPortsPerElement) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Refusing old-format input port list with implausible count %1 (max %2)",
-                                        QString::number(inputSize),
-                                        QString::number(kMaxPortsPerElement));
+        throw PANDACEPTION("Refusing old-format input port list with implausible count %1 (max %2)",
+                           QString::number(inputSize),
+                           QString::number(kMaxPortsPerElement));
     }
 
     for (size_t port = 0; port < inputSize; ++port) {
-        loadInputPort(stream, context, static_cast<int>(port));
+        loadInputPort(element, stream, context, static_cast<int>(port));
     }
 
-    removeSurplusInputs(inputSize, context);
+    removeSurplusInputs(element, inputSize, context);
 }
 
-void GraphicElement::loadInputPort(QDataStream &stream, SerializationContext &context, const int port)
+void GraphicElementSerializer::loadInputPort(GraphicElement &element, QDataStream &stream, SerializationContext &context, const int port)
 {
     quint64 ptr;  stream >> ptr;
     const QString name = Serialization::readBoundedString(stream);
     int flags;    stream >> flags;
 
-    if (port < m_ports.inputs().size()) {
-        if (elementType() == ElementType::IC) {
-            m_ports.inputs().value(port)->setName(name);
+    if (port < element.m_ports.inputs().size()) {
+        if (element.elementType() == ElementType::IC) {
+            element.m_ports.inputs().value(port)->setName(name);
         }
     } else {
-        m_ports.addPort(name, false);
+        element.m_ports.addPort(name, false);
     }
 
-    context.portMap[ptr] = m_ports.inputs().value(port);
+    context.portMap[ptr] = element.m_ports.inputs().value(port);
 }
 
-void GraphicElement::loadOutputPorts(QDataStream &stream, SerializationContext &context)
+void GraphicElementSerializer::loadOutputPorts(GraphicElement &element, QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading output ports.";
     quint64 outputSize; stream >> outputSize;
     if (outputSize > kMaxPortsPerElement) {
-        throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                        "Refusing old-format output port list with implausible count %1 (max %2)",
-                                        QString::number(outputSize),
-                                        QString::number(kMaxPortsPerElement));
+        throw PANDACEPTION("Refusing old-format output port list with implausible count %1 (max %2)",
+                           QString::number(outputSize),
+                           QString::number(kMaxPortsPerElement));
     }
 
     for (size_t port = 0; port < outputSize; ++port) {
-        loadOutputPort(stream, context, static_cast<int>(port));
+        loadOutputPort(element, stream, context, static_cast<int>(port));
     }
 
-    removeSurplusOutputs(outputSize, context);
+    removeSurplusOutputs(element, outputSize, context);
 }
 
-void GraphicElement::loadOutputPort(QDataStream &stream, SerializationContext &context, const int port)
+void GraphicElementSerializer::loadOutputPort(GraphicElement &element, QDataStream &stream, SerializationContext &context, const int port)
 {
     quint64 ptr;  stream >> ptr;
     const QString name = Serialization::readBoundedString(stream);
     int flags;    stream >> flags;
 
-    if (port < m_ports.outputs().size()) {
-        if (elementType() == ElementType::IC) {
-            m_ports.outputs().value(port)->setName(name);
+    if (port < element.m_ports.outputs().size()) {
+        if (element.elementType() == ElementType::IC) {
+            element.m_ports.outputs().value(port)->setName(name);
         }
     } else {
-        m_ports.addPort(name, true);
+        element.m_ports.addPort(name, true);
     }
 
-    context.portMap[ptr] = m_ports.outputs().value(port);
+    context.portMap[ptr] = element.m_ports.outputs().value(port);
 }
 
 // ========== Surplus port removal ==========
 
-void GraphicElement::removeSurplusInputs(const quint64 inputSize_, SerializationContext &context)
+void GraphicElementSerializer::removeSurplusInputs(GraphicElement &element, const quint64 inputSize_, SerializationContext &context)
 {
     // The element may have been constructed with more ports than are stored in the file
     // (e.g. default constructor creates minInputSize ports).  Trim the excess from the end,
     // but never go below minInputSize to avoid leaving an unusable element.
-    while ((inputSize() > static_cast<int>(inputSize_)) && (inputSize_ >= m_minInputSize)) {
+    while ((element.inputSize() > static_cast<int>(inputSize_)) && (inputSize_ >= static_cast<quint64>(element.minInputSize()))) {
         // Remove from the vector before deleting: a reentrant access during deserialization
         // must never observe a dangling pointer still present in m_ports.
-        auto *deletedPort = m_ports.takeLastInput();
+        auto *deletedPort = element.m_ports.takeLastInput();
         removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
     }
 }
 
-void GraphicElement::removeSurplusOutputs(const quint64 outputSize_, SerializationContext &context)
+void GraphicElementSerializer::removeSurplusOutputs(GraphicElement &element, const quint64 outputSize_, SerializationContext &context)
 {
     // Same trimming logic as removeSurplusInputs, applied to output ports
-    while ((outputSize() > static_cast<int>(outputSize_)) && (outputSize_ >= m_minOutputSize)) {
+    while ((element.outputSize() > static_cast<int>(outputSize_)) && (outputSize_ >= static_cast<quint64>(element.minOutputSize()))) {
         // Remove from the vector before deleting: a reentrant access during deserialization
         // must never observe a dangling pointer still present in m_ports.
-        auto *deletedPort = m_ports.takeLastOutput();
+        auto *deletedPort = element.m_ports.takeLastOutput();
         removePortFromMap(deletedPort, context.portMap);
         delete deletedPort;
-    }
-}
-
-void GraphicElement::removePortFromMap(QNEPort *deletedPort, QHash<quint64, QNEPort *> &portMap)
-{
-    for (auto it = portMap.begin(); it != portMap.end();) {
-        if (it.value() == deletedPort) {
-            it = portMap.erase(it);
-        } else {
-            ++it;
-        }
     }
 }
 
 // ========== Appearance loading ==========
 
-void GraphicElement::loadPixmapAppearanceNames(QDataStream &stream, SerializationContext &context)
+void GraphicElementSerializer::loadPixmapAppearanceNames(GraphicElement &element, QDataStream &stream, SerializationContext &context)
 {
-
     if (VersionInfo::hasAppearanceNames(context.version)) {
-        qCDebug(four) << tr("Loading pixmap appearance names.");
+        qCDebug(four) << "Loading pixmap appearance names.";
         quint64 outputSize; stream >> outputSize;
         if (outputSize > kMaxPortsPerElement) {
-            throw PANDACEPTION_WITH_CONTEXT("GraphicElement",
-                                            "Refusing old-format appearance list with implausible count %1 (max %2)",
-                                            QString::number(outputSize),
-                                            QString::number(kMaxPortsPerElement));
+            throw PANDACEPTION("Refusing old-format appearance list with implausible count %1 (max %2)",
+                               QString::number(outputSize),
+                               QString::number(kMaxPortsPerElement));
         }
 
-        if (m_elementType == ElementType::IC) {
+        if (element.elementType() == ElementType::IC) {
             // IC paints itself procedurally and has no appearance slots.
             // Drain the saved appearance names from old file formats to keep the stream position valid.
             for (quint64 i = 0; i < outputSize; ++i) {
@@ -545,22 +550,22 @@ void GraphicElement::loadPixmapAppearanceNames(QDataStream &stream, Serializatio
         }
 
         for (size_t i = 0; i < outputSize; ++i) {
-            loadPixmapAppearanceName(stream, static_cast<int>(i), context.contextDir);
+            loadPixmapAppearanceName(element, stream, static_cast<int>(i), context.contextDir);
         }
 
-        m_appearance.recomputeUsingDefault();
+        element.m_appearance.recomputeUsingDefault();
 
-        refresh();
+        element.refresh();
     }
 }
 
-void GraphicElement::loadPixmapAppearanceName(QDataStream &stream, const int index, const QString &contextDir)
+void GraphicElementSerializer::loadPixmapAppearanceName(GraphicElement &element, QDataStream &stream, const int index, const QString &contextDir)
 {
     const QString name = Serialization::readBoundedString(stream);
 
-    if (index >= m_appearance.alternativeAppearances().size()) {
+    if (index >= element.m_appearance.alternativeAppearances().size()) {
         throw PANDACEPTION("Appearance index %1 out of range (size=%2) for appearance name \"%3\" — stream may be corrupt",
-                           QString::number(index), QString::number(m_appearance.alternativeAppearances().size()), name);
+                           QString::number(index), QString::number(element.m_appearance.alternativeAppearances().size()), name);
     }
 
     // Only override the alternative appearance if it is a filesystem path; resource
@@ -568,9 +573,9 @@ void GraphicElement::loadPixmapAppearanceName(QDataStream &stream, const int ind
     // potentially missing saved path from an older project file.
     if (!name.startsWith(":/")) {
         if (!contextDir.isEmpty() && QDir::isRelativePath(name)) {
-            m_appearance.setAlternativeAppearanceAt(index, contextDir + "/" + name);
+            element.m_appearance.setAlternativeAppearanceAt(index, contextDir + "/" + name);
         } else {
-            m_appearance.setAlternativeAppearanceAt(index, name);
+            element.m_appearance.setAlternativeAppearanceAt(index, name);
         }
     }
 }
