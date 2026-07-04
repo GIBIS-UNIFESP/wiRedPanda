@@ -44,6 +44,9 @@ void SceneItemRegistry::updateItemId(ItemWithId *item, const int newId)
 
 void SceneItemRegistry::forgetItemId(const int id)
 {
+    if (auto *item = m_elementRegistry.value(id, nullptr)) {
+        item->setRegistry(nullptr);
+    }
     m_elementRegistry.remove(id);
 }
 
@@ -57,6 +60,7 @@ void SceneItemRegistry::registerItem(ItemWithId *item)
     Q_ASSERT(!m_elementRegistry.contains(item->id())
           || m_elementRegistry.value(item->id()) == item);
     m_elementRegistry[item->id()] = item;
+    item->setRegistry(this);
 }
 
 void SceneItemRegistry::unregisterItem(ItemWithId *item)
@@ -65,6 +69,26 @@ void SceneItemRegistry::unregisterItem(ItemWithId *item)
         return;
     }
     m_elementRegistry.remove(item->id());
+    item->setRegistry(nullptr);
     // HC postcondition: after unregister, the registry must not still resolve this id
     Q_ASSERT(!m_elementRegistry.contains(item->id()));
+}
+
+void SceneItemRegistry::forget(ItemWithId *item)
+{
+    if (!item) {
+        return;
+    }
+    // Identity-checked: a reused id may already have been claimed by a new item by the
+    // time this fires (e.g. undo/redo restoring a different item under the same id).
+    if (m_elementRegistry.value(item->id()) == item) {
+        m_elementRegistry.remove(item->id());
+    }
+}
+
+SceneItemRegistry::~SceneItemRegistry()
+{
+    for (auto *item : std::as_const(m_elementRegistry)) {
+        item->setRegistry(nullptr);
+    }
 }
