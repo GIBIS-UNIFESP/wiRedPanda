@@ -65,7 +65,10 @@ class StackPointer8BitBuilder(ICBuilderBase):
             load_value_inputs.append(element_id)
 
         # Create control signals (shared by all bits)
-        ctrl_x = input_x + HORIZONTAL_GATE_SPACING
+        # "LoadValue[N]" reaches into this column at a standard 1x step on
+        # platforms that render the label a bit wider than the default Linux
+        # font (observed on Windows CI), so it gets extra clearance.
+        ctrl_x = input_x + HORIZONTAL_GATE_SPACING + 32
         control_signals = {}
 
         # (F26: the dangling "Enable" input was removed — nothing consumed it.)

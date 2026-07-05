@@ -80,7 +80,11 @@ class JKFlipFlopBuilder(ICBuilderBase):
         master_nor_x = master_gate_x + HORIZONTAL_GATE_SPACING * 1.5
         slave_and_x = master_nor_x + HORIZONTAL_GATE_SPACING
         slave_gate_x = slave_and_x + HORIZONTAL_GATE_SPACING
-        slave_nor_x = slave_gate_x + HORIZONTAL_GATE_SPACING
+        # slave_gate_s/slave_nor_q needs the same wider gap as the master
+        # stage above -- a standard 1x step is close enough that a platform
+        # with slightly wider label rendering (observed on Windows CI) tips
+        # it into overlap even though it clears at the default Linux font.
+        slave_nor_x = slave_gate_x + HORIZONTAL_GATE_SPACING * 1.5
         # "slave_nor_qbar" is a long label that reaches into the Q_bar LED at
         # a standard 1x step, so widen this last column too.
         output_x = slave_nor_x + HORIZONTAL_GATE_SPACING * 1.5

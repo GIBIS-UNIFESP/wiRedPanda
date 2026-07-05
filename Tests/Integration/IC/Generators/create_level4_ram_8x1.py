@@ -123,7 +123,10 @@ class RAM8x1Builder(ICBuilderBase):
         # width instead of a flat spacing constant.
         write_control_x = decoder_x + max(HORIZONTAL_GATE_SPACING, decoder_handle.width)
         data_mux_x = write_control_x + HORIZONTAL_GATE_SPACING
-        storage_ff_x = data_mux_x + HORIZONTAL_GATE_SPACING
+        # "data_mux[N]" reaches into "storage[N]" at a standard 1x step on
+        # platforms that render the label a bit wider than the default Linux
+        # font (observed on Windows CI), so this column gets extra clearance.
+        storage_ff_x = data_mux_x + HORIZONTAL_GATE_SPACING + 32
 
         # ========== Create Control Inputs (WriteEnable, Clock, Reset) ==========
         # WriteEnable/Clock/Reset each fan out to every one of the num_cells rows below

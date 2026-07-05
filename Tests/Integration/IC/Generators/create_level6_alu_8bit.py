@@ -330,7 +330,11 @@ class ALU8BitBuilder(ICBuilderBase):
         # Selector5way's rotated IC label reaches down past its own real
         # height (learned above, not a flat 64px guess), so the gap to the
         # row below is real-height-based, not a flat VERTICAL_STAGE_SPACING.
-        mux_8way_y = selector_y + max(selector_heights) + VERTICAL_STAGE_SPACING
+        # The rotated label's reach also varies with the platform's font
+        # metrics (a few extra px were observed on Windows CI), so add real
+        # margin on top of the measured height rather than relying on the
+        # bare VERTICAL_STAGE_SPACING gap.
+        mux_8way_y = selector_y + max(selector_heights) + VERTICAL_STAGE_SPACING + 40
 
         # For operations 0-4: Use the 5way selector
         # For operation 5 (NOT): Use NOT gates

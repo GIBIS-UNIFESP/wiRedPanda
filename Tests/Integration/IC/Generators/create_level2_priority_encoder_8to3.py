@@ -55,9 +55,16 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         selected_x = input_x + (4 * HORIZONTAL_GATE_SPACING)
         selected_base_y = input_y + VERTICAL_STAGE_SPACING
         addr_or_x = input_x + (5 * HORIZONTAL_GATE_SPACING)
-        addr_or_final_x = input_x + (6 * HORIZONTAL_GATE_SPACING)
-        en_x = input_x + (7 * HORIZONTAL_GATE_SPACING)
-        output_x = input_x + (8 * HORIZONTAL_GATE_SPACING)
+        # or_addrN_final's labels ("addr1_final", "valid_or", ...) are long
+        # enough that a standard 1x step from addr_or_x clears them only by a
+        # few px at the default Linux font -- not enough margin for platforms
+        # that render the label a bit wider (observed on Windows CI), so this
+        # column (and everything to its right, to keep the grid consistent)
+        # gets extra clearance.
+        addr_or_margin = 32.0
+        addr_or_final_x = input_x + (6 * HORIZONTAL_GATE_SPACING) + addr_or_margin
+        en_x = input_x + (7 * HORIZONTAL_GATE_SPACING) + addr_or_margin
+        output_x = input_x + (8 * HORIZONTAL_GATE_SPACING) + addr_or_margin
         output_base_y = input_y + (1.5 * VERTICAL_STAGE_SPACING)
         inhibit_spacing = VERTICAL_STAGE_SPACING
         selected_spacing = VERTICAL_STAGE_SPACING

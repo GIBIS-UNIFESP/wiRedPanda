@@ -50,10 +50,14 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         addr_y = 100.0
 
         # Create LoadValue[0-3] inputs
+        # "LoadValue[N]" reaches into its neighbor at a standard 1x step on
+        # platforms that render the label a bit wider than the default Linux
+        # font (observed on Windows CI), so this row gets extra clearance.
+        load_col_spacing = HORIZONTAL_GATE_SPACING + 32
         load_value_inputs = []
         for i in range(4):
             lv_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), addr_y, f"LoadValue[{i}]"
+                "InputSwitch", input_x + (i * load_col_spacing), addr_y, f"LoadValue[{i}]"
             )
             if lv_id is None:
                 return False
@@ -237,7 +241,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         # Connect enable signal to register (EN port) - always 1 to allow updates
         # Note: The load/increment/reset control is handled by the mux layer above the register
         # The register EN is always high so it captures whatever the mux provides on each clock edge
-        en_vcc_id = await self.create_element("InputVcc", input_x + (4 * HORIZONTAL_GATE_SPACING), 150.0, "EN_VCC")
+        en_vcc_id = await self.create_element("InputVcc", input_x + (4 * load_col_spacing), 150.0, "EN_VCC")
         if en_vcc_id is None:
             return False
 
