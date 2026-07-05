@@ -160,7 +160,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="853"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="882"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Export to PDF</source>
         <translation>匯出為 PDF</translation>
@@ -374,92 +374,92 @@
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="57"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="119"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="728"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="794"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="58"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="120"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="757"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="823"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin 模擬器</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="314"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="742"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="343"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="315"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="344"/>
         <source>Save simulation before closing?</source>
         <translation>關閉前是否儲存模擬？</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="743"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="772"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>您是否要將此 beWavedDolphin 檔案連結到您目前的 wiRedPanda 檔案並儲存？</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="901"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin 是 wiRedPanda 的波形模擬器，由聖保羅聯邦大學開發，旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;建立者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin 目前由 Prof. Fábio Cappabianco, Ph.D. 及其學生維護。&lt;/p&gt;&lt;p&gt; 如果您發現錯誤或想要請求新功能，請在我們的 GitHub 頁面上提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="708"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="737"/>
         <source>Save File as...</source>
         <translation>將檔案另存為...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="701"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="730"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV 檔案 (*.csv);;Dolphin 檔案 (*.dolphin);;所有支援的檔案 (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="702"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="731"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin 檔案 (*.dolphin);;CSV 檔案 (*.csv);;所有支援的檔案 (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="689"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="729"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="718"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="758"/>
         <source>Saved file successfully.</source>
         <translation>檔案儲存成功。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="477"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="506"/>
         <source>No cells selected.</source>
         <translation>未選擇任何儲存格。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="774"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="803"/>
         <source>Open File</source>
         <translation>開啟檔案</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="775"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="804"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>所有支援的檔案 (*.dolphin *.csv);;Dolphin 檔案 (*.dolphin);;CSV 檔案 (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="783"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="812"/>
         <source>File loaded successfully.</source>
         <translation>檔案載入成功。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="835"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="864"/>
         <source>Export to Image</source>
         <translation>匯出為圖片</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="835"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="864"/>
         <source>PNG files (*.png)</source>
         <translation>PNG 檔案 (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="853"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="882"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF 檔案 (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="128"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>檔案「%1」不存在！</translation>
     </message>
@@ -1153,6 +1153,90 @@ Each wireless channel must have a unique label.</source>
     </message>
 </context>
 <context>
+    <name>ExerciseBrowserDialog</name>
+    <message>
+        <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
+        <source>Could not create or access a folder for custom exercises.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
+        <source>Circuit Exercises</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
+        <source>Choose an Exercise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
+        <source>Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
+        <source>Open My Exercises Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ExerciseOverlay</name>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
+        <source>Close exercise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
+        <source>Hint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
+        <source>← Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <source>Next →</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
+        <source>Hide hint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
+        <source>Step %1 of %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
+        <source>Exercise complete! Well done.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <source>Finish</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ExportController</name>
     <message>
         <location filename="../../UI/ExportController.cpp" line="38"/>
@@ -1678,531 +1762,551 @@ Suggested name:</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Inputs/Outputs</source>
         <translation>輸入/輸出</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>Gates</source>
         <translation>閘電路</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Combinational</source>
         <translation>組合邏輯</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
         <source>Memory</source>
         <translation>記憶體</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="802"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>Integrated Circuits</source>
         <translation>集成電路</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>Add IC files</source>
         <translation>新增 IC 檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>&amp;System</source>
         <translation>系統(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Make file self-contained</source>
         <translation>使檔案自包含</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>靜音/取消靜音電路蜂鳴器</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>Show IC Preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
         <source>File-based ICs</source>
         <translation>基於檔案的 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="800"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>Remove IC</source>
         <translation>移除 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>Embedded ICs</source>
         <translation>嵌入式 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>Embed IC</source>
         <translation>嵌入 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Miscellaneous</source>
         <translation>雜項</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Search:</source>
         <translation>搜尋：</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>&amp;File</source>
         <translation>檔案(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
         <source>&amp;Recent files:</source>
         <translation>最近的檔案(&amp;R)：</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>&amp;Edit</source>
         <translation>編輯(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
         <source>&amp;Help</source>
         <translation>說明(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;幫助翻譯</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="824"/>
         <source>&amp;View</source>
         <translation>檢視(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>&amp;Theme</source>
         <translation>主題(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="826"/>
         <source>&amp;Language</source>
         <translation>語言(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
         <source>Sim&amp;ulation</source>
         <translation>模擬(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
         <source>Examples</source>
         <translation>範例</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="705"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="717"/>
         <source>&amp;Open...</source>
         <translation>開啟(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="706"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="718"/>
         <source>Open</source>
         <translation>開啟</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="707"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="719"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="708"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="720"/>
         <source>&amp;Save</source>
         <translation>儲存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="709"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="721"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="710"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="722"/>
         <source>Save &amp;As...</source>
         <translation>另存為(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="711"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="723"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="712"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="724"/>
         <source>Cu&amp;t</source>
         <translation>剪下(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="713"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="725"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="714"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="726"/>
         <source>&amp;Copy</source>
         <translation>複製(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="715"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="727"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="716"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="728"/>
         <source>&amp;Paste</source>
         <translation>貼上(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="717"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="729"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="718"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="730"/>
         <source>&amp;Delete</source>
         <translation>刪除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="719"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="731"/>
         <source>Del</source>
         <translation>刪除</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="720"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="732"/>
         <source>&amp;New</source>
         <translation>新建(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="721"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="733"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="722"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
         <source>Zoom &amp;in</source>
         <translation>放大(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="723"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="724"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="736"/>
         <source>Zoom &amp;out</source>
         <translation>縮小(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="725"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="726"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="738"/>
         <source>&amp;Wires</source>
         <translation>導線(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="727"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="728"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
         <source>&amp;Gates</source>
         <translation>閘電路(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="729"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
         <source>Ctrl+2</source>
         <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="730"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="742"/>
         <source>&amp;About</source>
         <translation>關於(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="731"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="732"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="744"/>
         <source>&amp;Exit</source>
         <translation>離開(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="733"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="746"/>
         <source>R&amp;otate right</source>
         <translation>向右旋轉(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="736"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="748"/>
         <source>Rotate &amp;left</source>
         <translation>向左旋轉(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="738"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="750"/>
         <source>About &amp;Qt</source>
         <translation>關於 Qt(&amp;Q)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
         <source>&amp;Select all</source>
         <translation>全選(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="752"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
         <source>Re&amp;load File</source>
         <translation>重新載入檔案(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="742"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="754"/>
         <source>Ctrl+F5</source>
         <translation>Ctrl+F5</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
         <source>E&amp;xport to Arduino</source>
         <translation>匯出到 Arduino(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="744"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
         <source>Ctrl+Alt+I</source>
         <translation>Ctrl+Alt+I</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>匯出為 &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="746"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="758"/>
         <source>Ctrl+Alt+O</source>
         <translation>Ctrl+Alt+O</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>&amp;Reset Zoom</source>
         <translation>重設縮放(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="748"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>Export to &amp;PDF</source>
         <translation>匯出為 PDF(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="750"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="762"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>&amp;Play/Pause</source>
         <translation>播放/暫停(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="752"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="764"/>
         <source>Play or Pause simulation.</source>
         <translation>播放或暫停模擬。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="754"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="766"/>
         <source>&amp;Rename</source>
         <translation>重新命名(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>F2</source>
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>更改觸發(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="758"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Cl&amp;ear selection</source>
         <translation>清除選擇(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
         <source>&amp;Fast Mode</source>
         <translation>快速模式(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="762"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
         <source>&amp;Light</source>
         <translation>&amp;淺色</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>&amp;Dark</source>
         <translation>&amp;深色</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="764"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
         <source>&amp;Waveform</source>
         <translation>波形(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="766"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Export to &amp;Image</source>
         <translation>匯出為圖片(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
         <source>Ctrl+E</source>
         <translation>Ctrl+E</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="781"/>
         <source>&amp;Flip horizontally</source>
         <translation>水平翻轉(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="783"/>
         <source>Flip &amp;vertically</source>
         <translation>垂直翻轉(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>F&amp;ullscreen</source>
         <translation>全螢幕(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="785"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
-        <location filename="../../UI/MainWindow.cpp" line="1006"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
+        <source>&amp;Exercises</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <source>&amp;Circuit Exercises...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <source>&amp;Tours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
+        <source>&amp;Interactive Tours...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="1056"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
         <source>Mute</source>
         <translation>靜音</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
         <source>Labels under icons</source>
         <translation>在圖示下方顯示標籤</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
         <source>About this version</source>
         <translation>關於此版本</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>&amp;Restart</source>
         <translation>重新啟動(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="781"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>Restart simulation.</source>
         <translation>重新啟動模擬。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
         <source>Background Simulation</source>
         <translation>背景模擬</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="783"/>
-        <location filename="../../UI/MainWindow.cpp" line="482"/>
+        <location filename="../../UI/MainWindow.cpp" line="495"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Shortcuts and Tips</source>
         <translation>快捷鍵與提示</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
         <source>Report Translation Error</source>
         <translation>報告翻譯錯誤</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="785"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>報告翻譯錯誤或協助改善 Weblate 上的翻譯</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="806"/>
+        <location filename="../../UI/MainWindow.cpp" line="844"/>
         <source>New Project</source>
         <translation>新專案</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="401"/>
+        <location filename="../../UI/MainWindow.cpp" line="414"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2221,27 +2325,27 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 在存取 IC 和外觀或執行 beWavedDolphin 模擬之前，您需要先儲存新專案。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="534"/>
+        <location filename="../../UI/MainWindow.cpp" line="547"/>
         <source>Are you sure?</source>
         <translation>您確定嗎？</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="483"/>
+        <location filename="../../UI/MainWindow.cpp" line="496"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;畫布快捷鍵&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : 放大 &lt;/li&gt;&lt;li&gt; Ctrl+- : 縮小 &lt;/li&gt;&lt;li&gt; Ctrl+1 : 隱藏/顯示連線 &lt;/li&gt;&lt;li&gt; Ctrl+2 : 隱藏/顯示邏輯閘 &lt;/li&gt;&lt;li&gt; Ctrl+F : 搜尋元件 &lt;/li&gt;&lt;li&gt; Ctrl+W : 開啟 beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : 儲存專案 &lt;/li&gt;&lt;li&gt; Ctrl+Q : 結束 wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : 開始/暫停模擬 &lt;/li&gt;&lt;li&gt; [ : 上一個主要元件屬性 &lt;/li&gt;&lt;li&gt; ] : 下一個主要元件屬性 &lt;/li&gt;&lt;li&gt; { : 上一個次要元件屬性 &lt;/li&gt;&lt;li&gt; } : 下一個次要元件屬性 &lt;/li&gt;&lt;li&gt; &amp;lt; : 變形為上一個元件 &lt;/li&gt;&lt;li&gt; &amp;gt; : 變形為下一個元件 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;一般提示&lt;/h1&gt;&lt;p&gt;雙擊連線以建立節點&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="461"/>
+        <location filename="../../UI/MainWindow.cpp" line="474"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="533"/>
+        <location filename="../../UI/MainWindow.cpp" line="546"/>
         <source>Exit</source>
         <translation>結束</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1006"/>
+        <location filename="../../UI/MainWindow.cpp" line="1056"/>
         <source>Unmute</source>
         <translation>取消靜音</translation>
     </message>
@@ -2700,6 +2804,68 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     </message>
 </context>
 <context>
+    <name>TourBrowserDialog</name>
+    <message>
+        <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
+        <source>Could not create or access a folder for custom tours.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
+        <source>Interactive Tours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
+        <source>Choose a Tour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
+        <source>Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
+        <source>Open My Tours Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TourOverlay</name>
+    <message>
+        <location filename="../../Tour/TourOverlay.cpp" line="84"/>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Tour/TourOverlay.cpp" line="85"/>
+        <source>Stop the tour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Tour/TourOverlay.cpp" line="87"/>
+        <source>← Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Tour/TourOverlay.cpp" line="89"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <source>Next →</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Tour/TourOverlay.cpp" line="188"/>
+        <source>Step %1 of %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <source>Finish</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TrashButton</name>
     <message>
         <location filename="../../UI/TrashButton.cpp" line="65"/>
@@ -2826,7 +2992,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="146"/>
+        <location filename="../../Scene/Workspace.cpp" line="147"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -2837,32 +3003,32 @@ Please update wiRedPanda to save changes to this file.</source>
 請更新 wiRedPanda 以儲存對此檔案的變更。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="150"/>
+        <location filename="../../Scene/Workspace.cpp" line="151"/>
         <source>Cannot save.</source>
         <translation>無法儲存。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="246"/>
+        <location filename="../../Scene/Workspace.cpp" line="247"/>
         <source>Error opening file: %1</source>
         <translation>開啟檔案時發生錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="278"/>
+        <location filename="../../Scene/Workspace.cpp" line="279"/>
         <source>Could not save file: %1</source>
         <translation>無法儲存檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="347"/>
+        <location filename="../../Scene/Workspace.cpp" line="348"/>
         <source>This file does not exist: %1</source>
         <translation>此檔案不存在：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="356"/>
+        <location filename="../../Scene/Workspace.cpp" line="357"/>
         <source>Could not open file: %1</source>
         <translation>無法開啟檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="404"/>
+        <location filename="../../Scene/Workspace.cpp" line="405"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -2875,34 +3041,34 @@ Please update wiRedPanda to edit and save this file.</source>
 請更新 wiRedPanda 以編輯和儲存此檔案。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="409"/>
+        <location filename="../../Scene/Workspace.cpp" line="410"/>
         <source>Newer version file.</source>
         <translation>新版本檔案。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="412"/>
+        <location filename="../../Scene/Workspace.cpp" line="413"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>此檔案為舊格式（版本 %1），將自動升級為目前格式（版本 %2）。
 原始檔案的備份已建立，名稱為: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="415"/>
+        <location filename="../../Scene/Workspace.cpp" line="416"/>
         <source>File upgraded.</source>
         <translation>檔案已升級。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="577"/>
+        <location filename="../../Scene/Workspace.cpp" line="578"/>
         <source>Error opening autosave file: %1</source>
         <translation>開啟自動儲存檔案時發生錯誤：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="585"/>
+        <location filename="../../Scene/Workspace.cpp" line="586"/>
         <source>Could not commit autosave file: %1</source>
         <translation>無法提交自動儲存檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="751"/>
+        <location filename="../../Scene/Workspace.cpp" line="752"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>移除內嵌 IC「%1」</translation>
     </message>
