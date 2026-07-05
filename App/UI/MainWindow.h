@@ -243,6 +243,10 @@ private:
     void on_actionGates_triggered(const bool checked);
     void on_actionLabelsUnderIcons_triggered(const bool checked);
     void on_actionICPreview_triggered(const bool checked);
+    void on_actionMinimapBottomLeft_triggered();
+    void on_actionMinimapBottomRight_triggered();
+    void on_actionMinimapTopLeft_triggered();
+    void on_actionMinimapTopRight_triggered();
     void on_actionMute_triggered(const bool checked);
     void on_actionPlay_toggled(const bool checked);
     void on_actionReportTranslationError_triggered();
@@ -252,6 +256,7 @@ private:
     void on_actionRotateRight_triggered();
     void on_actionSelectAll_triggered();
     void on_actionShortcuts_and_Tips_triggered();
+    void on_actionShowMinimap_triggered(const bool checked);
     void on_actionWaveform_triggered();
     void on_actionWires_triggered(const bool checked);
     void on_actionZoomIn_triggered() const;

@@ -26,6 +26,7 @@
 #include "App/Scene/Commands.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/UI/MinimapWidget.h"
 #include "App/Versions.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -56,6 +57,13 @@ WorkSpace::WorkSpace(QWidget *parent)
     m_scene.setSceneRect(m_view.rect());
     setLayout(new QHBoxLayout());
     layout()->addWidget(&m_view);
+
+    // Minimap overview: small widget overlayed on the workspace so it remains
+    // static even when the view's zoom changes. Positioning is computed
+    // relative to the view geometry in resizeEvent().
+    m_minimap = new MinimapWidget(&m_scene, &m_view, this);
+    m_minimap->setObjectName("minimap");
+    m_minimap->raise();
 
     // Adjust the scene rect after every zoom so that all items remain reachable
     // via panning, even when zoomed in very close
@@ -91,6 +99,17 @@ WorkSpace::~WorkSpace()
     /// before m_scene is destroyed.)
     blockSignals(true);
 
+    /// m_minimap is a QObject child of this WorkSpace, so Qt would normally
+    /// destroy it automatically -- but only as part of ~QObject(), which runs
+    /// after all of WorkSpace's own members (including m_view and m_scene)
+    /// have already been destructed. m_minimap holds a raw pointer to m_view
+    /// and has an event filter installed on m_view's viewport, so destroying
+    /// m_view first would leave that filter dereferencing a dangling
+    /// GraphicsView mid-teardown. Delete it explicitly, here, before any
+    /// member destruction begins.
+    delete m_minimap;
+    m_minimap = nullptr;
+
     /// Mirror the pre-debounce QTemporaryFile semantics: a clean Workspace
     /// destruction discards its autosave so it isn't recovered next launch.
     /// (On a real crash the destructor doesn't run, so the recovery file remains.)
@@ -102,6 +121,58 @@ WorkSpace::~WorkSpace()
         QFile::remove(m_autosaveFileName);
         m_autosaveFileName.clear();
     }
+}
+
+void WorkSpace::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+
+    if (m_minimap)
+        positionMinimap(Settings::minimapCorner());
+
+    if (m_exerciseOverlay && m_exerciseOverlay->isVisible())
+        m_exerciseOverlay->repositionToParent();
+}
+
+void WorkSpace::setMinimapVisible(bool visible)
+{
+    if (!m_minimap) return;
+    m_minimap->setVisible(visible);
+}
+
+void WorkSpace::setMinimapCorner(Settings::MinimapCorner corner)
+{
+    positionMinimap(corner);
+}
+
+void WorkSpace::positionMinimap(Settings::MinimapCorner corner)
+{
+    if (!m_minimap)
+        return;
+
+    const int margin = 12;
+    const QRect viewGeom = m_view.geometry();
+    int x = viewGeom.right() - m_minimap->width() - margin;
+    int y = viewGeom.bottom() - m_minimap->height() - margin;
+
+    switch (corner) {
+    case Settings::MinimapCorner::BottomLeft:
+        x = viewGeom.left() + margin;
+        y = viewGeom.bottom() - m_minimap->height() - margin;
+        break;
+    case Settings::MinimapCorner::TopLeft:
+        x = viewGeom.left() + margin;
+        y = viewGeom.top() + margin;
+        break;
+    case Settings::MinimapCorner::TopRight:
+        x = viewGeom.right() - m_minimap->width() - margin;
+        y = viewGeom.top() + margin;
+        break;
+    case Settings::MinimapCorner::BottomRight:
+        break; // x/y already default to this
+    }
+
+    m_minimap->move(qMax(x, margin), qMax(y, margin));
 }
 
 Scene *WorkSpace::scene()
@@ -768,12 +839,4 @@ void WorkSpace::setCurrentFile(const QString &filePath)
 void WorkSpace::setExerciseOverlay(ExerciseOverlay *overlay)
 {
     m_exerciseOverlay = overlay;
-}
-
-void WorkSpace::resizeEvent(QResizeEvent *event)
-{
-    QWidget::resizeEvent(event);
-    if (m_exerciseOverlay && m_exerciseOverlay->isVisible()) {
-        m_exerciseOverlay->repositionToParent();
-    }
 }

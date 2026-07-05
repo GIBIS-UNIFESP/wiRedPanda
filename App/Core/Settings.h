@@ -89,6 +89,20 @@ public:
     static int         tourProgress(const QString &tourId); ///< Returns -1 if no record.
     static void        setTourProgress(const QString &tourId, int step);
 
+    /// Corner of the workspace where the minimap overview is anchored.
+    enum class MinimapCorner {
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight,
+    };
+
+    // Minimap preferences
+    static bool minimapVisible();
+    static void setMinimapVisible(bool visible);
+    static MinimapCorner minimapCorner();
+    static void setMinimapCorner(MinimapCorner corner);
+
 private:
     static QVariant value(const QString &key);
     static void setValue(const QString &key, const QVariant &value);

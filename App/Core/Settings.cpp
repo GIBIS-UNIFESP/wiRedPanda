@@ -259,3 +259,34 @@ void Settings::setTourProgress(const QString &tourId, int step)
 {
     setValue(QStringLiteral("tours/progress/") + tourId, step);
 }
+
+// Minimap preferences
+bool Settings::minimapVisible()
+{
+    const QVariant v = value("minimap/visible");
+    if (!v.isValid())
+        return true; // default visible
+    return v.toBool();
+}
+
+void Settings::setMinimapVisible(bool visible)
+{
+    setValue("minimap/visible", visible);
+}
+
+Settings::MinimapCorner Settings::minimapCorner()
+{
+    const QVariant v = value("minimap/corner");
+    if (!v.isValid())
+        return MinimapCorner::BottomRight;
+    const int saved = v.toInt();
+    if (saved >= 0 && saved <= static_cast<int>(MinimapCorner::BottomRight)) {
+        return static_cast<MinimapCorner>(saved);
+    }
+    return MinimapCorner::BottomRight;
+}
+
+void Settings::setMinimapCorner(MinimapCorner corner)
+{
+    setValue("minimap/corner", static_cast<int>(corner));
+}

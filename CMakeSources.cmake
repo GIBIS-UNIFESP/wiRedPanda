@@ -112,6 +112,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
@@ -265,6 +266,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
@@ -497,6 +499,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLengthDialog.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.cpp
@@ -684,6 +687,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLengthDialog.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.h
