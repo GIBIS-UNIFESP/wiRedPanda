@@ -5,8 +5,8 @@
       "instruction": "Add two InputSwitch elements to the canvas"
     },
     "add-output": {
-      "hint": "Drag a Led from the I/O tab and place it to the right of the AND gate. Then connect the AND gate output port (right side) to the LED input port (left side).",
-      "instruction": "Add a LED and connect it to the AND gate output"
+      "hint": "Drag an LED from the I/O tab and place it to the right of the AND gate. Then connect the AND gate output port (right side) to the LED input port (left side).",
+      "instruction": "Add an LED and connect it to the AND gate output"
     },
     "connect-inputs": {
       "hint": "Click and drag from an InputSwitch output port (right side) to one of the AND gate input ports (left side). Repeat for the second switch.",
@@ -21,6 +21,38 @@
     "toggle-observe": {
       "hint": "Click an InputSwitch to toggle it. The LED only lights up when BOTH switches are ON. That is because AND outputs 1 only when all inputs are 1.",
       "instruction": "Toggle the switches and observe the LED — this is AND logic!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the OR gate.",
+      "instruction": "Add two InputSwitch elements to the canvas"
+    },
+    "add-not-gate": {
+      "hint": "Drag the wire between the OR gate and the LED to remove it.",
+      "instruction": "Disconnect the LED from the OR gate, then connect the OR gate to a NOT gate and the NOT gate to the LED"
+    },
+    "add-output": {
+      "hint": "Drag an LED from the I/O tab and place it to the right of the OR gate. Then connect the OR gate output port (right side) to the LED input port (left side).",
+      "instruction": "Add an LED and connect it to the OR gate output"
+    },
+    "connect-inputs": {
+      "hint": "Click and drag from an InputSwitch output port (right side) to one of the OR gate input ports (left side). Repeat for the second switch.",
+      "instruction": "Connect both input switches to the OR gate"
+    },
+    "description": "Learn to use the OR and NOT gates.",
+    "place-or-gate": {
+      "hint": "Click the Gates tab in the left panel, then drag the OR gate onto the canvas.",
+      "instruction": "Place an OR gate on the canvas"
+    },
+    "title": "More basic gates: OR and NOT",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "The NOT gate inverts the signal. Now, the circuit will output 1 only when none of the inputs are 1"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "Play around with the inputs and notice how the OR gate outputs 1 when any of its inputs are 1"
     }
   },
   "clock-led-waveform": {
@@ -49,6 +81,98 @@
     "toggle-cell": {
       "hint": "Double-click any cell in the Clock row to flip it between 0 and 1. Watch the Led row update instantly to reflect the new output.",
       "instruction": "Toggle a Clock cell manually"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "Your circuit should have two InputSwitches, two LEDs and one DEMUX circuit at this point",
+      "instruction": "Add a DEMUX circuit and connect the InputSwitches to its In and S0 ports. Then connect each of the DEMUX's outputs to a different LED"
+    },
+    "add-inputs": {
+      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the MUX circuit.",
+      "instruction": "Add three InputSwitch elements to the canvas"
+    },
+    "add-output": {
+      "hint": "Drag an LED from the I/O tab and place it to the right of the MUX circuit. Then connect the MUX circuit output port (right side) to the LED input port (left side).",
+      "instruction": "Add an LED and connect it to the MUX circuit output"
+    },
+    "connect-inputs": {
+      "hint": "Click and drag from an InputSwitch output port (right side) to one of the MUX gate input ports (left side). Repeat for the second switch. Then, connect the third input switch to the MUX selection port (bottom)",
+      "instruction": "Connect all input switches to the MUX circuit"
+    },
+    "description": "Learn about the MUX and DEMUX circuits.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "The S0 port at the bottom of the DEMUX selects which output will receive the input's signal. When S0 = 0, Out0 = In0. When S0 = 1, Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "The S0 port at the bottom of the MUX selects which input is routed to the output. When S0 = 0, the signal from Input 0 is sent to the output. When S0 = 1, the signal from Input 1 is sent to the output."
+    },
+    "place-mux": {
+      "hint": "Click the Combinational tab in the left panel, then drag the MUX circuit onto the canvas.",
+      "instruction": "Place a MUX circuit on the canvas"
+    },
+    "prepare-demux": {
+      "hint": "Your circuit should have two InputSwitches and two LEDs at this point",
+      "instruction": "Delete the MUX circuit and one of the InputSwitches. Then add another LED"
+    },
+    "title": "Combinational Circuits I: MUX and DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "Connect the outputs of the InputSwitches into the inputs of the gates.",
+      "instruction": "Add another InputSwitch to the canvas and give it the label Cin. Then add an XOR gate, an AND gate and an OR gate"
+    },
+    "add-half-adder-gates": {
+      "hint": "Use the Gates tab to add the XOR and AND gates, then use the I/O tab to add two LEDs.",
+      "instruction": "Add an XOR gate, an AND gate, and two LEDs to the canvas. Then connect each gate to a different LED"
+    },
+    "add-inputs": {
+      "hint": "Click the I/O tab in the left panel, then drag three InputSwitch elements onto the canvas. The third InputSwitch will be used later as the carry-in (Cin).",
+      "instruction": "Add two InputSwitch elements to the canvas"
+    },
+    "description": "Learn how to build an adder circuit.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "This circuit forms a full adder. Unlike a half adder, a full adder accepts a carry-in (Cin) from a previous addition and produces a carry-out (Cout) for the next stage. By connecting the Cout of one full adder to the Cin of another, multiple full adders can be chained together to add binary numbers of any length"
+    },
+    "label-half-adder-outputs": {
+      "hint": "Click on an LED and type in the label text box at the bottom left of the screen to give an LED a label.",
+      "instruction": "Give the LED connected to the XOR gate the label Sum, then give the LED connected to the AND gate the label Cout. This circuit forms a half adder, which adds two single-bit inputs"
+    },
+    "title": "Combinational Circuits III: Adder",
+    "wire-full-adder": {
+      "hint": "Remove the old connections to the LEDs to be able to add the new ones.",
+      "instruction": "Connect the old XOR gate and the Cin switch to the new XOR gate, then connect the new XOR gate to the Sum output. Also connect the old XOR gate and the Cin switch to the new AND gate. Finish by connecting both AND gates to the OR gate and the OR gate into Cout"
+    },
+    "wire-half-adder": {
+      "hint": "Connect the outputs of the InputSwitches into the inputs of the gates.",
+      "instruction": "Connect the two InputSwitches to the XOR gate and the AND gate. Each InputSwitch should connect to both gates. The XOR gate produces the Sum output, while the AND gate produces the Carry output"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "Use the gates tab in the left panel to add the AND gates and the I/O tab to add the LEDs.",
+      "instruction": "Add four AND gates and four LEDs to the canvas, then connect each AND gate to one of the LEDs"
+    },
+    "add-inputs": {
+      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas.",
+      "instruction": "Add two InputSwitch elements to the canvas"
+    },
+    "add-not-gates": {
+      "hint": "Click the gates tab in the left panel, then drag two NOT gate elements onto the canvas and connect the InputSwitches into them.",
+      "instruction": "Add two NOT gates to the canvas and connect each InputSwitch into a separate NOT gate"
+    },
+    "description": "Learn how to build a 2-to-4 Decoder.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "For every specific combination of input bits, only one corresponding output line is activated while all others remain inactive"
+    },
+    "title": "Combinational Circuits II: Decoder",
+    "wire-decoder": {
+      "hint": "Each AND gate should receive one signal from each input. Use the original InputSwitch signal for a 1 and the corresponding NOT gate output for a 0..",
+      "instruction": "Connect the outputs of the NOT gates and the InputSwitches to the AND gates so each AND gate represents one input combination"
     }
   },
   "ui-overview": {

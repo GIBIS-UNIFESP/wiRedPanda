@@ -38,8 +38,8 @@
     },
     {
       "key": "add-output",
-      "instruction": "Add a LED and connect it to the AND gate output",
-      "hint": "Drag a Led from the I/O tab and place it to the right of the AND gate. Then connect the AND gate output port (right side) to the LED input port (left side).",
+      "instruction": "Add an LED and connect it to the AND gate output",
+      "hint": "Drag an LED from the I/O tab and place it to the right of the AND gate. Then connect the AND gate output port (right side) to the LED input port (left side).",
       "click": ["ioTab"],
       "requiredElements": [
         { "type": "And", "minCount": 1 },

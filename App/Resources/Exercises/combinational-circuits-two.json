@@ -1,0 +1,71 @@
+{
+  "id": "combinational-circuits-two",
+  "title": "Combinational Circuits II: Decoder",
+  "description": "Learn how to build a 2-to-4 Decoder.",
+  "steps": [
+    {
+      "key": "add-inputs",
+      "instruction": "Add two InputSwitch elements to the canvas",
+      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas.",
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 2 }
+      ],
+      "requiredConnections": [],
+      "click": ["ioTab"]
+    },
+    {
+      "key": "add-not-gates",
+      "instruction": "Add two NOT gates to the canvas and connect each InputSwitch into a separate NOT gate",
+      "hint": "Click the gates tab in the left panel, then drag two NOT gate elements onto the canvas and connect the InputSwitches into them.",
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Not", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Not", "minCount": 2 }
+      ],
+      "click": ["gatesTab"]
+    },
+    {
+      "key": "add-and-gates-leds",
+      "instruction": "Add four AND gates and four LEDs to the canvas, then connect each AND gate to one of the LEDs",
+      "hint": "Use the gates tab in the left panel to add the AND gates and the I/O tab to add the LEDs.",
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Not", "minCount": 2 },
+        { "type": "And", "minCount": 4 },
+        { "type": "Led", "minCount": 4 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Not", "minCount": 2 },
+        { "fromType": "And", "toType": "Led", "minCount": 4 }
+      ],
+      "click": ["gatesTab"]
+    },
+    {
+      "key": "wire-decoder",
+      "instruction": "Connect the outputs of the NOT gates and the InputSwitches to the AND gates so each AND gate represents one input combination",
+      "hint": "Each AND gate should receive one signal from each input. Use the original InputSwitch signal for a 1 and the corresponding NOT gate output for a 0..",
+      "requiredElements": [
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Not", "minCount": 2 },
+        { "type": "And", "minCount": 4 },
+        { "type": "Led", "minCount": 4 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Not", "minCount": 2 },
+        { "fromType": "InputSwitch", "toType": "And", "minCount": 4 },
+        { "fromType": "Not", "toType": "And", "minCount": 4 },
+        { "fromType": "And", "toType": "Led", "minCount": 4 }
+      ],
+      "click": ["gatesTab"]
+    },
+    {
+      "key": "explain-decoder",
+      "instruction": "For every specific combination of input bits, only one corresponding output line is activated while all others remain inactive",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "basic-or-not-gates",
+  "title": "More basic gates: OR and NOT",
+  "description": "Learn to use the OR and NOT gates.",
+  "steps": [
+    {
+      "key": "place-or-gate",
+      "instruction": "Place an OR gate on the canvas",
+      "hint": "Click the Gates tab in the left panel, then drag the OR gate onto the canvas.",
+      "requiredElements": [
+        { "type": "Or", "minCount": 1 }
+      ],
+      "requiredConnections": [],
+      "click": ["gatesTab"]
+    },
+    {
+      "key": "add-inputs",
+      "instruction": "Add two InputSwitch elements to the canvas",
+      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the OR gate.",
+      "requiredElements": [
+        { "type": "Or", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 }
+      ],
+      "requiredConnections": [],
+      "click": ["ioTab"]
+    },
+    {
+      "key": "connect-inputs",
+      "instruction": "Connect both input switches to the OR gate",
+      "hint": "Click and drag from an InputSwitch output port (right side) to one of the OR gate input ports (left side). Repeat for the second switch.",
+      "requiredElements": [
+        { "type": "Or", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Or", "minCount": 2 }
+      ]
+    },
+    {
+      "key": "add-output",
+      "instruction": "Add an LED and connect it to the OR gate output",
+      "hint": "Drag an LED from the I/O tab and place it to the right of the OR gate. Then connect the OR gate output port (right side) to the LED input port (left side).",
+      "click": ["ioTab"],
+      "requiredElements": [
+        { "type": "Or", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Led", "minCount": 1 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Or", "minCount": 2 },
+        { "fromType": "Or", "toType": "Led" }
+      ]
+    },
+    {
+      "key": "toggle-observe-or",
+      "instruction": "Play around with the inputs and notice how the OR gate outputs 1 when any of its inputs are 1",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    },
+    {
+      "key": "add-not-gate",
+      "instruction": "Disconnect the LED from the OR gate, then connect the OR gate to a NOT gate and the NOT gate to the LED",
+      "hint": "Drag the wire between the OR gate and the LED to remove it.",
+      "click": ["gatesTab"],
+      "requiredElements": [
+        { "type": "Or", "minCount": 1 },
+        { "type": "Not", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Led", "minCount": 1 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "Or", "minCount": 2 },
+        { "fromType": "Or", "toType": "Not" },
+        { "fromType": "Not", "toType": "Led" }
+      ]
+    },
+    {
+      "key": "toggle-observe-nor",
+      "instruction": "The NOT gate inverts the signal. Now, the circuit will output 1 only when none of the inputs are 1",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    }
+  ]
+}
