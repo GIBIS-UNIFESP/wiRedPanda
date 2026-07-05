@@ -1,0 +1,123 @@
+{
+  "id": "sequential-circuits-two",
+  "title": "Sequential Circuits II: Flip-Flops",
+  "description": "Learn about Flip-Flops.",
+  "steps": [
+    {
+      "key": "add-d-flipflop",
+      "instruction": "Add a D flip-flop, two InputSwitches, a Clock, and two LEDs to the canvas",
+      "hint": "Use the Memory tab to add a D flip-flop and a Clock. Then use the I/O tab to add two InputSwitches and two LEDs.",
+      "requiredElements": [
+        { "type": "DFlipFlop", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Clock", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [],
+      "click": ["memoryTab"]
+    },
+    {
+      "key": "wire-d-flipflop",
+      "instruction": "Connect one InputSwitch to the D input, the Clock to the Clk input, and the Q and Q̅ outputs to the LEDs. The D input provides the value to be stored, while the Clock determines when the value is stored",
+      "hint": "Leave the Clear and Preset inputs disconnected for now.",
+      "requiredElements": [
+        { "type": "DFlipFlop", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Clock", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "DFlipFlop", "minCount": 1 },
+        { "fromType": "Clock", "toType": "DFlipFlop" },
+        { "fromType": "DFlipFlop", "toType": "Led", "minCount": 2 }
+      ]
+    },
+    {
+      "key": "explain-d-flipflop",
+      "instruction": "Toggle the D InputSwitch and observe the D flip-flop. The value on the D input is copied to the Q output only on the active clock edge. Between clock edges, the output remains unchanged",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    },
+    {
+      "key": "explain-clear-preset",
+      "instruction": "Connect the second InputSwitch to either the Clear or Preset input and observe its effect. Unlike the D input, the Clear and Preset inputs act immediately without waiting for a clock edge. Clear forces Q to 0, while Preset forces Q to 1",
+      "hint": "",
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "DFlipFlop", "minCount": 2 }
+      ]
+    },
+    {
+      "key": "add-jk-flipflop",
+      "instruction": "Replace the D flip-flop with a JK flip-flop while keeping the Clock, InputSwitches, and LEDs",
+      "hint": "The JK flip-flop has J and K inputs instead of a D input. Leave the Clear and Preset inputs disconnected.",
+      "requiredElements": [
+        { "type": "JKFlipFlop", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Clock", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [],
+      "click": ["memoryTab"]
+    },
+    {
+      "key": "wire-jk-flipflop",
+      "instruction": "Connect the InputSwitches to the J and K inputs, the Clock to the Clk input, and the Q and Q̅ outputs to the LEDs",
+      "hint": "The JK flip-flop changes its output only on the active clock edge.",
+      "requiredElements": [
+        { "type": "JKFlipFlop", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Clock", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "JKFlipFlop", "minCount": 2 },
+        { "fromType": "Clock", "toType": "JKFlipFlop" },
+        { "fromType": "JKFlipFlop", "toType": "Led", "minCount": 2 }
+      ]
+    },
+    {
+      "key": "explain-jk-flipflop",
+      "instruction": "Toggle the InputSwitches and observe the JK flip-flop. When J = K = 0, the output holds its current state. When J = 1 and K = 0, the output is set. When J = 0 and K = 1, the output is reset. When J = K = 1, the output toggles on every active clock edge",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    },
+    {
+      "key": "add-t-flipflop",
+      "instruction": "Replace the JK flip-flop with a T flip-flop and remove one of the InputSwitches",
+      "hint": "A T flip-flop only requires a single input in addition to the clock.",
+      "requiredElements": [
+        { "type": "TFlipFlop", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 1 },
+        { "type": "Clock", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [],
+      "click": ["memoryTab"]
+    },
+    {
+      "key": "wire-t-flipflop",
+      "instruction": "Connect the remaining InputSwitch to the T input, the Clock to the Clk input, and the Q and Q̅ outputs to the LEDs",
+      "hint": "Leave the Clear and Preset inputs disconnected.",
+      "requiredElements": [
+        { "type": "TFlipFlop", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 1 },
+        { "type": "Clock", "minCount": 1 },
+        { "type": "Led", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "TFlipFlop" },
+        { "fromType": "Clock", "toType": "TFlipFlop" },
+        { "fromType": "TFlipFlop", "toType": "Led", "minCount": 2 }
+      ]
+    },
+    {
+      "key": "explain-t-flipflop",
+      "instruction": "Toggle the InputSwitch and observe the T flip-flop. When T = 0, the output keeps its current state. When T = 1, the output toggles on every active clock edge. T flip-flops are commonly used to build binary counters and frequency dividers",
+      "hint": "",
+      "requiredElements": [],
+      "requiredConnections": []
+    }
+  ]
+}
