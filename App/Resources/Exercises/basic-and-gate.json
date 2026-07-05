@@ -1,0 +1,62 @@
+{
+  "id": "basic-and-gate",
+  "title": "Building an AND Gate Circuit",
+  "description": "Learn to place logic gates, add inputs and outputs, and wire them together.",
+  "steps": [
+    {
+      "key": "place-and-gate",
+      "instruction": "Place an AND gate on the canvas",
+      "hint": "Click the Gates tab in the left panel, then drag the AND gate onto the canvas.",
+      "requiredElements": [
+        { "type": "And", "minCount": 1 }
+      ],
+      "requiredConnections": [],
+      "click": ["gatesTab"]
+    },
+    {
+      "key": "add-inputs",
+      "instruction": "Add two InputSwitch elements to the canvas",
+      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the AND gate.",
+      "requiredElements": [
+        { "type": "And", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 }
+      ],
+      "requiredConnections": [],
+      "click": ["ioTab"]
+    },
+    {
+      "key": "connect-inputs",
+      "instruction": "Connect both input switches to the AND gate",
+      "hint": "Click and drag from an InputSwitch output port (right side) to one of the AND gate input ports (left side). Repeat for the second switch.",
+      "requiredElements": [
+        { "type": "And", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "And", "minCount": 2 }
+      ]
+    },
+    {
+      "key": "add-output",
+      "instruction": "Add a LED and connect it to the AND gate output",
+      "hint": "Drag a Led from the I/O tab and place it to the right of the AND gate. Then connect the AND gate output port (right side) to the LED input port (left side).",
+      "click": ["ioTab"],
+      "requiredElements": [
+        { "type": "And", "minCount": 1 },
+        { "type": "InputSwitch", "minCount": 2 },
+        { "type": "Led", "minCount": 1 }
+      ],
+      "requiredConnections": [
+        { "fromType": "InputSwitch", "toType": "And", "minCount": 2 },
+        { "fromType": "And", "toType": "Led" }
+      ]
+    },
+    {
+      "key": "toggle-observe",
+      "instruction": "Toggle the switches and observe the LED — this is AND logic!",
+      "hint": "Click an InputSwitch to toggle it. The LED only lights up when BOTH switches are ON. That is because AND outputs 1 only when all inputs are 1.",
+      "requiredElements": [],
+      "requiredConnections": []
+    }
+  ]
+}

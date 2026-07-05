@@ -247,7 +247,14 @@ endif()
 include(CMakeSources.cmake)
 
 # Find available translation files
-file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
+file(GLOB_RECURSE TS_FILES CONFIGURE_DEPENDS App/Resources/Translations/wpanda_*.ts)
+
+# Exercise content and its Weblate-managed translation catalog.
+# CONFIGURE_DEPENDS re-runs CMake's configure step when a file is added/removed here
+# (best-effort per CMake docs; works with the Ninja generator this project requires), so a
+# new .json file is picked up automatically — no CMake or .qrc edits needed.
+file(GLOB EXERCISE_JSON_FILES CONFIGURE_DEPENDS App/Resources/Exercises/*.json)
+file(GLOB EXERCISE_TOUR_CATALOG_JSON_FILES CONFIGURE_DEPENDS App/Resources/Translations/ExerciseTour/*.json)
 
 # Use the COMPONENTS form so cross-compile builds (WASM) consult QT_HOST_PATH
 # for host-only tools.  The bare `find_package(Qt6LinguistTools)` form only
@@ -255,10 +262,22 @@ file(GLOB_RECURSE TS_FILES App/Resources/Translations/wpanda_*.ts)
 # tools like lrelease aren't shipped.
 find_package(Qt6 QUIET COMPONENTS LinguistTools)
 
+# Only used to wire the Exercise/Tour translation-catalog regeneration into
+# update_translations below — lupdate can't parse the JSON that catalog is generated from.
+find_package(Python3 QUIET COMPONENTS Interpreter)
+
 qt6_add_resources(RESOURCES_RCC ${RESOURCES})
 
 add_library(wiredpanda_resources OBJECT ${RESOURCES_RCC})
 set_target_properties(wiredpanda_resources PROPERTIES UNITY_BUILD OFF)
+
+# Embed Exercise content JSON and its translation catalog directly onto the
+# wiredpanda_resources target. Deliberately NOT a .qrc file: rcc can't glob, so a .qrc would
+# reintroduce the hardcoded file list this mechanism is meant to eliminate.
+qt6_add_resources(wiredpanda_resources "exercises" PREFIX "/Exercises"
+    BASE App/Resources/Exercises FILES ${EXERCISE_JSON_FILES})
+qt6_add_resources(wiredpanda_resources "exercise-tour-catalog" PREFIX "/i18n/ExerciseTour"
+    BASE App/Resources/Translations/ExerciseTour FILES ${EXERCISE_TOUR_CATALOG_JSON_FILES})
 
 # ELF platforms only: wiredpanda_resources is a CMake OBJECT library, which means
 # its object files are compiled independently and do not inherit POSITION_INDEPENDENT_CODE
@@ -427,6 +446,27 @@ if(Qt6LinguistTools_FOUND)
         ${_merge_qt_translations}
         ${_lupdate_opts}
     )
+
+    # Regenerate the Weblate-managed Exercise/Tour content catalog (App/Resources/Translations/
+    # ExerciseTour/en.json) as part of the same command used for .ts sources, so contributors
+    # still only need to remember one target. A separate custom target because lupdate can't
+    # parse JSON. update_translations itself doesn't exist yet at this point: since no
+    # SOURCE_TARGETS was passed above, qt_add_translations() deferred its real work (including
+    # creating update_translations) to the end of this directory's scope via
+    # cmake_language(DEFER ...) instead of running it immediately. The add_dependencies() call
+    # below must be deferred the same way so it runs after that — deferred calls execute in the
+    # order they were scheduled, and this one is scheduled after Qt's.
+    if(Python3_FOUND)
+        add_custom_target(update_exercise_tour_catalog
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Scripts/generate_exercise_tour_catalog.py
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Regenerating Weblate Exercise/Tour content translation catalog"
+            VERBATIM
+        )
+        cmake_language(EVAL CODE
+            "cmake_language(DEFER DIRECTORY \"${PROJECT_SOURCE_DIR}\" CALL add_dependencies update_translations update_exercise_tour_catalog)"
+        )
+    endif()
 endif()
 
 # Preload example files into Emscripten's virtual filesystem
@@ -827,6 +867,7 @@ add_test(NAME TestSimulationUnit COMMAND test_wiredpanda TestSimulationUnit WORK
 add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTrashButton COMMAND test_wiredpanda TestTrashButton WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestExerciseTourResources COMMAND test_wiredpanda TestExerciseTourResources WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestUpdateChecker COMMAND test_wiredpanda TestUpdateChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================

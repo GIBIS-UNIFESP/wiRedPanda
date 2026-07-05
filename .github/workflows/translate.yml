@@ -8,6 +8,7 @@ on:
       - 'App/**/*.cpp'
       - 'App/**/*.h'
       - 'App/**/*.ui'
+      - 'App/Resources/Exercises/**/*.json'
       - 'CMakeLists.txt'
 
   # Trigger on translation file changes (typically from Weblate)
@@ -15,6 +16,8 @@ on:
     branches: [master]
     paths:
       - 'App/Resources/Translations/*.ts'
+      - 'App/Resources/Translations/ExerciseTour/*.json'
+      - 'App/Resources/Exercises/**/*.json'
     types: [opened, synchronize, reopened]
 
   # Manual trigger
@@ -121,6 +124,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libxml2-utils
+
+      - name: Verify Exercise/Tour content translation catalog is up to date
+        run: python3 Scripts/generate_exercise_tour_catalog.py --check
 
       - name: Validate translation files
         run: |
@@ -242,6 +248,19 @@ jobs:
             if ! lrelease "$ts_file" -qm "/tmp/qm-check/$lang.qm" 2>&1; then
               echo "❌ lrelease failed for $ts_file"
               exit 1
+            fi
+          done
+
+      - name: Validate Exercise/Tour content catalog JSON
+        run: |
+          echo "Checking Weblate-submitted Exercise/Tour catalog files..."
+          for json_file in App/Resources/Translations/ExerciseTour/*.json; do
+            if [[ -f "$json_file" ]]; then
+              if ! python3 -c "import json, sys; json.load(open(sys.argv[1], encoding='utf-8'))" "$json_file"; then
+                echo "❌ Invalid JSON in $json_file"
+                exit 1
+              fi
+              echo "✅ $json_file is valid"
             fi
           done
 

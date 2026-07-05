@@ -50,6 +50,7 @@ wiRedPanda is a free, open-source digital logic circuit simulator designed to he
 - Create learning materials and tutorials
 - Share classroom experiences and feedback
 - Suggest educational improvements
+- Add a circuit Exercise — see [`App/Resources/Exercises/README.md`](App/Resources/Exercises/README.md)
 
 ## Development Setup
 
@@ -248,6 +249,13 @@ wiRedPanda supports multiple languages through our translation system.
 2. Select your language or request a new one
 3. Translate strings using the web interface
 4. Translations are automatically submitted as pull requests
+
+### Translating Exercise Content
+
+Circuit Exercise step text is translated through a separate Weblate "JSON file"
+component (not the `.ts` component above) — the same web UI, no separate process. If you're
+adding new Exercise content rather than translating, see
+[`App/Resources/Exercises/README.md`](App/Resources/Exercises/README.md).
 
 ### Manual Translation
 

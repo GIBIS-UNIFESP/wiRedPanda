@@ -213,3 +213,26 @@ void Settings::setUpdateCheckSkippedVersion(const QString &version)
 {
     setValue("updateCheck/skippedVersion", version);
 }
+
+// Exercise progress
+
+QStringList Settings::completedExercises()
+{
+    return value("exercises/completed").toStringList();
+}
+
+void Settings::setCompletedExercises(const QStringList &ids)
+{
+    setValue("exercises/completed", ids);
+}
+
+int Settings::exerciseProgress(const QString &exerciseId)
+{
+    const QVariant v = value(QStringLiteral("exercises/progress/") + exerciseId);
+    return v.isValid() ? v.toInt() : -1;
+}
+
+void Settings::setExerciseProgress(const QString &exerciseId, int step)
+{
+    setValue(QStringLiteral("exercises/progress/") + exerciseId, step);
+}

@@ -32,6 +32,7 @@
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
+#include "App/Exercise/ExerciseOverlay.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/UI/ClockDialog.h"
 #include "App/UI/FileDialogProvider.h"
@@ -300,6 +301,19 @@ void BewavedDolphin::on_actionExit_triggered()
 void BewavedDolphin::closeEvent(QCloseEvent *event)
 {
     (m_askConnection && checkSave()) ? event->accept() : event->ignore();
+}
+
+void BewavedDolphin::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    if (m_exerciseOverlay && m_exerciseOverlay->isVisible()) {
+        m_exerciseOverlay->repositionToParent();
+    }
+}
+
+void BewavedDolphin::setExerciseOverlay(ExerciseOverlay *overlay)
+{
+    m_exerciseOverlay = overlay;
 }
 
 bool BewavedDolphin::checkSave()

@@ -18,6 +18,7 @@
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
+#include "App/Exercise/ExerciseOverlay.h"
 #include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -762,4 +763,17 @@ void WorkSpace::setCurrentFile(const QString &filePath)
 {
     m_fileInfo = QFileInfo(filePath);
     m_scene.setContextDir(m_fileInfo.absolutePath());
+}
+
+void WorkSpace::setExerciseOverlay(ExerciseOverlay *overlay)
+{
+    m_exerciseOverlay = overlay;
+}
+
+void WorkSpace::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    if (m_exerciseOverlay && m_exerciseOverlay->isVisible()) {
+        m_exerciseOverlay->repositionToParent();
+    }
 }

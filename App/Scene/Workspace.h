@@ -15,6 +15,7 @@
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 
+class ExerciseOverlay;
 class GraphicsView;
 class Simulation;
 
@@ -128,6 +129,13 @@ public:
      */
     void setLastId(int newLastId);
 
+    /// Registers an exercise overlay so WorkSpace can reposition it on resize.
+    /// Pass nullptr to detach. Does not take ownership.
+    void setExerciseOverlay(ExerciseOverlay *overlay);
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
 signals:
     /**
      * \brief Emitted whenever the file info of this workspace changes (load/save).
@@ -168,4 +176,7 @@ private:
     QPointer<WorkSpace> m_parentWorkspace;
     int m_parentICElementId = -1;
     QString m_inlineBlobName;
+
+    // Exercise overlay — non-owning pointer
+    ExerciseOverlay *m_exerciseOverlay = nullptr;
 };

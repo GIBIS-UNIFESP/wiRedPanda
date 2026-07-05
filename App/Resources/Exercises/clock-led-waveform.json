@@ -1,0 +1,64 @@
+{
+  "id": "clock-led-waveform",
+  "title": "Clock and LED: Waveform Basics",
+  "description": "Build a minimal Clock–LED circuit and explore the waveform viewer: combinational mode and manual cell editing.",
+  "steps": [
+    {
+      "key": "place-clock",
+      "instruction": "Place a Clock element on the canvas",
+      "hint": "Click the I/O tab on the left panel, then drag the Clock element onto the canvas.",
+      "requiredElements": [
+        { "type": "Clock", "minCount": 1 }
+      ],
+      "requiredConnections": [],
+      "click": ["ioTab"]
+    },
+    {
+      "key": "place-led",
+      "instruction": "Place a LED on the canvas",
+      "hint": "Still in the I/O tab, drag a Led element onto the canvas to the right of the Clock.",
+      "requiredElements": [
+        { "type": "Clock", "minCount": 1 },
+        { "type": "Led",   "minCount": 1 }
+      ],
+      "requiredConnections": []
+    },
+    {
+      "key": "connect-clock-led",
+      "instruction": "Connect the Clock output to the LED input",
+      "hint": "Click and drag from the Clock's output port (right side) to the LED's input port (left side).",
+      "requiredElements": [
+        { "type": "Clock", "minCount": 1 },
+        { "type": "Led",   "minCount": 1 }
+      ],
+      "requiredConnections": [
+        { "fromType": "Clock", "toType": "Led" }
+      ]
+    },
+    {
+      "key": "open-waveform",
+      "instruction": "The waveform viewer is now open — take a look!",
+      "hint": "BeWavedDolphin shows your circuit signals as rows. The Clock row is the input, and the Led row is the output. Each column is one simulation time step.",
+      "context": "bwd",
+      "click": ["actionWaveform"],
+      "requiredElements": [],
+      "requiredConnections": []
+    },
+    {
+      "key": "combinational-mode",
+      "instruction": "Generate all input combinations automatically",
+      "hint": "Click Edit → Combinational in BeWavedDolphin's menu bar. This fills the Clock row with all possible values and computes the LED output for each — a full truth table in one click.",
+      "context": "bwd",
+      "requiredElements": [],
+      "requiredConnections": []
+    },
+    {
+      "key": "toggle-cell",
+      "instruction": "Toggle a Clock cell manually",
+      "hint": "Double-click any cell in the Clock row to flip it between 0 and 1. Watch the Led row update instantly to reflect the new output.",
+      "context": "bwd",
+      "requiredElements": [],
+      "requiredConnections": []
+    }
+  ]
+}

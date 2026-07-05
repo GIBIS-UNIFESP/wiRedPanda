@@ -22,6 +22,7 @@
 
 class DolphinHost;
 class DolphinZoom;
+class ExerciseOverlay;
 class WaveformSimulator;
 
 namespace DolphinSerializer { struct WaveformData; }
@@ -125,11 +126,19 @@ public:
     /// Returns the input row index whose element label equals \a label, or -1 (MCP access).
     int inputRow(const QString &label) const;
 
+    // --- Exercise overlay support ---
+
+    /// Registers \a overlay so it is repositioned whenever the window is resized.
+    /// Pass \c nullptr to detach. Does not take ownership.
+    void setExerciseOverlay(ExerciseOverlay *overlay);
+
 protected:
     // --- Qt event overrides ---
 
     /// \reimp
     void closeEvent(QCloseEvent *event) override;
+    /// \reimp
+    void resizeEvent(QResizeEvent *event) override;
     /// \reimp Intercepts the mouse wheel on the table viewport to zoom the columns.
     bool eventFilter(QObject *watched, QEvent *event) override;
 
@@ -222,4 +231,5 @@ private:
     int m_clockPeriod              = 0;               ///< Period used by "Set Clock Wave" (0 = auto).
     int m_inputPorts               = 0;               ///< Number of input ports in the circuit.
     int m_length                   = 32;              ///< Number of simulation time-step columns.
+    ExerciseOverlay *m_exerciseOverlay = nullptr;     ///< Non-owning; repositioned on resize.
 };
