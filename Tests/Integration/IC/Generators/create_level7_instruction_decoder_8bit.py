@@ -83,7 +83,14 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
 
         decoder_half_height = max(decoder1_handle.height, decoder2_handle.height) / 2
         instr_y = decoder_y - decoder_half_height - VERTICAL_STAGE_SPACING
-        and_y_base = decoder_y + decoder_half_height + VERTICAL_STAGE_SPACING
+        # The decoders' side labels ("Decoder4to16_low"/"_high") are rotated
+        # 90 degrees and hang well below the IC's own ports/pixmap bounding
+        # box (not captured by decoder_half_height, which only covers ports +
+        # pixmap) -- far enough to reach row 0 of the AND-gate grid, which
+        # sits in the same column (dec[2]/dec[6] alias with decoder1_x/
+        # decoder2_x). Clearing that label reach needs more than one
+        # VERTICAL_STAGE_SPACING of clearance below the decoders.
+        and_y_base = decoder_y + decoder_half_height + (2.5 * VERTICAL_STAGE_SPACING)
 
         # Create instruction input switches (8-bit opcode)
         instr_inputs = []

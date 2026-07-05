@@ -459,13 +459,20 @@ class BarrelShiftBuilder(ICBuilderBase):
         # level4_bus_mux_4bit's real height (9 inputs: In0[0-3]/In1[0-3]/Sel) is well
         # over the default 64px, so stack the 4 instances using its actual measured
         # height (learned from the first instance) rather than a flat constant.
+        # left_stage1_y also gets a full 2x spacing unit below the data row (rather
+        # than a flat 200px) since the bus mux's many input ports push its own
+        # boundingRect() top edge above its nominal y, reaching up into Data[1]'s
+        # label below the data row.
         bus_mux = "level4_bus_mux_4bit"
-        left_stage1_y = 200.0
+        left_stage1_y = data_input_y + (2 * VERTICAL_STAGE_SPACING)
         left_s1_handle = await self.instantiate_ic_with_size(bus_mux, mux_x, left_stage1_y, "BusMux_Left_S1")
         if left_s1_handle is None:
             return False
         left_s1 = left_s1_handle.element_id
-        mux_row_spacing = max(VERTICAL_STAGE_SPACING, left_s1_handle.height)
+        # The extra 1.5x margin (beyond the real measured height) clears each bus
+        # mux's own rotated label, which reaches well past its IC body and would
+        # otherwise dip into the next bus mux stacked below it.
+        mux_row_spacing = max(VERTICAL_STAGE_SPACING, left_s1_handle.height) + (1.5 * VERTICAL_STAGE_SPACING)
 
         left_stage2_y = left_stage1_y + mux_row_spacing
         left_s2 = await self.instantiate_ic(bus_mux, mux_x, left_stage2_y, "BusMux_Left_S2")
@@ -487,11 +494,14 @@ class BarrelShiftBuilder(ICBuilderBase):
         if dir_mux is None:
             return False
 
+        # 1.5x spacing between LEDs -- "ShiftedData[i]" (barrel shifter) is long
+        # enough that a plain HORIZONTAL_GATE_SPACING step lets adjacent labels
+        # collide (the shorter "Result[i]" rotator labels clear either way).
         output_leds = []
         for i in range(4):
             led_id = await self.create_element(
                 "Led",
-                output_x + HORIZONTAL_GATE_SPACING + i * HORIZONTAL_GATE_SPACING,
+                output_x + HORIZONTAL_GATE_SPACING + i * (1.5 * HORIZONTAL_GATE_SPACING),
                 direction_y,
                 f"{out_label}[{i}]",
             )

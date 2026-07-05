@@ -95,7 +95,10 @@ class Comparator4BitEqualityBuilder(ICBuilderBase):
         await self.log("  ✓ Created optimized 4-input AND gate for equality")
 
         # Create output LED
-        output_x = final_and_x + HORIZONTAL_GATE_SPACING
+        # "andGateEqual" is a long label; at the standard 1x gap its text
+        # reaches into the output LED's label on the same row, so widen this
+        # last column step.
+        output_x = final_and_x + (1.5 * HORIZONTAL_GATE_SPACING)
         output_led = await self.create_element("Led", output_x, 100.0 + VERTICAL_STAGE_SPACING, "Equal")
         if output_led is None:
             return False

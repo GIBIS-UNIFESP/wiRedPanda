@@ -79,8 +79,11 @@ class ALUSelector5wayBuilder(ICBuilderBase):
             return False
 
         # Level 1: 2:1 mux between result2/result3 using op0
+        # l1_mux1/l1_mux2 are level2_mux_2to1 ICs stacked in the same column;
+        # their real footprint is taller than the flat 1x step, so use a
+        # wider gap here to keep l1_mux1's label clear of l1_mux2's body.
         l1_mux2 = await self.instantiate_ic(
-            "level2_mux_2to1", level1_x, input_y + (2 * VERTICAL_STAGE_SPACING), "l1_mux2"
+            "level2_mux_2to1", level1_x, input_y + (2.5 * VERTICAL_STAGE_SPACING), "l1_mux2"
         )
         if l1_mux2 is None:
             return False

@@ -85,6 +85,13 @@ class DecodeStageBuilder(ICBuilderBase):
 
         control_x = input_x + (6 * HORIZONTAL_GATE_SPACING)
 
+        # This chain of control gates ("RegWrite_NOT", "OpCode3_NOT",
+        # "MemRead_AND", "MemWrite_AND") has labels wide enough that
+        # consecutive columns clip each other at the standard
+        # HORIZONTAL_GATE_SPACING, so this row (and the output stage that
+        # must clear it below) uses a wider column step.
+        control_gate_spacing = 1.5 * HORIZONTAL_GATE_SPACING
+
         # ---- Create combinational logic for control signals ----
 
         # ALUOp[0-2]: Direct pass-through from OpCode[0-2]
@@ -92,7 +99,7 @@ class DecodeStageBuilder(ICBuilderBase):
 
         # RegWrite = NOT(OpCode[4])
         # When bit 4 is 0, write to register; when 1, it's a memory operation
-        regwrite_not_id = await self.create_element("Not", control_x + HORIZONTAL_GATE_SPACING, input_y, "RegWrite_NOT")
+        regwrite_not_id = await self.create_element("Not", control_x + control_gate_spacing, input_y, "RegWrite_NOT")
         if regwrite_not_id is None:
             return False
 
@@ -102,7 +109,7 @@ class DecodeStageBuilder(ICBuilderBase):
         # MemRead = OpCode[4] AND NOT(OpCode[3])
         # Memory read when bits [4:3] = 10
         opcode3_not_id = await self.create_element(
-            "Not", control_x + (2 * HORIZONTAL_GATE_SPACING), input_y, "OpCode3_NOT"
+            "Not", control_x + (2 * control_gate_spacing), input_y, "OpCode3_NOT"
         )
         if opcode3_not_id is None:
             return False
@@ -111,7 +118,7 @@ class DecodeStageBuilder(ICBuilderBase):
             return False
 
         memread_and_id = await self.create_element(
-            "And", control_x + (3 * HORIZONTAL_GATE_SPACING), input_y, "MemRead_AND"
+            "And", control_x + (3 * control_gate_spacing), input_y, "MemRead_AND"
         )
         if memread_and_id is None:
             return False
@@ -125,7 +132,7 @@ class DecodeStageBuilder(ICBuilderBase):
         # MemWrite = OpCode[4] AND OpCode[3]
         # Memory write when bits [4:3] = 11
         memwrite_and_id = await self.create_element(
-            "And", control_x + (4 * HORIZONTAL_GATE_SPACING), input_y, "MemWrite_AND"
+            "And", control_x + (4 * control_gate_spacing), input_y, "MemWrite_AND"
         )
         if memwrite_and_id is None:
             return False
@@ -139,7 +146,8 @@ class DecodeStageBuilder(ICBuilderBase):
         await self.log("  ✓ Created control signal logic")
 
         # ---- Create output LEDs ----
-        output_x = control_x + (6 * HORIZONTAL_GATE_SPACING)
+        # Clears the widened control-gate row (above) using the same wider step.
+        output_x = control_x + (6 * control_gate_spacing)
 
         # ALUOp outputs (direct pass-through from OpCode[0-2])
         for i in range(3):
@@ -206,11 +214,21 @@ class DecodeStageBuilder(ICBuilderBase):
         # Each grid row reserves two full stages: one for the AND gates
         # themselves and one dedicated to their output LEDs directly below,
         # so neither the LEDs nor the next row of AND gates encroach on them.
+        # "InstrDecodedLines[N]" labels are long enough (up to ~22 chars) that
+        # a standard HORIZONTAL_GATE_SPACING column step isn't enough to keep
+        # adjacent labels from overlapping, so the grid uses a full 2x column
+        # step instead.
+        # The wider column step above pushes row 0's rightmost columns as far
+        # right as the ALUOp/control-signal output row, so this grid also
+        # needs one more stage of vertical clearance from that row (which
+        # sits at input_y + 2 * VERTICAL_STAGE_SPACING) to avoid landing on
+        # top of it.
+        onehot_column_spacing = 2 * HORIZONTAL_GATE_SPACING
         onehot_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
-        onehot_y = input_y + (2 * VERTICAL_STAGE_SPACING)
+        onehot_y = input_y + (3 * VERTICAL_STAGE_SPACING)
         for line in range(32):
             low_idx = line & 0xF
-            gate_x = onehot_x + ((line % 8) * HORIZONTAL_GATE_SPACING)
+            gate_x = onehot_x + ((line % 8) * onehot_column_spacing)
             gate_y = onehot_y + ((line // 8) * (2 * VERTICAL_STAGE_SPACING))
 
             and_id = await self.create_element("And", gate_x, gate_y, f"line_and{line}")

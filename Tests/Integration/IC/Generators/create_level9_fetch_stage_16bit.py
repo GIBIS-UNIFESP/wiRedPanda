@@ -133,7 +133,14 @@ class FetchStage16bitBuilder(ICBuilderBase):
         )
         control_y = ic_row_y - ic_row_half_height - VERTICAL_STAGE_SPACING
         pc_data_y = control_y - VERTICAL_STAGE_SPACING
-        prog_addr_y = ic_row_y + ic_row_half_height + VERTICAL_STAGE_SPACING
+        # "InstrMem_Low"'s (and "InstrMem_High"'s) side label is rotated 90
+        # degrees and hangs well below the IC's own ports/pixmap bounding box
+        # (not captured by ic_row_half_height), reaching down into the
+        # ProgAddr[]/ProgData[] row below -- instr_mem_low_x lands in the
+        # same column as ProgAddr[6] (both input_x + 6 * HORIZONTAL_GATE_SPACING),
+        # so clearing that label reach needs more than one
+        # VERTICAL_STAGE_SPACING of clearance below the IC row.
+        prog_addr_y = ic_row_y + ic_row_half_height + (2 * VERTICAL_STAGE_SPACING)
         prog_data_y = prog_addr_y + VERTICAL_STAGE_SPACING
 
         # ---- Create PC data input (8-bit) ----
@@ -288,10 +295,16 @@ class FetchStage16bitBuilder(ICBuilderBase):
         # reaches out to input_x + 15 * HORIZONTAL_GATE_SPACING).
         ic_chain_output_x = ir_high_x + max(HORIZONTAL_GATE_SPACING * 2, ir_high_handle.width + HORIZONTAL_GATE_SPACING)
         prog_data_row_end = input_x + (15 * HORIZONTAL_GATE_SPACING)
-        output_x = max(ic_chain_output_x, prog_data_row_end + HORIZONTAL_GATE_SPACING)
+        # "ProgData[15]"'s label (fixed offset, doesn't scale with the row's
+        # own spacing) reaches past a single HORIZONTAL_GATE_SPACING gap into
+        # the output column, so this margin needs to be wider.
+        output_x = max(ic_chain_output_x, prog_data_row_end + (1.5 * HORIZONTAL_GATE_SPACING))
         output_y = ic_row_y
         instruction_x = output_x
-        rawinstr_x = instruction_x + HORIZONTAL_GATE_SPACING
+        # "Instruction[N]" labels are wide enough (especially double-digit N)
+        # that the standard HORIZONTAL_GATE_SPACING isn't enough to keep them
+        # clear of the "RawInstr[N]" column beside them.
+        rawinstr_x = instruction_x + (1.5 * HORIZONTAL_GATE_SPACING)
         pc_out_x = rawinstr_x + HORIZONTAL_GATE_SPACING
         decode_x = pc_out_x + HORIZONTAL_GATE_SPACING
 

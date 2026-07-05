@@ -58,7 +58,11 @@ class ALU16bitBuilder(ICBuilderBase):
 
         # Layout positions
         input_x = 50.0
-        alu_low_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
+        # OperandA[10-15]'s double-digit label ("OperandA[10]", 12 chars) is
+        # wider than a bare 1x step clears, so every column from OperandB
+        # onward is nudged right by an extra 0.25 step -- the gaps between
+        # OperandB/ALUOp/alu_low_x themselves stay at the original 1x step.
+        alu_low_x = input_x + (3.25 * HORIZONTAL_GATE_SPACING)
 
         # ---- Create Input Switches ----
         # OperandA[0-15]
@@ -75,7 +79,10 @@ class ALU16bitBuilder(ICBuilderBase):
         op_b_inputs = []
         for i in range(16):
             elem_id = await self.create_element(
-                "InputSwitch", input_x + HORIZONTAL_GATE_SPACING, 100.0 + (i * VERTICAL_STAGE_SPACING), f"OperandB[{i}]"
+                "InputSwitch",
+                input_x + 1.25 * HORIZONTAL_GATE_SPACING,
+                100.0 + (i * VERTICAL_STAGE_SPACING),
+                f"OperandB[{i}]",
             )
             if elem_id is None:
                 return False
@@ -88,7 +95,7 @@ class ALU16bitBuilder(ICBuilderBase):
         for i in range(3):
             elem_id = await self.create_element(
                 "InputSwitch",
-                input_x + (2 * HORIZONTAL_GATE_SPACING),
+                input_x + (2.25 * HORIZONTAL_GATE_SPACING),
                 100.0 + (i * VERTICAL_STAGE_SPACING),
                 f"ALUOp[{i}]",
             )

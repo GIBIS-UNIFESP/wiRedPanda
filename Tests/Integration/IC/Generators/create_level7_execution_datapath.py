@@ -192,8 +192,9 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         await self.log("  ✓ Created final AND gate for Zero flag")
 
         # Create Zero flag output LED (placed past the final AND gate, clear
-        # of the intermediate NOR/AND columns)
-        zero_sign_x = final_and_x + HORIZONTAL_GATE_SPACING
+        # of the intermediate NOR/AND columns). The "ZeroFlag_Final_AND" label
+        # is long enough to reach into a bare 1x step, so this step is 1.5x.
+        zero_sign_x = final_and_x + 1.5 * HORIZONTAL_GATE_SPACING
         zero_led_id = await self.create_element("Led", zero_sign_x, alu_y, "Zero")
         if zero_led_id is None:
             return False
