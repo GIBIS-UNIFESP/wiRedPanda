@@ -115,7 +115,19 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
     if (icName.isEmpty()) {
         return createErrorResponse("Parameter 'ic_name' cannot be empty", requestId, JsonRpcError::InvalidParams);
     }
-    if (icName == "." || icName == ".." || QFileInfo(icName).fileName() != icName
+
+    // Two ways to reference a dependency: a bare name (interactive/GUI use, resolved
+    // against the current tab's directory) or an absolute path (automation clients,
+    // e.g. the Python IC generators, which run one headless process per script with
+    // no reliable "current directory" to resolve a bare name against). Absolute paths
+    // still can't contain '..' components, so this doesn't relax path-traversal safety.
+    const bool isAbsolute = QFileInfo(icName).isAbsolute();
+    if (isAbsolute) {
+        if (icName.contains("..")) {
+            return createErrorResponse("IC path must not contain '..' components",
+                                       requestId, JsonRpcError::InvalidParams);
+        }
+    } else if (icName == "." || icName == ".." || QFileInfo(icName).fileName() != icName
         || icName.contains('/') || icName.contains('\\')) {
         return createErrorResponse("IC name must not contain path separators or directory components",
                                    requestId, JsonRpcError::InvalidParams);
@@ -128,7 +140,7 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
 
     return tryCommand([&]() -> QJsonObject {
         QString icFileName = icName + ".panda";
-        QString fullPath = m_mainWindow->currentDir().absoluteFilePath(icFileName);
+        QString fullPath = isAbsolute ? icFileName : m_mainWindow->currentDir().absoluteFilePath(icFileName);
 
         if (!QFile::exists(fullPath)) {
             return createErrorResponse(QString("IC file not found: %1").arg(icFileName),
