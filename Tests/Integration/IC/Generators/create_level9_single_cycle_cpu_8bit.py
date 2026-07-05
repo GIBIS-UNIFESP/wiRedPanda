@@ -56,12 +56,22 @@ from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 from ic_builder_helpers import build_cpu_register_programming_block
 
 # Layout is organized into vertically-stacked bands, each on its own row (or
-# pair of rows), separated by a fixed buffer far larger than any embedded
-# IC's real height (the tallest, level8_decode_stage, is ~602px) so no
-# height query can ever bridge the gap between two bands. Within a band,
-# elements are chained left-to-right using their real width (queried via
-# instantiate_ic_with_size) where the element is an embedded IC.
-BAND_GAP = 1000.0
+# pair of rows). Within a band, elements are chained left-to-right using
+# their real width (queried via instantiate_ic_with_size) where the element
+# is an embedded IC. Gaps between bands are likewise derived from real
+# content height (queried the same way, or the known 64px raw-gate row
+# height where a band has no embedded IC), not a flat worst-case constant --
+# each band's start can only be computed once the band above it has actually
+# been placed and its real height learned.
+RAW_ROW_HEIGHT = 64.0
+
+# The stage ICs (Fetch/Decode/Execute/Memory) are placed with many ports
+# spread symmetrically above and below their nominal y, not a simple
+# top-anchored 64px box -- level8_decode_stage, the tallest, is ~602px real
+# height. The gap immediately above y_stages can't be derived from a query
+# (nothing is instantiated there yet), so use half that documented worst
+# case plus margin; every other gap in this file is a real measurement.
+STAGE_CLEARANCE_ABOVE = (602.0 / 2) + VERTICAL_STAGE_SPACING
 
 
 class CPU8BitSingleCycleBuilder(ICBuilderBase):
@@ -75,14 +85,13 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         base_x = 50.0
 
-        # ---- Band Y anchors (top to bottom) ----
+        # ---- Band Y anchors (top to bottom): control and logic are both a
+        # single raw-gate row (known 64px height), so their gaps are flat;
+        # y_stages' gap to what follows depends on the stage ICs' real
+        # height, learned once they're instantiated below. ----
         y_control = 100.0
-        y_logic = y_control + BAND_GAP
-        y_stages = y_logic + BAND_GAP
-        y_regfile = y_stages + BAND_GAP
-        y_prog = y_regfile + BAND_GAP
-        y_regprog = y_prog + BAND_GAP
-        y_output = y_regprog + BAND_GAP
+        y_logic = y_control + RAW_ROW_HEIGHT + VERTICAL_STAGE_SPACING
+        y_stages = y_logic + RAW_ROW_HEIGHT + STAGE_CLEARANCE_ABOVE
 
         # ==== Band: Clock/Reset/Vcc/Gnd (boundary control inputs) ====
         clock_id = await self.create_element("Clock", base_x, y_control, "Clock")
@@ -104,24 +113,25 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         await self.log("  ✓ Created Clock, Reset, Vcc, and Gnd inputs")
 
         # ==== Band: register-file write-enable logic (not boundary elements
-        # — order among them doesn't affect the IC's port order) ====
+        # — order among them doesn't affect the IC's port order). Labels here
+        # (ProgWriteNOT, WriteEnableAND1/2, WriteEnableOR) are long enough
+        # that the standard 1x step isn't enough clearance -- widen the
+        # whole row's step. ====
+        logic_row_step = 1.5 * HORIZONTAL_GATE_SPACING
         prog_not_id = await self.create_element("Not", base_x, y_logic, "ProgWriteNOT")
         if prog_not_id is None:
             return False
-        reset_not_id = await self.create_element("Not", base_x + HORIZONTAL_GATE_SPACING, y_logic, "ResetNOT")
+        reset_not_id = await self.create_element("Not", base_x + logic_row_step, y_logic, "ResetNOT")
         if reset_not_id is None:
             return False
-        we_and1_id = await self.create_element(
-            "And", base_x + (2 * HORIZONTAL_GATE_SPACING), y_logic, "WriteEnableAND1"
-        )
+        we_and1_id = await self.create_element("And", base_x + (2 * logic_row_step), y_logic, "WriteEnableAND1")
         if we_and1_id is None:
             return False
-        we_and2_id = await self.create_element(
-            "And", base_x + (3 * HORIZONTAL_GATE_SPACING), y_logic, "WriteEnableAND2"
-        )
+        we_and2_x = base_x + (3 * logic_row_step)
+        we_and2_id = await self.create_element("And", we_and2_x, y_logic, "WriteEnableAND2")
         if we_and2_id is None:
             return False
-        we_or_id = await self.create_element("Or", base_x + (4 * HORIZONTAL_GATE_SPACING), y_logic, "WriteEnableOR")
+        we_or_id = await self.create_element("Or", we_and2_x + logic_row_step, y_logic, "WriteEnableOR")
         if we_or_id is None:
             return False
 
@@ -154,9 +164,12 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated Fetch, Decode, Execute, and Memory stages")
 
+        stages_height = max(fetch_handle.height, decode_handle.height, execute_handle.height, memory_handle.height)
+        y_regfile = y_stages + stages_height + VERTICAL_STAGE_SPACING
+
         # ==== Band: register file + its programming muxes, instruction/register
         # programming inputs (shared with the multi-cycle CPU generator) ====
-        block = await build_cpu_register_programming_block(self, base_x, y_regfile, y_prog, y_regprog)
+        block = await build_cpu_register_programming_block(self, base_x, y_regfile)
         if block is None:
             return False
         regfile_id = block.regfile_id
@@ -168,12 +181,15 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
         reg_prog_addr_inputs = block.reg_prog_addr_inputs
         reg_prog_data_inputs = block.reg_prog_data_inputs
         reg_prog_write_id = block.reg_prog_write_id
+        y_output = block.next_y
 
         # ==== Band: output LEDs ====
         pc_out_x = base_x
         result_out_x = pc_out_x + HORIZONTAL_GATE_SPACING
         instr_out_x = result_out_x + HORIZONTAL_GATE_SPACING
-        flags_out_x = instr_out_x + HORIZONTAL_GATE_SPACING
+        # Instruction[i]'s label is long enough that the standard 1x step
+        # into the Zero/Sign flag column isn't enough clearance.
+        flags_out_x = instr_out_x + 1.5 * HORIZONTAL_GATE_SPACING
 
         pc_led_ids = []
         for i in range(8):
