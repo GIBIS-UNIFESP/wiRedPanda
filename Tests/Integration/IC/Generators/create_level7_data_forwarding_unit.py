@@ -154,10 +154,12 @@ class DataForwardingUnitBuilder(ICBuilderBase):
             if not await self.connect(select_inputs[1], mux_id, target_port_label="Sel[1]"):
                 return False
 
-            # Create output LED
+            # Create output LED. "ForwardedData[N]" is wide enough that a bare
+            # 1x step between columns lets adjacent labels touch, so this row
+            # steps at 1.5x horizontal spacing instead.
             led_id = await self.create_element(
                 "Led",
-                output_x + (10 * HORIZONTAL_GATE_SPACING) + (bit_idx * HORIZONTAL_GATE_SPACING),
+                output_x + (10 * HORIZONTAL_GATE_SPACING) + (bit_idx * 1.5 * HORIZONTAL_GATE_SPACING),
                 250.0,
                 f"ForwardedData[{bit_idx}]",
             )

@@ -134,7 +134,14 @@ class FetchStageBuilder(ICBuilderBase):
         # the three real heights on each side.
         ic_row_half_height = max(pc_handle.height, addr_mux_handle.height, imem_handle.height) / 2
         pc_data_y = ic_row_y - ic_row_half_height - VERTICAL_STAGE_SPACING
-        prog_y = ic_row_y + ic_row_half_height + VERTICAL_STAGE_SPACING
+        # "InstrMem"'s side label is rotated 90 degrees and hangs well below
+        # its own ports/pixmap bounding box (not captured by
+        # ic_row_half_height), reaching down into the ProgAddr[]/ProgWrite
+        # row below -- which also has to clear the control-signal column's
+        # own label (its last switch, InstrLoad, is at the same "one stage"
+        # distance). One extra VERTICAL_STAGE_SPACING of clearance covers
+        # both.
+        prog_y = ic_row_y + ic_row_half_height + (2 * VERTICAL_STAGE_SPACING)
         prog_data_y = prog_y + VERTICAL_STAGE_SPACING
 
         # ---- Create PC data input (8-bit) ----
@@ -282,6 +289,11 @@ class FetchStageBuilder(ICBuilderBase):
 
         # ---- Create output LEDs ----
         output_x = input_x + (14 * HORIZONTAL_GATE_SPACING)
+        # "Instruction[N]"/"RegisterAddr[N]" labels are wide enough that
+        # neighboring output columns clip them at the standard
+        # HORIZONTAL_GATE_SPACING, so this 5-column output block uses a
+        # wider column step.
+        output_col_spacing = 1.5 * HORIZONTAL_GATE_SPACING
 
         # PC outputs
         pc_outputs = []
@@ -301,7 +313,7 @@ class FetchStageBuilder(ICBuilderBase):
         for i in range(8):
             led_id = await self.create_element(
                 "Led",
-                output_x + HORIZONTAL_GATE_SPACING,
+                output_x + output_col_spacing,
                 200.0 + (i * VERTICAL_STAGE_SPACING),
                 f"Instruction[{i}]",
             )
@@ -319,7 +331,7 @@ class FetchStageBuilder(ICBuilderBase):
         for i in range(5):
             led_id = await self.create_element(
                 "Led",
-                output_x + (2 * HORIZONTAL_GATE_SPACING),
+                output_x + (2 * output_col_spacing),
                 200.0 + (i * VERTICAL_STAGE_SPACING),
                 f"OpCode[{i}]",
             )
@@ -337,7 +349,7 @@ class FetchStageBuilder(ICBuilderBase):
         for i in range(3):
             led_id = await self.create_element(
                 "Led",
-                output_x + (3 * HORIZONTAL_GATE_SPACING),
+                output_x + (3 * output_col_spacing),
                 200.0 + (i * VERTICAL_STAGE_SPACING),
                 f"RegisterAddr[{i}]",
             )
@@ -356,7 +368,7 @@ class FetchStageBuilder(ICBuilderBase):
         for i in range(8):
             led_id = await self.create_element(
                 "Led",
-                output_x + (4 * HORIZONTAL_GATE_SPACING),
+                output_x + (4 * output_col_spacing),
                 200.0 + (i * VERTICAL_STAGE_SPACING),
                 f"RawInstr[{i}]",
             )

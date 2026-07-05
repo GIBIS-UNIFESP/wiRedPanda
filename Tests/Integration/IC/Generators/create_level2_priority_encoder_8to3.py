@@ -127,9 +127,15 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         for i in range(5, 0, -1):
             num_inputs = 8 - i  # Number of data inputs to OR together
 
-            or_gate = await self.create_element(
-                "Or", or_chain_x, or_chain_y + (6 - i) * VERTICAL_STAGE_SPACING, f"or_{7}_to_{i}"
-            )
+            # OR gates with 5+ inputs grow taller than the flat 104px row step
+            # (each input beyond 4 adds 16px). The 7-input gate (i=1) grows
+            # just tall enough to clip the label of the 6-input gate above it
+            # (i=2), so give this last row some extra clearance.
+            row_y = or_chain_y + (6 - i) * VERTICAL_STAGE_SPACING
+            if i == 1:
+                row_y += 0.25 * VERTICAL_STAGE_SPACING
+
+            or_gate = await self.create_element("Or", or_chain_x, row_y, f"or_{7}_to_{i}")
             if or_gate is None:
                 return False
 
@@ -376,7 +382,12 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         valid_led = await self.create_element("Led", output_x, output_base_y + 3 * addr_output_spacing, "valid")
         if valid_led is None:
             return False
-        eo_led = await self.create_element("Led", output_x, output_base_y + 4 * addr_output_spacing, "EO")
+        # "not_any_active" is a long label; at the standard 1x column gap its
+        # text reaches into the EO LED's label on the same row, so give this
+        # LED some extra horizontal clearance.
+        eo_led = await self.create_element(
+            "Led", output_x + (0.5 * HORIZONTAL_GATE_SPACING), output_base_y + 4 * addr_output_spacing, "EO"
+        )
         if eo_led is None:
             return False
 

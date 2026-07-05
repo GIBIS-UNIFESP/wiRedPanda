@@ -51,12 +51,20 @@ class FlagRegisterBuilder(ICBuilderBase):
         # Input positions
         input_x = 50.0
 
+        # This top row's labels ("FlagIn[N]_<name>") are much longer than the
+        # standard gate/IC labels elsewhere in the file, so this row alone
+        # needs a wider column step than HORIZONTAL_GATE_SPACING to keep
+        # adjacent labels from overlapping -- the rest of the circuit
+        # (muxes, flip-flops, outputs) is unaffected and keeps the standard
+        # spacing.
+        input_row_spacing = 2 * HORIZONTAL_GATE_SPACING
+
         # Create flag input switches (4-bit)
         flag_names = ["Zero", "Sign", "Carry", "Overflow"]
         flag_inputs = []
         for i in range(4):
             flag_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FlagIn[{i}]_{flag_names[i]}"
+                "InputSwitch", input_x + (i * input_row_spacing), 100.0, f"FlagIn[{i}]_{flag_names[i]}"
             )
             if flag_id is None:
                 return False
@@ -64,19 +72,19 @@ class FlagRegisterBuilder(ICBuilderBase):
         await self.log("  ✓ Created 4 flag inputs (Z, S, C, O)")
 
         # Create control inputs
-        load_id = await self.create_element("InputSwitch", input_x + (4 * HORIZONTAL_GATE_SPACING), 100.0, "Load")
+        load_id = await self.create_element("InputSwitch", input_x + (4 * input_row_spacing), 100.0, "Load")
         if load_id is None:
             return False
 
         clk_id = await self.create_element(
-            "InputSwitch", input_x + (4 * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, "Clock"
+            "InputSwitch", input_x + (4 * input_row_spacing), 100.0 + VERTICAL_STAGE_SPACING, "Clock"
         )
         if clk_id is None:
             return False
         await self.log("  ✓ Created Load and Clock inputs")
 
         # Create Vcc for inactive Preset/Clear signals
-        vcc_id = await self.create_element("InputVcc", input_x + (5 * HORIZONTAL_GATE_SPACING), 100.0, "Vcc")
+        vcc_id = await self.create_element("InputVcc", input_x + (5 * input_row_spacing), 100.0, "Vcc")
         if vcc_id is None:
             return False
         await self.log("  ✓ Created Vcc for FF control signals")

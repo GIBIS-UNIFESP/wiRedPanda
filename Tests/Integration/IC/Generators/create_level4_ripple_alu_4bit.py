@@ -57,8 +57,11 @@ class ALU4bitBuilder(ICBuilderBase):
         # down the same column so nothing here collides with them.
         not_b_y = b_input_y + VERTICAL_STAGE_SPACING
         and_row_y = not_b_y + VERTICAL_STAGE_SPACING
-        or_row_y = and_row_y + VERTICAL_STAGE_SPACING
-        carryin_row_y = or_row_y + VERTICAL_STAGE_SPACING
+        # mux_and[]/mux_or[] are level2_mux_2to1 ICs, taller than the flat
+        # 104px step; a 1x gap lets their labels reach into the row below
+        # (mux_or bodies, then CarryIn/Ground), so widen both of these steps.
+        or_row_y = and_row_y + (2 * VERTICAL_STAGE_SPACING)
+        carryin_row_y = or_row_y + (2 * VERTICAL_STAGE_SPACING)
         sub_carryin_row_y = carryin_row_y + VERTICAL_STAGE_SPACING
 
         # Adder/Subtractor must clear the full 4-wide A/B input row (mirrors
@@ -125,8 +128,10 @@ class ALU4bitBuilder(ICBuilderBase):
         # Subtraction = A - B = A + (~B + 1) = A + ~B + 1, so we invert B and add.
         # Stacks directly below the Adder -- same IC type, so use the Adder's
         # real measured height (not a flat constant) to clear it, mirroring
-        # BusMux_Left_S1/S2 in BarrelShiftBuilder.
-        subtractor_y = adder_y + max(VERTICAL_STAGE_SPACING, adder_handle.height)
+        # BusMux_Left_S1/S2 in BarrelShiftBuilder. An extra full stage on top
+        # of the measured height gives the Adder's own label (fixed below its
+        # body) room to clear before the Subtractor starts.
+        subtractor_y = adder_y + max(VERTICAL_STAGE_SPACING, adder_handle.height) + VERTICAL_STAGE_SPACING
         subtractor_ic_name = "level4_ripple_adder_4bit"
         subtractor_id = await self.instantiate_ic(
             subtractor_ic_name, adder_x, subtractor_y, "Subtractor (Adder with ~B)"
@@ -186,10 +191,15 @@ class ALU4bitBuilder(ICBuilderBase):
         output_y_and = mux_y + 2 * VERTICAL_STAGE_SPACING
         output_y_or = mux_y + 3 * VERTICAL_STAGE_SPACING
 
+        # "Result_ADD[0]"-style labels are long enough that at the standard
+        # 1x per-bit gap, each LED's label reaches into its neighbor's label
+        # on the same row, so widen the per-bit column step here.
+        result_bit_spacing = 1.25 * HORIZONTAL_GATE_SPACING
+
         for i in range(4):
             # Result_ADD[0-3]
             led_id = await self.create_element(
-                "Led", output_x + i * HORIZONTAL_GATE_SPACING, output_y_add, f"Result_ADD[{i}]"
+                "Led", output_x + i * result_bit_spacing, output_y_add, f"Result_ADD[{i}]"
             )
             if led_id is None:
                 return False
@@ -197,7 +207,7 @@ class ALU4bitBuilder(ICBuilderBase):
 
             # Result_SUB[0-3]
             led_id = await self.create_element(
-                "Led", output_x + i * HORIZONTAL_GATE_SPACING, output_y_sub, f"Result_SUB[{i}]"
+                "Led", output_x + i * result_bit_spacing, output_y_sub, f"Result_SUB[{i}]"
             )
             if led_id is None:
                 return False
@@ -205,16 +215,14 @@ class ALU4bitBuilder(ICBuilderBase):
 
             # Result_AND[0-3]
             led_id = await self.create_element(
-                "Led", output_x + i * HORIZONTAL_GATE_SPACING, output_y_and, f"Result_AND[{i}]"
+                "Led", output_x + i * result_bit_spacing, output_y_and, f"Result_AND[{i}]"
             )
             if led_id is None:
                 return False
             result_and_outputs.append(led_id)
 
             # Result_OR[0-3]
-            led_id = await self.create_element(
-                "Led", output_x + i * HORIZONTAL_GATE_SPACING, output_y_or, f"Result_OR[{i}]"
-            )
+            led_id = await self.create_element("Led", output_x + i * result_bit_spacing, output_y_or, f"Result_OR[{i}]")
             if led_id is None:
                 return False
             result_or_outputs.append(led_id)

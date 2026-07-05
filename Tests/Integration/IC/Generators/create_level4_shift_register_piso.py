@@ -70,7 +70,10 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         dff_y_base = input_y_load
         sout_x = input_x + (5 * HORIZONTAL_GATE_SPACING)
         sout_y = input_y_load
-        bit_spacing = 100.0
+        # 100px was too tight for the rotated IC labels stacked in this column
+        # (mux_sel0-3, then Vcc) -- their rotated text reaches well past a
+        # single row, so use a full 2x spacing unit between rows instead.
+        bit_spacing = 2 * VERTICAL_STAGE_SPACING
 
         # Create input controls
         clk_id = await self.create_element("InputSwitch", input_x, input_y_clk, "Clock")
@@ -121,7 +124,12 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
 
         # Instantiate shift path Bus Mux 4-bit IC
         # BusMux(GND, shiftIn[0-3], NOT_LOAD) = NOT_LOAD AND shiftIn[0-3]
-        shift_gate_y_base = load_gate_y_base + max(VERTICAL_STAGE_SPACING, load_mux_handle.height)
+        # The extra 1.5x margin (beyond the real measured height) clears
+        # BusMux_Load's own rotated label, which reaches well past its IC
+        # body and would otherwise dip into BusMux_Shift below it.
+        shift_gate_y_base = (
+            load_gate_y_base + max(VERTICAL_STAGE_SPACING, load_mux_handle.height) + (1.5 * VERTICAL_STAGE_SPACING)
+        )
         shift_mux_ic_id = await self.instantiate_ic(
             "level4_bus_mux_4bit", shift_gate_x, shift_gate_y_base, "BusMux_Shift"
         )

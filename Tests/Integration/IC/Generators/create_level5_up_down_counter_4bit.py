@@ -51,6 +51,11 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
             return False
 
         input_x = 50.0
+        # The not_carry/borrow -> xor_and0 -> xor_and1 -> xor_or run of columns
+        # holds long labels ("inc_not_carry0", "dec_xor_and0_0", ...) that don't
+        # clear a plain HORIZONTAL_GATE_SPACING column step; widen just that
+        # section's horizontal step instead of the whole diagram's.
+        wide_column_step = 1.5 * HORIZONTAL_GATE_SPACING
 
         # ========== Create inputs ==========
         clk_id = await self.create_element("InputSwitch", input_x, 100.0, "Clock")
@@ -107,13 +112,13 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
 
         # XOR AND gates (2 per bit for bits 1-3)
         inc_xor_and_ids = []
-        inc_xor_and_x = inc_not_carry_x + HORIZONTAL_GATE_SPACING
+        inc_xor_and_x = inc_not_carry_x + wide_column_step
         for i in range(4):
             bit_ands = []
             for j in range(2):
                 and_id = await self.create_element(
                     "And",
-                    inc_xor_and_x + (j * HORIZONTAL_GATE_SPACING),
+                    inc_xor_and_x + (j * wide_column_step),
                     100.0 + (i * VERTICAL_STAGE_SPACING),
                     f"inc_xor_and{i}_{j}",
                 )
@@ -124,7 +129,7 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
 
         # XOR OR gates
         inc_xor_or_ids = []
-        inc_xor_or_x = inc_xor_and_x + (2 * HORIZONTAL_GATE_SPACING)
+        inc_xor_or_x = inc_xor_and_x + (2 * wide_column_step)
         for i in range(4):
             or_id = await self.create_element(
                 "Or", inc_xor_or_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"inc_xor_or{i}"
@@ -165,13 +170,13 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
 
         # XOR AND gates for decrement (2 per bit for bits 1-3)
         dec_xor_and_ids = []
-        dec_xor_and_x = dec_not_borrow_x + HORIZONTAL_GATE_SPACING
+        dec_xor_and_x = dec_not_borrow_x + wide_column_step
         for i in range(4):
             bit_ands = []
             for j in range(2):
                 and_id = await self.create_element(
                     "And",
-                    dec_xor_and_x + (j * HORIZONTAL_GATE_SPACING),
+                    dec_xor_and_x + (j * wide_column_step),
                     100.0 + (i * VERTICAL_STAGE_SPACING),
                     f"dec_xor_and{i}_{j}",
                 )
@@ -182,7 +187,7 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
 
         # XOR OR gates for decrement
         dec_xor_or_ids = []
-        dec_xor_or_x = dec_xor_and_x + (2 * HORIZONTAL_GATE_SPACING)
+        dec_xor_or_x = dec_xor_and_x + (2 * wide_column_step)
         for i in range(4):
             or_id = await self.create_element(
                 "Or", dec_xor_or_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"dec_xor_or{i}"

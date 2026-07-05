@@ -45,13 +45,17 @@ class Register1BitBuilder(ICBuilderBase):
         not_reset_y = input_y + (3 * VERTICAL_STAGE_SPACING)
         not_we_x = input_x + HORIZONTAL_GATE_SPACING
         not_we_y = input_y + VERTICAL_STAGE_SPACING
-        mux_x = input_x + (2 * HORIZONTAL_GATE_SPACING)
+        # "not_writenable" is a long label; at the standard 1x gap its text
+        # reaches into the write_mux element on the same row, so the mux
+        # column (and everything after it, to keep their own gaps unchanged)
+        # gets an extra half-step of clearance.
+        mux_x = input_x + (2.5 * HORIZONTAL_GATE_SPACING)
         mux_y = input_y + VERTICAL_STAGE_SPACING
-        dff_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
+        dff_x = input_x + (3.5 * HORIZONTAL_GATE_SPACING)
         dff_y = input_y + VERTICAL_STAGE_SPACING
-        vcc_x = input_x + (2 * HORIZONTAL_GATE_SPACING)
+        vcc_x = input_x + (2.5 * HORIZONTAL_GATE_SPACING)
         vcc_y = input_y + (2 * VERTICAL_STAGE_SPACING)
-        output_x = input_x + (4 * HORIZONTAL_GATE_SPACING)
+        output_x = input_x + (4.5 * HORIZONTAL_GATE_SPACING)
         output_q_y = input_y
         output_notq_y = input_y + (2 * VERTICAL_STAGE_SPACING)
 

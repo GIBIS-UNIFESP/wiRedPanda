@@ -107,10 +107,13 @@ class Adder8BitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created and chained 8 Full Adders with ripple carry")
 
-        # Create output LEDs for Sum bits
+        # Create output LEDs for Sum bits. The FA[i] IC's own label sits just
+        # below its (port-count-grown) body, so the Sum row needs more than a
+        # bare 1x step to clear it -- both output rows step by the same extra
+        # margin so the Sum-to-CarryOut gap stays unchanged.
         for bit in range(8):
             sum_led = await self.create_element(
-                "Led", fa_x + bit * HORIZONTAL_GATE_SPACING, fa_y + VERTICAL_STAGE_SPACING, f"Sum[{bit}]"
+                "Led", fa_x + bit * HORIZONTAL_GATE_SPACING, fa_y + 1.5 * VERTICAL_STAGE_SPACING, f"Sum[{bit}]"
             )
             if sum_led is None:
                 return False
@@ -120,7 +123,7 @@ class Adder8BitBuilder(ICBuilderBase):
 
         # Create output LED for final CarryOut
         carry_out_led = await self.create_element(
-            "Led", fa_x + (7 * HORIZONTAL_GATE_SPACING), fa_y + 2 * VERTICAL_STAGE_SPACING, "CarryOut"
+            "Led", fa_x + (7 * HORIZONTAL_GATE_SPACING), fa_y + 2.5 * VERTICAL_STAGE_SPACING, "CarryOut"
         )
         if carry_out_led is None:
             return False

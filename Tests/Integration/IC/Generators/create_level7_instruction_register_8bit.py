@@ -105,9 +105,13 @@ class InstructionRegister8BitBuilder(ICBuilderBase):
         output_y = register_y + (3 * VERTICAL_STAGE_SPACING)
 
         # ---- Create Instruction output LEDs (Instruction[0..7]) ----
+        # "Instruction[N]" labels are wide enough that adjacent columns clip
+        # each other at the standard HORIZONTAL_GATE_SPACING, so this row
+        # uses a wider column step.
+        instruction_spacing = 1.5 * HORIZONTAL_GATE_SPACING
         for i in range(8):
             instr_led = await self.create_element(
-                "Led", output_x + (i * HORIZONTAL_GATE_SPACING), output_y, f"Instruction[{i}]"
+                "Led", output_x + (i * instruction_spacing), output_y, f"Instruction[{i}]"
             )
             if instr_led is None:
                 return False
@@ -129,10 +133,13 @@ class InstructionRegister8BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created 5 OpCode outputs (bits 3-7 of instruction)")
 
         # ---- Create RegisterAddr output LEDs (RegisterAddr[0..2] = Instruction[2:0]) ----
+        # "RegisterAddr[N]" is even wider than "Instruction[N]", so it also
+        # needs a wider column step than the standard spacing.
+        regaddr_spacing = 1.5 * HORIZONTAL_GATE_SPACING
         for i in range(3):
             regaddr_led = await self.create_element(
                 "Led",
-                output_x + (i * HORIZONTAL_GATE_SPACING),
+                output_x + (i * regaddr_spacing),
                 output_y + (2 * VERTICAL_STAGE_SPACING),
                 f"RegisterAddr[{i}]",
             )
