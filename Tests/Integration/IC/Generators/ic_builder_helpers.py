@@ -1402,16 +1402,23 @@ class CpuRegisterProgrammingBlock:
     reg_prog_addr_inputs: list[int]
     reg_prog_data_inputs: list[int]
     reg_prog_write_id: int
+    next_y: float
 
 
 async def build_cpu_register_programming_block(
-    builder: ICBuilderBase, base_x: float, y_regfile: float, y_prog: float, y_regprog: float
+    builder: ICBuilderBase, base_x: float, y_regfile: float
 ) -> "CpuRegisterProgrammingBlock | None":
     """Register file + its programming muxes + instruction/register-file
     programming inputs. Shared verbatim between the 8-bit single-cycle and
     multi-cycle CPU generators -- factored out after normalizing both
     generators' spacing made this ~90-line block byte-identical, which
     pylint's duplicate-code check (R0801) then flagged.
+
+    Only the block's own start (y_regfile) is a caller-supplied anchor -- the
+    prog/reg-prog sub-bands below it, and the `next_y` handed back for
+    whatever the caller places next, are derived from the register file's and
+    write-data mux's real rendered height (learned here via
+    instantiate_ic_with_size), not a flat worst-case constant.
     """
     regfile_x = base_x
     regfile_handle = await builder.instantiate_ic_with_size("level6_register_file_8x8", regfile_x, y_regfile, "RegFile")
@@ -1433,13 +1440,22 @@ async def build_cpu_register_programming_block(
     write_addr_mux_ids = []
     for i in range(3):
         mux_id = await builder.create_element(
-            "Mux", write_addr_mux_base_x + (i * HORIZONTAL_GATE_SPACING), y_regfile, f"WriteAddrMux{i}"
+            "Mux", write_addr_mux_base_x + (i * 1.5 * HORIZONTAL_GATE_SPACING), y_regfile, f"WriteAddrMux{i}"
         )
         if mux_id is None:
             return None
         write_addr_mux_ids.append(mux_id)
 
     await builder.log("  ✓ Instantiated register file and its programming muxes")
+
+    # Prog/reg-prog are each a straight 2-row band of 64px InputSwitches
+    # (ProgAddr/ProgData, then RegProgAddr/RegProgData), so their own height
+    # is the known raw-row constant below, not a query -- only the gap above
+    # this sub-band (clearing the register file/write-mux row) needs the
+    # real height learned above.
+    raw_band_height = VERTICAL_STAGE_SPACING + 64.0
+    y_prog = y_regfile + max(regfile_handle.height, write_data_mux_handle.height) + VERTICAL_STAGE_SPACING
+    y_regprog = y_prog + raw_band_height + VERTICAL_STAGE_SPACING
 
     prog_addr_inputs = []
     for i in range(8):
@@ -1473,7 +1489,7 @@ async def build_cpu_register_programming_block(
     reg_prog_addr_inputs = []
     for i in range(3):
         pid = await builder.create_element(
-            "InputSwitch", base_x + (i * HORIZONTAL_GATE_SPACING), y_regprog, f"RegProgAddr[{i}]"
+            "InputSwitch", base_x + (i * 1.5 * HORIZONTAL_GATE_SPACING), y_regprog, f"RegProgAddr[{i}]"
         )
         if pid is None:
             return None
@@ -1483,7 +1499,7 @@ async def build_cpu_register_programming_block(
     for i in range(8):
         pid = await builder.create_element(
             "InputSwitch",
-            base_x + (i * HORIZONTAL_GATE_SPACING),
+            base_x + (i * 1.5 * HORIZONTAL_GATE_SPACING),
             y_regprog + VERTICAL_STAGE_SPACING,
             f"RegProgData[{i}]",
         )
@@ -1509,4 +1525,5 @@ async def build_cpu_register_programming_block(
         reg_prog_addr_inputs=reg_prog_addr_inputs,
         reg_prog_data_inputs=reg_prog_data_inputs,
         reg_prog_write_id=reg_prog_write_id,
+        next_y=y_regprog + raw_band_height + VERTICAL_STAGE_SPACING,
     )
