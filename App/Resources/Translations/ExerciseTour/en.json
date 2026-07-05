@@ -1,0 +1,54 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the AND gate.",
+      "instruction": "Add two InputSwitch elements to the canvas"
+    },
+    "add-output": {
+      "hint": "Drag a Led from the I/O tab and place it to the right of the AND gate. Then connect the AND gate output port (right side) to the LED input port (left side).",
+      "instruction": "Add a LED and connect it to the AND gate output"
+    },
+    "connect-inputs": {
+      "hint": "Click and drag from an InputSwitch output port (right side) to one of the AND gate input ports (left side). Repeat for the second switch.",
+      "instruction": "Connect both input switches to the AND gate"
+    },
+    "description": "Learn to place logic gates, add inputs and outputs, and wire them together.",
+    "place-and-gate": {
+      "hint": "Click the Gates tab in the left panel, then drag the AND gate onto the canvas.",
+      "instruction": "Place an AND gate on the canvas"
+    },
+    "title": "Building an AND Gate Circuit",
+    "toggle-observe": {
+      "hint": "Click an InputSwitch to toggle it. The LED only lights up when BOTH switches are ON. That is because AND outputs 1 only when all inputs are 1.",
+      "instruction": "Toggle the switches and observe the LED — this is AND logic!"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "Click Edit → Combinational in BeWavedDolphin's menu bar. This fills the Clock row with all possible values and computes the LED output for each — a full truth table in one click.",
+      "instruction": "Generate all input combinations automatically"
+    },
+    "connect-clock-led": {
+      "hint": "Click and drag from the Clock's output port (right side) to the LED's input port (left side).",
+      "instruction": "Connect the Clock output to the LED input"
+    },
+    "description": "Build a minimal Clock–LED circuit and explore the waveform viewer: combinational mode and manual cell editing.",
+    "open-waveform": {
+      "hint": "BeWavedDolphin shows your circuit signals as rows. The Clock row is the input, and the Led row is the output. Each column is one simulation time step.",
+      "instruction": "The waveform viewer is now open — take a look!"
+    },
+    "place-clock": {
+      "hint": "Click the I/O tab on the left panel, then drag the Clock element onto the canvas.",
+      "instruction": "Place a Clock element on the canvas"
+    },
+    "place-led": {
+      "hint": "Still in the I/O tab, drag a Led element onto the canvas to the right of the Clock.",
+      "instruction": "Place a LED on the canvas"
+    },
+    "title": "Clock and LED: Waveform Basics",
+    "toggle-cell": {
+      "hint": "Double-click any cell in the Clock row to flip it between 0 and 1. Watch the Led row update instantly to reflect the new output.",
+      "instruction": "Toggle a Clock cell manually"
+    }
+  }
+}

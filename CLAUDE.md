@@ -86,6 +86,7 @@ Advanced development features supported:
 
 - **CRITICAL**: Always use `cmake --build --preset debug --target update_translations` to refresh `.ts` files — never call `lupdate` directly or use any other target.
 - This target passes `-tr-function-alias tr+=PANDACEPTION` so strings wrapped in the `PANDACEPTION()` macro are correctly extracted. Using any other invocation silently discards those strings.
+- **Exercise/Tour content translations**: Exercise step text (`App/Resources/Exercises/*.json`) never passes through `tr()` — it's JSON, so `lupdate` can't see it. It goes through a *separate* Weblate "JSON file" component and a generated catalog, `App/Resources/Translations/ExerciseTour/en.json` (`Scripts/generate_exercise_tour_catalog.py`). Regenerating it is wired into the same `update_translations` target above — still one command. See "Exercise Content" below.
 
 ## Project Structure
 
@@ -186,6 +187,46 @@ if (elapsed > m_interval) {
 #### **Verdict: Conceptually Correct for Educational Purpose**
 
 The simulation accurately represents **ideal digital logic behavior** while deliberately abstracting **physical implementation details**. This approach is pedagogically sound - students learn fundamental concepts correctly without being overwhelmed by timing complexities that would obscure the core logic principles.
+
+## Exercise Content
+
+**Exercises** (`App/Exercise/`): circuit-building challenges validated against the live `Scene`, driven by JSON step content (`App/Resources/Exercises/*.json`).
+
+### Content discovery: flat directory scan, not hardcoded lists
+
+`ExerciseBrowserDialog` calls `ExerciseTourResources::discover("Exercises")` (`App/Core/ExerciseTourResources.h`), which merges four sources rather than one: the built-in bundled content (`scan(":/Exercises")`, mirroring `LanguageManager::availableLanguages()`'s `QDir(prefix).entryList({"*.json"}, QDir::Files)` pattern) plus three real, on-disk, end-user-writable locations — see below. Dropping a new built-in `.json` file into `App/Resources/Exercises/` (with a globally unique `id`) is picked up automatically on the next reconfigure — no C++ or `.qrc` edits.
+
+### End-user-writable discovery: three locations, two audiences
+
+Built-in content only solves *contributor* flexibility (source-tree + reconfigure). Getting a
+custom exercise into an already-*compiled* app needs a real filesystem location, and this
+splits by audience — deliberately kept separate, not merged into one "user folder":
+
+- **`ExerciseTourResources::preferredContentDir(category)`** — what the **"Open Folder" button**
+  in the browser dialog opens: the install-relative folder next to the app (mirrors
+  `MainWindow::setupExamplesMenu()`'s per-platform search paths, parameterized instead of
+  hardcoded to `"Examples"`), or, if that isn't writable (e.g. installed under Program Files
+  without admin rights), a `Documents/wiRedPanda/<category>` fallback created only at that
+  point. Both are simple, visible, end-user-facing locations.
+- **`ExerciseTourResources::managedContentDir(category)`** — `QStandardPaths::AppDataLocation + "/" + category"` (same idiom as `Workspace.cpp`'s autosaves folder). Reserved *exclusively* for a
+  teacher/IT admin to pre-provision content in a managed classroom install. `discover()` scans
+  it, but **no code path ever opens or is allowed to fall back into it from the button** — that
+  invariant is deliberate and is exercised by
+  `TestExerciseTourResources::testPreferredContentDirReturnsWritablePathOutsideManagedDir`.
+
+`discover()`'s merge order is built-in → AppData → install-relative → Documents fallback; a
+colliding `id` is dropped from whichever source loses, via the testable `mergeUnique()` seam,
+never silently overwriting an earlier entry.
+
+### Resource embedding: CMake glob, no `.qrc`
+
+Exercise JSON is intentionally **not** listed in a `.qrc` (`rcc` can't glob, which would reintroduce the hardcoded-list problem). `CMakeLists.txt` globs the folder with `CONFIGURE_DEPENDS` and calls the target-based `qt6_add_resources(wiredpanda_resources "<name>" PREFIX ... BASE ... FILES ...)` API directly on the `wiredpanda_resources` OBJECT library, after it exists.
+
+### i18n: a separate Weblate "JSON file" component
+
+Step text never passes through `tr()`. `App/Resources/Translations/ExerciseTour/en.json` is the generated, committed English-source catalog (`Scripts/generate_exercise_tour_catalog.py`), keyed `<fileId>.title`, `<fileId>.description`, `<fileId>.<stepKey>.instruction`/`.hint`. Every translatable step has a stable, contributor-authored `"key"` used only to build these keys — never read by engine logic. `ExerciseTour/<lang>.json` files are Weblate-managed and embedded at `:/i18n/ExerciseTour/<lang>.json`. `ExerciseTourResources::translate(key, fallbackEnglish)` reloads the small catalog fresh on every call (no cache) — cheap given usage frequency (dialog open / exercise start), and always falls back to the raw English text.
+
+See `App/Resources/Exercises/README.md` for the full schema and the closed `click` vocabulary.
 
 ## Development Container
 

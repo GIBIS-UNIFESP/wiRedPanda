@@ -39,6 +39,9 @@
 #include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
+#include "App/Exercise/ExerciseBrowserDialog.h"
+#include "App/Exercise/ExerciseEngine.h"
+#include "App/Exercise/ExerciseOverlay.h"
 #include "App/IO/RecentFiles.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/ICRegistry.h"
@@ -111,6 +114,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Setting connections";
     setupConnections();
+
+    m_exerciseEngine = new ExerciseEngine(this);
 
     qCDebug(zero) << "Checking playing simulation.";
     // Start simulation running by default so the circuit is live on open.
@@ -263,6 +268,7 @@ void MainWindow::setupConnections()
     connect(m_ui->tab, &QTabWidget::currentChanged,    m_workspaceManager, &WorkspaceManager::onCurrentIndexChanged);
     connect(m_ui->tab, &QTabWidget::tabCloseRequested, m_workspaceManager, &WorkspaceManager::closeTab);
 
+    connect(m_ui->actionExercises,             &QAction::triggered,       this,                &MainWindow::on_actionExercises_triggered);
     connect(m_ui->actionAbout,                 &QAction::triggered,       this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,               &QAction::triggered,       this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion,      &QAction::triggered,       this,                &MainWindow::aboutThisVersion);
@@ -641,10 +647,25 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
 {
     // Reaction to WorkspaceManager::currentTabChanged: rebind the shared chrome to the
     // new scene and refresh the tab-navigation view state (file-based IC list, buttons).
+    // currentTab() already reflects newTab here (WorkspaceManager updates its current-tab
+    // field before emitting this signal), so the tab actually being left is tracked
+    // separately in m_previousTab rather than read via currentTab().
+    WorkSpace *prevTab = m_previousTab;
+    m_previousTab = newTab;
+
     m_binder->unbind(); // tear down the previously bound tab's chrome wiring
     // Hide the editor panel during the transition; SceneUiBinder::bind restores it
     // once the new scene's selection is known.
     m_ui->elementEditor->hide();
+
+    // Detach exercise overlay from the leaving tab
+    if (prevTab) {
+        prevTab->setExerciseOverlay(nullptr);
+    }
+    if (m_exerciseOverlay && m_exerciseEngine && m_exerciseEngine->isActive()) {
+        m_exerciseOverlay->hide();
+        m_exerciseOverlay->setParent(nullptr);
+    }
 
     if (!newTab) {
         // All tabs were closed; reset state.
@@ -659,6 +680,16 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
     // Hide management buttons for inline IC tabs (they use currentFile/currentDir which are empty)
     setICButtonsVisible(!newTab->isInlineIC());
     refreshICButtonsEnabled();
+
+    // Re-attach exercise overlay to the arriving tab
+    if (m_exerciseEngine && m_exerciseEngine->isActive() && m_exerciseOverlay) {
+        m_exerciseEngine->setScene(newTab->scene());
+        m_exerciseOverlay->setParent(newTab);
+        newTab->setExerciseOverlay(m_exerciseOverlay);
+        m_exerciseOverlay->repositionToParent();
+        m_exerciseOverlay->show();
+        m_exerciseOverlay->raise();
+    }
 }
 
 void MainWindow::on_actionGates_triggered(const bool checked)
@@ -906,15 +937,27 @@ void MainWindow::on_actionFastMode_triggered(const bool checked)
 void MainWindow::on_actionWaveform_triggered()
 {
     Application::guardedSlot(this, [this] {
+        if (m_bwd) {
+            m_bwd->raise();
+            m_bwd->activateWindow();
+            return;
+        }
         if (!currentTab()) {
             return;
         }
 
         sentryBreadcrumb("ui", QStringLiteral("Waveform dialog opened"));
         qCDebug(zero) << "BD fileName: " << currentTab()->dolphinFileName();
-        auto *bewavedDolphin = new BewavedDolphin(currentTab()->scene(), true, this);
-        bewavedDolphin->createWaveform(currentTab()->dolphinFileName());
-        bewavedDolphin->show();
+        auto *bwd = new BewavedDolphin(currentTab()->scene(), true, this);
+        bwd->createWaveform(currentTab()->dolphinFileName());
+        m_bwd = bwd;
+        connect(bwd, &QObject::destroyed, this, [this] {
+            if (m_exerciseOverlay && m_exerciseEngine && m_exerciseEngine->isActive()) {
+                m_exerciseOverlay->hide();
+                m_exerciseOverlay->setParent(nullptr);
+            }
+        });
+        bwd->show();
     });
 }
 
@@ -1048,4 +1091,94 @@ bool MainWindow::event(QEvent *event)
     };
 
     return QMainWindow::event(event);
+}
+
+void MainWindow::on_actionExercises_triggered()
+{
+    ExerciseBrowserDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        startExercise(dialog.selectedExercisePath());
+    }
+}
+
+void MainWindow::startExercise(const QString &resourcePath)
+{
+    if (!currentTab() || resourcePath.isEmpty()) {
+        return;
+    }
+    if (!m_exerciseEngine->loadFromResource(resourcePath)) {
+        qWarning() << "ExerciseEngine: failed to load" << resourcePath;
+        return;
+    }
+
+    if (currentTab()) {
+        currentTab()->setExerciseOverlay(nullptr);
+    }
+    delete m_exerciseOverlay;
+    m_exerciseOverlay = new ExerciseOverlay(m_exerciseEngine, currentTab());
+
+    // Must precede stepChanged→onStepChanged so actions run before the overlay updates.
+    connect(m_exerciseEngine, &ExerciseEngine::stepChanged, this,
+            [this](int, int, const ExerciseStep &step) {
+        for (const QString &id : step.click) clickTarget(id);
+
+        if (!m_exerciseOverlay) {
+            return;
+        }
+        const bool wantBwd = (step.context == "bwd");
+        if (wantBwd && m_bwd) {
+            m_exerciseOverlay->setParent(m_bwd->centralWidget());
+            m_bwd->setExerciseOverlay(m_exerciseOverlay);
+            if (currentTab()) {
+                currentTab()->setExerciseOverlay(nullptr);
+            }
+        } else if (!wantBwd && currentTab()) {
+            m_exerciseOverlay->setParent(currentTab());
+            currentTab()->setExerciseOverlay(m_exerciseOverlay);
+            if (m_bwd) {
+                m_bwd->setExerciseOverlay(nullptr);
+            }
+        }
+        m_exerciseOverlay->repositionToParent();
+        m_exerciseOverlay->show();
+        m_exerciseOverlay->raise();
+    });
+    connect(m_exerciseEngine, &ExerciseEngine::stepChanged,
+            m_exerciseOverlay, &ExerciseOverlay::onStepChanged);
+    connect(m_exerciseEngine, &ExerciseEngine::exerciseCompleted,
+            m_exerciseOverlay, &ExerciseOverlay::onExerciseCompleted);
+    connect(m_exerciseOverlay, &ExerciseOverlay::closeRequested, this, [this] {
+        if (!m_exerciseOverlay) return;
+        ExerciseOverlay *overlay = m_exerciseOverlay;
+        m_exerciseOverlay = nullptr;
+        m_exerciseEngine->stop();
+        if (currentTab()) {
+            currentTab()->setExerciseOverlay(nullptr);
+        }
+        if (m_bwd) {
+            m_bwd->setExerciseOverlay(nullptr);
+        }
+        overlay->deleteLater();
+    });
+
+    auto *esc = new QShortcut(QKeySequence(Qt::Key_Escape), m_exerciseOverlay);
+    connect(esc, &QShortcut::activated, m_exerciseOverlay, &ExerciseOverlay::closeRequested);
+
+    currentTab()->setExerciseOverlay(m_exerciseOverlay);
+    m_exerciseEngine->setScene(currentTab()->scene());
+    m_exerciseEngine->start();
+
+    m_exerciseOverlay->repositionToParent();
+    m_exerciseOverlay->show();
+    m_exerciseOverlay->raise();
+}
+
+void MainWindow::clickTarget(const QString &id)
+{
+    if      (id == "ioTab")          m_ui->tabElements->setCurrentIndex(0);
+    else if (id == "gatesTab")       m_ui->tabElements->setCurrentIndex(1);
+    else if (id == "combinational")  m_ui->tabElements->setCurrentIndex(2);
+    else if (id == "memoryTab")      m_ui->tabElements->setCurrentIndex(3);
+    else if (id == "actionPlay")     m_ui->actionPlay->trigger();
+    else if (id == "actionWaveform") m_ui->actionWaveform->trigger();
 }

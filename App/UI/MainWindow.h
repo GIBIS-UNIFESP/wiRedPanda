@@ -18,8 +18,12 @@
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
+class BewavedDolphin;
 class ElementLabel;
 class ElementPalette;
+class ExerciseBrowserDialog;
+class ExerciseEngine;
+class ExerciseOverlay;
 class ExportController;
 class ICController;
 class ICPreviewPopup;
@@ -215,6 +219,11 @@ private:
 
     // --- Action Handlers ---
 
+    void on_actionExercises_triggered();
+    void startExercise(const QString &resourcePath);
+
+    void clickTarget(const QString &id);
+
     static void on_actionDarkTheme_triggered();
     static void on_actionLightTheme_triggered();
     static void on_actionSystemTheme_triggered();
@@ -275,6 +284,17 @@ private:
     ICController     *m_icController      = nullptr;
     SceneUiBinder    *m_binder            = nullptr;
     WorkspaceManager *m_workspaceManager  = nullptr;
+
+    ExerciseEngine  *m_exerciseEngine  = nullptr;
+    ExerciseOverlay *m_exerciseOverlay = nullptr;
+
+    QPointer<BewavedDolphin> m_bwd;
+
+    /// The tab being left, captured for onCurrentTabChanged(): by the time that slot runs,
+    /// currentTab() already reflects the arriving tab (WorkspaceManager updates its current-tab
+    /// field before emitting the signal), so this is tracked separately. QPointer since the
+    /// previous tab may already be mid-close (deleteLater) by the time it's read.
+    QPointer<WorkSpace> m_previousTab;
 
     /// Shared IC-hover preview, parented to this MainWindow.
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.

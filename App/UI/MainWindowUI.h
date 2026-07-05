@@ -105,6 +105,9 @@ public:
     QAction *actionExportToImage = nullptr;
     QAction *actionMakeSelfContained = nullptr;
 
+    // Exercise actions
+    QAction *actionExercises = nullptr;
+
     // Help / about actions
     QAction *actionAbout = nullptr;
     QAction *actionAboutQt = nullptr;
@@ -226,6 +229,7 @@ public:
     QMenu *menuTranslation = nullptr;
     QMenu *menuSimulation = nullptr;
     QMenu *menuExamples = nullptr;
+    QMenu *menuExercises = nullptr;
     QMenu *menuHelp = nullptr;
 
 };
