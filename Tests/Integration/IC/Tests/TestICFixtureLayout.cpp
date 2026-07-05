@@ -4,6 +4,7 @@
 #include "Tests/Integration/IC/Tests/TestICFixtureLayout.h"
 
 #include <QDir>
+#include <QGraphicsSimpleTextItem>
 
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
@@ -51,6 +52,55 @@ void TestICFixtureLayout::testLayout()
                 overlaps << QString("'%1' (id %2) overlaps '%3' (id %4) by %5x%6 px at (%7, %8)")
                                 .arg(a->label()).arg(a->id())
                                 .arg(b->label()).arg(b->id())
+                                .arg(overlap.width(), 0, 'f', 1).arg(overlap.height(), 0, 'f', 1)
+                                .arg(overlap.x(), 0, 'f', 1).arg(overlap.y(), 0, 'f', 1);
+            }
+        }
+    }
+
+    // Labels aren't part of GraphicElement::boundingRect() (it unions only ports and
+    // the pixmap), so a label can visually collide with a neighboring element or
+    // another label even when every element-body check above passes.
+    QList<QRectF> labelRects(elements.size());
+    for (qsizetype i = 0; i < elements.size(); ++i) {
+        for (auto *child : elements.at(i)->childItems()) {
+            auto *text = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(child);
+            if (text && !text->text().isEmpty()) {
+                labelRects[i] = text->sceneBoundingRect();
+                break;
+            }
+        }
+    }
+
+    for (qsizetype i = 0; i < elements.size(); ++i) {
+        if (labelRects.at(i).isEmpty()) {
+            continue;
+        }
+
+        for (qsizetype j = 0; j < elements.size(); ++j) {
+            if (i == j) {
+                continue;
+            }
+            GraphicElement *other = elements.at(j);
+            const QRectF overlap = labelRects.at(i).intersected(other->sceneBoundingRect());
+            if (overlap.width() > kTolerance && overlap.height() > kTolerance) {
+                overlaps << QString("label '%1' (id %2) overlaps '%3' (id %4) by %5x%6 px at (%7, %8)")
+                                .arg(elements.at(i)->label()).arg(elements.at(i)->id())
+                                .arg(other->label()).arg(other->id())
+                                .arg(overlap.width(), 0, 'f', 1).arg(overlap.height(), 0, 'f', 1)
+                                .arg(overlap.x(), 0, 'f', 1).arg(overlap.y(), 0, 'f', 1);
+            }
+        }
+
+        for (qsizetype j = i + 1; j < elements.size(); ++j) {
+            if (labelRects.at(j).isEmpty()) {
+                continue;
+            }
+            const QRectF overlap = labelRects.at(i).intersected(labelRects.at(j));
+            if (overlap.width() > kTolerance && overlap.height() > kTolerance) {
+                overlaps << QString("label '%1' (id %2) overlaps label '%3' (id %4) by %5x%6 px at (%7, %8)")
+                                .arg(elements.at(i)->label()).arg(elements.at(i)->id())
+                                .arg(elements.at(j)->label()).arg(elements.at(j)->id())
                                 .arg(overlap.width(), 0, 'f', 1).arg(overlap.height(), 0, 'f', 1)
                                 .arg(overlap.x(), 0, 'f', 1).arg(overlap.y(), 0, 'f', 1);
             }
