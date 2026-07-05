@@ -179,29 +179,34 @@ class RegisterFileBuilder(ICBuilderBase):
         input_row_width = max(address_bits, data_width)
         # Write_Addr[i]/Read_Addr1[i]/Read_Addr2[i]/Data_In[i] labels are long
         # enough that a flat HORIZONTAL_GATE_SPACING step lets adjacent ones
-        # clip by a few px, so these four input rows get a slightly wider
-        # per-column step (decoder_x's clearance below is widened to match).
-        input_col_spacing = HORIZONTAL_GATE_SPACING + 16
+        # clip by a few px, so these four input rows get a wider per-column
+        # step (decoder_x's clearance below is widened to match). +16 was
+        # enough at the default Linux font but not on platforms that render
+        # the label a bit wider (observed on Windows CI), hence +32.
+        input_col_spacing = HORIZONTAL_GATE_SPACING + 32
         decoder_x = input_x_start + input_row_width * input_col_spacing
         # write_gates wraps 2-per-row (below), so mux must clear that full span.
         write_gates_x = decoder_x + HORIZONTAL_GATE_SPACING
         mux_x = write_gates_x + 2 * HORIZONTAL_GATE_SPACING
-        # holdMux[reg][i]'s label ("holdMux[3][7]", etc.) is long enough that a
-        # flat HORIZONTAL_GATE_SPACING step lets it clip the next bit's holdMux
-        # (or storage's first column past the last bit), so it gets the same
-        # slightly wider per-bit step -- storage keeps the plain step since its
-        # own shorter labels don't collide at it.
-        hold_mux_col_spacing = HORIZONTAL_GATE_SPACING + 16
+        # holdMux[reg][i]'s label ("holdMux[3][7]", etc.) and storage[reg][i]'s
+        # label ("storage[3][7]") are both long enough that a flat
+        # HORIZONTAL_GATE_SPACING step lets them clip the next bit's column on
+        # platforms that render the label a bit wider than the default Linux
+        # font (observed on Windows CI), so both get the same wider per-bit
+        # step.
+        hold_mux_col_spacing = HORIZONTAL_GATE_SPACING + 32
+        storage_col_spacing = HORIZONTAL_GATE_SPACING + 32
         # holdMux and storage are each a straight data_width-wide row at the same
         # per-register y -- they must be in disjoint column ranges (not
         # interleaved bit-by-bit, which would alias holdMux[b] onto storage[b-1]).
         storage_x = mux_x + data_width * hold_mux_col_spacing
-        read_mux_x = storage_x + data_width * HORIZONTAL_GATE_SPACING
+        read_mux_x = storage_x + data_width * storage_col_spacing
         # readMux1/readMux2 are two fixed columns -- output must clear both.
         output_x = read_mux_x + 2 * HORIZONTAL_GATE_SPACING
         # Read_Data1[i]/Read_Data2[i] labels are long enough that a flat
-        # HORIZONTAL_GATE_SPACING step lets adjacent ones clip too.
-        output_col_spacing = HORIZONTAL_GATE_SPACING + 16
+        # HORIZONTAL_GATE_SPACING step lets adjacent ones clip too (same
+        # Windows-font margin issue as input_col_spacing above).
+        output_col_spacing = HORIZONTAL_GATE_SPACING + 32
 
         write_addr = []
         for i in range(address_bits):
@@ -307,7 +312,7 @@ class RegisterFileBuilder(ICBuilderBase):
             for bit_idx in range(data_width):
                 ff_id = await self.create_element(
                     "DFlipFlop",
-                    storage_x + bit_idx * HORIZONTAL_GATE_SPACING,
+                    storage_x + bit_idx * storage_col_spacing,
                     write_addr_y + reg_idx * VERTICAL_STAGE_SPACING,
                     f"storage[{reg_idx}][{bit_idx}]",
                 )

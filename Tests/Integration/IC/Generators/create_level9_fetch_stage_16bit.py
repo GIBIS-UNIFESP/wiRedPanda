@@ -182,11 +182,16 @@ class FetchStage16bitBuilder(ICBuilderBase):
                 return False
             prog_addr_inputs.append(elem_id)
 
+        # ProgData[10..15]'s two-digit index makes the label long enough to
+        # reach into its neighbor at a standard 1x step on platforms that
+        # render the label a bit wider than the default Linux font (observed
+        # on Windows CI), so this row gets extra clearance.
+        prog_data_col_spacing = HORIZONTAL_GATE_SPACING + 32
         prog_data_inputs = []
         for i in range(16):
             elem_id = await self.create_element(
                 "InputSwitch",
-                input_x + (i * HORIZONTAL_GATE_SPACING),
+                input_x + (i * prog_data_col_spacing),
                 prog_data_y,
                 f"ProgData[{i}]",
             )
@@ -292,9 +297,9 @@ class FetchStage16bitBuilder(ICBuilderBase):
         # ---- Create output LED columns ----
         # Placed clear of both the last chained IC's (IR_High) real width and
         # the 16-wide ProgData[] row above/below it (whose rightmost switch
-        # reaches out to input_x + 15 * HORIZONTAL_GATE_SPACING).
+        # reaches out to input_x + 15 * prog_data_col_spacing).
         ic_chain_output_x = ir_high_x + max(HORIZONTAL_GATE_SPACING * 2, ir_high_handle.width + HORIZONTAL_GATE_SPACING)
-        prog_data_row_end = input_x + (15 * HORIZONTAL_GATE_SPACING)
+        prog_data_row_end = input_x + (15 * prog_data_col_spacing)
         # "ProgData[15]"'s label (fixed offset, doesn't scale with the row's
         # own spacing) reaches past a single HORIZONTAL_GATE_SPACING gap into
         # the output column, so this margin needs to be wider.

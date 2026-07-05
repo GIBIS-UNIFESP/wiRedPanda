@@ -125,10 +125,15 @@ class CPU16BitRISCBuilder(ICBuilderBase):
                 return False
             prog_addr_inputs.append(elem_id)
 
+        # ProgData[10..15]'s two-digit index makes the label long enough to
+        # reach into its neighbor at a standard 1x step on platforms that
+        # render the label a bit wider than the default Linux font (observed
+        # on Windows CI), so this row gets extra clearance.
+        prog_data_col_spacing = HORIZONTAL_GATE_SPACING + 32
         prog_data_inputs = []
         for i in range(16):
             elem_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), prog_data_y, f"ProgData[{i}]"
+                "InputSwitch", input_x + (i * prog_data_col_spacing), prog_data_y, f"ProgData[{i}]"
             )
             if elem_id is None:
                 return False

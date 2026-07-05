@@ -193,8 +193,11 @@ class ExecutionDatapathBuilder(ICBuilderBase):
 
         # Create Zero flag output LED (placed past the final AND gate, clear
         # of the intermediate NOR/AND columns). The "ZeroFlag_Final_AND" label
-        # is long enough to reach into a bare 1x step, so this step is 1.5x.
-        zero_sign_x = final_and_x + 1.5 * HORIZONTAL_GATE_SPACING
+        # is long enough that even a 1.5x step only clears it by a few px at
+        # the default Linux font -- not enough margin for platforms that
+        # render the label a bit wider (observed on Windows CI), so this step
+        # is 2x.
+        zero_sign_x = final_and_x + 2.0 * HORIZONTAL_GATE_SPACING
         zero_led_id = await self.create_element("Led", zero_sign_x, alu_y, "Zero")
         if zero_led_id is None:
             return False
