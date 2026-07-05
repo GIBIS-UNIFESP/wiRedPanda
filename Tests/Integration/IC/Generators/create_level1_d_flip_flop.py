@@ -57,12 +57,18 @@ class DFlipFlopBuilder(ICBuilderBase):
         input_x = 50.0
         not_clk_x = input_x + HORIZONTAL_GATE_SPACING
         master_not_x = not_clk_x + HORIZONTAL_GATE_SPACING
-        master_and_x = master_not_x + HORIZONTAL_GATE_SPACING
-        master_nor_x = master_and_x + HORIZONTAL_GATE_SPACING
+        # master_not_d/master_and_s and master_and_s/master_nor_q are all
+        # 12-char labels on the same rows; the standard 1x column step lets
+        # each one's label reach into its neighbor, so both of these steps
+        # get a wider gap.
+        master_and_x = master_not_x + HORIZONTAL_GATE_SPACING * 1.5
+        master_nor_x = master_and_x + HORIZONTAL_GATE_SPACING * 1.5
         slave_not_x = master_nor_x + HORIZONTAL_GATE_SPACING
         slave_and_x = slave_not_x + HORIZONTAL_GATE_SPACING
         slave_nor_x = slave_and_x + HORIZONTAL_GATE_SPACING
-        output_x = slave_nor_x + HORIZONTAL_GATE_SPACING
+        # "slave_nor_qbar" is a long label that reaches into the Q_bar LED at
+        # a standard 1x step, so widen this last column too.
+        output_x = slave_nor_x + HORIZONTAL_GATE_SPACING * 1.5
 
         top_y = 100.0
         bottom_y = top_y + VERTICAL_STAGE_SPACING

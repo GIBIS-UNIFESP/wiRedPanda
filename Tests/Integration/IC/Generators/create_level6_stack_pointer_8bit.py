@@ -101,28 +101,33 @@ class StackPointer8BitBuilder(ICBuilderBase):
         # it doesn't have to share x-space with anything else either.
         hold_x = ff_x + 8 * HORIZONTAL_GATE_SPACING
 
-        # Create constant high (InputVcc) for reset to 0xFF. This is a
-        # vertical COLUMN (fixed x, one InputVcc per row 100 + i *
-        # VERTICAL_STAGE_SPACING) -- its x must clear both the FF row's and
-        # the hold_mux row's *entire* 8-wide spans, not just sit a little
-        # past their start. The old vcc_x=800.0 fell inside the FF row's own
-        # span (550..1278), so Vcc[1] (the only index whose y landed close to
-        # the FF row's y=200) collided with it; after just widening hold_mux's
-        # step, vcc_x would similarly fall inside the hold_mux row's span.
+        # mux_x computed here (unchanged value: previously derived as
+        # vcc_x + HORIZONTAL_GATE_SPACING, i.e. hold_x + 9 steps) so the Vcc[]
+        # block below can align to each PriorityMux[i]'s own column.
+        mux_x = hold_x + 9 * HORIZONTAL_GATE_SPACING
+
+        # Create constant high (InputVcc) for reset to 0xFF. Each Vcc[i] sits
+        # directly above the PriorityMux[i] it feeds (same X as the mux row,
+        # one stage above its Y=200.0) instead of the old vertical COLUMN at a
+        # single fixed X -- that packed all 8 into one column spanning
+        # 100..828, so Vcc[7] was 628px below the mux row it connects to,
+        # forcing a long diagonal. Sharing each mux's own column (with Vcc
+        # above, never below, so its plain label can't run into the mux's own
+        # downward-rotated IC label) turns that into a short near-vertical
+        # wire. InputVcc is ElementGroup::StaticInput, not Input, so it's an
+        # internal element -- this can't affect the IC's exported port order.
         vcc_inputs = []
-        vcc_x = hold_x + 8 * HORIZONTAL_GATE_SPACING
         for i in range(8):
-            element_id = await self.create_element("InputVcc", vcc_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"Vcc[{i}]")
+            element_id = await self.create_element(
+                "InputVcc", mux_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"Vcc[{i}]"
+            )
             if element_id is None:
                 return False
             vcc_inputs.append(element_id)
 
         # Create 8x PriorityMux3to1 for priority: reset > load > push/pop.
-        # Another horizontal ROW (y=200.0) -- placed past the Vcc[] column
-        # rather than at the old mux_x=900.0, which fell inside the FF row's
-        # own span (causing SPMux[0] to collide with SP[3]/SP[4]).
+        # Another horizontal ROW (y=200.0), same X columns as Vcc[] above.
         priority_muxes = []
-        mux_x = vcc_x + HORIZONTAL_GATE_SPACING
         for i in range(8):
             element_id = await self.instantiate_ic(
                 "level2_priority_mux_3to1",

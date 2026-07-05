@@ -64,26 +64,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         # old mux_y - VERTICAL_STAGE_SPACING landed only ~46px below it, overlapping).
         mux_x = input_x
         not_load_y = addr_y + VERTICAL_STAGE_SPACING
-
-        # Control inputs: load, inc, reset, clock. Pushed well clear of
-        # reg_x/adder_x below so the dynamically-sized Register/Adder ICs
-        # can never reach this column regardless of their real width.
-        ctrl_x = input_x + 8 * HORIZONTAL_GATE_SPACING
-
-        load_id = await self.create_element("InputSwitch", ctrl_x, addr_y, "Load")
-        if load_id is None:
-            return False
-
-        inc_id = await self.create_element("InputSwitch", ctrl_x, not_load_y, "Inc")
-        if inc_id is None:
-            return False
-
         reset_y = not_load_y + VERTICAL_STAGE_SPACING
-        reset_id = await self.create_element("InputSwitch", ctrl_x, reset_y, "Reset")
-        if reset_id is None:
-            return False
-
-        await self.log("  ✓ Created control inputs (load, inc, reset)")
 
         # Instantiate level4_register_4bit a full stage below Reset, querying
         # its real rendered size so the mux layer below it (and the Adder
@@ -106,15 +87,40 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         adder_id = adder_handle.element_id
         await self.log("  ✓ Instantiated 4-bit Adder")
 
+        # Control inputs: load, inc, reset. Cleared past the Adder's real
+        # (port-count-grown) width -- querying it like adder_x does -- instead
+        # of a flat "8 columns over" guess, so the column sits close to the
+        # Register/Adder it drives rather than stranded far to the right.
+        ctrl_x = adder_x + max(HORIZONTAL_GATE_SPACING, adder_handle.width) + HORIZONTAL_GATE_SPACING
+
+        load_id = await self.create_element("InputSwitch", ctrl_x, addr_y, "Load")
+        if load_id is None:
+            return False
+
+        inc_id = await self.create_element("InputSwitch", ctrl_x, not_load_y, "Inc")
+        if inc_id is None:
+            return False
+
+        reset_id = await self.create_element("InputSwitch", ctrl_x, reset_y, "Reset")
+        if reset_id is None:
+            return False
+
+        await self.log("  ✓ Created control inputs (load, inc, reset)")
+
         # Create mux layer for load/increment control, mirroring the 8-bit PC
         # (F52: the old order put the inc mux last, so inc beat load).
         # Priority: load > increment > hold
         # Mux1[i]: Sum (when inc AND NOT load) vs hold (register Q)
         # Mux2[i]: loadValue (when load) vs Mux1[i]
         #
-        # Clear the register's and adder's real (port-count-grown) height,
-        # not just a flat stage constant -- both ICs sit at reg_y above.
-        mux_y = reg_y + max(VERTICAL_STAGE_SPACING, reg_handle.height, adder_handle.height)
+        # Clear the register's and adder's real (port-count-grown) height, not
+        # just a flat stage constant -- both ICs sit at reg_y above. IC labels
+        # render rotated 90 degrees alongside the chip body (see IC::IC()), so a
+        # long IC label's true on-screen reach below the chip tracks the
+        # label's TEXT WIDTH, not the chip's own boundingRect height -- add one
+        # more full stage on top of the real IC height so a long label like
+        # "Register4bit" can never reach down into the mux row below it.
+        mux_y = reg_y + max(VERTICAL_STAGE_SPACING, reg_handle.height, adder_handle.height) + VERTICAL_STAGE_SPACING
 
         # Control: AND(inc, NOT(load)) gates the increment path
         not_load_id = await self.create_element("Not", mux_x, not_load_y, "NotLoad")
@@ -134,13 +140,18 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         if not await self.connect(not_load_id, and_inc_id, target_port=1):
             return False
 
+        # Mux1_Inc[]/Mux2_Load[] get their own (wider) column pitch: a label
+        # like "Mux2_Load[0]" renders ~109px wide, just past the standard
+        # 104px gate pitch, which visually collided with its same-row neighbor.
+        mux_col_spacing = 130.0
+
         mux1_outputs = []
         mux2_outputs = []
 
         for i in range(4):
             # Mux1: Select between register output (hold, Sel=0) and adder Sum
             # (increment, Sel=1), gated so load wins over inc
-            mux1_id = await self.create_element("Mux", mux_x + (i * HORIZONTAL_GATE_SPACING), mux_y, f"Mux1_Inc[{i}]")
+            mux1_id = await self.create_element("Mux", mux_x + (i * mux_col_spacing), mux_y, f"Mux1_Inc[{i}]")
             if mux1_id is None:
                 return False
             mux1_outputs.append(mux1_id)
@@ -159,7 +170,7 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
 
             # Mux2: Select between Mux1 output (Sel=0) and loadValue (load, Sel=1)
             mux2_id = await self.create_element(
-                "Mux", mux_x + (i * HORIZONTAL_GATE_SPACING), mux_y + VERTICAL_STAGE_SPACING, f"Mux2_Load[{i}]"
+                "Mux", mux_x + (i * mux_col_spacing), mux_y + VERTICAL_STAGE_SPACING, f"Mux2_Load[{i}]"
             )
             if mux2_id is None:
                 return False

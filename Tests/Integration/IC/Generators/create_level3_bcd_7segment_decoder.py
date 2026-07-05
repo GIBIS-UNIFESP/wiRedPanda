@@ -83,13 +83,22 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
             await self.log(f"  ✓ Created segment {segment} output (id={element_id})")
 
         # NOT gate positions
-        not_gate_x = input_x + HORIZONTAL_GATE_SPACING
+        # A full extra stage of horizontal clearance (2 * HORIZONTAL_GATE_SPACING
+        # instead of 1) is inserted here so that or_gate_x below -- 3 stages right
+        # of not_gate_x -- no longer lands on BCD[3]'s x. At only 1 stage of
+        # clearance, or_gate_x == BCD[3]'s x exactly, and the OR gates for
+        # segments needing up to 8 inputs grow tall enough (up to ~122px) that
+        # their body reaches up into BCD[3]'s label. The extra stage shifts the
+        # whole not/digit-detector/OR column chain right by one column, so it now
+        # aliases BCD[2]/BCD[3]/(no BCD column) respectively instead of
+        # BCD[1]/BCD[2]/BCD[3] -- the per-column row-push below still clears
+        # each gate row from whichever BCD input row sits directly above it.
+        not_gate_x = input_x + (2 * HORIZONTAL_GATE_SPACING)
 
         # Create NOT gates for inverted inputs
         # Row 0 of this column would otherwise land at input_y, exactly where the
-        # BCD[1] input switch sits (not_gate_x == BCD[1]'s x, since both are
-        # input_x + 1 * HORIZONTAL_GATE_SPACING) -- push the whole column down by
-        # one stage so it clears the BCD input row above it.
+        # BCD[2] input switch sits (not_gate_x == BCD[2]'s x) -- push the whole
+        # column down by one stage so it clears the BCD input row above it.
         not_gates = []
         for i in range(4):
             element_id = await self.create_element(
@@ -123,7 +132,7 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
 
         # AND gate (digit detector) positions - arrange 10 detectors vertically or in grid
         # Same reasoning as the NOT-gate column: digit_detector_x coincides with
-        # BCD[2]'s x, so row 0 needs to clear the BCD input row above it.
+        # BCD[3]'s x, so row 0 needs to clear the BCD input row above it.
         digit_detector_x = not_gate_x + HORIZONTAL_GATE_SPACING
         for digit, pattern in enumerate(digit_patterns):
             # Stack digit detectors vertically
@@ -167,8 +176,10 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
         # stock 64px once it has more than 4 input ports (up to ~122px tall at
         # 8 inputs) -- a flat VERTICAL_STAGE_SPACING between rows isn't enough
         # for two adjacent wide gates, so double it for this column. Row 0 is
-        # also pushed down one stage (like the NOT/AND columns above) since
-        # or_gate_x otherwise coincides with BCD[3]'s x at output_y.
+        # also pushed down one stage for extra clearance from the BCD input row
+        # above, on top of the extra horizontal stage added to the gate-pipeline
+        # columns (see not_gate_x) that keeps or_gate_x clear of every BCD
+        # input's x.
         or_row_spacing = 2 * VERTICAL_STAGE_SPACING
         or_row_y0 = output_y + VERTICAL_STAGE_SPACING
 

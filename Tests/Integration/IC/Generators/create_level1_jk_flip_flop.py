@@ -73,12 +73,17 @@ class JKFlipFlopBuilder(ICBuilderBase):
         input_x = 50.0
         not_clk_x = input_x + HORIZONTAL_GATE_SPACING
         master_and_x = not_clk_x + HORIZONTAL_GATE_SPACING
-        master_gate_x = master_and_x + HORIZONTAL_GATE_SPACING
-        master_nor_x = master_gate_x + HORIZONTAL_GATE_SPACING
+        # master_and_s/master_gate_s and master_gate_s/master_nor_q labels
+        # are long enough that the standard 1x column step lets each one
+        # reach into its neighbor, so both of these steps get a wider gap.
+        master_gate_x = master_and_x + HORIZONTAL_GATE_SPACING * 1.5
+        master_nor_x = master_gate_x + HORIZONTAL_GATE_SPACING * 1.5
         slave_and_x = master_nor_x + HORIZONTAL_GATE_SPACING
         slave_gate_x = slave_and_x + HORIZONTAL_GATE_SPACING
         slave_nor_x = slave_gate_x + HORIZONTAL_GATE_SPACING
-        output_x = slave_nor_x + HORIZONTAL_GATE_SPACING
+        # "slave_nor_qbar" is a long label that reaches into the Q_bar LED at
+        # a standard 1x step, so widen this last column too.
+        output_x = slave_nor_x + HORIZONTAL_GATE_SPACING * 1.5
 
         row1_y = 100.0  # Top row: J, master S, gate S, NOR Q, slave S, gate S, NOR Q, Q output
         row2_y = (

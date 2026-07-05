@@ -76,38 +76,10 @@ class RAM8x1Builder(ICBuilderBase):
             return False
         await self.log("  ✓ Created DataIn")
 
-        # WriteEnable input
-        write_en_id = await self.create_element(
-            "InputSwitch", 50.0 + (address_bits + 1) * HORIZONTAL_GATE_SPACING, input_y, "WriteEnable"
-        )
-        if write_en_id is None:
-            return False
-        await self.log("  ✓ Created WriteEnable")
-
-        # Clock input
-        clock_id = await self.create_element(
-            "InputSwitch", 50.0 + (address_bits + 2) * HORIZONTAL_GATE_SPACING, input_y, "Clock"
-        )
-        if clock_id is None:
-            return False
-        await self.log("  ✓ Created Clock")
-
-        # Reset input (async clear of all cells, F54). Active-HIGH at the boundary;
-        # inverted to drive each cell's active-low ~Clear.
-        reset_id = await self.create_element(
-            "InputSwitch", 50.0 + (address_bits + 3) * HORIZONTAL_GATE_SPACING, input_y, "Reset"
-        )
-        if reset_id is None:
-            return False
-        await self.log("  ✓ Created Reset")
-
-        not_reset_id = await self.create_element(
-            "Not", 50.0 + (address_bits + 4) * HORIZONTAL_GATE_SPACING, input_y, "NOT_Reset"
-        )
-        if not_reset_id is None:
-            return False
-        if not await self.connect(reset_id, not_reset_id):
-            return False
+        # WriteEnable, Clock and Reset are created further below, once the storage
+        # array's real vertical extent is known (see "Create Control Inputs") -- they
+        # fan out to every cell, so they're placed nearer the array's centre instead of
+        # this top row, and that placement needs the array's post-clearance geometry.
 
         # ========== Create Decoder IC Instance ==========
         # Instantiated early (with its real measured size) so the write-control
@@ -122,6 +94,26 @@ class RAM8x1Builder(ICBuilderBase):
         decoder_ic = decoder_handle.element_id
         await self.log("  ✓ Loaded decoder IC")
 
+        # A decoder fans its output ports out symmetrically around its own vertical
+        # centre (GraphicElement::updatePortsProperties); with enough outputs (one per
+        # storage cell), the real bounding box measured above reaches above the decoder's
+        # own placement position far enough to clip the Address[] input labels sitting
+        # right above it. React to the *measured* height (not a guessed port-layout
+        # formula) by nudging the decoder down to clear it, and carrying the row grid
+        # down with it so everything anchored to grid_start_y stays aligned to the decoder.
+        decoder_overshoot = max(0.0, (decoder_handle.height - 64.0) / 2.0)
+        if decoder_overshoot > 0.0:
+            corrected_grid_start_y = grid_start_y + decoder_overshoot
+            move_response = await self.mcp.send_command(
+                "move_element", {"element_id": decoder_ic, "x": decoder_x, "y": corrected_grid_start_y}
+            )
+            if not move_response.success:
+                self.log_error("reposition AddrDecoder for label clearance")
+                return False
+            new_position = move_response.result.get("new_position", {}) if move_response.result else {}
+            grid_start_y = new_position.get("y", corrected_grid_start_y)
+            await self.log(f"  ✓ Repositioned AddrDecoder down {decoder_overshoot:.1f}px for label clearance")
+
         # Connect address inputs to decoder
         for i in range(address_bits):
             if not await self.connect(address_inputs[i], decoder_ic, target_port_label=f"addr[{i}]"):
@@ -132,6 +124,55 @@ class RAM8x1Builder(ICBuilderBase):
         write_control_x = decoder_x + max(HORIZONTAL_GATE_SPACING, decoder_handle.width)
         data_mux_x = write_control_x + HORIZONTAL_GATE_SPACING
         storage_ff_x = data_mux_x + HORIZONTAL_GATE_SPACING
+
+        # ========== Create Control Inputs (WriteEnable, Clock, Reset) ==========
+        # WriteEnable/Clock/Reset each fan out to every one of the num_cells rows below
+        # (write_ctrl[]/storage[] all the way down the column), so parking them on the
+        # top input row -- as far as possible from most of the rows they drive -- forces
+        # long diagonal wires to every cell but the first. Stack them instead in a
+        # dedicated column left of the decoder (below the decoder/Address[] row, so this
+        # doesn't reopen the label-clearance issue above), centred on the array's own
+        # vertical midpoint so the average wire to every row is shorter.
+        #
+        # This column must clear the decoder's own footprint (which starts at
+        # decoder_x and can extend a few px left of it -- see decoder_handle above), so
+        # it stays flush with the input row's leftmost column (Address[0]/DataIn's x=50)
+        # rather than decoder_x.
+        control_x = 50.0
+        array_span = (num_cells - 1) * VERTICAL_STAGE_SPACING
+        array_center_y = grid_start_y + (array_span / 2.0) + 32.0
+        control_block_top = array_center_y - 1.5 * VERTICAL_STAGE_SPACING
+
+        # WriteEnable input
+        write_en_id = await self.create_element("InputSwitch", control_x, control_block_top, "WriteEnable")
+        if write_en_id is None:
+            return False
+        await self.log("  ✓ Created WriteEnable")
+
+        # Clock input
+        clock_id = await self.create_element(
+            "InputSwitch", control_x, control_block_top + VERTICAL_STAGE_SPACING, "Clock"
+        )
+        if clock_id is None:
+            return False
+        await self.log("  ✓ Created Clock")
+
+        # Reset input (async clear of all cells, F54). Active-HIGH at the boundary;
+        # inverted to drive each cell's active-low ~Clear.
+        reset_id = await self.create_element(
+            "InputSwitch", control_x, control_block_top + 2 * VERTICAL_STAGE_SPACING, "Reset"
+        )
+        if reset_id is None:
+            return False
+        await self.log("  ✓ Created Reset")
+
+        not_reset_id = await self.create_element(
+            "Not", control_x, control_block_top + 3 * VERTICAL_STAGE_SPACING, "NOT_Reset"
+        )
+        if not_reset_id is None:
+            return False
+        if not await self.connect(reset_id, not_reset_id):
+            return False
 
         # ========== Create Write Control AND Gates ==========
         write_control_ands = []

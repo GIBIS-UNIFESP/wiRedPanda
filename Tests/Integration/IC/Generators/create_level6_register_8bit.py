@@ -37,12 +37,22 @@ class Register8BitBuilder(ICBuilderBase):
         if not await self.create_new_circuit():
             return False
 
-        # Create 8-bit Data input switches (vertically stacked)
-        data_inputs = []
+        # Create 8-bit Data input switches. Data[0-2] stay vertically stacked
+        # alongside Clock/WriteEnable/Reset (same column, same rows) -- Y order
+        # among all boundary inputs must stay exactly as-is, since IC port order
+        # is derived from a Y-sort and this IC's exported port order is a golden
+        # (level6_register_8bit.sv). Data[3-7] have no shared row to preserve, so
+        # instead of continuing straight down input_x (a separate block far below
+        # the register row that forced long diagonal wires up to Reg[3..7]), each
+        # sits in its own X column directly under the Reg[bit]/Q[bit] it feeds --
+        # same Y (so port order is untouched), much shorter/near-vertical wire.
         input_x = 50.0
+        reg_x = input_x + 2 * HORIZONTAL_GATE_SPACING
+        data_inputs = []
         for i in range(8):
+            data_x = input_x if i < 3 else reg_x + i * HORIZONTAL_GATE_SPACING
             element_id = await self.create_element(
-                "InputSwitch", input_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"Data[{i}]"
+                "InputSwitch", data_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"Data[{i}]"
             )
             if element_id is None:
                 return False
@@ -66,7 +76,6 @@ class Register8BitBuilder(ICBuilderBase):
 
         # Instantiate 1-bit Register IC instances
         registers = []
-        reg_x = ctrl_x + HORIZONTAL_GATE_SPACING
         reg_y = 100.0
         for bit in range(8):
             reg_id = await self.instantiate_ic(
@@ -98,8 +107,14 @@ class Register8BitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created and connected 8 1-bit Registers in parallel")
 
-        # Create output LEDs for Q bits
-        output_y = reg_y + VERTICAL_STAGE_SPACING
+        # Create output LEDs for Q bits. Reg[i]'s label is drawn IC-style (rotated
+        # alongside the chip body) and its rendered height grows with the embedded
+        # 1-bit Register's own port count, so a flat single-step gap isn't enough
+        # clearance -- the label text reached down into Q[i]. An extra half-step
+        # clears it (output Y order among Q[0..7] is unaffected: they all move
+        # down by the same amount, so their relative order -- and X tiebreak -- is
+        # unchanged).
+        output_y = reg_y + 1.5 * VERTICAL_STAGE_SPACING
         for bit in range(8):
             q_led = await self.create_element("Led", reg_x + bit * HORIZONTAL_GATE_SPACING, output_y, f"Q[{bit}]")
             if q_led is None:
