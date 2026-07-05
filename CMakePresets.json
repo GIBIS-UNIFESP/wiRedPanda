@@ -101,6 +101,7 @@
         },
         {
             "name": "macos-universal",
+            "hidden": true,
             "displayName": "macOS Universal",
             "description": "Release build for macOS with universal binaries (x86_64 + arm64)",
             "inherits": "release",
@@ -218,6 +219,7 @@
         },
         {
             "name": "macos-universal",
+            "hidden": true,
             "displayName": "Build macOS Universal",
             "configurePreset": "macos-universal"
         },
