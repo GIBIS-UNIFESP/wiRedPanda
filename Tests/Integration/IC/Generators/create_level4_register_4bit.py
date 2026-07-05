@@ -52,7 +52,10 @@ class RegisterBuilder(ICBuilderBase):
         if not await self.create_new_circuit():
             return False
 
-        # Create input controls
+        # Create input controls. Each control/data switch gets its own full
+        # VERTICAL_STAGE_SPACING slot (order-preserving: Clock < Enable <
+        # Reset < D0-D3) -- Reset used to sit only half a slot below Enable,
+        # which overlapped both Enable and D0.
         input_x = 50.0
         clk_id = await self.create_element("InputSwitch", input_x, 100.0, "Clock")
         if clk_id is None:
@@ -64,7 +67,7 @@ class RegisterBuilder(ICBuilderBase):
             return False
         await self.log(f"  ✓ Created input EN (id={en_id})")
 
-        reset_id = await self.create_element("InputSwitch", input_x, 100.0 + (1.5 * VERTICAL_STAGE_SPACING), "Reset")
+        reset_id = await self.create_element("InputSwitch", input_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "Reset")
         if reset_id is None:
             return False
         await self.log(f"  ✓ Created input Reset (id={reset_id})")
@@ -72,26 +75,34 @@ class RegisterBuilder(ICBuilderBase):
         # Create data inputs (4-bit)
         data_in_ids = []
         for i in range(4):
-            d_id = await self.create_element("InputSwitch", input_x, 100.0 + (2 + i) * VERTICAL_STAGE_SPACING, f"D{i}")
+            d_id = await self.create_element("InputSwitch", input_x, 100.0 + (3 + i) * VERTICAL_STAGE_SPACING, f"D{i}")
             if d_id is None:
                 return False
             data_in_ids.append(d_id)
             await self.log(f"  ✓ Created input D{i} (id={d_id})")
 
-        # Instantiate 4-bit Bus Multiplexer IC (replaces manual AND/OR gates)
-        mux_x = input_x + HORIZONTAL_GATE_SPACING
-        mux_ic_id = await self.instantiate_ic(
+        # NOT gates (EN/Reset inversion) share a column between the input
+        # switches and the BusMux IC -- previously NOT_EN was created at the
+        # exact same position as BusMux_LoadHold itself.
+        not_x = input_x + HORIZONTAL_GATE_SPACING
+
+        # Instantiate 4-bit Bus Multiplexer IC (replaces manual AND/OR gates).
+        # Measured with its real size (72x64+, wider than a stock element) so
+        # dff_x can clear its actual footprint instead of a flat constant.
+        mux_x = not_x + HORIZONTAL_GATE_SPACING
+        mux_handle = await self.instantiate_ic_with_size(
             "level4_bus_mux_4bit", mux_x, 100.0 + VERTICAL_STAGE_SPACING, "BusMux_LoadHold"
         )
-        if mux_ic_id is None:
+        if mux_handle is None:
             return False
+        mux_ic_id = mux_handle.element_id
         await self.log(f"  ✓ Instantiated BusMux_LoadHold (id={mux_ic_id})")
 
         # Create D flip-flops (4-bit)
         dff_ids = []
-        dff_x = mux_x + HORIZONTAL_GATE_SPACING
+        dff_x = mux_x + max(HORIZONTAL_GATE_SPACING, mux_handle.width)
         for i in range(4):
-            ff_id = await self.create_element("DFlipFlop", dff_x, 100.0 + (2 + i) * VERTICAL_STAGE_SPACING, f"FF{i}")
+            ff_id = await self.create_element("DFlipFlop", dff_x, 100.0 + (3 + i) * VERTICAL_STAGE_SPACING, f"FF{i}")
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -101,7 +112,7 @@ class RegisterBuilder(ICBuilderBase):
         output_led_ids = []
         output_x = dff_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            led_id = await self.create_element("Led", output_x, 100.0 + (2 + i) * VERTICAL_STAGE_SPACING, f"Q{i}")
+            led_id = await self.create_element("Led", output_x, 100.0 + (3 + i) * VERTICAL_STAGE_SPACING, f"Q{i}")
             if led_id is None:
                 return False
             output_led_ids.append(led_id)
@@ -119,10 +130,9 @@ class RegisterBuilder(ICBuilderBase):
                 return False
 
         # ========== Async reset: Reset (active HIGH) -> NOT -> ~Clear ==========
-        # The level3_register_1bit pattern (F52).
-        not_reset_id = await self.create_element(
-            "Not", input_x + (1.5 * HORIZONTAL_GATE_SPACING), 100.0 + (1.5 * VERTICAL_STAGE_SPACING), "NOT_Reset"
-        )
+        # The level3_register_1bit pattern (F52). Lives in the shared NOT
+        # column (not_x), aligned with Reset's own row.
+        not_reset_id = await self.create_element("Not", not_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "NOT_Reset")
         if not_reset_id is None:
             return False
 
@@ -154,10 +164,10 @@ class RegisterBuilder(ICBuilderBase):
         # ========== Invert EN and connect to mux select ==========
         # Bus mux logic: Sel=0 → In0 (load), Sel=1 → In1 (hold)
         # We need: EN=1 → load, EN=0 → hold
-        # So we invert EN: Sel = NOT(EN)
-        not_gate_id = await self.create_element(
-            "Not", input_x + HORIZONTAL_GATE_SPACING, 100.0 + VERTICAL_STAGE_SPACING, "NOT_EN"
-        )
+        # So we invert EN: Sel = NOT(EN). Lives in the shared NOT column
+        # (not_x), aligned with Enable's own row -- previously it sat exactly
+        # where BusMux_LoadHold is instantiated.
+        not_gate_id = await self.create_element("Not", not_x, 100.0 + VERTICAL_STAGE_SPACING, "NOT_EN")
         if not_gate_id is None:
             return False
         await self.log(f"  ✓ Created NOT gate for EN inversion (id={not_gate_id})")

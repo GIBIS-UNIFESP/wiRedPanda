@@ -55,8 +55,17 @@ Usage:
 
 import asyncio
 
-from element_spacing import HORIZONTAL_GATE_SPACING
+from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
+from ic_builder_helpers import build_cpu_register_programming_block
+
+# Layout is organized into vertically-stacked bands, each on its own row (or
+# pair of rows), separated by a fixed buffer far larger than any embedded
+# IC's real height (the tallest, level8_decode_stage, is ~602px) so no
+# height query can ever bridge the gap between two bands. Within a band,
+# elements are chained left-to-right using their real width (queried via
+# instantiate_ic_with_size) where the element is an embedded IC.
+BAND_GAP = 1000.0
 
 
 class CPU8BitMultiCycleBuilder(ICBuilderBase):
@@ -68,155 +77,166 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         if not await self.create_new_circuit():
             return False
 
-        # Layout positions
-        stage_x_offsets = [50.0, 300.0, 550.0, 800.0]
-        stage_y = 100.0
-        counter_y = 50.0
-        reg_file_y = 500.0
+        base_x = 50.0
 
-        # ---- Create Clock and Reset inputs ----
-        control_x = 50.0
-        control_y = counter_y
+        # ---- Band Y anchors (top to bottom) ----
+        y_control = 100.0
+        y_logic = y_control + BAND_GAP
+        y_stages = y_logic + BAND_GAP
+        y_regfile = y_stages + BAND_GAP
+        y_prog = y_regfile + BAND_GAP
+        y_regprog = y_prog + BAND_GAP
+        y_output = y_regprog + BAND_GAP
 
-        clock_id = await self.create_element("Clock", control_x, control_y, "Clock")
+        # ==== Band: Clock/Reset/Gnd (boundary control inputs) ====
+        clock_id = await self.create_element("Clock", base_x, y_control, "Clock")
         if clock_id is None:
             return False
 
-        reset_id = await self.create_element("InputSwitch", control_x + HORIZONTAL_GATE_SPACING, control_y, "Reset")
+        reset_id = await self.create_element("InputSwitch", base_x + HORIZONTAL_GATE_SPACING, y_control, "Reset")
         if reset_id is None:
             return False
 
-        await self.log("  ✓ Created Clock and Reset inputs")
-
-        # ---- Create instruction memory programming inputs ----
-        # Tests hold Reset (which freezes the cycle counter at phase 0, so the
-        # fetch stage's gated clock passes the full clock) and pulse the clock to
-        # write instruction memory at ProgAddr.
-        prog_x = 50.0
-        prog_y = control_y + 600.0
-
-        prog_addr_inputs = []
-        for i in range(8):
-            pid = await self.create_element(
-                "InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), prog_y, f"ProgAddr[{i}]"
-            )
-            if pid is None:
-                return False
-            prog_addr_inputs.append(pid)
-
-        prog_data_inputs = []
-        for i in range(8):
-            pid = await self.create_element(
-                "InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), prog_y + 50.0, f"ProgData[{i}]"
-            )
-            if pid is None:
-                return False
-            prog_data_inputs.append(pid)
-
-        prog_write_id = await self.create_element(
-            "InputSwitch", prog_x + (8 * HORIZONTAL_GATE_SPACING), prog_y, "ProgWrite"
-        )
-        if prog_write_id is None:
+        gnd_id = await self.create_element("InputGnd", base_x + (2 * HORIZONTAL_GATE_SPACING), y_control, "Gnd")
+        if gnd_id is None:
             return False
 
-        await self.log("  ✓ Created instruction memory programming inputs")
+        await self.log("  ✓ Created Clock, Reset, and Gnd inputs")
 
-        # ---- Create register file programming inputs ----
-        reg_prog_y = prog_y + 150.0
-
-        reg_prog_addr_inputs = []
-        for i in range(3):
-            pid = await self.create_element(
-                "InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), reg_prog_y, f"RegProgAddr[{i}]"
-            )
-            if pid is None:
-                return False
-            reg_prog_addr_inputs.append(pid)
-
-        reg_prog_data_inputs = []
-        for i in range(8):
-            pid = await self.create_element(
-                "InputSwitch", prog_x + (i * HORIZONTAL_GATE_SPACING), reg_prog_y + 50.0, f"RegProgData[{i}]"
-            )
-            if pid is None:
-                return False
-            reg_prog_data_inputs.append(pid)
-
-        reg_prog_write_id = await self.create_element(
-            "InputSwitch", prog_x + (8 * HORIZONTAL_GATE_SPACING), reg_prog_y, "RegProgWrite"
-        )
-        if reg_prog_write_id is None:
+        # ==== Band: internal control/counter logic (not boundary elements —
+        # order among them doesn't affect the IC's port order) ====
+        reset_not_id = await self.create_element("Not", base_x, y_logic, "ResetNot")
+        if reset_not_id is None:
             return False
 
-        await self.log("  ✓ Created register file programming inputs")
-
-        # ---- Create 2-bit Cycle Counter (using 2 D flip-flops) ----
-        # This counter sequences through 4 cycles: 00->01->10->11->00
         counter_ids = []
         for i in range(2):
             ff_id = await self.create_element(
-                "DFlipFlop", 150.0 + (i * HORIZONTAL_GATE_SPACING / 2), counter_y, f"CycleFF[{i}]"
+                "DFlipFlop", base_x + ((1 + i) * HORIZONTAL_GATE_SPACING), y_logic, f"CycleFF[{i}]"
             )
             if ff_id is None:
                 return False
             counter_ids.append(ff_id)
 
-        await self.log("  ✓ Created 2-bit cycle counter")
-
-        # ---- Create Gnd for default control signals (held-low inputs / mux In0) ----
-        gnd_id = await self.create_element("InputGnd", 150.0, stage_y - 50.0, "Gnd")
-        if gnd_id is None:
+        not_q0_id = await self.create_element("Not", base_x + (3 * HORIZONTAL_GATE_SPACING), y_logic, "NotQ0")
+        if not_q0_id is None:
+            return False
+        not_q1_id = await self.create_element("Not", base_x + (4 * HORIZONTAL_GATE_SPACING), y_logic, "NotQ1")
+        if not_q1_id is None:
             return False
 
-        await self.log("  ✓ Created Gnd for control signals")
-
-        # ---- Instantiate Fetch Stage ----
-        fetch_id = await self.instantiate_ic("level8_fetch_stage", stage_x_offsets[0], stage_y, "Fetch")
-        if fetch_id is None:
-            return False
-        await self.log("  ✓ Instantiated Fetch Stage")
-
-        # ---- Instantiate Decode Stage ----
-        decode_id = await self.instantiate_ic("level8_decode_stage", stage_x_offsets[1], stage_y, "Decode")
-        if decode_id is None:
-            return False
-        await self.log("  ✓ Instantiated Decode Stage")
-
-        # ---- Instantiate Execute Stage ----
-        execute_id = await self.instantiate_ic("level8_execute_stage", stage_x_offsets[2], stage_y, "Execute")
-        if execute_id is None:
-            return False
-        await self.log("  ✓ Instantiated Execute Stage")
-
-        # ---- Instantiate Memory Stage ----
-        memory_id = await self.instantiate_ic("level8_memory_stage", stage_x_offsets[3], stage_y, "Memory")
-        if memory_id is None:
-            return False
-        await self.log("  ✓ Instantiated Memory Stage")
-
-        # ---- Instantiate Register File ----
-        regfile_id = await self.instantiate_ic("level6_register_file_8x8", 425.0, reg_file_y, "RegFile")
-        if regfile_id is None:
-            return False
-        await self.log("  ✓ Instantiated Register File")
-
-        # ---- Instantiate register file programming muxes (mirrors single-cycle) ----
-        # Write data mux: In0=Memory DataOut (normal writeback), In1=RegProgData
-        write_data_mux_id = await self.instantiate_ic("level4_bus_mux_8bit", 425.0, reg_file_y - 150.0, "WriteDataMux")
-        if write_data_mux_id is None:
+        phase0_id = await self.create_element("And", base_x + (5 * HORIZONTAL_GATE_SPACING), y_logic, "Phase0")
+        if phase0_id is None:
             return False
 
-        # Write address muxes (3 individual Mux elements for the 3-bit address)
-        write_addr_mux_ids = []
-        for i in range(3):
-            mux_id = await self.create_element(
-                "Mux", 350.0 + (i * HORIZONTAL_GATE_SPACING), reg_file_y - 150.0, f"WriteAddrMux{i}"
-            )
-            if mux_id is None:
+        phase3_id = await self.create_element("And", base_x + (6 * HORIZONTAL_GATE_SPACING), y_logic, "Phase3")
+        if phase3_id is None:
+            return False
+
+        we_and_id = await self.create_element("And", base_x + (7 * HORIZONTAL_GATE_SPACING), y_logic, "WriteBackEnable")
+        if we_and_id is None:
+            return False
+
+        we_or_id = await self.create_element("Or", base_x + (8 * HORIZONTAL_GATE_SPACING), y_logic, "WriteEnableOR")
+        if we_or_id is None:
+            return False
+
+        xor_id = await self.create_element("Xor", base_x + (9 * HORIZONTAL_GATE_SPACING), y_logic, "XorFF")
+        if xor_id is None:
+            return False
+
+        await self.log("  ✓ Created cycle counter and phase-decode logic")
+
+        # ==== Band: pipeline stage ICs, chained left to right by real width ====
+        fetch_x = base_x
+        fetch_handle = await self.instantiate_ic_with_size("level8_fetch_stage", fetch_x, y_stages, "Fetch")
+        if fetch_handle is None:
+            return False
+        fetch_id = fetch_handle.element_id
+
+        decode_x = fetch_x + max(HORIZONTAL_GATE_SPACING * 2, fetch_handle.width + HORIZONTAL_GATE_SPACING)
+        decode_handle = await self.instantiate_ic_with_size("level8_decode_stage", decode_x, y_stages, "Decode")
+        if decode_handle is None:
+            return False
+        decode_id = decode_handle.element_id
+
+        execute_x = decode_x + max(HORIZONTAL_GATE_SPACING * 2, decode_handle.width + HORIZONTAL_GATE_SPACING)
+        execute_handle = await self.instantiate_ic_with_size("level8_execute_stage", execute_x, y_stages, "Execute")
+        if execute_handle is None:
+            return False
+        execute_id = execute_handle.element_id
+
+        memory_x = execute_x + max(HORIZONTAL_GATE_SPACING * 2, execute_handle.width + HORIZONTAL_GATE_SPACING)
+        memory_handle = await self.instantiate_ic_with_size("level8_memory_stage", memory_x, y_stages, "Memory")
+        if memory_handle is None:
+            return False
+        memory_id = memory_handle.element_id
+
+        memwrite_gate_x = memory_x + max(HORIZONTAL_GATE_SPACING * 2, memory_handle.width + HORIZONTAL_GATE_SPACING)
+        memwrite_gate_id = await self.create_element("And", memwrite_gate_x, y_stages, "MemWriteGate")
+        if memwrite_gate_id is None:
+            return False
+
+        await self.log("  ✓ Instantiated Fetch, Decode, Execute, and Memory stages")
+
+        # ==== Band: register file + its programming muxes, instruction/register
+        # programming inputs (shared with the single-cycle CPU generator) ====
+        block = await build_cpu_register_programming_block(self, base_x, y_regfile, y_prog, y_regprog)
+        if block is None:
+            return False
+        regfile_id = block.regfile_id
+        write_data_mux_id = block.write_data_mux_id
+        write_addr_mux_ids = block.write_addr_mux_ids
+        prog_addr_inputs = block.prog_addr_inputs
+        prog_data_inputs = block.prog_data_inputs
+        prog_write_id = block.prog_write_id
+        reg_prog_addr_inputs = block.reg_prog_addr_inputs
+        reg_prog_data_inputs = block.reg_prog_data_inputs
+        reg_prog_write_id = block.reg_prog_write_id
+
+        # ==== Band: output LEDs (four columns) ====
+        pc_out_x = base_x
+        result_out_x = pc_out_x + HORIZONTAL_GATE_SPACING
+        cycle_out_x = result_out_x + HORIZONTAL_GATE_SPACING
+        instr_out_x = cycle_out_x + HORIZONTAL_GATE_SPACING
+
+        pc_led_ids = []
+        for i in range(8):
+            led_id = await self.create_element("Led", pc_out_x, y_output + (i * VERTICAL_STAGE_SPACING), f"PC[{i}]")
+            if led_id is None:
                 return False
-            write_addr_mux_ids.append(mux_id)
+            pc_led_ids.append(led_id)
 
-        await self.log("  ✓ Instantiated register file programming muxes")
+        result_led_ids = []
+        for i in range(8):
+            led_id = await self.create_element(
+                "Led", result_out_x, y_output + (i * VERTICAL_STAGE_SPACING), f"Result[{i}]"
+            )
+            if led_id is None:
+                return False
+            result_led_ids.append(led_id)
+
+        cycle_led_ids = []
+        for i in range(2):
+            led_id = await self.create_element(
+                "Led", cycle_out_x, y_output + (i * VERTICAL_STAGE_SPACING), f"CycleCounter[{i}]"
+            )
+            if led_id is None:
+                return False
+            cycle_led_ids.append(led_id)
+
+        instr_led_ids = []
+        for i in range(8):
+            led_id = await self.create_element(
+                "Led", instr_out_x, y_output + (i * VERTICAL_STAGE_SPACING), f"Instruction[{i}]"
+            )
+            if led_id is None:
+                return False
+            instr_led_ids.append(led_id)
+
+        await self.log("  ✓ Created output LEDs")
+
+        # ================= Connections ================= #
 
         # ---- Connect Clock to cycle counter flip-flops ----
         for ff_id in counter_ids:
@@ -233,32 +253,18 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         # edges — diverging from the cycle-based engine (e.g. an extra PC
         # increment). Clock enables are glitch-free: the enable is just a D-side
         # signal sampled at the (single, real) clock edge.
-
-        # Counter-bit inverters (also feed the FF0 toggle further below).
-        not_q0_id = await self.create_element("Not", 200.0, counter_y, "NotQ0")
-        if not_q0_id is None:
-            return False
-        not_q1_id = await self.create_element("Not", 250.0, counter_y, "NotQ1")
-        if not_q1_id is None:
-            return False
         if not await self.connect(counter_ids[0], not_q0_id, source_port_label="Q"):
             return False
         if not await self.connect(counter_ids[1], not_q1_id, source_port_label="Q"):
             return False
 
         # Phase 0 (Fetch) enable = NOT Q1 AND NOT Q0
-        phase0_id = await self.create_element("And", 300.0, counter_y, "Phase0")
-        if phase0_id is None:
-            return False
         if not await self.connect(not_q1_id, phase0_id, target_port=0):
             return False
         if not await self.connect(not_q0_id, phase0_id, target_port=1):
             return False
 
         # Phase 3 (Memory write / register write-back) enable = Q1 AND Q0
-        phase3_id = await self.create_element("And", 340.0, counter_y, "Phase3")
-        if phase3_id is None:
-            return False
         if not await self.connect(counter_ids[1], phase3_id, source_port_label="Q", target_port=0):
             return False
         if not await self.connect(counter_ids[0], phase3_id, source_port_label="Q", target_port=1):
@@ -278,10 +284,6 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         await self.log("  ✓ Connected main clock to fetch, memory, and register file")
 
         # ---- Create NOT gate to invert reset signal (Clear is active-low) ----
-        reset_not_id = await self.create_element("Not", 100.0, counter_y + 50.0, "ResetNot")
-        if reset_not_id is None:
-            return False
-
         # Connect reset to NOT gate
         if not await self.connect(reset_id, reset_not_id):
             return False
@@ -336,9 +338,6 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         # now, so the phase restriction moves from the clock to the write enable
         # — the data memory only writes during the memory phase. (MemRead stays
         # ungated: reads are combinational and select the output mux every cycle.)
-        memwrite_gate_id = await self.create_element("And", 880.0, stage_y, "MemWriteGate")
-        if memwrite_gate_id is None:
-            return False
         if not await self.connect(decode_id, memwrite_gate_id, source_port_label="MemWrite", target_port=0):
             return False
         if not await self.connect(phase3_id, memwrite_gate_id, target_port=1):
@@ -449,9 +448,6 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
                 return False
 
         # phase3_id (Q1 AND Q0) was created with the phase-decode enables above.
-        we_and_id = await self.create_element("And", 420.0, counter_y, "WriteBackEnable")
-        if we_and_id is None:
-            return False
         if not await self.connect(decode_id, we_and_id, source_port_label="RegWrite"):
             return False
         if not await self.connect(phase3_id, we_and_id, target_port=1):
@@ -460,9 +456,6 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         # Write enable = normal write-back OR register programming. During
         # programming the test holds Reset (counter frozen at phase 0 → Phase3=0),
         # so the normal AND term is gated off and only RegProgWrite drives writes.
-        we_or_id = await self.create_element("Or", 460.0, counter_y, "WriteEnableOR")
-        if we_or_id is None:
-            return False
         if not await self.connect(we_and_id, we_or_id, target_port=0):
             return False
         if not await self.connect(reg_prog_write_id, we_or_id, target_port=1):
@@ -472,46 +465,24 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         await self.log("  ✓ Connected datapath and control signals")
 
-        # ---- Create output LEDs ----
-        output_x = stage_x_offsets[3] + HORIZONTAL_GATE_SPACING
-
-        # PC outputs
+        # ---- Connect output LEDs ----
         for i in range(8):
-            led_id = await self.create_element("Led", output_x, stage_y + (i * 50.0), f"PC[{i}]")
-            if led_id is None:
+            if not await self.connect(fetch_id, pc_led_ids[i], source_port_label=f"PC[{i}]"):
                 return False
 
-            if not await self.connect(fetch_id, led_id, source_port_label=f"PC[{i}]"):
-                return False
-
-        # Result outputs
         for i in range(8):
-            led_id = await self.create_element("Led", output_x, 500.0 + (i * 50.0), f"Result[{i}]")
-            if led_id is None:
+            if not await self.connect(memory_id, result_led_ids[i], source_port_label=f"DataOut[{i}]"):
                 return False
 
-            if not await self.connect(memory_id, led_id, source_port_label=f"DataOut[{i}]"):
-                return False
-
-        # Cycle counter outputs (connect flip-flop Q outputs)
         for i in range(2):
-            led_id = await self.create_element("Led", output_x + 100.0, counter_y + (i * 50.0), f"CycleCounter[{i}]")
-            if led_id is None:
+            if not await self.connect(counter_ids[i], cycle_led_ids[i], source_port_label="Q"):
                 return False
 
-            if not await self.connect(counter_ids[i], led_id, source_port_label="Q"):
-                return False
-
-        # Instruction outputs (from Fetch stage)
         for i in range(8):
-            led_id = await self.create_element("Led", output_x + 200.0, stage_y + (i * 50.0), f"Instruction[{i}]")
-            if led_id is None:
+            if not await self.connect(fetch_id, instr_led_ids[i], source_port_label=f"Instruction[{i}]"):
                 return False
 
-            if not await self.connect(fetch_id, led_id, source_port_label=f"Instruction[{i}]"):
-                return False
-
-        await self.log("  ✓ Created output LEDs")
+        await self.log("  ✓ Connected output LEDs")
 
         # ---- Connect cycle counter feedback (simple ripple) ----
         # FF0 toggles each cycle: reuse the existing NotQ0 gate from the
@@ -520,11 +491,6 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
             return False
 
         # For FF1, use XOR(Q0, Q1) for ripple counting
-        xor_id = await self.create_element("Xor", 250.0, counter_y, "XorFF")
-        if xor_id is None:
-            return False
-
-        # Connect Q0 and Q1 to XOR
         if not await self.connect(counter_ids[0], xor_id, source_port_label="Q"):
             return False
 

@@ -9,6 +9,8 @@ Each class replaces a set of near-identical generator files; the entry-point
 files become thin wrappers that pass different constructor arguments.
 """
 
+from dataclasses import dataclass
+
 from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase
 
@@ -35,7 +37,9 @@ class DecoderBuilder(ICBuilderBase):
         input_x = 50.0
         not_x = input_x + HORIZONTAL_GATE_SPACING
         and_x = not_x + HORIZONTAL_GATE_SPACING
-        output_x = and_x + HORIZONTAL_GATE_SPACING
+        # AND gates wrap 4-per-row (and_x + (i % 4) * HORIZONTAL_GATE_SPACING below), so the
+        # output LED column must clear that full 4-wide span, not just one step past and_x.
+        output_x = and_x + 4 * HORIZONTAL_GATE_SPACING
 
         addr_inputs = []
         for i in range(width):
@@ -158,18 +162,27 @@ class RegisterFileBuilder(ICBuilderBase):
         data_in_y = read_addr2_y + VERTICAL_STAGE_SPACING
         control_y = data_in_y + VERTICAL_STAGE_SPACING
 
-        decoder_x = input_x_start + HORIZONTAL_GATE_SPACING
+        # Input rows (write/read addresses, data-in) are up to
+        # max(address_bits, data_width) columns wide; every downstream column
+        # must clear the widest one so a wide row never reaches into the logic
+        # area to its right.
+        input_row_width = max(address_bits, data_width)
+        decoder_x = input_x_start + input_row_width * HORIZONTAL_GATE_SPACING
+        # write_gates wraps 2-per-row (below), so mux must clear that full span.
         write_gates_x = decoder_x + HORIZONTAL_GATE_SPACING
-        storage_x = write_gates_x + HORIZONTAL_GATE_SPACING
-        read_mux_x = storage_x + HORIZONTAL_GATE_SPACING
-        output_x = read_mux_x + HORIZONTAL_GATE_SPACING
-
-        dense_spacing = 60.0
+        mux_x = write_gates_x + 2 * HORIZONTAL_GATE_SPACING
+        # holdMux and storage are each a straight data_width-wide row at the same
+        # per-register y -- they must be in disjoint column ranges (not
+        # interleaved bit-by-bit, which would alias holdMux[b] onto storage[b-1]).
+        storage_x = mux_x + data_width * HORIZONTAL_GATE_SPACING
+        read_mux_x = storage_x + data_width * HORIZONTAL_GATE_SPACING
+        # readMux1/readMux2 are two fixed columns -- output must clear both.
+        output_x = read_mux_x + 2 * HORIZONTAL_GATE_SPACING
 
         write_addr = []
         for i in range(address_bits):
             elem_id = await self.create_element(
-                "InputSwitch", input_x_start + i * dense_spacing, write_addr_y, f"Write_Addr[{i}]"
+                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, write_addr_y, f"Write_Addr[{i}]"
             )
             if elem_id is None:
                 return False
@@ -178,7 +191,7 @@ class RegisterFileBuilder(ICBuilderBase):
         read_addr_1 = []
         for i in range(address_bits):
             elem_id = await self.create_element(
-                "InputSwitch", input_x_start + i * dense_spacing, read_addr1_y, f"Read_Addr1[{i}]"
+                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, read_addr1_y, f"Read_Addr1[{i}]"
             )
             if elem_id is None:
                 return False
@@ -187,7 +200,7 @@ class RegisterFileBuilder(ICBuilderBase):
         read_addr_2 = []
         for i in range(address_bits):
             elem_id = await self.create_element(
-                "InputSwitch", input_x_start + i * dense_spacing, read_addr2_y, f"Read_Addr2[{i}]"
+                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, read_addr2_y, f"Read_Addr2[{i}]"
             )
             if elem_id is None:
                 return False
@@ -196,7 +209,7 @@ class RegisterFileBuilder(ICBuilderBase):
         data_in = []
         for i in range(data_width):
             elem_id = await self.create_element(
-                "InputSwitch", input_x_start + i * dense_spacing, data_in_y, f"Data_In[{i}]"
+                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, data_in_y, f"Data_In[{i}]"
             )
             if elem_id is None:
                 return False
@@ -206,7 +219,7 @@ class RegisterFileBuilder(ICBuilderBase):
         if write_enable is None:
             return False
 
-        clock = await self.create_element("InputSwitch", input_x_start + dense_spacing, control_y, "Clock")
+        clock = await self.create_element("InputSwitch", input_x_start + HORIZONTAL_GATE_SPACING, control_y, "Clock")
         if clock is None:
             return False
 
@@ -214,14 +227,18 @@ class RegisterFileBuilder(ICBuilderBase):
 
         read_data_1 = []
         for i in range(data_width):
-            elem_id = await self.create_element("Led", output_x + i * dense_spacing, read_addr1_y, f"Read_Data1[{i}]")
+            elem_id = await self.create_element(
+                "Led", output_x + i * HORIZONTAL_GATE_SPACING, read_addr1_y, f"Read_Data1[{i}]"
+            )
             if elem_id is None:
                 return False
             read_data_1.append(elem_id)
 
         read_data_2 = []
         for i in range(data_width):
-            elem_id = await self.create_element("Led", output_x + i * dense_spacing, read_addr2_y, f"Read_Data2[{i}]")
+            elem_id = await self.create_element(
+                "Led", output_x + i * HORIZONTAL_GATE_SPACING, read_addr2_y, f"Read_Data2[{i}]"
+            )
             if elem_id is None:
                 return False
             read_data_2.append(elem_id)
@@ -242,8 +259,8 @@ class RegisterFileBuilder(ICBuilderBase):
         for reg_idx in range(num_registers):
             gate_id = await self.create_element(
                 "And",
-                write_gates_x + (reg_idx % 2) * HORIZONTAL_GATE_SPACING * 0.7,
-                write_addr_y + (reg_idx // 2) * VERTICAL_STAGE_SPACING * 0.6,
+                write_gates_x + (reg_idx % 2) * HORIZONTAL_GATE_SPACING,
+                write_addr_y + (reg_idx // 2) * VERTICAL_STAGE_SPACING,
                 f"writeGate[{reg_idx}]",
             )
             if gate_id is None:
@@ -256,7 +273,6 @@ class RegisterFileBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created write gates")
 
-        array_spacing = 50.0
         storage = []
         hold_muxes = []
 
@@ -267,8 +283,8 @@ class RegisterFileBuilder(ICBuilderBase):
             for bit_idx in range(data_width):
                 ff_id = await self.create_element(
                     "DFlipFlop",
-                    storage_x + bit_idx * array_spacing,
-                    write_addr_y + reg_idx * VERTICAL_STAGE_SPACING * 0.7,
+                    storage_x + bit_idx * HORIZONTAL_GATE_SPACING,
+                    write_addr_y + reg_idx * VERTICAL_STAGE_SPACING,
                     f"storage[{reg_idx}][{bit_idx}]",
                 )
                 if ff_id is None:
@@ -282,8 +298,8 @@ class RegisterFileBuilder(ICBuilderBase):
             for bit_idx in range(data_width):
                 mux_id = await self.create_element(
                     "Mux",
-                    storage_x - HORIZONTAL_GATE_SPACING + bit_idx * array_spacing,
-                    write_addr_y + reg_idx * VERTICAL_STAGE_SPACING * 0.7,
+                    mux_x + bit_idx * HORIZONTAL_GATE_SPACING,
+                    write_addr_y + reg_idx * VERTICAL_STAGE_SPACING,
                     f"holdMux[{reg_idx}][{bit_idx}]",
                 )
                 if mux_id is None:
@@ -308,20 +324,21 @@ class RegisterFileBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created storage array and hold muxes")
 
-        read_mux_spacing = 50.0
+        # readMux1/readMux2 input_size grows with num_registers + address_bits, so their
+        # real rendered height (learned from bit 0's resize, below) -- not a guessed
+        # constant -- determines how far apart successive bit-rows must be.
+        read_mux_spacing = VERTICAL_STAGE_SPACING
         for bit_idx in range(data_width):
-            read_mux1_id = await self.create_element(
+            mux1_handle = await self.create_element_with_size(
                 "Mux", read_mux_x, read_addr1_y + bit_idx * read_mux_spacing, f"readMux1[{bit_idx}]"
             )
-            if read_mux1_id is None:
+            if mux1_handle is None:
                 return False
-            set_props = await self.mcp.send_command(
-                "change_input_size",
-                {"element_id": read_mux1_id, "size": num_registers + address_bits},
-            )
-            if not set_props.success:
+            resized1 = await self.resize_input(mux1_handle.element_id, num_registers + address_bits)
+            if resized1 is None:
                 self.log_error(f"Failed to set readMux1[{bit_idx}] input_size")
                 return False
+            read_mux1_id = resized1.element_id
             for reg_idx in range(num_registers):
                 if not await self.connect(storage[reg_idx][bit_idx], read_mux1_id, target_port_label=f"In{reg_idx}"):
                     return False
@@ -331,21 +348,19 @@ class RegisterFileBuilder(ICBuilderBase):
             if not await self.connect(read_mux1_id, read_data_1[bit_idx]):
                 return False
 
-            read_mux2_id = await self.create_element(
+            mux2_handle = await self.create_element_with_size(
                 "Mux",
                 read_mux_x + HORIZONTAL_GATE_SPACING,
                 read_addr1_y + bit_idx * read_mux_spacing,
                 f"readMux2[{bit_idx}]",
             )
-            if read_mux2_id is None:
+            if mux2_handle is None:
                 return False
-            set_props = await self.mcp.send_command(
-                "change_input_size",
-                {"element_id": read_mux2_id, "size": num_registers + address_bits},
-            )
-            if not set_props.success:
+            resized2 = await self.resize_input(mux2_handle.element_id, num_registers + address_bits)
+            if resized2 is None:
                 self.log_error(f"Failed to set readMux2[{bit_idx}] input_size")
                 return False
+            read_mux2_id = resized2.element_id
             for reg_idx in range(num_registers):
                 if not await self.connect(storage[reg_idx][bit_idx], read_mux2_id, target_port_label=f"In{reg_idx}"):
                     return False
@@ -354,6 +369,9 @@ class RegisterFileBuilder(ICBuilderBase):
                     return False
             if not await self.connect(read_mux2_id, read_data_2[bit_idx]):
                 return False
+
+            if bit_idx == 0:
+                read_mux_spacing = max(VERTICAL_STAGE_SPACING, resized1.height, resized2.height)
 
         await self.log("  ✓ Created read multiplexers")
 
@@ -395,20 +413,16 @@ class BarrelShiftBuilder(ICBuilderBase):
 
         input_x_start = 50.0
         data_input_y = 100.0
-        ctrl_x = input_x_start + HORIZONTAL_GATE_SPACING * 2.5
-
-        left_stage1_y = 200.0
-        left_stage2_y = left_stage1_y + VERTICAL_STAGE_SPACING
-        right_stage1_y = left_stage2_y + VERTICAL_STAGE_SPACING
-        right_stage2_y = right_stage1_y + VERTICAL_STAGE_SPACING
-        direction_y = 300.0
-        output_x = input_x_start + HORIZONTAL_GATE_SPACING * 3
-        dense_spacing = 40.0
+        mux_x = input_x_start + HORIZONTAL_GATE_SPACING
+        # Data[] is a straight 4-wide row (below) -- ctrl_x must clear all of it,
+        # not just the single-column mux stack.
+        ctrl_x = input_x_start + 4 * HORIZONTAL_GATE_SPACING
+        output_x = ctrl_x + HORIZONTAL_GATE_SPACING
 
         data_inputs = []
         for i in range(4):
             data_id = await self.create_element(
-                "InputSwitch", input_x_start + i * dense_spacing, data_input_y, f"Data[{i}]"
+                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, data_input_y, f"Data[{i}]"
             )
             if data_id is None:
                 return False
@@ -431,42 +445,44 @@ class BarrelShiftBuilder(ICBuilderBase):
             gnd: int = 0  # ground not used in rotator mode
         else:
             dir_id = await self.create_element(
-                "InputSwitch", ctrl_x, data_input_y + VERTICAL_STAGE_SPACING * 1.5, dir_label
+                "InputSwitch", ctrl_x, data_input_y + VERTICAL_STAGE_SPACING * 2, dir_label
             )
             if dir_id is None:
                 return False
             ground_elem = await self.create_element(
-                "InputGnd", input_x_start, data_input_y + VERTICAL_STAGE_SPACING * 1.5, "Ground"
+                "InputGnd", input_x_start, data_input_y + VERTICAL_STAGE_SPACING * 2, "Ground"
             )
             if ground_elem is None:
                 return False
             gnd = ground_elem
 
+        # level4_bus_mux_4bit's real height (9 inputs: In0[0-3]/In1[0-3]/Sel) is well
+        # over the default 64px, so stack the 4 instances using its actual measured
+        # height (learned from the first instance) rather than a flat constant.
         bus_mux = "level4_bus_mux_4bit"
-        left_s1 = await self.instantiate_ic(
-            bus_mux, input_x_start + HORIZONTAL_GATE_SPACING, left_stage1_y, "BusMux_Left_S1"
-        )
-        if left_s1 is None:
+        left_stage1_y = 200.0
+        left_s1_handle = await self.instantiate_ic_with_size(bus_mux, mux_x, left_stage1_y, "BusMux_Left_S1")
+        if left_s1_handle is None:
             return False
+        left_s1 = left_s1_handle.element_id
+        mux_row_spacing = max(VERTICAL_STAGE_SPACING, left_s1_handle.height)
 
-        left_s2 = await self.instantiate_ic(
-            bus_mux, input_x_start + HORIZONTAL_GATE_SPACING, left_stage2_y, "BusMux_Left_S2"
-        )
+        left_stage2_y = left_stage1_y + mux_row_spacing
+        left_s2 = await self.instantiate_ic(bus_mux, mux_x, left_stage2_y, "BusMux_Left_S2")
         if left_s2 is None:
             return False
 
-        right_s1 = await self.instantiate_ic(
-            bus_mux, input_x_start + HORIZONTAL_GATE_SPACING, right_stage1_y, "BusMux_Right_S1"
-        )
+        right_stage1_y = left_stage2_y + mux_row_spacing
+        right_s1 = await self.instantiate_ic(bus_mux, mux_x, right_stage1_y, "BusMux_Right_S1")
         if right_s1 is None:
             return False
 
-        right_s2 = await self.instantiate_ic(
-            bus_mux, input_x_start + HORIZONTAL_GATE_SPACING, right_stage2_y, "BusMux_Right_S2"
-        )
+        right_stage2_y = right_stage1_y + mux_row_spacing
+        right_s2 = await self.instantiate_ic(bus_mux, mux_x, right_stage2_y, "BusMux_Right_S2")
         if right_s2 is None:
             return False
 
+        direction_y = right_stage2_y + mux_row_spacing
         dir_mux = await self.instantiate_ic(bus_mux, output_x, direction_y, "BusMux_Direction")
         if dir_mux is None:
             return False
@@ -475,7 +491,7 @@ class BarrelShiftBuilder(ICBuilderBase):
         for i in range(4):
             led_id = await self.create_element(
                 "Led",
-                output_x + HORIZONTAL_GATE_SPACING + i * dense_spacing,
+                output_x + HORIZONTAL_GATE_SPACING + i * HORIZONTAL_GATE_SPACING,
                 direction_y,
                 f"{out_label}[{i}]",
             )
@@ -893,9 +909,13 @@ class ComparatorBuilder(ICBuilderBase):
         input_x = 50.0
         not_x = input_x + HORIZONTAL_GATE_SPACING
         and_x = not_x + HORIZONTAL_GATE_SPACING
-        cascade_x = and_x + HORIZONTAL_GATE_SPACING
-        or_x = cascade_x + HORIZONTAL_GATE_SPACING
-        final_x = or_x + HORIZONTAL_GATE_SPACING
+        # xnor/andGreater/andLess (below) place column i at and_x + i * HORIZONTAL_GATE_SPACING
+        # for i in 0..3, so the next stage must clear that full 4-wide span.
+        cascade_x = and_x + 4 * HORIZONTAL_GATE_SPACING
+        # andCascade*/orCascade* (below) each wrap 2-per-row via (i % 2) * HORIZONTAL_GATE_SPACING,
+        # so each subsequent stage must clear a full 2-wide span, not just one step.
+        or_x = cascade_x + 2 * HORIZONTAL_GATE_SPACING
+        final_x = or_x + 2 * HORIZONTAL_GATE_SPACING
         output_x = final_x + HORIZONTAL_GATE_SPACING
 
         a_inputs = []
@@ -1280,7 +1300,6 @@ class ParityBuilder(ICBuilderBase):
             return False
 
         input_x = 50.0
-        output_x = input_x + HORIZONTAL_GATE_SPACING * 5
 
         data_inputs = []
         for i in range(width):
@@ -1316,7 +1335,9 @@ class ParityBuilder(ICBuilderBase):
             await self.log(f"  ✓ Created stage {stage_num}: {len(next_stage)} XOR gates")
             current_stage = next_stage
             stage_num += 1
-            stage_x += HORIZONTAL_GATE_SPACING
+            # Each stage wraps 2-per-row via (pair_idx // 2 % 2) * HORIZONTAL_GATE_SPACING above,
+            # so the next stage must clear that full 2-wide span, not just one step.
+            stage_x += 2 * HORIZONTAL_GATE_SPACING
 
         # Cascade input (74180-style): XOR a chained parity bit from a less-
         # significant block into this block's parity. Tied low (the default) it
@@ -1338,6 +1359,7 @@ class ParityBuilder(ICBuilderBase):
             return False
         current_stage = [cascade_xor]
 
+        output_x = stage_x + HORIZONTAL_GATE_SPACING
         parity_led = await self.create_element(
             "Led", output_x, 100.0 + (width // 2) * VERTICAL_STAGE_SPACING, out_label
         )
@@ -1355,3 +1377,126 @@ class ParityBuilder(ICBuilderBase):
         )
         await self.log(f"   Saved to: {output_file}")
         return True
+
+
+@dataclass(frozen=True)
+class CpuRegisterProgrammingBlock:
+    """Element ids produced by build_cpu_register_programming_block."""
+
+    regfile_id: int
+    write_data_mux_id: int
+    write_addr_mux_ids: list[int]
+    prog_addr_inputs: list[int]
+    prog_data_inputs: list[int]
+    prog_write_id: int
+    reg_prog_addr_inputs: list[int]
+    reg_prog_data_inputs: list[int]
+    reg_prog_write_id: int
+
+
+async def build_cpu_register_programming_block(
+    builder: ICBuilderBase, base_x: float, y_regfile: float, y_prog: float, y_regprog: float
+) -> "CpuRegisterProgrammingBlock | None":
+    """Register file + its programming muxes + instruction/register-file
+    programming inputs. Shared verbatim between the 8-bit single-cycle and
+    multi-cycle CPU generators -- factored out after normalizing both
+    generators' spacing made this ~90-line block byte-identical, which
+    pylint's duplicate-code check (R0801) then flagged.
+    """
+    regfile_x = base_x
+    regfile_handle = await builder.instantiate_ic_with_size("level6_register_file_8x8", regfile_x, y_regfile, "RegFile")
+    if regfile_handle is None:
+        return None
+    regfile_id = regfile_handle.element_id
+
+    write_data_mux_x = regfile_x + max(HORIZONTAL_GATE_SPACING * 2, regfile_handle.width + HORIZONTAL_GATE_SPACING)
+    write_data_mux_handle = await builder.instantiate_ic_with_size(
+        "level4_bus_mux_8bit", write_data_mux_x, y_regfile, "WriteDataMux"
+    )
+    if write_data_mux_handle is None:
+        return None
+    write_data_mux_id = write_data_mux_handle.element_id
+
+    write_addr_mux_base_x = write_data_mux_x + max(
+        HORIZONTAL_GATE_SPACING * 2, write_data_mux_handle.width + HORIZONTAL_GATE_SPACING
+    )
+    write_addr_mux_ids = []
+    for i in range(3):
+        mux_id = await builder.create_element(
+            "Mux", write_addr_mux_base_x + (i * HORIZONTAL_GATE_SPACING), y_regfile, f"WriteAddrMux{i}"
+        )
+        if mux_id is None:
+            return None
+        write_addr_mux_ids.append(mux_id)
+
+    await builder.log("  ✓ Instantiated register file and its programming muxes")
+
+    prog_addr_inputs = []
+    for i in range(8):
+        pid = await builder.create_element(
+            "InputSwitch", base_x + (i * HORIZONTAL_GATE_SPACING), y_prog, f"ProgAddr[{i}]"
+        )
+        if pid is None:
+            return None
+        prog_addr_inputs.append(pid)
+
+    prog_data_inputs = []
+    for i in range(8):
+        pid = await builder.create_element(
+            "InputSwitch",
+            base_x + (i * HORIZONTAL_GATE_SPACING),
+            y_prog + VERTICAL_STAGE_SPACING,
+            f"ProgData[{i}]",
+        )
+        if pid is None:
+            return None
+        prog_data_inputs.append(pid)
+
+    prog_write_id = await builder.create_element(
+        "InputSwitch", base_x + (8 * HORIZONTAL_GATE_SPACING), y_prog, "ProgWrite"
+    )
+    if prog_write_id is None:
+        return None
+
+    await builder.log("  ✓ Created instruction memory programming inputs")
+
+    reg_prog_addr_inputs = []
+    for i in range(3):
+        pid = await builder.create_element(
+            "InputSwitch", base_x + (i * HORIZONTAL_GATE_SPACING), y_regprog, f"RegProgAddr[{i}]"
+        )
+        if pid is None:
+            return None
+        reg_prog_addr_inputs.append(pid)
+
+    reg_prog_data_inputs = []
+    for i in range(8):
+        pid = await builder.create_element(
+            "InputSwitch",
+            base_x + (i * HORIZONTAL_GATE_SPACING),
+            y_regprog + VERTICAL_STAGE_SPACING,
+            f"RegProgData[{i}]",
+        )
+        if pid is None:
+            return None
+        reg_prog_data_inputs.append(pid)
+
+    reg_prog_write_id = await builder.create_element(
+        "InputSwitch", base_x + (8 * HORIZONTAL_GATE_SPACING), y_regprog, "RegProgWrite"
+    )
+    if reg_prog_write_id is None:
+        return None
+
+    await builder.log("  ✓ Created register file programming inputs")
+
+    return CpuRegisterProgrammingBlock(
+        regfile_id=regfile_id,
+        write_data_mux_id=write_data_mux_id,
+        write_addr_mux_ids=write_addr_mux_ids,
+        prog_addr_inputs=prog_addr_inputs,
+        prog_data_inputs=prog_data_inputs,
+        prog_write_id=prog_write_id,
+        reg_prog_addr_inputs=reg_prog_addr_inputs,
+        reg_prog_data_inputs=reg_prog_data_inputs,
+        reg_prog_write_id=reg_prog_write_id,
+    )

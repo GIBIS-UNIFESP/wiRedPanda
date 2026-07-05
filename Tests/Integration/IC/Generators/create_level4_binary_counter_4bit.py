@@ -63,38 +63,49 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         if not await self.create_new_circuit():
             return False
 
-        # Create clock input
+        # Single vertical column for all control + data switches (all at
+        # input_x). Order matches this IC's current port order -- derived from
+        # a Y-position sort of the old (broken, 20-40px-apart) coordinates:
+        # Reset, Load, CountEnable, Data[0], Clock, Data[1], Data[2], Data[3] --
+        # preserved here (just with real VERTICAL_STAGE_SPACING clearance) so
+        # any embedder referencing ports by index doesn't silently break.
         input_x = 50.0
-        clk_id = await self.create_element("InputSwitch", input_x, 100.0, "Clock")
-        if clk_id is None:
+        clear_id = await self.create_element("InputSwitch", input_x, 0.0, "Reset")
+        if clear_id is None:
             return False
-        await self.log("  ✓ Created input CLK")
+        load_id = await self.create_element("InputSwitch", input_x, VERTICAL_STAGE_SPACING, "Load")
+        if load_id is None:
+            return False
 
         # 74161-style control inputs (all active-HIGH):
         #   CountEnable : when low the counter holds its value
         #   Load        : synchronous parallel load of Data[0-3] on the next edge
         #   Reset       : asynchronous clear to 0
         # Tie CountEnable high (and Load/Reset low) for a free-running counter.
-        ce_id = await self.create_element("InputSwitch", input_x, 60.0, "CountEnable")
+        ce_id = await self.create_element("InputSwitch", input_x, 2 * VERTICAL_STAGE_SPACING, "CountEnable")
         if ce_id is None:
             return False
-        load_id = await self.create_element("InputSwitch", input_x, 20.0, "Load")
-        if load_id is None:
-            return False
-        clear_id = await self.create_element("InputSwitch", input_x, -20.0, "Reset")
-        if clear_id is None:
-            return False
+
         data_in_ids = []
         for i in range(4):
-            d_id = await self.create_element(
-                "InputSwitch", input_x - 40.0, 100.0 + (i * VERTICAL_STAGE_SPACING), f"Data[{i}]"
-            )
+            # Data[0] sits between CountEnable and Clock, Data[1-3] after Clock,
+            # matching the pre-fix Y-sort order.
+            row = 3 if i == 0 else 4 + i
+            d_id = await self.create_element("InputSwitch", input_x, row * VERTICAL_STAGE_SPACING, f"Data[{i}]")
             if d_id is None:
                 return False
             data_in_ids.append(d_id)
 
-        # Create Vcc element for Preset/Clear inactive state
-        vcc_id = await self.create_element("InputVcc", input_x, 140.0, "Vcc")
+        clk_id = await self.create_element("InputSwitch", input_x, 4 * VERTICAL_STAGE_SPACING, "Clock")
+        if clk_id is None:
+            return False
+        await self.log("  ✓ Created input CLK")
+
+        # Create Vcc element for Preset/Clear inactive state. InputVcc is not a
+        # named IC port (it's routed to the IC's internal elements rather than
+        # sorted into the boundary port list), so it only needs clearance from
+        # its neighbors here, not a preserved port rank.
+        vcc_id = await self.create_element("InputVcc", input_x, 8 * VERTICAL_STAGE_SPACING, "Vcc")
         if vcc_id is None:
             return False
         await self.log("  ✓ Created Vcc for inactive Preset/Clear")
@@ -158,8 +169,12 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             xor_or_ids.append(or_id)
 
         # Instantiate level1_d_flip_flop ICs (stage 6)
+        # dff_x is 3 gate-spacings past xor_or_x (not 1) to leave room for the
+        # hold_mux/load_mux columns below -- level2_mux_2to1's real rendered
+        # width doesn't fit in the fractional 0.5x/0.75x gaps those used to use,
+        # so FF0's left edge overlapped hold_mux0/load_mux0.
         dff_ids = []
-        dff_x = xor_or_x + HORIZONTAL_GATE_SPACING
+        dff_x = xor_or_x + (3 * HORIZONTAL_GATE_SPACING)
         for i in range(4):
             ff_id = await self.instantiate_ic(
                 "level1_d_flip_flop", dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}"
@@ -175,8 +190,8 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         #   FF_i.D = load_mux_i.Out
         # The bit logic below feeds each hold_mux's Data[1] (the "count" input).
         hold_mux_ids = []
-        mux_x = xor_or_x + 0.5 * HORIZONTAL_GATE_SPACING
-        load_mux_x = xor_or_x + 0.75 * HORIZONTAL_GATE_SPACING
+        mux_x = xor_or_x + HORIZONTAL_GATE_SPACING
+        load_mux_x = xor_or_x + (2 * HORIZONTAL_GATE_SPACING)
         for i in range(4):
             m = await self.instantiate_ic(
                 "level2_mux_2to1", mux_x, 110.0 + (i * VERTICAL_STAGE_SPACING), f"hold_mux{i}"

@@ -54,40 +54,47 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
 
         # Input positions
         input_x = 50.0
+        decoder1_x = input_x + (2 * HORIZONTAL_GATE_SPACING)
+        decoder2_x = input_x + (6 * HORIZONTAL_GATE_SPACING)
+        decoder_y = 400.0
+
+        # Instantiate the two 4-to-16 decoders first so the instruction input
+        # row above them (and the AND-gate grid below them) can be placed with
+        # guaranteed clearance from their real (port-count-dependent) height --
+        # level2_decoder_4to16 is far taller than the flat 64px assumed
+        # elsewhere (queried via instantiate_ic_with_size).
+        # Decoder 1: bits [3:0] → 16 outputs (low nibble)
+        decoder1_handle = await self.instantiate_ic_with_size(
+            "level2_decoder_4to16", decoder1_x, decoder_y, "Decoder4to16_low"
+        )
+        if decoder1_handle is None:
+            return False
+        decoder1_id = decoder1_handle.element_id
+        await self.log("  ✓ Instantiated decoder for low nibble [3:0]")
+
+        # Decoder 2: bits [7:4] → 16 outputs (high nibble)
+        decoder2_handle = await self.instantiate_ic_with_size(
+            "level2_decoder_4to16", decoder2_x, decoder_y, "Decoder4to16_high"
+        )
+        if decoder2_handle is None:
+            return False
+        decoder2_id = decoder2_handle.element_id
+        await self.log("  ✓ Instantiated decoder for high nibble [7:4]")
+
+        decoder_half_height = max(decoder1_handle.height, decoder2_handle.height) / 2
+        instr_y = decoder_y - decoder_half_height - VERTICAL_STAGE_SPACING
+        and_y_base = decoder_y + decoder_half_height + VERTICAL_STAGE_SPACING
 
         # Create instruction input switches (8-bit opcode)
         instr_inputs = []
         for i in range(8):
             instr_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"instr[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), instr_y, f"instr[{i}]"
             )
             if instr_id is None:
                 return False
             instr_inputs.append(instr_id)
         await self.log("  ✓ Created 8 instruction inputs")
-
-        # Instantiate two 4-to-16 decoders for hierarchical decoding
-        # Decoder 1: bits [3:0] → 16 outputs (low nibble)
-        decoder1_id = await self.instantiate_ic(
-            "level2_decoder_4to16",
-            input_x + (2 * HORIZONTAL_GATE_SPACING),
-            200.0,
-            "Decoder4to16_low",
-        )
-        if decoder1_id is None:
-            return False
-        await self.log("  ✓ Instantiated decoder for low nibble [3:0]")
-
-        # Decoder 2: bits [7:4] → 16 outputs (high nibble)
-        decoder2_id = await self.instantiate_ic(
-            "level2_decoder_4to16",
-            input_x + (6 * HORIZONTAL_GATE_SPACING),
-            200.0,
-            "Decoder4to16_high",
-        )
-        if decoder2_id is None:
-            return False
-        await self.log("  ✓ Instantiated decoder for high nibble [7:4]")
 
         # Connect low nibble inputs to decoder 1
         for i in range(4):
@@ -103,7 +110,10 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
 
         # Create 256 2-input AND gates to combine decoder outputs
         # AND gate for instruction N uses outputs from decoder2[N>>4] and decoder1[N&0xF]
-        and_y_base = 350.0
+        #
+        # Each grid row reserves two full stages: one for the AND gates
+        # themselves and one dedicated to their output LEDs directly below,
+        # so neither the LEDs nor the next row of AND gates encroach on them.
         op_outputs = []
 
         for instruction_code in range(256):
@@ -114,8 +124,8 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
             # Calculate position for this AND gate
             and_col = instruction_code % 16
             and_row = instruction_code // 16
-            and_x = input_x + (and_col * HORIZONTAL_GATE_SPACING / 2)
-            and_y = and_y_base + (and_row * VERTICAL_STAGE_SPACING)
+            and_x = input_x + (and_col * HORIZONTAL_GATE_SPACING)
+            and_y = and_y_base + (and_row * (2 * VERTICAL_STAGE_SPACING))
 
             # Create AND gate (2 inputs)
             and_id = await self.create_element("And", and_x, and_y, f"dec[{instruction_code}]")
@@ -130,8 +140,9 @@ class InstructionDecoder8BitBuilder(ICBuilderBase):
             if not await self.connect(decoder1_id, and_id, source_port_label=f"out[{low_idx}]", target_port=1):
                 return False
 
-            # Create output LED
-            op_id = await self.create_element("Led", and_x, and_y + 40.0, f"op[{instruction_code}]")
+            # Create output LED, in its own dedicated sub-row a full stage
+            # below the AND gate (clear of the next row's AND gates too)
+            op_id = await self.create_element("Led", and_x, and_y + VERTICAL_STAGE_SPACING, f"op[{instruction_code}]")
             if op_id is None:
                 return False
             op_outputs.append(op_id)

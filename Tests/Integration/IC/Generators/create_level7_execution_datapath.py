@@ -50,12 +50,28 @@ class ExecutionDatapathBuilder(ICBuilderBase):
 
         # Input positions
         input_x = 50.0
+        alu_x = input_x + (6 * HORIZONTAL_GATE_SPACING)
+        alu_y = 600.0
+
+        # Instantiate the 8-bit ALU first so the operand rows above it can be
+        # placed with guaranteed clearance from its real (port-count-dependent)
+        # top edge -- level6_alu_8bit's height scales with its 20+ ports and is
+        # far taller than the flat 64px assumed elsewhere (queried via
+        # instantiate_ic_with_size rather than a flat spacing constant).
+        alu_handle = await self.instantiate_ic_with_size("level6_alu_8bit", alu_x, alu_y, "ALU_8bit")
+        if alu_handle is None:
+            return False
+        alu_id = alu_handle.element_id
+        await self.log("  ✓ Instantiated 8-bit ALU")
+
+        operand_b_y = alu_y - (alu_handle.height / 2) - VERTICAL_STAGE_SPACING
+        operand_a_y = operand_b_y - VERTICAL_STAGE_SPACING
 
         # Create OperandA inputs (8-bit)
         operand_a_inputs = []
         for i in range(8):
             op_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"OperandA[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), operand_a_y, f"OperandA[{i}]"
             )
             if op_id is None:
                 return False
@@ -66,7 +82,7 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         operand_b_inputs = []
         for i in range(8):
             op_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, f"OperandB[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), operand_b_y, f"OperandB[{i}]"
             )
             if op_id is None:
                 return False
@@ -79,21 +95,13 @@ class ExecutionDatapathBuilder(ICBuilderBase):
             op_id = await self.create_element(
                 "InputSwitch",
                 input_x + (8 * HORIZONTAL_GATE_SPACING) + (i * HORIZONTAL_GATE_SPACING),
-                100.0,
+                operand_a_y,
                 f"OpCode[{i}]",
             )
             if op_id is None:
                 return False
             opcode_inputs.append(op_id)
         await self.log("  ✓ Created 3 OpCode inputs")
-
-        # Instantiate 8-bit ALU
-        alu_id = await self.instantiate_ic(
-            "level6_alu_8bit", input_x + (6 * HORIZONTAL_GATE_SPACING), 250.0, "ALU_8bit"
-        )
-        if alu_id is None:
-            return False
-        await self.log("  ✓ Instantiated 8-bit ALU")
 
         # Connect operands to ALU
         for i in range(8):
@@ -113,9 +121,7 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         output_x = input_x + (14 * HORIZONTAL_GATE_SPACING)
         result_leds = []
         for i in range(8):
-            led_id = await self.create_element(
-                "Led", output_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"Result[{i}]"
-            )
+            led_id = await self.create_element("Led", output_x, alu_y + (i * VERTICAL_STAGE_SPACING), f"Result[{i}]")
             if led_id is None:
                 return False
             if not led_id:
@@ -133,7 +139,7 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         nor_gates = []
         nor_x = output_x + HORIZONTAL_GATE_SPACING
         for i in range(0, 8, 2):
-            nor_id = await self.create_element("Nor", nor_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"NOR_{i}")
+            nor_id = await self.create_element("Nor", nor_x, alu_y + ((i // 2) * VERTICAL_STAGE_SPACING), f"NOR_{i}")
             if nor_id is None:
                 return False
             if not nor_id:
@@ -154,7 +160,7 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         and_gates = []
         and_x = nor_x + HORIZONTAL_GATE_SPACING
         for i in range(0, 4, 2):
-            and_id = await self.create_element("And", and_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"AND_{i}")
+            and_id = await self.create_element("And", and_x, alu_y + ((i // 2) * VERTICAL_STAGE_SPACING), f"AND_{i}")
             if and_id is None:
                 return False
             if not and_id:
@@ -171,7 +177,8 @@ class ExecutionDatapathBuilder(ICBuilderBase):
         await self.log("  ✓ Created first-level AND gates for Zero flag")
 
         # Create final AND gate to combine the two first-level AND results
-        final_and_id = await self.create_element("And", and_x + HORIZONTAL_GATE_SPACING, 250.0, "ZeroFlag_Final_AND")
+        final_and_x = and_x + HORIZONTAL_GATE_SPACING
+        final_and_id = await self.create_element("And", final_and_x, alu_y, "ZeroFlag_Final_AND")
         if final_and_id is None:
             return False
         if not final_and_id:
@@ -184,8 +191,10 @@ class ExecutionDatapathBuilder(ICBuilderBase):
                 return False
         await self.log("  ✓ Created final AND gate for Zero flag")
 
-        # Create Zero flag output LED
-        zero_led_id = await self.create_element("Led", output_x + (2 * HORIZONTAL_GATE_SPACING), 250.0, "Zero")
+        # Create Zero flag output LED (placed past the final AND gate, clear
+        # of the intermediate NOR/AND columns)
+        zero_sign_x = final_and_x + HORIZONTAL_GATE_SPACING
+        zero_led_id = await self.create_element("Led", zero_sign_x, alu_y, "Zero")
         if zero_led_id is None:
             return False
         if not zero_led_id:
@@ -197,9 +206,7 @@ class ExecutionDatapathBuilder(ICBuilderBase):
             return False
 
         # Create Sign flag output LED (MSB of result)
-        sign_led_id = await self.create_element(
-            "Led", output_x + (2 * HORIZONTAL_GATE_SPACING), 250.0 + VERTICAL_STAGE_SPACING, "Sign"
-        )
+        sign_led_id = await self.create_element("Led", zero_sign_x, alu_y + VERTICAL_STAGE_SPACING, "Sign")
         if sign_led_id is None:
             return False
         if not sign_led_id:

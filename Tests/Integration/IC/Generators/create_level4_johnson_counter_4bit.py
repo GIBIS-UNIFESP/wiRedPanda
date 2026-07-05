@@ -58,29 +58,45 @@ class JohnsonCounterBuilder(ICBuilderBase):
             return False
 
         # Create input controls
+        # Single vertical column for all control + data switches (all at
+        # input_x). Order matches this IC's current port order -- derived from
+        # a Y-position sort of the old (broken, 0-40px-apart) coordinates:
+        # Load, CountEnable, Clock, Data[0], Data[1], Init, Data[2], Data[3] --
+        # preserved here (just with real VERTICAL_STAGE_SPACING clearance) so
+        # any embedder referencing ports by index doesn't silently break.
         input_x = 50.0
-        clk_id = await self.create_element("InputSwitch", input_x, 100.0, "Clock")
-        if clk_id is None:
+        load_id = await self.create_element("InputSwitch", input_x, 0.0, "Load")
+        if load_id is None:
             return False
-        await self.log("  ✓ Created input CLK")
-
-        init_id = await self.create_element("InputSwitch", input_x, 100.0 + VERTICAL_STAGE_SPACING, "Init")
-        if init_id is None:
-            return False
-        await self.log("  ✓ Created input Init")
 
         # Control inputs (active-HIGH): CountEnable holds the value when low;
         # Load synchronously captures Data[0-3] on the next edge. Tie CountEnable
         # high and Load low for the normal twisted-ring sequence.
-        ce_id = await self.create_element("InputSwitch", input_x, 40.0, "CountEnable")
+        ce_id = await self.create_element("InputSwitch", input_x, VERTICAL_STAGE_SPACING, "CountEnable")
         if ce_id is None:
             return False
-        load_id = await self.create_element("InputSwitch", input_x, 0.0, "Load")
-        if load_id is None:
+
+        clk_id = await self.create_element("InputSwitch", input_x, 2 * VERTICAL_STAGE_SPACING, "Clock")
+        if clk_id is None:
             return False
+        await self.log("  ✓ Created input CLK")
+
         data_in_ids = []
-        for i in range(4):
-            d_id = await self.create_element("InputSwitch", input_x, 160.0 + (i * 30.0), f"Data[{i}]")
+        for i in range(2):
+            # Data[0-1] sit between Clock and Init, matching the pre-fix Y-sort
+            # order (Data[2-3] follow Init below).
+            d_id = await self.create_element("InputSwitch", input_x, (3 + i) * VERTICAL_STAGE_SPACING, f"Data[{i}]")
+            if d_id is None:
+                return False
+            data_in_ids.append(d_id)
+
+        init_id = await self.create_element("InputSwitch", input_x, 5 * VERTICAL_STAGE_SPACING, "Init")
+        if init_id is None:
+            return False
+        await self.log("  ✓ Created input Init")
+
+        for i in range(2, 4):
+            d_id = await self.create_element("InputSwitch", input_x, (4 + i) * VERTICAL_STAGE_SPACING, f"Data[{i}]")
             if d_id is None:
                 return False
             data_in_ids.append(d_id)
@@ -97,8 +113,11 @@ class JohnsonCounterBuilder(ICBuilderBase):
             dff_ids.append(ff_id)
             await self.log(f"  ✓ Instantiated level1_d_flip_flop {i}")
 
-        # Vcc to hold each FF's unused Preset/Clear pin inactive (active-LOW -> HIGH)
-        vcc_id = await self.create_element("InputVcc", input_x, 220.0, "Vcc")
+        # Vcc to hold each FF's unused Preset/Clear pin inactive (active-LOW ->
+        # HIGH). InputVcc is not a named IC port (routed to the IC's internal
+        # elements rather than sorted into the boundary port list), so it only
+        # needs clearance from its neighbors, not a preserved port rank.
+        vcc_id = await self.create_element("InputVcc", input_x, 8 * VERTICAL_STAGE_SPACING, "Vcc")
         if vcc_id is None:
             return False
 
@@ -107,10 +126,16 @@ class JohnsonCounterBuilder(ICBuilderBase):
         #   load_mux_i = mux(LD, hold_mux_i.Out, Data_i)       LD=1 parallel load
         #   FF_i.D = load_mux_i.Out
         # The cascade/feedback wiring below feeds each hold_mux's Data[1].
+        # Both columns sit a full gate-spacing past the last DFF column (not a
+        # fraction of one) -- level2_mux_2to1's real rendered width doesn't fit
+        # in the fractional 0.5x gap this used to use, which put hold_mux0/1
+        # right on top of the control column.
         hold_mux_ids = []
-        mux_x = input_x + 0.5 * HORIZONTAL_GATE_SPACING
+        mux_x = dff_x + (4 * HORIZONTAL_GATE_SPACING)
         for i in range(4):
-            hm = await self.instantiate_ic("level2_mux_2to1", mux_x, 220.0 + (i * 30.0), f"hold_mux{i}")
+            hm = await self.instantiate_ic(
+                "level2_mux_2to1", mux_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"hold_mux{i}"
+            )
             if hm is None:
                 return False
             hold_mux_ids.append(hm)
@@ -122,7 +147,7 @@ class JohnsonCounterBuilder(ICBuilderBase):
             lm = await self.instantiate_ic(
                 "level2_mux_2to1",
                 mux_x + HORIZONTAL_GATE_SPACING,
-                225.0 + (i * 30.0),
+                100.0 + (i * VERTICAL_STAGE_SPACING),
                 f"load_mux{i}",
             )
             if lm is None:
@@ -136,10 +161,11 @@ class JohnsonCounterBuilder(ICBuilderBase):
             if not await self.connect(lm, dff_ids[i], source_port_label="Output", target_port_label="D"):
                 return False
 
-        # Create NOT gate for twisted feedback
-        not_id = await self.create_element(
-            "Not", dff_x + (3 * HORIZONTAL_GATE_SPACING), 100.0 + VERTICAL_STAGE_SPACING, "not_q3"
-        )
+        # Create NOT gate for twisted feedback. dff_x + 3 * HORIZONTAL_GATE_SPACING
+        # is FF3's own x, and output_y below is the output LEDs' row -- placing
+        # this gate there landed it exactly on top of the Q3 LED, so it gets its
+        # own column past the mux chain instead.
+        not_id = await self.create_element("Not", mux_x + (2 * HORIZONTAL_GATE_SPACING), 100.0, "not_q3")
         if not_id is None:
             return False
         await self.log("  ✓ Created NOT gate")
@@ -184,8 +210,12 @@ class JohnsonCounterBuilder(ICBuilderBase):
         # The level1 D-FF has active-LOW Preset/Clear, so invert Init: Init=1 ->
         # init_not=0 drives FF0.Preset (Q0=1) and FF1-3.Clear (Q1-3=0) -> 0001.
         # Each FF's other async pin is tied to Vcc (active-LOW inactive = HIGH).
+        # dff_x - HORIZONTAL_GATE_SPACING is input_x, i.e. the control column --
+        # placing this gate there landed it inside the control switches' own
+        # occupied band, so it gets a dedicated column to the left of them
+        # instead (at Init's row, since that's what it inverts).
         init_not = await self.create_element(
-            "Not", dff_x - HORIZONTAL_GATE_SPACING, 100.0 + 2 * VERTICAL_STAGE_SPACING, "init_not"
+            "Not", input_x - HORIZONTAL_GATE_SPACING, 5 * VERTICAL_STAGE_SPACING, "init_not"
         )
         if init_not is None:
             return False

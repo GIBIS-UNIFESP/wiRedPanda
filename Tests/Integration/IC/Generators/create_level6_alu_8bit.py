@@ -69,7 +69,9 @@ class ALU8BitBuilder(ICBuilderBase):
         input_b_x_start = 50.0
         input_op_x = input_a_x_start + (8 * HORIZONTAL_GATE_SPACING) + HORIZONTAL_GATE_SPACING
         input_a_y = 100.0
-        input_b_y = 120.0
+        # A full stage below input_a_y -- the old 120.0 was only 20px below the
+        # A[] row (same x formula as A[]), so A[i] and B[i] overlapped pairwise.
+        input_b_y = input_a_y + VERTICAL_STAGE_SPACING
         op_y = 100.0
 
         # ---- Create A operand inputs (8 bits) ----
@@ -104,8 +106,13 @@ class ALU8BitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created 16 operand inputs + 3 opcode inputs")
 
-        # Instantiate two 4-bit ALU ICs for operations 0-3
-        alu_low_x = input_op_x + HORIZONTAL_GATE_SPACING
+        # Instantiate two 4-bit ALU ICs for operations 0-3. The OpCode[] row
+        # above occupies input_op_x + {0,1,2}*HORIZONTAL_GATE_SPACING (3
+        # slots), so the next stage must clear the full row, not just one
+        # column past it -- the old "+ 1 *"/"+ 2 *" base aliased onto
+        # OpCode[1]/OpCode[2]'s own x (and, transitively, onto ShrIn/ShlIn's
+        # x further below, which used those same absolute columns).
+        alu_low_x = input_op_x + 3 * HORIZONTAL_GATE_SPACING
         alu_high_x = alu_low_x + HORIZONTAL_GATE_SPACING
         alu_y = 250.0
 
@@ -322,10 +329,17 @@ class ALU8BitBuilder(ICBuilderBase):
         # Op5: OpCode[2] AND NOT(OpCode[1]) AND OpCode[0] (detects 101)
         # Op6: OpCode[2] AND OpCode[1] AND NOT(OpCode[0]) (detects 110)
         # Op7: OpCode[2] AND OpCode[1] AND OpCode[0] (detects 111)
+        #
+        # This 2-column x 3-row block used to sit at selector_x/selector_x +
+        # HORIZONTAL_GATE_SPACING -- directly inside the Selector5way[]/mux
+        # cascade's own 8-wide column range (selector_x .. selector_x + 7 *
+        # HORIZONTAL_GATE_SPACING), so it aliased onto Selector5way[0]/[1] and
+        # the Mux1/Mux2 cascade below. Move it a full row past that range.
+        decoder_x = selector_x + 9 * HORIZONTAL_GATE_SPACING
 
         # Create NOT gates
         not_op1_id = await self.create_element(
-            "Not", selector_x - HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "NOT_OpCode1"
+            "Not", decoder_x - HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "NOT_OpCode1"
         )
         if not_op1_id is None:
             return False
@@ -333,7 +347,7 @@ class ALU8BitBuilder(ICBuilderBase):
         if not await self.connect(opcode_inputs[1], not_op1_id):
             return False
 
-        not_op0_id = await self.create_element("Not", selector_x - HORIZONTAL_GATE_SPACING, selector_y, "NOT_OpCode0")
+        not_op0_id = await self.create_element("Not", decoder_x - HORIZONTAL_GATE_SPACING, selector_y, "NOT_OpCode0")
         if not_op0_id is None:
             return False
 
@@ -341,7 +355,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         # Op5 detector: OpCode[2] AND NOT(OpCode[1]) AND OpCode[0]
-        op5_and1_id = await self.create_element("And", selector_x, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND1")
+        op5_and1_id = await self.create_element("And", decoder_x, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND1")
         if op5_and1_id is None:
             return False
 
@@ -352,7 +366,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         op5_and2_id = await self.create_element(
-            "And", selector_x + HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND2"
+            "And", decoder_x + HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND2"
         )
         if op5_and2_id is None:
             return False
@@ -364,7 +378,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         # Op6 detector: OpCode[2] AND OpCode[1] AND NOT(OpCode[0])
-        op6_and1_id = await self.create_element("And", selector_x, selector_y, "Op6_AND1")
+        op6_and1_id = await self.create_element("And", decoder_x, selector_y, "Op6_AND1")
         if op6_and1_id is None:
             return False
 
@@ -374,7 +388,7 @@ class ALU8BitBuilder(ICBuilderBase):
         if not await self.connect(opcode_inputs[1], op6_and1_id, target_port=1):
             return False
 
-        op6_and2_id = await self.create_element("And", selector_x + HORIZONTAL_GATE_SPACING, selector_y, "Op6_AND2")
+        op6_and2_id = await self.create_element("And", decoder_x + HORIZONTAL_GATE_SPACING, selector_y, "Op6_AND2")
         if op6_and2_id is None:
             return False
 
@@ -385,7 +399,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         # Op7 detector: OpCode[2] AND OpCode[1] AND OpCode[0]
-        op7_and1_id = await self.create_element("And", selector_x, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND1")
+        op7_and1_id = await self.create_element("And", decoder_x, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND1")
         if op7_and1_id is None:
             return False
 
@@ -396,7 +410,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         op7_and2_id = await self.create_element(
-            "And", selector_x + HORIZONTAL_GATE_SPACING, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND2"
+            "And", decoder_x + HORIZONTAL_GATE_SPACING, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND2"
         )
         if op7_and2_id is None:
             return False
@@ -409,19 +423,28 @@ class ALU8BitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created OpCode decoders for operations 5, 6, 7")
 
-        # Create cascade of muxes to select from 8 operations
+        # Create cascade of muxes to select from 8 operations.
+        #
+        # Each of Mux1/Mux2/Mux3/Op6_OR_Op7 is its own full 8-wide row (one
+        # per bit i), each row a full VERTICAL_STAGE_SPACING below the last --
+        # the old layout instead offset each type by a small x delta
+        # (-2/0/+1/+2 columns) at the SAME y, so e.g. Mux3_Final[i] and
+        # Mux1_5way_NOT[i+3] landed on the same column and collided.
+        mux1_row_y = mux_8way_y
+        mux2_row_y = mux1_row_y + VERTICAL_STAGE_SPACING
+        mux3_row_y = mux2_row_y + VERTICAL_STAGE_SPACING
+        or_row_y = mux3_row_y + VERTICAL_STAGE_SPACING
+        led_row_y = or_row_y + VERTICAL_STAGE_SPACING
+
         result_outputs = []
         final_result_muxes = []  # Mux3 outputs — the true per-bit results, used by the flags
 
         for i in range(8):
+            col_x = selector_x + i * HORIZONTAL_GATE_SPACING
+
             # ========== Mux1: Select between 5-way output and NOT result ==========
             # Implements: Out = (OpCode==101) ? NOT(A) : (ops 0-4 result)
-            mux1_id = await self.create_element(
-                "Mux",
-                selector_x + i * HORIZONTAL_GATE_SPACING - (2 * HORIZONTAL_GATE_SPACING),
-                mux_8way_y,
-                f"Mux1_5way_NOT[{i}]",
-            )
+            mux1_id = await self.create_element("Mux", col_x, mux1_row_y, f"Mux1_5way_NOT[{i}]")
             if mux1_id is None:
                 return False
 
@@ -441,9 +464,7 @@ class ALU8BitBuilder(ICBuilderBase):
 
             # ========== Mux2: Select between SHL and SHR results ==========
             # Implements: Out = (OpCode[1]) ? SHR : SHL
-            mux2_id = await self.create_element(
-                "Mux", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y, f"Mux2_SHL_SHR[{i}]"
-            )
+            mux2_id = await self.create_element("Mux", col_x, mux2_row_y, f"Mux2_SHL_SHR[{i}]")
             if mux2_id is None:
                 return False
 
@@ -462,12 +483,7 @@ class ALU8BitBuilder(ICBuilderBase):
 
             # ========== Mux3: Final selector between (ops 0-5) and (ops 6-7) ==========
             # Implements: Out = ((OpCode & 110)==110) ? ShiftResult : ArithLogicResult
-            mux3_id = await self.create_element(
-                "Mux",
-                selector_x + i * HORIZONTAL_GATE_SPACING + HORIZONTAL_GATE_SPACING,
-                mux_8way_y,
-                f"Mux3_Final[{i}]",
-            )
+            mux3_id = await self.create_element("Mux", col_x, mux3_row_y, f"Mux3_Final[{i}]")
             if mux3_id is None:
                 return False
 
@@ -481,12 +497,7 @@ class ALU8BitBuilder(ICBuilderBase):
 
             # ========== Op6_OR_Op7 gate for Mux3 Select ==========
             # Determines if we're in shift operation mode (OpCode[2:1]==11x)
-            or_id = await self.create_element(
-                "Or",
-                selector_x + i * HORIZONTAL_GATE_SPACING + (2 * HORIZONTAL_GATE_SPACING),
-                mux_8way_y,
-                f"Op6_OR_Op7[{i}]",
-            )
+            or_id = await self.create_element("Or", col_x, or_row_y, f"Op6_OR_Op7[{i}]")
             if or_id is None:
                 return False
 
@@ -505,9 +516,7 @@ class ALU8BitBuilder(ICBuilderBase):
             final_result_muxes.append(mux3_id)
 
             # ========== Create result output LED ==========
-            led_id = await self.create_element(
-                "Led", selector_x + i * HORIZONTAL_GATE_SPACING, mux_8way_y + VERTICAL_STAGE_SPACING, f"Result[{i}]"
-            )
+            led_id = await self.create_element("Led", col_x, led_row_y, f"Result[{i}]")
             if led_id is None:
                 return False
             result_outputs.append(led_id)
@@ -519,10 +528,11 @@ class ALU8BitBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated operation selectors for all 8 operations")
 
         # Create Zero flag (1 if all Result bits are 0)
-        # NOR all result outputs together
-        zero_nor_id = await self.create_element(
-            "Nor", selector_x, selector_y + (2 * VERTICAL_STAGE_SPACING), "Zero_NOR"
-        )
+        # NOR all result outputs together. Placed a full stage below the
+        # Result[] row (which now lives at led_row_y, well past the old
+        # "selector_y + 2 * VERTICAL_STAGE_SPACING" that used to alias onto it).
+        flags_row_y = led_row_y + VERTICAL_STAGE_SPACING
+        zero_nor_id = await self.create_element("Nor", selector_x, flags_row_y, "Zero_NOR")
         if zero_nor_id is None:
             return False
 
@@ -541,9 +551,7 @@ class ALU8BitBuilder(ICBuilderBase):
         await self.log("  ✓ Created Zero flag (8-input NOR over the final results)")
 
         # Create Zero flag LED
-        zero_led_id = await self.create_element(
-            "Led", selector_x + HORIZONTAL_GATE_SPACING, selector_y + (2 * VERTICAL_STAGE_SPACING), "Zero"
-        )
+        zero_led_id = await self.create_element("Led", selector_x + HORIZONTAL_GATE_SPACING, flags_row_y, "Zero")
         if zero_led_id is None:
             return False
 
@@ -555,7 +563,7 @@ class ALU8BitBuilder(ICBuilderBase):
         # Create Negative flag (Result[7])
         await self.log("  🔍 Creating Negative flag from Result[7]")
         negative_led_id = await self.create_element(
-            "Led", selector_x + (2 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "Negative"
+            "Led", selector_x + (2 * HORIZONTAL_GATE_SPACING), flags_row_y, "Negative"
         )
         if negative_led_id is None:
             return False
@@ -571,7 +579,7 @@ class ALU8BitBuilder(ICBuilderBase):
         # Create Carry flag (CarryOut from high ALU)
         await self.log("  🔍 Creating Carry flag from high ALU CarryOut")
         carry_led_id = await self.create_element(
-            "Led", selector_x + (3 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "Carry"
+            "Led", selector_x + (3 * HORIZONTAL_GATE_SPACING), flags_row_y, "Carry"
         )
         if carry_led_id is None:
             return False
@@ -586,7 +594,7 @@ class ALU8BitBuilder(ICBuilderBase):
         # SubCarryOut (F26): exposes the SUB chain's carry so two 8-bit ALUs
         # can be cascaded into a 16-bit subtractor.
         subcarry_led_id = await self.create_element(
-            "Led", selector_x + (4 * HORIZONTAL_GATE_SPACING), selector_y + (2 * VERTICAL_STAGE_SPACING), "SubCarryOut"
+            "Led", selector_x + (4 * HORIZONTAL_GATE_SPACING), flags_row_y, "SubCarryOut"
         )
         if subcarry_led_id is None:
             return False

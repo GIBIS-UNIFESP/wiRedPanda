@@ -46,11 +46,9 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         input_x = 50.0
         addr_y = 100.0
         control_y = addr_y + VERTICAL_STAGE_SPACING
-        not_gates_x = input_x + HORIZONTAL_GATE_SPACING
-        decoder_gates_x = not_gates_x + HORIZONTAL_GATE_SPACING
-        gating_gates_x = decoder_gates_x + HORIZONTAL_GATE_SPACING * 1.5
-        output_gates_x = gating_gates_x + HORIZONTAL_GATE_SPACING * 2
-        output_x = output_gates_x + HORIZONTAL_GATE_SPACING
+        # Clear the full 3-wide addr[] input row (addr0..addr2 span
+        # input_x .. input_x + 2 * HORIZONTAL_GATE_SPACING) before the decoder IC.
+        decoder_gates_x = input_x + 3 * HORIZONTAL_GATE_SPACING
 
         # ========== Create Input Switches ==========
         # Address inputs (3 bits)
@@ -78,9 +76,12 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         await self.log("  ✓ Created all inputs (3 address + 2 control)")
 
         # ========== Instantiate 3-to-8 Decoder IC ==========
-        decoder_id = await self.instantiate_ic("level2_decoder_3to8", decoder_gates_x, addr_y, "Decoder_3to8")
-        if decoder_id is None:
+        decoder_handle = await self.instantiate_ic_with_size(
+            "level2_decoder_3to8", decoder_gates_x, addr_y, "Decoder_3to8"
+        )
+        if decoder_handle is None:
             return False
+        decoder_id = decoder_handle.element_id
 
         # Connect address inputs to decoder IC
         for i in range(3):
@@ -90,11 +91,20 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated level2_decoder_3to8 IC with address connections")
 
         # ========== Create Gating AND Gates (decoder output AND clock) ==========
+        # Clear the decoder's real width, not just an assumed flat constant.
+        gating_gates_x = decoder_gates_x + max(
+            HORIZONTAL_GATE_SPACING * 1.5, decoder_handle.width + HORIZONTAL_GATE_SPACING
+        )
+        # Each stage below is a 4-wide row (i % 4), so the next stage must clear
+        # the full row footprint, not just a single column.
+        output_gates_x = gating_gates_x + 4 * HORIZONTAL_GATE_SPACING
+        output_x = output_gates_x + 4 * HORIZONTAL_GATE_SPACING
+
         gating_gates = []
         for i in range(8):
             gating_id = await self.create_element(
                 "And",
-                gating_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6,
+                gating_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING,
                 addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
                 f"gating_and{i}",
             )
@@ -117,7 +127,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         for i in range(8):
             output_id = await self.create_element(
                 "And",
-                output_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6,
+                output_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING,
                 addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
                 f"output_and{i}",
             )
@@ -140,7 +150,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         for i in range(8):
             led_id = await self.create_element(
                 "Led",
-                output_x + (i % 4) * HORIZONTAL_GATE_SPACING * 0.6,
+                output_x + (i % 4) * HORIZONTAL_GATE_SPACING,
                 addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
                 f"out{i}",
             )

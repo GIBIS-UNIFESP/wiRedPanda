@@ -70,7 +70,7 @@ class Controller4BitBuilder(ICBuilderBase):
         output_x = input_x + (4 * HORIZONTAL_GATE_SPACING)
 
         # ctrl[2] = opcode[3] OR opcode[2] (register write enable)
-        regwrite_or_id = await self.create_element("Or", gates_x, 150.0, "RegWrite_OR")
+        regwrite_or_id = await self.create_element("Or", gates_x, 100.0 + VERTICAL_STAGE_SPACING, "RegWrite_OR")
         if regwrite_or_id is None:
             return False
 

@@ -50,8 +50,11 @@ class FullAdder4bitBuilder(ICBuilderBase):
         # Position calculation
         input_x = 50.0
         a_input_y = 100.0
-        b_input_y = a_input_y + VERTICAL_STAGE_SPACING
-        carry_in_y = b_input_y + VERTICAL_STAGE_SPACING
+        # A[0-3] occupy 4 rows starting at a_input_y -- B[] must start a full
+        # 4 rows below (not 1) or B[0] lands on top of A[1]; same for CarryIn
+        # starting a full 4 rows below B[3].
+        b_input_y = a_input_y + 4 * VERTICAL_STAGE_SPACING
+        carry_in_y = b_input_y + 4 * VERTICAL_STAGE_SPACING
 
         # Create A[0-3] inputs
         a_inputs = []

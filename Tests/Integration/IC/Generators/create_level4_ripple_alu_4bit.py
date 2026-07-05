@@ -52,21 +52,28 @@ class ALU4bitBuilder(ICBuilderBase):
         input_x_start = 50.0
         a_input_y = 100.0
         b_input_y = a_input_y + VERTICAL_STAGE_SPACING
+        # NOT_B[]/mux_and[]/mux_or[] stack below B[] in the same per-bit
+        # columns; CarryIn/Ground/SubCarryIn/Vcc get their own rows further
+        # down the same column so nothing here collides with them.
+        not_b_y = b_input_y + VERTICAL_STAGE_SPACING
+        and_row_y = not_b_y + VERTICAL_STAGE_SPACING
+        or_row_y = and_row_y + VERTICAL_STAGE_SPACING
+        carryin_row_y = or_row_y + VERTICAL_STAGE_SPACING
+        sub_carryin_row_y = carryin_row_y + VERTICAL_STAGE_SPACING
 
-        adder_x = input_x_start + HORIZONTAL_GATE_SPACING
+        # Adder/Subtractor must clear the full 4-wide A/B input row (mirrors
+        # BarrelShiftBuilder's ctrl_x pattern: place the next column after the
+        # whole row) instead of sitting right beside it.
+        adder_x = input_x_start + 4 * HORIZONTAL_GATE_SPACING
         adder_y = 200.0
-        subtractor_y = adder_y + VERTICAL_STAGE_SPACING
-        and_or_y = subtractor_y + VERTICAL_STAGE_SPACING
         mux_y = adder_y + VERTICAL_STAGE_SPACING
-        output_x = input_x_start + HORIZONTAL_GATE_SPACING * 5
-
-        # Dense array spacing for 4-bit parallel elements
-        dense_spacing = 40.0
 
         # Create input switches for A operand
         a_inputs = []
         for i in range(4):
-            a_id = await self.create_element("InputSwitch", input_x_start + i * dense_spacing, a_input_y, f"A[{i}]")
+            a_id = await self.create_element(
+                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, a_input_y, f"A[{i}]"
+            )
             if a_id is None:
                 return False
             a_inputs.append(a_id)
@@ -74,47 +81,52 @@ class ALU4bitBuilder(ICBuilderBase):
         # Create input switches for B operand
         b_inputs = []
         for i in range(4):
-            b_id = await self.create_element("InputSwitch", input_x_start + i * dense_spacing, b_input_y, f"B[{i}]")
+            b_id = await self.create_element(
+                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, b_input_y, f"B[{i}]"
+            )
             if b_id is None:
                 return False
             b_inputs.append(b_id)
 
         # Create CarryIn input port for adder chaining
-        carryin_id = await self.create_element(
-            "InputSwitch", input_x_start, b_input_y + VERTICAL_STAGE_SPACING, "CarryIn"
-        )
+        carryin_id = await self.create_element("InputSwitch", input_x_start, carryin_row_y, "CarryIn")
         if carryin_id is None:
             return False
 
         # Create ground (always 0) for fallback/reference
         ground_id = await self.create_element(
-            "InputGnd", input_x_start + HORIZONTAL_GATE_SPACING, b_input_y + VERTICAL_STAGE_SPACING, "Ground"
+            "InputGnd", input_x_start + HORIZONTAL_GATE_SPACING, carryin_row_y, "Ground"
         )
         if ground_id is None:
             return False
 
         # Create SubCarryIn input port for subtractor chaining
-        sub_carryin_id = await self.create_element(
-            "InputSwitch", input_x_start, b_input_y + VERTICAL_STAGE_SPACING * 1.5, "SubCarryIn"
-        )
+        sub_carryin_id = await self.create_element("InputSwitch", input_x_start, sub_carryin_row_y, "SubCarryIn")
         if sub_carryin_id is None:
             return False
 
         # Create Vcc (always 1) for OR mux logic
         vcc_id = await self.create_element(
-            "InputVcc", input_x_start + 2 * HORIZONTAL_GATE_SPACING, b_input_y + VERTICAL_STAGE_SPACING * 1.5, "Vcc"
+            "InputVcc", input_x_start + 2 * HORIZONTAL_GATE_SPACING, sub_carryin_row_y, "Vcc"
         )
         if vcc_id is None:
             return False
 
-        # Load FullAdder4bit IC for ADD operation
+        # Load FullAdder4bit IC for ADD operation. Measured with its real size
+        # since the Subtractor below it -- and everything to its right -- must
+        # clear its actual footprint, not a flat spacing constant.
         adder_ic_name = "level4_ripple_adder_4bit"
-        adder_id = await self.instantiate_ic(adder_ic_name, adder_x, adder_y, "Adder")
-        if adder_id is None:
+        adder_handle = await self.instantiate_ic_with_size(adder_ic_name, adder_x, adder_y, "Adder")
+        if adder_handle is None:
             return False
+        adder_id = adder_handle.element_id
 
         # Load FullAdder4bit IC for SUB operation (with inverted B inputs)
-        # Subtraction = A - B = A + (~B + 1) = A + ~B + 1, so we invert B and add
+        # Subtraction = A - B = A + (~B + 1) = A + ~B + 1, so we invert B and add.
+        # Stacks directly below the Adder -- same IC type, so use the Adder's
+        # real measured height (not a flat constant) to clear it, mirroring
+        # BusMux_Left_S1/S2 in BarrelShiftBuilder.
+        subtractor_y = adder_y + max(VERTICAL_STAGE_SPACING, adder_handle.height)
         subtractor_ic_name = "level4_ripple_adder_4bit"
         subtractor_id = await self.instantiate_ic(
             subtractor_ic_name, adder_x, subtractor_y, "Subtractor (Adder with ~B)"
@@ -122,13 +134,16 @@ class ALU4bitBuilder(ICBuilderBase):
         if subtractor_id is None:
             return False
 
+        # Output columns (Result_* LEDs) must clear the Adder/Subtractor's real width.
+        output_x = adder_x + max(HORIZONTAL_GATE_SPACING, adder_handle.width)
+
         # Create NOT gates for inverting B inputs in subtraction
         not_gates = []
         for i in range(4):
             not_id = await self.create_element(
                 "Not",
-                adder_x - HORIZONTAL_GATE_SPACING + i * dense_spacing,
-                subtractor_y - VERTICAL_STAGE_SPACING / 2,
+                input_x_start + i * HORIZONTAL_GATE_SPACING,
+                not_b_y,
                 f"NOT_B[{i}]",
             )
             if not_id is None:
@@ -140,7 +155,7 @@ class ALU4bitBuilder(ICBuilderBase):
         and_gates = []
         for i in range(4):
             mux_id = await self.instantiate_ic(
-                "level2_mux_2to1", adder_x + i * dense_spacing, and_or_y, f"mux_and[{i}]"
+                "level2_mux_2to1", input_x_start + i * HORIZONTAL_GATE_SPACING, and_row_y, f"mux_and[{i}]"
             )
             if mux_id is None:
                 return False
@@ -152,8 +167,8 @@ class ALU4bitBuilder(ICBuilderBase):
         for i in range(4):
             mux_id = await self.instantiate_ic(
                 "level2_mux_2to1",
-                adder_x + i * dense_spacing,
-                and_or_y + VERTICAL_STAGE_SPACING,
+                input_x_start + i * HORIZONTAL_GATE_SPACING,
+                or_row_y,
                 f"mux_or[{i}]",
             )
             if mux_id is None:
@@ -173,25 +188,33 @@ class ALU4bitBuilder(ICBuilderBase):
 
         for i in range(4):
             # Result_ADD[0-3]
-            led_id = await self.create_element("Led", output_x + i * dense_spacing, output_y_add, f"Result_ADD[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x + i * HORIZONTAL_GATE_SPACING, output_y_add, f"Result_ADD[{i}]"
+            )
             if led_id is None:
                 return False
             result_add_outputs.append(led_id)
 
             # Result_SUB[0-3]
-            led_id = await self.create_element("Led", output_x + i * dense_spacing, output_y_sub, f"Result_SUB[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x + i * HORIZONTAL_GATE_SPACING, output_y_sub, f"Result_SUB[{i}]"
+            )
             if led_id is None:
                 return False
             result_sub_outputs.append(led_id)
 
             # Result_AND[0-3]
-            led_id = await self.create_element("Led", output_x + i * dense_spacing, output_y_and, f"Result_AND[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x + i * HORIZONTAL_GATE_SPACING, output_y_and, f"Result_AND[{i}]"
+            )
             if led_id is None:
                 return False
             result_and_outputs.append(led_id)
 
             # Result_OR[0-3]
-            led_id = await self.create_element("Led", output_x + i * dense_spacing, output_y_or, f"Result_OR[{i}]")
+            led_id = await self.create_element(
+                "Led", output_x + i * HORIZONTAL_GATE_SPACING, output_y_or, f"Result_OR[{i}]"
+            )
             if led_id is None:
                 return False
             result_or_outputs.append(led_id)
@@ -203,7 +226,9 @@ class ALU4bitBuilder(ICBuilderBase):
             return False
 
         # Create SubCarryOut LED for subtractor carry propagation
-        sub_carryout_led = await self.create_element("Led", output_x + dense_spacing, output_y_carry, "SubCarryOut")
+        sub_carryout_led = await self.create_element(
+            "Led", output_x + HORIZONTAL_GATE_SPACING, output_y_carry, "SubCarryOut"
+        )
         if sub_carryout_led is None:
             return False
 
