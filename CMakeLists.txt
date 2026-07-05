@@ -249,11 +249,12 @@ include(CMakeSources.cmake)
 # Find available translation files
 file(GLOB_RECURSE TS_FILES CONFIGURE_DEPENDS App/Resources/Translations/wpanda_*.ts)
 
-# Exercise content and its Weblate-managed translation catalog.
+# Exercise/Tour content and its Weblate-managed translation catalog.
 # CONFIGURE_DEPENDS re-runs CMake's configure step when a file is added/removed here
 # (best-effort per CMake docs; works with the Ninja generator this project requires), so a
 # new .json file is picked up automatically — no CMake or .qrc edits needed.
 file(GLOB EXERCISE_JSON_FILES CONFIGURE_DEPENDS App/Resources/Exercises/*.json)
+file(GLOB TOUR_JSON_FILES CONFIGURE_DEPENDS App/Resources/Tours/*.json)
 file(GLOB EXERCISE_TOUR_CATALOG_JSON_FILES CONFIGURE_DEPENDS App/Resources/Translations/ExerciseTour/*.json)
 
 # Use the COMPONENTS form so cross-compile builds (WASM) consult QT_HOST_PATH
@@ -271,11 +272,13 @@ qt6_add_resources(RESOURCES_RCC ${RESOURCES})
 add_library(wiredpanda_resources OBJECT ${RESOURCES_RCC})
 set_target_properties(wiredpanda_resources PROPERTIES UNITY_BUILD OFF)
 
-# Embed Exercise content JSON and its translation catalog directly onto the
+# Embed Exercise/Tour content JSON and their translation catalog directly onto the
 # wiredpanda_resources target. Deliberately NOT a .qrc file: rcc can't glob, so a .qrc would
 # reintroduce the hardcoded file list this mechanism is meant to eliminate.
 qt6_add_resources(wiredpanda_resources "exercises" PREFIX "/Exercises"
     BASE App/Resources/Exercises FILES ${EXERCISE_JSON_FILES})
+qt6_add_resources(wiredpanda_resources "tours" PREFIX "/Tours"
+    BASE App/Resources/Tours FILES ${TOUR_JSON_FILES})
 qt6_add_resources(wiredpanda_resources "exercise-tour-catalog" PREFIX "/i18n/ExerciseTour"
     BASE App/Resources/Translations/ExerciseTour FILES ${EXERCISE_TOUR_CATALOG_JSON_FILES})
 

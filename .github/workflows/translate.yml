@@ -9,6 +9,7 @@ on:
       - 'App/**/*.h'
       - 'App/**/*.ui'
       - 'App/Resources/Exercises/**/*.json'
+      - 'App/Resources/Tours/**/*.json'
       - 'CMakeLists.txt'
 
   # Trigger on translation file changes (typically from Weblate)
@@ -18,6 +19,7 @@ on:
       - 'App/Resources/Translations/*.ts'
       - 'App/Resources/Translations/ExerciseTour/*.json'
       - 'App/Resources/Exercises/**/*.json'
+      - 'App/Resources/Tours/**/*.json'
     types: [opened, synchronize, reopened]
 
   # Manual trigger

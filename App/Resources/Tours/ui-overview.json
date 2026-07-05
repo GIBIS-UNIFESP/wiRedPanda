@@ -1,0 +1,71 @@
+{
+  "id": "ui-overview",
+  "title": "wiRedPanda Interface Tour",
+  "description": "A guided walkthrough of the main interface — palette, canvas, toolbar, and properties panel.",
+  "steps": [
+    {
+      "key": "welcome",
+      "title": "Welcome to wiRedPanda!",
+      "body": "wiRedPanda is a digital logic circuit simulator. You can build circuits by placing components and wiring them together. This tour will show you the main parts of the interface.",
+      "target": ""
+    },
+    {
+      "key": "component-palette",
+      "title": "Component Palette",
+      "body": "This panel lists all available components — logic gates, inputs, outputs, flip-flops, and more. Components are organized by category using the tabs at the top. Click a tab to browse its category.",
+      "target": "elementPalette"
+    },
+    {
+      "key": "logic-gates",
+      "title": "Logic Gates",
+      "body": "The Gates tab contains AND, OR, NOT, NAND, NOR, XOR, and other fundamental logic gates. Drag any gate from this list onto the canvas to add it to your circuit.",
+      "target": "gatesTab",
+      "click": ["gatesTab"]
+    },
+    {
+      "key": "canvas",
+      "title": "The Canvas",
+      "body": "Build your circuit here. Drag components from the palette, then connect them by clicking and dragging from an output port (right side of a component) to an input port (left side of another).",
+      "target": "canvasArea"
+    },
+    {
+      "key": "search-bar",
+      "title": "Search Bar",
+      "body": "Use the search bar to quickly find any component by name. As you type, a filtered list appears below showing matching components across all categories.",
+      "target": "searchBar"
+    },
+    {
+      "key": "element-properties",
+      "title": "Element Properties",
+      "body": "When you select a component on the canvas, its properties appear here. You can set labels, colors, trigger types, and other component-specific settings. Try selecting a placed component to see its options.",
+      "target": "elementEditor",
+      "click": ["setupElementEditorDemo"]
+    },
+    {
+      "key": "waveform-viewer",
+      "title": "Waveform Viewer",
+      "body": "wiRedPanda includes a waveform viewer called BeWavedDolphin. It shows how every signal in your circuit changes over time — inputs as rows at the top, outputs below, with each column representing one simulation time step. Click the highlighted toolbar button to open it.",
+      "target": "toolbar"
+    },
+    {
+      "key": "waveform-table",
+      "title": "Reading the Waveform Table",
+      "body": "The waveform table shows every signal in your circuit. The Clock row is the input; the Led row is the computed output. Each column is one simulation time step — you can see exactly how the output follows the input.",
+      "target": "bwd:tableView",
+      "click": ["setupWaveformDemo", "actionWaveform"]
+    },
+    {
+      "key": "combinational-mode",
+      "title": "Combinational Mode",
+      "body": "The highlighted button (Combinational) was just triggered automatically — it fills the input rows with every possible 0/1 combination, giving you a complete truth table in one click.",
+      "target": "bwd:toolbar",
+      "click": ["bwd:actionCombinational"]
+    },
+    {
+      "key": "editing-cells",
+      "title": "Editing Cells Manually",
+      "body": "You can also edit the waveform by hand. Double-click any cell in the Clock row to flip it between 0 and 1 — the Led row updates instantly to reflect the new output.",
+      "target": "bwd:tableView"
+    }
+  ]
+}
