@@ -110,11 +110,18 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Created Vcc for inactive Preset/Clear")
 
+        # Every stage below places bit i at the same row (100.0 + i *
+        # bit_row_step), keeping same-bit wires horizontal across the whole
+        # pipeline. bit_row_step is 2x the standard spacing (not 1x) because
+        # level2_mux_2to1's rotated side label (hold_mux/load_mux below)
+        # reaches well past its own body when stacked at the standard step.
+        bit_row_step = 2 * VERTICAL_STAGE_SPACING
+
         # Create NOT gates for each Q output (stage 1)
         not_q_ids = []
         not_x = input_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            not_id = await self.create_element("Not", not_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"not_q{i}")
+            not_id = await self.create_element("Not", not_x, 100.0 + (i * bit_row_step), f"not_q{i}")
             if not_id is None:
                 return False
             not_q_ids.append(not_id)
@@ -123,7 +130,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         carry_and_ids = []
         carry_x = not_x + HORIZONTAL_GATE_SPACING
         for i in range(2):
-            and_id = await self.create_element("And", carry_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"and_carry{i}")
+            and_id = await self.create_element("And", carry_x, 100.0 + (i * bit_row_step), f"and_carry{i}")
             if and_id is None:
                 return False
             carry_and_ids.append(and_id)
@@ -132,9 +139,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         not_carry_ids = []
         not_carry_x = carry_x + HORIZONTAL_GATE_SPACING
         for i in range(3):
-            not_id = await self.create_element(
-                "Not", not_carry_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"not_carry{i}"
-            )
+            not_id = await self.create_element("Not", not_carry_x, 100.0 + (i * bit_row_step), f"not_carry{i}")
             if not_id is None:
                 return False
             not_carry_ids.append(not_id)
@@ -151,7 +156,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
                 and_id = await self.create_element(
                     "And",
                     xor_and_x + (j * HORIZONTAL_GATE_SPACING),
-                    100.0 + (i * VERTICAL_STAGE_SPACING),
+                    100.0 + (i * bit_row_step),
                     f"and_xor{i}_{j}",
                 )
                 if and_id is None:
@@ -163,7 +168,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         xor_or_ids: list = [None]
         xor_or_x = xor_and_x + (2 * HORIZONTAL_GATE_SPACING)
         for i in range(1, 4):
-            or_id = await self.create_element("Or", xor_or_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"or_xor{i}")
+            or_id = await self.create_element("Or", xor_or_x, 100.0 + (i * bit_row_step), f"or_xor{i}")
             if or_id is None:
                 return False
             xor_or_ids.append(or_id)
@@ -176,9 +181,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         dff_ids = []
         dff_x = xor_or_x + (3 * HORIZONTAL_GATE_SPACING)
         for i in range(4):
-            ff_id = await self.instantiate_ic(
-                "level1_d_flip_flop", dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}"
-            )
+            ff_id = await self.instantiate_ic("level1_d_flip_flop", dff_x, 100.0 + (i * bit_row_step), f"FF{i}")
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -193,9 +196,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         mux_x = xor_or_x + HORIZONTAL_GATE_SPACING
         load_mux_x = xor_or_x + (2 * HORIZONTAL_GATE_SPACING)
         for i in range(4):
-            m = await self.instantiate_ic(
-                "level2_mux_2to1", mux_x, 110.0 + (i * VERTICAL_STAGE_SPACING), f"hold_mux{i}"
-            )
+            m = await self.instantiate_ic("level2_mux_2to1", mux_x, 100.0 + (i * bit_row_step), f"hold_mux{i}")
             if m is None:
                 return False
             hold_mux_ids.append(m)
@@ -208,7 +209,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             lm = await self.instantiate_ic(
                 "level2_mux_2to1",
                 load_mux_x,
-                115.0 + (i * VERTICAL_STAGE_SPACING),
+                100.0 + (i * bit_row_step),
                 f"load_mux{i}",
             )
             if lm is None:
@@ -226,7 +227,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         output_led_ids = []
         output_x = dff_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
-            led_id = await self.create_element("Led", output_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"Q{i}")
+            led_id = await self.create_element("Led", output_x, 100.0 + (i * bit_row_step), f"Q{i}")
             if led_id is None:
                 return False
             output_led_ids.append(led_id)
