@@ -316,6 +316,21 @@ void BewavedDolphin::setExerciseOverlay(ExerciseOverlay *overlay)
     m_exerciseOverlay = overlay;
 }
 
+QToolBar *BewavedDolphin::mainToolBar() const
+{
+    return m_ui->mainToolBar;
+}
+
+QAction *BewavedDolphin::actionCombinational() const
+{
+    return m_ui->actionCombinational;
+}
+
+void BewavedDolphin::triggerCombinational()
+{
+    on_actionCombinational_triggered();
+}
+
 bool BewavedDolphin::checkSave()
 {
     if (!m_edited) {

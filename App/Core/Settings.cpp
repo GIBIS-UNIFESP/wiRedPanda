@@ -236,3 +236,26 @@ void Settings::setExerciseProgress(const QString &exerciseId, int step)
 {
     setValue(QStringLiteral("exercises/progress/") + exerciseId, step);
 }
+
+// Tour progress
+
+QStringList Settings::completedTours()
+{
+    return value("tours/completed").toStringList();
+}
+
+void Settings::setCompletedTours(const QStringList &ids)
+{
+    setValue("tours/completed", ids);
+}
+
+int Settings::tourProgress(const QString &tourId)
+{
+    const QVariant v = value(QStringLiteral("tours/progress/") + tourId);
+    return v.isValid() ? v.toInt() : -1;
+}
+
+void Settings::setTourProgress(const QString &tourId, int step)
+{
+    setValue(QStringLiteral("tours/progress/") + tourId, step);
+}

@@ -18,7 +18,6 @@
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
-class BewavedDolphin;
 class ElementLabel;
 class ElementPalette;
 class ExerciseBrowserDialog;
@@ -28,8 +27,12 @@ class ExportController;
 class ICController;
 class ICPreviewPopup;
 class LanguageManager;
+class BewavedDolphin;
 class RecentFiles;
 class SceneUiBinder;
+class TourBrowserDialog;
+class TourEngine;
+class TourOverlay;
 class WorkSpace;
 class WorkspaceManager;
 
@@ -221,6 +224,9 @@ private:
 
     void on_actionExercises_triggered();
     void startExercise(const QString &resourcePath);
+    void on_actionTours_triggered();
+    void startTour(const QString &resourcePath);
+    QRect resolveTourTarget(const QString &id) const;
 
     void clickTarget(const QString &id);
 
@@ -287,6 +293,11 @@ private:
 
     ExerciseEngine  *m_exerciseEngine  = nullptr;
     ExerciseOverlay *m_exerciseOverlay = nullptr;
+
+    TourEngine  *m_tourEngine  = nullptr;
+    /// QPointer: can be destroyed as a side effect of a WA_DeleteOnClose window
+    /// (e.g. BeWavedDolphin) it was reparented onto, outside our own control.
+    QPointer<TourOverlay> m_tourOverlay;
 
     QPointer<BewavedDolphin> m_bwd;
 

@@ -97,9 +97,10 @@ can never be satisfied.
 
 `click` IDs are a **closed, hardcoded** set understood only by `MainWindow::clickTarget()`
 (`App/UI/MainWindow.cpp`) — not data-driven. Currently valid: `ioTab`, `gatesTab`,
-`combinational`, `memoryTab`, `actionPlay`, `actionWaveform`. Referencing an ID outside this
-list is silently a no-op. If your exercise needs to trigger something not in this list, add a
-case to `clickTarget()` first — there's no way to do it from JSON alone.
+`combinational`, `memoryTab`, `actionPlay`, `actionWaveform`, `bwd:actionCombinational`,
+`setupElementEditorDemo`, `setupWaveformDemo`. Referencing an ID outside this list is silently a
+no-op. If your exercise needs to trigger something not in this list, add a case to
+`clickTarget()` first — there's no way to do it from JSON alone.
 
 ## Translations
 
@@ -111,4 +112,5 @@ is generated from this folder's content by `Scripts/generate_exercise_tour_catal
 Non-English `ExerciseTour/<lang>.json` files are submitted by translators through Weblate's
 normal web UI (a *separate* "JSON file" component from the app's main `.ts` component) —
 translators never touch this folder's `.json` files directly. If a translation is missing or a
-step has no `key`, the app falls back to the raw English text here.
+step has no `key`, the app falls back to the raw English text here. See
+`../Tours/README.md` for the equivalent for guided UI tours.

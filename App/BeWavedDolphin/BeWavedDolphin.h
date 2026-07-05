@@ -126,11 +126,20 @@ public:
     /// Returns the input row index whose element label equals \a label, or -1 (MCP access).
     int inputRow(const QString &label) const;
 
-    // --- Exercise overlay support ---
+    // --- Tour / Exercise overlay support ---
 
     /// Registers \a overlay so it is repositioned whenever the window is resized.
     /// Pass \c nullptr to detach. Does not take ownership.
     void setExerciseOverlay(ExerciseOverlay *overlay);
+
+    /// Returns the waveform table view (for tour target resolution).
+    QTableView *signalTableView() const { return m_signalTableView; }
+    /// Returns the main toolbar (for tour target resolution).
+    QToolBar   *mainToolBar()        const;
+    /// Returns the combinational action (for tour button spotlighting).
+    QAction    *actionCombinational() const;
+    /// Triggers the combinational input-pattern generator (for tour automation).
+    void triggerCombinational();
 
 protected:
     // --- Qt event overrides ---
