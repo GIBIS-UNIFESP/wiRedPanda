@@ -185,6 +185,8 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
         icPtr->setPos(x, y);
         icPtr->setLabel(label);
 
+        const QRectF bounds = icPtr->boundingRect();
+
         QJsonObject result;
         result["element_id"] = icPtr->id();
         result["ic_name"] = icName;
@@ -193,6 +195,8 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
         result["position"] = QJsonObject{{"x", x}, {"y", y}};
         result["input_count"] = icPtr->inputSize();
         result["output_count"] = icPtr->outputSize();
+        result["width"] = bounds.width();
+        result["height"] = bounds.height();
         if (inlineMode) {
             result["inline"] = true;
             result["blob_name"] = icPtr->blobName();
