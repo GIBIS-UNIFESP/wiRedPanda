@@ -76,22 +76,24 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         await self.log("  ✓ Created load, inc, reset, clock control inputs")
 
         # Instantiate 8-bit Register IC
-        register_id = await self.instantiate_ic(
+        register_handle = await self.instantiate_ic_with_size(
             "level6_register_8bit", ctrl_x + HORIZONTAL_GATE_SPACING, 100.0, "Register8bit"
         )
-        if register_id is None:
+        if register_handle is None:
             return False
+        register_id = register_handle.element_id
         await self.log("  ✓ Instantiated 8-bit Register IC")
 
         # Instantiate 8-bit Adder IC (for PC + 1)
-        adder_id = await self.instantiate_ic(
+        adder_handle = await self.instantiate_ic_with_size(
             "level6_ripple_adder_8bit",
             ctrl_x + (2 * HORIZONTAL_GATE_SPACING),
             100.0,
             "Adder8bit",
         )
-        if adder_id is None:
+        if adder_handle is None:
             return False
+        adder_id = adder_handle.element_id
         await self.log("  ✓ Instantiated 8-bit Adder IC")
 
         # Connect adder A inputs to register outputs (PC current value)
@@ -130,17 +132,26 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Mux1: Select between hold (PC) and increment (PC+1) based on inc AND NOT(load)
         # Mux2: Select between Mux1 output and loadValue based on load
 
-        # Create NOT(load) gate for control logic. Own column (5) past
-        # VCC_Const1/GND_Const0 (column 3) and WriteEnable_OR (column 4) --
-        # the old "3.5 * HORIZONTAL_GATE_SPACING" packed it within ~30px of
-        # both of those.
-        not_load_id = await self.create_element("Not", ctrl_x + 5 * HORIZONTAL_GATE_SPACING, 350.0, "NotLoad")
+        # NotLoad/AndIncNotLoad share WriteEnable_OR's column (4) rather than
+        # sitting one column over (5) alongside Mux1 -- column 5 put them
+        # diagonally adjacent to the 8-row-tall Mux1 array (column 6, which
+        # spans the entire y=200..928 range), so a long label like
+        # "AndIncNotLoad" (~125px, wider than the 104px column pitch) reached
+        # sideways into whichever Mux1[i] row it happened to sit level with.
+        # Column 4 is a full 2*HORIZONTAL_GATE_SPACING clear of Mux1, so no
+        # label there can reach it regardless of row. Stacked a full
+        # VERTICAL_STAGE_SPACING below WriteEnable_OR (created further below,
+        # at 50.0 + 3 * VERTICAL_STAGE_SPACING) so the two gates' own labels
+        # don't collide with each other either.
+        not_load_id = await self.create_element(
+            "Not", ctrl_x + 4 * HORIZONTAL_GATE_SPACING, 50.0 + (4 * VERTICAL_STAGE_SPACING), "NotLoad"
+        )
         if not_load_id is None:
             return False
 
         # Create AND(inc, NOT(load)) gate
         and_inc_id = await self.create_element(
-            "And", ctrl_x + 5 * HORIZONTAL_GATE_SPACING, 350.0 + VERTICAL_STAGE_SPACING, "AndIncNotLoad"
+            "And", ctrl_x + 4 * HORIZONTAL_GATE_SPACING, 50.0 + (5 * VERTICAL_STAGE_SPACING), "AndIncNotLoad"
         )
         if and_inc_id is None:
             return False
@@ -158,8 +169,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
             return False
 
         # Create 8-bit Mux1 cascade: Select between hold (PC) and increment (PC+1)
-        # Controlled by AND(inc, NOT load). Own column (6), a full
-        # HORIZONTAL_GATE_SPACING past NotLoad/AndIncNotLoad (column 5).
+        # Controlled by AND(inc, NOT load). Own column (6), a full 2 *
+        # HORIZONTAL_GATE_SPACING past NotLoad/AndIncNotLoad (column 4) --
+        # column 5 is deliberately left empty for clearance (see NotLoad).
         mux1_gates = []
         for i in range(8):
             mux1_id = await self.create_element(
@@ -225,8 +237,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
             return False
 
         # WriteEnable: OR(load, inc) - write on clock edge when either load or inc is asserted.
-        # Own column (4), past VCC_Const1/GND_Const0 (column 3) -- the old
-        # "3.2 * HORIZONTAL_GATE_SPACING" put it only ~21px past GND_Const0.
+        # Column (4), past VCC_Const1/GND_Const0 (column 3) -- topmost of the
+        # three column-4 control gates (NotLoad/AndIncNotLoad stack below it,
+        # a full VERTICAL_STAGE_SPACING apart, see NotLoad above).
         we_or_id = await self.create_element(
             "Or", ctrl_x + 4 * HORIZONTAL_GATE_SPACING, 50.0 + (3 * VERTICAL_STAGE_SPACING), "WriteEnable_OR"
         )

@@ -256,22 +256,31 @@ class ALU8BitBuilder(ICBuilderBase):
         # Create selectors to choose between 5-way output and additional operations (NOT, SHL, SHR)
 
         # Instantiate level3_alu_selector_5way per bit to select from 5 operations (0-4)
+        # bit_col_step is wider than the standard HORIZONTAL_GATE_SPACING: this
+        # whole block's labels ("Mux1_5way_NOT[i]", "Mux2_SHL_SHR[i]") render
+        # wider than the standard 104px step, so adjacent bit columns collide
+        # at 1x. Selector5way/Mux1/Mux2/Mux3/Op6_OR_Op7/Result all share this
+        # same per-bit column (col_x below), so it's widened once here.
         selector_x = input_a_x_start
         selector_y = shl_y + (2 * VERTICAL_STAGE_SPACING)
+        bit_col_step = 1.75 * HORIZONTAL_GATE_SPACING
         selector_ids = []  # Store selector IDs for NOR connections
         selector_5way_outputs = []
+        selector_heights = []
 
         for i in range(8):
             # Instantiate selector for this bit (handles operations 0-4)
-            selector_id = await self.instantiate_ic(
+            selector_handle = await self.instantiate_ic_with_size(
                 "level3_alu_selector_5way",
-                selector_x + i * HORIZONTAL_GATE_SPACING,
+                selector_x + i * bit_col_step,
                 selector_y,
                 f"Selector5way[{i}]",
             )
-            if selector_id is None:
+            if selector_handle is None:
                 return False
+            selector_id = selector_handle.element_id
             selector_ids.append(selector_id)
+            selector_heights.append(selector_handle.height)
 
             # Connect operation results to selector
             alu_src = alu_low if i < 4 else alu_high
@@ -318,7 +327,10 @@ class ALU8BitBuilder(ICBuilderBase):
         # Final selection happens in the Mux1/Mux2/Mux3 cascade below.
         # (F26: a dead "Mux8way" layer used to sit here — 8 muxes with data
         # wired but no select and no consumer.)
-        mux_8way_y = selector_y + VERTICAL_STAGE_SPACING
+        # Selector5way's rotated IC label reaches down past its own real
+        # height (learned above, not a flat 64px guess), so the gap to the
+        # row below is real-height-based, not a flat VERTICAL_STAGE_SPACING.
+        mux_8way_y = selector_y + max(selector_heights) + VERTICAL_STAGE_SPACING
 
         # For operations 0-4: Use the 5way selector
         # For operation 5 (NOT): Use NOT gates
@@ -333,9 +345,18 @@ class ALU8BitBuilder(ICBuilderBase):
         # This 2-column x 3-row block used to sit at selector_x/selector_x +
         # HORIZONTAL_GATE_SPACING -- directly inside the Selector5way[]/mux
         # cascade's own 8-wide column range (selector_x .. selector_x + 7 *
-        # HORIZONTAL_GATE_SPACING), so it aliased onto Selector5way[0]/[1] and
+        # bit_col_step), so it aliased onto Selector5way[0]/[1] and
         # the Mux1/Mux2 cascade below. Move it a full row past that range.
-        decoder_x = selector_x + 9 * HORIZONTAL_GATE_SPACING
+        decoder_x = selector_x + 9 * bit_col_step
+
+        # "NOT_OpCode0"/"NOT_OpCode1" render wider (~113px) than the standard
+        # HORIZONTAL_GATE_SPACING (104px) at the default label font, so at a
+        # flat 1-stage gap their labels reach into the AND column immediately
+        # to the right ("Op6_AND1"/"Op5_AND1"). Give the AND columns an extra
+        # half-stage of clearance from the NOT column to clear that with
+        # margin, without disturbing the NOT gates' own (already-clear)
+        # position relative to decoder_x.
+        and_gate_x = decoder_x + (HORIZONTAL_GATE_SPACING // 2)
 
         # Create NOT gates
         not_op1_id = await self.create_element(
@@ -355,7 +376,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         # Op5 detector: OpCode[2] AND NOT(OpCode[1]) AND OpCode[0]
-        op5_and1_id = await self.create_element("And", decoder_x, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND1")
+        op5_and1_id = await self.create_element("And", and_gate_x, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND1")
         if op5_and1_id is None:
             return False
 
@@ -366,7 +387,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         op5_and2_id = await self.create_element(
-            "And", decoder_x + HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND2"
+            "And", and_gate_x + HORIZONTAL_GATE_SPACING, selector_y - VERTICAL_STAGE_SPACING, "Op5_AND2"
         )
         if op5_and2_id is None:
             return False
@@ -378,7 +399,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         # Op6 detector: OpCode[2] AND OpCode[1] AND NOT(OpCode[0])
-        op6_and1_id = await self.create_element("And", decoder_x, selector_y, "Op6_AND1")
+        op6_and1_id = await self.create_element("And", and_gate_x, selector_y, "Op6_AND1")
         if op6_and1_id is None:
             return False
 
@@ -388,7 +409,7 @@ class ALU8BitBuilder(ICBuilderBase):
         if not await self.connect(opcode_inputs[1], op6_and1_id, target_port=1):
             return False
 
-        op6_and2_id = await self.create_element("And", decoder_x + HORIZONTAL_GATE_SPACING, selector_y, "Op6_AND2")
+        op6_and2_id = await self.create_element("And", and_gate_x + HORIZONTAL_GATE_SPACING, selector_y, "Op6_AND2")
         if op6_and2_id is None:
             return False
 
@@ -399,7 +420,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         # Op7 detector: OpCode[2] AND OpCode[1] AND OpCode[0]
-        op7_and1_id = await self.create_element("And", decoder_x, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND1")
+        op7_and1_id = await self.create_element("And", and_gate_x, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND1")
         if op7_and1_id is None:
             return False
 
@@ -410,7 +431,7 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
 
         op7_and2_id = await self.create_element(
-            "And", decoder_x + HORIZONTAL_GATE_SPACING, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND2"
+            "And", and_gate_x + HORIZONTAL_GATE_SPACING, selector_y + VERTICAL_STAGE_SPACING, "Op7_AND2"
         )
         if op7_and2_id is None:
             return False
@@ -440,7 +461,7 @@ class ALU8BitBuilder(ICBuilderBase):
         final_result_muxes = []  # Mux3 outputs — the true per-bit results, used by the flags
 
         for i in range(8):
-            col_x = selector_x + i * HORIZONTAL_GATE_SPACING
+            col_x = selector_x + i * bit_col_step
 
             # ========== Mux1: Select between 5-way output and NOT result ==========
             # Implements: Out = (OpCode==101) ? NOT(A) : (ops 0-4 result)
@@ -531,7 +552,9 @@ class ALU8BitBuilder(ICBuilderBase):
         # NOR all result outputs together. Placed a full stage below the
         # Result[] row (which now lives at led_row_y, well past the old
         # "selector_y + 2 * VERTICAL_STAGE_SPACING" that used to alias onto it).
-        flags_row_y = led_row_y + VERTICAL_STAGE_SPACING
+        # Zero_NOR sits at the same x as Result[0] -- Result[0]'s label reaches
+        # past a flat 1x gap, so this needs 1.5x instead.
+        flags_row_y = led_row_y + 1.5 * VERTICAL_STAGE_SPACING
         zero_nor_id = await self.create_element("Nor", selector_x, flags_row_y, "Zero_NOR")
         if zero_nor_id is None:
             return False

@@ -79,12 +79,12 @@ module level4_ram_4x1_ic (
     output dataout
 );
 
-wire aux_not_1;
 // IC instance: AddrDecoder (level2_decoder_2to4)
-wire w_level2_decoder_2to4_inst_2_out0;
-wire w_level2_decoder_2to4_inst_2_out1;
-wire w_level2_decoder_2to4_inst_2_out2;
-wire w_level2_decoder_2to4_inst_2_out3;
+wire w_level2_decoder_2to4_inst_1_out0;
+wire w_level2_decoder_2to4_inst_1_out1;
+wire w_level2_decoder_2to4_inst_1_out2;
+wire w_level2_decoder_2to4_inst_1_out3;
+wire aux_not_2;
 wire aux_and_3;
 wire aux_and_4;
 wire aux_and_5;
@@ -105,20 +105,20 @@ reg aux_d_flip_flop_14_1_q = 1'b1;
 wire w_level2_mux_4to1_inst_15_p_output;
 
 // Internal logic
-assign aux_not_1 = ~reset;
-level2_decoder_2to4 level2_decoder_2to4_inst_2 (
+level2_decoder_2to4 level2_decoder_2to4_inst_1 (
     .addr0(address0),
     .addr1(address1),
     .enable(1'b1),
-    .out0(w_level2_decoder_2to4_inst_2_out0),
-    .out1(w_level2_decoder_2to4_inst_2_out1),
-    .out2(w_level2_decoder_2to4_inst_2_out2),
-    .out3(w_level2_decoder_2to4_inst_2_out3)
+    .out0(w_level2_decoder_2to4_inst_1_out0),
+    .out1(w_level2_decoder_2to4_inst_1_out1),
+    .out2(w_level2_decoder_2to4_inst_1_out2),
+    .out3(w_level2_decoder_2to4_inst_1_out3)
 );
-assign aux_and_3 = (w_level2_decoder_2to4_inst_2_out0 & writeenable);
-assign aux_and_4 = (w_level2_decoder_2to4_inst_2_out1 & writeenable);
-assign aux_and_5 = (w_level2_decoder_2to4_inst_2_out2 & writeenable);
-assign aux_and_6 = (w_level2_decoder_2to4_inst_2_out3 & writeenable);
+assign aux_not_2 = ~reset;
+assign aux_and_3 = (w_level2_decoder_2to4_inst_1_out0 & writeenable);
+assign aux_and_4 = (w_level2_decoder_2to4_inst_1_out1 & writeenable);
+assign aux_and_5 = (w_level2_decoder_2to4_inst_1_out2 & writeenable);
+assign aux_and_6 = (w_level2_decoder_2to4_inst_1_out3 & writeenable);
     //Multiplexer
     always @(*)
     begin
@@ -130,9 +130,9 @@ assign aux_and_6 = (w_level2_decoder_2to4_inst_2_out3 & writeenable);
     end
     //End of Multiplexer
     //D FlipFlop
-    always @(posedge clock or negedge aux_not_1)
+    always @(posedge clock or negedge aux_not_2)
     begin
-        if (~aux_not_1)
+        if (~aux_not_2)
         begin
             aux_d_flip_flop_8_0_q <= 1'b0;
             aux_d_flip_flop_8_1_q <= 1'b1;
@@ -155,9 +155,9 @@ assign aux_and_6 = (w_level2_decoder_2to4_inst_2_out3 & writeenable);
     end
     //End of Multiplexer
     //D FlipFlop
-    always @(posedge clock or negedge aux_not_1)
+    always @(posedge clock or negedge aux_not_2)
     begin
-        if (~aux_not_1)
+        if (~aux_not_2)
         begin
             aux_d_flip_flop_10_0_q <= 1'b0;
             aux_d_flip_flop_10_1_q <= 1'b1;
@@ -180,9 +180,9 @@ assign aux_and_6 = (w_level2_decoder_2to4_inst_2_out3 & writeenable);
     end
     //End of Multiplexer
     //D FlipFlop
-    always @(posedge clock or negedge aux_not_1)
+    always @(posedge clock or negedge aux_not_2)
     begin
-        if (~aux_not_1)
+        if (~aux_not_2)
         begin
             aux_d_flip_flop_12_0_q <= 1'b0;
             aux_d_flip_flop_12_1_q <= 1'b1;
@@ -205,9 +205,9 @@ assign aux_and_6 = (w_level2_decoder_2to4_inst_2_out3 & writeenable);
     end
     //End of Multiplexer
     //D FlipFlop
-    always @(posedge clock or negedge aux_not_1)
+    always @(posedge clock or negedge aux_not_2)
     begin
-        if (~aux_not_1)
+        if (~aux_not_2)
         begin
             aux_d_flip_flop_14_0_q <= 1'b0;
             aux_d_flip_flop_14_1_q <= 1'b1;

@@ -68,7 +68,17 @@ class DecoderBuilder(ICBuilderBase):
         # connection behaves exactly as before — both the engine (internal switch
         # holds its saved value) and the SV/Arduino export (an unconnected IC
         # input resolves to the port's default value) see Enable=1.
-        enable_id = await self.create_element("InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "Enable")
+        #
+        # Enable's Y stays exactly the address column's next row (unchanged from
+        # before) so it keeps its rank as the last boundary input when ports are
+        # sorted by Y then X -- other, unrelated generators embed this decoder
+        # and connect to addr[]/out[] by index-derived port order, so reordering
+        # boundary inputs here would silently misconnect fixtures outside this
+        # class's scope. Its X, however, is free to move: centering it under the
+        # AND-gate grid it actually fans out to (rather than the far-left address
+        # column) shortens that fan-out's worst-case wire without touching order.
+        enable_x = and_x + 1.5 * HORIZONTAL_GATE_SPACING
+        enable_id = await self.create_element("InputSwitch", enable_x, 100.0 + width * VERTICAL_STAGE_SPACING, "Enable")
         if enable_id is None:
             return False
         set_en = await self.mcp.send_command("set_input_value", {"element_id": enable_id, "value": True})
@@ -167,22 +177,36 @@ class RegisterFileBuilder(ICBuilderBase):
         # must clear the widest one so a wide row never reaches into the logic
         # area to its right.
         input_row_width = max(address_bits, data_width)
-        decoder_x = input_x_start + input_row_width * HORIZONTAL_GATE_SPACING
+        # Write_Addr[i]/Read_Addr1[i]/Read_Addr2[i]/Data_In[i] labels are long
+        # enough that a flat HORIZONTAL_GATE_SPACING step lets adjacent ones
+        # clip by a few px, so these four input rows get a slightly wider
+        # per-column step (decoder_x's clearance below is widened to match).
+        input_col_spacing = HORIZONTAL_GATE_SPACING + 16
+        decoder_x = input_x_start + input_row_width * input_col_spacing
         # write_gates wraps 2-per-row (below), so mux must clear that full span.
         write_gates_x = decoder_x + HORIZONTAL_GATE_SPACING
         mux_x = write_gates_x + 2 * HORIZONTAL_GATE_SPACING
+        # holdMux[reg][i]'s label ("holdMux[3][7]", etc.) is long enough that a
+        # flat HORIZONTAL_GATE_SPACING step lets it clip the next bit's holdMux
+        # (or storage's first column past the last bit), so it gets the same
+        # slightly wider per-bit step -- storage keeps the plain step since its
+        # own shorter labels don't collide at it.
+        hold_mux_col_spacing = HORIZONTAL_GATE_SPACING + 16
         # holdMux and storage are each a straight data_width-wide row at the same
         # per-register y -- they must be in disjoint column ranges (not
         # interleaved bit-by-bit, which would alias holdMux[b] onto storage[b-1]).
-        storage_x = mux_x + data_width * HORIZONTAL_GATE_SPACING
+        storage_x = mux_x + data_width * hold_mux_col_spacing
         read_mux_x = storage_x + data_width * HORIZONTAL_GATE_SPACING
         # readMux1/readMux2 are two fixed columns -- output must clear both.
         output_x = read_mux_x + 2 * HORIZONTAL_GATE_SPACING
+        # Read_Data1[i]/Read_Data2[i] labels are long enough that a flat
+        # HORIZONTAL_GATE_SPACING step lets adjacent ones clip too.
+        output_col_spacing = HORIZONTAL_GATE_SPACING + 16
 
         write_addr = []
         for i in range(address_bits):
             elem_id = await self.create_element(
-                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, write_addr_y, f"Write_Addr[{i}]"
+                "InputSwitch", input_x_start + i * input_col_spacing, write_addr_y, f"Write_Addr[{i}]"
             )
             if elem_id is None:
                 return False
@@ -191,7 +215,7 @@ class RegisterFileBuilder(ICBuilderBase):
         read_addr_1 = []
         for i in range(address_bits):
             elem_id = await self.create_element(
-                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, read_addr1_y, f"Read_Addr1[{i}]"
+                "InputSwitch", input_x_start + i * input_col_spacing, read_addr1_y, f"Read_Addr1[{i}]"
             )
             if elem_id is None:
                 return False
@@ -200,7 +224,7 @@ class RegisterFileBuilder(ICBuilderBase):
         read_addr_2 = []
         for i in range(address_bits):
             elem_id = await self.create_element(
-                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, read_addr2_y, f"Read_Addr2[{i}]"
+                "InputSwitch", input_x_start + i * input_col_spacing, read_addr2_y, f"Read_Addr2[{i}]"
             )
             if elem_id is None:
                 return False
@@ -209,7 +233,7 @@ class RegisterFileBuilder(ICBuilderBase):
         data_in = []
         for i in range(data_width):
             elem_id = await self.create_element(
-                "InputSwitch", input_x_start + i * HORIZONTAL_GATE_SPACING, data_in_y, f"Data_In[{i}]"
+                "InputSwitch", input_x_start + i * input_col_spacing, data_in_y, f"Data_In[{i}]"
             )
             if elem_id is None:
                 return False
@@ -228,7 +252,7 @@ class RegisterFileBuilder(ICBuilderBase):
         read_data_1 = []
         for i in range(data_width):
             elem_id = await self.create_element(
-                "Led", output_x + i * HORIZONTAL_GATE_SPACING, read_addr1_y, f"Read_Data1[{i}]"
+                "Led", output_x + i * output_col_spacing, read_addr1_y, f"Read_Data1[{i}]"
             )
             if elem_id is None:
                 return False
@@ -237,7 +261,7 @@ class RegisterFileBuilder(ICBuilderBase):
         read_data_2 = []
         for i in range(data_width):
             elem_id = await self.create_element(
-                "Led", output_x + i * HORIZONTAL_GATE_SPACING, read_addr2_y, f"Read_Data2[{i}]"
+                "Led", output_x + i * output_col_spacing, read_addr2_y, f"Read_Data2[{i}]"
             )
             if elem_id is None:
                 return False
@@ -298,7 +322,7 @@ class RegisterFileBuilder(ICBuilderBase):
             for bit_idx in range(data_width):
                 mux_id = await self.create_element(
                     "Mux",
-                    mux_x + bit_idx * HORIZONTAL_GATE_SPACING,
+                    mux_x + bit_idx * hold_mux_col_spacing,
                     write_addr_y + reg_idx * VERTICAL_STAGE_SPACING,
                     f"holdMux[{reg_idx}][{bit_idx}]",
                 )
@@ -919,13 +943,19 @@ class ComparatorBuilder(ICBuilderBase):
         input_x = 50.0
         not_x = input_x + HORIZONTAL_GATE_SPACING
         and_x = not_x + HORIZONTAL_GATE_SPACING
+        # andCascade*/orCascade* labels ("andCascadeGreater[2]", etc.) are long
+        # enough that wrapping them 2-per-row at the standard 1x column step
+        # collides both with each other and with their neighbouring stages, so
+        # they get their own, wider column unit.
+        cascade_col_spacing = 2 * HORIZONTAL_GATE_SPACING
         # xnor/andGreater/andLess (below) place column i at and_x + i * HORIZONTAL_GATE_SPACING
-        # for i in 0..3, so the next stage must clear that full 4-wide span.
-        cascade_x = and_x + 4 * HORIZONTAL_GATE_SPACING
-        # andCascade*/orCascade* (below) each wrap 2-per-row via (i % 2) * HORIZONTAL_GATE_SPACING,
-        # so each subsequent stage must clear a full 2-wide span, not just one step.
-        or_x = cascade_x + 2 * HORIZONTAL_GATE_SPACING
-        final_x = or_x + 2 * HORIZONTAL_GATE_SPACING
+        # for i in 0..3, so the next stage must clear that full 4-wide span. The extra
+        # +0.5x clears "andCascadeLess[2]"'s label reaching back into "andGreater[3]"'s.
+        cascade_x = and_x + 4.5 * HORIZONTAL_GATE_SPACING
+        # andCascade*/orCascade* (below) each wrap 2-per-row via (i % 2) * cascade_col_spacing,
+        # so each subsequent stage must clear that full 2-wide span, not just one step.
+        or_x = cascade_x + 2 * cascade_col_spacing
+        final_x = or_x + 2 * cascade_col_spacing
         output_x = final_x + HORIZONTAL_GATE_SPACING
 
         a_inputs = []
@@ -949,13 +979,20 @@ class ComparatorBuilder(ICBuilderBase):
         # 74LS85 cascade inputs: tie EqualIn high and GreaterIn/LessIn low for
         # standalone use; for a wider comparison feed the less-significant
         # comparator's outputs here.
-        gt_in = await self.create_element("InputSwitch", input_x, 100.0 + 8 * VERTICAL_STAGE_SPACING, "GreaterIn")
+        #
+        # Y stays the address column's next three rows (unchanged from before)
+        # so GreaterIn/EqualIn/LessIn keep their rank as the last three boundary
+        # inputs when ports are sorted by Y then X. Their X, however, sits under
+        # final_x (the column of eqAndGtIn/equalFinal/eqAndLtIn, the gates they
+        # actually feed) instead of the far-left address column, turning their
+        # long diagonal fan-out into a short, near-vertical one.
+        gt_in = await self.create_element("InputSwitch", final_x, 100.0 + 8 * VERTICAL_STAGE_SPACING, "GreaterIn")
         if gt_in is None:
             return False
-        eq_in = await self.create_element("InputSwitch", input_x, 100.0 + 9 * VERTICAL_STAGE_SPACING, "EqualIn")
+        eq_in = await self.create_element("InputSwitch", final_x, 100.0 + 9 * VERTICAL_STAGE_SPACING, "EqualIn")
         if eq_in is None:
             return False
-        lt_in = await self.create_element("InputSwitch", input_x, 100.0 + 10 * VERTICAL_STAGE_SPACING, "LessIn")
+        lt_in = await self.create_element("InputSwitch", final_x, 100.0 + 10 * VERTICAL_STAGE_SPACING, "LessIn")
         if lt_in is None:
             return False
         await self.log("  ✓ Created cascade inputs (GreaterIn, EqualIn, LessIn)")
@@ -1046,7 +1083,7 @@ class ComparatorBuilder(ICBuilderBase):
         for i in range(1, 4):
             and_casc_g_id = await self.create_element(
                 "And",
-                cascade_x + (i % 2) * HORIZONTAL_GATE_SPACING,
+                cascade_x + (i % 2) * cascade_col_spacing,
                 100.0 + (4 + (i // 2)) * VERTICAL_STAGE_SPACING,
                 f"andCascadeGreater[{i}]",
             )
@@ -1059,7 +1096,7 @@ class ComparatorBuilder(ICBuilderBase):
 
             or_casc_g_id = await self.create_element(
                 "Or",
-                or_x + (i % 2) * HORIZONTAL_GATE_SPACING,
+                or_x + (i % 2) * cascade_col_spacing,
                 100.0 + (4 + (i // 2)) * VERTICAL_STAGE_SPACING,
                 f"orCascadeGreater[{i}]",
             )
@@ -1073,7 +1110,7 @@ class ComparatorBuilder(ICBuilderBase):
 
             and_casc_l_id = await self.create_element(
                 "And",
-                cascade_x + (i % 2) * HORIZONTAL_GATE_SPACING,
+                cascade_x + (i % 2) * cascade_col_spacing,
                 100.0 + (6 + (i // 2)) * VERTICAL_STAGE_SPACING,
                 f"andCascadeLess[{i}]",
             )
@@ -1086,7 +1123,7 @@ class ComparatorBuilder(ICBuilderBase):
 
             or_casc_l_id = await self.create_element(
                 "Or",
-                or_x + (i % 2) * HORIZONTAL_GATE_SPACING,
+                or_x + (i % 2) * cascade_col_spacing,
                 100.0 + (6 + (i // 2)) * VERTICAL_STAGE_SPACING,
                 f"orCascadeLess[{i}]",
             )
@@ -1209,19 +1246,29 @@ class MuxNto1Builder(ICBuilderBase):
             data_ids.append(data_id)
             await self.log(f"  ✓ Created Data[{i}] (id={data_id})")
 
+        # Sel[] gets its own row directly under Data[] (rather than continuing
+        # the same flat row further right past every Data[] column) so it lands
+        # close to the Mux/output cluster below. This row is strictly below
+        # Data[]'s Y, and Sel[] keeps its existing left-to-right order within
+        # it, so the IC's port order (sorted by Y, then X) is unchanged --
+        # only the fan-out wires get shorter.
+        select_row_y = input_y + VERTICAL_STAGE_SPACING
         select_ids = []
-        select_x = input_x + (data_inputs * HORIZONTAL_GATE_SPACING) + HORIZONTAL_GATE_SPACING
         for i in range(select_bits):
             sel_id = await self.create_element(
-                "InputSwitch", select_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"Sel[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), select_row_y, f"Sel[{i}]"
             )
             if sel_id is None:
                 return False
             select_ids.append(sel_id)
             await self.log(f"  ✓ Created Sel[{i}] (id={sel_id})")
 
-        mux_x = select_x + (2 * HORIZONTAL_GATE_SPACING)
-        mux_y = input_y + VERTICAL_STAGE_SPACING
+        # Mux/output cluster centered under Data[]'s span (one more row below
+        # Sel[]) instead of far right past the whole input row -- this shortens
+        # the worst-case Data[]->Mux wire from sweeping the entire input row's
+        # width down to roughly half of it.
+        mux_x = input_x + ((data_inputs - 1) / 2.0) * HORIZONTAL_GATE_SPACING
+        mux_y = select_row_y + VERTICAL_STAGE_SPACING
         mux_id = await self.create_element("Mux", mux_x, mux_y, f"Mux_{data_inputs}to1")
         if mux_id is None:
             return False
@@ -1245,8 +1292,11 @@ class MuxNto1Builder(ICBuilderBase):
         # high means a mux embedded WITHOUT an explicit Enable connection behaves
         # exactly as before — both the engine and the SV/Arduino export resolve an
         # unconnected Enable to its high default.
-        enable_x = mux_x + HORIZONTAL_GATE_SPACING
-        enable_id = await self.create_element("InputSwitch", enable_x, input_y, "Enable")
+        # Enable sits on Sel[]'s row (still ranked after every Sel[i] by X, so
+        # port order is unchanged) but aligned above en_and for a short, straight
+        # wire down instead of the old far-right corner past the whole Mux.
+        en_and_x = mux_x + HORIZONTAL_GATE_SPACING
+        enable_id = await self.create_element("InputSwitch", en_and_x, select_row_y, "Enable")
         if enable_id is None:
             return False
         set_en = await self.mcp.send_command("set_input_value", {"element_id": enable_id, "value": True})
@@ -1254,7 +1304,7 @@ class MuxNto1Builder(ICBuilderBase):
             self.log_error("Failed to default Enable high")
             return False
 
-        en_and = await self.create_element("And", enable_x, mux_y, "out_enable")
+        en_and = await self.create_element("And", en_and_x, mux_y, "out_enable")
         if en_and is None:
             return False
         if not await self.connect(mux_id, en_and, source_port_label="Out", target_port=0):
@@ -1262,7 +1312,7 @@ class MuxNto1Builder(ICBuilderBase):
         if not await self.connect(enable_id, en_and, target_port=1):
             return False
 
-        output_x = enable_x + HORIZONTAL_GATE_SPACING
+        output_x = en_and_x + HORIZONTAL_GATE_SPACING
         output_id = await self.create_element("Led", output_x, mux_y, "Output")
         if output_id is None:
             return False
