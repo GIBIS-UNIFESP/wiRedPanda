@@ -17,4 +17,5 @@ private slots:
     void testModificationTracking();
     void testICEditing();
     void testFullScreenHandling();
+    void testMinimapCornerPositioning();
 };

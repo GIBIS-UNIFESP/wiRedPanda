@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <QUndoStack>
 
+#include "App/Core/Settings.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 
@@ -31,6 +32,8 @@ class Simulation;
 class WorkSpace : public QWidget
 {
     Q_OBJECT
+
+    friend class TestWorkspaceUnit;
 
 public:
     /// Outcome of a save attempt: whether it wrote to disk, or the target turned out to
@@ -108,6 +111,10 @@ public:
     /// Removes all IC instances with the given blob name.
     void removeEmbeddedIC(const QString &blobName);
 
+    // Minimap control
+    void setMinimapVisible(bool visible);
+    void setMinimapCorner(Settings::MinimapCorner corner);
+
     // --- Waveform Integration ---
 
     /// Returns the path of the associated BeWavedDolphin waveform file.
@@ -160,6 +167,9 @@ private:
     /// Atomically sets m_fileInfo and the scene's contextDir from \a filePath.
     void setCurrentFile(const QString &filePath);
 
+    /// Repositions m_minimap in its configured \a corner relative to m_view's geometry.
+    void positionMinimap(Settings::MinimapCorner corner);
+
     // --- Members ---
 
     GraphicsView m_view;
@@ -170,6 +180,9 @@ private:
     QTimer m_autosaveDebounceTimer;
     QVersionNumber m_loadedVersion;
     int m_lastId = 0;
+
+    // Minimap overview widget (small, shows full scene and viewport)
+    class MinimapWidget *m_minimap = nullptr;
 
     // Inline IC tab state
     bool m_isInlineIC = false;

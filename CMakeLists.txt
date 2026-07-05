@@ -739,6 +739,7 @@ add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKIN
 add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMainWindowGui COMMAND test_wiredpanda TestMainWindowGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMinimapWidget COMMAND test_wiredpanda TestMinimapWidget WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel1DFlipFlop COMMAND test_wiredpanda TestLevel1DFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel1DLatch COMMAND test_wiredpanda TestLevel1DLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel1JKFlipFlop COMMAND test_wiredpanda TestLevel1JKFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
