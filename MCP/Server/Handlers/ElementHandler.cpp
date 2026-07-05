@@ -130,8 +130,12 @@ QJsonObject ElementHandler::handleCreateElement(const QJsonObject &params, const
                                    requestId, JsonRpcError::OperationFailed);
     }
 
+    const QRectF bounds = element->boundingRect();
+
     QJsonObject result;
     result["element_id"] = element->id();
+    result["width"] = bounds.width();
+    result["height"] = bounds.height();
 
     return createSuccessResponse(result, requestId);
 }
@@ -674,9 +678,12 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
 
     return tryCommand([&]() -> QJsonObject {
         scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, true));
+        const QRectF bounds = element->boundingRect();
         QJsonObject result;
         result["element_id"] = element->id();
         result["new_size"] = newSize;
+        result["width"] = bounds.width();
+        result["height"] = bounds.height();
         return createSuccessResponse(result, requestId);
     }, "change input size", requestId);
 }
@@ -711,9 +718,12 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
 
     return tryCommand([&]() -> QJsonObject {
         scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, false));
+        const QRectF bounds = element->boundingRect();
         QJsonObject result;
         result["element_id"] = element->id();
         result["new_size"] = newSize;
+        result["width"] = bounds.width();
+        result["height"] = bounds.height();
         return createSuccessResponse(result, requestId);
     }, "change output size", requestId);
 }

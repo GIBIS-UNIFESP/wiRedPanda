@@ -2253,6 +2253,12 @@
                     "element_id": {
                       "type": "integer",
                       "minimum": 1
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "height": {
+                      "type": "number"
                     }
                   },
                   "required": [
@@ -2596,6 +2602,12 @@
                     "output_count": {
                       "type": "integer"
                     },
+                    "width": {
+                      "type": "number"
+                    },
+                    "height": {
+                      "type": "number"
+                    },
                     "message": {
                       "type": "string"
                     },
@@ -2846,6 +2858,12 @@
                     "new_size": {
                       "type": "integer",
                       "minimum": 1
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "height": {
+                      "type": "number"
                     }
                   },
                   "required": [
@@ -2875,6 +2893,12 @@
                     "new_size": {
                       "type": "integer",
                       "minimum": 1
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "height": {
+                      "type": "number"
                     }
                   },
                   "required": [

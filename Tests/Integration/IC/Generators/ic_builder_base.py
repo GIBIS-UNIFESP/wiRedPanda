@@ -18,6 +18,7 @@ Dependencies:
 """
 
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -44,6 +45,21 @@ except ImportError:
 # Output directory for all IC components
 IC_COMPONENTS_DIR = Path(__file__).parent.parent / "Components"
 IC_COMPONENTS_DIR.mkdir(parents=True, exist_ok=True)
+
+
+@dataclass(frozen=True)
+class ElementHandle:
+    """A placed element/IC plus its real rendered size (from the server's own
+    boundingRect(), not a Python-side approximation of Qt's port-layout math).
+
+    Used by call sites that need to react to an element's true footprint
+    (e.g. a Mux or IC whose height grows with port count) instead of assuming
+    a flat spacing constant is always enough clearance.
+    """
+
+    element_id: int
+    width: float
+    height: float
 
 
 class ErrorContext:
@@ -126,6 +142,53 @@ class ICBuilderBase:
             self.element_count += 1
         return elem_id
 
+    async def create_element_with_size(
+        self, elem_type: str, x: float, y: float, label: str = ""
+    ) -> "ElementHandle | None":
+        """Like create_element, but also returns the element's real rendered
+        width/height (from the server's boundingRect()). Use this instead of
+        create_element for elements whose size varies (e.g. a Mux later resized
+        via change_input_size/change_output_size) and whose neighbors need to
+        react to the real footprint rather than a flat spacing constant.
+        """
+        response = await self.mcp.send_command("create_element", {"type": elem_type, "x": x, "y": y, "label": label})
+        if not response.success:
+            self.log_error(f"create {elem_type} '{label}'")
+            return None
+        if response.result is None:
+            return None
+        elem_id = response.result.get("element_id")
+        if elem_id is None:
+            return None
+        self.element_count += 1
+        return ElementHandle(elem_id, response.result.get("width", 64.0), response.result.get("height", 64.0))
+
+    async def resize_input(self, element_id: int, size: int) -> "ElementHandle | None":
+        """Change an element's input port count and return its updated size.
+
+        Geometry must be re-queried after a resize rather than trusted from
+        creation time -- a Mux created then grown via change_input_size (as
+        RegisterFileBuilder does) has a taller boundingRect() only after this
+        call, not at create_element time.
+        """
+        response = await self.mcp.send_command("change_input_size", {"element_id": element_id, "size": size})
+        if not response.success:
+            self.log_error(f"resize input of element {element_id} to {size}")
+            return None
+        if response.result is None:
+            return None
+        return ElementHandle(element_id, response.result.get("width", 64.0), response.result.get("height", 64.0))
+
+    async def resize_output(self, element_id: int, size: int) -> "ElementHandle | None":
+        """Change an element's output port count and return its updated size. See resize_input."""
+        response = await self.mcp.send_command("change_output_size", {"element_id": element_id, "size": size})
+        if not response.success:
+            self.log_error(f"resize output of element {element_id} to {size}")
+            return None
+        if response.result is None:
+            return None
+        return ElementHandle(element_id, response.result.get("width", 64.0), response.result.get("height", 64.0))
+
     async def instantiate_ic(self, component: str, x: float, y: float, label: str = "") -> "int | None":
         """Instantiate an IC component by bare name (e.g. "level1_d_flip_flop").
 
@@ -145,6 +208,29 @@ class ICBuilderBase:
         if elem_id is not None:
             self.element_count += 1
         return elem_id
+
+    async def instantiate_ic_with_size(
+        self, component: str, x: float, y: float, label: str = ""
+    ) -> "ElementHandle | None":
+        """Like instantiate_ic, but also returns the IC's real rendered width/height
+        (which grows with its own input/output port count). Use this instead of
+        instantiate_ic when a neighboring element's placement needs to clear the
+        embedded IC's true footprint rather than a flat spacing constant.
+        """
+        ic_path = str(IC_COMPONENTS_DIR / component)
+        if not self.check_dependency(ic_path):
+            return None
+        response = await self.mcp.send_command("instantiate_ic", {"ic_name": ic_path, "x": x, "y": y, "label": label})
+        if not response.success:
+            self.log_error(f"instantiate IC '{label}' ({component})")
+            return None
+        if response.result is None:
+            return None
+        elem_id = response.result.get("element_id")
+        if elem_id is None:
+            return None
+        self.element_count += 1
+        return ElementHandle(elem_id, response.result.get("width", 64.0), response.result.get("height", 64.0))
 
     async def connect(
         self,
