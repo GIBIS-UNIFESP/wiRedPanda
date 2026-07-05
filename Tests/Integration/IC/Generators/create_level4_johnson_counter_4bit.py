@@ -101,12 +101,25 @@ class JohnsonCounterBuilder(ICBuilderBase):
                 return False
             data_in_ids.append(d_id)
 
-        # Create D flip-flops (4-bit) using level1_d_flip_flop IC
+        # Each bit's hold_mux -> load_mux -> FF -> output LED forms a single
+        # column (matching the actual D-input signal flow top-to-bottom),
+        # instead of the muxes stacking in their own column indexed by row
+        # while FF/LED were laid out in a row indexed by column -- that
+        # mismatch turned every same-bit wire into a diagonal that grew with
+        # bit index (FF3 to hold_mux3 was the worst case). level2_mux_2to1's
+        # rotated side label reaches well past its own body when stacked, so
+        # this column uses 2x VERTICAL_STAGE_SPACING, not 1x.
+        bit_x_base = input_x + HORIZONTAL_GATE_SPACING
+        bit_row_step = 2 * VERTICAL_STAGE_SPACING
+        y_hold = 100.0
+        y_load = y_hold + bit_row_step
+        y_ff = y_load + bit_row_step
+        y_output = y_ff + bit_row_step
+
         dff_ids = []
-        dff_x = input_x + HORIZONTAL_GATE_SPACING
         for i in range(4):
             ff_id = await self.instantiate_ic(
-                "level1_d_flip_flop", dff_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"FF{i}"
+                "level1_d_flip_flop", bit_x_base + (i * HORIZONTAL_GATE_SPACING), y_ff, f"FF{i}"
             )
             if ff_id is None:
                 return False
@@ -126,16 +139,10 @@ class JohnsonCounterBuilder(ICBuilderBase):
         #   load_mux_i = mux(LD, hold_mux_i.Out, Data_i)       LD=1 parallel load
         #   FF_i.D = load_mux_i.Out
         # The cascade/feedback wiring below feeds each hold_mux's Data[1].
-        # Both columns sit a full gate-spacing past the last DFF column (not a
-        # fraction of one) -- level2_mux_2to1's real rendered width doesn't fit
-        # in the fractional 0.5x gap this used to use, which put hold_mux0/1
-        # right on top of the control column.
         hold_mux_ids = []
-        mux_x = dff_x + (4 * HORIZONTAL_GATE_SPACING)
         for i in range(4):
-            hm = await self.instantiate_ic(
-                "level2_mux_2to1", mux_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"hold_mux{i}"
-            )
+            bit_x = bit_x_base + (i * HORIZONTAL_GATE_SPACING)
+            hm = await self.instantiate_ic("level2_mux_2to1", bit_x, y_hold, f"hold_mux{i}")
             if hm is None:
                 return False
             hold_mux_ids.append(hm)
@@ -144,12 +151,7 @@ class JohnsonCounterBuilder(ICBuilderBase):
             if not await self.connect(ce_id, hm, target_port_label="Sel[0]"):
                 return False
 
-            lm = await self.instantiate_ic(
-                "level2_mux_2to1",
-                mux_x + HORIZONTAL_GATE_SPACING,
-                100.0 + (i * VERTICAL_STAGE_SPACING),
-                f"load_mux{i}",
-            )
+            lm = await self.instantiate_ic("level2_mux_2to1", bit_x, y_load, f"load_mux{i}")
             if lm is None:
                 return False
             if not await self.connect(hm, lm, source_port_label="Output", target_port_label="Data[0]"):
@@ -161,20 +163,17 @@ class JohnsonCounterBuilder(ICBuilderBase):
             if not await self.connect(lm, dff_ids[i], source_port_label="Output", target_port_label="D"):
                 return False
 
-        # Create NOT gate for twisted feedback. dff_x + 3 * HORIZONTAL_GATE_SPACING
-        # is FF3's own x, and output_y below is the output LEDs' row -- placing
-        # this gate there landed it exactly on top of the Q3 LED, so it gets its
-        # own column past the mux chain instead.
-        not_id = await self.create_element("Not", mux_x + (2 * HORIZONTAL_GATE_SPACING), 100.0, "not_q3")
+        # Create NOT gate for twisted feedback, in its own column past FF3
+        # (level with the FF row, since it taps FF3.Q directly).
+        not_id = await self.create_element("Not", bit_x_base + (4 * HORIZONTAL_GATE_SPACING), y_ff, "not_q3")
         if not_id is None:
             return False
         await self.log("  ✓ Created NOT gate")
 
         # Create output LEDs (4-bit)
         output_led_ids = []
-        output_y = 100.0 + VERTICAL_STAGE_SPACING
         for i in range(4):
-            led_id = await self.create_element("Led", dff_x + (i * HORIZONTAL_GATE_SPACING), output_y, f"Q{i}")
+            led_id = await self.create_element("Led", bit_x_base + (i * HORIZONTAL_GATE_SPACING), y_output, f"Q{i}")
             if led_id is None:
                 return False
             output_led_ids.append(led_id)
@@ -210,10 +209,10 @@ class JohnsonCounterBuilder(ICBuilderBase):
         # The level1 D-FF has active-LOW Preset/Clear, so invert Init: Init=1 ->
         # init_not=0 drives FF0.Preset (Q0=1) and FF1-3.Clear (Q1-3=0) -> 0001.
         # Each FF's other async pin is tied to Vcc (active-LOW inactive = HIGH).
-        # dff_x - HORIZONTAL_GATE_SPACING is input_x, i.e. the control column --
-        # placing this gate there landed it inside the control switches' own
-        # occupied band, so it gets a dedicated column to the left of them
-        # instead (at Init's row, since that's what it inverts).
+        # Placing this gate in the bit columns would land it inside the
+        # hold_mux/load_mux/FF stack, so it gets a dedicated column to the
+        # left of the control switches instead (at Init's row, since that's
+        # what it inverts).
         init_not = await self.create_element(
             "Not", input_x - HORIZONTAL_GATE_SPACING, 5 * VERTICAL_STAGE_SPACING, "init_not"
         )
