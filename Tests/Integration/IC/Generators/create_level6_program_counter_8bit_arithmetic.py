@@ -104,7 +104,7 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Create using InputVcc (constant high/1) element
 
         vcc_id = await self.create_element(
-            "InputVcc", ctrl_x + (3 * HORIZONTAL_GATE_SPACING), 50.0 + (2 * VERTICAL_STAGE_SPACING), "VCC_Const1"
+            "InputVcc", ctrl_x + 3 * HORIZONTAL_GATE_SPACING, 50.0 + (2 * VERTICAL_STAGE_SPACING), "VCC_Const1"
         )
         if vcc_id is None:
             return False
@@ -130,14 +130,17 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         # Mux1: Select between hold (PC) and increment (PC+1) based on inc AND NOT(load)
         # Mux2: Select between Mux1 output and loadValue based on load
 
-        # Create NOT(load) gate for control logic
-        not_load_id = await self.create_element("Not", ctrl_x + (3.5 * HORIZONTAL_GATE_SPACING), 350.0, "NotLoad")
+        # Create NOT(load) gate for control logic. Own column (5) past
+        # VCC_Const1/GND_Const0 (column 3) and WriteEnable_OR (column 4) --
+        # the old "3.5 * HORIZONTAL_GATE_SPACING" packed it within ~30px of
+        # both of those.
+        not_load_id = await self.create_element("Not", ctrl_x + 5 * HORIZONTAL_GATE_SPACING, 350.0, "NotLoad")
         if not_load_id is None:
             return False
 
         # Create AND(inc, NOT(load)) gate
         and_inc_id = await self.create_element(
-            "And", ctrl_x + (3.5 * HORIZONTAL_GATE_SPACING), 350.0 + VERTICAL_STAGE_SPACING, "AndIncNotLoad"
+            "And", ctrl_x + 5 * HORIZONTAL_GATE_SPACING, 350.0 + VERTICAL_STAGE_SPACING, "AndIncNotLoad"
         )
         if and_inc_id is None:
             return False
@@ -155,11 +158,12 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
             return False
 
         # Create 8-bit Mux1 cascade: Select between hold (PC) and increment (PC+1)
-        # Controlled by AND(inc, NOT load)
+        # Controlled by AND(inc, NOT load). Own column (6), a full
+        # HORIZONTAL_GATE_SPACING past NotLoad/AndIncNotLoad (column 5).
         mux1_gates = []
         for i in range(8):
             mux1_id = await self.create_element(
-                "Mux", ctrl_x + (3.7 * HORIZONTAL_GATE_SPACING), 200.0 + i * VERTICAL_STAGE_SPACING, f"Mux1[{i}]"
+                "Mux", ctrl_x + 6 * HORIZONTAL_GATE_SPACING, 200.0 + i * VERTICAL_STAGE_SPACING, f"Mux1[{i}]"
             )
             if mux1_id is None:
                 return False
@@ -180,11 +184,12 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         await self.log("  ✓ Created Mux1 layer (hold vs increment)")
 
         # Create 8-bit Mux2 cascade: Select between Mux1 output and loadValue
-        # Controlled by load
+        # Controlled by load. Own column (7) -- the old "3.9 *
+        # HORIZONTAL_GATE_SPACING" put it only ~21px past Mux1's column.
         mux2_gates = []
         for i in range(8):
             mux2_id = await self.create_element(
-                "Mux", ctrl_x + (3.9 * HORIZONTAL_GATE_SPACING), 200.0 + i * VERTICAL_STAGE_SPACING, f"Mux2[{i}]"
+                "Mux", ctrl_x + 7 * HORIZONTAL_GATE_SPACING, 200.0 + i * VERTICAL_STAGE_SPACING, f"Mux2[{i}]"
             )
             if mux2_id is None:
                 return False
@@ -219,9 +224,11 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
         if not await self.connect(reset_id, register_id, target_port_label="Reset"):
             return False
 
-        # WriteEnable: OR(load, inc) - write on clock edge when either load or inc is asserted
+        # WriteEnable: OR(load, inc) - write on clock edge when either load or inc is asserted.
+        # Own column (4), past VCC_Const1/GND_Const0 (column 3) -- the old
+        # "3.2 * HORIZONTAL_GATE_SPACING" put it only ~21px past GND_Const0.
         we_or_id = await self.create_element(
-            "Or", ctrl_x + (3.2 * HORIZONTAL_GATE_SPACING), 50.0 + (3 * VERTICAL_STAGE_SPACING), "WriteEnable_OR"
+            "Or", ctrl_x + 4 * HORIZONTAL_GATE_SPACING, 50.0 + (3 * VERTICAL_STAGE_SPACING), "WriteEnable_OR"
         )
         if we_or_id is None:
             return False
@@ -240,8 +247,9 @@ class ProgramCounter8bitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Connected clock, reset, and WriteEnable (OR(load, inc)) to register")
 
-        # Create output LEDs for pc[0-7] (note: lowercase for test compatibility)
-        output_x = ctrl_x + (4 * HORIZONTAL_GATE_SPACING)
+        # Create output LEDs for pc[0-7] (note: lowercase for test compatibility).
+        # Own column (8), past Mux2 (column 7).
+        output_x = ctrl_x + 8 * HORIZONTAL_GATE_SPACING
         for i in range(8):
             led_id = await self.create_element("Led", output_x, 100.0 + i * VERTICAL_STAGE_SPACING, f"pc[{i}]")
             if led_id is None:

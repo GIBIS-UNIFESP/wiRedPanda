@@ -84,7 +84,8 @@ class StackPointer8BitBuilder(ICBuilderBase):
         if adder_id is None:
             return False
 
-        # Create 8 D Flip-Flops for SP storage
+        # Create 8 D Flip-Flops for SP storage. This is a horizontal ROW (all
+        # 8 share y=200.0), spanning ff_x .. ff_x + 7 * HORIZONTAL_GATE_SPACING.
         sp_flipflops = []
         ff_x = 550.0
         for i in range(8):
@@ -95,18 +96,33 @@ class StackPointer8BitBuilder(ICBuilderBase):
                 return False
             sp_flipflops.append(element_id)
 
-        # Create constant high (InputVcc) for reset to 0xFF
+        # hold_mux[] (created further below) is also a horizontal ROW, at
+        # y=350.0 -- reserve its own 8-wide block right after the FF row so
+        # it doesn't have to share x-space with anything else either.
+        hold_x = ff_x + 8 * HORIZONTAL_GATE_SPACING
+
+        # Create constant high (InputVcc) for reset to 0xFF. This is a
+        # vertical COLUMN (fixed x, one InputVcc per row 100 + i *
+        # VERTICAL_STAGE_SPACING) -- its x must clear both the FF row's and
+        # the hold_mux row's *entire* 8-wide spans, not just sit a little
+        # past their start. The old vcc_x=800.0 fell inside the FF row's own
+        # span (550..1278), so Vcc[1] (the only index whose y landed close to
+        # the FF row's y=200) collided with it; after just widening hold_mux's
+        # step, vcc_x would similarly fall inside the hold_mux row's span.
         vcc_inputs = []
-        vcc_x = 800.0
+        vcc_x = hold_x + 8 * HORIZONTAL_GATE_SPACING
         for i in range(8):
             element_id = await self.create_element("InputVcc", vcc_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"Vcc[{i}]")
             if element_id is None:
                 return False
             vcc_inputs.append(element_id)
 
-        # Create 8x PriorityMux3to1 for priority: reset > load > push/pop
+        # Create 8x PriorityMux3to1 for priority: reset > load > push/pop.
+        # Another horizontal ROW (y=200.0) -- placed past the Vcc[] column
+        # rather than at the old mux_x=900.0, which fell inside the FF row's
+        # own span (causing SPMux[0] to collide with SP[3]/SP[4]).
         priority_muxes = []
-        mux_x = 900.0
+        mux_x = vcc_x + HORIZONTAL_GATE_SPACING
         for i in range(8):
             element_id = await self.instantiate_ic(
                 "level2_priority_mux_3to1",
@@ -118,9 +134,10 @@ class StackPointer8BitBuilder(ICBuilderBase):
                 return False
             priority_muxes.append(element_id)
 
-        # Create 8 output LEDs for SP value
+        # Create 8 output LEDs for SP value -- a vertical COLUMN placed past
+        # the PriorityMux row's full span.
         sp_outputs = []
-        out_x = 1250.0
+        out_x = mux_x + 8 * HORIZONTAL_GATE_SPACING
         for i in range(8):
             element_id = await self.create_element("Led", out_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"SP[{i}]")
             if element_id is None:
@@ -148,10 +165,13 @@ class StackPointer8BitBuilder(ICBuilderBase):
             if not await self.connect(control_signals["Push"], adder_id, target_port_label=f"B[{i}]"):
                 return False
 
-        # Per-bit hold mux: Sum when Push|Pop, otherwise hold Q.
+        # Per-bit hold mux: Sum when Push|Pop, otherwise hold Q. Uses its own
+        # reserved hold_x block (see above) with full HORIZONTAL_GATE_SPACING
+        # steps -- the old "i * 40.0" was well under a mux's ~64px width, so
+        # consecutive hold_mux[] instances overlapped each other.
         hold_muxes = []
         for i in range(8):
-            mux_id = await self.create_element("Mux", 700.0 + (i * 40.0), 350.0, f"hold_mux[{i}]")
+            mux_id = await self.create_element("Mux", hold_x + (i * HORIZONTAL_GATE_SPACING), 350.0, f"hold_mux[{i}]")
             if mux_id is None:
                 return False
             hold_muxes.append(mux_id)

@@ -40,8 +40,8 @@ bool input_switch9_val = LOW;
 bool aux_level4_ripple_adder_4bit_0_sum0 = LOW;
 bool aux_level4_ripple_adder_4bit_0_sum1_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_sum2_2 = LOW;
-bool aux_level4_ripple_adder_4bit_0_carryout_3 = LOW;
-bool aux_level4_ripple_adder_4bit_0_sum3_4 = LOW;
+bool aux_level4_ripple_adder_4bit_0_sum3_3 = LOW;
+bool aux_level4_ripple_adder_4bit_0_carryout_4 = LOW;
 bool aux_level4_ripple_adder_4bit_0_node_0 = LOW;
 bool aux_level4_ripple_adder_4bit_0_node_1 = LOW;
 bool aux_level4_ripple_adder_4bit_0_node_2 = LOW;
@@ -165,14 +165,14 @@ void computeLogic() {
     aux_ic_input_level4_ripple_adder_4bit_0_7 = input_switch8_val;
     aux_ic_input_level4_ripple_adder_4bit_0_8 = input_switch9_val;
     aux_level4_ripple_adder_4bit_0_node_0 = aux_ic_input_level4_ripple_adder_4bit_0_0;
-    aux_level4_ripple_adder_4bit_0_node_4 = aux_ic_input_level4_ripple_adder_4bit_0_2;
-    aux_level4_ripple_adder_4bit_0_node_8 = aux_ic_input_level4_ripple_adder_4bit_0_5;
+    aux_level4_ripple_adder_4bit_0_node_4 = aux_ic_input_level4_ripple_adder_4bit_0_4;
+    aux_level4_ripple_adder_4bit_0_node_8 = aux_ic_input_level4_ripple_adder_4bit_0_8;
     aux_level4_ripple_adder_4bit_0_node_1 = aux_ic_input_level4_ripple_adder_4bit_0_1;
-    aux_level4_ripple_adder_4bit_0_node_5 = aux_ic_input_level4_ripple_adder_4bit_0_4;
-    aux_level4_ripple_adder_4bit_0_node_2 = aux_ic_input_level4_ripple_adder_4bit_0_3;
-    aux_level4_ripple_adder_4bit_0_node_6 = aux_ic_input_level4_ripple_adder_4bit_0_7;
-    aux_level4_ripple_adder_4bit_0_node_3 = aux_ic_input_level4_ripple_adder_4bit_0_6;
-    aux_level4_ripple_adder_4bit_0_node_7 = aux_ic_input_level4_ripple_adder_4bit_0_8;
+    aux_level4_ripple_adder_4bit_0_node_5 = aux_ic_input_level4_ripple_adder_4bit_0_5;
+    aux_level4_ripple_adder_4bit_0_node_2 = aux_ic_input_level4_ripple_adder_4bit_0_2;
+    aux_level4_ripple_adder_4bit_0_node_6 = aux_ic_input_level4_ripple_adder_4bit_0_6;
+    aux_level4_ripple_adder_4bit_0_node_3 = aux_ic_input_level4_ripple_adder_4bit_0_3;
+    aux_level4_ripple_adder_4bit_0_node_7 = aux_ic_input_level4_ripple_adder_4bit_0_7;
     // IC: FA[0]
     aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_0 = aux_level4_ripple_adder_4bit_0_node_0;
     aux_ic_input_level4_ripple_adder_4bit_0_fa0_9_1 = aux_level4_ripple_adder_4bit_0_node_4;
@@ -249,8 +249,8 @@ void computeLogic() {
     aux_level4_ripple_adder_4bit_0_sum0 = aux_level4_ripple_adder_4bit_0_node_13;
     aux_level4_ripple_adder_4bit_0_sum1_1 = aux_level4_ripple_adder_4bit_0_node_14;
     aux_level4_ripple_adder_4bit_0_sum2_2 = aux_level4_ripple_adder_4bit_0_node_15;
-    aux_level4_ripple_adder_4bit_0_carryout_3 = aux_level4_ripple_adder_4bit_0_node_17;
-    aux_level4_ripple_adder_4bit_0_sum3_4 = aux_level4_ripple_adder_4bit_0_node_16;
+    aux_level4_ripple_adder_4bit_0_sum3_3 = aux_level4_ripple_adder_4bit_0_node_16;
+    aux_level4_ripple_adder_4bit_0_carryout_4 = aux_level4_ripple_adder_4bit_0_node_17;
     // End IC: LEVEL4_RIPPLE_ADDER_4BIT
 }
 
@@ -274,6 +274,6 @@ void loop() {
     digitalWrite(led1_1, aux_level4_ripple_adder_4bit_0_sum0);
     digitalWrite(led2_1, aux_level4_ripple_adder_4bit_0_sum1_1);
     digitalWrite(led3_1, aux_level4_ripple_adder_4bit_0_sum2_2);
-    digitalWrite(led4_1, aux_level4_ripple_adder_4bit_0_carryout_3);
-    digitalWrite(led5_1, aux_level4_ripple_adder_4bit_0_sum3_4);
+    digitalWrite(led4_1, aux_level4_ripple_adder_4bit_0_sum3_3);
+    digitalWrite(led5_1, aux_level4_ripple_adder_4bit_0_carryout_4);
 }

@@ -33,18 +33,18 @@ endmodule
 module level4_ripple_adder_4bit_ic (
     input a0,
     input a1,
-    input b0,
     input a2,
-    input b1,
-    input carryin,
     input a3,
+    input b0,
+    input b1,
     input b2,
     input b3,
+    input carryin,
     output sum0,
     output sum1,
     output sum2,
-    output carryout,
-    output sum3
+    output sum3,
+    output carryout
 );
 
 // IC instance: FA[0] (level2_full_adder_1bit)
@@ -93,8 +93,8 @@ level2_full_adder_1bit level2_full_adder_1bit_inst_4 (
 assign sum0 = w_level2_full_adder_1bit_inst_1_sum;
 assign sum1 = w_level2_full_adder_1bit_inst_2_sum;
 assign sum2 = w_level2_full_adder_1bit_inst_3_sum;
-assign carryout = w_level2_full_adder_1bit_inst_4_cout;
 assign sum3 = w_level2_full_adder_1bit_inst_4_sum;
+assign carryout = w_level2_full_adder_1bit_inst_4_cout;
 endmodule
 
 module level4_ripple_adder_4bit (
@@ -121,32 +121,32 @@ output led15_1
 wire w_level4_ripple_adder_4bit_ic_inst_1_sum0;
 wire w_level4_ripple_adder_4bit_ic_inst_1_sum1;
 wire w_level4_ripple_adder_4bit_ic_inst_1_sum2;
-wire w_level4_ripple_adder_4bit_ic_inst_1_carryout;
 wire w_level4_ripple_adder_4bit_ic_inst_1_sum3;
+wire w_level4_ripple_adder_4bit_ic_inst_1_carryout;
 
 
 // Assigning aux variables. //
 level4_ripple_adder_4bit_ic level4_ripple_adder_4bit_ic_inst_1 (
     .a0(input_switch1),
     .a1(input_switch2),
-    .b0(input_switch3),
-    .a2(input_switch4),
-    .b1(input_switch5),
-    .carryin(input_switch6),
-    .a3(input_switch7),
-    .b2(input_switch8),
-    .b3(input_switch9),
+    .a2(input_switch3),
+    .a3(input_switch4),
+    .b0(input_switch5),
+    .b1(input_switch6),
+    .b2(input_switch7),
+    .b3(input_switch8),
+    .carryin(input_switch9),
     .sum0(w_level4_ripple_adder_4bit_ic_inst_1_sum0),
     .sum1(w_level4_ripple_adder_4bit_ic_inst_1_sum1),
     .sum2(w_level4_ripple_adder_4bit_ic_inst_1_sum2),
-    .carryout(w_level4_ripple_adder_4bit_ic_inst_1_carryout),
-    .sum3(w_level4_ripple_adder_4bit_ic_inst_1_sum3)
+    .sum3(w_level4_ripple_adder_4bit_ic_inst_1_sum3),
+    .carryout(w_level4_ripple_adder_4bit_ic_inst_1_carryout)
 );
 
 // Writing output data. //
 assign led11_1 = w_level4_ripple_adder_4bit_ic_inst_1_sum0;
 assign led12_1 = w_level4_ripple_adder_4bit_ic_inst_1_sum1;
 assign led13_1 = w_level4_ripple_adder_4bit_ic_inst_1_sum2;
-assign led14_1 = w_level4_ripple_adder_4bit_ic_inst_1_carryout;
-assign led15_1 = w_level4_ripple_adder_4bit_ic_inst_1_sum3;
+assign led14_1 = w_level4_ripple_adder_4bit_ic_inst_1_sum3;
+assign led15_1 = w_level4_ripple_adder_4bit_ic_inst_1_carryout;
 endmodule

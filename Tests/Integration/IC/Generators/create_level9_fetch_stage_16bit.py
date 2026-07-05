@@ -66,13 +66,81 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         # Input positions
         input_x = 50.0
-        input_y = 100.0
+
+        # ---- Instantiate all embedded ICs first, chained left to right ----
+        # PCData[]/control signals sit above this whole row, and
+        # ProgAddr[]/ProgData[] sit below it, sharing its wide X range -- these
+        # ICs are far taller than the flat 64px assumed elsewhere, so their
+        # real height (queried via instantiate_ic_with_size) drives the
+        # clearance above and below, and their real width drives the
+        # horizontal chaining between them.
+        ic_row_y = 800.0
+
+        pc_x = input_x + (2 * HORIZONTAL_GATE_SPACING)
+        pc_handle = await self.instantiate_ic_with_size("level7_cpu_program_counter_8bit", pc_x, ic_row_y, "PC")
+        if pc_handle is None:
+            return False
+        pc_id = pc_handle.element_id
+
+        addr_mux_x = pc_x + max(HORIZONTAL_GATE_SPACING * 2, pc_handle.width + HORIZONTAL_GATE_SPACING)
+        addr_mux_handle = await self.instantiate_ic_with_size("level4_bus_mux_8bit", addr_mux_x, ic_row_y, "AddrMux")
+        if addr_mux_handle is None:
+            return False
+        addr_mux_id = addr_mux_handle.element_id
+
+        instr_mem_low_x = addr_mux_x + max(HORIZONTAL_GATE_SPACING * 2, addr_mux_handle.width + HORIZONTAL_GATE_SPACING)
+        instr_mem_low_handle = await self.instantiate_ic_with_size(
+            "level7_instruction_memory_interface", instr_mem_low_x, ic_row_y, "InstrMem_Low"
+        )
+        if instr_mem_low_handle is None:
+            return False
+        instr_mem_low_id = instr_mem_low_handle.element_id
+
+        instr_mem_high_x = instr_mem_low_x + max(
+            HORIZONTAL_GATE_SPACING * 2, instr_mem_low_handle.width + HORIZONTAL_GATE_SPACING
+        )
+        instr_mem_high_handle = await self.instantiate_ic_with_size(
+            "level7_instruction_memory_interface", instr_mem_high_x, ic_row_y, "InstrMem_High"
+        )
+        if instr_mem_high_handle is None:
+            return False
+        instr_mem_high_id = instr_mem_high_handle.element_id
+
+        ir_low_x = instr_mem_high_x + max(
+            HORIZONTAL_GATE_SPACING * 2, instr_mem_high_handle.width + HORIZONTAL_GATE_SPACING
+        )
+        ir_low_handle = await self.instantiate_ic_with_size("level6_register_8bit", ir_low_x, ic_row_y, "IR_Low")
+        if ir_low_handle is None:
+            return False
+        ir_low_id = ir_low_handle.element_id
+
+        ir_high_x = ir_low_x + max(HORIZONTAL_GATE_SPACING * 2, ir_low_handle.width + HORIZONTAL_GATE_SPACING)
+        ir_high_handle = await self.instantiate_ic_with_size("level6_register_8bit", ir_high_x, ic_row_y, "IR_High")
+        if ir_high_handle is None:
+            return False
+        ir_high_id = ir_high_handle.element_id
+
+        ic_row_half_height = (
+            max(
+                pc_handle.height,
+                addr_mux_handle.height,
+                instr_mem_low_handle.height,
+                instr_mem_high_handle.height,
+                ir_low_handle.height,
+                ir_high_handle.height,
+            )
+            / 2
+        )
+        control_y = ic_row_y - ic_row_half_height - VERTICAL_STAGE_SPACING
+        pc_data_y = control_y - VERTICAL_STAGE_SPACING
+        prog_addr_y = ic_row_y + ic_row_half_height + VERTICAL_STAGE_SPACING
+        prog_data_y = prog_addr_y + VERTICAL_STAGE_SPACING
 
         # ---- Create PC data input (8-bit) ----
         pc_data_inputs = []
         for i in range(8):
             elem_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"PCData[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), pc_data_y, f"PCData[{i}]"
             )
             if elem_id is None:
                 return False
@@ -82,7 +150,6 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         # ---- Create control signal inputs ----
         control_x = input_x
-        control_y = input_y + VERTICAL_STAGE_SPACING
 
         control_signals = {}
         for signal_name in ["Clock", "Reset", "PCLoad", "PCInc", "InstrLoad"]:
@@ -99,12 +166,10 @@ class FetchStage16bitBuilder(ICBuilderBase):
         # ---- Create programming interface inputs (F53: previously absent —
         # the instruction memory could never be loaded, so the field-decode
         # tests were vacuous) ----
-        prog_y = control_y + VERTICAL_STAGE_SPACING
-
         prog_addr_inputs = []
         for i in range(8):
             elem_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), prog_y, f"ProgAddr[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), prog_addr_y, f"ProgAddr[{i}]"
             )
             if elem_id is None:
                 return False
@@ -114,8 +179,8 @@ class FetchStage16bitBuilder(ICBuilderBase):
         for i in range(16):
             elem_id = await self.create_element(
                 "InputSwitch",
-                input_x + (i * HORIZONTAL_GATE_SPACING / 2),
-                prog_y + (VERTICAL_STAGE_SPACING / 2),
+                input_x + (i * HORIZONTAL_GATE_SPACING),
+                prog_data_y,
                 f"ProgData[{i}]",
             )
             if elem_id is None:
@@ -123,20 +188,12 @@ class FetchStage16bitBuilder(ICBuilderBase):
             prog_data_inputs.append(elem_id)
 
         prog_write_id = await self.create_element(
-            "InputSwitch", input_x + (9 * HORIZONTAL_GATE_SPACING), prog_y, "ProgWrite"
+            "InputSwitch", input_x + (9 * HORIZONTAL_GATE_SPACING), prog_addr_y, "ProgWrite"
         )
         if prog_write_id is None:
             return False
 
         await self.log("  ✓ Created programming interface inputs")
-
-        # ---- Instantiate Program Counter ----
-        pc_x = 250.0
-        pc_y = 100.0
-
-        pc_id = await self.instantiate_ic("level7_cpu_program_counter_8bit", pc_x, pc_y, "PC")
-        if pc_id is None:
-            return False
 
         # Connect PC inputs
         for i in range(8):
@@ -159,10 +216,6 @@ class FetchStage16bitBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated Program Counter")
 
         # ---- Address mux: PC (fetch) vs ProgAddr (programming) ----
-        addr_mux_id = await self.instantiate_ic("level4_bus_mux_8bit", 350.0, 100.0, "AddrMux")
-        if addr_mux_id is None:
-            return False
-
         for i in range(8):
             if not await self.connect(
                 pc_id, addr_mux_id, source_port_label=f"Address[{i}]", target_port_label=f"In0[{i}]"
@@ -175,26 +228,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated Address Mux (PC vs ProgAddr)")
 
-        # ---- Instantiate two Instruction Memory interfaces (low and high bytes) ----
-        instr_mem_x = 450.0
-        instr_mem_low_y = 100.0
-        instr_mem_high_y = 250.0
-
-        instr_mem_low_id = await self.instantiate_ic(
-            "level7_instruction_memory_interface", instr_mem_x, instr_mem_low_y, "InstrMem_Low"
-        )
-        if instr_mem_low_id is None:
-            return False
-
-        instr_mem_high_id = await self.instantiate_ic(
-            "level7_instruction_memory_interface",
-            instr_mem_x,
-            instr_mem_high_y,
-            "InstrMem_High",
-        )
-        if instr_mem_high_id is None:
-            return False
-
+        # ---- Two Instruction Memory interfaces (low and high bytes) ----
         # Muxed address into both instruction memories
         for i in range(8):
             if not await self.connect(
@@ -230,14 +264,6 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         # ---- Instruction Register: 2× level6_register_8bit (F53: InstrLoad
         # used to be a dead input — there was no IR to load) ----
-        ir_low_id = await self.instantiate_ic("level6_register_8bit", 600.0, 100.0, "IR_Low")
-        if ir_low_id is None:
-            return False
-
-        ir_high_id = await self.instantiate_ic("level6_register_8bit", 600.0, 250.0, "IR_High")
-        if ir_high_id is None:
-            return False
-
         for ir_id, mem_id in ((ir_low_id, instr_mem_low_id), (ir_high_id, instr_mem_high_id)):
             for i in range(8):
                 if not await self.connect(
@@ -256,14 +282,26 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated and wired the 16-bit instruction register")
 
-        # ---- Create Output: registered 16-bit Instruction ----
-        output_x = 750.0
-        output_y = 100.0
+        # ---- Create output LED columns ----
+        # Placed clear of both the last chained IC's (IR_High) real width and
+        # the 16-wide ProgData[] row above/below it (whose rightmost switch
+        # reaches out to input_x + 15 * HORIZONTAL_GATE_SPACING).
+        ic_chain_output_x = ir_high_x + max(HORIZONTAL_GATE_SPACING * 2, ir_high_handle.width + HORIZONTAL_GATE_SPACING)
+        prog_data_row_end = input_x + (15 * HORIZONTAL_GATE_SPACING)
+        output_x = max(ic_chain_output_x, prog_data_row_end + HORIZONTAL_GATE_SPACING)
+        output_y = ic_row_y
+        instruction_x = output_x
+        rawinstr_x = instruction_x + HORIZONTAL_GATE_SPACING
+        pc_out_x = rawinstr_x + HORIZONTAL_GATE_SPACING
+        decode_x = pc_out_x + HORIZONTAL_GATE_SPACING
 
+        # ---- Create Output: registered 16-bit Instruction ----
         for i in range(16):
             ir_source = ir_low_id if i < 8 else ir_high_id
 
-            led_id = await self.create_element("Led", output_x, output_y + (i * 30), f"Instruction[{i}]")
+            led_id = await self.create_element(
+                "Led", instruction_x, output_y + (i * VERTICAL_STAGE_SPACING), f"Instruction[{i}]"
+            )
             if led_id is None:
                 return False
 
@@ -277,7 +315,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
             mem_source = instr_mem_low_id if i < 8 else instr_mem_high_id
 
             led_id = await self.create_element(
-                "Led", output_x + (HORIZONTAL_GATE_SPACING / 2), output_y + (i * 30), f"RawInstr[{i}]"
+                "Led", rawinstr_x, output_y + (i * VERTICAL_STAGE_SPACING), f"RawInstr[{i}]"
             )
             if led_id is None:
                 return False
@@ -289,9 +327,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         # ---- Create Output: PC (for external use) ----
         for i in range(8):
-            led_id = await self.create_element(
-                "Led", output_x + HORIZONTAL_GATE_SPACING, output_y + (i * 30), f"PC[{i}]"
-            )
+            led_id = await self.create_element("Led", pc_out_x, output_y + (i * VERTICAL_STAGE_SPACING), f"PC[{i}]")
             if led_id is None:
                 return False
 
@@ -307,7 +343,6 @@ class FetchStage16bitBuilder(ICBuilderBase):
         # OpCode[i]  = Instruction[11+i]
         # DestReg[i] = Instruction[6+i]
         # SrcBits[i] = Instruction[i]
-        decode_x = output_x + (2 * HORIZONTAL_GATE_SPACING)
 
         def ir_source_for(instr_bit: int):
             return (ir_low_id if instr_bit < 8 else ir_high_id), f"Q[{instr_bit % 8}]"
@@ -316,7 +351,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
         for i in range(5):
             source_id, port = ir_source_for(11 + i)
 
-            led_id = await self.create_element("Led", decode_x, output_y + (i * 30), f"OpCode[{i}]")
+            led_id = await self.create_element("Led", decode_x, output_y + (i * VERTICAL_STAGE_SPACING), f"OpCode[{i}]")
             if led_id is None:
                 return False
 
@@ -328,7 +363,10 @@ class FetchStage16bitBuilder(ICBuilderBase):
             source_id, port = ir_source_for(6 + i)
 
             led_id = await self.create_element(
-                "Led", decode_x + HORIZONTAL_GATE_SPACING, output_y + (i * 30), f"DestReg[{i}]"
+                "Led",
+                decode_x + HORIZONTAL_GATE_SPACING,
+                output_y + (i * VERTICAL_STAGE_SPACING),
+                f"DestReg[{i}]",
             )
             if led_id is None:
                 return False
@@ -341,7 +379,10 @@ class FetchStage16bitBuilder(ICBuilderBase):
             source_id, port = ir_source_for(i)
 
             led_id = await self.create_element(
-                "Led", decode_x + (2 * HORIZONTAL_GATE_SPACING), output_y + (i * 30), f"SrcBits[{i}]"
+                "Led",
+                decode_x + (2 * HORIZONTAL_GATE_SPACING),
+                output_y + (i * VERTICAL_STAGE_SPACING),
+                f"SrcBits[{i}]",
             )
             if led_id is None:
                 return False

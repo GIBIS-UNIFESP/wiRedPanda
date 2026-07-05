@@ -43,7 +43,7 @@ Usage:
 
 import asyncio
 
-from element_spacing import HORIZONTAL_GATE_SPACING
+from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
@@ -58,15 +58,15 @@ class ALU16bitBuilder(ICBuilderBase):
 
         # Layout positions
         input_x = 50.0
-        alu_low_x = 250.0
-        alu_high_x = 450.0
-        output_x = 650.0
+        alu_low_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
 
         # ---- Create Input Switches ----
         # OperandA[0-15]
         op_a_inputs = []
         for i in range(16):
-            elem_id = await self.create_element("InputSwitch", input_x, 100.0 + (i * 40.0), f"OperandA[{i}]")
+            elem_id = await self.create_element(
+                "InputSwitch", input_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"OperandA[{i}]"
+            )
             if elem_id is None:
                 return False
             op_a_inputs.append(elem_id)
@@ -75,7 +75,7 @@ class ALU16bitBuilder(ICBuilderBase):
         op_b_inputs = []
         for i in range(16):
             elem_id = await self.create_element(
-                "InputSwitch", input_x + HORIZONTAL_GATE_SPACING, 100.0 + (i * 40.0), f"OperandB[{i}]"
+                "InputSwitch", input_x + HORIZONTAL_GATE_SPACING, 100.0 + (i * VERTICAL_STAGE_SPACING), f"OperandB[{i}]"
             )
             if elem_id is None:
                 return False
@@ -87,7 +87,10 @@ class ALU16bitBuilder(ICBuilderBase):
         aluop_inputs = []
         for i in range(3):
             elem_id = await self.create_element(
-                "InputSwitch", input_x + (2 * HORIZONTAL_GATE_SPACING), 100.0 + (i * 40.0), f"ALUOp[{i}]"
+                "InputSwitch",
+                input_x + (2 * HORIZONTAL_GATE_SPACING),
+                100.0 + (i * VERTICAL_STAGE_SPACING),
+                f"ALUOp[{i}]",
             )
             if elem_id is None:
                 return False
@@ -96,15 +99,22 @@ class ALU16bitBuilder(ICBuilderBase):
         await self.log("  ✓ Created ALUOp inputs")
 
         # ---- Instantiate two 8-bit ALUs ----
-        # Low byte ALU (bits 0-7)
-        alu_low_id = await self.instantiate_ic("level6_alu_8bit", alu_low_x, 150.0, "ALU_Low")
-        if alu_low_id is None:
+        # Low byte ALU (bits 0-7) — real width/height queried via
+        # instantiate_ic_with_size since it grows with the IC's own port
+        # count, and the ALUOp column needs true horizontal clearance from it.
+        alu_low_handle = await self.instantiate_ic_with_size("level6_alu_8bit", alu_low_x, 150.0, "ALU_Low")
+        if alu_low_handle is None:
             return False
+        alu_low_id = alu_low_handle.element_id
 
         # High byte ALU (bits 8-15)
-        alu_high_id = await self.instantiate_ic("level6_alu_8bit", alu_high_x, 150.0, "ALU_High")
-        if alu_high_id is None:
+        alu_high_x = alu_low_x + max(HORIZONTAL_GATE_SPACING * 2, alu_low_handle.width + HORIZONTAL_GATE_SPACING)
+        alu_high_handle = await self.instantiate_ic_with_size("level6_alu_8bit", alu_high_x, 150.0, "ALU_High")
+        if alu_high_handle is None:
             return False
+        alu_high_id = alu_high_handle.element_id
+
+        output_x = alu_high_x + max(HORIZONTAL_GATE_SPACING * 2, alu_high_handle.width + HORIZONTAL_GATE_SPACING)
 
         await self.log("  ✓ Instantiated two 8-bit ALUs")
 
@@ -168,7 +178,7 @@ class ALU16bitBuilder(ICBuilderBase):
         # ---- Create output LEDs ----
         # Result[0-15]
         for i in range(16):
-            led_id = await self.create_element("Led", output_x, 100.0 + (i * 40.0), f"Result[{i}]")
+            led_id = await self.create_element("Led", output_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"Result[{i}]")
             if led_id is None:
                 return False
 
@@ -206,7 +216,9 @@ class ALU16bitBuilder(ICBuilderBase):
             return False
 
         # Sign flag (MSB of result, from high ALU's Negative output)
-        sign_id = await self.create_element("Led", output_x + HORIZONTAL_GATE_SPACING, 150.0, "Sign")
+        sign_id = await self.create_element(
+            "Led", output_x + HORIZONTAL_GATE_SPACING, 100.0 + VERTICAL_STAGE_SPACING, "Sign"
+        )
         if sign_id is None:
             return False
 
@@ -214,7 +226,9 @@ class ALU16bitBuilder(ICBuilderBase):
             return False
 
         # Carry flag (carry-out from high ALU)
-        carry_id = await self.create_element("Led", output_x + HORIZONTAL_GATE_SPACING, 200.0, "Carry")
+        carry_id = await self.create_element(
+            "Led", output_x + HORIZONTAL_GATE_SPACING, 100.0 + (2 * VERTICAL_STAGE_SPACING), "Carry"
+        )
         if carry_id is None:
             return False
 

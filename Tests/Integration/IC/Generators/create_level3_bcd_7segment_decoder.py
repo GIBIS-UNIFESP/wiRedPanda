@@ -86,10 +86,14 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
         not_gate_x = input_x + HORIZONTAL_GATE_SPACING
 
         # Create NOT gates for inverted inputs
+        # Row 0 of this column would otherwise land at input_y, exactly where the
+        # BCD[1] input switch sits (not_gate_x == BCD[1]'s x, since both are
+        # input_x + 1 * HORIZONTAL_GATE_SPACING) -- push the whole column down by
+        # one stage so it clears the BCD input row above it.
         not_gates = []
         for i in range(4):
             element_id = await self.create_element(
-                "Not", not_gate_x, input_y + (i * VERTICAL_STAGE_SPACING), f"not_bcd{i}"
+                "Not", not_gate_x, input_y + ((i + 1) * VERTICAL_STAGE_SPACING), f"not_bcd{i}"
             )
             if element_id is None:
                 return False
@@ -118,10 +122,12 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
         ]
 
         # AND gate (digit detector) positions - arrange 10 detectors vertically or in grid
+        # Same reasoning as the NOT-gate column: digit_detector_x coincides with
+        # BCD[2]'s x, so row 0 needs to clear the BCD input row above it.
         digit_detector_x = not_gate_x + HORIZONTAL_GATE_SPACING
         for digit, pattern in enumerate(digit_patterns):
             # Stack digit detectors vertically
-            digit_y = input_y + (digit * VERTICAL_STAGE_SPACING)
+            digit_y = input_y + ((digit + 1) * VERTICAL_STAGE_SPACING)
             element_id = await self.create_element("And", digit_detector_x, digit_y, f"digit_{digit}")
             if element_id is None:
                 return False
@@ -156,6 +162,16 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
         # OR gate positions
         or_gate_x = digit_detector_x + HORIZONTAL_GATE_SPACING
 
+        # Segment OR gates can grow up to 8 inputs (segments a/b/c need exactly
+        # or over 8 active digits), and a gate's boundingRect grows past the
+        # stock 64px once it has more than 4 input ports (up to ~122px tall at
+        # 8 inputs) -- a flat VERTICAL_STAGE_SPACING between rows isn't enough
+        # for two adjacent wide gates, so double it for this column. Row 0 is
+        # also pushed down one stage (like the NOT/AND columns above) since
+        # or_gate_x otherwise coincides with BCD[3]'s x at output_y.
+        or_row_spacing = 2 * VERTICAL_STAGE_SPACING
+        or_row_y0 = output_y + VERTICAL_STAGE_SPACING
+
         # Create OR gates for each segment and connect digit detectors
         for segment_idx, segment_name in enumerate(segment_names):
             active_digits = segment_digit_map[segment_idx]
@@ -164,7 +180,7 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
             if len(active_digits) <= 8:
                 # Single OR gate is sufficient
                 or_gate_id = await self.create_element(
-                    "Or", or_gate_x, output_y + (segment_idx * VERTICAL_STAGE_SPACING), f"or_seg_{segment_name}"
+                    "Or", or_gate_x, or_row_y0 + (segment_idx * or_row_spacing), f"or_seg_{segment_name}"
                 )
                 if or_gate_id is None:
                     return False
@@ -190,7 +206,7 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
                 # Multiple OR gates needed for >8 inputs
                 # Create first OR gate with 8 inputs
                 or_gate_1 = await self.create_element(
-                    "Or", or_gate_x, output_y + (segment_idx * VERTICAL_STAGE_SPACING), f"or_seg_{segment_name}_1"
+                    "Or", or_gate_x, or_row_y0 + (segment_idx * or_row_spacing), f"or_seg_{segment_name}_1"
                 )
                 if or_gate_1 is None:
                     return False
@@ -212,7 +228,7 @@ class BCD7SegmentDecoderBuilder(ICBuilderBase):
                 or_gate_2 = await self.create_element(
                     "Or",
                     or_gate_x + HORIZONTAL_GATE_SPACING,
-                    output_y + (segment_idx * VERTICAL_STAGE_SPACING),
+                    or_row_y0 + (segment_idx * or_row_spacing),
                     f"or_seg_{segment_name}_2",
                 )
                 if or_gate_2 is None:

@@ -56,11 +56,12 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         selected_base_y = input_y + VERTICAL_STAGE_SPACING
         addr_or_x = input_x + (5 * HORIZONTAL_GATE_SPACING)
         addr_or_final_x = input_x + (6 * HORIZONTAL_GATE_SPACING)
-        output_x = input_x + (7 * HORIZONTAL_GATE_SPACING)
+        en_x = input_x + (7 * HORIZONTAL_GATE_SPACING)
+        output_x = input_x + (8 * HORIZONTAL_GATE_SPACING)
         output_base_y = input_y + (1.5 * VERTICAL_STAGE_SPACING)
-        inhibit_spacing = 30.0
-        selected_spacing = 30.0
-        addr_output_spacing = 50.0
+        inhibit_spacing = VERTICAL_STAGE_SPACING
+        selected_spacing = VERTICAL_STAGE_SPACING
+        addr_output_spacing = VERTICAL_STAGE_SPACING
 
         # Create input switches for data bits (8 inputs)
         data_inputs = []
@@ -126,7 +127,9 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         for i in range(5, 0, -1):
             num_inputs = 8 - i  # Number of data inputs to OR together
 
-            or_gate = await self.create_element("Or", or_chain_x + (7 - i) * 15.0, or_chain_y, f"or_{7}_to_{i}")
+            or_gate = await self.create_element(
+                "Or", or_chain_x, or_chain_y + (6 - i) * VERTICAL_STAGE_SPACING, f"or_{7}_to_{i}"
+            )
             if or_gate is None:
                 return False
 
@@ -326,7 +329,6 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         # Every addr/valid output is ANDed with EI (forced to 0 when disabled).
         # EO = EI AND no-input-active, so a chained lower-priority encoder is
         # enabled only when this one sees nothing on its data inputs.
-        en_x = output_x - HORIZONTAL_GATE_SPACING
         addr_finals = [addr0_final, addr1_final, addr2_final]
         addr_gated = []
         for i, addr_sig in enumerate(addr_finals):

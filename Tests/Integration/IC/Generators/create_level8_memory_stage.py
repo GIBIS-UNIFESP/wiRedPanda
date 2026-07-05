@@ -65,12 +65,29 @@ class MemoryStageBuilder(ICBuilderBase):
         # Input positions
         input_x = 50.0
         input_y = 100.0
+        ram_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
+        ram_y = 600.0
+
+        # ---- Instantiate RAM first ----
+        # The Address/DataIn/Result rows above it share its X column (they
+        # all land at ram_x for i == 3), so they need clearance from its real
+        # (port-count-dependent) height -- level6_ram_8x8 is far taller than
+        # the flat 64px assumed elsewhere (queried via instantiate_ic_with_size).
+        ram_handle = await self.instantiate_ic_with_size("level6_ram_8x8", ram_x, ram_y, "RAM")
+        if ram_handle is None:
+            return False
+        ram_id = ram_handle.element_id
+        await self.log("  ✓ Instantiated RAM")
+
+        result_y = ram_y - (ram_handle.height / 2) - VERTICAL_STAGE_SPACING
+        datain_y = result_y - VERTICAL_STAGE_SPACING
+        address_y = datain_y - VERTICAL_STAGE_SPACING
 
         # ---- Create Address input switches (8-bit) ----
         address_inputs = []
         for i in range(8):
             addr_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"Address[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), address_y, f"Address[{i}]"
             )
             if addr_id is None:
                 return False
@@ -83,7 +100,7 @@ class MemoryStageBuilder(ICBuilderBase):
             datain_id = await self.create_element(
                 "InputSwitch",
                 input_x + (i * HORIZONTAL_GATE_SPACING),
-                input_y + VERTICAL_STAGE_SPACING / 2,
+                datain_y,
                 f"DataIn[{i}]",
             )
             if datain_id is None:
@@ -95,7 +112,7 @@ class MemoryStageBuilder(ICBuilderBase):
         result_inputs = []
         for i in range(8):
             result_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y + VERTICAL_STAGE_SPACING, f"Result[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), result_y, f"Result[{i}]"
             )
             if result_id is None:
                 return False
@@ -109,29 +126,19 @@ class MemoryStageBuilder(ICBuilderBase):
         if memread_id is None:
             return False
 
-        memwrite_id = await self.create_element(
-            "InputSwitch", control_x, input_y + VERTICAL_STAGE_SPACING / 2, "MemWrite"
-        )
+        memwrite_id = await self.create_element("InputSwitch", control_x, input_y + VERTICAL_STAGE_SPACING, "MemWrite")
         if memwrite_id is None:
             return False
 
-        clock_id = await self.create_element("Clock", control_x, input_y + VERTICAL_STAGE_SPACING, "Clock")
+        clock_id = await self.create_element("Clock", control_x, input_y + (2 * VERTICAL_STAGE_SPACING), "Clock")
         if clock_id is None:
             return False
 
-        reset_id = await self.create_element(
-            "InputSwitch", control_x, input_y + (1.5 * VERTICAL_STAGE_SPACING), "Reset"
-        )
+        reset_id = await self.create_element("InputSwitch", control_x, input_y + (3 * VERTICAL_STAGE_SPACING), "Reset")
         if reset_id is None:
             return False
 
         await self.log("  ✓ Created control signals")
-
-        # ---- Instantiate RAM ----
-        ram_id = await self.instantiate_ic("level6_ram_8x8", input_x + (3 * HORIZONTAL_GATE_SPACING), 300.0, "RAM")
-        if ram_id is None:
-            return False
-        await self.log("  ✓ Instantiated RAM")
 
         # ---- Connect Address inputs to RAM ----
         # The stage keeps an 8-bit address bus; the backing memory holds 8
@@ -170,7 +177,7 @@ class MemoryStageBuilder(ICBuilderBase):
 
         for i in range(8):
             # Create mux for bit i
-            mux_id = await self.create_element("Mux", mux_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"Mux[{i}]")
+            mux_id = await self.create_element("Mux", mux_x, input_y + (i * VERTICAL_STAGE_SPACING), f"Mux[{i}]")
             if mux_id is None:
                 return False
             mux_outputs.append(mux_id)
@@ -193,9 +200,7 @@ class MemoryStageBuilder(ICBuilderBase):
         output_x = mux_x + (2 * HORIZONTAL_GATE_SPACING)
 
         for i in range(8):
-            led_id = await self.create_element(
-                "Led", output_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"DataOut[{i}]"
-            )
+            led_id = await self.create_element("Led", output_x, input_y + (i * VERTICAL_STAGE_SPACING), f"DataOut[{i}]")
             if led_id is None:
                 return False
 

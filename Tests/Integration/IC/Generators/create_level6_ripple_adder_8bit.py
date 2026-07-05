@@ -66,9 +66,12 @@ class Adder8BitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created 16 data inputs + 1 carry input")
 
-        # Load 1-bit Full Adder IC instances and chain with ripple carry
+        # Load 1-bit Full Adder IC instances and chain with ripple carry.
+        # A full stage past CarryIn's own column (input_b_x + 1 *
+        # HORIZONTAL_GATE_SPACING) -- the old fa_x reused that exact column,
+        # so CarryIn and FA[0] landed on the same coordinates.
         full_adders = []
-        fa_x = input_b_x + HORIZONTAL_GATE_SPACING
+        fa_x = input_b_x + 2 * HORIZONTAL_GATE_SPACING
         fa_y = 100.0
 
         for bit in range(8):

@@ -337,18 +337,18 @@ void computeLogic() {
     aux_ic_input_level4_binary_counter_4bit_0_5 = input_switch6_val;
     aux_ic_input_level4_binary_counter_4bit_0_6 = input_switch7_val;
     aux_ic_input_level4_binary_counter_4bit_0_7 = input_switch8_val;
-    aux_level4_binary_counter_4bit_0_node_3 = aux_ic_input_level4_binary_counter_4bit_0_0;
-    aux_level4_binary_counter_4bit_0_node_0 = aux_ic_input_level4_binary_counter_4bit_0_4;
-    aux_level4_binary_counter_4bit_0_node_1 = aux_ic_input_level4_binary_counter_4bit_0_2;
-    aux_level4_binary_counter_4bit_0_node_2 = aux_ic_input_level4_binary_counter_4bit_0_1;
-    aux_level4_binary_counter_4bit_0_node_4 = aux_ic_input_level4_binary_counter_4bit_0_3;
-    aux_level4_binary_counter_4bit_0_node_5 = aux_ic_input_level4_binary_counter_4bit_0_5;
-    aux_level4_binary_counter_4bit_0_node_6 = aux_ic_input_level4_binary_counter_4bit_0_6;
-    aux_level4_binary_counter_4bit_0_node_7 = aux_ic_input_level4_binary_counter_4bit_0_7;
-    aux_level4_binary_counter_4bit_0_not_43 = !aux_level4_binary_counter_4bit_0_node_3;
+    aux_level4_binary_counter_4bit_0_node_0 = aux_ic_input_level4_binary_counter_4bit_0_0;
+    aux_level4_binary_counter_4bit_0_node_7 = aux_ic_input_level4_binary_counter_4bit_0_4;
+    aux_level4_binary_counter_4bit_0_node_2 = aux_ic_input_level4_binary_counter_4bit_0_2;
+    aux_level4_binary_counter_4bit_0_node_1 = aux_ic_input_level4_binary_counter_4bit_0_1;
+    aux_level4_binary_counter_4bit_0_node_3 = aux_ic_input_level4_binary_counter_4bit_0_3;
+    aux_level4_binary_counter_4bit_0_node_4 = aux_ic_input_level4_binary_counter_4bit_0_5;
+    aux_level4_binary_counter_4bit_0_node_5 = aux_ic_input_level4_binary_counter_4bit_0_6;
+    aux_level4_binary_counter_4bit_0_node_6 = aux_ic_input_level4_binary_counter_4bit_0_7;
+    aux_level4_binary_counter_4bit_0_not_43 = !aux_level4_binary_counter_4bit_0_node_0;
     // IC: FF0
     aux_ic_input_level4_binary_counter_4bit_0_ff0_27_0 = aux_level4_binary_counter_4bit_0_load_mux0_32_output;
-    aux_ic_input_level4_binary_counter_4bit_0_ff0_27_1 = aux_level4_binary_counter_4bit_0_node_0;
+    aux_ic_input_level4_binary_counter_4bit_0_ff0_27_1 = aux_level4_binary_counter_4bit_0_node_7;
     aux_ic_input_level4_binary_counter_4bit_0_ff0_27_2 = HIGH;
     aux_ic_input_level4_binary_counter_4bit_0_ff0_27_3 = aux_level4_binary_counter_4bit_0_not_43;
     aux_level4_binary_counter_4bit_0_ff0_27_node_0 = aux_ic_input_level4_binary_counter_4bit_0_ff0_27_0;
@@ -378,7 +378,7 @@ void computeLogic() {
     // End IC: FF0
     // IC: FF1
     aux_ic_input_level4_binary_counter_4bit_0_ff1_28_0 = aux_level4_binary_counter_4bit_0_load_mux1_34_output;
-    aux_ic_input_level4_binary_counter_4bit_0_ff1_28_1 = aux_level4_binary_counter_4bit_0_node_0;
+    aux_ic_input_level4_binary_counter_4bit_0_ff1_28_1 = aux_level4_binary_counter_4bit_0_node_7;
     aux_ic_input_level4_binary_counter_4bit_0_ff1_28_2 = HIGH;
     aux_ic_input_level4_binary_counter_4bit_0_ff1_28_3 = aux_level4_binary_counter_4bit_0_not_43;
     aux_level4_binary_counter_4bit_0_ff1_28_node_0 = aux_ic_input_level4_binary_counter_4bit_0_ff1_28_0;
@@ -409,7 +409,7 @@ void computeLogic() {
     aux_level4_binary_counter_4bit_0_and_13 = aux_level4_binary_counter_4bit_0_ff0_27_q && aux_level4_binary_counter_4bit_0_ff1_28_q;
     // IC: FF2
     aux_ic_input_level4_binary_counter_4bit_0_ff2_29_0 = aux_level4_binary_counter_4bit_0_load_mux2_36_output;
-    aux_ic_input_level4_binary_counter_4bit_0_ff2_29_1 = aux_level4_binary_counter_4bit_0_node_0;
+    aux_ic_input_level4_binary_counter_4bit_0_ff2_29_1 = aux_level4_binary_counter_4bit_0_node_7;
     aux_ic_input_level4_binary_counter_4bit_0_ff2_29_2 = HIGH;
     aux_ic_input_level4_binary_counter_4bit_0_ff2_29_3 = aux_level4_binary_counter_4bit_0_not_43;
     aux_level4_binary_counter_4bit_0_ff2_29_node_0 = aux_ic_input_level4_binary_counter_4bit_0_ff2_29_0;
@@ -440,7 +440,7 @@ void computeLogic() {
     aux_level4_binary_counter_4bit_0_and_14 = aux_level4_binary_counter_4bit_0_and_13 && aux_level4_binary_counter_4bit_0_ff2_29_q;
     // IC: FF3
     aux_ic_input_level4_binary_counter_4bit_0_ff3_30_0 = aux_level4_binary_counter_4bit_0_load_mux3_38_output;
-    aux_ic_input_level4_binary_counter_4bit_0_ff3_30_1 = aux_level4_binary_counter_4bit_0_node_0;
+    aux_ic_input_level4_binary_counter_4bit_0_ff3_30_1 = aux_level4_binary_counter_4bit_0_node_7;
     aux_ic_input_level4_binary_counter_4bit_0_ff3_30_2 = HIGH;
     aux_ic_input_level4_binary_counter_4bit_0_ff3_30_3 = aux_level4_binary_counter_4bit_0_not_43;
     aux_level4_binary_counter_4bit_0_ff3_30_node_0 = aux_ic_input_level4_binary_counter_4bit_0_ff3_30_0;
@@ -483,7 +483,7 @@ void computeLogic() {
     // IC: hold_mux0
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux0_31_0 = aux_level4_binary_counter_4bit_0_ff0_27_q;
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux0_31_1 = aux_level4_binary_counter_4bit_0_not_9;
-    aux_ic_input_level4_binary_counter_4bit_0_hold_mux0_31_2 = aux_level4_binary_counter_4bit_0_node_1;
+    aux_ic_input_level4_binary_counter_4bit_0_hold_mux0_31_2 = aux_level4_binary_counter_4bit_0_node_2;
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux0_31_3 = HIGH;
     aux_level4_binary_counter_4bit_0_hold_mux0_31_node_0 = aux_ic_input_level4_binary_counter_4bit_0_hold_mux0_31_0;
     aux_level4_binary_counter_4bit_0_hold_mux0_31_node_1 = aux_ic_input_level4_binary_counter_4bit_0_hold_mux0_31_1;
@@ -505,7 +505,7 @@ void computeLogic() {
     // IC: hold_mux1
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux1_33_0 = aux_level4_binary_counter_4bit_0_ff1_28_q;
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux1_33_1 = aux_level4_binary_counter_4bit_0_or_24;
-    aux_ic_input_level4_binary_counter_4bit_0_hold_mux1_33_2 = aux_level4_binary_counter_4bit_0_node_1;
+    aux_ic_input_level4_binary_counter_4bit_0_hold_mux1_33_2 = aux_level4_binary_counter_4bit_0_node_2;
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux1_33_3 = HIGH;
     aux_level4_binary_counter_4bit_0_hold_mux1_33_node_0 = aux_ic_input_level4_binary_counter_4bit_0_hold_mux1_33_0;
     aux_level4_binary_counter_4bit_0_hold_mux1_33_node_1 = aux_ic_input_level4_binary_counter_4bit_0_hold_mux1_33_1;
@@ -527,7 +527,7 @@ void computeLogic() {
     // IC: hold_mux2
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux2_35_0 = aux_level4_binary_counter_4bit_0_ff2_29_q;
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux2_35_1 = aux_level4_binary_counter_4bit_0_or_25;
-    aux_ic_input_level4_binary_counter_4bit_0_hold_mux2_35_2 = aux_level4_binary_counter_4bit_0_node_1;
+    aux_ic_input_level4_binary_counter_4bit_0_hold_mux2_35_2 = aux_level4_binary_counter_4bit_0_node_2;
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux2_35_3 = HIGH;
     aux_level4_binary_counter_4bit_0_hold_mux2_35_node_0 = aux_ic_input_level4_binary_counter_4bit_0_hold_mux2_35_0;
     aux_level4_binary_counter_4bit_0_hold_mux2_35_node_1 = aux_ic_input_level4_binary_counter_4bit_0_hold_mux2_35_1;
@@ -549,7 +549,7 @@ void computeLogic() {
     // IC: hold_mux3
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux3_37_0 = aux_level4_binary_counter_4bit_0_ff3_30_q;
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux3_37_1 = aux_level4_binary_counter_4bit_0_or_26;
-    aux_ic_input_level4_binary_counter_4bit_0_hold_mux3_37_2 = aux_level4_binary_counter_4bit_0_node_1;
+    aux_ic_input_level4_binary_counter_4bit_0_hold_mux3_37_2 = aux_level4_binary_counter_4bit_0_node_2;
     aux_ic_input_level4_binary_counter_4bit_0_hold_mux3_37_3 = HIGH;
     aux_level4_binary_counter_4bit_0_hold_mux3_37_node_0 = aux_ic_input_level4_binary_counter_4bit_0_hold_mux3_37_0;
     aux_level4_binary_counter_4bit_0_hold_mux3_37_node_1 = aux_ic_input_level4_binary_counter_4bit_0_hold_mux3_37_1;
@@ -574,8 +574,8 @@ void computeLogic() {
     aux_level4_binary_counter_4bit_0_or_26 = aux_level4_binary_counter_4bit_0_and_22 || aux_level4_binary_counter_4bit_0_and_23;
     // IC: load_mux0
     aux_ic_input_level4_binary_counter_4bit_0_load_mux0_32_0 = aux_level4_binary_counter_4bit_0_hold_mux0_31_output;
-    aux_ic_input_level4_binary_counter_4bit_0_load_mux0_32_1 = aux_level4_binary_counter_4bit_0_node_4;
-    aux_ic_input_level4_binary_counter_4bit_0_load_mux0_32_2 = aux_level4_binary_counter_4bit_0_node_2;
+    aux_ic_input_level4_binary_counter_4bit_0_load_mux0_32_1 = aux_level4_binary_counter_4bit_0_node_3;
+    aux_ic_input_level4_binary_counter_4bit_0_load_mux0_32_2 = aux_level4_binary_counter_4bit_0_node_1;
     aux_ic_input_level4_binary_counter_4bit_0_load_mux0_32_3 = HIGH;
     aux_level4_binary_counter_4bit_0_load_mux0_32_node_0 = aux_ic_input_level4_binary_counter_4bit_0_load_mux0_32_0;
     aux_level4_binary_counter_4bit_0_load_mux0_32_node_1 = aux_ic_input_level4_binary_counter_4bit_0_load_mux0_32_1;
@@ -596,8 +596,8 @@ void computeLogic() {
     // End IC: load_mux0
     // IC: load_mux1
     aux_ic_input_level4_binary_counter_4bit_0_load_mux1_34_0 = aux_level4_binary_counter_4bit_0_hold_mux1_33_output;
-    aux_ic_input_level4_binary_counter_4bit_0_load_mux1_34_1 = aux_level4_binary_counter_4bit_0_node_5;
-    aux_ic_input_level4_binary_counter_4bit_0_load_mux1_34_2 = aux_level4_binary_counter_4bit_0_node_2;
+    aux_ic_input_level4_binary_counter_4bit_0_load_mux1_34_1 = aux_level4_binary_counter_4bit_0_node_4;
+    aux_ic_input_level4_binary_counter_4bit_0_load_mux1_34_2 = aux_level4_binary_counter_4bit_0_node_1;
     aux_ic_input_level4_binary_counter_4bit_0_load_mux1_34_3 = HIGH;
     aux_level4_binary_counter_4bit_0_load_mux1_34_node_0 = aux_ic_input_level4_binary_counter_4bit_0_load_mux1_34_0;
     aux_level4_binary_counter_4bit_0_load_mux1_34_node_1 = aux_ic_input_level4_binary_counter_4bit_0_load_mux1_34_1;
@@ -618,8 +618,8 @@ void computeLogic() {
     // End IC: load_mux1
     // IC: load_mux2
     aux_ic_input_level4_binary_counter_4bit_0_load_mux2_36_0 = aux_level4_binary_counter_4bit_0_hold_mux2_35_output;
-    aux_ic_input_level4_binary_counter_4bit_0_load_mux2_36_1 = aux_level4_binary_counter_4bit_0_node_6;
-    aux_ic_input_level4_binary_counter_4bit_0_load_mux2_36_2 = aux_level4_binary_counter_4bit_0_node_2;
+    aux_ic_input_level4_binary_counter_4bit_0_load_mux2_36_1 = aux_level4_binary_counter_4bit_0_node_5;
+    aux_ic_input_level4_binary_counter_4bit_0_load_mux2_36_2 = aux_level4_binary_counter_4bit_0_node_1;
     aux_ic_input_level4_binary_counter_4bit_0_load_mux2_36_3 = HIGH;
     aux_level4_binary_counter_4bit_0_load_mux2_36_node_0 = aux_ic_input_level4_binary_counter_4bit_0_load_mux2_36_0;
     aux_level4_binary_counter_4bit_0_load_mux2_36_node_1 = aux_ic_input_level4_binary_counter_4bit_0_load_mux2_36_1;
@@ -640,8 +640,8 @@ void computeLogic() {
     // End IC: load_mux2
     // IC: load_mux3
     aux_ic_input_level4_binary_counter_4bit_0_load_mux3_38_0 = aux_level4_binary_counter_4bit_0_hold_mux3_37_output;
-    aux_ic_input_level4_binary_counter_4bit_0_load_mux3_38_1 = aux_level4_binary_counter_4bit_0_node_7;
-    aux_ic_input_level4_binary_counter_4bit_0_load_mux3_38_2 = aux_level4_binary_counter_4bit_0_node_2;
+    aux_ic_input_level4_binary_counter_4bit_0_load_mux3_38_1 = aux_level4_binary_counter_4bit_0_node_6;
+    aux_ic_input_level4_binary_counter_4bit_0_load_mux3_38_2 = aux_level4_binary_counter_4bit_0_node_1;
     aux_ic_input_level4_binary_counter_4bit_0_load_mux3_38_3 = HIGH;
     aux_level4_binary_counter_4bit_0_load_mux3_38_node_0 = aux_ic_input_level4_binary_counter_4bit_0_load_mux3_38_0;
     aux_level4_binary_counter_4bit_0_load_mux3_38_node_1 = aux_ic_input_level4_binary_counter_4bit_0_load_mux3_38_1;

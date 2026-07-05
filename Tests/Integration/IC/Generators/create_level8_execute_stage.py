@@ -64,12 +64,31 @@ class ExecuteStageBuilder(ICBuilderBase):
         # Input positions
         input_x = 50.0
         input_y = 100.0
+        datapath_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
+        datapath_y = 700.0
+
+        # ---- Instantiate Execution Datapath first ----
+        # The OperandA/OperandB rows above it share its X column (both land
+        # at datapath_x for i == 3), so they need clearance from its real
+        # (port-count-dependent) height -- level7_execution_datapath is far
+        # taller than the flat 64px assumed elsewhere (queried via
+        # instantiate_ic_with_size).
+        datapath_handle = await self.instantiate_ic_with_size(
+            "level7_execution_datapath", datapath_x, datapath_y, "Datapath"
+        )
+        if datapath_handle is None:
+            return False
+        datapath_id = datapath_handle.element_id
+        await self.log("  ✓ Instantiated Execution Datapath")
+
+        operand_b_y = datapath_y - (datapath_handle.height / 2) - VERTICAL_STAGE_SPACING
+        operand_a_y = operand_b_y - VERTICAL_STAGE_SPACING
 
         # ---- Create OperandA input switches (8-bit) ----
         operand_a_inputs = []
         for i in range(8):
             op_a_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), input_y, f"OperandA[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), operand_a_y, f"OperandA[{i}]"
             )
             if op_a_id is None:
                 return False
@@ -82,7 +101,7 @@ class ExecuteStageBuilder(ICBuilderBase):
             op_b_id = await self.create_element(
                 "InputSwitch",
                 input_x + (i * HORIZONTAL_GATE_SPACING),
-                input_y + VERTICAL_STAGE_SPACING / 2,
+                operand_b_y,
                 f"OperandB[{i}]",
             )
             if op_b_id is None:
@@ -95,7 +114,7 @@ class ExecuteStageBuilder(ICBuilderBase):
         control_x = input_x + (9 * HORIZONTAL_GATE_SPACING)
         for i in range(3):
             aluop_id = await self.create_element(
-                "InputSwitch", control_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"ALUOp[{i}]"
+                "InputSwitch", control_x, input_y + (i * VERTICAL_STAGE_SPACING), f"ALUOp[{i}]"
             )
             if aluop_id is None:
                 return False
@@ -104,17 +123,6 @@ class ExecuteStageBuilder(ICBuilderBase):
 
         # (F33: the stage is purely combinational — the unused Clock element
         # and Reset switch it used to embed were removed.)
-
-        # ---- Instantiate Execution Datapath ----
-        datapath_id = await self.instantiate_ic(
-            "level7_execution_datapath",
-            input_x + (3 * HORIZONTAL_GATE_SPACING),
-            300.0,
-            "Datapath",
-        )
-        if datapath_id is None:
-            return False
-        await self.log("  ✓ Instantiated Execution Datapath")
 
         # ---- Connect operands and ALUOp to datapath ----
         for i in range(8):
@@ -136,9 +144,7 @@ class ExecuteStageBuilder(ICBuilderBase):
         # Result outputs (8-bit)
         result_outputs = []
         for i in range(8):
-            led_id = await self.create_element(
-                "Led", output_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"Result[{i}]"
-            )
+            led_id = await self.create_element("Led", output_x, input_y + (i * VERTICAL_STAGE_SPACING), f"Result[{i}]")
             if led_id is None:
                 return False
             result_outputs.append(led_id)
@@ -158,7 +164,7 @@ class ExecuteStageBuilder(ICBuilderBase):
 
         # Sign flag output
         sign_led_id = await self.create_element(
-            "Led", output_x + HORIZONTAL_GATE_SPACING, input_y + (VERTICAL_STAGE_SPACING / 2), "Sign"
+            "Led", output_x + HORIZONTAL_GATE_SPACING, input_y + VERTICAL_STAGE_SPACING, "Sign"
         )
         if sign_led_id is None:
             return False

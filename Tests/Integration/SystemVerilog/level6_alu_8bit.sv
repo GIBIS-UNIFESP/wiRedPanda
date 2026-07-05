@@ -116,18 +116,18 @@ endmodule
 module level4_ripple_adder_4bit (
     input a0,
     input a1,
-    input b0,
     input a2,
-    input b1,
-    input carryin,
     input a3,
+    input b0,
+    input b1,
     input b2,
     input b3,
+    input carryin,
     output sum0,
     output sum1,
     output sum2,
-    output carryout,
-    output sum3
+    output sum3,
+    output carryout
 );
 
 // IC instance: FA[0] (level2_full_adder_1bit)
@@ -176,8 +176,8 @@ level2_full_adder_1bit level2_full_adder_1bit_inst_4 (
 assign sum0 = w_level2_full_adder_1bit_inst_1_sum;
 assign sum1 = w_level2_full_adder_1bit_inst_2_sum;
 assign sum2 = w_level2_full_adder_1bit_inst_3_sum;
-assign carryout = w_level2_full_adder_1bit_inst_4_cout;
 assign sum3 = w_level2_full_adder_1bit_inst_4_sum;
+assign carryout = w_level2_full_adder_1bit_inst_4_cout;
 endmodule
 
 // Module for ALU_Low (generated from level4_ripple_alu_4bit.panda)
@@ -216,14 +216,14 @@ module level4_ripple_alu_4bit (
 wire w_level4_ripple_adder_4bit_inst_3_sum0;
 wire w_level4_ripple_adder_4bit_inst_3_sum1;
 wire w_level4_ripple_adder_4bit_inst_3_sum2;
-wire w_level4_ripple_adder_4bit_inst_3_carryout;
 wire w_level4_ripple_adder_4bit_inst_3_sum3;
+wire w_level4_ripple_adder_4bit_inst_3_carryout;
 // IC instance: Subtractor (Adder with ~B) (level4_ripple_adder_4bit)
 wire w_level4_ripple_adder_4bit_inst_4_sum0;
 wire w_level4_ripple_adder_4bit_inst_4_sum1;
 wire w_level4_ripple_adder_4bit_inst_4_sum2;
-wire w_level4_ripple_adder_4bit_inst_4_carryout;
 wire w_level4_ripple_adder_4bit_inst_4_sum3;
+wire w_level4_ripple_adder_4bit_inst_4_carryout;
 wire aux_not_5;
 wire aux_not_6;
 wire aux_not_7;
@@ -249,34 +249,34 @@ wire w_level2_mux_2to1_inst_16_p_output;
 level4_ripple_adder_4bit level4_ripple_adder_4bit_inst_3 (
     .a0(a0),
     .a1(a1),
-    .b0(b0),
     .a2(a2),
-    .b1(b1),
-    .carryin(carryin),
     .a3(a3),
+    .b0(b0),
+    .b1(b1),
     .b2(b2),
     .b3(b3),
+    .carryin(carryin),
     .sum0(w_level4_ripple_adder_4bit_inst_3_sum0),
     .sum1(w_level4_ripple_adder_4bit_inst_3_sum1),
     .sum2(w_level4_ripple_adder_4bit_inst_3_sum2),
-    .carryout(w_level4_ripple_adder_4bit_inst_3_carryout),
-    .sum3(w_level4_ripple_adder_4bit_inst_3_sum3)
+    .sum3(w_level4_ripple_adder_4bit_inst_3_sum3),
+    .carryout(w_level4_ripple_adder_4bit_inst_3_carryout)
 );
 level4_ripple_adder_4bit level4_ripple_adder_4bit_inst_4 (
     .a0(a0),
     .a1(a1),
-    .b0(aux_not_5),
     .a2(a2),
-    .b1(aux_not_6),
-    .carryin(subcarryin),
     .a3(a3),
+    .b0(aux_not_5),
+    .b1(aux_not_6),
     .b2(aux_not_7),
     .b3(aux_not_8),
+    .carryin(subcarryin),
     .sum0(w_level4_ripple_adder_4bit_inst_4_sum0),
     .sum1(w_level4_ripple_adder_4bit_inst_4_sum1),
     .sum2(w_level4_ripple_adder_4bit_inst_4_sum2),
-    .carryout(w_level4_ripple_adder_4bit_inst_4_carryout),
-    .sum3(w_level4_ripple_adder_4bit_inst_4_sum3)
+    .sum3(w_level4_ripple_adder_4bit_inst_4_sum3),
+    .carryout(w_level4_ripple_adder_4bit_inst_4_carryout)
 );
 assign aux_not_5 = ~b0;
 assign aux_not_6 = ~b1;
@@ -386,16 +386,16 @@ module level6_alu_8bit_ic (
     input shlin,
     output result0,
     output result1,
-    output zero,
     output result2,
-    output negative,
     output result3,
-    output carry,
     output result4,
-    output subcarryout,
     output result5,
     output result6,
-    output result7
+    output result7,
+    output zero,
+    output negative,
+    output carry,
+    output subcarryout
 );
 
 // IC instance: ALU_Low (level4_ripple_alu_4bit)
@@ -935,16 +935,16 @@ assign aux_nor_67 = ~(aux_mux_37 | aux_mux_41 | aux_mux_45 | aux_mux_49 | aux_mu
 
 assign result0 = aux_mux_37;
 assign result1 = aux_mux_41;
-assign zero = aux_nor_67;
 assign result2 = aux_mux_45;
-assign negative = aux_mux_65;
 assign result3 = aux_mux_49;
-assign carry = w_level4_ripple_alu_4bit_inst_2_carryout;
 assign result4 = aux_mux_53;
-assign subcarryout = w_level4_ripple_alu_4bit_inst_2_subcarryout;
 assign result5 = aux_mux_57;
 assign result6 = aux_mux_61;
 assign result7 = aux_mux_65;
+assign zero = aux_nor_67;
+assign negative = aux_mux_65;
+assign carry = w_level4_ripple_alu_4bit_inst_2_carryout;
+assign subcarryout = w_level4_ripple_alu_4bit_inst_2_subcarryout;
 endmodule
 
 module level6_alu_8bit (
@@ -991,16 +991,16 @@ output led36_1
 // IC instance: LEVEL6_ALU_8BIT (level6_alu_8bit_ic)
 wire w_level6_alu_8bit_ic_inst_1_result0;
 wire w_level6_alu_8bit_ic_inst_1_result1;
-wire w_level6_alu_8bit_ic_inst_1_zero;
 wire w_level6_alu_8bit_ic_inst_1_result2;
-wire w_level6_alu_8bit_ic_inst_1_negative;
 wire w_level6_alu_8bit_ic_inst_1_result3;
-wire w_level6_alu_8bit_ic_inst_1_carry;
 wire w_level6_alu_8bit_ic_inst_1_result4;
-wire w_level6_alu_8bit_ic_inst_1_subcarryout;
 wire w_level6_alu_8bit_ic_inst_1_result5;
 wire w_level6_alu_8bit_ic_inst_1_result6;
 wire w_level6_alu_8bit_ic_inst_1_result7;
+wire w_level6_alu_8bit_ic_inst_1_zero;
+wire w_level6_alu_8bit_ic_inst_1_negative;
+wire w_level6_alu_8bit_ic_inst_1_carry;
+wire w_level6_alu_8bit_ic_inst_1_subcarryout;
 
 
 // Assigning aux variables. //
@@ -1030,29 +1030,29 @@ level6_alu_8bit_ic level6_alu_8bit_ic_inst_1 (
     .shlin(input_switch23),
     .result0(w_level6_alu_8bit_ic_inst_1_result0),
     .result1(w_level6_alu_8bit_ic_inst_1_result1),
-    .zero(w_level6_alu_8bit_ic_inst_1_zero),
     .result2(w_level6_alu_8bit_ic_inst_1_result2),
-    .negative(w_level6_alu_8bit_ic_inst_1_negative),
     .result3(w_level6_alu_8bit_ic_inst_1_result3),
-    .carry(w_level6_alu_8bit_ic_inst_1_carry),
     .result4(w_level6_alu_8bit_ic_inst_1_result4),
-    .subcarryout(w_level6_alu_8bit_ic_inst_1_subcarryout),
     .result5(w_level6_alu_8bit_ic_inst_1_result5),
     .result6(w_level6_alu_8bit_ic_inst_1_result6),
-    .result7(w_level6_alu_8bit_ic_inst_1_result7)
+    .result7(w_level6_alu_8bit_ic_inst_1_result7),
+    .zero(w_level6_alu_8bit_ic_inst_1_zero),
+    .negative(w_level6_alu_8bit_ic_inst_1_negative),
+    .carry(w_level6_alu_8bit_ic_inst_1_carry),
+    .subcarryout(w_level6_alu_8bit_ic_inst_1_subcarryout)
 );
 
 // Writing output data. //
 assign led25_1 = w_level6_alu_8bit_ic_inst_1_result0;
 assign led26_1 = w_level6_alu_8bit_ic_inst_1_result1;
-assign led27_1 = w_level6_alu_8bit_ic_inst_1_zero;
-assign led28_1 = w_level6_alu_8bit_ic_inst_1_result2;
-assign led29_1 = w_level6_alu_8bit_ic_inst_1_negative;
-assign led30_1 = w_level6_alu_8bit_ic_inst_1_result3;
-assign led31_1 = w_level6_alu_8bit_ic_inst_1_carry;
-assign led32_1 = w_level6_alu_8bit_ic_inst_1_result4;
-assign led33_1 = w_level6_alu_8bit_ic_inst_1_subcarryout;
-assign led34_1 = w_level6_alu_8bit_ic_inst_1_result5;
-assign led35_1 = w_level6_alu_8bit_ic_inst_1_result6;
-assign led36_1 = w_level6_alu_8bit_ic_inst_1_result7;
+assign led27_1 = w_level6_alu_8bit_ic_inst_1_result2;
+assign led28_1 = w_level6_alu_8bit_ic_inst_1_result3;
+assign led29_1 = w_level6_alu_8bit_ic_inst_1_result4;
+assign led30_1 = w_level6_alu_8bit_ic_inst_1_result5;
+assign led31_1 = w_level6_alu_8bit_ic_inst_1_result6;
+assign led32_1 = w_level6_alu_8bit_ic_inst_1_result7;
+assign led33_1 = w_level6_alu_8bit_ic_inst_1_zero;
+assign led34_1 = w_level6_alu_8bit_ic_inst_1_negative;
+assign led35_1 = w_level6_alu_8bit_ic_inst_1_carry;
+assign led36_1 = w_level6_alu_8bit_ic_inst_1_subcarryout;
 endmodule

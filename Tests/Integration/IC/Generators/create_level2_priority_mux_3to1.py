@@ -117,7 +117,10 @@ class PriorityMux3to1Builder(ICBuilderBase):
         await self.log("  Created stage 2: mux(data0, stage1, sel0)")
 
         # Create output LED
-        output_x = stage2_mux_x + HORIZONTAL_GATE_SPACING
+        # Two gate-spacings past stage2 (not one): sel_input_x already sits one
+        # gate-spacing past stage2_mux_x (both are input_x + 3 * spacing), so a
+        # single extra step here would land the LED exactly on top of sel0.
+        output_x = stage2_mux_x + (2 * HORIZONTAL_GATE_SPACING)
         output_y = data_input_y
 
         output_led = await self.create_element("Led", output_x, output_y, "out")

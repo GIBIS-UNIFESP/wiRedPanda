@@ -33,7 +33,7 @@ Usage:
 
 import asyncio
 
-from element_spacing import HORIZONTAL_GATE_SPACING
+from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
@@ -48,17 +48,22 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         if not await self.create_new_circuit():
             return False
 
-        # Position hierarchy
+        # Position hierarchy. Control/data switches each get a full
+        # VERTICAL_STAGE_SPACING slot (order-preserving: Clock < Load <
+        # D0-D3) -- they used to be packed 40-50px apart, well under the
+        # ~64px element height.
         input_x = 50.0
         input_y_clk = 50.0
-        input_y_load = 100.0
-        input_y_data_base = 150.0
+        input_y_load = input_y_clk + VERTICAL_STAGE_SPACING
+        input_y_data_base = input_y_load + VERTICAL_STAGE_SPACING
         not_load_x = input_x + HORIZONTAL_GATE_SPACING
         not_load_y = input_y_load
         load_gate_x = input_x + (2 * HORIZONTAL_GATE_SPACING)
         load_gate_y_base = input_y_load
         shift_gate_x = input_x + (2 * HORIZONTAL_GATE_SPACING)
-        shift_gate_y_base = input_y_load + 30.0
+        # shift_gate_y_base is computed below, after BusMux_Load is
+        # instantiated -- it must clear BusMux_Load's real measured height,
+        # not a flat 30px offset (both are 74x114+ embedded ICs).
         select_gate_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
         select_gate_y_base = input_y_load + 15.0
         dff_x = input_x + (4 * HORIZONTAL_GATE_SPACING)
@@ -66,7 +71,6 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         sout_x = input_x + (5 * HORIZONTAL_GATE_SPACING)
         sout_y = input_y_load
         bit_spacing = 100.0
-        data_input_spacing = 40.0
 
         # Create input controls
         clk_id = await self.create_element("InputSwitch", input_x, input_y_clk, "Clock")
@@ -83,7 +87,7 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         data_in_ids = []
         for i in range(4):
             d_id = await self.create_element(
-                "InputSwitch", input_x, input_y_data_base + (i * data_input_spacing), f"D{i}"
+                "InputSwitch", input_x, input_y_data_base + (i * VERTICAL_STAGE_SPACING), f"D{i}"
             )
             if d_id is None:
                 return False
@@ -104,15 +108,20 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
             dff_ids.append(ff_id)
             await self.log(f"  ✓ Instantiated level1_d_flip_flop {i} (id={ff_id})")
 
-        # Instantiate load path Bus Mux 4-bit IC
-        # BusMux(GND, D[0-3], LOAD) = LOAD AND D[0-3]
-        load_mux_ic_id = await self.instantiate_ic("level4_bus_mux_4bit", load_gate_x, load_gate_y_base, "BusMux_Load")
-        if load_mux_ic_id is None:
+        # Instantiate load path Bus Mux 4-bit IC. Measured with its real size
+        # since BusMux_Shift stacks directly below it and must clear its
+        # actual height (74x114+), not a flat 30px offset.
+        load_mux_handle = await self.instantiate_ic_with_size(
+            "level4_bus_mux_4bit", load_gate_x, load_gate_y_base, "BusMux_Load"
+        )
+        if load_mux_handle is None:
             return False
+        load_mux_ic_id = load_mux_handle.element_id
         await self.log(f"  ✓ Instantiated load path Bus Multiplexer IC (id={load_mux_ic_id})")
 
         # Instantiate shift path Bus Mux 4-bit IC
         # BusMux(GND, shiftIn[0-3], NOT_LOAD) = NOT_LOAD AND shiftIn[0-3]
+        shift_gate_y_base = load_gate_y_base + max(VERTICAL_STAGE_SPACING, load_mux_handle.height)
         shift_mux_ic_id = await self.instantiate_ic(
             "level4_bus_mux_4bit", shift_gate_x, shift_gate_y_base, "BusMux_Shift"
         )

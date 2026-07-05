@@ -47,59 +47,63 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
 
         # Input positions
         input_x = 50.0
+        addr_y = 100.0
 
         # Create LoadValue[0-3] inputs
         load_value_inputs = []
         for i in range(4):
             lv_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"LoadValue[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), addr_y, f"LoadValue[{i}]"
             )
             if lv_id is None:
                 return False
             load_value_inputs.append(lv_id)
         await self.log("  ✓ Created 4 loadValue inputs")
 
-        # Control inputs: load, inc, reset, clock
-        ctrl_x = input_x + (4 * HORIZONTAL_GATE_SPACING) + HORIZONTAL_GATE_SPACING
+        # NotLoad/AndIncNotLoad sit a full stage below the LoadValue[] row (the
+        # old mux_y - VERTICAL_STAGE_SPACING landed only ~46px below it, overlapping).
+        mux_x = input_x
+        not_load_y = addr_y + VERTICAL_STAGE_SPACING
 
-        load_id = await self.create_element("InputSwitch", ctrl_x, 100.0, "Load")
+        # Control inputs: load, inc, reset, clock. Pushed well clear of
+        # reg_x/adder_x below so the dynamically-sized Register/Adder ICs
+        # can never reach this column regardless of their real width.
+        ctrl_x = input_x + 8 * HORIZONTAL_GATE_SPACING
+
+        load_id = await self.create_element("InputSwitch", ctrl_x, addr_y, "Load")
         if load_id is None:
             return False
 
-        inc_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + VERTICAL_STAGE_SPACING, "Inc")
+        inc_id = await self.create_element("InputSwitch", ctrl_x, not_load_y, "Inc")
         if inc_id is None:
             return False
 
-        reset_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "Reset")
+        reset_y = not_load_y + VERTICAL_STAGE_SPACING
+        reset_id = await self.create_element("InputSwitch", ctrl_x, reset_y, "Reset")
         if reset_id is None:
             return False
 
-        clock_id = await self.create_element("InputSwitch", ctrl_x, 100.0 + (3 * VERTICAL_STAGE_SPACING), "Clock")
-        if clock_id is None:
-            return False
+        await self.log("  ✓ Created control inputs (load, inc, reset)")
 
-        await self.log("  ✓ Created control inputs (load, inc, reset, clock)")
-
-        # Instantiate level4_register_4bit
-        reg_id = await self.instantiate_ic(
-            "level4_register_4bit",
-            input_x + (2 * HORIZONTAL_GATE_SPACING),
-            200.0,
-            "Register4bit",
-        )
-        if reg_id is None:
+        # Instantiate level4_register_4bit a full stage below Reset, querying
+        # its real rendered size so the mux layer below it (and the Adder
+        # beside it) can be placed with true clearance instead of guessing.
+        reg_x = input_x + (2 * HORIZONTAL_GATE_SPACING)
+        reg_y = reset_y + VERTICAL_STAGE_SPACING
+        reg_handle = await self.instantiate_ic_with_size("level4_register_4bit", reg_x, reg_y, "Register4bit")
+        if reg_handle is None:
             return False
+        reg_id = reg_handle.element_id
         await self.log("  ✓ Instantiated 4-bit Register")
 
-        # Instantiate level4_ripple_adder_4bit
-        adder_id = await self.instantiate_ic(
-            "level4_ripple_adder_4bit",
-            input_x + (2 * HORIZONTAL_GATE_SPACING),
-            300.0,
-            "Adder4bit",
-        )
-        if adder_id is None:
+        # Instantiate level4_ripple_adder_4bit beside the register (same row)
+        # rather than stacked on the same column -- stacking is what caused
+        # Register/Adder/Mux1_Inc[2] to alias onto the same x in the old layout.
+        adder_x = reg_x + max(HORIZONTAL_GATE_SPACING, reg_handle.width) + HORIZONTAL_GATE_SPACING
+        adder_handle = await self.instantiate_ic_with_size("level4_ripple_adder_4bit", adder_x, reg_y, "Adder4bit")
+        if adder_handle is None:
             return False
+        adder_id = adder_handle.element_id
         await self.log("  ✓ Instantiated 4-bit Adder")
 
         # Create mux layer for load/increment control, mirroring the 8-bit PC
@@ -107,18 +111,17 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
         # Priority: load > increment > hold
         # Mux1[i]: Sum (when inc AND NOT load) vs hold (register Q)
         # Mux2[i]: loadValue (when load) vs Mux1[i]
-
-        mux_x = input_x
-        mux_y = 250.0
+        #
+        # Clear the register's and adder's real (port-count-grown) height,
+        # not just a flat stage constant -- both ICs sit at reg_y above.
+        mux_y = reg_y + max(VERTICAL_STAGE_SPACING, reg_handle.height, adder_handle.height)
 
         # Control: AND(inc, NOT(load)) gates the increment path
-        not_load_id = await self.create_element("Not", mux_x, mux_y - VERTICAL_STAGE_SPACING, "NotLoad")
+        not_load_id = await self.create_element("Not", mux_x, not_load_y, "NotLoad")
         if not_load_id is None:
             return False
 
-        and_inc_id = await self.create_element(
-            "And", mux_x + HORIZONTAL_GATE_SPACING, mux_y - VERTICAL_STAGE_SPACING, "AndIncNotLoad"
-        )
+        and_inc_id = await self.create_element("And", mux_x + HORIZONTAL_GATE_SPACING, not_load_y, "AndIncNotLoad")
         if and_inc_id is None:
             return False
 
@@ -181,6 +184,36 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(mux2_outputs[i], reg_id, target_port_label=f"D{i}"):
                 return False
 
+        # Connect constant 1 to adder B[0], 0 to B[1-3] for +1 operation.
+        # Placed in the control column below Reset (ahead of Clock) rather
+        # than sharing reg_x -- that column is already occupied by the
+        # Register IC and the mux layer below it.
+        vcc_y = reset_y + VERTICAL_STAGE_SPACING
+        vcc_id = await self.create_element("InputVcc", ctrl_x, vcc_y, "VCC_Const1")
+        if vcc_id is None:
+            return False
+
+        if not await self.connect(vcc_id, adder_id, target_port_label="B[0]"):
+            return False
+
+        # Explicit constant 0 on B[1..3] (F34 — was an implicit unconnected default)
+        gnd_y = vcc_y + VERTICAL_STAGE_SPACING
+        gnd_id = await self.create_element("InputGnd", ctrl_x, gnd_y, "GND_Const0")
+        if gnd_id is None:
+            return False
+
+        for i in range(1, 4):
+            if not await self.connect(gnd_id, adder_id, target_port_label=f"B[{i}]"):
+                return False
+
+        # Clock is created last (below VCC_Const1/GND_Const0) so it keeps its
+        # rank as the last input port on this IC -- its position depends on
+        # mux_y, which is only known once the Register/Adder are instantiated.
+        clock_y = gnd_y + VERTICAL_STAGE_SPACING
+        clock_id = await self.create_element("InputSwitch", ctrl_x, clock_y, "Clock")
+        if clock_id is None:
+            return False
+
         # Connect clock to register (CLK port)
         if not await self.connect(clock_id, reg_id, target_port_label="Clock"):
             return False
@@ -207,28 +240,12 @@ class ProgramCounter4BitBuilder(ICBuilderBase):
             if not await self.connect(reg_id, adder_id, source_port_label=f"Q{i}", target_port_label=f"A[{i}]"):
                 return False
 
-        # Connect constant 1 to adder B[0], 0 to B[1-3] for +1 operation
-        vcc_id = await self.create_element("InputVcc", input_x + (2 * HORIZONTAL_GATE_SPACING), 320.0, "VCC_Const1")
-        if vcc_id is None:
-            return False
-
-        if not await self.connect(vcc_id, adder_id, target_port_label="B[0]"):
-            return False
-
-        # Explicit constant 0 on B[1..3] (F34 — was an implicit unconnected default)
-        gnd_id = await self.create_element("InputGnd", input_x + (2 * HORIZONTAL_GATE_SPACING), 360.0, "GND_Const0")
-        if gnd_id is None:
-            return False
-
-        for i in range(1, 4):
-            if not await self.connect(gnd_id, adder_id, target_port_label=f"B[{i}]"):
-                return False
-
         await self.log("  ✓ Connected adder inputs for PC + 1 computation")
 
-        # Create output LEDs for pc[0-3] (current program counter value)
+        # Create output LEDs for pc[0-3] (current program counter value), a
+        # full stage below the Mux2_Load[] row.
         pc_output_x = input_x
-        pc_output_y = 400.0
+        pc_output_y = mux_y + 2 * VERTICAL_STAGE_SPACING
 
         for i in range(4):
             led_id = await self.create_element(

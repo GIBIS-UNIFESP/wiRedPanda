@@ -28,7 +28,7 @@ Usage:
 
 import asyncio
 
-from element_spacing import HORIZONTAL_GATE_SPACING
+from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 # The 4x1 and 8x1 RAMs are the same cell-array architecture at two sizes; their
@@ -54,11 +54,6 @@ class RAM8x1Builder(ICBuilderBase):
 
         # Position hierarchy
         input_y = 50.0
-        gate_spacing = 40.0
-        write_control_x = 200.0
-        data_mux_x = write_control_x + gate_spacing
-        storage_ff_x = data_mux_x + gate_spacing
-        output_x = 600.0
         output_y = 250.0
 
         # ========== Create Input Elements ==========
@@ -114,10 +109,36 @@ class RAM8x1Builder(ICBuilderBase):
         if not await self.connect(reset_id, not_reset_id):
             return False
 
+        # ========== Create Decoder IC Instance ==========
+        # Instantiated early (with its real measured size) so the write-control
+        # grid below can clear the decoder's actual footprint -- an embedded IC's
+        # width isn't a flat stock-element size (see instantiate_ic_with_size).
+        decoder_ic_name = "level2_decoder_3to8"
+        decoder_x = 150.0
+        grid_start_y = input_y + VERTICAL_STAGE_SPACING
+        decoder_handle = await self.instantiate_ic_with_size(decoder_ic_name, decoder_x, grid_start_y, "AddrDecoder")
+        if decoder_handle is None:
+            return False
+        decoder_ic = decoder_handle.element_id
+        await self.log("  ✓ Loaded decoder IC")
+
+        # Connect address inputs to decoder
+        for i in range(address_bits):
+            if not await self.connect(address_inputs[i], decoder_ic, target_port_label=f"addr[{i}]"):
+                return False
+
+        # Write-control/data-mux/storage grid must clear the decoder's real
+        # width instead of a flat spacing constant.
+        write_control_x = decoder_x + max(HORIZONTAL_GATE_SPACING, decoder_handle.width)
+        data_mux_x = write_control_x + HORIZONTAL_GATE_SPACING
+        storage_ff_x = data_mux_x + HORIZONTAL_GATE_SPACING
+
         # ========== Create Write Control AND Gates ==========
         write_control_ands = []
         for i in range(num_cells):
-            gate_id = await self.create_element("And", write_control_x, 100.0 + i * gate_spacing, f"write_ctrl[{i}]")
+            gate_id = await self.create_element(
+                "And", write_control_x, grid_start_y + i * VERTICAL_STAGE_SPACING, f"write_ctrl[{i}]"
+            )
             if gate_id is None:
                 return False
             write_control_ands.append(gate_id)
@@ -130,43 +151,41 @@ class RAM8x1Builder(ICBuilderBase):
 
         for i in range(num_cells):
             # Create Mux for data path
-            mux_id = await self.create_element("Mux", data_mux_x, 100.0 + i * gate_spacing, f"data_mux[{i}]")
+            mux_id = await self.create_element(
+                "Mux", data_mux_x, grid_start_y + i * VERTICAL_STAGE_SPACING, f"data_mux[{i}]"
+            )
             if mux_id is None:
                 return False
             data_mux_gates.append(mux_id)
 
             # Create storage DFlipFlop
-            ff_id = await self.create_element("DFlipFlop", storage_ff_x, 100.0 + i * gate_spacing, f"storage[{i}]")
+            ff_id = await self.create_element(
+                "DFlipFlop", storage_ff_x, grid_start_y + i * VERTICAL_STAGE_SPACING, f"storage[{i}]"
+            )
             if ff_id is None:
                 return False
             storage_ffs.append(ff_id)
 
         await self.log(f"  ✓ Created {num_cells} storage DFlipFlops and data MUX gates")
 
+        # ========== Create Multiplexer IC Instance ==========
+        # Placed (and sized) relative to storage_ff_x -- the storage column's
+        # real width grew with the decoder above, so a flat 500.0 constant is no
+        # longer guaranteed to clear it.
+        mux_ic_name = "level2_mux_8to1"
+        mux_x = storage_ff_x + HORIZONTAL_GATE_SPACING
+        mux_handle = await self.instantiate_ic_with_size(mux_ic_name, mux_x, 250.0, "ReadMux")
+        if mux_handle is None:
+            return False
+        read_mux_ic = mux_handle.element_id
+        await self.log("  ✓ Loaded multiplexer IC")
+
         # ========== Create Output LED ==========
+        output_x = mux_x + max(HORIZONTAL_GATE_SPACING, mux_handle.width)
         output_led = await self.create_element("Led", output_x, output_y, "DataOut")
         if output_led is None:
             return False
         await self.log("  ✓ Created output LED")
-
-        # ========== Create Decoder IC Instance ==========
-        decoder_ic_name = "level2_decoder_3to8"
-        decoder_ic = await self.instantiate_ic(decoder_ic_name, 150.0, 150.0, "AddrDecoder")
-        if decoder_ic is None:
-            return False
-        await self.log("  ✓ Loaded decoder IC")
-
-        # Connect address inputs to decoder
-        for i in range(address_bits):
-            if not await self.connect(address_inputs[i], decoder_ic, target_port_label=f"addr[{i}]"):
-                return False
-
-        # ========== Create Multiplexer IC Instance ==========
-        mux_ic_name = "level2_mux_8to1"
-        read_mux_ic = await self.instantiate_ic(mux_ic_name, 500.0, 250.0, "ReadMux")
-        if read_mux_ic is None:
-            return False
-        await self.log("  ✓ Loaded multiplexer IC")
 
         # ========== Connect Write Control ==========
         for i in range(num_cells):

@@ -49,12 +49,27 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
 
         # Input positions
         input_x = 50.0
+        ram_x = input_x + (4 * HORIZONTAL_GATE_SPACING)
+        ram_y = 400.0
+
+        # Instantiate the 8×8 RAM first so the Address/DataIn input rows
+        # above it can be placed with guaranteed clearance from its real
+        # (port-count-dependent) height -- level6_ram_8x8 is far taller than
+        # the flat 64px assumed elsewhere (queried via instantiate_ic_with_size).
+        ram_handle = await self.instantiate_ic_with_size("level6_ram_8x8", ram_x, ram_y, "InstructionMemory")
+        if ram_handle is None:
+            return False
+        ram_id = ram_handle.element_id
+        await self.log("  ✓ Instantiated 8×8 RAM for instruction memory")
+
+        data_y = ram_y - (ram_handle.height / 2) - VERTICAL_STAGE_SPACING
+        address_y = data_y - VERTICAL_STAGE_SPACING
 
         # Create address inputs (8-bit)
         address_inputs = []
         for i in range(8):
             addr_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"Address[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), address_y, f"Address[{i}]"
             )
             if addr_id is None:
                 return False
@@ -65,7 +80,7 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
         data_inputs = []
         for i in range(8):
             data_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 200.0, f"DataIn[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), data_y, f"DataIn[{i}]"
             )
             if data_id is None:
                 return False
@@ -74,28 +89,17 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
 
         # Create write enable input
         write_enable_id = await self.create_element(
-            "InputSwitch", input_x + (8 * HORIZONTAL_GATE_SPACING), 200.0, "WriteEnable"
+            "InputSwitch", input_x + (8 * HORIZONTAL_GATE_SPACING), data_y, "WriteEnable"
         )
         if write_enable_id is None:
             return False
         await self.log("  ✓ Created WriteEnable input")
 
         # Create clock input
-        clock_id = await self.create_element("InputSwitch", input_x + (9 * HORIZONTAL_GATE_SPACING), 100.0, "Clock")
+        clock_id = await self.create_element("InputSwitch", input_x + (9 * HORIZONTAL_GATE_SPACING), address_y, "Clock")
         if clock_id is None:
             return False
         await self.log("  ✓ Created clock input")
-
-        # Instantiate 8×8 RAM for instruction memory
-        ram_id = await self.instantiate_ic(
-            "level6_ram_8x8",
-            input_x + (4 * HORIZONTAL_GATE_SPACING),
-            250.0,
-            "InstructionMemory",
-        )
-        if ram_id is None:
-            return False
-        await self.log("  ✓ Instantiated 8×8 RAM for instruction memory")
 
         # Connect the low address bits to the RAM. The interface keeps a full
         # 8-bit address bus for the CPU; the backing memory holds 8 words, so
@@ -122,7 +126,7 @@ class InstructionMemoryInterfaceBuilder(ICBuilderBase):
         output_x = input_x + (14 * HORIZONTAL_GATE_SPACING)
         for i in range(8):
             led_id = await self.create_element(
-                "Led", output_x, 250.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"Instruction[{i}]"
+                "Led", output_x, ram_y + (i * VERTICAL_STAGE_SPACING), f"Instruction[{i}]"
             )
             if led_id is None:
                 return False

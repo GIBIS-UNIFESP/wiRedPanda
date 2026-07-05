@@ -143,9 +143,7 @@ class DecodeStageBuilder(ICBuilderBase):
 
         # ALUOp outputs (direct pass-through from OpCode[0-2])
         for i in range(3):
-            led_id = await self.create_element(
-                "Led", output_x, input_y + (i * (VERTICAL_STAGE_SPACING / 2)), f"ALUOp[{i}]"
-            )
+            led_id = await self.create_element("Led", output_x, input_y + (i * VERTICAL_STAGE_SPACING), f"ALUOp[{i}]")
             if led_id is None:
                 return False
 
@@ -204,12 +202,16 @@ class DecodeStageBuilder(ICBuilderBase):
         # decodes unconditionally — so no enable tie-off is needed.
 
         # The RegWrite NOT gate already computes NOT(OpCode[4]) — reuse it.
+        #
+        # Each grid row reserves two full stages: one for the AND gates
+        # themselves and one dedicated to their output LEDs directly below,
+        # so neither the LEDs nor the next row of AND gates encroach on them.
         onehot_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
         onehot_y = input_y + (2 * VERTICAL_STAGE_SPACING)
         for line in range(32):
             low_idx = line & 0xF
-            gate_x = onehot_x + ((line % 8) * HORIZONTAL_GATE_SPACING / 2)
-            gate_y = onehot_y + ((line // 8) * VERTICAL_STAGE_SPACING / 2)
+            gate_x = onehot_x + ((line % 8) * HORIZONTAL_GATE_SPACING)
+            gate_y = onehot_y + ((line // 8) * (2 * VERTICAL_STAGE_SPACING))
 
             and_id = await self.create_element("And", gate_x, gate_y, f"line_and{line}")
             if and_id is None:
@@ -222,7 +224,9 @@ class DecodeStageBuilder(ICBuilderBase):
             if not await self.connect(high_source, and_id, target_port=1):
                 return False
 
-            led_id = await self.create_element("Led", gate_x, gate_y + 30.0, f"InstrDecodedLines[{line}]")
+            led_id = await self.create_element(
+                "Led", gate_x, gate_y + VERTICAL_STAGE_SPACING, f"InstrDecodedLines[{line}]"
+            )
             if led_id is None:
                 return False
 

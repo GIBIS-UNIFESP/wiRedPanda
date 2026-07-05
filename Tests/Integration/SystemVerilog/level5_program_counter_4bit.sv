@@ -239,18 +239,18 @@ endmodule
 module level4_ripple_adder_4bit (
     input a0,
     input a1,
-    input b0,
     input a2,
-    input b1,
-    input carryin,
     input a3,
+    input b0,
+    input b1,
     input b2,
     input b3,
+    input carryin,
     output sum0,
     output sum1,
     output sum2,
-    output carryout,
-    output sum3
+    output sum3,
+    output carryout
 );
 
 // IC instance: FA[0] (level2_full_adder_1bit)
@@ -299,8 +299,8 @@ level2_full_adder_1bit level2_full_adder_1bit_inst_4 (
 assign sum0 = w_level2_full_adder_1bit_inst_1_sum;
 assign sum1 = w_level2_full_adder_1bit_inst_2_sum;
 assign sum2 = w_level2_full_adder_1bit_inst_3_sum;
-assign carryout = w_level2_full_adder_1bit_inst_4_cout;
 assign sum3 = w_level2_full_adder_1bit_inst_4_sum;
+assign carryout = w_level2_full_adder_1bit_inst_4_cout;
 endmodule
 
 // Module for LEVEL5_PROGRAM_COUNTER_4BIT (generated from level5_program_counter_4bit.panda)
@@ -332,8 +332,8 @@ wire w_level4_register_4bit_inst_1_q3;
 wire w_level4_ripple_adder_4bit_inst_2_sum0;
 wire w_level4_ripple_adder_4bit_inst_2_sum1;
 wire w_level4_ripple_adder_4bit_inst_2_sum2;
-wire w_level4_ripple_adder_4bit_inst_2_carryout;
 wire w_level4_ripple_adder_4bit_inst_2_sum3;
+wire w_level4_ripple_adder_4bit_inst_2_carryout;
 wire aux_not_3;
 wire aux_and_4;
 reg aux_mux_5 = 1'b0;
@@ -362,18 +362,18 @@ level4_register_4bit level4_register_4bit_inst_1 (
 level4_ripple_adder_4bit level4_ripple_adder_4bit_inst_2 (
     .a0(w_level4_register_4bit_inst_1_q0),
     .a1(w_level4_register_4bit_inst_1_q1),
-    .b0(1'b1),
     .a2(w_level4_register_4bit_inst_1_q2),
-    .b1(1'b0),
-    .carryin(1'b0),
     .a3(w_level4_register_4bit_inst_1_q3),
+    .b0(1'b1),
+    .b1(1'b0),
     .b2(1'b0),
     .b3(1'b0),
+    .carryin(1'b0),
     .sum0(w_level4_ripple_adder_4bit_inst_2_sum0),
     .sum1(w_level4_ripple_adder_4bit_inst_2_sum1),
     .sum2(w_level4_ripple_adder_4bit_inst_2_sum2),
-    .carryout(w_level4_ripple_adder_4bit_inst_2_carryout),
-    .sum3(w_level4_ripple_adder_4bit_inst_2_sum3)
+    .sum3(w_level4_ripple_adder_4bit_inst_2_sum3),
+    .carryout(w_level4_ripple_adder_4bit_inst_2_carryout)
 );
 assign aux_not_3 = ~load;
 assign aux_and_4 = (inc & aux_not_3);

@@ -48,7 +48,7 @@ Usage:
 
 import asyncio
 
-from element_spacing import HORIZONTAL_GATE_SPACING
+from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase, run_ic_builder
 
 
@@ -107,7 +107,9 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
 
         input_x = 50.0
         for idx, label in enumerate(input_labels):
-            element_id = await self.create_element("InputSwitch", input_x, 100.0 + (idx * 20.0), label)
+            element_id = await self.create_element(
+                "InputSwitch", input_x, 100.0 + (idx * VERTICAL_STAGE_SPACING), label
+            )
             if element_id is None:
                 return False
             inputs[label] = element_id
@@ -118,12 +120,6 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
         await self.log("📦 Instantiating Stack Pointer 8-bit...")
         sp_id = await self.instantiate_ic("level6_stack_pointer_8bit", 300.0, 200.0, "StackPointer")
         if sp_id is None:
-            return False
-
-        # Instantiate RAM (8x8 stack memory)
-        await self.log("📦 Instantiating 8×8 stack RAM...")
-        ram_id = await self.instantiate_ic("level6_ram_8x8", 750.0, 200.0, "StackRAM")
-        if ram_id is None:
             return False
 
         # Create 8x 2-to-1 Multiplexers for address selection (Address vs SP)
@@ -141,10 +137,22 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
                 return False
             address_muxes.append(element_id)
 
-        # Create output LEDs for outputs
+        # Instantiate RAM (8x8 stack memory) past the END of the full 8-wide
+        # address_muxes row -- the RAM's address inputs are fed by the mux
+        # outputs, so it belongs after them in left-to-right dataflow order.
+        # The old fixed x=750.0 fell inside the muxes' own span (600..1328).
+        await self.log("📦 Instantiating 8×8 stack RAM...")
+        ram_x = mux_x + 8 * HORIZONTAL_GATE_SPACING
+        ram_handle = await self.instantiate_ic_with_size("level6_ram_8x8", ram_x, 200.0, "StackRAM")
+        if ram_handle is None:
+            return False
+        ram_id = ram_handle.element_id
+
+        # Create output LEDs for outputs, past the RAM's real width so they
+        # can't alias back onto it regardless of how wide the RAM IC is.
         await self.log("📦 Creating output LEDs...")
         outputs = {}
-        out_x = 1300.0
+        out_x = ram_x + max(2 * HORIZONTAL_GATE_SPACING, ram_handle.width + HORIZONTAL_GATE_SPACING)
         out_labels = [
             "SP[0]",
             "SP[1]",
@@ -173,7 +181,7 @@ class StackMemoryInterfaceBuilder(ICBuilderBase):
         ]
 
         for idx, label in enumerate(out_labels):
-            element_id = await self.create_element("Led", out_x, 100.0 + (idx * 20.0), label)
+            element_id = await self.create_element("Led", out_x, 100.0 + (idx * VERTICAL_STAGE_SPACING), label)
             if element_id is None:
                 return False
             outputs[label] = element_id

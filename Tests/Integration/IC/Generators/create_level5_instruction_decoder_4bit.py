@@ -40,27 +40,33 @@ class InstructionDecoder4BitBuilder(ICBuilderBase):
 
         # Input positions
         input_x = 50.0
+        addr_y = 100.0
 
         # Create instruction input switches (4-bit opcode)
         instr_inputs = []
         for i in range(4):
             instr_id = await self.create_element(
-                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), 100.0, f"instr[{i}]"
+                "InputSwitch", input_x + (i * HORIZONTAL_GATE_SPACING), addr_y, f"instr[{i}]"
             )
             if instr_id is None:
                 return False
             instr_inputs.append(instr_id)
         await self.log("  ✓ Created 4 instruction inputs")
 
-        # Instantiate level2_decoder_4to16
-        decoder_id = await self.instantiate_ic(
+        # Instantiate level2_decoder_4to16 -- its 16 output ports push its real
+        # bounding box (queried via instantiate_ic_with_size) far above its own
+        # pos.y, so it needs more than a single stage of clearance from the
+        # instr[] row above it.
+        decoder_y = addr_y + 2 * VERTICAL_STAGE_SPACING
+        decoder_handle = await self.instantiate_ic_with_size(
             "level2_decoder_4to16",
             input_x + (2 * HORIZONTAL_GATE_SPACING),
-            200.0,
+            decoder_y,
             "Decoder4to16",
         )
-        if decoder_id is None:
+        if decoder_handle is None:
             return False
+        decoder_id = decoder_handle.element_id
         await self.log("  ✓ Instantiated 4-to-16 Decoder")
 
         # Connect instruction inputs to decoder
@@ -72,7 +78,7 @@ class InstructionDecoder4BitBuilder(ICBuilderBase):
         # Create output LEDs for each instruction line (16 total)
         output_x = input_x + (4 * HORIZONTAL_GATE_SPACING)
         for i in range(16):
-            led_id = await self.create_element("Led", output_x, 200.0 + (i * (VERTICAL_STAGE_SPACING / 2)), f"op[{i}]")
+            led_id = await self.create_element("Led", output_x, decoder_y + (i * VERTICAL_STAGE_SPACING), f"op[{i}]")
             if led_id is None:
                 return False
 
