@@ -16,6 +16,7 @@
 #include "Tests/Integration/IC/Tests/Cpu/TestCPURegisterBank.h"
 #include "Tests/Integration/IC/Tests/Cpu/TestCPURegisters.h"
 // integration/ic/tests
+#include "Tests/Integration/IC/Tests/TestICFixtureLayout.h"
 #include "Tests/Integration/IC/Tests/TestLevel1DFlipFlop.h"
 #include "Tests/Integration/IC/Tests/TestLevel1DLatch.h"
 #include "Tests/Integration/IC/Tests/TestLevel1JkFlipFlop.h"
@@ -214,6 +215,7 @@ int main(int argc, char **argv)
         {"TestCPUProgramCounter", []() -> QObject * { return new TestCPUProgramCounter; }},
         {"TestCPURegisterBank", []() -> QObject * { return new TestCPURegisterBank; }},
         {"TestCPURegisters", []() -> QObject * { return new TestCPURegisters; }},
+        {"TestICFixtureLayout", []() -> QObject * { return new TestICFixtureLayout; }},
         {"TestLevel1DFlipFlop", []() -> QObject * { return new TestLevel1DFlipFlop; }},
         {"TestLevel1DLatch", []() -> QObject * { return new TestLevel1DLatch; }},
         {"TestLevel1JKFlipFlop", []() -> QObject * { return new TestLevel1JKFlipFlop; }},
