@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "点击左侧面板中的“I/O”标签页，然后将两个 InputSwitch 元件拖到画布上，并将它们放置在与门的左侧。",
+      "instruction": "向画布添加两个 InputSwitch 元件"
+    },
+    "add-output": {
+      "hint": "从“I/O”标签页拖动一个 LED，并将其放置在与门的右侧。然后将与门的输出端口（右侧）连接到 LED 的输入端口（左侧）。",
+      "instruction": "添加一个 LED 并将其连接到与门的输出"
+    },
+    "connect-inputs": {
+      "hint": "从 InputSwitch 的输出端口（右侧）点击并拖动到与门的一个输入端口（左侧）。对第二个开关重复此操作。",
+      "instruction": "将两个输入开关都连接到与门"
+    },
+    "description": "学习放置逻辑门、添加输入和输出，并将它们连接起来。",
+    "place-and-gate": {
+      "hint": "点击左侧面板中的“门”标签页，然后将与门拖到画布上。",
+      "instruction": "在画布上放置一个与门"
+    },
+    "title": "构建一个与门电路",
+    "toggle-observe": {
+      "hint": "点击 InputSwitch 以切换它。只有当两个开关都打开时，LED 才会点亮。这是因为与门只有在所有输入都为 1 时才会输出 1。",
+      "instruction": "切换开关并观察 LED — 这就是与逻辑！"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "点击左侧面板中的“I/O”标签页，然后将两个 InputSwitch 元件拖到画布上，并将它们放置在或门的左侧。",
+      "instruction": "向画布添加两个 InputSwitch 元件"
+    },
+    "add-not-gate": {
+      "hint": "拖动或门和 LED 之间的导线以将其移除。",
+      "instruction": "断开 LED 与或门的连接，然后将或门连接到非门，并将非门连接到 LED"
+    },
+    "add-output": {
+      "hint": "从“I/O”标签页拖动一个 LED，并将其放置在或门的右侧。然后将或门的输出端口（右侧）连接到 LED 的输入端口（左侧）。",
+      "instruction": "添加一个 LED 并将其连接到或门的输出"
+    },
+    "connect-inputs": {
+      "hint": "从 InputSwitch 的输出端口（右侧）点击并拖动到或门的一个输入端口（左侧）。对第二个开关重复此操作。",
+      "instruction": "将两个输入开关都连接到或门"
+    },
+    "description": "学习使用或门和非门。",
+    "place-or-gate": {
+      "hint": "点击左侧面板中的“门”标签页，然后将或门拖到画布上。",
+      "instruction": "在画布上放置一个或门"
+    },
+    "title": "更多基本门：或门和非门",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "非门会反转信号。现在，只有当所有输入都不为 1 时，电路才会输出 1"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "尝试不同的输入，观察当任意一个输入为 1 时，或门是如何输出 1 的"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "在 BeWavedDolphin 的菜单栏中点击“编辑”→“组合”。这将用所有可能的值填充时钟行，并计算每种情况下的 LED 输出 — 一键生成完整的真值表。",
+      "instruction": "自动生成所有输入组合"
+    },
+    "connect-clock-led": {
+      "hint": "从时钟的输出端口（右侧）点击并拖动到 LED 的输入端口（左侧）。",
+      "instruction": "将时钟的输出连接到 LED 的输入"
+    },
+    "description": "构建一个最简单的时钟-LED 电路，并探索波形查看器：组合模式和手动单元编辑。",
+    "open-waveform": {
+      "hint": "BeWavedDolphin 将电路信号显示为行。时钟行是输入，Led 行是输出。每一列都是一个模拟时间步。",
+      "instruction": "波形查看器现已打开 — 看一看吧！"
+    },
+    "place-clock": {
+      "hint": "点击左侧面板中的“I/O”标签页，然后将时钟元件拖到画布上。",
+      "instruction": "在画布上放置一个时钟元件"
+    },
+    "place-led": {
+      "hint": "仍在“I/O”标签页中，将一个 Led 元件拖到时钟右侧的画布上。",
+      "instruction": "在画布上放置一个 LED"
+    },
+    "title": "时钟和 LED：波形基础",
+    "toggle-cell": {
+      "hint": "双击时钟行中的任意单元格，使其在 0 和 1 之间切换。观察 Led 行如何立即更新以反映新的输出。",
+      "instruction": "手动切换一个时钟单元格"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "此时你的电路应该有两个 InputSwitch、两个 LED 和一个 DEMUX 电路",
+      "instruction": "添加一个 DEMUX 电路，并将 InputSwitch 连接到它的 In 和 S0 端口。然后将 DEMUX 的每个输出连接到不同的 LED"
+    },
+    "add-inputs": {
+      "hint": "点击左侧面板中的“I/O”标签页，然后将两个 InputSwitch 元件拖到画布上，并将它们放置在 MUX 电路的左侧。",
+      "instruction": "向画布添加三个 InputSwitch 元件"
+    },
+    "add-output": {
+      "hint": "从“I/O”标签页拖动一个 LED，并将其放置在 MUX 电路的右侧。然后将 MUX 电路的输出端口（右侧）连接到 LED 的输入端口（左侧）。",
+      "instruction": "添加一个 LED 并将其连接到 MUX 电路的输出"
+    },
+    "connect-inputs": {
+      "hint": "从 InputSwitch 的输出端口（右侧）点击并拖动到 MUX 门的一个输入端口（左侧）。对第二个开关重复此操作。然后将第三个输入开关连接到 MUX 的选择端口（底部）",
+      "instruction": "将所有输入开关连接到 MUX 电路"
+    },
+    "description": "了解 MUX 和 DEMUX 电路。",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "DEMUX 底部的 S0 端口用于选择哪个输出会接收输入的信号。当 S0 = 0 时，Out0 = In0。当 S0 = 1 时，Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "MUX 底部的 S0 端口用于选择哪个输入被路由到输出。当 S0 = 0 时，输入 0 的信号被发送到输出。当 S0 = 1 时，输入 1 的信号被发送到输出。"
+    },
+    "place-mux": {
+      "hint": "点击左侧面板中的“组合”标签页，然后将 MUX 电路拖到画布上。",
+      "instruction": "在画布上放置一个 MUX 电路"
+    },
+    "prepare-demux": {
+      "hint": "此时你的电路应该有两个 InputSwitch 和两个 LED",
+      "instruction": "删除 MUX 电路和其中一个 InputSwitch。然后再添加一个 LED"
+    },
+    "title": "组合电路 I：MUX 和 DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "将 InputSwitch 的输出连接到门的输入。",
+      "instruction": "向画布添加另一个 InputSwitch，并将其标记为 Cin。然后添加一个异或门、一个与门和一个或门"
+    },
+    "add-half-adder-gates": {
+      "hint": "使用“门”标签页添加异或门和与门，然后使用“I/O”标签页添加两个 LED。",
+      "instruction": "向画布添加一个异或门、一个与门和两个 LED。然后将每个门连接到不同的 LED"
+    },
+    "add-inputs": {
+      "hint": "点击左侧面板中的“I/O”标签页，然后将三个 InputSwitch 元件拖到画布上。第三个 InputSwitch 将在稍后用作进位输入（Cin）。",
+      "instruction": "向画布添加两个 InputSwitch 元件"
+    },
+    "description": "学习构建一个加法器电路。",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "该电路构成一个全加器。与半加器不同，全加器接受来自上一次加法的进位输入（Cin），并为下一阶段产生进位输出（Cout）。通过将一个全加器的 Cout 连接到另一个全加器的 Cin，可以将多个全加器链接在一起，以对任意长度的二进制数进行加法运算"
+    },
+    "label-half-adder-outputs": {
+      "hint": "点击一个 LED，并在屏幕左下角的标签文本框中输入文字，即可为该 LED 添加标签。",
+      "instruction": "将连接到异或门的 LED 标记为 Sum，然后将连接到与门的 LED 标记为 Cout。该电路构成一个半加器，用于将两个单比特输入相加"
+    },
+    "title": "组合电路 III：加法器",
+    "wire-full-adder": {
+      "hint": "移除到 LED 的旧连接，以便添加新的连接。",
+      "instruction": "将旧的异或门和 Cin 开关连接到新的异或门，然后将新的异或门连接到 Sum 输出。同时将旧的异或门和 Cin 开关连接到新的与门。最后将两个与门都连接到或门，并将或门连接到 Cout，完成整个电路"
+    },
+    "wire-half-adder": {
+      "hint": "将 InputSwitch 的输出连接到门的输入。",
+      "instruction": "将两个 InputSwitch 连接到异或门和与门。每个 InputSwitch 都应连接到这两个门。异或门产生 Sum 输出，而与门产生 Carry 输出"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "使用左侧面板的“门”标签页添加与门，使用“I/O”标签页添加 LED。",
+      "instruction": "向画布添加四个与门和四个 LED，然后将每个与门连接到其中一个 LED"
+    },
+    "add-inputs": {
+      "hint": "点击左侧面板中的“I/O”标签页，并将两个 InputSwitch 元件拖到画布上。",
+      "instruction": "向画布添加两个 InputSwitch 元件"
+    },
+    "add-not-gates": {
+      "hint": "点击左侧面板中的“门”标签页，然后将两个非门元件拖到画布上，并将 InputSwitch 连接到它们。",
+      "instruction": "向画布添加两个非门，并将每个 InputSwitch 连接到一个单独的非门"
+    },
+    "description": "学习构建一个 2 到 4 译码器。",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "对于输入位的每一种特定组合，只有一条对应的输出线被激活，而其他所有输出线都保持未激活状态"
+    },
+    "title": "组合电路 II：译码器",
+    "wire-decoder": {
+      "hint": "每个与门应从每个输入接收一个信号。对于 1，使用原始的 InputSwitch 信号；对于 0，使用对应的非门输出。",
+      "instruction": "将非门和 InputSwitch 的输出连接到与门，使每个与门代表一种输入组合"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "D 锁存器存储单个输入值，并避免了 SR 锁存器的无效输入组合。",
+      "instruction": "在保留 InputSwitch 和 LED 的同时移除 SR 锁存器。然后添加一个 D 锁存器"
+    },
+    "add-sr-latch": {
+      "hint": "使用“存储器”标签页添加一个 SR 锁存器。然后使用“I/O”标签页添加两个 InputSwitch 和两个 LED。",
+      "instruction": "向画布添加一个 SR 锁存器、两个 InputSwitch 和两个 LED"
+    },
+    "description": "学习使用锁存器。",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "切换 InputSwitch 并观察 D 锁存器。当 Enable 为 1 时，输出跟随 D 输入。当 Enable 为 0 时，锁存器会记住其先前的值"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "切换 InputSwitch，观察 SR 锁存器如何存储其状态。将 S 输入设为 1 会使 Q 输出变为 1，而将 R 输入设为 1 会将 Q 复位为 0。当两个输入都恢复为 0 时，锁存器会记住其最后的状态，直到再次被置位或复位"
+    },
+    "title": "时序电路 I：锁存器",
+    "wire-d-latch": {
+      "hint": "D 输入是要存储的值。Enable 输入决定锁存器何时更新其存储的值。",
+      "instruction": "将一个 InputSwitch 连接到 D 输入，另一个连接到 Enable（E）输入。将 Q 和 Q̅ 输出连接到 LED"
+    },
+    "wire-sr-latch": {
+      "hint": "将一个 InputSwitch 连接到 Set（S）输入，另一个连接到 Reset（R）输入。将锁存器的每个输出连接到不同的 LED。",
+      "instruction": "将 InputSwitch 连接到 SR 锁存器的 S 和 R 输入。然后将 Q 和 Q̅ 输出连接到 LED"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "使用“存储器”标签页添加 T 触发器和一个时钟。然后使用“I/O”标签页添加三个 InputSwitch 和三个 LED。",
+      "instruction": "向画布添加三个 T 触发器、三个 InputSwitch、一个时钟和三个 LED"
+    },
+    "description": "学习构建一个计数器电路。",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "打开全部三个 InputSwitch 并启动时钟。观察计数器运行时的 LED。第一个 LED 每个时钟脉冲改变一次状态，第二个每两个脉冲改变一次，第三个每四个脉冲改变一次，展示从 000 到 111 反复循环的 3 位二进制计数"
+    },
+    "title": "时序电路 III：计数器",
+    "wire-clock": {
+      "hint": "第一个触发器接收外部时钟信号。",
+      "instruction": "将时钟连接到第一个 T 触发器的 Clk 输入"
+    },
+    "wire-outputs": {
+      "hint": "每个 LED 代表计数器的一位，第一个 LED 是最低有效位。",
+      "instruction": "将每个触发器的 Q 输出连接到不同的 LED"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "将第一个触发器的 Q 输出连接到第二个触发器的 Clk 输入，然后将第二个触发器的 Q 输出连接到第三个触发器的 Clk 输入。每个触发器都由前一个的输出提供时钟，从而形成一个纹波计数器（ripple counter）"
+    },
+    "wire-t-inputs": {
+      "hint": "打开全部三个 InputSwitch。只有当其 T 输入为 1 时，T 触发器才会翻转。",
+      "instruction": "将每个 InputSwitch 连接到不同触发器的 T 输入"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "使用“存储器”标签页添加一个 D 触发器和一个时钟。然后使用“I/O”标签页添加两个 InputSwitch 和两个 LED。",
+      "instruction": "向画布添加一个 D 触发器、两个 InputSwitch、一个时钟和两个 LED"
+    },
+    "add-jk-flipflop": {
+      "hint": "JK 触发器具有 J 和 K 输入，而不是 D 输入。让 Clear 和 Preset 输入保持未连接状态。",
+      "instruction": "在保留时钟、InputSwitch 和 LED 的同时，将 D 触发器替换为 JK 触发器"
+    },
+    "add-t-flipflop": {
+      "hint": "T 触发器除时钟外只需要一个输入。",
+      "instruction": "将 JK 触发器替换为 T 触发器，并移除其中一个 InputSwitch"
+    },
+    "description": "了解触发器。",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "将第二个 InputSwitch 连接到 Clear 或 Preset 输入，观察其效果。与 D 输入不同，Clear 和 Preset 输入会立即生效，无需等待时钟边沿。Clear 强制 Q 为 0，而 Preset 强制 Q 为 1"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "切换 D InputSwitch 并观察 D 触发器。D 输入上的值只在有效时钟边沿被复制到 Q 输出。在时钟边沿之间，输出保持不变"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "切换 InputSwitch 并观察 JK 触发器。当 J = K = 0 时，输出保持当前状态。当 J = 1 且 K = 0 时，输出被置位。当 J = 0 且 K = 1 时，输出被复位。当 J = K = 1 时，输出在每个有效时钟边沿翻转"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "切换 InputSwitch 并观察 T 触发器。当 T = 0 时，输出保持当前状态。当 T = 1 时，输出在每个有效时钟边沿翻转。T 触发器常用于构建二进制计数器和分频器"
+    },
+    "title": "时序电路 II：触发器",
+    "wire-d-flipflop": {
+      "hint": "暂时让 Clear 和 Preset 输入保持未连接状态。",
+      "instruction": "将一个 InputSwitch 连接到 D 输入，将时钟连接到 Clk 输入，并将 Q 和 Q̅ 输出连接到 LED。D 输入提供要存储的值，而时钟决定何时存储该值"
+    },
+    "wire-jk-flipflop": {
+      "hint": "JK 触发器只在有效时钟边沿改变其输出。",
+      "instruction": "将 InputSwitch 连接到 J 和 K 输入，将时钟连接到 Clk 输入，并将 Q 和 Q̅ 输出连接到 LED"
+    },
+    "wire-t-flipflop": {
+      "hint": "让 Clear 和 Preset 输入保持未连接状态。",
+      "instruction": "将剩余的 InputSwitch 连接到 T 输入，将时钟连接到 Clk 输入，并将 Q 和 Q̅ 输出连接到 LED"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "在这里构建你的电路。从面板拖动元件，然后通过点击并从输出端口（元件的右侧）拖动到输入端口（另一个元件的左侧）来连接它们。",
+      "title": "画布"
+    },
+    "combinational-mode": {
+      "body": "高亮显示的按钮（组合）刚刚被自动触发 — 它会用每种可能的 0/1 组合填充输入行，让你一键获得完整的真值表。",
+      "title": "组合模式"
+    },
+    "component-palette": {
+      "body": "此面板列出了所有可用的元件 — 逻辑门、输入、输出、触发器等等。元件通过顶部的标签页按类别组织。点击一个标签页即可浏览该类别。",
+      "title": "元件面板"
+    },
+    "description": "主界面的引导式导览 — 面板、画布、工具栏和属性面板。",
+    "editing-cells": {
+      "body": "你也可以手动编辑波形。双击时钟行中的任意单元格，使其在 0 和 1 之间切换 — Led 行会立即更新以反映新的输出。",
+      "title": "手动编辑单元格"
+    },
+    "element-properties": {
+      "body": "当你在画布上选择一个元件时，其属性会显示在此处。你可以设置标签、颜色、触发类型和其他元件特定的设置。尝试选择一个已放置的元件，看看它有哪些选项。",
+      "title": "元件属性"
+    },
+    "logic-gates": {
+      "body": "“门”标签页包含与门、或门、非门、与非门、或非门、异或门以及其他基本逻辑门。从此列表中将任意门拖到画布上，即可将其添加到你的电路中。",
+      "title": "逻辑门"
+    },
+    "search-bar": {
+      "body": "使用搜索栏可按名称快速查找任何元件。输入时，下方会出现一个筛选列表，显示所有类别中匹配的元件。",
+      "title": "搜索栏"
+    },
+    "title": "wiRedPanda 界面导览",
+    "waveform-table": {
+      "body": "波形表显示电路中的每个信号。时钟行是输入；Led 行是计算出的输出。每一列都是一个模拟时间步 — 你可以清楚地看到输出如何跟随输入变化。",
+      "title": "读取波形表"
+    },
+    "waveform-viewer": {
+      "body": "wiRedPanda 包含一个名为 BeWavedDolphin 的波形查看器。它显示电路中每个信号如何随时间变化 — 输入显示为顶部的行，输出显示在下方，每一列代表一个模拟时间步。点击工具栏中高亮显示的按钮即可打开它。",
+      "title": "波形查看器"
+    },
+    "welcome": {
+      "body": "wiRedPanda 是一个数字逻辑电路模拟器。你可以通过放置元件并将它们连接起来构建电路。本导览将向你展示界面的主要部分。",
+      "title": "欢迎使用 wiRedPanda！"
+    }
+  }
+}

@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "左パネルの「I/O」タブをクリックし、2つのInputSwitch要素をキャンバスにドラッグして、アンド ゲートの左側に配置します。",
+      "instruction": "キャンバスに2つのInputSwitch要素を追加します"
+    },
+    "add-output": {
+      "hint": "「I/O」タブからLEDをドラッグし、アンド ゲートの右側に配置します。次に、アンド ゲートの出力ポート（右側）をLEDの入力ポート（左側）に接続します。",
+      "instruction": "LEDを追加し、アンド ゲートの出力に接続します"
+    },
+    "connect-inputs": {
+      "hint": "InputSwitchの出力ポート（右側）からアンド ゲートの入力ポート（左側）の1つへクリックしてドラッグします。もう一方のスイッチについても繰り返します。",
+      "instruction": "両方の入力スイッチをアンド ゲートに接続します"
+    },
+    "description": "論理ゲートの配置、入力と出力の追加、それらの接続方法を学びます。",
+    "place-and-gate": {
+      "hint": "左パネルの「ゲート」タブをクリックし、アンド ゲートをキャンバスにドラッグします。",
+      "instruction": "キャンバスにアンド ゲートを配置します"
+    },
+    "title": "アンド ゲート回路を作る",
+    "toggle-observe": {
+      "hint": "InputSwitchをクリックして切り替えます。LEDは両方のスイッチがオンのときだけ点灯します。これは、アンドがすべての入力が1のときだけ出力1を出すためです。",
+      "instruction": "スイッチを切り替えてLEDを観察しましょう — これがアンドロジックです！"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "左パネルの「I/O」タブをクリックし、2つのInputSwitch要素をキャンバスにドラッグして、Orゲートの左側に配置します。",
+      "instruction": "キャンバスに2つのInputSwitch要素を追加します"
+    },
+    "add-not-gate": {
+      "hint": "OrゲートとLEDの間の配線をドラッグして削除します。",
+      "instruction": "LEDをOrゲートから切り離し、次にOrゲートをNotゲートに、Notゲートをそのまま LEDに接続します"
+    },
+    "add-output": {
+      "hint": "「I/O」タブからLEDをドラッグし、Orゲートの右側に配置します。次に、Orゲートの出力ポート（右側）をLEDの入力ポート（左側）に接続します。",
+      "instruction": "LEDを追加し、Orゲートの出力に接続します"
+    },
+    "connect-inputs": {
+      "hint": "InputSwitchの出力ポート（右側）からOrゲートの入力ポート（左側）の1つへクリックしてドラッグします。もう一方のスイッチについても繰り返します。",
+      "instruction": "両方の入力スイッチをOrゲートに接続します"
+    },
+    "description": "OrゲートとNotゲートの使い方を学びます。",
+    "place-or-gate": {
+      "hint": "左パネルの「ゲート」タブをクリックし、Orゲートをキャンバスにドラッグします。",
+      "instruction": "キャンバスにOrゲートを配置します"
+    },
+    "title": "さらに基本的なゲート: OrとNotゲート",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "Notゲートは信号を反転させます。これで、回路はどの入力も1でないときのみ出力1を出すようになります"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "入力をいろいろ試して、いずれかの入力が1のときにOrゲートがどのように出力1を出すかを観察してください"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "BeWavedDolphinのメニューバーで「編集」→「組み合わせ」をクリックします。これによりクロック行がすべての可能な値で埋められ、それぞれについてLED出力が計算されます — ワンクリックで完全な真理値表が得られます。",
+      "instruction": "すべての入力の組み合わせを自動生成します"
+    },
+    "connect-clock-led": {
+      "hint": "クロックの出力ポート（右側）からLEDの入力ポート（左側）へクリックしてドラッグします。",
+      "instruction": "クロックの出力をLEDの入力に接続します"
+    },
+    "description": "最小限のクロック-LED回路を構築し、波形ビューアーを探索します: 組み合わせモードと手動セル編集。",
+    "open-waveform": {
+      "hint": "BeWavedDolphinは回路の信号を行として表示します。クロック行は入力で、Led行は出力です。各列は1シミュレーション時間ステップです。",
+      "instruction": "波形ビューアーが開きました — 見てみましょう！"
+    },
+    "place-clock": {
+      "hint": "左パネルの「I/O」タブをクリックし、クロック要素をキャンバスにドラッグします。",
+      "instruction": "キャンバスにクロック要素を配置します"
+    },
+    "place-led": {
+      "hint": "「I/O」タブのまま、Led要素をクロックの右側のキャンバスにドラッグします。",
+      "instruction": "キャンバスにLEDを配置します"
+    },
+    "title": "クロックとLED: 波形の基本",
+    "toggle-cell": {
+      "hint": "クロック行の任意のセルをダブルクリックして0と1を切り替えます。Led行が新しい出力を反映して即座に更新される様子を観察してください。",
+      "instruction": "クロックセルを手動で切り替えます"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "この時点で回路には2つのInputSwitch、2つのLED、1つのDEMUX回路があるはずです",
+      "instruction": "DEMUX回路を追加し、InputSwitchをそのInポートとS0ポートに接続します。次に、DEMUXの各出力を別々のLEDに接続します"
+    },
+    "add-inputs": {
+      "hint": "左パネルの「I/O」タブをクリックし、2つのInputSwitch要素をキャンバスにドラッグして、MUX回路の左側に配置します。",
+      "instruction": "キャンバスに3つのInputSwitch要素を追加します"
+    },
+    "add-output": {
+      "hint": "「I/O」タブからLEDをドラッグし、MUX回路の右側に配置します。次に、MUX回路の出力ポート（右側）をLEDの入力ポート（左側）に接続します。",
+      "instruction": "LEDを追加し、MUX回路の出力に接続します"
+    },
+    "connect-inputs": {
+      "hint": "InputSwitchの出力ポート（右側）からMUXゲートの入力ポート（左側）の1つへクリックしてドラッグします。もう一方のスイッチについても繰り返します。次に、3つ目の入力スイッチをMUXの選択ポート（下部）に接続します",
+      "instruction": "すべての入力スイッチをMUX回路に接続します"
+    },
+    "description": "MUX回路とDEMUX回路について学びます。",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "DEMUXの下部にあるS0ポートは、どの出力が入力の信号を受け取るかを選択します。S0 = 0のとき、Out0 = In0です。S0 = 1のとき、Out1 = In0です"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "MUXの下部にあるS0ポートは、どの入力を出力にルーティングするかを選択します。S0 = 0のとき、入力0の信号が出力に送られます。S0 = 1のとき、入力1の信号が出力に送られます。"
+    },
+    "place-mux": {
+      "hint": "左パネルの「組み合わせ」タブをクリックし、MUX回路をキャンバスにドラッグします。",
+      "instruction": "キャンバスにMUX回路を配置します"
+    },
+    "prepare-demux": {
+      "hint": "この時点で回路には2つのInputSwitchと2つのLEDがあるはずです",
+      "instruction": "MUX回路とInputSwitchの1つを削除します。次にもう1つLEDを追加します"
+    },
+    "title": "組み合わせ回路 I: MUXとDEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "InputSwitchの出力をゲートの入力に接続します。",
+      "instruction": "キャンバスにもう1つInputSwitchを追加し、Cinというラベルを付けます。次にXorゲート、アンド ゲート、Orゲートを追加します"
+    },
+    "add-half-adder-gates": {
+      "hint": "「ゲート」タブを使用してXorゲートとアンド ゲートを追加し、「I/O」タブを使用して2つのLEDを追加します。",
+      "instruction": "キャンバスにXorゲート、アンド ゲート、2つのLEDを追加します。次に各ゲートを別々のLEDに接続します"
+    },
+    "add-inputs": {
+      "hint": "左パネルの「I/O」タブをクリックし、3つのInputSwitch要素をキャンバスにドラッグします。3つ目のInputSwitchは後で桁上げ入力（Cin）として使用されます。",
+      "instruction": "キャンバスに2つのInputSwitch要素を追加します"
+    },
+    "description": "加算器回路の作り方を学びます。",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "この回路は全加算器を形成します。半加算器とは異なり、全加算器は前の加算からの桁上げ入力（Cin）を受け取り、次の段のために桁上げ出力（Cout）を生成します。ある全加算器のCoutを別の全加算器のCinに接続することで、複数の全加算器を連結して任意の長さの2進数を加算できます"
+    },
+    "label-half-adder-outputs": {
+      "hint": "LEDにラベルを付けるには、LEDをクリックして画面左下のラベルテキストボックスに入力します。",
+      "instruction": "Xorゲートに接続されたLEDにSumというラベルを付け、次にアンド ゲートに接続されたLEDにCoutというラベルを付けます。この回路は半加算器を形成し、2つの1ビット入力を加算します"
+    },
+    "title": "組み合わせ回路 III: 加算器",
+    "wire-full-adder": {
+      "hint": "新しい接続を追加できるように、LEDへの古い接続を削除します。",
+      "instruction": "古いXorゲートとCinスイッチを新しいXorゲートに接続し、次に新しいXorゲートをSum出力に接続します。また、古いXorゲートとCinスイッチを新しいアンド ゲートにも接続します。両方のアンド ゲートをOrゲートに接続し、OrゲートをCoutに接続して完成させます"
+    },
+    "wire-half-adder": {
+      "hint": "InputSwitchの出力をゲートの入力に接続します。",
+      "instruction": "両方のInputSwitchをXorゲートとアンド ゲートに接続します。各InputSwitchは両方のゲートに接続する必要があります。Xorゲートは合計（Sum）出力を生成し、アンド ゲートは桁上げ（Carry）出力を生成します"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "左パネルの「ゲート」タブを使用してアンド ゲートを追加し、「I/O」タブを使用してLEDを追加します。",
+      "instruction": "キャンバスに4つのアンド ゲートと4つのLEDを追加し、各アンド ゲートをLEDの1つに接続します"
+    },
+    "add-inputs": {
+      "hint": "左パネルの「I/O」タブをクリックし、2つのInputSwitch要素をキャンバスにドラッグします。",
+      "instruction": "キャンバスに2つのInputSwitch要素を追加します"
+    },
+    "add-not-gates": {
+      "hint": "左パネルの「ゲート」タブをクリックし、2つのNotゲート要素をキャンバスにドラッグして、InputSwitchをそれらに接続します。",
+      "instruction": "キャンバスに2つのNotゲートを追加し、各InputSwitchを別々のNotゲートに接続します"
+    },
+    "description": "2-to-4デコーダーの作り方を学びます。",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "入力ビットの特定の組み合わせごとに、対応する1つの出力ラインだけが有効になり、他はすべて無効のままです"
+    },
+    "title": "組み合わせ回路 II: デコーダー",
+    "wire-decoder": {
+      "hint": "各アンド ゲートは各入力から1つの信号を受け取る必要があります。1にはオリジナルのInputSwitch信号を、0には対応するNotゲートの出力を使用します。",
+      "instruction": "Notゲートとインプットスイッチの出力をアンド ゲートに接続し、各アンド ゲートが1つの入力の組み合わせを表すようにします"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "Dラッチは単一の入力値を保存し、SRラッチの無効な入力の組み合わせを回避します。",
+      "instruction": "InputSwitchとLEDを保持したままSRラッチを削除します。次にDラッチを追加します"
+    },
+    "add-sr-latch": {
+      "hint": "「メモリ」タブを使用してSRラッチを追加します。次に「I/O」タブを使用して2つのInputSwitchと2つのLEDを追加します。",
+      "instruction": "キャンバスにSRラッチ、2つのInputSwitch、2つのLEDを追加します"
+    },
+    "description": "ラッチの使い方を学びます。",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "InputSwitchを切り替えて、Dラッチを観察してください。Enableが1のとき、出力はD入力に従います。Enableが0のとき、ラッチは以前の値を記憶します"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "InputSwitchを切り替えて、SRラッチが状態をどのように保持するかを観察してください。S入力を1に設定するとQ出力が1になり、R入力を1に設定するとQが0にリセットされます。両方の入力が0に戻ると、ラッチは再度セットまたはリセットされるまで最後の状態を記憶します"
+    },
+    "title": "順序回路 I: ラッチ",
+    "wire-d-latch": {
+      "hint": "D入力は保存される値です。Enable入力は、ラッチが保存された値をいつ更新するかを決定します。",
+      "instruction": "1つのInputSwitchをD入力に、もう1つをEnable（E）入力に接続します。QおよびQ̅出力をLEDに接続します"
+    },
+    "wire-sr-latch": {
+      "hint": "1つのInputSwitchをSet（S）入力に、もう1つをReset（R）入力に接続します。ラッチの各出力を別々のLEDに接続します。",
+      "instruction": "InputSwitchをSRラッチのSおよびR入力に接続します。次にQおよびQ̅出力をLEDに接続します"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "「メモリ」タブを使用してTフリップフロップとクロックを追加します。次に「I/O」タブを使用して3つのInputSwitchと3つのLEDを追加します。",
+      "instruction": "キャンバスに3つのTフリップフロップ、3つのInputSwitch、クロック、3つのLEDを追加します"
+    },
+    "description": "カウンター回路の作り方を学びます。",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "3つのInputSwitchすべてをオンにし、クロックを開始します。カウンターが動作している間、LEDを観察してください。最初のLEDはクロックパルスごとに状態を変え、2番目は2パルスごとに、3番目は4パルスごとに変わり、000から111まで繰り返される3ビットの2進数カウントを表示します"
+    },
+    "title": "順序回路 III: カウンター",
+    "wire-clock": {
+      "hint": "最初のフリップフロップが外部クロック信号を受け取ります。",
+      "instruction": "クロックを最初のTフリップフロップのClk入力に接続します"
+    },
+    "wire-outputs": {
+      "hint": "各LEDはカウンターの1ビットを表し、最初のLEDが最下位ビットです。",
+      "instruction": "各フリップフロップのQ出力を別々のLEDに接続します"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "最初のフリップフロップのQ出力を2番目のフリップフロップのClk入力に接続し、次に2番目のフリップフロップのQ出力を3番目のフリップフロップのClk入力に接続します。各フリップフロップは前のものの出力によってクロックされ、リップルカウンターを形成します"
+    },
+    "wire-t-inputs": {
+      "hint": "3つのInputSwitchすべてをオンにします。Tフリップフロップは、T入力が1のときにのみ切り替わります。",
+      "instruction": "各InputSwitchを別々のフリップフロップのT入力に接続します"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "「メモリ」タブを使用してDフリップフロップとクロックを追加します。次に「I/O」タブを使用して2つのInputSwitchと2つのLEDを追加します。",
+      "instruction": "キャンバスにDフリップフロップ、2つのInputSwitch、クロック、2つのLEDを追加します"
+    },
+    "add-jk-flipflop": {
+      "hint": "JKフリップフロップにはD入力の代わりにJおよびK入力があります。Clear入力とPreset入力は未接続のままにしておきます。",
+      "instruction": "クロック、InputSwitch、LEDを保持したまま、DフリップフロップをJKフリップフロップに置き換えます"
+    },
+    "add-t-flipflop": {
+      "hint": "Tフリップフロップはクロックに加えて1つの入力しか必要としません。",
+      "instruction": "JKフリップフロップをTフリップフロップに置き換え、InputSwitchの1つを削除します"
+    },
+    "description": "フリップフロップについて学びます。",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "2つ目のInputSwitchをClear入力またはPreset入力に接続し、その効果を観察してください。D入力とは異なり、ClearおよびPreset入力はクロックエッジを待たずに即座に作用します。ClearはQを0に強制し、PresetはQを1に強制します"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "D InputSwitchを切り替えて、Dフリップフロップを観察してください。D入力の値は、アクティブなクロックエッジでのみQ出力にコピーされます。クロックエッジの間、出力は変化しません"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "InputSwitchを切り替えて、JKフリップフロップを観察してください。J = K = 0のとき、出力は現在の状態を保持します。J = 1、K = 0のとき、出力はセットされます。J = 0、K = 1のとき、出力はリセットされます。J = K = 1のとき、出力はアクティブなクロックエッジごとに切り替わります"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "InputSwitchを切り替えて、Tフリップフロップを観察してください。T = 0のとき、出力は現在の状態を保持します。T = 1のとき、出力はアクティブなクロックエッジごとに切り替わります。Tフリップフロップは、一般的にバイナリカウンターや周波数分周器の構築に使用されます"
+    },
+    "title": "順序回路 II: フリップフロップ",
+    "wire-d-flipflop": {
+      "hint": "今のところClear入力とPreset入力は未接続のままにしておきます。",
+      "instruction": "1つのInputSwitchをD入力に、クロックをClk入力に、QおよびQ̅出力をLEDに接続します。D入力は保存される値を提供し、クロックは値がいつ保存されるかを決定します"
+    },
+    "wire-jk-flipflop": {
+      "hint": "JKフリップフロップは、アクティブなクロックエッジでのみ出力を変更します。",
+      "instruction": "InputSwitchをJおよびK入力に、クロックをClk入力に、QおよびQ̅出力をLEDに接続します"
+    },
+    "wire-t-flipflop": {
+      "hint": "Clear入力とPreset入力は未接続のままにしておきます。",
+      "instruction": "残ったInputSwitchをT入力に、クロックをClk入力に、QおよびQ̅出力をLEDに接続します"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "ここで回路を構築します。パレットからコンポーネントをドラッグし、出力ポート（コンポーネントの右側）から入力ポート（別のコンポーネントの左側）へクリック＆ドラッグして接続します。",
+      "title": "キャンバス"
+    },
+    "combinational-mode": {
+      "body": "強調表示されたボタン（組み合わせ）がちょうど自動的にトリガーされました — これにより、入力行がすべての可能な0/1の組み合わせで埋められ、ワンクリックで完全な真理値表が得られます。",
+      "title": "組み合わせモード"
+    },
+    "component-palette": {
+      "body": "このパネルには、論理ゲート、入力、出力、フリップフロップなど、利用可能なすべてのコンポーネントが一覧表示されます。コンポーネントは上部のタブを使用してカテゴリ別に整理されています。タブをクリックしてそのカテゴリを閲覧します。",
+      "title": "コンポーネントパレット"
+    },
+    "description": "メインインターフェースのガイド付きツアー — パレット、キャンバス、ツールバー、プロパティパネル。",
+    "editing-cells": {
+      "body": "波形を手動で編集することもできます。クロック行の任意のセルをダブルクリックして0と1を切り替えます — Led行は新しい出力を反映して即座に更新されます。",
+      "title": "セルの手動編集"
+    },
+    "element-properties": {
+      "body": "キャンバス上でコンポーネントを選択すると、そのプロパティがここに表示されます。ラベル、色、トリガータイプ、その他のコンポーネント固有の設定を設定できます。配置済みのコンポーネントを選択して、そのオプションを確認してみてください。",
+      "title": "要素のプロパティ"
+    },
+    "logic-gates": {
+      "body": "「ゲート」タブには、アンド、Or、Not、Nand、Nor、Xor、その他の基本的な論理ゲートが含まれています。このリストから任意のゲートをキャンバスにドラッグして回路に追加します。",
+      "title": "論理ゲート"
+    },
+    "search-bar": {
+      "body": "検索バーを使用すると、名前で任意のコンポーネントをすばやく見つけられます。入力すると、すべてのカテゴリから一致するコンポーネントを表示するフィルター済みリストが下に表示されます。",
+      "title": "検索バー"
+    },
+    "title": "wiRedPandaインターフェースツアー",
+    "waveform-table": {
+      "body": "波形テーブルは回路内の各信号を表示します。クロック行は入力です。Led行は計算された出力です。各列は1つのシミュレーション時間ステップです — 出力が入力にどのように従うかを正確に確認できます。",
+      "title": "波形テーブルの読み方"
+    },
+    "waveform-viewer": {
+      "body": "wiRedPandaにはBeWavedDolphinという波形ビューアーが含まれています。これは、回路内の各信号が時間とともにどのように変化するかを示します — 入力は上部の行として、出力はその下に表示され、各列は1つのシミュレーション時間ステップを表します。開くには、強調表示されたツールバーボタンをクリックします。",
+      "title": "波形ビューアー"
+    },
+    "welcome": {
+      "body": "wiRedPandaはデジタル論理回路シミュレーターです。コンポーネントを配置して接続することで回路を構築できます。このツアーではインターフェースの主要な部分を紹介します。",
+      "title": "wiRedPandaへようこそ！"
+    }
+  }
+}

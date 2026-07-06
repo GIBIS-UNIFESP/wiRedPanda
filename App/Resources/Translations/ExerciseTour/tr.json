@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "Sol paneldeki G/Ç sekmesine tıklayın, ardından iki InputSwitch öğesini çalışma alanına sürükleyin ve Ve kapısının soluna yerleştirin.",
+      "instruction": "Çalışma alanına iki InputSwitch öğesi ekleyin"
+    },
+    "add-output": {
+      "hint": "G/Ç sekmesinden bir LED sürükleyin ve Ve kapısının sağına yerleştirin. Ardından Ve kapısının çıkış portunu (sağ taraf) LED'in giriş portuna (sol taraf) bağlayın.",
+      "instruction": "Bir LED ekleyin ve Ve kapısının çıkışına bağlayın"
+    },
+    "connect-inputs": {
+      "hint": "Bir InputSwitch'in çıkış portundan (sağ taraf) Ve kapısının giriş portlarından birine (sol taraf) tıklayıp sürükleyin. İkinci anahtar için tekrarlayın.",
+      "instruction": "Her iki giriş anahtarını da Ve kapısına bağlayın"
+    },
+    "description": "Mantık kapıları yerleştirmeyi, giriş ve çıkış eklemeyi ve bunları birbirine bağlamayı öğrenin.",
+    "place-and-gate": {
+      "hint": "Sol paneldeki Kapılar sekmesine tıklayın, ardından Ve kapısını çalışma alanına sürükleyin.",
+      "instruction": "Çalışma alanına bir Ve kapısı yerleştirin"
+    },
+    "title": "Ve Kapısı Devresi Oluşturma",
+    "toggle-observe": {
+      "hint": "Değiştirmek için bir InputSwitch'e tıklayın. LED yalnızca HER İKİ anahtar da AÇIK olduğunda yanar. Bunun nedeni, Ve kapısının yalnızca tüm girişler 1 olduğunda çıkış olarak 1 vermesidir.",
+      "instruction": "Anahtarları değiştirin ve LED'i gözlemleyin — bu Ve mantığıdır!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "Sol paneldeki G/Ç sekmesine tıklayın, ardından iki InputSwitch öğesini çalışma alanına sürükleyin ve Veya kapısının soluna yerleştirin.",
+      "instruction": "Çalışma alanına iki InputSwitch öğesi ekleyin"
+    },
+    "add-not-gate": {
+      "hint": "Kaldırmak için Veya kapısı ile LED arasındaki teli sürükleyin.",
+      "instruction": "LED'i Veya kapısından ayırın, ardından Veya kapısını bir Değil kapısına ve Değil kapısını LED'e bağlayın"
+    },
+    "add-output": {
+      "hint": "G/Ç sekmesinden bir LED sürükleyin ve Veya kapısının sağına yerleştirin. Ardından Veya kapısının çıkış portunu (sağ taraf) LED'in giriş portuna (sol taraf) bağlayın.",
+      "instruction": "Bir LED ekleyin ve Veya kapısının çıkışına bağlayın"
+    },
+    "connect-inputs": {
+      "hint": "Bir InputSwitch'in çıkış portundan (sağ taraf) Veya kapısının giriş portlarından birine (sol taraf) tıklayıp sürükleyin. İkinci anahtar için tekrarlayın.",
+      "instruction": "Her iki giriş anahtarını da Veya kapısına bağlayın"
+    },
+    "description": "Veya ve Değil kapılarını kullanmayı öğrenin.",
+    "place-or-gate": {
+      "hint": "Sol paneldeki Kapılar sekmesine tıklayın, ardından Veya kapısını çalışma alanına sürükleyin.",
+      "instruction": "Çalışma alanına bir Veya kapısı yerleştirin"
+    },
+    "title": "Daha Fazla Temel Kapı: Veya ve Değil",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "Değil kapısı sinyali ters çevirir. Şimdi devre, yalnızca girişlerden hiçbiri 1 olmadığında çıkış olarak 1 verecektir"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "Girişlerle deneme yapın ve girişlerinden herhangi biri 1 olduğunda Veya kapısının çıkış olarak nasıl 1 verdiğini fark edin"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "BeWavedDolphin'in menü çubuğunda Düzenle → Kombinasyonel'e tıklayın. Bu, Saat satırını tüm olası değerlerle doldurur ve her biri için LED çıkışını hesaplar — tek tıklamayla eksiksiz bir doğruluk tablosu.",
+      "instruction": "Tüm giriş kombinasyonlarını otomatik olarak oluşturun"
+    },
+    "connect-clock-led": {
+      "hint": "Saat'in çıkış portundan (sağ taraf) LED'in giriş portuna (sol taraf) tıklayıp sürükleyin.",
+      "instruction": "Saat çıkışını LED girişine bağlayın"
+    },
+    "description": "Minimal bir Saat-LED devresi oluşturun ve dalga formu görüntüleyicisini keşfedin: kombinasyonel mod ve manuel hücre düzenleme.",
+    "open-waveform": {
+      "hint": "BeWavedDolphin, devrenizin sinyallerini satırlar olarak gösterir. Saat satırı giriştir, Led satırı ise çıkıştır. Her sütun bir simülasyon zaman adımıdır.",
+      "instruction": "Dalga formu görüntüleyicisi artık açık — bir göz atın!"
+    },
+    "place-clock": {
+      "hint": "Sol paneldeki G/Ç sekmesine tıklayın, ardından Saat öğesini çalışma alanına sürükleyin.",
+      "instruction": "Çalışma alanına bir Saat öğesi yerleştirin"
+    },
+    "place-led": {
+      "hint": "G/Ç sekmesinde kalarak, bir Led öğesini Saat'in sağına, çalışma alanına sürükleyin.",
+      "instruction": "Çalışma alanına bir LED yerleştirin"
+    },
+    "title": "Saat ve LED: Dalga Formu Temelleri",
+    "toggle-cell": {
+      "hint": "Saat satırındaki herhangi bir hücreye çift tıklayarak 0 ile 1 arasında değiştirin. Led satırının yeni çıkışı yansıtarak anında güncellendiğini izleyin.",
+      "instruction": "Bir Saat hücresini manuel olarak değiştirin"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "Devreniz artık iki InputSwitch, iki LED ve bir DEMUX devresine sahip olmalıdır",
+      "instruction": "Bir DEMUX devresi ekleyin ve InputSwitch'leri onun In ve S0 portlarına bağlayın. Ardından DEMUX'ın çıkışlarının her birini farklı bir LED'e bağlayın"
+    },
+    "add-inputs": {
+      "hint": "Sol paneldeki G/Ç sekmesine tıklayın, ardından iki InputSwitch öğesini çalışma alanına sürükleyin ve MUX devresinin soluna yerleştirin.",
+      "instruction": "Çalışma alanına üç InputSwitch öğesi ekleyin"
+    },
+    "add-output": {
+      "hint": "G/Ç sekmesinden bir LED sürükleyin ve MUX devresinin sağına yerleştirin. Ardından MUX devresinin çıkış portunu (sağ taraf) LED'in giriş portuna (sol taraf) bağlayın.",
+      "instruction": "Bir LED ekleyin ve MUX devresinin çıkışına bağlayın"
+    },
+    "connect-inputs": {
+      "hint": "Bir InputSwitch'in çıkış portundan (sağ taraf) MUX kapısının giriş portlarından birine (sol taraf) tıklayıp sürükleyin. İkinci anahtar için tekrarlayın. Ardından üçüncü giriş anahtarını MUX'ın seçim portuna (alt) bağlayın",
+      "instruction": "Tüm giriş anahtarlarını MUX devresine bağlayın"
+    },
+    "description": "MUX ve DEMUX devreleri hakkında bilgi edinin.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "DEMUX'ın altındaki S0 portu, hangi çıkışın girişin sinyalini alacağını seçer. S0 = 0 olduğunda, Out0 = In0. S0 = 1 olduğunda, Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "MUX'ın altındaki S0 portu, hangi girişin çıkışa yönlendirileceğini seçer. S0 = 0 olduğunda, Giriş 0'dan gelen sinyal çıkışa gönderilir. S0 = 1 olduğunda, Giriş 1'den gelen sinyal çıkışa gönderilir."
+    },
+    "place-mux": {
+      "hint": "Sol paneldeki Kombinasyonel sekmesine tıklayın, ardından MUX devresini çalışma alanına sürükleyin.",
+      "instruction": "Çalışma alanına bir MUX devresi yerleştirin"
+    },
+    "prepare-demux": {
+      "hint": "Devreniz artık iki InputSwitch ve iki LED'e sahip olmalıdır",
+      "instruction": "MUX devresini ve InputSwitch'lerden birini silin. Ardından başka bir LED ekleyin"
+    },
+    "title": "Kombinasyonel Devreler I: MUX ve DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "InputSwitch'lerin çıkışlarını kapıların girişlerine bağlayın.",
+      "instruction": "Çalışma alanına başka bir InputSwitch ekleyin ve ona Cin etiketini verin. Ardından bir Xor kapısı, bir Ve kapısı ve bir Veya kapısı ekleyin"
+    },
+    "add-half-adder-gates": {
+      "hint": "Xor ve Ve kapılarını eklemek için Kapılar sekmesini kullanın, ardından iki LED eklemek için G/Ç sekmesini kullanın.",
+      "instruction": "Çalışma alanına bir Xor kapısı, bir Ve kapısı ve iki LED ekleyin. Ardından her kapıyı farklı bir LED'e bağlayın"
+    },
+    "add-inputs": {
+      "hint": "Sol paneldeki G/Ç sekmesine tıklayın, ardından üç InputSwitch öğesini çalışma alanına sürükleyin. Üçüncü InputSwitch daha sonra elde girişi (Cin) olarak kullanılacaktır.",
+      "instruction": "Çalışma alanına iki InputSwitch öğesi ekleyin"
+    },
+    "description": "Bir toplayıcı devresi oluşturmayı öğrenin.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "Bu devre tam bir toplayıcı oluşturur. Yarım toplayıcıdan farklı olarak, tam toplayıcı önceki bir toplamadan bir elde girişi (Cin) kabul eder ve bir sonraki aşama için bir elde çıkışı (Cout) üretir. Bir tam toplayıcının Cout'unu diğerinin Cin'ine bağlayarak, herhangi bir uzunlukta ikili sayıları toplamak için birden çok tam toplayıcı zincirlenebilir"
+    },
+    "label-half-adder-outputs": {
+      "hint": "Bir LED'e etiket vermek için bir LED'e tıklayın ve ekranın sol alt köşesindeki etiket metin kutusuna yazın.",
+      "instruction": "Xor kapısına bağlı LED'e Sum etiketini verin, ardından Ve kapısına bağlı LED'e Cout etiketini verin. Bu devre, iki tek bitlik girişi toplayan bir yarım toplayıcı oluşturur"
+    },
+    "title": "Kombinasyonel Devreler III: Toplayıcı",
+    "wire-full-adder": {
+      "hint": "Yenilerini ekleyebilmek için LED'lere olan eski bağlantıları kaldırın.",
+      "instruction": "Eski Xor kapısını ve Cin anahtarını yeni Xor kapısına bağlayın, ardından yeni Xor kapısını Sum çıkışına bağlayın. Ayrıca eski Xor kapısını ve Cin anahtarını yeni Ve kapısına bağlayın. Her iki Ve kapısını da Veya kapısına ve Veya kapısını Cout'a bağlayarak tamamlayın"
+    },
+    "wire-half-adder": {
+      "hint": "InputSwitch'lerin çıkışlarını kapıların girişlerine bağlayın.",
+      "instruction": "İki InputSwitch'i Xor kapısına ve Ve kapısına bağlayın. Her InputSwitch her iki kapıya da bağlanmalıdır. Xor kapısı Sum çıkışını üretirken, Ve kapısı Carry çıkışını üretir"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "Ve kapılarını eklemek için sol paneldeki Kapılar sekmesini, LED'leri eklemek için G/Ç sekmesini kullanın.",
+      "instruction": "Çalışma alanına dört Ve kapısı ve dört LED ekleyin, ardından her Ve kapısını LED'lerden birine bağlayın"
+    },
+    "add-inputs": {
+      "hint": "Sol paneldeki G/Ç sekmesine tıklayın ve iki InputSwitch öğesini çalışma alanına sürükleyin.",
+      "instruction": "Çalışma alanına iki InputSwitch öğesi ekleyin"
+    },
+    "add-not-gates": {
+      "hint": "Sol paneldeki Kapılar sekmesine tıklayın, ardından iki Değil kapısı öğesini çalışma alanına sürükleyin ve InputSwitch'leri onlara bağlayın.",
+      "instruction": "Çalışma alanına iki Değil kapısı ekleyin ve her InputSwitch'i ayrı bir Değil kapısına bağlayın"
+    },
+    "description": "2'den 4'e bir kod çözücü oluşturmayı öğrenin.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "Giriş bitlerinin her belirli kombinasyonu için, yalnızca ilgili tek bir çıkış hattı etkinleştirilir, diğerleri ise etkin kalmaz"
+    },
+    "title": "Kombinasyonel Devreler II: Kod Çözücü",
+    "wire-decoder": {
+      "hint": "Her Ve kapısı, her girişten bir sinyal almalıdır. 1 için orijinal InputSwitch sinyalini ve 0 için ilgili Değil kapısı çıkışını kullanın.",
+      "instruction": "Her Ve kapısı bir giriş kombinasyonunu temsil edecek şekilde, Değil kapılarının ve InputSwitch'lerin çıkışlarını Ve kapılarına bağlayın"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "D mandalı tek bir giriş değerini saklar ve bir SR mandalının geçersiz giriş kombinasyonundan kaçınır.",
+      "instruction": "InputSwitch'leri ve LED'leri koruyarak SR mandalını kaldırın. Ardından bir D mandalı ekleyin"
+    },
+    "add-sr-latch": {
+      "hint": "Bir SR mandalı eklemek için Bellek sekmesini kullanın. Ardından iki InputSwitch ve iki LED eklemek için G/Ç sekmesini kullanın.",
+      "instruction": "Çalışma alanına bir SR mandalı, iki InputSwitch ve iki LED ekleyin"
+    },
+    "description": "Mandalları (latch) kullanmayı öğrenin.",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "InputSwitch'leri değiştirin ve D mandalını gözlemleyin. Enable 1 olduğunda, çıkış D girişini takip eder. Enable 0 olduğunda, mandal önceki değerini hatırlar"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "InputSwitch'leri değiştirin ve SR mandalının durumunu nasıl sakladığını gözlemleyin. S girişini 1'e ayarlamak Q çıkışının 1 olmasına neden olur, R girişini 1'e ayarlamak ise Q'yu 0'a sıfırlar. Her iki giriş de 0'a döndüğünde, mandal tekrar ayarlanana veya sıfırlanana kadar son durumunu hatırlar"
+    },
+    "title": "Ardışıl Devreler I: Mandallar",
+    "wire-d-latch": {
+      "hint": "D girişi saklanacak değerdir. Enable girişi, mandalın sakladığı değeri ne zaman güncelleyeceğini belirler.",
+      "instruction": "Bir InputSwitch'i D girişine, diğerini Enable (E) girişine bağlayın. Q ve Q̅ çıkışlarını LED'lere bağlayın"
+    },
+    "wire-sr-latch": {
+      "hint": "Bir InputSwitch'i Set (S) girişine, diğerini Reset (R) girişine bağlayın. Mandalın her çıkışını farklı bir LED'e bağlayın.",
+      "instruction": "InputSwitch'leri SR mandalının S ve R girişlerine bağlayın. Ardından Q ve Q̅ çıkışlarını LED'lere bağlayın"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "T flip-flop'ları ve bir Saat eklemek için Bellek sekmesini kullanın. Ardından üç InputSwitch ve üç LED eklemek için G/Ç sekmesini kullanın.",
+      "instruction": "Çalışma alanına üç T flip-flop, üç InputSwitch, bir Saat ve üç LED ekleyin"
+    },
+    "description": "Bir sayaç devresi oluşturmayı öğrenin.",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "Üç InputSwitch'in tümünü açın ve Saat'i başlatın. Sayaç çalışırken LED'leri gözlemleyin. İlk LED her saat darbesinde durum değiştirir, ikincisi her iki darbede bir değişir ve üçüncüsü her dört darbede bir değişir; bu, 000'dan 111'e tekrar eden 3 bitlik ikili sayımı gösterir"
+    },
+    "title": "Ardışıl Devreler III: Sayaç",
+    "wire-clock": {
+      "hint": "İlk flip-flop, harici saat sinyalini alır.",
+      "instruction": "Saat'i ilk T flip-flop'un Clk girişine bağlayın"
+    },
+    "wire-outputs": {
+      "hint": "Her LED, sayacın bir bitini temsil eder; ilk LED en az anlamlı bittir.",
+      "instruction": "Her flip-flop'un Q çıkışını farklı bir LED'e bağlayın"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "İlk flip-flop'un Q çıkışını ikinci flip-flop'un Clk girişine bağlayın, ardından ikinci flip-flop'un Q çıkışını üçüncü flip-flop'un Clk girişine bağlayın. Her flip-flop, öncekinin çıkışıyla saatlenerek dalgalı bir sayaç (ripple counter) oluşturur"
+    },
+    "wire-t-inputs": {
+      "hint": "Üç InputSwitch'in tümünü açın. Bir T flip-flop yalnızca T girişi 1 olduğunda değişir.",
+      "instruction": "Her InputSwitch'i farklı bir flip-flop'un T girişine bağlayın"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "Bir D flip-flop ve bir Saat eklemek için Bellek sekmesini kullanın. Ardından iki InputSwitch ve iki LED eklemek için G/Ç sekmesini kullanın.",
+      "instruction": "Çalışma alanına bir D flip-flop, iki InputSwitch, bir Saat ve iki LED ekleyin"
+    },
+    "add-jk-flipflop": {
+      "hint": "JK flip-flop, D girişi yerine J ve K girişlerine sahiptir. Clear ve Preset girişlerini bağlantısız bırakın.",
+      "instruction": "Saat, InputSwitch'ler ve LED'leri koruyarak D flip-flop'u bir JK flip-flop ile değiştirin"
+    },
+    "add-t-flipflop": {
+      "hint": "Bir T flip-flop, saatin yanı sıra yalnızca tek bir giriş gerektirir.",
+      "instruction": "JK flip-flop'u bir T flip-flop ile değiştirin ve InputSwitch'lerden birini kaldırın"
+    },
+    "description": "Flip-flop'lar hakkında bilgi edinin.",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "İkinci InputSwitch'i Clear veya Preset girişine bağlayın ve etkisini gözlemleyin. D girişinin aksine, Clear ve Preset girişleri bir saat kenarı beklemeden hemen etki eder. Clear, Q'yu 0'a zorlar, Preset ise Q'yu 1'e zorlar"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "D InputSwitch'i değiştirin ve D flip-flop'u gözlemleyin. D girişindeki değer yalnızca etkin saat kenarında Q çıkışına kopyalanır. Saat kenarları arasında çıkış değişmeden kalır"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "InputSwitch'leri değiştirin ve JK flip-flop'u gözlemleyin. J = K = 0 olduğunda, çıkış mevcut durumunu korur. J = 1 ve K = 0 olduğunda, çıkış ayarlanır. J = 0 ve K = 1 olduğunda, çıkış sıfırlanır. J = K = 1 olduğunda, çıkış her etkin saat kenarında değişir"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "InputSwitch'i değiştirin ve T flip-flop'u gözlemleyin. T = 0 olduğunda, çıkış mevcut durumunu korur. T = 1 olduğunda, çıkış her etkin saat kenarında değişir. T flip-flop'lar genellikle ikili sayaçlar ve frekans bölücüler oluşturmak için kullanılır"
+    },
+    "title": "Ardışıl Devreler II: Flip-Flop'lar",
+    "wire-d-flipflop": {
+      "hint": "Şimdilik Clear ve Preset girişlerini bağlantısız bırakın.",
+      "instruction": "Bir InputSwitch'i D girişine, Saat'i Clk girişine ve Q ile Q̅ çıkışlarını LED'lere bağlayın. D girişi saklanacak değeri sağlar, Saat ise değerin ne zaman saklanacağını belirler"
+    },
+    "wire-jk-flipflop": {
+      "hint": "JK flip-flop çıkışını yalnızca etkin saat kenarında değiştirir.",
+      "instruction": "InputSwitch'leri J ve K girişlerine, Saat'i Clk girişine ve Q ile Q̅ çıkışlarını LED'lere bağlayın"
+    },
+    "wire-t-flipflop": {
+      "hint": "Clear ve Preset girişlerini bağlantısız bırakın.",
+      "instruction": "Kalan InputSwitch'i T girişine, Saat'i Clk girişine ve Q ile Q̅ çıkışlarını LED'lere bağlayın"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "Devrenizi burada oluşturun. Paletten bileşenleri sürükleyin, ardından bir çıkış portundan (bir bileşenin sağ tarafı) bir giriş portuna (başka birinin sol tarafı) tıklayıp sürükleyerek bunları bağlayın.",
+      "title": "Çalışma Alanı"
+    },
+    "combinational-mode": {
+      "body": "Vurgulanan düğme (Kombinasyonel) az önce otomatik olarak tetiklendi — bu, giriş satırlarını her olası 0/1 kombinasyonuyla doldurarak size tek tıklamayla eksiksiz bir doğruluk tablosu verir.",
+      "title": "Kombinasyonel Mod"
+    },
+    "component-palette": {
+      "body": "Bu panel, mevcut tüm bileşenleri listeler — mantık kapıları, girişler, çıkışlar, flip-flop'lar ve daha fazlası. Bileşenler, üstteki sekmeler kullanılarak kategoriye göre düzenlenmiştir. Kategorisine göz atmak için bir sekmeye tıklayın.",
+      "title": "Bileşen Paleti"
+    },
+    "description": "Ana arayüzde rehberli bir tur — palet, çalışma alanı, araç çubuğu ve özellikler paneli.",
+    "editing-cells": {
+      "body": "Dalga formunu elle de düzenleyebilirsiniz. Saat satırındaki herhangi bir hücreye çift tıklayarak 0 ile 1 arasında değiştirin — Led satırı, yeni çıkışı yansıtarak anında güncellenir.",
+      "title": "Hücreleri Manuel Olarak Düzenleme"
+    },
+    "element-properties": {
+      "body": "Çalışma alanında bir bileşen seçtiğinizde, özellikleri burada görünür. Etiketler, renkler, tetikleme türleri ve diğer bileşene özgü ayarları belirleyebilirsiniz. Seçeneklerini görmek için yerleştirilmiş bir bileşeni seçmeyi deneyin.",
+      "title": "Öğe Özellikleri"
+    },
+    "logic-gates": {
+      "body": "Kapılar sekmesi Ve, Veya, Değil, Nand, Nor, Xor ve diğer temel mantık kapılarını içerir. Devrenize eklemek için bu listeden herhangi bir kapıyı çalışma alanına sürükleyin.",
+      "title": "Mantık Kapıları"
+    },
+    "search-bar": {
+      "body": "Herhangi bir bileşeni ada göre hızlıca bulmak için arama çubuğunu kullanın. Yazarken, tüm kategorilerdeki eşleşen bileşenleri gösteren filtrelenmiş bir liste altta görünür.",
+      "title": "Arama Çubuğu"
+    },
+    "title": "wiRedPanda Arayüz Turu",
+    "waveform-table": {
+      "body": "Dalga formu tablosu, devrenizdeki her sinyali gösterir. Saat satırı giriştir; Led satırı hesaplanan çıkıştır. Her sütun bir simülasyon zaman adımıdır — çıkışın girişi tam olarak nasıl takip ettiğini görebilirsiniz.",
+      "title": "Dalga Formu Tablosunu Okuma"
+    },
+    "waveform-viewer": {
+      "body": "wiRedPanda, BeWavedDolphin adlı bir dalga formu görüntüleyici içerir. Devrenizdeki her sinyalin zaman içinde nasıl değiştiğini gösterir — girişler üstte satırlar olarak, çıkışlar altta, her sütun bir simülasyon zaman adımını temsil eder. Açmak için araç çubuğundaki vurgulanan düğmeye tıklayın.",
+      "title": "Dalga Formu Görüntüleyici"
+    },
+    "welcome": {
+      "body": "wiRedPanda dijital lojik devre simülatörüdür. Bileşenleri yerleştirerek ve birbirine bağlayarak devreler oluşturabilirsiniz. Bu tur size arayüzün ana bölümlerini gösterecektir.",
+      "title": "wiRedPanda'ya Hoş Geldiniz!"
+    }
+  }
+}

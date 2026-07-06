@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "Kattintson a Be/Ki fülre a bal oldali panelen, majd húzzon két InputSwitch elemet a munkaterületre, és helyezze el őket az ÉS kaputól balra.",
+      "instruction": "Adjon hozzá két InputSwitch elemet a munkaterülethez"
+    },
+    "add-output": {
+      "hint": "Húzzon egy LED-et a Be/Ki fülről, és helyezze el az ÉS kaputól jobbra. Ezután kösse össze az ÉS kapu kimeneti portját (jobb oldal) a LED bemeneti portjával (bal oldal).",
+      "instruction": "Adjon hozzá egy LED-et, és kösse össze az ÉS kapu kimenetével"
+    },
+    "connect-inputs": {
+      "hint": "Kattintson és húzzon egy InputSwitch kimeneti portjától (jobb oldal) az ÉS kapu egyik bemeneti portjához (bal oldal). Ismételje meg a második kapcsolóval.",
+      "instruction": "Kösse össze mindkét bemeneti kapcsolót az ÉS kapuval"
+    },
+    "description": "Tanuljon meg logikai kapukat elhelyezni, bemeneteket és kimeneteket hozzáadni, és összekötni őket.",
+    "place-and-gate": {
+      "hint": "Kattintson a Kapuk fülre a bal oldali panelen, majd húzza az ÉS kaput a munkaterületre.",
+      "instruction": "Helyezzen el egy ÉS kaput a munkaterületen"
+    },
+    "title": "ÉS kapu áramkör építése",
+    "toggle-observe": {
+      "hint": "Kattintson egy InputSwitch-re a kapcsolásához. A LED csak akkor gyullad ki, ha MINDKÉT kapcsoló be van kapcsolva. Ez azért van, mert az ÉS csak akkor ad 1-et kimenetként, ha minden bemenet 1.",
+      "instruction": "Kapcsolgassa a kapcsolókat, és figyelje a LED-et — ez az ÉS logika!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "Kattintson a Be/Ki fülre a bal oldali panelen, majd húzzon két InputSwitch elemet a munkaterületre, és helyezze el őket a VAGY kaputól balra.",
+      "instruction": "Adjon hozzá két InputSwitch elemet a munkaterülethez"
+    },
+    "add-not-gate": {
+      "hint": "Húzza el a vezetéket a VAGY kapu és a LED között az eltávolításához.",
+      "instruction": "Kösse le a LED-et a VAGY kapuról, majd kösse össze a VAGY kaput egy Not kapuval, a Not kaput pedig a LED-del"
+    },
+    "add-output": {
+      "hint": "Húzzon egy LED-et a Be/Ki fülről, és helyezze el a VAGY kaputól jobbra. Ezután kösse össze a VAGY kapu kimeneti portját (jobb oldal) a LED bemeneti portjával (bal oldal).",
+      "instruction": "Adjon hozzá egy LED-et, és kösse össze a VAGY kapu kimenetével"
+    },
+    "connect-inputs": {
+      "hint": "Kattintson és húzzon egy InputSwitch kimeneti portjától (jobb oldal) a VAGY kapu egyik bemeneti portjához (bal oldal). Ismételje meg a második kapcsolóval.",
+      "instruction": "Kösse össze mindkét bemeneti kapcsolót a VAGY kapuval"
+    },
+    "description": "Tanulja meg a VAGY és a Not kapu használatát.",
+    "place-or-gate": {
+      "hint": "Kattintson a Kapuk fülre a bal oldali panelen, majd húzza a VAGY kaput a munkaterületre.",
+      "instruction": "Helyezzen el egy VAGY kaput a munkaterületen"
+    },
+    "title": "További alapkapuk: VAGY és Not",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "A Not kapu megfordítja a jelet. Most az áramkör csak akkor ad 1-et kimenetként, ha egyik bemenet sem 1"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "Kísérletezzen a bemenetekkel, és figyelje meg, hogyan ad a VAGY kapu 1-et kimenetként, ha bármelyik bemenete 1"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "Kattintson a Szerkesztés → Kombinációs menüpontra a BeWavedDolphin menüsorában. Ez feltölti az Óra sort az összes lehetséges értékkel, és kiszámítja a LED kimenetét mindegyikhez — egy teljes igazságtáblát egyetlen kattintással.",
+      "instruction": "Az összes bemeneti kombináció automatikus generálása"
+    },
+    "connect-clock-led": {
+      "hint": "Kattintson és húzzon az Óra kimeneti portjától (jobb oldal) a LED bemeneti portjához (bal oldal).",
+      "instruction": "Kösse össze az Óra kimenetét a LED bemenetével"
+    },
+    "description": "Építsen egy minimális Óra-LED áramkört, és fedezze fel a hullámforma-megjelenítőt: kombinációs mód és kézi cellaszerkesztés.",
+    "open-waveform": {
+      "hint": "A BeWavedDolphin sorokként jeleníti meg az áramkör jeleit. Az Óra sor a bemenet, a Led sor pedig a kimenet. Minden oszlop egy szimulációs időlépés.",
+      "instruction": "A hullámforma-megjelenítő most megnyílt — vessen rá egy pillantást!"
+    },
+    "place-clock": {
+      "hint": "Kattintson a Be/Ki fülre a bal oldali panelen, majd húzza az Óra elemet a munkaterületre.",
+      "instruction": "Helyezzen el egy Óra elemet a munkaterületen"
+    },
+    "place-led": {
+      "hint": "Maradva a Be/Ki fülön, húzzon egy Led elemet a munkaterületre az Órától jobbra.",
+      "instruction": "Helyezzen el egy LED-et a munkaterületen"
+    },
+    "title": "Óra és LED: a hullámformák alapjai",
+    "toggle-cell": {
+      "hint": "Kattintson duplán bármelyik cellára az Óra sorban, hogy 0 és 1 között kapcsolja. Figyelje meg, ahogy a Led sor azonnal frissül, tükrözve az új kimenetet.",
+      "instruction": "Kapcsoljon egy Óra cellát manuálisan"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "Az áramkörének ezen a ponton két InputSwitch-csel, két LED-del és egy DEMUX áramkörrel kell rendelkeznie",
+      "instruction": "Adjon hozzá egy DEMUX áramkört, és kösse össze az InputSwitch-eket az In és S0 portjaival. Ezután kösse össze a DEMUX kimeneteinek mindegyikét egy-egy másik LED-del"
+    },
+    "add-inputs": {
+      "hint": "Kattintson a Be/Ki fülre a bal oldali panelen, majd húzzon két InputSwitch elemet a munkaterületre, és helyezze el őket a MUX áramkörtől balra.",
+      "instruction": "Adjon hozzá három InputSwitch elemet a munkaterülethez"
+    },
+    "add-output": {
+      "hint": "Húzzon egy LED-et a Be/Ki fülről, és helyezze el a MUX áramkörtől jobbra. Ezután kösse össze a MUX áramkör kimeneti portját (jobb oldal) a LED bemeneti portjával (bal oldal).",
+      "instruction": "Adjon hozzá egy LED-et, és kösse össze a MUX áramkör kimenetével"
+    },
+    "connect-inputs": {
+      "hint": "Kattintson és húzzon egy InputSwitch kimeneti portjától (jobb oldal) a MUX kapu egyik bemeneti portjához (bal oldal). Ismételje meg a második kapcsolóval. Ezután kösse össze a harmadik bemeneti kapcsolót a MUX kiválasztó portjával (alul)",
+      "instruction": "Kösse össze az összes bemeneti kapcsolót a MUX áramkörrel"
+    },
+    "description": "Ismerje meg a MUX és DEMUX áramköröket.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "A DEMUX alján lévő S0 port választja ki, melyik kimenet kapja meg a bemenet jelét. Ha S0 = 0, Out0 = In0. Ha S0 = 1, Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "A MUX alján lévő S0 port választja ki, melyik bemenet kerül a kimenetre. Ha S0 = 0, a 0. bemenet jele kerül a kimenetre. Ha S0 = 1, az 1. bemenet jele kerül a kimenetre."
+    },
+    "place-mux": {
+      "hint": "Kattintson a Kombinációs fülre a bal oldali panelen, majd húzza a MUX áramkört a munkaterületre.",
+      "instruction": "Helyezzen el egy MUX áramkört a munkaterületen"
+    },
+    "prepare-demux": {
+      "hint": "Az áramkörének ezen a ponton két InputSwitch-csel és két LED-del kell rendelkeznie",
+      "instruction": "Törölje a MUX áramkört és az egyik InputSwitch-et. Ezután adjon hozzá még egy LED-et"
+    },
+    "title": "Kombinációs áramkörök I: MUX és DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "Kösse össze az InputSwitch-ek kimeneteit a kapuk bemeneteivel.",
+      "instruction": "Adjon hozzá egy másik InputSwitch-et a munkaterülethez, és adja neki a Cin címkét. Ezután adjon hozzá egy Xor kaput, egy ÉS kaput és egy VAGY kaput"
+    },
+    "add-half-adder-gates": {
+      "hint": "Használja a Kapuk fület a Xor és ÉS kapuk hozzáadásához, majd használja a Be/Ki fület két LED hozzáadásához.",
+      "instruction": "Adjon hozzá egy Xor kaput, egy ÉS kaput és két LED-et a munkaterülethez. Ezután kössön minden kaput egy-egy másik LED-hez"
+    },
+    "add-inputs": {
+      "hint": "Kattintson a Be/Ki fülre a bal oldali panelen, majd húzzon három InputSwitch elemet a munkaterületre. A harmadik InputSwitch-et később bemeneti átvitelként (Cin) használjuk.",
+      "instruction": "Adjon hozzá két InputSwitch elemet a munkaterülethez"
+    },
+    "description": "Tanulja meg egy összeadó áramkör felépítését.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "Ez az áramkör egy teljes összeadót alkot. A félösszeadóval ellentétben a teljes összeadó elfogad egy bemeneti átvitelt (Cin) egy korábbi összeadásból, és előállít egy kimeneti átvitelt (Cout) a következő szakaszhoz. Az egyik teljes összeadó Cout-jának a másik Cin-jével való összekapcsolásával több teljes összeadó láncolható össze tetszőleges hosszúságú bináris számok összeadásához"
+    },
+    "label-half-adder-outputs": {
+      "hint": "Kattintson egy LED-re, és írjon be szöveget a képernyő bal alsó sarkában lévő címkemezőbe, hogy címkét adjon egy LED-nek.",
+      "instruction": "Adja a Xor kapuhoz kötött LED-nek a Sum címkét, majd adja az ÉS kapuhoz kötött LED-nek a Cout címkét. Ez az áramkör egy félösszeadót alkot, amely két egybites bemenetet ad össze"
+    },
+    "title": "Kombinációs áramkörök III: Összeadó",
+    "wire-full-adder": {
+      "hint": "Távolítsa el a régi kapcsolatokat a LED-ekkel, hogy hozzáadhassa az újakat.",
+      "instruction": "Kösse össze a régi Xor kaput és a Cin kapcsolót az új Xor kapuval, majd kösse össze az új Xor kaput a Sum kimenettel. Kösse össze a régi Xor kaput és a Cin kapcsolót az új ÉS kapuval is. Fejezze be azzal, hogy mindkét ÉS kaput összeköti a VAGY kapuval, a VAGY kaput pedig a Cout-tal"
+    },
+    "wire-half-adder": {
+      "hint": "Kösse össze az InputSwitch-ek kimeneteit a kapuk bemeneteivel.",
+      "instruction": "Kösse össze a két InputSwitch-et a Xor kapuval és az ÉS kapuval. Minden InputSwitch-nek mindkét kapuhoz kell kapcsolódnia. A Xor kapu állítja elő a Sum kimenetet, míg az ÉS kapu a Carry kimenetet"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "Használja a Kapuk fület a bal oldali panelen az ÉS kapuk hozzáadásához, és a Be/Ki fület a LED-ek hozzáadásához.",
+      "instruction": "Adjon hozzá négy ÉS kaput és négy LED-et a munkaterülethez, majd kössön minden ÉS kaput az egyik LED-hez"
+    },
+    "add-inputs": {
+      "hint": "Kattintson a Be/Ki fülre a bal oldali panelen, és húzzon két InputSwitch elemet a munkaterületre.",
+      "instruction": "Adjon hozzá két InputSwitch elemet a munkaterülethez"
+    },
+    "add-not-gates": {
+      "hint": "Kattintson a Kapuk fülre a bal oldali panelen, majd húzzon két Not kapu elemet a munkaterületre, és kösse hozzájuk az InputSwitch-eket.",
+      "instruction": "Adjon hozzá két Not kaput a munkaterülethez, és kössön minden InputSwitch-et egy külön Not kapuhoz"
+    },
+    "description": "Tanulja meg egy 2-ből 4-be dekóder felépítését.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "A bemeneti bitek minden konkrét kombinációjához csak egy megfelelő kimeneti vonal aktiválódik, míg az összes többi inaktív marad"
+    },
+    "title": "Kombinációs áramkörök II: Dekóder",
+    "wire-decoder": {
+      "hint": "Minden ÉS kapunak egy jelet kell kapnia minden bemenetről. Használja az eredeti InputSwitch jelet az 1-hez, és a megfelelő Not kapu kimenetét a 0-hoz.",
+      "instruction": "Kösse össze a Not kapuk és az InputSwitch-ek kimeneteit az ÉS kapukkal úgy, hogy minden ÉS kapu egy bemeneti kombinációt reprezentáljon"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "A D-tároló egyetlen bemeneti értéket tárol, és elkerüli az SR-tároló érvénytelen bemeneti kombinációját.",
+      "instruction": "Távolítsa el az SR-tárolót, miközben megtartja az InputSwitch-eket és a LED-eket. Ezután adjon hozzá egy D-tárolót"
+    },
+    "add-sr-latch": {
+      "hint": "Használja a Memória fület egy SR-tároló hozzáadásához. Ezután használja a Be/Ki fület két InputSwitch és két LED hozzáadásához.",
+      "instruction": "Adjon hozzá egy SR-tárolót, két InputSwitch-et és két LED-et a munkaterülethez"
+    },
+    "description": "Tanulja meg a tárolók (latch) használatát.",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "Kapcsolgassa az InputSwitch-eket, és figyelje meg a D-tárolót. Ha az Enable 1, a kimenet követi a D bemenetet. Ha az Enable 0, a tároló megjegyzi az előző értékét"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "Kapcsolgassa az InputSwitch-eket, és figyelje meg, hogyan tárolja az SR-tároló az állapotát. Az S bemenet 1-re állítása azt okozza, hogy a Q kimenet 1 lesz, míg az R bemenet 1-re állítása 0-ra állítja vissza a Q-t. Amikor mindkét bemenet visszatér 0-ra, a tároló megjegyzi az utolsó állapotát, amíg újra be nem állítják vagy vissza nem állítják"
+    },
+    "title": "Szekvenciális áramkörök I: Tárolók",
+    "wire-d-latch": {
+      "hint": "A D bemenet a tárolandó érték. Az Enable bemenet határozza meg, mikor frissíti a tároló a tárolt értékét.",
+      "instruction": "Kössön egy InputSwitch-et a D bemenethez, a másikat pedig az Enable (E) bemenethez. Kösse össze a Q és Q̅ kimeneteket a LED-ekkel"
+    },
+    "wire-sr-latch": {
+      "hint": "Kössön egy InputSwitch-et a Set (S) bemenethez, a másikat pedig a Reset (R) bemenethez. Kössön minden tárolókimenetet egy-egy másik LED-hez.",
+      "instruction": "Kösse össze az InputSwitch-eket az SR-tároló S és R bemeneteivel. Ezután kösse össze a Q és Q̅ kimeneteket a LED-ekkel"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "Használja a Memória fület a T flip-flopok és egy Óra hozzáadásához. Ezután használja a Be/Ki fület három InputSwitch és három LED hozzáadásához.",
+      "instruction": "Adjon hozzá három T flip-flopot, három InputSwitch-et, egy Órát és három LED-et a munkaterülethez"
+    },
+    "description": "Tanulja meg egy számláló áramkör felépítését.",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "Kapcsolja be mindhárom InputSwitch-et, és indítsa el az Órát. Figyelje a LED-eket, miközben a számláló fut. Az első LED minden óraimpulzusnál állapotot vált, a második minden két impulzusnál, a harmadik minden négy impulzusnál, egy ismétlődő 3 bites bináris számlálást mutatva 000-tól 111-ig"
+    },
+    "title": "Szekvenciális áramkörök III: Számláló",
+    "wire-clock": {
+      "hint": "Az első flip-flop kapja a külső óra jelet.",
+      "instruction": "Kösse össze az Órát az első T flip-flop Clk bemenetével"
+    },
+    "wire-outputs": {
+      "hint": "Minden LED a számláló egy bitjét reprezentálja, az első LED a legkevésbé jelentős bit.",
+      "instruction": "Kösse össze minden flip-flop Q kimenetét egy-egy másik LED-del"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "Kösse össze az első flip-flop Q kimenetét a második flip-flop Clk bemenetével, majd kösse össze a második flip-flop Q kimenetét a harmadik flip-flop Clk bemenetével. Minden flip-flopot az előző kimenete órázza, ripple számlálót hozva létre"
+    },
+    "wire-t-inputs": {
+      "hint": "Kapcsolja be mindhárom InputSwitch-et. Egy T flip-flop csak akkor vált, ha a T bemenete 1.",
+      "instruction": "Kössön minden InputSwitch-et egy másik flip-flop T bemenetéhez"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "Használja a Memória fület egy D flip-flop és egy Óra hozzáadásához. Ezután használja a Be/Ki fület két InputSwitch és két LED hozzáadásához.",
+      "instruction": "Adjon hozzá egy D flip-flopot, két InputSwitch-et, egy Órát és két LED-et a munkaterülethez"
+    },
+    "add-jk-flipflop": {
+      "hint": "A JK flip-flopnak J és K bemenetei vannak D bemenet helyett. Hagyja a Clear és Preset bemeneteket bekötetlenül.",
+      "instruction": "Cserélje ki a D flip-flopot egy JK flip-flopra, miközben megtartja az Órát, az InputSwitch-eket és a LED-eket"
+    },
+    "add-t-flipflop": {
+      "hint": "Egy T flip-flopnak az órán kívül csak egyetlen bemenetre van szüksége.",
+      "instruction": "Cserélje ki a JK flip-flopot egy T flip-flopra, és távolítsa el az egyik InputSwitch-et"
+    },
+    "description": "Ismerje meg a flip-flopokat.",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "Kösse a második InputSwitch-et vagy a Clear, vagy a Preset bemenethez, és figyelje meg a hatását. A D bemenettel ellentétben a Clear és Preset bemenetek azonnal hatnak, óraél nélkül. A Clear 0-ra kényszeríti Q-t, míg a Preset 1-re kényszeríti Q-t"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "Kapcsolja a D InputSwitch-et, és figyelje meg a D flip-flopot. A D bemeneten lévő érték csak az aktív óraél idején másolódik a Q kimenetre. Az óraélek között a kimenet változatlan marad"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "Kapcsolgassa az InputSwitch-eket, és figyelje meg a JK flip-flopot. Ha J = K = 0, a kimenet megtartja aktuális állapotát. Ha J = 1 és K = 0, a kimenet beállítódik. Ha J = 0 és K = 1, a kimenet visszaáll. Ha J = K = 1, a kimenet minden aktív óraélnél átvált"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "Kapcsolja az InputSwitch-et, és figyelje meg a T flip-flopot. Ha T = 0, a kimenet megtartja aktuális állapotát. Ha T = 1, a kimenet minden aktív óraélnél átvált. A T flip-flopokat gyakran használják bináris számlálók és frekvenciaosztók építésére"
+    },
+    "title": "Szekvenciális áramkörök II: Flip-flopok",
+    "wire-d-flipflop": {
+      "hint": "Egyelőre hagyja a Clear és Preset bemeneteket bekötetlenül.",
+      "instruction": "Kössön egy InputSwitch-et a D bemenethez, az Órát a Clk bemenethez, valamint a Q és Q̅ kimeneteket a LED-ekhez. A D bemenet adja a tárolandó értéket, míg az Óra határozza meg, mikor tárolódik az érték"
+    },
+    "wire-jk-flipflop": {
+      "hint": "A JK flip-flop csak az aktív óraélnél változtatja meg a kimenetét.",
+      "instruction": "Kösse össze az InputSwitch-eket a J és K bemenetekkel, az Órát a Clk bemenettel, valamint a Q és Q̅ kimeneteket a LED-ekkel"
+    },
+    "wire-t-flipflop": {
+      "hint": "Hagyja a Clear és Preset bemeneteket bekötetlenül.",
+      "instruction": "Kösse össze a megmaradt InputSwitch-et a T bemenettel, az Órát a Clk bemenettel, valamint a Q és Q̅ kimeneteket a LED-ekkel"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "Építse fel itt az áramkörét. Húzzon komponenseket a palettáról, majd kapcsolja össze őket kattintással és húzással egy kimeneti porttól (egy komponens jobb oldala) egy bemeneti portig (egy másik bal oldala).",
+      "title": "A munkaterület"
+    },
+    "combinational-mode": {
+      "body": "A kiemelt gomb (Kombinációs) most automatikusan aktiválódott — feltölti a bemeneti sorokat minden lehetséges 0/1 kombinációval, egyetlen kattintással teljes igazságtáblát adva.",
+      "title": "Kombinációs mód"
+    },
+    "component-palette": {
+      "body": "Ez a panel felsorolja az összes elérhető komponenst — logikai kapukat, bemeneteket, kimeneteket, flip-flopokat és egyebeket. A komponensek kategóriák szerint vannak rendezve a felül lévő fülek segítségével. Kattintson egy fülre a kategória böngészéséhez.",
+      "title": "Komponenspaletta"
+    },
+    "description": "A fő felület vezetett bemutatója — paletta, munkaterület, eszköztár és tulajdonságpanel.",
+    "editing-cells": {
+      "body": "A hullámformát kézzel is szerkesztheti. Kattintson duplán bármelyik cellára az Óra sorban, hogy 0 és 1 között kapcsolja — a Led sor azonnal frissül, tükrözve az új kimenetet.",
+      "title": "Cellák kézi szerkesztése"
+    },
+    "element-properties": {
+      "body": "Amikor kiválaszt egy komponenst a munkaterületen, itt jelennek meg a tulajdonságai. Beállíthat címkéket, színeket, kiváltási típusokat és egyéb komponens-specifikus beállításokat. Próbáljon kiválasztani egy elhelyezett komponenst az opcióinak megtekintéséhez.",
+      "title": "Elemtulajdonságok"
+    },
+    "logic-gates": {
+      "body": "A Kapuk fül tartalmazza az ÉS, VAGY, Not, Nand, Nor, Xor és más alapvető logikai kapukat. Húzzon bármely kaput erről a listáról a munkaterületre, hogy hozzáadja az áramköréhez.",
+      "title": "Logikai kapuk"
+    },
+    "search-bar": {
+      "body": "Használja a keresősávot bármely komponens gyors megtalálásához név szerint. Gépelés közben alul megjelenik egy szűrt lista, amely az összes kategóriában megjeleníti a megfelelő komponenseket.",
+      "title": "Keresősáv"
+    },
+    "title": "wiRedPanda felület bemutatása",
+    "waveform-table": {
+      "body": "A hullámforma-táblázat megjeleníti az áramköre minden jelét. Az Óra sor a bemenet; a Led sor a kiszámított kimenet. Minden oszlop egy szimulációs időlépés — pontosan láthatja, hogyan követi a kimenet a bemenetet.",
+      "title": "A hullámforma-táblázat olvasása"
+    },
+    "waveform-viewer": {
+      "body": "A wiRedPanda tartalmaz egy BeWavedDolphin nevű hullámforma-megjelenítőt. Megmutatja, hogyan változik az áramköre minden jele az idő múlásával — a bemenetek sorokként felül, a kimenetek alul, minden oszlop egy szimulációs időlépést jelent. Kattintson a kiemelt eszköztárgombra a megnyitásához.",
+      "title": "Hullámforma-megjelenítő"
+    },
+    "welcome": {
+      "body": "A wiRedPanda egy digitális logikai áramkör-szimulátor. Áramköröket építhet komponensek elhelyezésével és összekapcsolásával. Ez a túra bemutatja a felület fő részeit.",
+      "title": "Üdvözöljük a wiRedPanda-ban!"
+    }
+  }
+}

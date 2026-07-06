@@ -546,12 +546,12 @@
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="40"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="unfinished">Σφάλμα ροής κατά την ανάγνωση χάρτη συνδέσεων στη θέση %1</translation>
+        <translation>Σφάλμα ροής κατά την ανάγνωση του χάρτη συνδέσεων στη μετατόπιση %1</translation>
     </message>
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="unfinished">Σφάλμα ροής κατά την ανάγνωση αναγνωριστικών θυρών σύνδεσης στη θέση %1</translation>
+        <translation>Σφάλμα ροής κατά την ανάγνωση των αναγνωριστικών θυρών σύνδεσης στη μετατόπιση %1</translation>
     </message>
 </context>
 <context>
@@ -1157,27 +1157,27 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν ήταν δυνατή η δημιουργία ή η πρόσβαση σε φάκελο για προσαρμοσμένες ασκήσεις.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
         <source>Circuit Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>Ασκήσεις κυκλωμάτων</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
         <source>Choose an Exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξτε μια άσκηση</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Έναρξη</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα του φακέλου ασκήσεών μου</translation>
     </message>
 </context>
 <context>
@@ -1185,55 +1185,55 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
         <source>Exit</source>
-        <translation type="unfinished">Έξοδος</translation>
+        <translation>Έξοδος</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
         <source>Close exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Κλείσιμο άσκησης</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
         <source>Hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Υπόδειξη</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Πίσω</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Επόμενο →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <source>Hide hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Απόκρυψη υπόδειξης</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Βήμα %1 από %2</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>Exercise complete! Well done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Η άσκηση ολοκληρώθηκε! Μπράβο.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Κλείσιμο</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Τέλος</translation>
     </message>
 </context>
 <context>
@@ -1329,62 +1329,62 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="46"/>
         <source>Stream error reading %1 count at position %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα ροής κατά την ανάγνωση του πλήθους %1 στη θέση %2</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="50"/>
         <source>Refusing to read %1 with implausible count %2 (max %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Άρνηση ανάγνωσης %1 με απίθανο πλήθος %2 (μέγ. %3)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="60"/>
         <source>Stream error reading %1 entry %2 at position %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα ροής κατά την ανάγνωση της καταχώρισης %2 του %1 στη θέση %3</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="unfinished">Σφάλμα ροής κατά την ανάγνωση ιδιοτήτων στοιχείου στη θέση %1</translation>
+        <translation>Σφάλμα ροής κατά την ανάγνωση ιδιοτήτων στοιχείου στη θέση %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="unfinished">Σφάλμα ροής κατά την ανάγνωση εμφανίσεων στη θέση %1</translation>
+        <translation>Σφάλμα ροής κατά την ανάγνωση εμφανίσεων στη θέση %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="unfinished">Δείκτης εμφάνισης %1 εκτός εμβέλειας (μέγεθος=%2) — η ροή μπορεί να έχει αλλοιωθεί</translation>
+        <translation>Ο δείκτης εμφάνισης %1 είναι εκτός εύρους (μέγεθος=%2) — η ροή μπορεί να είναι κατεστραμμένη</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
         <source>Non-finite element position — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Μη πεπερασμένη θέση στοιχείου — η ροή μπορεί να είναι κατεστραμμένη</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Μη πεπερασμένη περιστροφή στοιχείου — η ροή μπορεί να είναι κατεστραμμένη</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Άρνηση λίστας θυρών εισόδου παλιάς μορφής με απίθανο πλήθος %1 (μέγ. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Άρνηση λίστας θυρών εξόδου παλιάς μορφής με απίθανο πλήθος %1 (μέγ. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Άρνηση λίστας εμφανίσεων παλιάς μορφής με απίθανο πλήθος %1 (μέγ. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="unfinished">Δείκτης εμφάνισης %1 εκτός ορίων (μέγεθος=%2) για όνομα εμφάνισης &quot;%3&quot; — η ροή μπορεί να είναι κατεστραμμένη</translation>
+        <translation>Ο δείκτης εμφάνισης %1 είναι εκτός εύρους (μέγεθος=%2) για το όνομα εμφάνισης «%3» — η ροή μπορεί να είναι κατεστραμμένη</translation>
     </message>
 </context>
 <context>
@@ -1539,32 +1539,32 @@ Suggested name:</source>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="103"/>
         <source>%1 not found.</source>
-        <translation type="unfinished">Δεν βρέθηκε %1.</translation>
+        <translation>Το %1 δεν βρέθηκε.</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="148"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="unfinished">Ανιχνεύθηκε κυκλική αναφορά IC: %1</translation>
+        <translation>Εντοπίστηκε κυκλική αναφορά IC: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="155"/>
         <source>Error opening file: %1</source>
-        <translation type="unfinished">Σφάλμα ανοίγματος αρχείου: %1</translation>
+        <translation>Σφάλμα κατά το άνοιγμα του αρχείου: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="227"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="unfinished">Μετεγκατάσταση IC: δεν είναι δυνατό το άνοιγμα αρχείου για εγγραφή: %1</translation>
+        <translation>Μετεγκατάσταση IC: δεν είναι δυνατό το άνοιγμα του αρχείου για εγγραφή: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="234"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="unfinished">Μετεγκατάσταση IC: αποτυχία αποθήκευσης του αρχείου: %1</translation>
+        <translation>Μετεγκατάσταση IC: αποτυχία επιβεβαίωσης του εκ νέου αποθηκευμένου αρχείου: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="297"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="unfinished">Υπέρβαση ορίου βάθους ένθεσης IC (%1) — το blob ενδέχεται να έχει δημιουργηθεί κακόβουλα</translation>
+        <translation>Υπέρβαση ορίου βάθους εμφώλευσης IC (%1) — το blob ενδέχεται να έχει δημιουργηθεί κακόβουλα</translation>
     </message>
 </context>
 <context>
@@ -1810,32 +1810,32 @@ Suggested name:</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>Show IC Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση προεπισκόπησης IC</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>Show Minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση μικρού χάρτη</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Top-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάνω αριστερά</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Top-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάνω δεξιά</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Bottom-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Κάτω αριστερά</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Bottom-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Κάτω δεξιά</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="834"/>
@@ -1906,7 +1906,7 @@ Suggested name:</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Minimap &amp;Position</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Θέση μικρού χάρτη</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
@@ -2261,22 +2261,22 @@ Suggested name:</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>&amp;Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>Α&amp;σκήσεις</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>&amp;Circuit Exercises...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ασκήσεις &amp;κυκλωμάτων...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>&amp;Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Περιηγήσεις</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="861"/>
         <source>&amp;Interactive Tours...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Διαδραστικές περιηγήσεις...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1086"/>
@@ -2367,7 +2367,7 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../UI/MainWindow.cpp" line="500"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Το wiRedPanda είναι λογισμικό που αναπτύχθηκε από φοιτητές του Ομοσπονδιακού Πανεπιστημίου του Σάο Πάολο για να βοηθήσει τους μαθητές να μάθουν για τα λογικά κυκλώματα.&lt;/p&gt;&lt;p&gt;Έκδοση λογισμικού: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Δημιουργοί:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; Το wiRedPanda συντηρείται επί του παρόντος από τους Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves και Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Παρακαλούμε υποβάλετε αναφορά στη σελίδα μας στο GitHub αν βρείτε κάποιο σφάλμα ή θέλετε να ζητήσετε μια νέα λειτουργία.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Επισκεφθείτε τον ιστότοπό μας!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="572"/>
@@ -2385,7 +2385,7 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="26"/>
         <source>Mini-map: click or drag to navigate</source>
-        <translation type="unfinished"></translation>
+        <translation>Μικρός χάρτης: κάντε κλικ ή σύρετε για πλοήγηση</translation>
     </message>
 </context>
 <context>
@@ -2695,7 +2695,7 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../IO/Serialization.cpp" line="359"/>
         <source>Invalid legacy file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Μη έγκυρη κεφαλίδα παλαιού αρχείου: %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="542"/>
@@ -2730,7 +2730,7 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../IO/Serialization.cpp" line="666"/>
         <source>Stream error reading preamble: status %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα ροής κατά την ανάγνωση του προοιμίου: κατάσταση %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="730"/>
@@ -2784,7 +2784,7 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="unfinished">Δεν ήταν δυνατό το άνοιγμα του αρχείου για εγγραφή: %1</translation>
+        <translation>Δεν ήταν δυνατό το άνοιγμα του αρχείου για εγγραφή: %1</translation>
     </message>
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
@@ -2838,7 +2838,7 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Η θέση εναλλαγής του πίνακα αλήθειας είναι εκτός εύρους: %1</translation>
     </message>
 </context>
 <context>
@@ -2846,27 +2846,27 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν ήταν δυνατή η δημιουργία ή η πρόσβαση σε φάκελο για προσαρμοσμένες περιηγήσεις.</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
         <source>Interactive Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαδραστικές περιηγήσεις</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
         <source>Choose a Tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξτε μια περιήγηση</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Έναρξη</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα του φακέλου περιηγήσεών μου</translation>
     </message>
 </context>
 <context>
@@ -2874,33 +2874,33 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
         <source>Exit</source>
-        <translation type="unfinished">Έξοδος</translation>
+        <translation>Έξοδος</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
         <source>Stop the tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Διακοπή περιήγησης</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Πίσω</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Επόμενο →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Βήμα %1 από %2</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Τέλος</translation>
     </message>
 </context>
 <context>
@@ -3012,7 +3012,8 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
         <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not write the file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν ήταν δυνατή η εγγραφή του αρχείου:
+%1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="152"/>
@@ -3160,12 +3161,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>Save File</source>
-        <translation type="unfinished">Αποθήκευση Αρχείου</translation>
+        <translation>Αποθήκευση αρχείου</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
         <source>Save File (original location is read-only)</source>
-        <translation type="unfinished">Αποθήκευση αρχείου (η αρχική τοποθεσία είναι μόνο για ανάγνωση)</translation>
+        <translation>Αποθήκευση αρχείου (η αρχική τοποθεσία είναι μόνο για ανάγνωση)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
@@ -3272,7 +3273,7 @@ Do you want to save your changes?</source>
         <location filename="../../Main.cpp" line="372"/>
         <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα: δεν δόθηκε αρχείο κυκλώματος εισόδου.</translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="407"/>

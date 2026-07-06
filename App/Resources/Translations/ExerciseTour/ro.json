@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "Faceți clic pe fila I/O din panoul din stânga, apoi trageți două elemente InputSwitch pe suprafața de lucru și plasați-le la stânga porții Și.",
+      "instruction": "Adăugați două elemente InputSwitch pe suprafața de lucru"
+    },
+    "add-output": {
+      "hint": "Trageți un LED din fila I/O și plasați-l la dreapta porții Și. Apoi conectați portul de ieșire al porții Și (partea dreaptă) la portul de intrare al LED-ului (partea stângă).",
+      "instruction": "Adăugați un LED și conectați-l la ieșirea porții Și"
+    },
+    "connect-inputs": {
+      "hint": "Faceți clic și trageți de la un port de ieșire al unui InputSwitch (partea dreaptă) la unul dintre porturile de intrare ale porții Și (partea stângă). Repetați pentru al doilea întrerupător.",
+      "instruction": "Conectați ambele întrerupătoare de intrare la poarta Și"
+    },
+    "description": "Învățați să plasați porți logice, să adăugați intrări și ieșiri și să le conectați între ele.",
+    "place-and-gate": {
+      "hint": "Faceți clic pe fila Porți din panoul din stânga, apoi trageți poarta Și pe suprafața de lucru.",
+      "instruction": "Plasați o poartă Și pe suprafața de lucru"
+    },
+    "title": "Construirea unui circuit cu o poartă Și",
+    "toggle-observe": {
+      "hint": "Faceți clic pe un InputSwitch pentru a-l comuta. LED-ul se aprinde doar când AMBELE întrerupătoare sunt pornite. Aceasta se întâmplă deoarece Și produce 1 la ieșire doar când toate intrările sunt 1.",
+      "instruction": "Comutați întrerupătoarele și observați LED-ul — aceasta este logica Și!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "Faceți clic pe fila I/O din panoul din stânga, apoi trageți două elemente InputSwitch pe suprafața de lucru și plasați-le la stânga porții Sau.",
+      "instruction": "Adăugați două elemente InputSwitch pe suprafața de lucru"
+    },
+    "add-not-gate": {
+      "hint": "Trageți firul dintre poarta Sau și LED pentru a-l elimina.",
+      "instruction": "Deconectați LED-ul de la poarta Sau, apoi conectați poarta Sau la o poartă Nu și poarta Nu la LED"
+    },
+    "add-output": {
+      "hint": "Trageți un LED din fila I/O și plasați-l la dreapta porții Sau. Apoi conectați portul de ieșire al porții Sau (partea dreaptă) la portul de intrare al LED-ului (partea stângă).",
+      "instruction": "Adăugați un LED și conectați-l la ieșirea porții Sau"
+    },
+    "connect-inputs": {
+      "hint": "Faceți clic și trageți de la un port de ieșire al unui InputSwitch (partea dreaptă) la unul dintre porturile de intrare ale porții Sau (partea stângă). Repetați pentru al doilea întrerupător.",
+      "instruction": "Conectați ambele întrerupătoare de intrare la poarta Sau"
+    },
+    "description": "Învățați să folosiți porțile Sau și Nu.",
+    "place-or-gate": {
+      "hint": "Faceți clic pe fila Porți din panoul din stânga, apoi trageți poarta Sau pe suprafața de lucru.",
+      "instruction": "Plasați o poartă Sau pe suprafața de lucru"
+    },
+    "title": "Mai multe porți de bază: Sau și Nu",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "Poarta Nu inversează semnalul. Acum, circuitul va produce 1 la ieșire doar când niciuna dintre intrări nu este 1"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "Experimentați cu intrările și observați cum poarta Sau produce 1 la ieșire când oricare dintre intrările sale este 1"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "Faceți clic pe Editare → Combinațional în bara de meniu a BeWavedDolphin. Aceasta va completa rândul Ceas cu toate valorile posibile și va calcula ieșirea LED-ului pentru fiecare — un tabel de adevăr complet dintr-un singur clic.",
+      "instruction": "Generează automat toate combinațiile de intrare"
+    },
+    "connect-clock-led": {
+      "hint": "Faceți clic și trageți de la portul de ieșire al Ceasului (partea dreaptă) la portul de intrare al LED-ului (partea stângă).",
+      "instruction": "Conectați ieșirea Ceasului la intrarea LED-ului"
+    },
+    "description": "Construiți un circuit minim Ceas-LED și explorați vizualizatorul de forme de undă: modul combinațional și editarea manuală a celulelor.",
+    "open-waveform": {
+      "hint": "BeWavedDolphin afișează semnalele circuitului dvs. sub formă de rânduri. Rândul Ceas este intrarea, iar rândul Led este ieșirea. Fiecare coloană este un pas de timp al simulării.",
+      "instruction": "Vizualizatorul de forme de undă este acum deschis — aruncați o privire!"
+    },
+    "place-clock": {
+      "hint": "Faceți clic pe fila I/O din panoul din stânga, apoi trageți elementul Ceas pe suprafața de lucru.",
+      "instruction": "Plasați un element Ceas pe suprafața de lucru"
+    },
+    "place-led": {
+      "hint": "Rămânând în fila I/O, trageți un element Led pe suprafața de lucru la dreapta Ceasului.",
+      "instruction": "Plasați un LED pe suprafața de lucru"
+    },
+    "title": "Ceas și LED: noțiuni de bază despre forme de undă",
+    "toggle-cell": {
+      "hint": "Faceți dublu clic pe orice celulă din rândul Ceas pentru a o comuta între 0 și 1. Observați cum rândul Led se actualizează instantaneu pentru a reflecta noua ieșire.",
+      "instruction": "Comutați manual o celulă a Ceasului"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "Circuitul dvs. ar trebui să aibă acum două InputSwitch, două LED-uri și un circuit DEMUX",
+      "instruction": "Adăugați un circuit DEMUX și conectați InputSwitch la porturile sale In și S0. Apoi conectați fiecare dintre ieșirile DEMUX-ului la un alt LED"
+    },
+    "add-inputs": {
+      "hint": "Faceți clic pe fila I/O din panoul din stânga, apoi trageți două elemente InputSwitch pe suprafața de lucru și plasați-le la stânga circuitului MUX.",
+      "instruction": "Adăugați trei elemente InputSwitch pe suprafața de lucru"
+    },
+    "add-output": {
+      "hint": "Trageți un LED din fila I/O și plasați-l la dreapta circuitului MUX. Apoi conectați portul de ieșire al circuitului MUX (partea dreaptă) la portul de intrare al LED-ului (partea stângă).",
+      "instruction": "Adăugați un LED și conectați-l la ieșirea circuitului MUX"
+    },
+    "connect-inputs": {
+      "hint": "Faceți clic și trageți de la un port de ieșire al unui InputSwitch (partea dreaptă) la unul dintre porturile de intrare ale porții MUX (partea stângă). Repetați pentru al doilea întrerupător. Apoi, conectați al treilea întrerupător de intrare la portul de selecție al MUX-ului (partea de jos)",
+      "instruction": "Conectați toate întrerupătoarele de intrare la circuitul MUX"
+    },
+    "description": "Aflați despre circuitele MUX și DEMUX.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "Portul S0 din partea de jos a DEMUX-ului selectează ce ieșire va primi semnalul intrării. Când S0 = 0, Out0 = In0. Când S0 = 1, Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "Portul S0 din partea de jos a MUX-ului selectează ce intrare este direcționată către ieșire. Când S0 = 0, semnalul de la Intrarea 0 este trimis la ieșire. Când S0 = 1, semnalul de la Intrarea 1 este trimis la ieșire."
+    },
+    "place-mux": {
+      "hint": "Faceți clic pe fila Combinațional din panoul din stânga, apoi trageți circuitul MUX pe suprafața de lucru.",
+      "instruction": "Plasați un circuit MUX pe suprafața de lucru"
+    },
+    "prepare-demux": {
+      "hint": "Circuitul dvs. ar trebui să aibă acum două InputSwitch și două LED-uri",
+      "instruction": "Ștergeți circuitul MUX și unul dintre InputSwitch. Apoi adăugați un alt LED"
+    },
+    "title": "Circuite combinaționale I: MUX și DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "Conectați ieșirile InputSwitch la intrările porților.",
+      "instruction": "Adăugați un alt InputSwitch pe suprafața de lucru și dați-i eticheta Cin. Apoi adăugați o poartă Xor, o poartă Și și o poartă Sau"
+    },
+    "add-half-adder-gates": {
+      "hint": "Folosiți fila Porți pentru a adăuga porțile Xor și Și, apoi folosiți fila I/O pentru a adăuga două LED-uri.",
+      "instruction": "Adăugați o poartă Xor, o poartă Și și două LED-uri pe suprafața de lucru. Apoi conectați fiecare poartă la un alt LED"
+    },
+    "add-inputs": {
+      "hint": "Faceți clic pe fila I/O din panoul din stânga, apoi trageți trei elemente InputSwitch pe suprafața de lucru. Al treilea InputSwitch va fi folosit mai târziu ca transport de intrare (Cin).",
+      "instruction": "Adăugați două elemente InputSwitch pe suprafața de lucru"
+    },
+    "description": "Învățați să construiți un circuit sumator.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "Acest circuit formează un sumator complet. Spre deosebire de un semisumator, un sumator complet acceptă un transport de intrare (Cin) de la o adunare anterioară și produce un transport de ieșire (Cout) pentru etapa următoare. Conectând Cout-ul unui sumator complet la Cin-ul altuia, mai multe sumatoare complete pot fi înlănțuite pentru a aduna numere binare de orice lungime"
+    },
+    "label-half-adder-outputs": {
+      "hint": "Faceți clic pe un LED și tastați în caseta de text a etichetei din colțul din stânga jos al ecranului pentru a da o etichetă unui LED.",
+      "instruction": "Dați LED-ului conectat la poarta Xor eticheta Sum, apoi dați LED-ului conectat la poarta Și eticheta Cout. Acest circuit formează un semisumator, care adună două intrări de un singur bit"
+    },
+    "title": "Circuite combinaționale III: Sumator",
+    "wire-full-adder": {
+      "hint": "Eliminați vechile conexiuni la LED-uri pentru a putea adăuga cele noi.",
+      "instruction": "Conectați vechea poartă Xor și întrerupătorul Cin la noua poartă Xor, apoi conectați noua poartă Xor la ieșirea Sum. De asemenea, conectați vechea poartă Xor și întrerupătorul Cin la noua poartă Și. Terminați conectând ambele porți Și la poarta Sau, iar poarta Sau la Cout"
+    },
+    "wire-half-adder": {
+      "hint": "Conectați ieșirile InputSwitch la intrările porților.",
+      "instruction": "Conectați cele două InputSwitch la poarta Xor și la poarta Și. Fiecare InputSwitch ar trebui să se conecteze la ambele porți. Poarta Xor produce ieșirea Sum, în timp ce poarta Și produce ieșirea Carry"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "Folosiți fila Porți din panoul din stânga pentru a adăuga porțile Și și fila I/O pentru a adăuga LED-urile.",
+      "instruction": "Adăugați patru porți Și și patru LED-uri pe suprafața de lucru, apoi conectați fiecare poartă Și la unul dintre LED-uri"
+    },
+    "add-inputs": {
+      "hint": "Faceți clic pe fila I/O din panoul din stânga și trageți două elemente InputSwitch pe suprafața de lucru.",
+      "instruction": "Adăugați două elemente InputSwitch pe suprafața de lucru"
+    },
+    "add-not-gates": {
+      "hint": "Faceți clic pe fila Porți din panoul din stânga, apoi trageți două elemente poartă Nu pe suprafața de lucru și conectați InputSwitch la ele.",
+      "instruction": "Adăugați două porți Nu pe suprafața de lucru și conectați fiecare InputSwitch la o poartă Nu separată"
+    },
+    "description": "Învățați să construiți un decodor 2 la 4.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "Pentru fiecare combinație specifică de biți de intrare, este activată doar o linie de ieșire corespunzătoare, în timp ce toate celelalte rămân inactive"
+    },
+    "title": "Circuite combinaționale II: Decodor",
+    "wire-decoder": {
+      "hint": "Fiecare poartă Și ar trebui să primească un semnal de la fiecare intrare. Folosiți semnalul InputSwitch original pentru un 1 și ieșirea corespunzătoare a porții Nu pentru un 0.",
+      "instruction": "Conectați ieșirile porților Nu și ale InputSwitch la porțile Și astfel încât fiecare poartă Și să reprezinte o combinație de intrare"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "Zăvorul D stochează o singură valoare de intrare și evită combinația de intrare nevalidă a unui zăvor SR.",
+      "instruction": "Eliminați zăvorul SR păstrând InputSwitch și LED-urile. Apoi adăugați un zăvor D"
+    },
+    "add-sr-latch": {
+      "hint": "Folosiți fila Memorie pentru a adăuga un zăvor SR. Apoi folosiți fila I/O pentru a adăuga două InputSwitch și două LED-uri.",
+      "instruction": "Adăugați un zăvor SR, două InputSwitch și două LED-uri pe suprafața de lucru"
+    },
+    "description": "Învățați să folosiți zăvoarele (latch).",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "Comutați InputSwitch și observați zăvorul D. Când Enable este 1, ieșirea urmează intrarea D. Când Enable este 0, zăvorul își amintește valoarea anterioară"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "Comutați InputSwitch și observați cum zăvorul SR își stochează starea. Setarea intrării S la 1 face ca ieșirea Q să devină 1, în timp ce setarea intrării R la 1 resetează Q la 0. Când ambele intrări revin la 0, zăvorul își amintește ultima stare până când este setat sau resetat din nou"
+    },
+    "title": "Circuite secvențiale I: Zăvoare",
+    "wire-d-latch": {
+      "hint": "Intrarea D este valoarea care urmează să fie stocată. Intrarea Enable determină când zăvorul își actualizează valoarea stocată.",
+      "instruction": "Conectați un InputSwitch la intrarea D și celălalt la intrarea Enable (E). Conectați ieșirile Q și Q̅ la LED-uri"
+    },
+    "wire-sr-latch": {
+      "hint": "Conectați un InputSwitch la intrarea Set (S) și celălalt la intrarea Reset (R). Conectați fiecare ieșire a zăvorului la un alt LED.",
+      "instruction": "Conectați InputSwitch la intrările S și R ale zăvorului SR. Apoi conectați ieșirile Q și Q̅ la LED-uri"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "Folosiți fila Memorie pentru a adăuga bistabilele T și un Ceas. Apoi folosiți fila I/O pentru a adăuga trei InputSwitch și trei LED-uri.",
+      "instruction": "Adăugați trei bistabile T, trei InputSwitch, un Ceas și trei LED-uri pe suprafața de lucru"
+    },
+    "description": "Învățați să construiți un circuit numărător.",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "Porniți toate cele trei InputSwitch și porniți Ceasul. Observați LED-urile în timp ce numărătorul funcționează. Primul LED își schimbă starea la fiecare impuls de ceas, al doilea se schimbă la fiecare două impulsuri, iar al treilea la fiecare patru impulsuri, afișând o numărare binară repetitivă pe 3 biți de la 000 la 111"
+    },
+    "title": "Circuite secvențiale III: Numărător",
+    "wire-clock": {
+      "hint": "Primul bistabil primește semnalul de ceas extern.",
+      "instruction": "Conectați Ceasul la intrarea Clk a primului bistabil T"
+    },
+    "wire-outputs": {
+      "hint": "Fiecare LED reprezintă un bit al numărătorului, primul LED fiind bitul cel mai puțin semnificativ.",
+      "instruction": "Conectați ieșirea Q a fiecărui bistabil la un alt LED"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "Conectați ieșirea Q a primului bistabil la intrarea Clk a celui de-al doilea bistabil, apoi conectați ieșirea Q a celui de-al doilea bistabil la intrarea Clk a celui de-al treilea bistabil. Fiecare bistabil este ceasat de ieșirea celui anterior, creând un numărător în cascadă"
+    },
+    "wire-t-inputs": {
+      "hint": "Porniți toate cele trei InputSwitch. Un bistabil T comută doar atunci când intrarea sa T este 1.",
+      "instruction": "Conectați fiecare InputSwitch la intrarea T a unui alt bistabil"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "Folosiți fila Memorie pentru a adăuga un bistabil D și un Ceas. Apoi folosiți fila I/O pentru a adăuga două InputSwitch și două LED-uri.",
+      "instruction": "Adăugați un bistabil D, două InputSwitch, un Ceas și două LED-uri pe suprafața de lucru"
+    },
+    "add-jk-flipflop": {
+      "hint": "Bistabilul JK are intrări J și K în loc de o intrare D. Lăsați intrările Clear și Preset neconectate.",
+      "instruction": "Înlocuiți bistabilul D cu un bistabil JK păstrând Ceasul, InputSwitch și LED-urile"
+    },
+    "add-t-flipflop": {
+      "hint": "Un bistabil T necesită doar o singură intrare pe lângă ceas.",
+      "instruction": "Înlocuiți bistabilul JK cu un bistabil T și eliminați unul dintre InputSwitch"
+    },
+    "description": "Aflați despre bistabile.",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "Conectați al doilea InputSwitch fie la intrarea Clear, fie la Preset, și observați efectul. Spre deosebire de intrarea D, intrările Clear și Preset acționează imediat, fără a aștepta un front de ceas. Clear forțează Q la 0, în timp ce Preset forțează Q la 1"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "Comutați InputSwitch D și observați bistabilul D. Valoarea de la intrarea D este copiată la ieșirea Q doar la frontul activ al ceasului. Între fronturile ceasului, ieșirea rămâne neschimbată"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "Comutați InputSwitch și observați bistabilul JK. Când J = K = 0, ieșirea își menține starea curentă. Când J = 1 și K = 0, ieșirea este setată. Când J = 0 și K = 1, ieșirea este resetată. Când J = K = 1, ieșirea comută la fiecare front activ al ceasului"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "Comutați InputSwitch și observați bistabilul T. Când T = 0, ieșirea își menține starea curentă. Când T = 1, ieșirea comută la fiecare front activ al ceasului. Bistabilele T sunt utilizate în mod obișnuit pentru a construi numărătoare binare și divizoare de frecvență"
+    },
+    "title": "Circuite secvențiale II: Bistabile",
+    "wire-d-flipflop": {
+      "hint": "Lăsați deocamdată intrările Clear și Preset neconectate.",
+      "instruction": "Conectați un InputSwitch la intrarea D, Ceasul la intrarea Clk, iar ieșirile Q și Q̅ la LED-uri. Intrarea D furnizează valoarea care urmează să fie stocată, în timp ce Ceasul determină când valoarea este stocată"
+    },
+    "wire-jk-flipflop": {
+      "hint": "Bistabilul JK își schimbă ieșirea doar la frontul activ al ceasului.",
+      "instruction": "Conectați InputSwitch la intrările J și K, Ceasul la intrarea Clk, iar ieșirile Q și Q̅ la LED-uri"
+    },
+    "wire-t-flipflop": {
+      "hint": "Lăsați intrările Clear și Preset neconectate.",
+      "instruction": "Conectați InputSwitch-ul rămas la intrarea T, Ceasul la intrarea Clk, iar ieșirile Q și Q̅ la LED-uri"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "Construiți-vă circuitul aici. Trageți componente din paletă, apoi conectați-le făcând clic și trăgând de la un port de ieșire (partea dreaptă a unei componente) la un port de intrare (partea stângă a alteia).",
+      "title": "Suprafața de lucru"
+    },
+    "combinational-mode": {
+      "body": "Butonul evidențiat (Combinațional) a fost tocmai activat automat — acesta completează rândurile de intrare cu fiecare combinație posibilă de 0/1, oferindu-vă un tabel de adevăr complet dintr-un singur clic.",
+      "title": "Mod combinațional"
+    },
+    "component-palette": {
+      "body": "Acest panou listează toate componentele disponibile — porți logice, intrări, ieșiri, bistabile și altele. Componentele sunt organizate pe categorii folosind filele din partea de sus. Faceți clic pe o filă pentru a-i răsfoi categoria.",
+      "title": "Paleta de componente"
+    },
+    "description": "Un ghid pas cu pas al interfeței principale — paletă, suprafață de lucru, bară de instrumente și panou de proprietăți.",
+    "editing-cells": {
+      "body": "De asemenea, puteți edita forma de undă manual. Faceți dublu clic pe orice celulă din rândul Ceas pentru a o comuta între 0 și 1 — rândul Led se actualizează instantaneu pentru a reflecta noua ieșire.",
+      "title": "Editarea manuală a celulelor"
+    },
+    "element-properties": {
+      "body": "Când selectați o componentă pe suprafața de lucru, proprietățile acesteia apar aici. Puteți seta etichete, culori, tipuri de declanșare și alte setări specifice componentei. Încercați să selectați o componentă plasată pentru a-i vedea opțiunile.",
+      "title": "Proprietățile elementului"
+    },
+    "logic-gates": {
+      "body": "Fila Porți conține Și, Sau, Nu, Nand, Nor, Xor și alte porți logice fundamentale. Trageți orice poartă din această listă pe suprafața de lucru pentru a o adăuga circuitului dvs.",
+      "title": "Porți logice"
+    },
+    "search-bar": {
+      "body": "Folosiți bara de căutare pentru a găsi rapid orice componentă după nume. Pe măsură ce tastați, apare mai jos o listă filtrată care afișează componentele corespunzătoare din toate categoriile.",
+      "title": "Bara de căutare"
+    },
+    "title": "Tur al interfeței wiRedPanda",
+    "waveform-table": {
+      "body": "Tabelul de forme de undă afișează fiecare semnal din circuitul dvs. Rândul Ceas este intrarea; rândul Led este ieșirea calculată. Fiecare coloană este un pas de timp al simulării — puteți vedea exact cum ieșirea urmează intrarea.",
+      "title": "Citirea tabelului de forme de undă"
+    },
+    "waveform-viewer": {
+      "body": "wiRedPanda include un vizualizator de forme de undă numit BeWavedDolphin. Acesta arată cum se schimbă fiecare semnal din circuitul dvs. în timp — intrările ca rânduri în partea de sus, ieșirile dedesubt, fiecare coloană reprezentând un pas de timp al simulării. Faceți clic pe butonul evidențiat din bara de instrumente pentru a-l deschide.",
+      "title": "Vizualizator de forme de undă"
+    },
+    "welcome": {
+      "body": "wiRedPanda este un simulator de circuite logice digitale. Puteți construi circuite plasând componente și conectându-le între ele. Acest tur vă va arăta părțile principale ale interfeței.",
+      "title": "Bun venit în wiRedPanda!"
+    }
+  }
+}

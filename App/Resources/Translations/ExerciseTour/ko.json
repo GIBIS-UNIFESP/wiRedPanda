@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "왼쪽 패널에서 I/O 탭을 클릭한 다음 InputSwitch 요소 두 개를 캔버스로 드래그하여 And 게이트 왼쪽에 배치하세요.",
+      "instruction": "캔버스에 InputSwitch 요소 두 개를 추가하세요"
+    },
+    "add-output": {
+      "hint": "I/O 탭에서 LED를 드래그하여 And 게이트 오른쪽에 배치하세요. 그런 다음 And 게이트의 출력 포트(오른쪽)를 LED의 입력 포트(왼쪽)에 연결하세요.",
+      "instruction": "LED를 추가하고 And 게이트의 출력에 연결하세요"
+    },
+    "connect-inputs": {
+      "hint": "InputSwitch의 출력 포트(오른쪽)에서 And 게이트의 입력 포트(왼쪽) 중 하나로 클릭하여 드래그하세요. 두 번째 스위치에 대해서도 반복하세요.",
+      "instruction": "두 입력 스위치를 모두 And 게이트에 연결하세요"
+    },
+    "description": "논리 게이트를 배치하고 입력과 출력을 추가하며 서로 연결하는 방법을 배웁니다.",
+    "place-and-gate": {
+      "hint": "왼쪽 패널에서 게이트 탭을 클릭한 다음 And 게이트를 캔버스로 드래그하세요.",
+      "instruction": "캔버스에 And 게이트를 배치하세요"
+    },
+    "title": "And 게이트 회로 만들기",
+    "toggle-observe": {
+      "hint": "InputSwitch를 클릭하여 토글하세요. LED는 두 스위치가 모두 켜져 있을 때만 켜집니다. And는 모든 입력이 1일 때만 출력 1을 내기 때문입니다.",
+      "instruction": "스위치를 토글하고 LED를 관찰하세요 — 이것이 And 로직입니다!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "왼쪽 패널에서 I/O 탭을 클릭한 다음 InputSwitch 요소 두 개를 캔버스로 드래그하여 OR 게이트 왼쪽에 배치하세요.",
+      "instruction": "캔버스에 InputSwitch 요소 두 개를 추가하세요"
+    },
+    "add-not-gate": {
+      "hint": "OR 게이트와 LED 사이의 배선을 드래그하여 제거하세요.",
+      "instruction": "LED를 OR 게이트에서 분리한 다음 OR 게이트를 Not 게이트에 연결하고 Not 게이트를 LED에 연결하세요"
+    },
+    "add-output": {
+      "hint": "I/O 탭에서 LED를 드래그하여 OR 게이트 오른쪽에 배치하세요. 그런 다음 OR 게이트의 출력 포트(오른쪽)를 LED의 입력 포트(왼쪽)에 연결하세요.",
+      "instruction": "LED를 추가하고 OR 게이트의 출력에 연결하세요"
+    },
+    "connect-inputs": {
+      "hint": "InputSwitch의 출력 포트(오른쪽)에서 OR 게이트의 입력 포트(왼쪽) 중 하나로 클릭하여 드래그하세요. 두 번째 스위치에 대해서도 반복하세요.",
+      "instruction": "두 입력 스위치를 모두 OR 게이트에 연결하세요"
+    },
+    "description": "OR 게이트와 Not 게이트 사용법을 배웁니다.",
+    "place-or-gate": {
+      "hint": "왼쪽 패널에서 게이트 탭을 클릭한 다음 OR 게이트를 캔버스로 드래그하세요.",
+      "instruction": "캔버스에 OR 게이트를 배치하세요"
+    },
+    "title": "더 많은 기본 게이트: OR과 Not",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "Not 게이트는 신호를 반전시킵니다. 이제 회로는 입력 중 어느 것도 1이 아닐 때만 출력 1을 냅니다"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "입력을 실험해 보고 입력 중 하나라도 1이면 OR 게이트가 어떻게 출력 1을 내는지 관찰하세요"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "BeWavedDolphin의 메뉴 모음에서 편집 → 조합을 클릭하세요. 이렇게 하면 클록 행이 가능한 모든 값으로 채워지고 각 값에 대한 LED 출력이 계산됩니다 — 클릭 한 번으로 완전한 진리표를 얻을 수 있습니다.",
+      "instruction": "모든 입력 조합을 자동으로 생성하기"
+    },
+    "connect-clock-led": {
+      "hint": "클록의 출력 포트(오른쪽)에서 LED의 입력 포트(왼쪽)로 클릭하여 드래그하세요.",
+      "instruction": "클록 출력을 LED 입력에 연결하세요"
+    },
+    "description": "최소한의 클록-LED 회로를 구축하고 파형 뷰어를 살펴봅니다: 조합 모드와 수동 셀 편집.",
+    "open-waveform": {
+      "hint": "BeWavedDolphin은 회로의 신호를 행으로 표시합니다. 클록 행은 입력이고 Led 행은 출력입니다. 각 열은 하나의 시뮬레이션 시간 단계입니다.",
+      "instruction": "파형 뷰어가 이제 열렸습니다 — 살펴보세요!"
+    },
+    "place-clock": {
+      "hint": "왼쪽 패널에서 I/O 탭을 클릭한 다음 클록 요소를 캔버스로 드래그하세요.",
+      "instruction": "캔버스에 클록 요소를 배치하세요"
+    },
+    "place-led": {
+      "hint": "I/O 탭에 그대로 있으면서 Led 요소를 클록 오른쪽 캔버스로 드래그하세요.",
+      "instruction": "캔버스에 LED를 배치하세요"
+    },
+    "title": "클록과 LED: 파형의 기초",
+    "toggle-cell": {
+      "hint": "클록 행의 어떤 셀이든 두 번 클릭하여 0과 1 사이를 전환하세요. Led 행이 새 출력을 반영하여 즉시 업데이트되는 것을 관찰하세요.",
+      "instruction": "클록 셀을 수동으로 토글하세요"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "이 시점에서 회로에는 InputSwitch 두 개, LED 두 개, DEMUX 회로 하나가 있어야 합니다",
+      "instruction": "DEMUX 회로를 추가하고 InputSwitch를 In 및 S0 포트에 연결하세요. 그런 다음 DEMUX의 각 출력을 서로 다른 LED에 연결하세요"
+    },
+    "add-inputs": {
+      "hint": "왼쪽 패널에서 I/O 탭을 클릭한 다음 InputSwitch 요소 두 개를 캔버스로 드래그하여 MUX 회로 왼쪽에 배치하세요.",
+      "instruction": "캔버스에 InputSwitch 요소 세 개를 추가하세요"
+    },
+    "add-output": {
+      "hint": "I/O 탭에서 LED를 드래그하여 MUX 회로 오른쪽에 배치하세요. 그런 다음 MUX 회로의 출력 포트(오른쪽)를 LED의 입력 포트(왼쪽)에 연결하세요.",
+      "instruction": "LED를 추가하고 MUX 회로의 출력에 연결하세요"
+    },
+    "connect-inputs": {
+      "hint": "InputSwitch의 출력 포트(오른쪽)에서 MUX 게이트의 입력 포트(왼쪽) 중 하나로 클릭하여 드래그하세요. 두 번째 스위치에 대해서도 반복하세요. 그런 다음 세 번째 입력 스위치를 MUX의 선택 포트(하단)에 연결하세요",
+      "instruction": "모든 입력 스위치를 MUX 회로에 연결하세요"
+    },
+    "description": "MUX와 DEMUX 회로에 대해 배웁니다.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "DEMUX 하단의 S0 포트는 어떤 출력이 입력의 신호를 받을지 선택합니다. S0 = 0이면 Out0 = In0입니다. S0 = 1이면 Out1 = In0입니다"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "MUX 하단의 S0 포트는 어떤 입력이 출력으로 라우팅될지 선택합니다. S0 = 0이면 입력 0의 신호가 출력으로 전송됩니다. S0 = 1이면 입력 1의 신호가 출력으로 전송됩니다."
+    },
+    "place-mux": {
+      "hint": "왼쪽 패널에서 조합 탭을 클릭한 다음 MUX 회로를 캔버스로 드래그하세요.",
+      "instruction": "캔버스에 MUX 회로를 배치하세요"
+    },
+    "prepare-demux": {
+      "hint": "이 시점에서 회로에는 InputSwitch 두 개와 LED 두 개가 있어야 합니다",
+      "instruction": "MUX 회로와 InputSwitch 중 하나를 삭제하세요. 그런 다음 LED를 하나 더 추가하세요"
+    },
+    "title": "조합 회로 I: MUX와 DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "InputSwitch의 출력을 게이트의 입력에 연결하세요.",
+      "instruction": "캔버스에 InputSwitch를 하나 더 추가하고 Cin 레이블을 지정하세요. 그런 다음 Xor 게이트, And 게이트, OR 게이트를 추가하세요"
+    },
+    "add-half-adder-gates": {
+      "hint": "게이트 탭을 사용하여 Xor 게이트와 And 게이트를 추가한 다음 I/O 탭을 사용하여 LED 두 개를 추가하세요.",
+      "instruction": "캔버스에 Xor 게이트, And 게이트, LED 두 개를 추가하세요. 그런 다음 각 게이트를 서로 다른 LED에 연결하세요"
+    },
+    "add-inputs": {
+      "hint": "왼쪽 패널에서 I/O 탭을 클릭한 다음 InputSwitch 요소 세 개를 캔버스로 드래그하세요. 세 번째 InputSwitch는 나중에 자리올림 입력(Cin)으로 사용됩니다.",
+      "instruction": "캔버스에 InputSwitch 요소 두 개를 추가하세요"
+    },
+    "description": "가산기 회로를 만드는 방법을 배웁니다.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "이 회로는 전가산기를 형성합니다. 반가산기와 달리 전가산기는 이전 덧셈에서 자리올림 입력(Cin)을 받아들이고 다음 단계를 위한 자리올림 출력(Cout)을 생성합니다. 한 전가산기의 Cout을 다른 전가산기의 Cin에 연결하면 여러 전가산기를 연결하여 임의의 길이의 이진수를 더할 수 있습니다"
+    },
+    "label-half-adder-outputs": {
+      "hint": "LED에 레이블을 지정하려면 LED를 클릭하고 화면 왼쪽 하단의 레이블 텍스트 상자에 입력하세요.",
+      "instruction": "Xor 게이트에 연결된 LED에 Sum 레이블을 지정한 다음 And 게이트에 연결된 LED에 Cout 레이블을 지정하세요. 이 회로는 반가산기를 형성하며, 두 개의 단일 비트 입력을 더합니다"
+    },
+    "title": "조합 회로 III: 가산기",
+    "wire-full-adder": {
+      "hint": "새 연결을 추가할 수 있도록 LED에 대한 이전 연결을 제거하세요.",
+      "instruction": "이전 Xor 게이트와 Cin 스위치를 새 Xor 게이트에 연결한 다음 새 Xor 게이트를 Sum 출력에 연결하세요. 또한 이전 Xor 게이트와 Cin 스위치를 새 And 게이트에 연결하세요. 두 And 게이트를 모두 OR 게이트에 연결하고 OR 게이트를 Cout에 연결하여 마무리하세요"
+    },
+    "wire-half-adder": {
+      "hint": "InputSwitch의 출력을 게이트의 입력에 연결하세요.",
+      "instruction": "InputSwitch 두 개를 Xor 게이트와 And 게이트에 연결하세요. 각 InputSwitch는 두 게이트 모두에 연결되어야 합니다. Xor 게이트는 Sum 출력을 생성하고 And 게이트는 Carry 출력을 생성합니다"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "왼쪽 패널의 게이트 탭을 사용하여 And 게이트를 추가하고 I/O 탭을 사용하여 LED를 추가하세요.",
+      "instruction": "캔버스에 And 게이트 네 개와 LED 네 개를 추가한 다음 각 And 게이트를 LED 중 하나에 연결하세요"
+    },
+    "add-inputs": {
+      "hint": "왼쪽 패널에서 I/O 탭을 클릭하고 InputSwitch 요소 두 개를 캔버스로 드래그하세요.",
+      "instruction": "캔버스에 InputSwitch 요소 두 개를 추가하세요"
+    },
+    "add-not-gates": {
+      "hint": "왼쪽 패널에서 게이트 탭을 클릭한 다음 Not 게이트 요소 두 개를 캔버스로 드래그하고 InputSwitch를 여기에 연결하세요.",
+      "instruction": "캔버스에 Not 게이트 두 개를 추가하고 각 InputSwitch를 별도의 Not 게이트에 연결하세요"
+    },
+    "description": "2-대-4 디코더를 만드는 방법을 배웁니다.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "입력 비트의 각 특정 조합에 대해 해당하는 출력 라인 하나만 활성화되고 나머지는 모두 비활성 상태를 유지합니다"
+    },
+    "title": "조합 회로 II: 디코더",
+    "wire-decoder": {
+      "hint": "각 And 게이트는 각 입력에서 하나의 신호를 받아야 합니다. 1에는 원래 InputSwitch 신호를 사용하고 0에는 해당하는 Not 게이트 출력을 사용하세요.",
+      "instruction": "Not 게이트와 InputSwitch의 출력을 And 게이트에 연결하여 각 And 게이트가 하나의 입력 조합을 나타내도록 하세요"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "D 래치는 단일 입력 값을 저장하며 SR 래치의 유효하지 않은 입력 조합을 피합니다.",
+      "instruction": "InputSwitch와 LED를 유지한 채로 SR 래치를 제거하세요. 그런 다음 D 래치를 추가하세요"
+    },
+    "add-sr-latch": {
+      "hint": "메모리 탭을 사용하여 SR 래치를 추가하세요. 그런 다음 I/O 탭을 사용하여 InputSwitch 두 개와 LED 두 개를 추가하세요.",
+      "instruction": "캔버스에 SR 래치, InputSwitch 두 개, LED 두 개를 추가하세요"
+    },
+    "description": "래치 사용법을 배웁니다.",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "InputSwitch를 토글하고 D 래치를 관찰하세요. Enable이 1이면 출력은 D 입력을 따릅니다. Enable이 0이면 래치는 이전 값을 기억합니다"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "InputSwitch를 토글하고 SR 래치가 상태를 어떻게 저장하는지 관찰하세요. S 입력을 1로 설정하면 Q 출력이 1이 되고, R 입력을 1로 설정하면 Q가 0으로 재설정됩니다. 두 입력이 모두 0으로 돌아가면 래치는 다시 설정되거나 재설정될 때까지 마지막 상태를 기억합니다"
+    },
+    "title": "순차 회로 I: 래치",
+    "wire-d-latch": {
+      "hint": "D 입력은 저장할 값입니다. Enable 입력은 래치가 저장된 값을 언제 업데이트할지 결정합니다.",
+      "instruction": "InputSwitch 하나를 D 입력에, 다른 하나를 Enable(E) 입력에 연결하세요. Q 및 Q̅ 출력을 LED에 연결하세요"
+    },
+    "wire-sr-latch": {
+      "hint": "InputSwitch 하나를 Set(S) 입력에, 다른 하나를 Reset(R) 입력에 연결하세요. 래치의 각 출력을 서로 다른 LED에 연결하세요.",
+      "instruction": "InputSwitch를 SR 래치의 S 및 R 입력에 연결하세요. 그런 다음 Q 및 Q̅ 출력을 LED에 연결하세요"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "메모리 탭을 사용하여 T 플립플롭과 클록을 추가하세요. 그런 다음 I/O 탭을 사용하여 InputSwitch 세 개와 LED 세 개를 추가하세요.",
+      "instruction": "캔버스에 T 플립플롭 세 개, InputSwitch 세 개, 클록, LED 세 개를 추가하세요"
+    },
+    "description": "카운터 회로를 만드는 방법을 배웁니다.",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "InputSwitch 세 개를 모두 켜고 클록을 시작하세요. 카운터가 작동하는 동안 LED를 관찰하세요. 첫 번째 LED는 클록 펄스마다 상태를 바꾸고, 두 번째는 두 펄스마다, 세 번째는 네 펄스마다 바뀌어 000부터 111까지 반복되는 3비트 이진 카운트를 표시합니다"
+    },
+    "title": "순차 회로 III: 카운터",
+    "wire-clock": {
+      "hint": "첫 번째 플립플롭은 외부 클록 신호를 받습니다.",
+      "instruction": "클록을 첫 번째 T 플립플롭의 Clk 입력에 연결하세요"
+    },
+    "wire-outputs": {
+      "hint": "각 LED는 카운터의 한 비트를 나타내며, 첫 번째 LED가 최하위 비트입니다.",
+      "instruction": "각 플립플롭의 Q 출력을 서로 다른 LED에 연결하세요"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "첫 번째 플립플롭의 Q 출력을 두 번째 플립플롭의 Clk 입력에 연결한 다음 두 번째 플립플롭의 Q 출력을 세 번째 플립플롭의 Clk 입력에 연결하세요. 각 플립플롭은 이전 것의 출력에 의해 클록킹되어 리플 카운터를 형성합니다"
+    },
+    "wire-t-inputs": {
+      "hint": "InputSwitch 세 개를 모두 켜세요. T 플립플롭은 T 입력이 1일 때만 토글됩니다.",
+      "instruction": "각 InputSwitch를 서로 다른 플립플롭의 T 입력에 연결하세요"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "메모리 탭을 사용하여 D 플립플롭과 클록을 추가하세요. 그런 다음 I/O 탭을 사용하여 InputSwitch 두 개와 LED 두 개를 추가하세요.",
+      "instruction": "캔버스에 D 플립플롭, InputSwitch 두 개, 클록, LED 두 개를 추가하세요"
+    },
+    "add-jk-flipflop": {
+      "hint": "JK 플립플롭은 D 입력 대신 J 및 K 입력을 갖습니다. Clear와 Preset 입력은 연결하지 않은 상태로 두세요.",
+      "instruction": "클록, InputSwitch, LED를 유지한 채로 D 플립플롭을 JK 플립플롭으로 교체하세요"
+    },
+    "add-t-flipflop": {
+      "hint": "T 플립플롭은 클록 외에 입력이 하나만 필요합니다.",
+      "instruction": "JK 플립플롭을 T 플립플롭으로 교체하고 InputSwitch 중 하나를 제거하세요"
+    },
+    "description": "플립플롭에 대해 배웁니다.",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "두 번째 InputSwitch를 Clear 또는 Preset 입력에 연결하고 그 효과를 관찰하세요. D 입력과 달리 Clear와 Preset 입력은 클록 에지를 기다리지 않고 즉시 작동합니다. Clear는 Q를 0으로 강제하고 Preset은 Q를 1로 강제합니다"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "D InputSwitch를 토글하고 D 플립플롭을 관찰하세요. D 입력의 값은 활성 클록 에지에서만 Q 출력으로 복사됩니다. 클록 에지 사이에는 출력이 변경되지 않고 유지됩니다"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "InputSwitch를 토글하고 JK 플립플롭을 관찰하세요. J = K = 0이면 출력은 현재 상태를 유지합니다. J = 1이고 K = 0이면 출력이 설정됩니다. J = 0이고 K = 1이면 출력이 재설정됩니다. J = K = 1이면 출력이 활성 클록 에지마다 토글됩니다"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "InputSwitch를 토글하고 T 플립플롭을 관찰하세요. T = 0이면 출력은 현재 상태를 유지합니다. T = 1이면 출력이 활성 클록 에지마다 토글됩니다. T 플립플롭은 일반적으로 이진 카운터와 주파수 분주기를 만드는 데 사용됩니다"
+    },
+    "title": "순차 회로 II: 플립플롭",
+    "wire-d-flipflop": {
+      "hint": "지금은 Clear와 Preset 입력을 연결하지 않은 상태로 두세요.",
+      "instruction": "InputSwitch 하나를 D 입력에, 클록을 Clk 입력에, Q 및 Q̅ 출력을 LED에 연결하세요. D 입력은 저장할 값을 제공하고, 클록은 값이 언제 저장되는지 결정합니다"
+    },
+    "wire-jk-flipflop": {
+      "hint": "JK 플립플롭은 활성 클록 에지에서만 출력을 변경합니다.",
+      "instruction": "InputSwitch를 J 및 K 입력에, 클록을 Clk 입력에, Q 및 Q̅ 출력을 LED에 연결하세요"
+    },
+    "wire-t-flipflop": {
+      "hint": "Clear와 Preset 입력은 연결하지 않은 상태로 두세요.",
+      "instruction": "남은 InputSwitch를 T 입력에, 클록을 Clk 입력에, Q 및 Q̅ 출력을 LED에 연결하세요"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "여기에서 회로를 만드세요. 팔레트에서 구성 요소를 드래그한 다음 출력 포트(구성 요소의 오른쪽)에서 입력 포트(다른 구성 요소의 왼쪽)로 클릭하고 드래그하여 연결하세요.",
+      "title": "캔버스"
+    },
+    "combinational-mode": {
+      "body": "강조 표시된 버튼(조합)이 방금 자동으로 트리거되었습니다 — 이는 입력 행을 가능한 모든 0/1 조합으로 채워 클릭 한 번으로 완전한 진리표를 제공합니다.",
+      "title": "조합 모드"
+    },
+    "component-palette": {
+      "body": "이 패널은 사용 가능한 모든 구성 요소(논리 게이트, 입력, 출력, 플립플롭 등)를 나열합니다. 구성 요소는 상단의 탭을 사용하여 범주별로 정리되어 있습니다. 탭을 클릭하여 해당 범주를 탐색하세요.",
+      "title": "구성 요소 팔레트"
+    },
+    "description": "주요 인터페이스에 대한 안내 — 팔레트, 캔버스, 도구 모음, 속성 패널.",
+    "editing-cells": {
+      "body": "파형을 직접 편집할 수도 있습니다. 클록 행의 어떤 셀이든 두 번 클릭하여 0과 1 사이를 전환하세요 — Led 행은 새 출력을 반영하여 즉시 업데이트됩니다.",
+      "title": "셀 수동 편집"
+    },
+    "element-properties": {
+      "body": "캔버스에서 구성 요소를 선택하면 여기에 속성이 나타납니다. 레이블, 색상, 트리거 유형 및 기타 구성 요소별 설정을 지정할 수 있습니다. 배치된 구성 요소를 선택하여 옵션을 확인해 보세요.",
+      "title": "요소 속성"
+    },
+    "logic-gates": {
+      "body": "게이트 탭에는 And, OR, Not, NAND, NOR, XOR 및 기타 기본 논리 게이트가 있습니다. 이 목록에서 원하는 게이트를 캔버스로 드래그하여 회로에 추가하세요.",
+      "title": "논리 게이트"
+    },
+    "search-bar": {
+      "body": "검색 창을 사용하여 이름으로 구성 요소를 빠르게 찾으세요. 입력하면 모든 범주에서 일치하는 구성 요소를 보여주는 필터링된 목록이 아래에 나타납니다.",
+      "title": "검색 창"
+    },
+    "title": "wiRedPanda 인터페이스 투어",
+    "waveform-table": {
+      "body": "파형 표는 회로의 각 신호를 보여줍니다. 클록 행은 입력이고 Led 행은 계산된 출력입니다. 각 열은 하나의 시뮬레이션 시간 단계입니다 — 출력이 입력을 어떻게 따르는지 정확히 볼 수 있습니다.",
+      "title": "파형 표 읽기"
+    },
+    "waveform-viewer": {
+      "body": "wiRedPanda에는 BeWavedDolphin이라는 파형 뷰어가 포함되어 있습니다. 이 뷰어는 회로의 각 신호가 시간에 따라 어떻게 변하는지 보여줍니다 — 입력은 상단의 행으로, 출력은 그 아래에, 각 열은 하나의 시뮬레이션 시간 단계를 나타냅니다. 강조 표시된 도구 모음 버튼을 클릭하여 여세요.",
+      "title": "파형 뷰어"
+    },
+    "welcome": {
+      "body": "wiRedPanda는 디지털 논리 회로 시뮬레이터입니다. 구성 요소를 배치하고 서로 연결하여 회로를 만들 수 있습니다. 이 투어는 인터페이스의 주요 부분을 보여줍니다.",
+      "title": "wiRedPanda에 오신 것을 환영합니다!"
+    }
+  }
+}

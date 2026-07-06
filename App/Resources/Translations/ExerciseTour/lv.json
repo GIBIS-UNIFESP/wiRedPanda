@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "Noklikšķiniet uz cilnes I/O kreisajā panelī, pēc tam velciet divus InputSwitch elementus uz darbvirsmu un novietojiet tos pa kreisi no Un elementa.",
+      "instruction": "Pievienojiet darbvirsmā divus InputSwitch elementus"
+    },
+    "add-output": {
+      "hint": "Velciet gaismas diodi no cilnes I/O un novietojiet to pa labi no Un elementa. Pēc tam savienojiet Un elementa izejas portu (labā puse) ar gaismas diodes ieejas portu (kreisā puse).",
+      "instruction": "Pievienojiet gaismas diodi un savienojiet to ar Un elementa izeju"
+    },
+    "connect-inputs": {
+      "hint": "Noklikšķiniet un velciet no InputSwitch izejas porta (labā puse) uz vienu no Un elementa ieejas portiem (kreisā puse). Atkārtojiet ar otro slēdzi.",
+      "instruction": "Savienojiet abus ieejas slēdžus ar Un elementu"
+    },
+    "description": "Iemācieties izvietot loģiskos elementus, pievienot ieejas un izejas, un tos savienot.",
+    "place-and-gate": {
+      "hint": "Noklikšķiniet uz cilnes Elementi kreisajā panelī un pēc tam velciet Un elementu uz darbvirsmu.",
+      "instruction": "Novietojiet Un elementu darbvirsmā"
+    },
+    "title": "Shēmas izveide ar Un elementu",
+    "toggle-observe": {
+      "hint": "Noklikšķiniet uz InputSwitch, lai to pārslēgtu. Gaismas diode iedegas tikai tad, kad ABI slēdži ir ieslēgti. Tas notiek tāpēc, ka Un rada izejā 1 tikai tad, kad visas ieejas ir 1.",
+      "instruction": "Pārslēdziet slēdžus un vērojiet gaismas diodi — tā ir Un loģika!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "Noklikšķiniet uz cilnes I/O kreisajā panelī, pēc tam velciet divus InputSwitch elementus uz darbvirsmu un novietojiet tos pa kreisi no Vai elementa.",
+      "instruction": "Pievienojiet darbvirsmā divus InputSwitch elementus"
+    },
+    "add-not-gate": {
+      "hint": "Velciet vadu starp Vai elementu un gaismas diodi, lai to noņemtu.",
+      "instruction": "Atvienojiet gaismas diodi no Vai elementa, pēc tam savienojiet Vai elementu ar Ne elementu, un Ne elementu ar gaismas diodi"
+    },
+    "add-output": {
+      "hint": "Velciet gaismas diodi no cilnes I/O un novietojiet to pa labi no Vai elementa. Pēc tam savienojiet Vai elementa izejas portu (labā puse) ar gaismas diodes ieejas portu (kreisā puse).",
+      "instruction": "Pievienojiet gaismas diodi un savienojiet to ar Vai elementa izeju"
+    },
+    "connect-inputs": {
+      "hint": "Noklikšķiniet un velciet no InputSwitch izejas porta (labā puse) uz vienu no Vai elementa ieejas portiem (kreisā puse). Atkārtojiet ar otro slēdzi.",
+      "instruction": "Savienojiet abus ieejas slēdžus ar Vai elementu"
+    },
+    "description": "Iemācieties lietot elementus Vai un Ne.",
+    "place-or-gate": {
+      "hint": "Noklikšķiniet uz cilnes Elementi kreisajā panelī un pēc tam velciet Vai elementu uz darbvirsmu.",
+      "instruction": "Novietojiet Vai elementu darbvirsmā"
+    },
+    "title": "Vairāk pamata elementu: Vai un Ne",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "Ne elements apgriež signālu. Tagad shēma radīs izejā 1 tikai tad, kad neviena no ieejām nav 1"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "Eksperimentējiet ar ieejām un pamaniet, kā Vai elements rada izejā 1, kad jebkura no tā ieejām ir 1"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "Noklikšķiniet uz Rediģēt → Kombinacionāls BeWavedDolphin izvēlnes joslā. Tas aizpildīs Pulksteņa rindu ar visām iespējamām vērtībām un aprēķinās gaismas diodes izeju katrai no tām — pilnu patiesuma tabulu ar vienu klikšķi.",
+      "instruction": "Automātiski ģenerēt visas ieejas kombinācijas"
+    },
+    "connect-clock-led": {
+      "hint": "Noklikšķiniet un velciet no Pulksteņa izejas porta (labā puse) uz gaismas diodes ieejas portu (kreisā puse).",
+      "instruction": "Savienojiet Pulksteņa izeju ar gaismas diodes ieeju"
+    },
+    "description": "Izveidojiet minimālu Pulkstenis-gaismas diode shēmu un izpētiet viļņu formu skatītāju: kombinacionālo režīmu un manuālu šūnu rediģēšanu.",
+    "open-waveform": {
+      "hint": "BeWavedDolphin attēlo jūsu shēmas signālus kā rindas. Pulksteņa rinda ir ieeja, un Led rinda ir izeja. Katra kolonna ir viens simulācijas laika solis.",
+      "instruction": "Viļņu formu skatītājs tagad ir atvērts — apskatieties!"
+    },
+    "place-clock": {
+      "hint": "Noklikšķiniet uz cilnes I/O kreisajā panelī un pēc tam velciet Pulksteņa elementu uz darbvirsmu.",
+      "instruction": "Novietojiet Pulksteņa elementu darbvirsmā"
+    },
+    "place-led": {
+      "hint": "Palieciet cilnē I/O un velciet Led elementu uz darbvirsmu pa labi no Pulksteņa.",
+      "instruction": "Novietojiet gaismas diodi darbvirsmā"
+    },
+    "title": "Pulkstenis un gaismas diode: viļņu formu pamati",
+    "toggle-cell": {
+      "hint": "Veiciet dubultklikšķi uz jebkuras šūnas Pulksteņa rindā, lai to pārslēgtu starp 0 un 1. Vērojiet, kā Led rinda nekavējoties atjaunojas, atspoguļojot jauno izeju.",
+      "instruction": "Manuāli pārslēdziet Pulksteņa šūnu"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "Jūsu shēmā tagad vajadzētu būt diviem InputSwitch, divām gaismas diodēm un vienai DEMUX shēmai",
+      "instruction": "Pievienojiet DEMUX shēmu un savienojiet InputSwitch ar tās In un S0 portiem. Pēc tam savienojiet katru no DEMUX izejām ar citu gaismas diodi"
+    },
+    "add-inputs": {
+      "hint": "Noklikšķiniet uz cilnes I/O kreisajā panelī, pēc tam velciet divus InputSwitch elementus uz darbvirsmu un novietojiet tos pa kreisi no MUX shēmas.",
+      "instruction": "Pievienojiet darbvirsmā trīs InputSwitch elementus"
+    },
+    "add-output": {
+      "hint": "Velciet gaismas diodi no cilnes I/O un novietojiet to pa labi no MUX shēmas. Pēc tam savienojiet MUX shēmas izejas portu (labā puse) ar gaismas diodes ieejas portu (kreisā puse).",
+      "instruction": "Pievienojiet gaismas diodi un savienojiet to ar MUX shēmas izeju"
+    },
+    "connect-inputs": {
+      "hint": "Noklikšķiniet un velciet no InputSwitch izejas porta (labā puse) uz vienu no MUX elementa ieejas portiem (kreisā puse). Atkārtojiet ar otro slēdzi. Pēc tam savienojiet trešo ieejas slēdzi ar MUX izvēles portu (apakšā)",
+      "instruction": "Savienojiet visus ieejas slēdžus ar MUX shēmu"
+    },
+    "description": "Uzziniet par MUX un DEMUX shēmām.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "S0 ports DEMUX apakšā izvēlas, kura izeja saņems ieejas signālu. Kad S0 = 0, Out0 = In0. Kad S0 = 1, Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "S0 ports MUX apakšā izvēlas, kura ieeja tiek novirzīta uz izeju. Kad S0 = 0, signāls no Ieejas 0 tiek nosūtīts uz izeju. Kad S0 = 1, signāls no Ieejas 1 tiek nosūtīts uz izeju."
+    },
+    "place-mux": {
+      "hint": "Noklikšķiniet uz cilnes Kombinacionāls kreisajā panelī un pēc tam velciet MUX shēmu uz darbvirsmu.",
+      "instruction": "Novietojiet MUX shēmu darbvirsmā"
+    },
+    "prepare-demux": {
+      "hint": "Jūsu shēmā tagad vajadzētu būt diviem InputSwitch un divām gaismas diodēm",
+      "instruction": "Izdzēsiet MUX shēmu un vienu no InputSwitch. Pēc tam pievienojiet vēl vienu gaismas diodi"
+    },
+    "title": "Kombinacionālās shēmas I: MUX un DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "Savienojiet InputSwitch izejas ar elementu ieejām.",
+      "instruction": "Pievienojiet darbvirsmā vēl vienu InputSwitch un piešķiriet tam etiķeti Cin. Pēc tam pievienojiet Xor elementu, Un elementu un Vai elementu"
+    },
+    "add-half-adder-gates": {
+      "hint": "Izmantojiet cilni Elementi, lai pievienotu Xor un Un elementus, pēc tam izmantojiet cilni I/O, lai pievienotu divas gaismas diodes.",
+      "instruction": "Pievienojiet Xor elementu, Un elementu un divas gaismas diodes darbvirsmā. Pēc tam savienojiet katru elementu ar citu gaismas diodi"
+    },
+    "add-inputs": {
+      "hint": "Noklikšķiniet uz cilnes I/O kreisajā panelī, pēc tam velciet trīs InputSwitch elementus uz darbvirsmu. Trešais InputSwitch vēlāk tiks izmantots kā ienesuma ieeja (Cin).",
+      "instruction": "Pievienojiet darbvirsmā divus InputSwitch elementus"
+    },
+    "description": "Iemācieties izveidot summatora shēmu.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "Šī shēma veido pilnu summatoru. Atšķirībā no pussummātora, pilns summators pieņem ienesuma ieeju (Cin) no iepriekšējās saskaitīšanas un rada ienesuma izeju (Cout) nākamajam posmam. Savienojot viena pilna summatora Cout ar cita Cin, vairākus pilnus summatorus var savienot ķēdē, lai saskaitītu jebkura garuma binārus skaitļus"
+    },
+    "label-half-adder-outputs": {
+      "hint": "Noklikšķiniet uz gaismas diodes un ierakstiet tekstu etiķetes lodziņā ekrāna kreisajā apakšējā stūrī, lai piešķirtu gaismas diodei etiķeti.",
+      "instruction": "Piešķiriet gaismas diodei, kas savienota ar Xor elementu, etiķeti Sum, pēc tam piešķiriet gaismas diodei, kas savienota ar Un elementu, etiķeti Cout. Šī shēma veido pussummātoru, kas saskaita divas vienbita ieejas"
+    },
+    "title": "Kombinacionālās shēmas III: Summators",
+    "wire-full-adder": {
+      "hint": "Noņemiet vecos savienojumus ar gaismas diodēm, lai varētu pievienot jaunos.",
+      "instruction": "Savienojiet veco Xor elementu un Cin slēdzi ar jauno Xor elementu, pēc tam savienojiet jauno Xor elementu ar Sum izeju. Savienojiet arī veco Xor elementu un Cin slēdzi ar jauno Un elementu. Pabeidziet, savienojot abus Un elementus ar Vai elementu, un Vai elementu ar Cout"
+    },
+    "wire-half-adder": {
+      "hint": "Savienojiet InputSwitch izejas ar elementu ieejām.",
+      "instruction": "Savienojiet abus InputSwitch ar Xor elementu un Un elementu. Katram InputSwitch vajadzētu savienoties ar abiem elementiem. Xor elements rada Sum izeju, kamēr Un elements rada Carry izeju"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "Izmantojiet cilni Elementi kreisajā panelī, lai pievienotu Un elementus, un cilni I/O, lai pievienotu gaismas diodes.",
+      "instruction": "Pievienojiet darbvirsmā četrus Un elementus un četras gaismas diodes, pēc tam savienojiet katru Un elementu ar vienu no gaismas diodēm"
+    },
+    "add-inputs": {
+      "hint": "Noklikšķiniet uz cilnes I/O kreisajā panelī un velciet divus InputSwitch elementus uz darbvirsmu.",
+      "instruction": "Pievienojiet darbvirsmā divus InputSwitch elementus"
+    },
+    "add-not-gates": {
+      "hint": "Noklikšķiniet uz cilnes Elementi kreisajā panelī, pēc tam velciet divus Ne elementa elementus uz darbvirsmu un savienojiet ar tiem InputSwitch.",
+      "instruction": "Pievienojiet darbvirsmā divus Ne elementus un savienojiet katru InputSwitch ar atsevišķu Ne elementu"
+    },
+    "description": "Iemācieties izveidot 2-uz-4 dekoderi.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "Katrai konkrētai ieejas bitu kombinācijai tiek aktivizēta tikai viena atbilstoša izejas līnija, kamēr visas pārējās paliek neaktīvas"
+    },
+    "title": "Kombinacionālās shēmas II: Dekoders",
+    "wire-decoder": {
+      "hint": "Katram Un elementam vajadzētu saņemt vienu signālu no katras ieejas. Izmantojiet oriģinālo InputSwitch signālu vērtībai 1 un atbilstošo Ne elementa izeju vērtībai 0.",
+      "instruction": "Savienojiet Ne elementu un InputSwitch izejas ar Un elementiem tā, lai katrs Un elements pārstāvētu vienu ieejas kombināciju"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "D fiksators saglabā vienu ieejas vērtību un izvairās no SR fiksatora nederīgās ieejas kombinācijas.",
+      "instruction": "Noņemiet SR fiksatoru, saglabājot InputSwitch un gaismas diodes. Pēc tam pievienojiet D fiksatoru"
+    },
+    "add-sr-latch": {
+      "hint": "Izmantojiet cilni Atmiņa, lai pievienotu SR fiksatoru. Pēc tam izmantojiet cilni I/O, lai pievienotu divus InputSwitch un divas gaismas diodes.",
+      "instruction": "Pievienojiet SR fiksatoru, divus InputSwitch un divas gaismas diodes darbvirsmā"
+    },
+    "description": "Iemācieties lietot fiksatorus (latch).",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "Pārslēdziet InputSwitch un vērojiet D fiksatoru. Kad Enable ir 1, izeja seko D ieejai. Kad Enable ir 0, fiksators atceras savu iepriekšējo vērtību"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "Pārslēdziet InputSwitch un vērojiet, kā SR fiksators saglabā savu stāvokli. S ieejas iestatīšana uz 1 izraisa Q izejas kļūšanu par 1, kamēr R ieejas iestatīšana uz 1 atiestata Q uz 0. Kad abas ieejas atgriežas pie 0, fiksators atceras savu pēdējo stāvokli, kamēr tas netiek atkal iestatīts vai atiestatīts"
+    },
+    "title": "Sekvenciālās shēmas I: Fiksatori",
+    "wire-d-latch": {
+      "hint": "D ieeja ir saglabājamā vērtība. Enable ieeja nosaka, kad fiksators atjaunina savu saglabāto vērtību.",
+      "instruction": "Savienojiet vienu InputSwitch ar D ieeju un otru ar Enable (E) ieeju. Savienojiet Q un Q̅ izejas ar gaismas diodēm"
+    },
+    "wire-sr-latch": {
+      "hint": "Savienojiet vienu InputSwitch ar Set (S) ieeju un otru ar Reset (R) ieeju. Savienojiet katru fiksatora izeju ar citu gaismas diodi.",
+      "instruction": "Savienojiet InputSwitch ar SR fiksatora S un R ieejām. Pēc tam savienojiet Q un Q̅ izejas ar gaismas diodēm"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "Izmantojiet cilni Atmiņa, lai pievienotu T trigerus un Pulksteni. Pēc tam izmantojiet cilni I/O, lai pievienotu trīs InputSwitch un trīs gaismas diodes.",
+      "instruction": "Pievienojiet trīs T trigerus, trīs InputSwitch, Pulksteni un trīs gaismas diodes darbvirsmā"
+    },
+    "description": "Iemācieties izveidot skaitītāja shēmu.",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "Ieslēdziet visus trīs InputSwitch un iedarbiniet Pulksteni. Vērojiet gaismas diodes, kamēr skaitītājs darbojas. Pirmā gaismas diode maina stāvokli ar katru pulksteņa impulsu, otrā mainās ik pēc diviem impulsiem, un trešā ik pēc četriem impulsiem, parādot atkārtotu 3 bitu binārā skaitīšanu no 000 līdz 111"
+    },
+    "title": "Sekvenciālās shēmas III: Skaitītājs",
+    "wire-clock": {
+      "hint": "Pirmais trigeris saņem ārējo pulksteņa signālu.",
+      "instruction": "Savienojiet Pulksteni ar pirmā T trigera Clk ieeju"
+    },
+    "wire-outputs": {
+      "hint": "Katra gaismas diode pārstāv vienu skaitītāja bitu, pirmajai gaismas diodei esot vismazāk nozīmīgajam bitam.",
+      "instruction": "Savienojiet katra trigera Q izeju ar citu gaismas diodi"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "Savienojiet pirmā trigera Q izeju ar otrā trigera Clk ieeju, pēc tam savienojiet otrā trigera Q izeju ar trešā trigera Clk ieeju. Katru trigeri sinhronizē iepriekšējā izeja, radot viļņveida skaitītāju (ripple counter)"
+    },
+    "wire-t-inputs": {
+      "hint": "Ieslēdziet visus trīs InputSwitch. T trigeris pārslēdzas tikai tad, kad tā T ieeja ir 1.",
+      "instruction": "Savienojiet katru InputSwitch ar cita trigera T ieeju"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "Izmantojiet cilni Atmiņa, lai pievienotu D trigeri un Pulksteni. Pēc tam izmantojiet cilni I/O, lai pievienotu divus InputSwitch un divas gaismas diodes.",
+      "instruction": "Pievienojiet D trigeri, divus InputSwitch, Pulksteni un divas gaismas diodes darbvirsmā"
+    },
+    "add-jk-flipflop": {
+      "hint": "JK trigerim ir J un K ieejas D ieejas vietā. Atstājiet Clear un Preset ieejas nesavienotas.",
+      "instruction": "Aizstājiet D trigeri ar JK trigeri, saglabājot Pulksteni, InputSwitch un gaismas diodes"
+    },
+    "add-t-flipflop": {
+      "hint": "T trigerim ir nepieciešama tikai viena ieeja papildus pulkstenim.",
+      "instruction": "Aizstājiet JK trigeri ar T trigeri un noņemiet vienu no InputSwitch"
+    },
+    "description": "Uzziniet par trigeriem.",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "Savienojiet otro InputSwitch vai nu ar Clear, vai Preset ieeju un vērojiet tās efektu. Atšķirībā no D ieejas, Clear un Preset ieejas darbojas nekavējoties, negaidot pulksteņa fronti. Clear piespiež Q uz 0, kamēr Preset piespiež Q uz 1"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "Pārslēdziet D InputSwitch un vērojiet D trigeri. Vērtība D ieejā tiek kopēta uz Q izeju tikai aktīvajā pulksteņa frontē. Starp pulksteņa frontēm izeja paliek nemainīga"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "Pārslēdziet InputSwitch un vērojiet JK trigeri. Kad J = K = 0, izeja saglabā savu pašreizējo stāvokli. Kad J = 1 un K = 0, izeja tiek iestatīta. Kad J = 0 un K = 1, izeja tiek atiestatīta. Kad J = K = 1, izeja pārslēdzas ar katru aktīvo pulksteņa fronti"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "Pārslēdziet InputSwitch un vērojiet T trigeri. Kad T = 0, izeja saglabā savu pašreizējo stāvokli. Kad T = 1, izeja pārslēdzas ar katru aktīvo pulksteņa fronti. T trigerus parasti izmanto binārо skaitītāju un frekvences dalītāju veidošanai"
+    },
+    "title": "Sekvenciālās shēmas II: Trigeri",
+    "wire-d-flipflop": {
+      "hint": "Pagaidām atstājiet Clear un Preset ieejas nesavienotas.",
+      "instruction": "Savienojiet vienu InputSwitch ar D ieeju, Pulksteni ar Clk ieeju, un Q un Q̅ izejas ar gaismas diodēm. D ieeja nodrošina saglabājamo vērtību, kamēr Pulkstenis nosaka, kad vērtība tiek saglabāta"
+    },
+    "wire-jk-flipflop": {
+      "hint": "JK trigeris maina savu izeju tikai aktīvajā pulksteņa frontē.",
+      "instruction": "Savienojiet InputSwitch ar J un K ieejām, Pulksteni ar Clk ieeju, un Q un Q̅ izejas ar gaismas diodēm"
+    },
+    "wire-t-flipflop": {
+      "hint": "Atstājiet Clear un Preset ieejas nesavienotas.",
+      "instruction": "Savienojiet atlikušo InputSwitch ar T ieeju, Pulksteni ar Clk ieeju, un Q un Q̅ izejas ar gaismas diodēm"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "Veidojiet savu shēmu šeit. Velciet komponentes no paletes, pēc tam savienojiet tās, noklikšķinot un velkot no izejas porta (komponentes labā puse) uz ieejas portu (citas komponentes kreisā puse).",
+      "title": "Darbvirsma"
+    },
+    "combinational-mode": {
+      "body": "Izceltā poga (Kombinacionāls) tikko tika automātiski aktivizēta — tā aizpilda ieejas rindas ar visām iespējamām 0/1 kombinācijām, dodot jums pilnu patiesuma tabulu ar vienu klikšķi.",
+      "title": "Kombinacionālais režīms"
+    },
+    "component-palette": {
+      "body": "Šis panelis uzskaita visas pieejamās komponentes — loģiskos elementus, ieejas, izejas, trigerus un citas. Komponentes ir sakārtotas pa kategorijām, izmantojot cilnes augšpusē. Noklikšķiniet uz cilnes, lai pārlūkotu tās kategoriju.",
+      "title": "Komponenšu palete"
+    },
+    "description": "Vadīts galvenās saskarnes apskats — palete, darbvirsma, rīkjosla un īpašību panelis.",
+    "editing-cells": {
+      "body": "Jūs varat arī rediģēt viļņu formu manuāli. Veiciet dubultklikšķi uz jebkuras šūnas Pulksteņa rindā, lai to pārslēgtu starp 0 un 1 — Led rinda nekavējoties atjaunojas, atspoguļojot jauno izeju.",
+      "title": "Manuāla šūnu rediģēšana"
+    },
+    "element-properties": {
+      "body": "Kad izvēlaties komponenti darbvirsmā, šeit parādās tās īpašības. Jūs varat iestatīt etiķetes, krāsas, aktivizācijas veidus un citus komponentei specifiskus iestatījumus. Mēģiniet izvēlēties izvietotu komponenti, lai redzētu tās opcijas.",
+      "title": "Elementa īpašības"
+    },
+    "logic-gates": {
+      "body": "Cilne Elementi satur Un, Vai, Ne, Nand, Nor, Xor un citus pamata loģiskos elementus. Velciet jebkuru elementu no šī saraksta uz darbvirsmu, lai pievienotu to savai shēmai.",
+      "title": "Loģiskie elementi"
+    },
+    "search-bar": {
+      "body": "Izmantojiet meklēšanas joslu, lai ātri atrastu jebkuru komponenti pēc nosaukuma. Rakstot, zemāk parādās filtrēts saraksts, kas rāda atbilstošās komponentes no visām kategorijām.",
+      "title": "Meklēšanas josla"
+    },
+    "title": "wiRedPanda saskarnes apskats",
+    "waveform-table": {
+      "body": "Viļņu formu tabula rāda katru jūsu shēmas signālu. Pulksteņa rinda ir ieeja; Led rinda ir aprēķinātā izeja. Katra kolonna ir viens simulācijas laika solis — jūs varat precīzi redzēt, kā izeja seko ieejai.",
+      "title": "Viļņu formu tabulas lasīšana"
+    },
+    "waveform-viewer": {
+      "body": "wiRedPanda ietver viļņu formu skatītāju ar nosaukumu BeWavedDolphin. Tas parāda, kā katrs jūsu shēmas signāls mainās laika gaitā — ieejas kā rindas augšpusē, izejas apakšā, katrai kolonnai pārstāvot vienu simulācijas laika soli. Noklikšķiniet uz izceltās rīkjoslas pogas, lai to atvērtu.",
+      "title": "Viļņu formu skatītājs"
+    },
+    "welcome": {
+      "body": "wiRedPanda ir digitālo loģisko shēmu simulators. Jūs varat veidot shēmas, izvietojot komponentes un tās savienojot. Šis apskats parādīs jums saskarnes galvenās daļas.",
+      "title": "Laipni lūdzam wiRedPanda!"
+    }
+  }
+}
