@@ -546,12 +546,12 @@
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="40"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="unfinished">Virtavirhe luettaessa yhteyskarttaa kohdassa %1</translation>
+        <translation>Tietovirran virhe luettaessa yhteyskarttaa siirtymässä %1</translation>
     </message>
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="unfinished">Virtavirhe luettaessa yhteyden porttitunnisteita kohdassa %1</translation>
+        <translation>Tietovirran virhe luettaessa liitäntäporttien tunnisteita siirtymässä %1</translation>
     </message>
 </context>
 <context>
@@ -1157,27 +1157,27 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mukautettujen harjoitusten kansiota ei voitu luoda tai käyttää.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
         <source>Circuit Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>Piiriharjoitukset</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
         <source>Choose an Exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse harjoitus</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Aloita</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa harjoituskansioni</translation>
     </message>
 </context>
 <context>
@@ -1185,55 +1185,55 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
         <source>Exit</source>
-        <translation type="unfinished">Poistu</translation>
+        <translation>Poistu</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
         <source>Close exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Sulje harjoitus</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
         <source>Hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Vihje</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Takaisin</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Seuraava →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <source>Hide hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Piilota vihje</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihe %1/%2</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>Exercise complete! Well done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Harjoitus suoritettu! Hienoa työtä.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Sulje</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Lopeta</translation>
     </message>
 </context>
 <context>
@@ -1329,62 +1329,62 @@ Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translatio
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="46"/>
         <source>Stream error reading %1 count at position %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Tietovirran virhe luettaessa kohteen %1 määrää sijainnissa %2</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="50"/>
         <source>Refusing to read %1 with implausible count %2 (max %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kieltäydytään lukemasta kohdetta %1, jonka määrä %2 on epäuskottava (maks. %3)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="60"/>
         <source>Stream error reading %1 entry %2 at position %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Tietovirran virhe luettaessa kohteen %1 merkintää %2 sijainnissa %3</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="unfinished">Virtavirhe luettaessa elementin ominaisuuksia kohdassa %1</translation>
+        <translation>Tietovirran virhe luettaessa elementin ominaisuuksia sijainnissa %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="unfinished">Virtavirhe luettaessa ulkoasuja kohdassa %1</translation>
+        <translation>Tietovirran virhe luettaessa ulkoasuja sijainnissa %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="unfinished">Ulkoasun indeksi %1 alueen ulkopuolella (koko=%2) — virta voi olla vioittunut</translation>
+        <translation>Ulkoasun indeksi %1 on sallitun alueen ulkopuolella (koko=%2) — tietovirta saattaa olla vioittunut</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
         <source>Non-finite element position — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei-äärellinen elementin sijainti — tietovirta saattaa olla vioittunut</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei-äärellinen elementin kierto — tietovirta saattaa olla vioittunut</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kieltäydytään vanhan muodon tuloporttiluettelosta, jonka määrä %1 on epäuskottava (maks. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kieltäydytään vanhan muodon lähtöporttiluettelosta, jonka määrä %1 on epäuskottava (maks. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kieltäydytään vanhan muodon ulkoasuluettelosta, jonka määrä %1 on epäuskottava (maks. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="unfinished">Ulkoasuindeksi %1 alueen ulkopuolella (koko=%2) ulkoasunimelle &quot;%3&quot; — virta voi olla vioittunut</translation>
+        <translation>Ulkoasun indeksi %1 on sallitun alueen ulkopuolella (koko=%2) ulkoasun nimelle ”%3” — tietovirta saattaa olla vioittunut</translation>
     </message>
 </context>
 <context>
@@ -1539,32 +1539,32 @@ Ehdotettu nimi:</translation>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="103"/>
         <source>%1 not found.</source>
-        <translation type="unfinished">%1 ei löytynyt.</translation>
+        <translation>%1 ei löytynyt.</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="148"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="unfinished">Kehäviittaus IC:hen havaittu: %1</translation>
+        <translation>Havaittiin kehämäinen IC-viittaus: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="155"/>
         <source>Error opening file: %1</source>
-        <translation type="unfinished">Virhe avattaessa tiedostoa: %1</translation>
+        <translation>Virhe avattaessa tiedostoa: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="227"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="unfinished">IC-siirto: tiedostoa ei voi avata kirjoittamista varten: %1</translation>
+        <translation>IC-migraatio: tiedostoa ei voida avata kirjoitusta varten: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="234"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="unfinished">IC-siirto: uudelleen tallennetun tiedoston viimeistely epäonnistui: %1</translation>
+        <translation>IC-migraatio: uudelleentallennettua tiedostoa ei voitu vahvistaa: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="297"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="unfinished">IC:n sisäkkäisyyden syvyysrajoitus (%1) ylittyi — blob saattaa olla haitallisesti laadittu</translation>
+        <translation>IC-sisäkkäisyyden syvyysraja (%1) ylitettiin — blob saattaa olla haitallisesti laadittu</translation>
     </message>
 </context>
 <context>
@@ -1810,32 +1810,32 @@ Ehdotettu nimi:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>Show IC Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä IC-esikatselu</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>Show Minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä pienoiskartta</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Top-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Vasen yläkulma</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Top-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Oikea yläkulma</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Bottom-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Vasen alakulma</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Bottom-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Oikea alakulma</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="834"/>
@@ -1906,7 +1906,7 @@ Ehdotettu nimi:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Minimap &amp;Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Pienoiskartan &amp;sijainti</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
@@ -2261,22 +2261,22 @@ Ehdotettu nimi:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>&amp;Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Harjoitukset</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>&amp;Circuit Exercises...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Piiriharjoitukset...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>&amp;Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opastukset</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="861"/>
         <source>&amp;Interactive Tours...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Interaktiiviset opastukset...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1086"/>
@@ -2367,7 +2367,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../UI/MainWindow.cpp" line="500"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;wiRedPanda on São Paulon liittovaltion yliopiston opiskelijoiden kehittämä ohjelmisto, joka auttaa opiskelijoita oppimaan logiikkapiireistä.&lt;/p&gt;&lt;p&gt;Ohjelmistoversio: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tekijät:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPandaa ylläpitävät tällä hetkellä prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ja Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Ilmoita ongelmasta GitHub-sivullamme, jos löydät virheen tai haluat pyytää uutta ominaisuutta.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Käy verkkosivuillamme!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="572"/>
@@ -2385,7 +2385,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="26"/>
         <source>Mini-map: click or drag to navigate</source>
-        <translation type="unfinished"></translation>
+        <translation>Pienoiskartta: napsauta tai vedä navigoidaksesi</translation>
     </message>
 </context>
 <context>
@@ -2695,7 +2695,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../IO/Serialization.cpp" line="359"/>
         <source>Invalid legacy file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen vanhan tiedoston otsikko: %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="542"/>
@@ -2730,7 +2730,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../IO/Serialization.cpp" line="666"/>
         <source>Stream error reading preamble: status %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tietovirran virhe luettaessa alkuosaa: tila %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="730"/>
@@ -2784,7 +2784,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="unfinished">Tiedostoa ei voitu avata kirjoittamista varten: %1</translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten: %1</translation>
     </message>
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
@@ -2838,7 +2838,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Totuustaulun vaihtoasema on sallitun alueen ulkopuolella: %1</translation>
     </message>
 </context>
 <context>
@@ -2846,27 +2846,27 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mukautettujen opastusten kansiota ei voitu luoda tai käyttää.</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
         <source>Interactive Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>Interaktiiviset opastukset</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
         <source>Choose a Tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse opastus</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Aloita</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa opastuskansioni</translation>
     </message>
 </context>
 <context>
@@ -2874,33 +2874,33 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
         <source>Exit</source>
-        <translation type="unfinished">Poistu</translation>
+        <translation>Poistu</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
         <source>Stop the tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Lopeta opastus</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Takaisin</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Seuraava →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihe %1/%2</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Lopeta</translation>
     </message>
 </context>
 <context>
@@ -3012,7 +3012,8 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
         <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not write the file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu kirjoittaa:
+%1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="152"/>
@@ -3160,12 +3161,12 @@ Haluatko tallentaa muutokset?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>Save File</source>
-        <translation type="unfinished">Tallenna tiedosto</translation>
+        <translation>Tallenna tiedosto</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
         <source>Save File (original location is read-only)</source>
-        <translation type="unfinished">Tallenna tiedosto (alkuperäinen sijainti vain luku)</translation>
+        <translation>Tallenna tiedosto (alkuperäinen sijainti on vain luku -tilassa)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
@@ -3272,7 +3273,7 @@ Haluatko tallentaa muutokset?</translation>
         <location filename="../../Main.cpp" line="372"/>
         <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe: syöttöpiiritiedostoa ei annettu.</translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="407"/>

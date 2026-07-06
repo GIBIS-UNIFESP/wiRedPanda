@@ -546,12 +546,12 @@
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="40"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="unfinished">在偏移量 %1 處讀取連線映射時發生串流錯誤</translation>
+        <translation>在偏移量 %1 處讀取連接映射時發生串流錯誤</translation>
     </message>
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="unfinished">在偏移 %1 讀取連接埠 ID 時出現串流錯誤</translation>
+        <translation>在偏移量 %1 處讀取連接埠ID時發生串流錯誤</translation>
     </message>
 </context>
 <context>
@@ -1157,27 +1157,27 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法建立或存取自訂練習的資料夾。</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
         <source>Circuit Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>電路練習</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
         <source>Choose an Exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇練習</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>開始</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟我的練習資料夾</translation>
     </message>
 </context>
 <context>
@@ -1185,55 +1185,55 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>結束</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
         <source>Close exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉練習</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
         <source>Hint</source>
-        <translation type="unfinished"></translation>
+        <translation>提示</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← 返回</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>下一步 →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <source>Hide hint</source>
-        <translation type="unfinished"></translation>
+        <translation>隱藏提示</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>第 %1 步，共 %2 步</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>Exercise complete! Well done.</source>
-        <translation type="unfinished"></translation>
+        <translation>練習完成！做得好。</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>完成</translation>
     </message>
 </context>
 <context>
@@ -1329,62 +1329,62 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="46"/>
         <source>Stream error reading %1 count at position %2</source>
-        <translation type="unfinished"></translation>
+        <translation>在位置 %2 處讀取 %1 數量時發生串流錯誤</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="50"/>
         <source>Refusing to read %1 with implausible count %2 (max %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>拒絕讀取數量不合理的 %1（%2，上限 %3）</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="60"/>
         <source>Stream error reading %1 entry %2 at position %3</source>
-        <translation type="unfinished"></translation>
+        <translation>在位置 %3 處讀取 %1 的項目 %2 時發生串流錯誤</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="unfinished">在位置 %1 讀取元件屬性時出現串流錯誤</translation>
+        <translation>在位置 %1 處讀取元件屬性時發生串流錯誤</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="unfinished">在位置 %1 讀取外觀時出現串流錯誤</translation>
+        <translation>在位置 %1 處讀取外觀時發生串流錯誤</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="unfinished">外觀索引 %1 超出範圍（大小=%2）——資料流可能已損毀</translation>
+        <translation>外觀索引 %1 超出範圍（大小=%2）— 串流可能已損毀</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
         <source>Non-finite element position — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>元件位置非有限 — 串流可能已損毀</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>元件旋轉非有限 — 串流可能已損毀</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>拒絕數量不合理的舊格式輸入埠清單（%1，上限 %2）</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>拒絕數量不合理的舊格式輸出埠清單（%1，上限 %2）</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>拒絕數量不合理的舊格式外觀清單（%1，上限 %2）</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="unfinished">外觀索引 %1 超出範圍 (大小=%2) 外觀名稱 &quot;%3&quot; — 串流可能已損壞</translation>
+        <translation>外觀名稱「%3」的外觀索引 %1 超出範圍（大小=%2）— 串流可能已損毀</translation>
     </message>
 </context>
 <context>
@@ -1539,32 +1539,32 @@ Suggested name:</source>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="103"/>
         <source>%1 not found.</source>
-        <translation type="unfinished">找不到 %1。</translation>
+        <translation>找不到 %1。</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="148"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="unfinished">偵測到 IC 循環參照: %1</translation>
+        <translation>偵測到循環 IC 參照：%1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="155"/>
         <source>Error opening file: %1</source>
-        <translation type="unfinished">開啟檔案時發生錯誤：%1</translation>
+        <translation>開啟檔案時發生錯誤：%1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="227"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="unfinished">IC 遷移: 無法開啟檔案進行寫入: %1</translation>
+        <translation>IC 遷移：無法開啟檔案以進行寫入：%1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="234"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="unfinished">IC 遷移: 無法提交重新儲存的檔案: %1</translation>
+        <translation>IC 遷移：確認重新儲存的檔案失敗：%1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="297"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="unfinished">已超出 IC 巢狀深度上限 (%1)——blob 可能為惡意構造</translation>
+        <translation>超出 IC 巢狀深度限制（%1）— blob 可能是惡意製作的</translation>
     </message>
 </context>
 <context>
@@ -1810,32 +1810,32 @@ Suggested name:</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>Show IC Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示 IC 預覽</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>Show Minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示小地圖</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Top-left</source>
-        <translation type="unfinished"></translation>
+        <translation>左上</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Top-right</source>
-        <translation type="unfinished"></translation>
+        <translation>右上</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Bottom-left</source>
-        <translation type="unfinished"></translation>
+        <translation>左下</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Bottom-right</source>
-        <translation type="unfinished"></translation>
+        <translation>右下</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="834"/>
@@ -1906,7 +1906,7 @@ Suggested name:</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Minimap &amp;Position</source>
-        <translation type="unfinished"></translation>
+        <translation>小地圖位置(&amp;P)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
@@ -2261,22 +2261,22 @@ Suggested name:</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>&amp;Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>練習(&amp;E)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>&amp;Circuit Exercises...</source>
-        <translation type="unfinished"></translation>
+        <translation>電路練習(&amp;C)...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>&amp;Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>導覽(&amp;T)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="861"/>
         <source>&amp;Interactive Tours...</source>
-        <translation type="unfinished"></translation>
+        <translation>互動導覽(&amp;I)...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1086"/>
@@ -2367,7 +2367,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../UI/MainWindow.cpp" line="500"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;wiRedPanda 是由聖保羅聯邦大學的學生所開發的軟體，旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本：%1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;創作者：&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda 目前由 Fábio Cappabianco 教授（博士）、João Pedro M. Oliveira、Matheus R. Esteves 和 Maycon A. Santana 維護。&lt;/p&gt;&lt;p&gt; 如果您發現錯誤或想要請求新功能，請在我們的 GitHub 頁面提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="572"/>
@@ -2385,7 +2385,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="26"/>
         <source>Mini-map: click or drag to navigate</source>
-        <translation type="unfinished"></translation>
+        <translation>小地圖：點擊或拖曳以導覽</translation>
     </message>
 </context>
 <context>
@@ -2695,7 +2695,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../IO/Serialization.cpp" line="359"/>
         <source>Invalid legacy file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無效的舊版檔案標頭：%1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="542"/>
@@ -2730,7 +2730,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../IO/Serialization.cpp" line="666"/>
         <source>Stream error reading preamble: status %1</source>
-        <translation type="unfinished"></translation>
+        <translation>讀取前導碼時發生串流錯誤：狀態 %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="730"/>
@@ -2784,7 +2784,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="unfinished">無法開啟檔案進行寫入: %1</translation>
+        <translation>無法開啟檔案以進行寫入：%1</translation>
     </message>
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
@@ -2838,7 +2838,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>真值表切換位置超出範圍：%1</translation>
     </message>
 </context>
 <context>
@@ -2846,27 +2846,27 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法建立或存取自訂導覽的資料夾。</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
         <source>Interactive Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>互動導覽</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
         <source>Choose a Tour</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇導覽</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>開始</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟我的導覽資料夾</translation>
     </message>
 </context>
 <context>
@@ -2874,33 +2874,33 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>結束</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
         <source>Stop the tour</source>
-        <translation type="unfinished"></translation>
+        <translation>停止導覽</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← 返回</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>下一步 →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>第 %1 步，共 %2 步</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>完成</translation>
     </message>
 </context>
 <context>
@@ -3012,7 +3012,8 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
         <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not write the file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法寫入檔案：
+%1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="152"/>
@@ -3160,12 +3161,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>Save File</source>
-        <translation type="unfinished">儲存檔案</translation>
+        <translation>儲存檔案</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
         <source>Save File (original location is read-only)</source>
-        <translation type="unfinished">儲存檔案（原始位置為唯讀）</translation>
+        <translation>儲存檔案（原始位置為唯讀）</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
@@ -3272,7 +3273,7 @@ Do you want to save your changes?</source>
         <location filename="../../Main.cpp" line="372"/>
         <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
-        <translation type="unfinished"></translation>
+        <translation>錯誤：未提供輸入電路檔案。</translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="407"/>

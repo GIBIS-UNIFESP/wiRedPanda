@@ -546,12 +546,12 @@
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="40"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="unfinished">Lỗi luồng khi đọc bản đồ kết nối tại vị trí %1</translation>
+        <translation>Lỗi luồng khi đọc bản đồ kết nối tại độ lệch %1</translation>
     </message>
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="unfinished">Lỗi luồng khi đọc ID cổng kết nối tại vị trí %1</translation>
+        <translation>Lỗi luồng khi đọc ID cổng kết nối tại độ lệch %1</translation>
     </message>
 </context>
 <context>
@@ -1157,27 +1157,27 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể tạo hoặc truy cập thư mục cho các bài tập tùy chỉnh.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
         <source>Circuit Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>Bài Tập Mạch</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
         <source>Choose an Exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn một bài tập</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Bắt đầu</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở Thư Mục Bài Tập Của Tôi</translation>
     </message>
 </context>
 <context>
@@ -1185,55 +1185,55 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
         <source>Exit</source>
-        <translation type="unfinished">Thoát</translation>
+        <translation>Thoát</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
         <source>Close exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Đóng bài tập</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
         <source>Hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Gợi ý</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Quay lại</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiếp theo →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <source>Hide hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Ẩn gợi ý</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Bước %1 trên %2</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>Exercise complete! Well done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Đã hoàn thành bài tập! Làm tốt lắm.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Đóng</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết thúc</translation>
     </message>
 </context>
 <context>
@@ -1329,62 +1329,62 @@ Mỗi kênh không dây phải có nhãn duy nhất.</translation>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="46"/>
         <source>Stream error reading %1 count at position %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi luồng khi đọc số lượng %1 tại vị trí %2</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="50"/>
         <source>Refusing to read %1 with implausible count %2 (max %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Từ chối đọc %1 với số lượng không hợp lý %2 (tối đa %3)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="60"/>
         <source>Stream error reading %1 entry %2 at position %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi luồng khi đọc mục %2 của %1 tại vị trí %3</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="unfinished">Lỗi luồng khi đọc thuộc tính phần tử tại vị trí %1</translation>
+        <translation>Lỗi luồng khi đọc thuộc tính phần tử tại vị trí %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="unfinished">Lỗi luồng khi đọc giao diện tại vị trí %1</translation>
+        <translation>Lỗi luồng khi đọc giao diện tại vị trí %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="unfinished">Chỉ mục giao diện %1 ngoài phạm vi (kích thước=%2) — luồng có thể bị hỏng</translation>
+        <translation>Chỉ số giao diện %1 nằm ngoài phạm vi (kích thước=%2) — luồng có thể bị hỏng</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
         <source>Non-finite element position — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Vị trí phần tử không hữu hạn — luồng có thể bị hỏng</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Góc xoay phần tử không hữu hạn — luồng có thể bị hỏng</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Từ chối danh sách cổng đầu vào định dạng cũ với số lượng không hợp lý %1 (tối đa %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Từ chối danh sách cổng đầu ra định dạng cũ với số lượng không hợp lý %1 (tối đa %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Từ chối danh sách giao diện định dạng cũ với số lượng không hợp lý %1 (tối đa %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="unfinished">Chỉ mục giao diện %1 ngoài phạm vi (kích thước=%2) cho tên giao diện &quot;%3&quot; — luồng có thể bị hỏng</translation>
+        <translation>Chỉ số giao diện %1 nằm ngoài phạm vi (kích thước=%2) cho tên giao diện &quot;%3&quot; — luồng có thể bị hỏng</translation>
     </message>
 </context>
 <context>
@@ -1539,32 +1539,32 @@ Tên gợi ý:</translation>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="103"/>
         <source>%1 not found.</source>
-        <translation type="unfinished">Không tìm thấy %1.</translation>
+        <translation>Không tìm thấy %1.</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="148"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="unfinished">Phát hiện tham chiếu IC vòng: %1</translation>
+        <translation>Phát hiện tham chiếu IC vòng tròn: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="155"/>
         <source>Error opening file: %1</source>
-        <translation type="unfinished">Lỗi khi mở tệp: %1</translation>
+        <translation>Lỗi khi mở tệp: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="227"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="unfinished">Di chuyển IC: không thể mở tệp để ghi: %1</translation>
+        <translation>Di chuyển IC: không thể mở tệp để ghi: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="234"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="unfinished">Di chuyển IC: không thể lưu lại tệp đã lưu: %1</translation>
+        <translation>Di chuyển IC: không thể xác nhận tệp đã lưu lại: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="297"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="unfinished">Đã vượt giới hạn độ sâu lồng nhau của IC (%1) — blob có thể được tạo độc hại</translation>
+        <translation>Vượt quá giới hạn độ sâu lồng nhau của IC (%1) — blob có thể được tạo ra với mục đích xấu</translation>
     </message>
 </context>
 <context>
@@ -1865,7 +1865,7 @@ Tên gợi ý:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Minimap &amp;Position</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vị trí bản đồ thu nhỏ</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
@@ -2131,32 +2131,32 @@ Tên gợi ý:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>Show IC Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiển Thị Xem Trước IC</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>Show Minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiển Thị Bản Đồ Thu Nhỏ</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Top-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Trên bên trái</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Top-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Trên bên phải</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Bottom-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Dưới bên trái</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Bottom-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dưới bên phải</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="822"/>
@@ -2176,22 +2176,22 @@ Tên gợi ý:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>&amp;Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bài tập</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>&amp;Circuit Exercises...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bài Tập &amp;Mạch...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>&amp;Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Chuyến tham quan</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="861"/>
         <source>&amp;Interactive Tours...</source>
-        <translation type="unfinished"></translation>
+        <translation>Chuyến Tham Quan &amp;Tương Tác...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="786"/>
@@ -2357,7 +2357,7 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../UI/MainWindow.cpp" line="500"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;wiRedPanda là phần mềm được phát triển bởi sinh viên của Đại học Liên bang São Paulo nhằm giúp học sinh học về mạch logic.&lt;/p&gt;&lt;p&gt;Phiên bản phần mềm: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Người tạo:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda hiện đang được duy trì bởi Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves và Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vui lòng gửi báo cáo trên trang GitHub của chúng tôi nếu bạn tìm thấy lỗi hoặc muốn yêu cầu tính năng mới.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Truy cập trang web của chúng tôi!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="573"/>
@@ -2385,7 +2385,7 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="26"/>
         <source>Mini-map: click or drag to navigate</source>
-        <translation type="unfinished"></translation>
+        <translation>Bản đồ thu nhỏ: nhấp hoặc kéo để điều hướng</translation>
     </message>
 </context>
 <context>
@@ -2695,7 +2695,7 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../IO/Serialization.cpp" line="359"/>
         <source>Invalid legacy file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiêu đề tệp cũ không hợp lệ: %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="542"/>
@@ -2730,7 +2730,7 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../IO/Serialization.cpp" line="666"/>
         <source>Stream error reading preamble: status %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi luồng khi đọc phần mở đầu: trạng thái %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="730"/>
@@ -2784,7 +2784,7 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="unfinished">Không thể mở tệp để ghi: %1</translation>
+        <translation>Không thể mở tệp để ghi: %1</translation>
     </message>
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
@@ -2838,7 +2838,7 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vị trí chuyển đổi bảng chân trị nằm ngoài phạm vi: %1</translation>
     </message>
 </context>
 <context>
@@ -2846,27 +2846,27 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể tạo hoặc truy cập thư mục cho các chuyến tham quan tùy chỉnh.</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
         <source>Interactive Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>Chuyến Tham Quan Tương Tác</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
         <source>Choose a Tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn một chuyến tham quan</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Bắt đầu</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở Thư Mục Chuyến Tham Quan Của Tôi</translation>
     </message>
 </context>
 <context>
@@ -2874,33 +2874,33 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
         <source>Exit</source>
-        <translation type="unfinished">Thoát</translation>
+        <translation>Thoát</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
         <source>Stop the tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Dừng chuyến tham quan</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Quay lại</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiếp theo →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Bước %1 trên %2</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết thúc</translation>
     </message>
 </context>
 <context>
@@ -3012,7 +3012,8 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
         <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not write the file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể ghi tệp:
+%1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="152"/>
@@ -3160,12 +3161,12 @@ Bạn có muốn lưu thay đổi không?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>Save File</source>
-        <translation type="unfinished">Lưu tệp</translation>
+        <translation>Lưu Tệp</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
         <source>Save File (original location is read-only)</source>
-        <translation type="unfinished">Lưu tệp (vị trí gốc chỉ đọc)</translation>
+        <translation>Lưu Tệp (vị trí gốc chỉ đọc)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
@@ -3272,7 +3273,7 @@ Bạn có muốn lưu thay đổi không?</translation>
         <location filename="../../Main.cpp" line="372"/>
         <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: không có tệp mạch đầu vào nào được cung cấp.</translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="407"/>

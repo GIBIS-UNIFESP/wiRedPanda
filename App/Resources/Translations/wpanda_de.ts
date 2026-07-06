@@ -546,12 +546,12 @@
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="40"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="unfinished">Stream-Fehler beim Lesen der Verbindungstabelle bei Offset %1</translation>
+        <translation>Datenstromfehler beim Lesen der Verbindungskarte bei Offset %1</translation>
     </message>
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="unfinished">Stream-Fehler beim Lesen der Verbindungsport-IDs bei Offset %1</translation>
+        <translation>Datenstromfehler beim Lesen der Verbindungsport-IDs bei Offset %1</translation>
     </message>
 </context>
 <context>
@@ -1157,27 +1157,27 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner für benutzerdefinierte Übungen konnte nicht erstellt oder geöffnet werden.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
         <source>Circuit Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>Schaltungsübungen</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
         <source>Choose an Exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Übung auswählen</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Meinen Übungsordner öffnen</translation>
     </message>
 </context>
 <context>
@@ -1185,55 +1185,55 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
         <source>Exit</source>
-        <translation type="unfinished">Beenden</translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
         <source>Close exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Übung schließen</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
         <source>Hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Hinweis</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Zurück</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Weiter →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <source>Hide hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Hinweis ausblenden</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Schritt %1 von %2</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>Exercise complete! Well done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Übung abgeschlossen! Gut gemacht.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Fertig</translation>
     </message>
 </context>
 <context>
@@ -1329,62 +1329,62 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="46"/>
         <source>Stream error reading %1 count at position %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Datenstromfehler beim Lesen der %1-Anzahl an Position %2</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="50"/>
         <source>Refusing to read %1 with implausible count %2 (max %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesen von %1 mit unplausibler Anzahl %2 abgelehnt (max. %3)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="60"/>
         <source>Stream error reading %1 entry %2 at position %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Datenstromfehler beim Lesen von %1-Eintrag %2 an Position %3</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="unfinished">Stream-Fehler beim Lesen der Elementeigenschaften an Position %1</translation>
+        <translation>Datenstromfehler beim Lesen der Elementeigenschaften an Position %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="unfinished">Stream-Fehler beim Lesen der Skins an Position %1</translation>
+        <translation>Datenstromfehler beim Lesen der Erscheinungsbilder an Position %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="unfinished">Erscheinungsindex %1 außerhalb des Bereichs (Größe=%2) — der Datenstrom ist möglicherweise beschädigt</translation>
+        <translation>Erscheinungsbild-Index %1 außerhalb des gültigen Bereichs (Größe=%2) — Datenstrom möglicherweise beschädigt</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
         <source>Non-finite element position — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht endliche Elementposition — Datenstrom möglicherweise beschädigt</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht endliche Elementrotation — Datenstrom möglicherweise beschädigt</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingangsport-Liste im alten Format mit unplausibler Anzahl %1 abgelehnt (max. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgangsport-Liste im alten Format mit unplausibler Anzahl %1 abgelehnt (max. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Erscheinungsbildliste im alten Format mit unplausibler Anzahl %1 abgelehnt (max. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="unfinished">Skin-Index %1 außerhalb des Bereichs (Größe=%2) für Skin-Name &quot;%3&quot; — Stream ist möglicherweise beschädigt</translation>
+        <translation>Erscheinungsbild-Index %1 außerhalb des gültigen Bereichs (Größe=%2) für Erscheinungsbildname „%3“ — Datenstrom möglicherweise beschädigt</translation>
     </message>
 </context>
 <context>
@@ -1539,32 +1539,32 @@ Vorgeschlagener Name:</translation>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="103"/>
         <source>%1 not found.</source>
-        <translation type="unfinished">%1 nicht gefunden.</translation>
+        <translation>%1 nicht gefunden.</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="148"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="unfinished">Zirkuläre IC-Referenz erkannt: %1</translation>
+        <translation>Zirkuläre IC-Referenz erkannt: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="155"/>
         <source>Error opening file: %1</source>
-        <translation type="unfinished">Fehler beim Öffnen der Datei: %1</translation>
+        <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="227"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="unfinished">IC-Migration: Datei kann nicht zum Schreiben geöffnet werden: %1</translation>
+        <translation>IC-Migration: Datei kann nicht zum Schreiben geöffnet werden: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="234"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="unfinished">IC-Migration: erneut gespeicherte Datei konnte nicht übernommen werden: %1</translation>
+        <translation>IC-Migration: Erneut gespeicherte Datei konnte nicht übernommen werden: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="297"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="unfinished">IC-Verschachtelungstiefenlimit (%1) überschritten — das Blob könnte böswillig erstellt sein</translation>
+        <translation>Grenze für IC-Verschachtelungstiefe (%1) überschritten — Blob könnte böswillig erstellt worden sein</translation>
     </message>
 </context>
 <context>
@@ -1865,7 +1865,7 @@ Vorgeschlagener Name:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Minimap &amp;Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Minikarten&amp;position</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
@@ -2131,32 +2131,32 @@ Vorgeschlagener Name:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>Show IC Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>IC-Vorschau anzeigen</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>Show Minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>Minikarte anzeigen</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Top-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Oben links</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Top-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Oben rechts</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Bottom-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Unten links</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Bottom-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Unten rechts</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="822"/>
@@ -2176,22 +2176,22 @@ Vorgeschlagener Name:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>&amp;Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>Ü&amp;bungen</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>&amp;Circuit Exercises...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Schaltungsübungen...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>&amp;Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Touren</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="861"/>
         <source>&amp;Interactive Tours...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Interaktive Touren...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="786"/>
@@ -2357,7 +2357,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     <message>
         <location filename="../../UI/MainWindow.cpp" line="500"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;wiRedPanda ist eine Software, die von Studierenden der Bundesuniversität São Paulo entwickelt wurde, um Lernenden das Verständnis logischer Schaltungen zu erleichtern.&lt;/p&gt;&lt;p&gt;Softwareversion: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Ersteller:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda wird derzeit von Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves und Maycon A. Santana gepflegt.&lt;/p&gt;&lt;p&gt; Bitte melde auf unserer GitHub-Seite einen Fehler oder wünsche dir eine neue Funktion.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besuche unsere Website!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="573"/>
@@ -2385,7 +2385,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="26"/>
         <source>Mini-map: click or drag to navigate</source>
-        <translation type="unfinished"></translation>
+        <translation>Minikarte: Klicken oder ziehen zum Navigieren</translation>
     </message>
 </context>
 <context>
@@ -2695,7 +2695,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     <message>
         <location filename="../../IO/Serialization.cpp" line="359"/>
         <source>Invalid legacy file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger alter Dateikopf: %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="542"/>
@@ -2730,7 +2730,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     <message>
         <location filename="../../IO/Serialization.cpp" line="666"/>
         <source>Stream error reading preamble: status %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Datenstromfehler beim Lesen der Präambel: Status %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="730"/>
@@ -2784,7 +2784,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="unfinished">Datei konnte nicht zum Schreiben geöffnet werden: %1</translation>
+        <translation>Datei konnte nicht zum Schreiben geöffnet werden: %1</translation>
     </message>
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
@@ -2838,7 +2838,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     <message>
         <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wahrheitstabellen-Umschaltposition außerhalb des gültigen Bereichs: %1</translation>
     </message>
 </context>
 <context>
@@ -2846,27 +2846,27 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     <message>
         <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner für benutzerdefinierte Touren konnte nicht erstellt oder geöffnet werden.</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
         <source>Interactive Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>Interaktive Touren</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
         <source>Choose a Tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Tour auswählen</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Meinen Tourenordner öffnen</translation>
     </message>
 </context>
 <context>
@@ -2874,33 +2874,33 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
         <source>Exit</source>
-        <translation type="unfinished">Beenden</translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
         <source>Stop the tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Tour beenden</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Zurück</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Weiter →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Schritt %1 von %2</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Fertig</translation>
     </message>
 </context>
 <context>
@@ -3012,7 +3012,8 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
         <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not write the file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei konnte nicht geschrieben werden:
+%1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="152"/>
@@ -3160,12 +3161,12 @@ Möchten Sie Ihre Änderungen speichern?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>Save File</source>
-        <translation type="unfinished">Datei speichern</translation>
+        <translation>Datei speichern</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
         <source>Save File (original location is read-only)</source>
-        <translation type="unfinished">Datei speichern (ursprünglicher Speicherort ist schreibgeschützt)</translation>
+        <translation>Datei speichern (ursprünglicher Speicherort ist schreibgeschützt)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
@@ -3272,7 +3273,7 @@ Möchten Sie Ihre Änderungen speichern?</translation>
         <location filename="../../Main.cpp" line="372"/>
         <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler: Keine Eingabe-Schaltungsdatei angegeben.</translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="407"/>

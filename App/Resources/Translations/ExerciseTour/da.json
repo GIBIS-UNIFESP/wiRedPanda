@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "Klik på fanen I/O i venstre panel, og træk derefter to InputSwitch-elementer ud på lærredet, og placer dem til venstre for Og-gate'et.",
+      "instruction": "Tilføj to InputSwitch-elementer til lærredet"
+    },
+    "add-output": {
+      "hint": "Træk en LED fra fanen I/O, og placer den til højre for Og-gate'et. Forbind derefter Og-gate'ets udgangsport (højre side) til LED'ens indgangsport (venstre side).",
+      "instruction": "Tilføj en LED, og forbind den til Og-gate'ets udgang"
+    },
+    "connect-inputs": {
+      "hint": "Klik og træk fra en InputSwitch-udgangsport (højre side) til en af Og-gate'ets indgangsporte (venstre side). Gentag for den anden kontakt.",
+      "instruction": "Forbind begge inputkontakter til Og-gate'et"
+    },
+    "description": "Lær at placere logiske gates, tilføje input og output, og forbinde dem.",
+    "place-and-gate": {
+      "hint": "Klik på fanen Gates i venstre panel, og træk derefter Og-gate'et ud på lærredet.",
+      "instruction": "Placer et Og-gate på lærredet"
+    },
+    "title": "Byg et Og-gate-kredsløb",
+    "toggle-observe": {
+      "hint": "Klik på en InputSwitch for at skifte den. LED'en lyser kun, når BEGGE kontakter er TÆNDT. Det er fordi Og kun giver 1 som output, når alle input er 1.",
+      "instruction": "Skift kontakterne, og observer LED'en — dette er Og-logik!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "Klik på fanen I/O i venstre panel, og træk derefter to InputSwitch-elementer ud på lærredet, og placer dem til venstre for Eller-gate'et.",
+      "instruction": "Tilføj to InputSwitch-elementer til lærredet"
+    },
+    "add-not-gate": {
+      "hint": "Træk i ledningen mellem Eller-gate'et og LED'en for at fjerne den.",
+      "instruction": "Afbryd forbindelsen mellem LED'en og Eller-gate'et, forbind derefter Eller-gate'et til et Ikke-gate, og Ikke-gate'et til LED'en"
+    },
+    "add-output": {
+      "hint": "Træk en LED fra fanen I/O, og placer den til højre for Eller-gate'et. Forbind derefter Eller-gate'ets udgangsport (højre side) til LED'ens indgangsport (venstre side).",
+      "instruction": "Tilføj en LED, og forbind den til Eller-gate'ets udgang"
+    },
+    "connect-inputs": {
+      "hint": "Klik og træk fra en InputSwitch-udgangsport (højre side) til en af Eller-gate'ets indgangsporte (venstre side). Gentag for den anden kontakt.",
+      "instruction": "Forbind begge inputkontakter til Eller-gate'et"
+    },
+    "description": "Lær at bruge Eller- og Ikke-gates.",
+    "place-or-gate": {
+      "hint": "Klik på fanen Gates i venstre panel, og træk derefter Eller-gate'et ud på lærredet.",
+      "instruction": "Placer et Eller-gate på lærredet"
+    },
+    "title": "Flere grundlæggende gates: Eller og Ikke",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "Ikke-gate'et vender signalet om. Nu vil kredsløbet kun give 1 som output, når ingen af inputtene er 1"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "Eksperimenter med inputtene, og læg mærke til, hvordan Eller-gate'et giver 1 som output, når blot ét af dets input er 1"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "Klik på Rediger → Kombinatorisk i BeWavedDolphins menulinje. Dette udfylder Clock-rækken med alle mulige værdier og beregner LED-outputtet for hver — en komplet sandhedstabel med ét klik.",
+      "instruction": "Generér automatisk alle inputkombinationer"
+    },
+    "connect-clock-led": {
+      "hint": "Klik og træk fra Clock'ens udgangsport (højre side) til LED'ens indgangsport (venstre side).",
+      "instruction": "Forbind Clock-udgangen til LED-indgangen"
+    },
+    "description": "Byg et minimalt Clock-LED-kredsløb, og udforsk bølgeformsvisningen: kombinatorisk tilstand og manuel celleredigering.",
+    "open-waveform": {
+      "hint": "BeWavedDolphin viser dine kredsløbssignaler som rækker. Clock-rækken er input, og Led-rækken er output. Hver kolonne er ét simuleringstidstrin.",
+      "instruction": "Bølgeformsvisningen er nu åben — tag et kig!"
+    },
+    "place-clock": {
+      "hint": "Klik på fanen I/O i venstre panel, og træk derefter Clock-elementet ud på lærredet.",
+      "instruction": "Placer et Clock-element på lærredet"
+    },
+    "place-led": {
+      "hint": "Bliv på fanen I/O, og træk et Led-element ud på lærredet til højre for Clock'en.",
+      "instruction": "Placer en LED på lærredet"
+    },
+    "title": "Clock og LED: Grundlæggende om bølgeformer",
+    "toggle-cell": {
+      "hint": "Dobbeltklik på en vilkårlig celle i Clock-rækken for at skifte den mellem 0 og 1. Se, hvordan Led-rækken øjeblikkeligt opdateres for at afspejle det nye output.",
+      "instruction": "Skift en Clock-celle manuelt"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "Dit kredsløb bør nu have to InputSwitch'e, to LED'er og ét DEMUX-kredsløb",
+      "instruction": "Tilføj et DEMUX-kredsløb, og forbind InputSwitch'ene til dets In- og S0-porte. Forbind derefter hver af DEMUX'ens udgange til en separat LED"
+    },
+    "add-inputs": {
+      "hint": "Klik på fanen I/O i venstre panel, og træk derefter to InputSwitch-elementer ud på lærredet, og placer dem til venstre for MUX-kredsløbet.",
+      "instruction": "Tilføj tre InputSwitch-elementer til lærredet"
+    },
+    "add-output": {
+      "hint": "Træk en LED fra fanen I/O, og placer den til højre for MUX-kredsløbet. Forbind derefter MUX-kredsløbets udgangsport (højre side) til LED'ens indgangsport (venstre side).",
+      "instruction": "Tilføj en LED, og forbind den til MUX-kredsløbets udgang"
+    },
+    "connect-inputs": {
+      "hint": "Klik og træk fra en InputSwitch-udgangsport (højre side) til en af MUX-gate'ets indgangsporte (venstre side). Gentag for den anden kontakt. Forbind derefter den tredje inputkontakt til MUX'ens valgport (nederst)",
+      "instruction": "Forbind alle inputkontakter til MUX-kredsløbet"
+    },
+    "description": "Lær om MUX- og DEMUX-kredsløb.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "S0-porten nederst på DEMUX'en vælger, hvilken udgang der modtager inputtets signal. Når S0 = 0, er Out0 = In0. Når S0 = 1, er Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "S0-porten nederst på MUX'en vælger, hvilket input der sendes videre til udgangen. Når S0 = 0, sendes signalet fra Input 0 til udgangen. Når S0 = 1, sendes signalet fra Input 1 til udgangen."
+    },
+    "place-mux": {
+      "hint": "Klik på fanen Kombinatorisk i venstre panel, og træk derefter MUX-kredsløbet ud på lærredet.",
+      "instruction": "Placer et MUX-kredsløb på lærredet"
+    },
+    "prepare-demux": {
+      "hint": "Dit kredsløb bør nu have to InputSwitch'e og to LED'er",
+      "instruction": "Slet MUX-kredsløbet og en af InputSwitch'ene. Tilføj derefter endnu en LED"
+    },
+    "title": "Kombinatoriske kredsløb I: MUX og DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "Forbind udgangene fra InputSwitch'ene til gates'enes indgange.",
+      "instruction": "Tilføj endnu en InputSwitch til lærredet, og giv den mærkatet Cin. Tilføj derefter et XOR-gate, et Og-gate og et Eller-gate"
+    },
+    "add-half-adder-gates": {
+      "hint": "Brug fanen Gates til at tilføje XOR- og Og-gates, og brug derefter fanen I/O til at tilføje to LED'er.",
+      "instruction": "Tilføj et XOR-gate, et Og-gate og to LED'er til lærredet. Forbind derefter hvert gate til en separat LED"
+    },
+    "add-inputs": {
+      "hint": "Klik på fanen I/O i venstre panel, og træk derefter tre InputSwitch-elementer ud på lærredet. Den tredje InputSwitch bruges senere som overførselsindgang (Cin).",
+      "instruction": "Tilføj to InputSwitch-elementer til lærredet"
+    },
+    "description": "Lær at bygge et adder-kredsløb.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "Dette kredsløb udgør en fuldadder. I modsætning til en halvadder modtager en fuldadder en overførselsindgang (Cin) fra en tidligere addition og danner en overførselsudgang (Cout) til næste trin. Ved at forbinde Cout på én fuldadder til Cin på en anden kan flere fuldaddere kædes sammen for at addere binære tal af enhver længde"
+    },
+    "label-half-adder-outputs": {
+      "hint": "Klik på en LED, og skriv i mærkatfeltet nederst til venstre på skærmen for at give en LED et mærkat.",
+      "instruction": "Giv LED'en, der er forbundet til XOR-gate'et, mærkatet Sum, og giv derefter LED'en, der er forbundet til Og-gate'et, mærkatet Cout. Dette kredsløb udgør en halvadder, som lægger to enkeltbit-input sammen"
+    },
+    "title": "Kombinatoriske kredsløb III: Adder",
+    "wire-full-adder": {
+      "hint": "Fjern de gamle forbindelser til LED'erne for at kunne tilføje de nye.",
+      "instruction": "Forbind det gamle XOR-gate og Cin-kontakten til det nye XOR-gate, og forbind derefter det nye XOR-gate til Sum-udgangen. Forbind også det gamle XOR-gate og Cin-kontakten til det nye Og-gate. Afslut ved at forbinde begge Og-gates til Eller-gate'et og Eller-gate'et til Cout"
+    },
+    "wire-half-adder": {
+      "hint": "Forbind udgangene fra InputSwitch'ene til gates'enes indgange.",
+      "instruction": "Forbind de to InputSwitch'e til XOR-gate'et og Og-gate'et. Hver InputSwitch skal forbindes til begge gates. XOR-gate'et danner Sum-outputtet, mens Og-gate'et danner Carry-outputtet"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "Brug fanen Gates i venstre panel til at tilføje Og-gates, og fanen I/O til at tilføje LED'erne.",
+      "instruction": "Tilføj fire Og-gates og fire LED'er til lærredet, og forbind derefter hvert Og-gate til en af LED'erne"
+    },
+    "add-inputs": {
+      "hint": "Klik på fanen I/O i venstre panel, og træk derefter to InputSwitch-elementer ud på lærredet.",
+      "instruction": "Tilføj to InputSwitch-elementer til lærredet"
+    },
+    "add-not-gates": {
+      "hint": "Klik på fanen Gates i venstre panel, og træk derefter to Ikke-gate-elementer ud på lærredet, og forbind InputSwitch'ene til dem.",
+      "instruction": "Tilføj to Ikke-gates til lærredet, og forbind hver InputSwitch til et separat Ikke-gate"
+    },
+    "description": "Lær at bygge en 2-til-4-dekoder.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "For hver specifik kombination af inputbits aktiveres kun én tilsvarende udgangslinje, mens alle andre forbliver inaktive"
+    },
+    "title": "Kombinatoriske kredsløb II: Dekoder",
+    "wire-decoder": {
+      "hint": "Hvert Og-gate bør modtage ét signal fra hvert input. Brug det oprindelige InputSwitch-signal for et 1-tal, og det tilsvarende Ikke-gate-output for et 0-tal.",
+      "instruction": "Forbind udgangene fra Ikke-gates'ene og InputSwitch'ene til Og-gates'ene, så hvert Og-gate repræsenterer én inputkombination"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "D-latchen gemmer én enkelt inputværdi og undgår SR-latchens ugyldige inputkombination.",
+      "instruction": "Fjern SR-latchen, mens InputSwitch'ene og LED'erne bevares. Tilføj derefter en D-latch"
+    },
+    "add-sr-latch": {
+      "hint": "Brug fanen Memory til at tilføje en SR-latch. Brug derefter fanen I/O til at tilføje to InputSwitch'e og to LED'er.",
+      "instruction": "Tilføj en SR-latch, to InputSwitch'e og to LED'er til lærredet"
+    },
+    "description": "Lær at bruge latches.",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "Skift InputSwitch'ene, og observer D-latchen. Når Enable er 1, følger udgangen D-indgangen. Når Enable er 0, husker latchen sin tidligere værdi"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "Skift InputSwitch'ene, og observer, hvordan SR-latchen gemmer sin tilstand. Når S-indgangen sættes til 1, bliver Q-udgangen til 1, mens R-indgangen sat til 1 nulstiller Q til 0. Når begge indgange vender tilbage til 0, husker latchen sin sidste tilstand, indtil den sættes eller nulstilles igen"
+    },
+    "title": "Sekventielle kredsløb I: Latches",
+    "wire-d-latch": {
+      "hint": "D-indgangen er den værdi, der skal gemmes. Enable-indgangen bestemmer, hvornår latchen opdaterer sin gemte værdi.",
+      "instruction": "Forbind én InputSwitch til D-indgangen og den anden til Enable-indgangen (E). Forbind Q- og Q̅-udgangene til LED'erne"
+    },
+    "wire-sr-latch": {
+      "hint": "Forbind én InputSwitch til Set-indgangen (S) og den anden til Reset-indgangen (R). Forbind hver udgang fra latchen til en separat LED.",
+      "instruction": "Forbind InputSwitch'ene til S- og R-indgangene på SR-latchen. Forbind derefter Q- og Q̅-udgangene til LED'erne"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "Brug fanen Memory til at tilføje T-flip-flops og en Clock. Brug derefter fanen I/O til at tilføje tre InputSwitch'e og tre LED'er.",
+      "instruction": "Tilføj tre T-flip-flops, tre InputSwitch'e, en Clock og tre LED'er til lærredet"
+    },
+    "description": "Lær at bygge et tællerkredsløb.",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "Tænd for alle tre InputSwitch'e, og start Clock'en. Observer LED'erne, mens tælleren kører. Den første LED skifter tilstand for hver klokkepuls, den anden skifter for hver to pulser, og den tredje skifter for hver fire pulser, hvilket viser en gentagende 3-bit binær tælling fra 000 til 111"
+    },
+    "title": "Sekventielle kredsløb III: Tæller",
+    "wire-clock": {
+      "hint": "Den første flip-flop modtager det eksterne klokkesignal.",
+      "instruction": "Forbind Clock'en til Clk-indgangen på den første T-flip-flop"
+    },
+    "wire-outputs": {
+      "hint": "Hver LED repræsenterer én bit af tælleren, hvor den første LED er den mindst betydende bit.",
+      "instruction": "Forbind Q-udgangen på hver flip-flop til en separat LED"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "Forbind Q-udgangen på den første flip-flop til Clk-indgangen på den anden flip-flop, og forbind derefter Q-udgangen på den anden flip-flop til Clk-indgangen på den tredje flip-flop. Hver flip-flop styres af udgangen fra den foregående, hvilket skaber en ripple-tæller"
+    },
+    "wire-t-inputs": {
+      "hint": "Tænd for alle tre InputSwitch'e. En T-flip-flop skifter kun, når dens T-indgang er 1.",
+      "instruction": "Forbind hver InputSwitch til T-indgangen på en separat flip-flop"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "Brug fanen Memory til at tilføje en D-flip-flop og en Clock. Brug derefter fanen I/O til at tilføje to InputSwitch'e og to LED'er.",
+      "instruction": "Tilføj en D-flip-flop, to InputSwitch'e, en Clock og to LED'er til lærredet"
+    },
+    "add-jk-flipflop": {
+      "hint": "JK-flip-floppen har J- og K-indgange i stedet for en D-indgang. Lad Clear- og Preset-indgangene være uden forbindelse.",
+      "instruction": "Erstat D-flip-floppen med en JK-flip-flop, mens Clock, InputSwitch'e og LED'er bevares"
+    },
+    "add-t-flipflop": {
+      "hint": "En T-flip-flop kræver kun én enkelt indgang ud over klokken.",
+      "instruction": "Erstat JK-flip-floppen med en T-flip-flop, og fjern en af InputSwitch'ene"
+    },
+    "description": "Lær om flip-flops.",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "Forbind den anden InputSwitch til enten Clear- eller Preset-indgangen, og observer dens effekt. I modsætning til D-indgangen virker Clear- og Preset-indgangene øjeblikkeligt uden at vente på en klokkeflanke. Clear tvinger Q til 0, mens Preset tvinger Q til 1"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "Skift D-InputSwitch'en, og observer D-flip-floppen. Værdien på D-indgangen kopieres kun til Q-udgangen ved den aktive klokkeflanke. Mellem klokkeflankerne forbliver udgangen uændret"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "Skift InputSwitch'ene, og observer JK-flip-floppen. Når J = K = 0, holder udgangen sin nuværende tilstand. Når J = 1 og K = 0, sættes udgangen. Når J = 0 og K = 1, nulstilles udgangen. Når J = K = 1, skifter udgangen ved hver aktive klokkeflanke"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "Skift InputSwitch'en, og observer T-flip-floppen. Når T = 0, beholder udgangen sin nuværende tilstand. Når T = 1, skifter udgangen ved hver aktive klokkeflanke. T-flip-flops bruges ofte til at bygge binære tællere og frekvensdelere"
+    },
+    "title": "Sekventielle kredsløb II: Flip-flops",
+    "wire-d-flipflop": {
+      "hint": "Lad Clear- og Preset-indgangene være uden forbindelse for nu.",
+      "instruction": "Forbind én InputSwitch til D-indgangen, Clock'en til Clk-indgangen, og Q- og Q̅-udgangene til LED'erne. D-indgangen angiver den værdi, der skal gemmes, mens Clock'en bestemmer, hvornår værdien gemmes"
+    },
+    "wire-jk-flipflop": {
+      "hint": "JK-flip-floppen ændrer kun sin udgang ved den aktive klokkeflanke.",
+      "instruction": "Forbind InputSwitch'ene til J- og K-indgangene, Clock'en til Clk-indgangen, og Q- og Q̅-udgangene til LED'erne"
+    },
+    "wire-t-flipflop": {
+      "hint": "Lad Clear- og Preset-indgangene være uden forbindelse.",
+      "instruction": "Forbind den resterende InputSwitch til T-indgangen, Clock'en til Clk-indgangen, og Q- og Q̅-udgangene til LED'erne"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "Byg dit kredsløb her. Træk komponenter fra paletten, og forbind dem derefter ved at klikke og trække fra en udgangsport (højre side af en komponent) til en indgangsport (venstre side af en anden).",
+      "title": "Lærredet"
+    },
+    "combinational-mode": {
+      "body": "Den fremhævede knap (Kombinatorisk) blev netop udløst automatisk — den udfylder inputrækkerne med alle mulige 0/1-kombinationer, hvilket giver dig en komplet sandhedstabel med ét klik.",
+      "title": "Kombinatorisk tilstand"
+    },
+    "component-palette": {
+      "body": "Dette panel viser alle tilgængelige komponenter — logiske gates, input, output, flip-flops med mere. Komponenterne er organiseret i kategorier via fanerne øverst. Klik på en fane for at gennemse dens kategori.",
+      "title": "Komponentpalet"
+    },
+    "description": "En guidet gennemgang af hovedgrænsefladen — palet, lærred, værktøjslinje og egenskabspanel.",
+    "editing-cells": {
+      "body": "Du kan også redigere bølgeformen manuelt. Dobbeltklik på en vilkårlig celle i Clock-rækken for at skifte den mellem 0 og 1 — Led-rækken opdateres øjeblikkeligt for at afspejle det nye output.",
+      "title": "Manuel celleredigering"
+    },
+    "element-properties": {
+      "body": "Når du vælger en komponent på lærredet, vises dens egenskaber her. Du kan angive mærkater, farver, udløsertyper og andre komponentspecifikke indstillinger. Prøv at vælge en placeret komponent for at se dens indstillinger.",
+      "title": "Elementegenskaber"
+    },
+    "logic-gates": {
+      "body": "Fanen Gates indeholder Og, Eller, Ikke, NAND, NOR, XOR og andre grundlæggende logiske gates. Træk et vilkårligt gate fra denne liste ud på lærredet for at tilføje det til dit kredsløb.",
+      "title": "Logiske gates"
+    },
+    "search-bar": {
+      "body": "Brug søgefeltet til hurtigt at finde en komponent ved navn. Mens du skriver, vises en filtreret liste nedenfor med matchende komponenter på tværs af alle kategorier.",
+      "title": "Søgefelt"
+    },
+    "title": "Rundvisning i wiRedPandas grænseflade",
+    "waveform-table": {
+      "body": "Bølgeformstabellen viser alle signaler i dit kredsløb. Clock-rækken er input; Led-rækken er det beregnede output. Hver kolonne er ét simuleringstidstrin — du kan se præcis, hvordan outputtet følger inputtet.",
+      "title": "Sådan læses bølgeformstabellen"
+    },
+    "waveform-viewer": {
+      "body": "wiRedPanda indeholder en bølgeformsvisning kaldet BeWavedDolphin. Den viser, hvordan alle signaler i dit kredsløb ændrer sig over tid — input som rækker øverst, output nedenunder, hvor hver kolonne repræsenterer ét simuleringstidstrin. Klik på den fremhævede knap på værktøjslinjen for at åbne den.",
+      "title": "Bølgeformsvisning"
+    },
+    "welcome": {
+      "body": "wiRedPanda er en simulator til digitale logiske kredsløb. Du kan bygge kredsløb ved at placere komponenter og forbinde dem. Denne rundvisning viser dig hovedelementerne i grænsefladen.",
+      "title": "Velkommen til wiRedPanda!"
+    }
+  }
+}

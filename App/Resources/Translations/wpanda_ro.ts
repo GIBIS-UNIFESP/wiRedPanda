@@ -546,12 +546,12 @@
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="40"/>
         <source>Stream error reading connection map at offset %1</source>
-        <translation type="unfinished">Eroare de flux la citirea hărții de conexiuni la deplasamentul %1</translation>
+        <translation>Eroare de flux la citirea hărții de conexiuni la offsetul %1</translation>
     </message>
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation type="unfinished">Eroare de flux la citirea ID-urilor porturilor de conexiune la offsetul %1</translation>
+        <translation>Eroare de flux la citirea ID-urilor porturilor de conexiune la offsetul %1</translation>
     </message>
 </context>
 <context>
@@ -1157,27 +1157,27 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-a putut crea sau accesa un folder pentru exerciții personalizate.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
         <source>Circuit Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>Exerciții de circuite</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
         <source>Choose an Exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Alegeți un exercițiu</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide folderul meu de exerciții</translation>
     </message>
 </context>
 <context>
@@ -1185,55 +1185,55 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
         <source>Exit</source>
-        <translation type="unfinished">Ieșire</translation>
+        <translation>Ieșire</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
         <source>Close exercise</source>
-        <translation type="unfinished"></translation>
+        <translation>Închide exercițiul</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
         <source>Hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Indiciu</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Înapoi</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Următorul →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <source>Hide hint</source>
-        <translation type="unfinished"></translation>
+        <translation>Ascunde indiciul</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasul %1 din %2</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>Exercise complete! Well done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exercițiu finalizat! Bravo.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Închide</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Finalizează</translation>
     </message>
 </context>
 <context>
@@ -1329,62 +1329,62 @@ Fiecare canal wireless trebuie să aibă o etichetă unică.</translation>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="46"/>
         <source>Stream error reading %1 count at position %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare de flux la citirea numărului de %1 la poziția %2</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="50"/>
         <source>Refusing to read %1 with implausible count %2 (max %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Refuz de citire a %1 cu un număr neplauzibil %2 (max. %3)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="60"/>
         <source>Stream error reading %1 entry %2 at position %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare de flux la citirea intrării %2 din %1 la poziția %3</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation type="unfinished">Eroare de flux la citirea proprietăților elementului la poziția %1</translation>
+        <translation>Eroare de flux la citirea proprietăților elementului la poziția %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
         <source>Stream error reading appearances at position %1</source>
-        <translation type="unfinished">Eroare de flux la citirea aspectelor la poziția %1</translation>
+        <translation>Eroare de flux la citirea aspectelor la poziția %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation type="unfinished">Index de aspect %1 în afara intervalului (dimensiune=%2) — fluxul poate fi corupt</translation>
+        <translation>Indicele aspectului %1 în afara intervalului (dimensiune=%2) — fluxul ar putea fi corupt</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
         <source>Non-finite element position — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Poziție de element non-finită — fluxul ar putea fi corupt</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotație de element non-finită — fluxul ar putea fi corupt</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Refuz al listei de porturi de intrare în format vechi cu un număr neplauzibil %1 (max. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Refuz al listei de porturi de ieșire în format vechi cu un număr neplauzibil %1 (max. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Refuz al listei de aspecte în format vechi cu un număr neplauzibil %1 (max. %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation type="unfinished">Indexul aspectului %1 în afara intervalului (dimensiune=%2) pentru numele aspectului &quot;%3&quot; — fluxul poate fi corupt</translation>
+        <translation>Indicele aspectului %1 în afara intervalului (dimensiune=%2) pentru numele de aspect „%3” — fluxul ar putea fi corupt</translation>
     </message>
 </context>
 <context>
@@ -1539,32 +1539,32 @@ Nume sugerat:</translation>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="103"/>
         <source>%1 not found.</source>
-        <translation type="unfinished">%1 nu a fost găsit.</translation>
+        <translation>%1 nu a fost găsit.</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="148"/>
         <source>Circular IC reference detected: %1</source>
-        <translation type="unfinished">Referință circulară IC detectată: %1</translation>
+        <translation>S-a detectat o referință circulară de CI: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="155"/>
         <source>Error opening file: %1</source>
-        <translation type="unfinished">Eroare la deschiderea fișierului: %1</translation>
+        <translation>Eroare la deschiderea fișierului: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="227"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation type="unfinished">Migrare IC: fișierul nu poate fi deschis pentru scriere: %1</translation>
+        <translation>Migrare CI: nu se poate deschide fișierul pentru scriere: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="234"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
-        <translation type="unfinished">Migrare IC: nu s-a putut finaliza fișierul resalvat: %1</translation>
+        <translation>Migrare CI: confirmarea fișierului resalvat a eșuat: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="297"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation type="unfinished">Limita de adâncime de imbricare a CI (%1) depășită — blob-ul poate fi creat răuvoitor</translation>
+        <translation>Limita de adâncime de imbricare a CI (%1) a fost depășită — blob-ul ar putea fi creat cu rea intenție</translation>
     </message>
 </context>
 <context>
@@ -1865,7 +1865,7 @@ Nume sugerat:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Minimap &amp;Position</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Poziția minimapei</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
@@ -2131,32 +2131,32 @@ Nume sugerat:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>Show IC Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Afișează previzualizarea CI</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>Show Minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>Afișează minimapa</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Top-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sus stânga</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Top-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Sus dreapta</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Bottom-left</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos stânga</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Bottom-right</source>
-        <translation type="unfinished"></translation>
+        <translation>Jos dreapta</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="822"/>
@@ -2176,22 +2176,22 @@ Nume sugerat:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>&amp;Exercises</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exerciții</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>&amp;Circuit Exercises...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exerciții de &amp;circuite...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>&amp;Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tururi</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="861"/>
         <source>&amp;Interactive Tours...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tururi &amp;interactive...</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="786"/>
@@ -2357,7 +2357,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../UI/MainWindow.cpp" line="500"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;wiRedPanda este un software dezvoltat de studenți ai Universității Federale din São Paulo pentru a-i ajuta pe elevi să învețe despre circuitele logice.&lt;/p&gt;&lt;p&gt;Versiune software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creatori:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda este întreținut în prezent de prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves și Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vă rugăm să trimiteți un raport pe pagina noastră de GitHub dacă găsiți o eroare sau doriți să solicitați o funcție nouă.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Vizitați site-ul nostru!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="573"/>
@@ -2385,7 +2385,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="26"/>
         <source>Mini-map: click or drag to navigate</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimapă: faceți clic sau trageți pentru a naviga</translation>
     </message>
 </context>
 <context>
@@ -2695,7 +2695,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../IO/Serialization.cpp" line="359"/>
         <source>Invalid legacy file header: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Antet de fișier vechi nevalid: %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="542"/>
@@ -2730,7 +2730,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../IO/Serialization.cpp" line="666"/>
         <source>Stream error reading preamble: status %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare de flux la citirea preambulului: stare %1</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="730"/>
@@ -2784,7 +2784,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
         <source>Could not open file for writing: %1</source>
-        <translation type="unfinished">Fișierul nu a putut fi deschis pentru scriere: %1</translation>
+        <translation>Nu s-a putut deschide fișierul pentru scriere: %1</translation>
     </message>
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
@@ -2838,7 +2838,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../Scene/Commands.cpp" line="1063"/>
         <source>TruthTable toggle position out of range: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Poziția de comutare a tabelului de adevăr în afara intervalului: %1</translation>
     </message>
 </context>
 <context>
@@ -2846,27 +2846,27 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-a putut crea sau accesa un folder pentru tururi personalizate.</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
         <source>Interactive Tours</source>
-        <translation type="unfinished"></translation>
+        <translation>Tururi interactive</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
         <source>Choose a Tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Alegeți un tur</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide folderul meu de tururi</translation>
     </message>
 </context>
 <context>
@@ -2874,33 +2874,33 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
         <source>Exit</source>
-        <translation type="unfinished">Ieșire</translation>
+        <translation>Ieșire</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
         <source>Stop the tour</source>
-        <translation type="unfinished"></translation>
+        <translation>Oprește turul</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
         <source>← Back</source>
-        <translation type="unfinished"></translation>
+        <translation>← Înapoi</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Next →</source>
-        <translation type="unfinished"></translation>
+        <translation>Următorul →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasul %1 din %2</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Finalizează</translation>
     </message>
 </context>
 <context>
@@ -3012,7 +3012,8 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
         <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not write the file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-a putut scrie fișierul:
+%1</translation>
     </message>
     <message>
         <location filename="../../UI/UpdateController.cpp" line="152"/>
@@ -3160,12 +3161,12 @@ Vrei să salvezi modificările?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <source>Save File</source>
-        <translation type="unfinished">Salvează Fișierul</translation>
+        <translation>Salvează fișierul</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
         <source>Save File (original location is read-only)</source>
-        <translation type="unfinished">Salvează fișierul (locația originală este doar pentru citire)</translation>
+        <translation>Salvează fișierul (locația originală este doar pentru citire)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
@@ -3272,7 +3273,7 @@ Vrei să salvezi modificările?</translation>
         <location filename="../../Main.cpp" line="372"/>
         <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eroare: nu a fost furnizat niciun fișier de circuit de intrare.</translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="407"/>

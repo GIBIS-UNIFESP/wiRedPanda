@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "Napsauta I/O-välilehteä vasemmassa paneelissa, vedä sitten kaksi InputSwitch-elementtiä työtasolle ja sijoita ne Ja-portin vasemmalle puolelle.",
+      "instruction": "Lisää kaksi InputSwitch-elementtiä työtasolle"
+    },
+    "add-output": {
+      "hint": "Vedä LED I/O-välilehdeltä ja sijoita se Ja-portin oikealle puolelle. Kytke sitten Ja-portin lähtöportti (oikea puoli) LED:n tuloporttiin (vasen puoli).",
+      "instruction": "Lisää LED ja kytke se Ja-portin lähtöön"
+    },
+    "connect-inputs": {
+      "hint": "Napsauta ja vedä InputSwitch-elementin lähtöportista (oikea puoli) johonkin Ja-portin tuloporteista (vasen puoli). Toista toiselle kytkimelle.",
+      "instruction": "Kytke molemmat tulokytkimet Ja-porttiin"
+    },
+    "description": "Opi sijoittamaan loogisia portteja, lisäämään tuloja ja lähtöjä sekä kytkemään niitä yhteen.",
+    "place-and-gate": {
+      "hint": "Napsauta Portit-välilehteä vasemmassa paneelissa ja vedä sitten Ja-portti työtasolle.",
+      "instruction": "Sijoita Ja-portti työtasolle"
+    },
+    "title": "Ja-portin piirin rakentaminen",
+    "toggle-observe": {
+      "hint": "Napsauta InputSwitch-elementtiä vaihtaaksesi sitä. LED syttyy vain, kun MOLEMMAT kytkimet ovat päällä. Tämä johtuu siitä, että Ja antaa lähdöksi 1 vain, kun kaikki tulot ovat 1.",
+      "instruction": "Vaihda kytkimiä ja tarkkaile LED:iä — tämä on Ja-logiikkaa!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "Napsauta I/O-välilehteä vasemmassa paneelissa, vedä sitten kaksi InputSwitch-elementtiä työtasolle ja sijoita ne Tai-portin vasemmalle puolelle.",
+      "instruction": "Lisää kaksi InputSwitch-elementtiä työtasolle"
+    },
+    "add-not-gate": {
+      "hint": "Vedä johto pois Tai-portin ja LED:n väliltä poistaaksesi sen.",
+      "instruction": "Irrota LED Tai-portista, kytke sitten Tai-portti Ei-porttiin ja Ei-portti LED:iin"
+    },
+    "add-output": {
+      "hint": "Vedä LED I/O-välilehdeltä ja sijoita se Tai-portin oikealle puolelle. Kytke sitten Tai-portin lähtöportti (oikea puoli) LED:n tuloporttiin (vasen puoli).",
+      "instruction": "Lisää LED ja kytke se Tai-portin lähtöön"
+    },
+    "connect-inputs": {
+      "hint": "Napsauta ja vedä InputSwitch-elementin lähtöportista (oikea puoli) johonkin Tai-portin tuloporteista (vasen puoli). Toista toiselle kytkimelle.",
+      "instruction": "Kytke molemmat tulokytkimet Tai-porttiin"
+    },
+    "description": "Opi käyttämään Tai- ja Ei-portteja.",
+    "place-or-gate": {
+      "hint": "Napsauta Portit-välilehteä vasemmassa paneelissa ja vedä sitten Tai-portti työtasolle.",
+      "instruction": "Sijoita Tai-portti työtasolle"
+    },
+    "title": "Lisää peruportteja: Tai ja Ei",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "Ei-portti kääntää signaalin. Nyt piiri antaa lähdöksi 1 vain, kun kumpikaan tuloista ei ole 1"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "Kokeile tuloja ja huomaa, kuinka Tai-portti antaa lähdöksi 1, kun jompikumpi sen tuloista on 1"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "Napsauta Muokkaa → Kombinaatio BeWavedDolphinin valikkorivillä. Tämä täyttää Kello-rivin kaikilla mahdollisilla arvoilla ja laskee LED-lähdön jokaiselle — täydellisen totuustaulun yhdellä napsautuksella.",
+      "instruction": "Luo automaattisesti kaikki tulokombinaatiot"
+    },
+    "connect-clock-led": {
+      "hint": "Napsauta ja vedä Kellon lähtöportista (oikea puoli) LED:n tuloporttiin (vasen puoli).",
+      "instruction": "Kytke Kellon lähtö LED:n tuloon"
+    },
+    "description": "Rakenna minimaalinen Kello-LED-piiri ja tutustu aaltomuotokatseluun: kombinaatiotila ja manuaalinen solujen muokkaus.",
+    "open-waveform": {
+      "hint": "BeWavedDolphin näyttää piirisi signaalit riveinä. Kello-rivi on tulo, ja Led-rivi on lähtö. Jokainen sarake on yksi simulaation aika-askel.",
+      "instruction": "Aaltomuotokatselu on nyt avoinna — katso!"
+    },
+    "place-clock": {
+      "hint": "Napsauta I/O-välilehteä vasemmassa paneelissa ja vedä sitten Kello-elementti työtasolle.",
+      "instruction": "Sijoita Kello-elementti työtasolle"
+    },
+    "place-led": {
+      "hint": "Pysyen I/O-välilehdellä, vedä Led-elementti työtasolle Kellon oikealle puolelle.",
+      "instruction": "Sijoita LED työtasolle"
+    },
+    "title": "Kello ja LED: aaltomuotojen perusteet",
+    "toggle-cell": {
+      "hint": "Kaksoisnapsauta mitä tahansa solua Kello-rivillä vaihtaaksesi sen 0:n ja 1:n välillä. Tarkkaile, kuinka Led-rivi päivittyy välittömästi näyttäen uuden lähdön.",
+      "instruction": "Vaihda Kello-solua manuaalisesti"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "Piirissäsi pitäisi nyt olla kaksi InputSwitch-elementtiä, kaksi LED:iä ja yksi DEMUX-piiri",
+      "instruction": "Lisää DEMUX-piiri ja kytke InputSwitch-elementit sen In- ja S0-portteihin. Kytke sitten kukin DEMUX:n lähdöistä eri LED:iin"
+    },
+    "add-inputs": {
+      "hint": "Napsauta I/O-välilehteä vasemmassa paneelissa, vedä sitten kaksi InputSwitch-elementtiä työtasolle ja sijoita ne MUX-piirin vasemmalle puolelle.",
+      "instruction": "Lisää kolme InputSwitch-elementtiä työtasolle"
+    },
+    "add-output": {
+      "hint": "Vedä LED I/O-välilehdeltä ja sijoita se MUX-piirin oikealle puolelle. Kytke sitten MUX-piirin lähtöportti (oikea puoli) LED:n tuloporttiin (vasen puoli).",
+      "instruction": "Lisää LED ja kytke se MUX-piirin lähtöön"
+    },
+    "connect-inputs": {
+      "hint": "Napsauta ja vedä InputSwitch-elementin lähtöportista (oikea puoli) johonkin MUX-portin tuloporteista (vasen puoli). Toista toiselle kytkimelle. Kytke sitten kolmas tulokytkin MUX:n valintaporttiin (alhaalla)",
+      "instruction": "Kytke kaikki tulokytkimet MUX-piiriin"
+    },
+    "description": "Opi MUX- ja DEMUX-piireistä.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "DEMUX:n alaosassa oleva S0-portti valitsee, mikä lähtö saa tulon signaalin. Kun S0 = 0, Out0 = In0. Kun S0 = 1, Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "MUX:n alaosassa oleva S0-portti valitsee, mikä tulo ohjataan lähtöön. Kun S0 = 0, Tulon 0 signaali lähetetään lähtöön. Kun S0 = 1, Tulon 1 signaali lähetetään lähtöön."
+    },
+    "place-mux": {
+      "hint": "Napsauta Kombinaatio-välilehteä vasemmassa paneelissa ja vedä sitten MUX-piiri työtasolle.",
+      "instruction": "Sijoita MUX-piiri työtasolle"
+    },
+    "prepare-demux": {
+      "hint": "Piirissäsi pitäisi nyt olla kaksi InputSwitch-elementtiä ja kaksi LED:iä",
+      "instruction": "Poista MUX-piiri ja yksi InputSwitch-elementeistä. Lisää sitten toinen LED"
+    },
+    "title": "Kombinaatiopiirit I: MUX ja DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "Kytke InputSwitch-elementtien lähdöt porttien tuloihin.",
+      "instruction": "Lisää toinen InputSwitch työtasolle ja anna sille nimikkeeksi Cin. Lisää sitten Xor-portti, Ja-portti ja Tai-portti"
+    },
+    "add-half-adder-gates": {
+      "hint": "Käytä Portit-välilehteä Xor- ja Ja-porttien lisäämiseen, käytä sitten I/O-välilehteä kahden LED:n lisäämiseen.",
+      "instruction": "Lisää Xor-portti, Ja-portti ja kaksi LED:iä työtasolle. Kytke sitten kukin portti eri LED:iin"
+    },
+    "add-inputs": {
+      "hint": "Napsauta I/O-välilehteä vasemmassa paneelissa, vedä sitten kolme InputSwitch-elementtiä työtasolle. Kolmatta InputSwitch-elementtiä käytetään myöhemmin muistibittinä (Cin).",
+      "instruction": "Lisää kaksi InputSwitch-elementtiä työtasolle"
+    },
+    "description": "Opi rakentamaan summainpiiri.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "Tämä piiri muodostaa täyssummaimen. Toisin kuin puolisummain, täyssummain hyväksyy muistibitin (Cin) edellisestä yhteenlaskusta ja tuottaa muistilähdön (Cout) seuraavalle vaiheelle. Kytkemällä yhden täyssummaimen Cout-lähdön toisen Cin-tuloon, useita täyssummaimia voidaan ketjuttaa yhteen minkä tahansa pituisten binäärilukujen yhteenlaskemiseksi"
+    },
+    "label-half-adder-outputs": {
+      "hint": "Napsauta LED:iä ja kirjoita näytön vasemmassa alakulmassa olevaan nimikekenttään antaaksesi LED:lle nimikkeen.",
+      "instruction": "Anna Xor-porttiin kytketylle LED:lle nimikkeeksi Sum, ja anna sitten Ja-porttiin kytketylle LED:lle nimikkeeksi Cout. Tämä piiri muodostaa puolisummaimen, joka laskee yhteen kaksi yksibittistä tuloa"
+    },
+    "title": "Kombinaatiopiirit III: Summain",
+    "wire-full-adder": {
+      "hint": "Poista vanhat kytkennät LED:eihin, jotta voit lisätä uudet.",
+      "instruction": "Kytke vanha Xor-portti ja Cin-kytkin uuteen Xor-porttiin, kytke sitten uusi Xor-portti Sum-lähtöön. Kytke myös vanha Xor-portti ja Cin-kytkin uuteen Ja-porttiin. Viimeistele kytkemällä molemmat Ja-portit Tai-porttiin ja Tai-portti Cout:iin"
+    },
+    "wire-half-adder": {
+      "hint": "Kytke InputSwitch-elementtien lähdöt porttien tuloihin.",
+      "instruction": "Kytke molemmat InputSwitch-elementit Xor-porttiin ja Ja-porttiin. Kunkin InputSwitch-elementin tulisi kytkeytyä molempiin portteihin. Xor-portti tuottaa Sum-lähdön, kun taas Ja-portti tuottaa Carry-lähdön"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "Käytä Portit-välilehteä vasemmassa paneelissa Ja-porttien lisäämiseen ja I/O-välilehteä LED:ien lisäämiseen.",
+      "instruction": "Lisää neljä Ja-porttia ja neljä LED:iä työtasolle, kytke sitten kukin Ja-portti johonkin LED:iin"
+    },
+    "add-inputs": {
+      "hint": "Napsauta I/O-välilehteä vasemmassa paneelissa ja vedä kaksi InputSwitch-elementtiä työtasolle.",
+      "instruction": "Lisää kaksi InputSwitch-elementtiä työtasolle"
+    },
+    "add-not-gates": {
+      "hint": "Napsauta Portit-välilehteä vasemmassa paneelissa, vedä sitten kaksi Ei-porttielementtiä työtasolle ja kytke InputSwitch-elementit niihin.",
+      "instruction": "Lisää kaksi Ei-porttia työtasolle ja kytke kukin InputSwitch erilliseen Ei-porttiin"
+    },
+    "description": "Opi rakentamaan 2:sta 4:ään -dekooderi.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "Jokaiselle tulobittien tietylle kombinaatiolle aktivoituu vain yksi vastaava lähtölinja, kun taas kaikki muut pysyvät pois päältä"
+    },
+    "title": "Kombinaatiopiirit II: Dekooderi",
+    "wire-decoder": {
+      "hint": "Kunkin Ja-portin tulisi saada yksi signaali kustakin tulosta. Käytä alkuperäistä InputSwitch-signaalia arvolle 1 ja vastaavaa Ei-portin lähtöä arvolle 0.",
+      "instruction": "Kytke Ei-porttien ja InputSwitch-elementtien lähdöt Ja-portteihin niin, että kukin Ja-portti edustaa yhtä tulokombinaatiota"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "D-salpa tallentaa yhden tuloarvon ja välttää SR-salvan virheellisen tulokombinaation.",
+      "instruction": "Poista SR-salpa säilyttäen InputSwitch-elementit ja LED:t. Lisää sitten D-salpa"
+    },
+    "add-sr-latch": {
+      "hint": "Käytä Muisti-välilehteä SR-salvan lisäämiseen. Käytä sitten I/O-välilehteä kahden InputSwitch-elementin ja kahden LED:n lisäämiseen.",
+      "instruction": "Lisää SR-salpa, kaksi InputSwitch-elementtiä ja kaksi LED:iä työtasolle"
+    },
+    "description": "Opi käyttämään salpoja.",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "Vaihda InputSwitch-elementtejä ja tarkkaile D-salpaa. Kun Enable on 1, lähtö seuraa D-tuloa. Kun Enable on 0, salpa muistaa edellisen arvonsa"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "Vaihda InputSwitch-elementtejä ja tarkkaile, kuinka SR-salpa tallentaa tilansa. S-tulon asettaminen arvoon 1 aiheuttaa Q-lähdön muuttumisen arvoon 1, kun taas R-tulon asettaminen arvoon 1 palauttaa Q:n arvoon 0. Kun molemmat tulot palaavat arvoon 0, salpa muistaa viimeisen tilansa, kunnes se asetetaan tai palautetaan uudelleen"
+    },
+    "title": "Sekvenssipiirit I: Salvat",
+    "wire-d-latch": {
+      "hint": "D-tulo on tallennettava arvo. Enable-tulo määrittää, milloin salpa päivittää tallennetun arvonsa.",
+      "instruction": "Kytke yksi InputSwitch D-tuloon ja toinen Enable (E) -tuloon. Kytke Q- ja Q̅-lähdöt LED:eihin"
+    },
+    "wire-sr-latch": {
+      "hint": "Kytke yksi InputSwitch Set (S) -tuloon ja toinen Reset (R) -tuloon. Kytke kukin salvan lähtö eri LED:iin.",
+      "instruction": "Kytke InputSwitch-elementit SR-salvan S- ja R-tuloihin. Kytke sitten Q- ja Q̅-lähdöt LED:eihin"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "Käytä Muisti-välilehteä T-kiikkujen ja Kellon lisäämiseen. Käytä sitten I/O-välilehteä kolmen InputSwitch-elementin ja kolmen LED:n lisäämiseen.",
+      "instruction": "Lisää kolme T-kiikkua, kolme InputSwitch-elementtiä, Kello ja kolme LED:iä työtasolle"
+    },
+    "description": "Opi rakentamaan laskuripiiri.",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "Kytke kaikki kolme InputSwitch-elementtiä päälle ja käynnistä Kello. Tarkkaile LED:ejä laskurin käydessä. Ensimmäinen LED vaihtaa tilaa joka kellopulssilla, toinen vaihtuu joka toisella pulssilla, ja kolmas joka neljännellä pulssilla, näyttäen toistuvan 3-bittisen binäärilaskennan 000:sta 111:een"
+    },
+    "title": "Sekvenssipiirit III: Laskuri",
+    "wire-clock": {
+      "hint": "Ensimmäinen kiikku vastaanottaa ulkoisen kellosignaalin.",
+      "instruction": "Kytke Kello ensimmäisen T-kiikun Clk-tuloon"
+    },
+    "wire-outputs": {
+      "hint": "Kukin LED edustaa yhtä laskurin bittiä, ensimmäisen LED:n ollessa vähiten merkitsevä bitti.",
+      "instruction": "Kytke kunkin kiikun Q-lähtö eri LED:iin"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "Kytke ensimmäisen kiikun Q-lähtö toisen kiikun Clk-tuloon, kytke sitten toisen kiikun Q-lähtö kolmannen kiikun Clk-tuloon. Kukin kiikku saa kellotuksensa edellisen lähdöstä, mikä luo aaltoilevan laskurin (ripple counter)"
+    },
+    "wire-t-inputs": {
+      "hint": "Kytke kaikki kolme InputSwitch-elementtiä päälle. T-kiikku vaihtaa vain, kun sen T-tulo on 1.",
+      "instruction": "Kytke kukin InputSwitch eri kiikun T-tuloon"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "Käytä Muisti-välilehteä D-kiikun ja Kellon lisäämiseen. Käytä sitten I/O-välilehteä kahden InputSwitch-elementin ja kahden LED:n lisäämiseen.",
+      "instruction": "Lisää D-kiikku, kaksi InputSwitch-elementtiä, Kello ja kaksi LED:iä työtasolle"
+    },
+    "add-jk-flipflop": {
+      "hint": "JK-kiikulla on J- ja K-tulot D-tulon sijaan. Jätä Clear- ja Preset-tulot kytkemättä.",
+      "instruction": "Korvaa D-kiikku JK-kiikulla säilyttäen Kellon, InputSwitch-elementit ja LED:t"
+    },
+    "add-t-flipflop": {
+      "hint": "T-kiikku vaatii vain yhden tulon kellon lisäksi.",
+      "instruction": "Korvaa JK-kiikku T-kiikulla ja poista yksi InputSwitch-elementeistä"
+    },
+    "description": "Opi kiikuista.",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "Kytke toinen InputSwitch joko Clear- tai Preset-tuloon ja tarkkaile sen vaikutusta. Toisin kuin D-tulo, Clear- ja Preset-tulot vaikuttavat välittömästi odottamatta kellon reunaa. Clear pakottaa Q:n arvoon 0, kun taas Preset pakottaa Q:n arvoon 1"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "Vaihda D-InputSwitch-elementtiä ja tarkkaile D-kiikkua. D-tulon arvo kopioidaan Q-lähtöön vain aktiivisella kellon reunalla. Kellon reunojen välillä lähtö pysyy muuttumattomana"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "Vaihda InputSwitch-elementtejä ja tarkkaile JK-kiikkua. Kun J = K = 0, lähtö säilyttää nykyisen tilansa. Kun J = 1 ja K = 0, lähtö asetetaan. Kun J = 0 ja K = 1, lähtö palautetaan. Kun J = K = 1, lähtö vaihtuu jokaisella aktiivisella kellon reunalla"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "Vaihda InputSwitch-elementtiä ja tarkkaile T-kiikkua. Kun T = 0, lähtö säilyttää nykyisen tilansa. Kun T = 1, lähtö vaihtuu jokaisella aktiivisella kellon reunalla. T-kiikkuja käytetään yleisesti binäärilaskurien ja taajuusjakajien rakentamiseen"
+    },
+    "title": "Sekvenssipiirit II: Kiikut",
+    "wire-d-flipflop": {
+      "hint": "Jätä Clear- ja Preset-tulot toistaiseksi kytkemättä.",
+      "instruction": "Kytke yksi InputSwitch D-tuloon, Kello Clk-tuloon, ja Q- ja Q̅-lähdöt LED:eihin. D-tulo antaa tallennettavan arvon, kun taas Kello määrittää, milloin arvo tallennetaan"
+    },
+    "wire-jk-flipflop": {
+      "hint": "JK-kiikku muuttaa lähtöään vain aktiivisella kellon reunalla.",
+      "instruction": "Kytke InputSwitch-elementit J- ja K-tuloihin, Kello Clk-tuloon, ja Q- ja Q̅-lähdöt LED:eihin"
+    },
+    "wire-t-flipflop": {
+      "hint": "Jätä Clear- ja Preset-tulot kytkemättä.",
+      "instruction": "Kytke jäljelle jäänyt InputSwitch T-tuloon, Kello Clk-tuloon, ja Q- ja Q̅-lähdöt LED:eihin"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "Rakenna piirisi tänne. Vedä komponentteja paletista ja kytke ne sitten napsauttamalla ja vetämällä lähtöportista (komponentin oikea puoli) tuloporttiin (toisen komponentin vasen puoli).",
+      "title": "Työtaso"
+    },
+    "combinational-mode": {
+      "body": "Korostettu painike (Kombinaatio) laukaistiin juuri automaattisesti — se täyttää tulorivit jokaisella mahdollisella 0/1-kombinaatiolla, antaen sinulle täydellisen totuustaulun yhdellä napsautuksella.",
+      "title": "Kombinaatiotila"
+    },
+    "component-palette": {
+      "body": "Tämä paneeli listaa kaikki saatavilla olevat komponentit — loogiset portit, tulot, lähdöt, kiikut ja muut. Komponentit on järjestetty kategorioittain yläreunan välilehtien avulla. Napsauta välilehteä selataksesi sen kategoriaa.",
+      "title": "Komponenttipaletti"
+    },
+    "description": "Ohjattu kierros pääkäyttöliittymässä — paletti, työtaso, työkalupalkki ja ominaisuuspaneeli.",
+    "editing-cells": {
+      "body": "Voit myös muokata aaltomuotoa käsin. Kaksoisnapsauta mitä tahansa solua Kello-rivillä vaihtaaksesi sen 0:n ja 1:n välillä — Led-rivi päivittyy välittömästi näyttäen uuden lähdön.",
+      "title": "Solujen muokkaaminen manuaalisesti"
+    },
+    "element-properties": {
+      "body": "Kun valitset komponentin työtasolla, sen ominaisuudet näkyvät tässä. Voit asettaa nimikkeitä, värejä, laukaisutyyppejä ja muita komponenttikohtaisia asetuksia. Kokeile valita sijoitettu komponentti nähdäksesi sen vaihtoehdot.",
+      "title": "Elementin ominaisuudet"
+    },
+    "logic-gates": {
+      "body": "Portit-välilehti sisältää Ja-, Tai-, Ei-, Nand-, Nor-, Xor- ja muita perusloogisia portteja. Vedä mikä tahansa portti tästä listasta työtasolle lisätäksesi sen piiriisi.",
+      "title": "Loogiset portit"
+    },
+    "search-bar": {
+      "body": "Käytä hakupalkkia löytääksesi nopeasti minkä tahansa komponentin nimen perusteella. Kirjoittaessasi alle ilmestyy suodatettu lista, joka näyttää vastaavat komponentit kaikista kategorioista.",
+      "title": "Hakupalkki"
+    },
+    "title": "wiRedPanda-käyttöliittymän esittely",
+    "waveform-table": {
+      "body": "Aaltomuototaulukko näyttää jokaisen piirisi signaalin. Kello-rivi on tulo; Led-rivi on laskettu lähtö. Jokainen sarake on yksi simulaation aika-askel — voit nähdä tarkalleen, kuinka lähtö seuraa tuloa.",
+      "title": "Aaltomuototaulukon lukeminen"
+    },
+    "waveform-viewer": {
+      "body": "wiRedPanda sisältää aaltomuotokatselun nimeltä BeWavedDolphin. Se näyttää, kuinka jokainen piirisi signaali muuttuu ajan myötä — tulot riveinä ylhäällä, lähdöt alla, jokaisen sarakkeen edustaessa yhtä simulaation aika-askelta. Napsauta korostettua työkalupalkin painiketta avataksesi sen.",
+      "title": "Aaltomuotokatselu"
+    },
+    "welcome": {
+      "body": "wiRedPanda on digitaalisten logiikkapiirien simulaattori. Voit rakentaa piirejä sijoittamalla komponentteja ja kytkemällä niitä yhteen. Tämä kierros näyttää käyttöliittymän tärkeimmät osat.",
+      "title": "Tervetuloa wiRedPandaan!"
+    }
+  }
+}

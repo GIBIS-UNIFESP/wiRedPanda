@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "Klik tab I/O di panel kiri, lalu seret dua elemen InputSwitch ke kanvas dan letakkan di sebelah kiri Gerbang And.",
+      "instruction": "Tambahkan dua elemen InputSwitch ke kanvas"
+    },
+    "add-output": {
+      "hint": "Seret LED dari tab I/O dan letakkan di sebelah kanan Gerbang And. Kemudian hubungkan port output Gerbang And (sisi kanan) ke port input LED (sisi kiri).",
+      "instruction": "Tambahkan LED dan hubungkan ke output Gerbang And"
+    },
+    "connect-inputs": {
+      "hint": "Klik dan seret dari port output InputSwitch (sisi kanan) ke salah satu port input Gerbang And (sisi kiri). Ulangi untuk sakelar kedua.",
+      "instruction": "Hubungkan kedua sakelar input ke Gerbang And"
+    },
+    "description": "Pelajari cara menempatkan gerbang logika, menambahkan input dan output, dan menghubungkannya.",
+    "place-and-gate": {
+      "hint": "Klik tab Gerbang di panel kiri, lalu seret Gerbang And ke kanvas.",
+      "instruction": "Tempatkan Gerbang And di kanvas"
+    },
+    "title": "Membangun Rangkaian dengan Gerbang And",
+    "toggle-observe": {
+      "hint": "Klik InputSwitch untuk mengalihkannya. LED hanya menyala saat KEDUA sakelar dalam keadaan AKTIF. Itu karena And hanya menghasilkan output 1 saat semua input adalah 1.",
+      "instruction": "Ganti sakelar dan amati LED — ini adalah logika And!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "Klik tab I/O di panel kiri, lalu seret dua elemen InputSwitch ke kanvas dan letakkan di sebelah kiri Gerbang Or.",
+      "instruction": "Tambahkan dua elemen InputSwitch ke kanvas"
+    },
+    "add-not-gate": {
+      "hint": "Seret kabel antara Gerbang Or dan LED untuk menghapusnya.",
+      "instruction": "Putuskan LED dari Gerbang Or, lalu hubungkan Gerbang Or ke Gerbang Not dan Gerbang Not ke LED"
+    },
+    "add-output": {
+      "hint": "Seret LED dari tab I/O dan letakkan di sebelah kanan Gerbang Or. Kemudian hubungkan port output Gerbang Or (sisi kanan) ke port input LED (sisi kiri).",
+      "instruction": "Tambahkan LED dan hubungkan ke output Gerbang Or"
+    },
+    "connect-inputs": {
+      "hint": "Klik dan seret dari port output InputSwitch (sisi kanan) ke salah satu port input Gerbang Or (sisi kiri). Ulangi untuk sakelar kedua.",
+      "instruction": "Hubungkan kedua sakelar input ke Gerbang Or"
+    },
+    "description": "Pelajari cara menggunakan Gerbang Or dan Not.",
+    "place-or-gate": {
+      "hint": "Klik tab Gerbang di panel kiri, lalu seret Gerbang Or ke kanvas.",
+      "instruction": "Tempatkan Gerbang Or di kanvas"
+    },
+    "title": "Gerbang Dasar Lainnya: Or dan Not",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "Gerbang Not membalikkan sinyal. Sekarang, rangkaian akan menghasilkan output 1 hanya saat tidak ada input yang bernilai 1"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "Bereksperimenlah dengan input dan perhatikan bagaimana Gerbang Or menghasilkan output 1 saat salah satu inputnya adalah 1"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "Klik Edit → Kombinasional di bilah menu BeWavedDolphin. Ini akan mengisi baris Clock dengan semua nilai yang mungkin dan menghitung output LED untuk masing-masing — tabel kebenaran lengkap hanya dengan satu klik.",
+      "instruction": "Menghasilkan semua kombinasi input secara otomatis"
+    },
+    "connect-clock-led": {
+      "hint": "Klik dan seret dari port output Clock (sisi kanan) ke port input LED (sisi kiri).",
+      "instruction": "Hubungkan output Clock ke input LED"
+    },
+    "description": "Bangun rangkaian Clock-LED minimal dan jelajahi penampil bentuk gelombang: mode kombinasional dan pengeditan sel manual.",
+    "open-waveform": {
+      "hint": "BeWavedDolphin menampilkan sinyal rangkaian Anda sebagai baris. Baris Clock adalah input, dan baris Led adalah output. Setiap kolom adalah satu langkah waktu simulasi.",
+      "instruction": "Penampil bentuk gelombang sekarang terbuka — lihatlah!"
+    },
+    "place-clock": {
+      "hint": "Klik tab I/O di panel kiri, lalu seret elemen Clock ke kanvas.",
+      "instruction": "Tempatkan elemen Clock di kanvas"
+    },
+    "place-led": {
+      "hint": "Masih di tab I/O, seret elemen Led ke kanvas di sebelah kanan Clock.",
+      "instruction": "Tempatkan LED di kanvas"
+    },
+    "title": "Clock dan LED: Dasar-Dasar Bentuk Gelombang",
+    "toggle-cell": {
+      "hint": "Klik dua kali sel mana pun di baris Clock untuk mengalihkannya antara 0 dan 1. Amati bagaimana baris Led diperbarui secara instan untuk mencerminkan output baru.",
+      "instruction": "Alihkan sel Clock secara manual"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "Pada titik ini rangkaian Anda seharusnya memiliki dua InputSwitch, dua LED, dan satu rangkaian DEMUX",
+      "instruction": "Tambahkan rangkaian DEMUX dan hubungkan InputSwitch ke port In dan S0-nya. Kemudian hubungkan setiap output DEMUX ke LED yang berbeda"
+    },
+    "add-inputs": {
+      "hint": "Klik tab I/O di panel kiri, lalu seret dua elemen InputSwitch ke kanvas dan letakkan di sebelah kiri rangkaian MUX.",
+      "instruction": "Tambahkan tiga elemen InputSwitch ke kanvas"
+    },
+    "add-output": {
+      "hint": "Seret LED dari tab I/O dan letakkan di sebelah kanan rangkaian MUX. Kemudian hubungkan port output rangkaian MUX (sisi kanan) ke port input LED (sisi kiri).",
+      "instruction": "Tambahkan LED dan hubungkan ke output rangkaian MUX"
+    },
+    "connect-inputs": {
+      "hint": "Klik dan seret dari port output InputSwitch (sisi kanan) ke salah satu port input Gerbang MUX (sisi kiri). Ulangi untuk sakelar kedua. Kemudian, hubungkan sakelar input ketiga ke port pemilihan MUX (bawah)",
+      "instruction": "Hubungkan semua sakelar input ke rangkaian MUX"
+    },
+    "description": "Pelajari tentang rangkaian MUX dan DEMUX.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "Port S0 di bagian bawah DEMUX memilih output mana yang akan menerima sinyal input. Ketika S0 = 0, Out0 = In0. Ketika S0 = 1, Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "Port S0 di bagian bawah MUX memilih input mana yang dialihkan ke output. Ketika S0 = 0, sinyal dari Input 0 dikirim ke output. Ketika S0 = 1, sinyal dari Input 1 dikirim ke output."
+    },
+    "place-mux": {
+      "hint": "Klik tab Kombinasional di panel kiri, lalu seret rangkaian MUX ke kanvas.",
+      "instruction": "Tempatkan rangkaian MUX di kanvas"
+    },
+    "prepare-demux": {
+      "hint": "Pada titik ini rangkaian Anda seharusnya memiliki dua InputSwitch dan dua LED",
+      "instruction": "Hapus rangkaian MUX dan salah satu InputSwitch. Kemudian tambahkan LED lain"
+    },
+    "title": "Rangkaian Kombinasional I: MUX dan DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "Hubungkan output InputSwitch ke input gerbang.",
+      "instruction": "Tambahkan InputSwitch lain ke kanvas dan beri label Cin. Kemudian tambahkan Gerbang Xor, Gerbang And, dan Gerbang Or"
+    },
+    "add-half-adder-gates": {
+      "hint": "Gunakan tab Gerbang untuk menambahkan Gerbang Xor dan And, lalu gunakan tab I/O untuk menambahkan dua LED.",
+      "instruction": "Tambahkan Gerbang Xor, Gerbang And, dan dua LED ke kanvas. Kemudian hubungkan setiap gerbang ke LED yang berbeda"
+    },
+    "add-inputs": {
+      "hint": "Klik tab I/O di panel kiri, lalu seret tiga elemen InputSwitch ke kanvas. InputSwitch ketiga akan digunakan nanti sebagai carry-in (Cin).",
+      "instruction": "Tambahkan dua elemen InputSwitch ke kanvas"
+    },
+    "description": "Pelajari cara membangun rangkaian adder.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "Rangkaian ini membentuk full adder. Berbeda dengan half adder, full adder menerima carry-in (Cin) dari penjumlahan sebelumnya dan menghasilkan carry-out (Cout) untuk tahap berikutnya. Dengan menghubungkan Cout dari satu full adder ke Cin dari full adder lain, beberapa full adder dapat dirangkai bersama untuk menjumlahkan bilangan biner dengan panjang berapa pun"
+    },
+    "label-half-adder-outputs": {
+      "hint": "Klik LED dan ketik di kotak teks label di pojok kiri bawah layar untuk memberi label pada LED.",
+      "instruction": "Beri label Sum pada LED yang terhubung ke Gerbang Xor, lalu beri label Cout pada LED yang terhubung ke Gerbang And. Rangkaian ini membentuk half adder, yang menjumlahkan dua input satu-bit"
+    },
+    "title": "Rangkaian Kombinasional III: Adder",
+    "wire-full-adder": {
+      "hint": "Hapus koneksi lama ke LED agar Anda dapat menambahkan yang baru.",
+      "instruction": "Hubungkan Gerbang Xor lama dan sakelar Cin ke Gerbang Xor baru, lalu hubungkan Gerbang Xor baru ke output Sum. Hubungkan juga Gerbang Xor lama dan sakelar Cin ke Gerbang And baru. Selesaikan dengan menghubungkan kedua Gerbang And ke Gerbang Or, dan Gerbang Or ke Cout"
+    },
+    "wire-half-adder": {
+      "hint": "Hubungkan output InputSwitch ke input gerbang.",
+      "instruction": "Hubungkan kedua InputSwitch ke Gerbang Xor dan Gerbang And. Setiap InputSwitch harus terhubung ke kedua gerbang. Gerbang Xor menghasilkan output Sum, sedangkan Gerbang And menghasilkan output Carry"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "Gunakan tab Gerbang di panel kiri untuk menambahkan Gerbang And dan tab I/O untuk menambahkan LED.",
+      "instruction": "Tambahkan empat Gerbang And dan empat LED ke kanvas, lalu hubungkan setiap Gerbang And ke salah satu LED"
+    },
+    "add-inputs": {
+      "hint": "Klik tab I/O di panel kiri dan seret dua elemen InputSwitch ke kanvas.",
+      "instruction": "Tambahkan dua elemen InputSwitch ke kanvas"
+    },
+    "add-not-gates": {
+      "hint": "Klik tab Gerbang di panel kiri, lalu seret dua elemen Gerbang Not ke kanvas dan hubungkan InputSwitch ke mereka.",
+      "instruction": "Tambahkan dua Gerbang Not ke kanvas dan hubungkan setiap InputSwitch ke Gerbang Not terpisah"
+    },
+    "description": "Pelajari cara membangun dekoder 2-ke-4.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "Untuk setiap kombinasi bit input tertentu, hanya satu jalur output yang sesuai yang diaktifkan, sementara semua yang lain tetap tidak aktif"
+    },
+    "title": "Rangkaian Kombinasional II: Dekoder",
+    "wire-decoder": {
+      "hint": "Setiap Gerbang And harus menerima satu sinyal dari setiap input. Gunakan sinyal InputSwitch asli untuk 1 dan output Gerbang Not yang sesuai untuk 0.",
+      "instruction": "Hubungkan output dari Gerbang Not dan InputSwitch ke Gerbang And sehingga setiap Gerbang And mewakili satu kombinasi input"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "Latch D menyimpan satu nilai input tunggal dan menghindari kombinasi input yang tidak valid dari latch SR.",
+      "instruction": "Hapus latch SR sambil mempertahankan InputSwitch dan LED. Kemudian tambahkan latch D"
+    },
+    "add-sr-latch": {
+      "hint": "Gunakan tab Memori untuk menambahkan latch SR. Kemudian gunakan tab I/O untuk menambahkan dua InputSwitch dan dua LED.",
+      "instruction": "Tambahkan latch SR, dua InputSwitch, dan dua LED ke kanvas"
+    },
+    "description": "Pelajari cara menggunakan latch.",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "Alihkan InputSwitch dan amati latch D. Ketika Enable adalah 1, output mengikuti input D. Ketika Enable adalah 0, latch mengingat nilai sebelumnya"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "Alihkan InputSwitch dan amati bagaimana latch SR menyimpan statusnya. Mengatur input S ke 1 menyebabkan output Q menjadi 1, sementara mengatur input R ke 1 mengatur ulang Q ke 0. Ketika kedua input kembali ke 0, latch mengingat status terakhirnya hingga diatur atau diatur ulang lagi"
+    },
+    "title": "Rangkaian Sekuensial I: Latch",
+    "wire-d-latch": {
+      "hint": "Input D adalah nilai yang akan disimpan. Input Enable menentukan kapan latch memperbarui nilai yang disimpannya.",
+      "instruction": "Hubungkan satu InputSwitch ke input D dan yang lain ke input Enable (E). Hubungkan output Q dan Q̅ ke LED"
+    },
+    "wire-sr-latch": {
+      "hint": "Hubungkan satu InputSwitch ke input Set (S) dan yang lain ke input Reset (R). Hubungkan setiap output latch ke LED yang berbeda.",
+      "instruction": "Hubungkan InputSwitch ke input S dan R dari latch SR. Kemudian hubungkan output Q dan Q̅ ke LED"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "Gunakan tab Memori untuk menambahkan flip-flop T dan Clock. Kemudian gunakan tab I/O untuk menambahkan tiga InputSwitch dan tiga LED.",
+      "instruction": "Tambahkan tiga flip-flop T, tiga InputSwitch, Clock, dan tiga LED ke kanvas"
+    },
+    "description": "Pelajari cara membangun rangkaian counter.",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "Nyalakan ketiga InputSwitch dan mulai Clock. Amati LED saat counter berjalan. LED pertama mengubah status setiap denyut clock, yang kedua berubah setiap dua denyut, dan yang ketiga setiap empat denyut, menampilkan hitungan biner 3-bit berulang dari 000 hingga 111"
+    },
+    "title": "Rangkaian Sekuensial III: Counter",
+    "wire-clock": {
+      "hint": "Flip-flop pertama menerima sinyal clock eksternal.",
+      "instruction": "Hubungkan Clock ke input Clk dari flip-flop T pertama"
+    },
+    "wire-outputs": {
+      "hint": "Setiap LED mewakili satu bit dari counter, dengan LED pertama menjadi bit paling tidak signifikan.",
+      "instruction": "Hubungkan output Q dari setiap flip-flop ke LED yang berbeda"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "Hubungkan output Q dari flip-flop pertama ke input Clk dari flip-flop kedua, lalu hubungkan output Q dari flip-flop kedua ke input Clk dari flip-flop ketiga. Setiap flip-flop di-clock oleh output dari yang sebelumnya, menciptakan penghitung riak (ripple counter)"
+    },
+    "wire-t-inputs": {
+      "hint": "Nyalakan ketiga InputSwitch. Flip-flop T hanya beralih ketika input T-nya adalah 1.",
+      "instruction": "Hubungkan setiap InputSwitch ke input T dari flip-flop yang berbeda"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "Gunakan tab Memori untuk menambahkan flip-flop D dan Clock. Kemudian gunakan tab I/O untuk menambahkan dua InputSwitch dan dua LED.",
+      "instruction": "Tambahkan flip-flop D, dua InputSwitch, Clock, dan dua LED ke kanvas"
+    },
+    "add-jk-flipflop": {
+      "hint": "Flip-flop JK memiliki input J dan K, bukan input D. Biarkan input Clear dan Preset tidak terhubung.",
+      "instruction": "Ganti flip-flop D dengan flip-flop JK sambil mempertahankan Clock, InputSwitch, dan LED"
+    },
+    "add-t-flipflop": {
+      "hint": "Flip-flop T hanya memerlukan satu input tunggal selain clock.",
+      "instruction": "Ganti flip-flop JK dengan flip-flop T dan hapus salah satu InputSwitch"
+    },
+    "description": "Pelajari tentang flip-flop.",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "Hubungkan InputSwitch kedua ke input Clear atau Preset dan amati efeknya. Berbeda dengan input D, input Clear dan Preset bertindak segera tanpa menunggu tepi clock. Clear memaksa Q ke 0, sedangkan Preset memaksa Q ke 1"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "Alihkan InputSwitch D dan amati flip-flop D. Nilai pada input D hanya disalin ke output Q pada tepi clock aktif. Di antara tepi clock, output tetap tidak berubah"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "Alihkan InputSwitch dan amati flip-flop JK. Ketika J = K = 0, output mempertahankan status saat ini. Ketika J = 1 dan K = 0, output diatur. Ketika J = 0 dan K = 1, output diatur ulang. Ketika J = K = 1, output beralih pada setiap tepi clock aktif"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "Alihkan InputSwitch dan amati flip-flop T. Ketika T = 0, output mempertahankan status saat ini. Ketika T = 1, output beralih pada setiap tepi clock aktif. Flip-flop T umumnya digunakan untuk membangun penghitung biner dan pembagi frekuensi"
+    },
+    "title": "Rangkaian Sekuensial II: Flip-Flop",
+    "wire-d-flipflop": {
+      "hint": "Biarkan input Clear dan Preset tidak terhubung untuk saat ini.",
+      "instruction": "Hubungkan satu InputSwitch ke input D, Clock ke input Clk, dan output Q serta Q̅ ke LED. Input D menyediakan nilai yang akan disimpan, sedangkan Clock menentukan kapan nilai tersebut disimpan"
+    },
+    "wire-jk-flipflop": {
+      "hint": "Flip-flop JK hanya mengubah outputnya pada tepi clock aktif.",
+      "instruction": "Hubungkan InputSwitch ke input J dan K, Clock ke input Clk, dan output Q serta Q̅ ke LED"
+    },
+    "wire-t-flipflop": {
+      "hint": "Biarkan input Clear dan Preset tidak terhubung.",
+      "instruction": "Hubungkan InputSwitch yang tersisa ke input T, Clock ke input Clk, dan output Q serta Q̅ ke LED"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "Bangun rangkaian Anda di sini. Seret komponen dari palet, lalu hubungkan dengan mengklik dan menyeret dari port output (sisi kanan komponen) ke port input (sisi kiri komponen lain).",
+      "title": "Kanvas"
+    },
+    "combinational-mode": {
+      "body": "Tombol yang disorot (Kombinasional) baru saja dipicu secara otomatis — ini mengisi baris input dengan setiap kombinasi 0/1 yang mungkin, memberi Anda tabel kebenaran lengkap hanya dengan satu klik.",
+      "title": "Mode Kombinasional"
+    },
+    "component-palette": {
+      "body": "Panel ini mencantumkan semua komponen yang tersedia — gerbang logika, input, output, flip-flop, dan lainnya. Komponen diatur berdasarkan kategori menggunakan tab di bagian atas. Klik tab untuk menelusuri kategorinya.",
+      "title": "Palet Komponen"
+    },
+    "description": "Tur berpemandu melalui antarmuka utama — palet, kanvas, bilah alat, dan panel properti.",
+    "editing-cells": {
+      "body": "Anda juga dapat mengedit bentuk gelombang secara manual. Klik dua kali sel mana pun di baris Clock untuk mengalihkannya antara 0 dan 1 — baris Led diperbarui secara instan untuk mencerminkan output baru.",
+      "title": "Mengedit Sel Secara Manual"
+    },
+    "element-properties": {
+      "body": "Ketika Anda memilih komponen di kanvas, propertinya muncul di sini. Anda dapat mengatur label, warna, jenis pemicu, dan pengaturan spesifik komponen lainnya. Coba pilih komponen yang telah ditempatkan untuk melihat opsinya.",
+      "title": "Properti Elemen"
+    },
+    "logic-gates": {
+      "body": "Tab Gerbang berisi And, Or, Not, Nand, Nor, Xor, dan gerbang logika dasar lainnya. Seret gerbang mana pun dari daftar ini ke kanvas untuk menambahkannya ke rangkaian Anda.",
+      "title": "Gerbang Logika"
+    },
+    "search-bar": {
+      "body": "Gunakan bilah pencarian untuk dengan cepat menemukan komponen apa pun berdasarkan nama. Saat Anda mengetik, daftar yang difilter akan muncul di bawah menampilkan komponen yang cocok dari semua kategori.",
+      "title": "Bilah Pencarian"
+    },
+    "title": "Tur Antarmuka wiRedPanda",
+    "waveform-table": {
+      "body": "Tabel bentuk gelombang menunjukkan setiap sinyal dalam rangkaian Anda. Baris Clock adalah input; baris Led adalah output yang dihitung. Setiap kolom adalah satu langkah waktu simulasi — Anda dapat melihat persis bagaimana output mengikuti input.",
+      "title": "Membaca Tabel Bentuk Gelombang"
+    },
+    "waveform-viewer": {
+      "body": "wiRedPanda menyertakan penampil bentuk gelombang bernama BeWavedDolphin. Ini menunjukkan bagaimana setiap sinyal dalam rangkaian Anda berubah seiring waktu — input sebagai baris di bagian atas, output di bawah, dengan setiap kolom mewakili satu langkah waktu simulasi. Klik tombol bilah alat yang disorot untuk membukanya.",
+      "title": "Penampil Bentuk Gelombang"
+    },
+    "welcome": {
+      "body": "wiRedPanda adalah simulator rangkaian logika digital. Anda dapat membangun rangkaian dengan menempatkan komponen dan menghubungkannya satu sama lain. Tur ini akan menunjukkan kepada Anda bagian-bagian utama antarmuka.",
+      "title": "Selamat Datang di wiRedPanda!"
+    }
+  }
+}

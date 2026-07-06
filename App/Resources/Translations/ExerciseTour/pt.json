@@ -1,0 +1,322 @@
+{
+  "basic-and-gate": {
+    "add-inputs": {
+      "hint": "Clica no separador E/S no painel esquerdo, depois arrasta dois elementos InputSwitch para a área de desenho e coloca-os à esquerda da porta E.",
+      "instruction": "Adiciona dois elementos InputSwitch à área de desenho"
+    },
+    "add-output": {
+      "hint": "Arrasta um LED do separador E/S e coloca-o à direita da porta E. Depois liga a porta de saída da porta E (lado direito) à porta de entrada do LED (lado esquerdo).",
+      "instruction": "Adiciona um LED e liga-o à saída da porta E"
+    },
+    "connect-inputs": {
+      "hint": "Clica e arrasta a partir de uma porta de saída de um InputSwitch (lado direito) para uma das portas de entrada da porta E (lado esquerdo). Repete para o segundo interruptor.",
+      "instruction": "Liga os dois interruptores de entrada à porta E"
+    },
+    "description": "Aprende a colocar portas lógicas, adicionar entradas e saídas, e ligá-las entre si.",
+    "place-and-gate": {
+      "hint": "Clica no separador Portas no painel esquerdo e depois arrasta a porta E para a área de desenho.",
+      "instruction": "Coloca uma porta E na área de desenho"
+    },
+    "title": "Construir um circuito com uma porta E",
+    "toggle-observe": {
+      "hint": "Clica num InputSwitch para o alternar. O LED só acende quando AMBOS os interruptores estão ligados. Isto acontece porque a E só produz 1 quando todas as entradas são 1.",
+      "instruction": "Alterna os interruptores e observa o LED — isto é lógica E!"
+    }
+  },
+  "basic-or-not-gates": {
+    "add-inputs": {
+      "hint": "Clica no separador E/S no painel esquerdo, depois arrasta dois elementos InputSwitch para a área de desenho e coloca-os à esquerda da porta Ou.",
+      "instruction": "Adiciona dois elementos InputSwitch à área de desenho"
+    },
+    "add-not-gate": {
+      "hint": "Arrasta o fio entre a porta Ou e o LED para o remover.",
+      "instruction": "Desliga o LED da porta Ou, depois liga a porta Ou a uma porta Não e a porta Não ao LED"
+    },
+    "add-output": {
+      "hint": "Arrasta um LED do separador E/S e coloca-o à direita da porta Ou. Depois liga a porta de saída da porta Ou (lado direito) à porta de entrada do LED (lado esquerdo).",
+      "instruction": "Adiciona um LED e liga-o à saída da porta Ou"
+    },
+    "connect-inputs": {
+      "hint": "Clica e arrasta a partir de uma porta de saída de um InputSwitch (lado direito) para uma das portas de entrada da porta Ou (lado esquerdo). Repete para o segundo interruptor.",
+      "instruction": "Liga os dois interruptores de entrada à porta Ou"
+    },
+    "description": "Aprende a usar as portas Ou e Não.",
+    "place-or-gate": {
+      "hint": "Clica no separador Portas no painel esquerdo e depois arrasta a porta Ou para a área de desenho.",
+      "instruction": "Coloca uma porta Ou na área de desenho"
+    },
+    "title": "Mais portas básicas: Ou e Não",
+    "toggle-observe-nor": {
+      "hint": "",
+      "instruction": "A porta Não inverte o sinal. Agora, o circuito só produzirá 1 quando nenhuma das entradas for 1"
+    },
+    "toggle-observe-or": {
+      "hint": "",
+      "instruction": "Experimenta as entradas e repara como a porta Ou produz 1 quando qualquer uma das suas entradas é 1"
+    }
+  },
+  "clock-led-waveform": {
+    "combinational-mode": {
+      "hint": "Clica em Editar → Combinatório na barra de menus do BeWavedDolphin. Isto preenche a linha Clock com todos os valores possíveis e calcula a saída do LED para cada um — uma tabela de verdade completa com um clique.",
+      "instruction": "Gerar automaticamente todas as combinações de entrada"
+    },
+    "connect-clock-led": {
+      "hint": "Clica e arrasta a partir da porta de saída do Clock (lado direito) para a porta de entrada do LED (lado esquerdo).",
+      "instruction": "Liga a saída do Clock à entrada do LED"
+    },
+    "description": "Constrói um circuito mínimo de Clock e LED e explora o visualizador de formas de onda: modo combinatório e edição manual de células.",
+    "open-waveform": {
+      "hint": "O BeWavedDolphin mostra os sinais do teu circuito como linhas. A linha Clock é a entrada, e a linha Led é a saída. Cada coluna é um passo de tempo da simulação.",
+      "instruction": "O visualizador de formas de onda está agora aberto — dá uma vista de olhos!"
+    },
+    "place-clock": {
+      "hint": "Clica no separador E/S no painel esquerdo e depois arrasta o elemento Clock para a área de desenho.",
+      "instruction": "Coloca um elemento Clock na área de desenho"
+    },
+    "place-led": {
+      "hint": "Ainda no separador E/S, arrasta um elemento Led para a área de desenho à direita do Clock.",
+      "instruction": "Coloca um LED na área de desenho"
+    },
+    "title": "Clock e LED: noções básicas de formas de onda",
+    "toggle-cell": {
+      "hint": "Faz duplo clique em qualquer célula da linha Clock para a alternar entre 0 e 1. Observa a linha Led a atualizar-se instantaneamente para refletir a nova saída.",
+      "instruction": "Alternar manualmente uma célula do Clock"
+    }
+  },
+  "combinational-circuits-one": {
+    "add-demux": {
+      "hint": "Neste ponto, o teu circuito deve ter dois InputSwitch, dois LED e um circuito DEMUX",
+      "instruction": "Adiciona um circuito DEMUX e liga os InputSwitch às suas portas In e S0. Depois liga cada uma das saídas do DEMUX a um LED diferente"
+    },
+    "add-inputs": {
+      "hint": "Clica no separador E/S no painel esquerdo, depois arrasta dois elementos InputSwitch para a área de desenho e coloca-os à esquerda do circuito MUX.",
+      "instruction": "Adiciona três elementos InputSwitch à área de desenho"
+    },
+    "add-output": {
+      "hint": "Arrasta um LED do separador E/S e coloca-o à direita do circuito MUX. Depois liga a porta de saída do circuito MUX (lado direito) à porta de entrada do LED (lado esquerdo).",
+      "instruction": "Adiciona um LED e liga-o à saída do circuito MUX"
+    },
+    "connect-inputs": {
+      "hint": "Clica e arrasta a partir de uma porta de saída de um InputSwitch (lado direito) para uma das portas de entrada da porta MUX (lado esquerdo). Repete para o segundo interruptor. Depois, liga o terceiro interruptor de entrada à porta de seleção do MUX (em baixo)",
+      "instruction": "Liga todos os interruptores de entrada ao circuito MUX"
+    },
+    "description": "Aprende sobre os circuitos MUX e DEMUX.",
+    "explain-demux-select": {
+      "hint": "",
+      "instruction": "A porta S0 na parte inferior do DEMUX seleciona qual a saída que recebe o sinal da entrada. Quando S0 = 0, Out0 = In0. Quando S0 = 1, Out1 = In0"
+    },
+    "explain-mux-select": {
+      "hint": "",
+      "instruction": "A porta S0 na parte inferior do MUX seleciona qual a entrada encaminhada para a saída. Quando S0 = 0, o sinal da Entrada 0 é enviado para a saída. Quando S0 = 1, o sinal da Entrada 1 é enviado para a saída."
+    },
+    "place-mux": {
+      "hint": "Clica no separador Combinatório no painel esquerdo e depois arrasta o circuito MUX para a área de desenho.",
+      "instruction": "Coloca um circuito MUX na área de desenho"
+    },
+    "prepare-demux": {
+      "hint": "Neste ponto, o teu circuito deve ter dois InputSwitch e dois LED",
+      "instruction": "Elimina o circuito MUX e um dos InputSwitch. Depois adiciona outro LED"
+    },
+    "title": "Circuitos combinatórios I: MUX e DEMUX"
+  },
+  "combinational-circuits-three": {
+    "add-cin-and-gates": {
+      "hint": "Liga as saídas dos InputSwitch às entradas das portas.",
+      "instruction": "Adiciona outro InputSwitch à área de desenho e dá-lhe o rótulo Cin. Depois adiciona uma porta XOR, uma porta E e uma porta Ou"
+    },
+    "add-half-adder-gates": {
+      "hint": "Usa o separador Portas para adicionar as portas XOR e E, e depois usa o separador E/S para adicionar dois LED.",
+      "instruction": "Adiciona uma porta XOR, uma porta E e dois LED à área de desenho. Depois liga cada porta a um LED diferente"
+    },
+    "add-inputs": {
+      "hint": "Clica no separador E/S no painel esquerdo, depois arrasta três elementos InputSwitch para a área de desenho. O terceiro InputSwitch será usado mais tarde como transporte de entrada (Cin).",
+      "instruction": "Adiciona dois elementos InputSwitch à área de desenho"
+    },
+    "description": "Aprende a construir um circuito somador.",
+    "explain-full-adder": {
+      "hint": "",
+      "instruction": "Este circuito forma um somador completo. Ao contrário de um semissomador, um somador completo aceita um transporte de entrada (Cin) de uma soma anterior e produz um transporte de saída (Cout) para a etapa seguinte. Ao ligar o Cout de um somador completo ao Cin de outro, vários somadores completos podem ser encadeados para somar números binários de qualquer comprimento"
+    },
+    "label-half-adder-outputs": {
+      "hint": "Clica num LED e escreve na caixa de texto do rótulo no canto inferior esquerdo do ecrã para dar um rótulo a um LED.",
+      "instruction": "Dá ao LED ligado à porta XOR o rótulo Sum e depois dá ao LED ligado à porta E o rótulo Cout. Este circuito forma um semissomador, que soma duas entradas de um único bit"
+    },
+    "title": "Circuitos combinatórios III: Somador",
+    "wire-full-adder": {
+      "hint": "Remove as ligações antigas aos LED para poderes adicionar as novas.",
+      "instruction": "Liga a antiga porta XOR e o interruptor Cin à nova porta XOR, e depois liga a nova porta XOR à saída Sum. Liga também a antiga porta XOR e o interruptor Cin à nova porta E. Termina ligando ambas as portas E à porta Ou, e a porta Ou ao Cout"
+    },
+    "wire-half-adder": {
+      "hint": "Liga as saídas dos InputSwitch às entradas das portas.",
+      "instruction": "Liga os dois InputSwitch à porta XOR e à porta E. Cada InputSwitch deve ligar-se a ambas as portas. A porta XOR produz a saída Sum, enquanto a porta E produz a saída Carry"
+    }
+  },
+  "combinational-circuits-two": {
+    "add-and-gates-leds": {
+      "hint": "Usa o separador Portas no painel esquerdo para adicionar as portas E e o separador E/S para adicionar os LED.",
+      "instruction": "Adiciona quatro portas E e quatro LED à área de desenho e depois liga cada porta E a um dos LED"
+    },
+    "add-inputs": {
+      "hint": "Clica no separador E/S no painel esquerdo e depois arrasta dois elementos InputSwitch para a área de desenho.",
+      "instruction": "Adiciona dois elementos InputSwitch à área de desenho"
+    },
+    "add-not-gates": {
+      "hint": "Clica no separador Portas no painel esquerdo, depois arrasta dois elementos porta Não para a área de desenho e liga os InputSwitch a eles.",
+      "instruction": "Adiciona duas portas Não à área de desenho e liga cada InputSwitch a uma porta Não separada"
+    },
+    "description": "Aprende a construir um descodificador de 2 para 4.",
+    "explain-decoder": {
+      "hint": "",
+      "instruction": "Para cada combinação específica de bits de entrada, apenas uma linha de saída correspondente é ativada, enquanto todas as outras permanecem inativas"
+    },
+    "title": "Circuitos combinatórios II: Descodificador",
+    "wire-decoder": {
+      "hint": "Cada porta E deve receber um sinal de cada entrada. Usa o sinal InputSwitch original para um 1 e a saída correspondente da porta Não para um 0.",
+      "instruction": "Liga as saídas das portas Não e dos InputSwitch às portas E para que cada porta E represente uma combinação de entrada"
+    }
+  },
+  "sequential-circuits-one": {
+    "add-d-latch": {
+      "hint": "O latch D guarda um único valor de entrada e evita a combinação de entrada inválida de um latch SR.",
+      "instruction": "Remove o latch SR mantendo os InputSwitch e os LED. Depois adiciona um latch D"
+    },
+    "add-sr-latch": {
+      "hint": "Usa o separador Memória para adicionar um latch SR. Depois usa o separador E/S para adicionar dois InputSwitch e dois LED.",
+      "instruction": "Adiciona um latch SR, dois InputSwitch e dois LED à área de desenho"
+    },
+    "description": "Aprende a usar Latches.",
+    "explain-d-latch": {
+      "hint": "",
+      "instruction": "Alterna os InputSwitch e observa o latch D. Quando Enable é 1, a saída segue a entrada D. Quando Enable é 0, o latch recorda o seu valor anterior"
+    },
+    "explain-sr-latch": {
+      "hint": "",
+      "instruction": "Alterna os InputSwitch e observa como o latch SR guarda o seu estado. Colocar a entrada S a 1 faz com que a saída Q passe a 1, enquanto colocar a entrada R a 1 repõe Q a 0. Quando ambas as entradas voltam a 0, o latch recorda o seu último estado até ser novamente definido ou reposto"
+    },
+    "title": "Circuitos sequenciais I: Latches",
+    "wire-d-latch": {
+      "hint": "A entrada D é o valor a guardar. A entrada Enable determina quando o latch atualiza o valor guardado.",
+      "instruction": "Liga um InputSwitch à entrada D e o outro à entrada Enable (E). Liga as saídas Q e Q̅ aos LED"
+    },
+    "wire-sr-latch": {
+      "hint": "Liga um InputSwitch à entrada Set (S) e o outro à entrada Reset (R). Liga cada saída do latch a um LED diferente.",
+      "instruction": "Liga os InputSwitch às entradas S e R do latch SR. Depois liga as saídas Q e Q̅ aos LED"
+    }
+  },
+  "sequential-circuits-three": {
+    "add-flipflops": {
+      "hint": "Usa o separador Memória para adicionar os flip-flops T e um Clock. Depois usa o separador E/S para adicionar três InputSwitch e três LED.",
+      "instruction": "Adiciona três flip-flops T, três InputSwitch, um Clock e três LED à área de desenho"
+    },
+    "description": "Aprende a construir um circuito contador.",
+    "explain-counter": {
+      "hint": "",
+      "instruction": "Liga os três InputSwitch e inicia o Clock. Observa os LED enquanto o contador funciona. O primeiro LED muda de estado a cada impulso de relógio, o segundo muda a cada dois impulsos e o terceiro muda a cada quatro impulsos, mostrando uma contagem binária de 3 bits que se repete de 000 a 111"
+    },
+    "title": "Circuitos sequenciais III: Contador",
+    "wire-clock": {
+      "hint": "O primeiro flip-flop recebe o sinal de relógio externo.",
+      "instruction": "Liga o Clock à entrada Clk do primeiro flip-flop T"
+    },
+    "wire-outputs": {
+      "hint": "Cada LED representa um bit do contador, sendo o primeiro LED o bit menos significativo.",
+      "instruction": "Liga a saída Q de cada flip-flop a um LED diferente"
+    },
+    "wire-ripple-clock": {
+      "hint": "",
+      "instruction": "Liga a saída Q do primeiro flip-flop à entrada Clk do segundo flip-flop, e depois liga a saída Q do segundo flip-flop à entrada Clk do terceiro flip-flop. Cada flip-flop é temporizado pela saída do anterior, criando um contador em cascata"
+    },
+    "wire-t-inputs": {
+      "hint": "Liga os três InputSwitch. Um flip-flop T só alterna quando a sua entrada T é 1.",
+      "instruction": "Liga cada InputSwitch à entrada T de um flip-flop diferente"
+    }
+  },
+  "sequential-circuits-two": {
+    "add-d-flipflop": {
+      "hint": "Usa o separador Memória para adicionar um flip-flop D e um Clock. Depois usa o separador E/S para adicionar dois InputSwitch e dois LED.",
+      "instruction": "Adiciona um flip-flop D, dois InputSwitch, um Clock e dois LED à área de desenho"
+    },
+    "add-jk-flipflop": {
+      "hint": "O flip-flop JK tem entradas J e K em vez de uma entrada D. Deixa as entradas Clear e Preset por ligar.",
+      "instruction": "Substitui o flip-flop D por um flip-flop JK mantendo o Clock, os InputSwitch e os LED"
+    },
+    "add-t-flipflop": {
+      "hint": "Um flip-flop T só necessita de uma única entrada além do relógio.",
+      "instruction": "Substitui o flip-flop JK por um flip-flop T e remove um dos InputSwitch"
+    },
+    "description": "Aprende sobre Flip-Flops.",
+    "explain-clear-preset": {
+      "hint": "",
+      "instruction": "Liga o segundo InputSwitch à entrada Clear ou Preset e observa o efeito. Ao contrário da entrada D, as entradas Clear e Preset atuam de imediato sem esperar por uma transição do relógio. Clear força Q a 0, enquanto Preset força Q a 1"
+    },
+    "explain-d-flipflop": {
+      "hint": "",
+      "instruction": "Alterna o InputSwitch D e observa o flip-flop D. O valor na entrada D só é copiado para a saída Q na transição ativa do relógio. Entre transições do relógio, a saída mantém-se inalterada"
+    },
+    "explain-jk-flipflop": {
+      "hint": "",
+      "instruction": "Alterna os InputSwitch e observa o flip-flop JK. Quando J = K = 0, a saída mantém o seu estado atual. Quando J = 1 e K = 0, a saída é definida. Quando J = 0 e K = 1, a saída é reposta. Quando J = K = 1, a saída alterna em cada transição ativa do relógio"
+    },
+    "explain-t-flipflop": {
+      "hint": "",
+      "instruction": "Alterna o InputSwitch e observa o flip-flop T. Quando T = 0, a saída mantém o seu estado atual. Quando T = 1, a saída alterna em cada transição ativa do relógio. Os flip-flops T são normalmente usados para construir contadores binários e divisores de frequência"
+    },
+    "title": "Circuitos sequenciais II: Flip-flops",
+    "wire-d-flipflop": {
+      "hint": "Deixa por agora as entradas Clear e Preset por ligar.",
+      "instruction": "Liga um InputSwitch à entrada D, o Clock à entrada Clk, e as saídas Q e Q̅ aos LED. A entrada D fornece o valor a guardar, enquanto o Clock determina quando o valor é guardado"
+    },
+    "wire-jk-flipflop": {
+      "hint": "O flip-flop JK só muda a sua saída na transição ativa do relógio.",
+      "instruction": "Liga os InputSwitch às entradas J e K, o Clock à entrada Clk, e as saídas Q e Q̅ aos LED"
+    },
+    "wire-t-flipflop": {
+      "hint": "Deixa as entradas Clear e Preset por ligar.",
+      "instruction": "Liga o InputSwitch restante à entrada T, o Clock à entrada Clk, e as saídas Q e Q̅ aos LED"
+    }
+  },
+  "ui-overview": {
+    "canvas": {
+      "body": "Constrói o teu circuito aqui. Arrasta componentes da paleta e depois liga-os clicando e arrastando de uma porta de saída (lado direito de um componente) para uma porta de entrada (lado esquerdo de outro).",
+      "title": "A área de desenho"
+    },
+    "combinational-mode": {
+      "body": "O botão destacado (Combinatório) acabou de ser acionado automaticamente — preenche as linhas de entrada com todas as combinações possíveis de 0/1, dando-te uma tabela de verdade completa com um clique.",
+      "title": "Modo combinatório"
+    },
+    "component-palette": {
+      "body": "Este painel lista todos os componentes disponíveis — portas lógicas, entradas, saídas, flip-flops e muito mais. Os componentes estão organizados por categoria através dos separadores no topo. Clica num separador para explorar a sua categoria.",
+      "title": "Paleta de componentes"
+    },
+    "description": "Uma visita guiada pela interface principal — paleta, área de desenho, barra de ferramentas e painel de propriedades.",
+    "editing-cells": {
+      "body": "Também podes editar a forma de onda manualmente. Faz duplo clique em qualquer célula da linha Clock para a alternar entre 0 e 1 — a linha Led atualiza-se instantaneamente para refletir a nova saída.",
+      "title": "Edição manual de células"
+    },
+    "element-properties": {
+      "body": "Quando selecionas um componente na área de desenho, as suas propriedades aparecem aqui. Podes definir rótulos, cores, tipos de acionamento e outras definições específicas do componente. Experimenta selecionar um componente colocado para ver as suas opções.",
+      "title": "Propriedades do elemento"
+    },
+    "logic-gates": {
+      "body": "O separador Portas contém E, Ou, Não, NAND, NOR, XOR e outras portas lógicas fundamentais. Arrasta qualquer porta desta lista para a área de desenho para a adicionar ao teu circuito.",
+      "title": "Portas lógicas"
+    },
+    "search-bar": {
+      "body": "Usa a barra de pesquisa para encontrar rapidamente qualquer componente pelo nome. À medida que escreves, aparece por baixo uma lista filtrada com os componentes correspondentes em todas as categorias.",
+      "title": "Barra de pesquisa"
+    },
+    "title": "Visita guiada à interface do wiRedPanda",
+    "waveform-table": {
+      "body": "A tabela de formas de onda mostra cada sinal do teu circuito. A linha Clock é a entrada; a linha Led é a saída calculada. Cada coluna é um passo de tempo da simulação — podes ver exatamente como a saída segue a entrada.",
+      "title": "Ler a tabela de formas de onda"
+    },
+    "waveform-viewer": {
+      "body": "O wiRedPanda inclui um visualizador de formas de onda chamado BeWavedDolphin. Mostra como cada sinal do teu circuito muda ao longo do tempo — as entradas como linhas no topo, as saídas por baixo, com cada coluna a representar um passo de tempo da simulação. Clica no botão destacado na barra de ferramentas para o abrir.",
+      "title": "Visualizador de formas de onda"
+    },
+    "welcome": {
+      "body": "O wiRedPanda é um simulador de circuitos lógicos digitais. Podes construir circuitos colocando componentes e ligando-os entre si. Esta visita guiada mostra-te as principais partes da interface.",
+      "title": "Bem-vindo ao wiRedPanda!"
+    }
+  }
+}
