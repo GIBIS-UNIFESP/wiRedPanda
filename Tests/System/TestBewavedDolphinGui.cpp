@@ -1015,3 +1015,51 @@ void TestBewavedDolphinGui::testFitScreenClampsAndGuardsA26()
     QVERIFY(dolphin->m_zoom->fitScale() >= kMinFitScale);
     QVERIFY(dolphin->m_zoom->fitScale() <= kMaxFitScale);
 }
+
+void TestBewavedDolphinGui::testCreateWaveformResolvesAbsolutePathOutsideProjectDir()
+{
+    // A waveform file linked from outside the project directory (e.g. via
+    // associateToWiRedPanda()'s "Save As...") must still resolve by its absolute path —
+    // createWaveform() must not unconditionally discard the directory and only search
+    // the project's own folder.
+    QVERIFY(QDir(m_tempDir.path()).mkpath("project"));
+    QVERIFY(QDir(m_tempDir.path()).mkpath("elsewhere"));
+    const QString projectDir = m_tempDir.filePath("project");
+    const QString elsewhereDir = m_tempDir.filePath("elsewhere");
+    const QString dolphinPath = elsewhereDir + "/waveform.dolphin";
+
+    auto ws = createAndCircuit();
+
+    // Save a waveform with a known pattern to a .dolphin file living outside any project
+    // directory, via the same Save-As action other tests use.
+    {
+        StubDolphinHost host;
+        host.m_currentDir = QDir(elsewhereDir);
+        std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, &host));
+        dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+        dolphin->createWaveform("");
+        dolphin->setCellValue(0, 0, 1);
+        dolphin->run();
+
+        auto *action = dolphin->findChild<QAction *>("actionSaveAs");
+        QVERIFY2(action, "actionSaveAs not found");
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {dolphinPath, "Dolphin files (*.dolphin)"};
+        action->trigger();
+    }
+
+    QVERIFY(QFile::exists(dolphinPath));
+
+    // Open a fresh BewavedDolphin whose project directory is a different folder, and load
+    // the waveform by its full absolute path (as WorkSpace::dolphinFileName() would return
+    // after linking a file that lives outside the project).
+    StubDolphinHost host2;
+    host2.m_currentDir = QDir(projectDir);
+    std::unique_ptr<BewavedDolphin> dolphin2(new BewavedDolphin(ws->scene(), false, &host2));
+    dolphin2->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin2->createWaveform(dolphinPath);
+
+    auto *model = dolphin2->model();
+    QVERIFY(model);
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+}

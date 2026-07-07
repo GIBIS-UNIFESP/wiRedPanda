@@ -88,6 +88,10 @@ private slots:
     void testZoomScaleTrackingA26();
     void testFitScreenClampsAndGuardsA26();
 
+    // Regression: a linked waveform file living outside the project directory must still
+    // resolve by its absolute path, not just by basename inside the project's own folder.
+    void testCreateWaveformResolvesAbsolutePathOutsideProjectDir();
+
 private:
     QTemporaryDir m_tempDir;
 };

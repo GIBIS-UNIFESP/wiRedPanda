@@ -156,7 +156,21 @@ void AudioBox::save(QDataStream &stream) const
     GraphicElement::save(stream);
 
     const QString &path = m_audio.filePath();
-    const QString audioPath = path.startsWith(":/") ? path : m_audio.fileName();
+    QString audioPath = path;
+    if (!path.startsWith(":/")) {
+        // Truncating to a bare filename is only lossless if that name already resolves
+        // next to the project; otherwise this is an in-memory-only snapshot (e.g. an
+        // UpdateCommand undo/redo round-trip triggered by an unrelated property edit) or
+        // an unsaved project, and shortening the path now would make it permanently
+        // unresolvable — keep the full path instead.
+        const QString contextDir = GraphicElement::resolveContextDir(this);
+        const QString basename = m_audio.fileName();
+        const bool alreadyResolvable = !contextDir.isEmpty()
+            && QFileInfo(QDir(contextDir).filePath(basename)).exists();
+        if (alreadyResolvable) {
+            audioPath = basename;
+        }
+    }
 
     QMap<QString, QVariant> map;
     map.insert("audiobox", audioPath);

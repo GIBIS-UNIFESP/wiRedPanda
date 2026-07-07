@@ -7,6 +7,7 @@
 
 #include <QDataStream>
 #include <QFile>
+#include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTest>
 
@@ -407,4 +408,36 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     QVERIFY2(map.contains("audiobox"), "Saved data should contain 'audiobox' key");
     const QString savedPath = map.value("audiobox").toString();
     QCOMPARE(savedPath, tempInfo.fileName());
+}
+
+void TestAudioBox::testAudioSurvivesSaveLoadRoundTripWhenNotColocated()
+{
+    // Mirrors what UpdateCommand's undo/redo does for an unrelated property edit (e.g.
+    // dragging the volume slider): save() the just-applied state, then load() it right
+    // back — entirely in memory, regardless of whether the project has ever been saved.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString audioPath = tempDir.filePath("custom_audio.wav");
+    QVERIFY(QFile::copy(":/Components/Output/Audio/wiredpanda.wav", audioPath));
+
+    auto audioBox1 = std::make_unique<AudioBox>();
+    audioBox1->setAudio(audioPath);
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    audioBox1->save(saveStream);
+
+    auto audioBox2 = std::make_unique<AudioBox>();
+    QDataStream loadStream(data);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, {}};
+
+    bool threw = false;
+    try {
+        audioBox2->load(loadStream, context);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(!threw, "a custom audio file not yet colocated with any project must survive an in-memory save/load round trip");
 }
