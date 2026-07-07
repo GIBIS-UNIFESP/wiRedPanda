@@ -120,9 +120,13 @@ void BewavedDolphin::createWaveform(const QString &fileName)
         setWindowTitle(tr("beWavedDolphin Simulator"));
         run();
     } else {
-        // Resolve the file relative to the main window's working directory so that
-        // relative paths stored inside .panda files resolve correctly
-        QFileInfo fileInfo(m_host->currentDir(), QFileInfo(fileName).fileName());
+        // Try the stored path as-is first (handles an absolute path); if that doesn't
+        // resolve, fall back to just the filename relative to the main window's working
+        // directory so that relative paths stored inside .panda files still resolve.
+        QFileInfo fileInfo(fileName);
+        if (fileInfo.isRelative() || !fileInfo.exists()) {
+            fileInfo.setFile(m_host->currentDir(), QFileInfo(fileName).fileName());
+        }
 
         if (!fileInfo.exists()) {
             m_ui->statusbar->showMessage(tr("File \"%1\" does not exist!").arg(fileName), 4000);

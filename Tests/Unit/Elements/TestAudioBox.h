@@ -48,4 +48,5 @@ private slots:
     void testSetAudioWithForeignAbsolutePathMixedSlashes();
     void testSetAudioWithNonExistentFileFallback();
     void testSaveStoresFilenameOnlyInProjectDir();
+    void testAudioSurvivesSaveLoadRoundTripWhenNotColocated();
 };
