@@ -3,8 +3,10 @@
 
 #include "Tests/Unit/Serialization/TestSerialization.h"
 
+#include <QDataStream>
 #include <QFile>
 #include <QFileInfo>
+#include <QRectF>
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
@@ -1461,6 +1463,83 @@ void TestSerialization::testVersionedBackupMultiVersions()
     QFile f42(backup42);
     QVERIFY(f42.open(QIODevice::ReadOnly));
     QCOMPARE(f42.readAll(), content42);
+}
+
+// ============================================================================
+// File-copy utility — Serialization::copyPandaFile
+// ============================================================================
+
+namespace {
+// Writes a minimal .panda file with only the header + a metadata map containing
+// a single fileBackedICs entry — just enough for copyPandaFile to traverse.
+void writePandaWithFileBackedIC(const QString &path, const QString &referencedIC)
+{
+    QFile out(path);
+    QVERIFY(out.open(QIODevice::WriteOnly));
+    QDataStream stream(&out);
+    Serialization::writePandaHeader(stream);
+
+    QMap<QString, QVariant> metadata;
+    metadata["dolphinFileName"] = QString();
+    metadata["sceneRect"] = QRectF();
+    metadata["fileBackedICs"] = QStringList{referencedIC};
+    stream << metadata;
+}
+} // namespace
+
+void TestSerialization::testCopyPandaFileCopiesNonPandaContent()
+{
+    // copyPandaFile always copies the file itself, even when its content doesn't parse
+    // as a panda file — only the *recursion* into fileBackedICs is skipped on parse failure.
+    QTemporaryDir sourceDir;
+    QTemporaryDir destDir;
+    QVERIFY(sourceDir.isValid() && destDir.isValid());
+
+    const QString sourcePanda = sourceDir.path() + "/circuit.panda";
+    { QFile f(sourcePanda); QVERIFY(f.open(QIODevice::WriteOnly)); f.write("not a real panda file"); }
+
+    const QString destPanda = destDir.path() + "/circuit.panda";
+    Serialization::copyPandaFile(QFileInfo(sourcePanda), QFileInfo(destPanda));
+
+    QVERIFY2(QFile::exists(destPanda), "The file itself must still be copied");
+}
+
+void TestSerialization::testCopyPandaFileCopiesFileBackedDependency()
+{
+    // A real fileBackedICs entry must be discovered and copied alongside the parent file.
+    QTemporaryDir sourceDir;
+    QTemporaryDir destDir;
+    QVERIFY(sourceDir.isValid() && destDir.isValid());
+
+    const QString parentPath = sourceDir.path() + "/parent.panda";
+    const QString depPath = sourceDir.path() + "/dependency.panda";
+    writePandaWithFileBackedIC(parentPath, "dependency.panda");
+    writePandaWithFileBackedIC(depPath, {});
+
+    Serialization::copyPandaFile(QFileInfo(parentPath), QFileInfo(destDir.path() + "/parent.panda"));
+
+    QVERIFY2(QFile::exists(destDir.path() + "/parent.panda"), "Parent file must be copied");
+    QVERIFY2(QFile::exists(destDir.path() + "/dependency.panda"), "Referenced dependency must also be copied");
+}
+
+void TestSerialization::testCopyPandaFileTerminatesOnCircularMetadata()
+{
+    // Hand-craft two .panda files that reference each other in their
+    // fileBackedICs metadata. Pre-fix copyPandaDeps (now merged into
+    // copyPandaFile) would infinite-recurse until stack overflow; the
+    // visited-set guard short-circuits the cycle.
+    QTemporaryDir sourceDir;
+    QTemporaryDir destDir;
+    QVERIFY(sourceDir.isValid() && destDir.isValid());
+
+    const QString aPath = sourceDir.path() + "/a.panda";
+    const QString bPath = sourceDir.path() + "/b.panda";
+    writePandaWithFileBackedIC(aPath, "b.panda");
+    writePandaWithFileBackedIC(bPath, "a.panda");
+
+    // Should return promptly — if it doesn't terminate the test runner kills us.
+    Serialization::copyPandaFile(QFileInfo(aPath), QFileInfo(destDir.path() + "/a.panda"));
+    QVERIFY(true);
 }
 
 // ============================================================================

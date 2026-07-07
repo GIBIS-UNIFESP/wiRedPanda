@@ -3,18 +3,12 @@
 
 #pragma once
 
-#include <QDataStream>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QSet>
 #include <QString>
-#include <QStringList>
-#include <QtEndian>
 
 #include "App/Core/Common.h"
-#include "App/IO/Serialization.h"
-#include "App/IO/VersionInfo.h"
 
 namespace FileUtils {
 
@@ -41,91 +35,6 @@ inline void copyToDir(const QString &srcPath, const QString &destDir)
         if (!srcFile.copy(dest)) {
             throw PANDACEPTION_WITH_CONTEXT("FileUtils", "Could not copy %1 to %2: %3",
                                             srcPath, dest, srcFile.errorString());
-        }
-    }
-}
-
-/// Recursively copies .panda IC dependencies from \a srcDir to \a destDir
-/// by reading the fileBackedICs metadata key from the given \a pandaPath.
-/// \a visited tracks already-processed canonical paths to break circular
-/// fileBackedICs metadata (A→B→A); the root caller passes nothing.
-inline void copyPandaDeps(const QString &pandaPath, const QString &srcDir, const QString &destDir,
-                          QSet<QString> *visited = nullptr)
-{
-    QSet<QString> ownedVisited;
-    if (!visited) {
-        visited = &ownedVisited;
-    }
-    const QString canonical = QFileInfo(pandaPath).canonicalFilePath();
-    if (canonical.isEmpty() || visited->contains(canonical)) {
-        return;
-    }
-    visited->insert(canonical);
-
-    QFile file(pandaPath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    // Quick peek-based plausibility check before attempting a full parse, so
-    // a non-panda file encountered while walking IC dependency blobs is
-    // quietly skipped without relying on readPreamble()'s exception path.
-    // Peek only — never touch the stream readPreamble() constructs next.
-    {
-        char magicBuf[sizeof(quint32)];
-        if (file.peek(magicBuf, sizeof(magicBuf)) != static_cast<qint64>(sizeof(magicBuf))) {
-            return;
-        }
-        const quint32 magicHeader = qFromBigEndian<quint32>(magicBuf);
-        if (magicHeader != Serialization::MAGIC_HEADER_CIRCUIT) {
-            constexpr quint32 NullStringMarker = 0xFFFFFFFFu;
-            constexpr qint64 MaxLegacyHeaderBytes = 128;
-            if (magicHeader == NullStringMarker || magicHeader > MaxLegacyHeaderBytes) {
-                return;
-            }
-            const qint64 probeLen = sizeof(quint32) + magicHeader;
-            QByteArray strProbeBuf(static_cast<int>(probeLen), '\0');
-            if (file.peek(strProbeBuf.data(), probeLen) != probeLen) {
-                return;
-            }
-            QDataStream strProbe(strProbeBuf);
-            strProbe.setVersion(QDataStream::Qt_5_12);
-            QString appName;
-            strProbe >> appName;
-            if (strProbe.status() != QDataStream::Ok || !appName.startsWith("wiRedPanda", Qt::CaseInsensitive)) {
-                return;
-            }
-        }
-    }
-
-    QDataStream stream(&file);
-    Serialization::Preamble preamble;
-    try {
-        preamble = Serialization::readPreamble(stream);
-    } catch (...) {
-        return; // Corrupt or non-panda file — nothing to recurse into
-    }
-    if (!VersionInfo::hasMetadata(preamble.version)) {
-        return;
-    }
-
-    const QStringList icFiles = preamble.metadata.value("fileBackedICs").toStringList();
-    for (const QString &icFile : icFiles) {
-        const QFileInfo icSrc(QDir(srcDir), icFile);
-        const QFileInfo icDest(QDir(destDir), icFile);
-
-        if (icSrc.exists() && !QFile::exists(icDest.absoluteFilePath())) {
-            QFile srcFile(icSrc.absoluteFilePath());
-            if (!srcFile.copy(icDest.absoluteFilePath())) {
-                throw PANDACEPTION_WITH_CONTEXT("FileUtils",
-                                                "Could not copy %1 to %2: %3",
-                                                icSrc.absoluteFilePath(), icDest.absoluteFilePath(),
-                                                srcFile.errorString());
-            }
-        }
-
-        if (icSrc.exists()) {
-            copyPandaDeps(icSrc.absoluteFilePath(), srcDir, destDir, visited);
         }
     }
 }

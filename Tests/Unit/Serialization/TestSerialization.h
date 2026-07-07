@@ -88,6 +88,12 @@ private slots:
     void testVersionedBackupPreservesOriginal();// original file content unchanged after backup
     void testVersionedBackupMultiVersions();    // different versions produce different backup files
 
+    // File-copy utility (Serialization::copyPandaFile)
+    void testCopyPandaFileCopiesNonPandaContent();          // non-panda content still gets copied, no recursion
+    void testCopyPandaFileCopiesFileBackedDependency();     // a real fileBackedICs entry is also copied
+    // Regression: D16 — circular fileBackedICs metadata must not infinite-recurse
+    void testCopyPandaFileTerminatesOnCircularMetadata();
+
     // libFuzzer regression fixtures (Tests/Fuzz/regressions/) — malformed
     // .panda inputs that must throw cleanly under ASan, never crash.
     void testFuzzRegressionCleanupUAF();
