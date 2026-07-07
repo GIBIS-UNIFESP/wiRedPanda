@@ -695,7 +695,7 @@ QMap<QString, QByteArray> Serialization::deserializeBlobRegistry(const QMap<QStr
         if (VersionInfo::hasVersionedBlobRegistry(fileVersion))
             regStream.setVersion(QDataStream::Qt_5_12);
         // Pre-V_5_0 files: no setVersion — use Qt default matching the build that wrote them.
-        regStream >> result;
+        result = readBoundedBlobMap(regStream);
     }
     return result;
 }

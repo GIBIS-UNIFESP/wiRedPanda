@@ -19,6 +19,7 @@
 #include "App/IO/Serialization.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Versions.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -1222,6 +1223,31 @@ void TestSerialization::testMalformedConnectionData()
         // Acceptable to fail on malformed data
         QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the malformed connection issue");
     }
+}
+
+void TestSerialization::testMalformedEmbeddedICsRegistryRejected()
+{
+    // A crafted embeddedICs blob whose leading QMap entry count vastly exceeds what
+    // the buffer could hold. Serialization::deserializeBlobRegistry must reject this
+    // via readBoundedBlobMap before Qt's raw QMap<QString,QByteArray>::operator>> can
+    // spin through an implausible entry count.
+    QByteArray badRegistry;
+    QDataStream writeStream(&badRegistry, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << 0xFFFFFFFFu; // implausible entry count
+    // No entries follow — nowhere near enough bytes for that many key/value pairs.
+
+    QMap<QString, QVariant> metadata;
+    metadata.insert("embeddedICs", badRegistry);
+
+    bool threw = false;
+    try {
+        Serialization::deserializeBlobRegistry(metadata, FormatRev::current);
+    } catch (const std::exception &e) {
+        threw = true;
+        QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the implausible count");
+    }
+    QVERIFY2(threw, "Implausible embeddedICs entry count should be rejected, not allocated");
 }
 
 // ============================================================
