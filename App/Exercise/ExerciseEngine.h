@@ -43,11 +43,18 @@ public:
     /// Manually advances one step (used by the overlay Next/Finish button for observe steps).
     void advanceStep();
 
+    /// Re-translates the title and all steps' instruction/hint text for the current
+    /// language, preserving currentStep()/isActive(). No-op if never loaded or inactive.
+    /// Emits retranslated() (never stepChanged()) so listeners can't replay step-entry
+    /// side effects like MainWindow's click-target handling.
+    void retranslate();
+
 signals:
     void stepChanged(int step, int total, const ExerciseStep &data);
     void stepCompleted(int step);
     void exerciseCompleted();
     void exerciseStopped();
+    void retranslated();
 
 private slots:
     void onCircuitChanged();
@@ -65,6 +72,7 @@ private:
 
     QString               m_id;
     QString               m_title;
+    QString               m_resourcePath;
     QVector<ExerciseStep> m_steps;
     int                   m_currentStep = 0;
     bool                  m_active = false;

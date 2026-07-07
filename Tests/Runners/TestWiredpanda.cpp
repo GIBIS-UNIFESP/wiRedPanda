@@ -155,6 +155,8 @@
 #include "Tests/Unit/Elements/TestSequentialLogic.h"
 #include "Tests/Unit/Elements/TestTruthTable.h"
 #include "Tests/Unit/Elements/TestWirelessNode.h"
+// unit/exercise
+#include "Tests/Unit/Exercise/TestExerciseEngine.h"
 // unit/factory
 #include "Tests/Unit/Factory/TestElementFactory.h"
 // unit/logic
@@ -181,6 +183,8 @@
 #include "Tests/Unit/Simulation/TestDanglingPointer.h"
 #include "Tests/Unit/Simulation/TestSimulation.h"
 #include "Tests/Unit/Simulation/TestSimulationBlocker.h"
+// unit/tour
+#include "Tests/Unit/Tour/TestTourEngine.h"
 // unit/ui
 #include "Tests/Unit/Ui/TestCircuitExporter.h"
 #include "Tests/Unit/Ui/TestDialogs.h"
@@ -316,6 +320,7 @@ int main(int argc, char **argv)
         {"TestThemeManager", []() -> QObject * { return new TestThemeManager; }},
         {"TestCoreSettings", []() -> QObject * { return new TestCoreSettings; }},
         {"TestExerciseTourResources", []() -> QObject * { return new TestExerciseTourResources; }},
+        {"TestExerciseEngine", []() -> QObject * { return new TestExerciseEngine; }},
         {"TestUpdateChecker", []() -> QObject * { return new TestUpdateChecker; }},
         {"TestApplication", []() -> QObject * { return new TestApplication; }},
         {"TestNotifyCatch", []() -> QObject * { return new TestNotifyCatch; }},
@@ -372,6 +377,7 @@ int main(int argc, char **argv)
         {"TestPort", []() -> QObject * { return new TestPort; }},
         {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
+        {"TestTourEngine", []() -> QObject * { return new TestTourEngine; }},
         {"TestDanglingPointer", []() -> QObject * { return new TestDanglingPointer; }},
         {"TestCircuitExporter", []() -> QObject * { return new TestCircuitExporter; }},
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},

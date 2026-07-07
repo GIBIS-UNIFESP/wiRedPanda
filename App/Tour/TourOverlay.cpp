@@ -207,6 +207,26 @@ void TourOverlay::onStepChanged(int step, int total, const TourStep &stepData)
     m_callout->show();
 }
 
+void TourOverlay::onRetranslated()
+{
+    const TourStep &stepData = m_engine->currentStepData();
+    const int step  = m_engine->currentStep();
+    const int total = m_engine->totalSteps();
+
+    m_stepCounter->setText(tr("Step %1 of %2").arg(step + 1).arg(total));
+    m_titleLabel->setText(stepData.title);
+    m_bodyLabel->setText(stepData.body);
+    m_nextButton->setText(step == total - 1 ? tr("Finish") : tr("Next →"));
+
+    m_closeButton->setText(tr("Exit"));
+    m_closeButton->setToolTip(tr("Stop the tour"));
+    m_prevButton->setText(tr("← Back"));
+
+    m_callout->adjustSize();
+    repositionCallout();
+    update();
+}
+
 void TourOverlay::onTourFinished()
 {
     hide();

@@ -23,6 +23,7 @@ bool TourEngine::loadFromResource(const QString &resourcePath)
     m_currentStep = 0;
     m_id.clear();
     m_title.clear();
+    m_resourcePath = resourcePath;
 
     QFile file(resourcePath);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -127,6 +128,22 @@ void TourEngine::advanceStep()
     ++m_currentStep;
     Settings::setTourProgress(m_id, m_currentStep);
     emitCurrentStep();
+}
+
+void TourEngine::retranslate()
+{
+    if (m_resourcePath.isEmpty() || !m_active) {
+        return;
+    }
+    const int savedStep = m_currentStep;
+
+    if (!loadFromResource(m_resourcePath)) {
+        return;
+    }
+
+    m_currentStep = qBound(0, savedStep, static_cast<int>(m_steps.size()) - 1);
+    m_active = true;
+    emit retranslated();
 }
 
 void TourEngine::emitCurrentStep()

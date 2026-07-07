@@ -27,6 +27,7 @@ public:
 public slots:
     void onStepChanged(int step, int total, const ExerciseStep &stepData);
     void onExerciseCompleted();
+    void onRetranslated();
 
 signals:
     void closeRequested();
