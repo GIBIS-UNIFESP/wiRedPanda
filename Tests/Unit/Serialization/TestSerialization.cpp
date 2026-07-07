@@ -1254,6 +1254,71 @@ void TestSerialization::testMalformedEmbeddedICsRegistryRejected()
     QVERIFY2(threw, "Implausible embeddedICs entry count should be rejected, not allocated");
 }
 
+void TestSerialization::testMalformedWaypointsDataRejected()
+{
+    // A crafted waypoints blob whose leading element count vastly exceeds what the
+    // buffer could actually hold. Serialization::readBoundedPointVector must reject
+    // this before Qt's QVector::reserve() attempts a multi-GB allocation.
+    QByteArray badWaypoints;
+    QDataStream writeStream(&badWaypoints, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << 0xFFFFFFFFu; // implausible element count (quint32 == unsigned int)
+    // No point data follows the count — nowhere near enough bytes for that many QPointF.
+
+    QDataStream readStream(badWaypoints);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    try {
+        Serialization::readBoundedPointVector(readStream);
+    } catch (const std::exception &e) {
+        threw = true;
+        QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the implausible count");
+    }
+    QVERIFY2(threw, "Implausible waypoint count should be rejected, not allocated");
+}
+
+void TestSerialization::testConnectionWireModeAndWaypointsRoundTrip()
+{
+    WorkSpace workspace1;
+    Scene *scene1 = workspace1.scene();
+
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    QVERIFY2(sw != nullptr, "Failed to create InputSwitch");
+    sw->setPos(0, 0);
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    QVERIFY2(led != nullptr, "Failed to create Led element");
+    led->setPos(200, 0);
+
+    scene1->addItem(sw);
+    scene1->addItem(led);
+
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    conn->setWireMode(WireMode::Orthogonal);
+    const QVector<QPointF> waypoints = {QPointF(50, 0), QPointF(50, 40), QPointF(150, 40)};
+    conn->setWaypoints(waypoints);
+    scene1->addItem(conn);
+
+    QByteArray data = saveToMemory(workspace1);
+    WorkSpace workspace2;
+    loadFromMemory(workspace2, data);
+
+    Connection *loadedConn = nullptr;
+    const auto items = workspace2.scene()->items();
+    for (auto *item : std::as_const(items)) {
+        if (auto *c = qgraphicsitem_cast<Connection *>(item)) {
+            loadedConn = c;
+            break;
+        }
+    }
+
+    QVERIFY2(loadedConn != nullptr, "Connection should survive round trip");
+    QCOMPARE(loadedConn->wireMode(), WireMode::Orthogonal);
+    QCOMPARE(loadedConn->waypoints(), waypoints);
+}
+
 // ============================================================
 // Wireless Node Serialization Tests
 // ============================================================

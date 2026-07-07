@@ -223,6 +223,9 @@ void MainWindow::setupTheme()
     // Restore IC hover-preview visibility from previous session.
     m_ui->actionICPreview->setChecked(!Settings::icPreviewDisabled());
     m_ui->actionCheckForUpdates->setChecked(!Settings::updateChecksDisabled());
+
+    // Restore orthogonal wire routing preference from previous session.
+    m_ui->actionOrthogonalWires->setChecked(Settings::orthogonalWires());
 }
 
 void MainWindow::setupRecentFiles()
@@ -375,6 +378,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,                   &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::newTab);
     connect(m_ui->actionOpen,                  &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::openFile);
+    connect(m_ui->actionOrthogonalWires,       &QAction::triggered,       this,                &MainWindow::on_actionOrthogonalWires_triggered);
     connect(m_ui->actionPlay,                  &QAction::toggled,         this,                &MainWindow::on_actionPlay_toggled);
     connect(m_ui->actionReloadFile,            &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::reloadFile);
     connect(m_ui->actionRename,                &QAction::triggered,       m_ui->elementEditor, &ElementEditor::renameAction);
@@ -1340,6 +1344,14 @@ void MainWindow::on_actionShowMinimap_triggered(const bool checked)
         sentryBreadcrumb("ui", QStringLiteral("Show minimap: %1").arg(checked));
         Settings::setMinimapVisible(checked);
         if (currentTab()) currentTab()->setMinimapVisible(checked);
+    });
+}
+
+void MainWindow::on_actionOrthogonalWires_triggered(const bool checked)
+{
+    Application::guardedSlot(this, [checked] {
+        sentryBreadcrumb("ui", QStringLiteral("Orthogonal wires: %1").arg(checked));
+        Settings::setOrthogonalWires(checked);
     });
 }
 

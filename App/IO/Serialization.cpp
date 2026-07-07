@@ -145,6 +145,24 @@ QKeySequence readBoundedKeySequence(QDataStream &stream)
     QKeySequence ks; stream >> ks; return ks;
 }
 
+/// Reads a QVector<QPointF> from \a stream, bounding the element count by
+/// bytesAvailable() before Qt's reserve() allocates the full vector.
+QVector<QPointF> readBoundedPointVector(QDataStream &stream)
+{
+    quint32 count = 0;
+    if (peekU32(stream, count) && count > 0) {
+        // Each QPointF serialises as two qreal (8 bytes each) = 16 bytes;
+        // subtract 4 for the count field itself which is still in the stream.
+        if (static_cast<qint64>(count) > (bytesAvailable(stream) - 4) / 16)
+            throw PANDACEPTION_WITH_CONTEXT("Serialization",
+                                            "Waypoint count %1 implausible given remaining stream bytes",
+                                            QString::number(count));
+    }
+    QVector<QPointF> result;
+    stream >> result;
+    return result;
+}
+
 /// Reads a QBitArray (quint32 numBits + ceil(numBits/8) bytes).
 QBitArray readBoundedBitArray(QDataStream &stream)
 {
@@ -312,6 +330,11 @@ QMap<QString, QByteArray> Serialization::readBoundedBlobMap(QDataStream &stream)
         result.insert(std::move(key), std::move(val));
     }
     return result;
+}
+
+QVector<QPointF> Serialization::readBoundedPointVector(QDataStream &stream)
+{
+    return ::readBoundedPointVector(stream); // delegate to the file-local free function
 }
 
 void Serialization::writePandaHeader(QDataStream &stream)

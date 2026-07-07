@@ -3,6 +3,8 @@
 
 #include "App/Wiring/ConnectionSerializer.h"
 
+#include <QIODevice>
+
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
@@ -26,6 +28,16 @@ void ConnectionSerializer::save(const Connection &connection, QDataStream &strea
     QMap<QString, QVariant> map;
     map.insert("startPortId", calculateSerialId(connection.startPort()));
     map.insert("endPortId", calculateSerialId(connection.endPort()));
+    map.insert("wireMode", static_cast<quint8>(connection.wireMode()));
+
+    if (!connection.waypoints().isEmpty()) {
+        QByteArray wpBytes;
+        QDataStream wpStream(&wpBytes, QIODevice::WriteOnly);
+        wpStream.setVersion(QDataStream::Qt_5_12);
+        wpStream << connection.waypoints();
+        map.insert("waypoints", wpBytes);
+    }
+
     stream << map;
 }
 
@@ -43,6 +55,17 @@ void ConnectionSerializer::load(Connection &connection, QDataStream &stream, Ser
 
         id1 = map.value("startPortId").toULongLong();
         id2 = map.value("endPortId").toULongLong();
+
+        if (map.contains("wireMode")) {
+            connection.setWireMode(static_cast<WireMode>(map.value("wireMode").toUInt()));
+        }
+
+        if (map.contains("waypoints")) {
+            const QByteArray wpBytes = map.value("waypoints").toByteArray();
+            QDataStream wpStream(wpBytes);
+            wpStream.setVersion(QDataStream::Qt_5_12);
+            connection.setWaypoints(Serialization::readBoundedPointVector(wpStream));
+        }
     } else {
         stream >> id1;
         stream >> id2;

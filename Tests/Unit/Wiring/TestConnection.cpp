@@ -144,3 +144,43 @@ void TestConnection::testShapeFollowsPathAndPenWidth()
 
     Application::renderingEnabled = prevRendering;
 }
+
+void TestConnection::testOrthogonalWireModeDefaultsToBezier()
+{
+    Connection connection;
+    QCOMPARE(connection.wireMode(), WireMode::Bezier);
+    QVERIFY(connection.waypoints().isEmpty());
+}
+
+void TestConnection::testOrthogonalWirePathFollowsWaypoints()
+{
+    const bool prevRendering = Application::renderingEnabled;
+    Application::renderingEnabled = true;
+
+    Connection connection;
+    connection.setWireMode(WireMode::Orthogonal);
+    QCOMPARE(connection.wireMode(), WireMode::Orthogonal);
+
+    connection.setStartPos({0, 0});
+    connection.setEndPos({100, 50});
+    const QVector<QPointF> waypoints = {QPointF(50, 0), QPointF(50, 50)};
+    connection.setWaypoints(waypoints);
+    QCOMPARE(connection.waypoints(), waypoints);
+
+    connection.updatePath();
+    QVERIFY(!connection.path().isEmpty());
+    // moveTo(start) + lineTo each waypoint + lineTo(end) — no curve elements in
+    // orthogonal mode, unlike the Bezier branch's cubicTo.
+    QCOMPARE(connection.path().elementCount(), waypoints.size() + 2);
+
+    Application::renderingEnabled = prevRendering;
+}
+
+void TestConnection::testClearWaypoints()
+{
+    Connection connection;
+    connection.setWaypoints({QPointF(1, 1), QPointF(2, 2)});
+    QVERIFY(!connection.waypoints().isEmpty());
+    connection.clearWaypoints();
+    QVERIFY(connection.waypoints().isEmpty());
+}

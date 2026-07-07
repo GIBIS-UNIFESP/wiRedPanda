@@ -452,6 +452,7 @@ private:
     /// one grid step (Shift = a larger step) as a single undoable command and returns true.
     bool nudgeSelection(QKeyEvent *event);
     QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
+    /// Returns all connections in the scene.
     const QVector<Connection *> connections() const;
     void checkUpdateRequest();
     void updateUndoText(const QString &text);

@@ -21,4 +21,6 @@ private slots:
     void testHoverFanOutShowsAllPeerLabels();
     void testHoverLabelExcludedFromHitTesting();
     void testHoverReleaseClearsPeerHighlightAfterWireDeleted();
+    void testOrthogonalDragStraightLineHasNoWaypoints();
+    void testOrthogonalDragCommitsCornerOnDirectionChange();
 };

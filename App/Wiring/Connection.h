@@ -16,6 +16,7 @@
 
 #include <QGraphicsPathItem>
 #include <QPen>
+#include <QVector>
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
@@ -77,6 +78,19 @@ public:
     /// Returns the pen paint() draws the wire with for its current status.
     QPen statusPen() const { return m_statusPen; }
 
+    // --- Wire mode & waypoints ---
+
+    /// Returns the wire routing mode (Bezier or Orthogonal).
+    WireMode wireMode() const;
+    /// Sets the wire routing mode.
+    void setWireMode(WireMode mode);
+    /// Returns the intermediate waypoints for orthogonal routing.
+    const QVector<QPointF> &waypoints() const;
+    /// Sets the intermediate waypoints for orthogonal routing.
+    void setWaypoints(const QVector<QPointF> &waypoints);
+    /// Clears all waypoints.
+    void clearWaypoints();
+
     // --- Geometric properties ---
 
     /// \reimp
@@ -88,7 +102,7 @@ public:
     QPainterPath shape() const override;
     /// Returns the current angle of the bezier midpoint in radians.
     double angle();
-    /// Recomputes the bezier control points from the current start/end positions.
+    /// Recomputes the path from the current start/end positions and waypoints.
     void updatePath();
 
     /// Moves the wire endpoints to match the current port positions.
@@ -140,6 +154,11 @@ private:
     InputPort *m_endPort = nullptr;
     QPointF m_startPos;
     QPointF m_endPos;
+
+    // --- Members: Wire mode & waypoints ---
+
+    WireMode m_wireMode = WireMode::Bezier;
+    QVector<QPointF> m_waypoints;
 
     // --- Members: State ---
 

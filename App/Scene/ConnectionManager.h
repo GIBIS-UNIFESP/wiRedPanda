@@ -12,6 +12,7 @@
 #include <QPair>
 #include <QPointer>
 #include <QPointF>
+#include <QVector>
 
 class GraphicElement;
 class PortHoverLabel;
@@ -123,6 +124,9 @@ private:
     /// Removes and deletes all live label chips spawned by the current hover.
     void clearHoverLabels();
 
+    void resetOrthogonalState();
+    static QPointF snapToGrid(const QPointF &pos);
+
     Scene *m_scene = nullptr;
 
     /// ID of the in-progress wire (looked up via Scene::itemById).
@@ -141,4 +145,10 @@ private:
     /// element is deleted mid-hover) so releaseHoverPort() can hoverLeave() exactly this set
     /// even if connectivity changes mid-hover.
     QList<QPair<int, int>> m_highlightedPeers;
+
+    /// Orthogonal drag state.
+    enum class DragDirection { None, Horizontal, Vertical };
+    QVector<QPointF> m_dragWaypoints;
+    QPointF m_dragAnchor;
+    DragDirection m_dragDirection = DragDirection::None;
 };
