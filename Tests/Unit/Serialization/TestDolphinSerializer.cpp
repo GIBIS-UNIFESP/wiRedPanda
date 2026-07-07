@@ -221,7 +221,7 @@ void TestDolphinSerializer::testReadDolphinHeaderParsesLegacyAppName()
     // UTF-16 code units (no QDataStream QString framing — this format predates
     // that; see the comment in Serialization::readDolphinHeader).
     const QString appName = QStringLiteral("beWavedDolphin 1.0");
-    const int byteLen = appName.size() * 2;
+    const int byteLen = static_cast<int>(appName.size()) * 2;
 
     QByteArray payload;
     {
