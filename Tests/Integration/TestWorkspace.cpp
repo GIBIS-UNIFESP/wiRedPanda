@@ -1072,3 +1072,45 @@ void TestWorkspace::testFlushPendingAutosaveRunsImmediatelyB3()
     // Now the autosave write happened.
     QVERIFY(Settings::autosaveFiles().size() >= 1);
 }
+
+void TestWorkspace::testFirstSaveCopiesExternalAppearanceFile()
+{
+    // A custom LED appearance picked before the project has ever been saved lives
+    // somewhere unrelated to the eventual project folder. The first real "Save" must
+    // copy it alongside the .panda file — otherwise GraphicElementSerializer::save()'s
+    // bare-filename reference can never be resolved again after a reload.
+    QTemporaryDir sourceDir;
+    QVERIFY2(sourceDir.isValid(), "Source temporary directory creation failed");
+    const QString imagePath = sourceDir.filePath("custom_led.svg");
+    QVERIFY(QFile::copy(":/Components/Output/Led/WhiteLed.svg", imagePath));
+
+    QTemporaryDir projectDir;
+    QVERIFY2(projectDir.isValid(), "Project temporary directory creation failed");
+    const QString saveFile = projectDir.filePath("circuit.panda");
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    scene->addItem(led);
+    led->setAppearance(false, imagePath);
+
+    try {
+        workspace.save(saveFile);
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("First save should not throw: %1").arg(e.what())));
+    }
+
+    const QString copiedImagePath = projectDir.filePath("custom_led.svg");
+    QVERIFY2(QFile::exists(copiedImagePath),
+             "Custom appearance file should be copied next to the project on its first save");
+
+    // Reloading must resolve the now-bare-filename reference against the copy that
+    // was just placed alongside it.
+    WorkSpace reloaded;
+    try {
+        reloaded.load(saveFile);
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("Reloading the saved project should not throw: %1").arg(e.what())));
+    }
+}
