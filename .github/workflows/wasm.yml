@@ -24,6 +24,10 @@ jobs:
         submodules: recursive
         fetch-depth: 0
 
+    - name: Work around flaky packages.microsoft.com apt mirror
+      if: runner.os == 'Linux'
+      run: sudo rm -f /etc/apt/sources.list.d/azure-cli.list /etc/apt/sources.list.d/microsoft-prod.list
+
     # Install the host Qt explicitly (with qttools) so qt_add_translations
     # can find Qt6LinguistTools.  --autodesktop on the WASM step installs a
     # base host Qt, but without qttools, lrelease/lupdate aren't available
