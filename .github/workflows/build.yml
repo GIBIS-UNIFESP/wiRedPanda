@@ -232,3 +232,107 @@ jobs:
           ${{ runner.temp }}/work-i386/CMakeCache.txt
           ${{ runner.temp }}/work-i386/CMakeFiles/CMakeConfigureLog.yaml
         retention-days: 7
+
+# =================================
+
+  # Compile-only guard for strict-alignment architectures (issue #453): plain
+  # -Wcast-align (already always on for GNU/Clang, see the main job above) only
+  # fires when the compiler knows the target enforces strict alignment, which
+  # none of the runners above do — x86_64 and AArch64 both tolerate unaligned
+  # access, so a -Wcast-align regression is invisible to every job above and
+  # only surfaces on a real armhf/riscv64 build, exactly as it did in #453.
+  # GitHub has no hosted armhf/riscv64 runners, so these run inside
+  # QEMU-emulated *native* armhf/riscv64 Debian containers (docker/setup-qemu-action
+  # + --platform), mirroring the i386 job above but emulated instead of native.
+  # A native-arch container avoids the multiarch-on-amd64-host route entirely
+  # (dpkg foreign-arch installs of the full Qt6/X11/Wayland dependency graph
+  # don't resolve cleanly there) — everything installed here is native to the
+  # container's own (emulated) architecture, so it resolves the same way real
+  # Debian armhf/riscv64 builds do. Compile-only, no ctest: catching
+  # -Wcast-align needs a real compile, not a real run, and running the suite
+  # under emulation would multiply an already-slow build for no extra coverage.
+  build-cross-align-check:
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: armhf,   docker_platform: linux/arm/v7, qemu_platform: arm     }
+          - { arch: riscv64, docker_platform: linux/riscv64, qemu_platform: riscv64 }
+    name: debian-${{ matrix.arch }} Qt6 (cast-align check)
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
+      with:
+        platforms: ${{ matrix.qemu_platform }}
+
+    - name: ccache
+      uses: actions/cache@v6
+      with:
+        path: ${{ runner.temp }}/ccache-${{ matrix.arch }}
+        key: ${{ matrix.arch }}-ccache-${{ github.sha }}
+        restore-keys: ${{ matrix.arch }}-ccache-
+
+    # Same bind-mount rationale as the i386 job: build dir + ccache live on the
+    # host (under $RUNNER_TEMP) and are bind-mounted in, so ccache persists via
+    # actions/cache above and build artifacts survive the --rm container for
+    # failure upload. No ctest step — see the job-level comment above.
+    - name: Cross-compile in ${{ matrix.arch }} container (compile only)
+      timeout-minutes: 60
+      run: |
+        WORK_DIR="$RUNNER_TEMP/work-${{ matrix.arch }}"
+        CACHE_DIR="$RUNNER_TEMP/ccache-${{ matrix.arch }}"
+        mkdir -p "$WORK_DIR" "$CACHE_DIR"
+        docker run --rm -i --platform ${{ matrix.docker_platform }} \
+          -v "$PWD":/src \
+          -v "$WORK_DIR":/work \
+          -v "$CACHE_DIR":/ccache \
+          debian:trixie bash -s <<'EOF'
+        set -eu
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get update -qq
+        apt-get install -y --no-install-recommends \
+          build-essential cmake ninja-build ccache pkg-config git ca-certificates \
+          qt6-base-dev qt6-multimedia-dev qt6-svg-dev qt6-svg-plugins \
+          qt6-image-formats-plugins libgl1-mesa-dev libglu1-mesa-dev
+        useradd -o -u "$(stat -c %u /src)" -m builder
+        chown builder /work /ccache
+        su builder -c '
+          set -eu
+          export CCACHE_DIR=/ccache
+          export CCACHE_SLOPPINESS=pch_defines,time_macros,include_file_ctime,include_file_mtime
+          git config --global --add safe.directory /src
+          # -Wno-error=null-dereference: Debian trixie'\''s GCC 14.2 flags a false
+          # positive in ElementFactory::buildElement() after inlining through
+          # QHash'\''s internals (qhash.h) — GCC 13 (the Ubuntu jobs above) does not
+          # flag it, and the surrounding code already guards the lookup with a
+          # constEnd() check before dereferencing. Unrelated to the cast-align
+          # check this job exists for; downgraded to a non-fatal warning here
+          # rather than touching source for a toolchain-version-specific false
+          # positive out of scope for issue #453.
+          cmake -S /src -B /work -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_CXX_FLAGS=-Wno-error=null-dereference
+          cmake --build /work
+        '
+        EOF
+
+    - name: Upload build artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: build-logs-${{ matrix.arch }}
+        # CMake 3.26+ writes CMakeConfigureLog.yaml (the old CMakeOutput.log /
+        # CMakeError.log no longer exist); compile errors stream to the step log.
+        path: |
+          ${{ runner.temp }}/work-${{ matrix.arch }}/CMakeCache.txt
+          ${{ runner.temp }}/work-${{ matrix.arch }}/CMakeFiles/CMakeConfigureLog.yaml
+        retention-days: 7
