@@ -1184,11 +1184,13 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="204"/>
         <source>Exit</source>
         <translation>Avsluta</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="205"/>
         <source>Close exercise</source>
         <translation>Stäng övning</translation>
     </message>
@@ -1196,42 +1198,46 @@ Varje trådlös kanal måste ha en unik etikett.</translation>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="206"/>
         <source>Hint</source>
         <translation>Tips</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="207"/>
         <source>← Back</source>
         <translation>← Tillbaka</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="230"/>
         <source>Next →</source>
         <translation>Nästa →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="206"/>
         <source>Hide hint</source>
         <translation>Dölj tips</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="199"/>
         <source>Step %1 of %2</source>
         <translation>Steg %1 av %2</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="216"/>
         <source>Exercise complete! Well done.</source>
         <translation>Övning slutförd! Bra jobbat.</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="220"/>
         <source>Close</source>
         <translation>Stäng</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="230"/>
         <source>Finish</source>
         <translation>Avsluta</translation>
     </message>
@@ -2279,7 +2285,7 @@ Föreslaget namn:</translation>
         <translation>&amp;Interaktiva rundturer...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1086"/>
+        <location filename="../../UI/MainWindow.cpp" line="1095"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>Tysta</translation>
@@ -2315,7 +2321,7 @@ Föreslaget namn:</translation>
         <translation>Bakgrundssimulering</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="521"/>
+        <location filename="../../UI/MainWindow.cpp" line="523"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>Genvägar och tips</translation>
@@ -2331,12 +2337,12 @@ Föreslaget namn:</translation>
         <translation>Rapportera översättningsfel eller hjälp till att förbättra översättningar på Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="874"/>
+        <location filename="../../UI/MainWindow.cpp" line="876"/>
         <source>New Project</source>
         <translation>Nytt projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="440"/>
+        <location filename="../../UI/MainWindow.cpp" line="442"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2355,27 +2361,27 @@ wiRedPanda %1 kommer automatiskt att lista alla andra .panda-filer i samma katal
 Du måste spara nya projekt innan du kan komma åt IC:ar och utseenden eller köra beWavedDolphin-simuleringar.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="573"/>
+        <location filename="../../UI/MainWindow.cpp" line="575"/>
         <source>Are you sure?</source>
         <translation>Är du säker?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="522"/>
+        <location filename="../../UI/MainWindow.cpp" line="524"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Arbetsytans genvägar&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zooma in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zooma ut &lt;/li&gt;&lt;li&gt; Ctrl+1 : Dölj/Visa ledningar &lt;/li&gt;&lt;li&gt; Ctrl+2 : Dölj/Visa grindar &lt;/li&gt;&lt;li&gt; Ctrl+F : Sök element &lt;/li&gt;&lt;li&gt; Ctrl+W : Öppna beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Spara projekt &lt;/li&gt;&lt;li&gt; Ctrl+Q : Avsluta wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Starta/Pausa simulering &lt;/li&gt;&lt;li&gt; [ : Föregående primär elementegenskap &lt;/li&gt;&lt;li&gt; ] : Nästa primär elementegenskap &lt;/li&gt;&lt;li&gt; { : Föregående sekundär elementegenskap &lt;/li&gt;&lt;li&gt; } : Nästa sekundär elementegenskap &lt;/li&gt;&lt;li&gt; &amp;lt; : Omvandla till föregående element &lt;/li&gt;&lt;li&gt; &amp;gt; : Omvandla till nästa element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Allmänna tips&lt;/h1&gt;&lt;p&gt;Dubbelklicka på en ledning för att skapa en nod&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="500"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda är programvara utvecklad av studenter vid Federal University of São Paulo för att hjälpa studenter att lära sig om logiska kretsar.&lt;/p&gt;&lt;p&gt;Programversion: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Skapare:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda underhålls för närvarande av Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves och Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Lämna gärna en rapport på vår GitHub-sida om du hittar en bugg eller vill begära en ny funktion.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besök vår webbplats!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="572"/>
+        <location filename="../../UI/MainWindow.cpp" line="574"/>
         <source>Exit</source>
         <translation>Avsluta</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1086"/>
+        <location filename="../../UI/MainWindow.cpp" line="1095"/>
         <source>Unmute</source>
         <translation>Aktivera ljud</translation>
     </message>
@@ -2873,32 +2879,38 @@ Du måste spara nya projekt innan du kan komma åt IC:ar och utseenden eller kö
     <name>TourOverlay</name>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="221"/>
         <source>Exit</source>
         <translation>Avsluta</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="222"/>
         <source>Stop the tour</source>
         <translation>Stoppa rundturen</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="223"/>
         <source>← Back</source>
         <translation>← Tillbaka</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="219"/>
         <source>Next →</source>
         <translation>Nästa →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="216"/>
         <source>Step %1 of %2</source>
         <translation>Steg %1 av %2</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="219"/>
         <source>Finish</source>
         <translation>Avsluta</translation>
     </message>

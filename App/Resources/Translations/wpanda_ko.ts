@@ -1184,11 +1184,13 @@ Each wireless channel must have a unique label.</source>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="204"/>
         <source>Exit</source>
         <translation>종료</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="205"/>
         <source>Close exercise</source>
         <translation>연습 문제 닫기</translation>
     </message>
@@ -1196,42 +1198,46 @@ Each wireless channel must have a unique label.</source>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="206"/>
         <source>Hint</source>
         <translation>힌트</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="207"/>
         <source>← Back</source>
         <translation>← 뒤로</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="230"/>
         <source>Next →</source>
         <translation>다음 →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="206"/>
         <source>Hide hint</source>
         <translation>힌트 숨기기</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="199"/>
         <source>Step %1 of %2</source>
         <translation>%2단계 중 %1단계</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="216"/>
         <source>Exercise complete! Well done.</source>
         <translation>연습 문제 완료! 잘하셨습니다.</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="220"/>
         <source>Close</source>
         <translation>닫기</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="230"/>
         <source>Finish</source>
         <translation>완료</translation>
     </message>
@@ -2294,7 +2300,7 @@ Suggested name:</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1086"/>
+        <location filename="../../UI/MainWindow.cpp" line="1095"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>음소거</translation>
@@ -2325,18 +2331,18 @@ Suggested name:</source>
         <translation>시뮤레이션을 재시작합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="521"/>
+        <location filename="../../UI/MainWindow.cpp" line="523"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>단축키와 팁</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="874"/>
+        <location filename="../../UI/MainWindow.cpp" line="876"/>
         <source>New Project</source>
         <translation>새 프로젝트</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="440"/>
+        <location filename="../../UI/MainWindow.cpp" line="442"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2355,27 +2361,27 @@ wiRedPanda %1 는 현재 프로젝트와 같은 디렉터리에 있는 다른 �
 IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 전에 새 프로젝트를 저장해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="500"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda는 학생들이 논리 회로에 대해 배우도록 돕기 위해 상파울루 연방 대학교 학생들이 개발한 소프트웨어입니다.&lt;/p&gt;&lt;p&gt;소프트웨어 버전: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;제작자:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda는 현재 Fábio Cappabianco 교수(Ph.D.), João Pedro M. Oliveira, Matheus R. Esteves, Maycon A. Santana가 유지 관리하고 있습니다.&lt;/p&gt;&lt;p&gt; 버그를 발견했거나 새로운 기능을 요청하고 싶다면 저희 GitHub 페이지에 신고해 주세요.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;저희 웹사이트를 방문해 보세요!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="573"/>
+        <location filename="../../UI/MainWindow.cpp" line="575"/>
         <source>Are you sure?</source>
         <translation>확실하십니까?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="522"/>
+        <location filename="../../UI/MainWindow.cpp" line="524"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;캔버스 단축키&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : 확대 &lt;/li&gt;&lt;li&gt; Ctrl+- : 축소 &lt;/li&gt;&lt;li&gt; Ctrl+1 : 와이어 표시/숨기기 &lt;/li&gt;&lt;li&gt; Ctrl+2 : 게이트 표시/숨기기 &lt;/li&gt;&lt;li&gt; Ctrl+F : 요소 검색 &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin 열기 &lt;/li&gt;&lt;li&gt; Ctrl+S : 프로젝트 저장 &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda 종료 &lt;/li&gt;&lt;li&gt; F5 : 시뮬레이션 시작/일시정지 &lt;/li&gt;&lt;li&gt; [ : 이전 기본 요소 속성 &lt;/li&gt;&lt;li&gt; ] : 다음 기본 요소 속성 &lt;/li&gt;&lt;li&gt; { : 이전 보조 요소 속성 &lt;/li&gt;&lt;li&gt; } : 다음 보조 요소 속성 &lt;/li&gt;&lt;li&gt; &amp;lt; : 이전 요소로 변환 &lt;/li&gt;&lt;li&gt; &amp;gt; : 다음 요소로 변환 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;일반 팁&lt;/h1&gt;&lt;p&gt;와이어를 더블 클릭하여 노드 생성&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="572"/>
+        <location filename="../../UI/MainWindow.cpp" line="574"/>
         <source>Exit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1086"/>
+        <location filename="../../UI/MainWindow.cpp" line="1095"/>
         <source>Unmute</source>
         <translation>음소거 해제</translation>
     </message>
@@ -2873,32 +2879,38 @@ IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 �
     <name>TourOverlay</name>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="221"/>
         <source>Exit</source>
         <translation>종료</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="222"/>
         <source>Stop the tour</source>
         <translation>투어 중지</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="223"/>
         <source>← Back</source>
         <translation>← 뒤로</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="219"/>
         <source>Next →</source>
         <translation>다음 →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="216"/>
         <source>Step %1 of %2</source>
         <translation>%2단계 중 %1단계</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="219"/>
         <source>Finish</source>
         <translation>완료</translation>
     </message>

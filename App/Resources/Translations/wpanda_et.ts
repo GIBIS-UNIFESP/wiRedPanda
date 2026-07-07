@@ -1184,11 +1184,13 @@ Igal juhtmevaba kanalil peab olema unikaalne silt.</translation>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="204"/>
         <source>Exit</source>
         <translation>Välju</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="205"/>
         <source>Close exercise</source>
         <translation>Sulge harjutus</translation>
     </message>
@@ -1196,42 +1198,46 @@ Igal juhtmevaba kanalil peab olema unikaalne silt.</translation>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="206"/>
         <source>Hint</source>
         <translation>Vihje</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="207"/>
         <source>← Back</source>
         <translation>← Tagasi</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="230"/>
         <source>Next →</source>
         <translation>Edasi →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="206"/>
         <source>Hide hint</source>
         <translation>Peida vihje</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="199"/>
         <source>Step %1 of %2</source>
         <translation>Samm %1/%2</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="216"/>
         <source>Exercise complete! Well done.</source>
         <translation>Harjutus tehtud! Tubli töö.</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="220"/>
         <source>Close</source>
         <translation>Sulge</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="230"/>
         <source>Finish</source>
         <translation>Lõpeta</translation>
     </message>
@@ -2279,7 +2285,7 @@ Soovitatud nimi:</translation>
         <translation>&amp;Interaktiivsed ekskursioonid...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1086"/>
+        <location filename="../../UI/MainWindow.cpp" line="1095"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>Vaigista</translation>
@@ -2315,7 +2321,7 @@ Soovitatud nimi:</translation>
         <translation>Taustasimulatsioon</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="521"/>
+        <location filename="../../UI/MainWindow.cpp" line="523"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>Kiirklahvid ja nõuanded</translation>
@@ -2331,12 +2337,12 @@ Soovitatud nimi:</translation>
         <translation>Teatage tõlkeveadest või aidake parandada tõlkeid Weblate&apos;is</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="874"/>
+        <location filename="../../UI/MainWindow.cpp" line="876"/>
         <source>New Project</source>
         <translation>Uus projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="440"/>
+        <location filename="../../UI/MainWindow.cpp" line="442"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2355,27 +2361,27 @@ wiRedPanda %1 loetleb automaatselt kõik teised .panda failid, mis asuvad praegu
 Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivitamist peate uued projektid salvestama.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="573"/>
+        <location filename="../../UI/MainWindow.cpp" line="575"/>
         <source>Are you sure?</source>
         <translation>Kas olete kindel?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="522"/>
+        <location filename="../../UI/MainWindow.cpp" line="524"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Lõuendi otseteed&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Suurenda &lt;/li&gt;&lt;li&gt; Ctrl+- : Vähenda &lt;/li&gt;&lt;li&gt; Ctrl+1 : Peida/Kuva juhtmed &lt;/li&gt;&lt;li&gt; Ctrl+2 : Peida/Kuva loogikaelemendid &lt;/li&gt;&lt;li&gt; Ctrl+F : Otsi elemente &lt;/li&gt;&lt;li&gt; Ctrl+W : Ava beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Salvesta projekt &lt;/li&gt;&lt;li&gt; Ctrl+Q : Välju wiRedPandast &lt;/li&gt;&lt;li&gt; F5 : Käivita/Peata simulatsioon &lt;/li&gt;&lt;li&gt; [ : Eelmine esmane elemendi omadus &lt;/li&gt;&lt;li&gt; ] : Järgmine esmane elemendi omadus &lt;/li&gt;&lt;li&gt; { : Eelmine teisene elemendi omadus &lt;/li&gt;&lt;li&gt; } : Järgmine teisene elemendi omadus &lt;/li&gt;&lt;li&gt; &amp;lt; : Teisenda eelmiseks elemendiks &lt;/li&gt;&lt;li&gt; &amp;gt; : Teisenda järgmiseks elemendiks &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Üldised näpunäited&lt;/h1&gt;&lt;p&gt;Topeltklõps juhtmel loob sõlme&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="500"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda on tarkvara, mille on loonud São Paulo Föderaalülikooli üliõpilased, et aidata õpilastel loogikaskeeme õppida.&lt;/p&gt;&lt;p&gt;Tarkvara versioon: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Loojad:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPandat haldavad praegu prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ja Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Kui leiate vea või soovite uut funktsiooni, andke sellest teada meie GitHubi lehel.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Külastage meie veebisaiti!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="572"/>
+        <location filename="../../UI/MainWindow.cpp" line="574"/>
         <source>Exit</source>
         <translation>Välju</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1086"/>
+        <location filename="../../UI/MainWindow.cpp" line="1095"/>
         <source>Unmute</source>
         <translation>Lülita heli sisse</translation>
     </message>
@@ -2873,32 +2879,38 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
     <name>TourOverlay</name>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="221"/>
         <source>Exit</source>
         <translation>Välju</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="222"/>
         <source>Stop the tour</source>
         <translation>Peata ekskursioon</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="223"/>
         <source>← Back</source>
         <translation>← Tagasi</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="219"/>
         <source>Next →</source>
         <translation>Edasi →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="216"/>
         <source>Step %1 of %2</source>
         <translation>Samm %1/%2</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="219"/>
         <source>Finish</source>
         <translation>Lõpeta</translation>
     </message>

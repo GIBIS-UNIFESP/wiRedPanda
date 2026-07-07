@@ -1184,11 +1184,13 @@ Each wireless channel must have a unique label.</source>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="204"/>
         <source>Exit</source>
         <translation>बाहर निकलें</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="205"/>
         <source>Close exercise</source>
         <translation>अभ्यास बंद करें</translation>
     </message>
@@ -1196,42 +1198,46 @@ Each wireless channel must have a unique label.</source>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="178"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="206"/>
         <source>Hint</source>
         <translation>संकेत</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="207"/>
         <source>← Back</source>
         <translation>← वापस</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="230"/>
         <source>Next →</source>
         <translation>अगला →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="206"/>
         <source>Hide hint</source>
         <translation>संकेत छिपाएं</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="199"/>
         <source>Step %1 of %2</source>
         <translation>चरण %1 / %2</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="216"/>
         <source>Exercise complete! Well done.</source>
         <translation>अभ्यास पूरा हुआ! शाबाश।</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="200"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="220"/>
         <source>Close</source>
         <translation>बंद करें</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="210"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="230"/>
         <source>Finish</source>
         <translation>समाप्त करें</translation>
     </message>
@@ -2294,7 +2300,7 @@ Suggested name:</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1086"/>
+        <location filename="../../UI/MainWindow.cpp" line="1095"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>मूक</translation>
@@ -2325,18 +2331,18 @@ Suggested name:</source>
         <translation>सिमुलेशन पुनरारंभ करें।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="521"/>
+        <location filename="../../UI/MainWindow.cpp" line="523"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>शॉर्टकट और टिप्स</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="874"/>
+        <location filename="../../UI/MainWindow.cpp" line="876"/>
         <source>New Project</source>
         <translation>नया प्रोजेक्ट</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="440"/>
+        <location filename="../../UI/MainWindow.cpp" line="442"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2355,27 +2361,27 @@ wiRedPanda %1 स्वचालित रूप से वर्तमान �
 IC और दिखावट तक पहुँचने या beWavedDolphin सिमुलेशन चलाने से पहले आपको नए प्रोजेक्ट सहेजने होंगे।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="500"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda साओ पाउलो के संघीय विश्वविद्यालय के छात्रों द्वारा विकसित एक सॉफ़्टवेयर है, जो छात्रों को लॉजिक सर्किट के बारे में सीखने में मदद करता है।&lt;/p&gt;&lt;p&gt;सॉफ़्टवेयर संस्करण: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;निर्माता:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda को वर्तमान में प्रो. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves और Maycon A. Santana द्वारा बनाए रखा जाता है।&lt;/p&gt;&lt;p&gt; यदि आपको कोई बग मिलता है या नई सुविधा का अनुरोध करना चाहते हैं, तो कृपया हमारे GitHub पेज पर रिपोर्ट दर्ज करें।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;हमारी वेबसाइट पर जाएं!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="573"/>
+        <location filename="../../UI/MainWindow.cpp" line="575"/>
         <source>Are you sure?</source>
         <translation>क्या आप निश्चित हैं?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="522"/>
+        <location filename="../../UI/MainWindow.cpp" line="524"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;कैनवास शॉर्टकट&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : ज़ूम इन &lt;/li&gt;&lt;li&gt; Ctrl+- : ज़ूम आउट &lt;/li&gt;&lt;li&gt; Ctrl+1 : तार छुपाएँ/दिखाएँ &lt;/li&gt;&lt;li&gt; Ctrl+2 : गेट छुपाएँ/दिखाएँ &lt;/li&gt;&lt;li&gt; Ctrl+F : तत्व खोजें &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin खोलें &lt;/li&gt;&lt;li&gt; Ctrl+S : प्रोजेक्ट सहेजें &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda से बाहर निकलें &lt;/li&gt;&lt;li&gt; F5 : सिमुलेशन शुरू/रोकें &lt;/li&gt;&lt;li&gt; [ : पिछली प्राथमिक तत्व विशेषता &lt;/li&gt;&lt;li&gt; ] : अगली प्राथमिक तत्व विशेषता &lt;/li&gt;&lt;li&gt; { : पिछली द्वितीयक तत्व विशेषता &lt;/li&gt;&lt;li&gt; } : अगली द्वितीयक तत्व विशेषता &lt;/li&gt;&lt;li&gt; &amp;lt; : पिछले तत्व में बदलें &lt;/li&gt;&lt;li&gt; &amp;gt; : अगले तत्व में बदलें &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;सामान्य सुझाव&lt;/h1&gt;&lt;p&gt;एक नोड बनाने के लिए तार पर डबल-क्लिक करें&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="572"/>
+        <location filename="../../UI/MainWindow.cpp" line="574"/>
         <source>Exit</source>
         <translation>बाहर निकलें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1086"/>
+        <location filename="../../UI/MainWindow.cpp" line="1095"/>
         <source>Unmute</source>
         <translation>अनम्यूट</translation>
     </message>
@@ -2873,32 +2879,38 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <name>TourOverlay</name>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="84"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="221"/>
         <source>Exit</source>
         <translation>बाहर निकलें</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="85"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="222"/>
         <source>Stop the tour</source>
         <translation>टूर रोकें</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="223"/>
         <source>← Back</source>
         <translation>← वापस</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="219"/>
         <source>Next →</source>
         <translation>अगला →</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="188"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="216"/>
         <source>Step %1 of %2</source>
         <translation>चरण %1 / %2</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="193"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="219"/>
         <source>Finish</source>
         <translation>समाप्त करें</translation>
     </message>
