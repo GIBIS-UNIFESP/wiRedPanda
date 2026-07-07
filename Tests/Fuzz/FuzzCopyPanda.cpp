@@ -14,8 +14,11 @@
  *     copyPandaFile is distinct.
  *
  *   - copyPandaFile(): recursively copies a .panda file and its file-backed IC
- *     dependencies.  The recursion guard (QSet<QString>) and the "fileBackedICs"
- *     metadata key parsing are completely dark without an explicit caller.
+ *     dependencies (also copying the file itself and the peek-based
+ *     plausibility pre-check, both formerly duplicated in the now-removed
+ *     FileUtils::copyPandaDeps()).  The recursion guard (QSet<QString>) and
+ *     the "fileBackedICs" metadata key parsing are completely dark without an
+ *     explicit caller.
  *
  * Strategy:
  *   1. Write fuzz bytes to a QTemporaryFile — this is the "source" panda.
@@ -33,7 +36,6 @@
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
-#include <QDir>
 #include <QEvent>
 #include <QFileInfo>
 #include <QIODevice>
@@ -48,7 +50,6 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
-#include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 
 namespace {
@@ -161,15 +162,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
             Serialization::copyPandaFile(outerSrcInfo, outerDestInfo);
         } catch (...) {}
     }
-
-    // --- Phase 3: FileUtils::copyPandaDeps --- exercises a different code path
-    // in the same "copy panda + IC dependencies" flow (inline header-only implementation
-    // with a visited-set cycle guard, distinct from Serialization::copyPandaFile).
-    try {
-        FileUtils::copyPandaDeps(srcFile.fileName(),
-                                 srcInfo.absolutePath(),
-                                 srcInfo.absolutePath()); // src == dest: no-op copy
-    } catch (...) {}
 
     return 0;
 }

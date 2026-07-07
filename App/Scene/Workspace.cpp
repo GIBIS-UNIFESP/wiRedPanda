@@ -291,9 +291,13 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
     if (oldContextDir != newContextDir) {
         for (auto *elm : m_scene.elements()) {
             for (const QString &file : elm->externalFiles()) {
-                FileUtils::copyToDir(file, newContextDir);
                 if (file.endsWith(".panda")) {
-                    FileUtils::copyPandaDeps(file, oldContextDir, newContextDir);
+                    // copyPandaFile copies the file itself and recursively copies any
+                    // fileBackedICs it references, in one pass.
+                    const QFileInfo srcInfo(file);
+                    Serialization::copyPandaFile(srcInfo, QFileInfo(newContextDir + "/" + srcInfo.fileName()));
+                } else {
+                    FileUtils::copyToDir(file, newContextDir);
                 }
             }
         }
