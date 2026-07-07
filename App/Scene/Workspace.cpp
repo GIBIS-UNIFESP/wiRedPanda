@@ -282,9 +282,13 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
 
     // Copy external file dependencies (appearances, audio, IC sub-circuits, waveform)
     // to the new directory before updating contextDir, so save() can store bare filenames.
+    // This also runs on a project's very first save (oldContextDir empty): without it, a
+    // custom appearance/audio file picked before ever saving would never get copied
+    // alongside the .panda file, leaving the bare filename GraphicElementSerializer::save()
+    // stores unresolvable on the next reload.
     const QString oldContextDir = m_scene.contextDir();
     const QString newContextDir = QFileInfo(fileName_).absolutePath();
-    if (!oldContextDir.isEmpty() && oldContextDir != newContextDir) {
+    if (oldContextDir != newContextDir) {
         for (auto *elm : m_scene.elements()) {
             for (const QString &file : elm->externalFiles()) {
                 FileUtils::copyToDir(file, newContextDir);

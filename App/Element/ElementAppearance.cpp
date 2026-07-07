@@ -217,22 +217,23 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
 
     QString path = pixmapPath;
 
-    // Qt resource paths start with ":/"; anything else is a filesystem path
-    // relative to the project's working directory (where the .panda file lives).
-    // Try the path as-is against contextDir first; if not found, fall back to
-    // just the filename — handles cross-platform absolute paths from old files.
-    if (!path.startsWith(":/")) {
+    // Qt resource paths start with ":/"; a path that already resolves as given (e.g. a real,
+    // existing absolute path freshly chosen via the file dialog) needs no further resolution and
+    // loads directly, even before the project has ever been saved. Gate on existence rather than
+    // QFileInfo::isRelative(): a Windows-style "C:/..." path is absolute per QFileInfo when
+    // running on Windows, but a project saved on a different OS means that exact path usually
+    // doesn't exist there either, so it still needs to fall through to the contextDir/filename
+    // fallback below — the same case BeWavedDolphin::createWaveform() already guards with an
+    // isRelative() || !exists() check.
+    if (!path.startsWith(":/") && !QFileInfo::exists(path)) {
         const QString contextDir = GraphicElement::resolveContextDir(m_owner);
-        if (contextDir.isEmpty()) {
-            return;
-        }
-        const QDir dir(contextDir);
-        const QString resolved = dir.filePath(path);
+        if (!contextDir.isEmpty()) {
+            const QDir dir(contextDir);
+            const QString resolved = dir.filePath(path);
 
-        if (!QFileInfo::exists(resolved)) {
-            path = dir.filePath(QFileInfo(QString(path).replace('\\', '/')).fileName());
-        } else {
-            path = resolved;
+            path = QFileInfo::exists(resolved)
+                       ? resolved
+                       : dir.filePath(QFileInfo(QString(path).replace('\\', '/')).fileName());
         }
     }
 
@@ -253,6 +254,10 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
         // Load the default appearance so the element remains renderable before the exception unwinds
         m_basePixmap.load(m_defaultAppearances.constFirst());
         m_pixmap = m_basePixmap;
+        // Remember this exact request failed so a later call with the same broken path (e.g.
+        // every simulation tick's refresh()) is skipped by the guard above instead of
+        // re-attempting the load and re-throwing — each distinct failure surfaces once.
+        m_currentPixmapPath = pixmapPath;
         qCDebug(zero) << "Problem loading pixmapPath: " << path;
         throw PANDACEPTION("Couldn't load pixmap: %1 (%2)", path, reason);
     }

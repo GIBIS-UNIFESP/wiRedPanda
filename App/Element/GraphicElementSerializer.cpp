@@ -146,9 +146,25 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
 
     QList<QMap<QString, QVariant>> appearancesMap;
 
+    const QString contextDir = GraphicElement::resolveContextDir(&element);
+
     for (const auto &appearance : element.m_appearance.alternativeAppearances()) {
         QMap<QString, QVariant> tempMap;
-        tempMap.insert("skinName", appearance.startsWith(":/") ? appearance : QFileInfo(appearance).fileName());
+        QString skinName = appearance;
+        if (!appearance.startsWith(":/")) {
+            // Truncating to a bare filename is only lossless if that name already resolves
+            // next to the project (WorkSpace::save() copies external dependencies there
+            // before this runs); otherwise this is an in-memory-only snapshot (e.g. an
+            // UpdateCommand undo/redo round-trip) or an unsaved project, and shortening the
+            // path now would make it permanently unresolvable — keep the full path instead.
+            const QString basename = QFileInfo(appearance).fileName();
+            const bool alreadyResolvable = !contextDir.isEmpty()
+                && QFileInfo(QDir(contextDir).filePath(basename)).exists();
+            if (alreadyResolvable) {
+                skinName = basename;
+            }
+        }
+        tempMap.insert("skinName", skinName);
         appearancesMap << tempMap;
     }
 

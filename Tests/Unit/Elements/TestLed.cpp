@@ -7,8 +7,10 @@
 
 #include <QDataStream>
 #include <QFile>
+#include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
@@ -517,8 +519,92 @@ void TestLED::testSetAppearanceDefault()
     // Restore default appearance
     led.setAppearance(true, {});
     QVERIFY(true);
+}
 
-    // Set custom appearance (non-existent file is fine — just stores the path)
-    led.setAppearance(false, "/tmp/custom_led.png");
-    QVERIFY(true);
+void TestLED::testSetAppearanceWithAbsolutePathNoContextDir()
+{
+    // A freshly picked, existing, absolute path must apply directly even when the element
+    // has no scene/contextDir at all (e.g. before the project has ever been saved).
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString imagePath = tempDir.path() + "/custom_led.svg";
+    QVERIFY(QFile::copy(":/Components/Output/Led/WhiteLed.svg", imagePath));
+
+    Led led;
+    bool threw = false;
+    try {
+        led.setAppearance(false, imagePath);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(!threw, "setAppearance should resolve an existing absolute path directly even with no contextDir");
+}
+
+void TestLED::testSetAppearanceWithNonExistentFileThrows()
+{
+    Led led;
+
+    bool threw = false;
+    try {
+        led.setAppearance(false, "/tmp/nonexistent_custom_led_98765.png");
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(threw, "setAppearance should throw when the absolute path does not exist");
+}
+
+void TestLED::testSetAppearanceRepeatedFailureThrowsOnce()
+{
+    Led led;
+    const QString badPath = "/tmp/nonexistent_custom_led_98765.png";
+
+    bool threwFirst = false;
+    try {
+        led.setAppearance(false, badPath);
+    } catch (const Pandaception &) {
+        threwFirst = true;
+    }
+
+    bool threwSecond = false;
+    try {
+        led.setAppearance(false, badPath);
+    } catch (const Pandaception &) {
+        threwSecond = true;
+    }
+
+    QVERIFY2(threwFirst, "the first attempt at a broken path should throw");
+    QVERIFY2(!threwSecond, "repeating the exact same broken path should not re-throw");
+}
+
+void TestLED::testAppearanceSurvivesSaveLoadRoundTripWhenNotColocated()
+{
+    // Mirrors what UpdateCommand's undo/redo does: save() the just-applied state, then
+    // load() it right back — entirely in memory, before the project is ever saved to disk.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString imagePath = tempDir.path() + "/custom_led.svg";
+    QVERIFY(QFile::copy(":/Components/Output/Led/WhiteLed.svg", imagePath));
+
+    auto led1 = std::make_unique<Led>();
+    led1->setAppearance(false, imagePath);
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    led1->save(saveStream);
+
+    auto led2 = std::make_unique<Led>();
+    QDataStream loadStream(data);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
+
+    bool threw = false;
+    try {
+        led2->load(loadStream, context);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+
+    QVERIFY2(!threw, "a custom appearance not yet colocated with any project must survive an in-memory save/load round trip");
 }

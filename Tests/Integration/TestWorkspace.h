@@ -69,6 +69,9 @@ private slots:
     // Regression: B2 — autosave truncates on shrink (no leftover-tail garbage)
     void testAutosaveTruncatesOnShrinkB2();
 
+    // Regression: custom LED appearance survives a never-before-saved project's first save
+    void testFirstSaveCopiesExternalAppearanceFile();
+
 private:
     QTemporaryDir m_tempDir;
 };

@@ -47,4 +47,8 @@ private slots:
     // Appearance tests
     void testAppearanceStates();
     void testSetAppearanceDefault();
+    void testSetAppearanceWithAbsolutePathNoContextDir();
+    void testSetAppearanceWithNonExistentFileThrows();
+    void testSetAppearanceRepeatedFailureThrowsOnce();
+    void testAppearanceSurvivesSaveLoadRoundTripWhenNotColocated();
 };
