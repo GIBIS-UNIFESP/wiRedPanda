@@ -27,7 +27,9 @@ QString writeTourFixture(const QTemporaryDir &dir)
 {
     const QString path = dir.filePath("tour.json");
     QFile file(path);
-    file.open(QIODevice::WriteOnly);
+    if (!file.open(QIODevice::WriteOnly)) {
+        return {};
+    }
     file.write(kTourFixtureJson);
     return path;
 }
