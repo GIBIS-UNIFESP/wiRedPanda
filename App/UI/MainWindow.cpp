@@ -101,6 +101,11 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_binder, &SceneUiBinder::openICRequested, m_workspaceManager, &WorkspaceManager::openICInTab);
     connect(m_binder, &SceneUiBinder::loadFileRequested, m_workspaceManager, &WorkspaceManager::loadPandaFile);
 
+    // Must be created before setupLanguage(): loading a translation can synchronously
+    // emit translationChanged(), which retranslateUi() handles by calling isActive() here.
+    m_exerciseEngine = new ExerciseEngine(this);
+    m_tourEngine     = new TourEngine(this);
+
     setupLanguage();
     setupGeometry();
     setupTheme();
@@ -119,9 +124,6 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Setting connections";
     setupConnections();
-
-    m_exerciseEngine = new ExerciseEngine(this);
-    m_tourEngine     = new TourEngine(this);
 
     qCDebug(zero) << "Checking playing simulation.";
     // Start simulation running by default so the circuit is live on open.
@@ -886,6 +888,13 @@ void MainWindow::retranslateUi()
             elm->retranslate();
         }
     }
+
+    if (m_exerciseEngine->isActive()) {
+        m_exerciseEngine->retranslate();
+    }
+    if (m_tourEngine->isActive()) {
+        m_tourEngine->retranslate();
+    }
 }
 
 void MainWindow::loadTranslation(const QString &language)
@@ -1230,6 +1239,8 @@ void MainWindow::startExercise(const QString &resourcePath)
             m_exerciseOverlay, &ExerciseOverlay::onStepChanged);
     connect(m_exerciseEngine, &ExerciseEngine::exerciseCompleted,
             m_exerciseOverlay, &ExerciseOverlay::onExerciseCompleted);
+    connect(m_exerciseEngine, &ExerciseEngine::retranslated,
+            m_exerciseOverlay, &ExerciseOverlay::onRetranslated);
     connect(m_exerciseOverlay, &ExerciseOverlay::closeRequested, this, [this] {
         if (!m_exerciseOverlay) return;
         ExerciseOverlay *overlay = m_exerciseOverlay;
@@ -1309,6 +1320,8 @@ void MainWindow::startTour(const QString &resourcePath)
             m_tourOverlay, &TourOverlay::onTourFinished);
     connect(m_tourEngine, &TourEngine::tourStopped,
             m_tourOverlay, &TourOverlay::onTourFinished);
+    connect(m_tourEngine, &TourEngine::retranslated,
+            m_tourOverlay, &TourOverlay::onRetranslated);
     connect(m_tourOverlay, &TourOverlay::closeRequested, this, [this] {
         if (!m_tourOverlay) return;
         TourOverlay *overlay = m_tourOverlay;

@@ -190,6 +190,26 @@ void ExerciseOverlay::onStepChanged(int step, int total, const ExerciseStep &ste
     repositionToParent();
 }
 
+void ExerciseOverlay::onRetranslated()
+{
+    const ExerciseStep &stepData = m_engine->currentStepData();
+    const int step  = m_engine->currentStep();
+    const int total = m_engine->totalSteps();
+
+    m_stepCounter->setText(tr("Step %1 of %2").arg(step + 1).arg(total));
+    m_instructionLabel->setText(stepData.instruction);
+    m_hintLabel->setText(stepData.hint);
+    updateNextButton(step == total - 1);
+
+    m_closeButton->setText(tr("Exit"));
+    m_closeButton->setToolTip(tr("Close exercise"));
+    m_hintButton->setText(m_hintVisible ? tr("Hide hint") : tr("Hint"));
+    m_prevButton->setText(tr("← Back"));
+
+    adjustSize();
+    repositionToParent();
+}
+
 void ExerciseOverlay::onExerciseCompleted()
 {
     m_stepCounter->setText({});

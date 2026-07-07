@@ -40,6 +40,7 @@ public:
 public slots:
     void onStepChanged(int step, int total, const TourStep &stepData);
     void onTourFinished();
+    void onRetranslated();
 
 signals:
     void closeRequested();
