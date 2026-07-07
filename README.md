@@ -57,13 +57,13 @@ The translations are located in the [App/Resources/Translations](https://github.
 <img src="https://hosted.weblate.org/widget/wiredpanda/wiredpanda/multi-auto.svg" alt="Translation status" />
 </a>
 
-## Stars
+## Star History
 
-<a href="https://www.star-history.com/#GIBIS-UNIFESP/wiRedPanda&Date">
+<a href="https://www.star-history.com/?repos=GIBIS-UNIFESP%2FwiRedPanda&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=GIBIS-UNIFESP/wiRedPanda&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=GIBIS-UNIFESP/wiRedPanda&type=date&theme=dark&legend=top-left&sealed_token=U2xfd63gLfdN7hNXCqP_s6FCeboyNACDWqEoE53Q-AGtfVCOHJMCJ9Ee1sLr5iCKj7j0VPS5PnySLjVDJjCpaL8yfvKVId5e1JSqHf17ByJ1ZoRqqB7dcA" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=GIBIS-UNIFESP/wiRedPanda&type=date&legend=top-left&sealed_token=U2xfd63gLfdN7hNXCqP_s6FCeboyNACDWqEoE53Q-AGtfVCOHJMCJ9Ee1sLr5iCKj7j0VPS5PnySLjVDJjCpaL8yfvKVId5e1JSqHf17ByJ1ZoRqqB7dcA" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=GIBIS-UNIFESP/wiRedPanda&type=date&legend=top-left&sealed_token=U2xfd63gLfdN7hNXCqP_s6FCeboyNACDWqEoE53Q-AGtfVCOHJMCJ9Ee1sLr5iCKj7j0VPS5PnySLjVDJjCpaL8yfvKVId5e1JSqHf17ByJ1ZoRqqB7dcA" />
  </picture>
 </a>
 
