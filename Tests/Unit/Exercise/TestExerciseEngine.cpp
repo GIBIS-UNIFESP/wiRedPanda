@@ -27,7 +27,9 @@ QString writeExerciseFixture(const QTemporaryDir &dir)
 {
     const QString path = dir.filePath("exercise.json");
     QFile file(path);
-    file.open(QIODevice::WriteOnly);
+    if (!file.open(QIODevice::WriteOnly)) {
+        return {};
+    }
     file.write(kExerciseFixtureJson);
     return path;
 }
