@@ -263,6 +263,7 @@ private:
     void on_actionICPreview_triggered(const bool checked);
     void on_actionCheckForUpdates_triggered(const bool checked);
     void on_actionMute_triggered(const bool checked);
+    void on_actionOrthogonalWires_triggered(const bool checked);
     void on_actionPlay_toggled(const bool checked);
     void on_actionReportTranslationError_triggered();
     void on_actionResetZoom_triggered() const;

@@ -18,4 +18,7 @@ private slots:
     void testConnectionDestruction();
     void testConnectionStatusPenTracksColorAndWidth();
     void testShapeFollowsPathAndPenWidth();
+    void testOrthogonalWireModeDefaultsToBezier();
+    void testOrthogonalWirePathFollowsWaypoints();
+    void testClearWaypoints();
 };

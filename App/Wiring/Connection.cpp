@@ -115,7 +115,7 @@ void Connection::updatePosFromPorts()
 
 void Connection::updatePath()
 {
-    // Skip expensive Bézier path construction when there is no visible rendering.
+    // Skip expensive path construction when there is no visible rendering.
     // Tests and fuzz harnesses never paint, so building and comparing
     // QPainterPaths is pure waste there. This must NOT key off interactiveMode:
     // both MCP modes run non-interactively yet still render (the --mcp-gui
@@ -125,22 +125,53 @@ void Connection::updatePath()
     }
 
     QPainterPath path;
-
     path.moveTo(m_startPos);
 
-    qreal dx = m_endPos.x() - m_startPos.x();
-    qreal dy = m_endPos.y() - m_startPos.y();
+    if (m_wireMode == WireMode::Orthogonal) {
+        for (const auto &wp : m_waypoints) {
+            path.lineTo(wp);
+        }
+        path.lineTo(m_endPos);
+    } else {
+        qreal dx = m_endPos.x() - m_startPos.x();
+        qreal dy = m_endPos.y() - m_startPos.y();
 
-    // Cubic Bézier control points chosen so the wire leaves/arrives roughly horizontally
-    // (small Y fraction) and curves gently in the middle (0.25/0.75 X fraction).
-    // This gives an S-curve appearance typical of schematic wire routing tools.
-    QPointF ctr1(m_startPos.x() + dx * 0.25, m_startPos.y() + dy * 0.1);
-    QPointF ctr2(m_startPos.x() + dx * 0.75, m_startPos.y() + dy * 0.9);
+        // Cubic Bézier control points chosen so the wire leaves/arrives roughly horizontally
+        // (small Y fraction) and curves gently in the middle (0.25/0.75 X fraction).
+        // This gives an S-curve appearance typical of schematic wire routing tools.
+        QPointF ctr1(m_startPos.x() + dx * 0.25, m_startPos.y() + dy * 0.1);
+        QPointF ctr2(m_startPos.x() + dx * 0.75, m_startPos.y() + dy * 0.9);
 
-    path.cubicTo(ctr1, ctr2, m_endPos);
+        path.cubicTo(ctr1, ctr2, m_endPos);
+    }
 
     setPath(path);
     m_shapeDirty = true;
+}
+
+WireMode Connection::wireMode() const
+{
+    return m_wireMode;
+}
+
+void Connection::setWireMode(WireMode mode)
+{
+    m_wireMode = mode;
+}
+
+const QVector<QPointF> &Connection::waypoints() const
+{
+    return m_waypoints;
+}
+
+void Connection::setWaypoints(const QVector<QPointF> &waypoints)
+{
+    m_waypoints = waypoints;
+}
+
+void Connection::clearWaypoints()
+{
+    m_waypoints.clear();
 }
 
 OutputPort *Connection::startPort() const

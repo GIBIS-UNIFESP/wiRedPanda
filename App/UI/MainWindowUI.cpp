@@ -184,6 +184,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionShowMinimap = new QAction(MainWindow);
     actionShowMinimap->setObjectName("actionShowMinimap");
     actionShowMinimap->setCheckable(true);
+    actionOrthogonalWires = new QAction(MainWindow);
+    actionOrthogonalWires->setObjectName("actionOrthogonalWires");
+    actionOrthogonalWires->setCheckable(true);
     actionAboutThisVersion = new QAction(MainWindow);
     actionAboutThisVersion->setObjectName("actionAboutThisVersion");
     actionRestart = new QAction(MainWindow);
@@ -731,6 +734,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addAction(actionFullscreen);
     menuView->addAction(actionLabelsUnderIcons);
     menuView->addAction(actionICPreview);
+    menuView->addAction(actionOrthogonalWires);
     menuTheme->addAction(actionSystemTheme);
     menuTheme->addAction(actionLightTheme);
     menuTheme->addAction(actionDarkTheme);
@@ -844,6 +848,7 @@ void MainWindowUi::retranslateUi()
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
     actionICPreview->setText(QCoreApplication::translate("MainWindow", "Show IC Preview"));
     actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
+    actionOrthogonalWires->setText(QCoreApplication::translate("MainWindow", "Orthogonal wires"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionCheckForUpdates->setText(QCoreApplication::translate("MainWindow", "Check for updates automatically"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));
