@@ -110,17 +110,20 @@ QPixmap Display7::convertColor(const QImage &source, const bool red, const bool 
     QImage target(source);
 
     for (int y = 0; y < target.height(); ++y) {
-        QRgb *line = reinterpret_cast<QRgb *>(target.scanLine(y));
         for (int x = 0; x < target.width(); ++x) {
-            QRgb &rgb = line[x];
             // The source SVG uses grayscale: red channel encodes pixel brightness.
             // Reuse that brightness value for the enabled channels and set alpha
             // equal to brightness so transparent backgrounds remain transparent.
-            const int value = qRed(rgb);
-            rgb = qRgba(red   ? value : 0,
-                        green ? value : 0,
-                        blue  ? value : 0,
-                        value);
+            // Uses the pixel()/setPixel() accessors instead of a raw scanLine()
+            // cast to QRgb* — scanLine() returns uchar*, and reinterpret_cast to
+            // the 4-byte-aligned QRgb is a -Wcast-align violation on armhf/riscv64
+            // (issue #453). Called only a handful of times total (cached), so the
+            // per-pixel accessor cost is irrelevant here.
+            const int value = qRed(target.pixel(x, y));
+            target.setPixel(x, y, qRgba(red   ? value : 0,
+                                         green ? value : 0,
+                                         blue  ? value : 0,
+                                         value));
         }
     }
 

@@ -36,4 +36,8 @@ private slots:
     // libFuzzer regression (Tests/Fuzz/regressions/) — legacy .dolphin header
     // with a fuzz-controlled app-name length must be rejected before allocation.
     void testReadDolphinHeaderRejectsLargeAppName();
+
+    // Regression: issue #453 — legacy beWavedDolphin header's raw UTF-16
+    // app-name probe must still parse correctly after the -Wcast-align fix.
+    void testReadDolphinHeaderParsesLegacyAppName();
 };

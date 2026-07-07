@@ -4,6 +4,7 @@
 #include "App/IO/Serialization.h"
 
 #include <array>
+#include <cstring>
 #include <limits>
 #include <utility>
 
@@ -18,6 +19,7 @@
 #include <QScopeGuard>
 #include <QSysInfo>
 #include <QtEndian>
+#include <QVarLengthArray>
 #include <QVariant>
 
 #include "App/Core/Common.h"
@@ -422,9 +424,21 @@ void Serialization::readDolphinHeader(QDataStream &stream)
     if (device->peek(strProbeBuf.data(), probeLen) != probeLen) {
         throw PANDACEPTION("Invalid file format.");
     }
-    const QString appName = QString::fromUtf16(
-        reinterpret_cast<const char16_t *>(strProbeBuf.constData() + sizeof(quint32)),
-        static_cast<int>(magicHeader / 2));
+    // strProbeBuf's buffer has no 2-byte alignment guarantee, so the UTF-16 code
+    // units are copied into a properly-aligned scratch buffer instead of being
+    // reinterpret_cast in place — that cast is a strict-aliasing/alignment
+    // violation that -Wcast-align catches on armhf/riscv64 (issue #453).
+    // Plain byte copy, no endian conversion: unlike the QDataStream-framed
+    // "wiRedPanda X.Y" legacy header in readPandaHeader above (which is read
+    // back via stream >> QString), this beWavedDolphin field is a raw
+    // native-order UTF-16 dump — introducing qFromBigEndian/qFromLittleEndian
+    // here, or reusing readPandaHeader's QDataStream-based probe, would change
+    // behaviour, not just alignment.
+    const int codeUnitCount = static_cast<int>(magicHeader / 2);
+    QVarLengthArray<char16_t, 128> appNameBuf(codeUnitCount);
+    std::memcpy(appNameBuf.data(), strProbeBuf.constData() + sizeof(quint32),
+                static_cast<size_t>(magicHeader));
+    const QString appName = QString::fromUtf16(appNameBuf.constData(), codeUnitCount);
     if (!appName.startsWith("beWavedDolphin")) {
         throw PANDACEPTION("Invalid file format.");
     }

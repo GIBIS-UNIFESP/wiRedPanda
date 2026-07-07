@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cmath>
+#include <cstring>
 
 #include <QAudioFormat>
 #include <QIODevice>
@@ -62,10 +63,15 @@ protected:
         const double increment = m_frequency / SampleRate;
 
         const qint64 samples = maxSize / BytesPerSample;
-        auto *ptr = reinterpret_cast<qint16 *>(data);
 
         for (qint64 i = 0; i < samples; ++i) {
-            ptr[i] = static_cast<qint16>(Amplitude * std::sin(twoPi * m_phase));
+            // data is Qt's raw QIODevice buffer — no alignment guarantee, so a
+            // reinterpret_cast<qint16*> store is a -Wcast-align violation on
+            // armhf/riscv64 (issue #453). memcpy of a compile-time-constant 2
+            // bytes inlines to a single (possibly unaligned) store at -O2, so
+            // this has no measurable cost in the real-time audio path.
+            const qint16 sample = static_cast<qint16>(Amplitude * std::sin(twoPi * m_phase));
+            std::memcpy(data + i * BytesPerSample, &sample, sizeof(sample));
             m_phase += increment;
             if (m_phase >= 1.0) {
                 m_phase -= 1.0;
