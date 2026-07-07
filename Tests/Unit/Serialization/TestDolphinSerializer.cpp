@@ -212,3 +212,37 @@ void TestDolphinSerializer::testReadDolphinHeaderRejectsLargeAppName()
     QDataStream stream(data);
     QVERIFY_THROWS(std::exception, Serialization::readDolphinHeader(stream));
 }
+
+void TestDolphinSerializer::testReadDolphinHeaderParsesLegacyAppName()
+{
+    // Synthetic legacy ".dolphin" stream: 4-byte length prefix (big-endian,
+    // matching peekU32's qFromBigEndian convention — same as the modern-format
+    // magic-number field), followed by "beWavedDolphin 1.0" as raw *native-order*
+    // UTF-16 code units (no QDataStream QString framing — this format predates
+    // that; see the comment in Serialization::readDolphinHeader).
+    const QString appName = QStringLiteral("beWavedDolphin 1.0");
+    const int byteLen = appName.size() * 2;
+
+    QByteArray payload;
+    {
+        QDataStream out(&payload, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_12);
+        out << static_cast<quint32>(byteLen); // default byte order is BigEndian
+    }
+    payload.append(reinterpret_cast<const char *>(appName.utf16()), byteLen);
+
+    QDataStream stream(payload);
+    stream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    try {
+        Serialization::readDolphinHeader(stream);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY(!threw);
+    QCOMPARE(stream.status(), QDataStream::Ok);
+    // Header fully consumed (4-byte length + byteLen bytes) — next read should
+    // land exactly where the caller (DolphinSerializer::loadBinary) expects it.
+    QCOMPARE(stream.device()->pos(), qint64(4 + byteLen));
+}
