@@ -101,6 +101,7 @@ public:
     QAction *actionICPreview = nullptr;
     QAction *actionCheckForUpdates = nullptr;
     QAction *actionShowMinimap = nullptr;
+    QAction *actionOrthogonalWires = nullptr;
     QAction *actionLightTheme = nullptr;
     QAction *actionDarkTheme = nullptr;
     QAction *actionSystemTheme = nullptr;

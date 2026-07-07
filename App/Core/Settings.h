@@ -51,6 +51,8 @@ public:
     static void setLabelsUnderIcons(bool enabled);
     static bool icPreviewDisabled();
     static void setIcPreviewDisabled(bool disabled);
+    static bool orthogonalWires();
+    static void setOrthogonalWires(bool enabled);
 
     // Language
     static QString language();

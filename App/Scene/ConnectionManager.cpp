@@ -3,11 +3,14 @@
 
 #include "App/Scene/ConnectionManager.h"
 
+#include <cmath>
 #include <utility>
 
 #include <QGraphicsView>
 
+#include "App/Core/Constants.h"
 #include "App/Core/SentryHelpers.h"
+#include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
@@ -84,6 +87,12 @@ void ConnectionManager::startFromOutput(OutputPort *startPort)
     connection->setStartPort(startPort);
     connection->setEndPos(m_scene->mousePos());
 
+    if (Settings::orthogonalWires()) {
+        connection->setWireMode(WireMode::Orthogonal);
+        m_dragAnchor = snapToGrid(startPort->scenePos());
+        resetOrthogonalState();
+    }
+
     m_scene->addItem(connection);
     setEditedConnection(connection);
     connection->updatePath();
@@ -94,6 +103,12 @@ void ConnectionManager::startFromInput(InputPort *endPort)
     auto *connection = new Connection();
     connection->setEndPort(endPort);
     connection->setStartPos(m_scene->mousePos());
+
+    if (Settings::orthogonalWires()) {
+        connection->setWireMode(WireMode::Orthogonal);
+        m_dragAnchor = snapToGrid(endPort->scenePos());
+        resetOrthogonalState();
+    }
 
     m_scene->addItem(connection);
     setEditedConnection(connection);
@@ -190,22 +205,65 @@ void ConnectionManager::updateEditedEnd(const QPointF &scenePos)
         return;
     }
 
+    if (!connection->startPort() && !connection->endPort()) {
+        // Connection lost both ports (e.g., element deleted mid-drag) — clean up
+        deleteEditedConnection();
+        return;
+    }
+
+    if (connection->wireMode() == WireMode::Orthogonal) {
+        const QPointF snapped = snapToGrid(scenePos);
+        constexpr qreal threshold = Constants::gridSize * 3;
+
+        if (m_dragDirection == DragDirection::None) {
+            const qreal dx = std::abs(snapped.x() - m_dragAnchor.x());
+            const qreal dy = std::abs(snapped.y() - m_dragAnchor.y());
+            if (dx > 0 || dy > 0) {
+                m_dragDirection = (dx >= dy) ? DragDirection::Horizontal : DragDirection::Vertical;
+            }
+        } else if (m_dragDirection == DragDirection::Horizontal) {
+            if (std::abs(snapped.y() - m_dragAnchor.y()) > threshold) {
+                const QPointF corner(snapped.x(), m_dragAnchor.y());
+                m_dragWaypoints.append(corner);
+                m_dragAnchor = corner;
+                m_dragDirection = DragDirection::Vertical;
+            }
+        } else if (m_dragDirection == DragDirection::Vertical) {
+            if (std::abs(snapped.x() - m_dragAnchor.x()) > threshold) {
+                const QPointF corner(m_dragAnchor.x(), snapped.y());
+                m_dragWaypoints.append(corner);
+                m_dragAnchor = corner;
+                m_dragDirection = DragDirection::Horizontal;
+            }
+        }
+
+        QVector<QPointF> liveWaypoints = m_dragWaypoints;
+        QPointF liveCorner = (m_dragDirection == DragDirection::Horizontal)
+            ? QPointF(snapped.x(), m_dragAnchor.y())
+            : QPointF(m_dragAnchor.x(), snapped.y());
+        if (liveCorner != m_dragAnchor && liveCorner != snapped) {
+            liveWaypoints.append(liveCorner);
+        }
+
+        connection->setWaypoints(liveWaypoints);
+
+        if (connection->startPort()) {
+            connection->setEndPos(snapped);
+        } else {
+            connection->setStartPos(snapped);
+        }
+        connection->updatePath();
+        return;
+    }
+
     if (connection->startPort()) {
         // Wire anchored at start: free end follows the mouse
         connection->setEndPos(scenePos);
-        connection->updatePath();
-        return;
-    }
-
-    if (connection->endPort()) {
+    } else {
         // Wire anchored at end (dragged from input): free start follows the mouse
         connection->setStartPos(scenePos);
-        connection->updatePath();
-        return;
     }
-
-    // Connection lost both ports (e.g., element deleted mid-drag) — clean up
-    deleteEditedConnection();
+    connection->updatePath();
 }
 
 // --- Hover feedback ---
@@ -421,4 +479,17 @@ Port *ConnectionManager::hoverPort()
     }
 
     return hoverPort;
+}
+
+void ConnectionManager::resetOrthogonalState()
+{
+    m_dragWaypoints.clear();
+    m_dragDirection = DragDirection::None;
+}
+
+QPointF ConnectionManager::snapToGrid(const QPointF &pos)
+{
+    constexpr int grid = Constants::gridSize / 2;
+    return {qRound(pos.x() / grid) * static_cast<qreal>(grid),
+            qRound(pos.y() / grid) * static_cast<qreal>(grid)};
 }

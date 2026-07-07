@@ -24,4 +24,7 @@ private slots:
     void testSceneEventSwallowsCtrlClick();
     void testPortAttachConnectionIgnoresNull();
     void testPortConstGraphicElementAccessor();
+    void testOrthogonalWireModeDefaultsToBezier();
+    void testOrthogonalWirePathFollowsWaypoints();
+    void testClearWaypoints();
 };

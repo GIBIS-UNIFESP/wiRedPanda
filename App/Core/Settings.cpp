@@ -137,6 +137,16 @@ void Settings::setUpdateChecksDisabled(bool disabled)
     setValue("updateChecksDisabled", disabled);
 }
 
+bool Settings::orthogonalWires()
+{
+    return value("orthogonalWires").toBool();
+}
+
+void Settings::setOrthogonalWires(bool enabled)
+{
+    setValue("orthogonalWires", enabled);
+}
+
 // Language
 
 QString Settings::language()

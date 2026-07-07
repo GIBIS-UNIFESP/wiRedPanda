@@ -11,8 +11,10 @@
 #include <QFileInfo>
 #include <QKeySequence>
 #include <QMap>
+#include <QPointF>
 #include <QSet>
 #include <QString>
+#include <QVector>
 #include <QVersionNumber>
 
 #include "App/IO/SerializationContext.h"
@@ -107,6 +109,15 @@ public:
      * \c QDataStream::operator>>(QMap<QString,QByteArray>&).
      */
     static QMap<QString, QByteArray> readBoundedBlobMap(QDataStream &stream);
+
+    /**
+     * \brief Reads a \c QVector<QPointF> from \a stream with bounds checking.
+     *
+     * Used to deserialise wire waypoints from their nested \c QByteArray blob without
+     * allowing a fuzz-controlled element count to cause OOM via
+     * \c QDataStream::operator>>(QVector<QPointF>&).
+     */
+    static QVector<QPointF> readBoundedPointVector(QDataStream &stream);
 
     /**
      * \brief Reads and validates the BeWavedDolphin waveform file header.

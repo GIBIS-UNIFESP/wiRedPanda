@@ -80,6 +80,8 @@ private slots:
     void testConnectionSurvivesSaveLoadRoundTrip();
     void testMalformedConnectionData();
     void testMalformedEmbeddedICsRegistryRejected();
+    void testMalformedWaypointsDataRejected();
+    void testConnectionWireModeAndWaypointsRoundTrip();
 
     // Wireless node serialization (4 tests)
     void testWirelessTxNodePreservedInScene();

@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
 
+#include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -593,4 +594,74 @@ void TestConnectionManager::testShowHoverLabelsWithNullPortIsNoOp()
 void TestConnectionManager::testConnectedPeersWithNullPortReturnsEmpty()
 {
     QVERIFY(ConnectionManager::connectedPeers(nullptr).isEmpty());
+void TestConnectionManager::testOrthogonalDragStraightLineHasNoWaypoints()
+{
+    const bool prevOrthogonal = Settings::orthogonalWires();
+    Settings::setOrthogonalWires(true);
+
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    And andGate;
+    builder.add(&sw, &andGate);
+
+    auto *manager = workspace.scene()->connectionManager();
+    auto *startPort = sw.outputPort(0);
+    // The manager anchors the drag to the grid-snapped port position, not its raw
+    // scenePos() — use the same private helper (TestConnectionManager is a friend)
+    // so the offsets below land exactly where the algorithm expects them.
+    const QPointF anchor = ConnectionManager::snapToGrid(startPort->scenePos());
+
+    manager->startFromOutput(startPort);
+    auto *connection = manager->editedConnection();
+    QVERIFY(connection != nullptr);
+    QCOMPARE(connection->wireMode(), WireMode::Orthogonal);
+
+    // Drag purely horizontally, ending exactly on the locked axis — no corner
+    // should be committed, and no live rubber-band point either (that only
+    // appears when the cursor is off-axis, even within the commit threshold).
+    manager->updateEditedEnd(anchor + QPointF(16, 0));
+    manager->updateEditedEnd(anchor + QPointF(64, 0));
+    QVERIFY(connection->waypoints().isEmpty());
+
+    manager->cancel();
+    Settings::setOrthogonalWires(prevOrthogonal);
+}
+
+void TestConnectionManager::testOrthogonalDragCommitsCornerOnDirectionChange()
+{
+    const bool prevOrthogonal = Settings::orthogonalWires();
+    Settings::setOrthogonalWires(true);
+
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    And andGate;
+    builder.add(&sw, &andGate);
+
+    auto *manager = workspace.scene()->connectionManager();
+    auto *startPort = sw.outputPort(0);
+    // The manager anchors the drag to the grid-snapped port position, not its raw
+    // scenePos() — use the same private helper (TestConnectionManager is a friend)
+    // so the offsets below land exactly where the algorithm expects them.
+    const QPointF anchor = ConnectionManager::snapToGrid(startPort->scenePos());
+
+    manager->startFromOutput(startPort);
+    auto *connection = manager->editedConnection();
+    QVERIFY(connection != nullptr);
+
+    // Move right first to lock in the Horizontal direction...
+    manager->updateEditedEnd(anchor + QPointF(32, 0));
+    QVERIFY(connection->waypoints().isEmpty());
+
+    // ...then drop well past the threshold (48px) vertically to force a corner
+    // commit and a flip to Vertical.
+    manager->updateEditedEnd(anchor + QPointF(64, 64));
+    QCOMPARE(connection->waypoints().size(), 1);
+    QCOMPARE(connection->waypoints().first().y(), anchor.y());
+
+    manager->cancel();
+    Settings::setOrthogonalWires(prevOrthogonal);
 }

@@ -57,4 +57,6 @@ private slots:
 
     void testShowHoverLabelsWithNullPortIsNoOp();
     void testConnectedPeersWithNullPortReturnsEmpty();
+    void testOrthogonalDragStraightLineHasNoWaypoints();
+    void testOrthogonalDragCommitsCornerOnDirectionChange();
 };
