@@ -74,6 +74,7 @@ private slots:
     void testStreamPositionValidation();
     void testConnectionWithDeletedPorts();
     void testMalformedConnectionData();
+    void testMalformedEmbeddedICsRegistryRejected();
 
     // Wireless node serialization (4 tests)
     void testWirelessTxNodePreservedInScene();
