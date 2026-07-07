@@ -800,42 +800,42 @@
         <translation>צג 7 קטעים</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>middle</source>
         <translation>אמצע</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
         <source>upper left</source>
         <translation>שמאל עליון</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
         <source>lower left</source>
         <translation>שמאל תחתון</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
         <source>bottom</source>
         <translation>תחתון</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
         <source>top</source>
         <translation>עליון</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="148"/>
         <source>upper right</source>
         <translation>ימין עליון</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="149"/>
         <source>dot</source>
         <translation>נקודה</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="150"/>
         <source>lower right</source>
         <translation>ימין תחתון</translation>
     </message>
@@ -2367,7 +2367,7 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
     <message>
         <location filename="../../UI/MainWindow.cpp" line="500"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRedPanda היא תוכנה שפותחה על ידי סטודנטים מהאוניברסיטה הפדרלית של סאו פאולו כדי לעזור לתלמידים ללמוד על מעגלים לוגיים.&lt;/p&gt;&lt;p&gt;גרסת התוכנה: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;יוצרים:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda מתוחזקת כיום על ידי פרופ' Fábio Cappabianco, Ph.D.,‏ João Pedro M. Oliveira,‏ Matheus R. Esteves ו-Maycon A. Santana.&lt;/p&gt;&lt;p&gt; נא לדווח בעמוד ה-GitHub שלנו אם מצאתם באג או שברצונכם לבקש תכונה חדשה.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;בקרו באתר שלנו!&lt;/a&gt;&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;wiRedPanda היא תוכנה שפותחה על ידי סטודנטים מהאוניברסיטה הפדרלית של סאו פאולו כדי לעזור לתלמידים ללמוד על מעגלים לוגיים.&lt;/p&gt;&lt;p&gt;גרסת התוכנה: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;יוצרים:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda מתוחזקת כיום על ידי פרופ&apos; Fábio Cappabianco, Ph.D.,‏ João Pedro M. Oliveira,‏ Matheus R. Esteves ו-Maycon A. Santana.&lt;/p&gt;&lt;p&gt; נא לדווח בעמוד ה-GitHub שלנו אם מצאתם באג או שברצונכם לבקש תכונה חדשה.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;בקרו באתר שלנו!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="572"/>
@@ -2662,78 +2662,78 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="275"/>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Stream error reading metadata map count</source>
         <translation>שגיאת זרם בעת קריאת מספר המטא-נתונים</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="278"/>
+        <location filename="../../IO/Serialization.cpp" line="280"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>מספר מטא-נתונים %1 לא סביר בהתחשב בבייטים שנותרו בזרם</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="295"/>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Stream error reading blob map count</source>
         <translation>שגיאת זרם בעת קריאת מספר ה-blob</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="298"/>
+        <location filename="../../IO/Serialization.cpp" line="300"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>מספר blob %1 לא סביר בהתחשב בבייטים שנותרו בזרם</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="323"/>
-        <location filename="../../IO/Serialization.cpp" line="370"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="398"/>
-        <location filename="../../IO/Serialization.cpp" line="418"/>
-        <location filename="../../IO/Serialization.cpp" line="423"/>
-        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="325"/>
+        <location filename="../../IO/Serialization.cpp" line="372"/>
+        <location filename="../../IO/Serialization.cpp" line="379"/>
+        <location filename="../../IO/Serialization.cpp" line="400"/>
+        <location filename="../../IO/Serialization.cpp" line="420"/>
+        <location filename="../../IO/Serialization.cpp" line="425"/>
+        <location filename="../../IO/Serialization.cpp" line="443"/>
         <source>Invalid file format.</source>
         <translation>פורמט קובץ לא תקין.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="359"/>
+        <location filename="../../IO/Serialization.cpp" line="361"/>
         <source>Invalid legacy file header: %1</source>
         <translation>כותרת קובץ ישן לא תקינה: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="542"/>
+        <location filename="../../IO/Serialization.cpp" line="556"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>שגיאת זרם בקריאת תגית סוג במיקום %1: מצב %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="554"/>
+        <location filename="../../IO/Serialization.cpp" line="568"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>שגיאת זרם בקריאת סוג רכיב במיקום %1: מצב %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="566"/>
+        <location filename="../../IO/Serialization.cpp" line="580"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>שגיאת זרם בטעינת רכיב במיקום %1: מצב %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="599"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>שגיאת זרם בטעינת חיבור במיקום %1: מצב %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="592"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>סוג לא תקין. הנתונים עלולים להיות פגומים.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="645"/>
+        <location filename="../../IO/Serialization.cpp" line="659"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>יצירת גיבוי מגרסה נכשלה: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="666"/>
+        <location filename="../../IO/Serialization.cpp" line="680"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>שגיאת זרם בקריאת הפתיח: מצב %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="730"/>
+        <location filename="../../IO/Serialization.cpp" line="744"/>
         <source>Error copying file: %1</source>
         <translation>שגיאה בהעתקת הקובץ: %1</translation>
     </message>

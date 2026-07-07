@@ -800,42 +800,42 @@
         <translation>7段显示器</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>middle</source>
         <translation>中间</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
         <source>upper left</source>
         <translation>左上</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
         <source>lower left</source>
         <translation>左下</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
         <source>bottom</source>
         <translation>底部</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
         <source>top</source>
         <translation>顶部</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="148"/>
         <source>upper right</source>
         <translation>右上</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="149"/>
         <source>dot</source>
         <translation>点</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="150"/>
         <source>lower right</source>
         <translation>右下</translation>
     </message>
@@ -2662,78 +2662,78 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="275"/>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Stream error reading metadata map count</source>
         <translation>读取元数据计数时发生流错误</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="278"/>
+        <location filename="../../IO/Serialization.cpp" line="280"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>相对于剩余流字节数，元数据计数 %1 不合理</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="295"/>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Stream error reading blob map count</source>
         <translation>读取 blob 计数时发生流错误</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="298"/>
+        <location filename="../../IO/Serialization.cpp" line="300"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>相对于剩余流字节数，blob 计数 %1 不合理</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="323"/>
-        <location filename="../../IO/Serialization.cpp" line="370"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="398"/>
-        <location filename="../../IO/Serialization.cpp" line="418"/>
-        <location filename="../../IO/Serialization.cpp" line="423"/>
-        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="325"/>
+        <location filename="../../IO/Serialization.cpp" line="372"/>
+        <location filename="../../IO/Serialization.cpp" line="379"/>
+        <location filename="../../IO/Serialization.cpp" line="400"/>
+        <location filename="../../IO/Serialization.cpp" line="420"/>
+        <location filename="../../IO/Serialization.cpp" line="425"/>
+        <location filename="../../IO/Serialization.cpp" line="443"/>
         <source>Invalid file format.</source>
         <translation>无效的文件格式。</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="359"/>
+        <location filename="../../IO/Serialization.cpp" line="361"/>
         <source>Invalid legacy file header: %1</source>
         <translation>旧版文件头无效：%1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="542"/>
+        <location filename="../../IO/Serialization.cpp" line="556"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>在位置 %1 读取类型标签时出现流错误: 状态 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="554"/>
+        <location filename="../../IO/Serialization.cpp" line="568"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>在位置 %1 读取元件类型时出现流错误: 状态 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="566"/>
+        <location filename="../../IO/Serialization.cpp" line="580"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>在位置 %1 加载元件时出现流错误: 状态 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="599"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>在位置 %1 加载连接时出现流错误: 状态 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="592"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>无效类型。数据可能已损坏。</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="645"/>
+        <location filename="../../IO/Serialization.cpp" line="659"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>无法创建版本化备份: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="666"/>
+        <location filename="../../IO/Serialization.cpp" line="680"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>读取前导码时发生流错误：状态 %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="730"/>
+        <location filename="../../IO/Serialization.cpp" line="744"/>
         <source>Error copying file: %1</source>
         <translation>复制文件时出错：%1</translation>
     </message>

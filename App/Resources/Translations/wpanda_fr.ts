@@ -800,42 +800,42 @@
         <translation>Affichage 7 segments</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>middle</source>
         <translation>milieu</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
         <source>upper left</source>
         <translation>haut gauche</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
         <source>lower left</source>
         <translation>bas gauche</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
         <source>bottom</source>
         <translation>bas</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
         <source>top</source>
         <translation>haut</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="148"/>
         <source>upper right</source>
         <translation>haut droit</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="149"/>
         <source>dot</source>
         <translation>point</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="150"/>
         <source>lower right</source>
         <translation>bas droit</translation>
     </message>
@@ -1157,7 +1157,7 @@ Chaque canal sans fil doit avoir un label unique.</translation>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation>Impossible de créer ou d'accéder à un dossier pour les exercices personnalisés.</translation>
+        <translation>Impossible de créer ou d&apos;accéder à un dossier pour les exercices personnalisés.</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
@@ -1177,7 +1177,7 @@ Chaque canal sans fil doit avoir un label unique.</translation>
     <message>
         <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
         <source>Open My Exercises Folder</source>
-        <translation>Ouvrir mon dossier d'exercices</translation>
+        <translation>Ouvrir mon dossier d&apos;exercices</translation>
     </message>
 </context>
 <context>
@@ -1190,7 +1190,7 @@ Chaque canal sans fil doit avoir un label unique.</translation>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="57"/>
         <source>Close exercise</source>
-        <translation>Fermer l'exercice</translation>
+        <translation>Fermer l&apos;exercice</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
@@ -1213,7 +1213,7 @@ Chaque canal sans fil doit avoir un label unique.</translation>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="79"/>
         <source>Hide hint</source>
-        <translation>Masquer l'indice</translation>
+        <translation>Masquer l&apos;indice</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="171"/>
@@ -1339,12 +1339,12 @@ Chaque canal sans fil doit avoir un label unique.</translation>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="60"/>
         <source>Stream error reading %1 entry %2 at position %3</source>
-        <translation>Erreur de flux lors de la lecture de l'entrée %2 de %1 à la position %3</translation>
+        <translation>Erreur de flux lors de la lecture de l&apos;entrée %2 de %1 à la position %3</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
         <source>Stream error reading element properties at position %1</source>
-        <translation>Erreur de flux lors de la lecture des propriétés de l'élément à la position %1</translation>
+        <translation>Erreur de flux lors de la lecture des propriétés de l&apos;élément à la position %1</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
@@ -1354,22 +1354,22 @@ Chaque canal sans fil doit avoir un label unique.</translation>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
-        <translation>Index d'apparence %1 hors limites (taille=%2) — le flux est peut-être corrompu</translation>
+        <translation>Index d&apos;apparence %1 hors limites (taille=%2) — le flux est peut-être corrompu</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
         <source>Non-finite element position — stream may be corrupt</source>
-        <translation>Position d'élément non finie — le flux est peut-être corrompu</translation>
+        <translation>Position d&apos;élément non finie — le flux est peut-être corrompu</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
-        <translation>Rotation d'élément non finie — le flux est peut-être corrompu</translation>
+        <translation>Rotation d&apos;élément non finie — le flux est peut-être corrompu</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
-        <translation>Liste de ports d'entrée au format ancien refusée avec un nombre invraisemblable %1 (max %2)</translation>
+        <translation>Liste de ports d&apos;entrée au format ancien refusée avec un nombre invraisemblable %1 (max %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
@@ -1379,12 +1379,12 @@ Chaque canal sans fil doit avoir un label unique.</translation>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
-        <translation>Liste d'apparences au format ancien refusée avec un nombre invraisemblable %1 (max %2)</translation>
+        <translation>Liste d&apos;apparences au format ancien refusée avec un nombre invraisemblable %1 (max %2)</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
-        <translation>Index d'apparence %1 hors limites (taille=%2) pour le nom d'apparence « %3 » — le flux est peut-être corrompu</translation>
+        <translation>Index d&apos;apparence %1 hors limites (taille=%2) pour le nom d&apos;apparence « %3 » — le flux est peut-être corrompu</translation>
     </message>
 </context>
 <context>
@@ -1549,12 +1549,12 @@ Nom suggéré&#xa0;:</translation>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="155"/>
         <source>Error opening file: %1</source>
-        <translation>Erreur lors de l'ouverture du fichier : %1</translation>
+        <translation>Erreur lors de l&apos;ouverture du fichier : %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="227"/>
         <source>IC migration: cannot open file for writing: %1</source>
-        <translation>Migration de CI : impossible d'ouvrir le fichier en écriture : %1</translation>
+        <translation>Migration de CI : impossible d&apos;ouvrir le fichier en écriture : %1</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="234"/>
@@ -1564,7 +1564,7 @@ Nom suggéré&#xa0;:</translation>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="297"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>Limite de profondeur d'imbrication des CI (%1) dépassée — le blob a peut-être été conçu de manière malveillante</translation>
+        <translation>Limite de profondeur d&apos;imbrication des CI (%1) dépassée — le blob a peut-être été conçu de manière malveillante</translation>
     </message>
 </context>
 <context>
@@ -1810,7 +1810,7 @@ Nom suggéré&#xa0;:</translation>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>Show IC Preview</source>
-        <translation>Afficher l'aperçu du CI</translation>
+        <translation>Afficher l&apos;aperçu du CI</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="814"/>
@@ -2352,7 +2352,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../UI/MainWindow.cpp" line="500"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;wiRedPanda est un logiciel développé par des étudiants de l'Université fédérale de São Paulo pour aider les étudiants à apprendre les circuits logiques.&lt;/p&gt;&lt;p&gt;Version du logiciel : %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Créateurs :&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda est actuellement maintenu par le Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves et Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Merci de signaler un problème sur notre page GitHub si vous trouvez un bogue ou souhaitez demander une nouvelle fonctionnalité.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visitez notre site web !&lt;/a&gt;&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;wiRedPanda est un logiciel développé par des étudiants de l&apos;Université fédérale de São Paulo pour aider les étudiants à apprendre les circuits logiques.&lt;/p&gt;&lt;p&gt;Version du logiciel : %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Créateurs :&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda est actuellement maintenu par le Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves et Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Merci de signaler un problème sur notre page GitHub si vous trouvez un bogue ou souhaitez demander une nouvelle fonctionnalité.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visitez notre site web !&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="573"/>
@@ -2662,78 +2662,78 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="275"/>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Stream error reading metadata map count</source>
         <translation>Erreur de flux lors de la lecture du nombre de métadonnées</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="278"/>
+        <location filename="../../IO/Serialization.cpp" line="280"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>Nombre de métadonnées %1 invraisemblable au vu des octets restants</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="295"/>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Stream error reading blob map count</source>
         <translation>Erreur de flux lors de la lecture du nombre de blobs</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="298"/>
+        <location filename="../../IO/Serialization.cpp" line="300"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>Nombre de blobs %1 invraisemblable au vu des octets restants</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="323"/>
-        <location filename="../../IO/Serialization.cpp" line="370"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="398"/>
-        <location filename="../../IO/Serialization.cpp" line="418"/>
-        <location filename="../../IO/Serialization.cpp" line="423"/>
-        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="325"/>
+        <location filename="../../IO/Serialization.cpp" line="372"/>
+        <location filename="../../IO/Serialization.cpp" line="379"/>
+        <location filename="../../IO/Serialization.cpp" line="400"/>
+        <location filename="../../IO/Serialization.cpp" line="420"/>
+        <location filename="../../IO/Serialization.cpp" line="425"/>
+        <location filename="../../IO/Serialization.cpp" line="443"/>
         <source>Invalid file format.</source>
         <translation>Format de fichier invalide.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="359"/>
+        <location filename="../../IO/Serialization.cpp" line="361"/>
         <source>Invalid legacy file header: %1</source>
         <translation>En-tête de fichier hérité non valide : %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="542"/>
+        <location filename="../../IO/Serialization.cpp" line="556"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Erreur de flux lors de la lecture de l’étiquette de type à la position %1&#xa0;: état %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="554"/>
+        <location filename="../../IO/Serialization.cpp" line="568"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Erreur de flux lors de la lecture du type d’élément à la position %1&#xa0;: état %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="566"/>
+        <location filename="../../IO/Serialization.cpp" line="580"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Erreur de flux lors du chargement de l’élément à la position %1&#xa0;: état %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="599"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Erreur de flux lors du chargement de la connexion à la position %1&#xa0;: état %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="592"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Type invalide. Les données sont possiblement corrompues.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="645"/>
+        <location filename="../../IO/Serialization.cpp" line="659"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Échec de la création de la sauvegarde versionnée&#xa0;: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="666"/>
+        <location filename="../../IO/Serialization.cpp" line="680"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Erreur de flux lors de la lecture du préambule : statut %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="730"/>
+        <location filename="../../IO/Serialization.cpp" line="744"/>
         <source>Error copying file: %1</source>
         <translation>Erreur lors de la copie du fichier&#xa0;: %1</translation>
     </message>
@@ -2784,7 +2784,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="39"/>
         <source>Could not open file for writing: %1</source>
-        <translation>Impossible d'ouvrir le fichier en écriture : %1</translation>
+        <translation>Impossible d&apos;ouvrir le fichier en écriture : %1</translation>
     </message>
     <message>
         <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
@@ -2846,7 +2846,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation>Impossible de créer ou d'accéder à un dossier pour les visites personnalisées.</translation>
+        <translation>Impossible de créer ou d&apos;accéder à un dossier pour les visites personnalisées.</translation>
     </message>
     <message>
         <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
@@ -3012,7 +3012,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
         <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not write the file:
 %1</source>
-        <translation>Impossible d'écrire le fichier :
+        <translation>Impossible d&apos;écrire le fichier :
 %1</translation>
     </message>
     <message>
@@ -3166,7 +3166,7 @@ Voulez-vous enregistrer vos modifications&#x202f;?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
         <source>Save File (original location is read-only)</source>
-        <translation>Enregistrer le fichier (l'emplacement d'origine est en lecture seule)</translation>
+        <translation>Enregistrer le fichier (l&apos;emplacement d&apos;origine est en lecture seule)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
@@ -3268,7 +3268,7 @@ Voulez-vous enregistrer vos modifications&#x202f;?</translation>
         <location filename="../../Main.cpp" line="372"/>
         <location filename="../../Main.cpp" line="384"/>
         <source>Error: no input circuit file given.</source>
-        <translation>Erreur : aucun fichier de circuit d'entrée fourni.</translation>
+        <translation>Erreur : aucun fichier de circuit d&apos;entrée fourni.</translation>
     </message>
     <message>
         <location filename="../../Main.cpp" line="407"/>

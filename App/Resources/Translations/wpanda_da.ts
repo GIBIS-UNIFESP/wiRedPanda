@@ -551,7 +551,7 @@
     <message>
         <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
         <source>Stream error reading connection port IDs at offset %1</source>
-        <translation>Streamfejl ved læsning af forbindelsesport-id'er ved offset %1</translation>
+        <translation>Streamfejl ved læsning af forbindelsesport-id&apos;er ved offset %1</translation>
     </message>
 </context>
 <context>
@@ -800,42 +800,42 @@
         <translation>7-segment display</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>middle</source>
         <translation>midten</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
         <source>upper left</source>
         <translation>øverste venstre</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
         <source>lower left</source>
         <translation>nederste venstre</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
         <source>bottom</source>
         <translation>bund</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
         <source>top</source>
         <translation>øverste</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="148"/>
         <source>upper right</source>
         <translation>øverste højre</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="149"/>
         <source>dot</source>
         <translation>punkt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="150"/>
         <source>lower right</source>
         <translation>nederste højre</translation>
     </message>
@@ -1564,7 +1564,7 @@ Foreslået navn:</translation>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="297"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
-        <translation>Grænsen for IC-indlejringsdybde (%1) overskredet — blob'en kan være ondsindet udformet</translation>
+        <translation>Grænsen for IC-indlejringsdybde (%1) overskredet — blob&apos;en kan være ondsindet udformet</translation>
     </message>
 </context>
 <context>
@@ -2662,78 +2662,78 @@ Du skal gemme nye projekter før du kan tilgå IC&apos;er og udseender eller kø
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="275"/>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Stream error reading metadata map count</source>
         <translation>Strømfejl ved læsning af antallet af metadata</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="278"/>
+        <location filename="../../IO/Serialization.cpp" line="280"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>Antallet af metadata %1 er urimeligt i forhold til de tilbageværende bytes i strømmen</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="295"/>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Stream error reading blob map count</source>
         <translation>Strømfejl ved læsning af antallet af blobs</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="298"/>
+        <location filename="../../IO/Serialization.cpp" line="300"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>Antallet af blobs %1 er urimeligt i forhold til de tilbageværende bytes i strømmen</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="323"/>
-        <location filename="../../IO/Serialization.cpp" line="370"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="398"/>
-        <location filename="../../IO/Serialization.cpp" line="418"/>
-        <location filename="../../IO/Serialization.cpp" line="423"/>
-        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="325"/>
+        <location filename="../../IO/Serialization.cpp" line="372"/>
+        <location filename="../../IO/Serialization.cpp" line="379"/>
+        <location filename="../../IO/Serialization.cpp" line="400"/>
+        <location filename="../../IO/Serialization.cpp" line="420"/>
+        <location filename="../../IO/Serialization.cpp" line="425"/>
+        <location filename="../../IO/Serialization.cpp" line="443"/>
         <source>Invalid file format.</source>
         <translation>Ugyldigt filformat.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="359"/>
+        <location filename="../../IO/Serialization.cpp" line="361"/>
         <source>Invalid legacy file header: %1</source>
         <translation>Ugyldigt ældre filhoved: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="542"/>
+        <location filename="../../IO/Serialization.cpp" line="556"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Streamfejl ved læsning af typetag ved position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="554"/>
+        <location filename="../../IO/Serialization.cpp" line="568"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Streamfejl ved læsning af elementtype ved position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="566"/>
+        <location filename="../../IO/Serialization.cpp" line="580"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Streamfejl ved indlæsning af element ved position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="599"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Streamfejl ved indlæsning af forbindelse ved position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="592"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Ugyldig type. Data er muligvis beskadiget.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="645"/>
+        <location filename="../../IO/Serialization.cpp" line="659"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Kunne ikke oprette versioneret sikkerhedskopi: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="666"/>
+        <location filename="../../IO/Serialization.cpp" line="680"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Streamfejl ved læsning af præambel: status %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="730"/>
+        <location filename="../../IO/Serialization.cpp" line="744"/>
         <source>Error copying file: %1</source>
         <translation>Fejl ved kopiering af fil: %1</translation>
     </message>

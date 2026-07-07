@@ -800,42 +800,42 @@
         <translation>7-खंड प्रदर्शक</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
         <source>middle</source>
         <translation>मध्य</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="141"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
         <source>upper left</source>
         <translation>ऊपरी बाएँ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="142"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
         <source>lower left</source>
         <translation>निचले बाएँ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
         <source>bottom</source>
         <translation>नीचे</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
         <source>top</source>
         <translation>ऊपर</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="148"/>
         <source>upper right</source>
         <translation>ऊपरी दाएँ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="149"/>
         <source>dot</source>
         <translation>बिंदु</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="150"/>
         <source>lower right</source>
         <translation>निचले दाएँ</translation>
     </message>
@@ -2662,78 +2662,78 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="275"/>
+        <location filename="../../IO/Serialization.cpp" line="277"/>
         <source>Stream error reading metadata map count</source>
         <translation>मेटाडेटा गणना पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="278"/>
+        <location filename="../../IO/Serialization.cpp" line="280"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>शेष स्ट्रीम बाइट्स के अनुसार मेटाडेटा गणना %1 असंभाव्य है</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="295"/>
+        <location filename="../../IO/Serialization.cpp" line="297"/>
         <source>Stream error reading blob map count</source>
         <translation>blob गणना पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="298"/>
+        <location filename="../../IO/Serialization.cpp" line="300"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>शेष स्ट्रीम बाइट्स के अनुसार blob गणना %1 असंभाव्य है</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="323"/>
-        <location filename="../../IO/Serialization.cpp" line="370"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="398"/>
-        <location filename="../../IO/Serialization.cpp" line="418"/>
-        <location filename="../../IO/Serialization.cpp" line="423"/>
-        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="325"/>
+        <location filename="../../IO/Serialization.cpp" line="372"/>
+        <location filename="../../IO/Serialization.cpp" line="379"/>
+        <location filename="../../IO/Serialization.cpp" line="400"/>
+        <location filename="../../IO/Serialization.cpp" line="420"/>
+        <location filename="../../IO/Serialization.cpp" line="425"/>
+        <location filename="../../IO/Serialization.cpp" line="443"/>
         <source>Invalid file format.</source>
         <translation>अमान्य फ़ाइल प्रारूप।</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="359"/>
+        <location filename="../../IO/Serialization.cpp" line="361"/>
         <source>Invalid legacy file header: %1</source>
         <translation>अमान्य पुरानी फ़ाइल हेडर: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="542"/>
+        <location filename="../../IO/Serialization.cpp" line="556"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>स्थिति %1 पर टाइप टैग पढ़ने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="554"/>
+        <location filename="../../IO/Serialization.cpp" line="568"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>स्थिति %1 पर तत्व प्रकार पढ़ने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="566"/>
+        <location filename="../../IO/Serialization.cpp" line="580"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>स्थिति %1 पर तत्व लोड करने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="599"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>स्थिति %1 पर कनेक्शन लोड करने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="592"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>अमान्य प्रकार। डेटा संभवतः दूषित है।</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="645"/>
+        <location filename="../../IO/Serialization.cpp" line="659"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>संस्करणित बैकअप बनाने में विफल: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="666"/>
+        <location filename="../../IO/Serialization.cpp" line="680"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>प्रस्तावना पढ़ते समय स्ट्रीम त्रुटि: स्थिति %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="730"/>
+        <location filename="../../IO/Serialization.cpp" line="744"/>
         <source>Error copying file: %1</source>
         <translation>फ़ाइल कॉपी करने में त्रुटि: %1</translation>
     </message>
