@@ -277,12 +277,6 @@ class StackPointer8BitBuilder(ICBuilderBase):
             if not await self.connect(vcc_preset_clear_id, ff_id, target_port_label="Clear"):
                 return False
 
-        # Connect control signals to Adder for ±1 operations
-        # When Push is high, add 0xFF (subtract 1)
-        # When Pop is high, add 0x01
-        # Note: Adder B inputs determine the operation (0x00 for hold, 0x01 for pop, 0xFF for push)
-        # For now, connect B inputs to 0 (hold) - push/pop can be enhanced later
-
         await self.log(f"✓ Made {self.connection_count} connections")
 
         # Save the IC
