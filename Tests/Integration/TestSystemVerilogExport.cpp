@@ -770,6 +770,11 @@ void TestSystemVerilogExport::testSystemVerilogExportDecoder4to16()
     testSystemVerilogExportHelper("level2_decoder_4to16.panda");
 }
 
+void TestSystemVerilogExport::testSystemVerilogExportDecoder5to32()
+{
+    testSystemVerilogExportHelper("level2_decoder_5to32.panda");
+}
+
 void TestSystemVerilogExport::testSystemVerilogExportMux4to1()
 {
     testSystemVerilogExportHelper("level2_mux_4to1.panda");

@@ -25,6 +25,7 @@ private slots:
     void testSystemVerilogExportDecoder3to8();
     void testSystemVerilogExportParityChecker();
     void testSystemVerilogExportDecoder4to16();
+    void testSystemVerilogExportDecoder5to32();
     void testSystemVerilogExportMux4to1();
     void testSystemVerilogExportMux8to1();
     void testSystemVerilogExportParityGenerator();
