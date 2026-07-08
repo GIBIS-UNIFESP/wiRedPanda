@@ -705,26 +705,11 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
     setText(tr("Morph %1 elements to %2").arg(elements.size()).arg(elements.constFirst()->objectName()));
 }
 
-void MorphCommand::undo()
+void MorphCommand::restoreDeletedConnections(const QList<DeletedConnectionInfo> &deleted)
 {
-    // transferConnections() deletes the current elements; a sim tick on
-    // the torn state between delete and setCircuitUpdateRequired() faults.
-    SimulationBlocker blocker(m_scene->simulation());
-
-    auto newElms = elements();
-    decltype(newElms) oldElms;
-    oldElms.reserve(m_ids.size());
-
-    for (int i = 0; i < m_ids.size(); ++i) {
-        oldElms << ElementFactory::buildElement(m_types.at(i));
-    }
-
-    transferConnections(newElms, oldElms);
-
-    // Restore connections that were deleted when redo() morphed to a smaller element.
     // By this point transferConnections has already placed the restored elements in the
     // scene under their original IDs, so itemById() resolves correctly.
-    for (const auto &info : std::as_const(m_deletedConnections)) {
+    for (const auto &info : deleted) {
         auto *morphedElm = dynamic_cast<GraphicElement *>(m_scene->itemById(info.morphedElementId));
         auto *otherElm   = dynamic_cast<GraphicElement *>(m_scene->itemById(info.otherElementId));
         if (!morphedElm || !otherElm) {
@@ -744,6 +729,27 @@ void MorphCommand::undo()
         m_scene->updateItemId(conn, info.connectionId);
         m_scene->addItem(conn);
     }
+}
+
+void MorphCommand::undo()
+{
+    // transferConnections() deletes the current elements; a sim tick on
+    // the torn state between delete and setCircuitUpdateRequired() faults.
+    SimulationBlocker blocker(m_scene->simulation());
+
+    auto newElms = elements();
+    decltype(newElms) oldElms;
+    oldElms.reserve(m_ids.size());
+
+    for (int i = 0; i < m_ids.size(); ++i) {
+        oldElms << ElementFactory::buildElement(m_types.at(i));
+    }
+
+    m_deletedConnectionsOnUndo.clear();
+    transferConnections(newElms, oldElms, &m_deletedConnectionsOnUndo);
+
+    // Restore connections that were deleted when the last redo() morphed to a smaller element.
+    restoreDeletedConnections(m_deletedConnections);
 
     m_scene->setCircuitUpdateRequired();
 }
@@ -762,6 +768,12 @@ void MorphCommand::redo()
 
     m_deletedConnections.clear();
     transferConnections(oldElms, newElms, &m_deletedConnections);
+
+    // Restore connections that were deleted when the last undo() reverted to a smaller
+    // original type — symmetric with undo()'s restoration above, so a connection added
+    // while morphed and later dropped by undo() isn't lost permanently.
+    restoreDeletedConnections(m_deletedConnectionsOnUndo);
+
     m_scene->setCircuitUpdateRequired();
 }
 
