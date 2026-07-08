@@ -31,7 +31,9 @@ from ic_builder_helpers import CounterBuilder
 
 async def build(mcp) -> bool:
     """Entry point for the builder"""
-    return await CounterBuilder(mcp, mode="modulo").create()
+    return await CounterBuilder(
+        mcp, mode="modulo", dff_name="level1_d_flip_flop", comparator_name="level3_comparator_4bit_equality"
+    ).create()
 
 
 if __name__ == "__main__":

@@ -175,7 +175,9 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
 
         # ==== Band: register file + its programming muxes, instruction/register
         # programming inputs (shared with the multi-cycle CPU generator) ====
-        block = await build_cpu_register_programming_block(self, base_x, y_regfile)
+        block = await build_cpu_register_programming_block(
+            self, base_x, y_regfile, regfile_name="level6_register_file_8x8", bus_mux_name="level4_bus_mux_8bit"
+        )
         if block is None:
             return False
         regfile_id = block.regfile_id

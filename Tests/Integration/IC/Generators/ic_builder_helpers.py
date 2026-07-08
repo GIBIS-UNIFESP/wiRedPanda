@@ -533,9 +533,20 @@ class RegisterFileBuilder(ICBuilderBase):
 class BarrelShiftBuilder(ICBuilderBase):
     """4-bit barrel shifter/rotator. is_rotator=True → wrap-around; False → zero-fill."""
 
-    def __init__(self, mcp, is_rotator: bool, verbose: bool = True) -> None:
+    def __init__(self, mcp, is_rotator: bool, bus_mux_name: str, verbose: bool = True) -> None:
+        # bus_mux_name is a required, caller-supplied literal (see
+        # RegisterFileBuilder.decoder_name / build_cpu_register_programming_block
+        # for the same pattern) so run_all_generators.py's dependency scanner --
+        # which only sees literal string constants in the generator script it's
+        # analyzing -- can see this builder's bus-mux dependency instead of it
+        # being invisible inside this shared helper.
+        expected_bus_mux_name = "level4_bus_mux_4bit"
+        if bus_mux_name != expected_bus_mux_name:
+            raise ValueError(f"bus_mux_name={bus_mux_name!r} does not match the expected {expected_bus_mux_name!r}")
+
         super().__init__(mcp, verbose)
         self.is_rotator = is_rotator
+        self.bus_mux_name = bus_mux_name
 
     async def create(self) -> bool:
         """Create the barrel shifter or rotator IC."""
@@ -607,7 +618,7 @@ class BarrelShiftBuilder(ICBuilderBase):
         # than a flat 200px) since the bus mux's many input ports push its own
         # boundingRect() top edge above its nominal y, reaching up into Data[1]'s
         # label below the data row.
-        bus_mux = "level4_bus_mux_4bit"
+        bus_mux = self.bus_mux_name
         left_stage1_y = data_input_y + (2 * VERTICAL_STAGE_SPACING)
         left_s1_handle = await self.instantiate_ic_with_size(bus_mux, mux_x, left_stage1_y, "BusMux_Left_S1")
         if left_s1_handle is None:
@@ -759,9 +770,36 @@ class CounterBuilder(ICBuilderBase):
     BinaryCounter4BitBuilder (create_level4_binary_counter_4bit.py).
     """
 
-    def __init__(self, mcp, mode: str, verbose: bool = True) -> None:
+    def __init__(
+        self,
+        mcp,
+        mode: str,
+        dff_name: str,
+        comparator_name: "str | None" = None,
+        verbose: bool = True,
+    ) -> None:
+        # dff_name/comparator_name are required, caller-supplied literals (see
+        # RegisterFileBuilder.decoder_name for the same pattern) so
+        # run_all_generators.py's dependency scanner -- which only sees literal
+        # string constants in the generator script it's analyzing -- can see
+        # this builder's dependencies instead of them being invisible inside
+        # this shared helper. dff_name is used in both modes; comparator_name
+        # only in "modulo" mode.
+        expected_dff_name = "level1_d_flip_flop"
+        if dff_name != expected_dff_name:
+            raise ValueError(f"dff_name={dff_name!r} does not match the expected {expected_dff_name!r}")
+        if mode == "modulo":
+            expected_comparator_name = "level3_comparator_4bit_equality"
+            if comparator_name != expected_comparator_name:
+                raise ValueError(
+                    f"comparator_name={comparator_name!r} does not match the expected "
+                    f"{expected_comparator_name!r} for mode='modulo'"
+                )
+
         super().__init__(mcp, verbose)
         self.mode = mode
+        self.dff_name = dff_name
+        self.comparator_name = comparator_name
 
     async def create(self) -> bool:
         """Create a 4-bit counter IC."""
@@ -883,8 +921,9 @@ class CounterBuilder(ICBuilderBase):
             dff_x = mux_x + HORIZONTAL_GATE_SPACING
         elif mode == "modulo":
             comparator_x = xor_or_x + HORIZONTAL_GATE_SPACING
-            comp_name = "level3_comparator_4bit_equality"
-            comparator_id = await self.instantiate_ic(comp_name, comparator_x, 100.0, "Comparator")
+            # __init__ requires/validates comparator_name whenever mode == "modulo".
+            assert self.comparator_name is not None
+            comparator_id = await self.instantiate_ic(self.comparator_name, comparator_x, 100.0, "Comparator")
             if comparator_id is None:
                 return False
             not_equal_id = await self.create_element("Not", comparator_x + HORIZONTAL_GATE_SPACING, 100.0, "not_equal")
@@ -904,8 +943,7 @@ class CounterBuilder(ICBuilderBase):
 
         dff_ids = []
         for i in range(4):
-            dff_dep = "level1_d_flip_flop"
-            ff_id = await self.instantiate_ic(dff_dep, dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}")
+            ff_id = await self.instantiate_ic(self.dff_name, dff_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"FF{i}")
             if ff_id is None:
                 return False
             dff_ids.append(ff_id)
@@ -1576,7 +1614,11 @@ class CpuRegisterProgrammingBlock:
 
 
 async def build_cpu_register_programming_block(
-    builder: ICBuilderBase, base_x: float, y_regfile: float
+    builder: ICBuilderBase,
+    base_x: float,
+    y_regfile: float,
+    regfile_name: str,
+    bus_mux_name: str,
 ) -> "CpuRegisterProgrammingBlock | None":
     """Register file + its programming muxes + instruction/register-file
     programming inputs. Shared verbatim between the 8-bit single-cycle and
@@ -1584,21 +1626,37 @@ async def build_cpu_register_programming_block(
     generators' spacing made this ~90-line block byte-identical, which
     pylint's duplicate-code check (R0801) then flagged.
 
+    regfile_name/bus_mux_name are required, caller-supplied literals -- not
+    hardcoded here -- for the same reason RegisterFileBuilder.decoder_name is:
+    run_all_generators.py's dependency scanner only sees literal string
+    constants in the generator script it's analyzing, so this shared helper's
+    two dependencies must also appear as plain literals in each caller's own
+    file. Cross-checked against the only values this helper actually builds
+    (an 8x8/2-read-port register file and an 8-bit bus mux) so a typo'd/
+    mismatched literal fails loudly instead of silently wiring up the wrong IC.
+
     Only the block's own start (y_regfile) is a caller-supplied anchor -- the
     prog/reg-prog sub-bands below it, and the `next_y` handed back for
     whatever the caller places next, are derived from the register file's and
     write-data mux's real rendered height (learned here via
     instantiate_ic_with_size), not a flat worst-case constant.
     """
+    expected_regfile_name = "level6_register_file_8x8"
+    if regfile_name != expected_regfile_name:
+        raise ValueError(f"regfile_name={regfile_name!r} does not match the expected {expected_regfile_name!r}")
+    expected_bus_mux_name = "level4_bus_mux_8bit"
+    if bus_mux_name != expected_bus_mux_name:
+        raise ValueError(f"bus_mux_name={bus_mux_name!r} does not match the expected {expected_bus_mux_name!r}")
+
     regfile_x = base_x
-    regfile_handle = await builder.instantiate_ic_with_size("level6_register_file_8x8", regfile_x, y_regfile, "RegFile")
+    regfile_handle = await builder.instantiate_ic_with_size(regfile_name, regfile_x, y_regfile, "RegFile")
     if regfile_handle is None:
         return None
     regfile_id = regfile_handle.element_id
 
     write_data_mux_x = regfile_x + max(HORIZONTAL_GATE_SPACING * 2, regfile_handle.width + HORIZONTAL_GATE_SPACING)
     write_data_mux_handle = await builder.instantiate_ic_with_size(
-        "level4_bus_mux_8bit", write_data_mux_x, y_regfile, "WriteDataMux"
+        bus_mux_name, write_data_mux_x, y_regfile, "WriteDataMux"
     )
     if write_data_mux_handle is None:
         return None
