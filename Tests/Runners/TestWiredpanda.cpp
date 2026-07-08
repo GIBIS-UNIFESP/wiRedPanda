@@ -168,6 +168,8 @@
 #include "Tests/Unit/Logic/TestElementLogicErrors.h"
 #include "Tests/Unit/Logic/TestNodeLogic.h"
 #include "Tests/Unit/Logic/TestStatusOps.h"
+// unit/mcp
+#include "Tests/Unit/MCP/TestICHandlerSecurity.h"
 // unit/scene
 #include "Tests/Unit/Scene/TestConnectionManager.h"
 #include "Tests/Unit/Scene/TestConnectionValidity.h"
@@ -366,6 +368,7 @@ int main(int argc, char **argv)
         {"TestElementLogicErrors", []() -> QObject * { return new TestElementLogicErrors; }},
         {"TestNodeLogic", []() -> QObject * { return new TestNodeLogic; }},
         {"TestStatusOps", []() -> QObject * { return new TestStatusOps; }},
+        {"TestICHandlerSecurity", []() -> QObject * { return new TestICHandlerSecurity; }},
         {"TestConnectionSerialization", []() -> QObject * { return new TestConnectionSerialization; }},
         {"TestConnections", []() -> QObject * { return new TestConnections; }},
         {"TestConnectionManager", []() -> QObject * { return new TestConnectionManager; }},

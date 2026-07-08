@@ -17,6 +17,20 @@
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 
+namespace {
+
+/// Returns \c true if \a name is a single path component with no directory traversal —
+/// safe to use as-is inside a filesystem path built from MCP-client-supplied input, which
+/// (unlike the GUI's getSaveFileName()/getOpenFileName() dialogs) has no human confirming
+/// the resulting location before a file gets read or written.
+bool isBareFileName(const QString &name)
+{
+    return name != "." && name != ".." && QFileInfo(name).fileName() == name
+        && !name.contains('/') && !name.contains('\\');
+}
+
+} // namespace
+
 ICHandler::ICHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
 {
@@ -58,8 +72,7 @@ QJsonObject ICHandler::handleCreateIC(const QJsonObject &params, const QJsonValu
         return createErrorResponse("IC name cannot be empty", requestId, JsonRpcError::InvalidParams);
     }
 
-    if (name == "." || name == ".." || QFileInfo(name).fileName() != name
-        || name.contains('/') || name.contains('\\')) {
+    if (!isBareFileName(name)) {
         return createErrorResponse("IC name must not contain path separators or directory components",
                                    requestId, JsonRpcError::InvalidParams);
     }
@@ -127,8 +140,7 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
             return createErrorResponse("IC path must not contain '..' components",
                                        requestId, JsonRpcError::InvalidParams);
         }
-    } else if (icName == "." || icName == ".." || QFileInfo(icName).fileName() != icName
-        || icName.contains('/') || icName.contains('\\')) {
+    } else if (!isBareFileName(icName)) {
         return createErrorResponse("IC name must not contain path separators or directory components",
                                    requestId, JsonRpcError::InvalidParams);
     }
@@ -166,6 +178,11 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
             QString blobName = params.value("blob_name").toString();
             if (blobName.isEmpty()) {
                 blobName = QFileInfo(fullPath).baseName();
+            } else if (!isBareFileName(blobName)) {
+                // Same reasoning as handleEmbedIC: this blob_name is stored verbatim as a
+                // registry key and can later be used as a file-name fallback by extract_ic.
+                return createErrorResponse("blob_name must not contain path separators or directory components",
+                                           requestId, JsonRpcError::InvalidParams);
             }
 
             auto *reg = scene->icRegistry();
@@ -177,8 +194,11 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
 
             icPtr = reg->createEmbeddedIC(blobName, fileBytes, icDirectory);
         } else {
+            // loadFile() can throw (nesting depth, circular reference, bad file); release()
+            // only after it succeeds so the unique_ptr cleans up on the throwing path instead
+            // of leaking, mirroring SceneDropHandler.cpp's identical loadFromDrop() sequencing.
+            ic->loadFile(fullPath, icDirectory);
             icPtr = ic.release();
-            icPtr->loadFile(fullPath, icDirectory);
             scene->receiveCommand(new AddItemsCommand({icPtr}, scene));
         }
 
@@ -322,6 +342,12 @@ QJsonObject ICHandler::handleEmbedIC(const QJsonObject &params, const QJsonValue
         QString blobName = params.value("blob_name").toString();
         if (blobName.isEmpty()) {
             blobName = QFileInfo(resolvedPath).baseName();
+        } else if (!isBareFileName(blobName)) {
+            // blob_name is later used verbatim as a file-name fallback by extract_ic
+            // (ICHandler::handleExtractIC) — reject path traversal here too, not just there,
+            // so a malicious name can't ride through the registry as a stored blob key.
+            return createErrorResponse("blob_name must not contain path separators or directory components",
+                                       requestId, JsonRpcError::InvalidParams);
         }
 
         auto *reg = scene->icRegistry();
@@ -381,6 +407,21 @@ QJsonObject ICHandler::handleExtractIC(const QJsonObject &params, const QJsonVal
         if (!fileName.endsWith(".panda")) {
             fileName.append(".panda");
         }
+
+        // file_name is an MCP-client-supplied identifier, not a GUI-picked path (unlike
+        // ICController::extractSelectedIC, which always routes through an interactive
+        // getSaveFileName dialog a human must approve) — an absolute file_name or one with
+        // ".." components would otherwise let the write above land anywhere on disk. Validate
+        // the final resolved path rather than the individual inputs that built it, so this
+        // can't be bypassed by some other future parameter combination; subdirectories of
+        // contextDir remain allowed, only escapes are rejected.
+        const QString cleanContextDir = QDir::cleanPath(QDir(contextDir).absolutePath());
+        const QString cleanFileName = QDir::cleanPath(fileName);
+        if (cleanFileName != cleanContextDir && !cleanFileName.startsWith(cleanContextDir + '/')) {
+            return createErrorResponse("file_name must resolve to a location inside the project directory",
+                                       requestId, JsonRpcError::InvalidParams);
+        }
+        fileName = cleanFileName;
 
         if (QFile::exists(fileName) && !params.value("overwrite").toBool()) {
             return createErrorResponse(QString("File '%1' already exists. Set overwrite=true to replace it.").arg(fileName),
