@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QPen>
+#include <QPixmapCache>
 #include <QRegularExpression>
 #include <QSvgRenderer>
 
@@ -20,23 +21,6 @@
 #include "App/Element/GraphicElement.h"
 
 namespace {
-
-/// Cache decoded pixmaps by resolved path so each image is loaded from disk only once.
-QHash<QString, QPixmap> &pixmapCache()
-{
-    static QHash<QString, QPixmap> cache;
-    return cache;
-}
-
-/// Cache of orientation-variant pixmaps keyed by "<resolvedPath>|<canonicalAngle>|<flipX><flipY>"
-/// so the SVG text correction is rendered only once per appearance and rotation/flip state.
-/// Both this and pixmapCache() are plain static QHashes with no locking: GraphicElement pixmaps are
-/// only built and read on the GUI thread, so concurrent access does not occur.
-QHash<QString, QPixmap> &orientedPixmapCache()
-{
-    static QHash<QString, QPixmap> cache;
-    return cache;
-}
 
 /// Rewrites \a svgBytes so every <text> element is counter-oriented about its own centre for the
 /// element's current rotation \a angle and \a flipX / \a flipY. Pre-applying the inverse of the
@@ -124,7 +108,8 @@ QByteArray orientSvgTextNodes(const QByteArray &svgBytes, const qreal angle, con
 
 /// Renders an orientation-variant pixmap for the SVG at \a resolvedPath with its <text> labels
 /// counter-oriented for the current rotation \a angle and flip, cached per path + angle + flip
-/// state. Returns a null pixmap on failure so callers can fall back to the plain base pixmap
+/// state via the shared QPixmapCache (see MainWindow's setCacheLimit() call for the app-wide
+/// budget). Returns a null pixmap on failure so callers can fall back to the plain base pixmap
 /// (which the item transform then rotates/flips).
 QPixmap orientedSvgPixmap(const QString &resolvedPath, const qreal angle, const bool flipX, const bool flipY)
 {
@@ -132,15 +117,17 @@ QPixmap orientedSvgPixmap(const QString &resolvedPath, const qreal angle, const 
     // share one cache entry instead of growing the key space without bound — MCP can request any
     // angle and rotate-left produces negatives.
     const qreal canonAngle = std::fmod(std::fmod(angle, 360.0) + 360.0, 360.0);
-    const QString key = resolvedPath + QLatin1Char('|')
+    // Namespaced so this can never collide with Qt's own internal QPixmapCache keys (which are
+    // always prefixed "qt_pixmap") or anything else the app might insert into the same shared,
+    // process-wide cache.
+    const QString key = QLatin1String("wp_oriented_svg:") + resolvedPath + QLatin1Char('|')
         + QString::number(canonAngle) + QLatin1Char('|')
         + (flipX ? QLatin1Char('1') : QLatin1Char('0'))
         + (flipY ? QLatin1Char('1') : QLatin1Char('0'));
 
-    auto &cache = orientedPixmapCache();
-    const auto it = cache.constFind(key);
-    if (it != cache.constEnd()) {
-        return *it;
+    QPixmap cached;
+    if (QPixmapCache::find(key, &cached)) {
+        return cached;
     }
 
     QFile file(resolvedPath);
@@ -167,7 +154,7 @@ QPixmap orientedSvgPixmap(const QString &resolvedPath, const qreal angle, const 
     renderer.render(&painter);
     painter.end();
 
-    cache.insert(key, pixmap);
+    QPixmapCache::insert(key, pixmap);
     return pixmap;
 }
 
@@ -237,13 +224,11 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
         }
     }
 
-    auto &cache = pixmapCache();
-    auto it = cache.constFind(path);
-    if (it != cache.constEnd()) {
-        m_basePixmap = *it;
-    } else if (m_basePixmap.load(path)) {
-        cache.insert(path, m_basePixmap);
-    } else {
+    // QPixmap::load() already caches internally via the shared QPixmapCache, keyed on
+    // path + mtime + size (see MainWindow's setCacheLimit() call for the app-wide budget) — a
+    // wrapper cache of our own here would be both redundant and, keyed on the bare path alone,
+    // staler than what load() already gives us for free.
+    if (!m_basePixmap.load(path)) {
         const QFileInfo info(path);
         const QString reason = !info.exists()
                                    ? tr("File does not exist")
