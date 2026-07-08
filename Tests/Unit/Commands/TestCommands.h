@@ -32,6 +32,7 @@ private slots:
     void testMorphCommand();
     void testMorphPreservesFlip();
     void testMorphPreservesVolume();
+    void testMorphCommandUndoPreservesConnectionAddedWhileMorphed();
     void testUpdateCommand();
     void testUpdateCommandPreservesClockPhase();
     void testUpdateCommandWirelessLabelRewiresChannel();

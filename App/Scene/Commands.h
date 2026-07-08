@@ -332,10 +332,16 @@ private:
     void transferPortConnections(GraphicElement *oldElm, GraphicElement *newElm,
                                  bool isInput, QList<DeletedConnectionInfo> *deleted);
 
+    /// Recreates each connection recorded in \a deleted, restoring its original scene ID.
+    /// Shared by redo() and undo() so both directions restore a connection that couldn't
+    /// survive the *other* direction's port-count change.
+    void restoreDeletedConnections(const QList<DeletedConnectionInfo> &deleted);
+
     // --- Members ---
     ElementType m_newType;
     QList<ElementType> m_types;
-    QList<DeletedConnectionInfo> m_deletedConnections; ///< Connections deleted during the last redo(); restored on undo().
+    QList<DeletedConnectionInfo> m_deletedConnections; ///< Connections deleted during the last redo(); restored on the next undo().
+    QList<DeletedConnectionInfo> m_deletedConnectionsOnUndo; ///< Connections deleted during the last undo(); restored on the next redo().
 };
 
 /**

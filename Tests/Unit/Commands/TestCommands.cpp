@@ -9,6 +9,7 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputButton.h"
@@ -19,6 +20,7 @@
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
+#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -664,6 +666,61 @@ void TestCommands::testMorphPreservesVolume()
     auto *restored = scene->elements().first();
     QCOMPARE(restored->elementType(), ElementType::Buzzer);
     QCOMPARE(restored->volume(), 0.25F);
+}
+
+void TestCommands::testMorphCommandUndoPreservesConnectionAddedWhileMorphed()
+{
+    // Regression: MorphCommand::undo() didn't record connections it had to drop the way
+    // redo() does (see the Display14->Display7 dangling-connection regression coverage in
+    // TestSceneUndoredo) — asymmetric with the tested, documented redo-direction behavior.
+    // A connection that exists on the morphed (larger) element but doesn't fit the original
+    // (smaller) type used to be silently lost forever when undo() reverted the morph; it
+    // must now be restored on the next redo(), symmetric with the redo-then-undo case.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    auto *disp7 = new Display7();
+    auto *sw = new InputSwitch();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{disp7, sw}, scene));
+    const int dispId = disp7->id();
+    const int swId = sw->id();
+    QCOMPARE(disp7->inputSize(), 8);
+
+    // Morph up to Display14 (15 inputs) — pure growth, nothing dropped.
+    scene->receiveCommand(new MorphCommand({disp7}, ElementType::Display14, scene));
+    auto *disp14 = dynamic_cast<GraphicElement *>(scene->itemById(dispId));
+    QVERIFY(disp14 != nullptr);
+    QCOMPARE(disp14->elementType(), ElementType::Display14);
+    QCOMPARE(disp14->inputSize(), 15);
+
+    // Add a wire directly to port 10 — a port that exists on Display14 but not on the
+    // original Display7 — bypassing the undo system, exactly as a separate user action would.
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort(0));
+    conn->setEndPort(disp14->inputPort(10));
+    scene->addItem(conn);
+    const int connId = conn->id();
+    QVERIFY(!disp14->inputPort(10)->connections().isEmpty());
+
+    // Undo the morph: Display7 has no port 10, so the connection can't survive.
+    undoStack->undo();
+
+    auto *restored7 = dynamic_cast<GraphicElement *>(scene->itemById(dispId));
+    QVERIFY(restored7 != nullptr);
+    QCOMPARE(restored7->elementType(), ElementType::Display7);
+    QCOMPARE(restored7->inputSize(), 8);
+    QVERIFY(scene->itemById(connId) == nullptr);
+
+    // Redo: back to Display14 — the connection must be restored, not lost forever.
+    undoStack->redo();
+
+    auto *redisp14 = dynamic_cast<GraphicElement *>(scene->itemById(dispId));
+    QVERIFY(redisp14 != nullptr);
+    QCOMPARE(redisp14->elementType(), ElementType::Display14);
+    QCOMPARE(redisp14->inputSize(), 15);
+    QVERIFY(!redisp14->inputPort(10)->connections().isEmpty());
+    QCOMPARE(redisp14->inputPort(10)->connections().constFirst()->startPort()->graphicElement()->id(), swId);
 }
 
 void TestCommands::testSplitCommandRedoThrowsBeforeAllocation()
