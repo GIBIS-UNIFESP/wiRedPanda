@@ -160,7 +160,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="882"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="922"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Export to PDF</source>
         <translation>Експорт в PDF</translation>
@@ -376,90 +376,95 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="58"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="120"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="757"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="823"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="797"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="863"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Симулятор beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="343"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="371"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="811"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="344"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="372"/>
         <source>Save simulation before closing?</source>
         <translation>Зберегти симуляцію перед закриттям?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="772"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="812"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Чи хочете пов&apos;язати цей файл beWavedDolphin із поточним файлом wiRedPanda і зберегти його?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="901"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="941"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin — симулятор осцилограм для wiRedPanda, розроблений Федеральним університетом Сан-Паулу, щоб допомогти студентам вивчати логічні схеми.&lt;/p&gt;&lt;p&gt;Версія програми: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Творці:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin наразі підтримується Prof. Fábio Cappabianco, Ph.D. та його студентами.&lt;/p&gt;&lt;p&gt; Будь ласка, повідомте на нашій сторінці GitHub, якщо знайдете помилку або хочете запросити нову функцію.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Відвідайте наш сайт!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="737"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="777"/>
         <source>Save File as...</source>
         <translation>Зберегти файл як...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="730"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>Файли CSV (*.csv);;Файли Dolphin (*.dolphin);;Всі підтримувані файли (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="731"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Файли Dolphin (*.dolphin);;Файли CSV (*.csv);;Всі підтримувані файли (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="718"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="758"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="798"/>
         <source>Saved file successfully.</source>
         <translation>Файл успішно збережено.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="506"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="459"/>
+        <source>Cannot export: the circuit this waveform was built from has changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="546"/>
         <source>No cells selected.</source>
         <translation>Жодної комірки не вибрано.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="803"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="843"/>
         <source>Open File</source>
         <translation>Відкрити файл</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="804"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Всі підтримувані файли (*.dolphin *.csv);;Файли Dolphin (*.dolphin);;Файли CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="812"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="852"/>
         <source>File loaded successfully.</source>
         <translation>Файл успішно завантажено.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="864"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="904"/>
         <source>Export to Image</source>
         <translation>Експорт в зображення</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="864"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="904"/>
         <source>PNG files (*.png)</source>
         <translation>Файли PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="882"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="922"/>
         <source>PDF files (*.pdf)</source>
         <translation>Файли PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="128"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Файл &quot;%1&quot; не існує!</translation>
     </message>
@@ -467,12 +472,12 @@
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="37"/>
         <source>Buzzer</source>
         <translation>Зумер</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="36"/>
         <source>BUZZER</source>
         <translation>ЗУМЕР</translation>
     </message>
@@ -480,14 +485,22 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="952"/>
+        <location filename="../../Scene/Commands.cpp" line="964"/>
         <source>Change input size to %1</source>
         <translation>Змінити розмір входу на %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="953"/>
+        <location filename="../../Scene/Commands.cpp" line="965"/>
         <source>Change output size to %1</source>
         <translation>Змінити розмір виходу на %1</translation>
+    </message>
+</context>
+<context>
+    <name>ClipboardManager</name>
+    <message>
+        <location filename="../../Scene/ClipboardManager.cpp" line="158"/>
+        <source>Paste</source>
+        <translation type="unfinished">Вставити</translation>
     </message>
 </context>
 <context>
@@ -498,12 +511,12 @@
         <translation>Такт</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
         <source>Low</source>
         <translation>Низький</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
         <source>High</source>
         <translation>Високий</translation>
     </message>
@@ -843,22 +856,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="248"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="234"/>
         <source>File does not exist</source>
         <translation>Файл не існує</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="250"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="236"/>
         <source>File is not readable</source>
         <translation>Файл нечитабельний</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
         <source>Unknown reason</source>
         <translation>Невідома причина</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="257"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="247"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Не вдалося завантажити зображення: %1 (%2)</translation>
     </message>
@@ -982,7 +995,7 @@
         <translation>Гучність:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="318"/>
+        <location filename="../../UI/ElementEditor.cpp" line="326"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Гц</translation>
@@ -1033,98 +1046,114 @@
         <translation>Таблиця істинності</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="172"/>
+        <location filename="../../UI/ElementEditor.cpp" line="173"/>
         <source>Open File</source>
         <translation>Відкрити файл</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="238"/>
+        <location filename="../../UI/ElementEditor.cpp" line="189"/>
+        <source>Change appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="246"/>
         <source>Green</source>
         <translation>Зелений</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="239"/>
+        <location filename="../../UI/ElementEditor.cpp" line="247"/>
         <source>Blue</source>
         <translation>Синій</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="240"/>
+        <location filename="../../UI/ElementEditor.cpp" line="248"/>
         <source>Purple</source>
         <translation>Фіолетовий</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="604"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Дублювання бездротового каналу</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="597"/>
+        <location filename="../../UI/ElementEditor.cpp" line="605"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Вузол Tx з міткою &quot;%1&quot; вже існує.
 Кожен бездротовий канал повинен мати унікальну мітку.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="663"/>
+        <location filename="../../UI/ElementEditor.cpp" line="662"/>
         <source>Change wireless mode</source>
         <translation>Змінити бездротовий режим</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="871"/>
+        <location filename="../../UI/ElementEditor.cpp" line="695"/>
+        <source>Duplicate IC Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="696"/>
+        <source>An embedded IC named &quot;%1&quot; already exists.
+Choose a different name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="904"/>
         <source>Select any audio</source>
         <translation>Оберіть будь-яке аудіо</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="872"/>
+        <location filename="../../UI/ElementEditor.cpp" line="905"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Аудіо (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="237"/>
+        <location filename="../../UI/ElementEditor.cpp" line="245"/>
         <source>Red</source>
         <translation>Червоний</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="171"/>
+        <location filename="../../UI/ElementEditor.cpp" line="172"/>
         <source>Images</source>
         <translation>Зображення</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="236"/>
+        <location filename="../../UI/ElementEditor.cpp" line="244"/>
         <source>White</source>
         <translation>Білий</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="145"/>
+        <location filename="../../UI/ElementEditor.h" line="147"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Багато звуків&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="146"/>
+        <location filename="../../UI/ElementEditor.h" line="148"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Багато кольорів&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="147"/>
-        <location filename="../../UI/ElementEditor.h" line="148"/>
         <location filename="../../UI/ElementEditor.h" line="149"/>
+        <location filename="../../UI/ElementEditor.h" line="150"/>
         <location filename="../../UI/ElementEditor.h" line="151"/>
-        <location filename="../../UI/ElementEditor.h" line="152"/>
+        <location filename="../../UI/ElementEditor.h" line="153"/>
+        <location filename="../../UI/ElementEditor.h" line="154"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Багато значень&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Багато міток&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="154"/>
+        <location filename="../../UI/ElementEditor.h" line="156"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;Багато режимів&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="153"/>
+        <location filename="../../UI/ElementEditor.h" line="155"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Багато тригерів&gt;</translation>
     </message>
@@ -1317,7 +1346,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="893"/>
+        <location filename="../../Scene/Commands.cpp" line="905"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Відобразити %1 елементів по осі %2</translation>
     </message>
@@ -1348,47 +1377,47 @@ Each wireless channel must have a unique label.</source>
         <translation>Помилка потоку під час читання запису %2 з %1 у позиції %3</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="230"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>Помилка потоку під час читання властивостей елемента у позиції %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="359"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Помилка потоку під час читання зовнішніх вигляду у позиції %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="367"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>Індекс зовнішнього вигляду %1 поза діапазоном (розмір=%2) — потік може бути пошкоджений</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="404"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>Нескінченна позиція елемента — потік може бути пошкоджений</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="422"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>Нескінченне обертання елемента — потік може бути пошкоджений</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="482"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>Відмова від списку вхідних портів старого формату з неправдоподібною кількістю %1 (макс. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="516"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>Відмова від списку вихідних портів старого формату з неправдоподібною кількістю %1 (макс. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="581"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>Відмова від списку зовнішніх виглядів старого формату з неправдоподібною кількістю %1 (макс. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="610"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Індекс зовнішнього вигляду %1 поза діапазоном (розмір=%2) для назви зовнішнього вигляду «%3» — потік може бути пошкоджений</translation>
     </message>
@@ -1548,27 +1577,32 @@ Suggested name:</source>
         <translation>%1 не знайдено.</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="148"/>
+        <location filename="../../Element/ICLoader.cpp" line="151"/>
+        <source>IC nesting depth limit (%1) exceeded while loading %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="162"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Виявлено циклічне посилання на ІС: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="155"/>
+        <location filename="../../Element/ICLoader.cpp" line="169"/>
         <source>Error opening file: %1</source>
         <translation>Помилка під час відкриття файлу: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="227"/>
+        <location filename="../../Element/ICLoader.cpp" line="241"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Міграція ІС: не вдається відкрити файл для запису: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="234"/>
+        <location filename="../../Element/ICLoader.cpp" line="248"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Міграція ІС: не вдалося підтвердити повторно збережений файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="297"/>
+        <location filename="../../Element/ICLoader.cpp" line="311"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Перевищено ліміт глибини вкладеності ІС (%1) — blob може бути створений зі зловмисним наміром</translation>
     </message>
@@ -1576,14 +1610,19 @@ Suggested name:</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="283"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="273"/>
         <source>Could not open file: %1</source>
         <translation>Неможливо відкрити файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="277"/>
         <source>Could not save file: %1</source>
         <translation>Неможливо зберегти файл: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/ICRegistry.cpp" line="340"/>
+        <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2489,9 +2528,24 @@ wiRedPanda %1 автоматично відобразить усі інші фа
     </message>
 </context>
 <context>
+    <name>PropertyShortcutHandler</name>
+    <message>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="43"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="144"/>
+        <source>Cycle element properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="220"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="251"/>
+        <source>Morph elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="235"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="226"/>
         <source>Add embedded IC</source>
         <translation>Додати вбудований IC</translation>
     </message>
@@ -2585,7 +2639,7 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1114"/>
+        <location filename="../../Scene/Commands.cpp" line="1126"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Зареєструвати blob &quot;%1&quot;</translation>
     </message>
@@ -2593,9 +2647,17 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1137"/>
+        <location filename="../../Scene/Commands.cpp" line="1149"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Видалити blob «%1»</translation>
+    </message>
+</context>
+<context>
+    <name>RenameBlobCommand</name>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2636,18 +2698,18 @@ wiRedPanda %1 автоматично відобразить усі інші фа
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="540"/>
+        <location filename="../../Scene/Scene.cpp" line="560"/>
         <source>&amp;Undo</source>
         <translation>&amp;Скасувати</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="546"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>&amp;Redo</source>
         <translation>&amp;Повторити</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="566"/>
+        <location filename="../../Scene/Scene.cpp" line="586"/>
         <source>Paste</source>
         <translation>Вставити</translation>
     </message>
@@ -2668,78 +2730,83 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
+        <location filename="../../IO/Serialization.cpp" line="282"/>
         <source>Stream error reading metadata map count</source>
         <translation>Помилка потоку під час читання кількості метаданих</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="280"/>
+        <location filename="../../IO/Serialization.cpp" line="285"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>Кількість метаданих %1 неправдоподібна для решти байтів потоку</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
+        <location filename="../../IO/Serialization.cpp" line="302"/>
         <source>Stream error reading blob map count</source>
         <translation>Помилка потоку під час читання кількості blob-об’єктів</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="300"/>
+        <location filename="../../IO/Serialization.cpp" line="305"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>Кількість blob-об’єктів %1 неправдоподібна для решти байтів потоку</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="325"/>
-        <location filename="../../IO/Serialization.cpp" line="372"/>
-        <location filename="../../IO/Serialization.cpp" line="379"/>
-        <location filename="../../IO/Serialization.cpp" line="400"/>
-        <location filename="../../IO/Serialization.cpp" line="420"/>
+        <location filename="../../IO/Serialization.cpp" line="330"/>
+        <location filename="../../IO/Serialization.cpp" line="377"/>
+        <location filename="../../IO/Serialization.cpp" line="384"/>
+        <location filename="../../IO/Serialization.cpp" line="405"/>
         <location filename="../../IO/Serialization.cpp" line="425"/>
-        <location filename="../../IO/Serialization.cpp" line="443"/>
+        <location filename="../../IO/Serialization.cpp" line="430"/>
+        <location filename="../../IO/Serialization.cpp" line="448"/>
         <source>Invalid file format.</source>
         <translation>Неправильний формат файлу.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="361"/>
+        <location filename="../../IO/Serialization.cpp" line="366"/>
         <source>Invalid legacy file header: %1</source>
         <translation>Недійсний заголовок старого файлу: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="556"/>
+        <location filename="../../IO/Serialization.cpp" line="561"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Помилка потоку під час читання мітки типу на позиції %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="568"/>
+        <location filename="../../IO/Serialization.cpp" line="573"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Помилка потоку під час читання типу елемента на позиції %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="580"/>
+        <location filename="../../IO/Serialization.cpp" line="585"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Помилка потоку під час завантаження елемента на позиції %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="599"/>
+        <location filename="../../IO/Serialization.cpp" line="604"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Помилка потоку під час завантаження з’єднання на позиції %1: статус %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="606"/>
+        <location filename="../../IO/Serialization.cpp" line="611"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Неправильний тип. Дані можливо пошкоджені.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="659"/>
+        <location filename="../../IO/Serialization.cpp" line="664"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Не вдалося створити версіоновану резервну копію: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="680"/>
+        <location filename="../../IO/Serialization.cpp" line="685"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Помилка потоку під час читання преамбули: статус %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="744"/>
+        <location filename="../../IO/Serialization.cpp" line="739"/>
+        <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="758"/>
         <source>Error copying file: %1</source>
         <translation>Помилка копіювання файлу: %1</translation>
     </message>
@@ -2832,17 +2899,17 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1059"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Перемкнути вихід таблиці істинності на позиції: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1056"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Could not find truthtable element!</source>
         <translation>Не вдалося знайти елемент таблиці істинності!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1063"/>
+        <location filename="../../Scene/Commands.cpp" line="1075"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>Позиція перемикання таблиці істинності поза діапазоном: %1</translation>
     </message>
@@ -2918,12 +2985,12 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>TrashButton</name>
     <message>
-        <location filename="../../UI/TrashButton.cpp" line="65"/>
+        <location filename="../../UI/TrashButton.cpp" line="59"/>
         <source>Remove all &quot;%1&quot; instances from the circuit?</source>
         <translation>Видалити всі екземпляри &quot;%1&quot; зі схеми?</translation>
     </message>
     <message>
-        <location filename="../../UI/TrashButton.cpp" line="67"/>
+        <location filename="../../UI/TrashButton.cpp" line="61"/>
         <source>File will be deleted. Are you sure?</source>
         <translation>Файл буде видалено. Ви впевнені?</translation>
     </message>
@@ -2944,7 +3011,7 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <location filename="../../Scene/Commands.cpp" line="1203"/>
         <source>Update %1 IC blobs</source>
         <translation>Оновити %1 IC-блобів</translation>
     </message>
@@ -3059,27 +3126,32 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>Неможливо зберегти.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="318"/>
+        <location filename="../../Scene/Workspace.cpp" line="252"/>
+        <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="329"/>
         <source>Error opening file: %1</source>
         <translation>Помилка відкриття файлу: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="350"/>
+        <location filename="../../Scene/Workspace.cpp" line="361"/>
         <source>Could not save file: %1</source>
         <translation>Неможливо зберегти файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="419"/>
+        <location filename="../../Scene/Workspace.cpp" line="436"/>
         <source>This file does not exist: %1</source>
         <translation>Цей файл не існує: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="428"/>
+        <location filename="../../Scene/Workspace.cpp" line="445"/>
         <source>Could not open file: %1</source>
         <translation>Неможливо відкрити файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="476"/>
+        <location filename="../../Scene/Workspace.cpp" line="493"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3092,34 +3164,34 @@ Please update wiRedPanda to edit and save this file.</source>
 Будь ласка, оновіть wiRedPanda для редагування та збереження цього файлу.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="481"/>
+        <location filename="../../Scene/Workspace.cpp" line="498"/>
         <source>Newer version file.</source>
         <translation>Файл новішої версії.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="484"/>
+        <location filename="../../Scene/Workspace.cpp" line="501"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Цей файл у старому форматі (версія %1) і буде автоматично оновлено до поточного формату (версія %2).
 Резервну копію оригінального файлу створено з назвою: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="487"/>
+        <location filename="../../Scene/Workspace.cpp" line="504"/>
         <source>File upgraded.</source>
         <translation>Файл оновлено.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="649"/>
+        <location filename="../../Scene/Workspace.cpp" line="666"/>
         <source>Error opening autosave file: %1</source>
         <translation>Помилка відкриття файлу автозбереження: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="657"/>
+        <location filename="../../Scene/Workspace.cpp" line="674"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Не вдалося завершити файл автозбереження: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="823"/>
+        <location filename="../../Scene/Workspace.cpp" line="840"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Видалити вбудовану ІС «%1»</translation>
     </message>
