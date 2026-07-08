@@ -481,6 +481,30 @@ private:
 };
 
 /**
+ * \class RenameBlobCommand
+ * \brief Undo command that renames a blob in the IC registry.
+ *
+ * \details Pushed standalone (never sharing a transaction with an UpdateCommand)
+ * so a rename is its own independent undo step — see ElementEditor's
+ * lineEditBlobName editingFinished handler.
+ */
+class RenameBlobCommand : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(RenameBlobCommand)
+
+public:
+    RenameBlobCommand(const QString &oldName, const QString &newName, Scene *scene, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    QString m_oldName;
+    QString m_newName;
+    Scene *m_scene;
+};
+
+/**
  * \class UpdateBlobCommand
  * \brief Undo command for embedded IC blob changes that may alter port counts.
  *
