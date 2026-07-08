@@ -103,27 +103,14 @@ void ICRegistry::onFileChanged(const QString &filePath)
     const auto connections = UpdateBlobCommand::captureConnections(targets);
     const QByteArray oldData = captureSnapshot(targets);
 
-    // Stop the simulation for the entire reload. Between freeing each IC's
-    // old internal graph and rebuilding it, the scene's sorted vectors hold
-    // dangling pointers; ticking on that state would fault. Roll back any
-    // partial mutation if loadFile throws so we don't push a half-applied
-    // undo command.
-    QList<GraphicElement *> updated;
-    {
-        SimulationBlocker blocker(m_scene->simulation());
-        try {
-            for (auto *elm : targets) {
-                static_cast<IC *>(elm)->loadFile(filePath);
-                updated.append(elm);
-            }
-        } catch (...) {
-            rollbackElements(updated, oldData, m_scene);
-            m_scene->setCircuitUpdateRequired();
-            emit definitionChanged(filePath);
-            throw;
-        }
+    try {
+        reloadTargetsAtomically(targets, oldData, [&](IC *ic) { ic->loadFile(filePath); });
+    } catch (...) {
         m_scene->setCircuitUpdateRequired();
+        emit definitionChanged(filePath);
+        throw;
     }
+    m_scene->setCircuitUpdateRequired();
 
     auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
     m_scene->undoStack()->push(cmd);
@@ -258,18 +245,12 @@ int ICRegistry::embedICsByFile(const QString &fileName, const QByteArray &fileBy
 
     registerBlob(blobName, fileBytes);
 
-    // Mutate all targets atomically: if any loadFromBlob throws, roll back
-    // every element that was already updated so we don't push a partial undo command.
-    QList<GraphicElement *> updated;
     try {
-        for (auto *elm : targets) {
-            auto *ic = static_cast<IC *>(elm);
+        reloadTargetsAtomically(targets, oldData, [&](IC *ic) {
             ic->setBlobName(blobName);
             ic->loadFromBlob(m_blobs[blobName], m_scene->contextDir());
-            updated.append(elm);
-        }
+        });
     } catch (...) {
-        rollbackElements(updated, oldData, m_scene);
         removeBlob(blobName);
         throw;
     }
@@ -306,20 +287,8 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath)
     const QByteArray oldData = captureSnapshot(targets);
     const QByteArray oldBlob = blob(blobName);
 
-    // Mutate all targets atomically: if any loadFile throws, roll back
-    // every element that was already updated so we don't push a partial undo command.
     const QString fileDir = QFileInfo(filePath).absolutePath();
-    QList<GraphicElement *> updated;
-    try {
-        for (auto *elm : targets) {
-            auto *ic = static_cast<IC *>(elm);
-            ic->loadFile(filePath, fileDir);
-            updated.append(elm);
-        }
-    } catch (...) {
-        rollbackElements(updated, oldData, m_scene);
-        throw;
-    }
+    reloadTargetsAtomically(targets, oldData, [&](IC *ic) { ic->loadFile(filePath, fileDir); });
 
     removeBlob(blobName);
 
@@ -340,6 +309,27 @@ void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const
     auto ctx = scene->deserializationContext(portMap, version);
     for (auto *elm : elements) {
         elm->load(stream, ctx);
+    }
+}
+
+void ICRegistry::reloadTargetsAtomically(const QList<GraphicElement *> &targets, const QByteArray &oldData,
+                                          const std::function<void(IC *)> &mutate)
+{
+    // Stop the simulation for the entire loop, not just each individual mutation. Between
+    // freeing one IC's old internal graph and rebuilding it, the scene's sorted vectors hold
+    // dangling pointers; ticking on that state would fault — and that stale state persists
+    // across the whole loop, since setCircuitUpdateRequired() only runs once, after every
+    // target has been reloaded, not after each one.
+    QList<GraphicElement *> updated;
+    SimulationBlocker blocker(m_scene->simulation());
+    try {
+        for (auto *elm : targets) {
+            mutate(static_cast<IC *>(elm));
+            updated.append(elm);
+        }
+    } catch (...) {
+        rollbackElements(updated, oldData, m_scene);
+        throw;
     }
 }
 

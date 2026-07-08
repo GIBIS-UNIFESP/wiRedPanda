@@ -91,6 +91,12 @@ private slots:
     /// the file-watcher path.
     void bug7_icRegistryFileChangedMustNotLeaveDanglingPointers();
 
+    /// Hardening — embedICsByFile()/extractToFile() had no SimulationBlocker
+    /// at all (unlike their sibling onFileChanged()/bug7), despite mutating
+    /// live, already-in-scene ICs the same way. Source-level check, same
+    /// shape as bug6/bug7.
+    void hardening_icRegistryReloadHelpersMustUseSimulationBlocker();
+
     /// Combined H2 reproduction — sits at the end so the process crash
     /// only affects this last slot. Covers the concrete path that
     /// Simulation.cpp:87's `element->updateLogic()` took in production.

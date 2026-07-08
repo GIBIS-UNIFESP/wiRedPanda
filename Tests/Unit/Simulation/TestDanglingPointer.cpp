@@ -468,11 +468,12 @@ void TestDanglingPointer::bug7_icRegistryFileChangedMustNotLeaveDanglingPointers
              "Could not find end of ICRegistry::onFileChanged body.");
     const QString body = source.mid(bodyStart, bodyEnd - bodyStart + 1);
 
-    QVERIFY2(body.contains("SimulationBlocker"),
-             "ICRegistry::onFileChanged must open a SimulationBlocker "
-             "scope around the reload loop so the 1 ms simulation QTimer "
-             "is quiescent while each IC's m_internalElements is freed "
-             "and replaced.");
+    QVERIFY2(body.contains("reloadTargetsAtomically"),
+             "ICRegistry::onFileChanged must reload targets through "
+             "reloadTargetsAtomically(), which opens a SimulationBlocker "
+             "scope around the whole reload loop so the 1 ms simulation "
+             "QTimer is quiescent while each IC's m_internalElements is "
+             "freed and replaced.");
 
     QVERIFY2(body.contains("setCircuitUpdateRequired"),
              "ICRegistry::onFileChanged must call setCircuitUpdateRequired() "
@@ -480,6 +481,83 @@ void TestDanglingPointer::bug7_icRegistryFileChangedMustNotLeaveDanglingPointers
              "The previous simulation()->restart() was too weak — it only "
              "invalidated the outer Simulation::m_sortedElements, leaving "
              "each IC's m_sortedInternalElements untouched.");
+}
+
+// Hardening — embedICsByFile()/extractToFile() reload live, already-in-scene
+// ICs exactly like onFileChanged() (bug7) does, via ic->loadFromBlob()/
+// loadFile(), but had no SimulationBlocker at all — including in their own
+// rollback path. Same H2 use-after-free shape: an IC's internal flip-flop
+// elements are freed by resetInternalState() while Simulation::m_sequentialElements
+// still points at them, and nothing stopped the 1 ms timer for the duration.
+// Fixed by routing all three functions through one shared
+// ICRegistry::reloadTargetsAtomically() helper. Source-level check, same
+// shape as bug6/bug7, for the same reason: the real reentrancy window can't
+// be triggered deterministically inside single-threaded QtTest.
+void TestDanglingPointer::hardening_icRegistryReloadHelpersMustUseSimulationBlocker()
+{
+    const QString path =
+        QString(QUOTE(CURRENTDIR)) + "/../App/Scene/ICRegistry.cpp";
+    QFile src(path);
+    QVERIFY2(src.open(QIODevice::ReadOnly),
+             qPrintable(QString("Cannot open %1").arg(src.fileName())));
+    const QString source = QString::fromUtf8(src.readAll());
+    src.close();
+
+    auto bodyOf = [&source](const QString &qualifiedName) -> QString {
+        // [\s\S]*? (lazy, spans newlines) rather than [^)]* — reloadTargetsAtomically's own
+        // parameter list contains std::function<void(IC *)>, a nested closing paren that a
+        // negated-character-class match can't see past to find the parameter list's real end.
+        const QString pattern =
+            QStringLiteral("\\b") + QRegularExpression::escape(qualifiedName)
+            + QStringLiteral("\\s*\\([\\s\\S]*?\\)\\s*\\{");
+        QRegularExpression rx(pattern);
+        const auto match = rx.match(source);
+        if (!match.hasMatch()) return {};
+
+        const qsizetype start = match.capturedEnd() - 1;
+        int depth = 0;
+        for (qsizetype i = start; i < source.size(); ++i) {
+            const QChar c = source.at(i);
+            if (c == '{') ++depth;
+            else if (c == '}') {
+                --depth;
+                if (depth == 0) return source.mid(start, i - start + 1);
+            }
+        }
+        return {};
+    };
+
+    const QString helperBody = bodyOf("ICRegistry::reloadTargetsAtomically");
+    QVERIFY2(!helperBody.isEmpty(), "Could not locate ICRegistry::reloadTargetsAtomically definition.");
+    QVERIFY2(helperBody.contains("SimulationBlocker"),
+             "ICRegistry::reloadTargetsAtomically must open a SimulationBlocker "
+             "scope around its whole loop over targets, not just each individual "
+             "mutation — the timer must stay stopped between iterations too, since "
+             "Simulation::m_sequentialElements stays stale until the caller's "
+             "setCircuitUpdateRequired() runs after the entire loop completes.");
+
+    const QStringList reloadCallers = {
+        "ICRegistry::embedICsByFile",
+        "ICRegistry::extractToFile",
+    };
+    QStringList missingCall;
+    for (const QString &name : reloadCallers) {
+        const QString body = bodyOf(name);
+        if (body.isEmpty()) {
+            missingCall << (name + " (function body not located)");
+            continue;
+        }
+        if (!body.contains("reloadTargetsAtomically")) {
+            missingCall << name;
+        }
+    }
+
+    QVERIFY2(missingCall.isEmpty(),
+             qPrintable(QString("The following functions mutate live, already-in-scene "
+                                "IC elements and must go through reloadTargetsAtomically() "
+                                "(which opens a SimulationBlocker for the whole loop) rather "
+                                "than mutating them directly:\n  - %1")
+                            .arg(missingCall.join("\n  - "))));
 }
 
 // Combined integration reproduction of WIREDPANDA-H2. Same tick path the
