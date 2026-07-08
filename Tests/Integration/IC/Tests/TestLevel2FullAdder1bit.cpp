@@ -117,64 +117,6 @@ void TestLevel2FullAdder1Bit::testFullAdder()
 }
 
 // ============================================================
-// Test: CPU-Level Full Adder with All Truth Table Combinations
-// ============================================================
-
-// Truth table for Full Adder:
-// A | B | Cin | Sum | Cout
-// --+---+-----+-----+------
-// 0 | 0 |  0  |  0  |  0
-// 0 | 0 |  1  |  1  |  0
-// 0 | 1 |  0  |  1  |  0
-// 0 | 1 |  1  |  0  |  1
-// 1 | 0 |  0  |  1  |  0
-// 1 | 0 |  1  |  0  |  1
-// 1 | 1 |  0  |  0  |  1
-// 1 | 1 |  1  |  1  |  1
-void TestLevel2FullAdder1Bit::testCpuFullAdder_data()
-{
-    QTest::addColumn<int>("inputA");
-    QTest::addColumn<int>("inputB");
-    QTest::addColumn<int>("inputCin");
-    QTest::addColumn<int>("expectedSum");
-    QTest::addColumn<int>("expectedCout");
-
-    QTest::newRow("0+0+0=0, Cout=0") << 0 << 0 << 0 << 0 << 0;
-    QTest::newRow("0+0+1=1, Cout=0") << 0 << 0 << 1 << 1 << 0;
-    QTest::newRow("0+1+0=1, Cout=0") << 0 << 1 << 0 << 1 << 0;
-    QTest::newRow("0+1+1=10, Cout=1") << 0 << 1 << 1 << 0 << 1;
-    QTest::newRow("1+0+0=1, Cout=0") << 1 << 0 << 0 << 1 << 0;
-    QTest::newRow("1+0+1=10, Cout=1") << 1 << 0 << 1 << 0 << 1;
-    QTest::newRow("1+1+0=10, Cout=1") << 1 << 1 << 0 << 0 << 1;
-    QTest::newRow("1+1+1=11, Cout=1") << 1 << 1 << 1 << 1 << 1;
-}
-
-void TestLevel2FullAdder1Bit::testCpuFullAdder()
-{
-    QFETCH(int, inputA);
-    QFETCH(int, inputB);
-    QFETCH(int, inputCin);
-    QFETCH(int, expectedSum);
-    QFETCH(int, expectedCout);
-
-    auto &f = *s_level2FullAdder1bit;
-
-    f.a->setOn(inputA != 0);
-    f.b->setOn(inputB != 0);
-    f.carryIn->setOn(inputCin != 0);
-    f.sim->update();
-
-    auto sumPort = f.sum->inputPort(0);
-    auto carryOutPort = f.carryOut->inputPort(0);
-
-    int sum_actual = (sumPort && sumPort->status() == Status::Active) ? 1 : 0;
-    int cout_actual = (carryOutPort && carryOutPort->status() == Status::Active) ? 1 : 0;
-
-    QCOMPARE(sum_actual, expectedSum);
-    QCOMPARE(cout_actual, expectedCout);
-}
-
-// ============================================================
 // Test: IC Structure and Port Validation
 // ============================================================
 

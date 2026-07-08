@@ -18,10 +18,6 @@ private slots:
     void testFullAdder_data();
     void testFullAdder();
 
-    // CPU-level Full Adder functional test
-    void testCpuFullAdder_data();
-    void testCpuFullAdder();
-
     // Structure and port validation test
     void testStructure();
 };
