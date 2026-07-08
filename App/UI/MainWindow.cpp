@@ -973,7 +973,7 @@ void MainWindow::on_actionWaveform_triggered()
 
         sentryBreadcrumb("ui", QStringLiteral("Waveform dialog opened"));
         qCDebug(zero) << "BD fileName: " << currentTab()->dolphinFileName();
-        auto *bwd = new BewavedDolphin(currentTab()->scene(), true, this);
+        auto *bwd = new BewavedDolphin(currentTab()->scene(), true, this, this);
         bwd->createWaveform(currentTab()->dolphinFileName());
         m_bwd = bwd;
         connect(bwd, &QObject::destroyed, this, [this] {

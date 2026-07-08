@@ -15,6 +15,7 @@
 #include <QHeaderView>
 #include <QImage>
 #include <QItemSelectionModel>
+#include <QRegularExpression>
 #include <QScrollBar>
 #include <QSet>
 #include <QStandardItemModel>
@@ -28,6 +29,7 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/FileDialogProvider.h"
@@ -1062,4 +1064,109 @@ void TestBewavedDolphinGui::testCreateWaveformResolvesAbsolutePathOutsideProject
     auto *model = dolphin2->model();
     QVERIFY(model);
     QCOMPARE(model->index(0, 0).data().toInt(), 1);
+}
+
+void TestBewavedDolphinGui::hardeningRunAndSaveToTxtMustCheckElementsStillLive()
+{
+    const QString path = QString(QUOTE(CURRENTDIR)) + "/../App/BeWavedDolphin/BeWavedDolphin.cpp";
+    QFile src(path);
+    QVERIFY2(src.open(QIODevice::ReadOnly), qPrintable(QString("Cannot open %1").arg(src.fileName())));
+    const QString source = QString::fromUtf8(src.readAll());
+    src.close();
+
+    auto bodyOf = [&source](const QString &qualifiedName) -> QString {
+        const QString pattern =
+            QStringLiteral("\\b") + QRegularExpression::escape(qualifiedName)
+            + QStringLiteral("\\s*\\([^)]*\\)\\s*\\{");
+        QRegularExpression rx(pattern);
+        const auto match = rx.match(source);
+        if (!match.hasMatch()) return {};
+
+        const qsizetype start = match.capturedEnd() - 1;
+        int depth = 0;
+        for (qsizetype i = start; i < source.size(); ++i) {
+            const QChar c = source.at(i);
+            if (c == '{') ++depth;
+            else if (c == '}') {
+                --depth;
+                if (depth == 0) return source.mid(start, i - start + 1);
+            }
+        }
+        return {};
+    };
+
+    const QStringList checkedFunctions = {"BewavedDolphin::run", "BewavedDolphin::saveToTxt"};
+    QStringList missingCheck;
+    for (const QString &name : checkedFunctions) {
+        const QString body = bodyOf(name);
+        if (body.isEmpty()) {
+            missingCheck << (name + " (function body not located)");
+            continue;
+        }
+        if (!body.contains("elementsStillLive")) {
+            missingCheck << name;
+        }
+    }
+
+    QVERIFY2(missingCheck.isEmpty(),
+             qPrintable(QString("The following functions dereference m_inputs/m_outputs via "
+                                "sweep() and must check elementsStillLive() first — an element "
+                                "deleted from the live scene since prepare() (main canvas, or an "
+                                "MCP client, neither blocked by this window's modality) would "
+                                "otherwise dangle:\n  - %1")
+                            .arg(missingCheck.join("\n  - "))));
+}
+
+void TestBewavedDolphinGui::testRunAndSaveToTxtHandleDeletedTrackedElement()
+{
+    auto ws = createAndCircuit();
+    auto *scene = ws->scene();
+    auto *dolphin = createDolphin(ws.get());
+
+    // Find the tracked InputSwitch backing waveform row 0, then delete it directly via a
+    // scene command — the same mutation an MCP client's delete_element would perform,
+    // bypassing this window's (GUI-only) modality entirely.
+    const auto &inputs = dolphin->inputElements();
+    QVERIFY(!inputs.isEmpty());
+    auto *trackedInput = inputs.first();
+    scene->receiveCommand(new DeleteItemsCommand({trackedInput}, scene));
+
+    // run() must skip the now-stale sweep rather than dereferencing the deleted element.
+    dolphin->run();
+
+    // saveToTxt() must fail cleanly instead of silently exporting garbage/partial data.
+    QString text;
+    QTextStream stream(&text);
+    QVERIFY_THROWS(std::exception, dolphin->saveToTxt(stream));
+}
+
+void TestBewavedDolphinGui::testConstructorWithParentEnablesWindowModality()
+{
+    auto ws = createAndCircuit();
+    QWidget parentWidget;
+
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, nullptr, &parentWidget));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+
+    QCOMPARE(dolphin->parentWidget(), &parentWidget);
+    QCOMPARE(dolphin->windowModality(), Qt::WindowModal);
+}
+
+void TestBewavedDolphinGui::testSaveToTxtClampsColumnCountForManyInputPorts()
+{
+    auto ws = std::make_unique<WorkSpace>();
+    auto *scene = ws->scene();
+    for (int i = 0; i < 12; ++i) {
+        scene->addItem(new InputSwitch());
+    }
+    scene->addItem(new Led());
+    auto *dolphin = createDolphin(ws.get());
+
+    QString text;
+    QTextStream stream(&text);
+    dolphin->saveToTxt(stream);
+
+    const QString firstLine = text.section('\n', 0, 0);
+    const qsizetype columnCount = firstLine.section(" : ", 0, 0).length();
+    QCOMPARE(columnCount, static_cast<qsizetype>(SignalModel::kMaxColumns));
 }

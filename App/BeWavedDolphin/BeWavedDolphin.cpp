@@ -38,8 +38,8 @@
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
 
-BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHost *host)
-    : QMainWindow(nullptr)
+BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHost *host, QWidget *parent)
+    : QMainWindow(parent)
     , m_ui(std::make_unique<BewavedDolphinUi>())
     , m_host(host)
     , m_externalScene(scene)
@@ -248,12 +248,36 @@ void BewavedDolphin::on_tableView_selectionChanged()
     m_externalScene->view()->update();
 }
 
+bool BewavedDolphin::elementsStillLive() const
+{
+    const auto sceneElements = m_externalScene->elements();
+    for (auto *elm : std::as_const(m_inputs)) {
+        if (!sceneElements.contains(elm)) {
+            return false;
+        }
+    }
+    for (auto *elm : std::as_const(m_outputs)) {
+        if (!sceneElements.contains(elm)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void BewavedDolphin::run()
 {
     // Guard against a caller invoking run() before prepare()/loadNewTable() has built
     // the sweep driver and table model (every current call site prepares first, but
     // this is a public entry point with no compile-time guarantee of that ordering).
     if (!m_simDriver || !m_model) {
+        return;
+    }
+
+    // An input/output element this waveform was built from may have been deleted from the
+    // live scene since prepare() ran — via the main canvas, or an MCP client, neither of
+    // which this window's modality blocks (MCP mutates the scene directly, bypassing Qt
+    // input routing entirely). Skip the sweep rather than dereferencing freed elements.
+    if (!elementsStillLive()) {
         return;
     }
 
@@ -426,10 +450,22 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
     if (!m_model) {
         return;
     }
+
+    // Same staleness hazard as run() (see elementsStillLive()); saveToTxt() dereferences
+    // m_inputs/m_outputs via sweep() below too. Throw instead of silently no-op'ing so an
+    // MCP client (the only realistic caller once run() already guards interactive use) gets
+    // a clean error instead of a "successful" empty/truncated export.
+    if (!elementsStillLive()) {
+        throw PANDACEPTION("Cannot export: the circuit this waveform was built from has changed.");
+    }
+
     // Dump the full combinational truth table. Build it in a throwaway model (like
     // renderWaveform() uses a throwaway view) so the live document is never mutated —
     // exporting must not clobber the user's waveform (e.g. an MCP persistent session).
-    const int columns = static_cast<int>(std::pow(2, m_inputPorts));
+    // Clamp to SignalModel::kMaxColumns, exactly like on_actionCombinational_triggered's
+    // identical cap below — otherwise a circuit with ~25+ effective input ports allocates
+    // tens of millions of cells, and m_inputPorts >= 31 overflows the int cast (UB).
+    const int columns = static_cast<int>((std::min)(static_cast<double>(SignalModel::kMaxColumns), std::pow(2, m_inputPorts)));
     SignalModel truthTable(m_model->rowCount(), columns);
 
     // Carry the live model's row labels onto the throwaway model so the exporter, which
