@@ -574,7 +574,8 @@ jobs:
           $exampleCount = (Get-ChildItem "build-sentry-crashpad/wiredpanda-$env:VERSION/Examples" -Recurse -File | Measure-Object).Count
           Write-Output "✓ Examples directory present with $exampleCount files"
         } else {
-          Write-Output "Warning: Examples directory missing"
+          Write-Error "Error: Examples directory missing"
+          exit 1
         }
 
         # Functional check: actually run the packaged executable from its deployed
@@ -766,7 +767,8 @@ jobs:
           EXAMPLE_COUNT=$(find build-sentry-breakpad/wiredpanda.app/Contents/Resources/Examples -name "*.panda" | wc -l)
           echo "✓ Examples directory present with $EXAMPLE_COUNT files"
         else
-          echo "Warning: Examples directory missing from app bundle"
+          echo "Error: Examples directory missing from app bundle"
+          exit 1
         fi
 
         # Verify required Sentry files are included (breakpad backend)
