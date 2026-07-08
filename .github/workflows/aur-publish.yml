@@ -1,0 +1,68 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: AUR Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 5.1.3) — for manual dry-runs/backfills'
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    # secrets.* is not a recognized named-value inside a step-level `if:` (only inside
+    # run:/with:/env: values) - compute the presence check once here, where `secrets` is
+    # valid, and have the steps below branch on this env var instead.
+    env:
+      HAS_AUR_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY != '' }}
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Extract Version
+      run: |
+        if [ -n "${{ github.event.inputs.version }}" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+        else
+          echo "VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')" >> $GITHUB_ENV
+        fi
+      shell: bash
+
+    - name: Download source tarball and compute checksum
+      run: |
+        curl -fL -o src.tar.gz "https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/refs/tags/$VERSION.tar.gz"
+        echo "SHA256SUM=$(sha256sum src.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
+
+    - name: Render PKGBUILD
+      run: |
+        mkdir -p rendered
+        sed \
+          -e "s/^pkgver=0\$/pkgver=$VERSION/" \
+          -e "s/^sha256sums=('SKIP')\$/sha256sums=('$SHA256SUM')/" \
+          Packaging/AUR/PKGBUILD > rendered/PKGBUILD
+        cat rendered/PKGBUILD
+
+    - name: Publish to AUR
+      if: ${{ env.HAS_AUR_KEY == 'true' }}
+      uses: KSXGitHub/github-actions-deploy-aur@da03e160361ce01bf087e790b6ffd196d7dccff7 # v4.1.3
+      with:
+        pkgname: wiredpanda
+        pkgbuild: ./rendered/PKGBUILD
+        commit_username: "wiRedPanda CI"
+        commit_email: "41898282+github-actions[bot]@users.noreply.github.com"
+        commit_message: "Update to ${{ env.VERSION }}"
+        ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+
+    - name: Warn if AUR push was skipped
+      if: ${{ env.HAS_AUR_KEY == 'false' }}
+      run: |
+        echo "::warning::AUR_SSH_PRIVATE_KEY secret not set - skipped publishing to AUR. \
+        The AUR maintainer needs to add a CI-controlled SSH key (or co-maintainer account) \
+        before this step can push; see the PKGBUILD/workflow plan for details."
