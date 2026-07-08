@@ -245,9 +245,9 @@ QList<std::pair<int, QString>> Led::appearanceStates() const
 
     case 2:
         states.append({18, tr("00 (off)")});
-        states.append({19, tr("01")});
-        states.append({20, tr("10")});
-        states.append({25, tr("11")});
+        states.append({19, QStringLiteral("01")});
+        states.append({20, QStringLiteral("10")});
+        states.append({25, QStringLiteral("11")});
         break;
 
     case 3:

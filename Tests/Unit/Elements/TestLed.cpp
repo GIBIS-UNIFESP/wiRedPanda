@@ -497,6 +497,10 @@ void TestLED::testAppearanceStates()
     led2.setInputSize(2);
     auto states2 = led2.appearanceStates();
     QCOMPARE(states2.size(), 4);
+    QCOMPARE(states2.at(0).second, QString("00 (off)"));
+    QCOMPARE(states2.at(1).second, QString("01"));
+    QCOMPARE(states2.at(2).second, QString("10"));
+    QCOMPARE(states2.at(3).second, QString("11"));
 
     // 3-input: 000..111 (8 states)
     Led led3;
