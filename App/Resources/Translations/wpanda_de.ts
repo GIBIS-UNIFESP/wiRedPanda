@@ -160,7 +160,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="882"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="922"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Export to PDF</source>
         <translation>Als PDF exportieren</translation>
@@ -371,90 +371,95 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="58"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="120"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="757"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="823"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="797"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="863"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin Simulator</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="343"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="371"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="811"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="344"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="372"/>
         <source>Save simulation before closing?</source>
         <translation>Simulation vor dem Schließen speichern?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="772"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="812"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Möchten Sie diese beWavedDolphin-Datei mit Ihrer aktuellen wiRedPanda-Datei verknüpfen und speichern?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="901"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="941"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin ist ein Wellenformsimulator für wiRedPanda, entwickelt an der Bundesuniversität von São Paulo, um Studierenden beim Erlernen von Logikschaltungen zu helfen.&lt;/p&gt;&lt;p&gt;Softwareversion: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Ersteller:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin wird derzeit von Prof. Fábio Cappabianco, Ph.D. und seinen Studierenden gepflegt.&lt;/p&gt;&lt;p&gt; Bitte erstellen Sie einen Bericht auf unserer GitHub-Seite, wenn Sie einen Fehler finden oder eine neue Funktion wünschen.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besuchen Sie unsere Website!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="737"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="777"/>
         <source>Save File as...</source>
         <translation>Datei speichern als...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="730"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV-Dateien (*.csv);;Dolphin-Dateien (*.dolphin);;Alle unterstützten Dateien (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="731"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin-Dateien (*.dolphin);;CSV-Dateien (*.csv);;Alle unterstützten Dateien (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="718"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="758"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="798"/>
         <source>Saved file successfully.</source>
         <translation>Datei erfolgreich gespeichert.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="506"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="459"/>
+        <source>Cannot export: the circuit this waveform was built from has changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="546"/>
         <source>No cells selected.</source>
         <translation>Keine Zellen ausgewählt.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="803"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="843"/>
         <source>Open File</source>
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="804"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>Alle unterstützten Dateien (*.dolphin *.csv);;Dolphin-Dateien (*.dolphin);;CSV-Dateien (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="812"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="852"/>
         <source>File loaded successfully.</source>
         <translation>Datei erfolgreich geladen.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="864"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="904"/>
         <source>Export to Image</source>
         <translation>Als Bild exportieren</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="864"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="904"/>
         <source>PNG files (*.png)</source>
         <translation>PNG-Dateien (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="882"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="922"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF-Dateien (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="128"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>Datei &quot;%1&quot; existiert nicht!</translation>
     </message>
@@ -467,12 +472,12 @@
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="37"/>
         <source>Buzzer</source>
         <translation>Summer</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="36"/>
         <source>BUZZER</source>
         <translation>SUMMER</translation>
     </message>
@@ -480,14 +485,22 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="952"/>
+        <location filename="../../Scene/Commands.cpp" line="964"/>
         <source>Change input size to %1</source>
         <translation>Eingangsgröße auf %1 ändern</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="953"/>
+        <location filename="../../Scene/Commands.cpp" line="965"/>
         <source>Change output size to %1</source>
         <translation>Ausgabegröße auf %1 ändern</translation>
+    </message>
+</context>
+<context>
+    <name>ClipboardManager</name>
+    <message>
+        <location filename="../../Scene/ClipboardManager.cpp" line="158"/>
+        <source>Paste</source>
+        <translation type="unfinished">Einfügen</translation>
     </message>
 </context>
 <context>
@@ -498,12 +511,12 @@
         <translation>Takt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
         <source>Low</source>
         <translation>Niedrig</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
         <source>High</source>
         <translation>Hoch</translation>
     </message>
@@ -843,22 +856,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="248"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="234"/>
         <source>File does not exist</source>
         <translation>Datei existiert nicht</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="250"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="236"/>
         <source>File is not readable</source>
         <translation>Datei ist nicht lesbar</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
         <source>Unknown reason</source>
         <translation>Unbekannter Grund</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="257"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="247"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Pixmap konnte nicht geladen werden: %1 (%2)</translation>
     </message>
@@ -982,7 +995,7 @@
         <translation>Lautstärke:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="318"/>
+        <location filename="../../UI/ElementEditor.cpp" line="326"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1033,98 +1046,114 @@
         <translation>Wahrheitstabelle</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="172"/>
+        <location filename="../../UI/ElementEditor.cpp" line="173"/>
         <source>Open File</source>
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="238"/>
+        <location filename="../../UI/ElementEditor.cpp" line="189"/>
+        <source>Change appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="246"/>
         <source>Green</source>
         <translation>Grün</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="239"/>
+        <location filename="../../UI/ElementEditor.cpp" line="247"/>
         <source>Blue</source>
         <translation>Blau</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="240"/>
+        <location filename="../../UI/ElementEditor.cpp" line="248"/>
         <source>Purple</source>
         <translation>Violett</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="604"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Doppelter Drahtloskanal</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="597"/>
+        <location filename="../../UI/ElementEditor.cpp" line="605"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Ein Tx-Knoten mit der Bezeichnung &quot;%1&quot; existiert bereits.
 Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="663"/>
+        <location filename="../../UI/ElementEditor.cpp" line="662"/>
         <source>Change wireless mode</source>
         <translation>Drahtlosmodus ändern</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="871"/>
+        <location filename="../../UI/ElementEditor.cpp" line="695"/>
+        <source>Duplicate IC Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="696"/>
+        <source>An embedded IC named &quot;%1&quot; already exists.
+Choose a different name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="904"/>
         <source>Select any audio</source>
         <translation>Audio auswählen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="872"/>
+        <location filename="../../UI/ElementEditor.cpp" line="905"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>Audio (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="237"/>
+        <location filename="../../UI/ElementEditor.cpp" line="245"/>
         <source>Red</source>
         <translation>Rot</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="171"/>
+        <location filename="../../UI/ElementEditor.cpp" line="172"/>
         <source>Images</source>
         <translation>Bilder</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="236"/>
+        <location filename="../../UI/ElementEditor.cpp" line="244"/>
         <source>White</source>
         <translation>Weiß</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="145"/>
+        <location filename="../../UI/ElementEditor.h" line="147"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Mehrere Töne&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="146"/>
+        <location filename="../../UI/ElementEditor.h" line="148"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Mehrere Farben&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="147"/>
-        <location filename="../../UI/ElementEditor.h" line="148"/>
         <location filename="../../UI/ElementEditor.h" line="149"/>
+        <location filename="../../UI/ElementEditor.h" line="150"/>
         <location filename="../../UI/ElementEditor.h" line="151"/>
-        <location filename="../../UI/ElementEditor.h" line="152"/>
+        <location filename="../../UI/ElementEditor.h" line="153"/>
+        <location filename="../../UI/ElementEditor.h" line="154"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Mehrere Werte&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Mehrere Bezeichnungen&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="154"/>
+        <location filename="../../UI/ElementEditor.h" line="156"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;Mehrere Modi&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="153"/>
+        <location filename="../../UI/ElementEditor.h" line="155"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Mehrere Auslöser&gt;</translation>
     </message>
@@ -1317,7 +1346,7 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="893"/>
+        <location filename="../../Scene/Commands.cpp" line="905"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%1 Elemente entlang Achse %2 spiegeln</translation>
     </message>
@@ -1348,47 +1377,47 @@ Jeder Drahtloskanal muss eine eindeutige Bezeichnung haben.</translation>
         <translation>Datenstromfehler beim Lesen von %1-Eintrag %2 an Position %3</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="230"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>Datenstromfehler beim Lesen der Elementeigenschaften an Position %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="359"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Datenstromfehler beim Lesen der Erscheinungsbilder an Position %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="367"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>Erscheinungsbild-Index %1 außerhalb des gültigen Bereichs (Größe=%2) — Datenstrom möglicherweise beschädigt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="404"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>Nicht endliche Elementposition — Datenstrom möglicherweise beschädigt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="422"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>Nicht endliche Elementrotation — Datenstrom möglicherweise beschädigt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="482"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>Eingangsport-Liste im alten Format mit unplausibler Anzahl %1 abgelehnt (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="516"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>Ausgangsport-Liste im alten Format mit unplausibler Anzahl %1 abgelehnt (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="581"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>Erscheinungsbildliste im alten Format mit unplausibler Anzahl %1 abgelehnt (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="610"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Erscheinungsbild-Index %1 außerhalb des gültigen Bereichs (Größe=%2) für Erscheinungsbildname „%3“ — Datenstrom möglicherweise beschädigt</translation>
     </message>
@@ -1548,27 +1577,32 @@ Vorgeschlagener Name:</translation>
         <translation>%1 nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="148"/>
+        <location filename="../../Element/ICLoader.cpp" line="151"/>
+        <source>IC nesting depth limit (%1) exceeded while loading %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="162"/>
         <source>Circular IC reference detected: %1</source>
         <translation>Zirkuläre IC-Referenz erkannt: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="155"/>
+        <location filename="../../Element/ICLoader.cpp" line="169"/>
         <source>Error opening file: %1</source>
         <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="227"/>
+        <location filename="../../Element/ICLoader.cpp" line="241"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC-Migration: Datei kann nicht zum Schreiben geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="234"/>
+        <location filename="../../Element/ICLoader.cpp" line="248"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC-Migration: Erneut gespeicherte Datei konnte nicht übernommen werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="297"/>
+        <location filename="../../Element/ICLoader.cpp" line="311"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Grenze für IC-Verschachtelungstiefe (%1) überschritten — Blob könnte böswillig erstellt worden sein</translation>
     </message>
@@ -1576,14 +1610,19 @@ Vorgeschlagener Name:</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="283"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="273"/>
         <source>Could not open file: %1</source>
         <translation>Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="277"/>
         <source>Could not save file: %1</source>
         <translation>Datei konnte nicht gespeichert werden: %1</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/ICRegistry.cpp" line="340"/>
+        <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2489,9 +2528,24 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     </message>
 </context>
 <context>
+    <name>PropertyShortcutHandler</name>
+    <message>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="43"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="144"/>
+        <source>Cycle element properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="220"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="251"/>
+        <source>Morph elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="235"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="226"/>
         <source>Add embedded IC</source>
         <translation>Eingebettetes IC hinzufügen</translation>
     </message>
@@ -2585,7 +2639,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1114"/>
+        <location filename="../../Scene/Commands.cpp" line="1126"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Blob &quot;%1&quot; registrieren</translation>
     </message>
@@ -2593,9 +2647,17 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1137"/>
+        <location filename="../../Scene/Commands.cpp" line="1149"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Blob „%1“ entfernen</translation>
+    </message>
+</context>
+<context>
+    <name>RenameBlobCommand</name>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2636,18 +2698,18 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="540"/>
+        <location filename="../../Scene/Scene.cpp" line="560"/>
         <source>&amp;Undo</source>
         <translation>&amp;Rückgängig</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="546"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>&amp;Redo</source>
         <translation>&amp;Wiederholen</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="566"/>
+        <location filename="../../Scene/Scene.cpp" line="586"/>
         <source>Paste</source>
         <translation>Einfügen</translation>
     </message>
@@ -2668,78 +2730,83 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
+        <location filename="../../IO/Serialization.cpp" line="282"/>
         <source>Stream error reading metadata map count</source>
         <translation>Streamfehler beim Lesen der Metadaten-Anzahl</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="280"/>
+        <location filename="../../IO/Serialization.cpp" line="285"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>Metadaten-Anzahl %1 unplausibel für die verbleibenden Stream-Bytes</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
+        <location filename="../../IO/Serialization.cpp" line="302"/>
         <source>Stream error reading blob map count</source>
         <translation>Streamfehler beim Lesen der Blob-Anzahl</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="300"/>
+        <location filename="../../IO/Serialization.cpp" line="305"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>Blob-Anzahl %1 unplausibel für die verbleibenden Stream-Bytes</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="325"/>
-        <location filename="../../IO/Serialization.cpp" line="372"/>
-        <location filename="../../IO/Serialization.cpp" line="379"/>
-        <location filename="../../IO/Serialization.cpp" line="400"/>
-        <location filename="../../IO/Serialization.cpp" line="420"/>
+        <location filename="../../IO/Serialization.cpp" line="330"/>
+        <location filename="../../IO/Serialization.cpp" line="377"/>
+        <location filename="../../IO/Serialization.cpp" line="384"/>
+        <location filename="../../IO/Serialization.cpp" line="405"/>
         <location filename="../../IO/Serialization.cpp" line="425"/>
-        <location filename="../../IO/Serialization.cpp" line="443"/>
+        <location filename="../../IO/Serialization.cpp" line="430"/>
+        <location filename="../../IO/Serialization.cpp" line="448"/>
         <source>Invalid file format.</source>
         <translation>Ungültiges Dateiformat.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="361"/>
+        <location filename="../../IO/Serialization.cpp" line="366"/>
         <source>Invalid legacy file header: %1</source>
         <translation>Ungültiger alter Dateikopf: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="556"/>
+        <location filename="../../IO/Serialization.cpp" line="561"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Stream-Fehler beim Lesen des Typ-Tags an Position %1: Status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="568"/>
+        <location filename="../../IO/Serialization.cpp" line="573"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Stream-Fehler beim Lesen des Elementtyps an Position %1: Status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="580"/>
+        <location filename="../../IO/Serialization.cpp" line="585"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Stream-Fehler beim Laden des Elements an Position %1: Status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="599"/>
+        <location filename="../../IO/Serialization.cpp" line="604"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Stream-Fehler beim Laden der Verbindung an Position %1: Status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="606"/>
+        <location filename="../../IO/Serialization.cpp" line="611"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Ungültiger Typ. Daten sind möglicherweise beschädigt.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="659"/>
+        <location filename="../../IO/Serialization.cpp" line="664"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Versionierte Sicherungskopie konnte nicht erstellt werden: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="680"/>
+        <location filename="../../IO/Serialization.cpp" line="685"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Datenstromfehler beim Lesen der Präambel: Status %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="744"/>
+        <location filename="../../IO/Serialization.cpp" line="739"/>
+        <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="758"/>
         <source>Error copying file: %1</source>
         <translation>Fehler beim Kopieren der Datei: %1</translation>
     </message>
@@ -2832,17 +2899,17 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1059"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Wahrheitstabellen-Ausgabe an Position %1 umschalten</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1056"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Could not find truthtable element!</source>
         <translation>Wahrheitstabellen-Element konnte nicht gefunden werden!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1063"/>
+        <location filename="../../Scene/Commands.cpp" line="1075"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>Wahrheitstabellen-Umschaltposition außerhalb des gültigen Bereichs: %1</translation>
     </message>
@@ -2918,12 +2985,12 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>TrashButton</name>
     <message>
-        <location filename="../../UI/TrashButton.cpp" line="65"/>
+        <location filename="../../UI/TrashButton.cpp" line="59"/>
         <source>Remove all &quot;%1&quot; instances from the circuit?</source>
         <translation>Alle Instanzen von &quot;%1&quot; aus der Schaltung entfernen?</translation>
     </message>
     <message>
-        <location filename="../../UI/TrashButton.cpp" line="67"/>
+        <location filename="../../UI/TrashButton.cpp" line="61"/>
         <source>File will be deleted. Are you sure?</source>
         <translation>Datei wird gelöscht. Sind Sie sicher?</translation>
     </message>
@@ -2944,7 +3011,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <location filename="../../Scene/Commands.cpp" line="1203"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 IC-Blobs aktualisieren</translation>
     </message>
@@ -3059,27 +3126,32 @@ Bitte aktualisieren Sie wiRedPanda, um Änderungen an dieser Datei zu speichern.
         <translation>Speichern nicht möglich.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="318"/>
+        <location filename="../../Scene/Workspace.cpp" line="252"/>
+        <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="329"/>
         <source>Error opening file: %1</source>
         <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="350"/>
+        <location filename="../../Scene/Workspace.cpp" line="361"/>
         <source>Could not save file: %1</source>
         <translation>Datei konnte nicht gespeichert werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="419"/>
+        <location filename="../../Scene/Workspace.cpp" line="436"/>
         <source>This file does not exist: %1</source>
         <translation>Diese Datei existiert nicht: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="428"/>
+        <location filename="../../Scene/Workspace.cpp" line="445"/>
         <source>Could not open file: %1</source>
         <translation>Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="476"/>
+        <location filename="../../Scene/Workspace.cpp" line="493"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3092,34 +3164,34 @@ Die Datei wird geöffnet, aber das Speichern ist blockiert.
 Bitte aktualisieren Sie wiRedPanda, um diese Datei zu bearbeiten und zu speichern.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="481"/>
+        <location filename="../../Scene/Workspace.cpp" line="498"/>
         <source>Newer version file.</source>
         <translation>Datei neuerer Version.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="484"/>
+        <location filename="../../Scene/Workspace.cpp" line="501"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Diese Datei liegt in einem älteren Format (Version %1) vor und wird automatisch auf das aktuelle Format (Version %2) aktualisiert.
 Eine Sicherungskopie der Originaldatei wurde erstellt unter dem Namen: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="487"/>
+        <location filename="../../Scene/Workspace.cpp" line="504"/>
         <source>File upgraded.</source>
         <translation>Datei wurde aktualisiert.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="649"/>
+        <location filename="../../Scene/Workspace.cpp" line="666"/>
         <source>Error opening autosave file: %1</source>
         <translation>Fehler beim Öffnen der automatisch gespeicherten Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="657"/>
+        <location filename="../../Scene/Workspace.cpp" line="674"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Automatische Sicherungsdatei konnte nicht übernommen werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="823"/>
+        <location filename="../../Scene/Workspace.cpp" line="840"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Eingebetteten IC „%1“ entfernen</translation>
     </message>

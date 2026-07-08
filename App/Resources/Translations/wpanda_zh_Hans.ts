@@ -160,7 +160,7 @@
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="882"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="922"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="255"/>
         <source>Export to PDF</source>
         <translation>导出为PDF</translation>
@@ -376,90 +376,95 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="58"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="120"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="757"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="823"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="797"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="863"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin 仿真器</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="343"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="371"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="811"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="344"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="372"/>
         <source>Save simulation before closing?</source>
         <translation>关闭前保存仿真？</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="772"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="812"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>您要将此 beWavedDolphin 文件链接到当前的 wiRedPanda 文件并保存吗？</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="901"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="941"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin 是 wiRedPanda 的波形模拟器，由圣保罗联邦大学开发，旨在帮助学生学习逻辑电路。&lt;/p&gt;&lt;p&gt;软件版本: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;创建者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin 目前由 Prof. Fábio Cappabianco, Ph.D. 及其学生维护。&lt;/p&gt;&lt;p&gt; 如果您发现错误或想要请求新功能，请在我们的 GitHub 页面上提交报告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;访问我们的网站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="737"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="777"/>
         <source>Save File as...</source>
         <translation>文件另存为...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="730"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
         <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
         <translation>CSV 文件 (*.csv);;Dolphin 文件 (*.dolphin);;所有支持的文件 (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="731"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
         <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
         <translation>Dolphin 文件 (*.dolphin);;CSV 文件 (*.csv);;所有支持的文件 (*.dolphin *.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="718"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="758"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="798"/>
         <source>Saved file successfully.</source>
         <translation>文件保存成功。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="506"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="459"/>
+        <source>Cannot export: the circuit this waveform was built from has changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="546"/>
         <source>No cells selected.</source>
         <translation>未选择单元格。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="803"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="843"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="804"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
         <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
         <translation>所有支持的文件 (*.dolphin *.csv);;Dolphin 文件 (*.dolphin);;CSV 文件 (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="812"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="852"/>
         <source>File loaded successfully.</source>
         <translation>文件加载成功。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="864"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="904"/>
         <source>Export to Image</source>
         <translation>导出为图像</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="864"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="904"/>
         <source>PNG files (*.png)</source>
         <translation>PNG 文件 (*.png)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="882"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="922"/>
         <source>PDF files (*.pdf)</source>
         <translation>PDF 文件 (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="128"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
         <source>File &quot;%1&quot; does not exist!</source>
         <translation>文件 &quot;%1&quot; 不存在！</translation>
     </message>
@@ -467,12 +472,12 @@
 <context>
     <name>Buzzer</name>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="37"/>
         <source>Buzzer</source>
         <translation>蜂鸣器</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Buzzer.cpp" line="36"/>
         <source>BUZZER</source>
         <translation>蜂鸣器</translation>
     </message>
@@ -480,14 +485,22 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="952"/>
+        <location filename="../../Scene/Commands.cpp" line="964"/>
         <source>Change input size to %1</source>
         <translation>将输入大小更改为 %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="953"/>
+        <location filename="../../Scene/Commands.cpp" line="965"/>
         <source>Change output size to %1</source>
         <translation>将输出大小更改为 %1</translation>
+    </message>
+</context>
+<context>
+    <name>ClipboardManager</name>
+    <message>
+        <location filename="../../Scene/ClipboardManager.cpp" line="158"/>
+        <source>Paste</source>
+        <translation type="unfinished">粘贴</translation>
     </message>
 </context>
 <context>
@@ -498,12 +511,12 @@
         <translation>时钟</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
         <source>Low</source>
         <translation>低</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="218"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
         <source>High</source>
         <translation>高</translation>
     </message>
@@ -843,22 +856,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="248"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="234"/>
         <source>File does not exist</source>
         <translation>文件不存在</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="250"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="236"/>
         <source>File is not readable</source>
         <translation>文件不可读</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="251"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
         <source>Unknown reason</source>
         <translation>未知原因</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="257"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="247"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>无法加载像素图：%1 (%2)</translation>
     </message>
@@ -982,7 +995,7 @@
         <translation>音量：</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="318"/>
+        <location filename="../../UI/ElementEditor.cpp" line="326"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> Hz</translation>
@@ -1033,98 +1046,114 @@
         <translation>真值表</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="172"/>
+        <location filename="../../UI/ElementEditor.cpp" line="173"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="238"/>
+        <location filename="../../UI/ElementEditor.cpp" line="189"/>
+        <source>Change appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="246"/>
         <source>Green</source>
         <translation>绿色</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="239"/>
+        <location filename="../../UI/ElementEditor.cpp" line="247"/>
         <source>Blue</source>
         <translation>蓝色</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="240"/>
+        <location filename="../../UI/ElementEditor.cpp" line="248"/>
         <source>Purple</source>
         <translation>紫色</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="596"/>
+        <location filename="../../UI/ElementEditor.cpp" line="604"/>
         <source>Duplicate Wireless Channel</source>
         <translation>无线通道重复</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="597"/>
+        <location filename="../../UI/ElementEditor.cpp" line="605"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>标签为 &quot;%1&quot; 的 Tx 节点已存在。
 每个无线通道必须有唯一的标签。</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="663"/>
+        <location filename="../../UI/ElementEditor.cpp" line="662"/>
         <source>Change wireless mode</source>
         <translation>更改无线模式</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="871"/>
+        <location filename="../../UI/ElementEditor.cpp" line="695"/>
+        <source>Duplicate IC Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="696"/>
+        <source>An embedded IC named &quot;%1&quot; already exists.
+Choose a different name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="904"/>
         <source>Select any audio</source>
         <translation>选择任意音频</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="872"/>
+        <location filename="../../UI/ElementEditor.cpp" line="905"/>
         <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
         <translation>音频 (*.mp3 *.mp4 *.wav *.ogg)</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="237"/>
+        <location filename="../../UI/ElementEditor.cpp" line="245"/>
         <source>Red</source>
         <translation>红色</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="171"/>
+        <location filename="../../UI/ElementEditor.cpp" line="172"/>
         <source>Images</source>
         <translation>图像</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="236"/>
+        <location filename="../../UI/ElementEditor.cpp" line="244"/>
         <source>White</source>
         <translation>白色</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="145"/>
+        <location filename="../../UI/ElementEditor.h" line="147"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;多个声音&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="146"/>
+        <location filename="../../UI/ElementEditor.h" line="148"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;多种颜色&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="147"/>
-        <location filename="../../UI/ElementEditor.h" line="148"/>
         <location filename="../../UI/ElementEditor.h" line="149"/>
+        <location filename="../../UI/ElementEditor.h" line="150"/>
         <location filename="../../UI/ElementEditor.h" line="151"/>
-        <location filename="../../UI/ElementEditor.h" line="152"/>
+        <location filename="../../UI/ElementEditor.h" line="153"/>
+        <location filename="../../UI/ElementEditor.h" line="154"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;多个值&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;多个标签&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="154"/>
+        <location filename="../../UI/ElementEditor.h" line="156"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;多种模式&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="153"/>
+        <location filename="../../UI/ElementEditor.h" line="155"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;多个触发器&gt;</translation>
     </message>
@@ -1317,7 +1346,7 @@ Each wireless channel must have a unique label.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="893"/>
+        <location filename="../../Scene/Commands.cpp" line="905"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>在轴%2上翻转%1个元件</translation>
     </message>
@@ -1348,47 +1377,47 @@ Each wireless channel must have a unique label.</source>
         <translation>在位置 %3 处读取 %1 的条目 %2 时发生流错误</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="214"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="230"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>在位置 %1 处读取元件属性时发生流错误</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="343"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="359"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>在位置 %1 处读取外观时发生流错误</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="351"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="367"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>外观索引 %1 超出范围（大小=%2）— 流可能已损坏</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="388"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="404"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>元件位置非有限 — 流可能已损坏</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="422"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>元件旋转非有限 — 流可能已损坏</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="466"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="482"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>拒绝数量不合理的旧格式输入端口列表（%1，最大 %2）</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="500"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="516"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>拒绝数量不合理的旧格式输出端口列表（%1，最大 %2）</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="565"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="581"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>拒绝数量不合理的旧格式外观列表（%1，最大 %2）</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="594"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="610"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>外观名称“%3”的外观索引 %1 超出范围（大小=%2）— 流可能已损坏</translation>
     </message>
@@ -1548,27 +1577,32 @@ Suggested name:</source>
         <translation>未找到 %1。</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="148"/>
+        <location filename="../../Element/ICLoader.cpp" line="151"/>
+        <source>IC nesting depth limit (%1) exceeded while loading %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Element/ICLoader.cpp" line="162"/>
         <source>Circular IC reference detected: %1</source>
         <translation>检测到循环集成电路引用：%1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="155"/>
+        <location filename="../../Element/ICLoader.cpp" line="169"/>
         <source>Error opening file: %1</source>
         <translation>打开文件时出错：%1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="227"/>
+        <location filename="../../Element/ICLoader.cpp" line="241"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>集成电路迁移：无法打开文件进行写入：%1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="234"/>
+        <location filename="../../Element/ICLoader.cpp" line="248"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>集成电路迁移：确认重新保存的文件失败：%1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="297"/>
+        <location filename="../../Element/ICLoader.cpp" line="311"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>超出集成电路嵌套深度限制（%1）— blob 可能是恶意构造的</translation>
     </message>
@@ -1576,14 +1610,19 @@ Suggested name:</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="283"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="273"/>
         <source>Could not open file: %1</source>
         <translation>无法打开文件：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="277"/>
         <source>Could not save file: %1</source>
         <translation>无法保存文件：%1</translation>
+    </message>
+    <message>
+        <location filename="../../Scene/ICRegistry.cpp" line="340"/>
+        <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2489,9 +2528,24 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
     </message>
 </context>
 <context>
+    <name>PropertyShortcutHandler</name>
+    <message>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="43"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="144"/>
+        <source>Cycle element properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="220"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="251"/>
+        <source>Morph elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="235"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="226"/>
         <source>Add embedded IC</source>
         <translation>添加嵌入式 IC</translation>
     </message>
@@ -2585,7 +2639,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1114"/>
+        <location filename="../../Scene/Commands.cpp" line="1126"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>注册 blob &quot;%1&quot;</translation>
     </message>
@@ -2593,9 +2647,17 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1137"/>
+        <location filename="../../Scene/Commands.cpp" line="1149"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>移除 blob &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>RenameBlobCommand</name>
+    <message>
+        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2636,18 +2698,18 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="540"/>
+        <location filename="../../Scene/Scene.cpp" line="560"/>
         <source>&amp;Undo</source>
         <translation>&amp;撤销</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="546"/>
+        <location filename="../../Scene/Scene.cpp" line="566"/>
         <source>&amp;Redo</source>
         <translation>&amp;重做</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="566"/>
+        <location filename="../../Scene/Scene.cpp" line="586"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
@@ -2668,78 +2730,83 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>Serialization</name>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="277"/>
+        <location filename="../../IO/Serialization.cpp" line="282"/>
         <source>Stream error reading metadata map count</source>
         <translation>读取元数据计数时发生流错误</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="280"/>
+        <location filename="../../IO/Serialization.cpp" line="285"/>
         <source>Metadata map count %1 implausible given remaining stream bytes</source>
         <translation>相对于剩余流字节数，元数据计数 %1 不合理</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="297"/>
+        <location filename="../../IO/Serialization.cpp" line="302"/>
         <source>Stream error reading blob map count</source>
         <translation>读取 blob 计数时发生流错误</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="300"/>
+        <location filename="../../IO/Serialization.cpp" line="305"/>
         <source>Blob map count %1 implausible given remaining stream bytes</source>
         <translation>相对于剩余流字节数，blob 计数 %1 不合理</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="325"/>
-        <location filename="../../IO/Serialization.cpp" line="372"/>
-        <location filename="../../IO/Serialization.cpp" line="379"/>
-        <location filename="../../IO/Serialization.cpp" line="400"/>
-        <location filename="../../IO/Serialization.cpp" line="420"/>
+        <location filename="../../IO/Serialization.cpp" line="330"/>
+        <location filename="../../IO/Serialization.cpp" line="377"/>
+        <location filename="../../IO/Serialization.cpp" line="384"/>
+        <location filename="../../IO/Serialization.cpp" line="405"/>
         <location filename="../../IO/Serialization.cpp" line="425"/>
-        <location filename="../../IO/Serialization.cpp" line="443"/>
+        <location filename="../../IO/Serialization.cpp" line="430"/>
+        <location filename="../../IO/Serialization.cpp" line="448"/>
         <source>Invalid file format.</source>
         <translation>无效的文件格式。</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="361"/>
+        <location filename="../../IO/Serialization.cpp" line="366"/>
         <source>Invalid legacy file header: %1</source>
         <translation>旧版文件头无效：%1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="556"/>
+        <location filename="../../IO/Serialization.cpp" line="561"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>在位置 %1 读取类型标签时出现流错误: 状态 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="568"/>
+        <location filename="../../IO/Serialization.cpp" line="573"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>在位置 %1 读取元件类型时出现流错误: 状态 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="580"/>
+        <location filename="../../IO/Serialization.cpp" line="585"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>在位置 %1 加载元件时出现流错误: 状态 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="599"/>
+        <location filename="../../IO/Serialization.cpp" line="604"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>在位置 %1 加载连接时出现流错误: 状态 %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="606"/>
+        <location filename="../../IO/Serialization.cpp" line="611"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>无效类型。数据可能已损坏。</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="659"/>
+        <location filename="../../IO/Serialization.cpp" line="664"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>无法创建版本化备份: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="680"/>
+        <location filename="../../IO/Serialization.cpp" line="685"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>读取前导码时发生流错误：状态 %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="744"/>
+        <location filename="../../IO/Serialization.cpp" line="739"/>
+        <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../IO/Serialization.cpp" line="758"/>
         <source>Error copying file: %1</source>
         <translation>复制文件时出错：%1</translation>
     </message>
@@ -2832,17 +2899,17 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1047"/>
+        <location filename="../../Scene/Commands.cpp" line="1059"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>在位置 %1 切换真值表输出</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1056"/>
+        <location filename="../../Scene/Commands.cpp" line="1068"/>
         <source>Could not find truthtable element!</source>
         <translation>找不到真值表元素！</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1063"/>
+        <location filename="../../Scene/Commands.cpp" line="1075"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>真值表切换位置超出范围：%1</translation>
     </message>
@@ -2918,12 +2985,12 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>TrashButton</name>
     <message>
-        <location filename="../../UI/TrashButton.cpp" line="65"/>
+        <location filename="../../UI/TrashButton.cpp" line="59"/>
         <source>Remove all &quot;%1&quot; instances from the circuit?</source>
         <translation>从电路中移除所有 &quot;%1&quot; 实例？</translation>
     </message>
     <message>
-        <location filename="../../UI/TrashButton.cpp" line="67"/>
+        <location filename="../../UI/TrashButton.cpp" line="61"/>
         <source>File will be deleted. Are you sure?</source>
         <translation>文件将被删除。您确定吗？</translation>
     </message>
@@ -2944,7 +3011,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <location filename="../../Scene/Commands.cpp" line="1203"/>
         <source>Update %1 IC blobs</source>
         <translation>更新 %1 个 IC blob</translation>
     </message>
@@ -3059,27 +3126,32 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>无法保存。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="318"/>
+        <location filename="../../Scene/Workspace.cpp" line="252"/>
+        <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../Scene/Workspace.cpp" line="329"/>
         <source>Error opening file: %1</source>
         <translation>打开文件时出错：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="350"/>
+        <location filename="../../Scene/Workspace.cpp" line="361"/>
         <source>Could not save file: %1</source>
         <translation>无法保存文件：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="419"/>
+        <location filename="../../Scene/Workspace.cpp" line="436"/>
         <source>This file does not exist: %1</source>
         <translation>此文件不存在：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="428"/>
+        <location filename="../../Scene/Workspace.cpp" line="445"/>
         <source>Could not open file: %1</source>
         <translation>无法打开文件：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="476"/>
+        <location filename="../../Scene/Workspace.cpp" line="493"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3092,34 +3164,34 @@ Please update wiRedPanda to edit and save this file.</source>
 请更新 wiRedPanda 以编辑和保存此文件。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="481"/>
+        <location filename="../../Scene/Workspace.cpp" line="498"/>
         <source>Newer version file.</source>
         <translation>较新版本文件。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="484"/>
+        <location filename="../../Scene/Workspace.cpp" line="501"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>此文件为旧格式（版本 %1），将自动升级为当前格式（版本 %2）。
 原始文件的备份已创建，名称为: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="487"/>
+        <location filename="../../Scene/Workspace.cpp" line="504"/>
         <source>File upgraded.</source>
         <translation>文件已升级。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="649"/>
+        <location filename="../../Scene/Workspace.cpp" line="666"/>
         <source>Error opening autosave file: %1</source>
         <translation>打开自动保存文件时出错：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="657"/>
+        <location filename="../../Scene/Workspace.cpp" line="674"/>
         <source>Could not commit autosave file: %1</source>
         <translation>无法提交自动保存文件：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="823"/>
+        <location filename="../../Scene/Workspace.cpp" line="840"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>移除嵌入的 IC &quot;%1&quot;</translation>
     </message>
