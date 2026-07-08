@@ -22,4 +22,5 @@ private slots:
     void testInputRotaryOutputSize();
     void testMorphNextElement();
     void testMorphPrevElement();
+    void testMultiElementShortcutIsSingleUndoStep();
 };

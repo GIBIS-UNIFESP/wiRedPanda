@@ -4,7 +4,6 @@
 #include "App/Scene/PropertyShortcutHandler.h"
 
 #include <algorithm>
-#include <functional>
 
 #include "App/Core/Enums.h"
 #include "App/Element/GraphicElement.h"
@@ -17,27 +16,34 @@ PropertyShortcutHandler::PropertyShortcutHandler(Scene *scene)
 {
 }
 
-void PropertyShortcutHandler::adjustMainProperty(int dir)
+void PropertyShortcutHandler::applyWithUndo(GraphicElement *element, const std::function<void()> &mutate)
 {
     // Wraps a direct property mutation in an UpdateCommand (F37) so the
     // [ / ] shortcuts are undoable and mark the circuit dirty, exactly like
     // the port-size path below and the property editor.
-    const auto applyWithUndo = [this](GraphicElement *element, const std::function<void()> &mutate) {
-        QByteArray oldData;
-        {
-            QDataStream stream(&oldData, QIODevice::WriteOnly);
-            Serialization::writePandaHeader(stream);
-            element->save(stream);
-        }
-        mutate();
-        m_scene->receiveCommand(new UpdateCommand({element}, oldData, m_scene));
-    };
+    QByteArray oldData;
+    {
+        QDataStream stream(&oldData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        element->save(stream);
+    }
+    mutate();
+    m_scene->receiveCommand(new UpdateCommand({element}, oldData, m_scene));
+}
 
+void PropertyShortcutHandler::adjustMainProperty(int dir)
+{
     // dir = -1 for prev, +1 for next
     // Cycles the "primary" configurable property of each selected element:
     // input count for logic gates, output count for rotary inputs,
     // clock frequency (0.5 Hz step), buzzer frequency (100 Hz step), or display color.
-    for (auto *element : m_scene->selectedElements()) {
+    const auto selected = m_scene->selectedElements();
+    const bool needsMacro = selected.size() > 1;
+    if (needsMacro) {
+        m_scene->undoStack()->beginMacro(tr("Cycle element properties"));
+    }
+
+    for (auto *element : selected) {
         switch (element->elementType()) {
         // Logic Elements
         case ElementType::And:
@@ -113,6 +119,10 @@ void PropertyShortcutHandler::adjustMainProperty(int dir)
         element->setSelected(false);
         element->setSelected(true);
     }
+
+    if (needsMacro) {
+        m_scene->undoStack()->endMacro();
+    }
 }
 
 void PropertyShortcutHandler::prevMainProperty()
@@ -128,7 +138,13 @@ void PropertyShortcutHandler::nextMainProperty()
 void PropertyShortcutHandler::adjustSecondaryProperty(int dir)
 {
     // dir = -1 for prev, +1 for next
-    for (auto *element : m_scene->selectedElements()) {
+    const auto selected = m_scene->selectedElements();
+    const bool needsMacro = selected.size() > 1;
+    if (needsMacro) {
+        m_scene->undoStack()->beginMacro(tr("Cycle element properties"));
+    }
+
+    for (auto *element : selected) {
         switch (element->elementType()) {
         case ElementType::TruthTable: {
             const int newSize = element->outputSize() + dir;
@@ -139,7 +155,7 @@ void PropertyShortcutHandler::adjustSecondaryProperty(int dir)
         }
         case ElementType::Led:
             if (element->hasColors())
-                element->setColor(dir < 0 ? element->previousColor() : element->nextColor());
+                applyWithUndo(element, [element, dir] { element->setColor(dir < 0 ? element->previousColor() : element->nextColor()); });
             break;
 
         case ElementType::And:
@@ -180,6 +196,10 @@ void PropertyShortcutHandler::adjustSecondaryProperty(int dir)
         element->setSelected(false);
         element->setSelected(true);
     }
+
+    if (needsMacro) {
+        m_scene->undoStack()->endMacro();
+    }
 }
 
 void PropertyShortcutHandler::prevSecondaryProperty()
@@ -194,7 +214,13 @@ void PropertyShortcutHandler::nextSecondaryProperty()
 
 void PropertyShortcutHandler::nextElement()
 {
-    for (auto *element : m_scene->selectedElements()) {
+    const auto selected = m_scene->selectedElements();
+    const bool needsMacro = selected.size() > 1;
+    if (needsMacro) {
+        m_scene->undoStack()->beginMacro(tr("Morph elements"));
+    }
+
+    for (auto *element : selected) {
         const QPointF elmPosition = element->scenePos();
         auto nextType = Enums::nextElmType(element->elementType());
 
@@ -211,11 +237,21 @@ void PropertyShortcutHandler::nextElement()
             item->setSelected(true);
         }
     }
+
+    if (needsMacro) {
+        m_scene->undoStack()->endMacro();
+    }
 }
 
 void PropertyShortcutHandler::prevElement()
 {
-    for (auto *element : m_scene->selectedElements()) {
+    const auto selected = m_scene->selectedElements();
+    const bool needsMacro = selected.size() > 1;
+    if (needsMacro) {
+        m_scene->undoStack()->beginMacro(tr("Morph elements"));
+    }
+
+    for (auto *element : selected) {
         const QPointF elmPosition = element->scenePos();
         auto prevType = Enums::prevElmType(element->elementType());
 
@@ -228,5 +264,9 @@ void PropertyShortcutHandler::prevElement()
         if (item) {
             item->setSelected(true);
         }
+    }
+
+    if (needsMacro) {
+        m_scene->undoStack()->endMacro();
     }
 }
