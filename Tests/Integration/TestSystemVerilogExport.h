@@ -101,7 +101,9 @@ private slots:
     // Level 9 - Full CPUs
     void testSystemVerilogExportCpu16BitRisc();
     void testSystemVerilogExportFetchStage16Bit();
+    void testSystemVerilogExportMemoryStage16Bit();
     void testSystemVerilogExportMultiCycleCpu8Bit();
+    void testSystemVerilogExportRegisterFile32x16();
     void testSystemVerilogExportSingleCycleCpu8Bit();
 
 private:
