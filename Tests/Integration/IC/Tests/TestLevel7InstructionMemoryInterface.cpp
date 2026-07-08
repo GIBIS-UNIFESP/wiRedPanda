@@ -17,12 +17,87 @@ using TestUtils::readMultiBitOutput;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
+// Fully-wired harness (Address + DataIn + WriteEnable + Clock), shared by the
+// read-only and write/read tests. Mirrors the sibling level7 fixtures in this
+// directory.
+struct InstructionMemoryInterfaceFixture {
+    std::unique_ptr<WorkSpace> workspace;
+    IC *ic = nullptr;
+    QVector<InputSwitch *> addressInputs;
+    QVector<InputSwitch *> dataInputs;
+    InputSwitch *writeEnable = nullptr;
+    InputSwitch *clk = nullptr;
+    QVector<Led *> instrOutputs;
+    Simulation *sim = nullptr;
+
+    bool build()
+    {
+        workspace = std::make_unique<WorkSpace>();
+        CircuitBuilder builder(workspace->scene());
+
+        ic = loadBuildingBlockIC("level7_instruction_memory_interface.panda");
+        builder.add(ic);
+
+        for (int i = 0; i < 8; i++) {
+            auto *addr = new InputSwitch(); builder.add(addr); addressInputs.append(addr);
+            auto *data = new InputSwitch(); builder.add(data); dataInputs.append(data);
+            auto *led = new Led(); builder.add(led); instrOutputs.append(led);
+        }
+
+        writeEnable = new InputSwitch(); builder.add(writeEnable);
+        clk = new InputSwitch(); builder.add(clk);
+
+        for (int i = 0; i < 8; i++) {
+            builder.connect(addressInputs[i], 0, ic, QString("Address[%1]").arg(i));
+            builder.connect(dataInputs[i], 0, ic, QString("DataIn[%1]").arg(i));
+            builder.connect(ic, QString("Instruction[%1]").arg(i), instrOutputs[i], 0);
+        }
+        builder.connect(writeEnable, 0, ic, "WriteEnable");
+        builder.connect(clk, 0, ic, "Clock");
+
+        sim = builder.initSimulation();
+        sim->update();
+        return true;
+    }
+
+    int readAt(int address)
+    {
+        setMultiBitInput(addressInputs, address);
+        sim->update();
+        return readMultiBitOutput(QVector<GraphicElement *>(instrOutputs.begin(), instrOutputs.end()), 0);
+    }
+
+    void writeWord(int address, int value)
+    {
+        setMultiBitInput(addressInputs, address);
+        setMultiBitInput(dataInputs, value);
+        writeEnable->setOn(true);
+        sim->update();
+        clockCycle(sim, clk);
+        writeEnable->setOn(false);
+        sim->update();
+    }
+};
+
+static std::unique_ptr<InstructionMemoryInterfaceFixture> s_level7InstrMemInterface;
+
 void TestLevel7InstructionMemoryInterface::initTestCase()
 {
+    s_level7InstrMemInterface = std::make_unique<InstructionMemoryInterfaceFixture>();
+    QVERIFY(s_level7InstrMemInterface->build());
+}
+
+void TestLevel7InstructionMemoryInterface::cleanupTestCase()
+{
+    s_level7InstrMemInterface.reset();
 }
 
 void TestLevel7InstructionMemoryInterface::cleanup()
 {
+    if (s_level7InstrMemInterface && s_level7InstrMemInterface->sim) {
+        s_level7InstrMemInterface->sim->restart();
+        s_level7InstrMemInterface->sim->update();
+    }
 }
 
 void TestLevel7InstructionMemoryInterface::testInstructionMemoryInterface_data()
@@ -51,64 +126,11 @@ void TestLevel7InstructionMemoryInterface::testInstructionMemoryInterface()
     QFETCH(int, address);
     QFETCH(int, expectedInstruction);
 
-    auto workspace = std::make_unique<WorkSpace>();
-    CircuitBuilder builder(workspace->scene());
+    auto &f = *s_level7InstrMemInterface;
 
-    // Create address input switches (8-bit)
-    QVector<InputSwitch *> address_inputs;
-    for (int i = 0; i < 8; i++) {
-        InputSwitch *sw = new InputSwitch();
-        builder.add(sw);
-        sw->setLabel(QString("Address[%1]").arg(i));
-        sw->setPos(50 + i * 60, 100);
-        address_inputs.append(sw);
-    }
-
-    // Create clock input
-    InputSwitch *clk = new InputSwitch();
-    builder.add(clk);
-    clk->setLabel("Clock");
-    clk->setPos(550, 100);
-
-    // Load the instruction memory interface IC
-    IC *imem = loadBuildingBlockIC("level7_instruction_memory_interface.panda");
-    builder.add(imem);
-
-    // Create output LEDs for instruction (8-bit)
-    QVector<Led *> instr_leds;
-    for (int i = 0; i < 8; i++) {
-        Led *led = new Led();
-        builder.add(led);
-        led->setLabel(QString("Instruction[%1]").arg(i));
-        led->setPos(50 + i * 60, 200);
-        instr_leds.append(led);
-    }
-
-    // Connect all address inputs to instruction memory interface
-    for (int i = 0; i < 8; i++) {
-        builder.connect(address_inputs[i], 0, imem, QString("Address[%1]").arg(i));
-    }
-
-    // Connect clock
-    builder.connect(clk, 0, imem, "Clock");
-
-    // Connect outputs to LEDs
-    for (int i = 0; i < 8; i++) {
-        builder.connect(imem, QString("Instruction[%1]").arg(i), instr_leds[i], 0);
-    }
-
-    Simulation *sim = builder.initSimulation();
-    sim->update();
-
-    // Set address
-    setMultiBitInput(address_inputs, address);
-    sim->update();
-
-    // Read instruction output
-    int instruction = readMultiBitOutput(QVector<GraphicElement *>(instr_leds.begin(), instr_leds.end()), 0);
-
-    // Verify instruction matches expected
-    QCOMPARE(instruction, expectedInstruction);
+    // DataIn/WriteEnable stay untouched (default off) — this is a read-only
+    // pass over freshly-reset (uninitialized) memory.
+    QCOMPARE(f.readAt(address), expectedInstruction);
 }
 
 // The read-only test above only sees uninitialized memory (all 0x00) and never
@@ -118,76 +140,20 @@ void TestLevel7InstructionMemoryInterface::testInstructionMemoryInterface()
 // Address[0..2] reach the 8-word RAM, so addresses repeat modulo 8).
 void TestLevel7InstructionMemoryInterface::testInstructionMemoryWriteRead()
 {
-    auto workspace = std::make_unique<WorkSpace>();
-    CircuitBuilder builder(workspace->scene());
-
-    QVector<InputSwitch *> address_inputs;
-    QVector<InputSwitch *> data_inputs;
-    for (int i = 0; i < 8; i++) {
-        auto *addr = new InputSwitch();
-        builder.add(addr);
-        address_inputs.append(addr);
-
-        auto *data = new InputSwitch();
-        builder.add(data);
-        data_inputs.append(data);
-    }
-
-    InputSwitch *writeEnable = new InputSwitch();
-    builder.add(writeEnable);
-
-    InputSwitch *clk = new InputSwitch();
-    builder.add(clk);
-
-    IC *imem = loadBuildingBlockIC("level7_instruction_memory_interface.panda");
-    builder.add(imem);
-
-    QVector<Led *> instr_leds;
-    for (int i = 0; i < 8; i++) {
-        auto *led = new Led();
-        builder.add(led);
-        instr_leds.append(led);
-    }
-
-    for (int i = 0; i < 8; i++) {
-        builder.connect(address_inputs[i], 0, imem, QString("Address[%1]").arg(i));
-        builder.connect(data_inputs[i], 0, imem, QString("DataIn[%1]").arg(i));
-        builder.connect(imem, QString("Instruction[%1]").arg(i), instr_leds[i], 0);
-    }
-    builder.connect(writeEnable, 0, imem, "WriteEnable");
-    builder.connect(clk, 0, imem, "Clock");
-
-    Simulation *sim = builder.initSimulation();
-    sim->update();
-
-    auto readAt = [&](int address) {
-        setMultiBitInput(address_inputs, address);
-        sim->update();
-        return readMultiBitOutput(QVector<GraphicElement *>(instr_leds.begin(), instr_leds.end()), 0);
-    };
-
-    auto writeWord = [&](int address, int value) {
-        setMultiBitInput(address_inputs, address);
-        setMultiBitInput(data_inputs, value);
-        writeEnable->setOn(true);
-        sim->update();
-        clockCycle(sim, clk);
-        writeEnable->setOn(false);
-        sim->update();
-    };
+    auto &f = *s_level7InstrMemInterface;
 
     // Program two distinct words at two distinct low addresses
-    writeWord(0x02, 0xAB);
-    writeWord(0x05, 0xCD);
+    f.writeWord(0x02, 0xAB);
+    f.writeWord(0x05, 0xCD);
 
     // Each reads back independently — proving the write port stores and the
     // async read returns the addressed word
-    QCOMPARE(readAt(0x02), 0xAB);
-    QCOMPARE(readAt(0x05), 0xCD);
+    QCOMPARE(f.readAt(0x02), 0xAB);
+    QCOMPARE(f.readAt(0x05), 0xCD);
 
     // Partial decode: Address[3..7] are ignored, so 0x0A (= 0x02 + 8) aliases
     // the word written at 0x02
-    QCOMPARE(readAt(0x0A), 0xAB);
+    QCOMPARE(f.readAt(0x0A), 0xAB);
 }
 
 void TestLevel7InstructionMemoryInterface::testInstructionMemoryInterfaceStructure()
