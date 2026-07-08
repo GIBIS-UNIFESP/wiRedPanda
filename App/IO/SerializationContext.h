@@ -26,6 +26,8 @@ class Port;
  * - \c version — file-format version read from the stream header.
  * - \c oldPtrToSerialId — maps old pointer IDs (from pre-serialId files) to new
  *   serial IDs for backward compatibility.
+ * - \c trustedRoundTrip — true for in-session snapshots (undo/redo, IC rollback)
+ *   rather than a .panda file; see the field doc below.
  */
 struct SerializationContext {
     QHash<quint64, Port *> &portMap; ///< Accumulated port-pointer map built during deserialization.
@@ -37,4 +39,9 @@ struct SerializationContext {
     int nextLocalId = 1;
     /// Blob registry for resolving embedded IC blobNames during deserialization.
     QMap<QString, QByteArray> *blobRegistry = nullptr;
+    /// True when this context deserializes an in-session snapshot (undo/redo, IC
+    /// rollback) rather than a .panda file: the saved skinName was captured by this
+    /// same running app version and is always authoritative, even when it names a
+    /// built-in (":/...") resource.
+    bool trustedRoundTrip = false;
 };
