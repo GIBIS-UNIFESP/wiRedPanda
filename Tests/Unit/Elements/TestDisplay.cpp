@@ -5,6 +5,7 @@
 
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
+#include "App/IO/SerializationContext.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestDisplay::testDisplay14AllColors()
