@@ -604,12 +604,12 @@ jobs:
       run: |
         cmake --preset sentry-breakpad
         cmake --build --preset sentry-breakpad
-        mkdir -p build-sentry-breakpad/wiredpanda.app/Contents/MacOS
+        # MACOSX_BUNDLE means the build itself already produces
+        # build-sentry-breakpad/wiredpanda.app/Contents/MacOS/wiredpanda; cmake --install
+        # adds Contents/Resources/Examples on top of that (Contents/Frameworks/ and the
+        # Sentry dylib aren't part of install() and stay manual).
+        cmake --install build-sentry-breakpad --prefix "$PWD/build-sentry-breakpad"
         mkdir -p build-sentry-breakpad/wiredpanda.app/Contents/Frameworks
-        mkdir -p build-sentry-breakpad/wiredpanda.app/Contents/Resources
-        # Copy the main executable to the app bundle
-        cp build-sentry-breakpad/wiredpanda build-sentry-breakpad/wiredpanda.app/Contents/MacOS/
-        cp -r Examples build-sentry-breakpad/wiredpanda.app/Contents/Resources/Examples
         # Note: breakpad backend doesn't generate crashpad_handler (in-process crash handling)
         cp thirdparty/sentry/lib/libsentry.dylib build-sentry-breakpad/wiredpanda.app/Contents/Frameworks/
 
@@ -640,10 +640,13 @@ jobs:
         # Ensure executable has proper permissions and is linked correctly
         chmod +x wiredpanda.app/Contents/MacOS/wiredpanda
 
-        # Create Info.plist if missing (helps macdeployqt identify the bundle)
+        # cmake's MACOSX_BUNDLE_INFO_PLIST should always produce this now (see
+        # CMakeLists.txt's if(APPLE) block) - this is a temporary defensive fallback for
+        # the first few real CI runs of the new bundle path, not expected to ever fire.
+        # Remove once proven stable. Kept in sync with App/Resources/macOS/Info.plist.in.
         if [ ! -f "wiredpanda.app/Contents/Info.plist" ]; then
-          echo "Creating missing Info.plist..."
-          cat > wiredpanda.app/Contents/Info.plist << 'INFOPLIST'
+          echo "Warning: Info.plist missing after cmake --install - creating a fallback..."
+          cat > wiredpanda.app/Contents/Info.plist << INFOPLIST
         <?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
         <plist version="1.0">
@@ -651,11 +654,13 @@ jobs:
             <key>CFBundleExecutable</key>
             <string>wiredpanda</string>
             <key>CFBundleIdentifier</key>
-            <string>com.wiredpanda.wiRedPanda</string>
+            <string>io.github.gibis_unifesp.wiRedPanda</string>
             <key>CFBundleName</key>
             <string>wiRedPanda</string>
             <key>CFBundleVersion</key>
-            <string>1.0</string>
+            <string>$VERSION</string>
+            <key>CFBundleShortVersionString</key>
+            <string>$VERSION</string>
             <key>CFBundlePackageType</key>
             <string>APPL</string>
         </dict>

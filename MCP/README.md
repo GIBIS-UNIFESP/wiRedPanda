@@ -45,7 +45,7 @@ if __name__ == "__main__":
 ### 3. Or Use Direct CLI
 
 ```bash
-# Start MCP mode
+# Start MCP mode (on macOS use ./build/wiredpanda.app/Contents/MacOS/wiredpanda instead)
 ./build/wiredpanda --mcp
 
 # Send commands via stdin
@@ -379,7 +379,7 @@ cmake --preset release
 # Build with MCP integration
 cmake --build --preset release
 
-# Verify MCP functionality
+# Verify MCP functionality (on macOS use ./build/wiredpanda.app/Contents/MacOS/wiredpanda instead)
 ./build/wiredpanda --mcp
 
 # Run Python examples
