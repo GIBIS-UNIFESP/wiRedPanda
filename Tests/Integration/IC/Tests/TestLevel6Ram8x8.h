@@ -18,4 +18,6 @@ private slots:
     void testRAM8x8();
 
     void testRAMStructure();
+
+    void testRAMReset();
 };
