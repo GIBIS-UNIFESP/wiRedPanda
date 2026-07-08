@@ -902,7 +902,7 @@ void ElementEditor::audioBox()
     }
 
     const QString filePath = FileDialogs::provider()->getOpenFileName(this, tr("Select any audio"),
-                                                    QString(), tr("Audio (*.mp3 *.mp4 *.wav *.ogg)"));
+                                                    QString(), tr("Audio") + " (*.mp3 *.mp4 *.wav *.ogg)");
 
     if (filePath.isEmpty()) {
         return;

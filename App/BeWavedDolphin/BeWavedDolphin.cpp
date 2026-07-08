@@ -767,8 +767,8 @@ void BewavedDolphin::on_actionSaveAs_triggered()
 
         // List the format that matches the current file first so it is the default selection
         const QString fileFilter = m_currentFile.fileName().endsWith(".csv") ?
-                    tr("CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)")
-                  : tr("Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)");
+                    tr("CSV files") + " (*.csv);;" + tr("Dolphin files") + " (*.dolphin);;" + tr("All supported files") + " (*.dolphin *.csv)"
+                  : tr("Dolphin files") + " (*.dolphin);;" + tr("CSV files") + " (*.csv);;" + tr("All supported files") + " (*.dolphin *.csv)";
 
         const QString initialPath = m_currentFile.fileName().isEmpty()
                                         ? m_host->currentFile().absolutePath()
@@ -841,7 +841,7 @@ void BewavedDolphin::on_actionLoad_triggered()
 
         const QString fileName = FileDialogs::provider()->getOpenFileName(
             this, tr("Open File"), homeDir,
-            tr("All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)"));
+            tr("All supported files") + " (*.dolphin *.csv);;" + tr("Dolphin files") + " (*.dolphin);;" + tr("CSV files") + " (*.csv)");
 
         if (fileName.isEmpty()) {
             return;
@@ -901,7 +901,7 @@ void BewavedDolphin::on_actionExportToPng_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("export", QStringLiteral("Waveform export PNG"));
-        QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files (*.png)")).fileName;
+        QString pngFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to Image"), m_currentFile.absolutePath(), tr("PNG files") + " (*.png)").fileName;
 
         if (pngFile.isEmpty()) {
             return;
@@ -919,7 +919,7 @@ void BewavedDolphin::on_actionExportToPdf_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("export", QStringLiteral("Waveform export PDF"));
-        QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files (*.pdf)")).fileName;
+        QString pdfFile = FileDialogs::provider()->getSaveFileName(this, tr("Export to PDF"), m_currentFile.absolutePath(), tr("PDF files") + " (*.pdf)").fileName;
 
         if (pdfFile.isEmpty()) {
             return;
