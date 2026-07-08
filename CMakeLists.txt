@@ -895,6 +895,7 @@ add_test(NAME TestWorkspaceUnit COMMAND test_wiredpanda TestWorkspaceUnit WORKIN
 add_test(NAME TestApplication COMMAND test_wiredpanda TestApplication WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestArduinoCodeGenUnit COMMAND test_wiredpanda TestArduinoCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCircuitExporter COMMAND test_wiredpanda TestCircuitExporter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCodeGenUtils COMMAND test_wiredpanda TestCodeGenUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestConnection COMMAND test_wiredpanda TestConnection WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestConnectionManager COMMAND test_wiredpanda TestConnectionManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCoreSettings COMMAND test_wiredpanda TestCoreSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
