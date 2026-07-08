@@ -17,6 +17,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
@@ -157,6 +158,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ContextDirProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/MimeTypes.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Priorities.h
@@ -438,6 +440,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestUpdateChecker.cpp
@@ -627,6 +630,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestUpdateChecker.h

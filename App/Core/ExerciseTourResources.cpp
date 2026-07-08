@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-#include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
@@ -15,6 +14,7 @@
 #include <QJsonValue>
 #include <QStandardPaths>
 
+#include "App/Core/InstallRelativePaths.h"
 #include "App/Core/Settings.h"
 
 QVector<ExerciseTourResourceEntry> ExerciseTourResources::scan(const QString &directory)
@@ -92,37 +92,6 @@ QString ExerciseTourResources::managedContentDir(const QString &category)
     return path;
 }
 
-QStringList ExerciseTourResources::installRelativeCandidates(const QString &category)
-{
-    const QString appDir = QCoreApplication::applicationDirPath();
-
-    QStringList candidates = {
-        appDir + QLatin1Char('/') + category,                       // Windows / dev builds
-    };
-#ifdef Q_OS_MACOS
-    candidates << appDir + QStringLiteral("/../Resources/") + category; // macOS app bundle
-#endif
-#ifdef Q_OS_LINUX
-    candidates << qEnvironmentVariable("APPDIR") + QStringLiteral("/usr/share/wiredpanda/") + category; // AppImage
-#endif
-#ifdef Q_OS_WASM
-    candidates << QStringLiteral("/") + category;                   // WASM virtual filesystem
-#endif
-    candidates << category;                                          // CWD fallback (development)
-
-    return candidates;
-}
-
-QString ExerciseTourResources::installRelativeContentDir(const QString &category)
-{
-    for (const QString &candidate : installRelativeCandidates(category)) {
-        if (!candidate.isEmpty() && QDir(candidate).exists()) {
-            return candidate;
-        }
-    }
-    return {};
-}
-
 QString ExerciseTourResources::documentsFallbackDir(const QString &category)
 {
     return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QStringLiteral("/wiRedPanda/") + category;
@@ -150,7 +119,7 @@ QString ExerciseTourResources::resolveWritableDir(const QStringList &candidates,
 
 QString ExerciseTourResources::preferredContentDir(const QString &category)
 {
-    return resolveWritableDir(installRelativeCandidates(category), documentsFallbackDir(category));
+    return resolveWritableDir(InstallRelativePaths::candidates(category), documentsFallbackDir(category));
 }
 
 QVector<ExerciseTourResourceEntry> ExerciseTourResources::discover(const QString &category)
@@ -159,7 +128,7 @@ QVector<ExerciseTourResourceEntry> ExerciseTourResources::discover(const QString
 
     entries = mergeUnique(entries, scan(managedContentDir(category)));
 
-    const QString installDir = installRelativeContentDir(category);
+    const QString installDir = InstallRelativePaths::resolve(category);
     if (!installDir.isEmpty()) {
         entries = mergeUnique(entries, scan(installDir));
     }

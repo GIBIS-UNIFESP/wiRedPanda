@@ -125,6 +125,7 @@
 // unit/core
 #include "Tests/Unit/Core/TestApplication.h"
 #include "Tests/Unit/Core/TestExerciseTourResources.h"
+#include "Tests/Unit/Core/TestInstallRelativePaths.h"
 #include "Tests/Unit/Core/TestNotifyCatch.h"
 #include "Tests/Unit/Core/TestSettings.h"
 #include "Tests/Unit/Core/TestUpdateChecker.h"
@@ -320,6 +321,7 @@ int main(int argc, char **argv)
         {"TestThemeManager", []() -> QObject * { return new TestThemeManager; }},
         {"TestCoreSettings", []() -> QObject * { return new TestCoreSettings; }},
         {"TestExerciseTourResources", []() -> QObject * { return new TestExerciseTourResources; }},
+        {"TestInstallRelativePaths", []() -> QObject * { return new TestInstallRelativePaths; }},
         {"TestExerciseEngine", []() -> QObject * { return new TestExerciseEngine; }},
         {"TestUpdateChecker", []() -> QObject * { return new TestUpdateChecker; }},
         {"TestApplication", []() -> QObject * { return new TestApplication; }},
