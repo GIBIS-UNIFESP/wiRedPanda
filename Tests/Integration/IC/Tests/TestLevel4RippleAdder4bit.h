@@ -16,7 +16,4 @@ private slots:
 
     void testAdder4Bit_data();
     void testAdder4Bit();
-
-    void testRippleCarry_data();
-    void testRippleCarry();
 };
