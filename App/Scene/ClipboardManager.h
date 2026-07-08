@@ -14,7 +14,10 @@
 #include <QVersionNumber>
 
 class QGraphicsItem;
+class QImage;
 class QMimeData;
+class QRectF;
+class QTransform;
 class Scene;
 
 /**
@@ -51,6 +54,20 @@ public:
 
     /// Initiates a clone-drag (Ctrl+drag) of the current selection.
     void cloneDrag(const QPointF &mousePos);
+
+    /// Maximum width/height (in device pixels) buildDragImage() will allocate. A drag ghost is
+    /// a transient visual aid, not saved output, so a modest cap is enough — selection extent
+    /// beyond this is scaled down to fit rather than sized proportionally.
+    static constexpr int kMaxDragImageDimension = 1024;
+
+    /**
+     * \brief Renders \a sourceRect of \a scene, mapped through \a viewTransform, into a
+     * transparent-filled QImage bounded by kMaxDragImageDimension.
+     * \details \a sourceRect is a union of selected elements' scene bounding rects — unbounded
+     * magnitude, since position validation on load only rejects non-finite coordinates, never
+     * bounds them. Scaled down to fit rather than allocated proportionally. Exposed for testing.
+     */
+    static QImage buildDragImage(Scene *scene, const QTransform &viewTransform, const QRectF &sourceRect);
 
 private:
     /// Serializes \a items into \a stream (centroid + element data).

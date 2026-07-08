@@ -91,4 +91,5 @@ private slots:
 
     // Regression: F4 — paste gate must accept every format paste() reads
     void testClipboardCanPasteMatchesPasteFormats();
+    void testBuildDragImageClampsExtremeSelectionExtent();
 };

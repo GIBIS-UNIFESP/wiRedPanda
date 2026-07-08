@@ -186,6 +186,31 @@ bool ClipboardManager::canPaste(const QMimeData *mimeData)
            && (mimeData->hasFormat(MimeType::Clipboard) || mimeData->hasFormat(MimeType::ClipboardLegacy));
 }
 
+QImage ClipboardManager::buildDragImage(Scene *scene, const QTransform &viewTransform, const QRectF &sourceRect)
+{
+    QSize mappedSize = viewTransform.mapRect(sourceRect).size().toSize();
+
+    // Cap the ghost image at a sane maximum dimension. sourceRect derives from selected
+    // elements' scene positions (a crafted/corrupted file, or a large paste offset, can place
+    // one at an extreme-but-finite coordinate — the same gap CircuitExporter::renderToImage
+    // hit), so mappedSize would otherwise be sized proportionally to that distance. Scale down
+    // to fit instead of failing outright; the ghost is a transient visual aid, not saved output.
+    if (mappedSize.width() > kMaxDragImageDimension || mappedSize.height() > kMaxDragImageDimension) {
+        mappedSize.scale(kMaxDragImageDimension, kMaxDragImageDimension, Qt::KeepAspectRatio);
+    }
+
+    QImage image(mappedSize, QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+
+    QPainter painter(&image);
+    // Opacity 0 makes the ghost transparent; the drag cursor shape still appears
+    painter.setOpacity(0.0);
+    scene->render(&painter, QRectF(QPointF(), mappedSize), sourceRect);
+    painter.end();
+
+    return image;
+}
+
 void ClipboardManager::cloneDrag(const QPointF &mousePos)
 {
     auto *view = m_scene->view();
@@ -217,16 +242,7 @@ void ClipboardManager::cloneDrag(const QPointF &mousePos)
     // 8px padding avoids clipping port handles at the bounding-rect edges
     rect = rect.adjusted(-8, -8, 8, 8);
 
-    auto mappedSize = view->transform().mapRect(rect).size().toSize();
-    QImage image(mappedSize, QImage::Format_ARGB32_Premultiplied);
-    image.fill(Qt::transparent);
-
-    QPainter painter(&image);
-    // Opacity 0 makes the ghost transparent; the drag cursor shape still appears
-    painter.setOpacity(0.0);
-    QRectF target = image.rect();
-    QRectF source = rect;
-    m_scene->render(&painter, target, source);
+    const QImage image = buildDragImage(m_scene, view->transform(), rect);
 
     // Restore hidden items before the drag begins so the scene looks normal
     for (auto *item : items) {
