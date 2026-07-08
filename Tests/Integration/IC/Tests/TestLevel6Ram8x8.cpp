@@ -25,6 +25,7 @@ struct Ram8x8Fixture {
     QVector<InputSwitch *> dataInInputs;
     InputSwitch *we = nullptr;
     InputSwitch *clk = nullptr;
+    InputSwitch *reset = nullptr;
     QVector<Led *> dataOutOutputs;
     Simulation *sim = nullptr;
 
@@ -58,6 +59,10 @@ struct Ram8x8Fixture {
         builder.add(clk);
         clk->setLabel("Clock");
 
+        reset = new InputSwitch();
+        builder.add(reset);
+        reset->setLabel("Reset");
+
         for (int i = 0; i < 8; i++) {
             auto *led = new Led();
             builder.add(led);
@@ -73,6 +78,7 @@ struct Ram8x8Fixture {
         }
         builder.connect(we, 0, ic, "WriteEnable");
         builder.connect(clk, 0, ic, "Clock");
+        builder.connect(reset, 0, ic, "Reset");
 
         for (int i = 0; i < 8; i++) {
             builder.connect(ic, QString("DataOut[%1]").arg(i), dataOutOutputs[i], 0);
@@ -165,4 +171,32 @@ void TestLevel6RAM8X8::testRAMStructure()
 
     QCOMPARE(f.ic->inputSize(), 14);
     QCOMPARE(f.ic->outputSize(), 8);
+}
+
+// Reset (F54) is fanned out to every ram_8x1 column's own async clear, but no
+// test in this file ever asserted it — only level8_memory_stage's Reset test
+// exercises it, two IC layers away. Verify it directly: a written word must
+// clear when Reset is asserted.
+void TestLevel6RAM8X8::testRAMReset()
+{
+    auto &f = *s_level6Ram8x8;
+
+    setMultiBitInput(f.addressInputs, 0x03);
+    setMultiBitInput(f.dataInInputs, 0x5A);
+    f.we->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.we->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x5A);
+
+    // Assert Reset: the stored word clears asynchronously (no clock needed)
+    f.reset->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x00);
+
+    // Release Reset: memory stays cleared
+    f.reset->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x00);
 }
