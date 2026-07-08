@@ -293,6 +293,9 @@ public:
      */
     virtual QList<std::pair<int, QString>> appearanceStates() const;
 
+    /// Returns a small preview pixmap for the appearance at \a index (see appearanceStates()).
+    QPixmap appearancePreviewPixmap(const int index, const QSize &size) const;
+
     /// Loads and applies the pixmap located at \a pixmapPath.
     void setPixmap(const QString &pixmapPath);
 

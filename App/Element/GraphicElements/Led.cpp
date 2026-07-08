@@ -237,6 +237,16 @@ QList<std::pair<int, QString>> Led::appearanceStates() const
 {
     QList<std::pair<int, QString>> states;
 
+    // Builds "Port 1=0, Port 2=1, ..." from the bits of `code` (bit 0 = port 1, matching
+    // colorIndex()'s bit ordering and the "1"/"2"/... port names set in updatePortsProperties()).
+    auto portStateLabel = [](const int numPorts, const int code) {
+        QStringList parts;
+        for (int port = 0; port < numPorts; ++port) {
+            parts << tr("Port %1=%2").arg(port + 1).arg((code >> port) & 1);
+        }
+        return parts.join(QStringLiteral(", "));
+    };
+
     switch (inputSize()) {
     case 1:
         states.append({m_colorIndex, tr("Off")});
@@ -244,21 +254,21 @@ QList<std::pair<int, QString>> Led::appearanceStates() const
         break;
 
     case 2:
-        states.append({18, tr("00 (off)")});
-        states.append({19, QStringLiteral("01")});
-        states.append({20, QStringLiteral("10")});
-        states.append({25, QStringLiteral("11")});
+        for (int i = 0; i < 4; ++i) {
+            const int listIndex = (i == 3) ? 25 : 18 + i; // preserves colorIndex()'s special-case mapping
+            states.append({listIndex, portStateLabel(2, i)});
+        }
         break;
 
     case 3:
         for (int i = 0; i < 8; ++i) {
-            states.append({18 + i, QString("%1").arg(i, 3, 2, QLatin1Char('0'))});
+            states.append({18 + i, portStateLabel(3, i)});
         }
         break;
 
     case 4:
         for (int i = 0; i < 16; ++i) {
-            states.append({10 + i, QString("%1").arg(i, 4, 2, QLatin1Char('0'))});
+            states.append({10 + i, portStateLabel(4, i)});
         }
         break;
 

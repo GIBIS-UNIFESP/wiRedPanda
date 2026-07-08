@@ -258,6 +258,21 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     m_currentPixmapPath = pixmapPath;
 }
 
+QPixmap ElementAppearance::previewPixmapAt(const int index, const QSize &size) const
+{
+    if (index < 0 || index >= m_alternativeAppearances.size()) {
+        return {};
+    }
+
+    // m_alternativeAppearances is always seeded to match m_defaultAppearances and only diverges
+    // per-slot via setAlternativeAppearanceAt(), so it's already "the currently active path for
+    // that slot" — no need to branch on the (element-wide) m_usingDefaultAppearance flag here.
+    QPixmap pixmap;
+    pixmap.load(m_alternativeAppearances.at(index));
+
+    return pixmap.isNull() ? pixmap : pixmap.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+}
+
 void ElementAppearance::setRenderPixmap(const QPixmap &pixmap)
 {
     // See the identical call in setPixmap(): this pixmap's dimensions feed boundingRect().

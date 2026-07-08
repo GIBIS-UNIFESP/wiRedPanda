@@ -251,6 +251,11 @@ QList<std::pair<int, QString>> GraphicElement::appearanceStates() const
     return {{0, tr("Default")}};
 }
 
+QPixmap GraphicElement::appearancePreviewPixmap(const int index, const QSize &size) const
+{
+    return m_appearance.previewPixmapAt(index, size);
+}
+
 void GraphicElement::updatePortsProperties()
 {
     qCDebug(five) << "Updating port positions that belong to the IC.";
