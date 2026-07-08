@@ -108,10 +108,18 @@ private slots:
     void onFileChanged(const QString &filePath);
 
 private:
+    /// Maximum recursion depth for makeBlobSelfContained()'s dependency walk. Cycle detection via
+    /// its \c visited set alone doesn't bound a long, non-cyclic chain of distinct legitimate
+    /// files (A embeds B embeds C embeds ..., no repeats) — mirrors ICLoader's
+    /// kMaxICNestingDepth, which exists for the identical failure mode on the file-load path.
+    static constexpr int kMaxBlobNestingDepth = 16;
+
     /// Recursively inlines all IC dependencies of blob \a name so it has no external file references.
     /// Uses \a blobs as working storage instead of m_blobs to avoid corrupting state on failure.
+    /// \a depth counts recursion levels from the initial call (0) and throws once it would exceed
+    /// kMaxBlobNestingDepth, so a long chain of distinct dependency files can't exhaust the stack.
     void makeBlobSelfContained(const QString &name, QSet<QString> &visited,
-                               QMap<QString, QByteArray> &blobs);
+                               QMap<QString, QByteArray> &blobs, int depth = 0);
 
     /// Renames a nested blob reference from \a oldName to \a newName inside \a blobData's metadata.
     static void renameBlobReference(QByteArray &blobData, const QString &oldName, const QString &newName);

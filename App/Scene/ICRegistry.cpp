@@ -334,8 +334,13 @@ void ICRegistry::reloadTargetsAtomically(const QList<GraphicElement *> &targets,
 }
 
 void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visited,
-                                       QMap<QString, QByteArray> &blobs)
+                                       QMap<QString, QByteArray> &blobs, int depth)
 {
+    if (depth >= kMaxBlobNestingDepth) {
+        throw PANDACEPTION("Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving '%2'",
+                           QString::number(kMaxBlobNestingDepth), name);
+    }
+
     if (visited.contains(name)) {
         qCWarning(zero) << "Circular blob reference detected:" << name << "— skipping.";
         return;
@@ -358,7 +363,7 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
     for (auto it = embeddedICs.begin(); it != embeddedICs.end(); ++it) {
         const QString &depName = it.key();
         blobs[depName] = it.value();
-        makeBlobSelfContained(depName, visited, blobs);
+        makeBlobSelfContained(depName, visited, blobs, depth + 1);
         it.value() = blobs[depName];
     }
 
@@ -391,7 +396,7 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
 
             // Recursively make the dep self-contained before embedding
             blobs[baseName] = fileBytes;
-            makeBlobSelfContained(baseName, visited, blobs);
+            makeBlobSelfContained(baseName, visited, blobs, depth + 1);
             embeddedICs[baseName] = blobs[baseName];
         }
 

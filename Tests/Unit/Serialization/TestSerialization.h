@@ -93,6 +93,9 @@ private slots:
     void testCopyPandaFileCopiesFileBackedDependency();     // a real fileBackedICs entry is also copied
     // Regression: D16 — circular fileBackedICs metadata must not infinite-recurse
     void testCopyPandaFileTerminatesOnCircularMetadata();
+    // Regression: a long, non-cyclic chain of distinct fileBackedICs dependencies must be
+    // rejected past a fixed nesting depth, not recurse until the call stack is exhausted.
+    void testCopyPandaFileRejectsDeepDependencyChain();
 
     // libFuzzer regression fixtures (Tests/Fuzz/regressions/) — malformed
     // .panda inputs that must throw cleanly under ASan, never crash.
