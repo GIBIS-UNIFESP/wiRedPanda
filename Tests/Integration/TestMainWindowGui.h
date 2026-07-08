@@ -49,6 +49,7 @@ private slots:
     // --- Element manipulation via keyboard ---
 
     void testDeleteViaKeyboard();
+    void testDeleteViaKeyboardSurvivesMistranslatedShortcut();
     void testCopyPasteViaKeyboard();
     void testCutPasteViaKeyboard();
     void testUndoRedoViaKeyboard();
