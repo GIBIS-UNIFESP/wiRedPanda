@@ -6,6 +6,11 @@ name: Deploy
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build (e.g. 5.1.3) — for manual dry-runs only'
+        required: true
 
 jobs:
   build:
@@ -72,7 +77,12 @@ jobs:
         fetch-depth: 0
 
     - name: Extract Version
-      run: echo "VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')" >> $GITHUB_ENV
+      run: |
+        if [ -n "${{ github.event.inputs.version }}" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+        else
+          echo "VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')" >> $GITHUB_ENV
+        fi
       shell: bash
 
     - name: Install Sentry CLI
@@ -411,7 +421,7 @@ jobs:
         echo "Ubuntu release artifacts validated successfully"
 
     - name: Upload Ubuntu Debug Symbols to Sentry
-      if: runner.os == 'Linux'
+      if: runner.os == 'Linux' && github.event_name == 'release'
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
@@ -424,7 +434,7 @@ jobs:
 
     - name: Publish Ubuntu
       uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
-      if: runner.os == 'Linux'
+      if: runner.os == 'Linux' && github.event_name == 'release'
       with:
         fail_on_unmatched_files: true
         files: '*.AppImage'
@@ -572,7 +582,7 @@ jobs:
         Write-Output "Windows release artifacts validated successfully"
 
     - name: Upload Windows Debug Symbols to Sentry
-      if: runner.os == 'Windows'
+      if: runner.os == 'Windows' && github.event_name == 'release'
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
@@ -583,7 +593,7 @@ jobs:
         ./sentry-cli.exe releases set-commits --auto wiredpanda@$env:VERSION --log-level=debug
 
     - name: Publish Windows
-      if: runner.os == 'Windows'
+      if: runner.os == 'Windows' && github.event_name == 'release'
       uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
       with:
         fail_on_unmatched_files: true
@@ -864,7 +874,7 @@ jobs:
         echo "macOS release artifacts validated successfully"
 
     - name: Upload macOS Debug Symbols to Sentry
-      if: runner.os == 'macOS'
+      if: runner.os == 'macOS' && github.event_name == 'release'
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
@@ -875,7 +885,7 @@ jobs:
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish macOS
-      if: runner.os == 'macOS'
+      if: runner.os == 'macOS' && github.event_name == 'release'
       uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
       with:
         fail_on_unmatched_files: true
