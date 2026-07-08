@@ -10,6 +10,7 @@
 #include <QMimeData>
 
 #include "App/BeWavedDolphin/SignalModel.h"
+#include "App/Core/Common.h"
 #include "App/IO/Serialization.h"
 
 namespace {
@@ -71,7 +72,20 @@ void paste(SignalModel &model, const QItemSelection &ranges, QDataStream &stream
     const int anchorRow = firstRow(model, ranges);
     quint64 itemListSize; stream >> itemListSize;
 
-    for (int i = 0; i < static_cast<int>(itemListSize); ++i) {
+    // The clipboard is not a trusted source (any process can set MIME data ahead of a
+    // Ctrl+V) — bound the announced item count by what the stream can actually hold
+    // before looping, the same way DolphinSerializer::loadBinary bounds its row count,
+    // so a crafted/corrupt payload can't spin this loop for eons instead of failing fast.
+    constexpr qint64 kBytesPerItem = 3 * static_cast<qint64>(sizeof(quint64));
+    const qint64 available = stream.device() ? stream.device()->bytesAvailable() : 0;
+    const quint64 maxItems = available > 0 ? static_cast<quint64>(available / kBytesPerItem) : 0;
+    if (itemListSize > maxItems) {
+        qCWarning(zero) << "DolphinClipboard: truncating paste from" << itemListSize
+                         << "items to" << maxItems << "(insufficient stream data)";
+        itemListSize = maxItems;
+    }
+
+    for (quint64 i = 0; i < itemListSize; ++i) {
         quint64 row;   stream >> row;
         quint64 col;   stream >> col;
         quint64 value; stream >> value;
