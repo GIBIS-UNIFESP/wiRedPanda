@@ -3,6 +3,8 @@
 
 #include "App/Element/GraphicElements/Buzzer.h"
 
+#include <cmath>
+
 #include <QAudioSink>
 
 #include "App/Element/ElementFactory.h"
@@ -69,6 +71,15 @@ double Buzzer::frequency() const
 
 void Buzzer::setFrequency(double freq)
 {
+    // A .panda file (or any other caller) can supply a non-finite or non-positive value;
+    // ToneGenerator::readData() casts a NaN-derived sample to qint16, which is undefined
+    // behaviour, and a non-positive frequency has no physical meaning for a buzzer. Reject
+    // it here — the one setter every caller (file load, GUI, MCP, undo/redo) goes through —
+    // mirroring Clock::setFrequency()'s identical guard for the same untrusted-value class.
+    if (!std::isfinite(freq) || freq <= 0.0) {
+        return;
+    }
+
     m_frequency = freq;
 
     if (!m_hasOutputDevice) {
