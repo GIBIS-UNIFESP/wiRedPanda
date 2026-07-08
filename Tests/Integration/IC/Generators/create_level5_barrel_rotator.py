@@ -30,7 +30,7 @@ from ic_builder_helpers import BarrelShiftBuilder
 
 async def build(mcp) -> bool:
     """Entry point for the builder"""
-    return await BarrelShiftBuilder(mcp, is_rotator=True).create()
+    return await BarrelShiftBuilder(mcp, is_rotator=True, bus_mux_name="level4_bus_mux_4bit").create()
 
 
 if __name__ == "__main__":
