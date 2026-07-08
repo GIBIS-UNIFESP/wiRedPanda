@@ -110,6 +110,13 @@ private slots:
     void testFuzzRegressionNonFinitePosition();         // ic_nonfinite_position (fuzz_ic_file)
     void testFuzzRegressionNonFiniteRotation();         // ic_nonfinite_rotation (fuzz_ic_file)
 
+    // Regression: GraphicElementSerializer::loadTrigger() (old-format, version 1.9-4.0)
+    // used raw, unbounded QKeySequence deserialization instead of the bounded reader
+    // already used by the new-format path.
+    void testReadBoundedKeySequenceRoundTrip();
+    void testReadBoundedKeySequenceAcceptsMaxFourKeys();
+    void testReadBoundedKeySequenceRejectsImplausibleCount();
+
 private:
     // Helper methods
     QByteArray saveToMemory(WorkSpace &workspace);

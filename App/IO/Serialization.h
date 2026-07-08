@@ -9,6 +9,7 @@
 
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QKeySequence>
 #include <QMap>
 #include <QSet>
 #include <QString>
@@ -87,6 +88,14 @@ public:
      *        remain in the stream (prevents OOM on fuzz-controlled length fields).
      */
     static QString readBoundedString(QDataStream &stream);
+
+    /**
+     * \brief Reads a QKeySequence from \a stream, rejecting an implausible/oversized
+     *        internal key-combination count before QDataStream's default QKeySequence
+     *        deserialization would reserve() it (a QKeySequence holds at most 4 key
+     *        combinations, so a larger count can only be a corrupt/crafted stream).
+     */
+    static QKeySequence readBoundedKeySequence(QDataStream &stream);
 
     /**
      * \brief Reads a \c QMap<QString,QByteArray> from \a stream with bounds checking.
