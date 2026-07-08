@@ -295,7 +295,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
             auto *ic = qobject_cast<IC *>(elm);
             if (!ic) continue;
 
-            m_stream << "// IC: " << ic->label() << Qt::endl;
+            m_stream << "// IC: " << CodeGenUtils::sanitizeComment(ic->label()) << Qt::endl;
 
             // Include the full ancestor path (icPrefix) so names stay globally
             // unique across repeated/nested sub-IC instances (register files, RAM,
@@ -340,7 +340,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                 }
             }
 
-            m_stream << "// End IC: " << ic->label() << Qt::endl;
+            m_stream << "// End IC: " << CodeGenUtils::sanitizeComment(ic->label()) << Qt::endl;
             continue;
         }
 
@@ -671,7 +671,7 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
             auto *ic = qobject_cast<IC *>(elm);
             if (!ic) continue;
 
-            m_stream << "    // IC: " << ic->label() << Qt::endl;
+            m_stream << "    // IC: " << CodeGenUtils::sanitizeComment(ic->label()) << Qt::endl;
 
             for (int i = 0; i < ic->inputSize(); ++i) {
                 Port *externalPort = ic->inputPort(i);
@@ -712,7 +712,7 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
                 m_stream << "    " << externalVar << " = " << internalValue << ";" << Qt::endl;
             }
 
-            m_stream << "    // End IC: " << ic->label() << Qt::endl;
+            m_stream << "    // End IC: " << CodeGenUtils::sanitizeComment(ic->label()) << Qt::endl;
             continue;
         }
 

@@ -143,6 +143,7 @@ private slots:
     void testWirelessNodeGeneration();
     void testWirelessOrphanedRxCodegen();
     void testEmbeddedICGeneration();
+    void testEmbeddedICLabelWithNewlineDoesNotInjectCode();
     void testMuxDemuxIntegration();
 
     void testMultipleClocksInCircuit();

@@ -1787,6 +1787,49 @@ void TestArduino::testEmbeddedICGeneration()
              "Generated code must contain computeLogic()");
 }
 
+void TestArduino::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
+{
+    // Regression: an IC's label was written raw into a "// IC: <label>" comment. A label
+    // containing an embedded newline (settable via a crafted .panda file's label field, or
+    // MCP's create_element/set_element_properties "label" param — neither restricts content
+    // beyond length) could break out of the comment and inject a real line of Arduino code.
+    std::unique_ptr<WorkSpace> ws = TestUtils::createWorkspace();
+
+    const QString fixtureDir = QString(QUOTE(CURRENTDIR)) + "/../Tests/Integration/IC/Components/";
+    ws->scene()->setContextDir(fixtureDir);
+    auto *reg = ws->scene()->icRegistry();
+
+    auto *ic = new IC();
+    auto *sw1 = new InputSwitch();
+    auto *sw2 = new InputSwitch();
+    auto *led = new Led();
+
+    CircuitBuilder builder(ws->scene());
+    builder.add(sw1, sw2, ic, led);
+
+    const QByteArray pandaBytes = ICTestHelpers::readFile(fixtureDir + "level2_half_adder.panda");
+    QVERIFY2(!pandaBytes.isEmpty(), "Fixture file level2_half_adder.panda must exist");
+    ICTestHelpers::embedIC(ic, pandaBytes, "embedded_adder", fixtureDir, reg);
+
+    ic->setLabel("Evil\nvoid injected() { /* pwned */ }");
+
+    builder.connect(sw1, 0, ic, 0);
+    builder.connect(sw2, 0, ic, 1);
+    builder.connect(ic, 0, led, 0);
+    builder.initSimulation();
+
+    QVector<GraphicElement *> allElements;
+    for (auto *item : ws->scene()->items()) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item))
+            allElements.append(elm);
+    }
+
+    auto code = generateFromElements(allElements);
+    QVERIFY2(code.success, "Embedded IC Arduino generation should succeed");
+    QVERIFY2(!code.content.contains("\nvoid injected()"),
+             "Label newline must not inject a bare line of code into the generated sketch");
+}
+
 void TestArduino::testMuxDemuxIntegration()
 {
     // Test Mux element generates correct if/else select logic

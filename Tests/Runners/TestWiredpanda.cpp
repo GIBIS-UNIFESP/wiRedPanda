@@ -115,6 +115,7 @@
 #include "Tests/System/TestWaveform.h"
 // unit/codegen
 #include "Tests/Unit/CodeGen/TestArduinoCodeGenUnit.h"
+#include "Tests/Unit/CodeGen/TestCodeGenUtils.h"
 #include "Tests/Unit/CodeGen/TestSystemVerilogCodeGenUnit.h"
 // unit/commands
 #include "Tests/Unit/Commands/TestCommands.h"
@@ -320,6 +321,7 @@ int main(int argc, char **argv)
         {"TestWaveform", []() -> QObject * { return new TestWaveform; }},
         {"TestBewavedDolphinGui", []() -> QObject * { return new TestBewavedDolphinGui; }},
         {"TestArduinoCodeGenUnit", []() -> QObject * { return new TestArduinoCodeGenUnit; }},
+        {"TestCodeGenUtils", []() -> QObject * { return new TestCodeGenUtils; }},
         {"TestSystemVerilogCodeGenUnit", []() -> QObject * { return new TestSystemVerilogCodeGenUnit; }},
         {"TestCommands", []() -> QObject * { return new TestCommands; }},
         {"TestCommon", []() -> QObject * { return new TestCommon; }},

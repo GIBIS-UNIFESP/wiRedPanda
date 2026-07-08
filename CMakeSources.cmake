@@ -433,6 +433,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestBewavedDolphinGui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestWaveform.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestArduinoCodeGenUnit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestCodeGenUtils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestSystemVerilogCodeGenUnit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.cpp
@@ -628,6 +629,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestBewavedDolphinGui.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestWaveform.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestArduinoCodeGenUnit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestCodeGenUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestSystemVerilogCodeGenUnit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.h

@@ -16,6 +16,7 @@ private slots:
     // Wireless node codegen
     void testWirelessNodeGeneration();
     void testWirelessOrphanedRxCodegen();
+    void testEmbeddedICLabelWithNewlineDoesNotInjectCode();
 
     // Level 2 - Combinational circuits (all pure gates, no flip-flops)
     void testSystemVerilogExportHalfAdder();

@@ -395,7 +395,7 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
 
     // Emit module header
     const QString source = ic->isEmbedded() ? ic->blobName() : QFileInfo(ic->file()).fileName();
-    m_stream << "// Module for " << ic->label() << " (generated from " << source << ")" << Qt::endl;
+    m_stream << "// Module for " << CodeGenUtils::sanitizeComment(ic->label()) << " (generated from " << source << ")" << Qt::endl;
     m_stream << "module " << info.moduleName << " (" << Qt::endl;
 
     // Emit port list
@@ -648,7 +648,7 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
             QString instanceName = QString("%1_inst_%2").arg(info.moduleName).arg(m_globalCounter++);
             m_instanceNames[ic] = instanceName;
 
-            m_stream << "// IC instance: " << ic->label() << " (" << info.moduleName << ")" << Qt::endl;
+            m_stream << "// IC instance: " << CodeGenUtils::sanitizeComment(ic->label()) << " (" << info.moduleName << ")" << Qt::endl;
 
             // Declare output wires for this IC instance
             for (int i = 0; i < ic->outputSize(); ++i) {

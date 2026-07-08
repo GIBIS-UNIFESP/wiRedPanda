@@ -224,6 +224,70 @@ void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
     QVERIFY2(!content.isEmpty(), "Generated SystemVerilog should not be empty");
 }
 
+void TestSystemVerilogExport::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
+{
+    // Regression: an IC's label was written raw into "// Module for <label>" and
+    // "// IC instance: <label>" comments. A label containing an embedded newline (settable via
+    // a crafted .panda file's label field, or MCP's create_element/set_element_properties
+    // "label" param — neither restricts content beyond length) could break out of the comment
+    // and inject a real line into the generated SystemVerilog file.
+    IC *icRaw = nullptr;
+    try {
+        icRaw = CPUTestUtils::loadBuildingBlockIC("level2_half_adder.panda");
+    } catch (const std::exception &ex) {
+        QFAIL(qPrintable(QString("Failed to load IC: %1").arg(QString::fromStdString(ex.what()))));
+        return;
+    }
+    std::unique_ptr<IC> ic(icRaw);
+    ic->setLabel("Evil\nmodule injected_module; endmodule");
+
+    std::vector<std::unique_ptr<InputSwitch>> switchOwners;
+    std::vector<std::unique_ptr<Led>> ledOwners;
+    std::vector<std::unique_ptr<Connection>> connOwners;
+    QVector<GraphicElement *> elements{ic.get()};
+
+    for (int i = 0; i < ic->inputSize(); ++i) {
+        auto sw = std::make_unique<InputSwitch>();
+        auto conn = std::make_unique<Connection>();
+        conn->setStartPort(sw->outputPort(0));
+        conn->setEndPort(ic->inputPort(i));
+        elements.append(sw.get());
+        connOwners.push_back(std::move(conn));
+        switchOwners.push_back(std::move(sw));
+    }
+
+    for (int i = 0; i < ic->outputSize(); ++i) {
+        auto led = std::make_unique<Led>();
+        auto conn = std::make_unique<Connection>();
+        conn->setStartPort(ic->outputPort(i));
+        conn->setEndPort(led->inputPort(0));
+        elements.append(led.get());
+        connOwners.push_back(std::move(conn));
+        ledOwners.push_back(std::move(led));
+    }
+
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    QString verilogPath = tempDir.filePath("test_ic_label_injection.sv");
+
+    SystemVerilogCodeGen generator(verilogPath, elements);
+    try {
+        generator.generate();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("SystemVerilog generation threw an exception: %1").arg(e.what())));
+    }
+
+    QFile file(verilogPath);
+    QVERIFY2(file.open(QIODevice::ReadOnly | QIODevice::Text),
+             "Generated SystemVerilog file should be readable");
+    const QString content = QString::fromUtf8(file.readAll());
+    file.close();
+
+    QVERIFY2(!content.isEmpty(), "Generated SystemVerilog should not be empty");
+    QVERIFY2(!content.contains("\nmodule injected_module;"),
+             "Label newline must not inject a bare module declaration into the generated file");
+}
+
 bool TestSystemVerilogExport::validateWithIverilog(const QString &verilogFile)
 {
     QProcess process;

@@ -49,4 +49,20 @@ inline QString removeForbiddenChars(const QString &input, const bool stripFirst 
     return result;
 }
 
+/**
+ * \brief Makes \a input safe to embed in a single-line "//" comment.
+ *
+ * Neutralizes embedded line breaks. Without this, a label containing "\n" (settable via a
+ * crafted .panda file's label field, or the MCP create_element/set_element_properties "label"
+ * parameter — neither restricts content beyond length) could break out of the comment and
+ * inject an arbitrary line into the generated Arduino/SystemVerilog file.
+ */
+inline QString sanitizeComment(const QString &input)
+{
+    QString result = input;
+    result.replace(QLatin1Char('\r'), QLatin1Char(' '));
+    result.replace(QLatin1Char('\n'), QLatin1Char(' '));
+    return result;
+}
+
 }  // namespace CodeGenUtils
