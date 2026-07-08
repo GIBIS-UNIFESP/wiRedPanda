@@ -334,6 +334,33 @@ void TestClock::testUpdateClock()
     QVERIFY(clock.isOn());
 }
 
+void TestClock::testUpdateClockLargeBacklogResyncsInsteadOfBursting()
+{
+    // Regression: a large elapsed gap (e.g. the OS suspended the process while the
+    // simulation's QTimer stayed "active") used to be replayed as one toggle per subsequent
+    // updateClock() call until caught up — for a long-enough gap, thousands of rapid toggles.
+    // updateClock() must instead resync immediately, on the very first call after the gap,
+    // exactly like Simulation::start()'s explicit resetClock() already does for the
+    // stop/start case.
+    Clock clock;
+    clock.setFrequency(1.0); // 500ms half-period
+
+    const auto t0 = std::chrono::steady_clock::now();
+    clock.resetClock(t0);
+    QVERIFY(clock.isOn());
+
+    // Simulate a huge backlog: far beyond the resync threshold.
+    const auto hugeGap = t0 + std::chrono::hours(1);
+    clock.updateClock(hugeGap);
+    const bool stateAfterFirstCall = clock.isOn();
+
+    // If updateClock() resynced (the fix), its new internal time reference is now close to
+    // hugeGap, so a second call at the SAME timestamp is a no-op. If it instead single-stepped
+    // (the pre-fix behavior), it would still be far behind hugeGap and would toggle again.
+    clock.updateClock(hugeGap);
+    QCOMPARE(clock.isOn(), stateAfterFirstCall);
+}
+
 // ============================================================================
 // Serialization Tests
 // ============================================================================

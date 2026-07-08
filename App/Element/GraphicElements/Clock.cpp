@@ -69,6 +69,23 @@ void Clock::updateClock(std::chrono::steady_clock::time_point globalTime)
 
     const auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(globalTime - m_startTime);
 
+    // A gap this large means the wall clock jumped far ahead without an intervening
+    // Simulation::stop()/start() cycle (which already resyncs via resetClock() — see its call
+    // site) — e.g. the OS suspended the process while the simulation's QTimer stayed "active".
+    // Left to the single-step path below, replaying the backlog would toggle once per
+    // subsequent 1 ms tick until caught up: for a long gap, a burst of thousands of rapid,
+    // unrealistic toggles feeding into any connected sequential logic. Resync immediately
+    // instead, on this very first tick after the gap, so the burst never starts. The threshold
+    // is a fixed wall-clock duration, not a multiple of m_interval — scaling it to the
+    // half-period would fire this path on entirely ordinary jitter for high-frequency clocks
+    // (e.g. a 100 Hz clock's 5 ms interval means even a benign 20+ ms hiccup would look like a
+    // "large" multiple), which is not the gap this guards against.
+    constexpr auto kMaxCatchUpGap = std::chrono::seconds(5);
+    if (elapsed > kMaxCatchUpGap) {
+        resetClock(globalTime);
+        return;
+    }
+
     // m_interval is the half-period (time per HIGH or LOW phase).
     // Rather than resetting to globalTime we advance by exactly one interval so
     // that accumulated drift doesn't skew the clock frequency over time.
