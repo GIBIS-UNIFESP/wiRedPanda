@@ -163,9 +163,9 @@ QString Display16::color() const
     return m_color;
 }
 
-void Display16::save(QDataStream &stream) const
+void Display16::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
     map.insert("color", color());

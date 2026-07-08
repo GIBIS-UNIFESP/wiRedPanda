@@ -75,9 +75,9 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
-void InputButton::save(QDataStream &stream) const
+void InputButton::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
     map.insert("locked", m_locked);

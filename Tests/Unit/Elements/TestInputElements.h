@@ -42,12 +42,11 @@ private slots:
     // Basic InputSwitch test (migrated from testelements)
     void testInputSwitch();
 
-    // Cross-platform path resolution
-    void testAppearanceWithRelativePath();
+    // Path resolution (mechanics tested directly in Tests/Unit/Core/TestExternalFilePath.cpp;
+    // these confirm InputSwitch/appearance handling itself is wired to it correctly)
     void testAppearanceWithSameOsAbsolutePath();
-    void testAppearanceWithForeignAbsolutePathForwardSlash();
-    void testAppearanceWithForeignAbsolutePathBackslash();
-    void testAppearanceWithForeignAbsolutePathMixedSlashes();
     void testAppearanceWithNonExistentFileFallback();
     void testAppearanceReloadsAfterFileModified();
+    void testLoadResolvesAppearanceBareFilenameAgainstContextDir();
+    void testLoadResolvesAppearanceForeignPathViaBareFilenameFallback();
 };

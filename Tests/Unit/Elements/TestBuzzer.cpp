@@ -189,7 +189,7 @@ void TestBuzzer::testSaveFrequency()
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    buzzer.save(stream);
+    buzzer.save(stream, {.purpose = SerializationPurpose::PortableFile});
 
     QVERIFY(data.size() > 0);
 }
@@ -244,14 +244,14 @@ void TestBuzzer::testLoadVersionNew()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    buzzer1->save(saveStream);
+    buzzer1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Create new buzzer and load with current version
     auto buzzer2 = std::make_unique<Buzzer>();
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, FormatRev::current, {}};
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, {}};
 
     buzzer2->load(loadStream, context);
 

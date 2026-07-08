@@ -111,9 +111,9 @@ void Clock::setOn()
     Clock::setOn(true);
 }
 
-void Clock::save(QDataStream &stream) const
+void Clock::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
     map.insert("frequency", frequency());

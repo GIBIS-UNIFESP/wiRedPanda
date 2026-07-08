@@ -21,6 +21,7 @@ class QDataStream;
 class QPointF;
 class QVersionNumber;
 struct SerializationContext;
+struct SerializationOptions;
 
 /**
  * \class GraphicElementSerializer
@@ -43,7 +44,7 @@ class GraphicElementSerializer
 
 public:
     /// Writes \a element to \a stream (current keyed-QMap format).
-    static void save(const GraphicElement &element, QDataStream &stream);
+    static void save(const GraphicElement &element, QDataStream &stream, SerializationOptions options);
 
     /// Reads \a element from \a stream, dispatching on the format version in \a context.
     static void load(GraphicElement &element, QDataStream &stream, SerializationContext &context);
@@ -75,7 +76,7 @@ private:
     static void removeSurplusOutputs(GraphicElement &element, quint64 outputSize_, SerializationContext &context);
 
     static void loadPixmapAppearanceNames(GraphicElement &element, QDataStream &stream, SerializationContext &context);
-    static void loadPixmapAppearanceName(GraphicElement &element, QDataStream &stream, int index, const QString &contextDir);
+    static void loadPixmapAppearanceName(GraphicElement &element, QDataStream &stream, int index, const SerializationContext &context);
 
     /// Reads a `QList<QMap<QString, QVariant>>` from \a stream, rejecting implausible counts up
     /// front (fuzz-hardening). A member (not a file-local helper) so its load-error throws extract

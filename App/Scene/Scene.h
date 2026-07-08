@@ -35,6 +35,7 @@ class ItemWithId;
 class Connection;
 class QPainter;
 struct SerializationContext;
+enum class SerializationPurpose;
 
 /**
  * \class Scene
@@ -260,7 +261,9 @@ public:
     ICRegistry *icRegistry() { return &m_icRegistry; }
 
     /// Creates a deserialization context with the scene's contextDir and blob registry.
-    SerializationContext deserializationContext(QHash<quint64, Port *> &portMap, const QVersionNumber &version);
+    /// \a purpose has no default -- every caller must state whether this deserializes a
+    /// genuine .panda file or an in-session snapshot; see SerializationPurpose.
+    SerializationContext deserializationContext(QHash<quint64, Port *> &portMap, const QVersionNumber &version, SerializationPurpose purpose);
 
     // --- Autosave ---
 

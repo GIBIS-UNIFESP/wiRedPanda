@@ -13,8 +13,8 @@
  * \class ContextDirProvider
  * \brief Narrow interface exposing a scene's context directory.
  *
- * \details Lets Element-layer code (see GraphicElement::resolveContextDir) resolve
- * an item's context directory without naming the concrete Scene class.
+ * \details Lets Scene::deserializationContext() populate SerializationContext::contextDir
+ * without the Element layer needing to name the concrete Scene class.
  */
 class ContextDirProvider
 {

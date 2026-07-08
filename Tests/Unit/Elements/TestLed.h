@@ -50,5 +50,5 @@ private slots:
     void testSetAppearanceWithAbsolutePathNoContextDir();
     void testSetAppearanceWithNonExistentFileThrows();
     void testSetAppearanceRepeatedFailureThrowsOnce();
-    void testAppearanceSurvivesSaveLoadRoundTripWhenNotColocated();
+    void testSetAppearanceWithoutSavedProjectLoadsPixmap();
 };

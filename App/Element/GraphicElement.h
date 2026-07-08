@@ -25,6 +25,7 @@
 #include "App/Element/PropertyDescriptor.h"
 
 struct SerializationContext;
+struct SerializationOptions;
 
 class GraphicElement;
 class InputPort;
@@ -81,20 +82,16 @@ public:
 
     // --- Serialization ---
 
-    /// Saves the graphic element through a binary data stream.
-    virtual void save(QDataStream &stream) const;
+    /// Saves the graphic element through a binary data stream. \a options has no
+    /// default -- every caller must state whether this builds a genuine .panda file
+    /// or an in-session snapshot; see SerializationPurpose.
+    virtual void save(QDataStream &stream, SerializationOptions options) const;
 
     /**
      * \brief Loads the graphic element through a binary data stream.
      * \param context carries portMap, version, contextDir and optional copy-operation state.
      */
     virtual void load(QDataStream &stream, SerializationContext &context);
-
-    /// Returns the context directory stored during load() for path resolution.
-    QString loadContextDir() const { return m_contextDir; }
-
-    /// Returns the context directory for \a item: from its Scene if available, else the global fallback.
-    static QString resolveContextDir(const QGraphicsItem *item);
 
     // --- Port Management ---
 
@@ -645,12 +642,6 @@ private:
     /// the item and its ports; this element forwards its orientation interface here.
     /// See ElementOrientation.
     ElementOrientation m_orientation{this};
-
-    // --- Members: Context Directory ---
-
-    /// Directory of the .panda file from which this element was loaded.
-    /// Used by resolveContextDir() for elements not yet added to a scene.
-    QString m_contextDir;
 
     // --- Members: Port Size Constraints ---
 

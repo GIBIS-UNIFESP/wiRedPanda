@@ -70,7 +70,7 @@ public:
     void load(QDataStream &stream, SerializationContext &context) override;
 
     /// Serializes the color selection to \a stream.
-    void save(QDataStream &stream) const override;
+    void save(QDataStream &stream, SerializationOptions options) const override;
 
 private:
     // --- Members ---

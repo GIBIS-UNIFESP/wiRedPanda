@@ -79,7 +79,7 @@ void TestWirelessNode::testSaveLoadRoundTrip()
     {
         QDataStream out(&buffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        node->save(out);
+        node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
     auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
@@ -89,7 +89,7 @@ void TestWirelessNode::testSaveLoadRoundTrip()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {.portMap = portMap, .version = Serialization::readPandaHeader(in), .purpose = SerializationPurpose::PortableFile};
         node2->load(in, ctx);
     }
 
@@ -178,7 +178,7 @@ void TestWirelessNode::testSaveLoadRxMode()
     {
         QDataStream out(&buffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        node->save(out);
+        node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
     auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
@@ -188,7 +188,7 @@ void TestWirelessNode::testSaveLoadRxMode()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {.portMap = portMap, .version = Serialization::readPandaHeader(in), .purpose = SerializationPurpose::PortableFile};
         node2->load(in, ctx);
     }
 
@@ -229,7 +229,7 @@ void TestWirelessNode::testSaveLoadNoneMode()
     {
         QDataStream out(&buffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        node->save(out);
+        node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
     auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
@@ -239,7 +239,7 @@ void TestWirelessNode::testSaveLoadNoneMode()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {.portMap = portMap, .version = Serialization::readPandaHeader(in), .purpose = SerializationPurpose::PortableFile};
         node2->load(in, ctx);
     }
 
@@ -374,7 +374,7 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
     {
         QDataStream out(&buffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        node->save(out);
+        node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
     // Patch: replace the wirelessMode value in the trailing QMap.
@@ -387,7 +387,7 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
         auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
         QDataStream out(&corruptBuffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        elm2->save(out);  // saves base GraphicElement + normal Node map (mode=0)
+        elm2->save(out, {.purpose = SerializationPurpose::PortableFile});  // saves base GraphicElement + normal Node map (mode=0)
     }
 
     // Overwrite the trailing map with one that has wirelessMode=99.
@@ -398,7 +398,7 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
         QDataStream out(&finalBuffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
         // Save the GraphicElement base portion
-        baseElm->save(out);
+        baseElm->save(out, {.purpose = SerializationPurpose::PortableFile});
         // Write the Node-specific map with an invalid wirelessMode
         QMap<QString, QVariant> map;
         map.insert("wirelessMode", 99);
@@ -413,7 +413,7 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
     {
         QDataStream in(&finalBuffer, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {.portMap = portMap, .version = Serialization::readPandaHeader(in), .purpose = SerializationPurpose::PortableFile};
         loadNode->load(in, ctx);
     }
 
@@ -431,7 +431,7 @@ void TestWirelessNode::testLoadNegativeWirelessModeClampsToNone()
     {
         QDataStream out(&buffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        baseElm->save(out);
+        baseElm->save(out, {.purpose = SerializationPurpose::PortableFile});
         QMap<QString, QVariant> map;
         map.insert("wirelessMode", -1);
         out << map;
@@ -444,7 +444,7 @@ void TestWirelessNode::testLoadNegativeWirelessModeClampsToNone()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {.portMap = portMap, .version = Serialization::readPandaHeader(in), .purpose = SerializationPurpose::PortableFile};
         loadNode->load(in, ctx);
     }
 
@@ -467,7 +467,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
     {
         QDataStream out(&buffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        node->save(out);
+        node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
     auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
@@ -477,7 +477,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {.portMap = portMap, .version = Serialization::readPandaHeader(in), .purpose = SerializationPurpose::PortableFile};
         node2->load(in, ctx);
     }
 
@@ -500,7 +500,7 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
     {
         QDataStream out(&buffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        node->save(out);
+        node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
     auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
@@ -510,7 +510,7 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, Serialization::readPandaHeader(in)};
+        SerializationContext ctx = {.portMap = portMap, .version = Serialization::readPandaHeader(in), .purpose = SerializationPurpose::PortableFile};
         node2->load(in, ctx);
     }
 

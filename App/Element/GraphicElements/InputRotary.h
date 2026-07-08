@@ -76,7 +76,7 @@ public:
     void load(QDataStream &stream, SerializationContext &context) override;
 
     /// Serializes the current port selection to \a stream.
-    void save(QDataStream &stream) const override;
+    void save(QDataStream &stream, SerializationOptions options) const override;
 
 protected:
     // --- Event handlers ---

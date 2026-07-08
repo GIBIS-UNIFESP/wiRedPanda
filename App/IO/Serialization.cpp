@@ -455,7 +455,7 @@ void Serialization::readDolphinHeader(QDataStream &stream)
     stream.readRawData(raw.data(), static_cast<int>(consumedLen));
 }
 
-void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream)
+void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream, SerializationOptions options)
 {
     // Port serial IDs are computed from the element ID via Port::makeSerialId()
     // (used by both GraphicElementSerializer::save() and ConnectionSerializer::save()).
@@ -506,7 +506,7 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
         if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
             stream << static_cast<int>(GraphicElement::Type);
             stream << element->elementType();
-            element->save(stream);
+            element->save(stream, options);
         }
     }
 

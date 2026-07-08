@@ -27,7 +27,7 @@ void TestICUnit::testICNestedSaveLoad()
     IC ic;
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    ic.save(stream);
+    ic.save(stream, {.purpose = SerializationPurpose::PortableFile});
     QVERIFY(!data.isEmpty());
 }
 

@@ -1033,14 +1033,14 @@ void TestICInline::testBlobNamePreservation()
     QByteArray serialized;
     {
         QDataStream stream(&serialized, QIODevice::WriteOnly);
-        ic->save(stream);
+        ic->save(stream, {.purpose = SerializationPurpose::PortableFile});
     }
 
     std::unique_ptr<IC> ic2(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
         ctx.blobRegistry = &registry;
         ic2->load(stream, ctx);
     }
@@ -1155,7 +1155,7 @@ void TestICInline::testBlobNameRenamePropagation()
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
         for (auto *elm : std::as_const(targets)) {
-            elm->save(stream);
+            elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
         }
     }
 
@@ -1274,14 +1274,14 @@ void TestICInline::testBlobNameSpecialCharacters()
         QByteArray serialized;
         {
             QDataStream stream(&serialized, QIODevice::WriteOnly);
-            ic.save(stream);
+            ic.save(stream, {.purpose = SerializationPurpose::PortableFile});
         }
 
         std::unique_ptr<IC> loaded(new IC());
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
             QHash<quint64, Port *> portMap;
-            SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+            SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
             ctx.blobRegistry = &registry;
             loaded->load(stream, ctx);
         }
@@ -1772,14 +1772,14 @@ void TestICInline::testLoadV41MapDirectConstruct()
     QByteArray serialized;
     {
         QDataStream stream(&serialized, QIODevice::WriteOnly);
-        referenceIC.save(stream);
+        referenceIC.save(stream, {.purpose = SerializationPurpose::PortableFile});
     }
 
     std::unique_ptr<IC> loaded(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
         ctx.blobRegistry = &registry;
         loaded->load(stream, ctx);
     }
@@ -1807,14 +1807,14 @@ void TestICInline::testLoadMismatchNoFileName()
     QByteArray serialized;
     {
         QDataStream stream(&serialized, QIODevice::WriteOnly);
-        mismatchIC.save(stream);
+        mismatchIC.save(stream, {.purpose = SerializationPurpose::PortableFile});
     }
 
     std::unique_ptr<IC> loaded(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
         bool threw = false;
         try {
             loaded->load(stream, ctx);
@@ -2709,7 +2709,7 @@ void TestICInline::testSerializationMismatchFallback()
         QByteArray serialized;
         {
             QDataStream stream(&serialized, QIODevice::WriteOnly);
-            ic.save(stream);
+            ic.save(stream, {.purpose = SerializationPurpose::PortableFile});
         }
 
         std::unique_ptr<IC> loaded(new IC());
@@ -2717,7 +2717,7 @@ void TestICInline::testSerializationMismatchFallback()
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
             QHash<quint64, Port *> portMap;
-            SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+            SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
             try {
                 loaded->load(stream, ctx);
             } catch (const Pandaception &) {
@@ -2738,7 +2738,7 @@ void TestICInline::testSerializationMismatchFallback()
         QByteArray serialized;
         {
             QDataStream stream(&serialized, QIODevice::WriteOnly);
-            ic.save(stream);
+            ic.save(stream, {.purpose = SerializationPurpose::PortableFile});
         }
 
         std::unique_ptr<IC> loaded(new IC());
@@ -2746,7 +2746,7 @@ void TestICInline::testSerializationMismatchFallback()
         {
             QDataStream stream(&serialized, QIODevice::ReadOnly);
             QHash<quint64, Port *> portMap;
-            SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+            SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
             try {
                 loaded->load(stream, ctx);
             } catch (const Pandaception &) {
@@ -2766,14 +2766,14 @@ void TestICInline::testSerializationMismatchFallback()
         QByteArray embeddedData;
         {
             QDataStream stream(&embeddedData, QIODevice::WriteOnly);
-            embedded.save(stream);
+            embedded.save(stream, {.purpose = SerializationPurpose::PortableFile});
         }
 
         std::unique_ptr<IC> loaded(new IC());
         {
             QDataStream stream(&embeddedData, QIODevice::ReadOnly);
             QHash<quint64, Port *> portMap;
-            SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+            SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
             ctx.blobRegistry = &registry;
             loaded->load(stream, ctx);
         }
@@ -2800,14 +2800,14 @@ void TestICInline::testSerializationMismatchFallbackCase2State()
     QByteArray serialized;
     {
         QDataStream stream(&serialized, QIODevice::WriteOnly);
-        ic.save(stream);
+        ic.save(stream, {.purpose = SerializationPurpose::PortableFile});
     }
 
     std::unique_ptr<IC> loaded(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
         bool threw = false;
         try {
             loaded->load(stream, ctx);
@@ -2975,14 +2975,14 @@ void TestICInline::testSetInlineDataEmptyBlobNameRoundTripFails()
     QByteArray serialized;
     {
         QDataStream stream(&serialized, QIODevice::WriteOnly);
-        ic.save(stream);
+        ic.save(stream, {.purpose = SerializationPurpose::PortableFile});
     }
 
     std::unique_ptr<IC> loaded(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
         bool threw = false;
         try {
             loaded->load(stream, ctx);
@@ -3127,14 +3127,14 @@ void TestICInline::testCopyFileGuardDuringPaste()
     QByteArray serialized;
     {
         QDataStream stream(&serialized, QIODevice::WriteOnly);
-        ic.save(stream);
+        ic.save(stream, {.purpose = SerializationPurpose::PortableFile});
     }
 
     std::unique_ptr<IC> ic2(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
         ctx.blobRegistry = &registry;
         ic2->load(stream, ctx);
     }
@@ -3165,14 +3165,14 @@ void TestICInline::testCopyPasteEmbeddedICRoundTrip()
     QByteArray serialized;
     {
         QDataStream stream(&serialized, QIODevice::WriteOnly);
-        original.save(stream);
+        original.save(stream, {.purpose = SerializationPurpose::PortableFile});
     }
 
     std::unique_ptr<IC> pasted(new IC());
     {
         QDataStream stream(&serialized, QIODevice::ReadOnly);
         QHash<quint64, Port *> portMap;
-        SerializationContext ctx = {portMap, FormatRev::current, m_fixtureDir};
+        SerializationContext ctx = {portMap, FormatRev::current, SerializationPurpose::PortableFile, m_fixtureDir};
         ctx.blobRegistry = &registry;
         pasted->load(stream, ctx);
     }
@@ -4858,7 +4858,7 @@ void TestICInline::testLoadICWithMissingBlobFallsBackToFile()
     {
         QDataStream out(&elemData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        ic1->save(out);
+        ic1->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
     // Load the IC in a context with NO blob registry but with the file on disk.
@@ -4868,7 +4868,7 @@ void TestICInline::testLoadICWithMissingBlobFallsBackToFile()
     auto ic2 = std::make_unique<IC>();
     QDataStream in(&elemData, QIODevice::ReadOnly);
     QHash<quint64, Port *> portMap;
-    SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), m_fixtureDir};
+    SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), SerializationPurpose::PortableFile, m_fixtureDir};
     // No blobRegistry → ctx.blobRegistry is nullptr
 
     bool threw = false;
@@ -4898,14 +4898,14 @@ void TestICInline::testLoadICWithNullBlobRegistry()
     {
         QDataStream out(&elemData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        ic1->save(out);
+        ic1->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
     // Load with null blobRegistry — should fall back to file load successfully
     auto ic2 = std::make_unique<IC>();
     QDataStream in(&elemData, QIODevice::ReadOnly);
     QHash<quint64, Port *> portMap;
-    SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), m_fixtureDir};
+    SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), SerializationPurpose::PortableFile, m_fixtureDir};
     // ctx.blobRegistry is nullptr by default
 
     ic2->load(in, ctx);
@@ -5254,7 +5254,7 @@ void TestICInline::testLoadICMissingAllNameFieldsThrows()
         QDataStream out(&elemData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
         // Write GraphicElement base
-        static_cast<GraphicElement *>(ic)->GraphicElement::save(out);
+        static_cast<GraphicElement *>(ic)->GraphicElement::save(out, {.purpose = SerializationPurpose::PortableFile});
         // Write an EMPTY map (no name key)
         QMap<QString, QVariant> emptyMap;
         out << emptyMap;
@@ -5263,7 +5263,7 @@ void TestICInline::testLoadICMissingAllNameFieldsThrows()
     auto ic2 = std::make_unique<IC>();
     QDataStream in(&elemData, QIODevice::ReadOnly);
     QHash<quint64, Port *> portMap;
-    SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), m_fixtureDir};
+    SerializationContext ctx = {portMap, Serialization::readPandaHeader(in), SerializationPurpose::PortableFile, m_fixtureDir};
 
     bool threw = false;
     try {

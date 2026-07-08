@@ -272,7 +272,7 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
         Serialization::serializeBlobRegistry(m_scene.icRegistry()->blobMap(), metadata);
         stream << metadata;
 
-        Serialization::serialize(m_scene.items(), stream);
+        Serialization::serialize(m_scene.items(), stream, {.purpose = SerializationPurpose::PortableFile});
 
         m_scene.undoStack()->setClean();
         emit icBlobSaved(m_parentICElementId, blob);
@@ -287,31 +287,31 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
 
     // Copy external file dependencies (appearances, audio, IC sub-circuits, waveform)
     // to the new directory before updating contextDir, so save() can store bare filenames.
-    // This also runs on a project's very first save (oldContextDir empty): without it, a
-    // custom appearance/audio file picked before ever saving would never get copied
-    // alongside the .panda file, leaving the bare filename GraphicElementSerializer::save()
-    // stores unresolvable on the next reload.
+    // Always run this, even on a brand-new project's first save or a re-save to the same
+    // directory: copyToDir()/copyPandaFile() are no-ops for missing/self/already-present
+    // files, so this is a cheap "ensure every dependency is present" pass every time --
+    // including when a new dependency was added since the last save to an already-saved project.
     const QString oldContextDir = m_scene.contextDir();
     const QString newContextDir = QFileInfo(fileName_).absolutePath();
-    if (oldContextDir != newContextDir) {
-        for (auto *elm : m_scene.elements()) {
-            for (const QString &file : elm->externalFiles()) {
-                if (file.endsWith(".panda")) {
-                    // copyPandaFile copies the file itself and recursively copies any
-                    // fileBackedICs it references, in one pass.
-                    const QFileInfo srcInfo(file);
-                    Serialization::copyPandaFile(srcInfo, QFileInfo(newContextDir + "/" + srcInfo.fileName()));
-                } else {
-                    FileUtils::copyToDir(file, newContextDir);
-                }
+    for (auto *elm : m_scene.elements()) {
+        for (const QString &file : elm->externalFiles()) {
+            if (file.endsWith(".panda")) {
+                // copyPandaFile copies the file itself and recursively copies any
+                // fileBackedICs it references (resolved against the source file's own
+                // directory, not oldContextDir -- a dependency freshly added from an
+                // arbitrary external location never lived in oldContextDir), in one pass.
+                const QFileInfo srcInfo(file);
+                Serialization::copyPandaFile(srcInfo, QFileInfo(newContextDir + "/" + srcInfo.fileName()));
+            } else {
+                FileUtils::copyToDir(file, newContextDir);
             }
         }
+    }
 
-        // Copy the associated BeWavedDolphin waveform file if present
-        if (!m_dolphinFileName.isEmpty()) {
-            const QString resolved = QDir(oldContextDir).absoluteFilePath(m_dolphinFileName);
-            FileUtils::copyToDir(resolved, newContextDir);
-        }
+    // Copy the associated BeWavedDolphin waveform file if present
+    if (!m_dolphinFileName.isEmpty()) {
+        const QString resolved = QDir(oldContextDir).absoluteFilePath(m_dolphinFileName);
+        FileUtils::copyToDir(resolved, newContextDir);
     }
 
     // QSaveFile writes to a temp file and commits atomically, preventing data loss
@@ -422,7 +422,7 @@ void WorkSpace::save(QDataStream &stream)
 
     stream << metadata;
 
-    Serialization::serialize(m_scene.items(), stream);
+    Serialization::serialize(m_scene.items(), stream, {.purpose = SerializationPurpose::PortableFile});
 }
 
 void WorkSpace::load(const QString &fileName)
@@ -531,7 +531,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     if (!contextDir.isEmpty()) {
         m_scene.setContextDir(contextDir);
     }
-    auto context = m_scene.deserializationContext(portMap, version);
+    auto context = m_scene.deserializationContext(portMap, version, SerializationPurpose::PortableFile);
     context.contextDir = contextDir;
     const auto items = Serialization::deserialize(stream, context);
     qCDebug(zero) << "Finished loading items.";
@@ -723,7 +723,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     }
 
     QHash<quint64, Port *> portMap;
-    auto context = m_scene.deserializationContext(portMap, preamble.version);
+    auto context = m_scene.deserializationContext(portMap, preamble.version, SerializationPurpose::PortableFile);
     context.contextDir = parentContextDir;
     const auto items = Serialization::deserialize(stream, context);
 

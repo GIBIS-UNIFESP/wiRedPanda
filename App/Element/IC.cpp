@@ -16,6 +16,7 @@
 #include "App/Element/ICLoader.h"
 #include "App/Element/ICRenderer.h"
 #include "App/Element/ICSimulation.h"
+#include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -79,16 +80,16 @@ QStringList IC::externalFiles() const
     return result;
 }
 
-void IC::save(QDataStream &stream) const
+void IC::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
 
     if (isEmbedded()) {
         map.insert("name", m_blobName);
     } else if (!m_file.isEmpty()) {
-        map.insert("name", QFileInfo(m_file).fileName());
+        map.insert("name", ExternalFilePath::forWriting(m_file, options.purpose));
     }
 
     stream << map;

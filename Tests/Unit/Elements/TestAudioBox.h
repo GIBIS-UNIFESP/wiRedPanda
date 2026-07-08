@@ -40,13 +40,14 @@ private slots:
     void testLoadVersionOld();
     void testLoadVersionNew();
 
-    // Cross-platform path resolution
-    void testSetAudioWithRelativePath();
-    void testSetAudioWithSameOsAbsolutePath();
-    void testSetAudioWithForeignAbsolutePathForwardSlash();
-    void testSetAudioWithForeignAbsolutePathBackslash();
-    void testSetAudioWithForeignAbsolutePathMixedSlashes();
-    void testSetAudioWithNonExistentFileFallback();
+    // Path resolution (mechanics tested directly in Tests/Unit/Core/TestExternalFilePath.cpp;
+    // these confirm AudioBox itself is wired to it correctly)
+    void testSetAudioWithAbsolutePath();
+    void testSetAudioWithNonExistentPathThrows();
+    void testLoadResolvesBareFilenameAgainstContextDir();
+    void testLoadResolvesForeignPathViaBareFilenameFallback();
     void testSaveStoresFilenameOnlyInProjectDir();
-    void testAudioSurvivesSaveLoadRoundTripWhenNotColocated();
+
+    // UpdateCommand undo/redo round-trip
+    void testUpdateCommandUndoRedoPreservesFullAudioPath();
 };

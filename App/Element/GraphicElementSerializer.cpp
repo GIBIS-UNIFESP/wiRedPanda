@@ -11,11 +11,9 @@
 
 #include <cmath>
 
-#include <QDir>
-#include <QFileInfo>
-
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
+#include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -80,9 +78,9 @@ void GraphicElementSerializer::removePortFromMap(Port *deletedPort, QHash<quint6
 
 // ========== GraphicElement entry points (delegate to the serializer) ==========
 
-void GraphicElement::save(QDataStream &stream) const
+void GraphicElement::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElementSerializer::save(*this, stream);
+    GraphicElementSerializer::save(*this, stream, options);
 }
 
 void GraphicElement::load(QDataStream &stream, SerializationContext &context)
@@ -92,7 +90,7 @@ void GraphicElement::load(QDataStream &stream, SerializationContext &context)
 
 // ========== save / load ==========
 
-void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &stream)
+void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &stream, SerializationOptions options)
 {
     qCDebug(four) << "Saving element. Type: " << element.objectName();
 
@@ -146,25 +144,9 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
 
     QList<QMap<QString, QVariant>> appearancesMap;
 
-    const QString contextDir = GraphicElement::resolveContextDir(&element);
-
     for (const auto &appearance : element.m_appearance.alternativeAppearances()) {
         QMap<QString, QVariant> tempMap;
-        QString skinName = appearance;
-        if (!appearance.startsWith(":/")) {
-            // Truncating to a bare filename is only lossless if that name already resolves
-            // next to the project (WorkSpace::save() copies external dependencies there
-            // before this runs); otherwise this is an in-memory-only snapshot (e.g. an
-            // UpdateCommand undo/redo round-trip) or an unsaved project, and shortening the
-            // path now would make it permanently unresolvable — keep the full path instead.
-            const QString basename = QFileInfo(appearance).fileName();
-            const bool alreadyResolvable = !contextDir.isEmpty()
-                && QFileInfo(QDir(contextDir).filePath(basename)).exists();
-            if (alreadyResolvable) {
-                skinName = basename;
-            }
-        }
-        tempMap.insert("skinName", skinName);
+        tempMap.insert("skinName", ExternalFilePath::forWriting(appearance, options.purpose));
         appearancesMap << tempMap;
     }
 
@@ -178,8 +160,6 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
 void GraphicElementSerializer::load(GraphicElement &element, QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading element. Type: " << element.objectName();
-
-    element.m_contextDir = context.contextDir;
 
     // Files before 4.1 used a flat sequential binary format; 4.1+ use a keyed QMap
     // format that tolerates fields being added or reordered in future versions.
@@ -371,8 +351,8 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
 
         const QString name = entry.value("skinName").toString();
 
-        if (context.trustedRoundTrip || !name.startsWith(":/")) {
-            element.m_appearance.setAlternativeAppearanceAt(index, name);
+        if (const auto resolved = ExternalFilePath::forReading(name, context.contextDir, context.purpose)) {
+            element.m_appearance.setAlternativeAppearanceAt(index, *resolved);
         }
 
         ++index;
@@ -593,7 +573,7 @@ void GraphicElementSerializer::loadPixmapAppearanceNames(GraphicElement &element
         }
 
         for (size_t i = 0; i < outputSize; ++i) {
-            loadPixmapAppearanceName(element, stream, static_cast<int>(i), context.contextDir);
+            loadPixmapAppearanceName(element, stream, static_cast<int>(i), context);
         }
 
         element.m_appearance.recomputeUsingDefault();
@@ -602,7 +582,7 @@ void GraphicElementSerializer::loadPixmapAppearanceNames(GraphicElement &element
     }
 }
 
-void GraphicElementSerializer::loadPixmapAppearanceName(GraphicElement &element, QDataStream &stream, const int index, const QString &contextDir)
+void GraphicElementSerializer::loadPixmapAppearanceName(GraphicElement &element, QDataStream &stream, const int index, const SerializationContext &context)
 {
     const QString name = Serialization::readBoundedString(stream);
 
@@ -611,14 +591,7 @@ void GraphicElementSerializer::loadPixmapAppearanceName(GraphicElement &element,
                            QString::number(index), QString::number(element.m_appearance.alternativeAppearances().size()), name);
     }
 
-    // Only override the alternative appearance if it is a filesystem path; resource
-    // paths (":/...") are always available and should not be replaced by the
-    // potentially missing saved path from an older project file.
-    if (!name.startsWith(":/")) {
-        if (!contextDir.isEmpty() && QDir::isRelativePath(name)) {
-            element.m_appearance.setAlternativeAppearanceAt(index, contextDir + "/" + name);
-        } else {
-            element.m_appearance.setAlternativeAppearanceAt(index, name);
-        }
+    if (const auto resolved = ExternalFilePath::forReading(name, context.contextDir, context.purpose)) {
+        element.m_appearance.setAlternativeAppearanceAt(index, *resolved);
     }
 }

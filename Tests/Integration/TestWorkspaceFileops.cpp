@@ -117,6 +117,76 @@ void TestWorkspaceFileops::testSaveToExistingFile()
     }
 }
 
+void TestWorkspaceFileops::testSaveCopiesExternalAppearanceFileOnFirstSave()
+{
+    // A brand-new (never-saved) workspace's first save must copy a custom appearance file
+    // from an unrelated directory into the project directory. The pre-fix gate required
+    // contextDir to already be non-empty and differ from the new directory -- neither is
+    // ever true on a first save, so the dependency was silently never copied.
+    QTemporaryDir sourceDir;
+    QVERIFY(sourceDir.isValid());
+    const QString sourceImagePath = sourceDir.filePath("custom_led.svg");
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", sourceImagePath));
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    scene->addItem(led);
+    led->setAppearance(false, sourceImagePath);
+    scene->undoStack()->setClean();
+
+    const QString projectFilePath = m_tempDir.path() + "/new_project_with_appearance.panda";
+    try {
+        workspace.save(projectFilePath);
+    } catch (const std::exception &e) {
+        QFAIL(QString("Save failed with exception: %1").arg(e.what()).toUtf8().constData());
+    }
+
+    const QString expectedCopiedPath = QFileInfo(projectFilePath).absolutePath() + "/custom_led.svg";
+    QVERIFY2(QFileInfo(expectedCopiedPath).exists(),
+             "Custom appearance file should be copied into the project directory on first save");
+}
+
+void TestWorkspaceFileops::testSaveCopiesNewlyAddedDependencyOnResave()
+{
+    // An already-saved workspace, saved again to the SAME location after a new external
+    // dependency was added since the last save, must also copy that new file. The pre-fix
+    // gate skipped the whole copy loop whenever oldContextDir == newContextDir, which is
+    // exactly the common "save again to the same project" case.
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    scene->addItem(andGate);
+    scene->undoStack()->setClean();
+
+    const QString projectFilePath = m_tempDir.path() + "/resave_project.panda";
+    try {
+        workspace.save(projectFilePath);
+    } catch (const std::exception &e) {
+        QFAIL(QString("Initial save failed with exception: %1").arg(e.what()).toUtf8().constData());
+    }
+
+    QTemporaryDir sourceDir;
+    QVERIFY(sourceDir.isValid());
+    const QString sourceImagePath = sourceDir.filePath("custom_led.svg");
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", sourceImagePath));
+
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    scene->addItem(led);
+    led->setAppearance(false, sourceImagePath);
+    scene->undoStack()->setClean();
+
+    try {
+        workspace.save(projectFilePath);
+    } catch (const std::exception &e) {
+        QFAIL(QString("Re-save failed with exception: %1").arg(e.what()).toUtf8().constData());
+    }
+
+    const QString expectedCopiedPath = QFileInfo(projectFilePath).absolutePath() + "/custom_led.svg";
+    QVERIFY2(QFileInfo(expectedCopiedPath).exists(),
+             "Newly added dependency should be copied on re-save to the same directory");
+}
+
 void TestWorkspaceFileops::testSaveWithSpecialCharactersInFilename()
 {
     WorkSpace workspace;

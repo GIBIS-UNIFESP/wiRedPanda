@@ -139,9 +139,9 @@ int Buzzer::noteToFrequency(const QString &note)
     return map.value(note, 1047);
 }
 
-void Buzzer::save(QDataStream &stream) const
+void Buzzer::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
     map.insert("frequency", m_frequency);

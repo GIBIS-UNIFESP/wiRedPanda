@@ -13,6 +13,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Line.h"
 #include "App/Element/GraphicElements/Text.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -33,7 +34,7 @@ void TestGraphicElement::testElementSaveLoad()
 
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
-    gate.save(writeStream);
+    gate.save(writeStream, {.purpose = SerializationPurpose::PortableFile});
     QVERIFY(!data.isEmpty());
 }
 

@@ -857,7 +857,7 @@ void TestCommands::testUpdateCommand()
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
-    andGate->save(stream);
+    andGate->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
 
     // Modify the element (change label)
     const QString newLabel = "NewLabel";
@@ -901,7 +901,7 @@ void TestCommands::testUpdateCommandPreservesClockPhase()
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
-    andGate->save(stream);
+    andGate->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
 
     andGate->setLabel("Renamed"); // unrelated, non-structural property edit
     scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{andGate}, oldData, scene));
@@ -944,7 +944,7 @@ void TestCommands::testUpdateCommandWirelessLabelRewiresChannel()
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
-    rx->save(stream);
+    rx->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     rx->setLabel("B");
     scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{rx}, oldData, scene));
 
@@ -975,7 +975,7 @@ void TestCommands::testUpdateCommandNonWirelessNodeEditKeepsFastPath()
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
-    node->save(stream);
+    node->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     node->setLabel("junction-42"); // decorative label on a None-mode node — not a channel
     scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{node}, oldData, scene));
 

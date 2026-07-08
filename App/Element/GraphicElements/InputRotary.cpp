@@ -279,9 +279,9 @@ void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mousePressEvent(event);
 }
 
-void InputRotary::save(QDataStream &stream) const
+void InputRotary::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
     map.insert("currentPort", m_currentPort);
