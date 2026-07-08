@@ -140,15 +140,6 @@ void ClipboardManager::paste()
         QDataStream regStream(&regBytes, QIODevice::ReadOnly);
         try { clipboardBlobs = Serialization::readBoundedBlobMap(regStream); } catch (...) {}
     }
-    if (!clipboardBlobs.isEmpty()) {
-        auto *registry = m_scene->icRegistry();
-        for (auto it = clipboardBlobs.cbegin(); it != clipboardBlobs.cend(); ++it) {
-            if (!registry->hasBlob(it.key())) {
-                registry->setBlob(it.key(), it.value());
-            }
-        }
-    }
-
     QByteArray itemData;
 
     if (mimeData->hasFormat(MimeType::ClipboardLegacy)) {
@@ -159,10 +150,31 @@ void ClipboardManager::paste()
         itemData = mimeData->data(MimeType::Clipboard);
     }
 
+    // Register any new embedded-IC blobs and add the pasted items as a single undo step —
+    // registering the blobs untracked would leave them orphaned in the registry forever after
+    // an undo, since AddItemsCommand only knows about scene items, not the blob registry.
+    const bool needsMacro = !clipboardBlobs.isEmpty() && !itemData.isEmpty();
+    if (needsMacro) {
+        m_scene->undoStack()->beginMacro(tr("Paste"));
+    }
+
+    if (!clipboardBlobs.isEmpty()) {
+        auto *registry = m_scene->icRegistry();
+        for (auto it = clipboardBlobs.cbegin(); it != clipboardBlobs.cend(); ++it) {
+            if (!registry->hasBlob(it.key())) {
+                m_scene->receiveCommand(new RegisterBlobCommand(it.key(), it.value(), m_scene));
+            }
+        }
+    }
+
     if (!itemData.isEmpty()) {
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         QVersionNumber version = Serialization::readPandaHeader(stream);
         deserializeAndAdd(stream, version);
+    }
+
+    if (needsMacro) {
+        m_scene->undoStack()->endMacro();
     }
 }
 

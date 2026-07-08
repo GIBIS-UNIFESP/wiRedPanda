@@ -5,12 +5,15 @@
 
 #include <memory>
 
+#include <QApplication>
 #include <QDataStream>
 #include <QDir>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QFile>
 #include <QGraphicsSceneDragDropEvent>
+#include <QLineEdit>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
 #include <QSaveFile>
@@ -18,6 +21,7 @@
 #include <QSignalSpy>
 #include <QTemporaryFile>
 #include <QTest>
+#include <QTimer>
 
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Core/Common.h"
@@ -34,6 +38,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/UI/ElementEditor.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/ICDropZone.h"
 #include "App/UI/MainWindowUI.h"
@@ -46,6 +51,24 @@
 
 using ICTestHelpers::readFile;
 using ICTestHelpers::embedIC;
+
+// Named (not plain "static") to avoid colliding with same-named helpers from other test
+// files under the project's Unity build, which merges multiple .cpp files per translation unit.
+namespace TestICInlineHelpers {
+
+/// Schedules auto-close of the next visible QMessageBox that appears.
+void autoCloseNextMessageBox()
+{
+    QTimer::singleShot(0, [] {
+        if (auto *w = QApplication::activeModalWidget()) {
+            if (auto *msgBox = qobject_cast<QMessageBox *>(w)) {
+                msgBox->accept();
+            }
+        }
+    });
+}
+
+} // namespace TestICInlineHelpers
 
 // ---------------------------------------------------------------------------
 // Test Harness
@@ -1137,9 +1160,10 @@ void TestICInline::testBlobNameRenamePropagation()
 
 void TestICInline::testBlobNameCollisionDuringRename()
 {
-    // Verify collision detection logic: renaming to an existing blobName
-    // should be detected.
-
+    // Regression: renaming an embedded IC's blob name to a name that already names a
+    // different blob must be rejected by the ElementEditor UI path (the field the user
+    // actually types into) — not silently applied, which would destroy the colliding IC's
+    // data. testRenameBlobCollisionRejected covers the ICRegistry-level guard this backs up.
     WorkSpace ws;
     ws.scene()->setContextDir(m_fixtureDir);
     auto *reg = ws.scene()->icRegistry();
@@ -1154,29 +1178,38 @@ void TestICInline::testBlobNameCollisionDuringRename()
     ic2->setPos(200, 200);
     ws.scene()->addItem(ic2);
 
-    // Renaming "type_alpha" → "type_beta" should detect collision
-    bool collisionDetected = false;
-    for (auto *elm : ws.scene()->elements()) {
-        if (elm->isEmbedded() && elm->blobName() == "type_beta") {
-            collisionDetected = true;
-            break;
-        }
-    }
-    QVERIFY2(collisionDetected, "Collision should be detected when renaming to existing blobName");
+    ElementEditor editor(&ws);
+    editor.setScene(ws.scene());
 
-    // Renaming to a fresh name should NOT detect collision
-    bool noCollision = true;
-    for (auto *elm : ws.scene()->elements()) {
-        if (elm->isEmbedded() && elm->blobName() == "fresh_name") {
-            noCollision = false;
-            break;
-        }
-    }
-    QVERIFY2(noCollision, "No collision should be detected for unused name");
+    ws.scene()->clearSelection();
+    ic1->setSelected(true);
 
-    // Verify both ICs are unchanged
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditBlobName");
+    QVERIFY(lineEdit);
+    QCOMPARE(lineEdit->text(), QString("type_alpha"));
+
+    const int countBefore = ws.scene()->undoStack()->count();
+
+    // Try to rename "type_alpha" to the already-taken "type_beta"
+    lineEdit->setText("type_beta");
+    TestICInlineHelpers::autoCloseNextMessageBox();
+    emit lineEdit->editingFinished();
+
+    // Rejected: no command pushed, both ICs and both blobs unchanged
+    QCOMPARE(ws.scene()->undoStack()->count(), countBefore);
     QCOMPARE(ic1->blobName(), QString("type_alpha"));
     QCOMPARE(ic2->blobName(), QString("type_beta"));
+    QVERIFY(reg->hasBlob("type_alpha"));
+    QVERIFY(reg->hasBlob("type_beta"));
+
+    // Renaming to a fresh, non-colliding name must still succeed
+    lineEdit->setText("fresh_name");
+    emit lineEdit->editingFinished();
+
+    QCOMPARE(ws.scene()->undoStack()->count(), countBefore + 1);
+    QCOMPARE(ic1->blobName(), QString("fresh_name"));
+    QVERIFY(reg->hasBlob("fresh_name"));
+    QVERIFY(!reg->hasBlob("type_alpha"));
 }
 
 void TestICInline::testBlobNameSpecialCharacters()
@@ -4569,10 +4602,12 @@ void TestICInline::testRenameBlobSameNameNoOp()
     QCOMPARE(reg->blob("same"), blob);
 }
 
-void TestICInline::testRenameBlobCollisionOverwrites()
+void TestICInline::testRenameBlobCollisionRejected()
 {
-    // Renaming "A" to "B" when "B" already exists overwrites "B"'s data.
-    // ICs that referenced "B" keep the name "B" but now have "A"'s data.
+    // Regression: ICRegistry::renameBlob() used to overwrite an existing, different blob
+    // unconditionally, permanently destroying it (and silently making every IC instance
+    // that already referenced that name start behaving like the renamed-in circuit) with
+    // no undo path back. Renaming "A" to "B" when "B" already exists must now be a no-op.
     QByteArray blobA = readFile(m_fixtureDir + "/simple_and.panda");
     QByteArray blobB = QByteArray("dummy_data_for_B");
 
@@ -4588,13 +4623,14 @@ void TestICInline::testRenameBlobCollisionOverwrites()
     icA->loadFromBlob(blobA, m_fixtureDir);
     scene.addItem(icA);
 
-    // Rename A → B: "A" disappears, "B" now has A's data
+    // Rename A → B: rejected — both blobs and icA's identity are unchanged
     reg->renameBlob("A", "B");
 
-    QVERIFY(!reg->hasBlob("A"));
+    QVERIFY(reg->hasBlob("A"));
     QVERIFY(reg->hasBlob("B"));
-    QCOMPARE(reg->blob("B"), blobA);
-    QCOMPARE(icA->blobName(), QString("B"));
+    QCOMPARE(reg->blob("A"), blobA);
+    QCOMPARE(reg->blob("B"), blobB);
+    QCOMPARE(icA->blobName(), QString("A"));
 }
 
 void TestICInline::testRenameBlobNonExistentNoOp()
@@ -5143,6 +5179,29 @@ void TestICInline::testRegisterBlobCommandRedoAfterExternalRemove()
     // registerBlob calls makeBlobSelfContained, so the stored data might differ
     // from the raw blob bytes, but the blob must exist
     QVERIFY(!reg->blob("ext_rm").isEmpty());
+}
+
+void TestICInline::testRemoveBlobCommandUndoRedo()
+{
+    // RemoveBlobCommand undo restores the blob's original bytes, redo re-removes it —
+    // mirroring testRegisterBlobCommandUndoRedo()'s shape for the sibling command. Previously
+    // this command was only exercised indirectly, inside WorkSpace::removeEmbeddedIC()'s macro.
+    QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+
+    Scene scene;
+    scene.setContextDir(m_fixtureDir);
+    auto *reg = scene.icRegistry();
+    reg->setBlob("remove_cmd_test", blob);
+
+    scene.undoStack()->push(new RemoveBlobCommand("remove_cmd_test", &scene));
+    QVERIFY(!reg->hasBlob("remove_cmd_test"));
+
+    scene.undoStack()->undo();
+    QVERIFY(reg->hasBlob("remove_cmd_test"));
+    QCOMPARE(reg->blob("remove_cmd_test"), blob);
+
+    scene.undoStack()->redo();
+    QVERIFY(!reg->hasBlob("remove_cmd_test"));
 }
 
 void TestICInline::testLoadICMissingAllNameFieldsThrows()
@@ -5946,4 +6005,43 @@ void TestICInline::testOnFileChangedPushesUndoCommandC5()
     QCOMPARE(static_cast<int>(ws.scene()->elements().size()), 1);
 
     QFile::remove(icPath);
+}
+
+void TestICInline::testPasteEmbeddedICBlobUndoRemovesOrphan()
+{
+    // Regression: ClipboardManager::paste() previously registered clipboard blobs directly
+    // into the target registry, outside the undo system, while the paste itself only pushed
+    // an AddItemsCommand (which knows nothing about the blob registry). Undoing the paste
+    // removed the pasted element but left the blob permanently orphaned in the registry —
+    // unreachable by any further undo/redo action.
+    Scene sourceScene;
+    sourceScene.setContextDir(m_fixtureDir);
+    auto *sourceReg = sourceScene.icRegistry();
+
+    auto *ic = new IC();
+    embedIC(ic, readFile(m_fixtureDir + "/simple_and.panda"), "paste_orphan_test", m_fixtureDir, sourceReg);
+    sourceScene.addItem(ic);
+    ic->setSelected(true);
+    sourceScene.copyAction();
+
+    // Paste into a different scene that doesn't already know this blob — mirrors the
+    // cross-tab paste scenario the blob-registry import code exists for.
+    Scene targetScene;
+    targetScene.setContextDir(m_fixtureDir);
+    auto *targetReg = targetScene.icRegistry();
+    QVERIFY(!targetReg->hasBlob("paste_orphan_test"));
+
+    targetScene.pasteAction();
+    QVERIFY(targetReg->hasBlob("paste_orphan_test"));
+    QCOMPARE(static_cast<int>(targetScene.elements().size()), 1);
+
+    // A single undo must reverse both the element addition and the blob registration —
+    // they were pushed as one macro.
+    targetScene.undoStack()->undo();
+    QCOMPARE(static_cast<int>(targetScene.elements().size()), 0);
+    QVERIFY(!targetReg->hasBlob("paste_orphan_test"));
+
+    targetScene.undoStack()->redo();
+    QCOMPARE(static_cast<int>(targetScene.elements().size()), 1);
+    QVERIFY(targetReg->hasBlob("paste_orphan_test"));
 }
