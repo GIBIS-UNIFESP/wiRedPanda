@@ -6,6 +6,7 @@
 #include "App/Core/Settings.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
+#include "App/IO/SerializationContext.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestICUnit::testICLoadFromFile()

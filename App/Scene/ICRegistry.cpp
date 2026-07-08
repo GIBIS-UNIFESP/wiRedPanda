@@ -14,6 +14,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"

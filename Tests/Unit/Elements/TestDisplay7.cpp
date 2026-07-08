@@ -8,6 +8,7 @@
 #include <QStyleOptionGraphicsItem>
 
 #include "App/Element/GraphicElements/Display7.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 

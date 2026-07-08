@@ -18,6 +18,7 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
