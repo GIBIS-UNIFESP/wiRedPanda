@@ -8,6 +8,7 @@
 #include <QMimeData>
 #include <QVersionNumber>
 
+#include "App/Core/DragDropPayload.h"
 #include "App/Core/Enums.h"
 #include "App/Core/MimeTypes.h"
 #include "App/IO/Serialization.h"
@@ -46,14 +47,7 @@ void TrashButton::dropEvent(QDropEvent *event)
         QDataStream stream(&itemData, QIODevice::ReadOnly);
         Serialization::readPandaHeader(stream);
 
-        QPoint offset;      stream >> offset;
-        ElementType type;   stream >> type;
-        QString icFileName; stream >> icFileName;
-
-        bool isEmbedded = false;
-        QString blobName;
-        if (!stream.atEnd()) { stream >> isEmbedded; }
-        if (!stream.atEnd()) { stream >> blobName; }
+        const auto payload = readDragDropPayload(stream);
 
         QMessageBox msgBox;
         msgBox.setParent(this);
@@ -61,8 +55,8 @@ void TrashButton::dropEvent(QDropEvent *event)
         msgBox.setWindowModality(Qt::WindowModal);
         msgBox.setDefaultButton(QMessageBox::No);
 
-        if (isEmbedded) {
-            msgBox.setText(tr("Remove all \"%1\" instances from the circuit?").arg(blobName));
+        if (payload.isEmbedded) {
+            msgBox.setText(tr("Remove all \"%1\" instances from the circuit?").arg(payload.blobName));
         } else {
             msgBox.setText(tr("File will be deleted. Are you sure?"));
         }
@@ -72,10 +66,10 @@ void TrashButton::dropEvent(QDropEvent *event)
             return;
         }
 
-        if (isEmbedded) {
-            emit removeEmbeddedIC(blobName);
+        if (payload.isEmbedded) {
+            emit removeEmbeddedIC(payload.blobName);
         } else {
-            emit removeICFile(icFileName);
+            emit removeICFile(payload.icFileName);
         }
     }
 }
