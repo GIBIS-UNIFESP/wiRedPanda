@@ -93,7 +93,7 @@ QString WorkspaceManager::promptSavePath(const QString &fileName)
     const QStringList autosaves = Settings::autosaveFiles();
     if ((resolved.isEmpty() || autosaves.contains(resolved)) && currentFile().fileName().isEmpty()) {
         const QString path = resolved.isEmpty() ? currentFile().absolutePath() : QFileInfo(resolved).absolutePath();
-        resolved = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File"), path, tr("Panda files (*.panda)")).fileName;
+        resolved = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File"), path, tr("Panda files") + " (*.panda)").fileName;
     }
 
     if (resolved.isEmpty()) {
@@ -146,7 +146,7 @@ void WorkspaceManager::save(const QString &fileName)
         const QString newPath = FileDialogs::provider()->getSaveFileName(
             m_host.widget(), tr("Save File (original location is read-only)"),
             QFileInfo(resolvedFileName).fileName(),
-            tr("Panda files (*.panda)")).fileName;
+            tr("Panda files") + " (*.panda)").fileName;
         if (newPath.isEmpty()) {
             return;
         }
@@ -298,7 +298,7 @@ void WorkspaceManager::openFile()
         QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
     #else
         const QString path = currentFile().exists() ? "" : "./Examples";
-        const QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Open File"), path, tr("Panda files (*.panda)"));
+        const QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Open File"), path, tr("Panda files") + " (*.panda)");
 
         if (fileName.isEmpty()) {
             return;
@@ -332,7 +332,7 @@ void WorkspaceManager::saveFile()
         QString fileName = currentFile().absoluteFilePath();
 
         if (fileName.isEmpty()) {
-            fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File as ..."), QString(), tr("Panda files (*.panda)")).fileName;
+            fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File as ..."), QString(), tr("Panda files") + " (*.panda)").fileName;
 
             if (fileName.isEmpty()) {
                 return;
@@ -377,7 +377,7 @@ void WorkspaceManager::saveFileAs()
             QFileDialog::saveFileContent(content, suggestedName);
         }
     #else
-        QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files (*.panda)")).fileName;
+        QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Save File as ..."), currentFile().absoluteFilePath(), tr("Panda files") + " (*.panda)").fileName;
 
         if (fileName.isEmpty()) {
             return;

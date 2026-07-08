@@ -66,7 +66,7 @@ void ICController::addICFromFile()
             throw PANDACEPTION("Save file first.");
         }
 
-        const QString selectedFile = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Open File"), QString(), tr("Panda (*.panda)"));
+        const QString selectedFile = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Open File"), QString(), tr("Panda") + " (*.panda)");
 
         if (selectedFile.isEmpty()) {
             return;
@@ -204,7 +204,7 @@ void ICController::extractSelectedIC()
     }
 
     const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
-    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files (*.panda)")).fileName;
+    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
 
     if (fileName.isEmpty()) {
         return;
@@ -279,7 +279,7 @@ void ICController::extractICByBlobName(const QString &blobName)
     }
 
     const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
-    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files (*.panda)")).fileName;
+    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
 
     if (fileName.isEmpty()) {
         return;
@@ -358,7 +358,7 @@ void ICController::addEmbeddedICFromFile()
     if (!tab) {
         return;
     }
-    QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Select IC file to embed"), m_host.currentDir().absolutePath(), tr("Panda files (*.panda)"));
+    QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Select IC file to embed"), m_host.currentDir().absolutePath(), tr("Panda files") + " (*.panda)");
     if (fileName.isEmpty()) {
         return;
     }

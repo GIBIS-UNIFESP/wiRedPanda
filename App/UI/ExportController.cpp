@@ -123,7 +123,7 @@ void ExportController::exportArduinoDialog()
             path = m_host.currentFile().absolutePath();
         }
 
-        const QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Generate Arduino Code"), path, tr("Arduino file (*.ino)")).fileName;
+        const QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Generate Arduino Code"), path, tr("Arduino file") + " (*.ino)").fileName;
 
         if (!fileName.isEmpty()) {
             exportToArduino(fileName);
@@ -145,7 +145,7 @@ void ExportController::exportSystemVerilogDialog()
             path = m_host.currentFile().absolutePath();
         }
 
-        const QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Generate SystemVerilog Code"), path, tr("SystemVerilog file (*.sv)")).fileName;
+        const QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Generate SystemVerilog Code"), path, tr("SystemVerilog file") + " (*.sv)").fileName;
 
         if (!fileName.isEmpty()) {
             exportToSystemVerilog(fileName);
@@ -166,7 +166,7 @@ void ExportController::exportPdfDialog()
         tab->scene()->clearSelection();
 
         const QString path    = m_host.currentFile().exists() ? m_host.currentFile().absolutePath() : QString();
-        QString pdfFile = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Export to PDF"), path, tr("PDF files (*.pdf)")).fileName;
+        QString pdfFile = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Export to PDF"), path, tr("PDF files") + " (*.pdf)").fileName;
 
         if (pdfFile.isEmpty()) {
             return;
@@ -195,7 +195,7 @@ void ExportController::exportImageDialog()
         tab->scene()->clearSelection();
 
         const QString path    = m_host.currentFile().exists() ? m_host.currentFile().absolutePath() : QString();
-        QString pngFile = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Export to Image"), path, tr("PNG files (*.png)")).fileName;
+        QString pngFile = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Export to Image"), path, tr("PNG files") + " (*.png)").fileName;
 
         if (pngFile.isEmpty()) {
             return;
