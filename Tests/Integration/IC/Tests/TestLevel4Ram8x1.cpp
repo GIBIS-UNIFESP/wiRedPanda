@@ -117,65 +117,9 @@ void TestLevel4RAM8X1::testRamArray_data()
     for (int i = 0; i < 8; i++) {
         QTest::newRow(qPrintable(QString("write_addr%1_1").arg(i))) << i << true;
     }
-
-    QTest::newRow("pattern_test") << -1 << false;
-    QTest::newRow("we_gating_test") << -2 << false;
-    QTest::newRow("hold_test") << -3 << false;
-    QTest::newRow("isolation_test") << -2 << false;
-    QTest::newRow("sequential_write") << -3 << false;
 }
 
 void TestLevel4RAM8X1::testRamArray()
-{
-    QFETCH(int, address);
-    QFETCH(bool, dataToWrite);
-
-    auto &f = *s_level4Ram8x1;
-
-    if (address >= 0 && address < 8) {
-        f.writeData(dataToWrite, address);
-        QCOMPARE(f.readData(address), dataToWrite);
-    } else if (address == -1) {
-        // Pattern test
-        bool pattern[8] = {true, false, true, false, true, false, true, false};
-        for (int testAddr = 0; testAddr < 8; ++testAddr) {
-            f.writeData(pattern[testAddr], testAddr);
-            QCOMPARE(f.readData(testAddr), pattern[testAddr]);
-        }
-    } else if (address == -2) {
-        // WE gating
-        f.setAddress(3);
-        f.dataIn->setOn(true);
-        f.writeEnable->setOn(false);
-        TestUtils::clockCycle(f.sim, f.clock);
-        f.sim->update();
-        QCOMPARE(inputStatus(f.dataOut), false);
-    } else if (address == -3) {
-        // Hold test
-        f.writeData(true, 5);
-        QCOMPARE(f.readData(5), true);
-
-        f.setAddress(5);
-        f.dataIn->setOn(false);
-        f.writeEnable->setOn(false);
-        TestUtils::clockCycle(f.sim, f.clock);
-        f.sim->update();
-        QCOMPARE(inputStatus(f.dataOut), true);
-    }
-}
-
-void TestLevel4RAM8X1::testRamBasic_data()
-{
-    QTest::addColumn<int>("address");
-    QTest::addColumn<bool>("dataToWrite");
-    QTest::addColumn<QString>("testDescription");
-
-    for (int i = 0; i < 8; i++) {
-        QTest::newRow(qPrintable(QString("write_addr%1_1").arg(i))) << i << true << QString("Write address %1 with 1").arg(i);
-    }
-}
-
-void TestLevel4RAM8X1::testRamBasic()
 {
     QFETCH(int, address);
     QFETCH(bool, dataToWrite);
@@ -186,50 +130,69 @@ void TestLevel4RAM8X1::testRamBasic()
     QCOMPARE(f.readData(address), dataToWrite);
 }
 
-void TestLevel4RAM8X1::testRamEdgeCases_data()
+void TestLevel4RAM8X1::testPatternTest()
 {
-    QTest::addColumn<int>("address");
-    QTest::addColumn<QString>("testDescription");
+    auto &f = *s_level4Ram8x1;
+    const bool pattern[8] = {true, false, true, false, true, false, true, false};
 
-    QTest::newRow("pattern_test") << -1 << "";
-    QTest::newRow("we_gating_test") << -2 << "";
-    QTest::newRow("hold_test") << -3 << "";
-    QTest::newRow("isolation_test") << -2 << "";
-    QTest::newRow("sequential_write") << -3 << "";
+    for (int testAddr = 0; testAddr < 8; ++testAddr) {
+        f.writeData(pattern[testAddr], testAddr);
+        QCOMPARE(f.readData(testAddr), pattern[testAddr]);
+    }
 }
 
-void TestLevel4RAM8X1::testRamEdgeCases()
+void TestLevel4RAM8X1::testWeGating()
 {
-    QFETCH(int, address);
-
     auto &f = *s_level4Ram8x1;
 
-    if (address == -1) {
-        // Pattern test
-        bool pattern[8] = {true, false, true, false, true, false, true, false};
-        for (int testAddr = 0; testAddr < 8; ++testAddr) {
-            f.writeData(pattern[testAddr], testAddr);
-            QCOMPARE(f.readData(testAddr), pattern[testAddr]);
-        }
-    } else if (address == -2) {
-        // WE gating
-        f.setAddress(3);
-        f.dataIn->setOn(true);
-        f.writeEnable->setOn(false);
-        TestUtils::clockCycle(f.sim, f.clock);
-        f.sim->update();
-        QCOMPARE(inputStatus(f.dataOut), false);
-    } else if (address == -3) {
-        // Hold test
-        f.writeData(true, 5);
-        QCOMPARE(f.readData(5), true);
+    f.setAddress(3);
+    f.dataIn->setOn(true);
+    f.writeEnable->setOn(false);  // WE disabled
+    TestUtils::clockCycle(f.sim, f.clock);
+    f.sim->update();
 
-        f.setAddress(5);
-        f.dataIn->setOn(false);
-        f.writeEnable->setOn(false);
-        TestUtils::clockCycle(f.sim, f.clock);
-        f.sim->update();
-        QCOMPARE(inputStatus(f.dataOut), true);
+    QCOMPARE(inputStatus(f.dataOut), false);
+}
+
+void TestLevel4RAM8X1::testHoldBehavior()
+{
+    auto &f = *s_level4Ram8x1;
+
+    // Write 1 to address 5
+    f.writeData(true, 5);
+    QCOMPARE(f.readData(5), true);
+
+    // Try to overwrite with WE=0
+    f.setAddress(5);
+    f.dataIn->setOn(false);
+    f.writeEnable->setOn(false);
+    TestUtils::clockCycle(f.sim, f.clock);
+    f.sim->update();
+
+    QCOMPARE(inputStatus(f.dataOut), true);  // Should still hold 1
+}
+
+// Writing two different addresses must not corrupt each other's stored value.
+void TestLevel4RAM8X1::testIsolation()
+{
+    auto &f = *s_level4Ram8x1;
+
+    f.writeData(true, 0);
+    f.writeData(false, 7);
+
+    QCOMPARE(f.readData(0), true);
+    QCOMPARE(f.readData(7), false);
+}
+
+// Writing the same address repeatedly must have each write take effect.
+void TestLevel4RAM8X1::testSequentialWrite()
+{
+    auto &f = *s_level4Ram8x1;
+    const bool writeSequence[] = {true, false, true, false};
+
+    for (int writeIdx = 0; writeIdx < 4; ++writeIdx) {
+        f.writeData(writeSequence[writeIdx], 0);
+        QCOMPARE(inputStatus(f.dataOut), writeSequence[writeIdx]);
     }
 }
 
