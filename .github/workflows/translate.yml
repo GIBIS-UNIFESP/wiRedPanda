@@ -279,6 +279,12 @@ jobs:
           done
 
       - name: Commit backup-file cleanup
+        # github.head_ref is an attacker-controlled branch name (this job runs on
+        # pull_request, including from forks) - route it through env: instead of
+        # splicing the ${{ }} expression directly into the script, so a
+        # maliciously-crafted branch name can't inject shell commands.
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           git config user.name "Weblate Integration"
           git config user.email "weblate-integration@users.noreply.github.com"
@@ -301,7 +307,7 @@ jobs:
             # external fork.  Weblate always submits from its own fork, so skip
             # the push there — Weblate syncs its fork independently.
             if [[ "${{ github.event.pull_request.head.repo.full_name }}" == "${{ github.repository }}" ]]; then
-              git push origin HEAD:${{ github.head_ref }}
+              git push origin "HEAD:$HEAD_REF"
               echo "✅ Weblate changes processed"
             else
               echo "ℹ️ Fork PR: cleanup committed locally; skipping push (GITHUB_TOKEN has no write access to the fork)"
