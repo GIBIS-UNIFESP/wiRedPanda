@@ -45,7 +45,13 @@ from ic_builder_helpers import RegisterFileBuilder
 async def build(mcp) -> bool:
     """Entry point for the builder"""
     return await RegisterFileBuilder(
-        mcp, num_registers=32, data_width=16, address_bits=5, level=9, num_read_ports=1
+        mcp,
+        num_registers=32,
+        data_width=16,
+        address_bits=5,
+        decoder_name="level2_decoder_5to32",
+        level=9,
+        num_read_ports=1,
     ).create()
 
 
