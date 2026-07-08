@@ -7,8 +7,10 @@
 #include <memory>
 
 #include <QClipboard>
+#include <QImage>
 #include <QMimeData>
 #include <QTest>
+#include <QTransform>
 
 #include "App/Core/ItemWithId.h"
 #include "App/Core/MimeTypes.h"
@@ -1543,4 +1545,29 @@ void TestScene::testClipboardCanPasteMatchesPasteFormats()
     unrelated.setText("not circuit data");
     QVERIFY(!ClipboardManager::canPaste(&unrelated));
     QVERIFY(!ClipboardManager::canPaste(nullptr));
+}
+
+void TestScene::testBuildDragImageClampsExtremeSelectionExtent()
+{
+    // Regression: cloneDrag()'s ghost image was sized proportionally to the scene distance
+    // between selected elements — position validation on load only rejects non-finite
+    // coordinates, never bounds magnitude (the same gap CircuitExporter::renderToImage hit).
+    // One stray element at an extreme-but-finite position must not blow up the allocation.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *sw1 = new InputSwitch();
+    scene->addItem(sw1);
+    auto *sw2 = new InputSwitch();
+    scene->addItem(sw2);
+    sw2->setPos(1e7, 1e7);
+
+    const QRectF rect = sw1->sceneBoundingRect().united(sw2->sceneBoundingRect()).adjusted(-8, -8, 8, 8);
+
+    // Identity transform mirrors 100% zoom, the worst case for this bug.
+    const QImage image = ClipboardManager::buildDragImage(scene, QTransform(), rect);
+
+    QVERIFY(!image.isNull());
+    QVERIFY(image.width() <= ClipboardManager::kMaxDragImageDimension);
+    QVERIFY(image.height() <= ClipboardManager::kMaxDragImageDimension);
 }
