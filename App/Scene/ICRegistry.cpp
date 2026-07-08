@@ -164,7 +164,11 @@ void ICRegistry::removeBlob(const QString &name)
 
 void ICRegistry::renameBlob(const QString &oldName, const QString &newName)
 {
-    if (!m_blobs.contains(oldName) || oldName == newName) {
+    // Defense in depth: the primary guard is at the caller (ElementEditor rejects a colliding
+    // rename before ever constructing a command), but no-op here too rather than silently
+    // overwriting an unrelated blob's bytes, so any future/other caller can't corrupt one IC's
+    // data by renaming a different one onto it.
+    if (!m_blobs.contains(oldName) || oldName == newName || m_blobs.contains(newName)) {
         return;
     }
 
@@ -271,6 +275,11 @@ int ICRegistry::embedICsByFile(const QString &fileName, const QByteArray &fileBy
     }
 
     auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
+    // This blob is newly registered above (registerBlob() at a name these targets weren't
+    // already using), not replacing prior content — leave m_oldBlob at its default-empty so
+    // undo() removes it rather than restoring bytes that never existed. Explicit rather than
+    // relying on the constructor default, unlike every other UpdateBlobCommand call site.
+    cmd->setOldBlob(QByteArray());
     m_scene->undoStack()->push(cmd);
     return static_cast<int>(targets.size());
 }

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDataStream>
 #include <QList>
 #include <QPointF>
@@ -26,6 +27,8 @@ class Scene;
  */
 class ClipboardManager
 {
+    Q_DECLARE_TR_FUNCTIONS(ClipboardManager)
+
 public:
     explicit ClipboardManager(Scene *scene);
 

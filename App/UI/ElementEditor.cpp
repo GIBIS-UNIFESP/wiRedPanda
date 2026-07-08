@@ -679,6 +679,18 @@ void ElementEditor::blobNameEditingFinished()
         return;
     }
 
+    // Reject a rename that collides with a different, already-registered blob: ICRegistry::
+    // renameBlob() would silently overwrite that other blob's bytes with this IC's circuit,
+    // permanently destroying it with no undo path back. Refuse before pushing anything, mirroring
+    // the duplicate-wireless-Tx-channel guard above.
+    if (m_scene->icRegistry()->hasBlob(newBlobName)) {
+        QMessageBox::warning(this,
+            tr("Duplicate IC Name"),
+            tr("An embedded IC named \"%1\" already exists.\n"
+               "Choose a different name.").arg(newBlobName));
+        return;
+    }
+
     // Renaming is its own independent, immediately-applied action — pushed standalone rather
     // than folded into apply()'s UpdateCommand, so undo/redo never has to reconcile a generic
     // property snapshot against the IC registry's shared blob-name state.

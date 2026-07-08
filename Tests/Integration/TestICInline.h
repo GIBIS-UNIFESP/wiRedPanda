@@ -180,7 +180,7 @@ private slots:
     // --- Edge cases: ICRegistry ---
 
     void testRenameBlobSameNameNoOp();
-    void testRenameBlobCollisionOverwrites();
+    void testRenameBlobCollisionRejected();
     void testRenameBlobNonExistentNoOp();
     void testRemoveBlobNonExistent();
     void testInitEmbeddedICMissingBlob();
@@ -200,6 +200,7 @@ private slots:
     void testIsEmbeddedICWithStaleBlobName();
     void testRegisterBlobCommandUndoRedo();
     void testRegisterBlobCommandRedoAfterExternalRemove();
+    void testRemoveBlobCommandUndoRedo();
     void testRenameBlobCommandUndoRedo();
     // Regression: a rename and an unrelated property edit must each undo independently — the
     // old apply()-triggered, untracked renameBlob() call let a later UpdateCommand undo try to
@@ -235,6 +236,10 @@ private slots:
 
     // Regression: C5 — onFileChanged must push UpdateBlobCommand for undo
     void testOnFileChangedPushesUndoCommandC5();
+
+    // Regression: pasting an embedded IC previously registered its blob directly into the
+    // registry, outside the undo system — undoing the paste left it orphaned forever.
+    void testPasteEmbeddedICBlobUndoRemovesOrphan();
 
 private:
     QString fixturesSrcDir() const;
