@@ -60,6 +60,11 @@ bool shouldOfferUpdate(const QString &tagName, const QVersionNumber &currentVers
     return latest.toString() != skippedVersion;
 }
 
+bool isSafeGitHubUrl(const QUrl &url)
+{
+    return url.isValid() && url.scheme() == QLatin1String("https") && url.host() == QLatin1String("github.com");
+}
+
 UpdateChecker::UpdateChecker(QObject *parent)
     : QObject(parent)
 {
@@ -137,5 +142,14 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
     }
 
     const QUrl releaseUrl = QUrl(doc.object().value("html_url").toString());
+    if (!isSafeGitHubUrl(releaseUrl)) {
+        qWarning() << "UpdateChecker: release URL has unexpected scheme/host, ignoring update notification:" << releaseUrl;
+        return;
+    }
+    if (!downloadUrl.isEmpty() && !isSafeGitHubUrl(downloadUrl)) {
+        qWarning() << "UpdateChecker: download URL has unexpected scheme/host, falling back to release page:" << downloadUrl;
+        downloadUrl.clear();
+    }
+
     emit updateAvailable(latest.toString(), downloadUrl, releaseUrl);
 }

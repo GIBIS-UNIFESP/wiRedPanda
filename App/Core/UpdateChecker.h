@@ -67,3 +67,13 @@ bool isMatchingReleaseAsset(const QString &name, const QString &platform, const 
 /// to a valid version that is strictly newer than the running application and
 /// whose normalized string does not match the user's per-version suppression.
 bool shouldOfferUpdate(const QString &tagName, const QVersionNumber &currentVersion, const QString &skippedVersion);
+
+/// \brief True when \a url is safe to download from or hand to the OS's URL handler.
+///
+/// \details Exposed for testing. Requires scheme https and host github.com — the only shape
+/// GitHub's release JSON ever populates \c browser_download_url / \c html_url with (the CDN
+/// redirect for the actual asset happens only after fetching this URL, so the field itself
+/// never contains the CDN's host). Guards against a compromised/future-relaxed API response
+/// smuggling a \c file:// path (silently copies a local file into the Downloads folder) or an
+/// unexpected scheme/UNC-style URL into QDesktopServices::openUrl.
+bool isSafeGitHubUrl(const QUrl &url);
