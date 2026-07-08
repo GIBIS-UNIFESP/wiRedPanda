@@ -395,13 +395,29 @@ void TestLevel9MultiCycleCPU8Bit::testMultipleInstructions()
     f.programInstruction(2, encodeInstruction(AND, 1));  // R0 = 0x2B & 0x20 = 0x20
     f.run();
 
-    f.stepInstruction();          // execute instruction 0 (writes R0=0x30)
-    f.stepInstruction();          // execute instruction 1 (writes R0=0x2B)
-    f.stepInstruction();          // execute instruction 2 (writes R0=0x20)
+    // Check each instruction's result before ITS OWN write-back lands (Execute is
+    // combinational, so the live Result reflects exactly that instruction's inputs
+    // only up until the phase-3 edge writes back and the next instruction's fetch
+    // takes over) -- this is what actually exercises the write-back-to-next-read
+    // path (ADD's write-back feeding SUB's operand, SUB's feeding AND's), rather
+    // than only checking the final value: an AND against a single set bit (0x20)
+    // would just as well "pass" on a wrong upstream result that happens to keep
+    // that bit set (e.g. a miscomputed ADD of 0x31 still yields SUB=0x2C, and
+    // 0x2C & 0x20 == 0x20 too), so checking only the end result has little power
+    // to catch a broken intermediate step.
+    clockCycle(f.sim, f.clk);     // phase 0->1: IR loads ADD R1, ALU computes live
+    QCOMPARE(f.readResult(), 0x30);
+    clockCycle(f.sim, f.clk);     // phase 1->2
+    clockCycle(f.sim, f.clk);     // phase 2->3
+    clockCycle(f.sim, f.clk);     // phase 3->0: writes R0=0x30 back; IR still holds ADD
+    clockCycle(f.sim, f.clk);     // phase 0->1: IR loads SUB R2, ALU computes live off the new R0
 
-    // Verify by reading R0 back through a STORE/LOAD is overkill; the AND result
-    // is observable on the final instruction's execute phase. Re-run a NOP-free
-    // check: fetch instruction 2 result directly.
+    QCOMPARE(f.readResult(), 0x2B);
+    clockCycle(f.sim, f.clk);
+    clockCycle(f.sim, f.clk);
+    clockCycle(f.sim, f.clk);     // phase 3->0: writes R0=0x2B back; IR still holds SUB
+    clockCycle(f.sim, f.clk);     // phase 0->1: IR loads AND R1, ALU computes live off the new R0
+
     QCOMPARE(f.readResult(), 0x20);
 }
 
