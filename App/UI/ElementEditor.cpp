@@ -8,8 +8,10 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QIcon>
 #include <QImageReader>
 #include <QMessageBox>
+#include <QSize>
 
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
@@ -469,7 +471,8 @@ void ElementEditor::applyCapabilitiesToUi()
             QSignalBlocker blocker(m_ui->comboBoxAppearanceState);
             m_ui->comboBoxAppearanceState->clear();
             for (const auto &[index, label] : states) {
-                m_ui->comboBoxAppearanceState->addItem(label, index);
+                const QIcon icon(m_elements[0]->appearancePreviewPixmap(index, QSize(16, 16)));
+                m_ui->comboBoxAppearanceState->addItem(icon, label, index);
             }
         }
     } else {

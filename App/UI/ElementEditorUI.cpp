@@ -71,6 +71,7 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
 
     comboBoxAppearanceState = new QComboBox(groupBox);
     comboBoxAppearanceState->setObjectName("comboBoxAppearanceState");
+    comboBoxAppearanceState->setIconSize(QSize(16, 16));
     gridLayout_2->addWidget(comboBoxAppearanceState, 12, 1, 1, 1);
 
     horizontalLayout = new QHBoxLayout();
@@ -263,7 +264,7 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     labelLabels->setText(QCoreApplication::translate("ElementEditor", "Label:"));
     labelTrigger->setText(QCoreApplication::translate("ElementEditor", "Trigger:"));
     pushButtonTruthTable->setText(QCoreApplication::translate("ElementEditor", "Edit Truth Table"));
-    labelAppearanceState->setText(QCoreApplication::translate("ElementEditor", "Appearance:"));
+    labelAppearanceState->setText(QCoreApplication::translate("ElementEditor", "Appearance for:"));
     pushButtonChangeAppearance->setText(QCoreApplication::translate("ElementEditor", "Change appearance to ..."));
     pushButtonDefaultAppearance->setToolTip(QCoreApplication::translate("ElementEditor", "Default"));
     pushButtonDefaultAppearance->setText(QString());

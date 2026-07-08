@@ -46,6 +46,7 @@ private slots:
 
     // Appearance tests
     void testAppearanceStates();
+    void testAppearancePreviewPixmap();
     void testSetAppearanceDefault();
     void testSetAppearanceWithAbsolutePathNoContextDir();
     void testSetAppearanceWithNonExistentFileThrows();

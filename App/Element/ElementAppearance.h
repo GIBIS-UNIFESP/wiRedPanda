@@ -12,6 +12,7 @@
 #include <QColor>
 #include <QCoreApplication>
 #include <QPixmap>
+#include <QSize>
 #include <QStringList>
 
 class GraphicElement;
@@ -63,6 +64,10 @@ public:
 
     /// Loads and applies the pixmap located at \a pixmapPath.
     void setPixmap(const QString &pixmapPath);
+
+    /// Returns a scaled-down preview of the appearance at \a index, without mutating the
+    /// element's live displayed pixmap. Returns a null pixmap for an out-of-range index.
+    QPixmap previewPixmapAt(const int index, const QSize &size) const;
 
     /// Replaces the displayed pixmap with a procedurally-built one (Mux/Demux/TruthTable/IC).
     /// From then on the owner draws its own body from this pixmap's footprint: orientation

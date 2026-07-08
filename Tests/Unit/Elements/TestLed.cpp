@@ -8,6 +8,7 @@
 #include <QDataStream>
 #include <QFile>
 #include <QImage>
+#include <QSize>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -492,28 +493,54 @@ void TestLED::testAppearanceStates()
     Led led1;
     auto states1 = led1.appearanceStates();
     QCOMPARE(states1.size(), 2);
+    QCOMPARE(states1.at(0).second, QString("Off"));
+    QCOMPARE(states1.at(1).second, QString("On"));
 
-    // 2-input: 00, 01, 10, 11
+    // 2-input: explicit per-port labels, no (off)/(on) suffix
     Led led2;
     led2.setInputSize(2);
     auto states2 = led2.appearanceStates();
     QCOMPARE(states2.size(), 4);
-    QCOMPARE(states2.at(0).second, QString("00 (off)"));
-    QCOMPARE(states2.at(1).second, QString("01"));
-    QCOMPARE(states2.at(2).second, QString("10"));
-    QCOMPARE(states2.at(3).second, QString("11"));
+    QCOMPARE(states2.at(0).second, QString("Port 1=0, Port 2=0"));
+    QCOMPARE(states2.at(1).second, QString("Port 1=1, Port 2=0"));
+    QCOMPARE(states2.at(2).second, QString("Port 1=0, Port 2=1"));
+    QCOMPARE(states2.at(3).second, QString("Port 1=1, Port 2=1"));
 
-    // 3-input: 000..111 (8 states)
+    // 3-input: 8 states
     Led led3;
     led3.setInputSize(3);
     auto states3 = led3.appearanceStates();
     QCOMPARE(states3.size(), 8);
+    QCOMPARE(states3.at(0).second, QString("Port 1=0, Port 2=0, Port 3=0"));
+    QCOMPARE(states3.at(7).second, QString("Port 1=1, Port 2=1, Port 3=1"));
 
-    // 4-input: 0000..1111 (16 states)
+    // 4-input: 16 states
     Led led4;
     led4.setInputSize(4);
     auto states4 = led4.appearanceStates();
     QCOMPARE(states4.size(), 16);
+    QCOMPARE(states4.at(0).second, QString("Port 1=0, Port 2=0, Port 3=0, Port 4=0"));
+    QCOMPARE(states4.at(15).second, QString("Port 1=1, Port 2=1, Port 3=1, Port 4=1"));
+
+    // Index mapping into the appearance list must stay unchanged (serialized per-slot).
+    QCOMPARE(states2.at(0).first, 18);
+    QCOMPARE(states2.at(3).first, 25); // colorIndex()'s backward-compat special case
+    QCOMPARE(states3.at(0).first, 18);
+    QCOMPARE(states4.at(0).first, 10);
+}
+
+void TestLED::testAppearancePreviewPixmap()
+{
+    Led led;
+    led.setInputSize(2);
+    const auto states = led.appearanceStates();
+
+    for (const auto &[index, label] : states) {
+        QVERIFY(!led.appearancePreviewPixmap(index, QSize(16, 16)).isNull());
+    }
+
+    QVERIFY(led.appearancePreviewPixmap(-1, QSize(16, 16)).isNull());
+    QVERIFY(led.appearancePreviewPixmap(9999, QSize(16, 16)).isNull());
 }
 
 void TestLED::testSetAppearanceDefault()
