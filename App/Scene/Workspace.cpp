@@ -241,12 +241,17 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
                 const QString baseName = QFileInfo(icFile).baseName();
                 if (!m_scene.icRegistry()->hasBlob(baseName)) {
                     QFileInfo fi(QDir(contextDir), icFile);
-                    if (fi.exists()) {
-                        QFile f(fi.absoluteFilePath());
-                        if (f.open(QIODevice::ReadOnly)) {
-                            m_scene.icRegistry()->registerBlob(baseName, f.readAll());
-                        }
+                    QFile f(fi.absoluteFilePath());
+                    // setBlobName() below marks the IC embedded unconditionally; if the
+                    // dependency can't actually be read, embedding it anyway would leave the
+                    // blob metadata pointing at a name never registered in the IC registry —
+                    // and, since isEmbedded() would then always be true, this block would never
+                    // retry on any later save either. Fail loudly now instead of producing a
+                    // blob that throws "not found" only when someone tries to reload it.
+                    if (!fi.exists() || !f.open(QIODevice::ReadOnly)) {
+                        throw PANDACEPTION("Cannot save: sub-circuit \"%1\" could not be read to embed it.", icFile);
                     }
+                    m_scene.icRegistry()->registerBlob(baseName, f.readAll());
                 }
                 // Switch the IC to blob-backed for serialization; do NOT call
                 // loadFromBlob. The IC already has its internal state loaded
@@ -309,8 +314,6 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
         }
     }
 
-    setCurrentFile(fileName_);
-
     // QSaveFile writes to a temp file and commits atomically, preventing data loss
     // if the process is interrupted during a write
     QSaveFile saveFile(fileName_);
@@ -357,6 +360,12 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
         }
         throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
     }
+
+    // Only adopt the new file/context identity once it's actually on disk — setting it earlier
+    // left the workspace believing its current file was a path that was never written whenever
+    // the open/commit above failed (interactive ReadOnlyTarget with the retry cancelled, or a
+    // throw in non-interactive/MCP callers), with nothing to roll it back afterward.
+    setCurrentFile(fileName_);
 
     // Mark the undo stack as clean so the title bar no longer shows unsaved-change indicator
     m_scene.undoStack()->setClean();

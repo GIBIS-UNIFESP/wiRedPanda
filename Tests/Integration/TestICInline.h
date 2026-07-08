@@ -27,6 +27,7 @@ private slots:
     // Workspace inline tab
     void testInlineTabSaveLoad();
     void testChildBlobPropagation();
+    void testInlineTabSaveThrowsWhenFileBackedIcMissingOnDisk();
 
     // Undo/redo
     void testUndoRedoEmbedExtract();

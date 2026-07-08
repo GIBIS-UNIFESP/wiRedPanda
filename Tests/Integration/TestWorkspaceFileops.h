@@ -31,6 +31,7 @@ private slots:
     void testModifiedFlagClearedAfterSave();
     void testFilePathUpdatedAfterSave();
     void testFilePathPreservedAfterLoad();
+    void testSaveFailureLeavesFileIdentityUnchanged();
 
     void testFileExtensionPandaAppend();
     void testFileExtensionNoDuplicate();
