@@ -2300,7 +2300,7 @@ Suggested name:</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>Sessiz</translation>
@@ -2331,18 +2331,18 @@ Suggested name:</source>
         <translation>Simülasyonu yeniden başlat.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="523"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>Kısayollar ve İpuçları</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="876"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>New Project</source>
         <translation>Yeni Proje</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="442"/>
+        <location filename="../../UI/MainWindow.cpp" line="421"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2361,27 +2361,27 @@ wiRedPanda %1 mevcut projenin aynı dizininde bulunan diğer tüm .panda dosyala
 IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonlarını çalıştırmadan önce yeni projeleri kaydetmeniz gerekir.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
+        <location filename="../../UI/MainWindow.cpp" line="481"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda, öğrencilerin lojik devreleri öğrenmesine yardımcı olmak için São Paulo Federal Üniversitesi öğrencileri tarafından geliştirilen bir yazılımdır.&lt;/p&gt;&lt;p&gt;Yazılım sürümü: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Yaratıcılar:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda şu anda Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ve Maycon A. Santana tarafından sürdürülmektedir.&lt;/p&gt;&lt;p&gt; Bir hata bulursanız veya yeni bir özellik talep etmek isterseniz lütfen GitHub sayfamızda bir rapor gönderin.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Web sitemizi ziyaret edin!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="554"/>
         <source>Are you sure?</source>
         <translation>Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="524"/>
+        <location filename="../../UI/MainWindow.cpp" line="503"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Tuval Kısayolları&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Yakınlaştır &lt;/li&gt;&lt;li&gt; Ctrl+- : Uzaklaştır &lt;/li&gt;&lt;li&gt; Ctrl+1 : Kabloları Gizle/Göster &lt;/li&gt;&lt;li&gt; Ctrl+2 : Kapıları Gizle/Göster &lt;/li&gt;&lt;li&gt; Ctrl+F : Öğe ara &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin aç &lt;/li&gt;&lt;li&gt; Ctrl+S : Projeyi kaydet &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda&apos;dan çık &lt;/li&gt;&lt;li&gt; F5 : Simülasyonu Başlat/Duraklat &lt;/li&gt;&lt;li&gt; [ : Önceki birincil öğe özelliği &lt;/li&gt;&lt;li&gt; ] : Sonraki birincil öğe özelliği &lt;/li&gt;&lt;li&gt; { : Önceki ikincil öğe özelliği &lt;/li&gt;&lt;li&gt; } : Sonraki ikincil öğe özelliği &lt;/li&gt;&lt;li&gt; &amp;lt; : Önceki öğeye dönüştür &lt;/li&gt;&lt;li&gt; &amp;gt; : Sonraki öğeye dönüştür &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Genel İpuçları&lt;/h1&gt;&lt;p&gt;Bir düğüm oluşturmak için kabloya çift tıklayın&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="574"/>
+        <location filename="../../UI/MainWindow.cpp" line="553"/>
         <source>Exit</source>
         <translation>Çıkış</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <source>Unmute</source>
         <translation>Sesi aç</translation>
     </message>
