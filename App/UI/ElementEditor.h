@@ -125,6 +125,8 @@ private:
     void setTruthTableProposition(const int row, const int column);
     /// Slot: the user changed the keyboard trigger via the key-sequence editor.
     void triggerChanged(const QString &cmd);
+    /// Slot: the user finished editing the embedded IC's blob name field.
+    void blobNameEditingFinished();
 
     // --- Members ---
 

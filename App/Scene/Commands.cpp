@@ -1147,6 +1147,27 @@ void RemoveBlobCommand::undo()
     m_scene->icRegistry()->setBlob(m_blobName, m_data);
 }
 
+// --- RenameBlobCommand ---
+
+RenameBlobCommand::RenameBlobCommand(const QString &oldName, const QString &newName, Scene *scene, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_oldName(oldName)
+    , m_newName(newName)
+    , m_scene(scene)
+{
+    setText(tr("Rename IC \"%1\" to \"%2\"").arg(oldName, newName));
+}
+
+void RenameBlobCommand::redo()
+{
+    m_scene->icRegistry()->renameBlob(m_oldName, m_newName);
+}
+
+void RenameBlobCommand::undo()
+{
+    m_scene->icRegistry()->renameBlob(m_newName, m_oldName);
+}
+
 // --- UpdateBlobCommand ---
 
 UpdateBlobCommand::UpdateBlobCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData,

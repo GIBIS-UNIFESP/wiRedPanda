@@ -4972,6 +4972,103 @@ void TestICInline::testUpdateBlobCommandUndoRestoresOldBlob()
     QCOMPARE(reg->blob("undo_blob"), blobB);
 }
 
+void TestICInline::testRenameBlobCommandUndoRedo()
+{
+    // RenameBlobCommand undo reverses the rename, redo re-applies it — mirroring
+    // testRegisterBlobCommandUndoRedo()'s shape for the sibling command.
+    QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+
+    Scene scene;
+    scene.setContextDir(m_fixtureDir);
+    auto *reg = scene.icRegistry();
+
+    auto *ic = new IC();
+    embedIC(ic, blob, "rename_cmd_old", m_fixtureDir, reg);
+    scene.addItem(ic);
+
+    scene.undoStack()->push(new RenameBlobCommand("rename_cmd_old", "rename_cmd_new", &scene));
+    QVERIFY(!reg->hasBlob("rename_cmd_old"));
+    QVERIFY(reg->hasBlob("rename_cmd_new"));
+    QCOMPARE(ic->blobName(), QString("rename_cmd_new"));
+
+    scene.undoStack()->undo();
+    QVERIFY(reg->hasBlob("rename_cmd_old"));
+    QVERIFY(!reg->hasBlob("rename_cmd_new"));
+    QCOMPARE(ic->blobName(), QString("rename_cmd_old"));
+
+    scene.undoStack()->redo();
+    QVERIFY(!reg->hasBlob("rename_cmd_old"));
+    QVERIFY(reg->hasBlob("rename_cmd_new"));
+    QCOMPARE(ic->blobName(), QString("rename_cmd_new"));
+}
+
+void TestICInline::testRenameBlobCommandThenUnrelatedUpdateBothUndoIndependently()
+{
+    // Regression: before the fix, renaming an embedded IC's blob was applied directly
+    // inside ElementEditor::apply(), untracked, sharing the same UpdateCommand transaction
+    // as whatever unrelated property also changed. Undoing that UpdateCommand tried to
+    // resolve the pre-rename blob name against a registry that only had the new name
+    // anymore, throwing and corrupting the IC (App/Element/IC.cpp's no-match fallback set
+    // m_file to the bogus name before ICLoader::loadFile() threw "not found").
+    //
+    // With the fix, a rename is its own independent RenameBlobCommand, so a plain property
+    // UpdateCommand never touches m_blobName, and each undo reverses exactly one action.
+    QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+
+    auto *ic = new IC();
+    embedIC(ic, blob, "regress_old", m_fixtureDir, reg);
+    ic->setPos(100, 100);
+    ws.scene()->addItem(ic);
+
+    // Step 1: rename, exactly as the lineEditBlobName editingFinished handler does.
+    ws.scene()->undoStack()->push(new RenameBlobCommand("regress_old", "regress_new", ws.scene()));
+    QCOMPARE(ic->blobName(), QString("regress_new"));
+
+    // Step 2: an unrelated property edit (label), exactly as apply() pushes.
+    const QList<GraphicElement *> targets{ic};
+    const QByteArray oldData = ICRegistry::captureSnapshot(targets);
+    ic->setLabel("renamed label");
+
+    bool threw = false;
+    try {
+        ws.scene()->undoStack()->push(new UpdateCommand(targets, oldData, ws.scene()));
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY2(!threw, "pushing the property UpdateCommand must not throw");
+    QCOMPARE(ic->label(), QString("renamed label"));
+    QCOMPARE(ic->blobName(), QString("regress_new"));
+
+    // Undo #1: reverts the label only. Must not throw, and blobName/embedded state must
+    // stay untouched — this is exactly the step that used to corrupt the IC.
+    threw = false;
+    try {
+        ws.scene()->undoStack()->undo();
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY2(!threw, "undoing the unrelated property edit must not throw");
+    QCOMPARE(ic->blobName(), QString("regress_new"));
+    QVERIFY(ic->isEmbedded());
+    QVERIFY(ic->file().isEmpty());
+
+    // Undo #2: reverts the rename, independently.
+    threw = false;
+    try {
+        ws.scene()->undoStack()->undo();
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY2(!threw, "undoing the rename must not throw");
+    QCOMPARE(ic->blobName(), QString("regress_old"));
+    QVERIFY(reg->hasBlob("regress_old"));
+    QVERIFY(!reg->hasBlob("regress_new"));
+}
+
 // ============================================================================
 // Edge cases: isEmbedded, port names, RegisterBlobCommand, IC::load
 // ============================================================================

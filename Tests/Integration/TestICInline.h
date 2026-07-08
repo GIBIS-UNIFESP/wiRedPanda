@@ -200,6 +200,11 @@ private slots:
     void testIsEmbeddedICWithStaleBlobName();
     void testRegisterBlobCommandUndoRedo();
     void testRegisterBlobCommandRedoAfterExternalRemove();
+    void testRenameBlobCommandUndoRedo();
+    // Regression: a rename and an unrelated property edit must each undo independently — the
+    // old apply()-triggered, untracked renameBlob() call let a later UpdateCommand undo try to
+    // resolve the pre-rename blob name against a registry that no longer had it.
+    void testRenameBlobCommandThenUnrelatedUpdateBothUndoIndependently();
     void testLoadICMissingAllNameFieldsThrows();
     void testUniqueBlobNameEmptyBase();
     void testBlobReturnsEmptyForMissingName();

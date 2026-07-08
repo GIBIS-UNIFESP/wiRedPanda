@@ -86,6 +86,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->comboBoxWirelessMode,   qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
+    connect(m_ui->lineEditBlobName,       &QLineEdit::editingFinished,                      this, &ElementEditor::blobNameEditingFinished);
     connect(m_ui->pushButtonAudioBox,     &QPushButton::clicked,                            this, &ElementEditor::audioBox);
     connect(m_ui->pushButtonChangeAppearance,   &QPushButton::clicked,                            this, &ElementEditor::updateElementAppearance);
     connect(m_ui->pushButtonDefaultAppearance,  &QPushButton::clicked,                            this, &ElementEditor::defaultAppearance);
@@ -642,15 +643,6 @@ void ElementEditor::apply()
         }
     }
 
-    // Apply blob name rename via ICRegistry (updates registry key + all instances)
-    if (m_caps.isEmbedded && !m_elements.isEmpty()) {
-        const QString newBlobName = m_ui->lineEditBlobName->text().trimmed();
-        const QString oldBlobName = m_elements.first()->blobName();
-        if (!newBlobName.isEmpty() && newBlobName != oldBlobName) {
-            m_scene->icRegistry()->renameBlob(oldBlobName, newBlobName);
-        }
-    }
-
     // Reset the one-shot appearance update flag after applying to all elements.
     if (m_isUpdatingAppearance) {
         m_isUpdatingAppearance = false;
@@ -669,6 +661,28 @@ void ElementEditor::apply()
         m_scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, m_scene));
         m_scene->undoStack()->endMacro();
     }
+}
+
+void ElementEditor::blobNameEditingFinished()
+{
+    if (m_elements.isEmpty() || !m_caps.isEmbedded) {
+        return;
+    }
+
+    const QString newBlobName = m_ui->lineEditBlobName->text().trimmed();
+    const QString oldBlobName = m_elements.first()->blobName();
+
+    // editingFinished fires on plain focus-out too, not just on an actual edit — guard against
+    // the multi-selection placeholder as well as an empty/unchanged field so clicking into and
+    // out of the field without typing anything never renames.
+    if (newBlobName.isEmpty() || newBlobName == oldBlobName || newBlobName == m_manyLabels) {
+        return;
+    }
+
+    // Renaming is its own independent, immediately-applied action — pushed standalone rather
+    // than folded into apply()'s UpdateCommand, so undo/redo never has to reconcile a generic
+    // property snapshot against the IC registry's shared blob-name state.
+    m_scene->receiveCommand(new RenameBlobCommand(oldBlobName, newBlobName, m_scene));
 }
 
 void ElementEditor::inputIndexChanged(const int index)

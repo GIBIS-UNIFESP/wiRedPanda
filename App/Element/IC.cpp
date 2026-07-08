@@ -161,8 +161,12 @@ void IC::load(QDataStream &stream, SerializationContext &context)
             m_blobName = baseName;
             loadFromBlob(context.blobRegistry->value(baseName), context.contextDir);
         } else {
-            m_file = name;
-            loadFile(m_file, context.contextDir);
+            // Don't assign m_file until loadFile() has confirmed name actually resolves to a
+            // real file — ICLoader::loadFile() itself sets ic.m_file, but only once validated,
+            // so a name that resolves to neither a blob nor a file (e.g. an unrelated rename
+            // elsewhere in the registry) throws cleanly without leaving m_file holding a
+            // bogus non-path string.
+            loadFile(name, context.contextDir);
         }
     }
 
