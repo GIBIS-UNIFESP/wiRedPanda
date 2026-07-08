@@ -19,8 +19,8 @@
 #include <QScopeGuard>
 #include <QSysInfo>
 #include <QtEndian>
-#include <QVarLengthArray>
 #include <QVariant>
+#include <QVarLengthArray>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
@@ -267,6 +267,11 @@ QVariant readBoundedVariant(QDataStream &stream)
 QString Serialization::readBoundedString(QDataStream &stream)
 {
     return ::readBoundedString(stream); // delegate to the file-local free function
+}
+
+QKeySequence Serialization::readBoundedKeySequence(QDataStream &stream)
+{
+    return ::readBoundedKeySequence(stream); // delegate to the file-local free function
 }
 
 QMap<QString, QVariant> Serialization::readBoundedMetadata(QDataStream &stream)

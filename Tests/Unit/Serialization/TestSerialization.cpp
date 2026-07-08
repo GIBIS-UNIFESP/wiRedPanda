@@ -6,6 +6,7 @@
 #include <QDataStream>
 #include <QFile>
 #include <QFileInfo>
+#include <QKeySequence>
 #include <QRectF>
 #include <QTest>
 
@@ -1803,4 +1804,56 @@ void TestSerialization::testFuzzRegressionNonFiniteRotation()
         threw = true;
     }
     QVERIFY2(threw, "Non-finite element rotation must be rejected, not loaded");
+}
+
+void TestSerialization::testReadBoundedKeySequenceRoundTrip()
+{
+    const QKeySequence original(Qt::CTRL | Qt::Key_A);
+
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream << original;
+
+    QDataStream readStream(&data, QIODevice::ReadOnly);
+    const QKeySequence result = Serialization::readBoundedKeySequence(readStream);
+
+    QCOMPARE(result, original);
+}
+
+void TestSerialization::testReadBoundedKeySequenceAcceptsMaxFourKeys()
+{
+    // A QKeySequence holds at most 4 chained key combinations — count == 4 is the
+    // legitimate maximum and must still be accepted, not just count < 4.
+    const QKeySequence original(Qt::Key_A, Qt::Key_B, Qt::Key_C, Qt::Key_D);
+    QCOMPARE(original.count(), 4);
+
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream << original;
+
+    QDataStream readStream(&data, QIODevice::ReadOnly);
+    const QKeySequence result = Serialization::readBoundedKeySequence(readStream);
+
+    QCOMPARE(result, original);
+}
+
+void TestSerialization::testReadBoundedKeySequenceRejectsImplausibleCount()
+{
+    // Regression: GraphicElementSerializer::loadTrigger() (old-format loader, versions
+    // 1.9-4.0) used Qt's raw, unbounded QKeySequence deserialization, which reserve()s a
+    // QList<int> sized by this stream-controlled count before validating it. A crafted
+    // old-format .panda file with a valid header/version and this count is enough to
+    // trigger the allocation.
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream << static_cast<quint32>(0x7FFFFFFF); // implausible count, no real data behind it
+
+    QDataStream readStream(&data, QIODevice::ReadOnly);
+    bool threw = false;
+    try {
+        Serialization::readBoundedKeySequence(readStream);
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Implausible QKeySequence count must be rejected, not allocated");
 }

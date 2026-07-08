@@ -467,7 +467,7 @@ void GraphicElementSerializer::loadPortsSize(QDataStream &stream, const QVersion
 void GraphicElementSerializer::loadTrigger(GraphicElement &element, QDataStream &stream, const QVersionNumber &version)
 {
     if (VersionInfo::hasTrigger(version)) {
-        QKeySequence trigger; stream >> trigger;
+        const QKeySequence trigger = Serialization::readBoundedKeySequence(stream);
         element.setTrigger(trigger);
     }
 }
