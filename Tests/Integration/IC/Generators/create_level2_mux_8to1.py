@@ -10,12 +10,14 @@ Selects one of 8 data inputs based on 3 select bits.
 Inputs:
   - Data[0] to Data[7]: 8 data inputs
   - Sel[0], Sel[1], Sel[2]: 3 select bits
+  - Enable: 74153-style strobe, defaults high
 
 Outputs:
   - Output: selected data bit
 
 Architecture:
   - Single Mux element with inputSize=11 (8 data + 3 select)
+  - AND gate gates the Mux output with Enable
 
 Usage:
     python create_level2_mux_8to1.py

@@ -5,14 +5,14 @@
 """
 Create 4-to-16 Decoder IC
 
-Inputs: addr[0], addr[1], addr[2], addr[3]
+Inputs: addr[0], addr[1], addr[2], addr[3], Enable (74138-style chip select, defaults high)
 Outputs: out[0] to out[15]
 
 Circuit:
 - 4 NOT gates (invert address bits)
-- 16 AND gates (4-input, one-hot encoding)
-  - Each AND combines 4 inputs (direct or inverted)
-  - For output i: bit pattern of i determines which inputs to use
+- 16 AND gates (5-input, one-hot encoding)
+  - Each AND combines 5 inputs: 4 address bits (direct or inverted) + Enable
+  - For output i: bit pattern of i determines which address inputs to use
 
 Usage:
     python create_level2_decoder_4to16.py

@@ -5,14 +5,14 @@
 """
 Create 3-to-8 Decoder IC
 
-Inputs: addr[0], addr[1], addr[2]
+Inputs: addr[0], addr[1], addr[2], Enable (74138-style chip select, defaults high)
 Outputs: out[0] to out[7]
 
 Circuit:
 - 3 NOT gates (invert address bits)
-- 8 AND gates (3-input, one-hot encoding)
-  - Each AND combines 3 inputs (direct or inverted)
-  - For output i: bit pattern of i determines which inputs to use
+- 8 AND gates (4-input, one-hot encoding)
+  - Each AND combines 4 inputs: 3 address bits (direct or inverted) + Enable
+  - For output i: bit pattern of i determines which address inputs to use
 
 Usage:
     python create_level2_decoder_3to8.py

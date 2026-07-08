@@ -16,7 +16,8 @@ from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase
 
 
 class DecoderBuilder(ICBuilderBase):
-    """N-to-2^N binary decoder. Covers decoder_2to4, decoder_3to8, decoder_4to16."""
+    """N-to-2^N binary decoder with an Enable input. Covers decoder_2to4,
+    decoder_3to8, decoder_4to16, decoder_5to32."""
 
     def __init__(self, mcp, address_bits: int, verbose: bool = True) -> None:
         super().__init__(mcp, verbose)
@@ -1373,7 +1374,8 @@ class ComparatorBuilder(ICBuilderBase):
 
 
 class MuxNto1Builder(ICBuilderBase):
-    """N-to-1 multiplexer with log2(N) select bits. Covers mux_4to1 and mux_8to1."""
+    """N-to-1 multiplexer with log2(N) select bits and an Enable input.
+    Covers mux_4to1 and mux_8to1."""
 
     def __init__(self, mcp, data_inputs: int, verbose: bool = True) -> None:
         super().__init__(mcp, verbose)

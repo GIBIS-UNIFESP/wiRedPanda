@@ -5,7 +5,7 @@
 """
 Create 5-to-32 Decoder IC
 
-Inputs: addr[0] to addr[4]
+Inputs: addr[0] to addr[4], Enable (74138-style chip select, defaults high)
 Outputs: out[0] to out[31]
 
 Circuit:

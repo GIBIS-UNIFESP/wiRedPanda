@@ -5,14 +5,14 @@
 """
 Create 2-to-4 Decoder IC
 
-Inputs: addr[0], addr[1]
+Inputs: addr[0], addr[1], Enable (74138-style chip select, defaults high)
 Outputs: out[0] to out[3]
 
 Circuit:
 - 2 NOT gates (invert address bits)
 - 4 AND gates (one-hot encoding)
-  - Each AND combines 2 inputs (direct or inverted)
-  - For output i: bit pattern of i determines which inputs to use
+  - Each AND combines 3 inputs: 2 address bits (direct or inverted) + Enable
+  - For output i: bit pattern of i determines which address inputs to use
 
 Usage:
     python create_level2_decoder_2to4.py

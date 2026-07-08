@@ -10,12 +10,14 @@ Selects one of 4 data inputs based on 2 select bits.
 Inputs:
   - Data[0] to Data[3]: 4 data inputs
   - Sel[0], Sel[1]: 2 select bits
+  - Enable: 74153-style strobe, defaults high
 
 Outputs:
   - Output: selected data bit
 
 Architecture:
   - Single Mux element with inputSize=6 (4 data + 2 select)
+  - AND gate gates the Mux output with Enable
 
 Usage:
     python create_level2_mux_4to1.py
