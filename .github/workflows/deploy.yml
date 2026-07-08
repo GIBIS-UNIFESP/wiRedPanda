@@ -141,22 +141,20 @@ jobs:
         # produced by appimagetool.
         ARCH_TRIPLE=$(uname -m)
 
-        mkdir -p appimage/usr/bin \
-                 appimage/usr/lib \
-                 appimage/usr/share/applications \
+        mkdir -p appimage/usr/lib \
                  appimage/usr/share/icons/hicolor/scalable/apps \
-                 appimage/usr/share/icons/hicolor/256x256/apps \
-                 appimage/usr/share/wiredpanda
+                 appimage/usr/share/icons/hicolor/256x256/apps
 
-        cp build-sentry-crashpad/wiredpanda appimage/usr/bin/
+        # Installs the binary, .desktop file (version already substituted via
+        # configure_file at CMake-configure time), 5 PNG icon sizes, Examples/,
+        # and the mime XML - everything cmake --install now covers for Linux.
+        DESTDIR="$PWD/appimage" cmake --install build-sentry-crashpad --prefix /usr
+
         cp build-sentry-crashpad/crashpad_handler appimage/usr/bin/
         cp thirdparty/sentry/lib/libsentry.so appimage/usr/lib/
 
-        cp -r Examples appimage/usr/share/wiredpanda/Examples
-
-        cp App/Resources/Freedesktop/wiredpanda.desktop appimage/usr/share/applications/wiredpanda.desktop
-        sed -i "s/@VERSION@/$VERSION/g;s/@PROJECT_VERSION@/$VERSION/g" appimage/usr/share/applications/wiredpanda.desktop
-
+        # install() only ships PNGs up to 128x128; keep the scalable/256 assets
+        # it doesn't cover so the AppImage's app-menu icon looks its best.
         cp App/Resources/Assets/Logos/wpanda.svg appimage/usr/share/icons/hicolor/scalable/apps/wpanda.svg
         cp App/Resources/Assets/Logos/wpanda-256x256.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
 
@@ -363,6 +361,12 @@ jobs:
           echo "✓ Desktop integration file present"
         else
           echo "Warning: Desktop integration file missing"
+        fi
+
+        if [ -f "squashfs-root/usr/share/mime/packages/wiredpanda.xml" ]; then
+          echo "✓ Mime type definition present"
+        else
+          echo "Warning: Mime type definition missing"
         fi
 
         # Check dependencies are reasonable
