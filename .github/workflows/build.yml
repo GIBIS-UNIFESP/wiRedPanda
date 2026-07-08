@@ -130,6 +130,27 @@ jobs:
       run: |
         ctest --preset release -V -LE gui
 
+    - name: Smoke-test cmake --install
+      shell: bash
+      run: |
+        PREFIX="${RUNNER_TEMP}/install-smoke"
+        cmake --install build-release --prefix "$PREFIX"
+        # macOS isn't bundled yet - pre-bundle it falls into the same flat bin/+share/
+        # layout as Linux. Add a Contents/MacOS + Contents/Resources/Examples case here
+        # once MACOSX_BUNDLE support lands.
+        if [ "$RUNNER_OS" = "Windows" ]; then
+          BIN="$PREFIX/bin/wiredpanda.exe"; EX="$PREFIX/bin/Examples"
+        else
+          BIN="$PREFIX/bin/wiredpanda"; EX="$PREFIX/share/wiredpanda/Examples"
+        fi
+        [ -f "$BIN" ] || { echo "Error: installed binary missing at $BIN"; find "$PREFIX"; exit 1; }
+        [ -d "$EX" ] && [ "$(find "$EX" -name '*.panda' | wc -l)" -gt 0 ] || { echo "Error: Examples missing/empty at $EX"; exit 1; }
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          [ -f "$PREFIX/share/applications/wiredpanda.desktop" ] || { echo "Error: desktop file missing"; exit 1; }
+          [ "$(find "$PREFIX/share/icons/hicolor" -name wpanda.png | wc -l)" -eq 5 ] || { echo "Error: expected 5 icon sizes"; exit 1; }
+          [ -f "$PREFIX/share/mime/packages/wiredpanda.xml" ] || { echo "Error: mime XML missing"; exit 1; }
+        fi
+
     - name: Upload build artifacts on failure
       if: failure()
       uses: actions/upload-artifact@v7
