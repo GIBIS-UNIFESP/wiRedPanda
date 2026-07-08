@@ -107,9 +107,23 @@ void TestPropertyShortcutHandler::testLedColorSecondary()
     workspace.scene()->clearSelection();
     led->setSelected(true);
 
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
     // Led color is secondary property
     handler.nextSecondaryProperty();
     QVERIFY(led->color() != originalColor);
+    const QString cycledColor = led->color();
+
+    // Regression: this mutation used to bypass the undo system entirely — every sibling
+    // branch in adjustSecondaryProperty()/adjustMainProperty() wraps its change in an
+    // UpdateCommand via applyWithUndo(), but the Led branch set the color directly.
+    QCOMPARE(undoStack->count(), countBefore + 1);
+    QVERIFY(undoStack->canUndo());
+    undoStack->undo();
+    QCOMPARE(led->color(), originalColor);
+    undoStack->redo();
+    QCOMPARE(led->color(), cycledColor);
 
     handler.prevSecondaryProperty();
     QCOMPARE(led->color(), originalColor);
@@ -192,4 +206,37 @@ void TestPropertyShortcutHandler::testMorphPrevElement()
     auto selected = workspace.scene()->selectedElements();
     QCOMPARE(selected.size(), 1);
     QCOMPARE(selected.first()->elementType(), ElementType::Xnor);
+}
+
+void TestPropertyShortcutHandler::testMultiElementShortcutIsSingleUndoStep()
+{
+    // Regression: cycling a property on a multi-selection used to push one undo command
+    // per element, ungrouped — a single Ctrl+Z only reverted the last element touched.
+    // It must now be a single undo step for the whole action, like every other
+    // multi-element command in the app (e.g. the "Change wireless mode" macro).
+    WorkSpace workspace;
+    auto *clock1 = new Clock;
+    auto *clock2 = new Clock;
+    workspace.scene()->addItem(clock1);
+    workspace.scene()->addItem(clock2);
+    const double originalFreq1 = clock1->frequency();
+    const double originalFreq2 = clock2->frequency();
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    clock1->setSelected(true);
+    clock2->setSelected(true);
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    handler.nextMainProperty();
+
+    QCOMPARE(clock1->frequency(), originalFreq1 + 0.5);
+    QCOMPARE(clock2->frequency(), originalFreq2 + 0.5);
+    QCOMPARE(undoStack->count(), countBefore + 1);
+
+    undoStack->undo();
+    QCOMPARE(clock1->frequency(), originalFreq1);
+    QCOMPARE(clock2->frequency(), originalFreq2);
 }

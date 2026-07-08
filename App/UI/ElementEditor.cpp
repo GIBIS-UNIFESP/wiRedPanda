@@ -184,6 +184,10 @@ void ElementEditor::updateElementAppearance()
         const int appearanceIndex = m_ui->comboBoxAppearanceState->currentData().toInt();
 
         // Snapshot and apply via undo command
+        const bool needsMacro = m_scene && m_elements.size() > 1;
+        if (needsMacro) {
+            m_scene->undoStack()->beginMacro(tr("Change appearance"));
+        }
         for (auto *elm : std::as_const(m_elements)) {
             QByteArray oldData;
             {
@@ -195,6 +199,9 @@ void ElementEditor::updateElementAppearance()
             if (m_scene) {
                 m_scene->receiveCommand(new UpdateCommand({elm}, oldData, m_scene));
             }
+        }
+        if (needsMacro) {
+            m_scene->undoStack()->endMacro();
         }
         return;
     }

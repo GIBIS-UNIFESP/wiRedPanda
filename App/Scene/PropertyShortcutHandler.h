@@ -7,6 +7,11 @@
 
 #pragma once
 
+#include <functional>
+
+#include <QCoreApplication>
+
+class GraphicElement;
 class Scene;
 
 /**
@@ -18,6 +23,8 @@ class Scene;
  */
 class PropertyShortcutHandler
 {
+    Q_DECLARE_TR_FUNCTIONS(PropertyShortcutHandler)
+
 public:
     explicit PropertyShortcutHandler(Scene *scene);
 
@@ -41,4 +48,7 @@ private:
     void adjustMainProperty(int dir);
     /// Shared implementation for prev/nextSecondaryProperty(); \a dir is -1 or +1.
     void adjustSecondaryProperty(int dir);
+    /// Snapshots \a element, applies \a mutate, then pushes an UpdateCommand so the
+    /// change is undoable. Shared by adjustMainProperty() and adjustSecondaryProperty().
+    void applyWithUndo(GraphicElement *element, const std::function<void()> &mutate);
 };
