@@ -5,11 +5,12 @@
 """
 Create 2-to-1 Multiplexer IC using a single Mux primitive
 
-Inputs: Data[0], Data[1], Sel[0]
+Inputs: Data[0], Data[1], Sel[0], Enable (74153-style strobe, defaults high)
 Output: Output
 
 Architecture:
 - Single Mux element with inputSize=3 (2 data + 1 select)
+- AND gate gates the Mux output with Enable
 
 Usage:
     python create_level2_mux_2to1.py
