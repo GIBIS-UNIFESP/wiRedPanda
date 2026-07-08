@@ -20,6 +20,14 @@ class QString;
  */
 namespace CircuitExporter {
 
+/// Maximum width/height (in pixels) renderToImage() will allocate. Scene extent beyond this
+/// is scaled down to fit rather than sized proportionally — see renderToImage()'s details.
+/// Bounded well under 8192 (where width*height*4 bytes hits Qt's own default 256 MB
+/// QImageIOHandler allocation limit — confirmed via debugger inspection: a 16384 cap produced
+/// an image QImage's own reader then refused to load back), so the exported file stays usable
+/// by any default-configured Qt image consumer, not just by this process's writer.
+inline constexpr double kMaxImageDimension = 4096;
+
 /**
  * \brief Renders \a scene to a PDF file at \a filePath.
  * \throws Pandaception if the QPainter cannot begin painting to the printer.
@@ -28,6 +36,8 @@ void renderToPdf(Scene *scene, const QString &filePath);
 
 /**
  * \brief Renders \a scene to a PNG image file at \a filePath.
+ * \details Output resolution matches the scene extent 1:1 up to kMaxImageDimension;
+ * larger scenes are scaled down to fit rather than allocating proportionally.
  */
 void renderToImage(Scene *scene, const QString &filePath);
 
