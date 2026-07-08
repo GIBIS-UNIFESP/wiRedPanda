@@ -307,6 +307,7 @@ void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const
     const auto version = Serialization::readPandaHeader(stream);
     QHash<quint64, Port *> portMap;
     auto ctx = scene->deserializationContext(portMap, version);
+    ctx.trustedRoundTrip = true;
     for (auto *elm : elements) {
         elm->load(stream, ctx);
     }

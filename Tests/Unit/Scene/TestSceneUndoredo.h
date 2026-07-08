@@ -60,6 +60,7 @@ private slots:
 
     // UpdateCommand
     void testUpdateCommandUndoRedo();
+    void testUpdateCommandAppearanceUndoRestoresDefault();
     void testUpdateCommandWirelessModeUndoRedo();
     void testUpdateCommandRxModeIsRequired();
     void testWirelessModeUndoRestoresConnection();

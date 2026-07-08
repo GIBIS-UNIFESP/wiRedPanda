@@ -895,6 +895,41 @@ void TestSceneUndoredo::testUpdateCommandUndoRedo()
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->label(), QString("newLabel"));
 }
 
+void TestSceneUndoredo::testUpdateCommandAppearanceUndoRestoresDefault()
+{
+    Scene scene;
+
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    scene.addItem(led);
+    const int id = led->id();
+
+    QVERIFY(led->externalFiles().isEmpty()); // starts on the default (resource) appearance
+
+    // Capture old state BEFORE making changes (mirrors ElementEditor::updateElementAppearance())
+    QByteArray oldData;
+    {
+        QDataStream stream(&oldData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        led->save(stream);
+    }
+
+    led->setAppearance(false, "/tmp/custom_led_test.png");
+    QCOMPARE(led->externalFiles(), QStringList{"/tmp/custom_led_test.png"});
+
+    // UpdateCommand captures current (new) state in constructor
+    scene.undoStack()->push(new UpdateCommand({led}, oldData, &scene));
+
+    // undo() must restore the default (resource) appearance, not just leave the custom one
+    scene.undoStack()->undo();
+    QVERIFY(dynamic_cast<GraphicElement *>(scene.itemById(id))->externalFiles().isEmpty());
+
+    // redo() reapplies the custom appearance. Serialization stores non-resource skinNames as a
+    // bare filename (portable across machines/contextDir), so the save()/load() round trip
+    // through UpdateCommand normalizes the path — unrelated to the fix under test here.
+    scene.undoStack()->redo();
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->externalFiles(), QStringList{"custom_led_test.png"});
+}
+
 void TestSceneUndoredo::testUpdateCommandWirelessModeUndoRedo()
 {
     // Changing wireless mode through UpdateCommand (the real ElementEditor path)

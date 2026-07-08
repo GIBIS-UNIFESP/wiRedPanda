@@ -193,6 +193,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
 
     QHash<quint64, Port *> portMap;
     auto context = scene->deserializationContext(portMap, version);
+    context.trustedRoundTrip = true;
 
     for (auto *elm : CommandUtils::findElements(scene, otherIds)) {
         elm->load(stream, context);
@@ -541,6 +542,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
 
     QHash<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
+    context.trustedRoundTrip = true;
 
     for (auto *elm : elements) {
         elm->load(stream, context);
@@ -1029,6 +1031,7 @@ void ChangePortSizeCommand::undo()
 
     QHash<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
+    context.trustedRoundTrip = true;
 
     for (auto *elm : serializationOrder) {
         elm->load(stream, context);
@@ -1251,6 +1254,7 @@ void UpdateBlobCommand::loadData(QByteArray &itemData)
 
     QHash<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version);
+    context.trustedRoundTrip = true;
 
     for (auto *elm : elements) {
         elm->load(stream, context);

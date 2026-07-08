@@ -371,7 +371,7 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
 
         const QString name = entry.value("skinName").toString();
 
-        if (!name.startsWith(":/")) {
+        if (context.trustedRoundTrip || !name.startsWith(":/")) {
             element.m_appearance.setAlternativeAppearanceAt(index, name);
         }
 
