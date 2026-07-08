@@ -76,7 +76,7 @@ bool ExerciseEngine::loadFromResource(const QString &resourcePath)
             const QJsonObject elemObj = elemVal.toObject();
             ExerciseElementRequirement req;
             req.typeName  = elemObj.value("type").toString();
-            req.minCount  = elemObj.value("minCount").toInt(1);
+            req.minCount  = qMax(0, elemObj.value("minCount").toInt(1));
             step.requiredElements.append(req);
         }
 
@@ -85,7 +85,7 @@ bool ExerciseEngine::loadFromResource(const QString &resourcePath)
             ExerciseConnectionRequirement req;
             req.fromTypeName = connObj.value("fromType").toString();
             req.toTypeName   = connObj.value("toType").toString();
-            req.minCount     = connObj.value("minCount").toInt(1);
+            req.minCount     = qMax(0, connObj.value("minCount").toInt(1));
             step.requiredConnections.append(req);
         }
 

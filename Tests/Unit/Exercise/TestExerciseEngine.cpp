@@ -119,3 +119,40 @@ void TestExerciseEngine::testRetranslateEmitsRetranslatedOnly()
 
     Settings::setLanguage(originalLang);
 }
+
+void TestExerciseEngine::testNegativeMinCountClampsToZero()
+{
+    // Regression: a negative minCount (typo'd or malicious custom exercise JSON — Exercise/Tour
+    // content is end-user-writable) silently auto-satisfied "count < minCount" since any
+    // non-negative count is always >= a negative number, permanently skipping the check.
+    const char *const json = R"({
+        "id": "test-negative-mincount",
+        "title": "Test",
+        "steps": [
+            {
+                "key": "step0",
+                "instruction": "Instruction",
+                "requiredElements": [ { "type": "And", "minCount": -5 } ],
+                "requiredConnections": [ { "fromType": "And", "toType": "Or", "minCount": -3 } ]
+            }
+        ]
+    })";
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("negative_mincount.json");
+    {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write(json);
+    }
+
+    ExerciseEngine engine;
+    QVERIFY(engine.loadFromResource(path));
+
+    const ExerciseStep &step = engine.currentStepData();
+    QCOMPARE(step.requiredElements.size(), 1);
+    QCOMPARE(step.requiredElements[0].minCount, 0);
+    QCOMPARE(step.requiredConnections.size(), 1);
+    QCOMPARE(step.requiredConnections[0].minCount, 0);
+}

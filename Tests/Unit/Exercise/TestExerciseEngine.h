@@ -15,4 +15,5 @@ private slots:
     void testRetranslateWhileInactiveIsNoOp();
     void testRetranslatePreservesProgressAndData();
     void testRetranslateEmitsRetranslatedOnly();
+    void testNegativeMinCountClampsToZero();
 };
