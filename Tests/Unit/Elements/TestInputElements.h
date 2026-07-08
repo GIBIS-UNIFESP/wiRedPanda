@@ -49,4 +49,5 @@ private slots:
     void testAppearanceWithForeignAbsolutePathBackslash();
     void testAppearanceWithForeignAbsolutePathMixedSlashes();
     void testAppearanceWithNonExistentFileFallback();
+    void testAppearanceReloadsAfterFileModified();
 };
