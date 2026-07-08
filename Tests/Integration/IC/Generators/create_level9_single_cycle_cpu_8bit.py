@@ -15,7 +15,13 @@ stages integrated (no pipeline — one instruction completes per clock):
 
 Inputs:
   Clock (synchronization signal)
-  Reset (initialize program counter to 0)
+  Reset (initialize program counter to 0 — must be held asserted for the whole
+         instruction-memory programming window, not just pulsed before it: PCInc/
+         InstrLoad are unconditionally tied to Vcc, so every clock pulse used to
+         write a word would otherwise also advance the fetch PC. Reset's async
+         override on the PC/instruction register is what prevents that drift —
+         the same mechanism level9_multi_cycle_cpu_8bit documents for its own
+         phase counter, applied directly here since there's no phase counter)
   ProgAddr[0-7] (instruction memory programming address)
   ProgData[0-7] (instruction memory programming data)
   ProgWrite (instruction memory write enable)

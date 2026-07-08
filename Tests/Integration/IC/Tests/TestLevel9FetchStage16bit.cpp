@@ -204,6 +204,16 @@ void TestLevel9FetchStage16Bit::cleanup()
     }
 }
 
+void TestLevel9FetchStage16Bit::testCPUStructure()
+{
+    auto &f = *s_level9FetchStage16bit;
+    QVERIFY(f.ic != nullptr);
+    // Clock + Reset + PCLoad + PCInc + InstrLoad + PCData[8] + ProgAddr[8] + ProgData[16] + ProgWrite (F53)
+    QCOMPARE(f.ic->inputSize(), 38);
+    // PC[8] + Instruction[16] + RawInstr[16] + OpCode[5] + DestReg[5] + SrcBits[6]
+    QCOMPARE(f.ic->outputSize(), 56);
+}
+
 void TestLevel9FetchStage16Bit::testFetchStage16Bit_data()
 {
     QTest::addColumn<int>("pcData");

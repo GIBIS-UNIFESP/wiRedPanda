@@ -14,14 +14,14 @@ Usage:
 
 Level Structure:
 - Level 1: Storage & Latching (4 generators)
-- Level 2: Simple Arithmetic & Logic (8 generators)
+- Level 2: Simple Arithmetic & Logic (13 generators)
 - Level 3: Enhanced Logic & 1-bit Systems (4 generators)
 - Level 4: 4-bit Arithmetic & Systems (12 generators)
 - Level 5: 4-bit Control & Advanced (9 generators)
 - Level 6: 8-bit Arithmetic & Storage (9 generators)
 - Level 7: CPU Building Blocks (7 generators)
 - Level 8: Pipeline Stages (4 generators)
-- Level 9: Complete CPUs (3 generators)
+- Level 9: Complete CPUs (6 generators)
 """
 
 import ast
