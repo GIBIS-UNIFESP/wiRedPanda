@@ -465,14 +465,16 @@ jobs:
       run : |
         # Create clean distribution directory
         cd build-sentry-crashpad
+        cmake --install . --prefix _stage
         mkdir wiredpanda-$env:VERSION
 
-        # Copy only essential files to clean directory
-        cp wiredpanda.exe wiredpanda-$env:VERSION/
+        # _stage/bin already has wiredpanda.exe and Examples/ colocated (matches
+        # InstallRelativePaths' Windows search: appDir + "/Examples"); copy that
+        # whole tree, then add the Sentry files install() doesn't cover.
+        Copy-Item -Recurse _stage/bin/* wiredpanda-$env:VERSION/
         cp crashpad_handler.exe wiredpanda-$env:VERSION/
         cp sentry.dll wiredpanda-$env:VERSION/
         cp crashpad_wer.dll wiredpanda-$env:VERSION/
-        cp -r ../examples wiredpanda-$env:VERSION/
 
         # Run windeployqt in the clean directory
         cd wiredpanda-$env:VERSION
