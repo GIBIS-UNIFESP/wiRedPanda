@@ -7,7 +7,6 @@
 #include <cmath>
 #include <memory>
 
-#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QPainter>
@@ -208,27 +207,12 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     // or the old footprint's stale pixels are never scheduled for repaint.
     m_owner->prepareGeometryChange();
 
-    QString path = pixmapPath;
-
-    // Qt resource paths start with ":/"; a path that already resolves as given (e.g. a real,
-    // existing absolute path freshly chosen via the file dialog) needs no further resolution and
-    // loads directly, even before the project has ever been saved. Gate on existence rather than
-    // QFileInfo::isRelative(): a Windows-style "C:/..." path is absolute per QFileInfo when
-    // running on Windows, but a project saved on a different OS means that exact path usually
-    // doesn't exist there either, so it still needs to fall through to the contextDir/filename
-    // fallback below — the same case BeWavedDolphin::createWaveform() already guards with an
-    // isRelative() || !exists() check.
-    if (!path.startsWith(":/") && !QFileInfo::exists(path)) {
-        const QString contextDir = GraphicElement::resolveContextDir(m_owner);
-        if (!contextDir.isEmpty()) {
-            const QDir dir(contextDir);
-            const QString resolved = dir.filePath(path);
-
-            path = QFileInfo::exists(resolved)
-                       ? resolved
-                       : dir.filePath(QFileInfo(QString(path).replace('\\', '/')).fileName());
-        }
-    }
+    // Resolution against contextDir already happened once, at load time (see
+    // ExternalFilePath::forReading(), called from GraphicElementSerializer) — by the
+    // time a path reaches here it's either a resource reference or already directly
+    // usable (a fresh absolute path from a file picker, or an already-resolved one
+    // read back from a saved project). Nothing left to do here but load it.
+    const QString path = pixmapPath;
 
     // QPixmap::load() already caches internally via the shared QPixmapCache, keyed on
     // path + mtime + size (see MainWindow's setCacheLimit() call for the app-wide budget) — a

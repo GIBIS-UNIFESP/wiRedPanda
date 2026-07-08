@@ -90,7 +90,7 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if (scene_) {
             QDataStream stream(&oldData, QIODevice::WriteOnly);
             Serialization::writePandaHeader(stream);
-            save(stream);
+            save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
         }
 
         setOn(!m_isOn);
@@ -104,9 +104,9 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mousePressEvent(event);
 }
 
-void InputSwitch::save(QDataStream &stream) const
+void InputSwitch::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
     map.insert("isOn", m_isOn);

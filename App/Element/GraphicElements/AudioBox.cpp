@@ -3,12 +3,11 @@
 
 #include "App/Element/GraphicElements/AudioBox.h"
 
-#include <QDir>
-
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElement.h"
+#include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -66,21 +65,13 @@ void AudioBox::setAudio(const QString &audioPath)
         return;
     }
 
-    // Qt resource paths start with ":/"; anything else is a filesystem path
-    // relative to the project's working directory (where the .panda file lives).
-    // Try the path as-is against contextDir first; if not found, fall back to
-    // just the filename — handles cross-platform absolute paths from old files.
-    QString path = audioPath;
+    // Resolution against contextDir already happened once, at load time (see
+    // ExternalFilePath::forReading(), called from load() below) -- by the time a
+    // path reaches here it's either a resource reference or already directly
+    // usable (a fresh absolute path from a file picker, or an already-resolved
+    // one read back from a saved project). Just validate it's actually there.
+    const QString &path = audioPath;
     if (!path.startsWith(":/")) {
-        const QDir dir(GraphicElement::resolveContextDir(this));
-        const QString resolved = dir.filePath(path);
-
-        if (!QFileInfo::exists(resolved)) {
-            path = dir.filePath(QFileInfo(QString(path).replace('\\', '/')).fileName());
-        } else {
-            path = resolved;
-        }
-
         const QFileInfo info(path);
         if (!info.exists() || !info.isReadable()) {
             const QString reason = !info.exists()
@@ -151,26 +142,11 @@ QStringList AudioBox::externalFiles() const
     return result;
 }
 
-void AudioBox::save(QDataStream &stream) const
+void AudioBox::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
 
-    const QString &path = m_audio.filePath();
-    QString audioPath = path;
-    if (!path.startsWith(":/")) {
-        // Truncating to a bare filename is only lossless if that name already resolves
-        // next to the project; otherwise this is an in-memory-only snapshot (e.g. an
-        // UpdateCommand undo/redo round-trip triggered by an unrelated property edit) or
-        // an unsaved project, and shortening the path now would make it permanently
-        // unresolvable — keep the full path instead.
-        const QString contextDir = GraphicElement::resolveContextDir(this);
-        const QString basename = m_audio.fileName();
-        const bool alreadyResolvable = !contextDir.isEmpty()
-            && QFileInfo(QDir(contextDir).filePath(basename)).exists();
-        if (alreadyResolvable) {
-            audioPath = basename;
-        }
-    }
+    const QString audioPath = ExternalFilePath::forWriting(m_audio.filePath(), options.purpose);
 
     QMap<QString, QVariant> map;
     map.insert("audiobox", audioPath);
@@ -191,7 +167,9 @@ void AudioBox::load(QDataStream &stream, SerializationContext &context)
     if (!VersionInfo::hasQMapFormat(context.version)) {
         // v2.4–4.0 stored the path as a bare QString
         const QString audio = Serialization::readBoundedString(stream);
-        setAudio(audio);
+        if (const auto resolved = ExternalFilePath::forReading(audio, context.contextDir, context.purpose)) {
+            setAudio(*resolved);
+        }
     }
 
     if (VersionInfo::hasQMapFormat(context.version)) {
@@ -199,7 +177,9 @@ void AudioBox::load(QDataStream &stream, SerializationContext &context)
         QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("audiobox")) {
-            setAudio(map.value("audiobox").toString());
+            if (const auto resolved = ExternalFilePath::forReading(map.value("audiobox").toString(), context.contextDir, context.purpose)) {
+                setAudio(*resolved);
+            }
         }
         if (map.contains("volume")) {
             bool ok = false;

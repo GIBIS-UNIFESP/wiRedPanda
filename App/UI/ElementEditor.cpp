@@ -193,7 +193,7 @@ void ElementEditor::updateElementAppearance()
             {
                 QDataStream stream(&oldData, QIODevice::WriteOnly);
                 Serialization::writePandaHeader(stream);
-                elm->save(stream);
+                elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
             }
             elm->setAppearanceAt(appearanceIndex, fileName);
             if (m_scene) {
@@ -644,7 +644,7 @@ void ElementEditor::apply()
     Serialization::writePandaHeader(stream);
 
     for (auto *elm : std::as_const(m_elements)) {
-        elm->save(stream);
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
         for (const auto &prop : elm->editableProperties()) {
             applyProperty(elm, prop.type);
         }

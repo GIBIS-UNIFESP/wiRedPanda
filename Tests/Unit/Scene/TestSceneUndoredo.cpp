@@ -7,6 +7,7 @@
 
 #include <QDataStream>
 #include <QGraphicsSceneMouseEvent>
+#include <QImage>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QUndoCommand>
@@ -874,7 +875,7 @@ void TestSceneUndoredo::testUpdateCommandUndoRedo()
     {
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        sw->save(stream);
+        sw->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     // Change the label
@@ -902,32 +903,49 @@ void TestSceneUndoredo::testUpdateCommandAppearanceUndoRestoresDefault()
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene.addItem(led);
     const int id = led->id();
+    auto *ledElm = dynamic_cast<GraphicElement *>(scene.itemById(id));
 
     QVERIFY(led->externalFiles().isEmpty()); // starts on the default (resource) appearance
+    const QRectF defaultBounds = ledElm->boundingRect();
+
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString imagePath = tempDir.filePath("custom_led_test.png");
+
+    // Deliberately a very different size than the default LED icon, so a
+    // successful pixmap load is observable via boundingRect() changing.
+    QImage image(400, 400, QImage::Format_RGB32);
+    image.fill(Qt::red);
+    QVERIFY(image.save(imagePath));
 
     // Capture old state BEFORE making changes (mirrors ElementEditor::updateElementAppearance())
     QByteArray oldData;
     {
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        led->save(stream);
+        led->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
-    led->setAppearance(false, "/tmp/custom_led_test.png");
-    QCOMPARE(led->externalFiles(), QStringList{"/tmp/custom_led_test.png"});
+    led->setAppearance(false, imagePath);
+    QCOMPARE(led->externalFiles(), QStringList{imagePath});
+    QVERIFY(ledElm->boundingRect() != defaultBounds);
 
     // UpdateCommand captures current (new) state in constructor
     scene.undoStack()->push(new UpdateCommand({led}, oldData, &scene));
 
     // undo() must restore the default (resource) appearance, not just leave the custom one
     scene.undoStack()->undo();
-    QVERIFY(dynamic_cast<GraphicElement *>(scene.itemById(id))->externalFiles().isEmpty());
+    QVERIFY(ledElm->externalFiles().isEmpty());
+    QCOMPARE(ledElm->boundingRect(), defaultBounds);
 
-    // redo() reapplies the custom appearance. Serialization stores non-resource skinNames as a
-    // bare filename (portable across machines/contextDir), so the save()/load() round trip
-    // through UpdateCommand normalizes the path — unrelated to the fix under test here.
+    // redo() reapplies the custom appearance. UpdateCommand snapshots are InMemorySnapshot
+    // serialization, which round-trips the full path losslessly (unlike a PortableFile save,
+    // which strips non-resource skinNames to a bare filename) — the full absolute path must
+    // survive undo/redo, and the pixmap must actually reload, with no contextDir ever having
+    // been set.
     scene.undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id))->externalFiles(), QStringList{"custom_led_test.png"});
+    QCOMPARE(ledElm->externalFiles(), QStringList{imagePath});
+    QVERIFY(ledElm->boundingRect() != defaultBounds);
 }
 
 void TestSceneUndoredo::testUpdateCommandWirelessModeUndoRedo()
@@ -949,7 +967,7 @@ void TestSceneUndoredo::testUpdateCommandWirelessModeUndoRedo()
     {
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        node->save(stream);
+        node->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     // Change to Tx mode
@@ -997,7 +1015,7 @@ void TestSceneUndoredo::testUpdateCommandRxModeIsRequired()
     {
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        node->save(stream);
+        node->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     // Switch to Rx mode — input port becomes optional
@@ -1064,7 +1082,7 @@ void TestSceneUndoredo::testWirelessModeUndoRestoresConnection()
     {
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        node->save(stream);
+        node->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     // Set to Tx mode (hides output port) — connection not deleted by setWirelessMode
@@ -1144,7 +1162,7 @@ void TestSceneUndoredo::testWirelessRxModeUndoRestoresConnection()
     {
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        node->save(stream);
+        node->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     // Set to Rx mode (hides input port)
@@ -1189,7 +1207,7 @@ void TestSceneUndoredo::testWirelessUndoRestoresPortVisibility()
     {
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        node->save(stream);
+        node->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     // Change to Tx mode — output port hidden
@@ -1224,7 +1242,7 @@ void TestSceneUndoredo::testWirelessUndoRestoresPortVisibility()
     {
         QDataStream stream(&noneData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        elm->save(stream);
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     elm->setWirelessMode(WirelessMode::Rx);

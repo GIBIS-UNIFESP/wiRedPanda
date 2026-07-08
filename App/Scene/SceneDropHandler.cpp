@@ -105,7 +105,7 @@ void SceneDropHandler::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
     offset = event->scenePos() - offset;
 
     QHash<quint64, Port *> portMap;
-    auto context = m_scene->deserializationContext(portMap, version);
+    auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
     const auto itemList = Serialization::deserialize(stream, context);
 
     m_scene->receiveCommand(new AddItemsCommand(itemList, m_scene));

@@ -20,6 +20,10 @@ private slots:
     void testSaveWithSpecialCharactersInFilename();
     void testSavePreservesElementData();
 
+    // External-file dependency copying on save
+    void testSaveCopiesExternalAppearanceFileOnFirstSave();
+    void testSaveCopiesNewlyAddedDependencyOnResave();
+
     // Load Operations Tests (4 tests)
     void testLoadFromValidFile();
     void testLoadNonExistentFileThrowsException();

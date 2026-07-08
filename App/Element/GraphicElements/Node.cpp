@@ -173,9 +173,9 @@ void Node::setWirelessMode(WirelessMode mode)
 
 // --- Serialization ---
 
-void Node::save(QDataStream &stream) const
+void Node::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
     map.insert("wirelessMode", static_cast<int>(m_wirelessMode));

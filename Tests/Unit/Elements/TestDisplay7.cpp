@@ -35,7 +35,7 @@ void TestDisplay7::testDisplay7SaveLoad()
 
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
-    display.save(writeStream);
+    display.save(writeStream, {.purpose = SerializationPurpose::PortableFile});
     QVERIFY(!data.isEmpty());
 }
 

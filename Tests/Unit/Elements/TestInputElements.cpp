@@ -140,7 +140,7 @@ void TestInputElements::testInputSwitchSaveState()
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
 
-    inputSwitch.save(stream);
+    inputSwitch.save(stream, {.purpose = SerializationPurpose::PortableFile});
 
     // Verify data was written
     QVERIFY(data.size() > 0);
@@ -154,7 +154,7 @@ void TestInputElements::testInputSwitchLoadOldVersion()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    inputSwitch1->save(saveStream);
+    inputSwitch1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
     inputSwitch1.reset();
 
     // Load with old version (< 4.1) - will try to read old format
@@ -165,7 +165,7 @@ void TestInputElements::testInputSwitchLoadOldVersion()
     // For versions < 4.1, loadOldFormat reads positional fields.  The saved data
     // is in QMap format, so readBoundedString rejects the map-count bytes as an
     // oversized string → PANDACEPTION is the expected result of this format mismatch.
-    SerializationContext context = {portMap, QVersionNumber(3, 0), {}};
+    SerializationContext context = {portMap, QVersionNumber(3, 0), SerializationPurpose::PortableFile, {}};
     bool threw = false;
     try {
         inputSwitch2->load(loadStream, context);
@@ -185,7 +185,7 @@ void TestInputElements::testInputSwitchLoadNewVersion()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    inputSwitch1->save(saveStream);
+    inputSwitch1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
     inputSwitch1.reset();
 
     // Load with new version (>= 4.1)
@@ -193,7 +193,7 @@ void TestInputElements::testInputSwitchLoadNewVersion()
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
+    SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, {}};
 
     inputSwitch2->load(loadStream, context);
 
@@ -356,7 +356,7 @@ void TestInputElements::testInputButtonSaveState()
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
 
-    inputButton.save(stream);
+    inputButton.save(stream, {.purpose = SerializationPurpose::PortableFile});
 
     // Verify data was written
     QVERIFY(data.size() > 0);
@@ -370,7 +370,7 @@ void TestInputElements::testInputButtonLoadOldVersion()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    inputButton1->save(saveStream);
+    inputButton1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
     inputButton1.reset();
 
     // Load with old version (3.1 - 4.0)
@@ -380,7 +380,7 @@ void TestInputElements::testInputButtonLoadOldVersion()
     QHash<quint64, Port *> portMap;
     // Save wrote QMap format; loadOldFormat reads positional fields → format mismatch.
     // readBoundedString rejects the map-count bytes as an oversized string → throws.
-    SerializationContext context = {portMap, QVersionNumber(3, 5), {}};
+    SerializationContext context = {portMap, QVersionNumber(3, 5), SerializationPurpose::PortableFile, {}};
     bool threw = false;
     try {
         inputButton2->load(loadStream, context);
@@ -399,7 +399,7 @@ void TestInputElements::testInputButtonLoadNewVersion()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    inputButton1->save(saveStream);
+    inputButton1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
     inputButton1.reset();
 
     // Load with new version (>= 4.1)
@@ -407,7 +407,7 @@ void TestInputElements::testInputButtonLoadNewVersion()
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
+    SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, {}};
 
     inputButton2->load(loadStream, context);
 
@@ -503,149 +503,115 @@ void TestInputElements::testInputSwitch()
     QCOMPARE(elm.outputPort()->status(), Status::Inactive);
 }
 
-void TestInputElements::testAppearanceWithRelativePath()
-{
-    // Bare filename resolved against scene's contextDir
-    QTemporaryDir tempDir;
-    QVERIFY(tempDir.isValid());
-
-    const QString appearanceFileName = "custom_appearance.svg";
-    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + appearanceFileName));
-
-    WorkSpace workspace;
-    workspace.scene()->setContextDir(tempDir.path());
-
-    auto *inputSwitch = new InputSwitch();
-    workspace.scene()->addItem(inputSwitch);
-
-    bool threw = false;
-    try {
-        inputSwitch->setAppearance(false, appearanceFileName);
-    } catch (const Pandaception &) {
-        threw = true;
-    }
-
-    QVERIFY2(!threw, "setAppearance should resolve relative filename against contextDir");
-}
-
 void TestInputElements::testAppearanceWithSameOsAbsolutePath()
 {
-    // Absolute path on the current OS — resolved directly
+    // setAppearance() takes a directly-usable path as-is -- no contextDir resolution of
+    // its own (that now happens once, at load time, via ExternalFilePath::forReading());
+    // see testLoadResolvesAppearanceBareFilenameAgainstContextDir() below and
+    // Tests/Unit/Core/TestExternalFilePath.cpp for the resolution mechanics themselves.
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
 
-    const QString appearanceFileName = "custom_appearance.svg";
-    const QString appearanceFullPath = tempDir.path() + "/" + appearanceFileName;
+    const QString appearanceFullPath = tempDir.path() + "/custom_appearance.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", appearanceFullPath));
 
-    WorkSpace workspace;
-    workspace.scene()->setContextDir("/some/unrelated/directory");
-
-    auto *inputSwitch = new InputSwitch();
-    workspace.scene()->addItem(inputSwitch);
+    InputSwitch inputSwitch;
 
     bool threw = false;
     try {
-        inputSwitch->setAppearance(false, appearanceFullPath);
+        inputSwitch.setAppearance(false, appearanceFullPath);
     } catch (const Pandaception &) {
         threw = true;
     }
 
-    QVERIFY2(!threw, "setAppearance should resolve same-OS absolute path directly");
-}
-
-void TestInputElements::testAppearanceWithForeignAbsolutePathForwardSlash()
-{
-    // Windows-style path with forward slashes on Linux
-    QTemporaryDir tempDir;
-    QVERIFY(tempDir.isValid());
-
-    const QString appearanceFileName = "custom_appearance.svg";
-    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + appearanceFileName));
-
-    WorkSpace workspace;
-    workspace.scene()->setContextDir(tempDir.path());
-
-    auto *inputSwitch = new InputSwitch();
-    workspace.scene()->addItem(inputSwitch);
-
-    bool threw = false;
-    try {
-        inputSwitch->setAppearance(false, "C:/Users/alice/project/" + appearanceFileName);
-    } catch (const Pandaception &) {
-        threw = true;
-    }
-
-    QVERIFY2(!threw, "setAppearance should resolve foreign path with forward slashes via filename fallback");
-}
-
-void TestInputElements::testAppearanceWithForeignAbsolutePathBackslash()
-{
-    // Windows-style path with backslashes on Linux
-    QTemporaryDir tempDir;
-    QVERIFY(tempDir.isValid());
-
-    const QString appearanceFileName = "custom_appearance.svg";
-    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + appearanceFileName));
-
-    WorkSpace workspace;
-    workspace.scene()->setContextDir(tempDir.path());
-
-    auto *inputSwitch = new InputSwitch();
-    workspace.scene()->addItem(inputSwitch);
-
-    bool threw = false;
-    try {
-        inputSwitch->setAppearance(false, "C:\\Users\\alice\\project\\" + appearanceFileName);
-    } catch (const Pandaception &) {
-        threw = true;
-    }
-
-    QVERIFY2(!threw, "setAppearance should resolve foreign path with backslashes via filename fallback");
-}
-
-void TestInputElements::testAppearanceWithForeignAbsolutePathMixedSlashes()
-{
-    // Windows-style path with mixed forward and backslashes
-    QTemporaryDir tempDir;
-    QVERIFY(tempDir.isValid());
-
-    const QString appearanceFileName = "custom_appearance.svg";
-    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", tempDir.path() + "/" + appearanceFileName));
-
-    WorkSpace workspace;
-    workspace.scene()->setContextDir(tempDir.path());
-
-    auto *inputSwitch = new InputSwitch();
-    workspace.scene()->addItem(inputSwitch);
-
-    bool threw = false;
-    try {
-        inputSwitch->setAppearance(false, "C:\\Users/alice\\project/" + appearanceFileName);
-    } catch (const Pandaception &) {
-        threw = true;
-    }
-
-    QVERIFY2(!threw, "setAppearance should resolve foreign path with mixed slashes via filename fallback");
+    QVERIFY2(!threw, "setAppearance should accept a direct, existing absolute path");
 }
 
 void TestInputElements::testAppearanceWithNonExistentFileFallback()
 {
-    // Both full path and filename fallback fail — should throw Pandaception
-    WorkSpace workspace;
-    workspace.scene()->setContextDir("/some/empty/directory");
-
-    auto *inputSwitch = new InputSwitch();
-    workspace.scene()->addItem(inputSwitch);
+    InputSwitch inputSwitch;
 
     bool threw = false;
     try {
-        inputSwitch->setAppearance(false, "C:\\Users\\alice\\project\\nonexistent_appearance_12345.svg");
+        inputSwitch.setAppearance(false, "/some/empty/directory/nonexistent_appearance_12345.svg");
     } catch (const Pandaception &) {
         threw = true;
     }
 
-    QVERIFY2(threw, "setAppearance should throw when neither full path nor filename fallback resolves");
+    QVERIFY2(threw, "setAppearance should throw when the given path does not exist");
+}
+
+void TestInputElements::testLoadResolvesAppearanceBareFilenameAgainstContextDir()
+{
+    // Integration check that GraphicElementSerializer's appearance-restore loop is wired
+    // to ExternalFilePath::forReading(): a PortableFile save() strips a non-resource path
+    // to a bare filename; loading it back with contextDir pointing at that file's
+    // directory must resolve the full path and actually reload the pixmap.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString appearanceFullPath = tempDir.path() + "/custom_appearance.svg";
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", appearanceFullPath));
+
+    InputSwitch inputSwitch1;
+    inputSwitch1.setAppearance(false, appearanceFullPath);
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    inputSwitch1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
+
+    InputSwitch inputSwitch2;
+    QDataStream loadStream(data);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, tempDir.path()};
+    inputSwitch2.load(loadStream, context);
+
+    QCOMPARE(inputSwitch2.externalFiles(), QStringList{appearanceFullPath});
+}
+
+void TestInputElements::testLoadResolvesAppearanceForeignPathViaBareFilenameFallback()
+{
+    // A stored Windows-style absolute path (saved on a different OS/machine) doesn't
+    // exist locally; load() must fall back to a bare-filename lookup in contextDir.
+    // See Tests/Unit/Core/TestExternalFilePath.cpp for the exhaustive separator matrix --
+    // this just confirms the appearance-restore path actually exercises that fallback.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString appearanceFileName = "custom_appearance.svg";
+    const QString appearanceFullPath = tempDir.path() + "/" + appearanceFileName;
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", appearanceFullPath));
+
+    InputSwitch inputSwitch1;
+    inputSwitch1.setAppearance(false, appearanceFullPath);
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    inputSwitch1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
+
+    // Rewrite the stored appearance skinName to a foreign, locally-nonexistent
+    // Windows-style absolute path with the same bare filename.
+    QMap<QString, QVariant> propsMap;
+    QList<QMap<QString, QVariant>> inputPorts, outputPorts, appearancesMap;
+    QMap<QString, QVariant> extraMap;
+    {
+        QDataStream readStream(data);
+        readStream >> propsMap >> inputPorts >> outputPorts >> appearancesMap >> extraMap;
+    }
+    QVERIFY(!appearancesMap.isEmpty());
+    appearancesMap[0]["skinName"] = "C:\\Users\\alice\\project\\" + appearanceFileName;
+
+    QByteArray rewritten;
+    {
+        QDataStream writeStream(&rewritten, QIODevice::WriteOnly);
+        writeStream << propsMap << inputPorts << outputPorts << appearancesMap << extraMap;
+    }
+
+    InputSwitch inputSwitch2;
+    QDataStream loadStream(rewritten);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, tempDir.path()};
+    inputSwitch2.load(loadStream, context);
+
+    QCOMPARE(inputSwitch2.externalFiles(), QStringList{appearanceFullPath});
 }
 
 void TestInputElements::testAppearanceReloadsAfterFileModified()

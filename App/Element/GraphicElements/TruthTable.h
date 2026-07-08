@@ -59,7 +59,7 @@ public:
     /// \reimp
     void load(QDataStream &stream, SerializationContext &context) override;
     /// \reimp
-    void save(QDataStream &stream) const override;
+    void save(QDataStream &stream, SerializationOptions options) const override;
 
 private:
     // --- Internal methods ---

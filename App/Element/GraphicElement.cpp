@@ -22,7 +22,6 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
-#include "App/Core/ContextDirProvider.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
@@ -296,19 +295,6 @@ void GraphicElement::refresh()
     // Reload appearance index 0, which is the currently active appearance for the element's
     // present state (e.g. after a theme change or appearance file replacement).
     setPixmap(0);
-}
-
-QString GraphicElement::resolveContextDir(const QGraphicsItem *item)
-{
-    if (auto *provider = dynamic_cast<ContextDirProvider *>(item->scene())) {
-        return provider->contextDir();
-    }
-    // Element not yet added to a scene (mid-deserialization): use the
-    // contextDir stored on the element during load().
-    if (auto *ge = dynamic_cast<const GraphicElement *>(item)) {
-        return ge->loadContextDir();
-    }
-    return {};
 }
 
 QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

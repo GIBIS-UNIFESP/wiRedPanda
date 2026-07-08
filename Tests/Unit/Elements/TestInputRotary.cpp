@@ -359,7 +359,7 @@ void TestInputRotary::testSaveCurrentPort()
     // Save to stream
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    rotary->save(stream);
+    rotary->save(stream, {.purpose = SerializationPurpose::PortableFile});
 
     // Verify data was written
     QVERIFY(data.size() > 0);
@@ -377,7 +377,7 @@ void TestInputRotary::testLoadCurrentPort()
     // Save state
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    rotary->save(saveStream);
+    rotary->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
     elem.reset();
 
     // Create new element and load state
@@ -387,7 +387,7 @@ void TestInputRotary::testLoadCurrentPort()
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
+    SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, {}};
     rotary2->load(loadStream, context);
 
     // Verify port was loaded correctly
@@ -406,7 +406,7 @@ void TestInputRotary::testSaveLoadPreservesState()
     // Save and load cycle
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    rotary->save(saveStream);
+    rotary->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
     elem.reset();
 
     // Load into new element
@@ -416,7 +416,7 @@ void TestInputRotary::testSaveLoadPreservesState()
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
+    SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, {}};
     rotary2->load(loadStream, context);
 
     // Verify state preserved

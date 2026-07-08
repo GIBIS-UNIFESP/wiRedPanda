@@ -130,6 +130,7 @@
 #include "Tests/Unit/Core/TestApplication.h"
 #include "Tests/Unit/Core/TestDragDropPayload.h"
 #include "Tests/Unit/Core/TestExerciseTourResources.h"
+#include "Tests/Unit/Core/TestExternalFilePath.h"
 #include "Tests/Unit/Core/TestInstallRelativePaths.h"
 #include "Tests/Unit/Core/TestNotifyCatch.h"
 #include "Tests/Unit/Core/TestSettings.h"
@@ -335,6 +336,7 @@ int main(int argc, char **argv)
         {"TestThemeManager", []() -> QObject * { return new TestThemeManager; }},
         {"TestCoreSettings", []() -> QObject * { return new TestCoreSettings; }},
         {"TestExerciseTourResources", []() -> QObject * { return new TestExerciseTourResources; }},
+        {"TestExternalFilePath", []() -> QObject * { return new TestExternalFilePath; }},
         {"TestInstallRelativePaths", []() -> QObject * { return new TestInstallRelativePaths; }},
         {"TestExerciseEngine", []() -> QObject * { return new TestExerciseEngine; }},
         {"TestUpdateChecker", []() -> QObject * { return new TestUpdateChecker; }},

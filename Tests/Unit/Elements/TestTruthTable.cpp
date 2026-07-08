@@ -297,7 +297,7 @@ void TestTruthTable::testSaveKey()
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
 
-    truthTable.save(stream);
+    truthTable.save(stream, {.purpose = SerializationPurpose::PortableFile});
 
     // Verify data was written
     QVERIFY(data.size() > 0);
@@ -315,14 +315,14 @@ void TestTruthTable::testLoadKeyVersion42()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    truthTable1.save(saveStream);
+    truthTable1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Load into new truth table with version 4.2
     TruthTable truthTable2;
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, QVersionNumber(4, 2), {}};
+    SerializationContext context = {portMap, QVersionNumber(4, 2), SerializationPurpose::PortableFile, {}};
     truthTable2.load(loadStream, context);
 
     // Verify key was loaded correctly
@@ -342,7 +342,7 @@ void TestTruthTable::testLoadKeyOldVersion()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    truthTable1.save(saveStream);
+    truthTable1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Load with old version (< 4.2)
     TruthTable truthTable2;
@@ -350,7 +350,7 @@ void TestTruthTable::testLoadKeyOldVersion()
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
     // Load with version 4.1 (less than 4.2)
-    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
+    SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, {}};
     truthTable2.load(loadStream, context);
 
     // Key should remain at default (all zeros) for old versions

@@ -16,6 +16,7 @@
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
 #include "App/IO/Serialization.h"
+#include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
 #include "App/Wiring/Connection.h"
@@ -202,7 +203,7 @@ void TestAudioBox::testSaveAudioPath()
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
 
-    audioBox.save(stream);
+    audioBox.save(stream, {.purpose = SerializationPurpose::PortableFile});
 
     // Verify data was written
     QVERIFY(data.size() > 0);
@@ -217,14 +218,14 @@ void TestAudioBox::testLoadVersionOld()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    audioBox1->save(saveStream);
+    audioBox1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Load and verify the audio path round-trips correctly
     auto audioBox2 = std::make_unique<AudioBox>();
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, FormatRev::current, {}};
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, {}};
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded correctly
@@ -239,132 +240,122 @@ void TestAudioBox::testLoadVersionNew()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    audioBox1->save(saveStream);
+    audioBox1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Create new audio box and load with current version
     auto audioBox2 = std::make_unique<AudioBox>();
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, FormatRev::current, {}};
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, {}};
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded
     QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
 }
 
-void TestAudioBox::testSetAudioWithRelativePath()
+void TestAudioBox::testSetAudioWithAbsolutePath()
 {
-    // Bare filename resolved against scene's contextDir
+    // setAudio() takes a directly-usable path as-is -- no contextDir resolution of its
+    // own (that now happens once, at load time, via ExternalFilePath::forReading(); see
+    // testLoadResolvesBareFilenameAgainstContextDir() below and Tests/Unit/Core/TestExternalFilePath.cpp
+    // for the resolution mechanics themselves).
     QTemporaryFile tempFile;
     QVERIFY(tempFile.open());
     tempFile.write("DUMMY AUDIO DATA");
     tempFile.close();
 
-    const QFileInfo tempInfo(tempFile.fileName());
-    WorkSpace workspace;
-    workspace.scene()->setContextDir(tempInfo.absolutePath());
+    AudioBox audioBox;
+    audioBox.setAudio(QFileInfo(tempFile.fileName()).absoluteFilePath());
 
-    auto *audioBox = new AudioBox();
-    workspace.scene()->addItem(audioBox);
-    audioBox->setAudio(tempInfo.fileName());
-
-    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
+    QCOMPARE(audioBox.audio(), QFileInfo(tempFile.fileName()).absoluteFilePath());
 }
 
-void TestAudioBox::testSetAudioWithSameOsAbsolutePath()
+void TestAudioBox::testSetAudioWithNonExistentPathThrows()
 {
-    // Absolute path on the current OS — resolved directly
-    QTemporaryFile tempFile;
-    QVERIFY(tempFile.open());
-    tempFile.write("DUMMY AUDIO DATA");
-    tempFile.close();
-
-    const QFileInfo tempInfo(tempFile.fileName());
-    WorkSpace workspace;
-    workspace.scene()->setContextDir("/some/unrelated/directory");
-
-    auto *audioBox = new AudioBox();
-    workspace.scene()->addItem(audioBox);
-    audioBox->setAudio(tempInfo.absoluteFilePath());
-
-    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
-}
-
-void TestAudioBox::testSetAudioWithForeignAbsolutePathForwardSlash()
-{
-    // Windows-style path with forward slashes on Linux
-    QTemporaryFile tempFile;
-    QVERIFY(tempFile.open());
-    tempFile.write("DUMMY AUDIO DATA");
-    tempFile.close();
-
-    const QFileInfo tempInfo(tempFile.fileName());
-    WorkSpace workspace;
-    workspace.scene()->setContextDir(tempInfo.absolutePath());
-
-    auto *audioBox = new AudioBox();
-    workspace.scene()->addItem(audioBox);
-    audioBox->setAudio("C:/Users/alice/project/" + tempInfo.fileName());
-
-    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
-}
-
-void TestAudioBox::testSetAudioWithForeignAbsolutePathBackslash()
-{
-    // Windows-style path with backslashes on Linux
-    QTemporaryFile tempFile;
-    QVERIFY(tempFile.open());
-    tempFile.write("DUMMY AUDIO DATA");
-    tempFile.close();
-
-    const QFileInfo tempInfo(tempFile.fileName());
-    WorkSpace workspace;
-    workspace.scene()->setContextDir(tempInfo.absolutePath());
-
-    auto *audioBox = new AudioBox();
-    workspace.scene()->addItem(audioBox);
-    audioBox->setAudio("C:\\Users\\alice\\project\\" + tempInfo.fileName());
-
-    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
-}
-
-void TestAudioBox::testSetAudioWithForeignAbsolutePathMixedSlashes()
-{
-    // Windows-style path with mixed forward and backslashes
-    QTemporaryFile tempFile;
-    QVERIFY(tempFile.open());
-    tempFile.write("DUMMY AUDIO DATA");
-    tempFile.close();
-
-    const QFileInfo tempInfo(tempFile.fileName());
-    WorkSpace workspace;
-    workspace.scene()->setContextDir(tempInfo.absolutePath());
-
-    auto *audioBox = new AudioBox();
-    workspace.scene()->addItem(audioBox);
-    audioBox->setAudio("C:\\Users/alice\\project/" + tempInfo.fileName());
-
-    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
-}
-
-void TestAudioBox::testSetAudioWithNonExistentFileFallback()
-{
-    // Both full path and filename fallback fail — should throw Pandaception
-    WorkSpace workspace;
-    workspace.scene()->setContextDir("/some/empty/directory");
-
-    auto *audioBox = new AudioBox();
-    workspace.scene()->addItem(audioBox);
+    AudioBox audioBox;
 
     bool threw = false;
     try {
-        audioBox->setAudio("C:\\Users\\alice\\project\\nonexistent_audio_12345.wav");
+        audioBox.setAudio("/some/empty/directory/nonexistent_audio_12345.wav");
     } catch (const Pandaception &) {
         threw = true;
     }
 
-    QVERIFY2(threw, "setAudio should throw when neither full path nor filename fallback resolves");
+    QVERIFY2(threw, "setAudio should throw when the given path does not exist");
+}
+
+void TestAudioBox::testLoadResolvesBareFilenameAgainstContextDir()
+{
+    // Integration check that AudioBox::load() is wired to ExternalFilePath::forReading():
+    // a PortableFile save() strips a non-resource path to a bare filename; loading it
+    // back with contextDir pointing at that file's directory must resolve the full path.
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+    const QFileInfo tempInfo(tempFile.fileName());
+
+    AudioBox audioBox1;
+    audioBox1.setAudio(tempInfo.absoluteFilePath());
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    audioBox1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
+
+    AudioBox audioBox2;
+    QDataStream loadStream(data);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, tempInfo.absolutePath()};
+    audioBox2.load(loadStream, context);
+
+    QCOMPARE(audioBox2.audio(), tempInfo.absoluteFilePath());
+}
+
+void TestAudioBox::testLoadResolvesForeignPathViaBareFilenameFallback()
+{
+    // A stored Windows-style absolute path (saved on a different OS/machine) doesn't
+    // exist locally; load() must fall back to a bare-filename lookup in contextDir.
+    // See Tests/Unit/Core/TestExternalFilePath.cpp for the exhaustive separator matrix --
+    // this just confirms AudioBox::load() actually exercises that fallback.
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+    const QFileInfo tempInfo(tempFile.fileName());
+
+    AudioBox audioBox1;
+    audioBox1.setAudio(tempInfo.absoluteFilePath());
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    audioBox1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
+
+    // Rewrite the stored "audiobox" path to a foreign, locally-nonexistent Windows-style
+    // absolute path with the same bare filename, so it's load()'s fallback -- not the
+    // original real path -- that has to resolve it.
+    QMap<QString, QVariant> propsMap;
+    QList<QMap<QString, QVariant>> inputPorts, outputPorts, appearances;
+    QMap<QString, QVariant> audioMap;
+    {
+        QDataStream readStream(data);
+        readStream >> propsMap >> inputPorts >> outputPorts >> appearances >> audioMap;
+    }
+    audioMap["audiobox"] = "C:\\Users\\alice\\project\\" + tempInfo.fileName();
+
+    QByteArray rewritten;
+    {
+        QDataStream writeStream(&rewritten, QIODevice::WriteOnly);
+        writeStream << propsMap << inputPorts << outputPorts << appearances << audioMap;
+    }
+
+    AudioBox audioBox2;
+    QDataStream loadStream(rewritten);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, tempInfo.absolutePath()};
+    audioBox2.load(loadStream, context);
+
+    QCOMPARE(audioBox2.audio(), tempInfo.absoluteFilePath());
 }
 
 void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
@@ -377,20 +368,17 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     tempFile.close();
 
     const QFileInfo tempInfo(tempFile.fileName());
-    WorkSpace workspace;
-    workspace.scene()->setContextDir(tempInfo.absolutePath());
 
-    auto *audioBox = new AudioBox();
-    workspace.scene()->addItem(audioBox);
-    audioBox->setAudio(tempInfo.fileName());
+    AudioBox audioBox;
+    audioBox.setAudio(tempInfo.absoluteFilePath());
 
     // Verify internal state stores the full resolved path
-    QCOMPARE(audioBox->audio(), tempInfo.absoluteFilePath());
+    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
 
     // Save and read back the serialized audio path
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    audioBox->save(saveStream);
+    audioBox.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Skip past the GraphicElement base data to reach the AudioBox map.
     // GraphicElement::save writes: QMap (properties), QList<QMap> (inputs),
@@ -410,34 +398,42 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     QCOMPARE(savedPath, tempInfo.fileName());
 }
 
-void TestAudioBox::testAudioSurvivesSaveLoadRoundTripWhenNotColocated()
+void TestAudioBox::testUpdateCommandUndoRedoPreservesFullAudioPath()
 {
-    // Mirrors what UpdateCommand's undo/redo does for an unrelated property edit (e.g.
-    // dragging the volume slider): save() the just-applied state, then load() it right
-    // back — entirely in memory, regardless of whether the project has ever been saved.
-    QTemporaryDir tempDir;
-    QVERIFY(tempDir.isValid());
-    const QString audioPath = tempDir.filePath("custom_audio.wav");
-    QVERIFY(QFile::copy(":/Components/Output/Audio/wiredpanda.wav", audioPath));
+    // UpdateCommand snapshots are InMemorySnapshot serialization, which must round-trip
+    // the full audio path losslessly (mirrors TestSceneUndoredo's equivalent Led test),
+    // with no contextDir ever having been set.
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+    const QString audioPath = QFileInfo(tempFile.fileName()).absoluteFilePath();
 
-    auto audioBox1 = std::make_unique<AudioBox>();
-    audioBox1->setAudio(audioPath);
+    WorkSpace workspace;
+    auto *audioBox = new AudioBox();
+    workspace.scene()->addItem(audioBox);
+    const int id = audioBox->id();
+    auto *audioElm = dynamic_cast<GraphicElement *>(audioBox);
 
-    QByteArray data;
-    QDataStream saveStream(&data, QIODevice::WriteOnly);
-    audioBox1->save(saveStream);
+    QVERIFY(audioElm->externalFiles().isEmpty()); // starts on the default (resource) audio
 
-    auto audioBox2 = std::make_unique<AudioBox>();
-    QDataStream loadStream(data);
-    QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, FormatRev::current, {}};
-
-    bool threw = false;
-    try {
-        audioBox2->load(loadStream, context);
-    } catch (const Pandaception &) {
-        threw = true;
+    QByteArray oldData;
+    {
+        QDataStream stream(&oldData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        audioElm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
-    QVERIFY2(!threw, "a custom audio file not yet colocated with any project must survive an in-memory save/load round trip");
+    audioBox->setAudio(audioPath);
+    QCOMPARE(audioElm->externalFiles(), QStringList{audioPath});
+
+    workspace.scene()->undoStack()->push(new UpdateCommand({audioElm}, oldData, workspace.scene()));
+
+    // undo() must restore the default (resource) audio, not just leave the custom one
+    workspace.scene()->undoStack()->undo();
+    QVERIFY(dynamic_cast<GraphicElement *>(workspace.scene()->itemById(id))->externalFiles().isEmpty());
+
+    // redo() reapplies the custom audio path, full and unstripped
+    workspace.scene()->undoStack()->redo();
+    QCOMPARE(dynamic_cast<GraphicElement *>(workspace.scene()->itemById(id))->externalFiles(), QStringList{audioPath});
 }

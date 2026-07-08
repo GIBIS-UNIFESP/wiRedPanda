@@ -7,6 +7,7 @@
 
 #include <QDataStream>
 #include <QFile>
+#include <QImage>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -389,7 +390,7 @@ void TestLED::testSaveColor()
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
 
-    led.save(stream);
+    led.save(stream, {.purpose = SerializationPurpose::PortableFile});
 
     // Verify data was written
     QVERIFY(data.size() > 0);
@@ -425,14 +426,14 @@ void TestLED::testLoadColorNewVersion()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    led1->save(saveStream);
+    led1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Create new LED and load with new version (>= 4.1)
     auto led2 = std::make_unique<Led>();
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
+    SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, {}};
 
     led2->load(loadStream, context);
 
@@ -459,7 +460,7 @@ void TestLED::testLoadColorDefault()
     QHash<quint64, Port *> portMap;
     // Load with version < 1.1 - should return early, leaving color unchanged
     led.setColor("Blue");
-    SerializationContext contextOld = {portMap, QVersionNumber(1, 0), {}};
+    SerializationContext contextOld = {portMap, QVersionNumber(1, 0), SerializationPurpose::PortableFile, {}};
     led.load(loadStream, contextOld);
 
     // Color should remain "Blue" because very old version returns early without loading
@@ -582,33 +583,26 @@ void TestLED::testSetAppearanceRepeatedFailureThrowsOnce()
     QVERIFY2(!threwSecond, "repeating the exact same broken path should not re-throw");
 }
 
-void TestLED::testAppearanceSurvivesSaveLoadRoundTripWhenNotColocated()
+void TestLED::testSetAppearanceWithoutSavedProjectLoadsPixmap()
 {
-    // Mirrors what UpdateCommand's undo/redo does: save() the just-applied state, then
-    // load() it right back — entirely in memory, before the project is ever saved to disk.
+    // A bare, scene-less Led mirrors a brand-new, never-saved project: setAppearance()
+    // is given a path directly (as the UI does from a file picker), with no load()
+    // round-trip involved, so there's no contextDir to resolve against either way.
+    Led led;
+    const QRectF defaultBounds = led.boundingRect();
+
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
-    const QString imagePath = tempDir.path() + "/custom_led.svg";
-    QVERIFY(QFile::copy(":/Components/Output/Led/WhiteLed.svg", imagePath));
+    const QString imagePath = tempDir.filePath("custom_led.png");
 
-    auto led1 = std::make_unique<Led>();
-    led1->setAppearance(false, imagePath);
+    // Deliberately a very different size than the default LED icon, so a
+    // successful pixmap load is observable via boundingRect() changing.
+    QImage image(400, 400, QImage::Format_RGB32);
+    image.fill(Qt::red);
+    QVERIFY(image.save(imagePath));
 
-    QByteArray data;
-    QDataStream saveStream(&data, QIODevice::WriteOnly);
-    led1->save(saveStream);
+    led.setAppearance(false, imagePath);
 
-    auto led2 = std::make_unique<Led>();
-    QDataStream loadStream(data);
-    QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, QVersionNumber(4, 1), {}};
-
-    bool threw = false;
-    try {
-        led2->load(loadStream, context);
-    } catch (const Pandaception &) {
-        threw = true;
-    }
-
-    QVERIFY2(!threw, "a custom appearance not yet colocated with any project must survive an in-memory save/load round trip");
+    QCOMPARE(led.externalFiles(), QStringList{imagePath});
+    QVERIFY(led.boundingRect() != defaultBounds);
 }

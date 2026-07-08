@@ -225,6 +225,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseStep.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/IO/ExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
@@ -447,6 +448,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestDragDropPayload.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.cpp
@@ -646,6 +648,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestDragDropPayload.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.h

@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-#include <QDir>
 #include <QSaveFile>
 #include <QScopeGuard>
 #include <QSet>
@@ -14,6 +13,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ICRenderer.h"
+#include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -89,15 +89,7 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
 {
     qCDebug(zero) << "Reading IC.";
 
-    // Try the full path combined with contextDir first (handles relative paths
-    // and same-OS absolute paths). If not found, fall back to just the filename
-    // resolved against contextDir — this handles cross-platform absolute paths
-    // from old .panda files (e.g. a Windows "C:\...\sub.panda" opened on Linux).
-    QFileInfo fileInfo(QDir(contextDir), fileName);
-
-    if (!fileInfo.exists() || !fileInfo.isFile()) {
-        fileInfo.setFile(QDir(contextDir), QFileInfo(QString(fileName).replace('\\', '/')).fileName());
-    }
+    QFileInfo fileInfo(ExternalFilePath::resolve(fileName, contextDir));
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
@@ -174,7 +166,7 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QHash<quint64, Port *> portMap;
-    SerializationContext subCtx = {portMap, preamble.version, fileInfo.absolutePath()};
+    SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = fileInfo.absolutePath()};
     subCtx.blobRegistry = fileRegistry.isEmpty() ? nullptr : &fileRegistry;
     QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
     file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
@@ -243,7 +235,7 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
     QDataStream outStream(&saveFile);
     Serialization::writePandaHeader(outStream);
     outStream << migrationMeta;
-    Serialization::serialize(items, outStream);
+    Serialization::serialize(items, outStream, {.purpose = SerializationPurpose::PortableFile});
     if (!saveFile.commit()) {
         throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
     }
@@ -323,7 +315,7 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QHash<quint64, Port *> portMap;
-    SerializationContext subCtx = {portMap, preamble.version, contextDir};
+    SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = contextDir};
     subCtx.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
     QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
 

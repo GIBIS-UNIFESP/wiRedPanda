@@ -60,7 +60,7 @@ void TestDisplay::testDisplay14Save()
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    display.save(stream);
+    display.save(stream, {.purpose = SerializationPurpose::PortableFile});
     QVERIFY(!data.isEmpty());
 }
 
@@ -71,6 +71,6 @@ void TestDisplay::testDisplay16Save()
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    display.save(stream);
+    display.save(stream, {.purpose = SerializationPurpose::PortableFile});
     QVERIFY(!data.isEmpty());
 }

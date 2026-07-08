@@ -306,8 +306,7 @@ void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const
     QDataStream stream(&data, QIODevice::ReadOnly);
     const auto version = Serialization::readPandaHeader(stream);
     QHash<quint64, Port *> portMap;
-    auto ctx = scene->deserializationContext(portMap, version);
-    ctx.trustedRoundTrip = true;
+    auto ctx = scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
     for (auto *elm : elements) {
         elm->load(stream, ctx);
     }
@@ -460,7 +459,7 @@ QByteArray ICRegistry::captureSnapshot(const QList<GraphicElement *> &targets)
     QDataStream stream(&data, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
     for (auto *elm : targets) {
-        elm->save(stream);
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
     return data;
 }

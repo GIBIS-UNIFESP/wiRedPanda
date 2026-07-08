@@ -43,7 +43,7 @@ public:
     /// \reimp
     void load(QDataStream &stream, SerializationContext &context) override;
     /// \reimp
-    void save(QDataStream &stream) const override;
+    void save(QDataStream &stream, SerializationOptions options) const override;
 
     /// Maps a note name (e.g. "C6") to its frequency in Hz. Returns 1047 for unknown notes.
     static int noteToFrequency(const QString &note);

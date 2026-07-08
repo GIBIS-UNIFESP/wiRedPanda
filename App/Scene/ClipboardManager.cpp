@@ -289,7 +289,7 @@ void ClipboardManager::serializeItems(const QList<QGraphicsItem *> &items, QData
     }
 
     stream << center / static_cast<qreal>(itemsQuantity);
-    Serialization::serialize(items, stream);
+    Serialization::serialize(items, stream, {.purpose = SerializationPurpose::InMemorySnapshot});
 }
 
 void ClipboardManager::serializeAndDelete(const QList<QGraphicsItem *> &items, QDataStream &stream)
@@ -305,7 +305,7 @@ void ClipboardManager::deserializeAndAdd(QDataStream &stream, const QVersionNumb
     QPointF center; stream >> center;
 
     QHash<quint64, Port *> portMap;
-    auto context = m_scene->deserializationContext(portMap, version);
+    auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
     const auto itemList = Serialization::deserialize(stream, context);
     // Shift pasted elements so their centroid lands at the cursor position,
     // then nudge 32 px diagonally so repeated pastes are visually offset and

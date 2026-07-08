@@ -163,10 +163,10 @@ void saveItems(Scene *scene, QByteArray &itemData, const QList<QGraphicsItem *> 
     const auto others = CommandUtils::findElements(scene, otherIds);
 
     for (auto *elm : others) {
-        elm->save(stream);
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
-    Serialization::serialize(items, stream);
+    Serialization::serialize(items, stream, {.purpose = SerializationPurpose::InMemorySnapshot});
 }
 
 void addItems(Scene *scene, const QList<QGraphicsItem *> &items)
@@ -192,8 +192,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QHash<quint64, Port *> portMap;
-    auto context = scene->deserializationContext(portMap, version);
-    context.trustedRoundTrip = true;
+    auto context = scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
 
     for (auto *elm : CommandUtils::findElements(scene, otherIds)) {
         elm->load(stream, context);
@@ -437,7 +436,7 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
 
     // Snapshot the current (post-change) state as the "new" data used by redo()
     for (auto *elm : elements) {
-        elm->save(stream);
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     // Precompute once whether old→new changes wireless routing (a mode, or the label of a
@@ -541,8 +540,7 @@ void UpdateCommand::loadData(QByteArray &itemData)
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QHash<quint64, Port *> portMap;
-    auto context = m_scene->deserializationContext(portMap, version);
-    context.trustedRoundTrip = true;
+    auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
 
     for (auto *elm : elements) {
         elm->load(stream, context);
@@ -985,7 +983,7 @@ void ChangePortSizeCommand::redo()
     Serialization::writePandaHeader(stream);
 
     for (auto *elm : elements) {
-        elm->save(stream);
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
         serializationOrder.append(elm);
 
         const int oldSize = m_isInput ? elm->inputSize() : elm->outputSize();
@@ -994,7 +992,7 @@ void ChangePortSizeCommand::redo()
             Port *nport = m_isInput ? static_cast<Port *>(elm->inputPort(port)) : elm->outputPort(port);
             for (auto *conn : nport->connections()) {
                 Port *otherPort = m_isInput ? static_cast<Port *>(conn->startPort()) : conn->endPort();
-                otherPort->graphicElement()->save(stream);
+                otherPort->graphicElement()->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
                 serializationOrder.append(otherPort->graphicElement());
             }
         }
@@ -1030,8 +1028,7 @@ void ChangePortSizeCommand::undo()
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QHash<quint64, Port *> portMap;
-    auto context = m_scene->deserializationContext(portMap, version);
-    context.trustedRoundTrip = true;
+    auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
 
     for (auto *elm : serializationOrder) {
         elm->load(stream, context);
@@ -1195,7 +1192,7 @@ UpdateBlobCommand::UpdateBlobCommand(const QList<GraphicElement *> &elements, co
     Serialization::writePandaHeader(stream);
 
     for (auto *elm : elements) {
-        elm->save(stream);
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     if (!elements.isEmpty()) {
@@ -1253,8 +1250,7 @@ void UpdateBlobCommand::loadData(QByteArray &itemData)
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QHash<quint64, Port *> portMap;
-    auto context = m_scene->deserializationContext(portMap, version);
-    context.trustedRoundTrip = true;
+    auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
 
     for (auto *elm : elements) {
         elm->load(stream, context);

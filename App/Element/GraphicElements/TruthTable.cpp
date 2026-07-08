@@ -221,9 +221,9 @@ void TruthTable::setkey(const QBitArray &key)
     m_key.resize(2048);
 }
 
-void TruthTable::save(QDataStream &stream) const
+void TruthTable::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream);
+    GraphicElement::save(stream, options);
     QMap<QString, QVariant> map;
     map.insert("key", m_key);
     stream << map;

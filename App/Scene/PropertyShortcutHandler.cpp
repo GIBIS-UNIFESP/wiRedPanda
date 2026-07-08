@@ -25,7 +25,7 @@ void PropertyShortcutHandler::applyWithUndo(GraphicElement *element, const std::
     {
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        element->save(stream);
+        element->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
     mutate();
     m_scene->receiveCommand(new UpdateCommand({element}, oldData, m_scene));

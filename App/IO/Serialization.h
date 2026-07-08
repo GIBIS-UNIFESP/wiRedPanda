@@ -38,8 +38,10 @@ public:
      * \brief Serializes \a items to \a stream in the current .panda binary format.
      * \param items Items to serialize (graphic elements and connections).
      * \param stream Destination data stream.
+     * \param options No default -- every caller must state whether this builds a
+     *        genuine .panda file or an in-session snapshot; see SerializationPurpose.
      */
-    static void serialize(const QList<QGraphicsItem *> &items, QDataStream &stream);
+    static void serialize(const QList<QGraphicsItem *> &items, QDataStream &stream, SerializationOptions options);
 
     /**
      * \brief Deserializes items from \a stream until the stream is exhausted.

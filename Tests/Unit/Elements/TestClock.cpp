@@ -376,7 +376,7 @@ void TestClock::testSaveFrequencyDelay()
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
 
-    clock.save(stream);
+    clock.save(stream, {.purpose = SerializationPurpose::PortableFile});
 
     // Verify data was written
     QVERIFY(data.size() > 0);
@@ -399,7 +399,7 @@ void TestClock::testLoadVersionOld()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    clock1->save(saveStream);
+    clock1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Load with old version (1.1 - 4.0) — format mismatch: save wrote QMap but
     // loadOldFormat reads positional fields.  readBoundedString rejects the map
@@ -408,7 +408,7 @@ void TestClock::testLoadVersionOld()
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext contextOld = {portMap, QVersionNumber(3, 0), {}};
+    SerializationContext contextOld = {portMap, QVersionNumber(3, 0), SerializationPurpose::PortableFile, {}};
     bool threw = false;
     try {
         clock2->load(loadStream, contextOld);
@@ -427,14 +427,14 @@ void TestClock::testLoadVersionNew()
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
-    clock1->save(saveStream);
+    clock1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Load with version 4.1 (delay silently discarded for version < 4.3)
     auto clock2 = std::make_unique<Clock>();
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext contextNew = {portMap, QVersionNumber(4, 1), {}};
+    SerializationContext contextNew = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, {}};
 
     clock2->load(loadStream, contextNew);
 
@@ -459,7 +459,7 @@ void TestClock::testLoadVersionVeryOld()
 
     QDataStream readStream(data);
     QHash<quint64, Port *> portMap;
-    SerializationContext contextVeryOld = {portMap, QVersionNumber(1, 0), {}};
+    SerializationContext contextVeryOld = {portMap, QVersionNumber(1, 0), SerializationPurpose::PortableFile, {}};
 
     clock->load(readStream, contextVeryOld);
 

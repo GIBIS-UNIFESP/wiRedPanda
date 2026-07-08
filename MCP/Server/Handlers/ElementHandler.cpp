@@ -296,7 +296,7 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     {
         QDataStream stream(&oldData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-        element->save(stream);
+        element->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
     QJsonObject result;
