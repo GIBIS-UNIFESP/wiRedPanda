@@ -70,7 +70,6 @@ private slots:
     void testSystemVerilogExportProgramCounter4Bit();
     void testSystemVerilogExportRegisterFile4x4();
     void testSystemVerilogExportRegisterFile8x8Level5();
-    void testSystemVerilogExportStackMemoryInterface();
     void testSystemVerilogExportUpDownCounter4Bit();
 
     // Level 6 - 8-bit subsystems (deeper nesting)
@@ -81,6 +80,7 @@ private slots:
     void testSystemVerilogExportRegister8Bit();
     void testSystemVerilogExportRegisterFile8x8Level6();
     void testSystemVerilogExportStackPointer8Bit();
+    void testSystemVerilogExportStackMemoryInterface();
 
     // Level 7 - 16-bit and CPU subsystems
     void testSystemVerilogExportAlu16Bit();

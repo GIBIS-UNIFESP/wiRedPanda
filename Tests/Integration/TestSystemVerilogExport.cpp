@@ -964,11 +964,6 @@ void TestSystemVerilogExport::testSystemVerilogExportRegisterFile8x8Level5()
     testSystemVerilogExportHelper("level5_register_file_8x8.panda");
 }
 
-void TestSystemVerilogExport::testSystemVerilogExportStackMemoryInterface()
-{
-    testSystemVerilogExportHelper("level6_stack_memory_interface.panda");
-}
-
 void TestSystemVerilogExport::testSystemVerilogExportUpDownCounter4Bit()
 {
     testSystemVerilogExportHelper("level5_up_down_counter_4bit.panda");
@@ -1009,6 +1004,11 @@ void TestSystemVerilogExport::testSystemVerilogExportRegisterFile8x8Level6()
 void TestSystemVerilogExport::testSystemVerilogExportStackPointer8Bit()
 {
     testSystemVerilogExportHelper("level6_stack_pointer_8bit.panda");
+}
+
+void TestSystemVerilogExport::testSystemVerilogExportStackMemoryInterface()
+{
+    testSystemVerilogExportHelper("level6_stack_memory_interface.panda");
 }
 
 // Level 7 - 16-bit and CPU subsystems
