@@ -43,19 +43,18 @@ void renderToPdf(Scene *scene, const QString &filePath)
     painter.end();
 }
 
-void renderToImage(Scene *scene, const QString &filePath)
+QImage renderScaledImage(Scene *scene, const QRectF &paddedRect)
 {
-    const QRectF rect = paddedBoundingRect(scene);
-
-    // Cap the output at a sane maximum dimension. rect derives from element positions
-    // loaded from a .panda file; the only check on load (GraphicElementSerializer's position
+    // Cap the output at a sane maximum dimension. paddedRect derives from element positions
+    // loaded from a .panda file (or set via the MCP create_element/move_element commands, which
+    // accept any finite coordinate); the only check on load (GraphicElementSerializer's position
     // validation) rejects non-finite coordinates but never bounds magnitude, so a crafted or
-    // corrupted file with one element at a large-but-finite position would otherwise size
-    // this pixmap proportionally — potentially tens of gigabytes. Scale into the capped size
-    // instead of failing outright, the same "fit scene content to a fixed target" technique
-    // renderToPdf already uses via its fixed-size printer page. Below the cap (every
-    // realistic circuit), output resolution is unchanged.
-    QSizeF targetSize = rect.size();
+    // corrupted file — or a scripted MCP client — with one element at a large-but-finite
+    // position would otherwise size this image proportionally — potentially tens of gigabytes.
+    // Scale into the capped size instead of failing outright, the same "fit scene content to a
+    // fixed target" technique renderToPdf already uses via its fixed-size printer page. Below
+    // the cap (every realistic circuit), output resolution is unchanged.
+    QSizeF targetSize = paddedRect.size();
     const qreal scale = (std::min)({1.0, kMaxImageDimension / targetSize.width(), kMaxImageDimension / targetSize.height()});
     if (scale < 1.0) {
         targetSize *= scale;
@@ -77,8 +76,15 @@ void renderToImage(Scene *scene, const QString &filePath)
     }
     // Antialiasing enabled here; the PDF path relies on the printer's high DPI instead.
     painter.setRenderHint(QPainter::Antialiasing);
-    scene->render(&painter, QRectF(QPointF(), targetSize), rect);
+    scene->render(&painter, QRectF(QPointF(), targetSize), paddedRect);
     painter.end();
+
+    return image;
+}
+
+void renderToImage(Scene *scene, const QString &filePath)
+{
+    const QImage image = renderScaledImage(scene, paddedBoundingRect(scene));
 
     if (!image.save(filePath)) {
         throw PANDACEPTION_WITH_CONTEXT("CircuitExporter", "Could not save image to %1.", filePath);

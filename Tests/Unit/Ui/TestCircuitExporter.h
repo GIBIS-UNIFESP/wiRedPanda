@@ -35,4 +35,10 @@ private slots:
     // vulnerable code path (unlike the pixel-buffer issue, which is renderToImage-only,
     // since renderToPdf's page size is fixed) and must complete promptly too.
     void testRenderToPdfHandlesExtremeSceneDimensionsPromptly();
+
+    // Regression: renderToImage() was refactored into a thin wrapper around
+    // CircuitExporter::renderScaledImage() so the MCP export_image handler could reuse the
+    // same bounding logic instead of re-implementing (and never bounding) it. Pin the
+    // extracted function's own contract directly, independent of the file round-trip above.
+    void testRenderScaledImageClampsExtremeDimensionsDirectly();
 };

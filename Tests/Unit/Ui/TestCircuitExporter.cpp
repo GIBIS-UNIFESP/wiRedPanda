@@ -82,3 +82,18 @@ void TestCircuitExporter::testRenderToPdfHandlesExtremeSceneDimensionsPromptly()
     CircuitExporter::renderToPdf(workspace.scene(), path);
     QVERIFY(QFile::exists(path));
 }
+
+void TestCircuitExporter::testRenderScaledImageClampsExtremeDimensionsDirectly()
+{
+    WorkSpace workspace;
+    auto *sw = new InputSwitch();
+    workspace.scene()->addItem(sw);
+    sw->setPos(1e7, 1e7);
+
+    const QRectF paddedRect = workspace.scene()->itemsBoundingRect().adjusted(-64, -64, 64, 64);
+    const QImage image = CircuitExporter::renderScaledImage(workspace.scene(), paddedRect);
+
+    QVERIFY(!image.isNull());
+    QVERIFY(image.width() <= CircuitExporter::kMaxImageDimension);
+    QVERIFY(image.height() <= CircuitExporter::kMaxImageDimension);
+}

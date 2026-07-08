@@ -169,6 +169,7 @@
 #include "Tests/Unit/Logic/TestNodeLogic.h"
 #include "Tests/Unit/Logic/TestStatusOps.h"
 // unit/mcp
+#include "Tests/Unit/MCP/TestFileHandlerSecurity.h"
 #include "Tests/Unit/MCP/TestICHandlerSecurity.h"
 // unit/scene
 #include "Tests/Unit/Scene/TestConnectionManager.h"
@@ -369,6 +370,7 @@ int main(int argc, char **argv)
         {"TestNodeLogic", []() -> QObject * { return new TestNodeLogic; }},
         {"TestStatusOps", []() -> QObject * { return new TestStatusOps; }},
         {"TestICHandlerSecurity", []() -> QObject * { return new TestICHandlerSecurity; }},
+        {"TestFileHandlerSecurity", []() -> QObject * { return new TestFileHandlerSecurity; }},
         {"TestConnectionSerialization", []() -> QObject * { return new TestConnectionSerialization; }},
         {"TestConnections", []() -> QObject * { return new TestConnections; }},
         {"TestConnectionManager", []() -> QObject * { return new TestConnectionManager; }},
