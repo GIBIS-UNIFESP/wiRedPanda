@@ -1,0 +1,30 @@
+# Maintainer: João Pedro Oliveira <oliveira.joao@unifesp.br>
+pkgname=wiredpanda
+pkgver=0
+pkgrel=1
+pkgdesc="Software designed to help students learn about logic circuits and simulate them in an easy and friendly way"
+arch=('x86_64' 'aarch64')
+url="https://gibis-unifesp.github.io/wiRedPanda/"
+license=('GPL-3.0-or-later')
+depends=('qt6-base' 'qt6-multimedia' 'qt6-svg')
+makedepends=('cmake' 'ninja' 'git')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "wiRedPanda-${pkgver}"
+    cmake --preset release -DCMAKE_INSTALL_PREFIX=/usr
+    cmake --build --preset release
+}
+
+check() {
+    cd "wiRedPanda-${pkgver}"
+    export QT_QPA_PLATFORM=offscreen
+    ctest --preset release --output-on-failure -LE gui
+}
+
+package() {
+    cd "wiRedPanda-${pkgver}"
+    DESTDIR="$pkgdir" cmake --install build-release
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
