@@ -15,6 +15,7 @@
 #include <QTabWidget>
 #include <QTest>
 #include <QTimer>
+#include <QTranslator>
 #include <QWheelEvent>
 
 #include "App/Core/Application.h"
@@ -82,6 +83,25 @@ QT_WARNING_DISABLE_DEPRECATED
 QT_WARNING_POP
     return w;
 }
+
+/// Reproduces wpanda_es.ts's real "Del" -> "Supr" mistranslation without needing the
+/// real .qm catalogs embedded (they aren't, see testLanguageChange), so a language
+/// switch can still exercise MainWindowUi::retranslateUi() under a mistranslated
+/// shortcut token.
+class DelMistranslator : public QTranslator
+{
+public:
+    QString translate(const char *context, const char *sourceText, const char *disambiguation = nullptr, int n = -1) const override
+    {
+        Q_UNUSED(disambiguation)
+        Q_UNUSED(n)
+        // Scoped to "MainWindow" only, like the real wpanda_es.ts entry -- must NOT
+        // also answer Qt's own internal "QShortcut" context lookups (used by
+        // QKeySequence's own PortableText parser), or the two would coincidentally
+        // agree and mask the very bug this fakes.
+        return (qstrcmp(context, "MainWindow") == 0 && qstrcmp(sourceText, "Del") == 0) ? QStringLiteral("Supr") : QString();
+    }
+};
 
 /// Sends a mouse click at the scene position of an element.
 static void clickElement(GraphicsView *view, GraphicElement *elm, Qt::KeyboardModifiers mods = Qt::NoModifier)
@@ -520,6 +540,30 @@ void TestMainWindowGui::testDeleteViaKeyboard()
     QTest::keyClick(window.get(), Qt::Key_Delete);
 
     QCOMPARE(static_cast<int>(scene->elements().size()), 0);
+}
+
+void TestMainWindowGui::testDeleteViaKeyboardSurvivesMistranslatedShortcut()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    DelMistranslator mistranslator;
+    qApp->installTranslator(&mistranslator);
+    window->loadTranslation("es");
+    qApp->removeTranslator(&mistranslator);
+
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *andGate = new And();
+    andGate->setPos(100, 100);
+    scene->addItem(andGate);
+
+    clickElement(view, andGate);
+    QTest::keyClick(window.get(), Qt::Key_Delete);
+
+    QCOMPARE(static_cast<int>(scene->elements().size()), 0);
+
+    window->loadTranslation("en");
 }
 
 void TestMainWindowGui::testCopyPasteViaKeyboard()
