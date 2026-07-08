@@ -14,6 +14,8 @@ private slots:
     void cleanupTestCase();
     void cleanup();
 
+    void testCPUStructure();
+
     void testFetchStage16Bit_data();
     void testFetchStage16Bit();
     void testPCIncrement();

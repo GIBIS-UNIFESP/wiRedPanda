@@ -69,16 +69,21 @@ class DecoderBuilder(ICBuilderBase):
         # holds its saved value) and the SV/Arduino export (an unconnected IC
         # input resolves to the port's default value) see Enable=1.
         #
-        # Enable's Y stays exactly the address column's next row (unchanged from
-        # before) so it keeps its rank as the last boundary input when ports are
-        # sorted by Y then X -- other, unrelated generators embed this decoder
-        # and connect to addr[]/out[] by index-derived port order, so reordering
-        # boundary inputs here would silently misconnect fixtures outside this
-        # class's scope. Its X, however, is free to move: centering it under the
-        # AND-gate grid it actually fans out to (rather than the far-left address
-        # column) shortens that fan-out's worst-case wire without touching order.
+        # Enable's Y must stay below every addr[] row (so it keeps its rank as
+        # the last boundary input when ports are sorted by Y then X -- other,
+        # unrelated generators embed this decoder and connect to addr[]/out[]
+        # by index-derived port order, so reordering boundary inputs here would
+        # silently misconnect fixtures outside this class's scope) *and* clear
+        # the AND-gate grid below it, which wraps 4-per-row and is ceil(num_
+        # outputs/4) rows tall -- for width<=4 (every decoder before the 5-bit
+        # one) that grid is never taller than the address column itself, so
+        # `width` rows happened to already clear it; a 5-bit decoder's 32-gate
+        # grid (8 rows) does not, so this takes the max of both instead of
+        # assuming address-column rows always dominate.
+        enable_row = max(width, -(-num_outputs // 4))
         enable_x = and_x + 1.5 * HORIZONTAL_GATE_SPACING
-        enable_id = await self.create_element("InputSwitch", enable_x, 100.0 + width * VERTICAL_STAGE_SPACING, "Enable")
+        enable_y = 100.0 + enable_row * VERTICAL_STAGE_SPACING
+        enable_id = await self.create_element("InputSwitch", enable_x, enable_y, "Enable")
         if enable_id is None:
             return False
         set_en = await self.mcp.send_command("set_input_value", {"element_id": enable_id, "value": True})
@@ -139,16 +144,93 @@ class DecoderBuilder(ICBuilderBase):
 
 
 class RegisterFileBuilder(ICBuilderBase):
-    """Register file with N registers of W bits. Covers register_file_4x4 and 8x8."""
+    """Register file with N registers of W bits. Covers register_file_4x4 and 8x8.
+
+    num_read_ports defaults to 2 (matching every existing caller); pass 1 for a
+    register file whose consumer only ever reads one operand (e.g. an immediate-plus-
+    register datapath) so a full second N-wide, fully-wired read-mux array isn't
+    generated and left unused.
+    """
 
     def __init__(
-        self, mcp, num_registers: int, data_width: int, address_bits: int, level: int = 5, verbose: bool = True
+        self,
+        mcp,
+        num_registers: int,
+        data_width: int,
+        address_bits: int,
+        level: int = 5,
+        num_read_ports: int = 2,
+        verbose: bool = True,
     ) -> None:
         super().__init__(mcp, verbose)
         self.num_registers = num_registers
         self.data_width = data_width
         self.address_bits = address_bits
         self.level = level
+        self.num_read_ports = num_read_ports
+
+    async def _build_read_mux_tree(
+        self, sources: list[int], addr_lines: list[int], x: float, y: float, label_prefix: str
+    ) -> tuple[int, float] | None:
+        """Select among `sources` (element ids, each read via its default output
+        port) using `addr_lines` (address-bit element ids, LSB-first) via a tree
+        of raw Muxes, each capped at 8 data inputs (Mux.maxInputSize=11 total
+        ports, and calculateSelectLines(11)==3 select lines -> 8 data lines is
+        the largest single Mux stage that stays within that hard cap). Returns
+        (final_mux_element_id, total_vertical_span) -- the span is level 0's
+        real rendered row height (queried via create_element_with_size/
+        resize_input, not guessed -- an 11-port Mux is taller than the flat
+        VERTICAL_STAGE_SPACING every other row height in this file assumes)
+        times its number of groups, i.e. how far down this whole tree reaches,
+        which the caller needs to space consecutive bits' trees apart.
+
+        For num_registers<=8 (every existing caller) this produces exactly one
+        8-or-fewer-input Mux -- byte-identical to the flat single-mux design
+        this replaces. It only branches into multiple levels for a register
+        file wider than 8 entries (e.g. the 32-entry file this was built for).
+        """
+        level = 0
+        total_span = 0.0
+        while len(sources) > 1:
+            bits_this_level = min(len(addr_lines), 3)
+            group_size = 1 << bits_this_level
+            level_x = x + level * (2 * HORIZONTAL_GATE_SPACING)
+            next_sources = []
+            row_spacing = VERTICAL_STAGE_SPACING
+            group_y = y
+            num_groups = 0
+            for group_idx, start in enumerate(range(0, len(sources), group_size)):
+                group = sources[start : start + group_size]
+                mux_label = f"{label_prefix}_L{level}_{group_idx}"
+                mux_handle = await self.create_element_with_size("Mux", level_x, group_y, mux_label)
+                if mux_handle is None:
+                    return None
+                mux_id = mux_handle.element_id
+                mux_height = mux_handle.height
+                total_ports = len(group) + bits_this_level
+                if total_ports > 3:  # 3 is the raw Mux element's own default (2 data + 1 select)
+                    resized = await self.resize_input(mux_id, total_ports)
+                    if resized is None:
+                        self.log_error(f"Failed to size {mux_label}")
+                        return None
+                    mux_height = resized.height
+                if group_idx == 0:
+                    row_spacing = max(VERTICAL_STAGE_SPACING, mux_height)
+                for i, src_id in enumerate(group):
+                    if not await self.connect(src_id, mux_id, target_port_label=f"In{i}"):
+                        return None
+                for i in range(bits_this_level):
+                    if not await self.connect(addr_lines[i], mux_id, target_port=len(group) + i):
+                        return None
+                next_sources.append(mux_id)
+                num_groups += 1
+                group_y += row_spacing
+            if level == 0:
+                total_span = num_groups * row_spacing
+            sources = next_sources
+            addr_lines = addr_lines[bits_this_level:]
+            level += 1
+        return sources[0], max(total_span, VERTICAL_STAGE_SPACING)
 
     async def create(self) -> bool:
         """Create a register file IC."""
@@ -187,22 +269,41 @@ class RegisterFileBuilder(ICBuilderBase):
         decoder_x = input_x_start + input_row_width * input_col_spacing
         # write_gates wraps 2-per-row (below), so mux must clear that full span.
         write_gates_x = decoder_x + HORIZONTAL_GATE_SPACING
-        mux_x = write_gates_x + 2 * HORIZONTAL_GATE_SPACING
+        # "writeGate[N]"'s two-digit index (num_registers>=10, e.g. the 32-entry
+        # register file) makes the label long enough to clip its neighbor at a
+        # standard 1x step on platforms that render it a bit wider than the
+        # default Linux font (same Windows-CI margin issue as input_col_spacing
+        # above) -- every existing caller stays single-digit and is unaffected.
+        write_gate_col_spacing = HORIZONTAL_GATE_SPACING + (32 if num_registers >= 10 else 0)
+        mux_x = write_gates_x + 2 * write_gate_col_spacing
         # holdMux[reg][i]'s label ("holdMux[3][7]", etc.) and storage[reg][i]'s
         # label ("storage[3][7]") are both long enough that a flat
         # HORIZONTAL_GATE_SPACING step lets them clip the next bit's column on
         # platforms that render the label a bit wider than the default Linux
         # font (observed on Windows CI), so both get the same wider per-bit
-        # step.
-        hold_mux_col_spacing = HORIZONTAL_GATE_SPACING + 32
-        storage_col_spacing = HORIZONTAL_GATE_SPACING + 32
+        # step. When reg_idx or bit_idx can reach two digits (e.g. the 32-entry,
+        # 16-bit-wide register file: "holdMux[31][15]"/"storage[31][15]"), the
+        # extra digits make the label long enough that even that margin isn't
+        # enough at the last holdMux column butting up against the first
+        # storage column, so those cases get a further widened step (same
+        # write_gate_col_spacing two-digit pattern above) -- every existing
+        # caller stays single-digit on both indices and is unaffected.
+        two_digit_indices = num_registers >= 10 or data_width >= 10
+        hold_mux_col_spacing = HORIZONTAL_GATE_SPACING + 32 + (16 if two_digit_indices else 0)
+        storage_col_spacing = HORIZONTAL_GATE_SPACING + 32 + (16 if two_digit_indices else 0)
         # holdMux and storage are each a straight data_width-wide row at the same
         # per-register y -- they must be in disjoint column ranges (not
         # interleaved bit-by-bit, which would alias holdMux[b] onto storage[b-1]).
         storage_x = mux_x + data_width * hold_mux_col_spacing
         read_mux_x = storage_x + data_width * storage_col_spacing
-        # readMux1/readMux2 are two fixed columns -- output must clear both.
-        output_x = read_mux_x + 2 * HORIZONTAL_GATE_SPACING
+        # Each read port's select tree spans ceil(address_bits/3) levels (see
+        # _build_read_mux_tree; 3 address bits per level is the most a single
+        # <=11-port Mux stage can decode), 2*HORIZONTAL_GATE_SPACING wide each --
+        # a second read port's tree starts right after the first one's, so
+        # output must clear both trees end-to-end, not a flat 2-column guess.
+        read_mux_levels = max(1, -(-address_bits // 3))
+        read_port_trees = 2 if self.num_read_ports == 2 else 1
+        output_x = read_mux_x + (read_port_trees * read_mux_levels * 2 * HORIZONTAL_GATE_SPACING)
         # Read_Data1[i]/Read_Data2[i] labels are long enough that a flat
         # HORIZONTAL_GATE_SPACING step lets adjacent ones clip too (same
         # Windows-font margin issue as input_col_spacing above).
@@ -227,13 +328,14 @@ class RegisterFileBuilder(ICBuilderBase):
             read_addr_1.append(elem_id)
 
         read_addr_2 = []
-        for i in range(address_bits):
-            elem_id = await self.create_element(
-                "InputSwitch", input_x_start + i * input_col_spacing, read_addr2_y, f"Read_Addr2[{i}]"
-            )
-            if elem_id is None:
-                return False
-            read_addr_2.append(elem_id)
+        if self.num_read_ports == 2:
+            for i in range(address_bits):
+                elem_id = await self.create_element(
+                    "InputSwitch", input_x_start + i * input_col_spacing, read_addr2_y, f"Read_Addr2[{i}]"
+                )
+                if elem_id is None:
+                    return False
+                read_addr_2.append(elem_id)
 
         data_in = []
         for i in range(data_width):
@@ -264,13 +366,14 @@ class RegisterFileBuilder(ICBuilderBase):
             read_data_1.append(elem_id)
 
         read_data_2 = []
-        for i in range(data_width):
-            elem_id = await self.create_element(
-                "Led", output_x + i * output_col_spacing, read_addr2_y, f"Read_Data2[{i}]"
-            )
-            if elem_id is None:
-                return False
-            read_data_2.append(elem_id)
+        if self.num_read_ports == 2:
+            for i in range(data_width):
+                elem_id = await self.create_element(
+                    "Led", output_x + i * output_col_spacing, read_addr2_y, f"Read_Data2[{i}]"
+                )
+                if elem_id is None:
+                    return False
+                read_data_2.append(elem_id)
 
         await self.log("  ✓ Created output LEDs")
 
@@ -288,7 +391,7 @@ class RegisterFileBuilder(ICBuilderBase):
         for reg_idx in range(num_registers):
             gate_id = await self.create_element(
                 "And",
-                write_gates_x + (reg_idx % 2) * HORIZONTAL_GATE_SPACING,
+                write_gates_x + (reg_idx % 2) * write_gate_col_spacing,
                 write_addr_y + (reg_idx // 2) * VERTICAL_STAGE_SPACING,
                 f"writeGate[{reg_idx}]",
             )
@@ -353,54 +456,45 @@ class RegisterFileBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created storage array and hold muxes")
 
-        # readMux1/readMux2 input_size grows with num_registers + address_bits, so their
-        # real rendered height (learned from bit 0's resize, below) -- not a guessed
-        # constant -- determines how far apart successive bit-rows must be.
+        # Each bit's read select is a tree of <=8-input Muxes (Mux.maxInputSize=11
+        # rules out a single num_registers-wide Mux once num_registers > 8 -- see
+        # _build_read_mux_tree). Its real rendered span (learned from bit 0,
+        # below) -- not a guessed constant, an 11-port Mux is taller than the
+        # flat VERTICAL_STAGE_SPACING every other row height in this file
+        # assumes -- determines how far apart successive bit-rows must be.
         read_mux_spacing = VERTICAL_STAGE_SPACING
         for bit_idx in range(data_width):
-            mux1_handle = await self.create_element_with_size(
-                "Mux", read_mux_x, read_addr1_y + bit_idx * read_mux_spacing, f"readMux1[{bit_idx}]"
+            bit_sources = [storage[reg_idx][bit_idx] for reg_idx in range(num_registers)]
+            bit_y = read_addr1_y + bit_idx * read_mux_spacing
+
+            result1 = await self._build_read_mux_tree(
+                bit_sources, read_addr_1, read_mux_x, bit_y, f"readMux1[{bit_idx}]"
             )
-            if mux1_handle is None:
+            if result1 is None:
                 return False
-            resized1 = await self.resize_input(mux1_handle.element_id, num_registers + address_bits)
-            if resized1 is None:
-                self.log_error(f"Failed to set readMux1[{bit_idx}] input_size")
-                return False
-            read_mux1_id = resized1.element_id
-            for reg_idx in range(num_registers):
-                if not await self.connect(storage[reg_idx][bit_idx], read_mux1_id, target_port_label=f"In{reg_idx}"):
-                    return False
-            for addr_idx in range(address_bits):
-                if not await self.connect(read_addr_1[addr_idx], read_mux1_id, target_port_label=f"S{addr_idx}"):
-                    return False
+            read_mux1_id, span1 = result1
             if not await self.connect(read_mux1_id, read_data_1[bit_idx]):
                 return False
 
-            mux2_handle = await self.create_element_with_size(
-                "Mux",
-                read_mux_x + HORIZONTAL_GATE_SPACING,
-                read_addr1_y + bit_idx * read_mux_spacing,
-                f"readMux2[{bit_idx}]",
-            )
-            if mux2_handle is None:
-                return False
-            resized2 = await self.resize_input(mux2_handle.element_id, num_registers + address_bits)
-            if resized2 is None:
-                self.log_error(f"Failed to set readMux2[{bit_idx}] input_size")
-                return False
-            read_mux2_id = resized2.element_id
-            for reg_idx in range(num_registers):
-                if not await self.connect(storage[reg_idx][bit_idx], read_mux2_id, target_port_label=f"In{reg_idx}"):
+            span2 = 0.0
+            if self.num_read_ports == 2:
+                # mux1's tree spans read_mux_levels levels -- mux2's tree must
+                # start clear of all of them (see read_mux_levels/output_x above).
+                result2 = await self._build_read_mux_tree(
+                    bit_sources,
+                    read_addr_2,
+                    read_mux_x + (read_mux_levels * 2 * HORIZONTAL_GATE_SPACING),
+                    bit_y,
+                    f"readMux2[{bit_idx}]",
+                )
+                if result2 is None:
                     return False
-            for addr_idx in range(address_bits):
-                if not await self.connect(read_addr_2[addr_idx], read_mux2_id, target_port_label=f"S{addr_idx}"):
+                read_mux2_id, span2 = result2
+                if not await self.connect(read_mux2_id, read_data_2[bit_idx]):
                     return False
-            if not await self.connect(read_mux2_id, read_data_2[bit_idx]):
-                return False
 
             if bit_idx == 0:
-                read_mux_spacing = max(VERTICAL_STAGE_SPACING, resized1.height, resized2.height)
+                read_mux_spacing = max(VERTICAL_STAGE_SPACING, span1, span2)
 
         await self.log("  ✓ Created read multiplexers")
 

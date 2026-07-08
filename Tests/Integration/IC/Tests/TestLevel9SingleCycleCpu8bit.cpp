@@ -157,6 +157,27 @@ struct CPUFixture {
         sim->update();
     }
 
+    /// Hold reset while programming instruction memory/registers. PCInc/InstrLoad are
+    /// unconditionally live (tied to Vcc in the generator), so without an asserted Reset
+    /// each clock pulse used to write a word would also advance the fetch PC; Reset's
+    /// async override on the PC/instruction-register keeps them pinned at 0 for the whole
+    /// programming window (same mechanism the multi-cycle CPU documents for its own phase
+    /// counter). Call run() to release Reset and start execution from PC=0.
+    void beginProgramming()
+    {
+        progWrite->setOn(false);
+        regProgWrite->setOn(false);
+        reset->setOn(true);
+        sim->update();
+    }
+
+    /// Release reset after beginProgramming() and start execution from PC=0.
+    void run()
+    {
+        reset->setOn(false);
+        sim->update();
+    }
+
     int readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
     int readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
     int readInstruction() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
@@ -224,6 +245,25 @@ void TestLevel9SingleCycleCPU8Bit::testPCIncrement()
     QCOMPARE(f.readPC(), 5);
 }
 
+// PCInc is unconditionally tied to Vcc in the generator (no phase counter to gate
+// it like the multi-cycle CPU has), so the fetch PC only stays at 0 across a
+// multi-word programming sequence because beginProgramming()'s asserted Reset
+// overrides PCInc on every one of those clock pulses. Confirms the fix for the
+// PC-drift-during-programming finding.
+void TestLevel9SingleCycleCPU8Bit::testPCDoesNotDriftDuringProgramming()
+{
+    auto &f = *s_cpu;
+
+    f.beginProgramming();
+    f.programInstruction(0, encodeInstruction(ADD, 1));
+    f.programInstruction(1, encodeInstruction(SUB, 2));
+    f.programInstruction(2, encodeInstruction(AND, 1));
+    f.programInstruction(3, encodeInstruction(OR, 1));
+    f.run();
+
+    QCOMPARE(f.readPC(), 0);
+}
+
 // ---------------------------------------------------------------------------
 // Helper: set up a single ALU instruction test
 // ---------------------------------------------------------------------------
@@ -250,6 +290,8 @@ static void runALUTest(int aluOp)
 
     const int regAddr = 1;
 
+    f.beginProgramming();
+
     // 1. Program register R1 with operandB
     f.programRegister(regAddr, operandB);
 
@@ -259,8 +301,8 @@ static void runALUTest(int aluOp)
     // 3. Program instruction at address 0: ALU_OP R1
     f.programInstruction(0, encodeInstruction(aluOp, regAddr));
 
-    // 4. Reset CPU — the ALU result is available combinationally before the clock edge
-    f.resetCPU();
+    // 4. Release reset — the ALU result is available combinationally before the clock edge
+    f.run();
 
     // 5. Verify (read before clockCycle — single-cycle result is live on the ALU output)
     QCOMPARE(f.readResult(), expectedResult);
@@ -473,10 +515,11 @@ void TestLevel9SingleCycleCPU8Bit::testZeroFlag()
 
     auto &f = *s_cpu;
 
+    f.beginProgramming();
     f.programRegister(1, operandB);
     f.programRegister(0, operandA);
     f.programInstruction(0, encodeInstruction(aluOp, 1));
-    f.resetCPU();
+    f.run();
 
     QCOMPARE(f.readZero(), expectedZero);
 }
@@ -509,10 +552,11 @@ void TestLevel9SingleCycleCPU8Bit::testSignFlag()
 
     auto &f = *s_cpu;
 
+    f.beginProgramming();
     f.programRegister(1, operandB);
     f.programRegister(0, operandA);
     f.programInstruction(0, encodeInstruction(aluOp, 1));
-    f.resetCPU();
+    f.run();
 
     QCOMPARE(f.readSign(), expectedSign);
 }
@@ -527,6 +571,8 @@ void TestLevel9SingleCycleCPU8Bit::testMultipleInstructions()
     f.sim->restart();
     f.sim->update();
 
+    f.beginProgramming();
+
     // Pre-load registers
     f.programRegister(0, 0x10);  // R0 (accumulator) = 0x10
     f.programRegister(1, 0x20);  // R1 = 0x20
@@ -540,7 +586,7 @@ void TestLevel9SingleCycleCPU8Bit::testMultipleInstructions()
     f.programInstruction(1, encodeInstruction(SUB, 2));
     f.programInstruction(2, encodeInstruction(AND, 1));
 
-    f.resetCPU();
+    f.run();
 
     // Instruction at address 0: ADD R1 -> R0 = 0x10 + 0x20 = 0x30
     QCOMPARE(f.readResult(), 0x30);
@@ -573,10 +619,11 @@ void TestLevel9SingleCycleCPU8Bit::testHighRegisterOperand()
         f.sim->update();
 
         const int operandB = 0x10 + reg;   // distinct per register
+        f.beginProgramming();
         f.programRegister(reg, operandB);
         f.programRegister(0, 0x10);         // R0 accumulator
         f.programInstruction(0, encodeInstruction(ADD, reg));
-        f.resetCPU();
+        f.run();
 
         QVERIFY2(f.readResult() == (0x10 + operandB),
             qPrintable(QString("ADD R%1: expected 0x%2, got 0x%3")
@@ -597,8 +644,9 @@ void TestLevel9SingleCycleCPU8Bit::testInstructionOutput()
     f.sim->update();
 
     const int instr = encodeInstruction(XOR, 3);
+    f.beginProgramming();
     f.programInstruction(0, instr);
-    f.resetCPU();
+    f.run();
     clockCycle(f.sim, f.clk);   // latch the fetched word into the instruction register
     f.sim->update();
 
@@ -617,10 +665,11 @@ void TestLevel9SingleCycleCPU8Bit::testISA_STORE()
 
     // Helper: store R0 to address, then load back and verify
     auto storeAndVerify = [&](int value, int addr) {
+        f.beginProgramming();
         f.programRegister(0, value);
         f.programInstruction(0, encodeStore(addr));
         f.programInstruction(1, encodeLoad(addr));
-        f.resetCPU();
+        f.run();
         clockCycle(f.sim, f.clk);  // execute STORE on clock edge
         f.sim->update();
         QCOMPARE(f.readResult(), value);  // LOAD reads back the stored value
@@ -644,14 +693,16 @@ void TestLevel9SingleCycleCPU8Bit::testISA_LOAD()
     f.sim->update();
 
     // Data memory starts at all zeros. LOAD from any address should give 0.
+    f.beginProgramming();
     f.programInstruction(0, encodeLoad(0));
-    f.resetCPU();
+    f.run();
     QCOMPARE(f.readResult(), 0x00);
     QCOMPARE(f.readZero(), true);
 
     // LOAD from address 7 (also empty)
+    f.beginProgramming();
     f.programInstruction(0, encodeLoad(7));
-    f.resetCPU();
+    f.run();
     QCOMPARE(f.readResult(), 0x00);
     QCOMPARE(f.readZero(), true);
 }
@@ -667,6 +718,8 @@ void TestLevel9SingleCycleCPU8Bit::testISA_StoreLoad()
     f.sim->update();
 
     // Store 0xAB to mem[2], change R0 to 0xCD, store to mem[3], then load both back.
+    f.beginProgramming();
+
     // Pre-load registers
     f.programRegister(0, 0xAB);
     f.programRegister(1, 0xCD);
@@ -685,7 +738,7 @@ void TestLevel9SingleCycleCPU8Bit::testISA_StoreLoad()
     f.programInstruction(4, encodeLoad(2));
     f.programInstruction(5, encodeLoad(3));
 
-    f.resetCPU();
+    f.run();
 
     // Execute instructions 0-3 (STORE, XOR, ADD, STORE)
     for (int i = 0; i < 4; ++i) {

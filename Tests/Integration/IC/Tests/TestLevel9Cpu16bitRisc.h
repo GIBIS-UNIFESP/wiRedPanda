@@ -18,10 +18,16 @@ private slots:
     void testCPUExecution_data();
     void testCPUExecution();
     void testCPUReset();
+    void testPCDoesNotDriftDuringProgramming();
     void testInstrWordVisible();
     void testOpCodeInValidRange();
     void testResultRegisterReadable();
     void testInstrOpCodeFieldConsistency();
     void testCPUComputesOnDecodedFields_data();
     void testCPUComputesOnDecodedFields();
+
+    void testISA_Store();
+    void testISA_Load();
+    void testLoadWritesBackToRegister();
+    void testStoreDoesNotWriteBackToRegister();
 };

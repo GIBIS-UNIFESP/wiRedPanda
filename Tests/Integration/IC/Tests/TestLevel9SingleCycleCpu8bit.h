@@ -17,6 +17,7 @@ private slots:
     void testCPUStructure();
     void testCPUReset();
     void testPCIncrement();
+    void testPCDoesNotDriftDuringProgramming();
 
     void testISA_ADD_data();
     void testISA_ADD();
