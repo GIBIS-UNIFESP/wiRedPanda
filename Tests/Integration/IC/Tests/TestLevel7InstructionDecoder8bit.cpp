@@ -45,9 +45,9 @@ struct InstrDecoder8bitFixture {
             builder.connect(instrInputs[i], 0, ic, QString("instr[%1]").arg(i));
         }
 
-        // Connect outputs for all indices tested in _data()
-        const int testIndices[] = {0, 1, 2, 4, 8, 15, 16, 32, 64, 66, 85, 127, 128, 129, 170, 240, 255};
-        for (int idx : testIndices) {
+        // Connect every one of the 256 output lines — testInstructionDecoder8BitOneHot()
+        // sweeps all of them, not just the handful of named rows in _data().
+        for (int idx = 0; idx < 256; idx++) {
             auto *led = new Led();
             builder.add(led);
             led->setLabel(QString("op[%1]").arg(idx));
@@ -152,4 +152,25 @@ void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8BitStructure()
 
     QCOMPARE(f.ic->inputSize(), 8);
     QCOMPARE(f.ic->outputSize(), 256);
+}
+
+// Exactly one op[] line fires per instruction code, and it is line number ==
+// instructionCode (one-hot decode: two level2_decoder_4to16 plus 256 AND
+// gates combining the high/low nibble decodes). The named-row test above
+// only ever samples a handful of the 256 output lines against a small
+// sentinel watch-set; this sweeps every code against every line.
+void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8BitOneHot()
+{
+    auto &f = *s_level7InstrDec8bit;
+
+    for (int code = 0; code < 256; ++code) {
+        setMultiBitInput(f.instrInputs, code);
+        f.sim->update();
+
+        for (int line = 0; line < 256; ++line) {
+            QVERIFY2(inputStatus(f.opOutputs[line]) == (line == code),
+                qPrintable(QString("instr 0x%1: op[%2] should be %3")
+                    .arg(code, 2, 16, QChar('0')).arg(line).arg(line == code ? "active" : "inactive")));
+        }
+    }
 }

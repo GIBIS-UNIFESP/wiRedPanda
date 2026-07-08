@@ -18,4 +18,6 @@ private slots:
     void testInstructionDecoder8Bit();
 
     void testInstructionDecoder8BitStructure();
+
+    void testInstructionDecoder8BitOneHot();
 };
