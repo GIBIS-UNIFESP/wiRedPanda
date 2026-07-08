@@ -11,6 +11,7 @@ class TestLevel7InstructionMemoryInterface : public QObject
 
 private slots:
     void initTestCase();
+    void cleanupTestCase();
     void cleanup();
 
     void testInstructionMemoryInterface_data();
