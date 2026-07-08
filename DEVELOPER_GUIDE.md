@@ -145,7 +145,9 @@ brew install cmake ninja qt6 ccache
 ### Running the Application
 
 ```bash
-./build/wiredpanda
+./build/wiredpanda                                 # Linux
+./build/wiredpanda.app/Contents/MacOS/wiredpanda    # macOS
+./build/wiredpanda.exe                              # Windows
 ```
 
 ### Running Tests

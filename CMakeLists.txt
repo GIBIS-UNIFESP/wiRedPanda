@@ -560,6 +560,21 @@ if(WIN32)
     target_sources(wiredpanda PRIVATE "${CMAKE_BINARY_DIR}/wpanda.rc")
 endif()
 
+if(APPLE)
+    # Configure and embed Info.plist (replaces @PROJECT_VERSION@ with actual version).
+    # Setting MACOSX_BUNDLE makes install(TARGETS ... BUNDLE DESTINATION .) produce a
+    # real .app bundle instead of a bare executable.
+    configure_file(
+        App/Resources/macOS/Info.plist.in
+        ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
+        @ONLY
+    )
+    set_target_properties(wiredpanda PROPERTIES
+        MACOSX_BUNDLE ON
+        MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist"
+    )
+endif()
+
 # ========= INSTALLATION =============================
 
 # Install executable
@@ -570,11 +585,17 @@ install(TARGETS wiredpanda
 
 # Install example circuits (found at runtime via InstallRelativePaths::resolve("Examples")).
 # Destination is platform-specific: it must match InstallRelativePaths.cpp's own candidate
-# list for each OS (Windows only ever looks next to the executable; Linux looks under
-# share/wiredpanda/ via the AppImage/native-FHS candidates).
+# list for each OS (Windows only ever looks next to the executable; macOS looks inside the
+# bundle's Contents/Resources; Linux looks under share/wiredpanda/ via the AppImage/native-FHS
+# candidates).
 if(WIN32)
     install(DIRECTORY Examples/
         DESTINATION bin/Examples
+        COMPONENT examples
+    )
+elseif(APPLE)
+    install(DIRECTORY Examples/
+        DESTINATION "$<TARGET_BUNDLE_DIR_NAME:wiredpanda>/Contents/Resources/Examples"
         COMPONENT examples
     )
 else()

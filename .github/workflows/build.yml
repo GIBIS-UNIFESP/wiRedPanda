@@ -135,11 +135,10 @@ jobs:
       run: |
         PREFIX="${RUNNER_TEMP}/install-smoke"
         cmake --install build-release --prefix "$PREFIX"
-        # macOS isn't bundled yet - pre-bundle it falls into the same flat bin/+share/
-        # layout as Linux. Add a Contents/MacOS + Contents/Resources/Examples case here
-        # once MACOSX_BUNDLE support lands.
         if [ "$RUNNER_OS" = "Windows" ]; then
           BIN="$PREFIX/bin/wiredpanda.exe"; EX="$PREFIX/bin/Examples"
+        elif [ "$RUNNER_OS" = "macOS" ]; then
+          BIN="$PREFIX/wiredpanda.app/Contents/MacOS/wiredpanda"; EX="$PREFIX/wiredpanda.app/Contents/Resources/Examples"
         else
           BIN="$PREFIX/bin/wiredpanda"; EX="$PREFIX/share/wiredpanda/Examples"
         fi

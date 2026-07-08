@@ -87,6 +87,12 @@ class TestConfig:
                 exe_path = build_dir / name
                 if exe_path.exists():
                     return exe_path
+            # macOS app bundle (MACOSX_BUNDLE): the executable lives under
+            # Contents/MacOS/ instead of directly in the build dir. CFBundleExecutable
+            # is fixed to "wiredpanda" (see App/Resources/macOS/Info.plist.in).
+            bundle_exe = build_dir / "wiredpanda.app" / "Contents" / "MacOS" / "wiredpanda"
+            if bundle_exe.exists():
+                return bundle_exe
 
         return None
 

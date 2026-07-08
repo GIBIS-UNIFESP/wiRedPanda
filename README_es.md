@@ -37,7 +37,7 @@ cmake --preset release
 cmake --build --preset release
 ```
 
-Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `build/wiredpanda` en Linux y macOS, o `build/wiredpanda.exe` en Windows.
+Este proceso podría llevar un tiempo. Una vez concluido, el binario se ubicará en `build/wiredpanda` en Linux, `build/wiredpanda.app/Contents/MacOS/wiredpanda` en macOS, o `build/wiredpanda.exe` en Windows.
 
 Para obtener instrucciones de compilación detalladas, consulte [BUILD.md](BUILD.md) o visite la [wiki](https://github.com/GIBIS-UNIFESP/wiRedPanda/wiki/How-to-setup-environment).
 
