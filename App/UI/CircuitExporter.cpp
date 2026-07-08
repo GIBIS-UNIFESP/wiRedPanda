@@ -3,12 +3,15 @@
 
 #include "App/UI/CircuitExporter.h"
 
+#include <algorithm>
+
+#include <QImage>
 #include <QPageLayout>
 #include <QPageSize>
 #include <QPainter>
-#include <QPixmap>
 #include <QPrinter>
 #include <QRectF>
+#include <QSizeF>
 
 #include "App/Core/Common.h"
 #include "App/Scene/Scene.h"
@@ -43,18 +46,41 @@ void renderToPdf(Scene *scene, const QString &filePath)
 void renderToImage(Scene *scene, const QString &filePath)
 {
     const QRectF rect = paddedBoundingRect(scene);
-    QPixmap pixmap(rect.size().toSize());
+
+    // Cap the output at a sane maximum dimension. rect derives from element positions
+    // loaded from a .panda file; the only check on load (GraphicElementSerializer's position
+    // validation) rejects non-finite coordinates but never bounds magnitude, so a crafted or
+    // corrupted file with one element at a large-but-finite position would otherwise size
+    // this pixmap proportionally — potentially tens of gigabytes. Scale into the capped size
+    // instead of failing outright, the same "fit scene content to a fixed target" technique
+    // renderToPdf already uses via its fixed-size printer page. Below the cap (every
+    // realistic circuit), output resolution is unchanged.
+    QSizeF targetSize = rect.size();
+    const qreal scale = (std::min)({1.0, kMaxImageDimension / targetSize.width(), kMaxImageDimension / targetSize.height()});
+    if (scale < 1.0) {
+        targetSize *= scale;
+    }
+
+    // QImage with an explicit alpha format, not QPixmap — QPixmap(size) defaults to an
+    // opaque platform format on this build, so filling it with Qt::transparent silently
+    // flattens to opaque instead of storing real alpha. Without an explicit fill at all it's
+    // uninitialized (Qt's documented QPixmap/QImage(size) contract): Scene only paints its
+    // background opaquely once Scene::updateTheme() has run, which production always does
+    // first, masking this everywhere else; a caller that doesn't would export genuine
+    // garbage/uninitialized pixels in the padding margin.
+    QImage image(targetSize.toSize(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
 
     QPainter painter;
-    if (!painter.begin(&pixmap)) {
+    if (!painter.begin(&image)) {
         throw PANDACEPTION_WITH_CONTEXT("CircuitExporter", "Could not begin painting circuit image.");
     }
     // Antialiasing enabled here; the PDF path relies on the printer's high DPI instead.
     painter.setRenderHint(QPainter::Antialiasing);
-    scene->render(&painter, QRectF(), rect);
+    scene->render(&painter, QRectF(QPointF(), targetSize), rect);
     painter.end();
 
-    if (!pixmap.save(filePath)) {
+    if (!image.save(filePath)) {
         throw PANDACEPTION_WITH_CONTEXT("CircuitExporter", "Could not save image to %1.", filePath);
     }
 }

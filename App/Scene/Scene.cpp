@@ -194,10 +194,30 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
     const int right = static_cast<int>(std::ceil(rect.right() / gridSize)) * gridSize;
     const int bottom = static_cast<int>(std::ceil(rect.bottom() / gridSize)) * gridSize;
 
+    // Bound the grid regardless of view zoom: \a rect isn't necessarily clipped to the
+    // interactive view's viewport — a headless scene->render() call (CircuitExporter's
+    // PDF/image export) passes the *entire* scene bounding rect as the exposed area, which
+    // for a scene containing one element at an extreme-but-finite position (the only check
+    // on load rejects non-finite, not large, coordinates) can span millions of grid cells.
+    // Left unchecked, the loop below builds a point list with billions of entries — hanging
+    // and exhausting memory well before drawPoints() ever runs. Compute in 64-bit: the naive
+    // int product overflows for exactly this scenario, wrapping to a small/negative value
+    // that would pass a small reserve() through to an unbounded loop anyway.
+    const qint64 columns = (static_cast<qint64>(right) - left) / gridSize + 1;
+    const qint64 rows = (static_cast<qint64>(bottom) - top) / gridSize + 1;
+    constexpr qint64 kMaxGridPoints = 1'000'000;
+    if (columns * rows > kMaxGridPoints) {
+        return;
+    }
+
     painter->setPen(m_dots);
 
     QPolygon points;
-    points.reserve(((right - left) / gridSize + 1) * ((bottom - top) / gridSize + 1));
+    // kMaxGridPoints (checked above) comfortably fits in int on every supported platform;
+    // cast explicitly rather than relying on the implicit qint64->qsizetype narrowing, since
+    // qsizetype is 32-bit on i386 (would warn under -Wconversion) but the same width as qint64
+    // on 64-bit platforms (a same-width static_cast there would instead warn -Wuseless-cast).
+    points.reserve(static_cast<int>(columns * rows));
 
     for (int x = left; x <= right; x += gridSize) {
         for (int y = top; y <= bottom; y += gridSize) {
