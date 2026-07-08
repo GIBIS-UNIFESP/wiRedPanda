@@ -783,6 +783,7 @@ add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelem
 add_test(NAME TestIC COMMAND test_wiredpanda TestIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICFixtureLayout COMMAND test_wiredpanda TestICFixtureLayout WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICHandlerSecurity COMMAND test_wiredpanda TestICHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMCPProcessor COMMAND test_wiredpanda TestMCPProcessor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICInline COMMAND test_wiredpanda TestICInline WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestIcons COMMAND test_wiredpanda TestIcons WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

@@ -49,12 +49,40 @@ void StdinReader::requestStop()
 
 void StdinReader::run()
 {
-    // Blocks in getline; MCPProcessor::stopProcessing closes the stdin handle
-    // to unblock it, so the loop exits on EOF without QThread::terminate().
+    // Blocks reading one character at a time; MCPProcessor::stopProcessing closes the
+    // stdin handle to unblock it, so the loop exits on EOF without QThread::terminate().
+    // A manual char loop (rather than std::getline, which has no length bound) lets a
+    // line past MCPProcessor::kMaxStdinLineBytes be dropped instead of growing std::string without limit.
     std::string line;
-    while (!m_stopRequested && std::getline(std::cin, line)) {
-        if (!line.empty()) {
+    while (!m_stopRequested) {
+        line.clear();
+        bool overflowed = false;
+        int ch = std::char_traits<char>::eof();
+
+        while (!m_stopRequested) {
+            ch = std::cin.get();
+            if (ch == std::char_traits<char>::eof() || ch == '\n') {
+                break;
+            }
+            if (static_cast<qint64>(line.size()) < MCPProcessor::kMaxStdinLineBytes) {
+                line.push_back(static_cast<char>(ch));
+            } else {
+                overflowed = true; // keep draining this line without growing it further
+            }
+        }
+
+        if (std::cin.eof() && line.empty() && !overflowed) {
+            break; // clean EOF, nothing pending
+        }
+
+        if (overflowed) {
+            qWarning() << "MCPProcessor: stdin line exceeds" << MCPProcessor::kMaxStdinLineBytes << "bytes with no newline — dropping it";
+        } else if (!line.empty()) {
             emit dataReceived(QString::fromStdString(line));
+        }
+
+        if (ch == std::char_traits<char>::eof()) {
+            break;
         }
     }
 }
@@ -169,12 +197,10 @@ void MCPProcessor::onStdinReadable()
         const ssize_t bytesRead = ::read(::fileno(stdin), buffer, sizeof(buffer));
 
         if (bytesRead > 0) {
-            m_stdinBuffer.append(buffer, static_cast<qsizetype>(bytesRead));
-            qsizetype newline;
-            while ((newline = m_stdinBuffer.indexOf('\n')) != -1) {
-                const QByteArray lineBytes = m_stdinBuffer.left(newline);
-                m_stdinBuffer.remove(0, newline + 1);
-                processIncomingData(QString::fromUtf8(lineBytes));
+            const QByteArray chunk(buffer, static_cast<qsizetype>(bytesRead));
+            const QStringList lines = extractStdinLines(m_stdinBuffer, chunk);
+            for (const QString &line : lines) {
+                processIncomingData(line);
             }
             continue; // drain whatever else is buffered before yielding
         }
@@ -204,6 +230,27 @@ void MCPProcessor::onStdinReadable()
     }
 }
 #endif
+
+QStringList MCPProcessor::extractStdinLines(QByteArray &buffer, const QByteArray &data)
+{
+    buffer.append(data);
+
+    QStringList lines;
+    qsizetype newline;
+    while ((newline = buffer.indexOf('\n')) != -1) {
+        lines.append(QString::fromUtf8(buffer.left(newline)));
+        buffer.remove(0, newline + 1);
+    }
+
+    // A client that never sends '\n' would otherwise grow the buffer without bound —
+    // stdin is not a trusted channel in --mcp/--mcp-gui mode.
+    if (buffer.size() > kMaxStdinLineBytes) {
+        qWarning() << "MCPProcessor: stdin line exceeds" << kMaxStdinLineBytes << "bytes with no newline — dropping it";
+        buffer.clear();
+    }
+
+    return lines;
+}
 
 void MCPProcessor::processIncomingData(const QString &line)
 {

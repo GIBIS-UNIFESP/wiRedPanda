@@ -7,10 +7,12 @@
 #include <memory>
 
 #include <QBuffer>
+#include <QByteArray>
 #include <QHash>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QObject>
+#include <QStringList>
 #include <QTextStream>
 #include <QThread>
 #include <QTimer>
@@ -77,6 +79,19 @@ public:
 
     void startProcessing();
     void stopProcessing();
+
+    /// Maximum bytes buffered while waiting for a newline-terminated JSON-RPC command — see
+    /// extractStdinLines(). Public so tests can reference the real limit instead of a
+    /// duplicated magic number.
+    static constexpr qint64 kMaxStdinLineBytes = 16 * 1024 * 1024; // 16 MB
+
+    /// Appends \a data to \a buffer and returns every complete ('\n'-terminated) line found,
+    /// removing them from \a buffer. If more than kMaxStdinLineBytes accumulates with no
+    /// newline, clears \a buffer instead of growing it without bound — stdin is not a trusted
+    /// channel in --mcp/--mcp-gui mode (any local process that can pipe into wiRedPanda's
+    /// stdin can write it). A pure static method, independent of any live file descriptor, so
+    /// the buffering/cap logic is directly unit-testable.
+    static QStringList extractStdinLines(QByteArray &buffer, const QByteArray &data);
 
 private slots:
     void processIncomingData(const QString &line);
