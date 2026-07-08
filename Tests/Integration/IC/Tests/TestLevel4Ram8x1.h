@@ -16,9 +16,10 @@ private slots:
 
     void testRamArray_data();
     void testRamArray();
-    void testRamBasic_data();
-    void testRamBasic();
-    void testRamEdgeCases_data();
-    void testRamEdgeCases();
+    void testPatternTest();
+    void testWeGating();
+    void testHoldBehavior();
+    void testIsolation();
+    void testSequentialWrite();
     void testReset();
 };
