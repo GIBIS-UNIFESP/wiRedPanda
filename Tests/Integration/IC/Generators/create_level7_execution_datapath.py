@@ -134,70 +134,12 @@ class ExecutionDatapathBuilder(ICBuilderBase):
                 return False
         await self.log("  ✓ Created 8 Result output LEDs")
 
-        # Create NOR gates for Zero flag (8 inputs → 1 output)
-        # Zero flag is 1 when result is 0 (all bits are 0)
-        nor_gates = []
-        nor_x = output_x + HORIZONTAL_GATE_SPACING
-        for i in range(0, 8, 2):
-            nor_id = await self.create_element("Nor", nor_x, alu_y + ((i // 2) * VERTICAL_STAGE_SPACING), f"NOR_{i}")
-            if nor_id is None:
-                return False
-            if not nor_id:
-                self.log_error(f"Failed to get ID for NOR_{i}")
-                return False
-            nor_gates.append(nor_id)
-
-            # Connect result bits to NOR gate
-            if not await self.connect(alu_id, nor_id, source_port_label=f"Result[{i}]"):
-                return False
-
-            if not await self.connect(alu_id, nor_id, source_port_label=f"Result[{i + 1}]", target_port=1):
-                return False
-        await self.log("  ✓ Created NOR gates for Zero flag detection")
-
-        # Create AND gates to combine NOR results (cascaded for multi-input)
-        # First level: AND(NOR[0], NOR[2]) and AND(NOR[4], NOR[6])
-        and_gates = []
-        and_x = nor_x + HORIZONTAL_GATE_SPACING
-        for i in range(0, 4, 2):
-            and_id = await self.create_element("And", and_x, alu_y + ((i // 2) * VERTICAL_STAGE_SPACING), f"AND_{i}")
-            if and_id is None:
-                return False
-            if not and_id:
-                self.log_error(f"Failed to get ID for AND_{i}")
-                return False
-            and_gates.append(and_id)
-
-            # Connect NOR outputs to this AND
-            if not await self.connect(nor_gates[i // 2], and_id):
-                return False
-
-            if not await self.connect(nor_gates[i // 2 + 2], and_id, target_port=1):
-                return False
-        await self.log("  ✓ Created first-level AND gates for Zero flag")
-
-        # Create final AND gate to combine the two first-level AND results
-        final_and_x = and_x + HORIZONTAL_GATE_SPACING
-        final_and_id = await self.create_element("And", final_and_x, alu_y, "ZeroFlag_Final_AND")
-        if final_and_id is None:
-            return False
-        if not final_and_id:
-            self.log_error("Failed to get ID for final AND gate")
-            return False
-
-        # Connect first-level AND outputs to final AND (ports 0, 1 for 2-input AND)
-        for i, and_id in enumerate(and_gates):
-            if not await self.connect(and_id, final_and_id, target_port=i):
-                return False
-        await self.log("  ✓ Created final AND gate for Zero flag")
-
-        # Create Zero flag output LED (placed past the final AND gate, clear
-        # of the intermediate NOR/AND columns). The "ZeroFlag_Final_AND" label
-        # is long enough that even a 1.5x step only clears it by a few px at
-        # the default Linux font -- not enough margin for platforms that
-        # render the label a bit wider (observed on Windows CI), so this step
-        # is 2x.
-        zero_sign_x = final_and_x + 2.0 * HORIZONTAL_GATE_SPACING
+        # Zero/Sign are already computed by the embedded ALU (level6_alu_8bit
+        # exposes both directly) -- forward them rather than re-deriving Zero
+        # from Result bits with a redundant NOR/AND tree, matching how
+        # level7_alu_16bit and level8_execute_stage both wire their own Zero
+        # flag straight from their ALU.
+        zero_sign_x = output_x + HORIZONTAL_GATE_SPACING
         zero_led_id = await self.create_element("Led", zero_sign_x, alu_y, "Zero")
         if zero_led_id is None:
             return False
@@ -206,7 +148,7 @@ class ExecutionDatapathBuilder(ICBuilderBase):
             return False
 
         # Connect Zero flag to LED
-        if not await self.connect(final_and_id, zero_led_id):
+        if not await self.connect(alu_id, zero_led_id, source_port_label="Zero"):
             return False
 
         # Create Sign flag output LED (MSB of result)
