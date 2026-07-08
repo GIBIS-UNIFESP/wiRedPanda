@@ -14,4 +14,8 @@ private slots:
 
     void testICDropEvent();
     void testICMimeData();
+
+    // Regression: a crafted drag payload with an implausible icFileName/blobName
+    // length must be rejected, not crash or hang the drop handler.
+    void testDropEventRejectsOversizedPayload();
 };

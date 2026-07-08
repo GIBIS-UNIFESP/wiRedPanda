@@ -9,21 +9,14 @@
 #include <QDragMoveEvent>
 #include <QMimeData>
 
+#include "App/Core/DragDropPayload.h"
 #include "App/Core/Enums.h"
 #include "App/Core/MimeTypes.h"
 #include "App/IO/Serialization.h"
 
 namespace {
 
-struct DragPayload {
-    QPoint offset;
-    ElementType type;
-    QString icFileName;
-    bool isEmbedded = false;
-    QString blobName;
-};
-
-std::optional<DragPayload> extractDragPayload(const QMimeData *mimeData)
+std::optional<DragDropPayload> extractDragPayload(const QMimeData *mimeData)
 {
     QByteArray itemData;
     if (mimeData->hasFormat(MimeType::DragDrop)) {
@@ -37,11 +30,7 @@ std::optional<DragPayload> extractDragPayload(const QMimeData *mimeData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     Serialization::readPandaHeader(stream);
 
-    DragPayload payload;
-    stream >> payload.offset >> payload.type >> payload.icFileName;
-    if (!stream.atEnd()) { stream >> payload.isEmbedded; }
-    if (!stream.atEnd()) { stream >> payload.blobName; }
-    return payload;
+    return readDragDropPayload(stream);
 }
 
 } // namespace

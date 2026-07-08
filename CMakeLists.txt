@@ -904,6 +904,7 @@ add_test(NAME TestDisplay COMMAND test_wiredpanda TestDisplay WORKING_DIRECTORY 
 add_test(NAME TestDisplay7 COMMAND test_wiredpanda TestDisplay7 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinClipboard COMMAND test_wiredpanda TestDolphinClipboard WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinSerializer COMMAND test_wiredpanda TestDolphinSerializer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDragDropPayload COMMAND test_wiredpanda TestDragDropPayload WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementContextMenu COMMAND test_wiredpanda TestElementContextMenu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementEditor COMMAND test_wiredpanda TestElementEditor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementPalette COMMAND test_wiredpanda TestElementPalette WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

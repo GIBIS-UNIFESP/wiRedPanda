@@ -10,6 +10,7 @@
 #include <QtGlobal>
 
 #include "App/Core/Common.h"
+#include "App/Core/DragDropPayload.h"
 #include "App/Core/Enums.h"
 #include "App/Core/MimeTypes.h"
 #include "App/Element/ElementFactory.h"
@@ -50,30 +51,23 @@ void SceneDropHandler::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     Serialization::readPandaHeader(stream);
 
-    QPoint offset;      stream >> offset;
-    ElementType type;   stream >> type;
-    QString icFileName; stream >> icFileName;
-
-    bool isEmbedded = false;
-    QString blobName;
-    if (!stream.atEnd()) { stream >> isEmbedded; }
-    if (!stream.atEnd()) { stream >> blobName; }
+    const auto payload = readDragDropPayload(stream);
 
     // Subtract the drag offset so the element lands under the original grab point
-    QPointF pos = event->scenePos() - offset;
-    qCDebug(zero) << type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << icFileName;
+    QPointF pos = event->scenePos() - payload.offset;
+    qCDebug(zero) << payload.type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << payload.icFileName;
 
-    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
+    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(payload.type));
     qCDebug(zero) << "Valid element.";
 
-    if (isEmbedded && type == ElementType::IC) {
-        if (!m_scene->icRegistry()->initEmbeddedIC(static_cast<IC *>(element.get()), blobName)) {
+    if (payload.isEmbedded && payload.type == ElementType::IC) {
+        if (!m_scene->icRegistry()->initEmbeddedIC(static_cast<IC *>(element.get()), payload.blobName)) {
             return;
         }
     } else {
         // loadFromDrop can throw on malformed files; unique_ptr keeps the
         // freshly-allocated element from leaking when it does.
-        element->loadFromDrop(icFileName, m_scene->contextDir());
+        element->loadFromDrop(payload.icFileName, m_scene->contextDir());
     }
 
     qCDebug(zero) << "Adding the element to the scene.";
@@ -135,16 +129,9 @@ void SceneDropHandler::addFromMimeData(QMimeData *mimeData)
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     Serialization::readPandaHeader(stream);
 
-    QPoint offset;      stream >> offset;
-    ElementType type;   stream >> type;
-    QString icFileName; stream >> icFileName;
+    const auto payload = readDragDropPayload(stream);
 
-    bool isEmbedded = false;
-    QString blobName;
-    if (!stream.atEnd()) { stream >> isEmbedded; }
-    if (!stream.atEnd()) { stream >> blobName; }
-
-    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
+    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(payload.type));
     qCDebug(zero) << "Valid element.";
 
     // RAII for mimeData too — the original deleteLater at the bottom is
@@ -152,12 +139,12 @@ void SceneDropHandler::addFromMimeData(QMimeData *mimeData)
     // the half-built element.
     auto mimeGuard = qScopeGuard([mimeData]() { mimeData->deleteLater(); });
 
-    if (isEmbedded && type == ElementType::IC) {
-        if (!m_scene->icRegistry()->initEmbeddedIC(static_cast<IC *>(element.get()), blobName)) {
+    if (payload.isEmbedded && payload.type == ElementType::IC) {
+        if (!m_scene->icRegistry()->initEmbeddedIC(static_cast<IC *>(element.get()), payload.blobName)) {
             return;
         }
     } else {
-        element->loadFromDrop(icFileName, m_scene->contextDir());
+        element->loadFromDrop(payload.icFileName, m_scene->contextDir());
     }
 
     qCDebug(zero) << "Adding the element to the scene.";
