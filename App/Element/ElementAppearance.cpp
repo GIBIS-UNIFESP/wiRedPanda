@@ -202,6 +202,12 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
         return;
     }
 
+    // The pixmap about to load may have different dimensions than the current one,
+    // which changes what boundingRect() reports (it's derived from pixmap().rect()) —
+    // Qt requires prepareGeometryChange() before any such geometry-affecting mutation,
+    // or the old footprint's stale pixels are never scheduled for repaint.
+    m_owner->prepareGeometryChange();
+
     QString path = pixmapPath;
 
     // Qt resource paths start with ":/"; a path that already resolves as given (e.g. a real,
@@ -264,6 +270,8 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
 
 void ElementAppearance::setRenderPixmap(const QPixmap &pixmap)
 {
+    // See the identical call in setPixmap(): this pixmap's dimensions feed boundingRect().
+    m_owner->prepareGeometryChange();
     m_pixmap = pixmap;
     m_hasCustomRenderPixmap = true;
     // The owner's body is drawn from this footprint, so rotation must pivot on its centre —

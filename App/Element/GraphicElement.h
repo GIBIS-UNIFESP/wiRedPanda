@@ -590,6 +590,10 @@ private:
     /// see GraphicElementSerializer.
     friend class GraphicElementSerializer;
 
+    /// Calls prepareGeometryChange() before its pixmap mutation resizes boundingRect();
+    /// see ElementAppearance::setPixmap()/setRenderPixmap().
+    friend class ElementAppearance;
+
     // --- Port Management Helpers ---
 
     /// Shared implementation for setInputSize() and setOutputSize(): resizes the port store
