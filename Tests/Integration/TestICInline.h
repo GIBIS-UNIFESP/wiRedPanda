@@ -241,6 +241,16 @@ private slots:
     // registry, outside the undo system — undoing the paste left it orphaned forever.
     void testPasteEmbeddedICBlobUndoRemovesOrphan();
 
+    // Regression: embedICsByFile()/extractToFile() mutated live, already-in-scene ICs with no
+    // SimulationBlocker, unlike sibling onFileChanged() — a UAF risk if the IC contains a
+    // sequential element while the simulation is running.
+    void testEmbedICsByFileWithSequentialElementWhileSimulationRunning();
+
+    // Regression: ICLoader::loadFileDirectly() only had cycle detection, not a depth cap
+    // (unlike its sibling deserializeAndLoad()) — a long, non-cyclic chain of distinct file-
+    // backed ICs recursed unbounded and could exhaust the call stack.
+    void testLoadFileDirectlyEnforcesNestingDepthLimit();
+
 private:
     QString fixturesSrcDir() const;
     bool copyFixture(const QString &name);

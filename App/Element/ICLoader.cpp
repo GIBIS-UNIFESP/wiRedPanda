@@ -140,6 +140,20 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
 
 void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
 {
+    // Depth cap: shares s_icLoadDepth/kMaxICNestingDepth with deserializeAndLoad() rather than
+    // using a separate counter, so a chain that mixes file-backed and embedded-blob hops can't
+    // bypass the limit by crossing between the two loading paths — depth bounds the overall
+    // recursion, not "how many hops happened to go through this particular function." Cycle
+    // detection (below) alone isn't enough: a long, non-cyclic chain of distinct legitimate
+    // files (A embeds B embeds C embeds ... , no repeats) would otherwise recurse unbounded here
+    // and exhaust the call stack.
+    if (s_icLoadDepth >= kMaxICNestingDepth) {
+        throw PANDACEPTION("IC nesting depth limit (%1) exceeded while loading %2",
+                           QString::number(kMaxICNestingDepth), fileInfo.absoluteFilePath());
+    }
+    ++s_icLoadDepth;
+    const auto depthGuard = qScopeGuard([] { --s_icLoadDepth; });
+
     // Cycle detection: if this file is already being loaded up the call stack,
     // a circular IC reference exists (A→B→A→…). Throw instead of stack-overflowing.
     static QSet<QString> s_loadingFiles;

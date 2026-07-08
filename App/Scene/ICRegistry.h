@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
@@ -113,6 +115,15 @@ private:
 
     /// Renames a nested blob reference from \a oldName to \a newName inside \a blobData's metadata.
     static void renameBlobReference(QByteArray &blobData, const QString &oldName, const QString &newName);
+
+    /// Runs \a mutate on each of \a targets, atomically: if any call throws, every target already
+    /// mutated is rolled back to \a oldData before the exception propagates. The whole loop runs
+    /// under one SimulationBlocker — each mutation frees and rebuilds an IC's internal graph, and a
+    /// tick observing that between iterations (not just within one) would still dereference freed
+    /// memory via Simulation's cached vectors, so the guard must span the entire loop, not each
+    /// iteration.
+    void reloadTargetsAtomically(const QList<GraphicElement *> &targets, const QByteArray &oldData,
+                                 const std::function<void(IC *)> &mutate);
 
     Scene *m_scene;                          ///< Owning scene.
     QMap<QString, QByteArray> m_fileCache;   ///< Cached file reads for file-backed ICs (path → bytes).

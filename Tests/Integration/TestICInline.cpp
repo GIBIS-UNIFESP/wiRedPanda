@@ -6045,3 +6045,92 @@ void TestICInline::testPasteEmbeddedICBlobUndoRemovesOrphan()
     QCOMPARE(static_cast<int>(targetScene.elements().size()), 1);
     QVERIFY(targetReg->hasBlob("paste_orphan_test"));
 }
+
+void TestICInline::testEmbedICsByFileWithSequentialElementWhileSimulationRunning()
+{
+    // Regression: embedICsByFile() previously mutated a live, already-in-scene IC with no
+    // SimulationBlocker at all, unlike sibling onFileChanged(). If the embedded sub-circuit
+    // contains a sequential element, resetInternalState() frees exactly the objects
+    // Simulation::m_sequentialElements points to while the simulation timer could still be
+    // running. This can't reproduce the real UAF deterministically in single-threaded QtTest
+    // (see TestDanglingPointer's bug6/bug7 for the same limitation) — this test instead
+    // exercises the guarded path end to end with the simulation actively started, and confirms
+    // the embed completes correctly and the simulation still ticks afterward.
+    const QString filePath = TestUtils::examplesDir() + "jkflipflop.panda";
+    QVERIFY2(QFile::exists(filePath), "jkflipflop.panda fixture not found");
+    QByteArray rawFileBytes = readFile(filePath);
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(QFileInfo(filePath).absolutePath());
+
+    auto *ic = new IC();
+    ic->loadFile(filePath, QFileInfo(filePath).absolutePath());
+    ws.scene()->addItem(ic);
+    QVERIFY(!ic->isEmbedded());
+
+    ws.scene()->simulation()->start();
+
+    auto *reg = ws.scene()->icRegistry();
+    const int count = reg->embedICsByFile(filePath, rawFileBytes, "flipflop_embedded");
+    QCOMPARE(count, 1);
+    QVERIFY(ic->isEmbedded());
+    QCOMPARE(ic->blobName(), QString("flipflop_embedded"));
+
+    // The simulation must still tick correctly post-embed — proves the internal graph was
+    // rebuilt cleanly, not left torn.
+    ws.scene()->simulation()->update();
+
+    ws.scene()->simulation()->stop();
+}
+
+void TestICInline::testLoadFileDirectlyEnforcesNestingDepthLimit()
+{
+    // Regression: ICLoader::loadFileDirectly() (used when an IC isn't yet in a scene, e.g.
+    // during deserialization) previously only had cycle detection — no depth cap, unlike its
+    // sibling deserializeAndLoad() (the blob-cache path), which is bounded by
+    // kMaxICNestingDepth. A long, non-cyclic chain of distinct legitimate files (no repeats, so
+    // the cycle guard never fires) recursed unbounded through loadFileDirectly() and could
+    // exhaust the call stack. Build a chain deeper than the shared limit and confirm it throws
+    // cleanly instead of crashing.
+    QTemporaryDir tmp;
+    QVERIFY(tmp.isValid());
+
+    // Leaf: reuse the simple_and.panda fixture (a plain 2-input AND gate, no IC references).
+    QVERIFY(QFile::copy(m_fixtureDir + "/simple_and.panda", tmp.filePath("level0.panda")));
+
+    // Build a chain of file-backed ICs, each wrapping the previous level. None of these levels
+    // are ever added to a Scene, so loading them back always takes the loadFileDirectly()
+    // fallback, not the blob-cache path. Each level's loadFile() call fully re-resolves the
+    // whole chain accumulated so far (an IC needs its complete internal structure to determine
+    // port counts, not just a lazy filename reference), so the depth limit fires partway
+    // through this construction loop itself, comfortably before reaching 20 levels — this loop
+    // IS the deepening non-cyclic chain the fix is meant to bound.
+    constexpr int kChainLength = 20;
+    bool threw = false;
+    QString message;
+    for (int level = 1; level <= kChainLength; ++level) {
+        WorkSpace ws;
+        ws.scene()->setContextDir(tmp.path());
+        auto *ic = new IC();
+        try {
+            ic->loadFile(QStringLiteral("level%1.panda").arg(level - 1), tmp.path());
+        } catch (const Pandaception &e) {
+            threw = true;
+            message = e.englishMessage();
+            delete ic; // never added to a scene on this path — safe to delete directly
+            break;
+        }
+        ws.scene()->addItem(ic);
+
+        QFile file(tmp.filePath(QStringLiteral("level%1.panda").arg(level)));
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        QDataStream stream(&file);
+        Serialization::writePandaHeader(stream);
+        ws.save(stream);
+    }
+
+    QVERIFY2(threw, "Building a chain of 20 nested file-backed ICs must eventually throw a "
+                    "nesting-depth exception, not crash or succeed unbounded.");
+    QVERIFY2(message.contains("nesting depth", Qt::CaseInsensitive),
+             qPrintable(QString("Expected a nesting-depth-limit error, got: %1").arg(message)));
+}
