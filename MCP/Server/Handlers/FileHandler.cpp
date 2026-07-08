@@ -3,19 +3,31 @@
 
 #include "MCP/Server/Handlers/FileHandler.h"
 
+#include <algorithm>
+
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QImage>
 #include <QPageSize>
 #include <QPainter>
 #include <QPdfWriter>
-#include <QPixmap>
 #include <QSvgGenerator>
 #include <QTabWidget>
 
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/UI/CircuitExporter.h"
 #include "App/UI/MainWindow.h"
+
+namespace {
+
+/// Maximum padding (in scene pixels) export_image will apply around the circuit before
+/// rendering. The schema only enforces a minimum of 0 (MCP/schema-mcp.json); an MCP client
+/// requesting an absurd padding could otherwise blow up the render regardless of scene size.
+constexpr int kMaxExportPadding = 2000;
+
+} // namespace
 
 FileHandler::FileHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
@@ -183,7 +195,7 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
 
     QString filename = params.value("filename").toString();
     QString format = params.value("format").toString().toLower();
-    int padding = params.value("padding").toInt(20);
+    const int padding = std::clamp(params.value("padding").toInt(20), 0, kMaxExportPadding);
 
     Scene *scene = currentScene();
     if (!scene) {
@@ -240,17 +252,22 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
             scene->render(&painter, QRectF(), sceneRect);
             painter.end();
         } else {  // png
-            QPixmap pixmap(sceneRect.size().toSize());
-            pixmap.fill(Qt::white);
+            // Delegates to CircuitExporter's already-hardened renderer instead of sizing an
+            // image directly from sceneRect: that bounding/scale-to-fit logic (capped at
+            // CircuitExporter::kMaxImageDimension) exists in exactly one place so it can't drift
+            // out of sync between the GUI's "Export to Image" action and this MCP command.
+            const QImage image = CircuitExporter::renderScaledImage(scene, sceneRect);
 
-            QPainter painter(&pixmap);
-            painter.setRenderHint(QPainter::Antialiasing);
-            scene->render(&painter, QRectF(), sceneRect);
-            painter.end();
-
-            if (!pixmap.save(filename, "PNG")) {
+            if (!image.save(filename, "PNG")) {
                 return createErrorResponse("Failed to save PNG file", requestId, JsonRpcError::FileError);
             }
+
+            QJsonObject result;
+            result["exported_file"] = filename;
+            result["format"] = format;
+            result["size"] = QString("%1x%2").arg(image.width()).arg(image.height());
+
+            return createSuccessResponse(result, requestId);
         }
 
         QJsonObject result;

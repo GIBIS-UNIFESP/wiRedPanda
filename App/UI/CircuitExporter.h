@@ -9,6 +9,8 @@
 
 class Scene;
 class QString;
+class QImage;
+class QRectF;
 
 /**
  * \namespace CircuitExporter
@@ -40,5 +42,15 @@ void renderToPdf(Scene *scene, const QString &filePath);
  * larger scenes are scaled down to fit rather than allocating proportionally.
  */
 void renderToImage(Scene *scene, const QString &filePath);
+
+/**
+ * \brief Renders \a scene into a transparent-filled QImage bounded by kMaxImageDimension.
+ * \details \a paddedRect is scene-coordinate content to render (caller applies its own
+ * padding policy). Content is scaled down to fit within kMaxImageDimension per side rather
+ * than allocated proportionally to \a paddedRect. Shared by renderToImage() and the MCP
+ * export_image handler so this bounding logic has exactly one implementation.
+ * \throws Pandaception if the QPainter cannot begin painting to the image.
+ */
+QImage renderScaledImage(Scene *scene, const QRectF &paddedRect);
 
 } // namespace CircuitExporter
