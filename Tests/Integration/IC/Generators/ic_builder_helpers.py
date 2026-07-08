@@ -158,16 +158,37 @@ class RegisterFileBuilder(ICBuilderBase):
         num_registers: int,
         data_width: int,
         address_bits: int,
+        decoder_name: str,
         level: int = 5,
         num_read_ports: int = 2,
         verbose: bool = True,
     ) -> None:
+        # decoder_name is a required, caller-supplied literal -- not computed here
+        # via f-string -- so run_all_generators.py's dependency scanner (which only
+        # sees literal string constants in the generator script it's analyzing, per
+        # extract_dependencies()'s own docstring convention: "Dependencies are always
+        # written as plain string literals naming another component") can see this
+        # builder's write-decoder dependency. Every other generator already follows
+        # that convention; this used to be the one exception, invisible to the
+        # scanner regardless of which file the f-string lived in. Cross-checked
+        # against the computed name so a typo'd/mismatched literal fails loudly
+        # instead of silently wiring up the wrong decoder. Validated before
+        # super().__init__() so this specific error surfaces first.
+        expected_decoder_name = f"level2_decoder_{address_bits}to{num_registers}"
+        if decoder_name != expected_decoder_name:
+            raise ValueError(
+                f"decoder_name={decoder_name!r} does not match the expected "
+                f"{expected_decoder_name!r} for address_bits={address_bits}, "
+                f"num_registers={num_registers}"
+            )
+
         super().__init__(mcp, verbose)
         self.num_registers = num_registers
         self.data_width = data_width
         self.address_bits = address_bits
         self.level = level
         self.num_read_ports = num_read_ports
+        self.decoder_name = decoder_name
 
     async def _build_read_mux_tree(
         self, sources: list[int], addr_lines: list[int], x: float, y: float, label_prefix: str
@@ -241,7 +262,7 @@ class RegisterFileBuilder(ICBuilderBase):
         # F32: the level-5 and level-6 8×8 register-file fixtures are the same
         # circuit — only the output filename's level prefix differs.
         output_name = f"level{self.level}_register_file_{num_registers}x{data_width}"
-        decoder_name = f"level2_decoder_{address_bits}to{num_registers}"
+        decoder_name = self.decoder_name
 
         await self.begin_build(display)
         if not await self.create_new_circuit():
