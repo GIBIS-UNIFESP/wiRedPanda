@@ -83,10 +83,10 @@ void TestLevel3BCD7SegmentDecoder::testBCD7SegmentDecoder_data()
 
     // Standard 7-segment patterns for BCD digits 0-9
     // Pattern is a bitmask where bit i represents segment i (a=0, b=1, ..., g=6)
-    // Segment layout: a=MSB at pos 6, g=LSB at pos 0
-    //    aaa       (a is segment_a, position 6)
+    // Segment layout: a=LSB at pos 0, g=MSB at pos 6
+    //    aaa       (a is segment_a, position 0)
     //   f   b      (b is segment_b, position 1)
-    //    ggg       (g is segment_g, position 0)
+    //    ggg       (g is segment_g, position 6)
     //   e   c
     //    ddd
 
