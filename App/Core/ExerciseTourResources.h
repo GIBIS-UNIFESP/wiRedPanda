@@ -31,9 +31,10 @@ struct ExerciseTourResourceEntry {
  * by discover()) instead of a hardcoded list. Built-in content ships embedded at
  * ":/Exercises"/":/Tours"; on top of that, discover() also finds user-added content in three
  * real, non-built-in locations, each for a different audience:
- *  - the install-relative folder (mirrors the existing Examples folder) and, when that isn't
- *    writable, a Documents-based fallback — both end-user-facing, both opened by the "Open
- *    Folder" button in the browser dialogs via preferredContentDir();
+ *  - the install-relative folder (InstallRelativePaths::candidates(), shared with the
+ *    Examples menu) and, when that isn't writable, a Documents-based fallback — both
+ *    end-user-facing, both opened by the "Open Folder" button in the browser dialogs via
+ *    preferredContentDir();
  *  - the AppData folder (managedContentDir()) — reserved for a teacher/IT admin to
  *    pre-provision content in a managed classroom install. It is scanned so provisioned
  *    content shows up, but deliberately never opened or created by the "Open Folder" button
@@ -75,9 +76,9 @@ public:
     static QString managedContentDir(const QString &category);
 
     /// Returns the folder the "Open Folder" button should open for \a category: the first
-    /// install-relative candidate (mirroring MainWindow::setupExamplesMenu()'s per-platform
-    /// search paths) that already exists, or can be created, AND is writable — the simple,
-    /// visible location meant for an individual end-user. If none of those are writable (e.g.
+    /// install-relative candidate (InstallRelativePaths::candidates()) that already exists,
+    /// or can be created, AND is writable — the simple, visible location meant for an
+    /// individual end-user. If none of those are writable (e.g.
     /// installed under Program Files without admin rights), falls back to a Documents-based
     /// folder (QStandardPaths::DocumentsLocation + "/wiRedPanda/<category>"), created only at
     /// this point, on demand. Returns an empty string if even that fails — this never falls
@@ -114,16 +115,6 @@ public:
     static QString resolveWritableDir(const QStringList &candidates, const QString &documentsFallback);
 
 private:
-    /// Builds the per-platform install-relative candidate list for \a category, mirroring
-    /// MainWindow::setupExamplesMenu()'s search paths (app dir, macOS bundle Resources,
-    /// Linux AppImage share dir, WASM virtual path, CWD dev fallback) with the folder name
-    /// parameterized instead of hardcoded to "Examples".
-    static QStringList installRelativeCandidates(const QString &category);
-
-    /// Returns the first install-relative candidate that already exists on disk, or "" if
-    /// none do. Read-only — creates nothing; used by discover() for scanning.
-    static QString installRelativeContentDir(const QString &category);
-
     /// Computes (does not create) the Documents-based fallback path for \a category.
     static QString documentsFallbackDir(const QString &category);
 };

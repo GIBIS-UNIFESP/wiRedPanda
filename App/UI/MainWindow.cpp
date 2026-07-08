@@ -33,6 +33,7 @@
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/InstallRelativePaths.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
@@ -232,29 +233,7 @@ void MainWindow::setupRecentFiles()
 
 void MainWindow::setupExamplesMenu()
 {
-    const QString appDir = QCoreApplication::applicationDirPath();
-
-    const QStringList searchPaths = {
-        appDir + "/Examples",                       // Windows / dev builds
-#ifdef Q_OS_MACOS
-        appDir + "/../Resources/Examples",          // macOS app bundle
-#endif
-#ifdef Q_OS_LINUX
-        qEnvironmentVariable("APPDIR") + "/usr/share/wiredpanda/Examples",  // AppImage
-#endif
-#ifdef Q_OS_WASM
-        QStringLiteral("/Examples"),                // WASM virtual filesystem (--preload-file)
-#endif
-        QStringLiteral("Examples"),                 // CWD fallback (development)
-    };
-
-    QString examplesPath;
-    for (const auto &path : searchPaths) {
-        if (!path.isEmpty() && QDir(path).exists()) {
-            examplesPath = path;
-            break;
-        }
-    }
+    const QString examplesPath = InstallRelativePaths::resolve(QStringLiteral("Examples"));
 
     if (!examplesPath.isEmpty()) {
         const auto entryList = QDir(examplesPath).entryList({"*.panda"}, QDir::Files);

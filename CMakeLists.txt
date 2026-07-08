@@ -568,26 +568,53 @@ install(TARGETS wiredpanda
     BUNDLE DESTINATION .
 )
 
-# Configure and install .desktop file (replaces @VERSION@ with actual version)
-configure_file(
-    App/Resources/Freedesktop/wiredpanda.desktop
-    ${CMAKE_CURRENT_BINARY_DIR}/wiredpanda.desktop
-    @ONLY
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/wiredpanda.desktop
-    DESTINATION share/applications
-    COMPONENT desktop
-)
-
-# Install icons in standard FreeDesktop Icon Theme hierarchy
-set(ICON_SIZES 26x26 32x32 48x48 64x64 128x128)
-foreach(SIZE ${ICON_SIZES})
-    install(FILES App/Resources/Assets/Icons/${SIZE}/wpanda.png
-        DESTINATION share/icons/hicolor/${SIZE}/apps
-        RENAME wpanda.png
-        COMPONENT icons
+# Install example circuits (found at runtime via InstallRelativePaths::resolve("Examples")).
+# Destination is platform-specific: it must match InstallRelativePaths.cpp's own candidate
+# list for each OS (Windows only ever looks next to the executable; Linux looks under
+# share/wiredpanda/ via the AppImage/native-FHS candidates).
+if(WIN32)
+    install(DIRECTORY Examples/
+        DESTINATION bin/Examples
+        COMPONENT examples
     )
-endforeach()
+else()
+    install(DIRECTORY Examples/
+        DESTINATION share/wiredpanda/Examples
+        COMPONENT examples
+    )
+endif()
+
+# Linux-only desktop integration: .desktop entry, icons, and shared-mime-info definition.
+# Meaningless on Windows/macOS (no FreeDesktop menu/icon-theme/mime system there).
+if(LINUX)
+    # Configure and install .desktop file (replaces @VERSION@ with actual version)
+    configure_file(
+        App/Resources/Freedesktop/wiredpanda.desktop
+        ${CMAKE_CURRENT_BINARY_DIR}/wiredpanda.desktop
+        @ONLY
+    )
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/wiredpanda.desktop
+        DESTINATION share/applications
+        COMPONENT desktop
+    )
+
+    # Install icons in standard FreeDesktop Icon Theme hierarchy
+    set(ICON_SIZES 26x26 32x32 48x48 64x64 128x128)
+    foreach(SIZE ${ICON_SIZES})
+        install(FILES App/Resources/Assets/Icons/${SIZE}/wpanda.png
+            DESTINATION share/icons/hicolor/${SIZE}/apps
+            RENAME wpanda.png
+            COMPONENT icons
+        )
+    endforeach()
+
+    # Install shared-mime-info definition for .panda/application/x-wiredpanda
+    install(FILES App/Resources/Freedesktop/wiredpanda-mime.xml
+        DESTINATION share/mime/packages
+        RENAME wiredpanda.xml
+        COMPONENT mime
+    )
+endif()
 
 # ========= TESTS ===================================
 
@@ -873,6 +900,7 @@ add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WO
 add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTrashButton COMMAND test_wiredpanda TestTrashButton WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExerciseTourResources COMMAND test_wiredpanda TestExerciseTourResources WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestInstallRelativePaths COMMAND test_wiredpanda TestInstallRelativePaths WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExerciseEngine COMMAND test_wiredpanda TestExerciseEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTourEngine COMMAND test_wiredpanda TestTourEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestUpdateChecker COMMAND test_wiredpanda TestUpdateChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
