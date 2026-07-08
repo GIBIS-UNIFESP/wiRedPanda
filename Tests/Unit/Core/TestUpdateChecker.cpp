@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Core/TestUpdateChecker.h"
 
+#include <QUrl>
+
 #include "App/Core/UpdateChecker.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -83,4 +85,27 @@ void TestUpdateChecker::testAssetSelection()
     // the caller then falls back to the release page rather than a wrong binary.
     QVERIFY(!isMatchingReleaseAsset(linuxX86, "Linux", "ppc64"));
     QVERIFY(!isMatchingReleaseAsset(winX86, "Windows", "ppc64"));
+}
+
+void TestUpdateChecker::testSafeGitHubUrl()
+{
+    // Regression: browser_download_url/html_url from the GitHub API response were used for a
+    // network download + file write and QDesktopServices::openUrl with no scheme/host check.
+    // GitHub's release JSON only ever populates these fields as https://github.com/... — the
+    // CDN redirect happens only after fetching this URL, so its host never appears here.
+    QVERIFY(isSafeGitHubUrl(QUrl("https://github.com/gibis-unifesp/wiredpanda/releases/download/5.1.2/wiRedPanda.AppImage")));
+    QVERIFY(isSafeGitHubUrl(QUrl("https://github.com/gibis-unifesp/wiredpanda/releases/tag/5.1.2")));
+
+    // Wrong scheme: could otherwise have the app silently copy a local file into Downloads,
+    // or hand an unexpected URI scheme to the OS's protocol handler.
+    QVERIFY(!isSafeGitHubUrl(QUrl("file:///etc/passwd")));
+    QVERIFY(!isSafeGitHubUrl(QUrl("ftp://github.com/some/asset")));
+
+    // Lookalike hosts must not pass a substring/prefix check.
+    QVERIFY(!isSafeGitHubUrl(QUrl("https://github.com.evil.com/asset")));
+    QVERIFY(!isSafeGitHubUrl(QUrl("https://evil.com/github.com")));
+
+    // Invalid/empty URL.
+    QVERIFY(!isSafeGitHubUrl(QUrl()));
+    QVERIFY(!isSafeGitHubUrl(QUrl(QString())));
 }
