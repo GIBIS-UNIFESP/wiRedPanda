@@ -71,23 +71,23 @@
 <context>
     <name>AudioBox</name>
     <message>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="34"/>
         <location filename="../../Element/GraphicElements/AudioBox.cpp" line="35"/>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="36"/>
         <source>Audio Box</source>
         <translation>ऑडियो बॉक्स</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="87"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="78"/>
         <source>File does not exist</source>
         <translation>फाइल मौजूद नहीं है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="88"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="79"/>
         <source>File is not readable</source>
         <translation>फाइल पढ़ने योग्य नहीं है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="90"/>
+        <location filename="../../Element/GraphicElements/AudioBox.cpp" line="81"/>
         <source>Couldn&apos;t load audio: %1 (%2)</source>
         <translation>ऑडियो लोड नहीं हो सका: %1 (%2)</translation>
     </message>
@@ -125,19 +125,9 @@
         <translation>के बारे में</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="248"/>
-        <source>Ctrl+H</source>
-        <translation>Ctrl+H</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="249"/>
         <source>Load</source>
         <translation>लोड करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="250"/>
-        <source>Ctrl+L</source>
-        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="251"/>
@@ -145,19 +135,9 @@
         <translation>बाहर निकलें</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="252"/>
-        <source>Ctrl+W</source>
-        <translation>Ctrl+W</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="253"/>
         <source>Combinational</source>
         <translation>संयोजक</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="254"/>
-        <source>Alt+C</source>
-        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="922"/>
@@ -166,19 +146,9 @@
         <translation>PDF में एक्सपोर्ट करें</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="256"/>
-        <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="257"/>
         <source>Save</source>
         <translation>सेव करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="258"/>
-        <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="259"/>
@@ -186,19 +156,9 @@
         <translation>इस रूप में सेव करें...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="260"/>
-        <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="261"/>
         <source>Copy</source>
         <translation>कॉपी करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="262"/>
-        <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="263"/>
@@ -206,35 +166,15 @@
         <translation>पेस्ट करें</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="264"/>
-        <source>Ctrl+V</source>
-        <translation>Ctrl+V</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="265"/>
         <source>Set to 0</source>
         <translation>0 पर सेट करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="266"/>
-        <source>0</source>
-        <translation>0</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
-        <source>1</source>
-        <translation>1</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="269"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="270"/>
         <source>Set clock period</source>
         <translation>क्लॉक आवर्तकाल सेट करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="273"/>
-        <source>Space</source>
-        <translation>स्पेस</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="286"/>
@@ -259,19 +199,9 @@
         <translation>ऑटोक्रॉप</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="299"/>
-        <source>Ctrl+A</source>
-        <translation>Ctrl+A</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="267"/>
         <source>Set to 1</source>
         <translation>1 पर सेट करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="271"/>
-        <source>Alt+W</source>
-        <translation>Alt+W</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="272"/>
@@ -294,19 +224,9 @@
         <translation>PNG में एक्सपोर्ट करें</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="277"/>
-        <source>Ctrl+Shift+P</source>
-        <translation>Ctrl+Shift+P</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="278"/>
         <source>Set Length</source>
         <translation>लंबाई सेट करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="279"/>
-        <source>Alt+L</source>
-        <translation>Alt+L</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="280"/>
@@ -314,19 +234,9 @@
         <translation>Qt के बारे में</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="281"/>
-        <source>Ctrl+Shift+H</source>
-        <translation>Ctrl+Shift+H</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="282"/>
         <source>Zoom In</source>
         <translation>ज़ूम इन</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="283"/>
-        <source>Ctrl+=</source>
-        <translation>Ctrl+=</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="284"/>
@@ -334,24 +244,9 @@
         <translation>ज़ूम आउट</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="285"/>
-        <source>Ctrl+-</source>
-        <translation>Ctrl+-</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="288"/>
-        <source>Ctrl+Shift+R</source>
-        <translation>Ctrl+Shift+R</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
         <source>Reset Zoom</source>
         <translation>ज़ूम रीसेट करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="290"/>
-        <source>Ctrl+Home</source>
-        <translation>Ctrl+Home</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="291"/>
@@ -359,19 +254,9 @@
         <translation>साफ करें</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="292"/>
-        <source>Alt+X</source>
-        <translation>Alt+X</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="293"/>
         <source>Cut</source>
         <translation>कट करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="294"/>
-        <source>Ctrl+X</source>
-        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="58"/>
@@ -393,9 +278,40 @@
         <translation>बंद करने से पहले सिमुलेशन सेव करें?</translation>
     </message>
     <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <source>CSV files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <source>Dolphin files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <source>All supported files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="812"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>क्या आप इस beWavedDolphin फ़ाइल को अपनी वर्तमान wiRedPanda फ़ाइल से लिंक करना चाहते हैं और इसे सेव करना चाहते हैं?</translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="904"/>
+        <source>PNG files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="922"/>
+        <source>PDF files</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="941"/>
@@ -406,16 +322,6 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="777"/>
         <source>Save File as...</source>
         <translation>फ़ाइल इस रूप में सेव करें...</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="770"/>
-        <source>CSV files (*.csv);;Dolphin files (*.dolphin);;All supported files (*.dolphin *.csv)</source>
-        <translation>CSV फ़ाइलें (*.csv);;Dolphin फ़ाइलें (*.dolphin);;सभी समर्थित फ़ाइलें (*.dolphin *.csv)</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="771"/>
-        <source>Dolphin files (*.dolphin);;CSV files (*.csv);;All supported files (*.dolphin *.csv)</source>
-        <translation>Dolphin फ़ाइलें (*.dolphin);;CSV फ़ाइलें (*.csv);;सभी समर्थित फ़ाइलें (*.dolphin *.csv)</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="758"/>
@@ -439,11 +345,6 @@
         <translation>फ़ाइल खोलें</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <source>All supported files (*.dolphin *.csv);;Dolphin files (*.dolphin);;CSV files (*.csv)</source>
-        <translation>सभी समर्थित फ़ाइलें (*.dolphin *.csv);;Dolphin फ़ाइलें (*.dolphin);;CSV फ़ाइलें (*.csv)</translation>
-    </message>
-    <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="852"/>
         <source>File loaded successfully.</source>
         <translation>फ़ाइल सफलतापूर्वक लोड हुई।</translation>
@@ -452,16 +353,6 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="904"/>
         <source>Export to Image</source>
         <translation>इमेज में एक्सपोर्ट करें</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="904"/>
-        <source>PNG files (*.png)</source>
-        <translation>PNG फ़ाइलें (*.png)</translation>
-    </message>
-    <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="922"/>
-        <source>PDF files (*.pdf)</source>
-        <translation>PDF फ़ाइलें (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="132"/>
@@ -498,7 +389,7 @@
 <context>
     <name>ClipboardManager</name>
     <message>
-        <location filename="../../Scene/ClipboardManager.cpp" line="158"/>
+        <location filename="../../Scene/ClipboardManager.cpp" line="159"/>
         <source>Paste</source>
         <translation type="unfinished">पेस्ट करें</translation>
     </message>
@@ -856,22 +747,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="234"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="224"/>
         <source>File does not exist</source>
         <translation>फाइल मौजूद नहीं है</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="236"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="226"/>
         <source>File is not readable</source>
         <translation>फाइल पढ़ने योग्य नहीं है</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="227"/>
         <source>Unknown reason</source>
         <translation>अज्ञात कारण</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="247"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>पिक्समैप लोड नहीं हो सका: %1 (%2)</translation>
     </message>
@@ -995,7 +886,7 @@
         <translation>आवाज़:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="326"/>
+        <location filename="../../UI/ElementEditor.cpp" line="327"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="272"/>
         <source> Hz</source>
         <translation> हर्ट्ज</translation>
@@ -1041,85 +932,85 @@
         <translation>लॉक्ड:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="69"/>
+        <location filename="../../UI/ElementEditor.cpp" line="70"/>
         <source>Truth Table</source>
         <translation>सत्य तालिका</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="173"/>
+        <location filename="../../UI/ElementEditor.cpp" line="174"/>
         <source>Open File</source>
         <translation>फ़ाइल खोलें</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="189"/>
+        <location filename="../../UI/ElementEditor.cpp" line="190"/>
         <source>Change appearance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="246"/>
+        <location filename="../../UI/ElementEditor.cpp" line="247"/>
         <source>Green</source>
         <translation>हरा</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="247"/>
+        <location filename="../../UI/ElementEditor.cpp" line="248"/>
         <source>Blue</source>
         <translation>नीला</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="248"/>
+        <location filename="../../UI/ElementEditor.cpp" line="249"/>
         <source>Purple</source>
         <translation>बैंगनी</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="604"/>
+        <location filename="../../UI/ElementEditor.cpp" line="605"/>
         <source>Duplicate Wireless Channel</source>
         <translation>डुप्लिकेट वायरलेस चैनल</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="605"/>
+        <location filename="../../UI/ElementEditor.cpp" line="606"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>लेबल &quot;%1&quot; वाला एक Tx नोड पहले से मौजूद है।
 प्रत्येक वायरलेस चैनल का एक अनन्य लेबल होना चाहिए।</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="662"/>
+        <location filename="../../UI/ElementEditor.cpp" line="663"/>
         <source>Change wireless mode</source>
         <translation>वायरलेस मोड बदलें</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="695"/>
+        <location filename="../../UI/ElementEditor.cpp" line="696"/>
         <source>Duplicate IC Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="696"/>
+        <location filename="../../UI/ElementEditor.cpp" line="697"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="904"/>
+        <location filename="../../UI/ElementEditor.cpp" line="905"/>
         <source>Select any audio</source>
         <translation>कोई ऑडियो चुनें</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="905"/>
-        <source>Audio (*.mp3 *.mp4 *.wav *.ogg)</source>
-        <translation>ऑडियो (*.mp3 *.mp4 *.wav *.ogg)</translation>
+        <location filename="../../UI/ElementEditor.cpp" line="906"/>
+        <source>Audio</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="245"/>
+        <location filename="../../UI/ElementEditor.cpp" line="246"/>
         <source>Red</source>
         <translation>लाल</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="172"/>
+        <location filename="../../UI/ElementEditor.cpp" line="173"/>
         <source>Images</source>
         <translation>छवियाँ</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="244"/>
+        <location filename="../../UI/ElementEditor.cpp" line="245"/>
         <source>White</source>
         <translation>सफेद</translation>
     </message>
@@ -1303,8 +1194,23 @@ Choose a different name.</source>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
-        <source>Arduino file (*.ino)</source>
-        <translation>Arduino फाइल (*.ino)</translation>
+        <source>Arduino file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="148"/>
+        <source>SystemVerilog file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="169"/>
+        <source>PDF files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ExportController.cpp" line="198"/>
+        <source>PNG files</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
@@ -1312,19 +1218,9 @@ Choose a different name.</source>
         <translation>SystemVerilog कोड उत्पन्न करें</translation>
     </message>
     <message>
-        <location filename="../../UI/ExportController.cpp" line="148"/>
-        <source>SystemVerilog file (*.sv)</source>
-        <translation>SystemVerilog फ़ाइल (*.sv)</translation>
-    </message>
-    <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>Export to PDF</source>
         <translation>PDF में एक्सपोर्ट करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/ExportController.cpp" line="169"/>
-        <source>PDF files (*.pdf)</source>
-        <translation>PDF फ़ाइलें (*.pdf)</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="180"/>
@@ -1336,11 +1232,6 @@ Choose a different name.</source>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>Export to Image</source>
         <translation>इमेज में एक्सपोर्ट करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/ExportController.cpp" line="198"/>
-        <source>PNG files (*.png)</source>
-        <translation>PNG फ़ाइलें (*.png)</translation>
     </message>
 </context>
 <context>
@@ -1354,7 +1245,7 @@ Choose a different name.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="240"/>
+        <location filename="../../Element/GraphicElement.cpp" line="239"/>
         <source>Default</source>
         <translation>डिफ़ॉल्ट</translation>
     </message>
@@ -1362,62 +1253,62 @@ Choose a different name.</source>
 <context>
     <name>GraphicElementSerializer</name>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="46"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="44"/>
         <source>Stream error reading %1 count at position %2</source>
         <translation>स्थिति %2 पर %1 की गिनती पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="50"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="48"/>
         <source>Refusing to read %1 with implausible count %2 (max %3)</source>
         <translation>अविश्वसनीय गिनती %2 के साथ %1 पढ़ने से इनकार (अधिकतम %3)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="60"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="58"/>
         <source>Stream error reading %1 entry %2 at position %3</source>
         <translation>स्थिति %3 पर %1 की प्रविष्टि %2 पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="230"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="210"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>स्थिति %1 पर तत्व गुण पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="359"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="339"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>स्थिति %1 पर रूप पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="367"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="347"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>रूप सूचकांक %1 सीमा से बाहर है (आकार=%2) — स्ट्रीम दूषित हो सकती है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="404"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="384"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>गैर-परिमित तत्व स्थिति — स्ट्रीम दूषित हो सकती है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="422"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="402"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>गैर-परिमित तत्व घुमाव — स्ट्रीम दूषित हो सकती है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="482"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="462"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>अविश्वसनीय गिनती %1 के साथ पुराने प्रारूप की इनपुट पोर्ट सूची से इनकार (अधिकतम %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="516"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="496"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>अविश्वसनीय गिनती %1 के साथ पुराने प्रारूप की आउटपुट पोर्ट सूची से इनकार (अधिकतम %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="581"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="561"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>अविश्वसनीय गिनती %1 के साथ पुराने प्रारूप की रूप सूची से इनकार (अधिकतम %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="610"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="590"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>रूप नाम &quot;%3&quot; के लिए रूप सूचकांक %1 सीमा से बाहर है (आकार=%2) — स्ट्रीम दूषित हो सकती है</translation>
     </message>
@@ -1425,17 +1316,17 @@ Choose a different name.</source>
 <context>
     <name>IC</name>
     <message>
-        <location filename="../../Element/IC.cpp" line="39"/>
+        <location filename="../../Element/IC.cpp" line="40"/>
         <source>IC</source>
         <translation>आईसी</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="38"/>
+        <location filename="../../Element/IC.cpp" line="39"/>
         <source>INTEGRATED CIRCUIT</source>
         <translation>एकीकृत परिपथ</translation>
     </message>
     <message>
-        <location filename="../../Element/IC.cpp" line="148"/>
+        <location filename="../../Element/IC.cpp" line="149"/>
         <source>IC load: no IC name present in serialized data</source>
         <translation>IC लोड: क्रमबद्ध डेटा में IC नाम मौजूद नहीं</translation>
     </message>
@@ -1454,8 +1345,8 @@ Choose a different name.</source>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="69"/>
-        <source>Panda (*.panda)</source>
-        <translation>पांडा (*.panda)</translation>
+        <source>Panda</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="77"/>
@@ -1539,8 +1430,8 @@ Suggested name:</source>
         <location filename="../../UI/ICController.cpp" line="207"/>
         <location filename="../../UI/ICController.cpp" line="282"/>
         <location filename="../../UI/ICController.cpp" line="361"/>
-        <source>Panda files (*.panda)</source>
-        <translation>पांडा फाइलें (*.panda)</translation>
+        <source>Panda files</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="220"/>
@@ -1572,37 +1463,37 @@ Suggested name:</source>
 <context>
     <name>ICLoader</name>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="103"/>
+        <location filename="../../Element/ICLoader.cpp" line="95"/>
         <source>%1 not found.</source>
         <translation>%1 नहीं मिला।</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="151"/>
+        <location filename="../../Element/ICLoader.cpp" line="143"/>
         <source>IC nesting depth limit (%1) exceeded while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="162"/>
+        <location filename="../../Element/ICLoader.cpp" line="154"/>
         <source>Circular IC reference detected: %1</source>
         <translation>चक्रीय आईसी संदर्भ मिला: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="169"/>
+        <location filename="../../Element/ICLoader.cpp" line="161"/>
         <source>Error opening file: %1</source>
         <translation>फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="241"/>
+        <location filename="../../Element/ICLoader.cpp" line="233"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>आईसी माइग्रेशन: लिखने के लिए फ़ाइल नहीं खोली जा सकती: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="248"/>
+        <location filename="../../Element/ICLoader.cpp" line="240"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>आईसी माइग्रेशन: पुनः सहेजी गई फ़ाइल की पुष्टि विफल: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="311"/>
+        <location filename="../../Element/ICLoader.cpp" line="303"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>आईसी नेस्टिंग गहराई सीमा (%1) पार हो गई — ब्लॉब दुर्भावनापूर्ण रूप से तैयार किया गया हो सकता है</translation>
     </message>
@@ -1610,17 +1501,17 @@ Suggested name:</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="273"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="274"/>
         <source>Could not open file: %1</source>
         <translation>फ़ाइल नहीं खोल सके: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="277"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="278"/>
         <source>Could not save file: %1</source>
         <translation>फ़ाइल सेव नहीं हो सकी: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="340"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="341"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1741,21 +1632,6 @@ Suggested name:</source>
         <location filename="../../Element/GraphicElements/Led.cpp" line="247"/>
         <source>00 (off)</source>
         <translation>00 (बंद)</translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="248"/>
-        <source>01</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
-        <source>10</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="250"/>
-        <source>11</source>
-        <translation></translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Led.cpp" line="266"/>
@@ -1938,19 +1814,9 @@ Suggested name:</source>
         <translation>खोलें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="742"/>
-        <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="743"/>
         <source>&amp;Save</source>
         <translation>&amp;सेव करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="744"/>
-        <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="745"/>
@@ -1958,19 +1824,9 @@ Suggested name:</source>
         <translation>इस &amp;रूप में सेव करें...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="746"/>
-        <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="747"/>
         <source>Cu&amp;t</source>
         <translation>क&amp;ट करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="748"/>
-        <source>Ctrl+X</source>
-        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="749"/>
@@ -1978,19 +1834,9 @@ Suggested name:</source>
         <translation>&amp;कॉपी करें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="750"/>
-        <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="751"/>
         <source>&amp;Paste</source>
         <translation>&amp;पेस्ट करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="752"/>
-        <source>Ctrl+V</source>
-        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="753"/>
@@ -1998,19 +1844,9 @@ Suggested name:</source>
         <translation>&amp;डिलीट करें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="754"/>
-        <source>Del</source>
-        <translation>डिलीट</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="755"/>
         <source>&amp;New</source>
         <translation>&amp;नया</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
-        <source>Ctrl+N</source>
-        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="757"/>
@@ -2018,19 +1854,9 @@ Suggested name:</source>
         <translation>ज़ूम &amp;इन</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="758"/>
-        <source>Ctrl+=</source>
-        <translation>Ctrl+=</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>Zoom &amp;out</source>
         <translation>ज़ूम &amp;आउट</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
-        <source>Ctrl+-</source>
-        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="761"/>
@@ -2038,19 +1864,9 @@ Suggested name:</source>
         <translation>&amp;तारें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="762"/>
-        <source>Ctrl+1</source>
-        <translation>Ctrl+1</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>&amp;Gates</source>
         <translation>&amp;गेट्स</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="764"/>
-        <source>Ctrl+2</source>
-        <translation>Ctrl+2</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="765"/>
@@ -2058,19 +1874,9 @@ Suggested name:</source>
         <translation>&amp;के बारे में</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="766"/>
-        <source>F1</source>
-        <translation>F1</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>&amp;Exit</source>
         <translation>&amp;बाहर निकलें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
-        <source>Ctrl+Q</source>
-        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="769"/>
@@ -2078,19 +1884,9 @@ Suggested name:</source>
         <translation>दाएँ &amp;घुमाएँ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
-        <source>Ctrl+R</source>
-        <translation>Ctrl+R</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>Rotate &amp;left</source>
         <translation>&amp;बाएँ घुमाएँ</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
-        <source>Ctrl+Shift+R</source>
-        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="773"/>
@@ -2103,19 +1899,9 @@ Suggested name:</source>
         <translation>&amp;सभी चुनें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
-        <source>Ctrl+A</source>
-        <translation>Ctrl+A</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="776"/>
         <source>Re&amp;load File</source>
         <translation>फाइल &amp;पुन: लोड करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
-        <source>Ctrl+F5</source>
-        <translation>Ctrl+F5</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="778"/>
@@ -2123,19 +1909,9 @@ Suggested name:</source>
         <translation>Arduino में &amp;एक्सपोर्ट करें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
-        <source>Ctrl+Alt+I</source>
-        <translation>Ctrl+Alt+I</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>&amp;SystemVerilog में निर्यात करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="781"/>
-        <source>Ctrl+Alt+O</source>
-        <translation>Ctrl+Alt+O</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="782"/>
@@ -2143,19 +1919,9 @@ Suggested name:</source>
         <translation>ज़ूम &amp;रीसेट</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="783"/>
-        <source>Ctrl+0</source>
-        <translation>Ctrl+0</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>Export to &amp;PDF</source>
         <translation>&amp;PDF में एक्सपोर्ट</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="785"/>
-        <source>Ctrl+Shift+P</source>
-        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="796"/>
@@ -2254,19 +2020,9 @@ Suggested name:</source>
         <translation>सिमुलेशन चलाएं या रोकें।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
-        <source>F5</source>
-        <translation>F5</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="789"/>
         <source>&amp;Rename</source>
         <translation>&amp;नाम बदलें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
-        <source>F2</source>
-        <translation>F2</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="791"/>
@@ -2274,19 +2030,9 @@ Suggested name:</source>
         <translation>ट्रिगर &amp;बदलें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
-        <source>F3</source>
-        <translation>F3</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>Cl&amp;ear selection</source>
         <translation>चयन साफ़ &amp;करें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
-        <source>Esc</source>
-        <translation>एस्केप</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="795"/>
@@ -2299,29 +2045,14 @@ Suggested name:</source>
         <translation>&amp;तरंग रूप</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="800"/>
-        <source>Ctrl+W</source>
-        <translation>Ctrl+W</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>Export to &amp;Image</source>
         <translation>&amp;छवि में निर्यात करें</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="802"/>
-        <source>Ctrl+E</source>
-        <translation>Ctrl+E</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;क्षैतिज रूप से पलटें</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
-        <source>Ctrl+H</source>
-        <translation>Ctrl+H</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="806"/>
@@ -2334,20 +2065,10 @@ Suggested name:</source>
         <translation>&amp;पूरी स्क्रीन</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
-        <source>F11</source>
-        <translation>F11</translation>
-    </message>
-    <message>
         <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>मूक</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
-        <source>Ctrl+M</source>
-        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="812"/>
@@ -2530,14 +2251,14 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
 <context>
     <name>PropertyShortcutHandler</name>
     <message>
-        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="43"/>
-        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="144"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="44"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="145"/>
         <source>Cycle element properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="220"/>
-        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="251"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="221"/>
+        <location filename="../../Scene/PropertyShortcutHandler.cpp" line="252"/>
         <source>Morph elements</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2545,7 +2266,7 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="226"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="227"/>
         <source>Add embedded IC</source>
         <translation>एम्बेडेड IC जोड़ें</translation>
     </message>
@@ -3235,17 +2956,17 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
+        <source>Save File</source>
+        <translation>फ़ाइल सहेजें</translation>
+    </message>
+    <message>
+        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="149"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="301"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="335"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
-        <source>Panda files (*.panda)</source>
-        <translation>पांडा फाइलें (*.panda)</translation>
-    </message>
-    <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="96"/>
-        <source>Save File</source>
-        <translation>फ़ाइल सहेजें</translation>
+        <source>Panda files</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="147"/>
