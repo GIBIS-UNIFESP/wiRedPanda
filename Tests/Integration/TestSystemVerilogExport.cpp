@@ -1087,9 +1087,19 @@ void TestSystemVerilogExport::testSystemVerilogExportFetchStage16Bit()
     testSystemVerilogExportHelper("level9_fetch_stage_16bit.panda");
 }
 
+void TestSystemVerilogExport::testSystemVerilogExportMemoryStage16Bit()
+{
+    testSystemVerilogExportHelper("level9_memory_stage_16bit.panda");
+}
+
 void TestSystemVerilogExport::testSystemVerilogExportMultiCycleCpu8Bit()
 {
     testSystemVerilogExportHelper("level9_multi_cycle_cpu_8bit.panda");
+}
+
+void TestSystemVerilogExport::testSystemVerilogExportRegisterFile32x16()
+{
+    testSystemVerilogExportHelper("level9_register_file_32x16.panda");
 }
 
 void TestSystemVerilogExport::testSystemVerilogExportSingleCycleCpu8Bit()
