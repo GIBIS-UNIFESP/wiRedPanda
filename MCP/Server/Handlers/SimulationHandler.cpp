@@ -100,7 +100,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
             m_persistentDolphin->deleteLater();
             m_persistentDolphin = nullptr;
         }
-        m_persistentDolphin = new BewavedDolphin(scene, false, m_mainWindow);
+        m_persistentDolphin = new BewavedDolphin(scene, false, m_mainWindow, m_mainWindow);
         BewavedDolphin *bewavedDolphin = m_persistentDolphin;
 
         bewavedDolphin->prepare("");

@@ -92,6 +92,26 @@ private slots:
     // resolve by its absolute path, not just by basename inside the project's own folder.
     void testCreateWaveformResolvesAbsolutePathOutsideProjectDir();
 
+    // Regression: run()/saveToTxt() dereferenced m_inputs/m_outputs via sweep() with no
+    // check that those elements were still in the live scene — deleting one (main canvas,
+    // or an MCP client neither path's modality blocks) left them dangling. Source-level
+    // check, same shape as TestDanglingPointer.cpp's hardening_* tests: a plain behavioral
+    // repro isn't reliable here since reading recently-freed memory doesn't crash on every
+    // allocator/run.
+    void hardeningRunAndSaveToTxtMustCheckElementsStillLive();
+    // Behavioral companion: deleting a tracked element and then calling run()/saveToTxt()
+    // must not crash and must fail cleanly, not silently export garbage.
+    void testRunAndSaveToTxtHandleDeletedTrackedElement();
+    // Regression: BewavedDolphin's Qt::WindowModal setting was a no-op because the window
+    // was never given a real Qt parent (host is a non-QWidget interface) — the comment
+    // claiming "the user cannot interact with the main circuit" was false as implemented.
+    void testConstructorWithParentEnablesWindowModality();
+
+    // Regression: saveToTxt()'s column count had no cap, unlike its sibling
+    // on_actionCombinational_triggered — 12 input ports (2^12 = 4096 combinations) must
+    // clamp to SignalModel::kMaxColumns (2048), the same bound the sibling already uses.
+    void testSaveToTxtClampsColumnCountForManyInputPorts();
+
 private:
     QTemporaryDir m_tempDir;
 };

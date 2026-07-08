@@ -50,8 +50,12 @@ public:
      * \param askConnection If \c true, prompts the user to link to a .dolphin file.
      * \param host          Host application providing the circuit file context (a
      *                      MainWindow in the app; a stub in tests). May be \c nullptr.
+     * \param parent        Widget to parent this window to, so its Qt::WindowModal setting
+     *                      (see the constructor body) actually blocks it — separate from
+     *                      \a host since tests pass a non-QWidget stub host. May be \c nullptr.
      */
-    explicit BewavedDolphin(Scene *scene, const bool askConnection = true, DolphinHost *host = nullptr);
+    explicit BewavedDolphin(Scene *scene, const bool askConnection = true, DolphinHost *host = nullptr,
+                            QWidget *parent = nullptr);
     ~BewavedDolphin() override;
 
     /// Initializes a blank waveform from the current scene's I/O elements.
@@ -175,6 +179,12 @@ private:
     void load(const QString &fileName);
     /// Applies parsed file \a fileData to the model (sets length, fills inputs, re-runs).
     void applyWaveformData(const DolphinSerializer::WaveformData &fileData);
+
+    /// Returns \c false if any element in m_inputs/m_outputs was deleted from the live scene
+    /// since prepare() snapshotted them (e.g. via the main canvas or an MCP client — neither
+    /// path is blocked by this window's modality, which only affects interactive GUI input).
+    /// run()/saveToTxt() must check this before dereferencing those pointers via sweep().
+    bool elementsStillLive() const;
 
     // --- Signal Table Management ---
 
