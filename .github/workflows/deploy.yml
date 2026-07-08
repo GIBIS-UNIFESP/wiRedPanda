@@ -577,6 +577,29 @@ jobs:
           Write-Output "Warning: Examples directory missing"
         }
 
+        # Functional check: actually run the packaged executable from its deployed
+        # directory, proving it launches standalone (all Qt/Sentry DLLs resolve via
+        # windeployqt's same-directory layout) - not just that the right files exist.
+        # wiredpanda.exe is a WIN32_EXECUTABLE (GUI subsystem); $LASTEXITCODE after
+        # the "&" call operator is unreliable for GUI-subsystem processes, so use
+        # Start-Process -Wait -PassThru, which reliably captures the real exit code
+        # via the Win32 process APIs.
+        Write-Output "Running wiredpanda.exe --version..."
+        $stdoutFile = "version-stdout.txt"
+        $stderrFile = "version-stderr.txt"
+        $proc = Start-Process -FilePath $executablePath -ArgumentList "--version" -NoNewWindow -PassThru -Wait `
+          -RedirectStandardOutput $stdoutFile -RedirectStandardError $stderrFile
+        $stdout = Get-Content $stdoutFile -Raw -ErrorAction SilentlyContinue
+        $stderr = Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue
+        if ($proc.ExitCode -ne 0) {
+          Write-Error "Error: wiredpanda.exe --version exited with code $($proc.ExitCode)"
+          Write-Output "stdout: $stdout"
+          Write-Output "stderr: $stderr"
+          exit 1
+        }
+        Write-Output "✓ wiredpanda.exe runs and exits successfully:"
+        Write-Output $stdout
+
         Write-Output "Windows build quality validation completed successfully"
 
         Write-Output "Windows release artifacts validated successfully"
@@ -862,6 +885,20 @@ jobs:
         # Verify code signing (basic check)
         CODESIGN_STATUS=$(codesign -dv "$EXECUTABLE_PATH" 2>&1 | grep -o "adhoc\|signed" || echo "unsigned")
         echo "✓ Code signing status: $CODESIGN_STATUS"
+
+        # Functional check: actually run the packaged executable from inside the
+        # bundle, proving it launches standalone (Qt frameworks resolve via the
+        # bundle's own @rpath) - not just that otool -L looks right statically.
+        echo "Running wiredpanda --version..."
+        VERSION_OUTPUT=$("$EXECUTABLE_PATH" --version 2>&1)
+        VERSION_EXIT=$?
+        if [ "$VERSION_EXIT" -ne 0 ]; then
+          echo "Error: wiredpanda --version exited with code $VERSION_EXIT"
+          echo "$VERSION_OUTPUT"
+          exit 1
+        fi
+        echo "✓ wiredpanda runs and exits successfully:"
+        echo "$VERSION_OUTPUT"
 
         echo "macOS build quality validation completed successfully"
 
