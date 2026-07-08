@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Elements/TestBuzzer.h"
 
+#include <limits>
 #include <memory>
 
 #include <QDataStream>
@@ -74,6 +75,44 @@ void TestBuzzer::testSetFrequency()
 
     buzzer.setFrequency(2000.0);
     QCOMPARE(buzzer.frequency(), 2000.0);
+}
+
+void TestBuzzer::testSetFrequencyRejectsNaN()
+{
+    Buzzer buzzer;
+    buzzer.setFrequency(880.0);
+    QCOMPARE(buzzer.frequency(), 880.0);
+
+    // NaN must be rejected, not stored — ToneGenerator::readData() casts a NaN-derived
+    // sample to qint16, which is undefined behaviour.
+    buzzer.setFrequency(std::numeric_limits<double>::quiet_NaN());
+    QCOMPARE(buzzer.frequency(), 880.0);
+}
+
+void TestBuzzer::testSetFrequencyRejectsInfinity()
+{
+    Buzzer buzzer;
+    buzzer.setFrequency(880.0);
+    QCOMPARE(buzzer.frequency(), 880.0);
+
+    buzzer.setFrequency(std::numeric_limits<double>::infinity());
+    QCOMPARE(buzzer.frequency(), 880.0);
+
+    buzzer.setFrequency(-std::numeric_limits<double>::infinity());
+    QCOMPARE(buzzer.frequency(), 880.0);
+}
+
+void TestBuzzer::testSetFrequencyRejectsZeroAndNegative()
+{
+    Buzzer buzzer;
+    buzzer.setFrequency(880.0);
+    QCOMPARE(buzzer.frequency(), 880.0);
+
+    buzzer.setFrequency(0.0);
+    QCOMPARE(buzzer.frequency(), 880.0);
+
+    buzzer.setFrequency(-100.0);
+    QCOMPARE(buzzer.frequency(), 880.0);
 }
 
 void TestBuzzer::testSetAudioBackwardCompat()
