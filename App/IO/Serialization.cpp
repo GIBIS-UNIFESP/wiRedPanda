@@ -729,8 +729,17 @@ QString Serialization::typeName(const int type) {
 }
 
 void Serialization::copyPandaFile(const QFileInfo &srcPath, const QFileInfo &destPath,
-                                  QSet<QString> *visited)
+                                  QSet<QString> *visited, int depth)
 {
+    // Cycle detection (visited) alone doesn't bound a long, non-cyclic chain of distinct
+    // dependency files (A references B references C references ..., no repeats) — mirrors
+    // ICLoader's kMaxICNestingDepth for the identical failure mode on the IC-load path.
+    constexpr int kMaxPandaFileCopyDepth = 16;
+    if (depth >= kMaxPandaFileCopyDepth) {
+        throw PANDACEPTION("Panda file dependency chain exceeds the maximum nesting depth (%1) while copying '%2'",
+                           QString::number(kMaxPandaFileCopyDepth), srcPath.filePath());
+    }
+
     QSet<QString> ownedVisited;
     if (!visited) {
         visited = &ownedVisited;
@@ -804,7 +813,7 @@ void Serialization::copyPandaFile(const QFileInfo &srcPath, const QFileInfo &des
         const QFileInfo icSrc(QDir(srcPath.absolutePath()), icFile);
         const QFileInfo icDest(QDir(destPath.absolutePath()), icFile);
         if (icSrc.exists()) {
-            copyPandaFile(icSrc, icDest, visited);
+            copyPandaFile(icSrc, icDest, visited, depth + 1);
         }
     }
 }

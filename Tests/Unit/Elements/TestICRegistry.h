@@ -16,4 +16,8 @@ private slots:
     void testICFileWatcher();
     void testRecursiveICLoading();
     void testICValidation();
+
+    // Regression: makeBlobSelfContained() only had cycle detection, no recursion depth
+    // cap, unlike ICLoader's identical-purpose kMaxICNestingDepth guard.
+    void testMakeBlobSelfContainedRejectsDeepDependencyChain();
 };

@@ -1543,6 +1543,32 @@ void TestSerialization::testCopyPandaFileTerminatesOnCircularMetadata()
     QVERIFY(true);
 }
 
+void TestSerialization::testCopyPandaFileRejectsDeepDependencyChain()
+{
+    // A long but non-cyclic chain of distinct dependency files (each real, on disk, never
+    // repeated) must be rejected once it exceeds the nesting depth cap — the visited-set
+    // cycle guard alone doesn't bound this, unlike the circular-reference case above.
+    QTemporaryDir sourceDir;
+    QTemporaryDir destDir;
+    QVERIFY(sourceDir.isValid() && destDir.isValid());
+
+    constexpr int chainLength = 20; // > the copyPandaFile nesting depth cap (16)
+    for (int i = 0; i < chainLength; ++i) {
+        const QString path = sourceDir.path() + QString("/dep%1.panda").arg(i);
+        const QString nextDep = (i + 1 < chainLength) ? QString("dep%1.panda").arg(i + 1) : QString();
+        writePandaWithFileBackedIC(path, nextDep);
+    }
+
+    bool threw = false;
+    try {
+        Serialization::copyPandaFile(QFileInfo(sourceDir.path() + "/dep0.panda"),
+                                      QFileInfo(destDir.path() + "/dep0.panda"));
+    } catch (...) {
+        threw = true;
+    }
+    QVERIFY2(threw, "A dependency chain deeper than the nesting cap must be rejected, not stack-overflow");
+}
+
 // ============================================================================
 // libFuzzer Regressions
 // ============================================================================

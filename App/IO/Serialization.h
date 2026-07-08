@@ -172,9 +172,12 @@ public:
      * \param srcPath  Source .panda file info.
      * \param destPath Destination .panda file info.
      * \param visited  Internal recursion guard; root callers leave this null.
+     * \param depth    Internal recursion depth; root callers leave this at 0. Throws once a
+     *                 chain of distinct dependency files would recurse past a fixed limit —
+     *                 the \a visited cycle guard alone doesn't bound a long, non-cyclic chain.
      */
     static void copyPandaFile(const QFileInfo &srcPath, const QFileInfo &destPath,
-                              QSet<QString> *visited = nullptr);
+                              QSet<QString> *visited = nullptr, int depth = 0);
 
     // --- Magic Headers ---
 
