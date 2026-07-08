@@ -2300,7 +2300,7 @@ Voorgestelde naam:</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>Dempen</translation>
@@ -2331,18 +2331,18 @@ Voorgestelde naam:</translation>
         <translation>Simulatie herstarten.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="523"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>Sneltoetsen en tips</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="876"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>New Project</source>
         <translation>Nieuw project</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="442"/>
+        <location filename="../../UI/MainWindow.cpp" line="421"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2361,27 +2361,27 @@ wiRedPanda %1 zal automatisch alle andere .panda-bestanden in dezelfde map als h
 U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of beWavedDolphin-simulaties kunt uitvoeren.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
+        <location filename="../../UI/MainWindow.cpp" line="481"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda is software ontwikkeld door studenten van de Federale Universiteit van São Paulo om studenten te helpen logische circuits te leren begrijpen.&lt;/p&gt;&lt;p&gt;Softwareversie: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Makers:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda wordt momenteel onderhouden door Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves en Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Meld een probleem op onze GitHub-pagina als je een bug vindt of een nieuwe functie wilt aanvragen.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Bezoek onze website!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="554"/>
         <source>Are you sure?</source>
         <translation>Weet u het zeker?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="524"/>
+        <location filename="../../UI/MainWindow.cpp" line="503"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Sneltoetsen canvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Inzoomen &lt;/li&gt;&lt;li&gt; Ctrl+- : Uitzoomen &lt;/li&gt;&lt;li&gt; Ctrl+1 : Draden verbergen/tonen &lt;/li&gt;&lt;li&gt; Ctrl+2 : Poorten verbergen/tonen &lt;/li&gt;&lt;li&gt; Ctrl+F : Elementen zoeken &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin openen &lt;/li&gt;&lt;li&gt; Ctrl+S : Project opslaan &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda afsluiten &lt;/li&gt;&lt;li&gt; F5 : Simulatie starten/pauzeren &lt;/li&gt;&lt;li&gt; [ : Vorige primaire elementeigenschap &lt;/li&gt;&lt;li&gt; ] : Volgende primaire elementeigenschap &lt;/li&gt;&lt;li&gt; { : Vorige secundaire elementeigenschap &lt;/li&gt;&lt;li&gt; } : Volgende secundaire elementeigenschap &lt;/li&gt;&lt;li&gt; &amp;lt; : Transformeren naar vorig element &lt;/li&gt;&lt;li&gt; &amp;gt; : Transformeren naar volgend element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Algemene tips&lt;/h1&gt;&lt;p&gt;Dubbelklik op een draad om een knooppunt te maken&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="574"/>
+        <location filename="../../UI/MainWindow.cpp" line="553"/>
         <source>Exit</source>
         <translation>Afsluiten</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <source>Unmute</source>
         <translation>Geluid aan</translation>
     </message>

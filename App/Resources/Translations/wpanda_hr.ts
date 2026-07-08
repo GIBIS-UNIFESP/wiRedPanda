@@ -2285,7 +2285,7 @@ Predloženi naziv:</translation>
         <translation>&amp;Interaktivni obilasci...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>Utišaj</translation>
@@ -2321,7 +2321,7 @@ Predloženi naziv:</translation>
         <translation>Simulacija u pozadini</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="523"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>Prečaci i savjeti</translation>
@@ -2337,12 +2337,12 @@ Predloženi naziv:</translation>
         <translation>Prijavite greške prijevoda ili pomognite poboljšati prijevode na Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="876"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>New Project</source>
         <translation>Novi projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="442"/>
+        <location filename="../../UI/MainWindow.cpp" line="421"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2361,27 +2361,27 @@ wiRedPanda %1 automatski će prikazati sve ostale .panda datoteke u istom direkt
 Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja beWavedDolphin simulacija.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="554"/>
         <source>Are you sure?</source>
         <translation>Jeste li sigurni?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="524"/>
+        <location filename="../../UI/MainWindow.cpp" line="503"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Prečaci platna&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Povećaj &lt;/li&gt;&lt;li&gt; Ctrl+- : Smanji &lt;/li&gt;&lt;li&gt; Ctrl+1 : Sakrij/Prikaži žice &lt;/li&gt;&lt;li&gt; Ctrl+2 : Sakrij/Prikaži vrata &lt;/li&gt;&lt;li&gt; Ctrl+F : Traži elemente &lt;/li&gt;&lt;li&gt; Ctrl+W : Otvori beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Spremi projekt &lt;/li&gt;&lt;li&gt; Ctrl+Q : Izađi iz wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Pokreni/Pauziraj simulaciju &lt;/li&gt;&lt;li&gt; [ : Prethodno primarno svojstvo elementa &lt;/li&gt;&lt;li&gt; ] : Sljedeće primarno svojstvo elementa &lt;/li&gt;&lt;li&gt; { : Prethodno sekundarno svojstvo elementa &lt;/li&gt;&lt;li&gt; } : Sljedeće sekundarno svojstvo elementa &lt;/li&gt;&lt;li&gt; &amp;lt; : Pretvori u prethodni element &lt;/li&gt;&lt;li&gt; &amp;gt; : Pretvori u sljedeći element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Opći savjeti&lt;/h1&gt;&lt;p&gt;Dvaput kliknite na žicu za stvaranje čvora&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
+        <location filename="../../UI/MainWindow.cpp" line="481"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda je softver koji su razvili studenti Saveznog sveučilišta u São Paulu kako bi pomogli učenicima da nauče o logičkim krugovima.&lt;/p&gt;&lt;p&gt;Verzija softvera: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Autori:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda trenutno održavaju prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves i Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Molimo prijavite problem na našoj GitHub stranici ako pronađete grešku ili želite zatražiti novu značajku.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Posjetite našu web stranicu!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="574"/>
+        <location filename="../../UI/MainWindow.cpp" line="553"/>
         <source>Exit</source>
         <translation>Izlaz</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <source>Unmute</source>
         <translation>Uključi zvuk</translation>
     </message>

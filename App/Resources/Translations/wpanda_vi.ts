@@ -2300,7 +2300,7 @@ Tên gợi ý:</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>Tắt tiếng</translation>
@@ -2331,18 +2331,18 @@ Tên gợi ý:</translation>
         <translation>Khởi động lại mô phỏng.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="523"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>Phím tắt và mẹo</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="876"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>New Project</source>
         <translation>Dự án mới</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="442"/>
+        <location filename="../../UI/MainWindow.cpp" line="421"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2361,27 +2361,27 @@ wiRedPanda %1 sẽ tự động liệt kê tất cả các tệp .panda khác tr
 Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện, hoặc chạy mô phỏng beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
+        <location filename="../../UI/MainWindow.cpp" line="481"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda là phần mềm được phát triển bởi sinh viên của Đại học Liên bang São Paulo nhằm giúp học sinh học về mạch logic.&lt;/p&gt;&lt;p&gt;Phiên bản phần mềm: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Người tạo:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda hiện đang được duy trì bởi Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves và Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vui lòng gửi báo cáo trên trang GitHub của chúng tôi nếu bạn tìm thấy lỗi hoặc muốn yêu cầu tính năng mới.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Truy cập trang web của chúng tôi!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="554"/>
         <source>Are you sure?</source>
         <translation>Bạn có chắc chắn?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="524"/>
+        <location filename="../../UI/MainWindow.cpp" line="503"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Phím tắt Canvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Phóng to &lt;/li&gt;&lt;li&gt; Ctrl+- : Thu nhỏ &lt;/li&gt;&lt;li&gt; Ctrl+1 : Ẩn/Hiện dây &lt;/li&gt;&lt;li&gt; Ctrl+2 : Ẩn/Hiện cổng &lt;/li&gt;&lt;li&gt; Ctrl+F : Tìm phần tử &lt;/li&gt;&lt;li&gt; Ctrl+W : Mở beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Lưu dự án &lt;/li&gt;&lt;li&gt; Ctrl+Q : Thoát wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Bắt đầu/Tạm dừng mô phỏng &lt;/li&gt;&lt;li&gt; [ : Thuộc tính chính trước của phần tử &lt;/li&gt;&lt;li&gt; ] : Thuộc tính chính tiếp theo của phần tử &lt;/li&gt;&lt;li&gt; { : Thuộc tính phụ trước của phần tử &lt;/li&gt;&lt;li&gt; } : Thuộc tính phụ tiếp theo của phần tử &lt;/li&gt;&lt;li&gt; &amp;lt; : Chuyển đổi sang phần tử trước &lt;/li&gt;&lt;li&gt; &amp;gt; : Chuyển đổi sang phần tử tiếp theo &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Mẹo chung&lt;/h1&gt;&lt;p&gt;Nhấp đúp vào dây để tạo nút&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="574"/>
+        <location filename="../../UI/MainWindow.cpp" line="553"/>
         <source>Exit</source>
         <translation>Thoát</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <source>Unmute</source>
         <translation>Bật tiếng</translation>
     </message>

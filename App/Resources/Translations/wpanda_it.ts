@@ -2300,7 +2300,7 @@ Nome suggerito:</translation>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>Muto</translation>
@@ -2331,18 +2331,18 @@ Nome suggerito:</translation>
         <translation>Riavvia simulazione.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="523"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>Scorciatoie e Suggerimenti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="876"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>New Project</source>
         <translation>Nuovo Progetto</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="442"/>
+        <location filename="../../UI/MainWindow.cpp" line="421"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2361,27 +2361,27 @@ wiRedPanda %1 elencherà automaticamente tutti gli altri file .panda nella stess
 È necessario salvare i nuovi progetti prima di accedere a IC e aspetti o eseguire simulazioni beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
+        <location filename="../../UI/MainWindow.cpp" line="481"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda è un software sviluppato da studenti dell&apos;Università Federale di San Paolo per aiutare gli studenti ad apprendere i circuiti logici.&lt;/p&gt;&lt;p&gt;Versione del software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creatori:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda è attualmente mantenuto dal Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Segnala un problema sulla nostra pagina GitHub se trovi un bug o vuoi richiedere una nuova funzionalità.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visita il nostro sito web!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="554"/>
         <source>Are you sure?</source>
         <translation>Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="524"/>
+        <location filename="../../UI/MainWindow.cpp" line="503"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Scorciatoie della tela&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Ingrandisci &lt;/li&gt;&lt;li&gt; Ctrl+- : Rimpicciolisci &lt;/li&gt;&lt;li&gt; Ctrl+1 : Nascondi/Mostra fili &lt;/li&gt;&lt;li&gt; Ctrl+2 : Nascondi/Mostra porte &lt;/li&gt;&lt;li&gt; Ctrl+F : Cerca elementi &lt;/li&gt;&lt;li&gt; Ctrl+W : Apri beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Salva progetto &lt;/li&gt;&lt;li&gt; Ctrl+Q : Esci da wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Avvia/Pausa simulazione &lt;/li&gt;&lt;li&gt; [ : Proprietà primaria precedente dell’elemento &lt;/li&gt;&lt;li&gt; ] : Proprietà primaria successiva dell’elemento &lt;/li&gt;&lt;li&gt; { : Proprietà secondaria precedente dell’elemento &lt;/li&gt;&lt;li&gt; } : Proprietà secondaria successiva dell’elemento &lt;/li&gt;&lt;li&gt; &amp;lt; : Trasforma nell’elemento precedente &lt;/li&gt;&lt;li&gt; &amp;gt; : Trasforma nell’elemento successivo &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Suggerimenti generali&lt;/h1&gt;&lt;p&gt;Fai doppio clic su un filo per creare un nodo&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="574"/>
+        <location filename="../../UI/MainWindow.cpp" line="553"/>
         <source>Exit</source>
         <translation>Esci</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <source>Unmute</source>
         <translation>Riattiva Audio</translation>
     </message>

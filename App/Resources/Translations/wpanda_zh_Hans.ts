@@ -2300,7 +2300,7 @@ Suggested name:</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Mute</source>
         <translation>静音</translation>
@@ -2331,18 +2331,18 @@ Suggested name:</source>
         <translation>重启仿真。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="523"/>
+        <location filename="../../UI/MainWindow.cpp" line="502"/>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Shortcuts and Tips</source>
         <translation>快捷键和提示</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="876"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>New Project</source>
         <translation>新项目</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="442"/>
+        <location filename="../../UI/MainWindow.cpp" line="421"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2361,27 +2361,27 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 在访问 IC 和外观或运行 beWavedDolphin 仿真之前，您需要先保存新项目。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
+        <location filename="../../UI/MainWindow.cpp" line="481"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda 是由圣保罗联邦大学的学生开发的软件，旨在帮助学生学习逻辑电路。&lt;/p&gt;&lt;p&gt;软件版本：%1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;创作者：&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda 目前由 Fábio Cappabianco 教授（博士）、João Pedro M. Oliveira、Matheus R. Esteves 和 Maycon A. Santana 维护。&lt;/p&gt;&lt;p&gt; 如果您发现错误或想请求新功能，请在我们的 GitHub 页面上提交报告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;访问我们的网站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="575"/>
+        <location filename="../../UI/MainWindow.cpp" line="554"/>
         <source>Are you sure?</source>
         <translation>您确定吗？</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="524"/>
+        <location filename="../../UI/MainWindow.cpp" line="503"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;画布快捷键&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : 放大 &lt;/li&gt;&lt;li&gt; Ctrl+- : 缩小 &lt;/li&gt;&lt;li&gt; Ctrl+1 : 隐藏/显示连线 &lt;/li&gt;&lt;li&gt; Ctrl+2 : 隐藏/显示逻辑门 &lt;/li&gt;&lt;li&gt; Ctrl+F : 搜索元件 &lt;/li&gt;&lt;li&gt; Ctrl+W : 打开 beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : 保存项目 &lt;/li&gt;&lt;li&gt; Ctrl+Q : 退出 wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : 开始/暂停仿真 &lt;/li&gt;&lt;li&gt; [ : 上一个主要元件属性 &lt;/li&gt;&lt;li&gt; ] : 下一个主要元件属性 &lt;/li&gt;&lt;li&gt; { : 上一个次要元件属性 &lt;/li&gt;&lt;li&gt; } : 下一个次要元件属性 &lt;/li&gt;&lt;li&gt; &amp;lt; : 变形为上一个元件 &lt;/li&gt;&lt;li&gt; &amp;gt; : 变形为下一个元件 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;一般提示&lt;/h1&gt;&lt;p&gt;双击连线以创建节点&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="574"/>
+        <location filename="../../UI/MainWindow.cpp" line="553"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1095"/>
+        <location filename="../../UI/MainWindow.cpp" line="1074"/>
         <source>Unmute</source>
         <translation>取消静音</translation>
     </message>
