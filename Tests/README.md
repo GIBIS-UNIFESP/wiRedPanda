@@ -14,8 +14,8 @@ The test suite is organized into multiple categories to ensure correctness at di
 
 ## Test Statistics
 
-- **Total Tests**: 132
-- **IC Hierarchy Tests**: 69 (organized in 9 levels of increasing complexity)
+- **Total Tests**: 135
+- **IC Hierarchy Tests**: 72 (organized in 9 levels of increasing complexity)
 - **Other Integration Tests**: 7
 - **Unit Tests**: 45
 - **System Tests**: 3
@@ -27,16 +27,16 @@ The test suite is organized into multiple categories to ensure correctness at di
 ```text
 Tests/
 ├── Integration/              # Full circuit and system integration tests
-│   ├── IC/Tests/             # Hierarchical IC test suite (69 tests)
+│   ├── IC/Tests/             # Hierarchical IC test suite (72 tests)
 │   │   ├── TestLevel1*.cpp   # Basic sequential elements (4 tests)
-│   │   ├── TestLevel2*.cpp   # Combinational circuits (12 tests)
+│   │   ├── TestLevel2*.cpp   # Combinational circuits (13 tests)
 │   │   ├── TestLevel3*.cpp   # Mid-complexity circuits (5 tests)
 │   │   ├── TestLevel4*.cpp   # Complex circuits (13 tests)
 │   │   ├── TestLevel5*.cpp   # Advanced building blocks (11 tests)
 │   │   ├── TestLevel6*.cpp   # Multi-bit components (8 tests)
 │   │   ├── TestLevel7*.cpp   # CPU subcomponents (8 tests)
 │   │   ├── TestLevel8*.cpp   # CPU pipeline stages (4 tests)
-│   │   ├── TestLevel9*.cpp   # Full CPU implementations (4 tests)
+│   │   ├── TestLevel9*.cpp   # Full CPU implementations & supporting components (6 tests)
 │   │   ├── Cpu/              # CPU-specific tests (12 integration tests)
 │   │   ├── TestsWithoutPanda/# Tests for basic logic without circuit files
 │   │   └── CpuTestUtils.h    # Utilities for loading and testing ICs
@@ -73,9 +73,9 @@ Tests/
     └── CPUTestUtils.h/cpp    # IC loading and CPU-specific utilities
 ```
 
-## Hierarchical IC Tests (69 tests across 9 levels)
+## Hierarchical IC Tests (72 tests across 9 levels)
 
-The integration test suite includes 69 tests organized hierarchically by circuit complexity, enabling systematic validation of the simulator's ability to handle increasingly complex nested IC structures.
+The integration test suite includes 72 tests organized hierarchically by circuit complexity, enabling systematic validation of the simulator's ability to handle increasingly complex nested IC structures.
 
 ### Level 1: Basic Sequential Elements (4 tests)
 
@@ -86,11 +86,11 @@ The integration test suite includes 69 tests organized hierarchically by circuit
 
 Basic state-holding elements that form the foundation of sequential logic.
 
-### Level 2: Combinational Circuits (12 tests)
+### Level 2: Combinational Circuits (13 tests)
 
 - Half Adder (1-bit)
 - Full Adder (1-bit)
-- Decoders (2-to-4, 3-to-8, 4-to-16)
+- Decoders (2-to-4, 3-to-8, 4-to-16, 5-to-32)
 - Multiplexers (2-to-1, 4-to-1, 8-to-1)
 - Priority Encoder (8-to-3)
 - Parity Generator/Checker
@@ -169,14 +169,18 @@ Individual CPU pipeline components designed for integration.
 
 Complete processor pipeline stages ready for multi-cycle CPU assembly.
 
-### Level 9: Full CPU Implementations (4 tests)
+### Level 9: Full CPU Implementations & Supporting Components (6 tests)
 
 - 8-bit Single-Cycle CPU
 - 8-bit Multi-Cycle CPU
 - 16-bit RISC CPU
 - 16-bit Fetch Stage
+- 32×16 Register File
+- 16-bit Data Memory Stage
 
-Complete working CPU implementations demonstrating the entire test hierarchy.
+Complete working CPU implementations demonstrating the entire test hierarchy, plus the
+32×16 register file and 16-bit data memory stage built for the 16-bit RISC CPU's
+Load/Store support.
 
 ## Running Tests
 

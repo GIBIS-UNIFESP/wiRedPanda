@@ -795,6 +795,7 @@ add_test(NAME TestLevel1SRLatch COMMAND test_wiredpanda TestLevel1SRLatch WORKIN
 add_test(NAME TestLevel2Decoder2To4 COMMAND test_wiredpanda TestLevel2Decoder2To4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2Decoder3To8 COMMAND test_wiredpanda TestLevel2Decoder3To8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2Decoder4To16 COMMAND test_wiredpanda TestLevel2Decoder4To16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder5To32 COMMAND test_wiredpanda TestLevel2Decoder5To32 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2FullAdder1Bit COMMAND test_wiredpanda TestLevel2FullAdder1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2HalfAdder COMMAND test_wiredpanda TestLevel2HalfAdder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2MUX2To1 COMMAND test_wiredpanda TestLevel2MUX2To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -855,7 +856,9 @@ add_test(NAME TestLevel8FetchStage COMMAND test_wiredpanda TestLevel8FetchStage 
 add_test(NAME TestLevel8MemoryStage COMMAND test_wiredpanda TestLevel8MemoryStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9CPU16BitRISC COMMAND test_wiredpanda TestLevel9CPU16BitRISC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9FetchStage16Bit COMMAND test_wiredpanda TestLevel9FetchStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9MemoryStage16Bit COMMAND test_wiredpanda TestLevel9MemoryStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9MultiCycleCPU8Bit COMMAND test_wiredpanda TestLevel9MultiCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9RegisterFile32X16 COMMAND test_wiredpanda TestLevel9RegisterFile32X16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9SingleCycleCPU8Bit COMMAND test_wiredpanda TestLevel9SingleCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLogicGates COMMAND test_wiredpanda TestLogicGates WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingTime WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -940,8 +943,8 @@ endforeach()
 
 # Level Tests - Integration category (IC-level hierarchical tests)
 foreach(TEST TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch 
-        TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 
-        TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1 
+        TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
+        TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1
         TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator 
         TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1 TestLevel3ALUSelector5Way 
         TestLevel3BCD7SegmentDecoder TestLevel3Comparator4Bit TestLevel3Comparator4BitEquality 
@@ -960,8 +963,8 @@ foreach(TEST TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel
         TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit 
         TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit 
         TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage 
-        TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MultiCycleCPU8Bit 
-        TestLevel9SingleCycleCPU8Bit)
+        TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
+        TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -1025,7 +1028,7 @@ set(ALL_TESTS
     TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
     TestCPUMemoryInterface TestCPUProgramCounter TestCPURegisterBank TestCPURegisters
     TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch
-    TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16
+    TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
     TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1
     TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator
     TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1
@@ -1047,8 +1050,8 @@ set(ALL_TESTS
     TestLevel7ExecutionDatapath TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit
     TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit
     TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
-    TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MultiCycleCPU8Bit
-    TestLevel9SingleCycleCPU8Bit
+    TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
+    TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit
     TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
     TestMUXDEMUXComprehensive
     TestArduino TestFeedback TestFiles TestIC TestICInline

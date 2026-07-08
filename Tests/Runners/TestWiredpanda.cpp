@@ -24,6 +24,7 @@
 #include "Tests/Integration/IC/Tests/TestLevel2Decoder2to4.h"
 #include "Tests/Integration/IC/Tests/TestLevel2Decoder3to8.h"
 #include "Tests/Integration/IC/Tests/TestLevel2Decoder4to16.h"
+#include "Tests/Integration/IC/Tests/TestLevel2Decoder5to32.h"
 #include "Tests/Integration/IC/Tests/TestLevel2FullAdder1bit.h"
 #include "Tests/Integration/IC/Tests/TestLevel2HalfAdder.h"
 #include "Tests/Integration/IC/Tests/TestLevel2Mux2to1.h"
@@ -84,7 +85,9 @@
 #include "Tests/Integration/IC/Tests/TestLevel8MemoryStage.h"
 #include "Tests/Integration/IC/Tests/TestLevel9Cpu16bitRisc.h"
 #include "Tests/Integration/IC/Tests/TestLevel9FetchStage16bit.h"
+#include "Tests/Integration/IC/Tests/TestLevel9MemoryStage16bit.h"
 #include "Tests/Integration/IC/Tests/TestLevel9MultiCycleCpu8bit.h"
+#include "Tests/Integration/IC/Tests/TestLevel9RegisterFile32x16.h"
 #include "Tests/Integration/IC/Tests/TestLevel9SingleCycleCpu8bit.h"
 // integration/ic/tests/tests_without_panda
 #include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestDecoder8to256.h"
@@ -229,6 +232,7 @@ int main(int argc, char **argv)
         {"TestLevel2Decoder2To4", []() -> QObject * { return new TestLevel2Decoder2To4; }},
         {"TestLevel2Decoder3To8", []() -> QObject * { return new TestLevel2Decoder3To8; }},
         {"TestLevel2Decoder4To16", []() -> QObject * { return new TestLevel2Decoder4To16; }},
+        {"TestLevel2Decoder5To32", []() -> QObject * { return new TestLevel2Decoder5To32; }},
         {"TestLevel2FullAdder1Bit", []() -> QObject * { return new TestLevel2FullAdder1Bit; }},
         {"TestLevel2HalfAdder", []() -> QObject * { return new TestLevel2HalfAdder; }},
         {"TestLevel2MUX2To1", []() -> QObject * { return new TestLevel2MUX2To1; }},
@@ -289,7 +293,9 @@ int main(int argc, char **argv)
         {"TestLevel8MemoryStage", []() -> QObject * { return new TestLevel8MemoryStage; }},
         {"TestLevel9CPU16BitRISC", []() -> QObject * { return new TestLevel9CPU16BitRISC; }},
         {"TestLevel9FetchStage16Bit", []() -> QObject * { return new TestLevel9FetchStage16Bit; }},
+        {"TestLevel9MemoryStage16Bit", []() -> QObject * { return new TestLevel9MemoryStage16Bit; }},
         {"TestLevel9MultiCycleCPU8Bit", []() -> QObject * { return new TestLevel9MultiCycleCPU8Bit; }},
+        {"TestLevel9RegisterFile32X16", []() -> QObject * { return new TestLevel9RegisterFile32X16; }},
         {"TestLevel9SingleCycleCPU8Bit", []() -> QObject * { return new TestLevel9SingleCycleCPU8Bit; }},
         {"TestDecoder8To256", []() -> QObject * { return new TestDecoder8To256; }},
         {"TestMemorySettlingTime", []() -> QObject * { return new TestMemorySettlingTime; }},
