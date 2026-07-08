@@ -347,6 +347,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder2to4.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder3to8.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder4to16.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder5to32.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2FullAdder1bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2HalfAdder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux2to1.cpp
@@ -407,7 +408,9 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8MemoryStage.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9Cpu16bitRisc.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9FetchStage16bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9MemoryStage16bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9MultiCycleCpu8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9RegisterFile32x16.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9SingleCycleCpu8bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestDecoder8to256.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.cpp
@@ -537,6 +540,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder2to4.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder3to8.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder4to16.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder5to32.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2FullAdder1bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2HalfAdder.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux2to1.h
@@ -597,7 +601,9 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8MemoryStage.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9Cpu16bitRisc.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9FetchStage16bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9MemoryStage16bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9MultiCycleCpu8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9RegisterFile32x16.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9SingleCycleCpu8bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestDecoder8to256.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.h
