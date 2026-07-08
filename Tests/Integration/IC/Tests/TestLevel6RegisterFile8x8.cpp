@@ -73,6 +73,36 @@ struct RegFile6_8x8Fixture {
         sim->update();
         return true;
     }
+
+    void writeReg(int addr, int value)
+    {
+        for (int i = 0; i < 3; ++i) {
+            writeAddr[i]->setOn((addr >> i) & 1);
+        }
+        for (int i = 0; i < 8; ++i) {
+            dataIn[i]->setOn((value >> i) & 1);
+        }
+        we->setOn(true);
+        sim->update();
+        clockCycle(sim, clk);
+        we->setOn(false);
+        sim->update();
+    }
+
+    int readPort1(int addr)
+    {
+        for (int i = 0; i < 3; ++i) {
+            readAddr1In[i]->setOn((addr >> i) & 1);
+        }
+        sim->update();
+        int v = 0;
+        for (int i = 0; i < 8; ++i) {
+            if (inputStatus(readData1[i])) {
+                v |= (1 << i);
+            }
+        }
+        return v;
+    }
 };
 
 static std::unique_ptr<RegFile6_8x8Fixture> s_level6RegFile8x8;
@@ -166,4 +196,72 @@ void TestLevel6RegisterFile8X8::testRegisterFile()
 
     QCOMPARE(readValue1, readValue2);
     QCOMPARE(readValue1, testData);
+}
+
+void TestLevel6RegisterFile8X8::testRegisterFileStructure()
+{
+    auto &f = *s_level6RegFile8x8;
+
+    QVERIFY(f.ic != nullptr);
+
+    // Write_Addr[3] + Read_Addr1[3] + Read_Addr2[3] + Data_In[8] + WriteEnable + Clock
+    QCOMPARE(f.ic->inputSize(), 19);
+    // Read_Data1[8] + Read_Data2[8]
+    QCOMPARE(f.ic->outputSize(), 16);
+}
+
+// The only other test always sets Write_Addr == Read_Addr1 == Read_Addr2 to the
+// same address per row, and resets between rows — so it never proves that two
+// different addresses hold independent values. A bug that aliased every
+// address to one shared storage cell would still pass every existing row.
+void TestLevel6RegisterFile8X8::testMultiAddressStorage()
+{
+    auto &f = *s_level6RegFile8x8;
+
+    f.we->setOn(false);
+    f.clk->setOn(false);
+    f.sim->update();
+
+    f.writeReg(0x02, 0x11);
+    f.writeReg(0x05, 0x22);
+
+    // Each address holds its own word, independent of the other
+    QCOMPARE(f.readPort1(0x02), 0x11);
+    QCOMPARE(f.readPort1(0x05), 0x22);
+}
+
+// The register file exposes two independent read ports so a CPU can read two
+// different registers in the same cycle (e.g. the accumulator on port 1, a
+// variable register on port 2) -- exactly what the level 9 CPUs do. The only
+// other test always sets both read addresses identically, so a bug that
+// cross-wired the two ports would go undetected.
+void TestLevel6RegisterFile8X8::testDualReadPortsDifferentAddresses()
+{
+    auto &f = *s_level6RegFile8x8;
+
+    f.we->setOn(false);
+    f.clk->setOn(false);
+    f.sim->update();
+
+    f.writeReg(0x01, 0x33);
+    f.writeReg(0x06, 0x44);
+
+    for (int i = 0; i < 3; ++i) {
+        f.readAddr1In[i]->setOn((0x01 >> i) & 1);
+        f.readAddr2In[i]->setOn((0x06 >> i) & 1);
+    }
+    f.sim->update();
+
+    int readValue1 = 0, readValue2 = 0;
+    for (int i = 0; i < 8; ++i) {
+        if (inputStatus(f.readData1[i])) {
+            readValue1 |= (1 << i);
+        }
+        if (inputStatus(f.readData2[i])) {
+            readValue2 |= (1 << i);
+        }
+    }
+
+    QCOMPARE(readValue1, 0x33);
+    QCOMPARE(readValue2, 0x44);
 }

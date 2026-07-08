@@ -16,4 +16,9 @@ private slots:
 
     void testRegisterFile_data();
     void testRegisterFile();
+
+    void testRegisterFileStructure();
+
+    void testMultiAddressStorage();
+    void testDualReadPortsDifferentAddresses();
 };
