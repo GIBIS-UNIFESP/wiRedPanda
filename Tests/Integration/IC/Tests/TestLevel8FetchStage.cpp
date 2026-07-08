@@ -162,12 +162,25 @@ struct FetchStageFixture {
     int readRegAddr() { return readBits(regAddr, 3); }
 };
 
+static std::unique_ptr<FetchStageFixture> s_level8FetchStage;
+
 void TestLevel8FetchStage::initTestCase()
 {
+    s_level8FetchStage = std::make_unique<FetchStageFixture>();
+    QVERIFY(s_level8FetchStage->build());
+}
+
+void TestLevel8FetchStage::cleanupTestCase()
+{
+    s_level8FetchStage.reset();
 }
 
 void TestLevel8FetchStage::cleanup()
 {
+    if (s_level8FetchStage && s_level8FetchStage->sim) {
+        s_level8FetchStage->sim->restart();
+        s_level8FetchStage->sim->update();
+    }
 }
 
 void TestLevel8FetchStage::testFetchStage_data()
@@ -309,8 +322,7 @@ void TestLevel8FetchStage::testFetchStage()
 // outputs that the original test (which only ever saw 0x00) never touched.
 void TestLevel8FetchStage::testProgramAndFetch()
 {
-    FetchStageFixture f;
-    QVERIFY(f.build());
+    auto &f = *s_level8FetchStage;
 
     // Word at low address 5: 0xB5 -> OpCode = 0xB5>>3 = 22, RegisterAddr = 0xB5&7 = 5
     f.program(0x05, 0xB5);
@@ -337,8 +349,7 @@ void TestLevel8FetchStage::testProgramAndFetch()
 // the fixture but never asserted by the original test.
 void TestLevel8FetchStage::testPCIncrement()
 {
-    FetchStageFixture f;
-    QVERIFY(f.build());
+    auto &f = *s_level8FetchStage;
 
     f.setPC(0x10);
     QCOMPARE(f.readPC(), 0x10);
@@ -358,8 +369,7 @@ void TestLevel8FetchStage::testPCIncrement()
 // Reset). Async — no clock needed. Normal counting resumes after release.
 void TestLevel8FetchStage::testReset()
 {
-    FetchStageFixture f;
-    QVERIFY(f.build());
+    auto &f = *s_level8FetchStage;
 
     f.program(0x03, 0x99);
     f.setPC(0x03);
@@ -388,8 +398,7 @@ void TestLevel8FetchStage::testReset()
 // integrated stage was never checked for spurious clocking.
 void TestLevel8FetchStage::testHold()
 {
-    FetchStageFixture f;
-    QVERIFY(f.build());
+    auto &f = *s_level8FetchStage;
 
     // Establish known state: instruction 0xB5 at PC 0x05
     f.program(0x05, 0xB5);
@@ -419,8 +428,7 @@ void TestLevel8FetchStage::testPCDataBitIsolation()
 {
     QFETCH(int, bitPosition);
 
-    FetchStageFixture f;
-    QVERIFY(f.build());
+    auto &f = *s_level8FetchStage;
 
     // A one-hot PCData must load to a one-hot PC at the same position.
     f.setPC(1 << bitPosition);
@@ -439,8 +447,7 @@ void TestLevel8FetchStage::testInstructionBitIsolation()
 {
     QFETCH(int, bitPosition);
 
-    FetchStageFixture f;
-    QVERIFY(f.build());
+    auto &f = *s_level8FetchStage;
 
     // A one-hot instruction must round-trip one-hot through both the async read
     // (RawInstr) and the registered output (Instruction) — no bit-lane

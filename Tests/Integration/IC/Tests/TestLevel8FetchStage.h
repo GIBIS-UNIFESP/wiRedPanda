@@ -11,6 +11,7 @@ class TestLevel8FetchStage : public QObject
 
 private slots:
     void initTestCase();
+    void cleanupTestCase();
     void cleanup();
 
     void testFetchStage_data();
