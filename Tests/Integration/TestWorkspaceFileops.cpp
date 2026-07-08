@@ -439,6 +439,38 @@ void TestWorkspaceFileops::testFilePathPreservedAfterLoad()
     }
 }
 
+void TestWorkspaceFileops::testSaveFailureLeavesFileIdentityUnchanged()
+{
+    // Regression: WorkSpace::save() used to adopt the new file/contextDir identity before the
+    // QSaveFile open/commit was known to succeed. A save that never actually writes anything
+    // (bad target path) must leave the workspace's reported identity exactly as it was before.
+    WorkSpace workspace;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    workspace.scene()->addItem(andGate);
+
+    const QString beforePath = workspace.fileInfo().absoluteFilePath();
+    const QString beforeContextDir = workspace.scene()->contextDir();
+
+    const bool prevInteractive = Application::interactiveMode;
+    Application::interactiveMode = true;
+
+    const QString badPath = m_tempDir.path() + "/no_such_directory/project.panda";
+    bool threw = false;
+    WorkSpace::SaveOutcome outcome = WorkSpace::SaveOutcome::Saved;
+    try {
+        outcome = workspace.save(badPath);
+    } catch (const std::exception &) {
+        threw = true;
+    }
+
+    Application::interactiveMode = prevInteractive;
+
+    QVERIFY2(threw || outcome == WorkSpace::SaveOutcome::ReadOnlyTarget,
+              "Expected save() to a nonexistent directory to fail (throw or ReadOnlyTarget)");
+    QCOMPARE(workspace.fileInfo().absoluteFilePath(), beforePath);
+    QCOMPARE(workspace.scene()->contextDir(), beforeContextDir);
+}
+
 void TestWorkspaceFileops::testFileExtensionPandaAppend()
 {
     // Test that file paths with .panda extension are recognized

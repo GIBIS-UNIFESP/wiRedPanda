@@ -366,6 +366,39 @@ void TestICInline::testChildBlobPropagation()
     QCOMPARE(spy.size(), 1);
 }
 
+void TestICInline::testInlineTabSaveThrowsWhenFileBackedIcMissingOnDisk()
+{
+    // chain_b.panda contains chain_c as a file-backed (non-embedded) nested IC (see
+    // testFlattenBlobMissingFile). Load chain_b's content as an inline-IC editing tab, then
+    // delete chain_c.panda from disk before saving: WorkSpace::save()'s dependency-embedding
+    // loop must throw rather than silently mark chain_c "embedded" with nothing registered in
+    // the IC registry (which would otherwise leave the saved blob referencing a blob name that
+    // was never registered — unloadable on a later reload).
+    QByteArray blob = readFile(m_fixtureDir + "/chain_b.panda");
+    QVERIFY(!blob.isEmpty());
+
+    WorkSpace parent;
+    SimulationBlocker parentBlocker(parent.simulation());
+    parent.scene()->setContextDir(m_fixtureDir);
+    parent.scene()->icRegistry()->setBlob("chain_b_test", blob);
+
+    auto *ic = new IC();
+    ic->setBlobName("chain_b_test");
+    ic->loadFromBlob(blob, m_fixtureDir);
+    parent.scene()->addItem(ic);
+
+    int icId = ic->id();
+
+    WorkSpace child;
+    SimulationBlocker childBlocker(child.simulation());
+    child.loadFromBlob(blob, &parent, icId, m_fixtureDir);
+
+    QFile::remove(m_fixtureDir + "/chain_c.panda");
+    auto restoreFixture = qScopeGuard([this] { copyFixture("chain_c.panda"); });
+
+    QVERIFY_THROWS(std::exception, child.save(QString()));
+}
+
 void TestICInline::testUndoRedoEmbedExtract()
 {
     const QString filePath = m_fixtureDir + "/simple_and.panda";
