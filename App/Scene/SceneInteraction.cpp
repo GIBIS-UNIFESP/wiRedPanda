@@ -198,18 +198,19 @@ bool SceneInteraction::mouseRelease(QGraphicsSceneMouseEvent *event)
 
             if (moved) {
                 m_scene->receiveCommand(new MoveCommand(liveElements, liveOldPositions, m_scene));
+
+                // Resize while m_draggingElement is still true, so this still takes
+                // resizeScene()'s expand-only branch like every other call during this
+                // gesture. Tightening here instead — after the flag is cleared below —
+                // would shrink the scene rect at the exact instant of mouse-up and jump
+                // the viewport to a different scroll position.
+                m_scene->resizeScene();
             }
         }
 
         sentryBreadcrumb("ui", moved ? QStringLiteral("Drag ended: moved") : QStringLiteral("Drag ended: no move"));
         m_draggingElement = false;
         m_dragSnapshot.clear();
-
-        // Only tighten scene rect after an actual drag; a click-without-move
-        // should not trigger a rect change that could shift the viewport.
-        if (moved) {
-            m_scene->resizeScene();
-        }
     }
 
     m_selectionRect.hide();
