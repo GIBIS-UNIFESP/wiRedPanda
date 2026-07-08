@@ -403,6 +403,11 @@ class CPU16BitRISCBuilder(ICBuilderBase):
                 fetch_id, alu_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"OperandA[{i}]"
             ):
                 return False
+        # F34 explicit-tie-off convention: the high 10 bits of the zero-extension
+        # aren't a natural side effect of leaving them unconnected.
+        for i in range(6, 16):
+            if not await self.connect(gnd_id, alu_id, target_port_label=f"OperandA[{i}]"):
+                return False
         for i in range(16):
             if not await self.connect(
                 regfile_id, alu_id, source_port_label=f"Read_Data1[{i}]", target_port_label=f"OperandB[{i}]"
