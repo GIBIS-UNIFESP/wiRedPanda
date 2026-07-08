@@ -6,6 +6,7 @@ name: Lint
 # Python trees covered: MCP/Client/ (full suite) and Scripts/, Tests/Fixtures/,
 # Tests/Integration/IC/Generators/ (ruff + pylint + pyrefly + vulture).
 # C++, CMake, translations, and deploy scripts fall through to build.yml.
+# Workflow YAML itself (.github/workflows/**) is covered here too, by actionlint.
 on:
   push:
     branches-ignore:
@@ -19,7 +20,7 @@ on:
       - 'ruff.toml'
       - '.pylintrc'
       - 'pyrefly.toml'
-      - '.github/workflows/lint.yml'
+      - '.github/workflows/**'
 
   pull_request:
     branches:
@@ -33,7 +34,7 @@ on:
       - 'ruff.toml'
       - '.pylintrc'
       - 'pyrefly.toml'
-      - '.github/workflows/lint.yml'
+      - '.github/workflows/**'
 
 jobs:
   python-lint:
@@ -132,3 +133,34 @@ jobs:
       run: >-
         vulture --min-confidence 80
         Scripts/ Tests/Fixtures/ Tests/Integration/IC/Generators/
+
+  actionlint:
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    name: actionlint (.github/workflows)
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
+    steps:
+    - uses: actions/checkout@v7
+
+    # reporter: local prints results to the job log instead of posting PR
+    # annotations, so this needs no extra permissions beyond contents: read.
+    # fail_level: error is required - the action's own default (none) always
+    # exits 0, which would make this step pass even on a schema-invalid file.
+    # filter_mode: nofilter - the default (file) makes reviewdog compute a diff
+    # to scope results to changed files, which needs a -diff command the action
+    # doesn't configure; outside a pull_request that fails outright ("diff
+    # command is empty"). This gate validates the whole tree, not just a diff,
+    # so skip diff computation entirely.
+    # shellcheck is disabled (-shellcheck=): its style/info-level findings on the
+    # embedded run: scripts are a separate, pre-existing concern across several
+    # workflow files, not what this gate is for - it's scoped to schema/expression
+    # validity (e.g. the secrets-in-if: class of bug this gate was added to catch).
+    - name: actionlint
+      uses: reviewdog/action-actionlint@6fb7acc99f4a1008869fa8a0f09cfca740837d9d # v1.72.0
+      with:
+        fail_level: error
+        reporter: local
+        filter_mode: nofilter
+        actionlint_flags: -shellcheck=
