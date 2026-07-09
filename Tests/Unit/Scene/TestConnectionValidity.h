@@ -32,6 +32,7 @@ private slots:
     void testIsConnectionAllowedPermitsNonePort();
     void testIsConnectionAllowedPermitsTxInputPort();
     void testIsConnectionAllowedPermitsRxOutputPort();
+    void testConnectionRejectionReasonMessages();
 
 private:
     QTemporaryDir m_tempDir;

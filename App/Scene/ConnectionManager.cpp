@@ -128,13 +128,16 @@ void ConnectionManager::tryComplete(const QPointF &scenePos)
     }
 
     /* Verifying if the connection is valid. */
-    if (isConnectionAllowed(startPort, endPort)) {
+    const QString rejection = connectionRejectionReason(startPort, endPort);
+    if (rejection.isEmpty()) {
         connection->setStartPort(startPort);
         connection->setEndPort(endPort);
         sentryBreadcrumb("ui", QStringLiteral("Wire connected"));
         m_scene->receiveCommand(new AddItemsCommand({connection}, m_scene));
         setEditedConnection(nullptr);
     } else {
+        // Explain why the wire vanished instead of dropping it silently.
+        m_scene->showStatusMessage(rejection);
         deleteEditedConnection();
     }
 }
@@ -240,26 +243,31 @@ void ConnectionManager::clearHover()
 
 bool ConnectionManager::isConnectionAllowed(OutputPort *startPort, InputPort *endPort)
 {
+    return connectionRejectionReason(startPort, endPort).isEmpty();
+}
+
+QString ConnectionManager::connectionRejectionReason(OutputPort *startPort, InputPort *endPort)
+{
     if (!startPort || !endPort) {
-        return false;
+        return tr("This connection is not allowed.");
     }
     if (startPort->graphicElement() == endPort->graphicElement()) {
-        return false;  // self-loop
+        return tr("Can't connect an element to itself.");
     }
     if (startPort->isConnected(endPort)) {
-        return false;  // duplicate
+        return tr("These ports are already connected.");
     }
     // Rx nodes receive their signal over the air; a physical wire on the input
     // port would be silently overridden by the simulation (tunnel convention).
     if (auto *elm = endPort->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Rx) {
-        return false;
+        return tr("This element receives wirelessly — no input wire needed.");
     }
     // Tx nodes are dead-end transmitters; their output port drives the wireless
     // channel only — no physical wire should bypass the channel (tunnel convention).
     if (auto *elm = startPort->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Tx) {
-        return false;
+        return tr("This element transmits wirelessly — no output wire needed.");
     }
-    return true;
+    return {};
 }
 
 // --- Private helpers ---

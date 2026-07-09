@@ -490,6 +490,11 @@ bool Scene::isConnectionAllowed(OutputPort *startPort, InputPort *endPort)
     return ConnectionManager::isConnectionAllowed(startPort, endPort);
 }
 
+void Scene::showStatusMessage(const QString &message)
+{
+    emit showStatusMessageRequested(message);
+}
+
 void Scene::prevMainPropShortcut() { m_propertyShortcutHandler.prevMainProperty(); }
 
 void Scene::nextMainPropShortcut() { m_propertyShortcutHandler.nextMainProperty(); }

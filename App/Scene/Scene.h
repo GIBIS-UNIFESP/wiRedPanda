@@ -154,6 +154,10 @@ public:
      */
     static bool isConnectionAllowed(OutputPort *startPort, InputPort *endPort);
 
+    /// Emits showStatusMessageRequested() so the bound chrome can surface \a message in the
+    /// status bar (used to explain a rejected wire instead of dropping it silently).
+    void showStatusMessage(const QString &message);
+
     // --- Connection Manager ---
 
     /// Returns the connection manager that handles wire creation, deletion, and hover feedback.
@@ -316,6 +320,10 @@ signals:
 
     /// Emitted when a .panda file is dropped onto the canvas from the file manager.
     void fileDropRequested(const QString &filePath);
+
+    /// Requests that \a message be shown transiently in the status bar (e.g. why a wire
+    /// was rejected). Routed to the status bar by SceneUiBinder.
+    void showStatusMessageRequested(const QString &message);
 
     // --- IC hover-preview lifecycle (re-emitted from IC; see SceneUiBinder) ---
     void icPreviewRequested(IC *ic, const QPoint &screenPos);

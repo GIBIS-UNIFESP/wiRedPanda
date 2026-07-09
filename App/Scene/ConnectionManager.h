@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QList>
 #include <QPair>
 #include <QPointer>
@@ -30,6 +31,7 @@ class Scene;
  */
 class ConnectionManager
 {
+    Q_DECLARE_TR_FUNCTIONS(ConnectionManager)
     friend class TestConnectionManager;
 
 public:
@@ -101,6 +103,11 @@ public:
      * - \a startPort belongs to a wireless Tx node (tunnel convention: output drives channel only).
      */
     static bool isConnectionAllowed(OutputPort *startPort, InputPort *endPort);
+
+    /// Returns a short, user-facing explanation of why the connection from \a startPort to
+    /// \a endPort is disallowed, or an empty string if it is allowed. Single source of truth
+    /// for isConnectionAllowed() and the status-bar feedback shown when a wire is rejected.
+    static QString connectionRejectionReason(OutputPort *startPort, InputPort *endPort);
 
 private:
     void setEditedConnection(Connection *connection);
