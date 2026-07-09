@@ -53,8 +53,10 @@ void TestGraphicElement::testElementAppearance()
 
 void TestGraphicElement::testElementTooltip()
 {
+    // Every element exposes its translated name as the hover tooltip (set in the ctor). With no
+    // translator loaded in the test the And gate's tooltip is its English name.
     And andGate;
-    QVERIFY(true);
+    QCOMPARE(andGate.toolTip(), QStringLiteral("And"));
 }
 
 void TestGraphicElement::testElementDoubleClick()

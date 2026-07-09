@@ -9,6 +9,7 @@
 #include <QSignalSpy>
 #include <QTranslator>
 
+#include "App/Core/Settings.h"
 #include "App/UI/LanguageManager.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -41,6 +42,8 @@ void TestLanguageManager::testSetLanguage()
 
     manager.loadTranslation("en");
 
+    // loadTranslation persists the choice and notifies listeners so the UI retranslates.
+    QCOMPARE(Settings::language(), QStringLiteral("en"));
     QCOMPARE(translationChangedSpy.count(), 1);
 }
 

@@ -44,9 +44,21 @@ void TestICRegistry::testICRegistration()
 
 void TestICRegistry::testICFileWatcher()
 {
+    // Registering a file for watching must not crash, and the registry's file cache — the copy
+    // the watcher invalidates and re-reads on external change — must return the on-disk content.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("watched.panda");
+    writeChainedPandaFile(path, QString());
+
     WorkSpace workspace;
-    ICRegistry registry(workspace.scene());
-    QVERIFY(true);
+    ICRegistry *registry = workspace.scene()->icRegistry();
+    registry->watchFile(path);
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    const QByteArray onDisk = file.readAll();
+    QCOMPARE(registry->cachedFileBytes(path), onDisk);
 }
 
 void TestICRegistry::testRecursiveICLoading()

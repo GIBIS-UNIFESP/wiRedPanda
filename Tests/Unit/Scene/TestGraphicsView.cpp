@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Scene/TestGraphicsView.h"
 
+#include <QPainter>
+
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -48,9 +50,16 @@ void TestGraphicsView::testFastMode()
     WorkSpace workspace;
     GraphicsView *view = workspace.view();
 
+    // Fast mode disables the expensive rendering hints to keep the frame rate up.
     view->setFastMode(true);
+    QVERIFY(!view->renderHints().testFlag(QPainter::Antialiasing));
+    QVERIFY(!view->renderHints().testFlag(QPainter::TextAntialiasing));
+    QVERIFY(!view->renderHints().testFlag(QPainter::SmoothPixmapTransform));
+
     view->setFastMode(false);
-    QVERIFY(true);
+    QVERIFY(view->renderHints().testFlag(QPainter::Antialiasing));
+    QVERIFY(view->renderHints().testFlag(QPainter::TextAntialiasing));
+    QVERIFY(view->renderHints().testFlag(QPainter::SmoothPixmapTransform));
 }
 
 void TestGraphicsView::testDragModeToggle()

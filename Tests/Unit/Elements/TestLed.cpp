@@ -545,12 +545,21 @@ void TestLED::testAppearancePreviewPixmap()
 
 void TestLED::testSetAppearanceDefault()
 {
-    Led led;
-    led.setColor("Red");
+    // Give the LED a custom appearance, then restore the default and confirm the custom
+    // external file is dropped (the default appearance references no external file).
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString imagePath = tempDir.filePath("custom_led.png");
+    QImage image(64, 64, QImage::Format_RGB32);
+    image.fill(Qt::red);
+    QVERIFY(image.save(imagePath));
 
-    // Restore default appearance
-    led.setAppearance(true, {});
-    QVERIFY(true);
+    Led led;
+    led.setAppearance(false, imagePath);
+    QCOMPARE(led.externalFiles(), QStringList{imagePath});
+
+    led.setAppearance(true, {}); // restore default
+    QVERIFY(led.externalFiles().isEmpty());
 }
 
 void TestLED::testSetAppearanceWithAbsolutePathNoContextDir()
