@@ -113,19 +113,21 @@ void ICController::removeICFile(const QString &icFileName)
         }
     }
 
+    // Move the source file to the system trash first: a mistaken removal stays recoverable
+    // (unlike a hard delete), and bailing out here on failure means the scene instances are
+    // never deleted while the file is still present.
+    QFile file(m_host.currentDir().absolutePath() + "/" + icFileName);
+    if (file.exists() && !file.moveToTrash()) {
+        throw PANDACEPTION("Error moving file to trash: %1", file.errorString());
+    }
+
     if (!toDelete.isEmpty()) {
         tab->scene()->receiveCommand(new DeleteItemsCommand(toDelete, tab->scene()));
         tab->simulation()->restart();
     }
 
-    QFile file(m_host.currentDir().absolutePath() + "/" + icFileName);
-
-    if (!file.remove()) {
-        throw PANDACEPTION("Error removing file: %1", file.errorString());
-    }
-
     m_host.palette()->updateICList(m_host.icListFile());
-    // Auto-save after removal so the scene no longer references the deleted file.
+    // Auto-save after removal so the scene no longer references the removed file.
     m_host.requestSave();
 }
 
