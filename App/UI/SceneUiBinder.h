@@ -14,6 +14,7 @@
 class ElementPalette;
 class ICPreviewPopup;
 class MainWindowUi;
+class QLabel;
 class QShortcut;
 class QWidget;
 class WorkSpace;
@@ -57,10 +58,14 @@ private:
     void addUndoRedoMenu();
     void removeUndoRedoMenu();
     void syncZoomActions();
+    /// Refreshes the permanent status-bar indicator (zoom % and selection count) from the
+    /// currently bound tab; clears it when no tab is bound.
+    void updateStatusInfo();
 
     MainWindowUi *m_ui;
     ElementPalette *m_palette;
     ICPreviewPopup *m_previewPopup;
+    QLabel *m_statusInfo = nullptr; ///< Permanent status-bar label: zoom % + selection count.
     WorkSpace *m_bound = nullptr;
 
     // Scene-property navigation shortcuts ( [ ] { } < > ), re-targeted to the active scene.

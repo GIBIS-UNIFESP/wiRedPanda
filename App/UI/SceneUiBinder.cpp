@@ -5,6 +5,7 @@
 
 #include <QAction>
 #include <QKeySequence>
+#include <QLabel>
 #include <QMenu>
 #include <QShortcut>
 #include <QStatusBar>
@@ -37,6 +38,26 @@ SceneUiBinder::SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, ICPrevie
     m_nextSecndPropShortcut = new QShortcut(QKeySequence("}"), shortcutParent);
     m_changePrevElmShortcut = new QShortcut(QKeySequence("<"), shortcutParent);
     m_changeNextElmShortcut = new QShortcut(QKeySequence(">"), shortcutParent);
+
+    // Permanent right-aligned status-bar indicator (zoom % + selection count), refreshed per
+    // bound tab. Transient showMessage() text still appears to its left.
+    m_statusInfo = new QLabel;
+    m_statusInfo->setObjectName("statusInfoLabel");
+    m_ui->statusBar->addPermanentWidget(m_statusInfo);
+}
+
+void SceneUiBinder::updateStatusInfo()
+{
+    if (!m_bound || !m_bound->scene() || !m_bound->view()) {
+        m_statusInfo->clear();
+        return;
+    }
+
+    auto *scene = m_bound->scene();
+    const int zoomPct = qRound(m_bound->view()->transform().m11() * 100.0);
+    const int selected = static_cast<int>(scene->selectedElements().size());
+    const int total = static_cast<int>(scene->elements().size());
+    m_statusInfo->setText(tr("Zoom: %1%    Selected: %2 / %3").arg(zoomPct).arg(selected).arg(total));
 }
 
 void SceneUiBinder::addUndoRedoMenu()
@@ -59,6 +80,11 @@ void SceneUiBinder::addUndoRedoMenu()
     // first, redo second — above the separator that already exists in menuEdit.
     m_ui->menuEdit->insertAction(actions.at(0), scene->undoAction());
     m_ui->menuEdit->insertAction(m_ui->menuEdit->actions().at(1), scene->redoAction());
+
+    // The same per-scene actions also drive the toolbar, in front of the transform group
+    // (a QAction can back several widgets, so both stay in sync with the active tab's stack).
+    m_ui->mainToolBar->insertAction(m_ui->actionRotateLeft, scene->undoAction());
+    m_ui->mainToolBar->insertAction(m_ui->actionRotateLeft, scene->redoAction());
 }
 
 void SceneUiBinder::removeUndoRedoMenu()
@@ -75,6 +101,12 @@ void SceneUiBinder::removeUndoRedoMenu()
     }
     m_ui->menuEdit->removeAction(actions.at(0));
     m_ui->menuEdit->removeAction(actions.at(1));
+
+    // Remove the same actions from the toolbar (by identity, so position is irrelevant).
+    if (auto *scene = m_bound->scene()) {
+        m_ui->mainToolBar->removeAction(scene->undoAction());
+        m_ui->mainToolBar->removeAction(scene->redoAction());
+    }
 }
 
 void SceneUiBinder::syncZoomActions()
@@ -101,6 +133,9 @@ void SceneUiBinder::bind(WorkSpace *tab)
     m_ui->elementEditor->setScene(scene);
 
     connect(tab->view(),       &GraphicsView::zoomChanged,     this, &SceneUiBinder::syncZoomActions);
+    connect(tab->view(),       &GraphicsView::zoomChanged,     this, &SceneUiBinder::updateStatusInfo);
+    connect(scene,             &QGraphicsScene::selectionChanged, this, &SceneUiBinder::updateStatusInfo);
+    connect(scene,             &Scene::circuitHasChanged,      this, &SceneUiBinder::updateStatusInfo);
     connect(tab->simulation(), &Simulation::simulationWarning, this, [this](const QString &msg) {
         m_ui->statusBar->showMessage(msg, 8000);
     });
@@ -174,6 +209,8 @@ void SceneUiBinder::bind(WorkSpace *tab)
     const bool muted = tab->simulation()->isUserMuted();
     m_ui->actionMute->setChecked(muted);
     m_ui->actionMute->setText(muted ? tr("Unmute") : tr("Mute"));
+
+    updateStatusInfo();
 }
 
 void SceneUiBinder::unbind()
@@ -193,6 +230,9 @@ void SceneUiBinder::unbind()
 
     qCDebug(zero) << "Disconnecting zoom and simulation signals from UI.";
     disconnect(m_bound->view(),       &GraphicsView::zoomChanged,     this, &SceneUiBinder::syncZoomActions);
+    disconnect(m_bound->view(),       &GraphicsView::zoomChanged,     this, &SceneUiBinder::updateStatusInfo);
+    disconnect(scene,                 &QGraphicsScene::selectionChanged, this, &SceneUiBinder::updateStatusInfo);
+    disconnect(scene,                 &Scene::circuitHasChanged,      this, &SceneUiBinder::updateStatusInfo);
     disconnect(m_bound->simulation(), &Simulation::simulationWarning, this, nullptr);
 
     qCDebug(zero) << "Disconnecting scene shortcuts from previous tab.";
@@ -214,4 +254,5 @@ void SceneUiBinder::unbind()
     removeUndoRedoMenu();
 
     m_bound = nullptr;
+    m_statusInfo->clear(); // no tab bound → no zoom/selection to report
 }
