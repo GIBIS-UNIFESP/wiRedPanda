@@ -60,6 +60,10 @@ public:
     /// Returns the translated human-readable name for \a type.
     static QString translatedName(const ElementType type);
 
+    /// Returns a short, translated functional description of \a type for palette tooltips
+    /// (empty for types without one, e.g. IC).
+    static QString description(const ElementType type);
+
     /// Returns the pixmap icon for the given element \a type.
     static QPixmap pixmap(const ElementType type);
 

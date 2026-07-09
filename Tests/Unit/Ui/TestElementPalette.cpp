@@ -3,9 +3,11 @@
 
 #include "Tests/Unit/Ui/TestElementPalette.h"
 
+#include <QLabel>
 #include <QMainWindow>
 #include <QTabWidget>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/MainWindowUI.h"
@@ -50,4 +52,24 @@ void TestElementPalette::testPaletteRebuild()
 
     QVERIFY(ui.tabElements->count() > 0);
     QVERIFY(!window.findChildren<ElementLabel *>().isEmpty());
+}
+
+void TestElementPalette::testElementLabelHasDescriptiveTooltip()
+{
+    // A gate label describes what the element does and how to place it.
+    ElementLabel andLabel(ElementFactory::pixmap(ElementType::And), ElementType::And, QString());
+    QVERIFY2(andLabel.toolTip().contains(QStringLiteral("AND")), qPrintable(andLabel.toolTip()));
+    QVERIFY2(andLabel.toolTip().contains(QStringLiteral("double-click")), qPrintable(andLabel.toolTip()));
+
+    // The tooltip is mirrored onto the child labels so it shows wherever the pointer rests.
+    const auto children = andLabel.findChildren<QLabel *>();
+    QVERIFY(!children.isEmpty());
+    for (auto *child : children) {
+        QCOMPARE(child->toolTip(), andLabel.toolTip());
+    }
+
+    // Descriptions are element-specific.
+    ElementLabel switchLabel(ElementFactory::pixmap(ElementType::InputSwitch), ElementType::InputSwitch, QString());
+    QVERIFY(!switchLabel.toolTip().isEmpty());
+    QVERIFY(switchLabel.toolTip() != andLabel.toolTip());
 }

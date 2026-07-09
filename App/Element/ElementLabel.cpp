@@ -33,6 +33,22 @@ ElementLabel::ElementLabel(const QPixmap &pixmap, ElementType type, const QStrin
         m_nameLabel.setText(ElementFactory::translatedName(type));
     }
 
+    // Describe what the item is and how to place it. Set on the frame and both child labels
+    // so the tooltip appears wherever the pointer rests on the item.
+    QString tip;
+    if (m_isEmbedded) {
+        tip = tr("Embedded IC: %1").arg(icFileName);
+    } else if (type == ElementType::IC) {
+        tip = tr("IC from file: %1").arg(QFileInfo(icFileName).fileName());
+    } else {
+        tip = ElementFactory::description(type);
+    }
+    const QString addHint = tr("Drag or double-click to add.");
+    tip = tip.isEmpty() ? addHint : tip + QLatin1Char('\n') + addHint;
+    setToolTip(tip);
+    m_iconLabel.setToolTip(tip);
+    m_nameLabel.setToolTip(tip);
+
     auto *itemLayout = new QHBoxLayout();
     itemLayout->setSpacing(6);
     itemLayout->setObjectName(QStringLiteral("itemLayout"));
