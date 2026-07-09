@@ -78,6 +78,7 @@ private slots:
     void testSaveAsAction();
     void testExitAction();
     void testMergeSplitDisabled();
+    void testShortcutsReconciledWithMainWindow();
 
     // Regression: C9 — actionSetClockWave gated on a non-empty selection
     void testSetClockWaveDisabledWithoutSelectionC9();

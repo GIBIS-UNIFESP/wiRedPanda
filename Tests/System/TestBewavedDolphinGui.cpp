@@ -15,6 +15,7 @@
 #include <QHeaderView>
 #include <QImage>
 #include <QItemSelectionModel>
+#include <QKeySequence>
 #include <QRegularExpression>
 #include <QScrollBar>
 #include <QSet>
@@ -875,6 +876,36 @@ void TestBewavedDolphinGui::testExitAction()
     QVERIFY(!dolphin->isVisible());
 
     delete dolphin;
+}
+
+void TestBewavedDolphinGui::testShortcutsReconciledWithMainWindow()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    const auto shortcutOf = [&](const char *name) {
+        auto *action = dolphin->findChild<QAction *>(name);
+        return action ? action->shortcut() : QKeySequence();
+    };
+
+    // Reconciled so a chord no longer means different things in the two windows: About
+    // matches the main window's F1 (Ctrl+H is Flip there); Fit Screen matches its
+    // Ctrl+Shift+F Zoom to Fit (Ctrl+Shift+R is Rotate there); AutoCrop moves to BWD's
+    // Alt+ family, freeing Ctrl+A for its universal Select-All meaning.
+    QCOMPARE(shortcutOf("actionAbout"), QKeySequence(QStringLiteral("F1")));
+    QCOMPARE(shortcutOf("actionFitScreen"), QKeySequence(QStringLiteral("Ctrl+Shift+F")));
+    QCOMPARE(shortcutOf("actionAutoCrop"), QKeySequence(QStringLiteral("Alt+A")));
+
+    // The reconciliation introduced no in-window duplicate shortcut.
+    QSet<QKeySequence> seen;
+    for (auto *action : dolphin->findChildren<QAction *>()) {
+        const QKeySequence sequence = action->shortcut();
+        if (sequence.isEmpty()) {
+            continue;
+        }
+        QVERIFY2(!seen.contains(sequence), qPrintable(QStringLiteral("duplicate BWD shortcut: %1").arg(sequence.toString())));
+        seen.insert(sequence);
+    }
 }
 
 void TestBewavedDolphinGui::testMergeSplitDisabled()

@@ -242,7 +242,7 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     // load/save), so no placeholder is applied here.
     Q_UNUSED(BewavedDolphin)
     actionAbout->setText(QCoreApplication::translate("BewavedDolphin", "About"));
-    actionAbout->setShortcut(QStringLiteral("Ctrl+H"));
+    actionAbout->setShortcut(QStringLiteral("F1")); // match the main window (Ctrl+H is Flip there)
     actionLoad->setText(QCoreApplication::translate("BewavedDolphin", "Load"));
     actionLoad->setShortcut(QStringLiteral("Ctrl+L"));
     actionExit->setText(QCoreApplication::translate("BewavedDolphin", "Exit"));
@@ -282,7 +282,7 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     actionZoomOut->setShortcut(QStringLiteral("Ctrl+-"));
     actionFitScreen->setText(QCoreApplication::translate("BewavedDolphin", "Fit to screen"));
     actionFitScreen->setToolTip(QCoreApplication::translate("BewavedDolphin", "Fit to screen"));
-    actionFitScreen->setShortcut(QStringLiteral("Ctrl+Shift+R"));
+    actionFitScreen->setShortcut(QStringLiteral("Ctrl+Shift+F")); // match the main window's Zoom to Fit (Ctrl+Shift+R is Rotate there)
     actionResetZoom->setText(QCoreApplication::translate("BewavedDolphin", "Reset Zoom"));
     actionResetZoom->setShortcut(QStringLiteral("Ctrl+Home"));
     actionClear->setText(QCoreApplication::translate("BewavedDolphin", "Clear"));
@@ -293,7 +293,7 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     actionShowWaveforms->setText(QCoreApplication::translate("BewavedDolphin", "Show Waveforms"));
     actionAutoCrop->setText(QCoreApplication::translate("BewavedDolphin", "AutoCrop"));
     actionAutoCrop->setToolTip(QCoreApplication::translate("BewavedDolphin", "AutoCrop"));
-    actionAutoCrop->setShortcut(QStringLiteral("Ctrl+A"));
+    actionAutoCrop->setShortcut(QStringLiteral("Alt+A")); // fits BWD's Alt+ family; frees Ctrl+A for its universal Select-All meaning
     mainToolBar->setWindowTitle(QCoreApplication::translate("BewavedDolphin", "toolBar"));
     menuFile->setTitle(QCoreApplication::translate("BewavedDolphin", "File"));
     menuAbout->setTitle(QCoreApplication::translate("BewavedDolphin", "Help"));
