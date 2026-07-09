@@ -108,6 +108,12 @@ public:
     /// Returns the blob name being edited (for tab title).
     const QString &inlineBlobName() const { return m_inlineBlobName; }
 
+    /// Stable placeholder title for an unsaved tab, e.g. "New Project" or "New Project 2".
+    /// Assigned once at creation so the tab keeps the same number across edits; unused once
+    /// the workspace is saved to a real file.
+    const QString &untitledTitle() const { return m_untitledTitle; }
+    void setUntitledTitle(const QString &title) { m_untitledTitle = title; }
+
     /// Removes all IC instances with the given blob name.
     void removeEmbeddedIC(const QString &blobName);
 
@@ -189,6 +195,7 @@ private:
     QPointer<WorkSpace> m_parentWorkspace;
     int m_parentICElementId = -1;
     QString m_inlineBlobName;
+    QString m_untitledTitle;
 
     // Exercise overlay — non-owning pointer
     ExerciseOverlay *m_exerciseOverlay = nullptr;
