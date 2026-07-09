@@ -3,12 +3,32 @@
 
 #include "Tests/Unit/Ui/TestElementPalette.h"
 
+#include "App/UI/ElementPalette.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestElementPalette::testPaletteSearch()
 {
-    // ElementPalette requires MainWindowUi — not available in unit tests
-    QVERIFY(true);
+    // Regex metacharacters in the query must be matched literally, not interpreted as pattern
+    // syntax. Before the fix (B3), an unescaped query built an invalid QRegularExpression whose
+    // match() never succeeded, so the user got zero results even when items matched.
+
+    // A lone '(' is an invalid regex on its own; it must still match a name that contains '('
+    // and must not match one that doesn't — never error into matching nothing.
+    QVERIFY(ElementPalette::nameMatchesSearch("nand(2)", "("));
+    QVERIFY(!ElementPalette::nameMatchesSearch("nand", "("));
+
+    // An IC named with parentheses is findable by a substring that includes them.
+    QVERIFY(ElementPalette::nameMatchesSearch("counter(2)", "counter(2)"));
+    QVERIFY(ElementPalette::nameMatchesSearch("counter(2)", "(2)"));
+
+    // Ordinary substring matching still works and is case-insensitive.
+    QVERIFY(ElementPalette::nameMatchesSearch("Input Switch", "switch"));
+    QVERIFY(!ElementPalette::nameMatchesSearch("And", "xyz"));
+
+    // Other metacharacters that would break an unescaped pattern are matched literally.
+    QVERIFY(ElementPalette::nameMatchesSearch("a+b", "+"));
+    QVERIFY(ElementPalette::nameMatchesSearch("a[b", "["));
+    QVERIFY(ElementPalette::nameMatchesSearch("a\\b", "\\"));
 }
 
 void TestElementPalette::testPaletteRebuild()

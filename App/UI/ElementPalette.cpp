@@ -26,6 +26,16 @@ ElementPalette::ElementPalette(MainWindowUi *ui, QObject *parent)
     connect(m_ui->lineEditSearch, &QLineEdit::returnPressed, this, &ElementPalette::onSearchReturnPressed);
 }
 
+bool ElementPalette::nameMatchesSearch(const QString &name, const QString &query)
+{
+    // Escape the raw query so regex metacharacters ('(', '[', '\\', '+', ...) are matched
+    // literally; an unescaped query can form an invalid pattern whose match() never succeeds,
+    // silently returning zero results even when items match.
+    const QRegularExpression regex(".*" + QRegularExpression::escape(query) + ".*",
+                                   QRegularExpression::CaseInsensitiveOption);
+    return regex.match(name).hasMatch();
+}
+
 void ElementPalette::populate()
 {
     setupTabIcons();
@@ -182,7 +192,10 @@ void ElementPalette::onSearchTextChanged(const QString &text)
         const auto allItems = m_ui->scrollArea_Search->findChildren<ElementLabel *>();
 
         // First pass: match by object name (e.g. "label_and") — prioritises exact type hits.
-        const QRegularExpression regex1(QString("^label_.*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
+        // The query is regex-escaped (as in nameMatchesSearch) so metacharacters can't form an
+        // invalid pattern; the ^label_ anchor keeps the query matching the type part rather than
+        // the shared "label_" prefix.
+        const QRegularExpression regex1(QString("^label_.*%1.*").arg(QRegularExpression::escape(text)), QRegularExpression::CaseInsensitiveOption);
         QList<ElementLabel *> searchResults;
         for (auto *item : allItems) {
             if (regex1.match(item->objectName()).hasMatch()) {
@@ -191,16 +204,15 @@ void ElementPalette::onSearchTextChanged(const QString &text)
         }
 
         // Second pass: match by human-readable translated element name.
-        const QRegularExpression regex2(QString(".*%1.*").arg(text), QRegularExpression::CaseInsensitiveOption);
         for (auto *item : allItems) {
-            if (regex2.match(item->name()).hasMatch() && !searchResults.contains(item)) {
+            if (nameMatchesSearch(item->name(), text) && !searchResults.contains(item)) {
                 searchResults.append(item);
             }
         }
 
         // Third pass: also search IC file names (all share object name "label_ic").
         for (auto *item : allItems) {
-            if (item->objectName() == QLatin1String("label_ic") && regex2.match(item->icFileName()).hasMatch()) {
+            if (item->objectName() == QLatin1String("label_ic") && nameMatchesSearch(item->icFileName(), text)) {
                 searchResults.append(item);
             }
         }

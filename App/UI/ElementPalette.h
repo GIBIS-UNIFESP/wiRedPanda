@@ -69,6 +69,13 @@ public:
     /// Updates the memory tab icon and all memory-tab ElementLabel themes.
     void updateTheme();
 
+    /// Case-insensitive "contains" match of \a query against \a name, used by the palette
+    /// search. \a query is a raw, user-typed string, so it is regex-escaped: metacharacters
+    /// (e.g. '(' in an IC named "counter(2)", or a lone '(') match literally instead of forming
+    /// an invalid pattern that would silently return zero results. Pure/static so the matching
+    /// can be tested without constructing the palette (which needs a MainWindowUi).
+    static bool nameMatchesSearch(const QString &name, const QString &query);
+
 signals:
     /**
      * \brief Emitted when the user presses Enter in the search box.
