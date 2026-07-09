@@ -154,6 +154,7 @@ void ArduinoCodeGen::generate()
             }
         }
         const int totalRequiredPins = requiredInputPins + requiredOutputPins;
+        m_totalRequiredPins = totalRequiredPins;
         m_selectedBoard = selectBoard(totalRequiredPins);
         m_availablePins = m_selectedBoard.availablePins;
 
@@ -199,7 +200,7 @@ void ArduinoCodeGen::declareInputs()
         if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch)) {
             // Check if we have available pins before assigning
             if (m_availablePins.isEmpty()) {
-                throw PANDACEPTION("Not enough pins available for all input elements");
+                throwPinOverflow();
             }
 
             QString varName = elm->objectName() + QString::number(counter);
@@ -226,7 +227,7 @@ void ArduinoCodeGen::declareInputs()
             const QString label = elm->label();
             for (int i = 0; i < elm->outputSize(); ++i) {
                 if (m_availablePins.isEmpty()) {
-                    throw PANDACEPTION("Not enough pins available for all rotary switch positions");
+                    throwPinOverflow();
                 }
                 QString varName = elm->objectName() + QString::number(counter) + "_pos" + QString::number(i);
                 if (!label.isEmpty()) {
@@ -261,7 +262,7 @@ void ArduinoCodeGen::declareOutputs()
             for (int i = 0; i < elm->inputs().size(); ++i) {
                 // Check if we have available pins before assigning
                 if (m_availablePins.isEmpty()) {
-                    throw PANDACEPTION("Not enough pins available for all output elements");
+                    throwPinOverflow();
                 }
 
                 QString varName = elm->objectName() + QString::number(counter);
@@ -1055,7 +1056,16 @@ ArduinoBoardConfig ArduinoCodeGen::selectBoard(int requiredPins)
             return board;
         }
     }
-    return boards.last();
+    // None fits: fall back to the board with the most pins. Don't assume the list is ordered
+    // by capacity — it isn't (ESP32's 38 < Mega's 68), so boards.last() could pick a smaller one.
+    return *std::max_element(boards.cbegin(), boards.cend(),
+        [](const ArduinoBoardConfig &a, const ArduinoBoardConfig &b) { return a.maxPins() < b.maxPins(); });
+}
+
+void ArduinoCodeGen::throwPinOverflow() const
+{
+    throw PANDACEPTION("This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.",
+                       QString::number(m_totalRequiredPins), m_selectedBoard.name, QString::number(m_selectedBoard.maxPins()));
 }
 
 QString ArduinoCodeGen::buildSelectExpression(GraphicElement *elm, int startIndex, int numSelectLines)

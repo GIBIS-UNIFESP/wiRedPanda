@@ -63,6 +63,7 @@ private slots:
     // Basic Generation (2 tests)
     void testBasicCircuitGeneration();
     void testEmptyCircuit();
+    void testPinOverflowMessageNamesCounts();
 
     // Logic Gates
     void testGateGeneration_data();
