@@ -12,7 +12,7 @@ AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent)
     : GraphicElement(type, parent)
 {
     // Position label to the right of the 64×64 body, vertically centred
-    m_label->setPos(64, 34);
+    setLabelAnchor(QPointF(64, 34));
 
     // Detect audio hardware once per process; subsequent calls are guarded by
     // m_hasOutputDevice so the element works silently in headless/CI environments.

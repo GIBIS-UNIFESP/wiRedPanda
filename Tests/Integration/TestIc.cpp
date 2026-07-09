@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QImage>
+#include <QLineF>
 #include <QPainter>
 #include <QScopeGuard>
 #include <QTemporaryDir>
@@ -1111,4 +1112,37 @@ void TestIC::testICBigFlipDoesNotDriftInScene()
     ic->setFlippedX(false);
     ic->setFlippedY(false);
     QCOMPARE(ic->mapToScene(ic->boundingRect().center()), centerScene);
+}
+
+void TestIC::testICBigLabelStaysAtFixedScenePosition()
+{
+    // Direct reproduction of the reported bug: on a big IC (edge-packed ports), the name label
+    // used to orbit around the rotation pivot while its glyphs stayed counter-oriented upright,
+    // landing the readable text on top of a pin row at some orientations. The label's anchor
+    // must stay fixed in scene space across every rotation/flip, exactly like the mascot/body
+    // centre already do (testICBigRotationDoesNotDriftInScene/testICBigFlipDoesNotDriftInScene).
+    WorkSpace workspace;
+    auto *ic = buildBigIC(workspace.scene());
+    QVERIFY(ic);
+
+    const QPointF labelScene = ic->m_label->scenePos();
+    const auto isAtLabelScene = [&labelScene](const QPointF &p) {
+        return QLineF(labelScene, p).length() < 0.5;
+    };
+
+    for (const qreal angle : {90.0, 180.0, 270.0, 0.0}) {
+        ic->setRotation(angle);
+        QVERIFY2(isAtLabelScene(ic->m_label->scenePos()),
+                 qPrintable(QString("Label drifted at %1°").arg(angle)));
+    }
+
+    ic->setFlippedX(true);
+    QVERIFY2(isAtLabelScene(ic->m_label->scenePos()), "Label drifted when flipped horizontally");
+
+    ic->setFlippedY(true);
+    QVERIFY2(isAtLabelScene(ic->m_label->scenePos()), "Label drifted when flipped vertically");
+
+    ic->setFlippedX(false);
+    ic->setFlippedY(false);
+    QVERIFY2(isAtLabelScene(ic->m_label->scenePos()), "Label didn't return after un-flipping");
 }

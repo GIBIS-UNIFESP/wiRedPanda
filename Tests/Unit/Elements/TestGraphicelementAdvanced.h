@@ -50,4 +50,5 @@ private slots:
     void testElementPosition();
     void testElementPositionPersistence();
     void testLabelStaysUprightWhenRotatedOrFlipped();
+    void testLabelPositionStaysFixedWhenRotatedOrFlipped();
 };

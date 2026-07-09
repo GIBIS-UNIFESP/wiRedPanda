@@ -112,7 +112,7 @@ void TruthTable::updatePortsProperties()
         }
     }
 
-    m_label->setPos(30, renderBodyBounds().bottom() + 5);
+    setLabelAnchor(QPointF(30, renderBodyBounds().bottom() + 5));
 
     generatePixmap();
 }

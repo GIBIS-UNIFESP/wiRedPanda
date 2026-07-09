@@ -7,6 +7,7 @@
 #include <memory>
 
 #include <QGraphicsSimpleTextItem>
+#include <QLineF>
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
@@ -380,4 +381,53 @@ void TestGraphicelementAdvanced::testLabelStaysUprightWhenRotatedOrFlipped()
 
     elem->setFlippedX(false);
     QVERIFY(isUpright(label->sceneTransform()));
+}
+
+void TestGraphicelementAdvanced::testLabelPositionStaysFixedWhenRotatedOrFlipped()
+{
+    // Keeping the label's glyphs upright (tested above) isn't enough on its own: if only the
+    // orientation is corrected while the anchor point still orbits with the rotating body, the
+    // (now-readable) text sweeps to a different spot at each orientation instead of staying put
+    // -- landing on top of pins for elements with edge-packed ports (e.g. a big IC).
+    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    QVERIFY(elem != nullptr);
+    elem->setLabel("Q1");
+
+    QGraphicsSimpleTextItem *label = nullptr;
+    const auto children = elem->childItems();
+    for (auto *child : children) {
+        if (auto *text = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(child)) {
+            label = text;
+        }
+    }
+    QVERIFY(label != nullptr);
+
+    const QPointF basePos = label->scenePos();
+    const auto isAtBasePos = [&basePos](const QPointF &p) {
+        return QLineF(basePos, p).length() < 0.5;
+    };
+
+    elem->setRotation(90);
+    QVERIFY2(isAtBasePos(label->scenePos()), "Label anchor moved at 90°");
+
+    elem->setRotation(180);
+    QVERIFY2(isAtBasePos(label->scenePos()), "Label anchor moved at 180°");
+
+    elem->setRotation(270);
+    QVERIFY2(isAtBasePos(label->scenePos()), "Label anchor moved at 270°");
+
+    elem->setRotation(0);
+    QVERIFY2(isAtBasePos(label->scenePos()), "Label anchor didn't return to its base position");
+
+    elem->setFlippedX(true);
+    QVERIFY2(isAtBasePos(label->scenePos()), "Label anchor moved when flipped horizontally");
+
+    elem->setFlippedX(false);
+    elem->setFlippedY(true);
+    QVERIFY2(isAtBasePos(label->scenePos()), "Label anchor moved when flipped vertically");
+
+    elem->setFlippedY(false);
+    elem->setRotation(90);
+    elem->setFlippedX(true);
+    QVERIFY2(isAtBasePos(label->scenePos()), "Label anchor moved when rotated and flipped together");
 }
