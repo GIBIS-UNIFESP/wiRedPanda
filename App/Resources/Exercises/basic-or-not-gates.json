@@ -15,8 +15,8 @@
     },
     {
       "key": "add-inputs",
-      "instruction": "Add two InputSwitch elements to the canvas",
-      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the OR gate.",
+      "instruction": "Add two Input Switch elements to the canvas",
+      "hint": "Click the I/O tab in the left panel, then drag two Input Switch elements onto the canvas and place them to the left of the OR gate.",
       "requiredElements": [
         { "type": "Or", "minCount": 1 },
         { "type": "InputSwitch", "minCount": 2 }
@@ -26,8 +26,8 @@
     },
     {
       "key": "connect-inputs",
-      "instruction": "Connect both input switches to the OR gate",
-      "hint": "Click and drag from an InputSwitch output port (right side) to one of the OR gate input ports (left side). Repeat for the second switch.",
+      "instruction": "Connect both Input Switches to the OR gate",
+      "hint": "Click and drag from an Input Switch output port (right side) to one of the OR gate input ports (left side). Repeat for the second switch.",
       "requiredElements": [
         { "type": "Or", "minCount": 1 },
         { "type": "InputSwitch", "minCount": 2 }

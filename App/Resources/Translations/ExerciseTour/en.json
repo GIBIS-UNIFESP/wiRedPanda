@@ -1,16 +1,16 @@
 {
   "basic-and-gate": {
     "add-inputs": {
-      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the AND gate.",
-      "instruction": "Add two InputSwitch elements to the canvas"
+      "hint": "Click the I/O tab in the left panel, then drag two Input Switch elements onto the canvas and place them to the left of the AND gate.",
+      "instruction": "Add two Input Switch elements to the canvas"
     },
     "add-output": {
       "hint": "Drag an LED from the I/O tab and place it to the right of the AND gate. Then connect the AND gate output port (right side) to the LED input port (left side).",
       "instruction": "Add an LED and connect it to the AND gate output"
     },
     "connect-inputs": {
-      "hint": "Click and drag from an InputSwitch output port (right side) to one of the AND gate input ports (left side). Repeat for the second switch.",
-      "instruction": "Connect both input switches to the AND gate"
+      "hint": "Click and drag from an Input Switch output port (right side) to one of the AND gate input ports (left side). Repeat for the second switch.",
+      "instruction": "Connect both Input Switches to the AND gate"
     },
     "description": "Learn to place logic gates, add inputs and outputs, and wire them together.",
     "place-and-gate": {
@@ -19,14 +19,14 @@
     },
     "title": "Building an AND Gate Circuit",
     "toggle-observe": {
-      "hint": "Click an InputSwitch to toggle it. The LED only lights up when BOTH switches are ON. That is because AND outputs 1 only when all inputs are 1.",
+      "hint": "Click an Input Switch to toggle it. The LED only lights up when BOTH switches are ON. That is because AND outputs 1 only when all inputs are 1.",
       "instruction": "Toggle the switches and observe the LED — this is AND logic!"
     }
   },
   "basic-or-not-gates": {
     "add-inputs": {
-      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the OR gate.",
-      "instruction": "Add two InputSwitch elements to the canvas"
+      "hint": "Click the I/O tab in the left panel, then drag two Input Switch elements onto the canvas and place them to the left of the OR gate.",
+      "instruction": "Add two Input Switch elements to the canvas"
     },
     "add-not-gate": {
       "hint": "Drag the wire between the OR gate and the LED to remove it.",
@@ -37,8 +37,8 @@
       "instruction": "Add an LED and connect it to the OR gate output"
     },
     "connect-inputs": {
-      "hint": "Click and drag from an InputSwitch output port (right side) to one of the OR gate input ports (left side). Repeat for the second switch.",
-      "instruction": "Connect both input switches to the OR gate"
+      "hint": "Click and drag from an Input Switch output port (right side) to one of the OR gate input ports (left side). Repeat for the second switch.",
+      "instruction": "Connect both Input Switches to the OR gate"
     },
     "description": "Learn to use the OR and NOT gates.",
     "place-or-gate": {
@@ -66,7 +66,7 @@
     },
     "description": "Build a minimal Clock–LED circuit and explore the waveform viewer: combinational mode and manual cell editing.",
     "open-waveform": {
-      "hint": "BeWavedDolphin shows your circuit signals as rows. The Clock row is the input, and the Led row is the output. Each column is one simulation time step.",
+      "hint": "BeWavedDolphin shows your circuit signals as rows. The Clock row is the input, and the LED row is the output. Each column is one simulation time step.",
       "instruction": "The waveform viewer is now open — take a look!"
     },
     "place-clock": {
@@ -74,31 +74,31 @@
       "instruction": "Place a Clock element on the canvas"
     },
     "place-led": {
-      "hint": "Still in the I/O tab, drag a Led element onto the canvas to the right of the Clock.",
+      "hint": "Still in the I/O tab, drag an LED element onto the canvas to the right of the Clock.",
       "instruction": "Place an LED on the canvas"
     },
     "title": "Clock and LED: Waveform Basics",
     "toggle-cell": {
-      "hint": "Double-click any cell in the Clock row to flip it between 0 and 1. Watch the Led row update instantly to reflect the new output.",
+      "hint": "Double-click any cell in the Clock row to flip it between 0 and 1. Watch the LED row update instantly to reflect the new output.",
       "instruction": "Toggle a Clock cell manually"
     }
   },
   "combinational-circuits-one": {
     "add-demux": {
-      "hint": "Your circuit should have two InputSwitches, two LEDs and one DEMUX circuit at this point",
-      "instruction": "Add a DEMUX circuit and connect the InputSwitches to its In and S0 ports. Then connect each of the DEMUX's outputs to a different LED"
+      "hint": "Your circuit should have two Input Switches, two LEDs and one DEMUX circuit at this point",
+      "instruction": "Add a DEMUX circuit and connect the Input Switches to its In and S0 ports. Then connect each of the DEMUX's outputs to a different LED"
     },
     "add-inputs": {
-      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the MUX circuit.",
-      "instruction": "Add three InputSwitch elements to the canvas"
+      "hint": "Click the I/O tab in the left panel, then drag two Input Switch elements onto the canvas and place them to the left of the MUX circuit.",
+      "instruction": "Add three Input Switch elements to the canvas"
     },
     "add-output": {
       "hint": "Drag an LED from the I/O tab and place it to the right of the MUX circuit. Then connect the MUX circuit output port (right side) to the LED input port (left side).",
       "instruction": "Add an LED and connect it to the MUX circuit output"
     },
     "connect-inputs": {
-      "hint": "Click and drag from an InputSwitch output port (right side) to one of the MUX gate input ports (left side). Repeat for the second switch. Then, connect the third input switch to the MUX selection port (bottom)",
-      "instruction": "Connect all input switches to the MUX circuit"
+      "hint": "Click and drag from an Input Switch output port (right side) to one of the MUX gate input ports (left side). Repeat for the second switch. Then, connect the third Input Switch to the MUX selection port (bottom)",
+      "instruction": "Connect all Input Switches to the MUX circuit"
     },
     "description": "Learn about the MUX and DEMUX circuits.",
     "explain-demux-select": {
@@ -114,23 +114,23 @@
       "instruction": "Place a MUX circuit on the canvas"
     },
     "prepare-demux": {
-      "hint": "Your circuit should have two InputSwitches and two LEDs at this point",
-      "instruction": "Delete the MUX circuit and one of the InputSwitches. Then add another LED"
+      "hint": "Your circuit should have two Input Switches and two LEDs at this point",
+      "instruction": "Delete the MUX circuit and one of the Input Switches. Then add another LED"
     },
     "title": "Combinational Circuits I: MUX and DEMUX"
   },
   "combinational-circuits-three": {
     "add-cin-and-gates": {
-      "hint": "Connect the outputs of the InputSwitches into the inputs of the gates.",
-      "instruction": "Add another InputSwitch to the canvas and give it the label Cin. Then add an XOR gate, an AND gate and an OR gate"
+      "hint": "Connect the outputs of the Input Switches into the inputs of the gates.",
+      "instruction": "Add another Input Switch to the canvas and give it the label Cin. Then add an XOR gate, an AND gate and an OR gate"
     },
     "add-half-adder-gates": {
       "hint": "Use the Gates tab to add the XOR and AND gates, then use the I/O tab to add two LEDs.",
       "instruction": "Add an XOR gate, an AND gate, and two LEDs to the canvas. Then connect each gate to a different LED"
     },
     "add-inputs": {
-      "hint": "Click the I/O tab in the left panel, then drag three InputSwitch elements onto the canvas. The third InputSwitch will be used later as the carry-in (Cin).",
-      "instruction": "Add two InputSwitch elements to the canvas"
+      "hint": "Click the I/O tab in the left panel, then drag three Input Switch elements onto the canvas. The third Input Switch will be used later as the carry-in (Cin).",
+      "instruction": "Add two Input Switch elements to the canvas"
     },
     "description": "Learn how to build an adder circuit.",
     "explain-full-adder": {
@@ -147,8 +147,8 @@
       "instruction": "Connect the old XOR gate and the Cin switch to the new XOR gate, then connect the new XOR gate to the Sum output. Also connect the old XOR gate and the Cin switch to the new AND gate. Finish by connecting both AND gates to the OR gate and the OR gate into Cout"
     },
     "wire-half-adder": {
-      "hint": "Connect the outputs of the InputSwitches into the inputs of the gates.",
-      "instruction": "Connect the two InputSwitches to the XOR gate and the AND gate. Each InputSwitch should connect to both gates. The XOR gate produces the Sum output, while the AND gate produces the Carry output"
+      "hint": "Connect the outputs of the Input Switches into the inputs of the gates.",
+      "instruction": "Connect the two Input Switches to the XOR gate and the AND gate. Each Input Switch should connect to both gates. The XOR gate produces the Sum output, while the AND gate produces the Carry output"
     }
   },
   "combinational-circuits-two": {
@@ -157,12 +157,12 @@
       "instruction": "Add four AND gates and four LEDs to the canvas, then connect each AND gate to one of the LEDs"
     },
     "add-inputs": {
-      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas.",
-      "instruction": "Add two InputSwitch elements to the canvas"
+      "hint": "Click the I/O tab in the left panel, then drag two Input Switch elements onto the canvas.",
+      "instruction": "Add two Input Switch elements to the canvas"
     },
     "add-not-gates": {
-      "hint": "Click the gates tab in the left panel, then drag two NOT gate elements onto the canvas and connect the InputSwitches into them.",
-      "instruction": "Add two NOT gates to the canvas and connect each InputSwitch into a separate NOT gate"
+      "hint": "Click the gates tab in the left panel, then drag two NOT gate elements onto the canvas and connect the Input Switches into them.",
+      "instruction": "Add two NOT gates to the canvas and connect each Input Switch into a separate NOT gate"
     },
     "description": "Learn how to build a 2-to-4 Decoder.",
     "explain-decoder": {
@@ -171,47 +171,47 @@
     },
     "title": "Combinational Circuits II: Decoder",
     "wire-decoder": {
-      "hint": "Each AND gate should receive one signal from each input. Use the original InputSwitch signal for a 1 and the corresponding NOT gate output for a 0..",
-      "instruction": "Connect the outputs of the NOT gates and the InputSwitches to the AND gates so each AND gate represents one input combination"
+      "hint": "Each AND gate should receive one signal from each input. Use the original Input Switch signal for a 1 and the corresponding NOT gate output for a 0..",
+      "instruction": "Connect the outputs of the NOT gates and the Input Switches to the AND gates so each AND gate represents one input combination"
     }
   },
   "sequential-circuits-one": {
     "add-d-latch": {
       "hint": "The D latch stores a single input value and avoids the invalid input combination of an SR latch.",
-      "instruction": "Remove the SR latch while keeping the InputSwitches and LEDs. Then add a D latch"
+      "instruction": "Remove the SR latch while keeping the Input Switches and LEDs. Then add a D latch"
     },
     "add-sr-latch": {
-      "hint": "Use the Memory tab to add an SR latch. Then use the I/O tab to add two InputSwitches and two LEDs.",
-      "instruction": "Add an SR latch, two InputSwitches, and two LEDs to the canvas"
+      "hint": "Use the Memory tab to add an SR latch. Then use the I/O tab to add two Input Switches and two LEDs.",
+      "instruction": "Add an SR latch, two Input Switches, and two LEDs to the canvas"
     },
     "description": "Learn how to use Latches.",
     "explain-d-latch": {
       "hint": "",
-      "instruction": "Toggle the InputSwitches and observe the D latch. When Enable is 1, the output follows the D input. When Enable is 0, the latch remembers its previous value"
+      "instruction": "Toggle the Input Switches and observe the D latch. When Enable is 1, the output follows the D input. When Enable is 0, the latch remembers its previous value"
     },
     "explain-sr-latch": {
       "hint": "",
-      "instruction": "Toggle the InputSwitches and observe how the SR latch stores its state. Setting the S input to 1 causes the Q output to become 1, while setting the R input to 1 resets Q to 0. When both inputs return to 0, the latch remembers its last state until it is set or reset again"
+      "instruction": "Toggle the Input Switches and observe how the SR latch stores its state. Setting the S input to 1 causes the Q output to become 1, while setting the R input to 1 resets Q to 0. When both inputs return to 0, the latch remembers its last state until it is set or reset again"
     },
     "title": "Sequential Circuits I: Latches",
     "wire-d-latch": {
       "hint": "The D input is the value to be stored. The Enable input determines when the latch updates its stored value.",
-      "instruction": "Connect one InputSwitch to the D input and the other to the Enable (E) input. Connect the Q and Q̅ outputs to the LEDs"
+      "instruction": "Connect one Input Switch to the D input and the other to the Enable (E) input. Connect the Q and Q̅ outputs to the LEDs"
     },
     "wire-sr-latch": {
-      "hint": "Connect one InputSwitch to the Set (S) input and the other to the Reset (R) input. Connect each output of the latch to a different LED.",
-      "instruction": "Connect the InputSwitches to the S and R inputs of the SR latch. Then connect the Q and Q̅ outputs to the LEDs"
+      "hint": "Connect one Input Switch to the Set (S) input and the other to the Reset (R) input. Connect each output of the latch to a different LED.",
+      "instruction": "Connect the Input Switches to the S and R inputs of the SR latch. Then connect the Q and Q̅ outputs to the LEDs"
     }
   },
   "sequential-circuits-three": {
     "add-flipflops": {
-      "hint": "Use the Memory tab to add the T flip-flops and a Clock. Then use the I/O tab to add three InputSwitches and three LEDs.",
-      "instruction": "Add three T flip-flops, three InputSwitches, a Clock, and three LEDs to the canvas"
+      "hint": "Use the Memory tab to add the T flip-flops and a Clock. Then use the I/O tab to add three Input Switches and three LEDs.",
+      "instruction": "Add three T flip-flops, three Input Switches, a Clock, and three LEDs to the canvas"
     },
     "description": "Learn how to build a counter circuit.",
     "explain-counter": {
       "hint": "",
-      "instruction": "Turn all three InputSwitches on and start the Clock. Observe the LEDs as the counter runs. The first LED changes state every clock pulse, the second changes every two pulses, and the third changes every four pulses, displaying a repeating 3-bit binary count from 000 to 111"
+      "instruction": "Turn all three Input Switches on and start the Clock. Observe the LEDs as the counter runs. The first LED changes state every clock pulse, the second changes every two pulses, and the third changes every four pulses, displaying a repeating 3-bit binary count from 000 to 111"
     },
     "title": "Sequential Circuits III: Counter",
     "wire-clock": {
@@ -227,52 +227,52 @@
       "instruction": "Connect the Q output of the first flip-flop to the Clk input of the second flip-flop, then connect the Q output of the second flip-flop to the Clk input of the third flip-flop. Each flip-flop is clocked by the output of the previous one, creating a ripple counter"
     },
     "wire-t-inputs": {
-      "hint": "Turn all three InputSwitches on. A T flip-flop toggles only when its T input is 1.",
-      "instruction": "Connect each InputSwitch to the T input of a different flip-flop"
+      "hint": "Turn all three Input Switches on. A T flip-flop toggles only when its T input is 1.",
+      "instruction": "Connect each Input Switch to the T input of a different flip-flop"
     }
   },
   "sequential-circuits-two": {
     "add-d-flipflop": {
-      "hint": "Use the Memory tab to add a D flip-flop and a Clock. Then use the I/O tab to add two InputSwitches and two LEDs.",
-      "instruction": "Add a D flip-flop, two InputSwitches, a Clock, and two LEDs to the canvas"
+      "hint": "Use the Memory tab to add a D flip-flop and a Clock. Then use the I/O tab to add two Input Switches and two LEDs.",
+      "instruction": "Add a D flip-flop, two Input Switches, a Clock, and two LEDs to the canvas"
     },
     "add-jk-flipflop": {
       "hint": "The JK flip-flop has J and K inputs instead of a D input. Leave the Clear and Preset inputs disconnected.",
-      "instruction": "Replace the D flip-flop with a JK flip-flop while keeping the Clock, InputSwitches, and LEDs"
+      "instruction": "Replace the D flip-flop with a JK flip-flop while keeping the Clock, Input Switches, and LEDs"
     },
     "add-t-flipflop": {
       "hint": "A T flip-flop only requires a single input in addition to the clock.",
-      "instruction": "Replace the JK flip-flop with a T flip-flop and remove one of the InputSwitches"
+      "instruction": "Replace the JK flip-flop with a T flip-flop and remove one of the Input Switches"
     },
     "description": "Learn about Flip-Flops.",
     "explain-clear-preset": {
       "hint": "",
-      "instruction": "Connect the second InputSwitch to either the Clear or Preset input and observe its effect. Unlike the D input, the Clear and Preset inputs act immediately without waiting for a clock edge. Clear forces Q to 0, while Preset forces Q to 1"
+      "instruction": "Connect the second Input Switch to either the Clear or Preset input and observe its effect. Unlike the D input, the Clear and Preset inputs act immediately without waiting for a clock edge. Clear forces Q to 0, while Preset forces Q to 1"
     },
     "explain-d-flipflop": {
       "hint": "",
-      "instruction": "Toggle the D InputSwitch and observe the D flip-flop. The value on the D input is copied to the Q output only on the active clock edge. Between clock edges, the output remains unchanged"
+      "instruction": "Toggle the D Input Switch and observe the D flip-flop. The value on the D input is copied to the Q output only on the active clock edge. Between clock edges, the output remains unchanged"
     },
     "explain-jk-flipflop": {
       "hint": "",
-      "instruction": "Toggle the InputSwitches and observe the JK flip-flop. When J = K = 0, the output holds its current state. When J = 1 and K = 0, the output is set. When J = 0 and K = 1, the output is reset. When J = K = 1, the output toggles on every active clock edge"
+      "instruction": "Toggle the Input Switches and observe the JK flip-flop. When J = K = 0, the output holds its current state. When J = 1 and K = 0, the output is set. When J = 0 and K = 1, the output is reset. When J = K = 1, the output toggles on every active clock edge"
     },
     "explain-t-flipflop": {
       "hint": "",
-      "instruction": "Toggle the InputSwitch and observe the T flip-flop. When T = 0, the output keeps its current state. When T = 1, the output toggles on every active clock edge. T flip-flops are commonly used to build binary counters and frequency dividers"
+      "instruction": "Toggle the Input Switch and observe the T flip-flop. When T = 0, the output keeps its current state. When T = 1, the output toggles on every active clock edge. T flip-flops are commonly used to build binary counters and frequency dividers"
     },
     "title": "Sequential Circuits II: Flip-Flops",
     "wire-d-flipflop": {
       "hint": "Leave the Clear and Preset inputs disconnected for now.",
-      "instruction": "Connect one InputSwitch to the D input, the Clock to the Clk input, and the Q and Q̅ outputs to the LEDs. The D input provides the value to be stored, while the Clock determines when the value is stored"
+      "instruction": "Connect one Input Switch to the D input, the Clock to the Clk input, and the Q and Q̅ outputs to the LEDs. The D input provides the value to be stored, while the Clock determines when the value is stored"
     },
     "wire-jk-flipflop": {
       "hint": "The JK flip-flop changes its output only on the active clock edge.",
-      "instruction": "Connect the InputSwitches to the J and K inputs, the Clock to the Clk input, and the Q and Q̅ outputs to the LEDs"
+      "instruction": "Connect the Input Switches to the J and K inputs, the Clock to the Clk input, and the Q and Q̅ outputs to the LEDs"
     },
     "wire-t-flipflop": {
       "hint": "Leave the Clear and Preset inputs disconnected.",
-      "instruction": "Connect the remaining InputSwitch to the T input, the Clock to the Clk input, and the Q and Q̅ outputs to the LEDs"
+      "instruction": "Connect the remaining Input Switch to the T input, the Clock to the Clk input, and the Q and Q̅ outputs to the LEDs"
     }
   },
   "ui-overview": {

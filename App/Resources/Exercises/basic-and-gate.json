@@ -15,8 +15,8 @@
     },
     {
       "key": "add-inputs",
-      "instruction": "Add two InputSwitch elements to the canvas",
-      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas and place them to the left of the AND gate.",
+      "instruction": "Add two Input Switch elements to the canvas",
+      "hint": "Click the I/O tab in the left panel, then drag two Input Switch elements onto the canvas and place them to the left of the AND gate.",
       "requiredElements": [
         { "type": "And", "minCount": 1 },
         { "type": "InputSwitch", "minCount": 2 }
@@ -26,8 +26,8 @@
     },
     {
       "key": "connect-inputs",
-      "instruction": "Connect both input switches to the AND gate",
-      "hint": "Click and drag from an InputSwitch output port (right side) to one of the AND gate input ports (left side). Repeat for the second switch.",
+      "instruction": "Connect both Input Switches to the AND gate",
+      "hint": "Click and drag from an Input Switch output port (right side) to one of the AND gate input ports (left side). Repeat for the second switch.",
       "requiredElements": [
         { "type": "And", "minCount": 1 },
         { "type": "InputSwitch", "minCount": 2 }
@@ -54,7 +54,7 @@
     {
       "key": "toggle-observe",
       "instruction": "Toggle the switches and observe the LED — this is AND logic!",
-      "hint": "Click an InputSwitch to toggle it. The LED only lights up when BOTH switches are ON. That is because AND outputs 1 only when all inputs are 1.",
+      "hint": "Click an Input Switch to toggle it. The LED only lights up when BOTH switches are ON. That is because AND outputs 1 only when all inputs are 1.",
       "requiredElements": [],
       "requiredConnections": []
     }
