@@ -25,6 +25,7 @@ private slots:
     void testTypedDolphinGeometry();
     void testTypedFastMode();
     void testTypedLabelsUnderIcons();
+    void testTypedUpdateChecksDisabled();
     void testTypedLanguage();
     void testTypedTheme();
     void testTypedRecentFiles();

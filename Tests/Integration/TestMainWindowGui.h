@@ -49,6 +49,7 @@ private slots:
     void testFastModeToggle();
     void testFullscreenToggle();
     void testLabelsUnderIconsToggle();
+    void testUpdateChecksToggle();
 
     // --- Element manipulation via keyboard ---
 

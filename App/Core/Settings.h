@@ -76,6 +76,9 @@ public:
     static void setUpdateCheckLastDate(const QString &date);
     static QString updateCheckSkippedVersion();
     static void setUpdateCheckSkippedVersion(const QString &version);
+    /// Global opt-out of update checks (for offline/managed installs); default false (enabled).
+    static bool updateChecksDisabled();
+    static void setUpdateChecksDisabled(bool disabled);
 
     // Exercise progress
     static QStringList completedExercises();

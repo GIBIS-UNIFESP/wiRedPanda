@@ -89,6 +89,7 @@ public:
     QAction *actionWires = nullptr;
     QAction *actionLabelsUnderIcons = nullptr;
     QAction *actionICPreview = nullptr;
+    QAction *actionCheckForUpdates = nullptr;
     QAction *actionShowMinimap = nullptr;
     QAction *actionMinimapTopLeft = nullptr;
     QAction *actionMinimapTopRight = nullptr;

@@ -229,6 +229,7 @@ void MainWindow::setupTheme()
 
     // Restore IC hover-preview visibility from previous session.
     m_ui->actionICPreview->setChecked(!Settings::icPreviewDisabled());
+    m_ui->actionCheckForUpdates->setChecked(!Settings::updateChecksDisabled());
 }
 
 void MainWindow::setupRecentFiles()
@@ -367,6 +368,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionGates,                 &QAction::triggered,       this,                &MainWindow::on_actionGates_triggered);
     connect(m_ui->actionLabelsUnderIcons,      &QAction::triggered,       this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
     connect(m_ui->actionICPreview,             &QAction::triggered,       this,                &MainWindow::on_actionICPreview_triggered);
+    connect(m_ui->actionCheckForUpdates,       &QAction::triggered,       this,                &MainWindow::on_actionCheckForUpdates_triggered);
     connect(m_ui->actionShowMinimap,           &QAction::triggered,       this,                &MainWindow::on_actionShowMinimap_triggered);
     connect(m_ui->actionMinimapTopLeft,        &QAction::triggered,       this,                &MainWindow::on_actionMinimapTopLeft_triggered);
     connect(m_ui->actionMinimapTopRight,       &QAction::triggered,       this,                &MainWindow::on_actionMinimapTopRight_triggered);
@@ -1242,6 +1244,14 @@ void MainWindow::on_actionICPreview_triggered(const bool checked)
     Application::guardedSlot(this, [checked] {
         sentryBreadcrumb("ui", QStringLiteral("IC preview: %1").arg(checked));
         Settings::setIcPreviewDisabled(!checked);
+    });
+}
+
+void MainWindow::on_actionCheckForUpdates_triggered(const bool checked)
+{
+    Application::guardedSlot(this, [checked] {
+        sentryBreadcrumb("ui", QStringLiteral("Auto update checks: %1").arg(checked));
+        Settings::setUpdateChecksDisabled(!checked);
     });
 }
 
