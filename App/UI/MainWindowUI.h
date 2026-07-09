@@ -81,6 +81,7 @@ public:
     QAction *actionZoomIn = nullptr;
     QAction *actionZoomOut = nullptr;
     QAction *actionResetZoom = nullptr;
+    QAction *actionZoomToFit = nullptr;
     QAction *actionFullscreen = nullptr;
     QAction *actionFastMode = nullptr;
     QAction *actionGates = nullptr;

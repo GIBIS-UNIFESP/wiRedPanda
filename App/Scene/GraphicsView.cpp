@@ -3,8 +3,11 @@
 
 #include "App/Scene/GraphicsView.h"
 
+#include <cmath>
+
 #include <QApplication>
 #include <QDebug>
+#include <QGraphicsItem>
 #include <QKeyEvent>
 #include <QScrollBar>
 
@@ -187,5 +190,47 @@ void GraphicsView::resetZoom()
     resetTransform();
     m_zoomLevel = 0;
     sentryBreadcrumb("ui", QStringLiteral("Zoom reset"));
+    emit zoomChanged();
+}
+
+void GraphicsView::zoomToFit()
+{
+    if (!scene()) {
+        return;
+    }
+
+    // Fit the current selection if there is one (zoom-to-selection); otherwise the whole circuit.
+    QRectF target;
+    const auto selected = scene()->selectedItems();
+    if (!selected.isEmpty()) {
+        for (auto *item : selected) {
+            target |= item->sceneBoundingRect();
+        }
+    } else {
+        target = scene()->itemsBoundingRect();
+    }
+
+    if (!target.isValid() || target.isEmpty()) {
+        return;
+    }
+
+    // A little breathing room around the content.
+    target.adjust(-16.0, -16.0, 16.0, 16.0);
+
+    // fitInView gives the ideal continuous scale; snap it DOWN to the nearest discrete zoom step
+    // so the whole target still fits (floor never overshoots the viewport) and the level ladder
+    // stays consistent with zoomIn()/zoomOut()/canZoom*(). The step is clamped to the same range
+    // those methods enforce.
+    fitInView(target, Qt::KeepAspectRatio);
+    const double fitScale = transform().m11();
+    const int level = qBound(-9, static_cast<int>(std::floor(std::log(fitScale) / std::log(1.25))), 3);
+
+    resetTransform();
+    const double scaleFactor = std::pow(1.25, level);
+    scale(scaleFactor, scaleFactor);
+    m_zoomLevel = level;
+    centerOn(target.center());
+
+    sentryBreadcrumb("ui", QStringLiteral("Zoom to fit: level %1").arg(m_zoomLevel));
     emit zoomChanged();
 }

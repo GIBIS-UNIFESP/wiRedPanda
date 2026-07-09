@@ -249,6 +249,7 @@ private:
     void on_actionPlay_toggled(const bool checked);
     void on_actionReportTranslationError_triggered();
     void on_actionResetZoom_triggered() const;
+    void on_actionZoomToFit_triggered() const;
     void on_actionRestart_triggered();
     void on_actionRotateLeft_triggered();
     void on_actionRotateRight_triggered();

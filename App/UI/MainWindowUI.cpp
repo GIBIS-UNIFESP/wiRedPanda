@@ -96,6 +96,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionResetZoom = new QAction(MainWindow);
     actionResetZoom->setObjectName("actionResetZoom");
     actionResetZoom->setIcon(QIcon(":/Interface/Toolbar/zoomReset.svg"));
+    actionZoomToFit = new QAction(MainWindow);
+    actionZoomToFit->setObjectName("actionZoomToFit");
+    actionZoomToFit->setIcon(QIcon(":/Interface/Dolphin/zoomRange.svg"));
     actionExportToPdf = new QAction(MainWindow);
     actionExportToPdf->setObjectName("actionExportToPdf");
     actionExportToPdf->setIcon(QIcon(":/Interface/Toolbar/pdf.svg"));
@@ -637,6 +640,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     mainToolBar->addAction(actionZoomIn);
     mainToolBar->addAction(actionZoomOut);
     mainToolBar->addAction(actionResetZoom);
+    mainToolBar->addAction(actionZoomToFit);
     mainToolBar->addSeparator();
     mainToolBar->addAction(actionPlay);
     mainToolBar->addAction(actionRestart);
@@ -693,6 +697,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addAction(actionZoomIn);
     menuView->addAction(actionZoomOut);
     menuView->addAction(actionResetZoom);
+    menuView->addAction(actionZoomToFit);
     menuView->addSeparator();
     menuView->addAction(actionWires);
     menuView->addAction(actionGates);
@@ -775,6 +780,11 @@ void MainWindowUi::retranslateUi()
     actionExportToSystemVerilog->setShortcut(QStringLiteral("Ctrl+Alt+O"));
     actionResetZoom->setText(QCoreApplication::translate("MainWindow", "&Reset Zoom"));
     actionResetZoom->setShortcut(QStringLiteral("Ctrl+0"));
+    actionZoomToFit->setText(QCoreApplication::translate("MainWindow", "Zoom to &Fit"));
+    actionZoomToFit->setToolTip(QCoreApplication::translate("MainWindow", "Zoom to fit the whole circuit (or the selection)"));
+    // Modifier-based to match every other action shortcut: a bare letter would preempt
+    // user-assigned InputSwitch/InputButton trigger keys handled in Scene::keyPressEvent.
+    actionZoomToFit->setShortcut(QStringLiteral("Ctrl+Shift+F"));
     actionExportToPdf->setText(QCoreApplication::translate("MainWindow", "Export to &PDF"));
     actionExportToPdf->setShortcut(QStringLiteral("Ctrl+Shift+P"));
     actionPlay->setText(QCoreApplication::translate("MainWindow", "&Play/Pause"));

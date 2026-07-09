@@ -382,6 +382,7 @@ void MainWindow::setupConnections()
     connect(m_ui->elementEditor, &ElementEditor::embedSubcircuitRequested, m_icController, &ICController::embedSelectedIC);
     connect(m_ui->elementEditor, &ElementEditor::extractToFileRequested, m_icController, &ICController::extractSelectedIC);
     connect(m_ui->actionResetZoom,             &QAction::triggered,       this,                &MainWindow::on_actionResetZoom_triggered);
+    connect(m_ui->actionZoomToFit,             &QAction::triggered,       this,                &MainWindow::on_actionZoomToFit_triggered);
     connect(m_ui->actionRestart,               &QAction::triggered,       this,                &MainWindow::on_actionRestart_triggered);
     connect(m_ui->actionRotateLeft,            &QAction::triggered,       this,                &MainWindow::on_actionRotateLeft_triggered);
     connect(m_ui->actionRotateRight,           &QAction::triggered,       this,                &MainWindow::on_actionRotateRight_triggered);
@@ -846,6 +847,17 @@ void MainWindow::on_actionResetZoom_triggered() const
         }
 
         currentTab()->view()->resetZoom();
+    });
+}
+
+void MainWindow::on_actionZoomToFit_triggered() const
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab()) {
+            return;
+        }
+
+        currentTab()->view()->zoomToFit();
     });
 }
 

@@ -39,6 +39,11 @@ public:
     /// Resets the view scale to 1:1.
     void resetZoom();
 
+    /// Scales and centres the view so the whole circuit — or the current selection, if any —
+    /// fits, snapping to the nearest discrete zoom step that still fits so the level ladder
+    /// (canZoomIn()/zoomIn()/zoomOut()) stays consistent.
+    void zoomToFit();
+
     /// Increases the view magnification by one zoom step.
     void zoomIn();
 
