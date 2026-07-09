@@ -1056,8 +1056,23 @@ void TestMainWindowGui::testAboutQtDialog()
 void TestMainWindowGui::testShortcutsDialog()
 {
     std::unique_ptr<MainWindow> window(createMW());
-    autoCloseNextMessageBox();
 
+    // The help body is generated from the live actions, so it must cover the real key
+    // bindings (not the old hand-maintained subset) and pick up newly added actions.
+    const QString html = window->shortcutsHelpHtml();
+    QVERIFY(html.contains("Copy") && html.contains("Ctrl+C"));
+    QVERIFY(html.contains("Paste") && html.contains("Ctrl+V"));
+    QVERIFY(html.contains("Ctrl+A")); // Select All — was missing from the old list
+    QVERIFY(html.contains("Undo") && html.contains("Ctrl+Z")); // injected per-scene action
+    QVERIFY(html.contains("Redo"));
+    QVERIFY(html.contains("Ctrl+Shift+F")); // Zoom to Fit — appears automatically
+    QVERIFY(html.contains("Morph")); // curated property-navigation section
+    QVERIFY(html.contains("arrow keys")); // curated tips section
+    // The old hand-written "beWaveDolphin" typo is gone — the label now comes from the action.
+    QVERIFY(!html.contains("beWaveDolphin"));
+
+    // Triggering the action still opens (and closes) the dialog without crashing.
+    autoCloseNextMessageBox();
     auto *action = window->findChild<QAction *>("actionShortcutsAndTips");
     QVERIFY2(action, "actionShortcutsAndTips not found");
     action->trigger();

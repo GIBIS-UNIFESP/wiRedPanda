@@ -117,6 +117,14 @@ public:
     /// \reimp MainWindowHost — re-evaluates the Add-IC button enabled state.
     void refreshICButtonsEnabled() override;
 
+    // --- Help ---
+
+    /// Rich-text body of the "Shortcuts and Tips" dialog, generated from this window's
+    /// actions so the list can never drift from the real key bindings and picks up any
+    /// action added later. Public so GUI tests can assert its completeness without
+    /// opening a modal dialog.
+    QString shortcutsHelpHtml() const;
+
     // --- Export ---
 
     /**
