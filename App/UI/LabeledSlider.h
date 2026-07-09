@@ -24,6 +24,14 @@ public:
     /// Constructs the labeled slider with horizontal orientation.
     explicit LabeledSlider(QWidget *parent = nullptr);
 
+public:
+    // --- Sizing ---
+
+    /// \reimp Reserves real space below the track for the tick-fraction labels.
+    QSize sizeHint() const override;
+    /// \reimp Layouts may prefer this over sizeHint(); keep both consistent.
+    QSize minimumSizeHint() const override;
+
 protected:
     // --- Painting ---
 

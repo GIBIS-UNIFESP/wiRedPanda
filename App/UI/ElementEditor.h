@@ -8,6 +8,7 @@
 #pragma once
 
 #include <memory>
+#include <utility>
 
 #include <QDialog>
 #include <QTableWidget>
@@ -109,6 +110,8 @@ private:
     void applyProperty(GraphicElement *elm, PropertyDescriptor::Type type);
     /// Restores the default appearance on the selected elements.
     void defaultAppearance();
+    /// Rebuilds the per-state appearance icon tile grid for the given \a states.
+    void rebuildAppearanceStateTiles(const QList<std::pair<int, QString>> &states);
     /// Slot: the user changed the desired input count via the input spin box.
     void inputIndexChanged(const int index);
     /// Slot: the user toggled the input-count lock check box.
