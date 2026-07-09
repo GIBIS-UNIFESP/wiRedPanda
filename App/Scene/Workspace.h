@@ -114,6 +114,11 @@ public:
     const QString &untitledTitle() const { return m_untitledTitle; }
     void setUntitledTitle(const QString &title) { m_untitledTitle = title; }
 
+    /// True if this tab was restored from an autosave on launch. Surfaced as a "(recovered)"
+    /// title marker until the user saves it to a real file, so recovered work is obvious.
+    bool isRecovered() const { return m_isRecovered; }
+    void setRecovered(bool recovered) { m_isRecovered = recovered; }
+
     /// Removes all IC instances with the given blob name.
     void removeEmbeddedIC(const QString &blobName);
 
@@ -196,6 +201,7 @@ private:
     int m_parentICElementId = -1;
     QString m_inlineBlobName;
     QString m_untitledTitle;
+    bool m_isRecovered = false;
 
     // Exercise overlay — non-owning pointer
     ExerciseOverlay *m_exerciseOverlay = nullptr;

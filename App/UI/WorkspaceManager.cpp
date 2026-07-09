@@ -68,8 +68,13 @@ QString WorkspaceManager::displayName(const WorkSpace *ws, const QFileInfo &file
         return fileInfo.fileName();
     }
     // Unsaved tab: the numbered placeholder assigned at creation (fall back for any
-    // workspace not created through createNewTab).
-    return ws->untitledTitle().isEmpty() ? tr("New Project") : ws->untitledTitle();
+    // workspace not created through createNewTab), plus a marker if it was recovered from
+    // an autosave so the user can tell it apart from a fresh, empty tab.
+    QString name = ws->untitledTitle().isEmpty() ? tr("New Project") : ws->untitledTitle();
+    if (ws->isRecovered()) {
+        name += tr(" (recovered)");
+    }
+    return name;
 }
 
 QString WorkspaceManager::currentTabName() const
@@ -594,6 +599,8 @@ void WorkspaceManager::loadAutosaveFiles()
         // Mark the newly loaded tab so it knows it came from an autosave,
         // causing it to prompt for a real save path on the next Ctrl+S.
         m_currentTab->setAutosaveFile();
+        // Flag it as recovered so its title carries a "(recovered)" marker until saved.
+        m_currentTab->setRecovered(true);
 
         ++it;
     }
