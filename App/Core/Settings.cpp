@@ -260,6 +260,16 @@ void Settings::setTourProgress(const QString &tourId, int step)
     setValue(QStringLiteral("tours/progress/") + tourId, step);
 }
 
+bool Settings::welcomeTourShown()
+{
+    return value("tours/welcomeShown").toBool();
+}
+
+void Settings::setWelcomeTourShown(bool shown)
+{
+    setValue("tours/welcomeShown", shown);
+}
+
 // Minimap preferences
 bool Settings::minimapVisible()
 {

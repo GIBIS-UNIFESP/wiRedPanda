@@ -470,6 +470,13 @@ void MainWindow::show()
 
     auto *updateController = new UpdateController(this);
     updateController->checkForUpdates();
+
+    // First-ever launch: auto-start the built-in UI walkthrough. Gated on interactiveMode so
+    // it doesn't fire in the CLI/MCP-automation paths that also construct a MainWindow.
+    if (Application::interactiveMode && !Settings::welcomeTourShown()) {
+        Settings::setWelcomeTourShown(true);
+        startTour(QStringLiteral(":/Tours/ui-overview.json"));
+    }
 }
 
 void MainWindow::aboutThisVersion()
