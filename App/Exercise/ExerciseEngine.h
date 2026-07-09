@@ -7,6 +7,7 @@
 #include <QPointer>
 #include <QVector>
 
+#include "App/Core/StepEngineCore.h"
 #include "App/Exercise/ExerciseStep.h"
 
 class Scene;
@@ -22,16 +23,16 @@ public:
     /// Returns false and leaves the engine inactive if the resource is missing or malformed.
     bool loadFromResource(const QString &resourcePath);
 
-    QString exerciseId()    const { return m_id; }
-    QString exerciseTitle() const { return m_title; }
+    QString exerciseId()    const { return m_core.id(); }
+    QString exerciseTitle() const { return m_core.title(); }
 
     /// Binds the engine to \a scene. Disconnects the previous scene if any.
     /// Pass nullptr to detach without binding a new scene.
     void setScene(Scene *scene);
 
-    int  currentStep() const { return m_currentStep; }
-    int  totalSteps()  const { return static_cast<int>(m_steps.size()); }
-    bool isActive()    const { return m_active; }
+    int  currentStep() const { return m_core.currentStep(); }
+    int  totalSteps()  const { return m_core.totalSteps(); }
+    bool isActive()    const { return m_core.isActive(); }
 
     /// Returns the data for the current step. Caller must check isActive() first.
     const ExerciseStep &currentStepData() const;
@@ -70,11 +71,10 @@ private:
     void emitCurrentStep();
     void markCompleted();
 
-    QString               m_id;
-    QString               m_title;
-    QString               m_resourcePath;
-    QVector<ExerciseStep> m_steps;
-    int                   m_currentStep = 0;
-    bool                  m_active = false;
-    QPointer<Scene>       m_scene;
+    /// Shared "advance the core, then react" tail for advanceStep() and onCircuitChanged(),
+    /// which differ only in their guard.
+    void performAdvance();
+
+    StepEngineCore<ExerciseStep> m_core;
+    QPointer<Scene> m_scene;
 };

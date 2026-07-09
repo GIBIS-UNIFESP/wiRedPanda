@@ -70,8 +70,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseBrowserDialog.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseBrowserDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
@@ -92,13 +90,13 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourBrowserDialog.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourBrowserDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ContentBrowserDialog.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ContentBrowserDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
@@ -168,6 +166,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SimulationHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StatusOps.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/StepEngineCore.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
@@ -220,8 +219,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseBrowserDialog.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseBrowserDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseStep.h
@@ -247,14 +244,14 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourBrowserDialog.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourBrowserDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourStep.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ContentBrowserDialog.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ContentBrowserDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
