@@ -15,7 +15,9 @@
 #include <QScrollBar>
 #include <QShortcut>
 #include <QSignalSpy>
+#include <QStatusBar>
 #include <QTabBar>
+#include <QTemporaryDir>
 #include <QSlider>
 #include <QTabWidget>
 #include <QTest>
@@ -1705,6 +1707,41 @@ void TestMainWindowGui::testMakeSelfContainedLabelsPreserved()
     QVERIFY(labels.contains("LabelB"));
 
     QFile::remove(savePath);
+}
+
+void TestMainWindowGui::testMakeSelfContainedPartialDoesNotClaimSuccess()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+
+    // A valid file-backed IC loaded from a throwaway copy of the fixture...
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString icPath = tempDir.path() + "/temp_ic.panda";
+    QVERIFY(QFile::copy(m_fixtureDir + "/test_circuit.panda", icPath));
+
+    scene->setContextDir(tempDir.path());
+    auto *ic = new IC();
+    ic->loadFile("temp_ic.panda", tempDir.path());
+    ic->setPos(100, 100);
+    scene->addItem(ic);
+    QVERIFY(!ic->isEmbedded());
+
+    // ...whose source file then disappears, so the embed loop hits a read error and breaks.
+    QVERIFY(QFile::remove(icPath));
+
+    autoCloseNextMessageBox(); // the "Could not read IC file" warning
+    auto *action = window->findChild<QAction *>("actionMakeSelfContained");
+    QVERIFY(action);
+    action->trigger();
+    QCoreApplication::processEvents();
+
+    // The IC stayed file-based, and no "self-contained" success claim was shown.
+    QVERIFY2(!ic->isEmbedded(), "IC should not be embedded after a read error");
+    auto *statusBar = window->findChild<QStatusBar *>();
+    QVERIFY(statusBar);
+    QVERIFY2(!statusBar->currentMessage().contains(QStringLiteral("self-contained")),
+             qPrintable(statusBar->currentMessage()));
 }
 
 void TestMainWindowGui::testEmbedExtractViaContextMenuCallback()
