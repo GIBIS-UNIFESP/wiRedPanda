@@ -62,10 +62,10 @@ void ICController::addICFromFile()
             return;
         }
 
-        // The IC list is directory-relative.  If the project hasn't been saved yet
-        // we don't have a directory to copy into, so require a save first.
-        if (!tab->fileInfo().isReadable()) {
-            throw PANDACEPTION("Save file first.");
+        // The IC list is directory-relative. If the project hasn't been saved yet there's no
+        // directory to copy into, so offer to save now instead of dead-ending on an error.
+        if (!ensureProjectSaved(tab->scene())) {
+            return;
         }
 
         const QString selectedFile = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Open File"), QString(), tr("Panda") + " (*.panda)");
@@ -180,6 +180,23 @@ QString ICController::resolveUniqueBlobName(const QString &initialName, Scene *s
     return blobName;
 }
 
+bool ICController::ensureProjectSaved(Scene *scene)
+{
+    if (scene && !scene->contextDir().isEmpty()) {
+        return true; // already backed by a real directory
+    }
+
+    const auto choice = QMessageBox::question(m_host.widget(), tr("Save required"),
+        tr("This action needs the project saved to a file first, so IC paths can be resolved.\n\nSave it now?"),
+        QMessageBox::Save | QMessageBox::Cancel, QMessageBox::Save);
+    if (choice != QMessageBox::Save) {
+        return false;
+    }
+
+    m_host.requestSave(); // modal; may prompt for a path and returns once done or cancelled
+    return scene && !scene->contextDir().isEmpty();
+}
+
 void ICController::embedSelectedIC()
 {
     sentryBreadcrumb("ic", QStringLiteral("Embed IC"));
@@ -190,11 +207,10 @@ void ICController::embedSelectedIC()
 
     auto *scene = m_host.currentTab()->scene();
 
-    const QString contextDir = scene->contextDir();
-    if (contextDir.isEmpty()) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Please save the project first so ICs can be resolved."));
+    if (!ensureProjectSaved(scene)) {
         return;
     }
+    const QString contextDir = scene->contextDir();
 
     QString blobName = resolveUniqueBlobName(QFileInfo(firstIC->file()).baseName(), scene);
     if (blobName.isEmpty()) {
@@ -224,11 +240,10 @@ void ICController::extractSelectedIC()
 
     auto *scene = m_host.currentTab()->scene();
     const QString blobName = firstIC->blobName();
-    const QString contextDir = scene->contextDir();
-    if (contextDir.isEmpty()) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Please save the project first."));
+    if (!ensureProjectSaved(scene)) {
         return;
     }
+    const QString contextDir = scene->contextDir();
 
     const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
     QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
@@ -255,11 +270,10 @@ void ICController::embedICByFile(const QString &fileName)
     }
 
     auto *scene = tab->scene();
-    const QString contextDir = scene->contextDir();
-    if (contextDir.isEmpty()) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Please save the project first so ICs can be resolved."));
+    if (!ensureProjectSaved(scene)) {
         return;
     }
+    const QString contextDir = scene->contextDir();
 
     const QString absolutePath = QDir(contextDir).absoluteFilePath(fileName);
     QFile file(absolutePath);
@@ -293,11 +307,10 @@ void ICController::extractICByBlobName(const QString &blobName)
     }
 
     auto *scene = tab->scene();
-    const QString contextDir = scene->contextDir();
-    if (contextDir.isEmpty()) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Please save the project first."));
+    if (!ensureProjectSaved(scene)) {
         return;
     }
+    const QString contextDir = scene->contextDir();
 
     // Find any embedded IC with this blobName to get the blob data
     auto *reg = scene->icRegistry();
@@ -331,11 +344,10 @@ void ICController::makeSelfContained()
     }
 
     auto *scene = tab->scene();
-    const QString contextDir = scene->contextDir();
-    if (contextDir.isEmpty()) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Please save the project first."));
+    if (!ensureProjectSaved(scene)) {
         return;
     }
+    const QString contextDir = scene->contextDir();
 
     // Collect unique file paths from all file-backed ICs
     QStringList uniqueFiles;

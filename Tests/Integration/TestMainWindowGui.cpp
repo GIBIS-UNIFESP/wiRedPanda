@@ -1785,6 +1785,38 @@ void TestMainWindowGui::testMakeSelfContainedPartialDoesNotClaimSuccess()
              qPrintable(statusBar->currentMessage()));
 }
 
+void TestMainWindowGui::testMakeSelfContainedPromptsToSaveWhenUnsaved()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+
+    // Fresh, unsaved project.
+    QVERIFY(scene->contextDir().isEmpty());
+
+    auto *ic = new IC();
+    ic->loadFile("test_circuit.panda", m_fixtureDir);
+    ic->setPos(100, 100);
+    scene->addItem(ic);
+
+    // Triggering an IC operation on an unsaved project now offers an inline "Save now?"
+    // prompt instead of a dead-end error. Answering Save (with a stubbed path) saves and
+    // lets the operation proceed rather than aborting.
+    ScopedFileDialogStub guard;
+    guard.stub.saveResult = {m_fixtureDir + "/save_prompt_test.panda", "Panda files (*.panda)"};
+    clickNextMessageBoxButton(QStringLiteral("Save"));
+
+    auto *action = window->findChild<QAction *>("actionMakeSelfContained");
+    QVERIFY(action);
+    action->trigger();
+    QCoreApplication::processEvents();
+
+    // The save happened and the operation went through (IC embedded).
+    QVERIFY2(!scene->contextDir().isEmpty(), "the Save-now prompt should have saved the project");
+    QVERIFY2(ic->isEmbedded(), "make-self-contained should proceed after saving");
+
+    QFile::remove(m_fixtureDir + "/save_prompt_test.panda");
+}
+
 void TestMainWindowGui::testEmbedExtractViaContextMenuCallback()
 {
     std::unique_ptr<MainWindow> window(createMW());
