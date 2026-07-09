@@ -241,6 +241,13 @@ void ElementEditor::updateElementAppearance()
         if (needsMacro) {
             m_scene->undoStack()->endMacro();
         }
+
+        // The tile icons were built from the pre-change appearance; refresh the edited tile in
+        // place so it shows the new image immediately. Without this it keeps the old preview
+        // until the element is reselected (which rebuilds the whole grid).
+        if (auto *checked = qobject_cast<QToolButton *>(m_ui->buttonGroupAppearanceStates->checkedButton())) {
+            checked->setIcon(QIcon(m_elements[0]->appearancePreviewPixmap(appearanceIndex, checked->iconSize())));
+        }
         return;
     }
 
