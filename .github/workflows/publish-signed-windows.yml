@@ -1,0 +1,88 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Sign Windows release artifacts (SignPath)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_SIGNED_WINDOWS_ENABLED=true, applying
+# for the free SignPath Foundation OSS plan
+# (https://signpath.io/solutions/open-source-community), and once approved, setting:
+#   - repository variables: SIGNPATH_ORGANIZATION_ID, SIGNPATH_PROJECT_SLUG,
+#     SIGNPATH_SIGNING_POLICY_SLUG, SIGNPATH_ZIP_ARTIFACT_CONFIG_SLUG,
+#     SIGNPATH_MSI_ARTIFACT_CONFIG_SLUG (the zip and msi need separate SignPath
+#     "artifact configurations" — one signs wiredpanda.exe inside the zip, the
+#     other signs the .msi package itself)
+#   - secret SIGNPATH_API_TOKEN
+#
+# SignPath signs artifacts that are already built, not source mid-build: this
+# downloads each already-published (unsigned) release asset, uploads it as a
+# GitHub Actions artifact (SignPath's action reads from GH artifact storage, not a
+# raw file path), submits it for signing, and re-uploads the signed result over
+# the original release asset.
+
+jobs:
+  sign:
+    if: vars.PUBLISH_SIGNED_WINDOWS_ENABLED == 'true'
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, arm64]
+        kind:
+          - { ext: zip, configSlugVar: SIGNPATH_ZIP_ARTIFACT_CONFIG_SLUG }
+          - { ext: msi, configSlugVar: SIGNPATH_MSI_ARTIFACT_CONFIG_SLUG }
+    steps:
+      - name: Extract version
+        run: |
+          $version = "${env:GITHUB_REF}" -replace '^refs/tags/',''
+          "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Download release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ("${{ matrix.kind.ext }}" -eq "zip") {
+            $name = "wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt6.9.3-Portable.zip"
+          } else {
+            $name = "wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt6.9.3.msi"
+          }
+          "ASSET_NAME=$name" >> $env:GITHUB_ENV
+          gh release download "$env:VERSION" --repo "$env:GITHUB_REPOSITORY" --pattern $name
+
+      - name: Upload as GitHub Actions artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-${{ matrix.arch }}-${{ matrix.kind.ext }}
+          path: ${{ env.ASSET_NAME }}
+          retention-days: 1
+
+      - name: Submit signing request
+        id: sign
+        uses: SignPath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: ${{ vars[matrix.kind.configSlugVar] }}
+          github-artifact-id: ${{ steps.upload.outputs['artifact-id'] }}
+          wait-for-completion: true
+          output-artifact-directory: signed
+          skip-decompress: true
+
+      - name: Upload signed artifact to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # --clobber matches by the local file's own name, so the signed download
+          # (saved under its own path) must be renamed to the exact release asset
+          # name it's replacing before upload — `gh release upload file#label` only
+          # sets a *display* label, it doesn't rename the uploaded asset.
+          $signed = Get-ChildItem signed | Select-Object -First 1
+          Copy-Item $signed.FullName ".\$env:ASSET_NAME"
+          gh release upload "$env:VERSION" ".\$env:ASSET_NAME" --repo "$env:GITHUB_REPOSITORY" --clobber
