@@ -95,4 +95,8 @@ private slots:
 
     // Regression: WIREDPANDA-KS — port/orientation geometry changes must reindex the scene BSP tree
     void testGeometryChangeKeepsSceneIndexConsistentKS();
+
+    // Regression (#44): a held trigger key must fire once — auto-repeat presses must not
+    // oscillate a latched InputSwitch.
+    void testKeyTriggerIgnoresAutoRepeat();
 };
