@@ -5,8 +5,8 @@
   "steps": [
     {
       "key": "add-flipflops",
-      "instruction": "Add three T flip-flops, three InputSwitches, a Clock, and three LEDs to the canvas",
-      "hint": "Use the Memory tab to add the T flip-flops and a Clock. Then use the I/O tab to add three InputSwitches and three LEDs.",
+      "instruction": "Add three T flip-flops, three Input Switches, a Clock, and three LEDs to the canvas",
+      "hint": "Use the Memory tab to add the T flip-flops and a Clock. Then use the I/O tab to add three Input Switches and three LEDs.",
       "requiredElements": [
         { "type": "TFlipFlop", "minCount": 3 },
         { "type": "InputSwitch", "minCount": 3 },
@@ -18,8 +18,8 @@
     },
     {
       "key": "wire-t-inputs",
-      "instruction": "Connect each InputSwitch to the T input of a different flip-flop",
-      "hint": "Turn all three InputSwitches on. A T flip-flop toggles only when its T input is 1.",
+      "instruction": "Connect each Input Switch to the T input of a different flip-flop",
+      "hint": "Turn all three Input Switches on. A T flip-flop toggles only when its T input is 1.",
       "requiredConnections": [
         { "fromType": "InputSwitch", "toType": "TFlipFlop", "minCount": 3 }
       ]
@@ -56,7 +56,7 @@
     },
     {
       "key": "explain-counter",
-      "instruction": "Turn all three InputSwitches on and start the Clock. Observe the LEDs as the counter runs. The first LED changes state every clock pulse, the second changes every two pulses, and the third changes every four pulses, displaying a repeating 3-bit binary count from 000 to 111",
+      "instruction": "Turn all three Input Switches on and start the Clock. Observe the LEDs as the counter runs. The first LED changes state every clock pulse, the second changes every two pulses, and the third changes every four pulses, displaying a repeating 3-bit binary count from 000 to 111",
       "hint": "",
       "requiredElements": [],
       "requiredConnections": []

@@ -16,7 +16,7 @@
     {
       "key": "place-led",
       "instruction": "Place an LED on the canvas",
-      "hint": "Still in the I/O tab, drag a Led element onto the canvas to the right of the Clock.",
+      "hint": "Still in the I/O tab, drag an LED element onto the canvas to the right of the Clock.",
       "requiredElements": [
         { "type": "Clock", "minCount": 1 },
         { "type": "Led",   "minCount": 1 }
@@ -38,7 +38,7 @@
     {
       "key": "open-waveform",
       "instruction": "The waveform viewer is now open — take a look!",
-      "hint": "BeWavedDolphin shows your circuit signals as rows. The Clock row is the input, and the Led row is the output. Each column is one simulation time step.",
+      "hint": "BeWavedDolphin shows your circuit signals as rows. The Clock row is the input, and the LED row is the output. Each column is one simulation time step.",
       "context": "bwd",
       "click": ["actionWaveform"],
       "requiredElements": [],
@@ -55,7 +55,7 @@
     {
       "key": "toggle-cell",
       "instruction": "Toggle a Clock cell manually",
-      "hint": "Double-click any cell in the Clock row to flip it between 0 and 1. Watch the Led row update instantly to reflect the new output.",
+      "hint": "Double-click any cell in the Clock row to flip it between 0 and 1. Watch the LED row update instantly to reflect the new output.",
       "context": "bwd",
       "requiredElements": [],
       "requiredConnections": []

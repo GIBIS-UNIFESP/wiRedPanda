@@ -5,8 +5,8 @@
   "steps": [
     {
       "key": "add-inputs",
-      "instruction": "Add two InputSwitch elements to the canvas",
-      "hint": "Click the I/O tab in the left panel, then drag two InputSwitch elements onto the canvas.",
+      "instruction": "Add two Input Switch elements to the canvas",
+      "hint": "Click the I/O tab in the left panel, then drag two Input Switch elements onto the canvas.",
       "requiredElements": [
         { "type": "InputSwitch", "minCount": 2 }
       ],
@@ -15,8 +15,8 @@
     },
     {
       "key": "add-not-gates",
-      "instruction": "Add two NOT gates to the canvas and connect each InputSwitch into a separate NOT gate",
-      "hint": "Click the gates tab in the left panel, then drag two NOT gate elements onto the canvas and connect the InputSwitches into them.",
+      "instruction": "Add two NOT gates to the canvas and connect each Input Switch into a separate NOT gate",
+      "hint": "Click the gates tab in the left panel, then drag two NOT gate elements onto the canvas and connect the Input Switches into them.",
       "requiredElements": [
         { "type": "InputSwitch", "minCount": 2 },
         { "type": "Not", "minCount": 2 }
@@ -44,8 +44,8 @@
     },
     {
       "key": "wire-decoder",
-      "instruction": "Connect the outputs of the NOT gates and the InputSwitches to the AND gates so each AND gate represents one input combination",
-      "hint": "Each AND gate should receive one signal from each input. Use the original InputSwitch signal for a 1 and the corresponding NOT gate output for a 0..",
+      "instruction": "Connect the outputs of the NOT gates and the Input Switches to the AND gates so each AND gate represents one input combination",
+      "hint": "Each AND gate should receive one signal from each input. Use the original Input Switch signal for a 1 and the corresponding NOT gate output for a 0..",
       "requiredElements": [
         { "type": "InputSwitch", "minCount": 2 },
         { "type": "Not", "minCount": 2 },

@@ -5,8 +5,8 @@
   "steps": [
     {
       "key": "add-inputs",
-      "instruction": "Add two InputSwitch elements to the canvas",
-      "hint": "Click the I/O tab in the left panel, then drag three InputSwitch elements onto the canvas. The third InputSwitch will be used later as the carry-in (Cin).",
+      "instruction": "Add two Input Switch elements to the canvas",
+      "hint": "Click the I/O tab in the left panel, then drag three Input Switch elements onto the canvas. The third Input Switch will be used later as the carry-in (Cin).",
       "requiredElements": [
         { "type": "InputSwitch", "minCount": 2 }
       ],
@@ -31,8 +31,8 @@
     },
     {
       "key": "wire-half-adder",
-      "instruction": "Connect the two InputSwitches to the XOR gate and the AND gate. Each InputSwitch should connect to both gates. The XOR gate produces the Sum output, while the AND gate produces the Carry output",
-      "hint": "Connect the outputs of the InputSwitches into the inputs of the gates.",
+      "instruction": "Connect the two Input Switches to the XOR gate and the AND gate. Each Input Switch should connect to both gates. The XOR gate produces the Sum output, while the AND gate produces the Carry output",
+      "hint": "Connect the outputs of the Input Switches into the inputs of the gates.",
       "requiredElements": [
         { "type": "InputSwitch", "minCount": 2 },
         { "type": "Xor", "minCount": 1 },
@@ -55,8 +55,8 @@
     },
     {
       "key": "add-cin-and-gates",
-      "instruction": "Add another InputSwitch to the canvas and give it the label Cin. Then add an XOR gate, an AND gate and an OR gate",
-      "hint": "Connect the outputs of the InputSwitches into the inputs of the gates.",
+      "instruction": "Add another Input Switch to the canvas and give it the label Cin. Then add an XOR gate, an AND gate and an OR gate",
+      "hint": "Connect the outputs of the Input Switches into the inputs of the gates.",
       "requiredElements": [
         { "type": "InputSwitch", "minCount": 3 },
         { "type": "Xor", "minCount": 2 },
