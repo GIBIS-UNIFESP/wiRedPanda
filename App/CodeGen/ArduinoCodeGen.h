@@ -186,5 +186,10 @@ private:
     const QVector<GraphicElement *> m_elements; ///< Topologically sorted circuit elements.
     IC *m_currentIC = nullptr;                 ///< IC currently being flattened (null at top level).
     ArduinoBoardConfig m_selectedBoard;        ///< Board configuration selected during generation.
+    int m_totalRequiredPins = 0;               ///< I/O pins the circuit needs (for the overflow message).
     bool m_hasSequential = false;              ///< True when the circuit has native flip-flops/latches (enables the non-blocking tick driver).
+
+    /// Throws with a message naming how many pins the circuit needs and how many the largest
+    /// supported board provides, instead of a bare "not enough pins".
+    [[noreturn]] void throwPinOverflow() const;
 };

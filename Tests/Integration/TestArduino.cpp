@@ -290,6 +290,35 @@ void TestArduino::testBasicCircuitGeneration()
     qDeleteAll(elements);
 }
 
+void TestArduino::testPinOverflowMessageNamesCounts()
+{
+    // 69 inputs exceed the largest supported board (Mega 2560, 68 pins).
+    QVector<GraphicElement *> elements;
+    for (int i = 0; i < 69; ++i) {
+        elements.append(ElementFactory::buildElement(ElementType::InputSwitch));
+    }
+
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    ArduinoCodeGen generator(tempDir.filePath("overflow.ino"), elements);
+
+    QString message;
+    try {
+        generator.generate();
+        QFAIL("expected a pin-overflow exception");
+    } catch (const std::exception &error) {
+        message = QString::fromUtf8(error.what());
+    }
+
+    // The message names how many pins the circuit needs and refers to the board's capacity,
+    // rather than the old bare "not enough pins".
+    QVERIFY2(message.contains(QStringLiteral("69")), qPrintable(message));
+    QVERIFY2(message.contains(QStringLiteral("board")), qPrintable(message));
+    QVERIFY2(!message.contains(QStringLiteral("Not enough pins available")), qPrintable(message));
+
+    qDeleteAll(elements);
+}
+
 void TestArduino::testEmptyCircuit()
 {
     // Generate code for empty circuit
