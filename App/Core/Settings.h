@@ -89,6 +89,12 @@ public:
     static int         tourProgress(const QString &tourId); ///< Returns -1 if no record.
     static void        setTourProgress(const QString &tourId, int step);
 
+    /// Whether the built-in welcome tour has already been auto-started once. Set the first
+    /// time MainWindow::show() runs, regardless of whether the tour is completed or dismissed,
+    /// so it never auto-starts again after that first launch.
+    static bool welcomeTourShown();
+    static void setWelcomeTourShown(bool shown);
+
     /// Corner of the workspace where the minimap overview is anchored.
     enum class MinimapCorner {
         TopLeft,
