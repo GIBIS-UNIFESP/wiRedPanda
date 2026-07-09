@@ -228,6 +228,26 @@ void TestMainWindowGui::testCreateMultipleTabs()
     QCOMPARE(tabs->count(), 3);
 }
 
+void TestMainWindowGui::testNewTabsAreNumbered()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    QCOMPARE(tabs->tabText(0), QStringLiteral("New Project"));
+
+    QTest::keyClick(window.get(), Qt::Key_N, Qt::ControlModifier);
+    QTest::keyClick(window.get(), Qt::Key_N, Qt::ControlModifier);
+    QCOMPARE(tabs->count(), 3);
+    QCOMPARE(tabs->tabText(1), QStringLiteral("New Project 2"));
+    QCOMPARE(tabs->tabText(2), QStringLiteral("New Project 3"));
+
+    // Closing a tab frees its number; the next new tab reclaims the lowest unused one.
+    tabs->tabCloseRequested(1); // removes "New Project 2"
+    QCOMPARE(tabs->count(), 2);
+    QTest::keyClick(window.get(), Qt::Key_N, Qt::ControlModifier);
+    QCOMPARE(tabs->count(), 3);
+    QCOMPARE(tabs->tabText(tabs->currentIndex()), QStringLiteral("New Project 2"));
+}
+
 void TestMainWindowGui::testCloseTabReducesCount()
 {
     std::unique_ptr<MainWindow> window(createMW());

@@ -86,6 +86,10 @@ private:
     int closeTabAnyway();
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
 
+    /// Returns the lowest-unused "New Project" placeholder title (unnumbered, then " 2",
+    /// " 3", …) not already shown by another open tab, so fresh tabs stay distinguishable.
+    [[nodiscard]] QString nextUntitledTitle() const;
+
     /// Warns and offers to switch tabs if \a fileName is already open in another tab.
     /// Returns \c true if a conflict was found (and shown), \c false if the save should proceed.
     bool warnIfOpenInAnotherTab(const QString &fileName);

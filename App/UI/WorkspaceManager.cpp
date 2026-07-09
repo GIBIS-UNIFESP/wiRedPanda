@@ -67,6 +67,31 @@ void WorkspaceManager::setDolphinFileName(const QString &fileName)
     m_currentTab->setDolphinFileName(fileName);
 }
 
+QString WorkspaceManager::nextUntitledTitle() const
+{
+    // Collect the titles other tabs currently show, minus any trailing unsaved "*".
+    QStringList taken;
+    taken.reserve(m_tab->count());
+    for (int i = 0; i < m_tab->count(); ++i) {
+        QString title = m_tab->tabText(i);
+        if (title.endsWith(QLatin1Char('*'))) {
+            title.chop(1);
+        }
+        taken.append(title);
+    }
+
+    const QString base = tr("New Project");
+    if (!taken.contains(base)) {
+        return base;
+    }
+    for (int n = 2;; ++n) {
+        const QString candidate = tr("New Project %1").arg(n);
+        if (!taken.contains(candidate)) {
+            return candidate;
+        }
+    }
+}
+
 void WorkspaceManager::createNewTab()
 {
     qCDebug(zero) << "Creating new workspace.";
@@ -76,8 +101,12 @@ void WorkspaceManager::createNewTab()
 
     workspace->scene()->updateTheme();
 
+    // Number the placeholder title so several unsaved tabs stay distinguishable.
+    const QString untitledTitle = nextUntitledTitle();
+    workspace->setUntitledTitle(untitledTitle);
+
     qCDebug(zero) << "Adding tab. #tabs: " << m_tab->count() << ", current tab: " << m_tabIndex;
-    m_tab->addTab(workspace, tr("New Project"));
+    m_tab->addTab(workspace, untitledTitle);
     sentryBreadcrumb("ui", QStringLiteral("Tab opened"));
 
     qCDebug(zero) << "Selecting the newly created tab.";
@@ -549,8 +578,12 @@ void WorkspaceManager::setCurrentFile(const QFileInfo &fileInfo)
     QString text;
     if (senderWs->isInlineIC()) {
         text = "[" + senderWs->inlineBlobName() + "]";
+    } else if (fileInfo.exists()) {
+        text = fileInfo.fileName();
     } else {
-        text = fileInfo.exists() ? fileInfo.fileName() : tr("New Project");
+        // Unsaved tab: keep the numbered placeholder assigned at creation (fall back for
+        // any workspace not created through createNewTab).
+        text = senderWs->untitledTitle().isEmpty() ? tr("New Project") : senderWs->untitledTitle();
     }
 
     // Append an asterisk to the tab title to indicate unsaved changes,
