@@ -5,6 +5,10 @@
 Select these components for Qt6:
 ![qt6](https://github.com/user-attachments/assets/aedc8749-8b5c-4f4d-9c65-651b703dccea)
 
+Install the Ninja build system, same as on other platforms: `choco install ninja` or
+`scoop install ninja`. Qt Creator picks it up automatically for the Kit it already detected
+for your Qt installation — no other setup needed.
+
 Then open CMakeLists.txt in Qt Creator and press Ctrl+R to build and run.
 
 ## On Linux & macOS
