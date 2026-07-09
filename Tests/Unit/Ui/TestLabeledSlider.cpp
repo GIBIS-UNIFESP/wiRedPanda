@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Ui/TestLabeledSlider.h"
 
+#include <QSlider>
+
 #include "App/UI/LabeledSlider.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -53,4 +55,24 @@ void TestLabeledSlider::testPaintEventHandlesZeroTickIntervalWithoutCrashing()
 
     const QPixmap pixmap = slider.grab();
     QVERIFY(!pixmap.isNull()); // reaching here means paintEvent() did not crash
+}
+
+void TestLabeledSlider::testSizeHintReservesLabelSpace()
+{
+    // Regression: sizeHint()/minimumSizeHint() must actually reserve room for the
+    // tick-fraction labels paintEvent() draws — a plain contentsMargins() call
+    // doesn't grow what the owning layout allocates, which let the labels overlap
+    // the slider track (see LabeledSlider::sizeHint()).
+    LabeledSlider slider;
+    slider.setRange(-4, 4);
+    slider.setOrientation(Qt::Horizontal);
+
+    const QSize noTicksHint = slider.sizeHint();
+
+    slider.setTickPosition(QSlider::TicksBelow);
+    slider.setTickInterval(1);
+    const QSize withTicksHint = slider.sizeHint();
+
+    QVERIFY(withTicksHint.height() > noTicksHint.height());
+    QCOMPARE(slider.minimumSizeHint(), slider.sizeHint());
 }

@@ -3,6 +3,10 @@
 
 #include "Tests/Unit/Ui/TestElementEditor.h"
 
+#include <algorithm>
+
+#include <QToolButton>
+
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -72,10 +76,50 @@ void TestElementEditor::testSetCurrentElementsLed()
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // Select LED — triggers selectionChanged with color combo UI
+    // Select LED — triggers selectionChanged, populating the appearance tile grid
     workspace.scene()->clearSelection();
     led->setSelected(true);
-    QVERIFY(true);
+
+    auto *statesWidget = editor.findChild<QWidget *>("widgetAppearanceStates");
+    QVERIFY(statesWidget);
+    // The editor itself is never shown in this test, so isVisible() (which also
+    // depends on ancestor/window visibility) would always be false; isHidden()
+    // reflects only this widget's own explicit setVisible() flag.
+    QVERIFY(!statesWidget->isHidden());
+
+    const auto tiles = statesWidget->findChildren<QToolButton *>();
+    QCOMPARE(tiles.size(), 2); // 1-input LED: Off/On
+
+    const auto checkedCount = std::count_if(tiles.begin(), tiles.end(), [](QToolButton *tile) { return tile->isChecked(); });
+    QCOMPARE(checkedCount, 1);
+    QVERIFY(tiles.first()->isChecked()); // first tile selected by default
+}
+
+void TestElementEditor::testAppearanceStateTileSelection()
+{
+    WorkSpace workspace;
+    auto *led = new Led;
+    led->setInputSize(2);
+    workspace.scene()->addItem(led);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+
+    workspace.scene()->clearSelection();
+    led->setSelected(true);
+
+    auto *statesWidget = editor.findChild<QWidget *>("widgetAppearanceStates");
+    QVERIFY(statesWidget);
+
+    const auto tiles = statesWidget->findChildren<QToolButton *>();
+    QCOMPARE(tiles.size(), 4); // 2-input LED: 4 states
+
+    auto *secondTile = tiles.at(1);
+    secondTile->click();
+
+    QVERIFY(secondTile->isChecked());
+    QVERIFY(!tiles.first()->isChecked());
+    QCOMPARE(secondTile->property("appearanceStateIndex").toInt(), led->appearanceStates().at(1).first);
 }
 
 void TestElementEditor::testFillColorComboBox()

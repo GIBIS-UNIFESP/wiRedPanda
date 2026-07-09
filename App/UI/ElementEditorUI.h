@@ -8,6 +8,7 @@
 #pragma once
 
 // Specific Qt includes instead of monolithic QtWidgets
+#include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDoubleSpinBox>
@@ -18,6 +19,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSlider>
+#include <QVBoxLayout>
 #include <QWidget>
 
 class LabeledSlider;
@@ -51,9 +53,23 @@ public:
     // Layout
     QGridLayout *gridLayout = nullptr;
     QGroupBox *groupBox = nullptr;
-    QGridLayout *gridLayout_2 = nullptr;
+    QVBoxLayout *verticalLayoutSections = nullptr;
     QHBoxLayout *horizontalLayout = nullptr;
     QHBoxLayout *horizontalLayout_2 = nullptr;
+
+    // Sections — group related properties so the panel isn't one flat 15-row list.
+    QGroupBox *groupBoxIdentity = nullptr;
+    QGridLayout *gridLayoutIdentity = nullptr;
+    QGroupBox *groupBoxPorts = nullptr;
+    QGridLayout *gridLayoutPorts = nullptr;
+    QGroupBox *groupBoxTiming = nullptr;
+    QGridLayout *gridLayoutTiming = nullptr;
+    QGroupBox *groupBoxSound = nullptr;
+    QGridLayout *gridLayoutSound = nullptr;
+    QGroupBox *groupBoxInteraction = nullptr;
+    QGridLayout *gridLayoutInteraction = nullptr;
+    QGroupBox *groupBoxAppearanceSection = nullptr;
+    QGridLayout *gridLayoutAppearanceSection = nullptr;
 
     // Label editing
     QLabel *labelLabels = nullptr;
@@ -87,7 +103,9 @@ public:
 
     // Appearance
     QLabel *labelAppearanceState = nullptr;
-    QComboBox *comboBoxAppearanceState = nullptr;
+    QWidget *widgetAppearanceStates = nullptr;
+    QGridLayout *gridLayoutAppearanceStates = nullptr;
+    QButtonGroup *buttonGroupAppearanceStates = nullptr;
     QPushButton *pushButtonChangeAppearance = nullptr;
     QPushButton *pushButtonDefaultAppearance = nullptr;
 

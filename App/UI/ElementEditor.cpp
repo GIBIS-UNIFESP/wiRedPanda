@@ -12,6 +12,7 @@
 #include <QImageReader>
 #include <QMessageBox>
 #include <QSize>
+#include <QToolButton>
 
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
@@ -169,6 +170,40 @@ void ElementEditor::changeTriggerAction()
     m_ui->lineEditTrigger->selectAll();
 }
 
+void ElementEditor::rebuildAppearanceStateTiles(const QList<std::pair<int, QString>> &states)
+{
+    // Drop the previous element's tiles; QButtonGroup auto-detaches destroyed buttons.
+    while (auto *item = m_ui->gridLayoutAppearanceStates->takeAt(0)) {
+        delete item->widget();
+        delete item;
+    }
+
+    constexpr int columns = 4;
+    constexpr QSize tileSize(32, 32);
+    constexpr QSize iconSize(24, 24);
+
+    for (int i = 0; i < states.size(); ++i) {
+        const auto &[index, label] = states[i];
+        auto *tile = new QToolButton(m_ui->widgetAppearanceStates);
+        tile->setCheckable(true);
+        tile->setAutoRaise(true);
+        tile->setFixedSize(tileSize);
+        tile->setIconSize(iconSize);
+        tile->setIcon(QIcon(m_elements[0]->appearancePreviewPixmap(index, iconSize)));
+        tile->setToolTip(label);
+        tile->setProperty("appearanceStateIndex", index);
+        m_ui->buttonGroupAppearanceStates->addButton(tile);
+        m_ui->gridLayoutAppearanceStates->addWidget(tile, i / columns, i % columns);
+    }
+
+    // Default-select the first tile, matching the combobox's old implicit currentIndex 0.
+    if (auto *item = m_ui->gridLayoutAppearanceStates->itemAtPosition(0, 0)) {
+        if (auto *firstTile = qobject_cast<QToolButton *>(item->widget())) {
+            firstTile->setChecked(true);
+        }
+    }
+}
+
 void ElementEditor::updateElementAppearance()
 {
     sentryBreadcrumb("ui", QStringLiteral("Element appearance dialog"));
@@ -181,10 +216,10 @@ void ElementEditor::updateElementAppearance()
 
     qCDebug(zero) << "File name: " << fileName;
 
-    // If a specific appearance state is selected in the combo box, use setAppearanceAt()
+    // If a specific appearance state is selected in the tile grid, use setAppearanceAt()
     // to target that index directly instead of relying on the element's current state.
-    if (m_ui->comboBoxAppearanceState->isVisible() && m_ui->comboBoxAppearanceState->count() > 0) {
-        const int appearanceIndex = m_ui->comboBoxAppearanceState->currentData().toInt();
+    if (m_ui->widgetAppearanceStates->isVisible() && m_ui->buttonGroupAppearanceStates->checkedButton()) {
+        const int appearanceIndex = m_ui->buttonGroupAppearanceStates->checkedButton()->property("appearanceStateIndex").toInt();
 
         // Snapshot and apply via undo command
         const bool needsMacro = m_scene && m_elements.size() > 1;
@@ -461,23 +496,18 @@ void ElementEditor::applyCapabilitiesToUi()
     m_ui->pushButtonChangeAppearance->setVisible(c.canChangeAppearance);
     m_ui->pushButtonDefaultAppearance->setVisible(c.canChangeAppearance);
 
-    // Populate the appearance state selector for multi-state elements
+    // Populate the appearance state icon grid for multi-state elements
     if (c.canChangeAppearance && m_elements.size() == 1) {
         const auto states = m_elements[0]->appearanceStates();
         const bool multiState = states.size() > 1;
         m_ui->labelAppearanceState->setVisible(multiState);
-        m_ui->comboBoxAppearanceState->setVisible(multiState);
+        m_ui->widgetAppearanceStates->setVisible(multiState);
         if (multiState) {
-            QSignalBlocker blocker(m_ui->comboBoxAppearanceState);
-            m_ui->comboBoxAppearanceState->clear();
-            for (const auto &[index, label] : states) {
-                const QIcon icon(m_elements[0]->appearancePreviewPixmap(index, QSize(16, 16)));
-                m_ui->comboBoxAppearanceState->addItem(icon, label, index);
-            }
+            rebuildAppearanceStateTiles(states);
         }
     } else {
         m_ui->labelAppearanceState->setVisible(false);
-        m_ui->comboBoxAppearanceState->setVisible(false);
+        m_ui->widgetAppearanceStates->setVisible(false);
     }
 
     /* Wireless mode — Node elements only */
@@ -504,6 +534,16 @@ void ElementEditor::applyCapabilitiesToUi()
         QSignalBlocker blocker(m_ui->lineEditBlobName);
         m_ui->lineEditBlobName->setText(sameBlobName ? firstElement->blobName() : m_manyLabels);
     }
+
+    /* Section visibility — hide a section's group box entirely when none of its
+       rows apply to the current selection, so the panel doesn't show empty
+       titled boxes. */
+    m_ui->groupBoxIdentity->setVisible(c.hasLabel || c.hasColors);
+    m_ui->groupBoxPorts->setVisible(c.canChangeInputSize || c.canChangeOutputSize || c.hasLatchedValue || c.hasOnlyInputs);
+    m_ui->groupBoxTiming->setVisible(c.hasFrequency || c.hasDelay);
+    m_ui->groupBoxSound->setVisible(c.hasAudio || c.hasAudioBox || c.hasVolume);
+    m_ui->groupBoxInteraction->setVisible(c.hasTrigger || c.hasTruthTable || c.hasWirelessMode);
+    m_ui->groupBoxAppearanceSection->setVisible(c.canChangeAppearance || c.isEmbedded);
 }
 
 void ElementEditor::selectionChanged()

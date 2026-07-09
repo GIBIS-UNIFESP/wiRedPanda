@@ -17,4 +17,6 @@ private slots:
 
     // Regression: paintEvent() divided by tickInterval() with no zero guard.
     void testPaintEventHandlesZeroTickIntervalWithoutCrashing();
+
+    void testSizeHintReservesLabelSpace();
 };
