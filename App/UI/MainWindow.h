@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 
 #include <QDir>
@@ -18,7 +19,6 @@
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
-class ContentBrowserDialog;
 class ElementLabel;
 class ElementPalette;
 class ExerciseEngine;
@@ -221,9 +221,7 @@ private:
 
     // --- Action Handlers ---
 
-    void on_actionExercises_triggered();
     void startExercise(const QString &resourcePath);
-    void on_actionTours_triggered();
     void startTour(const QString &resourcePath);
     QRect resolveTourTarget(const QString &id) const;
 
@@ -278,6 +276,15 @@ private:
     void setupRecentFiles();
     /// Populates the Examples menu from the Examples/ directory.
     void setupExamplesMenu();
+    /// Wires the Exercises menu to populate itself on every open.
+    void setupExercisesMenu();
+    /// Wires the Tours menu to populate itself on every open.
+    void setupToursMenu();
+    /// Rebuilds \a menu with one action per discovered Exercise/Tour item plus a trailing
+    /// "Open Folder" action; shared by setupExercisesMenu()/setupToursMenu().
+    void populateContentMenu(QMenu *menu, const QString &categoryKey,
+                              const QString &openFolderText, const QString &openFolderFailureText,
+                              const QStringList &completed, const std::function<void(const QString &)> &onSelect);
     /// Registers the global search shortcut (scene-property shortcuts live in SceneUiBinder).
     void setupShortcuts();
     /// Connects all QAction and widget signals to their slots.

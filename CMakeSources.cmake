@@ -95,8 +95,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ContentBrowserDialog.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ContentBrowserDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
@@ -250,8 +248,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ContentBrowserDialog.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ContentBrowserDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h

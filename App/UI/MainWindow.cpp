@@ -4,6 +4,7 @@
 #include "App/UI/MainWindow.h"
 
 #include <algorithm>
+#include <functional>
 #include <utility>
 
 #ifdef Q_OS_WASM
@@ -18,13 +19,16 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QIcon>
 #include <QLocale>
 #include <QLoggingCategory>
 #include <QMessageBox>
 #include <QPixmapCache>
 #include <QPushButton>
 #include <QShortcut>
+#include <QStyle>
 #include <QTabBar>
+#include <QUrl>
 
 #ifdef Q_OS_MAC
 #include <QSvgRenderer>
@@ -33,6 +37,7 @@
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/ExerciseTourResources.h"
 #include "App/Core/InstallRelativePaths.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
@@ -50,7 +55,6 @@
 #include "App/Simulation/Simulation.h"
 #include "App/Tour/TourEngine.h"
 #include "App/Tour/TourOverlay.h"
-#include "App/UI/ContentBrowserDialog.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/ExportController.h"
 #include "App/UI/ICController.h"
@@ -162,6 +166,8 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
 
     qCDebug(zero) << "Adding examples to menu";
     setupExamplesMenu();
+    setupExercisesMenu();
+    setupToursMenu();
 }
 
 void MainWindow::setupLanguage()
@@ -255,6 +261,65 @@ void MainWindow::setupExamplesMenu()
     }
 }
 
+void MainWindow::populateContentMenu(QMenu *menu, const QString &categoryKey,
+                                      const QString &openFolderText,
+                                      const QString &openFolderFailureText,
+                                      const QStringList &completed,
+                                      const std::function<void(const QString &)> &onSelect)
+{
+    menu->clear(); // deletes the QActions it owns (and their connections) — safe to rebuild every open
+
+    auto *openFolderAction = new QAction(openFolderText, menu);
+    connect(openFolderAction, &QAction::triggered, this, [this, categoryKey, openFolderFailureText] {
+        const QString dir = ExerciseTourResources::preferredContentDir(categoryKey);
+        if (dir.isEmpty()) {
+            QMessageBox::warning(this, tr("Error"), openFolderFailureText);
+            return;
+        }
+        QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
+    });
+    menu->addAction(openFolderAction);
+
+    const QIcon checkIcon = style()->standardIcon(QStyle::SP_DialogApplyButton);
+    const QIcon circleIcon = style()->standardIcon(QStyle::SP_ArrowRight);
+
+    const auto entries = ExerciseTourResources::discover(categoryKey);
+    if (!entries.isEmpty()) {
+        menu->addSeparator(); // only meaningful as a divider when there's something below it to divide from
+    }
+    for (const ExerciseTourResourceEntry &entry : entries) {
+        QString title = ExerciseTourResources::translate(entry.id + QStringLiteral(".title"), entry.title);
+        title.replace(QLatin1Char('&'), QStringLiteral("&&")); // literal '&' would otherwise be swallowed as a mnemonic marker
+        auto *action = new QAction(title, menu);
+        action->setIcon(completed.contains(entry.id) ? checkIcon : circleIcon);
+        action->setStatusTip(ExerciseTourResources::translate(entry.id + QStringLiteral(".description"), entry.description));
+        connect(action, &QAction::triggered, this, [onSelect, path = entry.path] { onSelect(path); });
+        menu->addAction(action);
+    }
+}
+
+void MainWindow::setupExercisesMenu()
+{
+    connect(m_ui->menuExercises, &QMenu::aboutToShow, this, [this] {
+        populateContentMenu(m_ui->menuExercises, "Exercises",
+            tr("Open My Exercises Folder"),
+            tr("Could not create or access a folder for custom exercises."),
+            Settings::completedExercises(),
+            [this](const QString &path) { startExercise(path); });
+    });
+}
+
+void MainWindow::setupToursMenu()
+{
+    connect(m_ui->menuTours, &QMenu::aboutToShow, this, [this] {
+        populateContentMenu(m_ui->menuTours, "Tours",
+            tr("Open My Tours Folder"),
+            tr("Could not create or access a folder for custom tours."),
+            Settings::completedTours(),
+            [this](const QString &path) { startTour(path); });
+    });
+}
+
 void MainWindow::setupShortcuts()
 {
     // The scene-property shortcuts ( [ ] { } < > ) are owned by SceneUiBinder, which
@@ -268,8 +333,6 @@ void MainWindow::setupConnections()
     connect(m_ui->tab, &QTabWidget::currentChanged,    m_workspaceManager, &WorkspaceManager::onCurrentIndexChanged);
     connect(m_ui->tab, &QTabWidget::tabCloseRequested, m_workspaceManager, &WorkspaceManager::closeTab);
 
-    connect(m_ui->actionExercises,             &QAction::triggered,       this,                &MainWindow::on_actionExercises_triggered);
-    connect(m_ui->actionTours,                 &QAction::triggered,       this,                &MainWindow::on_actionTours_triggered);
     connect(m_ui->actionAbout,                 &QAction::triggered,       this,                &MainWindow::on_actionAbout_triggered);
     connect(m_ui->actionAboutQt,               &QAction::triggered,       this,                &MainWindow::on_actionAboutQt_triggered);
     connect(m_ui->actionAboutThisVersion,      &QAction::triggered,       this,                &MainWindow::aboutThisVersion);
@@ -1163,14 +1226,6 @@ bool MainWindow::event(QEvent *event)
     return QMainWindow::event(event);
 }
 
-void MainWindow::on_actionExercises_triggered()
-{
-    ContentBrowserDialog dialog(ContentCategory::Exercises, this);
-    if (dialog.exec() == QDialog::Accepted) {
-        startExercise(dialog.selectedPath());
-    }
-}
-
 void MainWindow::startExercise(const QString &resourcePath)
 {
     if (!currentTab() || resourcePath.isEmpty()) {
@@ -1243,14 +1298,6 @@ void MainWindow::startExercise(const QString &resourcePath)
     m_exerciseOverlay->repositionToParent();
     m_exerciseOverlay->show();
     m_exerciseOverlay->raise();
-}
-
-void MainWindow::on_actionTours_triggered()
-{
-    ContentBrowserDialog dialog(ContentCategory::Tours, this);
-    if (dialog.exec() == QDialog::Accepted) {
-        startTour(dialog.selectedPath());
-    }
 }
 
 void MainWindow::startTour(const QString &resourcePath)
