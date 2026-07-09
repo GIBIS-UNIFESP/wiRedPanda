@@ -39,4 +39,24 @@ inline void copyToDir(const QString &srcPath, const QString &destDir)
     }
 }
 
+/// Returns true if \a a and \a b are the same file on disk or hold identical bytes. Used to
+/// tell a harmless "same file, same name" re-add from a genuine name collision (a different
+/// file that happens to share a name), which would otherwise be silently mis-bound.
+inline bool filesHaveSameContent(const QFileInfo &a, const QFileInfo &b)
+{
+    const QString canonicalA = a.canonicalFilePath();
+    if (!canonicalA.isEmpty() && canonicalA == b.canonicalFilePath()) {
+        return true; // literally the same file on disk
+    }
+    if (a.size() != b.size()) {
+        return false;
+    }
+    QFile fileA(a.absoluteFilePath());
+    QFile fileB(b.absoluteFilePath());
+    if (!fileA.open(QIODevice::ReadOnly) || !fileB.open(QIODevice::ReadOnly)) {
+        return false; // can't confirm identical → treat as different
+    }
+    return fileA.readAll() == fileB.readAll();
+}
+
 } // namespace FileUtils

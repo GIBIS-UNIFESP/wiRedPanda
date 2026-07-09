@@ -20,4 +20,7 @@ private slots:
 
     // Regression: D17 — copy failures must throw
     void testCopyToDirThrowsOnFailure();
+
+    // filesHaveSameContent — same-file vs name-collision detection
+    void testFilesHaveSameContent();
 };
