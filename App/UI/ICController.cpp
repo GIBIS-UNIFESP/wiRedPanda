@@ -330,6 +330,7 @@ void ICController::makeSelfContained()
     }
 
     int totalEmbedded = 0;
+    bool completed = true;
     auto *reg = scene->icRegistry();
 
     for (const QString &icFile : std::as_const(uniqueFiles)) {
@@ -337,6 +338,7 @@ void ICController::makeSelfContained()
         QFile file(fullPath);
         if (!file.open(QIODevice::ReadOnly)) {
             QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+            completed = false;
             break;
         }
         QByteArray fileBytes = file.readAll();
@@ -344,6 +346,7 @@ void ICController::makeSelfContained()
 
         QString blobName = resolveUniqueBlobName(QFileInfo(icFile).baseName(), scene);
         if (blobName.isEmpty()) {
+            completed = false;
             break; // User cancelled
         }
 
@@ -351,7 +354,14 @@ void ICController::makeSelfContained()
     }
 
     m_host.palette()->updateEmbeddedICList(scene);
-    m_host.showStatusMessage(tr("Embedded %1 IC(s). Circuit is now self-contained.").arg(totalEmbedded), 4000);
+    // Only claim the circuit is self-contained when every file-based IC was embedded. On a
+    // read error or a cancelled prompt the loop breaks early, so report the partial result
+    // honestly (or stay quiet if nothing was embedded — the error/cancel already spoke).
+    if (completed) {
+        m_host.showStatusMessage(tr("Embedded %1 IC(s). Circuit is now self-contained.").arg(totalEmbedded), 4000);
+    } else if (totalEmbedded > 0) {
+        m_host.showStatusMessage(tr("Embedded %1 IC(s); some file-based ICs remain.").arg(totalEmbedded), 4000);
+    }
 }
 
 void ICController::addEmbeddedICFromFile()
