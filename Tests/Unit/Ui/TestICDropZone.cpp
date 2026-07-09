@@ -4,7 +4,10 @@
 #include "Tests/Unit/Ui/TestICDropZone.h"
 
 #include <QDataStream>
+#include <QDragEnterEvent>
+#include <QDragLeaveEvent>
 #include <QDropEvent>
+#include <QLabel>
 #include <QMimeData>
 #include <QSignalSpy>
 
@@ -121,4 +124,35 @@ void TestICDropZone::testDropEventRejectsOversizedPayload()
 
     QCOMPARE(embedSpy.count(), 0);
     QCOMPARE(extractSpy.count(), 0);
+}
+
+void TestICDropZone::testHintShownOnCompatibleDragEnter()
+{
+    // A file-based IC payload (isEmbedded = false).
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    stream << QPoint(0, 0) << ElementType::IC << QString("counter.panda") << false << QString();
+
+    QMimeData mimeData;
+    mimeData.setData(MimeType::DragDrop, itemData);
+
+    // The embedded section accepts a file-based IC (for embedding).
+    ICDropZone dropZone(ICDropZone::Section::Embedded);
+    dropZone.resize(200, 150);
+
+    auto *hint = dropZone.findChild<QLabel *>("icDropHint");
+    QVERIFY(hint);
+    QVERIFY(hint->isHidden());                                      // hidden at rest
+    QVERIFY2(hint->text().contains(QStringLiteral("embed")), qPrintable(hint->text()));
+
+    // Dragging a compatible IC over the zone reveals the hint...
+    QDragEnterEvent enterEvent(QPoint(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    QApplication::sendEvent(&dropZone, &enterEvent);
+    QVERIFY(!hint->isHidden());
+
+    // ...and leaving the zone hides it again.
+    QDragLeaveEvent leaveEvent;
+    QApplication::sendEvent(&dropZone, &leaveEvent);
+    QVERIFY(hint->isHidden());
 }

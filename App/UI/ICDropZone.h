@@ -9,6 +9,8 @@
 
 #include <QWidget>
 
+class QLabel;
+
 /**
  * \class ICDropZone
  * \brief Drop zone widget that accepts opposite-type IC label drops.
@@ -43,9 +45,17 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     /// \reimp
     void dragMoveEvent(QDragMoveEvent *event) override;
+    /// \reimp — hides the drop hint when the drag leaves without dropping.
+    void dragLeaveEvent(QDragLeaveEvent *event) override;
     /// \reimp
     void dropEvent(QDropEvent *event) override;
+    /// \reimp — keeps the hint overlay covering the whole zone.
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
-    Section m_section; ///< Which palette section this zone represents.
+    /// Shows/hides the "drop to embed/extract" hint overlay.
+    void setHintVisible(bool visible);
+
+    Section m_section;               ///< Which palette section this zone represents.
+    QLabel *m_hintOverlay = nullptr; ///< Raised overlay shown only while a compatible IC is dragged over.
 };
