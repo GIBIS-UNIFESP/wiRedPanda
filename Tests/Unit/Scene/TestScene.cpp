@@ -14,7 +14,9 @@
 #include <QPainter>
 #include <QTest>
 #include <QTransform>
+#include <QUrl>
 
+#include "App/Core/Constants.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Core/MimeTypes.h"
 #include "App/Element/ElementFactory.h"
@@ -1646,4 +1648,66 @@ void TestScene::testKeyTriggerIgnoresAutoRepeat()
     QKeyEvent press2(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, QString(), /*autorep*/ false);
     QApplication::sendEvent(scene, &press2);
     QVERIFY(!inputSwitch->isOn());
+}
+
+void TestScene::testArrowKeyNudgesSelection()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *element = ElementFactory::buildElement(ElementType::And);
+    QVERIFY(element);
+    scene->addItem(element);
+    element->setPos(0, 0);
+    element->setSelected(true);
+
+    const int grid = Constants::gridSize;
+
+    // Right arrow moves the selection one grid cell in +x.
+    QKeyEvent right(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
+    QApplication::sendEvent(scene, &right);
+    QCOMPARE(element->pos(), QPointF(grid, 0));
+
+    // Down arrow moves one grid cell in +y.
+    QKeyEvent down(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
+    QApplication::sendEvent(scene, &down);
+    QCOMPARE(element->pos(), QPointF(grid, grid));
+
+    // Shift+Left jumps four grid cells in -x.
+    QKeyEvent shiftLeft(QEvent::KeyPress, Qt::Key_Left, Qt::ShiftModifier);
+    QApplication::sendEvent(scene, &shiftLeft);
+    QCOMPARE(element->pos(), QPointF(grid - 4 * grid, grid));
+
+    // Each nudge is a separate undoable move.
+    scene->undoStack()->undo();
+    QCOMPARE(element->pos(), QPointF(grid, grid));
+
+    // With nothing selected, arrow keys don't move the element.
+    scene->clearSelection();
+    const QPointF before = element->pos();
+    QKeyEvent right2(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
+    QApplication::sendEvent(scene, &right2);
+    QCOMPARE(element->pos(), before);
+}
+
+void TestScene::testDroppedPandaFileDetection()
+{
+    // A .panda local file is recognised as openable.
+    QMimeData pandaMime;
+    pandaMime.setUrls({QUrl::fromLocalFile("/home/user/circuit.panda")});
+    QCOMPARE(Scene::droppedPandaFile(&pandaMime), QStringLiteral("/home/user/circuit.panda"));
+
+    // A non-.panda file is not.
+    QMimeData txtMime;
+    txtMime.setUrls({QUrl::fromLocalFile("/home/user/notes.txt")});
+    QVERIFY(Scene::droppedPandaFile(&txtMime).isEmpty());
+
+    // No URLs at all (e.g. an internal palette drag) is not.
+    QMimeData noUrls;
+    QVERIFY(Scene::droppedPandaFile(&noUrls).isEmpty());
+
+    // The extension match is case-insensitive and picks the first .panda among several URLs.
+    QMimeData mixed;
+    mixed.setUrls({QUrl::fromLocalFile("/a/readme.md"), QUrl::fromLocalFile("/a/Design.PANDA")});
+    QCOMPARE(Scene::droppedPandaFile(&mixed), QStringLiteral("/a/Design.PANDA"));
 }

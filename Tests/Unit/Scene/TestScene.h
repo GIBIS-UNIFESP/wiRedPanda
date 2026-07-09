@@ -99,4 +99,10 @@ private slots:
     // Regression (#44): a held trigger key must fire once — auto-repeat presses must not
     // oscillate a latched InputSwitch.
     void testKeyTriggerIgnoresAutoRepeat();
+
+    // Arrow keys nudge the selection by a grid step (Shift = larger), undoable.
+    void testArrowKeyNudgesSelection();
+
+    // #12: a .panda file dropped from the file manager is recognised for opening.
+    void testDroppedPandaFileDetection();
 };

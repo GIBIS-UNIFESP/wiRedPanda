@@ -12,8 +12,10 @@
 #include <QGraphicsSceneHelpEvent>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QMimeData>
 #include <QPolygon>
 #include <QScrollBar>
+#include <QUrl>
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
@@ -707,10 +709,28 @@ void Scene::flipVertically()
     }
 }
 
+QString Scene::droppedPandaFile(const QMimeData *mimeData)
+{
+    if (!mimeData->hasUrls()) {
+        return {};
+    }
+    for (const QUrl &url : mimeData->urls()) {
+        if (!url.isLocalFile()) {
+            continue;
+        }
+        const QString path = url.toLocalFile();
+        if (path.endsWith(QLatin1String(".panda"), Qt::CaseInsensitive)) {
+            return path;
+        }
+    }
+    return {};
+}
+
 void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (SceneDropHandler::isSupportedDropFormat(event->mimeData())) {
-        event->accept();
+    if (SceneDropHandler::isSupportedDropFormat(event->mimeData())
+        || !droppedPandaFile(event->mimeData()).isEmpty()) {
+        event->acceptProposedAction();
         return;
     }
 
@@ -719,8 +739,9 @@ void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if (SceneDropHandler::isSupportedDropFormat(event->mimeData())) {
-        event->accept();
+    if (SceneDropHandler::isSupportedDropFormat(event->mimeData())
+        || !droppedPandaFile(event->mimeData()).isEmpty()) {
+        event->acceptProposedAction();
         return;
     }
 
@@ -730,6 +751,14 @@ void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
     sentryBreadcrumb("ui", QStringLiteral("Drop event"));
+
+    // A .panda file dragged from the file manager opens as a project (like File > Open).
+    const QString pandaFile = droppedPandaFile(event->mimeData());
+    if (!pandaFile.isEmpty()) {
+        event->acceptProposedAction();
+        emit fileDropRequested(pandaFile);
+        return;
+    }
 
     if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)
         || event->mimeData()->hasFormat(MimeType::DragDrop)) {
@@ -744,12 +773,60 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
     QGraphicsScene::dropEvent(event);
 }
 
+bool Scene::nudgeSelection(QKeyEvent *event)
+{
+    // Only plain / Shift+arrow — leave Ctrl/Alt combinations to other handlers.
+    if (event->modifiers().testFlag(Qt::ControlModifier) || event->modifiers().testFlag(Qt::AltModifier)) {
+        return false;
+    }
+
+    int dx = 0;
+    int dy = 0;
+    switch (event->key()) {
+    case Qt::Key_Left:  dx = -1; break;
+    case Qt::Key_Right: dx =  1; break;
+    case Qt::Key_Up:    dy = -1; break;
+    case Qt::Key_Down:  dy =  1; break;
+    default: return false;
+    }
+
+    const QList<GraphicElement *> selected = selectedElements();
+    if (selected.isEmpty()) {
+        return false; // nothing selected — let the arrow key scroll the view
+    }
+
+    // One grid cell by default; Shift jumps four cells for coarse positioning. Both are
+    // multiples of the grid, so grid-aligned elements stay aligned.
+    const int step = event->modifiers().testFlag(Qt::ShiftModifier) ? Constants::gridSize * 4 : Constants::gridSize;
+    const QPointF delta(dx * step, dy * step);
+
+    QList<QPointF> oldPositions;
+    oldPositions.reserve(selected.size());
+    for (auto *elm : selected) {
+        oldPositions.append(elm->pos());
+    }
+    for (auto *elm : selected) {
+        elm->setPos(elm->pos() + delta);
+    }
+
+    receiveCommand(new MoveCommand(selected, oldPositions, this));
+    resizeScene();
+    event->accept();
+    return true;
+}
+
 void Scene::keyPressEvent(QKeyEvent *event)
 {
     // Ignore auto-repeat: holding a trigger key must fire once, not oscillate an InputSwitch
     // (whose keyboard trigger toggles on every press) dozens of times a second.
     if (event->isAutoRepeat()) {
         QGraphicsScene::keyPressEvent(event);
+        return;
+    }
+
+    // Arrow keys nudge the current selection by a grid step (Shift = a larger step) as one
+    // undoable move; consumes the event only when it actually moves a selection.
+    if (nudgeSelection(event)) {
         return;
     }
 
