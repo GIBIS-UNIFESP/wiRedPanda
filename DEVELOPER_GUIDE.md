@@ -137,7 +137,11 @@ brew install cmake ninja qt6 ccache
 #### Windows
 
 1. Install [Qt 6.2+](https://www.qt.io/download) with Multimedia and SVG modules.
-2. Install [CMake](https://cmake.org/download/) and [Ninja](https://github.com/nicollasricas/ninja) (`choco install cmake ninja` or `scoop install cmake ninja`).
+2. Install [CMake](https://cmake.org/download/) and [Ninja](https://github.com/nicollasricas/ninja) (`choco install cmake ninja` or `scoop install cmake ninja`). Ninja matters even if
+   you only ever use Qt Creator: Qt Creator auto-detects a Kit for your Qt installation on its
+   own, but that Kit only defaults its CMake generator to Ninja once a `ninja` executable is
+   discoverable — without it, the Kit won't match this project's presets (which require Ninja)
+   and Qt Creator falls back to a slower, less reliable bootstrap path.
 3. Configure Visual Studio Build Tools 2022 or later.
 
 > **Note**: On Linux/macOS, always use `python3` (never `python`). The `python` command may not exist or point to Python 2.
@@ -1606,7 +1610,8 @@ Ordered by difficulty:
 
 | Error                                | Likely Cause                                    | Solution                                          |
 |--------------------------------------|-------------------------------------------------|---------------------------------------------------|
-| `Qt6 not found`                      | Qt not installed or not in PATH                 | Install Qt 6.2+ and set CMAKE_PREFIX_PATH         |
+| `Qt6 not found` in Qt Creator        | Ninja not installed (Kit generator mismatch)    | Install Ninja (see Windows setup above)           |
+| `Qt6 not found` on the command line  | Qt installed in a non-standard location         | Copy `CMakeUserPresets.json.example` to `CMakeUserPresets.json` and set `CMAKE_PREFIX_PATH` |
 | `Ninja not found`                    | Ninja not installed                             | `apt install ninja-build`                         |
 | `undefined reference to ...`         | .cpp file not listed in CMakeSources.cmake      | Add the file to the source list                   |
 | Tests crash with segfault            | Accessing destroyed object                      | Use ASAN: `cmake --preset asan`                   |
