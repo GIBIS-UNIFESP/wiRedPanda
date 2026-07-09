@@ -18,4 +18,7 @@ private slots:
     // Regression: a crafted drag payload with an implausible icFileName/blobName
     // length must be rejected, not crash or hang the drop handler.
     void testDropEventRejectsOversizedPayload();
+
+    // The drop hint appears only while a compatible IC is dragged over the zone.
+    void testHintShownOnCompatibleDragEnter();
 };
