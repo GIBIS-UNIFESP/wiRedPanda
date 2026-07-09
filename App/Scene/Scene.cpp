@@ -603,7 +603,7 @@ void Scene::contextMenu(const QPoint screenPos)
             emit contextMenuPos(screenPos, item);
         }
     } else {
-        // Right-click on empty canvas: show a minimal paste-only context menu
+        // Right-click on empty canvas: Paste plus Select all.
         QMenu menu;
         auto *pasteAction = menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/paste.svg")), tr("Paste"));
         const auto *mimeData = QApplication::clipboard()->mimeData();
@@ -613,6 +613,10 @@ void Scene::contextMenu(const QPoint screenPos)
         } else {
             pasteAction->setEnabled(false);
         }
+
+        auto *selectAllAction = menu.addAction(tr("Select all"));
+        selectAllAction->setEnabled(!elements().isEmpty());
+        connect(selectAllAction, &QAction::triggered, this, &Scene::selectAll);
 
         menu.exec(screenPos);
     }

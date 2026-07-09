@@ -46,6 +46,8 @@ void ElementContextMenu::exec(QPoint screenPos,
     QMenu menu;
     const QString changeAppearanceText(QObject::tr("Change appearance to ..."));
     const QString colorMenuText(QObject::tr("Change color to..."));
+    const QString flipHorizontalText(QObject::tr("Flip horizontally"));
+    const QString flipVerticalText(QObject::tr("Flip vertically"));
     const QString frequencyText(QObject::tr("Change frequency"));
     const QString morphMenuText(QObject::tr("Morph to..."));
     const QString renameText(QObject::tr("Rename"));
@@ -69,6 +71,8 @@ void ElementContextMenu::exec(QPoint screenPos,
 
     menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/rotateL.svg")), rotateLeftText)->setData(rotateLeftText);
     menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/rotateR.svg")), rotateRightText)->setData(rotateRightText);
+    menu.addAction(flipHorizontalText)->setData(flipHorizontalText);
+    menu.addAction(flipVerticalText)->setData(flipVerticalText);
 
     if (caps.hasFrequency) {
         menu.addAction(QIcon(ElementFactory::pixmap(ElementType::Clock)), frequencyText)->setData(frequencyText);
@@ -214,6 +218,16 @@ void ElementContextMenu::exec(QPoint screenPos,
 
     if (actionData == rotateRightText) {
         sendCommand(new RotateCommand(elements, 90.0, scene));
+        return;
+    }
+
+    if (actionData == flipHorizontalText) {
+        sendCommand(new FlipCommand(elements, 0, scene));
+        return;
+    }
+
+    if (actionData == flipVerticalText) {
+        sendCommand(new FlipCommand(elements, 1, scene));
         return;
     }
 
