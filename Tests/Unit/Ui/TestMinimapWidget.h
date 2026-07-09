@@ -12,8 +12,8 @@ class TestMinimapWidget : public QObject
 
 private slots:
 
-    void testComputeTransformVerticalLetterbox();
-    void testComputeTransformHorizontalLetterbox();
+    void testComputeTransformWideSourceFillsWidget();
+    void testComputeTransformTallSourceFillsWidget();
     void testComputeTransformNullScene();
     void testWidgetToSceneTopLeft();
     void testWidgetToSceneCenter();

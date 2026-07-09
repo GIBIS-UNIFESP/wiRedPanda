@@ -169,6 +169,22 @@ bool MinimapWidget::computeTransform(QRectF &srcOut, double &scaleOut, double &d
 
     const double w = static_cast<double>(width());
     const double h = static_cast<double>(height());
+
+    // Expand the source to the widget's aspect ratio (growing the deficient axis symmetrically
+    // about its centre) so the scene fills the whole widget instead of letterboxing with bars.
+    // This stays aspect-correct -- it just shows a little extra empty canvas on the shorter axis,
+    // and unlike cropping it never clips the overview. src is valid/non-empty (guarded above), so
+    // its width/height are > 0.
+    const double widgetAspect = w / h;
+    const double srcAspect = src.width() / src.height();
+    if (srcAspect < widgetAspect) {
+        const double grow = (src.height() * widgetAspect - src.width()) / 2.0;
+        src.adjust(-grow, 0.0, grow, 0.0);
+    } else if (srcAspect > widgetAspect) {
+        const double grow = (src.width() / widgetAspect - src.height()) / 2.0;
+        src.adjust(0.0, -grow, 0.0, grow);
+    }
+
     const double sx = src.width() > 0 ? w / src.width() : 1.0;
     const double sy = src.height() > 0 ? h / src.height() : 1.0;
     const double scale = qMin(sx, sy);

@@ -9,7 +9,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/UI/MinimapWidget.h"
 
-void TestMinimapWidget::testComputeTransformVerticalLetterbox()
+void TestMinimapWidget::testComputeTransformWideSourceFillsWidget()
 {
     WorkSpace workspace;
     auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 100));
@@ -18,7 +18,7 @@ void TestMinimapWidget::testComputeTransformVerticalLetterbox()
 
     // The minimap source is sceneRect ∪ itemsBoundingRect ∪ the visible viewport. Pin it with a
     // wide scene rect large enough to dominate the item and the (small, scale-1) viewport, so the
-    // fitted aspect is deterministic: wide content → width is the limiting dimension.
+    // expansion branch under test (source wider than the widget → grow height) is deterministic.
     workspace.scene()->setSceneRect(QRectF(0, 0, 8000, 2000));
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
@@ -27,34 +27,33 @@ void TestMinimapWidget::testComputeTransformVerticalLetterbox()
     double scale = 0.0, dx = 0.0, dy = 0.0, usedW = 0.0, usedH = 0.0;
     QVERIFY(minimap.computeTransform(src, scale, dx, dy, usedW, usedH));
 
-    // Ground truth computed exactly the way computeTransform() derives the source.
-    QRectF expectedSrc = workspace.scene()->sceneRect().united(workspace.scene()->itemsBoundingRect());
-    expectedSrc = expectedSrc.united(workspace.view()->mapToScene(workspace.view()->viewport()->rect()).boundingRect());
-    const double expectedScale = qMin(220.0 / expectedSrc.width(), 160.0 / expectedSrc.height());
-    const double expectedUsedW = expectedSrc.width() * expectedScale;
-    const double expectedUsedH = expectedSrc.height() * expectedScale;
+    // Pre-expansion union, derived the same way computeTransform() builds it.
+    QRectF unionSrc = workspace.scene()->sceneRect().united(workspace.scene()->itemsBoundingRect());
+    unionSrc = unionSrc.united(workspace.view()->mapToScene(workspace.view()->viewport()->rect()).boundingRect());
 
-    QCOMPARE(src, expectedSrc);
-    QCOMPARE(scale, expectedScale);
-    QCOMPARE(usedW, expectedUsedW);
-    QCOMPARE(usedH, expectedUsedH);
-    QCOMPARE(dx, (220.0 - expectedUsedW) / 2.0);
-    QCOMPARE(dy, (160.0 - expectedUsedH) / 2.0);
-
-    // Wide content relative to the widget's aspect ratio: width is the fitted dimension.
-    QCOMPARE(usedW, 220.0);
-    QVERIFY(usedH < 160.0);
+    // The source is expanded to the widget's aspect ratio so the scene fills the whole widget:
+    // no letterbox offsets, used size equals the widget size, and the source still contains the
+    // original (un-expanded) union.
+    QVERIFY(qFuzzyIsNull(dx));
+    QVERIFY(qFuzzyIsNull(dy));
+    QVERIFY(qAbs(usedW - 220.0) < 1e-6);
+    QVERIFY(qAbs(usedH - 160.0) < 1e-6);
+    QVERIFY(qAbs(src.width() / src.height() - 220.0 / 160.0) < 1e-6);
+    QVERIFY(src.contains(unionSrc));
+    // Wide source → grow height, width unchanged.
+    QVERIFY(qFuzzyCompare(src.width(), unionSrc.width()));
+    QVERIFY(src.height() > unionSrc.height());
 }
 
-void TestMinimapWidget::testComputeTransformHorizontalLetterbox()
+void TestMinimapWidget::testComputeTransformTallSourceFillsWidget()
 {
     WorkSpace workspace;
     auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 100, 400));
     rectItem->setPen(Qt::NoPen);
     workspace.scene()->addItem(rectItem);
 
-    // Tall scene rect that dominates the item and viewport (see the vertical case): tall content
-    // → height is the limiting dimension.
+    // Tall scene rect that dominates the item and viewport (see the wide case): exercises the
+    // other expansion branch (source taller than the widget → grow width).
     workspace.scene()->setSceneRect(QRectF(0, 0, 2000, 8000));
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
@@ -63,23 +62,18 @@ void TestMinimapWidget::testComputeTransformHorizontalLetterbox()
     double scale = 0.0, dx = 0.0, dy = 0.0, usedW = 0.0, usedH = 0.0;
     QVERIFY(minimap.computeTransform(src, scale, dx, dy, usedW, usedH));
 
-    // Ground truth computed exactly the way computeTransform() derives the source.
-    QRectF expectedSrc = workspace.scene()->sceneRect().united(workspace.scene()->itemsBoundingRect());
-    expectedSrc = expectedSrc.united(workspace.view()->mapToScene(workspace.view()->viewport()->rect()).boundingRect());
-    const double expectedScale = qMin(220.0 / expectedSrc.width(), 160.0 / expectedSrc.height());
-    const double expectedUsedW = expectedSrc.width() * expectedScale;
-    const double expectedUsedH = expectedSrc.height() * expectedScale;
+    QRectF unionSrc = workspace.scene()->sceneRect().united(workspace.scene()->itemsBoundingRect());
+    unionSrc = unionSrc.united(workspace.view()->mapToScene(workspace.view()->viewport()->rect()).boundingRect());
 
-    QCOMPARE(src, expectedSrc);
-    QCOMPARE(scale, expectedScale);
-    QCOMPARE(usedW, expectedUsedW);
-    QCOMPARE(usedH, expectedUsedH);
-    QCOMPARE(dx, (220.0 - expectedUsedW) / 2.0);
-    QCOMPARE(dy, (160.0 - expectedUsedH) / 2.0);
-
-    // Tall content relative to the widget's aspect ratio: height is the fitted dimension.
-    QCOMPARE(usedH, 160.0);
-    QVERIFY(usedW < 220.0);
+    QVERIFY(qFuzzyIsNull(dx));
+    QVERIFY(qFuzzyIsNull(dy));
+    QVERIFY(qAbs(usedW - 220.0) < 1e-6);
+    QVERIFY(qAbs(usedH - 160.0) < 1e-6);
+    QVERIFY(qAbs(src.width() / src.height() - 220.0 / 160.0) < 1e-6);
+    QVERIFY(src.contains(unionSrc));
+    // Tall source → grow width, height unchanged.
+    QVERIFY(qFuzzyCompare(src.height(), unionSrc.height()));
+    QVERIFY(src.width() > unionSrc.width());
 }
 
 void TestMinimapWidget::testComputeTransformNullScene()
