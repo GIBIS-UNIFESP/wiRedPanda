@@ -42,6 +42,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionPaste = new QAction(MainWindow);
     actionPaste->setObjectName("actionPaste");
     actionPaste->setIcon(QIcon(":/Interface/Toolbar/paste.svg"));
+    actionDuplicate = new QAction(MainWindow);
+    actionDuplicate->setObjectName("actionDuplicate");
     actionDelete = new QAction(MainWindow);
     actionDelete->setObjectName("actionDelete");
     QIcon icon6;
@@ -677,6 +679,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuEdit->addAction(actionCut);
     menuEdit->addAction(actionCopy);
     menuEdit->addAction(actionPaste);
+    menuEdit->addAction(actionDuplicate);
     menuEdit->addAction(actionDelete);
     menuEdit->addSeparator();
     menuEdit->addAction(actionRename);
@@ -749,6 +752,8 @@ void MainWindowUi::retranslateUi()
     actionCopy->setShortcut(QStringLiteral("Ctrl+C"));
     actionPaste->setText(QCoreApplication::translate("MainWindow", "&Paste"));
     actionPaste->setShortcut(QStringLiteral("Ctrl+V"));
+    actionDuplicate->setText(QCoreApplication::translate("MainWindow", "Dupli&cate"));
+    actionDuplicate->setShortcut(QStringLiteral("Ctrl+D"));
     actionDelete->setText(QCoreApplication::translate("MainWindow", "&Delete"));
     actionDelete->setShortcut(QStringLiteral("Del"));
     actionNew->setText(QCoreApplication::translate("MainWindow", "&New"));

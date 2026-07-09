@@ -636,6 +636,12 @@ void Scene::pasteAction()
     m_clipboardManager.paste();
 }
 
+void Scene::duplicateAction()
+{
+    sentryBreadcrumb("clipboard", QStringLiteral("Duplicate"));
+    m_clipboardManager.duplicate();
+}
+
 void Scene::deleteAction()
 {
     sentryBreadcrumb("ui", QStringLiteral("Delete"));

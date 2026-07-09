@@ -52,6 +52,7 @@ private slots:
     void testDeleteViaKeyboard();
     void testDeleteViaKeyboardSurvivesMistranslatedShortcut();
     void testCopyPasteViaKeyboard();
+    void testDuplicateViaKeyboard();
     void testCutPasteViaKeyboard();
     void testUndoRedoViaKeyboard();
     void testSelectAllViaKeyboard();

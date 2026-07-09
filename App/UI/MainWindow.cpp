@@ -430,6 +430,7 @@ void MainWindow::setupConnections()
     connectSceneAction(m_ui->actionCut,            &Scene::cutAction);
     connectSceneAction(m_ui->actionDelete,         &Scene::deleteAction);
     connectSceneAction(m_ui->actionPaste,          &Scene::pasteAction);
+    connectSceneAction(m_ui->actionDuplicate,      &Scene::duplicateAction);
 }
 
 void MainWindow::connectSceneAction(QAction *action, void (Scene::*method)())

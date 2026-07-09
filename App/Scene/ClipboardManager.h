@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QList>
@@ -44,6 +46,10 @@ public:
     /// Pastes items from the system clipboard into the scene.
     void paste();
 
+    /// Duplicates the current selection in place (a grid step down-right), without touching
+    /// the system clipboard, as a single undoable step; the copies become the new selection.
+    void duplicate();
+
     /**
      * \brief Returns whether \a mimeData carries circuit data paste() accepts.
      * \details Single source of truth for paste gating (context menu, future
@@ -76,8 +82,11 @@ private:
     /// Serializes \a items and then deletes them from the scene.
     void serializeAndDelete(const QList<QGraphicsItem *> &items, QDataStream &stream);
 
-    /// Deserializes from \a stream and adds to the scene with a positional offset.
-    void deserializeAndAdd(QDataStream &stream, const QVersionNumber &version);
+    /// Deserializes from \a stream and adds to the scene. Without \a fixedOffset the new
+    /// items are placed relative to the cursor (paste); with it they are shifted by exactly
+    /// that vector from the originals (duplicate). Returns the items added.
+    QList<QGraphicsItem *> deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
+                                             std::optional<QPointF> fixedOffset = std::nullopt);
 
     Scene *m_scene = nullptr;
 };
