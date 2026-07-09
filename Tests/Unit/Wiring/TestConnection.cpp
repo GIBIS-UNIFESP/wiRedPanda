@@ -3,7 +3,11 @@
 
 #include "Tests/Unit/Wiring/TestConnection.h"
 
+#include <memory>
+
 #include "App/Core/Application.h"
+#include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -59,10 +63,23 @@ void TestConnection::testConnectionSelection()
 
 void TestConnection::testConnectionDestruction()
 {
+    // Destroying a connection must detach it from both of its ports, leaving no dangling
+    // pointer behind in the ports' connection lists.
+    auto inputSwitch = std::make_unique<InputSwitch>();
+    auto andGate = std::make_unique<And>();
+
+    OutputPort *outPort = inputSwitch->outputPort(0);
+    InputPort *inPort = andGate->inputPort(0);
+    QVERIFY(outPort && inPort);
+
     {
         Connection connection;
-        connection.setStartPos({10, 20});
-        connection.setEndPos({30, 40});
-    }
-    QVERIFY(true);
+        connection.setStartPort(outPort);
+        connection.setEndPort(inPort);
+        QVERIFY(outPort->connections().contains(&connection));
+        QVERIFY(inPort->connections().contains(&connection));
+    } // connection destroyed here
+
+    QVERIFY(outPort->connections().isEmpty());
+    QVERIFY(inPort->connections().isEmpty());
 }

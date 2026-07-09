@@ -9,6 +9,7 @@
 #include <QDropEvent>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QPoint>
 #include <QSignalSpy>
 #include <QTimer>
 

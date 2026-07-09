@@ -136,9 +136,18 @@ void TestDolphinSerializer::testEmptyModelBinary()
     model.setRowCount(0);
     model.setColumnCount(4);
     QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-    DolphinSerializer::saveBinary(stream, &model, 0);
-    QVERIFY(true);
+    {
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        DolphinSerializer::saveBinary(stream, &model, 0);
+    }
+    QVERIFY(!data.isEmpty());
+
+    // A zero-input model must round-trip to zero input ports while preserving the column
+    // count, without throwing.
+    QDataStream readStream(&data, QIODevice::ReadOnly);
+    const auto result = DolphinSerializer::loadBinary(readStream, 0);
+    QCOMPARE(result.inputPorts, 0);
+    QCOMPARE(result.columns, 4);
 }
 
 void TestDolphinSerializer::testEmptyModelCSV()
@@ -157,8 +166,9 @@ void TestDolphinSerializer::testEmptyModelCSV()
 
 void TestDolphinSerializer::testCorruptedDataHandling()
 {
-    // This literal's bytes 8-15 (the `cols` field) decode as a big-endian qint64
-    // far beyond SignalModel::kMaxColumns, so loadBinary() deterministically throws.
+    // Corrupt input must be rejected with an exception, not silently accepted or crash. This
+    // literal's bytes 8-15 (the `cols` field) decode as a big-endian qint64 far beyond
+    // SignalModel::kMaxColumns, so loadBinary() deterministically throws.
     QByteArray corrupt("This is corrupted binary data !!!");
     QDataStream stream(&corrupt, QIODevice::ReadOnly);
     QVERIFY_THROWS(std::exception, DolphinSerializer::loadBinary(stream, 1));

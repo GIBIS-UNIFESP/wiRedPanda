@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Serialization/TestFileUtils.h"
 
+#include <QDir>
 #include <QFile>
 #include <QTemporaryDir>
 
@@ -11,10 +12,11 @@
 
 void TestFileUtils::testCopyToDirEmptyPath()
 {
-    // copyToDir with empty source is a no-op (void return)
+    // An empty source path is a no-op: nothing is written into the destination directory.
     QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
     FileUtils::copyToDir("", tempDir.path());
-    QVERIFY(true); // no crash
+    QVERIFY(QDir(tempDir.path()).entryList(QDir::Files | QDir::NoDotAndDotDot).isEmpty());
 }
 
 void TestFileUtils::testCopyToDirValidFile()
@@ -57,10 +59,12 @@ void TestFileUtils::testCopyToDirFileAlreadyExists()
 
 void TestFileUtils::testCopyToDirResourcePath()
 {
-    // copyToDir with resource path (":/" prefix) is a no-op
+    // A ":/"-prefixed resource path is a no-op: resources are already embedded, so nothing
+    // is copied into the destination directory.
     QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
     FileUtils::copyToDir(":/nonexistent", tempDir.path());
-    QVERIFY(true); // no crash
+    QVERIFY(QDir(tempDir.path()).entryList(QDir::Files | QDir::NoDotAndDotDot).isEmpty());
 }
 
 void TestFileUtils::testCopyToDirThrowsOnFailure()

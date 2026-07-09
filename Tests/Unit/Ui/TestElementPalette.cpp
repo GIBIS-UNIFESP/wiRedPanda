@@ -3,7 +3,12 @@
 
 #include "Tests/Unit/Ui/TestElementPalette.h"
 
+#include <QMainWindow>
+#include <QTabWidget>
+
+#include "App/Element/ElementLabel.h"
 #include "App/UI/ElementPalette.h"
+#include "App/UI/MainWindowUI.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestElementPalette::testPaletteSearch()
@@ -33,6 +38,16 @@ void TestElementPalette::testPaletteSearch()
 
 void TestElementPalette::testPaletteRebuild()
 {
-    // ElementPalette requires MainWindowUi — not available in unit tests
-    QVERIFY(true);
+    // ElementPalette drives the host window's MainWindowUi widgets; build a real one on a
+    // throwaway QMainWindow (no MainWindow needed) and verify populate() fills the category
+    // tabs with draggable ElementLabel widgets.
+    QMainWindow window;
+    MainWindowUi ui;
+    ui.setupUi(&window);
+
+    ElementPalette palette(&ui);
+    palette.populate();
+
+    QVERIFY(ui.tabElements->count() > 0);
+    QVERIFY(!window.findChildren<ElementLabel *>().isEmpty());
 }

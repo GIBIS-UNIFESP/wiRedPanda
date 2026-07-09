@@ -5,6 +5,8 @@
 
 #include <algorithm>
 
+#include <QComboBox>
+#include <QLabel>
 #include <QToolButton>
 
 #include "App/Element/GraphicElements/And.h"
@@ -18,18 +20,32 @@ void TestElementEditor::testCreation()
 {
     WorkSpace workspace;
     ElementEditor editor(&workspace);
-    QVERIFY(true);
+
+    // The constructor builds the full property-editor widget tree.
+    QVERIFY(editor.findChild<QComboBox *>("comboBoxColor"));
+    QVERIFY(editor.findChild<QComboBox *>("comboBoxInputSize"));
+    QVERIFY(editor.findChild<QWidget *>("widgetAppearanceStates"));
 }
 
 void TestElementEditor::testSetScene()
 {
     WorkSpace workspace;
+    auto *led = new Led;
+    workspace.scene()->addItem(led);
+
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // Set to nullptr to exercise disconnect path
+    // Connected: selecting an element shows the editor.
+    workspace.scene()->clearSelection();
+    led->setSelected(true);
+    QVERIFY(!editor.isHidden());
+
+    // Disconnected: a further scene selection change is ignored — clearing the selection
+    // would hide the editor if it were still connected to the scene.
     editor.setScene(nullptr);
-    QVERIFY(true);
+    workspace.scene()->clearSelection();
+    QVERIFY(!editor.isHidden());
 }
 
 void TestElementEditor::testRetranslateUi()
@@ -37,19 +53,31 @@ void TestElementEditor::testRetranslateUi()
     WorkSpace workspace;
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
+
     editor.retranslateUi();
-    QVERIFY(true);
+
+    // retranslateUi() (re)applies the static widget labels.
+    auto *labelColor = editor.findChild<QLabel *>("labelColor");
+    QVERIFY(labelColor);
+    QCOMPARE(labelColor->text(), QStringLiteral("Color:"));
 }
 
 void TestElementEditor::testSetCurrentElementsEmpty()
 {
     WorkSpace workspace;
+    auto *andGate = new And;
+    workspace.scene()->addItem(andGate);
+
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // Empty selection — triggers selectionChanged with no elements
+    // A non-empty selection shows the editor...
+    andGate->setSelected(true);
+    QVERIFY(!editor.isHidden());
+
+    // ...and clearing the selection hides it (setCurrentElements({}) calls hide()).
     workspace.scene()->clearSelection();
-    QVERIFY(true);
+    QVERIFY(editor.isHidden());
 }
 
 void TestElementEditor::testSetCurrentElementsGate()
@@ -61,10 +89,14 @@ void TestElementEditor::testSetCurrentElementsGate()
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // Select the gate — triggers selectionChanged with input-count UI
     workspace.scene()->clearSelection();
     andGate->setSelected(true);
-    QVERIFY(true);
+
+    // Selecting a gate shows the editor and enables the input-size selector (And is 2..8 inputs).
+    QVERIFY(!editor.isHidden());
+    auto *inputSizeCombo = editor.findChild<QComboBox *>("comboBoxInputSize");
+    QVERIFY(inputSizeCombo);
+    QVERIFY(inputSizeCombo->isEnabled());
 }
 
 void TestElementEditor::testSetCurrentElementsLed()
@@ -128,9 +160,15 @@ void TestElementEditor::testFillColorComboBox()
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
 
-    // fillColorComboBox rebuilds the color dropdown
     editor.fillColorComboBox();
-    QVERIFY(true);
+
+    // The dropdown holds the five LED colours; item data carries the untranslated English
+    // name used internally by GraphicElement::setColor().
+    auto *combo = editor.findChild<QComboBox *>("comboBoxColor");
+    QVERIFY(combo);
+    QCOMPARE(combo->count(), 5);
+    QCOMPARE(combo->itemData(0).toString(), QStringLiteral("White"));
+    QCOMPARE(combo->itemData(4).toString(), QStringLiteral("Purple"));
 }
 
 void TestElementEditor::testSelectionDoesNotPushPortSizeCommandB21()
