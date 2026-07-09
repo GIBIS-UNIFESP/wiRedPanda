@@ -20,8 +20,10 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QIcon>
+#include <QKeySequence>
 #include <QLocale>
 #include <QLoggingCategory>
+#include <QMap>
 #include <QMessageBox>
 #include <QPixmapCache>
 #include <QPushButton>
@@ -565,33 +567,61 @@ void MainWindow::on_actionAbout_triggered()
     });
 }
 
+QString MainWindow::shortcutsHelpHtml() const
+{
+    // Keyed by label so rows sort alphabetically and any duplicate collapses.
+    QMap<QString, QString> byLabel;
+
+    // Undo/Redo belong to the active Scene's stack, not this window, so findChildren()
+    // can't see them; add them explicitly with the platform-standard chords.
+    byLabel.insert(tr("Redo"), QKeySequence(QKeySequence::Redo).toString(QKeySequence::NativeText));
+    byLabel.insert(tr("Undo"), QKeySequence(QKeySequence::Undo).toString(QKeySequence::NativeText));
+
+    const auto actions = findChildren<QAction *>();
+    for (const auto *action : actions) {
+        const QKeySequence seq = action->shortcut();
+        if (seq.isEmpty()) {
+            continue;
+        }
+        QString label = action->text();
+        label.remove(QLatin1Char('&')); // strip menu mnemonics
+        if (label.endsWith(QLatin1String("..."))) {
+            label.chop(3);
+        }
+        label = label.trimmed();
+        if (!label.isEmpty()) {
+            byLabel.insert(label, seq.toString(QKeySequence::NativeText));
+        }
+    }
+
+    QString rows;
+    for (auto it = byLabel.cbegin(); it != byLabel.cend(); ++it) {
+        rows += QStringLiteral("<tr><td><b>%1</b>&nbsp;&nbsp;&nbsp;</td><td>%2</td></tr>")
+                    .arg(it.value().toHtmlEscaped(), it.key().toHtmlEscaped());
+    }
+
+    return tr("<h1>Keyboard Shortcuts</h1>"
+              "<table>%1</table>"
+              "<h1>Element Property Navigation</h1>"
+              "<ul style=\"list-style:none;\">"
+              "<li> [ / ] : Previous / next primary property </li>"
+              "<li> { / } : Previous / next secondary property </li>"
+              "<li> &lt; / &gt; : Morph to previous / next element </li>"
+              "</ul>"
+              "<h1>General Tips</h1>"
+              "<ul style=\"list-style:none;\">"
+              "<li> Double-click a wire to create a node </li>"
+              "<li> Drag an element from the left panel onto the canvas to add it </li>"
+              "<li> Nudge the selection with the arrow keys (hold Shift for larger steps) </li>"
+              "<li> Drop a .panda file onto the canvas to open it </li>"
+              "</ul>")
+        .arg(rows);
+}
+
 void MainWindow::on_actionShortcuts_and_Tips_triggered()
 {
     Application::guardedSlot(this, [this] {
-        QMessageBox::information(this,
-            tr("Shortcuts and Tips"),
-            tr("<h1>Canvas Shortcuts</h1>"
-               "<ul style=\"list-style:none;\">"
-               "<li> Ctrl+= : Zoom in </li>"
-               "<li> Ctrl+- : Zoom out </li>"
-               "<li> Ctrl+1 : Hide/Show wires </li>"
-               "<li> Ctrl+2 : Hide/Show gates </li>"
-               "<li> Ctrl+F : Search elements </li>"
-               "<li> Ctrl+W : Open beWaveDolphin </li>"
-               "<li> Ctrl+S : Save project </li>"
-               "<li> Ctrl+Q : Exit wiRedPanda </li>"
-               "<li> F5 : Start/Pause simulation </li>"
-               "<li> [ : Previous primary element property </li>"
-               "<li> ] : Next primary element property </li>"
-               "<li> { : Previous secondary element property </li>"
-               "<li> } : Next secondary element property </li>"
-               "<li> &lt; : Morph to previous element </li>"
-               "<li> &gt; : Morph to next element </li>"
-               "</ul>"
-
-               "<h1>General Tips</h1>"
-               "<p>Double-click on a wire to create a node</p>"
-            ));
+        QMessageBox::information(this, tr("Shortcuts and Tips"), shortcutsHelpHtml());
     });
 }
 
