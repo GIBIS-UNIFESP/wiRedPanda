@@ -760,7 +760,8 @@ void MainWindowUi::retranslateUi()
     actionNew->setText(QCoreApplication::translate("MainWindow", "&New"));
     actionNew->setShortcut(QStringLiteral("Ctrl+N"));
     actionZoomIn->setText(QCoreApplication::translate("MainWindow", "Zoom &in"));
-    actionZoomIn->setShortcut(QStringLiteral("Ctrl+="));
+    // Accept both the unshifted "Ctrl+=" and the "Ctrl++" most users reach for.
+    actionZoomIn->setShortcuts({QKeySequence(QStringLiteral("Ctrl+=")), QKeySequence(QStringLiteral("Ctrl++"))});
     actionZoomOut->setText(QCoreApplication::translate("MainWindow", "Zoom &out"));
     actionZoomOut->setShortcut(QStringLiteral("Ctrl+-"));
     actionWires->setText(QCoreApplication::translate("MainWindow", "&Wires"));
