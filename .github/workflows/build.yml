@@ -130,6 +130,20 @@ jobs:
       run: |
         ctest --preset release -V -LE gui
 
+    # The gui-labeled suite (TestMainWindowGui's ~120 cases, TestDialogs,
+    # TestFileDialogProvider, TestBewavedDolphinGui) is otherwise never executed in CI: every
+    # ctest invocation across the workflows passes -LE gui. The test harness forces the
+    # offscreen QPA platform on Linux (TestUtils::setupTestEnvironment), so these run headless
+    # with no display. -FS skips the non_gui_complete fixture so only the gui tests run here —
+    # the non-GUI suite already ran in the step above.
+    - name: Test (GUI, headless)
+      if: runner.os == 'Linux'
+      timeout-minutes: 10
+      env:
+        QT_FORCE_STDERR_LOGGING: 1
+      run: |
+        ctest --preset release -V -L gui -FS non_gui_complete
+
     - name: Smoke-test cmake --install
       shell: bash
       run: |
