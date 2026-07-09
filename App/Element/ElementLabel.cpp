@@ -3,6 +3,7 @@
 
 #include "App/Element/ElementLabel.h"
 
+#include <QApplication>
 #include <QDrag>
 #include <QFileInfo>
 #include <QHBoxLayout>
@@ -54,8 +55,31 @@ void ElementLabel::updateName()
 
 void ElementLabel::mousePressEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event)
+    // Only remember where the press started. Deferring the drag until the pointer
+    // actually moves leaves the press/release free for double-click detection, which a
+    // blocking drag->exec() on press would otherwise swallow.
+    if (event->button() == Qt::LeftButton) {
+        m_dragStartPos = event->pos();
+    }
+}
+
+void ElementLabel::mouseMoveEvent(QMouseEvent *event)
+{
+    if (!(event->buttons() & Qt::LeftButton)) {
+        return;
+    }
+    if ((event->pos() - m_dragStartPos).manhattanLength() < QApplication::startDragDistance()) {
+        return;
+    }
     startDrag();
+}
+
+void ElementLabel::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event)
+    // Drag-free shortcut: add this element straight to the active scene. mimeData()
+    // hands off a freshly-allocated payload the scene takes ownership of.
+    emit addToSceneRequested(mimeData());
 }
 
 const ElementType &ElementLabel::elementType() const

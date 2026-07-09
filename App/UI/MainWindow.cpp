@@ -397,7 +397,16 @@ void MainWindow::setupConnections()
     connect(m_ui->actionZoomIn,                &QAction::triggered,       this,                &MainWindow::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,               &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
     connect(m_palette,                         &ElementPalette::addElementRequested, this, [this](QMimeData *mimeData) {
-        if (currentTab()) currentTab()->scene()->addItem(mimeData);
+        auto *tab = currentTab();
+        if (!tab) {
+            delete mimeData; // no scene to take ownership; don't leak the payload
+            return;
+        }
+        // Land the element at the centre of what the user is currently viewing, not the
+        // scene origin, so it's visible however the canvas is scrolled or zoomed.
+        auto *view = tab->view();
+        const QPointF center = view->mapToScene(view->viewport()->rect().center());
+        tab->scene()->addItem(mimeData, center);
     });
     connect(m_ui->pushButtonAddIC,             &QPushButton::clicked,     m_icController,      &ICController::addICFromFile);
     connect(m_ui->pushButtonRemoveIC,          &QPushButton::clicked,     m_icController,      &ICController::showRemoveICHint);

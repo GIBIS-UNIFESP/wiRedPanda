@@ -10,6 +10,7 @@
 #include <QFrame>
 #include <QLabel>
 #include <QMimeData>
+#include <QPoint>
 
 #include "App/Core/Enums.h"
 
@@ -69,13 +70,26 @@ public:
     /// Updates colors to match the current application theme.
     void updateTheme();
 
+signals:
+    /// Emitted on double-click so the palette can add this element to the active scene
+    /// without a drag. Carries a fresh MIME payload (ownership passes to the receiver).
+    void addToSceneRequested(QMimeData *mimeData);
+
 protected:
-    /// Starts a drag operation when the user clicks on this label.
+    /// Records the press position; the drag itself only begins once the pointer moves
+    /// (see mouseMoveEvent) so a double-click isn't pre-empted by a drag on the press.
     void mousePressEvent(QMouseEvent *event) override;
+
+    /// Starts the drag once the pointer moves past the platform drag threshold.
+    void mouseMoveEvent(QMouseEvent *event) override;
+
+    /// Requests adding this element to the active scene (drag-free shortcut).
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private:
     // --- Members ---
 
+    QPoint m_dragStartPos;            ///< Left-press position; drag starts when the pointer leaves it.
     ElementType m_elementType = ElementType::Unknown;
     QLabel m_iconLabel;
     QLabel m_nameLabel;

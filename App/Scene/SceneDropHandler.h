@@ -7,6 +7,10 @@
 
 #pragma once
 
+#include <optional>
+
+#include <QPointF>
+
 class QGraphicsSceneDragDropEvent;
 class QMimeData;
 class Scene;
@@ -35,8 +39,10 @@ public:
     /// Re-instantiates a clone-dragged selection at the drop position.
     void handleCloneDrag(QGraphicsSceneDragDropEvent *event);
 
-    /// Adds a new element from \a mimeData (palette drop path); takes ownership of \a mimeData.
-    void addFromMimeData(QMimeData *mimeData);
+    /// Adds a new element from \a mimeData (palette add-without-drag path); takes ownership
+    /// of \a mimeData. If \a scenePos is set, the element is placed there (snapped to the
+    /// grid by the scene); otherwise it keeps its default position.
+    void addFromMimeData(QMimeData *mimeData, std::optional<QPointF> scenePos = std::nullopt);
 
 private:
     Scene *m_scene;

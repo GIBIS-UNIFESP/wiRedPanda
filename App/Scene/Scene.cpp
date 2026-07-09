@@ -949,7 +949,7 @@ void Scene::helpEvent(QGraphicsSceneHelpEvent *event)
     QGraphicsScene::helpEvent(event);
 }
 
-void Scene::addItem(QMimeData *mimeData)
+void Scene::addItem(QMimeData *mimeData, std::optional<QPointF> scenePos)
 {
-    m_dropHandler.addFromMimeData(mimeData);
+    m_dropHandler.addFromMimeData(mimeData, scenePos);
 }

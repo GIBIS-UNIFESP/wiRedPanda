@@ -122,7 +122,7 @@ void SceneDropHandler::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
     m_scene->resizeScene();
 }
 
-void SceneDropHandler::addFromMimeData(QMimeData *mimeData)
+void SceneDropHandler::addFromMimeData(QMimeData *mimeData, std::optional<QPointF> scenePos)
 {
     QByteArray itemData = mimeData->hasFormat(MimeType::DragDrop)
         ? mimeData->data(MimeType::DragDrop)
@@ -157,4 +157,11 @@ void SceneDropHandler::addFromMimeData(QMimeData *mimeData)
 
     qCDebug(zero) << "Setting created element as selected.";
     raw->setSelected(true);
+
+    // Add-without-drag (double-click / search): drop it where the caller asked (the view
+    // centre) so it lands in sight instead of at the scene origin. The grid snap in
+    // GraphicElement::itemChange rounds the final position.
+    if (scenePos) {
+        raw->setPos(*scenePos);
+    }
 }
