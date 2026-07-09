@@ -84,3 +84,34 @@ void TestFileUtils::testCopyToDirThrowsOnFailure()
     const QString badDest = sourceDir.path() + "/no/such/subdirectory";
     QVERIFY_THROWS(std::exception, FileUtils::copyToDir(sourceFile, badDest));
 }
+
+void TestFileUtils::testFilesHaveSameContent()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    const auto write = [&](const QString &path, const QByteArray &bytes) {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write(bytes);
+        file.close();
+    };
+
+    const QString original          = dir.path() + "/a.panda";
+    const QString identicalCopy     = dir.path() + "/copy.panda";
+    const QString differentSameSize = dir.path() + "/b.panda";
+    const QString differentSize     = dir.path() + "/c.panda";
+    write(original, "hello world");
+    write(identicalCopy, "hello world");
+    write(differentSameSize, "HELLO WORLD"); // same length, different bytes
+    write(differentSize, "hi");
+
+    // The very same file on disk.
+    QVERIFY(FileUtils::filesHaveSameContent(QFileInfo(original), QFileInfo(original)));
+    // A different path with identical bytes — a harmless re-add, not a collision.
+    QVERIFY(FileUtils::filesHaveSameContent(QFileInfo(original), QFileInfo(identicalCopy)));
+    // Same size but different content — the silent-mis-bind case that must be flagged.
+    QVERIFY(!FileUtils::filesHaveSameContent(QFileInfo(original), QFileInfo(differentSameSize)));
+    // Different size.
+    QVERIFY(!FileUtils::filesHaveSameContent(QFileInfo(original), QFileInfo(differentSize)));
+}

@@ -10,12 +10,14 @@
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QPushButton>
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/IC.h"
+#include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ICRegistry.h"
@@ -79,8 +81,31 @@ void ICController::addICFromFile()
         // Copy the chosen .panda file (and any ICs it depends on transitively)
         // into the project's directory so that relative paths work when reopened.
         for (const auto &file : files) {
-            QFileInfo destPath(m_host.currentDir().absolutePath() + "/" + QFileInfo(file).fileName());
-            Serialization::copyPandaFile(QFileInfo(file), destPath);
+            const QFileInfo srcInfo(file);
+            QFileInfo destPath(m_host.currentDir().absolutePath() + "/" + srcInfo.fileName());
+
+            // A *different* file with the same name already in the project folder would make
+            // copyPandaFile() skip the copy, silently binding the IC to that pre-existing
+            // file's content. Warn and let the user replace it or keep the existing one.
+            if (destPath.exists() && !FileUtils::filesHaveSameContent(srcInfo, destPath)) {
+                QMessageBox box(QMessageBox::Warning, tr("File name conflict"),
+                    tr("A different file named \"%1\" already exists in the project folder.").arg(srcInfo.fileName()),
+                    QMessageBox::NoButton, m_host.widget());
+                auto *replaceButton = box.addButton(tr("Replace"), QMessageBox::AcceptRole);
+                auto *keepButton = box.addButton(tr("Keep Existing"), QMessageBox::RejectRole);
+                box.addButton(QMessageBox::Cancel);
+                box.exec();
+
+                if (box.clickedButton() == replaceButton) {
+                    QFile::remove(destPath.absoluteFilePath()); // let copyPandaFile write the new file
+                } else if (box.clickedButton() == keepButton) {
+                    continue; // bind to the existing file; don't overwrite or pull in the source's deps
+                } else {
+                    return; // Cancel
+                }
+            }
+
+            Serialization::copyPandaFile(srcInfo, destPath);
         }
 
         m_host.palette()->updateICList(m_host.icListFile());
