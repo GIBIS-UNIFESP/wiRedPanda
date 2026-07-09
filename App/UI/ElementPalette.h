@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QStringList>
 
+class ElementLabel;
 class MainWindowUi;
 class QLayout;
 class QMimeData;
@@ -95,6 +96,9 @@ private:
 
     /// Creates ElementLabel widgets for each element in \a names and appends them to \a layout.
     void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
+    /// Routes \a label's double-click (addToSceneRequested) to addElementRequested so a
+    /// double-click adds the element to the active scene, mirroring a drag.
+    void connectDoubleClickAdd(ElementLabel *label);
     /// Loads category icons from the theme and applies them to the tab bar.
     void setupTabIcons();
     /// Returns the tab index whose widget has the given QObject \a objectName, or -1.

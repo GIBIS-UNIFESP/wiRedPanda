@@ -10,8 +10,10 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QMessageBox>
+#include <QMouseEvent>
 #include <QScrollBar>
 #include <QShortcut>
+#include <QSignalSpy>
 #include <QSlider>
 #include <QTabWidget>
 #include <QTest>
@@ -24,6 +26,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Element/ElementLabel.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
@@ -1076,6 +1079,59 @@ void TestMainWindowGui::testShortcutsDialog()
     auto *action = window->findChild<QAction *>("actionShortcutsAndTips");
     QVERIFY2(action, "actionShortcutsAndTips not found");
     action->trigger();
+}
+
+void TestMainWindowGui::testPaletteDoubleClickAddsElement()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    auto *view  = window->currentTab()->view();
+
+    // Give the window a real size so the active palette tab's labels are laid out and
+    // hit-testable, then pick one that is actually visible to double-click.
+    window->resize(1400, 900);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    QCoreApplication::processEvents();
+    ElementLabel *label = nullptr;
+    for (auto *candidate : window->findChildren<ElementLabel *>()) {
+        if (candidate->isVisible()) {
+            label = candidate;
+            break;
+        }
+    }
+    QVERIFY2(label, "no visible ElementLabel in the palette");
+
+    // Scroll the canvas away from the origin so centre-placement is distinguishable
+    // from the default (0,0) position.
+    view->centerOn(600, 400);
+    const QPointF viewCenter = view->mapToScene(view->viewport()->rect().center());
+
+    const auto before = scene->elements();
+
+    // Double-click the palette entry. The press no longer starts a (blocking) drag, so the
+    // double-click is detected and emits the add request.
+    QSignalSpy spy(label, &ElementLabel::addToSceneRequested);
+    QTest::mouseDClick(label, Qt::LeftButton, Qt::NoModifier, QPoint(10, 10));
+    QCoreApplication::processEvents();
+    QCOMPARE(spy.count(), 1); // the double-click emitted the add request
+
+    const auto after = scene->elements();
+    QCOMPARE(after.size(), before.size() + 1);
+
+    GraphicElement *added = nullptr;
+    for (auto *element : after) {
+        if (!before.contains(element)) {
+            added = element;
+            break;
+        }
+    }
+    QVERIFY(added);
+    QVERIFY2((added->pos() - viewCenter).manhattanLength() <= 32.0,
+             "double-clicked element should be placed at the view centre, not the origin");
+
+    // The add is a single undoable step.
+    QTest::keyClick(window.get(), Qt::Key_Z, Qt::ControlModifier);
+    QCOMPARE(static_cast<int>(scene->elements().size()), static_cast<int>(before.size()));
 }
 
 // ===========================================================================

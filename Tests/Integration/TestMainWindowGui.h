@@ -171,6 +171,7 @@ private slots:
 
     void testDoubleClickWireSplit();
     void testDragElementFromPalette();
+    void testPaletteDoubleClickAddsElement();
 
     // --- View/Help operations ---
 

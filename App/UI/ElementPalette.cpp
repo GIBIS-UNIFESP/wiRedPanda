@@ -88,9 +88,11 @@ void ElementPalette::updateICList(const QFileInfo &currentFile)
             const QPixmap pixmap(":/Components/Logic/ic-panda.svg");
 
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, m_ui->scrollAreaWidgetContents_IC);
+            connectDoubleClickAdd(item);
             m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
 
             auto *item2 = new ElementLabel(pixmap, ElementType::IC, file, m_ui->scrollAreaWidgetContents_Search);
+            connectDoubleClickAdd(item2);
             m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
         }
     }
@@ -129,10 +131,12 @@ void ElementPalette::updateEmbeddedICList(Scene *scene)
     for (const QString &bn : std::as_const(seenBlobNames)) {
         auto *item = new ElementLabel(pixmap, ElementType::IC, bn, m_ui->scrollAreaWidgetContents_EmbeddedIC, true);
         item->setObjectName("label_embedded_ic");
+        connectDoubleClickAdd(item);
         m_ui->scrollAreaWidgetContents_EmbeddedIC->layout()->addWidget(item);
 
         auto *item2 = new ElementLabel(pixmap, ElementType::IC, bn, m_ui->scrollAreaWidgetContents_Search, true);
         item2->setObjectName("label_embedded_ic");
+        connectDoubleClickAdd(item2);
         m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
     }
 
@@ -252,11 +256,24 @@ void ElementPalette::populateMenu(QSpacerItem *spacer, const QStringList &names,
     for (const auto &name : names) {
         const auto type   = ElementFactory::textToType(name);
         const auto pixmap = ElementFactory::pixmap(type);
-        layout->addWidget(new ElementLabel(pixmap, type, name, container));
-        m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(new ElementLabel(pixmap, type, name, m_ui->scrollAreaWidgetContents_Search));
+
+        auto *categoryLabel = new ElementLabel(pixmap, type, name, container);
+        connectDoubleClickAdd(categoryLabel);
+        layout->addWidget(categoryLabel);
+
+        auto *searchLabel = new ElementLabel(pixmap, type, name, m_ui->scrollAreaWidgetContents_Search);
+        connectDoubleClickAdd(searchLabel);
+        m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(searchLabel);
     }
 
     layout->addItem(spacer);
+}
+
+void ElementPalette::connectDoubleClickAdd(ElementLabel *label)
+{
+    // Signal-to-signal: a double-clicked label re-emits through addElementRequested,
+    // the same route the search-box Return key already uses to add an element.
+    connect(label, &ElementLabel::addToSceneRequested, this, &ElementPalette::addElementRequested);
 }
 
 void ElementPalette::setupTabIcons()

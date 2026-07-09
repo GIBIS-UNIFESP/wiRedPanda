@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include <QGraphicsScene>
 #include <QHash>
 #include <QMap>
@@ -180,8 +182,10 @@ public:
 
     // --- Adding Items ---
 
-    /// Deserializes and adds items from \a mimeData to the scene.
-    void addItem(QMimeData *mimeData);
+    /// Deserializes and adds items from \a mimeData to the scene. If \a scenePos is set,
+    /// the new element is placed there (used by the palette's double-click / search add so
+    /// it lands in view); otherwise it keeps its default position (drop path).
+    void addItem(QMimeData *mimeData, std::optional<QPointF> scenePos = std::nullopt);
 
     // --- Clipboard (Copy / Cut / Paste) ---
 
