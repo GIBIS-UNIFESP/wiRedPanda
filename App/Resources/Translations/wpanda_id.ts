@@ -747,22 +747,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="224"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="230"/>
         <source>File does not exist</source>
         <translation>File tidak ada</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="226"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="232"/>
         <source>File is not readable</source>
         <translation>File tidak dapat dibaca</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="227"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="233"/>
         <source>Unknown reason</source>
         <translation>Alasan tidak diketahui</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="243"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Tidak dapat memuat pixmap: %1 (%2)</translation>
     </message>
@@ -1073,34 +1073,6 @@ Choose a different name.</source>
     </message>
 </context>
 <context>
-    <name>ExerciseBrowserDialog</name>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
-        <source>Could not create or access a folder for custom exercises.</source>
-        <translation>Tidak dapat membuat atau mengakses folder untuk latihan kustom.</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
-        <source>Circuit Exercises</source>
-        <translation>Latihan Rangkaian</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
-        <source>Choose an Exercise</source>
-        <translation>Pilih Latihan</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
-        <source>Start</source>
-        <translation>Mulai</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
-        <source>Open My Exercises Folder</source>
-        <translation>Buka Folder Latihan Saya</translation>
-    </message>
-</context>
-<context>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
@@ -1245,7 +1217,7 @@ Choose a different name.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="239"/>
+        <location filename="../../Element/GraphicElement.cpp" line="251"/>
         <source>Default</source>
         <translation>Bawaan</translation>
     </message>
@@ -1683,426 +1655,416 @@ Nama yang disarankan:</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>Inputs/Outputs</source>
         <translation>Input/Output</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Gates</source>
         <translation>Gerbang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>Combinational</source>
         <translation>Kombinasional</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
         <source>Memory</source>
         <translation>Memori</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Integrated Circuits</source>
         <translation>Sirkuit Terpadu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
         <source>Add IC files</source>
         <translation>Tambah berkas IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
         <source>&amp;Light</source>
         <translation>&amp;Terang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>&amp;Dark</source>
         <translation>&amp;Gelap</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
         <source>File-based ICs</source>
         <translation>IC berbasis berkas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Remove IC</source>
         <translation>Hapus IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>Embedded ICs</source>
         <translation>IC tertanam</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
         <source>Embed IC</source>
         <translation>Tanamkan IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Miscellaneous</source>
         <translation>Lain-lain</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
         <source>Search:</source>
         <translation>Cari:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>&amp;File</source>
         <translation>&amp;Berkas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Berkas terbaru:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="843"/>
         <source>&amp;Edit</source>
         <translation>&amp;Sunting</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
         <source>&amp;Help</source>
         <translation>&amp;Bantuan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>&amp;View</source>
         <translation>&amp;Tampilan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
         <source>&amp;Theme</source>
         <translation>&amp;Tema</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Minimap &amp;Position</source>
         <translation>&amp;Posisi Peta Mini</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>&amp;Language</source>
         <translation>&amp;Bahasa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Sim&amp;ulation</source>
         <translation>Sim&amp;ulasi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Examples</source>
         <translation>Contoh</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
         <source>&amp;Open...</source>
         <translation>&amp;Buka...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
         <source>Open</source>
         <translation>Buka</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
         <source>&amp;Save</source>
         <translation>&amp;Simpan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
         <source>Save &amp;As...</source>
         <translation>Simpan &amp;Sebagai...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
         <source>Cu&amp;t</source>
         <translation>Po&amp;tong</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
         <source>&amp;Copy</source>
         <translation>&amp;Salin</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
         <source>&amp;Paste</source>
         <translation>&amp;Tempel</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
         <source>&amp;Delete</source>
         <translation>&amp;Hapus</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
         <source>&amp;New</source>
         <translation>&amp;Baru</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
         <source>Zoom &amp;in</source>
         <translation>Per&amp;besar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
         <source>Zoom &amp;out</source>
         <translation>Per&amp;kecil</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
         <source>&amp;Wires</source>
         <translation>&amp;Kabel</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>&amp;Gates</source>
         <translation>&amp;Gerbang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>&amp;About</source>
         <translation>&amp;Tentang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>&amp;Exit</source>
         <translation>&amp;Keluar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>R&amp;otate right</source>
         <translation>P&amp;utar kanan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Rotate &amp;left</source>
         <translation>Putar &amp;kiri</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>About &amp;Qt</source>
         <translation>Tentang &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
         <source>&amp;Select all</source>
         <translation>&amp;Pilih semua</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Re&amp;load File</source>
         <translation>Muat &amp;Ulang Berkas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
         <source>E&amp;xport to Arduino</source>
         <translation>E&amp;kspor ke Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>Ekspor ke &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Atur Ulang Zoom</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Export to &amp;PDF</source>
         <translation>Ekspor ke &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>&amp;System</source>
         <translation>&amp;Sistem</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
         <source>Make file self-contained</source>
         <translation>Jadikan berkas mandiri</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>Bisukan/bunyikan buzzer sirkuit</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>Show IC Preview</source>
         <translation>Tampilkan Pratinjau IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Show Minimap</source>
         <translation>Tampilkan Peta Mini</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Top-left</source>
         <translation>Kiri atas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>Top-right</source>
         <translation>Kanan atas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>Bottom-left</source>
         <translation>Kiri bawah</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>Bottom-right</source>
         <translation>Kanan bawah</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Background Simulation</source>
         <translation>Simulasi Latar Belakang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="824"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Report Translation Error</source>
         <translation>Laporkan kesalahan terjemahan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Laporkan kesalahan terjemahan atau bantu tingkatkan terjemahan di Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>&amp;Exercises</source>
         <translation>&amp;Latihan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="859"/>
-        <source>&amp;Circuit Exercises...</source>
-        <translation>Latihan &amp;Rangkaian...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>&amp;Tours</source>
         <translation>&amp;Tur</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="861"/>
-        <source>&amp;Interactive Tours...</source>
-        <translation>Tur &amp;Interaktif...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Putar/Jeda</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;Bantu Menerjemahkan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="781"/>
         <source>Play or Pause simulation.</source>
         <translation>Putar atau jeda simulasi.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="783"/>
         <source>&amp;Rename</source>
         <translation>&amp;Ubah Nama</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="785"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Uba&amp;h Pemicu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
         <source>Cl&amp;ear selection</source>
         <translation>Hap&amp;us pilihan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Mode Cepat</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Bentuk Gelombang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Export to &amp;Image</source>
         <translation>Ekspor ke &amp;Gambar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Balik horizontal</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="800"/>
         <source>Flip &amp;vertically</source>
         <translation>Balik &amp;vertikal</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>F&amp;ullscreen</source>
         <translation>Layar &amp;penuh</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1074"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindow.cpp" line="1143"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Mute</source>
         <translation>Bisukan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
         <source>Labels under icons</source>
         <translation>Label di bawah ikon</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>About this version</source>
         <translation>Tentang versi ini</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Restart</source>
         <translation>&amp;Mulai Ulang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Restart simulation.</source>
         <translation>Mulai ulang simulasi.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindow.cpp" line="571"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Shortcuts and Tips</source>
         <translation>Pintasan dan Tips</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="855"/>
+        <location filename="../../UI/MainWindow.cpp" line="924"/>
         <source>New Project</source>
         <translation>Proyek Baru</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="421"/>
+        <location filename="../../UI/MainWindow.cpp" line="490"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2121,27 +2083,52 @@ wiRedPanda %1 akan secara otomatis mencantumkan semua berkas .panda lain yang be
 Anda harus menyimpan proyek baru sebelum mengakses IC dan tampilan, atau menjalankan simulasi beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="481"/>
+        <location filename="../../UI/MainWindow.cpp" line="276"/>
+        <source>Error</source>
+        <translation type="unfinished">Kesalahan</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="305"/>
+        <source>Open My Exercises Folder</source>
+        <translation type="unfinished">Buka Folder Latihan Saya</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="306"/>
+        <source>Could not create or access a folder for custom exercises.</source>
+        <translation type="unfinished">Tidak dapat membuat atau mengakses folder untuk latihan kustom.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="316"/>
+        <source>Open My Tours Folder</source>
+        <translation type="unfinished">Buka Folder Tur Saya</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="317"/>
+        <source>Could not create or access a folder for custom tours.</source>
+        <translation type="unfinished">Tidak dapat membuat atau mengakses folder untuk tur kustom.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="550"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda adalah perangkat lunak yang dikembangkan oleh mahasiswa Universitas Federal São Paulo untuk membantu siswa belajar tentang rangkaian logika.&lt;/p&gt;&lt;p&gt;Versi perangkat lunak: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Pencipta:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda saat ini dikelola oleh Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves, dan Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Silakan laporkan di halaman GitHub kami jika Anda menemukan bug atau ingin meminta fitur baru.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Kunjungi situs web kami!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="554"/>
+        <location filename="../../UI/MainWindow.cpp" line="623"/>
         <source>Are you sure?</source>
         <translation>Apakah Anda yakin?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="503"/>
+        <location filename="../../UI/MainWindow.cpp" line="572"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Pintasan Kanvas&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Perbesar &lt;/li&gt;&lt;li&gt; Ctrl+- : Perkecil &lt;/li&gt;&lt;li&gt; Ctrl+1 : Sembunyikan/Tampilkan kabel &lt;/li&gt;&lt;li&gt; Ctrl+2 : Sembunyikan/Tampilkan gerbang &lt;/li&gt;&lt;li&gt; Ctrl+F : Cari elemen &lt;/li&gt;&lt;li&gt; Ctrl+W : Buka beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Simpan proyek &lt;/li&gt;&lt;li&gt; Ctrl+Q : Keluar dari wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Mulai/Jeda simulasi &lt;/li&gt;&lt;li&gt; [ : Properti elemen primer sebelumnya &lt;/li&gt;&lt;li&gt; ] : Properti elemen primer berikutnya &lt;/li&gt;&lt;li&gt; { : Properti elemen sekunder sebelumnya &lt;/li&gt;&lt;li&gt; } : Properti elemen sekunder berikutnya &lt;/li&gt;&lt;li&gt; &amp;lt; : Ubah ke elemen sebelumnya &lt;/li&gt;&lt;li&gt; &amp;gt; : Ubah ke elemen berikutnya &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Tips Umum&lt;/h1&gt;&lt;p&gt;Klik ganda pada kabel untuk membuat simpul&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="553"/>
+        <location filename="../../UI/MainWindow.cpp" line="622"/>
         <source>Exit</source>
         <translation>Keluar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1074"/>
+        <location filename="../../UI/MainWindow.cpp" line="1143"/>
         <source>Unmute</source>
         <translation>Suarakan</translation>
     </message>
@@ -2633,34 +2620,6 @@ Anda harus menyimpan proyek baru sebelum mengakses IC dan tampilan, atau menjala
         <location filename="../../Scene/Commands.cpp" line="1075"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>Posisi peralihan tabel kebenaran di luar jangkauan: %1</translation>
-    </message>
-</context>
-<context>
-    <name>TourBrowserDialog</name>
-    <message>
-        <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
-        <source>Could not create or access a folder for custom tours.</source>
-        <translation>Tidak dapat membuat atau mengakses folder untuk tur kustom.</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
-        <source>Interactive Tours</source>
-        <translation>Tur Interaktif</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
-        <source>Choose a Tour</source>
-        <translation>Pilih Tur</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
-        <source>Start</source>
-        <translation>Mulai</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
-        <source>Open My Tours Folder</source>
-        <translation>Buka Folder Tur Saya</translation>
     </message>
 </context>
 <context>

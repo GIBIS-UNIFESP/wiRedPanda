@@ -747,22 +747,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="224"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="230"/>
         <source>File does not exist</source>
         <translation>파일이 존재하지 않습니다</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="226"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="232"/>
         <source>File is not readable</source>
         <translation>파일을 읽을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="227"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="233"/>
         <source>Unknown reason</source>
         <translation>알 수 없는 이유</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="243"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>픽스맵을 로드할 수 없습니다: %1 (%2)</translation>
     </message>
@@ -1073,34 +1073,6 @@ Choose a different name.</source>
     </message>
 </context>
 <context>
-    <name>ExerciseBrowserDialog</name>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
-        <source>Could not create or access a folder for custom exercises.</source>
-        <translation>사용자 지정 연습 문제를 위한 폴더를 만들거나 액세스할 수 없습니다.</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
-        <source>Circuit Exercises</source>
-        <translation>회로 연습 문제</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
-        <source>Choose an Exercise</source>
-        <translation>연습 문제 선택</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
-        <source>Start</source>
-        <translation>시작</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
-        <source>Open My Exercises Folder</source>
-        <translation>내 연습 문제 폴더 열기</translation>
-    </message>
-</context>
-<context>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
@@ -1245,7 +1217,7 @@ Choose a different name.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="239"/>
+        <location filename="../../Element/GraphicElement.cpp" line="251"/>
         <source>Default</source>
         <translation>기본값</translation>
     </message>
@@ -1683,426 +1655,416 @@ Suggested name:</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>Inputs/Outputs</source>
         <translation>입력/출력</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Gates</source>
         <translation>게이트</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>Combinational</source>
         <translation>조합 논리</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
         <source>Memory</source>
         <translation>메모리</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Integrated Circuits</source>
         <translation>집적 회로</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
         <source>Add IC files</source>
         <translation>IC 파일 추가</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
         <source>&amp;Light</source>
         <translation>&amp;밝게</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>&amp;Dark</source>
         <translation>&amp;어둡게</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
         <source>File-based ICs</source>
         <translation>파일 기반 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Remove IC</source>
         <translation>IC 제거</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>Embedded ICs</source>
         <translation>임베디드 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
         <source>Embed IC</source>
         <translation>IC 임베드</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Miscellaneous</source>
         <translation>기타</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
         <source>Search:</source>
         <translation>검색:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>&amp;File</source>
         <translation>파일(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>&amp;Recent files:</source>
         <translation>최근 파일(&amp;R):</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="843"/>
         <source>&amp;Edit</source>
         <translation>편집(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
         <source>&amp;Help</source>
         <translation>도움말(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>&amp;View</source>
         <translation>보기(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
         <source>&amp;Theme</source>
         <translation>테마(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Minimap &amp;Position</source>
         <translation>미니맵 위치(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>&amp;Language</source>
         <translation>언어(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Sim&amp;ulation</source>
         <translation>시뮤레이션(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Examples</source>
         <translation>예제</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
         <source>&amp;Open...</source>
         <translation>열기(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
         <source>Open</source>
         <translation>열기</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
         <source>&amp;Save</source>
         <translation>저장(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
         <source>Save &amp;As...</source>
         <translation>다른 이름으로 저장(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
         <source>Cu&amp;t</source>
         <translation>잘라내기(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
         <source>&amp;Copy</source>
         <translation>복사(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
         <source>&amp;Paste</source>
         <translation>붙여넣기(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
         <source>&amp;Delete</source>
         <translation>삭제(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
         <source>&amp;New</source>
         <translation>새 문서(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
         <source>Zoom &amp;in</source>
         <translation>확대(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
         <source>Zoom &amp;out</source>
         <translation>축소(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
         <source>&amp;Wires</source>
         <translation>전선(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>&amp;Gates</source>
         <translation>게이트(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>&amp;About</source>
         <translation>정보(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>&amp;Exit</source>
         <translation>종료(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>R&amp;otate right</source>
         <translation>오른쪽 회전(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Rotate &amp;left</source>
         <translation>왼쪽 회전(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>About &amp;Qt</source>
         <translation>Qt 정보(&amp;Q)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
         <source>&amp;Select all</source>
         <translation>모두 선택(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Re&amp;load File</source>
         <translation>파일 다시 불러오기(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
         <source>E&amp;xport to Arduino</source>
         <translation>Arduino로 내보내기(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>&amp;SystemVerilog로 내보내기</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
         <source>&amp;Reset Zoom</source>
         <translation>줌 초기화(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Export to &amp;PDF</source>
         <translation>PDF로 내보내기(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>&amp;System</source>
         <translation>시스템(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
         <source>Make file self-contained</source>
         <translation>파일을 자체 포함형으로 만들기</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>회로 부저 음소거/음소거 해제</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>Show IC Preview</source>
         <translation>IC 미리보기 표시</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Show Minimap</source>
         <translation>미니맵 표시</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Top-left</source>
         <translation>왼쪽 위</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>Top-right</source>
         <translation>오른쪽 위</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>Bottom-left</source>
         <translation>왼쪽 아래</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>Bottom-right</source>
         <translation>오른쪽 아래</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Background Simulation</source>
         <translation>백그라운드 시뮤레이션</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="824"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Report Translation Error</source>
         <translation>번역 오류 신고</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>번역 오류를 신고하거나 Weblate에서 번역 개선을 도와주세요</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>&amp;Exercises</source>
         <translation>연습 문제(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="859"/>
-        <source>&amp;Circuit Exercises...</source>
-        <translation>회로 연습 문제(&amp;C)...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>&amp;Tours</source>
         <translation>투어(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="861"/>
-        <source>&amp;Interactive Tours...</source>
-        <translation>대화형 투어(&amp;I)...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Play/Pause</source>
         <translation>재생/일시정지(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;번역 도움말</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="781"/>
         <source>Play or Pause simulation.</source>
         <translation>시뮤레이션을 재생하거나 일시정지합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="783"/>
         <source>&amp;Rename</source>
         <translation>이름 바꾸기(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="785"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>트리거 변경(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
         <source>Cl&amp;ear selection</source>
         <translation>선택 지우기(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
         <source>&amp;Fast Mode</source>
         <translation>고속 모드(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>&amp;Waveform</source>
         <translation>파형(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Export to &amp;Image</source>
         <translation>이미지로 내보내기(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
         <source>&amp;Flip horizontally</source>
         <translation>수평 뒤집기(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="800"/>
         <source>Flip &amp;vertically</source>
         <translation>수직 뒤집기(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>F&amp;ullscreen</source>
         <translation>전체 화면(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1074"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindow.cpp" line="1143"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Mute</source>
         <translation>음소거</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
         <source>Labels under icons</source>
         <translation>아이콘 아래 레이블</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>About this version</source>
         <translation>이 버전에 대해</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Restart</source>
         <translation>재시작(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Restart simulation.</source>
         <translation>시뮤레이션을 재시작합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindow.cpp" line="571"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Shortcuts and Tips</source>
         <translation>단축키와 팁</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="855"/>
+        <location filename="../../UI/MainWindow.cpp" line="924"/>
         <source>New Project</source>
         <translation>새 프로젝트</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="421"/>
+        <location filename="../../UI/MainWindow.cpp" line="490"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2121,27 +2083,52 @@ wiRedPanda %1 는 현재 프로젝트와 같은 디렉터리에 있는 다른 �
 IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 전에 새 프로젝트를 저장해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="481"/>
+        <location filename="../../UI/MainWindow.cpp" line="276"/>
+        <source>Error</source>
+        <translation type="unfinished">오류</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="305"/>
+        <source>Open My Exercises Folder</source>
+        <translation type="unfinished">내 연습 문제 폴더 열기</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="306"/>
+        <source>Could not create or access a folder for custom exercises.</source>
+        <translation type="unfinished">사용자 지정 연습 문제를 위한 폴더를 만들거나 액세스할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="316"/>
+        <source>Open My Tours Folder</source>
+        <translation type="unfinished">내 투어 폴더 열기</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="317"/>
+        <source>Could not create or access a folder for custom tours.</source>
+        <translation type="unfinished">사용자 지정 투어를 위한 폴더를 만들거나 액세스할 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="550"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda는 학생들이 논리 회로에 대해 배우도록 돕기 위해 상파울루 연방 대학교 학생들이 개발한 소프트웨어입니다.&lt;/p&gt;&lt;p&gt;소프트웨어 버전: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;제작자:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda는 현재 Fábio Cappabianco 교수(Ph.D.), João Pedro M. Oliveira, Matheus R. Esteves, Maycon A. Santana가 유지 관리하고 있습니다.&lt;/p&gt;&lt;p&gt; 버그를 발견했거나 새로운 기능을 요청하고 싶다면 저희 GitHub 페이지에 신고해 주세요.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;저희 웹사이트를 방문해 보세요!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="554"/>
+        <location filename="../../UI/MainWindow.cpp" line="623"/>
         <source>Are you sure?</source>
         <translation>확실하십니까?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="503"/>
+        <location filename="../../UI/MainWindow.cpp" line="572"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;캔버스 단축키&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : 확대 &lt;/li&gt;&lt;li&gt; Ctrl+- : 축소 &lt;/li&gt;&lt;li&gt; Ctrl+1 : 와이어 표시/숨기기 &lt;/li&gt;&lt;li&gt; Ctrl+2 : 게이트 표시/숨기기 &lt;/li&gt;&lt;li&gt; Ctrl+F : 요소 검색 &lt;/li&gt;&lt;li&gt; Ctrl+W : beWaveDolphin 열기 &lt;/li&gt;&lt;li&gt; Ctrl+S : 프로젝트 저장 &lt;/li&gt;&lt;li&gt; Ctrl+Q : wiRedPanda 종료 &lt;/li&gt;&lt;li&gt; F5 : 시뮬레이션 시작/일시정지 &lt;/li&gt;&lt;li&gt; [ : 이전 기본 요소 속성 &lt;/li&gt;&lt;li&gt; ] : 다음 기본 요소 속성 &lt;/li&gt;&lt;li&gt; { : 이전 보조 요소 속성 &lt;/li&gt;&lt;li&gt; } : 다음 보조 요소 속성 &lt;/li&gt;&lt;li&gt; &amp;lt; : 이전 요소로 변환 &lt;/li&gt;&lt;li&gt; &amp;gt; : 다음 요소로 변환 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;일반 팁&lt;/h1&gt;&lt;p&gt;와이어를 더블 클릭하여 노드 생성&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="553"/>
+        <location filename="../../UI/MainWindow.cpp" line="622"/>
         <source>Exit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1074"/>
+        <location filename="../../UI/MainWindow.cpp" line="1143"/>
         <source>Unmute</source>
         <translation>음소거 해제</translation>
     </message>
@@ -2633,34 +2620,6 @@ IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 �
         <location filename="../../Scene/Commands.cpp" line="1075"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>진리표 토글 위치가 범위를 벗어났습니다: %1</translation>
-    </message>
-</context>
-<context>
-    <name>TourBrowserDialog</name>
-    <message>
-        <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
-        <source>Could not create or access a folder for custom tours.</source>
-        <translation>사용자 지정 투어를 위한 폴더를 만들거나 액세스할 수 없습니다.</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
-        <source>Interactive Tours</source>
-        <translation>대화형 투어</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
-        <source>Choose a Tour</source>
-        <translation>투어 선택</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
-        <source>Start</source>
-        <translation>시작</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
-        <source>Open My Tours Folder</source>
-        <translation>내 투어 폴더 열기</translation>
     </message>
 </context>
 <context>

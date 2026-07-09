@@ -747,22 +747,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="224"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="230"/>
         <source>File does not exist</source>
         <translation>Filen finns inte</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="226"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="232"/>
         <source>File is not readable</source>
         <translation>Filen är inte läsbar</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="227"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="233"/>
         <source>Unknown reason</source>
         <translation>Okänd orsak</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="243"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Kunde inte ladda pixmap: %1 (%2)</translation>
     </message>
@@ -1073,34 +1073,6 @@ Choose a different name.</source>
     </message>
 </context>
 <context>
-    <name>ExerciseBrowserDialog</name>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
-        <source>Could not create or access a folder for custom exercises.</source>
-        <translation>Kunde inte skapa eller komma åt en mapp för anpassade övningar.</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
-        <source>Circuit Exercises</source>
-        <translation>Kretsövningar</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
-        <source>Choose an Exercise</source>
-        <translation>Välj en övning</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
-        <source>Start</source>
-        <translation>Starta</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
-        <source>Open My Exercises Folder</source>
-        <translation>Öppna min övningsmapp</translation>
-    </message>
-</context>
-<context>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
@@ -1245,7 +1217,7 @@ Choose a different name.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="239"/>
+        <location filename="../../Element/GraphicElement.cpp" line="251"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
@@ -1683,426 +1655,416 @@ Föreslaget namn:</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>Inputs/Outputs</source>
         <translation>Ingångar/Utgångar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Gates</source>
         <translation>Grindar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>Combinational</source>
         <translation>Kombinatorisk</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
         <source>Memory</source>
         <translation>Minne</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Integrated Circuits</source>
         <translation>Integrerade kretsar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
         <source>Add IC files</source>
         <translation>Lägg till IC-filer</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>&amp;System</source>
         <translation>&amp;System</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
         <source>Make file self-contained</source>
         <translation>Gör filen fristående</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>Tysta/slå på kretssummrar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>Show IC Preview</source>
         <translation>Visa IC-förhandsgranskning</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Show Minimap</source>
         <translation>Visa minikarta</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Top-left</source>
         <translation>Övre vänster</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>Top-right</source>
         <translation>Övre höger</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>Bottom-left</source>
         <translation>Nedre vänster</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>Bottom-right</source>
         <translation>Nedre höger</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
         <source>File-based ICs</source>
         <translation>Filbaserade IC:er</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Remove IC</source>
         <translation>Ta bort IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>Embedded ICs</source>
         <translation>Inbäddade IC:er</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
         <source>Embed IC</source>
         <translation>Bädda in IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Miscellaneous</source>
         <translation>Diverse</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
         <source>Search:</source>
         <translation>Sök:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>&amp;File</source>
         <translation>&amp;Arkiv</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Senaste filer:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="843"/>
         <source>&amp;Edit</source>
         <translation>&amp;Redigera</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
         <source>&amp;Help</source>
         <translation>&amp;Hjälp</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;Hjälp till att Översätta</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>&amp;View</source>
         <translation>&amp;Visa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
         <source>&amp;Theme</source>
         <translation>&amp;Tema</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Minimap &amp;Position</source>
         <translation>Minikartans &amp;position</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>&amp;Language</source>
         <translation>&amp;Språk</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Sim&amp;ulation</source>
         <translation>Sim&amp;ulering</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Examples</source>
         <translation>Exempel</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
         <source>&amp;Open...</source>
         <translation>&amp;Öppna...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
         <source>Open</source>
         <translation>Öppna</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
         <source>&amp;Save</source>
         <translation>&amp;Spara</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
         <source>Save &amp;As...</source>
         <translation>S&amp;para som...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
         <source>Cu&amp;t</source>
         <translation>Kli&amp;pp ut</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopiera</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
         <source>&amp;Paste</source>
         <translation>K&amp;listra in</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
         <source>&amp;Delete</source>
         <translation>&amp;Ta bort</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
         <source>&amp;New</source>
         <translation>&amp;Ny</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
         <source>Zoom &amp;in</source>
         <translation>Zooma &amp;in</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
         <source>Zoom &amp;out</source>
         <translation>Zooma &amp;ut</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
         <source>&amp;Wires</source>
         <translation>&amp;Ledningar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>&amp;Gates</source>
         <translation>&amp;Grindar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>&amp;About</source>
         <translation>&amp;Om</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>&amp;Exit</source>
         <translation>&amp;Avsluta</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>R&amp;otate right</source>
         <translation>R&amp;otera höger</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Rotate &amp;left</source>
         <translation>Rotera &amp;vänster</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>About &amp;Qt</source>
         <translation>Om &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
         <source>&amp;Select all</source>
         <translation>&amp;Markera allt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Re&amp;load File</source>
         <translation>La&amp;dda om fil</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
         <source>E&amp;xport to Arduino</source>
         <translation>E&amp;xportera till Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>Exportera till &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Återställ zoom</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Export to &amp;PDF</source>
         <translation>Exportera till &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Spela/Pausa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="781"/>
         <source>Play or Pause simulation.</source>
         <translation>Spela eller pausa simulering.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="783"/>
         <source>&amp;Rename</source>
         <translation>&amp;Byt namn</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="785"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Ä&amp;ndra utlösare</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
         <source>Cl&amp;ear selection</source>
         <translation>R&amp;ensa urval</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Snabbläge</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
         <source>&amp;Light</source>
         <translation>&amp;Ljust</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>&amp;Dark</source>
         <translation>&amp;Mörkt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Vågform</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Export to &amp;Image</source>
         <translation>Exportera till &amp;Bild</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Vänd horisontellt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="800"/>
         <source>Flip &amp;vertically</source>
         <translation>Vänd &amp;vertikalt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>F&amp;ullscreen</source>
         <translation>F&amp;ullskärm</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>&amp;Exercises</source>
         <translation>Ö&amp;vningar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="859"/>
-        <source>&amp;Circuit Exercises...</source>
-        <translation>&amp;Kretsövningar...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>&amp;Tours</source>
         <translation>&amp;Rundturer</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="861"/>
-        <source>&amp;Interactive Tours...</source>
-        <translation>&amp;Interaktiva rundturer...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1074"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindow.cpp" line="1143"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Mute</source>
         <translation>Tysta</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
         <source>Labels under icons</source>
         <translation>Etiketter under ikoner</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>About this version</source>
         <translation>Om denna version</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Restart</source>
         <translation>&amp;Omstart</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Restart simulation.</source>
         <translation>Starta om simulering.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Background Simulation</source>
         <translation>Bakgrundssimulering</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindow.cpp" line="571"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Shortcuts and Tips</source>
         <translation>Genvägar och tips</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="824"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Report Translation Error</source>
         <translation>Rapportera översättningsfel</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Rapportera översättningsfel eller hjälp till att förbättra översättningar på Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="855"/>
+        <location filename="../../UI/MainWindow.cpp" line="924"/>
         <source>New Project</source>
         <translation>Nytt projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="421"/>
+        <location filename="../../UI/MainWindow.cpp" line="490"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2121,27 +2083,52 @@ wiRedPanda %1 kommer automatiskt att lista alla andra .panda-filer i samma katal
 Du måste spara nya projekt innan du kan komma åt IC:ar och utseenden eller köra beWavedDolphin-simuleringar.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="554"/>
+        <location filename="../../UI/MainWindow.cpp" line="623"/>
         <source>Are you sure?</source>
         <translation>Är du säker?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="503"/>
+        <location filename="../../UI/MainWindow.cpp" line="572"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Arbetsytans genvägar&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zooma in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zooma ut &lt;/li&gt;&lt;li&gt; Ctrl+1 : Dölj/Visa ledningar &lt;/li&gt;&lt;li&gt; Ctrl+2 : Dölj/Visa grindar &lt;/li&gt;&lt;li&gt; Ctrl+F : Sök element &lt;/li&gt;&lt;li&gt; Ctrl+W : Öppna beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Spara projekt &lt;/li&gt;&lt;li&gt; Ctrl+Q : Avsluta wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Starta/Pausa simulering &lt;/li&gt;&lt;li&gt; [ : Föregående primär elementegenskap &lt;/li&gt;&lt;li&gt; ] : Nästa primär elementegenskap &lt;/li&gt;&lt;li&gt; { : Föregående sekundär elementegenskap &lt;/li&gt;&lt;li&gt; } : Nästa sekundär elementegenskap &lt;/li&gt;&lt;li&gt; &amp;lt; : Omvandla till föregående element &lt;/li&gt;&lt;li&gt; &amp;gt; : Omvandla till nästa element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Allmänna tips&lt;/h1&gt;&lt;p&gt;Dubbelklicka på en ledning för att skapa en nod&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="481"/>
+        <location filename="../../UI/MainWindow.cpp" line="276"/>
+        <source>Error</source>
+        <translation type="unfinished">Fel</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="305"/>
+        <source>Open My Exercises Folder</source>
+        <translation type="unfinished">Öppna min övningsmapp</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="306"/>
+        <source>Could not create or access a folder for custom exercises.</source>
+        <translation type="unfinished">Kunde inte skapa eller komma åt en mapp för anpassade övningar.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="316"/>
+        <source>Open My Tours Folder</source>
+        <translation type="unfinished">Öppna min rundturmapp</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="317"/>
+        <source>Could not create or access a folder for custom tours.</source>
+        <translation type="unfinished">Kunde inte skapa eller komma åt en mapp för anpassade rundturer.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="550"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda är programvara utvecklad av studenter vid Federal University of São Paulo för att hjälpa studenter att lära sig om logiska kretsar.&lt;/p&gt;&lt;p&gt;Programversion: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Skapare:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda underhålls för närvarande av Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves och Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Lämna gärna en rapport på vår GitHub-sida om du hittar en bugg eller vill begära en ny funktion.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besök vår webbplats!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="553"/>
+        <location filename="../../UI/MainWindow.cpp" line="622"/>
         <source>Exit</source>
         <translation>Avsluta</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1074"/>
+        <location filename="../../UI/MainWindow.cpp" line="1143"/>
         <source>Unmute</source>
         <translation>Aktivera ljud</translation>
     </message>
@@ -2633,34 +2620,6 @@ Du måste spara nya projekt innan du kan komma åt IC:ar och utseenden eller kö
         <location filename="../../Scene/Commands.cpp" line="1075"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>Sanningstabellens växlingsposition utanför intervallet: %1</translation>
-    </message>
-</context>
-<context>
-    <name>TourBrowserDialog</name>
-    <message>
-        <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
-        <source>Could not create or access a folder for custom tours.</source>
-        <translation>Kunde inte skapa eller komma åt en mapp för anpassade rundturer.</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
-        <source>Interactive Tours</source>
-        <translation>Interaktiva rundturer</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
-        <source>Choose a Tour</source>
-        <translation>Välj en rundtur</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
-        <source>Start</source>
-        <translation>Starta</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
-        <source>Open My Tours Folder</source>
-        <translation>Öppna min rundturmapp</translation>
     </message>
 </context>
 <context>

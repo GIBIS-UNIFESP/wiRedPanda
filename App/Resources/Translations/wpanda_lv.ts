@@ -747,22 +747,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="224"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="230"/>
         <source>File does not exist</source>
         <translation>Fails neeksistē</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="226"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="232"/>
         <source>File is not readable</source>
         <translation>Fails nav lasāms</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="227"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="233"/>
         <source>Unknown reason</source>
         <translation>Nezināms iemesls</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="243"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Neizdevās ielādēt attēlu: %1 (%2)</translation>
     </message>
@@ -1073,34 +1073,6 @@ Choose a different name.</source>
     </message>
 </context>
 <context>
-    <name>ExerciseBrowserDialog</name>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialog.cpp" line="35"/>
-        <source>Could not create or access a folder for custom exercises.</source>
-        <translation>Neizdevās izveidot mapi pielāgotiem vingrinājumiem vai piekļūt tai.</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="47"/>
-        <source>Circuit Exercises</source>
-        <translation>Shēmu vingrinājumi</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="48"/>
-        <source>Choose an Exercise</source>
-        <translation>Izvēlieties vingrinājumu</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="49"/>
-        <source>Start</source>
-        <translation>Sākt</translation>
-    </message>
-    <message>
-        <location filename="../../Exercise/ExerciseBrowserDialogUI.cpp" line="50"/>
-        <source>Open My Exercises Folder</source>
-        <translation>Atvērt manu vingrinājumu mapi</translation>
-    </message>
-</context>
-<context>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="56"/>
@@ -1245,7 +1217,7 @@ Choose a different name.</source>
 <context>
     <name>GraphicElement</name>
     <message>
-        <location filename="../../Element/GraphicElement.cpp" line="239"/>
+        <location filename="../../Element/GraphicElement.cpp" line="251"/>
         <source>Default</source>
         <translation>Noklusējums</translation>
     </message>
@@ -1683,426 +1655,416 @@ Ieteiktais nosaukums:</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>Inputs/Outputs</source>
         <translation>Ieejas/Izejas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Gates</source>
         <translation>Vārti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>Combinational</source>
         <translation>Kombinacionālie</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
         <source>Memory</source>
         <translation>Atmiņa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Integrated Circuits</source>
         <translation>Integrētās šēmas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
         <source>Add IC files</source>
         <translation>Pievienot IC failus</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>&amp;System</source>
         <translation>&amp;Sistēma</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
         <source>Make file self-contained</source>
         <translation>Padarīt failu pašpietiekamu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>Izslēgt/ieslēgt ķēdes skaņas signālus</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>Show IC Preview</source>
         <translation>Rādīt IC priekšskatījumu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Show Minimap</source>
         <translation>Rādīt mazo karti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
         <source>Top-left</source>
         <translation>Augšā pa kreisi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>Top-right</source>
         <translation>Augšā pa labi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>Bottom-left</source>
         <translation>Apakšā pa kreisi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>Bottom-right</source>
         <translation>Apakšā pa labi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
         <source>File-based ICs</source>
         <translation>Uz failiem balstīti IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Remove IC</source>
         <translation>Noņemt IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>Embedded ICs</source>
         <translation>Iegulti IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
         <source>Embed IC</source>
         <translation>Iegult IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Miscellaneous</source>
         <translation>Dažādi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
         <source>Search:</source>
         <translation>Meklēt:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>&amp;File</source>
         <translation>&amp;Fails</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Nesenie faili:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="843"/>
         <source>&amp;Edit</source>
         <translation>&amp;Rediģēt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
         <source>&amp;Help</source>
         <translation>&amp;Palīdzība</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>&amp;Help Translate</source>
         <translation>&amp;Palīdzēt Tulkot</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>&amp;View</source>
         <translation>&amp;Skats</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
         <source>&amp;Theme</source>
         <translation>&amp;Tēma</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Minimap &amp;Position</source>
         <translation>Mazās kartes &amp;novietojums</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>&amp;Language</source>
         <translation>&amp;Valoda</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Sim&amp;ulation</source>
         <translation>Sim&amp;ulācija</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Examples</source>
         <translation>Piemēri</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="740"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="734"/>
         <source>&amp;Open...</source>
         <translation>&amp;Atvērt...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="735"/>
         <source>Open</source>
         <translation>Atvērt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="737"/>
         <source>&amp;Save</source>
         <translation>&amp;Saglabāt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="739"/>
         <source>Save &amp;As...</source>
         <translation>Saglabāt &amp;kā...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="741"/>
         <source>Cu&amp;t</source>
         <translation>Iz&amp;griezt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="743"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopēt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="745"/>
         <source>&amp;Paste</source>
         <translation>&amp;Ielīmēt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="747"/>
         <source>&amp;Delete</source>
         <translation>&amp;Dzēst</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="749"/>
         <source>&amp;New</source>
         <translation>&amp;Jauns</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="751"/>
         <source>Zoom &amp;in</source>
         <translation>Pie&amp;tuvināt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="753"/>
         <source>Zoom &amp;out</source>
         <translation>Attā&amp;lināt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="755"/>
         <source>&amp;Wires</source>
         <translation>&amp;Vadi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>&amp;Gates</source>
         <translation>&amp;Elementi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>&amp;About</source>
         <translation>&amp;Par</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>&amp;Exit</source>
         <translation>&amp;Iziet</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>R&amp;otate right</source>
         <translation>Pa&amp;griezt pa labi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Rotate &amp;left</source>
         <translation>Pagriezt pa &amp;kreisi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>About &amp;Qt</source>
         <translation>Par &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="768"/>
         <source>&amp;Select all</source>
         <translation>&amp;Atlasīt visu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="770"/>
         <source>Re&amp;load File</source>
         <translation>Pār&amp;ielādēt failu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="772"/>
         <source>E&amp;xport to Arduino</source>
         <translation>E&amp;ksportēt uz Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="774"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>Eksportēt uz &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Atiestatīt mērogu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Export to &amp;PDF</source>
         <translation>Eksportēt uz &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Atskaņot/Pauze</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="781"/>
         <source>Play or Pause simulation.</source>
         <translation>Atskaņot vai apturēt simulāciju.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="783"/>
         <source>&amp;Rename</source>
         <translation>&amp;Pārdēvēt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="785"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Mai&amp;nīt aktivizētāju</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="787"/>
         <source>Cl&amp;ear selection</source>
         <translation>No&amp;tīrīt atlasi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="789"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Ātrais režīms</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="791"/>
         <source>&amp;Light</source>
         <translation>&amp;Gaišs</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>&amp;Dark</source>
         <translation>&amp;Tumšs</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Viļņforma</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Export to &amp;Image</source>
         <translation>Eksportēt uz &amp;attēlu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="798"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Apmest horizontāli</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="800"/>
         <source>Flip &amp;vertically</source>
         <translation>Apmest &amp;vertikāli</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>F&amp;ullscreen</source>
         <translation>P&amp;ilnekrāns</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>&amp;Exercises</source>
         <translation>&amp;Vingrinājumi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="859"/>
-        <source>&amp;Circuit Exercises...</source>
-        <translation>&amp;Shēmu vingrinājumi...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>&amp;Tours</source>
         <translation>&amp;Ekskursijas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="861"/>
-        <source>&amp;Interactive Tours...</source>
-        <translation>&amp;Interaktīvās ekskursijas...</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindow.cpp" line="1074"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindow.cpp" line="1143"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Mute</source>
         <translation>Bez skaņas</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="806"/>
         <source>Labels under icons</source>
         <translation>Etiķetes zem ikonām</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>About this version</source>
         <translation>Par šo versiju</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Restart</source>
         <translation>&amp;Restartēt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Restart simulation.</source>
         <translation>Restartēt simulāciju.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
         <source>Background Simulation</source>
         <translation>Fona simulācija</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="502"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindow.cpp" line="571"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Shortcuts and Tips</source>
         <translation>Saīsnes un padomi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="824"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
         <source>Report Translation Error</source>
         <translation>Ziņot par tulkojuma kļūdu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Ziņojiet par tulkojuma kļūdām vai palīdziet uzlabot tulkojumus Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="855"/>
+        <location filename="../../UI/MainWindow.cpp" line="924"/>
         <source>New Project</source>
         <translation>Jauns projekts</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="421"/>
+        <location filename="../../UI/MainWindow.cpp" line="490"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2121,27 +2083,52 @@ wiRedPanda %1 automātiski uzskaitīs visus pārējos .panda failus, kas atrodas
 Jums ir jāsaglabā jaunie projekti pirms piekļuves IC un izskatiem vai beWavedDolphin simulāciju palaišanas.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="554"/>
+        <location filename="../../UI/MainWindow.cpp" line="623"/>
         <source>Are you sure?</source>
         <translation>Vai esat pārliecināts?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="503"/>
+        <location filename="../../UI/MainWindow.cpp" line="572"/>
         <source>&lt;h1&gt;Canvas Shortcuts&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Zoom in &lt;/li&gt;&lt;li&gt; Ctrl+- : Zoom out &lt;/li&gt;&lt;li&gt; Ctrl+1 : Hide/Show wires &lt;/li&gt;&lt;li&gt; Ctrl+2 : Hide/Show gates &lt;/li&gt;&lt;li&gt; Ctrl+F : Search elements &lt;/li&gt;&lt;li&gt; Ctrl+W : Open beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Save project &lt;/li&gt;&lt;li&gt; Ctrl+Q : Exit wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Start/Pause simulation &lt;/li&gt;&lt;li&gt; [ : Previous primary element property &lt;/li&gt;&lt;li&gt; ] : Next primary element property &lt;/li&gt;&lt;li&gt; { : Previous secondary element property &lt;/li&gt;&lt;li&gt; } : Next secondary element property &lt;/li&gt;&lt;li&gt; &amp;lt; : Morph to previous element &lt;/li&gt;&lt;li&gt; &amp;gt; : Morph to next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;p&gt;Double-click on a wire to create a node&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Audekla īsinājumtaustiņi&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Ctrl+= : Pietuvināt &lt;/li&gt;&lt;li&gt; Ctrl+- : Attālināt &lt;/li&gt;&lt;li&gt; Ctrl+1 : Slēpt/Rādīt vadus &lt;/li&gt;&lt;li&gt; Ctrl+2 : Slēpt/Rādīt vārtus &lt;/li&gt;&lt;li&gt; Ctrl+F : Meklēt elementus &lt;/li&gt;&lt;li&gt; Ctrl+W : Atvērt beWaveDolphin &lt;/li&gt;&lt;li&gt; Ctrl+S : Saglabāt projektu &lt;/li&gt;&lt;li&gt; Ctrl+Q : Iziet no wiRedPanda &lt;/li&gt;&lt;li&gt; F5 : Sākt/Apturēt simulāciju &lt;/li&gt;&lt;li&gt; [ : Iepriekšējā elementa primārā īpašība &lt;/li&gt;&lt;li&gt; ] : Nākamā elementa primārā īpašība &lt;/li&gt;&lt;li&gt; { : Iepriekšējā elementa sekundārā īpašība &lt;/li&gt;&lt;li&gt; } : Nākamā elementa sekundārā īpašība &lt;/li&gt;&lt;li&gt; &amp;lt; : Pārveidot par iepriekšējo elementu &lt;/li&gt;&lt;li&gt; &amp;gt; : Pārveidot par nākamo elementu &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Vispārīgi padomi&lt;/h1&gt;&lt;p&gt;Veiciet dubultklikšķi uz vada, lai izveidotu mezglu&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="481"/>
+        <location filename="../../UI/MainWindow.cpp" line="276"/>
+        <source>Error</source>
+        <translation type="unfinished">Kļūda</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="305"/>
+        <source>Open My Exercises Folder</source>
+        <translation type="unfinished">Atvērt manu vingrinājumu mapi</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="306"/>
+        <source>Could not create or access a folder for custom exercises.</source>
+        <translation type="unfinished">Neizdevās izveidot mapi pielāgotiem vingrinājumiem vai piekļūt tai.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="316"/>
+        <source>Open My Tours Folder</source>
+        <translation type="unfinished">Atvērt manu ekskursiju mapi</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="317"/>
+        <source>Could not create or access a folder for custom tours.</source>
+        <translation type="unfinished">Neizdevās izveidot mapi pielāgotām ekskursijām vai piekļūt tai.</translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindow.cpp" line="550"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda ir programmatūra, ko izstrādājuši Sanpaulu Federālās universitātes studenti, lai palīdzētu skolēniem apgūt loģiskās shēmas.&lt;/p&gt;&lt;p&gt;Programmatūras versija: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Veidotāji:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda pašlaik uztur prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves un Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Lūdzu, ziņojiet mūsu GitHub lapā, ja atrodat kļūdu vai vēlaties pieprasīt jaunu funkciju.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Apmeklējiet mūsu vietni!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="553"/>
+        <location filename="../../UI/MainWindow.cpp" line="622"/>
         <source>Exit</source>
         <translation>Iziet</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1074"/>
+        <location filename="../../UI/MainWindow.cpp" line="1143"/>
         <source>Unmute</source>
         <translation>Ar skaņu</translation>
     </message>
@@ -2633,34 +2620,6 @@ Jums ir jāsaglabā jaunie projekti pirms piekļuves IC un izskatiem vai beWaved
         <location filename="../../Scene/Commands.cpp" line="1075"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>Patiesuma tabulas pārslēgšanas pozīcija ir ārpus diapazona: %1</translation>
-    </message>
-</context>
-<context>
-    <name>TourBrowserDialog</name>
-    <message>
-        <location filename="../../Tour/TourBrowserDialog.cpp" line="35"/>
-        <source>Could not create or access a folder for custom tours.</source>
-        <translation>Neizdevās izveidot mapi pielāgotām ekskursijām vai piekļūt tai.</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="47"/>
-        <source>Interactive Tours</source>
-        <translation>Interaktīvās ekskursijas</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="48"/>
-        <source>Choose a Tour</source>
-        <translation>Izvēlieties ekskursiju</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="49"/>
-        <source>Start</source>
-        <translation>Sākt</translation>
-    </message>
-    <message>
-        <location filename="../../Tour/TourBrowserDialogUI.cpp" line="50"/>
-        <source>Open My Tours Folder</source>
-        <translation>Atvērt manu ekskursiju mapi</translation>
     </message>
 </context>
 <context>
