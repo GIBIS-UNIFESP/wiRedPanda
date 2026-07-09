@@ -32,6 +32,28 @@ QFileInfo WorkspaceManager::currentFile() const
     return m_currentTab ? m_currentTab->fileInfo() : QFileInfo();
 }
 
+QString WorkspaceManager::displayName(const WorkSpace *ws, const QFileInfo &fileInfo) const
+{
+    if (!ws) {
+        return {};
+    }
+    // Inline IC tabs use "[blobName]" — never the parent filename.
+    if (ws->isInlineIC()) {
+        return "[" + ws->inlineBlobName() + "]";
+    }
+    if (fileInfo.exists()) {
+        return fileInfo.fileName();
+    }
+    // Unsaved tab: the numbered placeholder assigned at creation (fall back for any
+    // workspace not created through createNewTab).
+    return ws->untitledTitle().isEmpty() ? tr("New Project") : ws->untitledTitle();
+}
+
+QString WorkspaceManager::currentTabName() const
+{
+    return displayName(m_currentTab, currentFile());
+}
+
 QDir WorkspaceManager::currentDir() const
 {
     return m_currentTab ? m_currentTab->fileInfo().absoluteDir() : QDir();
@@ -574,17 +596,7 @@ void WorkspaceManager::setCurrentFile(const QFileInfo &fileInfo)
         return;
     }
 
-    // Inline IC tabs use "[blobName]" as title — never the parent filename.
-    QString text;
-    if (senderWs->isInlineIC()) {
-        text = "[" + senderWs->inlineBlobName() + "]";
-    } else if (fileInfo.exists()) {
-        text = fileInfo.fileName();
-    } else {
-        // Unsaved tab: keep the numbered placeholder assigned at creation (fall back for
-        // any workspace not created through createNewTab).
-        text = senderWs->untitledTitle().isEmpty() ? tr("New Project") : senderWs->untitledTitle();
-    }
+    QString text = displayName(senderWs, fileInfo);
 
     // Append an asterisk to the tab title to indicate unsaved changes,
     // following the common editor convention.
@@ -597,6 +609,11 @@ void WorkspaceManager::setCurrentFile(const QFileInfo &fileInfo)
     }
 
     m_tab->setTabText(tabIndex, text);
+
+    // Keep the window title in step when it's the visible tab that changed.
+    if (senderWs == m_currentTab) {
+        emit titleChanged();
+    }
 
     // Only update tooltip and recent files for file-backed tabs.
     if (!senderWs->isInlineIC()) {

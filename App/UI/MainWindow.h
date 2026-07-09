@@ -210,6 +210,10 @@ private:
     /// Reacts to WorkspaceManager::currentTabChanged: rebinds the chrome to the new scene.
     void onCurrentTabChanged(WorkSpace *newTab);
 
+    /// Refreshes the window title to "<current tab>[*] — wiRedPanda <version>", using
+    /// setWindowModified() for the "*". Falls back to the bare app name when no tab is open.
+    void updateWindowTitle();
+
     /// \reimp MainWindowHost — file info used to populate the file-based IC palette.
     QFileInfo icListFile() const override;
 

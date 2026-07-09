@@ -43,6 +43,9 @@ public:
 
     [[nodiscard]] WorkSpace *currentTab() const { return m_currentTab; }
     [[nodiscard]] QFileInfo currentFile() const;
+    /// Display name of the current tab (file name, numbered placeholder, or "[blob]" for an
+    /// inline IC), without the unsaved "*" marker. Used for the window title.
+    [[nodiscard]] QString currentTabName() const;
     [[nodiscard]] QDir currentDir() const;
     [[nodiscard]] QFileInfo icListFile() const;
     [[nodiscard]] QString dolphinFileName() const;
@@ -81,10 +84,18 @@ signals:
     void currentTabChanged(WorkSpace *tab);
     /// Emitted when a file-backed tab is (re)named, to feed the recent-files list.
     void recentFileAdded(const QString &filePath);
+    /// Emitted when the current tab's title or modified state changes, so the shell can
+    /// refresh the window title.
+    void titleChanged();
 
 private:
     int closeTabAnyway();
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
+
+    /// Display name for \a ws given its \a fileInfo (file name, numbered placeholder, or
+    /// "[blob]" for an inline IC), without the unsaved "*" marker. Shared by the tab text
+    /// and the window title so they stay in step.
+    [[nodiscard]] QString displayName(const WorkSpace *ws, const QFileInfo &fileInfo) const;
 
     /// Returns the lowest-unused "New Project" placeholder title (unnumbered, then " 2",
     /// " 3", …) not already shown by another open tab, so fresh tabs stay distinguishable.
