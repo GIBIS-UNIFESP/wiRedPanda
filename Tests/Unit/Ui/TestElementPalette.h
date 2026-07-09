@@ -14,4 +14,5 @@ private slots:
 
     void testPaletteSearch();
     void testPaletteRebuild();
+    void testElementLabelHasDescriptiveTooltip();
 };
