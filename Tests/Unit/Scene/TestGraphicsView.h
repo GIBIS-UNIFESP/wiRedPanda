@@ -15,6 +15,7 @@ private slots:
     void testZoomMinimumLimit();
     void testZoomMaximumLimit();
     void testResetZoom();
+    void testZoomToFit();
     void testFastMode();
     void testDragModeToggle();
 };
