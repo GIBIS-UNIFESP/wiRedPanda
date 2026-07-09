@@ -128,6 +128,9 @@ public:
     const QVector<GraphicElement *> elements() const;
     /// Returns all graphic elements within \a rect.
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
+    /// Returns the path of the first local `.panda` file in \a mimeData's URL list (the file
+    /// a file-manager drop would open), or an empty string if there is none.
+    static QString droppedPandaFile(const QMimeData *mimeData);
     /// Returns all graphic elements without the topological sort — for hot
     /// paths (key triggers, mute) that don't care about evaluation order.
     const QVector<GraphicElement *> unsortedElements() const;
@@ -307,6 +310,9 @@ signals:
     /// Emitted when an IC element is double-clicked to request opening its sub-circuit.
     void icOpenRequested(int elementId, const QString &blobName, const QString &filePath);
 
+    /// Emitted when a .panda file is dropped onto the canvas from the file manager.
+    void fileDropRequested(const QString &filePath);
+
     // --- IC hover-preview lifecycle (re-emitted from IC; see SceneUiBinder) ---
     void icPreviewRequested(IC *ic, const QPoint &screenPos);
     void icPreviewMoved(IC *ic, const QPoint &screenPos);
@@ -343,6 +349,9 @@ protected:
 private:
     // --- Helpers ---
 
+    /// If \a event is a plain/Shift arrow key and something is selected, moves the selection by
+    /// one grid step (Shift = a larger step) as a single undoable command and returns true.
+    bool nudgeSelection(QKeyEvent *event);
     QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
     const QVector<Connection *> connections() const;
     void checkUpdateRequest();

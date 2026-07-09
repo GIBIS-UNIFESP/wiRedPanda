@@ -128,6 +128,9 @@ void SceneUiBinder::bind(WorkSpace *tab)
             emit loadFileRequested(filePath);
         }
     });
+    connect(scene, &Scene::fileDropRequested, this, [this](const QString &filePath) {
+        emit loadFileRequested(filePath);
+    });
     connect(scene, &Scene::icPreviewRequested, this, [this](IC *ic, const QPoint &screenPos) {
         m_previewPopup->showForIC(ic, screenPos);
     });
