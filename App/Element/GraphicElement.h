@@ -499,6 +499,12 @@ protected:
      */
     QRectF renderBodyBounds() const;
 
+    /// Sets the label's anchor point in the element's un-rotated local frame, and repositions
+    /// it there. \a pos is remembered (m_labelAnchor) so updateLabelOrientation() can always
+    /// recompute the label's actual on-screen position from this original value, rather than
+    /// from whatever rotation-adjusted position it last computed.
+    void setLabelAnchor(const QPointF &pos);
+
     // --- Qt Event Handling ---
 
     /**
@@ -551,6 +557,7 @@ protected:
     ElementAppearance m_appearance{this};
 
     QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
+    QPointF m_labelAnchor; ///< The label's intended anchor point in the element's un-rotated local frame; see setLabelAnchor().
 
     // --- Members: Metadata ---
 

@@ -61,7 +61,7 @@ Node::Node(QGraphicsItem *parent)
 
     // The node body is 32×32; move the label just below it (instead of the
     // default 64px offset which is designed for 64×64 elements).
-    m_label->setPos(0, 32);
+    setLabelAnchor(QPointF(0, 32));
 
     Node::updatePortsProperties();
 }

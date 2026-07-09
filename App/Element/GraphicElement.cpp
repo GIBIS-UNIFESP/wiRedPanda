@@ -65,10 +65,10 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     m_label->setVisible(metadata.hasLabel);
     // Font is applied lazily in updateLabel() to avoid expensive text layout
     // passes for elements that never display a label (e.g. IC sub-elements).
-    // 64 px below origin keeps the label below the standard 64×64 element body
-    m_label->setPos(0, 64);
     m_label->setParentItem(this);
     m_label->setBrush(Qt::black);
+    // 64 px below origin keeps the label below the standard 64×64 element body
+    setLabelAnchor(QPointF(0, 64));
 
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
@@ -188,6 +188,13 @@ QRectF GraphicElement::portsBoundingRect() const
 QRectF GraphicElement::renderBodyBounds() const
 {
     return portsBoundingRect().united(QRectF(0, 0, 64, 64));
+}
+
+void GraphicElement::setLabelAnchor(const QPointF &pos)
+{
+    m_labelAnchor = pos;
+    m_label->setPos(pos);     // baseline: always correct for non-rotatable elements
+    updateLabelOrientation(); // rotatable elements get position+orientation corrected on top
 }
 
 void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -406,16 +413,38 @@ void GraphicElement::updateLabelOrientation()
         return;
     }
 
-    // The label is a child item and inherits the element's Flip∘Rotate; carry its inverse
-    // (rotate outer, flip inner) about the label's own centre so the text reads upright and
-    // unmirrored while still travelling with the rotated body — like ports and SVG pin text.
-    const QPointF center = m_label->boundingRect().center();
+    // The label is a child item and inherits the element's Flip∘Rotate. Left alone, its anchor
+    // point (m_labelAnchor, in the element's un-rotated local frame) would orbit around the
+    // rotation pivot along with everything else -- fine for ports/pins, but it leaves the label
+    // sweeping past wherever the pivot's "below"/"beside" edge currently points to, which for a
+    // wide/tall body (or once ports are packed along an edge) can land it squarely on a pin.
+    // Counter-rotate the anchor's *position* about the same pivot the element itself rotates
+    // about (pixmapCenter()), so it stays fixed in world space -- built by replaying the exact
+    // transform the element applies to its children (its own extra transform(), i.e. the flip
+    // matrix already set by ElementOrientation::applyFlipTransform(), composed with a rotation
+    // about that pivot matching rotation()) and inverting it, rather than hand-deriving the
+    // reversed composition.
+    const QPointF pivot = pixmapCenter();
 
+    QTransform pivotRotate;
+    pivotRotate.translate(pivot.x(), pivot.y());
+    pivotRotate.rotate(rotation());
+    pivotRotate.translate(-pivot.x(), -pivot.y());
+
+    const QTransform elementRotateFlip = pivotRotate * transform();
+    m_label->setPos(elementRotateFlip.inverted().map(m_labelAnchor));
+
+    // Independently counter-orient the glyphs themselves so the text reads upright and
+    // unmirrored too. Pivots about the label's own local origin (0,0) -- the same point setPos()
+    // above just anchored -- rather than its bounding-rect centre: pivoting about any *other*
+    // point here would translate the label's own origin away from that anchor as rotation/flip
+    // change (rotating/scaling about a point off-origin necessarily moves the origin), quietly
+    // reintroducing the same kind of drift setPos() above was just added to eliminate. A pivot
+    // choice only ever affects translation, never the rotation/scale factors, so this is exactly
+    // as effective at keeping the glyphs upright as pivoting about the centre was.
     QTransform t;
-    t.translate(center.x(), center.y());
     t.rotate(-rotation());
     t.scale(isFlippedX() ? -1 : 1, isFlippedY() ? -1 : 1);
-    t.translate(-center.x(), -center.y());
     m_label->setTransform(t);
 }
 

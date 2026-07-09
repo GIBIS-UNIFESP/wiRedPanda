@@ -67,6 +67,7 @@ private slots:
     void testICBigPivotsAtBoundingRectCenter();
     void testICBigRotationDoesNotDriftInScene();
     void testICBigFlipDoesNotDriftInScene();
+    void testICBigLabelStaysAtFixedScenePosition();
 
 private:
     /// Builds an IC with enough ports that its body outgrows the nominal 64x64 box, without
