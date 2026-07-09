@@ -58,7 +58,7 @@ void TrashButton::dropEvent(QDropEvent *event)
         if (payload.isEmbedded) {
             msgBox.setText(tr("Remove all \"%1\" instances from the circuit?").arg(payload.blobName));
         } else {
-            msgBox.setText(tr("File will be deleted. Are you sure?"));
+            msgBox.setText(tr("Remove this IC? Its file will be moved to the system trash and its instances deleted from the circuit."));
         }
 
         if (msgBox.exec() != QMessageBox::Yes) {
