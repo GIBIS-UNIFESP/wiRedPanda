@@ -13,6 +13,13 @@
 
 #include "App/Core/SentryHelpers.h"
 
+namespace {
+// Zoom step ladder (factor 1.25 per step). The range is deliberately asymmetric: elements
+// stay useful when tiny, so we allow far more zoom-out than in.
+constexpr int kMaxViewZoomLevel = 7;   ///< 1.25^7 ≈ 4.8× — close enough to wire small ports/pins.
+constexpr int kMinViewZoomLevel = -9;  ///< 0.8^9 ≈ 0.13× — below this the grid dots merge.
+} // namespace
+
 GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)
 {
@@ -36,14 +43,12 @@ GraphicsView::GraphicsView(QWidget *parent)
 
 bool GraphicsView::canZoomIn() const
 {
-    // Level 3 ≈ 1.25^3 ≈ 1.95× — beyond this elements become too large to be useful
-    return m_zoomLevel < 3;
+    return m_zoomLevel < kMaxViewZoomLevel;
 }
 
 bool GraphicsView::canZoomOut() const
 {
-    // Level −9 ≈ 0.8^9 ≈ 0.13× — below this the grid dots merge and navigation is impractical
-    return m_zoomLevel > -9;
+    return m_zoomLevel > kMinViewZoomLevel;
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
@@ -223,7 +228,7 @@ void GraphicsView::zoomToFit()
     // those methods enforce.
     fitInView(target, Qt::KeepAspectRatio);
     const double fitScale = transform().m11();
-    const int level = qBound(-9, static_cast<int>(std::floor(std::log(fitScale) / std::log(1.25))), 3);
+    const int level = qBound(kMinViewZoomLevel, static_cast<int>(std::floor(std::log(fitScale) / std::log(1.25))), kMaxViewZoomLevel);
 
     resetTransform();
     const double scaleFactor = std::pow(1.25, level);
