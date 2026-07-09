@@ -292,8 +292,10 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
 
 void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
 {
-    ElementEditor->setWindowTitle(QCoreApplication::translate("ElementEditor", "Form"));
-    groupBox->setTitle(QCoreApplication::translate("ElementEditor", "Title"));
+    ElementEditor->setWindowTitle(QCoreApplication::translate("ElementEditor", "Element Editor"));
+    // Outer container: no visible heading (the inner sections carry their own labels), so
+    // don't ship a placeholder "Title" string to the catalog.
+    groupBox->setTitle(QString());
     groupBoxIdentity->setTitle(QCoreApplication::translate("ElementEditor", "Identity"));
     groupBoxPorts->setTitle(QCoreApplication::translate("ElementEditor", "Ports"));
     groupBoxTiming->setTitle(QCoreApplication::translate("ElementEditor", "Timing"));
@@ -322,7 +324,11 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     doubleSpinBoxFrequency->setSuffix(QCoreApplication::translate("ElementEditor", " Hz"));
     labelFrequency->setText(QCoreApplication::translate("ElementEditor", "Frequency:"));
     labelColor->setText(QCoreApplication::translate("ElementEditor", "Color:"));
-    pushButtonAudioBox->setText(QCoreApplication::translate("ElementEditor", "..."));
+    // The "..." glyph is a browse affordance, not translatable text; keep it out of the
+    // catalog and give the button a real accessible name / tooltip so its purpose is clear.
+    pushButtonAudioBox->setText(QStringLiteral("..."));
+    pushButtonAudioBox->setAccessibleName(QCoreApplication::translate("ElementEditor", "Choose audio file"));
+    pushButtonAudioBox->setToolTip(QCoreApplication::translate("ElementEditor", "Choose audio file"));
     labelInputs->setText(QCoreApplication::translate("ElementEditor", "Inputs:"));
     comboBoxColor->setCurrentText(QString());
     labelAudioBox->setText(QCoreApplication::translate("ElementEditor", "Sound file:"));
