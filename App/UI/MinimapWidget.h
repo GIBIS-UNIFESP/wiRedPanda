@@ -39,6 +39,7 @@ private:
     GraphicsView *m_view = nullptr;
     QPixmap m_cache;           ///< cached rendering of the scene for fast repaints
     bool m_cacheDirty = true;  ///< whether cache needs to be regenerated
+    QRectF m_cacheSrc;         ///< source rect the cache was rendered from; a change invalidates it
     bool m_dragging = false;
     QTimer m_throttle;        ///< throttle timer to limit redraws
 

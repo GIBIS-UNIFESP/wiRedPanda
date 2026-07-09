@@ -16,16 +16,20 @@ void TestMinimapWidget::testComputeTransformVerticalLetterbox()
     rectItem->setPen(Qt::NoPen);
     workspace.scene()->addItem(rectItem);
 
+    // The minimap source is sceneRect ∪ itemsBoundingRect ∪ the visible viewport. Pin it with a
+    // wide scene rect large enough to dominate the item and the (small, scale-1) viewport, so the
+    // fitted aspect is deterministic: wide content → width is the limiting dimension.
+    workspace.scene()->setSceneRect(QRectF(0, 0, 8000, 2000));
+
     MinimapWidget minimap(workspace.scene(), workspace.view());
 
     QRectF src;
     double scale = 0.0, dx = 0.0, dy = 0.0, usedW = 0.0, usedH = 0.0;
     QVERIFY(minimap.computeTransform(src, scale, dx, dy, usedW, usedH));
 
-    // Scene always contains a permanent (near-zero) rubber-band selection-rect item, so
-    // itemsBoundingRect() is never exactly (0,0,400,100) -- measure the ground truth
-    // directly rather than assuming our own rect's exact bounds.
-    const QRectF expectedSrc = workspace.scene()->itemsBoundingRect();
+    // Ground truth computed exactly the way computeTransform() derives the source.
+    QRectF expectedSrc = workspace.scene()->sceneRect().united(workspace.scene()->itemsBoundingRect());
+    expectedSrc = expectedSrc.united(workspace.view()->mapToScene(workspace.view()->viewport()->rect()).boundingRect());
     const double expectedScale = qMin(220.0 / expectedSrc.width(), 160.0 / expectedSrc.height());
     const double expectedUsedW = expectedSrc.width() * expectedScale;
     const double expectedUsedH = expectedSrc.height() * expectedScale;
@@ -49,13 +53,19 @@ void TestMinimapWidget::testComputeTransformHorizontalLetterbox()
     rectItem->setPen(Qt::NoPen);
     workspace.scene()->addItem(rectItem);
 
+    // Tall scene rect that dominates the item and viewport (see the vertical case): tall content
+    // → height is the limiting dimension.
+    workspace.scene()->setSceneRect(QRectF(0, 0, 2000, 8000));
+
     MinimapWidget minimap(workspace.scene(), workspace.view());
 
     QRectF src;
     double scale = 0.0, dx = 0.0, dy = 0.0, usedW = 0.0, usedH = 0.0;
     QVERIFY(minimap.computeTransform(src, scale, dx, dy, usedW, usedH));
 
-    const QRectF expectedSrc = workspace.scene()->itemsBoundingRect();
+    // Ground truth computed exactly the way computeTransform() derives the source.
+    QRectF expectedSrc = workspace.scene()->sceneRect().united(workspace.scene()->itemsBoundingRect());
+    expectedSrc = expectedSrc.united(workspace.view()->mapToScene(workspace.view()->viewport()->rect()).boundingRect());
     const double expectedScale = qMin(220.0 / expectedSrc.width(), 160.0 / expectedSrc.height());
     const double expectedUsedW = expectedSrc.width() * expectedScale;
     const double expectedUsedH = expectedSrc.height() * expectedScale;
