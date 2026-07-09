@@ -65,7 +65,10 @@ void MinimapWidget::paintEvent(QPaintEvent * /*event*/)
 
     const qreal dpr = this->devicePixelRatioF();
     const QSize pixSize = QSize(qRound(usedW * dpr), qRound(usedH * dpr));
-    if (m_cacheDirty || m_cache.size() != pixSize) {
+    // Regenerate when the source region changes too: unlike the old item-box source, the source
+    // now tracks sceneRect / the visible viewport, which change on zoom -- a stale cache would
+    // otherwise show the wrong region.
+    if (m_cacheDirty || m_cache.size() != pixSize || m_cacheSrc != srcUsed) {
         m_cache = QPixmap(pixSize);
         m_cache.setDevicePixelRatio(dpr);
         m_cache.fill(palette().window().color());
@@ -73,6 +76,7 @@ void MinimapWidget::paintEvent(QPaintEvent * /*event*/)
         pixmapPainter.setRenderHint(QPainter::Antialiasing, false);
         m_scene->render(&pixmapPainter, QRectF(0, 0, usedW, usedH), srcUsed, Qt::KeepAspectRatio);
         m_cacheDirty = false;
+        m_cacheSrc = srcUsed;
     }
 
     // Draw the cached pixmap at the computed offset so the minimap content
@@ -146,13 +150,20 @@ bool MinimapWidget::computeTransform(QRectF &srcOut, double &scaleOut, double &d
     if (!m_scene)
         return false;
 
+    // The minimap maps the whole navigable canvas, not the tight item box: fitting
+    // itemsBoundingRect() alone would zoom a single small element to fill the widget.
+    //   - sceneRect() is the navigable area once the user has interacted (stable under scroll).
+    //   - itemsBoundingRect() is a defensive superset so an item momentarily outside the scene
+    //     rect stays visible.
+    //   - the visible viewport region is the decisive term: right after a file loads, sceneRect()
+    //     is set to the tight item box (see WorkSpace load), so without this the minimap would
+    //     stay zoomed. Including it guarantees the minimap is never more zoomed-in than the view.
     // Scene always contains a permanent (near-zero) rubber-band selection-rect item, so
-    // itemsBoundingRect() never actually reports invalid/empty here in practice -- this
-    // fallback and early return exist only as a defensive guard for a Scene that isn't
-    // fully constructed the usual way.
-    QRectF src = m_scene->itemsBoundingRect();
-    if (!src.isValid() || src.isEmpty())
-        src = m_scene->sceneRect();
+    // itemsBoundingRect() never reports invalid/empty here in practice -- the final early return
+    // exists only as a defensive guard for a Scene that isn't fully constructed the usual way.
+    QRectF src = m_scene->sceneRect().united(m_scene->itemsBoundingRect());
+    if (m_view && m_view->viewport())
+        src = src.united(m_view->mapToScene(m_view->viewport()->rect()).boundingRect());
     if (!src.isValid() || src.isEmpty())
         return false;
 
