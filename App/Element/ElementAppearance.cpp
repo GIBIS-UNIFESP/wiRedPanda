@@ -284,6 +284,11 @@ void ElementAppearance::applyOrientation()
     // so its text — if any — must render as authored and never be counter-oriented.
     const bool oriented = m_owner->rotatesGraphic()
         && (m_owner->isFlippedX() || m_owner->isFlippedY() || (m_owner->rotation() != 0.0));
+    // A rotated/flipped SVG variant can differ in size from the base skin, which changes what
+    // boundingRect() reports (it's derived from pixmap().rect()). setPixmap()/setRenderPixmap()
+    // already guard their own callers, but reapplyAppearanceOrientation() reaches here directly
+    // on a rotate/flip, so the mutation below needs its own prepareGeometryChange().
+    m_owner->prepareGeometryChange();
     if (oriented && m_resolvedPixmapPath.endsWith(QLatin1String(".svg"), Qt::CaseInsensitive)) {
         const QPixmap variant = orientedSvgPixmap(m_resolvedPixmapPath, m_owner->rotation(), m_owner->isFlippedX(), m_owner->isFlippedY());
         m_pixmap = variant.isNull() ? m_basePixmap : variant;

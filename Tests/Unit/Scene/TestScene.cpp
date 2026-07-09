@@ -9,6 +9,7 @@
 #include <QClipboard>
 #include <QImage>
 #include <QMimeData>
+#include <QPainter>
 #include <QTest>
 #include <QTransform>
 
@@ -1570,4 +1571,44 @@ void TestScene::testBuildDragImageClampsExtremeSelectionExtent()
     QVERIFY(!image.isNull());
     QVERIFY(image.width() <= ClipboardManager::kMaxDragImageDimension);
     QVERIFY(image.height() <= ClipboardManager::kMaxDragImageDimension);
+}
+
+void TestScene::testGeometryChangeKeepsSceneIndexConsistentKS()
+{
+    // Guards the invariant behind WIREDPANDA-KS (EXCEPTION_ACCESS_VIOLATION_READ inside
+    // QGraphicsSceneBspTree::items during paint): every runtime change to an element's
+    // boundingRect() must reindex the scene's BSP tree via prepareGeometryChange(), or the
+    // stale bounds let a later paint walk the tree into a freed node. ElementAppearance's
+    // setPixmap()/setRenderPixmap() already guard the pixmap-load paths; this exercises the
+    // two remaining chokepoints — setPortSize() (port count) and applyOrientation() reached
+    // directly via a rotate/flip — through the exact drawItems -> BSP paint pipeline, and
+    // asserts the element stays correctly indexed and that render() does not fault.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    QVERIFY2(elm != nullptr, "failed to create AND element");
+    elm->setPos(0, 0);
+    scene->addItem(elm);
+
+    // Build the BSP index against the element's initial bounds.
+    (void)scene->items(QRectF(-1000, -1000, 2000, 2000), Qt::IntersectsItemBoundingRect);
+
+    // Port-count change: alters portsBoundingRect() and thus boundingRect().
+    elm->setInputSize(elm->maxInputSize());
+    QVERIFY2(scene->items(elm->sceneBoundingRect(), Qt::IntersectsItemBoundingRect).contains(elm),
+        "element lost from scene BSP index after input-size change");
+
+    // Orientation change: reaches applyOrientation() directly, which may swap in a
+    // different-size SVG variant.
+    elm->setRotation(90);
+    elm->setFlippedX(true);
+    QVERIFY2(scene->items(elm->sceneBoundingRect(), Qt::IntersectsItemBoundingRect).contains(elm),
+        "element lost from scene BSP index after rotate/flip");
+
+    // Drive the exact crashing path end-to-end: drawItems -> BSP traversal.
+    QImage canvas(400, 400, QImage::Format_ARGB32);
+    QPainter painter(&canvas);
+    scene->render(&painter); // must not corrupt the index / fault
+    painter.end();
 }

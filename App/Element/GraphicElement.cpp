@@ -648,6 +648,10 @@ void GraphicElement::setPortSize(const int size, const bool isInput)
         return;
     }
 
+    // Adding/removing ports changes portsBoundingRect(), and thus boundingRect(): notify the
+    // scene's spatial index before mutating so its stale bounds can't crash a later paint.
+    prepareGeometryChange();
+
     if (isInput) {
         m_ports.resizeInputs(size);
     } else {
