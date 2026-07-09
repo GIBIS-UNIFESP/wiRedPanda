@@ -20,6 +20,7 @@ private slots:
     void testNewTabCreated();
     void testCreateMultipleTabs();
     void testNewTabsAreNumbered();
+    void testTabsMovableAndMiddleClickCloses();
     void testCloseTabReducesCount();
     void testSwitchTab();
     void testCurrentTabReturnsActiveWorkspace();

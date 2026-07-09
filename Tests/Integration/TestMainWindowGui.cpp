@@ -15,6 +15,7 @@
 #include <QScrollBar>
 #include <QShortcut>
 #include <QSignalSpy>
+#include <QTabBar>
 #include <QSlider>
 #include <QTabWidget>
 #include <QTest>
@@ -247,6 +248,28 @@ void TestMainWindowGui::testNewTabsAreNumbered()
     QTest::keyClick(window.get(), Qt::Key_N, Qt::ControlModifier);
     QCOMPARE(tabs->count(), 3);
     QCOMPARE(tabs->tabText(tabs->currentIndex()), QStringLiteral("New Project 2"));
+}
+
+void TestMainWindowGui::testTabsMovableAndMiddleClickCloses()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *tabs = findTabs(window.get());
+
+    // Tabs can be dragged to reorder.
+    QVERIFY(tabs->isMovable());
+
+    // Middle-clicking a tab closes it.
+    QTest::keyClick(window.get(), Qt::Key_N, Qt::ControlModifier);
+    QCOMPARE(tabs->count(), 2);
+
+    auto *bar = tabs->tabBar();
+    const QRect tabRect = bar->tabRect(0);
+    QVERIFY(tabRect.isValid());
+    QTest::mouseClick(bar, Qt::MiddleButton, Qt::NoModifier, tabRect.center());
+    QCoreApplication::processEvents();
+    QCOMPARE(tabs->count(), 1);
 }
 
 void TestMainWindowGui::testCloseTabReducesCount()

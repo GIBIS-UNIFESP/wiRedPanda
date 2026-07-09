@@ -7,6 +7,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QTabBar>
 #include <QTabWidget>
 #include <QUndoStack>
 
@@ -25,6 +28,26 @@ WorkspaceManager::WorkspaceManager(QTabWidget *tab, MainWindowHost &host, QObjec
     , m_tab(tab)
     , m_host(host)
 {
+    // Watch the tab bar so a middle-click closes the tab under the cursor. Cache the tab bar
+    // pointer: the filter must never call back through m_tab, because a teardown event can reach
+    // it while m_tab is mid-destruction (its dynamic type already demoted below QTabWidget).
+    m_tabBar = m_tab->tabBar();
+    m_tabBar->installEventFilter(this);
+}
+
+bool WorkspaceManager::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == m_tabBar && event->type() == QEvent::MouseButtonRelease) {
+        const auto *mouseEvent = static_cast<QMouseEvent *>(event);
+        if (mouseEvent->button() == Qt::MiddleButton) {
+            const int index = m_tabBar->tabAt(mouseEvent->pos());
+            if (index >= 0) {
+                closeTab(index);
+                return true;
+            }
+        }
+    }
+    return QObject::eventFilter(watched, event);
 }
 
 QFileInfo WorkspaceManager::currentFile() const

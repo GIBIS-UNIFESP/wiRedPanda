@@ -574,6 +574,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     tab->setMinimumSize(QSize(570, 0));
     tab->setMaximumSize(QSize(16777215, 16777215));
     tab->setTabsClosable(true);
+    tab->setMovable(true); // let users drag tabs to reorder them
     splitter->addWidget(tab);
 
     gridLayout_8->addWidget(splitter, 0, 0, 1, 1);
