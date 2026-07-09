@@ -199,6 +199,8 @@ public:
     void cutAction();
     /// Pastes items from the internal clipboard into the scene.
     void pasteAction();
+    /// Duplicates the selection in place (leaves the system clipboard untouched).
+    void duplicateAction();
 
     // --- Element Operations (Rotate / Flip / Delete / Mute) ---
 

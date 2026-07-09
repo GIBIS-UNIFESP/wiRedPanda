@@ -65,6 +65,7 @@ public:
     QAction *actionCut = nullptr;
     QAction *actionCopy = nullptr;
     QAction *actionPaste = nullptr;
+    QAction *actionDuplicate = nullptr;
     QAction *actionDelete = nullptr;
     QAction *actionSelectAll = nullptr;
     QAction *actionClearSelection = nullptr;

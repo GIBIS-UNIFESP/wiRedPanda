@@ -14,6 +14,7 @@
 #include <QPainter>
 
 #include "App/Core/Common.h"
+#include "App/Core/Constants.h"
 #include "App/Core/MimeTypes.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
@@ -299,7 +300,8 @@ void ClipboardManager::serializeAndDelete(const QList<QGraphicsItem *> &items, Q
     m_scene->deleteAction();
 }
 
-void ClipboardManager::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version)
+QList<QGraphicsItem *> ClipboardManager::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
+                                                          std::optional<QPointF> fixedOffset)
 {
     m_scene->clearSelection();
 
@@ -308,10 +310,11 @@ void ClipboardManager::deserializeAndAdd(QDataStream &stream, const QVersionNumb
     QHash<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
     const auto itemList = Serialization::deserialize(stream, context);
-    // Shift pasted elements so their centroid lands at the cursor position,
-    // then nudge 32 px diagonally so repeated pastes are visually offset and
-    // don't completely overlap the original selection.
-    const QPointF offset = m_scene->mousePos() - center - QPointF(32.0, 32.0);
+    // Paste: shift elements so their centroid lands at the cursor, then nudge 32 px
+    // diagonally so repeated pastes don't completely overlap. Duplicate: shift by exactly
+    // fixedOffset from the originals so the copies sit a grid step down-right, in place.
+    const QPointF offset = fixedOffset ? *fixedOffset
+                                       : (m_scene->mousePos() - center - QPointF(32.0, 32.0));
 
     m_scene->receiveCommand(new AddItemsCommand(itemList, m_scene));
 
@@ -322,4 +325,30 @@ void ClipboardManager::deserializeAndAdd(QDataStream &stream, const QVersionNumb
     }
 
     m_scene->resizeScene();
+    return itemList;
+}
+
+void ClipboardManager::duplicate()
+{
+    if (m_scene->selectedElements().empty()) {
+        return;
+    }
+
+    // Serialize the selection to a private buffer so the system clipboard is left untouched.
+    QByteArray itemData;
+    QDataStream writeStream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(writeStream);
+    serializeItems(m_scene->selectedItems(), writeStream);
+
+    // Embedded-IC blobs referenced by the copies already live in this scene's registry
+    // (same tab), so — unlike paste — no blob re-registration is needed.
+    QDataStream readStream(&itemData, QIODevice::ReadOnly);
+    const QVersionNumber version = Serialization::readPandaHeader(readStream);
+    const QPointF step(Constants::gridSize, Constants::gridSize);
+    const auto added = deserializeAndAdd(readStream, version, step);
+
+    // Make the copies the active selection so they can be moved right away.
+    for (auto *item : added) {
+        item->setSelected(true);
+    }
 }

@@ -5,6 +5,7 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QClipboard>
 #include <QFile>
 #include <QLabel>
 #include <QLineEdit>
@@ -607,6 +608,36 @@ void TestMainWindowGui::testCopyPasteViaKeyboard()
     QTest::keyClick(window.get(), Qt::Key_V, Qt::ControlModifier);
 
     QCOMPARE(static_cast<int>(scene->elements().size()), 2);
+}
+
+void TestMainWindowGui::testDuplicateViaKeyboard()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    // Duplicate must not disturb the system clipboard.
+    QApplication::clipboard()->setText(QStringLiteral("sentinel-clipboard"));
+
+    auto *andGate = new And();
+    andGate->setPos(96, 96);
+    scene->addItem(andGate);
+    clickElement(view, andGate);
+
+    QTest::keyClick(window.get(), Qt::Key_D, Qt::ControlModifier);
+    QCOMPARE(static_cast<int>(scene->elements().size()), 2);
+    QCOMPARE(QApplication::clipboard()->text(), QStringLiteral("sentinel-clipboard"));
+
+    // The copy becomes the selection, offset from (and leaving deselected) the original.
+    QCOMPARE(scene->selectedElements().size(), 1);
+    auto *copy = scene->selectedElements().first();
+    QVERIFY(copy != andGate);
+    QVERIFY(copy->pos() != andGate->pos());
+    QVERIFY(!andGate->isSelected());
+
+    // Duplicate is a single undoable step.
+    QTest::keyClick(window.get(), Qt::Key_Z, Qt::ControlModifier);
+    QCOMPARE(static_cast<int>(scene->elements().size()), 1);
 }
 
 void TestMainWindowGui::testCutPasteViaKeyboard()
