@@ -253,6 +253,7 @@ private:
     void on_actionGates_triggered(const bool checked);
     void on_actionLabelsUnderIcons_triggered(const bool checked);
     void on_actionICPreview_triggered(const bool checked);
+    void on_actionCheckForUpdates_triggered(const bool checked);
     void on_actionMinimapBottomLeft_triggered();
     void on_actionMinimapBottomRight_triggered();
     void on_actionMinimapTopLeft_triggered();

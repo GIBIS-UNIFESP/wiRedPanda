@@ -114,6 +114,18 @@ void TestSettings::testTypedLabelsUnderIcons()
     QCOMPARE(Settings::labelsUnderIcons(), false);
 }
 
+void TestSettings::testTypedUpdateChecksDisabled()
+{
+    // Fresh store (init() cleared it): update checks are enabled by default.
+    QCOMPARE(Settings::updateChecksDisabled(), false);
+
+    Settings::setUpdateChecksDisabled(true);
+    QCOMPARE(Settings::updateChecksDisabled(), true);
+
+    Settings::setUpdateChecksDisabled(false);
+    QCOMPARE(Settings::updateChecksDisabled(), false);
+}
+
 void TestSettings::testTypedLanguage()
 {
     QStringList languages = {"en", "pt_BR", "es", "fr", "de"};

@@ -615,6 +615,27 @@ void TestMainWindowGui::testLabelsUnderIconsToggle()
     QCOMPARE(action->isChecked(), initial);
 }
 
+void TestMainWindowGui::testUpdateChecksToggle()
+{
+    const bool original = Settings::updateChecksDisabled();
+
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *action = window->findChild<QAction *>("actionCheckForUpdates");
+    QVERIFY(action);
+    QVERIFY(action->isCheckable());
+    // The action reflects the (default-enabled) setting: checked == not-disabled.
+    QCOMPARE(action->isChecked(), !Settings::updateChecksDisabled());
+
+    // Toggling it flips the global opt-out and persists it.
+    const bool wasDisabled = Settings::updateChecksDisabled();
+    action->trigger();
+    QCOMPARE(Settings::updateChecksDisabled(), !wasDisabled);
+    action->trigger();
+    QCOMPARE(Settings::updateChecksDisabled(), wasDisabled);
+
+    Settings::setUpdateChecksDisabled(original);
+}
+
 // ===========================================================================
 // Element manipulation via keyboard
 // ===========================================================================

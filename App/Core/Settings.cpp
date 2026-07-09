@@ -127,6 +127,16 @@ void Settings::setIcPreviewDisabled(bool disabled)
     setValue("icPreviewDisabled", disabled);
 }
 
+bool Settings::updateChecksDisabled()
+{
+    return value("updateChecksDisabled").toBool();
+}
+
+void Settings::setUpdateChecksDisabled(bool disabled)
+{
+    setValue("updateChecksDisabled", disabled);
+}
+
 // Language
 
 QString Settings::language()

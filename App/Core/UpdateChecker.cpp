@@ -76,6 +76,11 @@ UpdateChecker::UpdateChecker(QObject *parent)
 
 void UpdateChecker::checkForUpdates()
 {
+    // Honour the global opt-out (offline/managed installs).
+    if (Settings::updateChecksDisabled()) {
+        return;
+    }
+
     // Skip if we already checked today.
     const QString today = QDate::currentDate().toString(Qt::ISODate);
     if (Settings::updateCheckLastDate() == today) {
