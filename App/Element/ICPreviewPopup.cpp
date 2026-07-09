@@ -134,16 +134,28 @@ void ICPreviewPopup::executeShow()
 
     adjustSize();
 
-    // Position slightly offset from the cursor, then clamp to the available
-    // screen geometry so the popup never extends off-screen.
+    // Position slightly offset from the cursor, then clamp to the available screen
+    // geometry so the popup never extends off-screen. Resolve the screen from the cursor
+    // itself — the offset position can fall past the edge near a corner, making screenAt()
+    // return null and (previously) skipping the clamp entirely.
     QPoint pos = m_pendingPos + QPoint(16, 16);
-    if (const auto *screen = QGuiApplication::screenAt(pos)) {
-        const QRect avail = screen->availableGeometry();
-        pos.setX((std::min)(pos.x(), avail.right()  - width()));
-        pos.setY((std::min)(pos.y(), avail.bottom() - height()));
+    if (const auto *screen = QGuiApplication::screenAt(m_pendingPos)) {
+        pos = clampedPopupPos(m_pendingPos, size(), screen->availableGeometry());
     }
     move(pos);
     show();
+}
+
+QPoint ICPreviewPopup::clampedPopupPos(const QPoint &cursorPos, const QSize &popupSize, const QRect &availableGeometry)
+{
+    QPoint pos = cursorPos + QPoint(16, 16);
+    // Clamp the far edges first, then the near edges, so a popup larger than the available
+    // area still anchors to top-left rather than landing off-screen.
+    pos.setX((std::min)(pos.x(), availableGeometry.right()  - popupSize.width()));
+    pos.setY((std::min)(pos.y(), availableGeometry.bottom() - popupSize.height()));
+    pos.setX((std::max)(pos.x(), availableGeometry.left()));
+    pos.setY((std::max)(pos.y(), availableGeometry.top()));
+    return pos;
 }
 
 void ICPreviewPopup::scheduleHide()

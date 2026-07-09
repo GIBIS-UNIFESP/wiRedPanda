@@ -57,3 +57,24 @@ void TestICUnit::testICPreviewPopupRespectsDisabledSetting()
 
     Settings::setIcPreviewDisabled(originalIcPreviewDisabled);
 }
+
+void TestICUnit::testPreviewPopupClampsToScreen()
+{
+    const QRect screen(0, 0, 1920, 1080);
+    const QSize popup(500, 350);
+
+    // Away from any edge: the popup sits just down-right of the cursor.
+    QCOMPARE(ICPreviewPopup::clampedPopupPos(QPoint(800, 400), popup, screen), QPoint(816, 416));
+
+    // Cursor in the bottom-right corner — the case the old screenAt(offset) lookup rendered
+    // off-screen: the whole popup must still fit within the screen.
+    const QPoint atCorner = ICPreviewPopup::clampedPopupPos(QPoint(1915, 1075), popup, screen);
+    QVERIFY(screen.contains(atCorner));
+    QVERIFY(screen.contains(atCorner + QPoint(popup.width() - 1, popup.height() - 1)));
+
+    // A secondary monitor offset from the origin: clamping respects its geometry, not (0,0).
+    const QRect second(1920, 0, 1920, 1080);
+    const QPoint onSecond = ICPreviewPopup::clampedPopupPos(QPoint(3835, 500), popup, second);
+    QVERIFY(onSecond.x() >= second.left());
+    QVERIFY(second.contains(onSecond + QPoint(popup.width() - 1, popup.height() - 1)));
+}

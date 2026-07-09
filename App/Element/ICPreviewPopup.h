@@ -65,6 +65,11 @@ public:
     /// "needs re-arming" (e.g. after the cursor passed over a port).
     bool isShowActiveFor(const IC *ic) const;
 
+    /// Top-left at which a popup of \a popupSize should appear for a cursor at
+    /// \a cursorPos: offset down-right, then clamped so it stays within
+    /// \a availableGeometry on every side. Pure (no screen lookup) so it is testable.
+    static QPoint clampedPopupPos(const QPoint &cursorPos, const QSize &popupSize, const QRect &availableGeometry);
+
 protected:
     /// \reimp Cancels a scheduled hide when the cursor enters the popup itself.
     void enterEvent(QEnterEvent *event) override;

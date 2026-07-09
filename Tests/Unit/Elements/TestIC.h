@@ -17,4 +17,5 @@ private slots:
     void testICNestedSaveLoad();
     void testICInvalidFile();
     void testICPreviewPopupRespectsDisabledSetting();
+    void testPreviewPopupClampsToScreen();
 };
