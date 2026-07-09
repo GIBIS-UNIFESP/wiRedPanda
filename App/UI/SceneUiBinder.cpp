@@ -139,6 +139,9 @@ void SceneUiBinder::bind(WorkSpace *tab)
     connect(tab->simulation(), &Simulation::simulationWarning, this, [this](const QString &msg) {
         m_ui->statusBar->showMessage(msg, 8000);
     });
+    connect(scene, &Scene::showStatusMessageRequested, this, [this](const QString &msg) {
+        m_ui->statusBar->showMessage(msg, 5000);
+    });
     connect(scene->undoStack(), &QUndoStack::indexChanged, this, [this] {
         if (m_bound) {
             m_palette->updateEmbeddedICList(m_bound->scene());
@@ -234,6 +237,7 @@ void SceneUiBinder::unbind()
     disconnect(scene,                 &QGraphicsScene::selectionChanged, this, &SceneUiBinder::updateStatusInfo);
     disconnect(scene,                 &Scene::circuitHasChanged,      this, &SceneUiBinder::updateStatusInfo);
     disconnect(m_bound->simulation(), &Simulation::simulationWarning, this, nullptr);
+    disconnect(scene,                 &Scene::showStatusMessageRequested, this, nullptr);
 
     qCDebug(zero) << "Disconnecting scene shortcuts from previous tab.";
     disconnect(m_prevMainPropShortcut,  nullptr, scene, nullptr);

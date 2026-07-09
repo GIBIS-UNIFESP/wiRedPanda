@@ -10,6 +10,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Node.h"
+#include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
@@ -321,4 +322,43 @@ void TestConnectionValidity::testIsConnectionAllowedPermitsRxOutputPort()
     rxNode->setWirelessMode(WirelessMode::Rx);
 
     QVERIFY(Scene::isConnectionAllowed(rxNode->outputPort(0), dst->inputPort(0)));
+}
+
+void TestConnectionValidity::testConnectionRejectionReasonMessages()
+{
+    // Every rejected connection now carries a user-facing explanation (shown in the status
+    // bar instead of the wire silently vanishing); an allowed one carries none.
+    Scene scene;
+
+    auto *src    = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *andElm = ElementFactory::buildElement(ElementType::And);
+    auto *rxElm  = ElementFactory::buildElement(ElementType::Node);
+    auto *txElm  = ElementFactory::buildElement(ElementType::Node);
+    scene.addItem(src);
+    scene.addItem(andElm);
+    scene.addItem(rxElm);
+    scene.addItem(txElm);
+
+    auto *rx = qobject_cast<Node *>(rxElm);
+    QVERIFY(rx != nullptr);
+    rx->setWirelessMode(WirelessMode::Rx);
+    auto *tx = qobject_cast<Node *>(txElm);
+    QVERIFY(tx != nullptr);
+    tx->setWirelessMode(WirelessMode::Tx);
+
+    // Allowed: no message.
+    QVERIFY(ConnectionManager::connectionRejectionReason(src->outputPort(0), andElm->inputPort(0)).isEmpty());
+
+    // Self-loop (same element) is rejected with a message.
+    QVERIFY(!ConnectionManager::connectionRejectionReason(andElm->outputPort(0), andElm->inputPort(0)).isEmpty());
+
+    // The wireless cases spell out why no wire is needed.
+    const QString rxReason = ConnectionManager::connectionRejectionReason(src->outputPort(0), rx->inputPort(0));
+    QVERIFY2(rxReason.contains("wirelessly"), qPrintable(rxReason));
+    const QString txReason = ConnectionManager::connectionRejectionReason(tx->outputPort(0), andElm->inputPort(0));
+    QVERIFY2(txReason.contains("wirelessly"), qPrintable(txReason));
+
+    // The reason and the bool verdict stay in agreement.
+    QVERIFY(!Scene::isConnectionAllowed(andElm->outputPort(0), andElm->inputPort(0)));
+    QVERIFY(Scene::isConnectionAllowed(src->outputPort(0), andElm->inputPort(0)));
 }
