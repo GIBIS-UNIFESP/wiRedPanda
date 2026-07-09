@@ -635,6 +635,24 @@ if(LINUX)
         RENAME wiredpanda.xml
         COMPONENT mime
     )
+
+    # Install AppStream metainfo (software-center listing)
+    install(FILES App/Resources/Freedesktop/io.github.gibis_unifesp.wiRedPanda.metainfo.xml
+        DESTINATION share/metainfo
+        COMPONENT metainfo
+    )
+
+    # Scalable + large fallback icon, alongside the ICON_SIZES set above
+    install(FILES App/Resources/Assets/Logos/wpanda.svg
+        DESTINATION share/icons/hicolor/scalable/apps
+        RENAME wpanda.svg
+        COMPONENT icons
+    )
+    install(FILES App/Resources/Assets/Logos/wpanda-256x256.png
+        DESTINATION share/icons/hicolor/256x256/apps
+        RENAME wpanda.png
+        COMPONENT icons
+    )
 endif()
 
 # ========= TESTS ===================================

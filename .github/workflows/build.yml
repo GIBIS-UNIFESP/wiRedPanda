@@ -187,7 +187,9 @@ jobs:
         [ -d "$EX" ] && [ "$(find "$EX" -name '*.panda' | wc -l)" -gt 0 ] || { echo "Error: Examples missing/empty at $EX"; exit 1; }
         if [ "$RUNNER_OS" = "Linux" ]; then
           [ -f "$PREFIX/share/applications/wiredpanda.desktop" ] || { echo "Error: desktop file missing"; exit 1; }
-          [ "$(find "$PREFIX/share/icons/hicolor" -name wpanda.png | wc -l)" -eq 5 ] || { echo "Error: expected 5 icon sizes"; exit 1; }
+          [ "$(find "$PREFIX/share/icons/hicolor" -name wpanda.png | wc -l)" -eq 6 ] || { echo "Error: expected 6 icon sizes"; exit 1; }
+          [ -f "$PREFIX/share/icons/hicolor/scalable/apps/wpanda.svg" ] || { echo "Error: scalable icon missing"; exit 1; }
+          [ -f "$PREFIX/share/metainfo/io.github.gibis_unifesp.wiRedPanda.metainfo.xml" ] || { echo "Error: AppStream metainfo missing"; exit 1; }
           [ -f "$PREFIX/share/mime/packages/wiredpanda.xml" ] || { echo "Error: mime XML missing"; exit 1; }
         fi
 
