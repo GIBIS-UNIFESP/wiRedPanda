@@ -607,9 +607,17 @@ private:
     /// see GraphicElementSerializer.
     friend class GraphicElementSerializer;
 
-    /// Calls prepareGeometryChange() before its pixmap mutation resizes boundingRect();
+    /// Calls prepareGeometryChange() before its pixmap mutation resizes boundingRect(), and
+    /// invalidateRenderCache() when that mutation changes the pixmap size;
     /// see ElementAppearance::setPixmap()/setRenderPixmap().
     friend class ElementAppearance;
+
+    /// Drops and re-enables the item's DeviceCoordinateCache so the next paint re-renders the
+    /// whole item. DeviceCoordinateCache invalidates incrementally and keeps the previously
+    /// cached device tile when the displayed pixmap swaps to a different size (e.g. a small
+    /// built-in SVG replaced by a large custom raster), which would leave a stale image of the
+    /// old appearance behind the new one. Call only on an actual size change.
+    void invalidateRenderCache();
 
     // --- Port Management Helpers ---
 
