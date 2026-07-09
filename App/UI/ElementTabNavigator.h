@@ -8,8 +8,10 @@
 #pragma once
 
 #include <QObject>
+#include <QVector>
 
 class ElementEditor;
+class GraphicElement;
 class Scene;
 
 /**
@@ -41,6 +43,11 @@ public:
 
     /// \reimp
     bool eventFilter(QObject *obj, QEvent *event) override;
+
+    /// Orders \a elements in reading order — row-major: top-to-bottom by Y (primary key),
+    /// left-to-right by X within a row (secondary key). This is the order Tab/Backtab cycle
+    /// through; exposed as a pure function so the ordering can be verified directly.
+    static QVector<GraphicElement *> readingOrder(QVector<GraphicElement *> elements);
 
 private:
     // --- Members ---

@@ -19,6 +19,21 @@ ElementTabNavigator::ElementTabNavigator(ElementEditor *editor, QObject *parent)
 {
 }
 
+QVector<GraphicElement *> ElementTabNavigator::readingOrder(QVector<GraphicElement *> elements)
+{
+    // Reading order is row-major: top-to-bottom by Y (primary key), left-to-right by X within a
+    // row (secondary key). std::stable_sort is stable, so sorting by the secondary key (X) first
+    // and the primary key (Y) last leaves Y dominant while elements sharing a row keep their
+    // left-to-right X order.
+    std::stable_sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
+        return a->pos().rx() < b->pos().rx();
+    });
+    std::stable_sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
+        return a->pos().ry() < b->pos().ry();
+    });
+    return elements;
+}
+
 bool ElementTabNavigator::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() != QEvent::KeyPress) {
@@ -44,18 +59,17 @@ bool ElementTabNavigator::eventFilter(QObject *obj, QEvent *event)
         return false;
     }
 
-    auto *elm      = m_editor->m_elements.constFirst();
-    auto  elements = scene->visibleElements();
-
-    // Sort in reading order: left-to-right within each row, row-by-row top-to-bottom.
-    std::stable_sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
-        return a->pos().ry() < b->pos().ry();
-    });
-    std::stable_sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
-        return a->pos().rx() < b->pos().rx();
-    });
+    auto *elm            = m_editor->m_elements.constFirst();
+    const auto elements  = readingOrder(scene->visibleElements());
 
     const qsizetype elmPos = elements.indexOf(elm);
+    if (elmPos < 0) {
+        // The focused element isn't among the visible elements (e.g. it's hidden by a
+        // visibility filter). elmPos == -1 can never be reached by the modular advance loop
+        // below, so it would spin forever; elements.at(-1) would also be out of range. Let
+        // the key event fall through to default handling instead.
+        return false;
+    }
     const qsizetype step   = moveFwd ? 1 : -1;
     const qsizetype total  = elements.size();
 

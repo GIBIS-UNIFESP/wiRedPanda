@@ -5,8 +5,11 @@
 
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QVector>
 
+#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
@@ -39,6 +42,45 @@ QLineEdit *selectAndGetLabelField(Scene *scene, ElementEditor *editor, GraphicEl
 }
 
 } // namespace
+
+void TestElementTabNavigator::testReadingOrderIsRowMajor()
+{
+    // Two rows of two elements. Reading order must be row-major (top row left-to-right, then
+    // bottom row left-to-right): a, b, c, d. The pre-fix code used X as the primary sort key
+    // and would return column-major a, c, b, d — this is the direct guard for that bug.
+    Node a, b, c, d;
+    a.setPos(0, 0);      // top-left
+    b.setPos(100, 0);    // top-right
+    c.setPos(0, 100);    // bottom-left
+    d.setPos(100, 100);  // bottom-right
+
+    const QVector<GraphicElement *> scrambled = {&d, &b, &c, &a};
+    const QVector<GraphicElement *> expected  = {&a, &b, &c, &d};
+    QCOMPARE(ElementTabNavigator::readingOrder(scrambled), expected);
+}
+
+void TestElementTabNavigator::testReadingOrderTieBreaksLeftToRight()
+{
+    // Elements sharing a row (equal Y) are ordered left-to-right by X.
+    Node left, middle, right;
+    left.setPos(0, 50);
+    middle.setPos(100, 50);
+    right.setPos(200, 50);
+
+    const QVector<GraphicElement *> scrambled = {&right, &left, &middle};
+    const QVector<GraphicElement *> expected  = {&left, &middle, &right};
+    QCOMPARE(ElementTabNavigator::readingOrder(scrambled), expected);
+}
+
+void TestElementTabNavigator::testReadingOrderEmptyAndSingle()
+{
+    QVERIFY(ElementTabNavigator::readingOrder({}).isEmpty());
+
+    Node only;
+    only.setPos(42, 42);
+    const QVector<GraphicElement *> one = {&only};
+    QCOMPARE(ElementTabNavigator::readingOrder(one), one);
+}
 
 void TestElementTabNavigator::testTabNavigation()
 {
