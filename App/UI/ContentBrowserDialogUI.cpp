@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Exercise/ExerciseBrowserDialogUI.h"
+#include "App/UI/ContentBrowserDialogUI.h"
 
-void ExerciseBrowserDialogUi::setupUi(QDialog *dialog)
+void ContentBrowserDialogUi::setupUi(QDialog *dialog, ContentCategory category)
 {
     dialog->resize(420, 300);
 
@@ -18,9 +18,9 @@ void ExerciseBrowserDialogUi::setupUi(QDialog *dialog)
     titleLabel->setFont(titleFont);
     mainLayout->addWidget(titleLabel);
 
-    exerciseList = new QListWidget(dialog);
-    exerciseList->setSelectionMode(QAbstractItemView::SingleSelection);
-    mainLayout->addWidget(exerciseList, 1);
+    contentList = new QListWidget(dialog);
+    contentList->setSelectionMode(QAbstractItemView::SingleSelection);
+    mainLayout->addWidget(contentList, 1);
 
     descriptionLabel = new QLabel(dialog);
     descriptionLabel->setWordWrap(true);
@@ -36,16 +36,23 @@ void ExerciseBrowserDialogUi::setupUi(QDialog *dialog)
     buttonBox->addButton(QDialogButtonBox::Close);
     mainLayout->addWidget(buttonBox);
 
-    retranslateUi(dialog);
+    retranslateUi(dialog, category);
 
     QObject::connect(buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
     QObject::connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
 }
 
-void ExerciseBrowserDialogUi::retranslateUi(QDialog *dialog)
+void ContentBrowserDialogUi::retranslateUi(QDialog *dialog, ContentCategory category)
 {
-    dialog->setWindowTitle(QCoreApplication::translate("ExerciseBrowserDialog", "Circuit Exercises"));
-    titleLabel->setText(QCoreApplication::translate("ExerciseBrowserDialog", "Choose an Exercise"));
-    startButton->setText(QCoreApplication::translate("ExerciseBrowserDialog", "Start"));
-    openFolderButton->setText(QCoreApplication::translate("ExerciseBrowserDialog", "Open My Exercises Folder"));
+    if (category == ContentCategory::Exercises) {
+        dialog->setWindowTitle(QCoreApplication::translate("ExerciseBrowserDialog", "Circuit Exercises"));
+        titleLabel->setText(QCoreApplication::translate("ExerciseBrowserDialog", "Choose an Exercise"));
+        startButton->setText(QCoreApplication::translate("ExerciseBrowserDialog", "Start"));
+        openFolderButton->setText(QCoreApplication::translate("ExerciseBrowserDialog", "Open My Exercises Folder"));
+    } else {
+        dialog->setWindowTitle(QCoreApplication::translate("TourBrowserDialog", "Interactive Tours"));
+        titleLabel->setText(QCoreApplication::translate("TourBrowserDialog", "Choose a Tour"));
+        startButton->setText(QCoreApplication::translate("TourBrowserDialog", "Start"));
+        openFolderButton->setText(QCoreApplication::translate("TourBrowserDialog", "Open My Tours Folder"));
+    }
 }

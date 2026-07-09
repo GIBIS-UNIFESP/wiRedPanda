@@ -41,7 +41,6 @@
 #include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
-#include "App/Exercise/ExerciseBrowserDialog.h"
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/IO/RecentFiles.h"
@@ -49,9 +48,9 @@
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
-#include "App/Tour/TourBrowserDialog.h"
 #include "App/Tour/TourEngine.h"
 #include "App/Tour/TourOverlay.h"
+#include "App/UI/ContentBrowserDialog.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/ExportController.h"
 #include "App/UI/ICController.h"
@@ -1166,9 +1165,9 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::on_actionExercises_triggered()
 {
-    ExerciseBrowserDialog dialog(this);
+    ContentBrowserDialog dialog(ContentCategory::Exercises, this);
     if (dialog.exec() == QDialog::Accepted) {
-        startExercise(dialog.selectedExercisePath());
+        startExercise(dialog.selectedPath());
     }
 }
 
@@ -1248,9 +1247,9 @@ void MainWindow::startExercise(const QString &resourcePath)
 
 void MainWindow::on_actionTours_triggered()
 {
-    TourBrowserDialog dialog(this);
+    ContentBrowserDialog dialog(ContentCategory::Tours, this);
     if (dialog.exec() == QDialog::Accepted) {
-        startTour(dialog.selectedTourPath());
+        startTour(dialog.selectedPath());
     }
 }
 

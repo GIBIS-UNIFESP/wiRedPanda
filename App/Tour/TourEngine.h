@@ -4,8 +4,8 @@
 #pragma once
 
 #include <QObject>
-#include <QVector>
 
+#include "App/Core/StepEngineCore.h"
 #include "App/Tour/TourStep.h"
 
 class TourEngine : public QObject
@@ -19,12 +19,12 @@ public:
     /// Returns false and leaves the engine inactive if the resource is missing or malformed.
     bool loadFromResource(const QString &resourcePath);
 
-    QString tourId()    const { return m_id; }
-    QString tourTitle() const { return m_title; }
+    QString tourId()    const { return m_core.id(); }
+    QString tourTitle() const { return m_core.title(); }
 
-    int  currentStep() const { return m_currentStep; }
-    int  totalSteps()  const { return static_cast<int>(m_steps.size()); }
-    bool isActive()    const { return m_active; }
+    int  currentStep() const { return m_core.currentStep(); }
+    int  totalSteps()  const { return m_core.totalSteps(); }
+    bool isActive()    const { return m_core.isActive(); }
 
     /// Returns the data for the current step.
     const TourStep &currentStepData() const;
@@ -50,10 +50,5 @@ private:
     void emitCurrentStep();
     void markCompleted();
 
-    QString           m_id;
-    QString           m_title;
-    QString           m_resourcePath;
-    QVector<TourStep> m_steps;
-    int               m_currentStep = 0;
-    bool              m_active = false;
+    StepEngineCore<TourStep> m_core;
 };

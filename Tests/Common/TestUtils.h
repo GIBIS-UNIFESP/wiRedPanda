@@ -6,7 +6,9 @@
 #include <memory>
 
 #include <QApplication>
+#include <QImage>
 #include <QPixmap>
+#include <QPoint>
 #include <QTest>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
@@ -24,6 +26,7 @@ class InputSwitch;
 class Led;
 class Connection;
 class Simulation;
+class QGraphicsScene;
 
 /**
  * @brief Macro for accessing test data directory
@@ -196,6 +199,20 @@ void initElm(GraphicElement &elm);
  * @brief True if any pixel of @a pixmap has non-zero alpha (i.e. paint() drew something)
  */
 bool pixmapHasInk(const QPixmap &pixmap);
+
+/**
+ * @brief Renders @a elm's scene footprint into an image; @a centerOut receives the centre of
+ * the element's body (where drawBody() centres its logo/icon) in image coordinates.
+ */
+QImage renderElementForComparison(QGraphicsScene *scene, GraphicElement *elm, QPoint &centerOut);
+
+/**
+ * @brief Compares @a halfSize-radius crops of @a a around @a ca and @a b around @a cb, trying
+ * small alignment offsets so sub-pixel crop rounding can't fail the comparison. Returns the
+ * smallest count of pixels whose channels differ by more than @a tolerance.
+ */
+int alignedMismatch(const QImage &a, const QPoint ca, const QImage &b, const QPoint cb,
+                     int halfSize, int tolerance);
 
 /**
  * @brief One step of an engine-differential test vector: the inputs driven and

@@ -18,9 +18,9 @@
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
+class ContentBrowserDialog;
 class ElementLabel;
 class ElementPalette;
-class ExerciseBrowserDialog;
 class ExerciseEngine;
 class ExerciseOverlay;
 class ExportController;
@@ -30,7 +30,6 @@ class LanguageManager;
 class BewavedDolphin;
 class RecentFiles;
 class SceneUiBinder;
-class TourBrowserDialog;
 class TourEngine;
 class TourOverlay;
 class WorkSpace;

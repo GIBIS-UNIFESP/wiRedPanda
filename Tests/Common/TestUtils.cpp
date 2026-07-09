@@ -3,6 +3,10 @@
 
 #include "Tests/Common/TestUtils.h"
 
+#include <limits>
+
+#include <QGraphicsScene>
+#include <QPainter>
 #include <QRandomGenerator>
 #include <QSet>
 #include <QSettings>
@@ -184,6 +188,53 @@ bool pixmapHasInk(const QPixmap &pixmap)
         }
     }
     return false;
+}
+
+QImage renderElementForComparison(QGraphicsScene *scene, GraphicElement *elm, QPoint &centerOut)
+{
+    // Render 1:1 from an integer-aligned source rect so every orientation rasterises scene
+    // content at the same scale and sub-pixel phase — a fractional source origin would shift
+    // antialiasing between renders and defeat pixel comparison.
+    const QRect source = elm->sceneBoundingRect().toAlignedRect();
+    QImage image(source.size(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::white);
+
+    QPainter painter(&image);
+    scene->render(&painter, QRectF(image.rect()), source);
+    painter.end();
+
+    // pixmapCenter() is already an absolute point in the element's local frame (it derives from
+    // boundingRect().center() for procedural-render elements like IC/TruthTable) — no topLeft
+    // offset needed on top of it.
+    const QPointF centerScene = elm->mapToScene(elm->pixmapCenter());
+    centerOut = (centerScene - source.topLeft()).toPoint();
+    return image;
+}
+
+int alignedMismatch(const QImage &a, const QPoint ca, const QImage &b, const QPoint cb,
+                     const int halfSize, const int tolerance)
+{
+    int best = std::numeric_limits<int>::max();
+
+    for (int oy = -2; oy <= 2; ++oy) {
+        for (int ox = -2; ox <= 2; ++ox) {
+            int count = 0;
+            for (int dy = -halfSize; dy < halfSize; ++dy) {
+                for (int dx = -halfSize; dx < halfSize; ++dx) {
+                    const QColor pa = a.pixelColor(ca + QPoint(dx, dy));
+                    const QColor pb = b.pixelColor(cb + QPoint(dx + ox, dy + oy));
+                    if (qAbs(pa.red() - pb.red()) > tolerance
+                        || qAbs(pa.green() - pb.green()) > tolerance
+                        || qAbs(pa.blue() - pb.blue()) > tolerance) {
+                        ++count;
+                    }
+                }
+            }
+            best = qMin(best, count);
+        }
+    }
+
+    return best;
 }
 
 QVector<DiffStep> generateDifferentialVectors(
