@@ -5,6 +5,9 @@
 
 #include <QTest>
 
+class IC;
+class Scene;
+
 class TestIC : public QObject
 {
     Q_OBJECT
@@ -59,4 +62,16 @@ private slots:
     void testICRotationPivotsAtFootprintCenter();
     void testICRotatedBodyStillPaintsMascot();
     void testICRotatedMascotStaysUpright();
+
+    // Rotation/flip pivot on a "big" IC (ports extend past the 64x64 body)
+    void testICBigPivotsAtBoundingRectCenter();
+    void testICBigRotationDoesNotDriftInScene();
+    void testICBigFlipDoesNotDriftInScene();
+
+private:
+    /// Builds an IC with enough ports that its body outgrows the nominal 64x64 box, without
+    /// needing a fixture file. Needs friend access to IC's protected port-size setters (this
+    /// class is already `friend class TestIC` in IC.h), so it lives here rather than as a free
+    /// helper function.
+    IC *buildBigIC(Scene *scene);
 };

@@ -489,6 +489,16 @@ protected:
      */
     QRectF portsBoundingRect() const;
 
+    /**
+     * \brief Footprint of a "procedural render body" (IC/Mux/Demux/TruthTable): the nominal
+     * 64x64 body unioned with wherever the ports actually land, which extends past it once an
+     * instance has enough ports.
+     * \details Single source of truth for boundingRect(), the sizing pixmap, and the
+     * selection-highlight rect on those four element types, so they can never drift out of
+     * sync with each other.
+     */
+    QRectF renderBodyBounds() const;
+
     // --- Qt Event Handling ---
 
     /**

@@ -17,4 +17,9 @@ private slots:
     void testMuxPainting();
     void testMuxOutOfRangeSelect_data();
     void testMuxOutOfRangeSelect();
+
+    // Rotation/flip pivot on a "big" Mux (ports extend past the 64x64 body)
+    void testMuxBigPivotsAtBoundingRectCenter();
+    void testMuxBigRotationDoesNotDriftInScene();
+    void testMuxBigFlipDoesNotDriftInScene();
 };

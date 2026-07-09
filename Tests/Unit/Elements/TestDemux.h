@@ -16,4 +16,9 @@ private slots:
     void testDemuxRouting();
     void testDemuxPainting();
     void testDemuxOutOfRangeSelect();
+
+    // Rotation/flip pivot on a "big" Demux (ports extend past the 64x64 body)
+    void testDemuxBigPivotsAtBoundingRectCenter();
+    void testDemuxBigRotationDoesNotDriftInScene();
+    void testDemuxBigFlipDoesNotDriftInScene();
 };

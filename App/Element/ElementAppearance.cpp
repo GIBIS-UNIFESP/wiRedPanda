@@ -186,6 +186,12 @@ void ElementAppearance::seedFromMetadata(const QStringList &defaultAppearances,
 
 QPointF ElementAppearance::pixmapCenter() const
 {
+    // A procedural render pixmap (IC/Mux/Demux/TruthTable) isn't anchored at local (0,0) once
+    // the element's ports outgrow the nominal 64x64 body — boundingRect() (not the raw pixmap
+    // rect) is the actual footprint, and its own top-left tracks that offset.
+    if (m_hasCustomRenderPixmap) {
+        return m_owner->boundingRect().center();
+    }
     return QRectF(m_pixmap.rect()).center();
 }
 

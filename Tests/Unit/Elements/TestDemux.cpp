@@ -82,3 +82,53 @@ void TestDemux::testDemuxOutOfRangeSelect()
         QCOMPARE(demux.outputValue(i), Status::Unknown);
     }
 }
+
+void TestDemux::testDemuxBigPivotsAtBoundingRectCenter()
+{
+    // Direct regression: a big Demux's rotation/flip pivot must be the element's actual
+    // footprint centre, not the (0,0)-anchored raw pixmap centre that only happens to
+    // coincide with it for small instances.
+    WorkSpace workspace;
+    auto *demux = new Demux;
+    workspace.scene()->addItem(demux);
+    demux->setOutputSize(8); // max output size -> tallest body
+
+    QVERIFY2(demux->boundingRect().height() > 64,
+             "Test Demux isn't actually 'big' — boundingRect() didn't grow past the 64x64 body");
+    QCOMPARE(demux->transformOriginPoint(), demux->boundingRect().center());
+}
+
+void TestDemux::testDemuxBigRotationDoesNotDriftInScene()
+{
+    WorkSpace workspace;
+    auto *demux = new Demux;
+    workspace.scene()->addItem(demux);
+    demux->setOutputSize(8);
+
+    const QPointF centerScene = demux->mapToScene(demux->boundingRect().center());
+
+    for (const qreal angle : {90.0, 180.0, 270.0, 0.0}) {
+        demux->setRotation(angle);
+        QCOMPARE(demux->mapToScene(demux->boundingRect().center()), centerScene);
+    }
+}
+
+void TestDemux::testDemuxBigFlipDoesNotDriftInScene()
+{
+    WorkSpace workspace;
+    auto *demux = new Demux;
+    workspace.scene()->addItem(demux);
+    demux->setOutputSize(8);
+
+    const QPointF centerScene = demux->mapToScene(demux->boundingRect().center());
+
+    demux->setFlippedX(true);
+    QCOMPARE(demux->mapToScene(demux->boundingRect().center()), centerScene);
+
+    demux->setFlippedY(true);
+    QCOMPARE(demux->mapToScene(demux->boundingRect().center()), centerScene);
+
+    demux->setFlippedX(false);
+    demux->setFlippedY(false);
+    QCOMPARE(demux->mapToScene(demux->boundingRect().center()), centerScene);
+}

@@ -36,4 +36,9 @@ private slots:
     // Rendering under rotation
     void testRotationKeepsSizingPixmap();
     void testRotatedIconStaysUpright();
+
+    // Rotation/flip pivot on a "big" TruthTable (ports extend past the 64x64 body)
+    void testBigPivotsAtBoundingRectCenter();
+    void testBigRotationDoesNotDriftInScene();
+    void testBigFlipDoesNotDriftInScene();
 };
