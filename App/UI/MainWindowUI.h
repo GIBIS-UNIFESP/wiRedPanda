@@ -110,10 +110,6 @@ public:
     QAction *actionExportToImage = nullptr;
     QAction *actionMakeSelfContained = nullptr;
 
-    // Exercise and Tour actions
-    QAction *actionExercises = nullptr;
-    QAction *actionTours = nullptr;
-
     // Help / about actions
     QAction *actionAbout = nullptr;
     QAction *actionAboutQt = nullptr;
