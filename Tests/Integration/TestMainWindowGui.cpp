@@ -6,6 +6,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QFile>
+#include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
 #include <QMessageBox>
@@ -14,6 +15,7 @@
 #include <QSlider>
 #include <QTabWidget>
 #include <QTest>
+#include <QToolBar>
 #include <QTimer>
 #include <QTranslator>
 #include <QWheelEvent>
@@ -2093,6 +2095,59 @@ void TestMainWindowGui::testUndoPastStack()
 
     // No crash = pass; scene should still be functional
     QVERIFY(window->currentTab()->scene() != nullptr);
+}
+
+void TestMainWindowGui::testToolbarHasUndoRedoActions()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *toolbar = window->findChild<QToolBar *>();
+    QVERIFY(toolbar);
+
+    // The active tab's per-scene undo/redo actions are mirrored onto the toolbar (not only the
+    // Edit menu), so undo/redo are reachable from the toolbar and track the active stack.
+    const auto actions = toolbar->actions();
+    QVERIFY2(actions.contains(scene->undoAction()), "toolbar must carry the active tab's undo action");
+    QVERIFY2(actions.contains(scene->redoAction()), "toolbar must carry the active tab's redo action");
+
+    // On a clean stack undo is disabled; an undoable edit enables it (the toolbar button follows
+    // the same action, so it enables too).
+    QVERIFY(!scene->undoAction()->isEnabled());
+    auto *andGate = new And();
+    andGate->setPos(100, 100);
+    scene->addItem(andGate);
+    clickElement(view, andGate);
+    scene->deleteAction();
+    QVERIFY(scene->undoAction()->isEnabled());
+}
+
+void TestMainWindowGui::testStatusBarShowsZoomAndSelection()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *statusInfo = window->findChild<QLabel *>("statusInfoLabel");
+    QVERIFY(statusInfo);
+
+    // Two elements, one selected — the indicator reports the current zoom and selection.
+    auto *a = new And();
+    a->setPos(0, 0);
+    scene->addItem(a);
+    auto *b = new And();
+    b->setPos(200, 0);
+    scene->addItem(b);
+    scene->clearSelection();
+    a->setSelected(true);
+
+    QVERIFY2(statusInfo->text().contains(QStringLiteral("100%")), qPrintable(statusInfo->text()));
+    QVERIFY2(statusInfo->text().contains(QStringLiteral("Selected: 1 /")), qPrintable(statusInfo->text()));
+
+    // Zooming in updates the reported percentage.
+    view->zoomIn();
+    QVERIFY2(statusInfo->text().contains(QStringLiteral("125%")), qPrintable(statusInfo->text()));
 }
 
 void TestMainWindowGui::testRedoAfterNewAction()

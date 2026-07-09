@@ -134,6 +134,8 @@ private slots:
     void testMaxZoom();
     void testMinZoom();
     void testUndoPastStack();
+    void testToolbarHasUndoRedoActions();
+    void testStatusBarShowsZoomAndSelection();
     void testRedoAfterNewAction();
     void testWireCreationViaMouse();
     void testRubberBandSelection();
