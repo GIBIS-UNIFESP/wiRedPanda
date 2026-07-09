@@ -69,5 +69,11 @@ private:
     /// Resolves a non-colliding blob name for \a initialName, prompting on collision.
     QString resolveUniqueBlobName(const QString &initialName, Scene *scene);
 
+    /// Ensures \a scene's project is saved to a file (IC paths are directory-relative). If it
+    /// isn't, offers an inline "Save now?" prompt and performs the save instead of dead-ending
+    /// on an error. Returns true once the project has a real directory, false if the user
+    /// declined or cancelled the save.
+    bool ensureProjectSaved(Scene *scene);
+
     MainWindowHost &m_host;
 };

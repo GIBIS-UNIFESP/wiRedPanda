@@ -117,6 +117,7 @@ private slots:
     void testMakeSelfContainedMixedScene();
     void testMakeSelfContainedLabelsPreserved();
     void testMakeSelfContainedPartialDoesNotClaimSuccess();
+    void testMakeSelfContainedPromptsToSaveWhenUnsaved();
     void testEmbedExtractViaContextMenuCallback();
     void testDeleteLastEmbeddedInstanceUndo();
     void testReEmbedAfterExtract();
