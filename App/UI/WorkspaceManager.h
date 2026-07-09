@@ -14,6 +14,7 @@
 
 class MainWindowHost;
 class QByteArray;
+class QTabBar;
 class QTabWidget;
 class WorkSpace;
 
@@ -88,6 +89,10 @@ signals:
     /// refresh the window title.
     void titleChanged();
 
+protected:
+    /// Closes the tab under the cursor when its tab bar is middle-clicked.
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 private:
     int closeTabAnyway();
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
@@ -112,6 +117,10 @@ private:
     QString promptSavePath(const QString &fileName);
 
     QTabWidget *m_tab;
+    /// The tab bar we install the middle-click filter on, cached at construction so the filter
+    /// never dereferences m_tab (whose dynamic type is no longer QTabWidget while it is being
+    /// destroyed, which a teardown event reaching the filter would otherwise trip on).
+    QTabBar *m_tabBar = nullptr;
     MainWindowHost &m_host;
     WorkSpace *m_currentTab = nullptr;
     int m_tabIndex = -1;
