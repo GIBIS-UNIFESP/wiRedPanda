@@ -29,6 +29,9 @@ public:
     // --- Visual / Port Configuration ---
 
     /// \reimp
+    QRectF boundingRect() const override;
+
+    /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     /// Recalculates port positions for the current port count.

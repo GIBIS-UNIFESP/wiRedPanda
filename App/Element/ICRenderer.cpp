@@ -28,7 +28,7 @@ void ICRenderer::generatePixmap(IC &ic)
     // The body is now drawn as vectors in drawBody()/paint(); m_pixmap is kept only so that the
     // base pixmapCenter()/boundingRect() have the right size (its image content is never displayed).
     // It must encompass both the 64×64 body and any ports that extend beyond it.
-    const QSizeF boundsSize = ic.portsBoundingRect().united(QRectF(0, 0, 64, 64)).size();
+    const QSizeF boundsSize = ic.renderBodyBounds().size();
 
     // Defense-in-depth: a non-finite boundary port position makes this size NaN, and
     // QSizeF::toSize() asserts (!qIsNaN) on a NaN dimension → process abort.  The load-side

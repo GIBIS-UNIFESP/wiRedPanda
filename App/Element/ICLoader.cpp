@@ -291,7 +291,7 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
 
     // --- Update visual representation ---
     // Position label just below the IC body, which grows with port count
-    const qreal bottom = ic.portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
+    const qreal bottom = ic.renderBodyBounds().bottom();
     ic.m_label->setPos(30, bottom + 5);
 
     ICRenderer::generatePixmap(ic);

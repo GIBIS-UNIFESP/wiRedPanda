@@ -185,6 +185,11 @@ QRectF GraphicElement::portsBoundingRect() const
     return rectChildren;
 }
 
+QRectF GraphicElement::renderBodyBounds() const
+{
+    return portsBoundingRect().united(QRectF(0, 0, 64, 64));
+}
+
 void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget)

@@ -371,8 +371,12 @@ void TestTruthTable::testRotationKeepsSizingPixmap()
     TruthTable truthTable;
     truthTable.setInputSize(8);
 
+    // Inputs sit at x=0 and outputs at x=64 at any port count, so the body stays symmetric
+    // about (32,32) on both axes — the centre point can't distinguish "grew past the base
+    // skin" from "still the base skin"; height can.
+    QVERIFY(truthTable.boundingRect().height() > 64);
+
     const QPointF footprintCenter = truthTable.pixmapCenter();
-    QVERIFY(footprintCenter != QPointF(32, 32)); // taller than the 64×64 base skin
 
     truthTable.setRotation(90);
     QCOMPARE(truthTable.pixmapCenter(), footprintCenter);
@@ -398,7 +402,10 @@ QImage renderTruthTableElement(QGraphicsScene *scene, GraphicElement *elm, QPoin
     scene->render(&painter, QRectF(image.rect()), source);
     painter.end();
 
-    const QPointF logoScene = elm->mapToScene(elm->boundingRect().topLeft() + elm->pixmapCenter());
+    // pixmapCenter() is already an absolute point in the element's local frame (it now derives
+    // from boundingRect().center() for procedural-render elements like TruthTable) — no topLeft
+    // offset needed on top of it.
+    const QPointF logoScene = elm->mapToScene(elm->pixmapCenter());
     logoCenterOut = (logoScene - source.topLeft()).toPoint();
     return image;
 }
@@ -457,4 +464,54 @@ void TestTruthTable::testRotatedIconStaysUpright()
     QVERIFY2(mismatch <= 20,
              qPrintable(QString("Icon is not upright after a 180° rotation: %1 mismatching pixels")
                             .arg(mismatch)));
+}
+
+void TestTruthTable::testBigPivotsAtBoundingRectCenter()
+{
+    // Direct regression: a big TruthTable's rotation/flip pivot must be the element's actual
+    // footprint centre, not the (0,0)-anchored raw pixmap centre that only happens to
+    // coincide with it for small instances.
+    QGraphicsScene scene;
+    auto *truthTable = new TruthTable(); // the scene takes ownership
+    scene.addItem(truthTable);
+    truthTable->setInputSize(8); // max input size -> tallest body
+
+    QVERIFY2(truthTable->boundingRect().topLeft() != QPointF(0, 0),
+             "Test TruthTable isn't actually 'big' — boundingRect() didn't grow past the 64x64 body");
+    QCOMPARE(truthTable->transformOriginPoint(), truthTable->boundingRect().center());
+}
+
+void TestTruthTable::testBigRotationDoesNotDriftInScene()
+{
+    QGraphicsScene scene;
+    auto *truthTable = new TruthTable();
+    scene.addItem(truthTable);
+    truthTable->setInputSize(8);
+
+    const QPointF centerScene = truthTable->mapToScene(truthTable->boundingRect().center());
+
+    for (const qreal angle : {90.0, 180.0, 270.0, 0.0}) {
+        truthTable->setRotation(angle);
+        QCOMPARE(truthTable->mapToScene(truthTable->boundingRect().center()), centerScene);
+    }
+}
+
+void TestTruthTable::testBigFlipDoesNotDriftInScene()
+{
+    QGraphicsScene scene;
+    auto *truthTable = new TruthTable();
+    scene.addItem(truthTable);
+    truthTable->setInputSize(8);
+
+    const QPointF centerScene = truthTable->mapToScene(truthTable->boundingRect().center());
+
+    truthTable->setFlippedX(true);
+    QCOMPARE(truthTable->mapToScene(truthTable->boundingRect().center()), centerScene);
+
+    truthTable->setFlippedY(true);
+    QCOMPARE(truthTable->mapToScene(truthTable->boundingRect().center()), centerScene);
+
+    truthTable->setFlippedX(false);
+    truthTable->setFlippedY(false);
+    QCOMPARE(truthTable->mapToScene(truthTable->boundingRect().center()), centerScene);
 }

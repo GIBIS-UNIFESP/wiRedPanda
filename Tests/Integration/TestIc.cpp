@@ -22,6 +22,7 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICRenderer.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
@@ -960,7 +961,10 @@ QImage renderElement(QGraphicsScene *scene, GraphicElement *elm, QPoint &logoCen
     scene->render(&painter, QRectF(image.rect()), source);
     painter.end();
 
-    const QPointF logoScene = elm->mapToScene(elm->boundingRect().topLeft() + elm->pixmapCenter());
+    // pixmapCenter() is already an absolute point in the element's local frame (it now derives
+    // from boundingRect().center() for procedural-render elements like IC) — no topLeft offset
+    // needed on top of it.
+    const QPointF logoScene = elm->mapToScene(elm->pixmapCenter());
     logoCenterOut = (logoScene - source.topLeft()).toPoint();
     return image;
 }
@@ -1088,4 +1092,77 @@ void TestIC::testICRotatedMascotStaysUpright()
     QVERIFY2(mismatch <= 20,
              qPrintable(QString("Mascot is not upright after a 180° rotation: %1 mismatching pixels")
                             .arg(mismatch)));
+}
+
+IC *TestIC::buildBigIC(Scene *scene)
+{
+    auto *ic = new IC();
+    scene->addItem(ic);
+
+    // Mirrors ICLoader::loadBoundaryPorts()'s lock-then-set sequence (widen min/max together,
+    // then set the size) followed by the same ICRenderer::generatePixmap() call loadFile()
+    // makes — port count chosen well past what fits in the 64px body.
+    constexpr int portCount = 12;
+    ic->setMaxInputSize(portCount);
+    ic->setMinInputSize(portCount);
+    ic->setInputSize(portCount);
+    ic->setMaxOutputSize(portCount);
+    ic->setMinOutputSize(portCount);
+    ic->setOutputSize(portCount);
+    ICRenderer::generatePixmap(*ic);
+
+    return ic;
+}
+
+void TestIC::testICBigPivotsAtBoundingRectCenter()
+{
+    // Direct regression for the reported bug: a big IC's rotation/flip pivot must be the
+    // element's actual footprint centre, not the (0,0)-anchored raw pixmap centre that only
+    // happens to coincide with it for small instances.
+    WorkSpace workspace;
+    auto *ic = buildBigIC(workspace.scene());
+    QVERIFY(ic);
+
+    QVERIFY2(ic->boundingRect().topLeft() != QPointF(0, 0),
+             "Test IC isn't actually 'big' — boundingRect() didn't grow past the 64x64 body");
+    QCOMPARE(ic->transformOriginPoint(), ic->boundingRect().center());
+}
+
+void TestIC::testICBigRotationDoesNotDriftInScene()
+{
+    // End-to-end reproduction of "the element moves around" from the bug report: the
+    // footprint's own centre, mapped to scene coordinates, must stay fixed as the element
+    // rotates — true only when the rotation pivot actually is that centre.
+    WorkSpace workspace;
+    auto *ic = buildBigIC(workspace.scene());
+    QVERIFY(ic);
+
+    const QPointF centerScene = ic->mapToScene(ic->boundingRect().center());
+
+    for (const qreal angle : {90.0, 180.0, 270.0, 0.0}) {
+        ic->setRotation(angle);
+        QCOMPARE(ic->mapToScene(ic->boundingRect().center()), centerScene);
+    }
+}
+
+void TestIC::testICBigFlipDoesNotDriftInScene()
+{
+    // Same invariant as testICBigRotationDoesNotDriftInScene(), for the flip (mirror) pivot —
+    // ElementOrientation::applyFlipTransform() reads the same pixmapCenter() that rotation
+    // does, so it shares the identical bug on a big instance.
+    WorkSpace workspace;
+    auto *ic = buildBigIC(workspace.scene());
+    QVERIFY(ic);
+
+    const QPointF centerScene = ic->mapToScene(ic->boundingRect().center());
+
+    ic->setFlippedX(true);
+    QCOMPARE(ic->mapToScene(ic->boundingRect().center()), centerScene);
+
+    ic->setFlippedY(true);
+    QCOMPARE(ic->mapToScene(ic->boundingRect().center()), centerScene);
+
+    ic->setFlippedX(false);
+    ic->setFlippedY(false);
+    QCOMPARE(ic->mapToScene(ic->boundingRect().center()), centerScene);
 }

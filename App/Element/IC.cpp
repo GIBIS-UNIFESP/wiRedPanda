@@ -304,7 +304,7 @@ void IC::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 QRectF IC::boundingRect() const
 {
-    return portsBoundingRect().united(QRectF(0, 0, 64, 64));
+    return renderBodyBounds();
 }
 
 void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

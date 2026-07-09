@@ -86,10 +86,14 @@ void Mux::updatePortsProperties()
     generatePixmap();
 }
 
+QRectF Mux::boundingRect() const
+{
+    return renderBodyBounds();
+}
+
 void Mux::generatePixmap()
 {
-    const QRectF bounds = portsBoundingRect().united(QRectF(0, 0, 64, 64));
-    const int height = static_cast<int>(bounds.height());
+    const int height = static_cast<int>(renderBodyBounds().height());
 
     QPixmap tempPixmap(64, height);
     tempPixmap.fill(Qt::transparent);
@@ -137,7 +141,7 @@ void Mux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
         painter->save();
         painter->setBrush(m_appearance.selectionBrush());
         painter->setPen(QPen(m_appearance.selectionPen(), 0.5, Qt::SolidLine));
-        painter->drawRoundedRect(portsBoundingRect().united(QRectF(0, 0, 64, 64)), 5, 5);
+        painter->drawRoundedRect(boundingRect(), 5, 5);
         painter->restore();
     }
 

@@ -36,6 +36,8 @@ public:
     // --- Visual ---
 
     /// \reimp
+    QRectF boundingRect() const override;
+    /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     /// Forces a repaint of the element.
     void update();

@@ -29,6 +29,9 @@ public:
     // --- Visual / Port Configuration ---
 
     /// \reimp
+    QRectF boundingRect() const override;
+
+    /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     /// \reimp Co-updates input count when output size changes.

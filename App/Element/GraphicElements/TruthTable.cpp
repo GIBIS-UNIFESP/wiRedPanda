@@ -112,8 +112,7 @@ void TruthTable::updatePortsProperties()
         }
     }
 
-    const qreal bottom = portsBoundingRect().united(QRectF(0, 0, 64, 64)).bottom();
-    m_label->setPos(30, bottom + 5);
+    m_label->setPos(30, renderBodyBounds().bottom() + 5);
 
     generatePixmap();
 }
@@ -126,13 +125,18 @@ static QSvgRenderer &truthTableLogoRenderer()
     return renderer;
 }
 
+QRectF TruthTable::boundingRect() const
+{
+    return renderBodyBounds();
+}
+
 void TruthTable::generatePixmap()
 {
     // The TruthTable renders a custom IC-style body, now drawn as vectors in drawBody()/paint().
     // m_pixmap is kept only so the base pixmapCenter()/boundingRect() have the right size (its image
     // content is never displayed); a transparent pixmap of the body footprint is enough. It is
     // regenerated whenever the port count changes because the body height grows with the port layout.
-    const QSize size = portsBoundingRect().united(QRectF(0, 0, 64, 64)).size().toSize();
+    const QSize size = renderBodyBounds().size().toSize();
     QPixmap sizingPixmap(size);
     sizingPixmap.fill(Qt::transparent);
     m_appearance.setRenderPixmap(sizingPixmap);
@@ -192,7 +196,7 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         painter->setBrush(m_appearance.selectionBrush());
         painter->setPen(QPen(m_appearance.selectionPen(), 0.5, Qt::SolidLine));
         // Expand the highlight rect to cover any ports that extend outside the 64x64 body
-        painter->drawRoundedRect(portsBoundingRect().united(QRectF(0, 0, 64, 64)), 5, 5);
+        painter->drawRoundedRect(boundingRect(), 5, 5);
         painter->restore();
     }
 
