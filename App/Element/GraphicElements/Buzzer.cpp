@@ -133,7 +133,11 @@ int Buzzer::noteToFrequency(const QString &note)
 {
     static const QHash<QString, int> map = {
         {"C6", 1047}, {"D6", 1175}, {"E6", 1319}, {"F6", 1397},
-        {"G6", 1568}, {"A7", 3520}, {"B7", 3951}, {"C7", 2093},
+        {"G6", 1568}, {"A6", 1760}, {"B6", 1976}, {"C7", 2093},
+        // Backward-compatible aliases: the scale historically listed A7/B7 (an
+        // octave above their neighbours); pre-4.x files persist the note *name*,
+        // so keep resolving these to their true pitches.
+        {"A7", 3520}, {"B7", 3951},
     };
 
     return map.value(note, 1047);

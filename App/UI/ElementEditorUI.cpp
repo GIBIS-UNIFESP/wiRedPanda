@@ -305,8 +305,8 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     comboBoxAudio->setItemText(2, QCoreApplication::translate("ElementEditor", "E6"));
     comboBoxAudio->setItemText(3, QCoreApplication::translate("ElementEditor", "F6"));
     comboBoxAudio->setItemText(4, QCoreApplication::translate("ElementEditor", "G6"));
-    comboBoxAudio->setItemText(5, QCoreApplication::translate("ElementEditor", "A7"));
-    comboBoxAudio->setItemText(6, QCoreApplication::translate("ElementEditor", "B7"));
+    comboBoxAudio->setItemText(5, QCoreApplication::translate("ElementEditor", "A6"));
+    comboBoxAudio->setItemText(6, QCoreApplication::translate("ElementEditor", "B6"));
     comboBoxAudio->setItemText(7, QCoreApplication::translate("ElementEditor", "C7"));
 
     checkBoxLocked->setText(QString());

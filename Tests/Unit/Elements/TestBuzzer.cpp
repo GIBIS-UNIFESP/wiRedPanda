@@ -129,6 +129,29 @@ void TestBuzzer::testSetAudioBackwardCompat()
     QCOMPARE(buzzer.frequency(), 3520.0);
 }
 
+void TestBuzzer::testToneScaleIsMonotonic()
+{
+    // The tone picker presents these eight notes as an ascending scale; every step
+    // must rise in pitch (regression guard for the A7/B7 octave-jump bug).
+    const QStringList scale = {"C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7"};
+    int previous = 0;
+    for (const QString &note : scale) {
+        const int freq = Buzzer::noteToFrequency(note);
+        QVERIFY2(freq > previous,
+                 qPrintable(QString("Note %1 (%2 Hz) does not ascend above the previous note (%3 Hz)")
+                            .arg(note).arg(freq).arg(previous)));
+        previous = freq;
+    }
+
+    // The corrected sixth/seventh degrees sit in the same octave as their neighbours.
+    QCOMPARE(Buzzer::noteToFrequency("A6"), 1760);
+    QCOMPARE(Buzzer::noteToFrequency("B6"), 1976);
+
+    // Legacy note names remain resolvable to their true (higher-octave) pitches.
+    QCOMPARE(Buzzer::noteToFrequency("A7"), 3520);
+    QCOMPARE(Buzzer::noteToFrequency("B7"), 3951);
+}
+
 // ============================================================================
 // Playback Control Tests
 // ============================================================================
