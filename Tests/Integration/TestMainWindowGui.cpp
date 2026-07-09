@@ -2947,8 +2947,15 @@ void TestMainWindowGui::testOpenExample()
     auto *tabs = findTabs(window.get());
     int initialCount = tabs->count();
 
+    // The label is a prettified title (no ".panda", no hyphens); the real path lives in
+    // data() so the lookup doesn't depend on the (translatable) label.
+    auto *first = menuExamples->actions().first();
+    QVERIFY2(!first->text().contains(QStringLiteral(".panda")), qPrintable(first->text()));
+    QVERIFY2(!first->text().contains(QLatin1Char('-')), qPrintable(first->text()));
+    QVERIFY2(first->data().toString().endsWith(QStringLiteral(".panda")), qPrintable(first->data().toString()));
+
     // Trigger the first example
-    menuExamples->actions().first()->trigger();
+    first->trigger();
     QVERIFY(tabs->count() > initialCount);
 }
 

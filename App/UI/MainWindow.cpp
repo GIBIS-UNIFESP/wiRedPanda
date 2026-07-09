@@ -246,11 +246,23 @@ void MainWindow::setupExamplesMenu()
         const auto entryList = QDir(examplesPath).entryList({"*.panda"}, QDir::Files);
 
         for (const auto &entry : entryList) {
-            auto *action = new QAction(entry, this);
+            // Show a prettified title ("display-4bits-counter.panda" -> "Display 4bits
+            // Counter") but keep the real path in setData() so the lookup never depends on
+            // the (translatable, prettified) label — same pattern as the Recent Files menu.
+            QString title = QFileInfo(entry).completeBaseName();
+            title.replace(QLatin1Char('-'), QLatin1Char(' '));
+            title.replace(QLatin1Char('_'), QLatin1Char(' '));
+            QStringList words = title.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+            for (QString &word : words) {
+                word[0] = word[0].toUpper();
+            }
 
-            connect(action, &QAction::triggered, this, [this, examplesPath] {
+            auto *action = new QAction(words.join(QLatin1Char(' ')), this);
+            action->setData(examplesPath + "/" + entry);
+
+            connect(action, &QAction::triggered, this, [this] {
                 if (auto *senderAction = qobject_cast<QAction *>(sender())) {
-                    loadPandaFile(examplesPath + "/" + senderAction->text());
+                    loadPandaFile(senderAction->data().toString());
                 }
             });
 
