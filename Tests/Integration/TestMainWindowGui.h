@@ -180,6 +180,7 @@ private slots:
     void testThemeSwitching();
     void testAboutThisVersionDialog();
     void testOpenExample();
+    void testWindowTitleShowsFile();
     void testMakeSelfContained();
 
     // --- ElementEditor operations ---

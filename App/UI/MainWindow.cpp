@@ -104,6 +104,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     // The manager owns the tab model and announces active-tab changes; the shell
     // rebinds the chrome. The binder forwards scene-driven navigation back to the manager.
     connect(m_workspaceManager, &WorkspaceManager::currentTabChanged, this, &MainWindow::onCurrentTabChanged);
+    connect(m_workspaceManager, &WorkspaceManager::titleChanged,      this, &MainWindow::updateWindowTitle);
     connect(m_binder, &SceneUiBinder::openICRequested, m_workspaceManager, &WorkspaceManager::openICInTab);
     connect(m_binder, &SceneUiBinder::loadFileRequested, m_workspaceManager, &WorkspaceManager::loadPandaFile);
 
@@ -807,6 +808,7 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
         // All tabs were closed; reset state.
         m_palette->updateICList(QFileInfo());
         m_palette->updateEmbeddedICList(nullptr);
+        updateWindowTitle();
         return;
     }
 
@@ -830,6 +832,24 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
         m_exerciseOverlay->show();
         m_exerciseOverlay->raise();
     }
+
+    updateWindowTitle();
+}
+
+void MainWindow::updateWindowTitle()
+{
+    auto *tab = currentTab();
+    if (!tab) {
+        setWindowTitle(QStringLiteral("wiRedPanda " APP_VERSION));
+        setWindowModified(false);
+        return;
+    }
+
+    // "<name>[*] — wiRedPanda <version>": Qt swaps "[*]" for "*" when the window is marked
+    // modified, and drops it otherwise (a native dot on macOS).
+    setWindowTitle(tr("%1[*] — wiRedPanda %2")
+                       .arg(m_workspaceManager->currentTabName(), QStringLiteral(APP_VERSION)));
+    setWindowModified(!tab->scene()->undoStack()->isClean());
 }
 
 void MainWindow::on_actionGates_triggered(const bool checked)

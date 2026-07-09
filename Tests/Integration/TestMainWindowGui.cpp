@@ -2964,6 +2964,34 @@ void TestMainWindowGui::testOpenExample()
     QVERIFY(tabs->count() > initialCount);
 }
 
+void TestMainWindowGui::testWindowTitleShowsFile()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    // A fresh unsaved tab: the title names it (not just the bare app name), unmodified.
+    QVERIFY2(window->windowTitle().contains(QStringLiteral("New Project")), qPrintable(window->windowTitle()));
+    QVERIFY2(window->windowTitle().contains(QStringLiteral("wiRedPanda")), qPrintable(window->windowTitle()));
+    QVERIFY(!window->isWindowModified());
+
+    // An undoable edit marks the window modified.
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+    auto *andGate = new And();
+    andGate->setPos(100, 100);
+    scene->addItem(andGate);
+    clickElement(view, andGate);
+    QTest::keyClick(window.get(), Qt::Key_Delete);
+    QCoreApplication::processEvents();
+    QVERIFY(window->isWindowModified());
+
+    // Opening a file names the window after it.
+    ScopedFileDialogStub guard;
+    guard.stub.openResult = m_fixtureDir + "/test_circuit.panda";
+    QTest::keyClick(window.get(), Qt::Key_O, Qt::ControlModifier);
+    QCoreApplication::processEvents();
+    QVERIFY2(window->windowTitle().contains(QStringLiteral("test_circuit")), qPrintable(window->windowTitle()));
+}
+
 void TestMainWindowGui::testMakeSelfContained()
 {
     std::unique_ptr<MainWindow> window(createMW());
