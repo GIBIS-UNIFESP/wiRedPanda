@@ -205,6 +205,15 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     m_appearance.render(painter, boundingRect(), isSelected());
 }
 
+void GraphicElement::invalidateRenderCache()
+{
+    // Toggling the mode discards the cached device pixmap; re-enabling it forces the next
+    // paint to re-render the whole item from scratch — the same full regen a pan/zoom
+    // triggers. See the header for why a plain update() is not enough on a size change.
+    setCacheMode(QGraphicsItem::NoCache);
+    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+}
+
 void GraphicElement::setPortName(const QString &name)
 {
     setObjectName(name);
