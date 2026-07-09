@@ -95,6 +95,14 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
+    // Ignore auto-repeat so a held key counts as one logical press (matches Scene's trigger
+    // handling and avoids spacebar-pan churn on X11, where auto-repeat arrives as release/press
+    // pairs).
+    if (event->isAutoRepeat()) {
+        QGraphicsView::keyPressEvent(event);
+        return;
+    }
+
     if (event->key() == Qt::Key_Space) {
         // Spacebar held = pan mode (same as middle-mouse drag), a common convention
         // in design tools; the flag is checked in mouseMoveEvent
@@ -108,6 +116,13 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
 
 void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 {
+    // Ignore auto-repeat releases (X11 emits them mid-hold) so pan mode isn't dropped while the
+    // spacebar is still physically held.
+    if (event->isAutoRepeat()) {
+        QGraphicsView::keyReleaseEvent(event);
+        return;
+    }
+
     if (event->key() == Qt::Key_Space) {
         m_space = false;
         viewport()->unsetCursor();

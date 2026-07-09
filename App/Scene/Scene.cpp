@@ -746,6 +746,13 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 void Scene::keyPressEvent(QKeyEvent *event)
 {
+    // Ignore auto-repeat: holding a trigger key must fire once, not oscillate an InputSwitch
+    // (whose keyboard trigger toggles on every press) dozens of times a second.
+    if (event->isAutoRepeat()) {
+        QGraphicsScene::keyPressEvent(event);
+        return;
+    }
+
     // Skip keyboard triggers while Ctrl is held to avoid firing during Ctrl+Z/C/V shortcuts
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
         for (auto *element : unsortedElements()) {
@@ -762,6 +769,13 @@ void Scene::keyPressEvent(QKeyEvent *event)
 
 void Scene::keyReleaseEvent(QKeyEvent *event)
 {
+    // Ignore auto-repeat: on X11 a held key emits release/press pairs, which would otherwise
+    // release a momentary InputButton mid-hold.
+    if (event->isAutoRepeat()) {
+        QGraphicsScene::keyReleaseEvent(event);
+        return;
+    }
+
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
         for (auto *element : unsortedElements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {

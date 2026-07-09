@@ -6,8 +6,10 @@
 #include <cmath>
 #include <memory>
 
+#include <QApplication>
 #include <QClipboard>
 #include <QImage>
+#include <QKeyEvent>
 #include <QMimeData>
 #include <QPainter>
 #include <QTest>
@@ -1611,4 +1613,37 @@ void TestScene::testGeometryChangeKeepsSceneIndexConsistentKS()
     QPainter painter(&canvas);
     scene->render(&painter); // must not corrupt the index / fault
     painter.end();
+}
+
+void TestScene::testKeyTriggerIgnoresAutoRepeat()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *inputSwitch = qobject_cast<InputSwitch *>(ElementFactory::buildElement(ElementType::InputSwitch));
+    QVERIFY(inputSwitch);
+    inputSwitch->setTrigger(QKeySequence(Qt::Key_A));
+    scene->addItem(inputSwitch);
+
+    // Known starting state (setOn(bool) sets a definite level; the no-arg setOn() would toggle).
+    inputSwitch->setOn(false);
+    QVERIFY(!inputSwitch->isOn());
+
+    // A genuine (non-repeat) key press toggles the latched switch on.
+    QKeyEvent press(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, QString(), /*autorep*/ false);
+    QApplication::sendEvent(scene, &press);
+    QVERIFY(inputSwitch->isOn());
+
+    // Auto-repeat presses (emitted while the key is held) must NOT toggle it again — otherwise
+    // the switch would flip-flop many times a second while held.
+    for (int i = 0; i < 5; ++i) {
+        QKeyEvent repeat(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, QString(), /*autorep*/ true);
+        QApplication::sendEvent(scene, &repeat);
+        QVERIFY2(inputSwitch->isOn(), "auto-repeat press must not toggle the latched switch");
+    }
+
+    // A second genuine press toggles it back off, confirming the trigger still works normally.
+    QKeyEvent press2(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, QString(), /*autorep*/ false);
+    QApplication::sendEvent(scene, &press2);
+    QVERIFY(!inputSwitch->isOn());
 }
