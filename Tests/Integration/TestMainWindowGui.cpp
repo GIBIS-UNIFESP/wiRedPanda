@@ -2181,14 +2181,19 @@ void TestMainWindowGui::testMaxZoom()
     std::unique_ptr<MainWindow> window(createMW());
     auto *view = window->currentTab()->view();
 
-    // Zoom in repeatedly past the limit using direct API
-    for (int i = 0; i < 20; ++i) {
+    // Zoom in only while allowed, so we stop exactly at the cap.
+    int steps = 0;
+    while (view->canZoomIn() && steps < 50) {
         view->zoomIn();
+        ++steps;
     }
 
-    // Should cap at maximum zoom without crash
+    // Should cap at maximum zoom without crash...
     QVERIFY(!view->canZoomIn());
     QVERIFY(view->canZoomOut());
+    // ...and the ceiling now reaches well past the old ~1.95x limit so small ports/pins
+    // can be wired comfortably.
+    QVERIFY2(view->transform().m11() > 3.0, "zoom-in should exceed the old ~2x cap");
 }
 
 void TestMainWindowGui::testMinZoom()
