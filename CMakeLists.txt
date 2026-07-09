@@ -1147,3 +1147,42 @@ if(DOXYGEN_FOUND)
 else()
     message(STATUS "Doxygen not found: documentation target unavailable (install doxygen)")
 endif()
+
+# ========= WINDOWS INSTALLER (CPack / WiX) ==========
+
+# Must come after every install() rule above: CPack packages whatever's registered
+# by then. deploy.yml doesn't package this build tree's own install() output directly
+# — it points `cpack -G WIX` at the windeployqt-bundled staging directory (Qt DLLs +
+# Sentry crashpad files) via `-D CPACK_INSTALLED_DIRECTORIES="<staged-dir>;."` on the
+# command line, since a plain install() here has neither of those.
+if(WIN32)
+    set(CPACK_PACKAGE_NAME "wiRedPanda")
+    set(CPACK_PACKAGE_VENDOR "GIBIS-UNIFESP")
+    set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+    set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+    set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+    set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+    set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Logic circuit simulator focused on education")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "wiRedPanda")
+    set(CPACK_PACKAGE_EXECUTABLES "wiredpanda" "wiRedPanda")
+    set(CPACK_CREATE_DESKTOP_LINKS "wiredpanda")
+    # Fixed, arch-independent name — deploy.yml's per-arch matrix renames the output
+    # right after `cpack` runs, so this only needs to be a name it can find reliably,
+    # not CPack's own (version-dependent, easy to get wrong from outside) default.
+    set(CPACK_PACKAGE_FILE_NAME "wiRedPanda-installer")
+
+    # WiX's license dialog needs RTF; a plain .txt is auto-converted, but LICENSE has
+    # no extension, so stage a renamed copy (generated, not committed) for it to find.
+    configure_file(${CMAKE_SOURCE_DIR}/LICENSE ${CMAKE_BINARY_DIR}/LICENSE.txt COPYONLY)
+    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/LICENSE.txt")
+
+    set(CPACK_GENERATOR "WIX")
+    # Permanent — generated once, must NEVER change. WiX uses it to recognize an
+    # existing install and upgrade in place; regenerating it would make every future
+    # release install side-by-side instead of replacing the previous version.
+    set(CPACK_WIX_UPGRADE_GUID "E4E0DD81-25EB-4C46-B6BC-3ED15D22A434")
+    set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/App/Resources/Assets/Logos/wpanda.ico")
+    set(CPACK_WIX_PATCH_FILE "${CMAKE_SOURCE_DIR}/Packaging/wix/file-association.xml")
+
+    include(CPack)
+endif()

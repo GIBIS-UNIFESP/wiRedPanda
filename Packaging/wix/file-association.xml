@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+ SPDX-License-Identifier: GPL-3.0-or-later
+
+ CPACK_WIX_PATCH_FILE fragment: registers the .panda file extension to open
+ with wiredpanda.exe. Uses plain HKCR RegistryValue entries (not the WiX
+ util:FileAssociation extension) specifically so it doesn't depend on guessing
+ CPack's auto-generated Component/File Ids for the executable — this defines
+ its own self-contained component instead, anchored to the confirmed-stable
+ "INSTALL_ROOT" directory Id and "#PRODUCTFEATURE" special Id that CPack's WIX
+ generator always produces.
+
+ UNVERIFIED: no Windows/WiX toolchain is available in this dev environment.
+ The "INSTALL_ROOT" Directory Id patch target is inferred from CPack always
+ setting WIXUI_INSTALLDIR="INSTALL_ROOT" (a Directory Id reference), not from
+ directly inspecting a generated files.wxs. Confirm with a real
+ `cpack -G WIX` build (e.g. via workflow_dispatch on a Windows runner) before
+ relying on this — if INSTALL_ROOT isn't a valid patch target, CPack will
+ fail with an "unable to find CPack WiX patch target" error, not silently
+ skip it.
+-->
+<CPackWiXPatch>
+  <CPackWiXFragment Id="INSTALL_ROOT">
+    <Component Id="FileAssociationComponent" Guid="2C59C080-87CE-4F87-89EF-C8A5834A4D2C">
+      <RegistryValue Root="HKCR" Key=".panda" Value="wiRedPanda.panda" Type="string" KeyPath="yes"/>
+      <RegistryValue Root="HKCR" Key="wiRedPanda.panda" Value="wiRedPanda Circuit File" Type="string"/>
+      <RegistryValue Root="HKCR" Key="wiRedPanda.panda\DefaultIcon" Value="[INSTALL_ROOT]wiredpanda.exe,0" Type="string"/>
+      <RegistryValue Root="HKCR" Key="wiRedPanda.panda\shell\open\command" Value="&quot;[INSTALL_ROOT]wiredpanda.exe&quot; &quot;%1&quot;" Type="string"/>
+    </Component>
+  </CPackWiXFragment>
+  <CPackWiXFragment Id="#PRODUCTFEATURE">
+    <ComponentRef Id="FileAssociationComponent"/>
+  </CPackWiXFragment>
+</CPackWiXPatch>

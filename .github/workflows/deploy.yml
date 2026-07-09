@@ -494,6 +494,22 @@ jobs:
         cd ..
         Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}-Portable.zip
 
+    - name: Build Windows MSI installer (WiX)
+      if: runner.os == 'Windows'
+      run: |
+        cd build-sentry-crashpad
+        $stageDir = (Resolve-Path "wiredpanda-$env:VERSION").Path
+        cpack -G WIX -D "CPACK_INSTALLED_DIRECTORIES=$stageDir;."
+        Move-Item "wiRedPanda-installer.msi" "wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}.msi"
+        # NOTE: this also packages the project's own install(TARGETS wiredpanda ...)
+        # output at bin/wiredpanda.exe (without Qt DLLs, unlike the CPACK_INSTALLED_
+        # DIRECTORIES copy at the package root that Start Menu/file-association point
+        # at) — CPACK_INSTALLED_DIRECTORIES is additive, not a replacement. Harmless
+        # (an unreachable, non-functional extra file) but unverified end-to-end: no
+        # Windows/WiX toolchain is available outside CI to confirm the .msi installs,
+        # launches, and registers .panda correctly. Treat the first real run here as
+        # a validation step, not a known-working artifact.
+
     - name: Validate Windows Release Artifacts
       if: runner.os == 'Windows'
       run: |
@@ -621,7 +637,9 @@ jobs:
       uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
       with:
         fail_on_unmatched_files: true
-        files: 'build-sentry-crashpad/*.zip'
+        files: |
+          build-sentry-crashpad/*.zip
+          build-sentry-crashpad/*.msi
 
 # =================================
 
