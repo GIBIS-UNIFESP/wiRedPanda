@@ -274,6 +274,29 @@ void TestMainWindowGui::testTabsMovableAndMiddleClickCloses()
     QCOMPARE(tabs->count(), 1);
 }
 
+void TestMainWindowGui::testRecoveredTabIsMarked()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    auto *tab = window->currentTab();
+
+    // A fresh tab carries no recovery marker.
+    QVERIFY2(!tabs->tabText(0).contains(QStringLiteral("recovered")), qPrintable(tabs->tabText(0)));
+
+    // Simulate an autosave-recovered tab and force a title refresh via an undoable edit.
+    tab->setRecovered(true);
+    auto *scene = tab->scene();
+    auto *view = tab->view();
+    auto *andGate = new And();
+    andGate->setPos(100, 100);
+    scene->addItem(andGate);
+    clickElement(view, andGate);
+    QTest::keyClick(window.get(), Qt::Key_Delete); // dirties the stack -> title recompute
+    QCoreApplication::processEvents();
+
+    QVERIFY2(tabs->tabText(0).contains(QStringLiteral("(recovered)")), qPrintable(tabs->tabText(0)));
+}
+
 void TestMainWindowGui::testCloseTabReducesCount()
 {
     std::unique_ptr<MainWindow> window(createMW());
