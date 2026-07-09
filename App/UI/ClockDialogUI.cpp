@@ -72,8 +72,10 @@ void ClockDialogUi::setupUi(QDialog *ClockDialog)
 
 void ClockDialogUi::retranslateUi(QDialog *ClockDialog)
 {
-    ClockDialog->setWindowTitle(QCoreApplication::translate("ClockDialog", "Dialog"));
+    ClockDialog->setWindowTitle(QCoreApplication::translate("ClockDialog", "Clock"));
     titleLabel->setText(QCoreApplication::translate("ClockDialog", "Clock Period"));
-    maxLabel->setText(QCoreApplication::translate("ClockDialog", "1024"));
-    minLabel->setText(QCoreApplication::translate("ClockDialog", "2"));
+    // Range end labels are numbers, not translatable text — build them from the slider's
+    // actual bounds instead of shipping bare "2"/"1024" strings to the Weblate catalog.
+    maxLabel->setText(QString::number(periodSlider->maximum()));
+    minLabel->setText(QString::number(periodSlider->minimum()));
 }

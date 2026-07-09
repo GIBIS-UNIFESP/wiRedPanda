@@ -71,8 +71,10 @@ void LengthDialogUi::setupUi(QDialog *LengthDialog)
 
 void LengthDialogUi::retranslateUi(QDialog *LengthDialog)
 {
-    LengthDialog->setWindowTitle(QCoreApplication::translate("LengthDialog", "Dialog"));
-    minLabel->setText(QCoreApplication::translate("LengthDialog", "2"));
+    LengthDialog->setWindowTitle(QCoreApplication::translate("LengthDialog", "Simulation Length"));
     titleLabel->setText(QCoreApplication::translate("LengthDialog", "Simulation Length"));
-    maxLabel->setText(QCoreApplication::translate("LengthDialog", "2048"));
+    // Range end labels are numbers, not translatable text — build them from the slider's
+    // actual bounds instead of shipping bare "2"/"2048" strings to the Weblate catalog.
+    minLabel->setText(QString::number(lengthSlider->minimum()));
+    maxLabel->setText(QString::number(lengthSlider->maximum()));
 }

@@ -4,6 +4,7 @@
 #include "Tests/Unit/Ui/TestDialogs.h"
 
 #include <QComboBox>
+#include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QSlider>
@@ -159,6 +160,25 @@ void TestDialogs::testLengthDialogReturnValue()
     QTimer::singleShot(0, &dialog2, &QDialog::accept);
     QCOMPARE(dialog2.exec(), static_cast<int>(QDialog::Accepted));
     QCOMPARE(dialog2.length(), 128);
+}
+
+void TestDialogs::testLengthDialogTitleAndRangeLabels()
+{
+    LengthDialog dialog(64);
+
+    // No Qt Designer "Dialog" placeholder title survives to display.
+    QVERIFY(dialog.windowTitle() != QStringLiteral("Dialog"));
+
+    // The range end labels are built from the slider's actual bounds, not shipped as
+    // translatable bare numbers that could drift from the real range.
+    auto *slider = dialog.findChild<QSlider *>("lengthSlider");
+    QVERIFY(slider);
+    QStringList labelTexts;
+    for (auto *label : dialog.findChildren<QLabel *>()) {
+        labelTexts.append(label->text());
+    }
+    QVERIFY2(labelTexts.contains(QString::number(slider->maximum())), "a label should show the slider maximum");
+    QVERIFY2(labelTexts.contains(QString::number(slider->minimum())), "a label should show the slider minimum");
 }
 
 // ============================================================================

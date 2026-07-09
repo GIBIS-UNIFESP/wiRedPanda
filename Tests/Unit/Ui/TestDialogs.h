@@ -29,6 +29,11 @@ private slots:
     void testLengthDialogRange();
     void testLengthDialogReturnValue();
 
+    // Regression: Qt Designer's "Dialog" placeholder title and bare, hand-typed range
+    // numbers no longer ship — the title is real and the range labels are derived from
+    // the slider's actual bounds so they can't drift from it.
+    void testLengthDialogTitleAndRangeLabels();
+
     // ============================================================
     // ElementEditor — Wireless Tx duplicate-label rejection (5 tests)
     // ============================================================
