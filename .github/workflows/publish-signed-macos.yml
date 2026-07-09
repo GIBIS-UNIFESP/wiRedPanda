@@ -1,0 +1,123 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Sign, notarize, and package macOS release artifacts
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+# Enable by setting repository variable PUBLISH_SIGNED_MACOS_ENABLED=true, enrolling
+# in the Apple Developer Program ($99/yr), and setting:
+#   - repository variables: APPLE_TEAM_ID, MACOS_SIGNING_IDENTITY (e.g.
+#     "Developer ID Application: GIBIS-UNIFESP (TEAMID)"), MACOS_INSTALLER_IDENTITY
+#     (e.g. "Developer ID Installer: GIBIS-UNIFESP (TEAMID)" — a *different*
+#     certificate type from the Application one above; pkgbuild/productbuild reject
+#     the Application identity)
+#   - secrets: MACOS_CERTIFICATE_APPLICATION / MACOS_CERTIFICATE_APPLICATION_PASSWORD
+#     (base64-encoded "Developer ID Application" .p12 + its password),
+#     MACOS_CERTIFICATE_INSTALLER / MACOS_CERTIFICATE_INSTALLER_PASSWORD (same, for
+#     the "Developer ID Installer" .p12), APPLE_API_KEY / APPLE_API_KEY_ID /
+#     APPLE_API_ISSUER (base64-encoded App Store Connect API .p8 key, its key ID,
+#     and issuer ID — used by notarytool instead of an Apple ID + app-specific
+#     password, which needs interactive 2FA setup and isn't CI-friendly)
+#
+# Upgrades the existing DMG from unsigned to Developer-ID-signed + notarized (the
+# "Notarized + signed" row in DEPLOYMENT_OPTIONS.md), and adds a new signed +
+# notarized .pkg installer (the ".pkg installer" row) built from the same signed
+# .app — both need identical cert/notarization material, so one workflow covers
+# both rather than configuring the same secrets twice.
+
+jobs:
+  sign:
+    if: vars.PUBLISH_SIGNED_MACOS_ENABLED == 'true'
+    runs-on: macos-latest
+    steps:
+      - name: Extract version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
+
+      - name: Import signing certificates into a temporary keychain
+        env:
+          APPLICATION_CERT: ${{ secrets.MACOS_CERTIFICATE_APPLICATION }}
+          APPLICATION_CERT_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_APPLICATION_PASSWORD }}
+          INSTALLER_CERT: ${{ secrets.MACOS_CERTIFICATE_INSTALLER }}
+          INSTALLER_CERT_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_INSTALLER_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          KEYCHAIN="$RUNNER_TEMP/signing.keychain-db"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+
+          echo "$APPLICATION_CERT" | base64 --decode -o "$RUNNER_TEMP/application.p12"
+          echo "$INSTALLER_CERT" | base64 --decode -o "$RUNNER_TEMP/installer.p12"
+          security import "$RUNNER_TEMP/application.p12" -k "$KEYCHAIN" -P "$APPLICATION_CERT_PASSWORD" -T /usr/bin/codesign
+          security import "$RUNNER_TEMP/installer.p12" -k "$KEYCHAIN" -P "$INSTALLER_CERT_PASSWORD" -T /usr/bin/productsign -T /usr/bin/pkgbuild
+
+          security list-keychain -d user -s "$KEYCHAIN" $(security list-keychains -d user | tr -d '"')
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+
+      - name: Set up notarytool API key
+        env:
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$APPLE_API_KEY" | base64 --decode -o ~/.appstoreconnect/private_keys/AuthKey_${{ vars.APPLE_API_KEY_ID }}.p8
+
+      - name: Download release DMG
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download "$VERSION" --repo "$GITHUB_REPOSITORY" --pattern "wiRedPanda-$VERSION-macOS-Qt6.9.3.dmg"
+
+      - name: Re-sign the app bundle
+        run: |
+          hdiutil attach "wiRedPanda-$VERSION-macOS-Qt6.9.3.dmg" -mountpoint /tmp/wiredpanda_src -readonly -nobrowse
+          cp -R /tmp/wiredpanda_src/wiredpanda.app "$RUNNER_TEMP/wiredpanda.app"
+          hdiutil detach /tmp/wiredpanda_src
+
+          codesign --force --deep --options runtime \
+            --sign "${{ vars.MACOS_SIGNING_IDENTITY }}" \
+            --timestamp \
+            "$RUNNER_TEMP/wiredpanda.app"
+          codesign --verify --deep --strict --verbose=2 "$RUNNER_TEMP/wiredpanda.app"
+
+      - name: Build, notarize, and staple the DMG
+        run: |
+          DMG="wiRedPanda-$VERSION-macOS-Qt6.9.3.dmg"
+          rm -f "$DMG"
+          hdiutil create -volname "wiRedPanda" -srcfolder "$RUNNER_TEMP/wiredpanda.app" -ov -format UDZO "$DMG"
+
+          xcrun notarytool submit "$DMG" \
+            --key ~/.appstoreconnect/private_keys/AuthKey_${{ vars.APPLE_API_KEY_ID }}.p8 \
+            --key-id "${{ vars.APPLE_API_KEY_ID }}" \
+            --issuer "${{ vars.APPLE_API_ISSUER }}" \
+            --wait
+          xcrun stapler staple "$DMG"
+
+      - name: Build, notarize, and staple the .pkg installer
+        run: |
+          PKG="wiRedPanda-$VERSION-macOS-Qt6.9.3.pkg"
+          pkgbuild --component "$RUNNER_TEMP/wiredpanda.app" \
+            --install-location /Applications \
+            --sign "${{ vars.MACOS_INSTALLER_IDENTITY }}" \
+            --identifier com.wiredpanda.wiRedPanda \
+            --version "$VERSION" \
+            "$PKG"
+
+          xcrun notarytool submit "$PKG" \
+            --key ~/.appstoreconnect/private_keys/AuthKey_${{ vars.APPLE_API_KEY_ID }}.p8 \
+            --key-id "${{ vars.APPLE_API_KEY_ID }}" \
+            --issuer "${{ vars.APPLE_API_ISSUER }}" \
+            --wait
+          xcrun stapler staple "$PKG"
+
+      - name: Upload signed artifacts to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "$VERSION" \
+            "wiRedPanda-$VERSION-macOS-Qt6.9.3.dmg" \
+            "wiRedPanda-$VERSION-macOS-Qt6.9.3.pkg" \
+            --repo "$GITHUB_REPOSITORY" --clobber
