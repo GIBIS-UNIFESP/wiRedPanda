@@ -106,7 +106,10 @@ void Settings::setFastMode(bool enabled)
 
 bool Settings::labelsUnderIcons()
 {
-    return value("labelsUnderIcons").toBool();
+    // Default to labels-visible: the beginner audience benefits from readable toolbar
+    // buttons. Power users can turn labels off via View → Labels under icons.
+    const QVariant saved = value("labelsUnderIcons");
+    return saved.isValid() ? saved.toBool() : true;
 }
 
 void Settings::setLabelsUnderIcons(bool enabled)

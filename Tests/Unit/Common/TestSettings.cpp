@@ -103,6 +103,10 @@ void TestSettings::testTypedFastMode()
 
 void TestSettings::testTypedLabelsUnderIcons()
 {
+    // Fresh install (init() cleared the store): toolbar labels default to visible so
+    // the beginner audience gets readable buttons.
+    QCOMPARE(Settings::labelsUnderIcons(), true);
+
     Settings::setLabelsUnderIcons(true);
     QCOMPARE(Settings::labelsUnderIcons(), true);
 
