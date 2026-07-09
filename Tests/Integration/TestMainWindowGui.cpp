@@ -552,6 +552,24 @@ void TestMainWindowGui::testZoomInOutReset()
     QCOMPARE(view->transform().m11(), baseTx.m11());
 }
 
+void TestMainWindowGui::testZoomInAcceptsCtrlPlus()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *view = window->currentTab()->view();
+
+    // The action advertises both Ctrl+= and Ctrl++.
+    auto *action = window->findChild<QAction *>("actionZoomIn");
+    QVERIFY(action);
+    QVERIFY(action->shortcuts().contains(QKeySequence(QStringLiteral("Ctrl+="))));
+    QVERIFY(action->shortcuts().contains(QKeySequence(QStringLiteral("Ctrl++"))));
+
+    // And Ctrl++ actually zooms in.
+    QTest::keyClick(window.get(), Qt::Key_0, Qt::ControlModifier);
+    const qreal base = view->transform().m11();
+    QTest::keyClick(window.get(), Qt::Key_Plus, Qt::ControlModifier);
+    QVERIFY(view->transform().m11() > base);
+}
+
 void TestMainWindowGui::testFastModeToggle()
 {
     std::unique_ptr<MainWindow> window(createMW());

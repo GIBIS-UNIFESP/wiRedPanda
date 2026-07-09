@@ -45,6 +45,7 @@ private slots:
     void testToggleWiresVisibility();
     void testToggleGatesVisibility();
     void testZoomInOutReset();
+    void testZoomInAcceptsCtrlPlus();
     void testFastModeToggle();
     void testFullscreenToggle();
     void testLabelsUnderIconsToggle();
