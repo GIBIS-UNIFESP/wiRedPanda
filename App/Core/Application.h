@@ -103,8 +103,8 @@ public:
     static void handleException(const ExceptionInfo &info, const QObject *context);
 
     /**
-     * \brief Wraps a slot body in `try/catch` and defers exception reporting
-     *        to the next event-loop iteration via a queued `invokeMethod`.
+     * \brief Wraps a slot body in `try/catch` and reports any exception
+     *        synchronously, inside the slot's own stack frame.
      *
      * \details Per [Qt 6.11 Exception Safety](https://doc.qt.io/qt-6/exceptionsafety.html)
      * and [QTBUG-15197](https://bugreports.qt.io/browse/QTBUG-15197), throwing
@@ -112,16 +112,18 @@ public:
      * unwinder reliably triggers `std::terminate` mid-stack and no upstream
      * `catch` runs.  guardedSlot keeps the catch frame inside the slot itself
      * (below any Qt-internal frame) so the unwinder never crosses a structure
-     * that aborts.  The dialog/Sentry forwarding is deferred to the next tick
-     * because modal UI from inside a just-unwound event handler is unsafe.
-     * See `.claude/SENTRY_TRIAGE.md` §A25.
+     * that aborts.  Reporting was originally deferred to the next event-loop
+     * iteration via a queued `invokeMethod`, but that hangs on macOS — the
+     * modal `QMessageBox::exec()` deep inside the queued dispatch never
+     * returns (see the catch block below and `.claude/SENTRY_TRIAGE.md` §A25).
+     * `handleException` is called directly instead, using a non-modal
+     * `show()` so it returns immediately even when interactive.
      *
      * \tparam Body  Invocable callable with no arguments returning anything.
-     * \param context  Non-owning pointer used as the receiver hint when the
-     *                 deferred `handleException` runs.  Captured via QPointer
-     *                 so a destroyed receiver downgrades to nullptr.
+     * \param context  Non-owning pointer used as the receiver hint passed to
+     *                 `handleException`.
      * \param body  The slot body to invoke; any thrown `std::exception` is
-     *              caught and reported asynchronously.
+     *              caught and reported before this function returns.
      */
     template <typename Body>
     static void guardedSlot(const QObject *context, Body &&body) noexcept
