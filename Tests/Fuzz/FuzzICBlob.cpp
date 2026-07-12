@@ -77,7 +77,7 @@ QByteArray buildStructuredICBlob(FuzzedDataProvider &fdp)
     meta.insert("dolphinFileName", QVariant(QString()));
     s << meta;
 
-    Serialization::serialize(items, s);
+    Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
     qDeleteAll(items);
 
     return buf;

@@ -144,7 +144,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
             QMap<QString, QVariant> m;
             m.insert("dolphinFileName", QVariant(QString()));
             s << m;
-            Serialization::serialize(inner, s);
+            Serialization::serialize(inner, s, {.purpose = SerializationPurpose::PortableFile});
         }
         qDeleteAll(inner);
 

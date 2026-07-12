@@ -170,8 +170,8 @@ void writeOldElement(QDataStream &s, FuzzedDataProvider &fdp,
     const int outCount =
         (etype == ET::InputSwitch || etype == ET::InputButton ||
          etype == ET::InputGnd   || etype == ET::InputVcc ||
-         etype == ET::Clock      || etype == ET::InputSwitch ||
-         etype == ET::Mux        || etype == ET::Node) ? 1 :
+         etype == ET::Clock      || etype == ET::Mux ||
+         etype == ET::Node) ? 1 :
         (etype == ET::And  || etype == ET::Or    || etype == ET::Nand ||
          etype == ET::Nor  || etype == ET::Xor   || etype == ET::Xnor ||
          etype == ET::Not) ? 1 :

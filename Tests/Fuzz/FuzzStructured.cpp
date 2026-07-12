@@ -453,7 +453,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         meta.insert("dolphinFileName", QVariant(QString()));
         s << meta;
 
-        Serialization::serialize(items, s);
+        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
 
         qDeleteAll(items);
     }
@@ -489,7 +489,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         ic->setBlobName("fuzz_ic.panda");
         QList<QGraphicsItem *> icList;
         icList.append(ic);
-        Serialization::serialize(icList, ns);
+        Serialization::serialize(icList, ns, {.purpose = SerializationPurpose::PortableFile});
         qDeleteAll(icList);
     }
 

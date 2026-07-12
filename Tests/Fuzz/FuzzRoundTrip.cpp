@@ -120,7 +120,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
         // Collect all items from the scene
         const auto items = ws1.scene()->items();
-        Serialization::serialize(items, out);
+        Serialization::serialize(items, out, {.purpose = SerializationPurpose::PortableFile});
     }
 
     // --- Phase 3: reload the serialised output ---

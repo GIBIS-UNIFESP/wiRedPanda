@@ -213,7 +213,7 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
             {
                 QDataStream s(&oldData, QIODevice::WriteOnly);
                 Serialization::writePandaHeader(s);
-                for (auto *e : elems) e->save(s);
+                for (auto *e : elems) e->save(s, {.purpose = SerializationPurpose::InMemorySnapshot});
             }
             try {
                 stack.push(new UpdateCommand(elems, oldData, scene));
@@ -310,7 +310,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
         s << meta;
-        Serialization::serialize(items, s);
+        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
         qDeleteAll(items);
     }
 
@@ -335,7 +335,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
         s << meta;
-        Serialization::serialize(items, s);
+        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
         qDeleteAll(items);
 
         // Append one Connection (sw1 output → And input0) as raw wire bytes.

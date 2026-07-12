@@ -23,7 +23,6 @@
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
-#include <QDir>
 #include <QEvent>
 #include <QIODevice>
 #include <QMap>
@@ -130,7 +129,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
         s << meta;
-        Serialization::serialize(items, s);
+        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
         qDeleteAll(items);
     }
 
@@ -164,7 +163,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     tmp.write(fileContent);
     tmp.flush();
 
-    const QString icFileName = QDir(tmp.fileName()).dirName(); // basename only
     const QString contextDir = QFileInfo(tmp.fileName()).absolutePath();
 
     // Build and load the outer panda that references the temp file.
