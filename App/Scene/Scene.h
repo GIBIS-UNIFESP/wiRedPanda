@@ -402,6 +402,11 @@ private:
     // Visibility control (delegated to VisibilityManager)
     VisibilityManager m_visibilityManager = VisibilityManager(this);
 
+    // Set by setPropertyUpdateRequired() whenever a structural edit may have left some
+    // item's visibility out of sync with the current show-wires/show-gates toggles;
+    // reapplied lazily in drawBackground() (see its comment) rather than eagerly.
+    bool m_visibilityDirty = false;
+
     // Drag-and-drop payload decoding (delegated to SceneDropHandler)
     SceneDropHandler m_dropHandler = SceneDropHandler(this);
 

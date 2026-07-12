@@ -180,6 +180,16 @@ SerializationContext Scene::deserializationContext(QHash<quint64, Port *> &portM
 
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    // Flush any pending visibility reapply before items are painted: drawBackground()
+    // always runs before Qt's item-painting pass for this same frame (Qt calls
+    // drawBackground(), then paints visible items, then drawForeground()), so applying
+    // setVisible() here still takes effect for the frame about to be drawn. See
+    // setPropertyUpdateRequired() for why this is deferred instead of done eagerly there.
+    if (m_visibilityDirty) {
+        m_visibilityDirty = false;
+        m_visibilityManager.reapply();
+    }
+
     // m11() is the X-axis scale factor of the view transform; below 0.3 the grid dots
     // would be sub-pixel and invisible anyway, so skip drawing for performance
     if (view() and view()->transform().m11() < 0.3) {
@@ -247,21 +257,26 @@ void Scene::setCircuitUpdateRequired()
 {
     setPropertyUpdateRequired();
 
-    // Re-initialize topological sort and simulation graph after any structural change.
-    // If initialize() bails (e.g. the scene dropped to just the border rect), it left
-    // the hot-path vectors empty but didn't touch m_initialized — bring the flag into
-    // sync so the next tick treats the scene as uninitialised rather than trusting a
-    // stale "already done" marker against empty vectors.
-    if (!m_simulation.initialize()) {
-        m_simulation.restart();
-    }
+    // Invalidate the cached topology; the next Simulation::update() (or start())
+    // lazily rebuilds it. Structural edits often arrive in tight batches (MCP-driven
+    // circuit construction, multi-element paste/delete) — eagerly rebuilding here on
+    // every single one, as this used to do, turned an O(N) circuit build into O(N^2):
+    // each element/connection add paid a full topology rebuild over everything already
+    // in the scene. restart() alone is sufficient: it already unconditionally clears
+    // m_initialized, so it stays correct even on the "scene dropped to just the border
+    // rect" bail-out case that previously needed the eager initialize() call to detect.
+    m_simulation.restart();
 }
 
 void Scene::setPropertyUpdateRequired()
 {
     // Re-applying visibility ensures newly-added ports/wires respect the current
-    // show/hide state; without this, ports on fresh elements would always appear visible
-    m_visibilityManager.reapply();
+    // show/hide state; without this, ports on fresh elements would always appear visible.
+    // Deferred to the next drawBackground() (see its comment) rather than done eagerly
+    // here: this runs on every structural edit, and reapply() rescans the whole scene,
+    // which is fine for one edit but pathological for a tight batch of them (MCP-driven
+    // circuit construction, multi-element paste/delete) — O(N) per edit, O(N^2) overall.
+    m_visibilityDirty = true;
 
     update();
 
