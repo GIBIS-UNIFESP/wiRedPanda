@@ -5,7 +5,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <iostream>
 
 #include <QAbstractItemView>
 #include <QApplication>
@@ -285,10 +284,13 @@ void BewavedDolphin::run()
     // computed outputs (isInput=false → green; changeNext=false → caller refreshes) are
     // written back, then the original input states are restored so the live simulation
     // resumes correctly.
-    m_simDriver->sweep(
-        m_inputs, m_outputs, m_inputPorts, m_model->columnCount(),
-        [this](int row, int col) { return m_model->value(row, col) != 0; },
-        [this](int row, int col, int value) { m_model->setValue(row, col, value); });
+    {
+        SignalModel::BulkEditGuard guard(*m_model);
+        m_simDriver->sweep(
+            m_inputs, m_outputs, m_inputPorts, m_model->columnCount(),
+            [this](int row, int col) { return m_model->value(row, col) != 0; },
+            [this](int row, int col, int value) { m_model->setValue(row, col, value); });
+    }
 
     qCDebug(three) << "Setting inputs back to old values.";
     WaveformSimulator::restoreInputs(m_inputs, m_oldInputValues);
@@ -442,7 +444,7 @@ void BewavedDolphin::print()
     }
     // Outputs in the same CSV format used by loadFromTerminal() / the CSV save path,
     // allowing round-trip scripted use without a GUI.
-    std::cout << DolphinExporter::csvText(m_model).toStdString();
+    QTextStream(stdout) << DolphinExporter::csvText(m_model);
 }
 
 void BewavedDolphin::saveToTxt(QTextStream &stream)
@@ -481,10 +483,13 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
 
     // Compute the outputs for every input combination, then restore the live inputs the
     // sweep perturbed (the same capture/restore contract run() relies on).
-    m_simDriver->sweep(
-        m_inputs, m_outputs, m_inputPorts, columns,
-        [&truthTable](int row, int col) { return truthTable.value(row, col) != 0; },
-        [&truthTable](int row, int col, int value) { truthTable.setValue(row, col, value); });
+    {
+        SignalModel::BulkEditGuard guard(truthTable);
+        m_simDriver->sweep(
+            m_inputs, m_outputs, m_inputPorts, columns,
+            [&truthTable](int row, int col) { return truthTable.value(row, col) != 0; },
+            [&truthTable](int row, int col, int value) { truthTable.setValue(row, col, value); });
+    }
     WaveformSimulator::restoreInputs(m_inputs, m_oldInputValues);
 
     DolphinExporter::writeTruthTableText(stream, &truthTable, static_cast<int>(m_inputs.size()));
@@ -868,9 +873,12 @@ void BewavedDolphin::applyWaveformData(const DolphinSerializer::WaveformData &fi
     setLength(fileData.columns, false);
     qCDebug(zero) << "Update table.";
 
-    for (int row = 0; row < fileData.inputPorts; ++row) {
-        for (int col = 0; col < fileData.columns; ++col) {
-            m_model->setValue(row, col, fileData.values[row * fileData.columns + col]);
+    {
+        SignalModel::BulkEditGuard guard(*m_model);
+        for (int row = 0; row < fileData.inputPorts; ++row) {
+            for (int col = 0; col < fileData.columns; ++col) {
+                m_model->setValue(row, col, fileData.values[row * fileData.columns + col]);
+            }
         }
     }
 

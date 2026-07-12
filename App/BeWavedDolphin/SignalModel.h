@@ -57,6 +57,21 @@ public:
     /// Returns \c true if \a row is an input row (\a row < inputRows()).
     bool isInputRow(int row) const { return row < m_inputRows; }
 
+    /// RAII guard for a batch of setValue() calls: suppresses the per-cell dataChanged
+    /// signal each setValue() would otherwise emit, firing a single dataChanged for the
+    /// whole grid when the guard goes out of scope. Not reentrant — do not nest two of
+    /// these on the same model.
+    class BulkEditGuard {
+    public:
+        explicit BulkEditGuard(SignalModel &model);
+        ~BulkEditGuard();
+
+    private:
+        SignalModel &m_model;
+    };
+
 private:
+    void notifyBulkChanged();
+
     int m_inputRows = 0; ///< Number of leading input rows; the rest are outputs.
 };

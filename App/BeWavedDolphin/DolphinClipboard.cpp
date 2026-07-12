@@ -3,6 +3,8 @@
 
 #include "App/BeWavedDolphin/DolphinClipboard.h"
 
+#include <algorithm>
+
 #include <QApplication>
 #include <QClipboard>
 #include <QDataStream>
@@ -18,34 +20,29 @@ namespace {
 constexpr auto kWaveformMimeType = "application/x-bewaveddolphin-waveform";
 /// Legacy MIME type from older versions, still accepted on paste for compatibility.
 constexpr auto kLegacyMimeType = "bdolphin/copydata";
+
+/// Returns the minimum of \a extract(range) across \a ranges, or \a fallback if empty.
+template <typename Extract>
+int minAcrossRanges(int fallback, const QItemSelection &ranges, Extract extract)
+{
+    int result = fallback;
+    for (const auto &range : ranges) {
+        result = (std::min)(result, extract(range));
+    }
+    return result;
+}
 } // namespace
 
 namespace DolphinClipboard {
 
 int firstColumn(const SignalModel &model, const QItemSelection &ranges)
 {
-    int firstCol = model.columnCount() - 1;
-
-    for (const auto &range : ranges) {
-        if (range.left() < firstCol) {
-            firstCol = range.left();
-        }
-    }
-
-    return firstCol;
+    return minAcrossRanges(model.columnCount() - 1, ranges, [](const auto &r) { return r.left(); });
 }
 
 int firstRow(const SignalModel &model, const QItemSelection &ranges)
 {
-    int row = model.rowCount() - 1;
-
-    for (const auto &range : ranges) {
-        if (range.top() < row) {
-            row = range.top();
-        }
-    }
-
-    return row;
+    return minAcrossRanges(model.rowCount() - 1, ranges, [](const auto &r) { return r.top(); });
 }
 
 void copy(const SignalModel &model, const QItemSelection &ranges, QDataStream &stream)
@@ -85,6 +82,7 @@ void paste(SignalModel &model, const QItemSelection &ranges, QDataStream &stream
         itemListSize = maxItems;
     }
 
+    SignalModel::BulkEditGuard guard(model);
     for (quint64 i = 0; i < itemListSize; ++i) {
         quint64 row;   stream >> row;
         quint64 col;   stream >> col;

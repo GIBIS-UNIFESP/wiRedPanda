@@ -365,6 +365,7 @@ void TestSerialization::testDolphinFilenamePreserved()
 
     // Verify circuit loads without errors (dolphin filename is metadata)
     QVERIFY(!workspace2.scene()->elements().isEmpty());
+    QCOMPARE(workspace2.dolphinFileName(), testDolphinFile);
 }
 
 void TestSerialization::testSceneRectPreserved()
