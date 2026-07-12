@@ -10,6 +10,7 @@
 #include <QRandomGenerator>
 #include <QSet>
 #include <QSettings>
+#include <QStandardPaths>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -41,6 +42,15 @@ void setupTestEnvironment()
     if (settingsDir.isValid()) {
         QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsDir.path());
     }
+
+    // Redirect QStandardPaths::AppDataLocation (and the other locations Qt's test
+    // mode covers) to a per-process sandbox. Without this, ExerciseTourResources::
+    // managedContentDir() and anything else touching AppDataLocation creates and
+    // writes into the developer's/CI runner's real
+    // ~/.local/share/GIBIS-UNIFESP/wiRedPanda — confirmed accumulating thousands of
+    // leaked autosave files and stray test-category folders across real test runs.
+    QStandardPaths::setTestModeEnabled(true);
+
     Comment::setVerbosity(-1);
     Application::interactiveMode = false;   // Suppress UI dialogs in tests
     Application::renderingEnabled = false;  // Skip wire-geometry work — tests never paint
