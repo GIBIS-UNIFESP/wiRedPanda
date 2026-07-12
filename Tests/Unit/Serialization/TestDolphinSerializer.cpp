@@ -157,17 +157,11 @@ void TestDolphinSerializer::testEmptyModelCSV()
 
 void TestDolphinSerializer::testCorruptedDataHandling()
 {
+    // This literal's bytes 8-15 (the `cols` field) decode as a big-endian qint64
+    // far beyond SignalModel::kMaxColumns, so loadBinary() deterministically throws.
     QByteArray corrupt("This is corrupted binary data !!!");
     QDataStream stream(&corrupt, QIODevice::ReadOnly);
-    bool caught = false;
-    try {
-        DolphinSerializer::loadBinary(stream, 1);
-    } catch (...) {
-        caught = true;
-    }
-    // Either throws or returns degenerate data — both acceptable
-    QVERIFY(true);
-    Q_UNUSED(caught);
+    QVERIFY_THROWS(std::exception, DolphinSerializer::loadBinary(stream, 1));
 }
 
 void TestDolphinSerializer::testLoadBinaryRejectsNegativeRows()

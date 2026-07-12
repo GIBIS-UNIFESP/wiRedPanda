@@ -575,9 +575,11 @@ void TestBewavedDolphinGui::testDoubleClickToggle()
     dolphin->setCellValue(0, 0, 0);
     QCOMPARE(model->index(0, 0).data().toInt(), 0);
 
-    // Select the cell and emit doubleClicked to trigger the toggle handler.
-    // (The QTableView is inside a QGraphicsProxyWidget so QTest::mouseDClick
-    // may not reach it; emit the signal directly on the view instead.)
+    // Select the cell and emit doubleClicked to trigger the toggle handler, rather than
+    // driving a real QTest::mouseDClick: no other test in this suite clicks into a
+    // QTableView, and doing so here would need show() + realized cell geometry that
+    // createDolphin() intentionally skips. This exercises the connected slot's logic
+    // without that fragility.
     auto *tv = findTableView(dolphin.get());
     QVERIFY2(tv, "QTableView not found in BewavedDolphin");
 

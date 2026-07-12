@@ -13,9 +13,6 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
         BewavedDolphin->setObjectName("BewavedDolphin");
     }
 
-    // Initial geometry; the constructor restores the saved geometry immediately after
-    BewavedDolphin->resize(800, 600);
-
     BewavedDolphin->setWindowIcon(QIcon(":/Interface/Toolbar/dolphin_icon.svg"));
 
     actionAbout = new QAction(BewavedDolphin);

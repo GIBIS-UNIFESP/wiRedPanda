@@ -46,6 +46,7 @@ class WorkspaceManager;
 class MainWindow : public QMainWindow, public DolphinHost, public MainWindowHost
 {
     Q_OBJECT
+    friend class TestMainWindowGui;
 
 public:
     // --- Lifecycle ---

@@ -29,3 +29,20 @@ void SignalModel::setInputRows(const int inputRows)
 {
     m_inputRows = inputRows;
 }
+
+void SignalModel::notifyBulkChanged()
+{
+    emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
+}
+
+SignalModel::BulkEditGuard::BulkEditGuard(SignalModel &model)
+    : m_model(model)
+{
+    m_model.blockSignals(true);
+}
+
+SignalModel::BulkEditGuard::~BulkEditGuard()
+{
+    m_model.blockSignals(false);
+    m_model.notifyBulkChanged();
+}

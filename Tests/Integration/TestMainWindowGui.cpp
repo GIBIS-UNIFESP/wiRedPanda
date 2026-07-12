@@ -18,6 +18,7 @@
 #include <QTranslator>
 #include <QWheelEvent>
 
+#include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
@@ -1001,19 +1002,12 @@ void TestMainWindowGui::testOpenWaveformEditor()
     CircuitBuilder builder(window->currentTab()->scene());
     builder.connect(sw, 0, led, 0);
 
-    QTimer::singleShot(50, [&window] {
-        for (auto *w : QApplication::topLevelWidgets()) {
-            if (auto *mw = qobject_cast<QMainWindow *>(w)) {
-                if (mw != window.get()) {
-                    mw->setAttribute(Qt::WA_DeleteOnClose, false);
-                    mw->close();
-                    mw->deleteLater();
-                }
-            }
-        }
-    });
-
+    // keyClick invokes on_actionWaveform_triggered synchronously, so m_bwd is
+    // already set by the time it returns.
     QTest::keyClick(window.get(), Qt::Key_W, Qt::ControlModifier);
+
+    QVERIFY2(window->m_bwd, "Ctrl+W should open the waveform editor");
+    window->m_bwd->close();
 
     QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
     QCoreApplication::processEvents();
@@ -3223,9 +3217,12 @@ void TestMainWindowGui::testWaveformOnEmptySceneShowsWarningHQ()
     // Pre-fix: triggering actionWaveform on an empty scene drove
     // DolphinModelBuilder::collect() to throw PANDACEPTION. On macOS arm64
     // the exception escaped Application::notify and the process aborted with
-    // SIGABRT (captured as a Sentry minidump). The fix at
-    // MainWindow::on_actionWaveform_triggered pre-checks the empty case and
-    // shows a warning dialog instead of letting the throw escape.
+    // SIGABRT (captured as a Sentry minidump). The fix wraps
+    // on_actionWaveform_triggered's body in the existing generic
+    // Application::guardedSlot (used by nearly every slot in the app), so the
+    // PANDACEPTION is caught and reported via handleException instead of
+    // escaping and calling std::terminate. There's no empty-scene-specific
+    // pre-check — the catch is entirely generic.
     //
     // This GUI variant exercises the exact user path. The trigger is posted
     // via Qt::QueuedConnection so the slot is invoked through the platform
@@ -3244,11 +3241,10 @@ void TestMainWindowGui::testWaveformOnEmptySceneShowsWarningHQ()
     QVERIFY2(window->currentTab()->scene()->elements().isEmpty(),
              "Fresh tab must have an empty scene to reproduce WIREDPANDA-HQ");
 
-    // Poll-and-dismiss any QMessageBox that appears: either the pre-check
-    // warning (with the fix) or the critical dialog Application::notify
-    // shows from inside its catch (without the fix). A singleShot(0) won't
-    // work — it fires before the queued action trigger runs, so it sees no
-    // dialog and we hang on QDialog::exec.
+    // Poll-and-dismiss any QMessageBox that appears — guardedSlot's
+    // handleException shows a warning/critical dialog once it catches the
+    // PANDACEPTION. A singleShot(0) won't work — it fires before the queued
+    // action trigger runs, so it sees no dialog and we hang on QDialog::exec.
     QTimer dismissTimer;
     dismissTimer.setInterval(50);
     QObject::connect(&dismissTimer, &QTimer::timeout, []() {
@@ -3270,10 +3266,10 @@ void TestMainWindowGui::testWaveformOnEmptySceneShowsWarningHQ()
 
     dismissTimer.stop();
 
-    // Reaching this line means: no abort. Either the pre-check fired (fix
-    // present) or Application::notify caught the escaping PANDACEPTION
-    // (without the fix). On macOS, a SIGABRT here is the WIREDPANDA-HQ
-    // signature.
+    // Reaching this line means: no abort — guardedSlot caught the
+    // PANDACEPTION and handleException showed (and this test dismissed) a
+    // dialog instead of letting it escape to std::terminate. On macOS, a
+    // SIGABRT here is the WIREDPANDA-HQ signature.
     QVERIFY(window->isVisible());
 
     Application::interactiveMode = prevInteractive;

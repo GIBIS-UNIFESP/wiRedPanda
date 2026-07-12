@@ -11,6 +11,7 @@ namespace DolphinEdits {
 
 void applyToCells(SignalModel &model, const QModelIndexList &cells, const std::function<int(int)> &valueFn)
 {
+    SignalModel::BulkEditGuard guard(model);
     for (const auto &cell : cells) {
         model.setValue(cell.row(), cell.column(), valueFn(model.value(cell.row(), cell.column())));
     }
@@ -22,6 +23,7 @@ void clockWave(SignalModel &model, const QModelIndexList &cells, const int first
     // phase anchored at firstCol so the waveform starts at 0 regardless of the selection.
     const int halfPeriod = period / 2;
 
+    SignalModel::BulkEditGuard guard(model);
     for (const auto &cell : cells) {
         const int value = ((cell.column() - firstCol) % period < halfPeriod ? 0 : 1);
         model.setValue(cell.row(), cell.column(), value);
@@ -35,6 +37,7 @@ void combinational(SignalModel &model, const int inputPorts, const int columns)
     int halfClockPeriod = 1;
     int clockPeriod     = 2;
 
+    SignalModel::BulkEditGuard guard(model);
     for (int row = 0; row < inputPorts; ++row) {
         for (int col = 0; col < columns; ++col) {
             model.setValue(row, col, (col % clockPeriod < halfClockPeriod ? 0 : 1));
@@ -48,6 +51,7 @@ void combinational(SignalModel &model, const int inputPorts, const int columns)
 
 void clearInputs(SignalModel &model, const int inputPorts)
 {
+    SignalModel::BulkEditGuard guard(model);
     for (int row = 0; row < inputPorts; ++row) {
         for (int col = 0; col < model.columnCount(); ++col) {
             model.setValue(row, col, 0);
@@ -72,6 +76,7 @@ void growInputColumns(SignalModel &model, const int inputPorts, const int oldLen
 {
     // New input columns must be explicitly filled with zeros; output columns are populated
     // by the simulation run and don't need pre-filling.
+    SignalModel::BulkEditGuard guard(model);
     for (int row = 0; row < inputPorts; ++row) {
         for (int col = oldLength; col < newLength; ++col) {
             model.setValue(row, col, 0);
