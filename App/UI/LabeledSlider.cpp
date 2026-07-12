@@ -31,6 +31,14 @@ void LabeledSlider::paintEvent(QPaintEvent *event)
         const int min = minimum();
         const int max = maximum();
         const int interval = tickInterval();
+
+        // tickInterval() defaults to 0 (QSlider) until explicitly set; guard before the
+        // divide below rather than relying on every future caller pairing setTickPosition()
+        // with a non-zero setTickInterval().
+        if (interval <= 0) {
+            return;
+        }
+
         // Number of gaps between ticks; labels at both ends means tickCount+1 labels total.
         const int tickCount = (max - min) / interval;
 

@@ -13,4 +13,8 @@ class TestLabeledSlider : public QObject
 private slots:
 
     void testSliderValueChange();
+    void testPaintEventDrawsTickLabelsWithoutCrashing();
+
+    // Regression: paintEvent() divided by tickInterval() with no zero guard.
+    void testPaintEventHandlesZeroTickIntervalWithoutCrashing();
 };
