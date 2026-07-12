@@ -45,21 +45,14 @@ void TestEnums::testStringToElementType()
 
 void TestEnums::testInvalidStringToElementType()
 {
-    // Test invalid strings - QMetaEnum::keyToValue returns -1 for invalid keys
-    // which casts to an invalid enum value (not Unknown/0)
-    ElementType invalid = ElementFactory::textToType("InvalidType");
-    // Invalid conversion returns -1 cast to ElementType, which is not Unknown
-    QVERIFY(invalid != ElementType::And);
-    QVERIFY(invalid != ElementType::Or);
-
-    invalid = ElementFactory::textToType("NOTATYPE");
-    QVERIFY(invalid != ElementType::Not);
-
-    invalid = ElementFactory::textToType("");
-    QVERIFY(invalid != ElementType::Clock);
-
-    invalid = ElementFactory::textToType("random_string_123");
-    QVERIFY(invalid != ElementType::Led);
+    // QMetaEnum::keyToValue() returns -1 for a key it doesn't recognise;
+    // textToType() explicitly maps that sentinel to ElementType::Unknown so
+    // callers can rely on a simple `== ElementType::Unknown` check for bad
+    // input (see ElementFactory::textToType).
+    QCOMPARE(ElementFactory::textToType("InvalidType"), ElementType::Unknown);
+    QCOMPARE(ElementFactory::textToType("NOTATYPE"), ElementType::Unknown);
+    QCOMPARE(ElementFactory::textToType(""), ElementType::Unknown);
+    QCOMPARE(ElementFactory::textToType("random_string_123"), ElementType::Unknown);
 }
 
 void TestEnums::testUnknownElementType()
