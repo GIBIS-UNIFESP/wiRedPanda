@@ -119,6 +119,15 @@ QJsonObject ElementHandler::handleCreateElement(const QJsonObject &params, const
         element->setLabel(label);
     }
 
+    // Match the interactive drag-and-drop path (SceneDropHandler::handleDrop): clear the
+    // previous selection before adding the new element so it alone ends up selected,
+    // rather than accumulating onto every element ever created in this session. Without
+    // this, a long MCP-driven build (many create_element calls with nothing else ever
+    // clearing selection) leaves the entire circuit selected, and every selection-tracking
+    // consumer (e.g. ElementEditor::selectionChanged) pays for the whole growing selection
+    // on every single element added — O(N) per call, O(N^2) over the full build.
+    scene->clearSelection();
+
     try {
         scene->receiveCommand(new AddItemsCommand({element}, scene));
     } catch (const std::exception &e) {
