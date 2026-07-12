@@ -38,8 +38,16 @@ void TestWorkspace::init()
 
 void TestWorkspace::testAutosaveTriggersOnCircuitChange()
 {
+    // Regression: this test originally pushed a bare QUndoCommand, whose no-op redo() never
+    // calls Scene::setCircuitUpdateRequired() (only real commands like AddItemsCommand do —
+    // see AddItemsCommand::redo()), so autosave was never actually triggered; it also never
+    // flushed the debounced write (testFlushPendingAutosaveRunsImmediatelyB3: the push only
+    // schedules a 500ms timer) and compared with `>=`, which passes even when the list is
+    // unchanged — so it never observed anything.
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
+
+    Settings::setAutosaveFiles({});
 
     WorkSpace workspace;
     Scene *scene = workspace.scene();
@@ -48,22 +56,19 @@ void TestWorkspace::testAutosaveTriggersOnCircuitChange()
     // Initial state: undo stack should be clean
     QVERIFY2(undoStack->isClean(), "Undo stack should be in clean state");
 
-    // Get initial autosave list
-    QStringList autosavesBefore = Settings::autosaveFiles();
-
-    // Trigger circuit change via command to make undo stack dirty
-    QUndoCommand *addCommand = new QUndoCommand("Add element");
-    undoStack->push(addCommand);
+    // Trigger circuit change via a real command to make undo stack dirty
+    QList<QGraphicsItem *> items{ElementFactory::buildElement(ElementType::And)};
+    undoStack->push(new AddItemsCommand(items, scene));
 
     // undoStack->push() immediately dirties the undo stack (synchronous)
     // Verify undo stack is now dirty
     QVERIFY2(!undoStack->isClean(), "Undo stack should be dirty after circuit change");
 
-    // When circuit changes, autosave should be triggered
+    // Flush the debounced autosave write before checking Settings.
+    workspace.flushPendingAutosave();
+
     QStringList autosavesAfter = Settings::autosaveFiles();
-    // After making undo stack dirty, autosaves should be recorded or list should be valid
-    QVERIFY2(autosavesAfter.size() >= autosavesBefore.size(),
-             "Autosave should be triggered when circuit changes");
+    QVERIFY2(!autosavesAfter.isEmpty(), "Autosave should be triggered when circuit changes");
 }
 
 void TestWorkspace::testAutosaveSkippedWhenClean()
@@ -251,18 +256,27 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
 
 void TestWorkspace::testAutosaveFileCreatedInAppData()
 {
+    // Regression: a bare QUndoCommand's no-op redo() never calls
+    // Scene::setCircuitUpdateRequired() (only real commands like AddItemsCommand do), so
+    // autosave was never triggered; and without flushPendingAutosave(), the 500ms debounce
+    // means Settings::autosaveFiles() would still be empty even with a real command — the
+    // loop below never executed and the test passed vacuously without checking anything.
+    Settings::setAutosaveFiles({});
+
     WorkSpace workspace;
     Scene *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
     // For new (unsaved) project, autosave should be in AppData/autosaves
-    undoStack->push(new QUndoCommand("Add element"));
+    QList<QGraphicsItem *> items{ElementFactory::buildElement(ElementType::And)};
+    undoStack->push(new AddItemsCommand(items, scene));
+    workspace.flushPendingAutosave();
 
     // Get the autosave files list from Settings
     QStringList autosaves = Settings::autosaveFiles();
+    QVERIFY2(!autosaves.isEmpty(), "Circuit change should produce an autosave entry");
 
     // For new (unsaved) project, autosave should be in AppData/autosaves directory
-    // Verify each autosave contains expected path pattern (if any were created)
     for (const QString &autosave : std::as_const(autosaves)) {
         QVERIFY2(!autosave.isEmpty(), "Autosave entry should not be empty");
         QVERIFY2(autosave.contains("autosaves") || autosave.contains(".panda"),
@@ -276,17 +290,23 @@ void TestWorkspace::testAutosaveFileNameFormatNewProject()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
+    Settings::setAutosaveFiles({});
+
     WorkSpace workspace;
     Scene *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    // Mark undo stack as dirty to test autosave file naming
-    undoStack->push(new QUndoCommand("Add element"));
+    // Mark undo stack as dirty to test autosave file naming (real command — a bare
+    // QUndoCommand's no-op redo() never calls Scene::setCircuitUpdateRequired())
+    QList<QGraphicsItem *> items{ElementFactory::buildElement(ElementType::And)};
+    undoStack->push(new AddItemsCommand(items, scene));
+    workspace.flushPendingAutosave();
 
     // Get autosave files
     QStringList autosaves = Settings::autosaveFiles();
+    QVERIFY2(!autosaves.isEmpty(), "Circuit change should produce an autosave entry");
 
-    // For new projects, autosave filename should follow .XXXXXX.panda pattern (if any were created)
+    // For new projects, autosave filename should follow .XXXXXX.panda pattern
     for (const QString &autosave : std::as_const(autosaves)) {
         // All autosave entries should be non-empty
         QVERIFY2(!autosave.isEmpty(), "Autosave entry should not be empty");
@@ -600,11 +620,17 @@ void TestWorkspace::testAutosaveFileTemplatePattern()
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
+    Settings::setAutosaveFiles({});
+
     WorkSpace workspace;
-    workspace.scene()->undoStack()->push(new QUndoCommand("Add element"));
+    Scene *scene = workspace.scene();
+    QList<QGraphicsItem *> items{ElementFactory::buildElement(ElementType::And)};
+    scene->undoStack()->push(new AddItemsCommand(items, scene));
+    workspace.flushPendingAutosave();
 
     // Check autosave pattern
     QStringList autosaves = Settings::autosaveFiles();
+    QVERIFY2(!autosaves.isEmpty(), "Circuit change should produce an autosave entry");
 
     for (const QString &autosave : std::as_const(autosaves)) {
         // All entries should be non-empty
@@ -621,7 +647,10 @@ void TestWorkspace::testAutosaveFileTemplatePattern()
 
 void TestWorkspace::testMultipleAutosaveFilesNonConflicting()
 {
-    // Multiple autosave files shouldn't have identical names
+    // Multiple autosave files shouldn't have identical names.
+    // Regression: without flushPendingAutosave(), the 500ms debounce meant both autosave
+    // lists were still empty here, and the final comparison was itself guarded behind an
+    // "if both are non-empty" check — so the test never actually verified anything.
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
@@ -630,29 +659,29 @@ void TestWorkspace::testMultipleAutosaveFilesNonConflicting()
     QString autosave1;
     {
         WorkSpace ws1;
-        ws1.scene()->undoStack()->push(new QUndoCommand("Add element 1"));
+        QList<QGraphicsItem *> items1{ElementFactory::buildElement(ElementType::And)};
+        ws1.scene()->undoStack()->push(new AddItemsCommand(items1, ws1.scene()));
+        ws1.flushPendingAutosave();
 
         QStringList autosaves = Settings::autosaveFiles();
-        if (!autosaves.isEmpty()) {
-            autosave1 = autosaves.first();
-        }
+        QVERIFY2(!autosaves.isEmpty(), "First workspace should produce an autosave entry");
+        autosave1 = autosaves.first();
     }
 
     QString autosave2;
     {
         WorkSpace ws2;
-        ws2.scene()->undoStack()->push(new QUndoCommand("Add element 2"));
+        QList<QGraphicsItem *> items2{ElementFactory::buildElement(ElementType::Or)};
+        ws2.scene()->undoStack()->push(new AddItemsCommand(items2, ws2.scene()));
+        ws2.flushPendingAutosave();
 
         QStringList autosaves = Settings::autosaveFiles();
-        if (!autosaves.isEmpty()) {
-            autosave2 = (autosaves.size() >= 2) ? autosaves.last() : autosaves.first();
-        }
+        QVERIFY2(!autosaves.isEmpty(), "Second workspace should produce an autosave entry");
+        autosave2 = (autosaves.size() >= 2) ? autosaves.last() : autosaves.first();
     }
 
-    // Verify different autosave files don't have same path (if any were created)
-    if (!autosave1.isEmpty() && !autosave2.isEmpty()) {
-        QVERIFY2(autosave1 != autosave2, "Different workspaces should have different autosave files");
-    }
+    QVERIFY2(!autosave1.isEmpty() && !autosave2.isEmpty(), "Both autosave paths must be captured");
+    QVERIFY2(autosave1 != autosave2, "Different workspaces should have different autosave files");
 }
 
 void TestWorkspace::testAutosaveFilePermissions()
