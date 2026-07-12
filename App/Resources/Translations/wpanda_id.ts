@@ -2406,18 +2406,18 @@ Anda harus menyimpan proyek baru sebelum mengakses IC dan tampilan, atau menjala
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="560"/>
+        <location filename="../../Scene/Scene.cpp" line="575"/>
         <source>&amp;Undo</source>
         <translation>&amp;Batalkan</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="566"/>
+        <location filename="../../Scene/Scene.cpp" line="581"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ulangi</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="586"/>
+        <location filename="../../Scene/Scene.cpp" line="601"/>
         <source>Paste</source>
         <translation>Tempel</translation>
     </message>

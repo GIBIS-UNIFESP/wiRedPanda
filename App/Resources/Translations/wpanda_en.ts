@@ -2406,18 +2406,18 @@ You have to save new projects before accessing ICs and appearances, or running b
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="560"/>
+        <location filename="../../Scene/Scene.cpp" line="575"/>
         <source>&amp;Undo</source>
         <translation>&amp;Undo</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="566"/>
+        <location filename="../../Scene/Scene.cpp" line="581"/>
         <source>&amp;Redo</source>
         <translation>&amp;Redo</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="586"/>
+        <location filename="../../Scene/Scene.cpp" line="601"/>
         <source>Paste</source>
         <translation>Paste</translation>
     </message>
