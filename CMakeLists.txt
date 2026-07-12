@@ -1071,7 +1071,21 @@ set(ALL_TESTS
     TestSceneConnections TestSceneState TestSceneUndoredo
     TestSerialization TestSimulationBlocker
     TestDanglingPointer
-    TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings TestThemeManager)
+    TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings TestThemeManager
+    TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
+    TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
+    TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
+    TestCircuitExporter TestElementContextMenu TestElementEditor TestElementPalette
+    TestElementTabNavigator TestFileDialogProviderUnit TestICDropZone TestLabeledSlider
+    TestLanguageManager TestMinimapWidget TestSelectionCapabilities
+    TestTrashButton
+    TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort
+    TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
+    TestDolphinClipboard TestDolphinSerializer TestFileUtils TestRecentFilesUnit
+    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor
+    TestExerciseEngine TestTourEngine
+    TestSimulationUnit TestWorkspaceUnit
+    TestICFixtureLayout)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()
