@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QFile>
 #include <QLibraryInfo>
+#include <QSignalSpy>
 #include <QTranslator>
 
 #include "App/UI/LanguageManager.h"
@@ -13,16 +14,34 @@
 
 void TestLanguageManager::testAvailableLanguages()
 {
+    // availableLanguages() always includes the hardcoded "en" fallback even when the ":/i18n"
+    // resource directory is empty (LanguageManager.cpp), so !isEmpty() alone can never catch a
+    // regression that silently drops the ~39 real wpanda_*.qm translations from the embedded
+    // resources. Those are embedded only via qt_add_translations(wiredpanda ...)
+    // (CMakeLists.txt), scoped to the "wiredpanda" executable target specifically — not
+    // available in this test binary — so skip rather than fail when only the fallback is
+    // found, the same pattern the Qt-translations tests below already use.
     LanguageManager manager;
     QStringList languages = manager.availableLanguages();
-    QVERIFY(!languages.isEmpty());
+    QVERIFY(languages.contains("en"));
+    if (languages.size() == 1) {
+        QSKIP("Only the hardcoded \"en\" fallback was found — wpanda_*.qm translations are "
+              "embedded only in the \"wiredpanda\" executable target, not in this test binary");
+    }
+    QVERIFY(languages.contains("de"));
+    QVERIFY(languages.contains("pt_BR"));
 }
 
 void TestLanguageManager::testSetLanguage()
 {
+    // loadTranslation() documents that it "Emits translationChanged() after the translators
+    // are installed" (LanguageManager.h) — verify that actually happens.
     LanguageManager manager;
+    QSignalSpy translationChangedSpy(&manager, &LanguageManager::translationChanged);
+
     manager.loadTranslation("en");
-    QVERIFY(true);
+
+    QCOMPARE(translationChangedSpy.count(), 1);
 }
 
 void TestLanguageManager::testQtTranslationsPathExists()
