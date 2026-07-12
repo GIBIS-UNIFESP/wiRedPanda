@@ -42,8 +42,9 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHo
     , m_ui(std::make_unique<BewavedDolphinUi>())
     , m_host(host)
     , m_externalScene(scene)
-    // askConnection controls whether closing triggers a save-changes prompt and
-    // whether saving offers to link the .dolphin file to the parent .panda file
+    // askConnection controls whether closing consults checkSave()'s save-changes prompt
+    // (see closeEvent()); the separate save-and-link prompt in associateToWiRedPanda()
+    // is gated on Application::interactiveMode instead.
     , m_askConnection(askConnection)
 {
     m_ui->setupUi(this);
@@ -330,7 +331,14 @@ void BewavedDolphin::on_actionExit_triggered()
 
 void BewavedDolphin::closeEvent(QCloseEvent *event)
 {
-    (m_askConnection && checkSave()) ? event->accept() : event->ignore();
+    // askConnection gates whether closing consults checkSave() at all — with it false, the
+    // window must still be closable, just without the save-changes prompt.
+    if (m_askConnection && !checkSave()) {
+        event->ignore();
+        return;
+    }
+
+    event->accept();
 }
 
 void BewavedDolphin::resizeEvent(QResizeEvent *event)
