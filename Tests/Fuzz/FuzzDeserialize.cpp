@@ -18,11 +18,15 @@
  *   The custom mutator applies one structure-aware operation per call so that
  *   the corpus stays parseable while still reaching deep code paths:
  *
- *     - patch_version:    replace the 8-byte version field with a known-valid one
+ *     - patch_version:    replace the 12-byte version field with a known-valid one
  *     - patch_map_key:    splice a known map key (UTF-16-BE with length prefix)
  *                         at a random position inside the payload
  *     - patch_type_id:    splice a known QMetaType wire typeId at a random position
- *     - patch_element_type: replace one element-type string inside the payload
+ *     - patch_element_type: splice a valid ElementType quint64 at a random position
+ *     - patch_header:     write the WPCF magic + a known-valid version at byte 0
+ *     - patch_item_type:  splice a GraphicElement/Connection type discriminator
+ *     - patch_element_seq: splice a complete 12-byte element header (type + ElementType)
+ *     - patch_appearance_entry: splice a valid appearances-list entry with a skinName key
  *     - fallback:         call LLVMFuzzerMutate (libFuzzer's own mutator)
  *
  *   The mutator operates on raw bytes so it is safe even when the input does
