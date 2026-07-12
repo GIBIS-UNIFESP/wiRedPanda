@@ -2406,18 +2406,18 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
     <name>Scene</name>
     <message>
         <location filename="../../Scene/Scene.cpp" line="49"/>
-        <location filename="../../Scene/Scene.cpp" line="560"/>
+        <location filename="../../Scene/Scene.cpp" line="575"/>
         <source>&amp;Undo</source>
         <translation>&amp;Deshacer</translation>
     </message>
     <message>
         <location filename="../../Scene/Scene.cpp" line="57"/>
-        <location filename="../../Scene/Scene.cpp" line="566"/>
+        <location filename="../../Scene/Scene.cpp" line="581"/>
         <source>&amp;Redo</source>
         <translation>&amp;Rehacer</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="586"/>
+        <location filename="../../Scene/Scene.cpp" line="601"/>
         <source>Paste</source>
         <translation>Pegar</translation>
     </message>
