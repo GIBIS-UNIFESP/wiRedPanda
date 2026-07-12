@@ -858,6 +858,12 @@ void TestBewavedDolphinGui::testExitAction()
     auto ws = createAndCircuit();
     auto *dolphin = createDolphin(ws.get());
 
+    // The window must actually be shown first — otherwise isVisible() is trivially
+    // false both before and after trigger(), and the assertion below would pass
+    // even if Exit failed to close it.
+    dolphin->show();
+    QVERIFY(dolphin->isVisible());
+
     auto *action = dolphin->findChild<QAction *>("actionExit");
     QVERIFY2(action, "actionExit not found");
 

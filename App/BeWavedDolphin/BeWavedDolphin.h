@@ -47,7 +47,7 @@ public:
     /**
      * \brief Constructs the waveform editor.
      * \param scene         Circuit scene whose I/O elements will be mapped to signals.
-     * \param askConnection If \c true, prompts the user to link to a .dolphin file.
+     * \param askConnection If \c true, closing prompts to save unsaved changes (checkSave()).
      * \param host          Host application providing the circuit file context (a
      *                      MainWindow in the app; a stub in tests). May be \c nullptr.
      * \param parent        Widget to parent this window to, so its Qt::WindowModal setting
@@ -246,7 +246,7 @@ private:
     std::unique_ptr<WaveformSimulator> m_simDriver;   ///< Drives the column-by-column simulation sweep.
     std::unique_ptr<DolphinZoom> m_zoom;              ///< Owns the table's zoom state + view metrics.
     bool m_edited                  = false;           ///< True if the waveform has unsaved changes.
-    const bool m_askConnection;                       ///< If true, prompt to link to a .dolphin file on open.
+    const bool m_askConnection;                       ///< If true, closing consults checkSave()'s save-changes prompt.
     int m_clockPeriod              = 0;               ///< Period used by "Set Clock Wave" (0 = auto).
     int m_inputPorts               = 0;               ///< Number of input ports in the circuit.
     int m_length                   = 32;              ///< Number of simulation time-step columns.
