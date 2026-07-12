@@ -12,6 +12,7 @@
 #include "App/Core/Application.h"
 #include "App/Element/ElementFactory.h"
 #include "App/IO/Serialization.h"
+#include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
 #include "Tests/Common/TestUtils.h"
@@ -408,18 +409,25 @@ void TestWorkspaceFileops::testLoadEmptyCircuit()
 
 void TestWorkspaceFileops::testModifiedFlagAfterAddElement()
 {
+    // Scene::addItem() (used elsewhere in this file to set up fixtures before manually
+    // calling setClean()) never touches the undo stack — only going through the real
+    // command path (AddItemsCommand, as MainWindow's "Add Element" actions do) marks the
+    // workspace modified. Exercise that real path here.
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
     // Initially, undo stack should be clean
     QVERIFY2(scene->undoStack()->isClean(), "Undo stack should be in clean state after save");
 
-    // Add an element
+    // Add an element via the real command path
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    scene->addItem(andGate);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
 
     // Verify the element was actually added to the scene
     QCOMPARE(scene->elements().size(), 1);
+
+    // Verify the workspace is now marked modified
+    QVERIFY2(!scene->undoStack()->isClean(), "Undo stack should be dirty after adding an element via command");
 }
 
 void TestWorkspaceFileops::testModifiedFlagClearedAfterSave()
@@ -541,30 +549,6 @@ void TestWorkspaceFileops::testSaveFailureLeavesFileIdentityUnchanged()
     QCOMPARE(workspace.scene()->contextDir(), beforeContextDir);
 }
 
-void TestWorkspaceFileops::testFileExtensionPandaAppend()
-{
-    // Test that file paths with .panda extension are recognized
-    WorkSpace workspace;
-
-    QString pathWithExt = m_tempDir.path() + "/test.panda";
-    // Just verify the path would contain .panda
-    QVERIFY2(pathWithExt.endsWith(".panda"), "File path should have .panda extension");
-}
-
-void TestWorkspaceFileops::testFileExtensionNoDuplicate()
-{
-    // Test that .panda extension logic doesn't duplicate
-    WorkSpace workspace;
-
-    QString pathWithExt = m_tempDir.path() + "/test.panda";
-    QString pathDouble = pathWithExt + ".panda";
-
-    // Verify they're different
-    QVERIFY2(pathWithExt != pathDouble, "Path should not be duplicated");
-    // Verify the doubled path would be wrong
-    QVERIFY2(!pathWithExt.endsWith(".panda.panda"), "File path should not have double extension");
-}
-
 void TestWorkspaceFileops::testDolphinFileNameStorage()
 {
     // Test that dolphin filename can be stored and retrieved
@@ -603,20 +587,29 @@ void TestWorkspaceFileops::testLastIdGetterSetter()
 
 void TestWorkspaceFileops::testLastIdPersistenceOnLoad()
 {
-    // Test that lastId value is maintained correctly
-    // This is a simpler version that doesn't do full save/load
-    WorkSpace workspace;
+    // After a real save/load round-trip, lastId() must be at least as high as the highest
+    // element ID actually present in the loaded file (WorkSpace::load() recomputes it as
+    // max(m_lastId, elementId) over every loaded element) — otherwise a freshly-loaded
+    // circuit could hand out a new element ID that collides with an existing one.
+    const QString filePath = m_tempDir.path() + "/last_id_persistence_test.panda";
+    int maxSavedId = -1;
+    {
+        WorkSpace workspace;
+        Scene *scene = workspace.scene();
+        for (int i = 0; i < 3; ++i) {
+            auto *elm = ElementFactory::buildElement(ElementType::And);
+            scene->addItem(elm);
+            maxSavedId = (std::max)(maxSavedId, elm->id());
+        }
+        scene->undoStack()->setClean();
+        workspace.save(filePath);
+    }
 
-    // Simulate adding elements by incrementing lastId
-    int initialId = workspace.lastId();
-    workspace.setLastId(initialId + 10);
+    WorkSpace reloaded;
+    reloaded.load(filePath);
 
-    // Verify the value is set
-    QCOMPARE(workspace.lastId(), initialId + 10);
-
-    // Verify setting to same value works
-    workspace.setLastId(initialId + 10);
-    QCOMPARE(workspace.lastId(), initialId + 10);
+    QVERIFY2(reloaded.lastId() >= maxSavedId,
+             "lastId() after load must be at least the highest saved element ID");
 }
 
 void TestWorkspaceFileops::testFileInfoAfterCreation()

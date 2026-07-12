@@ -37,8 +37,6 @@ private slots:
     void testFilePathPreservedAfterLoad();
     void testSaveFailureLeavesFileIdentityUnchanged();
 
-    void testFileExtensionPandaAppend();
-    void testFileExtensionNoDuplicate();
     void testDolphinFileNameStorage();
     void testLastIdInitializationValue();
     void testLastIdGetterSetter();
