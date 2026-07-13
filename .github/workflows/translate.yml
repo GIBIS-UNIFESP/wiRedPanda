@@ -145,8 +145,7 @@ jobs:
           for ts_file in wpanda_*.ts; do
             if [[ -f "$ts_file" ]]; then
               # Check if file is valid XML
-              error_output=$(xmllint --noout "$ts_file" 2>&1)
-              if [ $? -ne 0 ]; then
+              if ! error_output=$(xmllint --noout "$ts_file" 2>&1); then
                 echo "❌ Invalid XML in $ts_file"
                 echo "Error details: $error_output"
                 exit 1
@@ -198,7 +197,7 @@ jobs:
       contents: write           # needed to commit backup-file cleanup
       pull-requests: write      # needed to comment on PRs
     runs-on: ubuntu-24.04
-    if: github.event_name == 'pull_request' && contains(github.event.pull_request.title, 'Weblate') || contains(github.event.pull_request.user.login, 'weblate')
+    if: github.event_name == 'pull_request' && (contains(github.event.pull_request.title, 'Weblate') || contains(github.event.pull_request.user.login, 'weblate'))
 
     steps:
       - name: Checkout code
@@ -239,8 +238,7 @@ jobs:
           for ts_file in wpanda_*.ts; do
             if [[ -f "$ts_file" ]]; then
               # Validate XML
-              error_output=$(xmllint --noout "$ts_file" 2>&1)
-              if [ $? -ne 0 ]; then
+              if ! error_output=$(xmllint --noout "$ts_file" 2>&1); then
                 echo "❌ XML validation failed for $ts_file"
                 echo "Error details: $error_output"
                 exit 1
@@ -336,10 +334,11 @@ jobs:
               const content = fs.readFileSync(path.join(translationsDir, tsFile), 'utf8');
 
               const totalMatches = content.match(/<message>/g);
-              const finishedMatches = content.match(/type="finished"/g);
+              const unfinishedMatches = content.match(/type="unfinished"/g);
 
               const total = totalMatches ? totalMatches.length : 0;
-              const finished = finishedMatches ? finishedMatches.length : 0;
+              const unfinished = unfinishedMatches ? unfinishedMatches.length : 0;
+              const finished = total - unfinished;
               const percentage = total > 0 ? Math.round((finished / total) * 100) : 0;
 
               let status = '🔴 Low';
