@@ -3,10 +3,16 @@
 
 #include "Tests/Unit/Elements/TestIC.h"
 
+#include <QGraphicsSceneMouseEvent>
+#include <QSignalSpy>
+
 #include "App/Core/Settings.h"
+#include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestICUnit::testICLoadFromFile()
@@ -77,4 +83,24 @@ void TestICUnit::testPreviewPopupClampsToScreen()
     const QPoint onSecond = ICPreviewPopup::clampedPopupPos(QPoint(3835, 500), popup, second);
     QVERIFY(onSecond.x() >= second.left());
     QVERIFY(second.contains(onSecond + QPoint(popup.width() - 1, popup.height() - 1)));
+}
+
+void TestICUnit::testDoubleClickOpensSubCircuitNotInlineEditor()
+{
+    WorkSpace workspace;
+    auto *ic = new IC;
+    QVERIFY(ic->hasLabel()); // otherwise this test wouldn't distinguish the two code paths
+    workspace.scene()->addItem(ic);
+
+    QSignalSpy openSpy(ic, &IC::requestOpenSubCircuit);
+    QSignalSpy inlineEditSpy(ic, &GraphicElement::inlineEditRequested);
+
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseDoubleClick);
+    event.setScenePos(ic->mapToScene(ic->boundingRect().center()));
+    event.setButton(Qt::LeftButton);
+    event.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(workspace.scene(), &event);
+
+    QCOMPARE(openSpy.count(), 1);
+    QCOMPARE(inlineEditSpy.count(), 0);
 }

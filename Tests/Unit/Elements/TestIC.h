@@ -18,4 +18,9 @@ private slots:
     void testICInvalidFile();
     void testICPreviewPopupRespectsDisabledSetting();
     void testPreviewPopupClampsToScreen();
+
+    // GraphicElement::mouseDoubleClickEvent() (added for #7/#38 inline rename) must never
+    // shadow IC's own double-click override -- ordinary virtual dispatch should guarantee
+    // this, but it's asserted directly rather than assumed.
+    void testDoubleClickOpensSubCircuitNotInlineEditor();
 };

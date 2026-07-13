@@ -18,6 +18,7 @@
 class Text : public GraphicElement
 {
     Q_OBJECT
+    friend class TestGraphicElement;
 
 public:
     /// Constructs a Text element.
@@ -25,4 +26,15 @@ public:
 
     /// Returns a bounding rect that includes the label text, not just the pixmap.
     QRectF boundingRect() const override;
+
+    /// Refreshes the empty-state hint's color alongside the base label/port theming.
+    void updateTheme() override;
+
+protected:
+    /// Shows a faint "double-click to add text" hint whenever the label is empty, since an
+    /// empty Text element is otherwise a fully transparent, near-invisible placeholder.
+    void labelContentChanged() override;
+
+private:
+    QGraphicsSimpleTextItem *m_emptyHint = new QGraphicsSimpleTextItem(this);
 };

@@ -374,6 +374,17 @@ bool GraphicElement::sceneEvent(QEvent *event)
     return QGraphicsItem::sceneEvent(event);
 }
 
+void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (hasLabel()) {
+        event->accept();
+        emit inlineEditRequested(this);
+        return;
+    }
+
+    QGraphicsItem::mouseDoubleClickEvent(event);
+}
+
 bool GraphicElement::hasAudio() const
 {
     return m_metadata.hasAudio;
@@ -417,6 +428,7 @@ void GraphicElement::updateLabel()
     m_label->setText(label);
     // The counter-orientation pivots on the label's centre, which the new text just moved.
     updateLabelOrientation();
+    labelContentChanged();
 }
 
 void GraphicElement::updateLabelOrientation()
@@ -471,6 +483,11 @@ void GraphicElement::setLabel(const QString &label)
 QString GraphicElement::label() const
 {
     return m_labelText;
+}
+
+QRectF GraphicElement::labelSceneBoundingRect() const
+{
+    return m_label->sceneBoundingRect();
 }
 
 // Color cycle (forward): White → Red → Green → Blue → Purple → White

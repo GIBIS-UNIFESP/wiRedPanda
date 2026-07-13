@@ -102,6 +102,9 @@ void Scene::addItem(QGraphicsItem *item)
         if (!elm) {
             return;
         }
+        connect(elm, &GraphicElement::inlineEditRequested, this, [this](GraphicElement *element) {
+            m_inlineLabelEditor.start(element);
+        });
         if (auto *ic = qobject_cast<IC *>(elm)) {
             if (!ic->file().isEmpty()) {
                 m_icRegistry.watchFile(ic->file());
