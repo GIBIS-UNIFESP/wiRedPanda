@@ -623,8 +623,6 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuEdit->setObjectName("menuEdit");
     menuHelp = new QMenu(menuBar);
     menuHelp->setObjectName("menuHelp");
-    menuTranslation = new QMenu(menuBar);
-    menuTranslation->setObjectName("menuTranslation");
     menuView = new QMenu(menuBar);
     menuView->setObjectName("menuView");
     menuTheme = new QMenu(menuView);
@@ -637,9 +635,11 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuSimulation->setObjectName("menuSimulation");
     menuExamples = new QMenu(menuBar);
     menuExamples->setObjectName("menuExamples");
-    menuExercises = new QMenu(menuBar);
+    menuLearn = new QMenu(menuBar);
+    menuLearn->setObjectName("menuLearn");
+    menuExercises = new QMenu(menuLearn);
     menuExercises->setObjectName("menuExercises");
-    menuTours = new QMenu(menuBar);
+    menuTours = new QMenu(menuLearn);
     menuTours->setObjectName("menuTours");
     MainWindow->setMenuBar(menuBar);
     QWidget::setTabOrder(lineEditSearch, tabElements);
@@ -672,10 +672,10 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuBar->addAction(menuView->menuAction());
     menuBar->addAction(menuSimulation->menuAction());
     menuBar->addAction(menuExamples->menuAction());
-    menuBar->addAction(menuExercises->menuAction());
-    menuBar->addAction(menuTours->menuAction());
+    menuBar->addAction(menuLearn->menuAction());
+    menuLearn->addMenu(menuExercises);
+    menuLearn->addMenu(menuTours);
     menuBar->addAction(menuLanguage->menuAction());
-    menuBar->addAction(menuTranslation->menuAction());
     menuBar->addAction(menuHelp->menuAction());
     menuFile->addAction(actionNew);
     menuFile->addAction(actionOpen);
@@ -728,7 +728,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuHelp->addAction(actionShortcutsAndTips);
     menuHelp->addSeparator();
     menuHelp->addAction(actionCheckForUpdates);
-    menuTranslation->addAction(actionReportTranslationError);
+    menuHelp->addSeparator();
+    menuHelp->addAction(actionReportTranslationError);
     menuView->addAction(actionZoomIn);
     menuView->addAction(actionZoomOut);
     menuView->addAction(actionResetZoom);
@@ -899,13 +900,13 @@ void MainWindowUi::retranslateUi()
     menuRecentFiles->setTitle(QCoreApplication::translate("MainWindow", "&Recent files:"));
     menuEdit->setTitle(QCoreApplication::translate("MainWindow", "&Edit"));
     menuHelp->setTitle(QCoreApplication::translate("MainWindow", "&Help"));
-    menuTranslation->setTitle(QCoreApplication::translate("MainWindow", "&Help Translate"));
     menuView->setTitle(QCoreApplication::translate("MainWindow", "&View"));
     menuTheme->setTitle(QCoreApplication::translate("MainWindow", "&Theme"));
     menuMinimapPosition->setTitle(QCoreApplication::translate("MainWindow", "Minimap &Position"));
     menuLanguage->setTitle(QCoreApplication::translate("MainWindow", "&Language"));
     menuSimulation->setTitle(QCoreApplication::translate("MainWindow", "Sim&ulation"));
     menuExamples->setTitle(QCoreApplication::translate("MainWindow", "Examples"));
+    menuLearn->setTitle(QCoreApplication::translate("MainWindow", "&Learn"));
     menuExercises->setTitle(QCoreApplication::translate("MainWindow", "&Exercises"));
     menuTours->setTitle(QCoreApplication::translate("MainWindow", "&Tours"));
 }

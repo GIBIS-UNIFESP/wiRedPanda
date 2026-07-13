@@ -242,9 +242,9 @@ public:
     QMenu *menuTheme = nullptr;
     QMenu *menuMinimapPosition = nullptr;
     QMenu *menuLanguage = nullptr;
-    QMenu *menuTranslation = nullptr;
     QMenu *menuSimulation = nullptr;
     QMenu *menuExamples = nullptr;
+    QMenu *menuLearn = nullptr;
     QMenu *menuExercises = nullptr;
     QMenu *menuTours = nullptr;
     QMenu *menuHelp = nullptr;
