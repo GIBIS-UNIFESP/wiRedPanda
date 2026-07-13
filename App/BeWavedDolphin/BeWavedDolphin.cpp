@@ -17,6 +17,7 @@
 #include <QWheelEvent>
 
 #include "App/BeWavedDolphin/DolphinClipboard.h"
+#include "App/BeWavedDolphin/DolphinCommands.h"
 #include "App/BeWavedDolphin/DolphinEdits.h"
 #include "App/BeWavedDolphin/DolphinExporter.h"
 #include "App/BeWavedDolphin/DolphinFile.h"
@@ -104,6 +105,12 @@ BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHo
     connect(m_ui->actionZoomIn,        &QAction::triggered,            this, &BewavedDolphin::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,       &QAction::triggered,            this, &BewavedDolphin::on_actionZoomOut_triggered);
     connect(m_ui->actionAutoCrop,      &QAction::triggered,            this, &BewavedDolphin::on_actionAutoCrop_triggered);
+
+    // Undo/redo for waveform cell edits (#19) -- mirrors Scene's m_undoAction/m_redoAction wiring.
+    connect(&m_undoStack, &QUndoStack::canUndoChanged, m_ui->actionUndo, &QAction::setEnabled);
+    connect(&m_undoStack, &QUndoStack::canRedoChanged, m_ui->actionRedo, &QAction::setEnabled);
+    connect(m_ui->actionUndo, &QAction::triggered, &m_undoStack, &QUndoStack::undo);
+    connect(m_ui->actionRedo, &QAction::triggered, &m_undoStack, &QUndoStack::redo);
 }
 
 BewavedDolphin::~BewavedDolphin()
@@ -139,12 +146,17 @@ void BewavedDolphin::createWaveform(const QString &fileName)
     qCDebug(zero) << "Resuming digital circuit main window after waveform simulation is finished.";
     // Reset edit flag — loading a file or a fresh run does not constitute a user edit
     m_edited = false;
+    // loadNewTable()'s initial clear (and, on the file-load branch, applyWaveformData()) may
+    // have pushed/undone entries as part of setting up the document; undo history should start
+    // clean from here, not from whatever internal setup happened to do.
+    m_undoStack.clear();
 }
 
 void BewavedDolphin::createWaveform()
 {
     prepare();
     loadFromTerminal();
+    m_undoStack.clear();
 }
 
 void BewavedDolphin::loadFromTerminal()
@@ -222,10 +234,9 @@ void BewavedDolphin::loadNewTable(const QStringList &inputLabels, const QStringL
 
 void BewavedDolphin::on_tableView_cellDoubleClicked()
 {
-    // Toggle each selected cell between 0 and 1, then re-simulate
-    DolphinEdits::applyToCells(*m_model, m_signalTableView->selectionModel()->selectedIndexes(),
-                               [](int v) { return (v + 1) % 2; });
-    run();
+    // Toggle each selected cell between 0 and 1 -- identical to Invert, so route through the
+    // same undoable helper rather than duplicating the DolphinEdits call inline.
+    applyToSelectedCells([](int v) { return (v + 1) % 2; });
 }
 
 void BewavedDolphin::on_tableView_selectionChanged()
@@ -513,12 +524,43 @@ bool BewavedDolphin::exportToPng(const QString &filename)
     }
 }
 
+std::pair<QList<QPair<int, int>>, QList<int>> BewavedDolphin::snapshotCells(const QModelIndexList &indexes) const
+{
+    QList<QPair<int, int>> cells;
+    QList<int> oldValues;
+    cells.reserve(indexes.size());
+    oldValues.reserve(indexes.size());
+    for (const auto &idx : indexes) {
+        cells.append({idx.row(), idx.column()});
+        oldValues.append(m_model->value(idx.row(), idx.column()));
+    }
+    return {cells, oldValues};
+}
+
+QModelIndexList BewavedDolphin::allCellIndexes(int rows, int cols) const
+{
+    QModelIndexList indexes;
+    indexes.reserve(rows * cols);
+    for (int row = 0; row < rows; ++row) {
+        for (int col = 0; col < cols; ++col) {
+            indexes.append(m_model->index(row, col));
+        }
+    }
+    return indexes;
+}
+
 void BewavedDolphin::applyToSelectedCells(const std::function<int(int)> &valueFn)
 {
-    DolphinEdits::applyToCells(*m_model, m_signalTableView->selectionModel()->selectedIndexes(), valueFn);
-    m_edited = true;
+    const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
+    const auto [cells, oldValues] = snapshotCells(indexes);
+
+    DolphinEdits::applyToCells(*m_model, indexes, valueFn);
+
     qCDebug(zero) << "Running simulation.";
-    run();
+    m_undoStack.push(new SetCellsCommand(m_model, cells, oldValues, [this] {
+        m_edited = true;
+        run();
+    }));
 }
 
 void BewavedDolphin::on_actionSetTo0_triggered()
@@ -573,11 +615,16 @@ void BewavedDolphin::on_actionSetClockWave_triggered()
         const int clockPeriod = dialog.period();
         m_clockPeriod = clockPeriod;
 
-        DolphinEdits::clockWave(*m_model, m_signalTableView->selectionModel()->selectedIndexes(), firstCol, clockPeriod);
+        const auto indexes = m_signalTableView->selectionModel()->selectedIndexes();
+        const auto [cells, oldValues] = snapshotCells(indexes);
 
-        m_edited = true;
+        DolphinEdits::clockWave(*m_model, indexes, firstCol, clockPeriod);
+
         qCDebug(zero) << "Running simulation.";
-        run();
+        m_undoStack.push(new SetCellsCommand(m_model, cells, oldValues, [this] {
+            m_edited = true;
+            run();
+        }));
     });
 }
 
@@ -589,11 +636,15 @@ void BewavedDolphin::on_actionCombinational_triggered()
         setLength(truthTableSize, false);
 
         qCDebug(zero) << "Setting the signal according to its columns and clock period.";
+        const auto [cells, oldValues] = snapshotCells(allCellIndexes(m_inputPorts, m_model->columnCount()));
+
         DolphinEdits::combinational(*m_model, m_inputPorts, m_model->columnCount());
 
-        m_edited = true;
         qCDebug(zero) << "Running simulation.";
-        run();
+        m_undoStack.push(new SetCellsCommand(m_model, cells, oldValues, [this] {
+            m_edited = true;
+            run();
+        }));
     });
 }
 
@@ -691,11 +742,15 @@ void BewavedDolphin::on_actionClear_triggered()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Clear input"));
+        const auto [cells, oldValues] = snapshotCells(allCellIndexes(m_inputPorts, m_model->columnCount()));
+
         DolphinEdits::clearInputs(*m_model, m_inputPorts);
 
-        m_edited = true;
         qCDebug(zero) << "Running simulation.";
-        run();
+        m_undoStack.push(new SetCellsCommand(m_model, cells, oldValues, [this] {
+            m_edited = true;
+            run();
+        }));
     });
 }
 

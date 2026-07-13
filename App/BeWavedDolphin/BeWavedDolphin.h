@@ -14,6 +14,7 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QTableView>
+#include <QUndoStack>
 
 #include "App/BeWavedDolphin/BeWavedDolphinUI.h"
 #include "App/BeWavedDolphin/SignalDelegate.h"
@@ -194,7 +195,16 @@ private:
     /// (produced by DolphinModelBuilder), snapshots input states, and runs the first sweep.
     void loadNewTable(const QStringList &inputLabels, const QStringList &outputLabels);
     /// Applies \a valueFn to every selected cell, marks the waveform edited, and re-runs.
+    /// Undoable -- pushes a SetCellsCommand (see DolphinCommands.h) after applying.
     void applyToSelectedCells(const std::function<int(int)> &valueFn);
+
+    /// Snapshots \a indexes' current (row, col) positions and values, for constructing a
+    /// SetCellsCommand right before an edit that will change them.
+    std::pair<QList<QPair<int, int>>, QList<int>> snapshotCells(const QModelIndexList &indexes) const;
+
+    /// Returns every (row, col) index in the rectangular range [0, rows) x [0, cols), for
+    /// snapshotting a whole-grid edit (clear, combinational fill) with snapshotCells().
+    QModelIndexList allCellIndexes(int rows, int cols) const;
     /// Applies the current zoom factor to the table's row/column sizes and font.
     void applyZoom();
     /// Updates the enabled state of the zoom-in/out actions for the current zoom.
@@ -233,6 +243,7 @@ private:
     // --- Members ---
 
     std::unique_ptr<BewavedDolphinUi> m_ui;          ///< Auto-generated UI descriptor.
+    QUndoStack m_undoStack;                           ///< Undo/redo history for waveform cell edits (#19).
     DolphinHost *m_host            = nullptr;         ///< Host app providing circuit file context.
     QFileInfo m_currentFile;                          ///< Path of the currently loaded .dolphin file.
     SignalModel *m_model           = nullptr;         ///< Table model (rows = signals, cols = time steps). Created once by loadNewTable() and owned via QObject parenting (this); freed when the window closes.

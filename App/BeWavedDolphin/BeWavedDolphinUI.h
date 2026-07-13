@@ -56,6 +56,8 @@ public:
 
     // --- Actions: Edit Menu ---
 
+    QAction *actionUndo = nullptr;
+    QAction *actionRedo = nullptr;
     QAction *actionCopy = nullptr;
     QAction *actionCut = nullptr;
     QAction *actionPaste = nullptr;
