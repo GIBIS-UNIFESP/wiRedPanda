@@ -21,4 +21,6 @@ private slots:
 
     // The drop hint appears only while a compatible IC is dragged over the zone.
     void testHintShownOnCompatibleDragEnter();
+
+    void testAccessibleNameSet(); // #14 accessibility sweep
 };

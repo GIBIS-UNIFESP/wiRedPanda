@@ -15,4 +15,5 @@ private slots:
     void testPaletteSearch();
     void testPaletteRebuild();
     void testElementLabelHasDescriptiveTooltip();
+    void testAccessibleNameSet(); // #14 accessibility sweep
 };

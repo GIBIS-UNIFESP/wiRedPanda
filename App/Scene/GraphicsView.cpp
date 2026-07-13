@@ -23,6 +23,11 @@ constexpr int kMinViewZoomLevel = -9;  ///< 0.8^9 ≈ 0.13× — below this the 
 GraphicsView::GraphicsView(QWidget *parent)
     : QGraphicsView(parent)
 {
+    setAccessibleName(tr("Circuit canvas"));
+    setWhatsThis(tr("The circuit canvas. Drag elements here from the palette to build a "
+                     "circuit, drag between ports to wire them together, and drag a "
+                     "selection to move it."));
+
     setAcceptDrops(true);
     // MouseTracking is needed so the scene receives mouseMoveEvents even when
     // no button is pressed (required for wire-routing cursor feedback)

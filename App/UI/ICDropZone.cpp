@@ -43,6 +43,11 @@ ICDropZone::ICDropZone(Section section, QWidget *parent)
 {
     setAcceptDrops(true);
 
+    setAccessibleName(m_section == Section::Embedded ? tr("Embedded IC drop zone") : tr("File-based IC drop zone"));
+    setWhatsThis(m_section == Section::Embedded
+                     ? tr("Drop a file-based IC here to embed it directly in the circuit.")
+                     : tr("Drop an embedded IC here to extract it to its own file."));
+
     // Cross-section drag-to-convert is otherwise invisible. A raised overlay, shown only
     // while a compatible IC is dragged over, spells out what the drop will do.
     m_hintOverlay = new QLabel(this);

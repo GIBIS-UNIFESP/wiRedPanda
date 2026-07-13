@@ -156,3 +156,18 @@ void TestICDropZone::testHintShownOnCompatibleDragEnter()
     QApplication::sendEvent(&dropZone, &leaveEvent);
     QVERIFY(hint->isHidden());
 }
+
+void TestICDropZone::testAccessibleNameSet()
+{
+    ICDropZone fileBasedZone(ICDropZone::Section::FileBased);
+    QVERIFY(!fileBasedZone.accessibleName().isEmpty());
+    QVERIFY(!fileBasedZone.whatsThis().isEmpty());
+
+    ICDropZone embeddedZone(ICDropZone::Section::Embedded);
+    QVERIFY(!embeddedZone.accessibleName().isEmpty());
+    QVERIFY(!embeddedZone.whatsThis().isEmpty());
+
+    // The two sections describe different actions -- must not be identical text.
+    QVERIFY(fileBasedZone.accessibleName() != embeddedZone.accessibleName());
+    QVERIFY(fileBasedZone.whatsThis() != embeddedZone.whatsThis());
+}

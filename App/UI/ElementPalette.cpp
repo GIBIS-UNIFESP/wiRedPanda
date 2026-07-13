@@ -22,6 +22,13 @@ ElementPalette::ElementPalette(MainWindowUi *ui, QObject *parent)
     : QObject(parent)
     , m_ui(ui)
 {
+    m_ui->lineEditSearch->setAccessibleName(tr("Search elements"));
+    m_ui->lineEditSearch->setWhatsThis(tr("Type to filter the palette by element name. Press "
+                                           "Enter to add the first match to the circuit."));
+    m_ui->tabElements->setAccessibleName(tr("Element palette"));
+    m_ui->tabElements->setWhatsThis(tr("Elements grouped by category. Drag one onto the canvas, "
+                                        "or double-click to add it to the active circuit."));
+
     connect(m_ui->lineEditSearch, &QLineEdit::textChanged,   this, &ElementPalette::onSearchTextChanged);
     connect(m_ui->lineEditSearch, &QLineEdit::returnPressed, this, &ElementPalette::onSearchReturnPressed);
 }
