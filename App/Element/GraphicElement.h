@@ -74,6 +74,14 @@ public:
     /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
     ~GraphicElement() override;
 
+signals:
+    /// Emitted on double-click for a labelable element (hasLabel()) whose type doesn't already
+    /// claim double-click for something else (IC/TruthTable override mouseDoubleClickEvent()
+    /// directly and this signal never fires for them). The owning Scene listens and drives the
+    /// actual inline edit widget -- see InlineLabelEditor.
+    void inlineEditRequested(GraphicElement *element);
+
+public:
     // --- External file dependencies ---
 
     /// Returns the list of external (non-resource) file paths this element depends on.
@@ -177,6 +185,11 @@ public:
 
     /// Returns \c true if this element type supports a user-editable label.
     bool hasLabel() const;
+
+    /// Returns the label child item's bounding rect in scene coordinates -- used to position the
+    /// inline rename editor over the visible label. Empty when the label has no text yet (a
+    /// caller should fall back to the element's own sceneBoundingRect() in that case).
+    QRectF labelSceneBoundingRect() const;
 
     // --- Embedded IC ---
 
@@ -508,6 +521,10 @@ protected:
     /// from whatever rotation-adjusted position it last computed.
     void setLabelAnchor(const QPointF &pos);
 
+    /// Hook called whenever the label text is set (including on construction and on inline-edit
+    /// commit). Base is a no-op; Text overrides it to toggle its empty-state hint.
+    virtual void labelContentChanged() {}
+
     // --- Qt Event Handling ---
 
     /**
@@ -522,6 +539,15 @@ protected:
      * \return The (possibly modified) value to use, or the base class result.
      */
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
+    /**
+     * \brief Requests inline label editing on double-click.
+     * \details Only fires for hasLabel() elements; other types fall through to the base
+     * Qt behavior unchanged. IC and TruthTable override this method themselves (to open a
+     * sub-circuit / the truth-table editor instead), so this base implementation is never
+     * reached for them -- ordinary virtual dispatch, no elementType() check needed here.
+     */
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
     /**
      * \brief Intercepts mouse-press and mouse-release events to handle Ctrl+click.

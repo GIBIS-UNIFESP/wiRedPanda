@@ -22,4 +22,10 @@ private slots:
     void testLineElement();
     void testDisplay14Paint();
     void testDisplay16Paint();
+
+    // Regression coverage for the inline double-click rename/edit feature (#7/#38).
+    void testInlineDoubleClickRenamesLabelWithUndo();
+    void testInlineDoubleClickEscapeCancelsWithoutUndo();
+    void testInlineDoubleClickIgnoredWithoutLabel();
+    void testTextEmptyStateHintTogglesWithLabelContent();
 };

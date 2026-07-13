@@ -22,6 +22,7 @@
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/ICRegistry.h"
+#include "App/Scene/InlineLabelEditor.h"
 #include "App/Scene/PropertyShortcutHandler.h"
 #include "App/Scene/SceneDropHandler.h"
 #include "App/Scene/SceneInteraction.h"
@@ -432,6 +433,9 @@ private:
 
     // Drag-and-drop payload decoding (delegated to SceneDropHandler)
     SceneDropHandler m_dropHandler = SceneDropHandler(this);
+
+    // On-canvas inline label rename/edit (delegated to InlineLabelEditor)
+    InlineLabelEditor m_inlineLabelEditor = InlineLabelEditor(this);
 
     // Mouse-driven editing gestures + rubber-band selection (delegated to SceneInteraction)
     SceneInteraction m_interaction{this};

@@ -3,9 +3,13 @@
 
 #include "Tests/Unit/Elements/TestGraphicElement.h"
 
+#include <QGraphicsProxyWidget>
+#include <QGraphicsSceneMouseEvent>
+#include <QLineEdit>
 #include <QPainter>
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
+#include <QUndoStack>
 
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Display14.h"
@@ -14,8 +18,36 @@
 #include "App/Element/GraphicElements/Line.h"
 #include "App/Element/GraphicElements/Text.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
+
+namespace {
+
+/// Sends a real double-click mouse event to \a scene at \a scenePos, exactly as the view would.
+void sendDoubleClick(Scene *scene, const QPointF &scenePos)
+{
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseDoubleClick);
+    event.setScenePos(scenePos);
+    event.setButton(Qt::LeftButton);
+    event.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(scene, &event);
+}
+
+/// Finds the QLineEdit hosted by InlineLabelEditor's QGraphicsProxyWidget, if one is active.
+QLineEdit *findInlineEditor(Scene *scene)
+{
+    for (auto *item : scene->items()) {
+        if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+            if (auto *lineEdit = qobject_cast<QLineEdit *>(proxy->widget())) {
+                return lineEdit;
+            }
+        }
+    }
+    return nullptr;
+}
+
+} // namespace
 
 void TestGraphicElement::testElementPaintSelection()
 {
@@ -127,4 +159,82 @@ void TestGraphicElement::testDisplay16Paint()
     painter.end();
 
     QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Display16 paint() must draw visible pixels");
+}
+
+void TestGraphicElement::testInlineDoubleClickRenamesLabelWithUndo()
+{
+    WorkSpace workspace;
+    auto *led = new Led;
+    led->setLabel("Original");
+    workspace.scene()->addItem(led);
+
+    sendDoubleClick(workspace.scene(), led->mapToScene(led->boundingRect().center()));
+
+    QLineEdit *editor = findInlineEditor(workspace.scene());
+    QVERIFY2(editor, "Double-clicking a labelable element must spawn an inline QLineEdit");
+    QCOMPARE(editor->text(), QString("Original"));
+
+    editor->setText("Renamed");
+    QTest::keyClick(editor, Qt::Key_Return);
+
+    QCOMPARE(led->label(), QString("Renamed"));
+    QCOMPARE(workspace.scene()->undoStack()->count(), 1);
+
+    workspace.scene()->undoStack()->undo();
+    QCOMPARE(led->label(), QString("Original"));
+
+    workspace.scene()->undoStack()->redo();
+    QCOMPARE(led->label(), QString("Renamed"));
+}
+
+void TestGraphicElement::testInlineDoubleClickEscapeCancelsWithoutUndo()
+{
+    WorkSpace workspace;
+    auto *led = new Led;
+    led->setLabel("Original");
+    workspace.scene()->addItem(led);
+
+    sendDoubleClick(workspace.scene(), led->mapToScene(led->boundingRect().center()));
+
+    QLineEdit *editor = findInlineEditor(workspace.scene());
+    QVERIFY(editor);
+
+    editor->setText("Should not stick");
+    QTest::keyClick(editor, Qt::Key_Escape);
+
+    QCOMPARE(led->label(), QString("Original"));
+    QCOMPARE(workspace.scene()->undoStack()->count(), 0);
+}
+
+void TestGraphicElement::testInlineDoubleClickIgnoredWithoutLabel()
+{
+    // And has no hasLabel() support -- double-click must fall through to default Qt
+    // behavior and must not spawn an inline editor.
+    WorkSpace workspace;
+    auto *gate = new And;
+    QVERIFY(!gate->hasLabel());
+    workspace.scene()->addItem(gate);
+
+    sendDoubleClick(workspace.scene(), gate->mapToScene(gate->boundingRect().center()));
+
+    QVERIFY(!findInlineEditor(workspace.scene()));
+}
+
+void TestGraphicElement::testTextEmptyStateHintTogglesWithLabelContent()
+{
+    WorkSpace workspace;
+    auto *text = new Text;
+    workspace.scene()->addItem(text);
+
+    // A fresh Text starts empty, so the hint must be visible immediately.
+    QVERIFY(text->m_emptyHint->isVisible());
+
+    text->setLabel("Now has content");
+    QVERIFY(!text->m_emptyHint->isVisible());
+
+    text->setLabel(""); // clearing it back out must re-show the hint
+    QVERIFY(text->m_emptyHint->isVisible());
+
+    text->setLabel("Second time");
+    QVERIFY(!text->m_emptyHint->isVisible());
 }
