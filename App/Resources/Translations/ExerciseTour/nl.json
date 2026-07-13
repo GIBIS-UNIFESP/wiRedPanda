@@ -1,322 +1,322 @@
 {
-  "basic-and-gate": {
-    "add-inputs": {
-      "hint": "Klik op het tabblad I/O in het linkerpaneel, sleep vervolgens twee InputSwitch-elementen naar het canvas en plaats ze links van de EN-poort.",
-      "instruction": "Voeg twee InputSwitch-elementen toe aan het canvas"
+    "basic-and-gate": {
+        "add-inputs": {
+            "hint": "Klik op het tabblad I/O in het linkerpaneel, sleep vervolgens twee InputSwitch-elementen naar het canvas en plaats ze links van de EN-poort.",
+            "instruction": "Voeg twee InputSwitch-elementen toe aan het canvas"
+        },
+        "add-output": {
+            "hint": "Sleep een LED vanaf het tabblad I/O en plaats deze rechts van de EN-poort. Verbind vervolgens de uitgangspoort van de EN-poort (rechterkant) met de ingangspoort van de LED (linkerkant).",
+            "instruction": "Voeg een LED toe en verbind deze met de uitgang van de EN-poort"
+        },
+        "connect-inputs": {
+            "hint": "Klik en sleep vanaf een uitgangspoort van een InputSwitch (rechterkant) naar een van de ingangspoorten van de EN-poort (linkerkant). Herhaal voor de tweede schakelaar.",
+            "instruction": "Verbind beide invoerschakelaars met de EN-poort"
+        },
+        "description": "Leer logische poorten te plaatsen, ingangen en uitgangen toe te voegen, en ze met elkaar te verbinden.",
+        "place-and-gate": {
+            "hint": "Klik op het tabblad Poorten in het linkerpaneel en sleep vervolgens de EN-poort naar het canvas.",
+            "instruction": "Plaats een EN-poort op het canvas"
+        },
+        "title": "Een EN-poort-circuit bouwen",
+        "toggle-observe": {
+            "hint": "Klik op een InputSwitch om deze om te schakelen. De LED gaat alleen branden wanneer BEIDE schakelaars AAN staan. Dat komt omdat EN alleen 1 als uitvoer geeft wanneer alle ingangen 1 zijn.",
+            "instruction": "Schakel de schakelaars om en observeer de LED — dit is EN-logica!"
+        }
     },
-    "add-output": {
-      "hint": "Sleep een LED vanaf het tabblad I/O en plaats deze rechts van de EN-poort. Verbind vervolgens de uitgangspoort van de EN-poort (rechterkant) met de ingangspoort van de LED (linkerkant).",
-      "instruction": "Voeg een LED toe en verbind deze met de uitgang van de EN-poort"
+    "basic-or-not-gates": {
+        "add-inputs": {
+            "hint": "Klik op het tabblad I/O in het linkerpaneel, sleep vervolgens twee InputSwitch-elementen naar het canvas en plaats ze links van de OF-poort.",
+            "instruction": "Voeg twee InputSwitch-elementen toe aan het canvas"
+        },
+        "add-not-gate": {
+            "hint": "Sleep de draad tussen de OF-poort en de LED om deze te verwijderen.",
+            "instruction": "Koppel de LED los van de OF-poort, verbind vervolgens de OF-poort met een NIET-poort en de NIET-poort met de LED"
+        },
+        "add-output": {
+            "hint": "Sleep een LED vanaf het tabblad I/O en plaats deze rechts van de OF-poort. Verbind vervolgens de uitgangspoort van de OF-poort (rechterkant) met de ingangspoort van de LED (linkerkant).",
+            "instruction": "Voeg een LED toe en verbind deze met de uitgang van de OF-poort"
+        },
+        "connect-inputs": {
+            "hint": "Klik en sleep vanaf een uitgangspoort van een InputSwitch (rechterkant) naar een van de ingangspoorten van de OF-poort (linkerkant). Herhaal voor de tweede schakelaar.",
+            "instruction": "Verbind beide invoerschakelaars met de OF-poort"
+        },
+        "description": "Leer de OF- en NIET-poort te gebruiken.",
+        "place-or-gate": {
+            "hint": "Klik op het tabblad Poorten in het linkerpaneel en sleep vervolgens de OF-poort naar het canvas.",
+            "instruction": "Plaats een OF-poort op het canvas"
+        },
+        "title": "Meer basispoorten: OF en NIET",
+        "toggle-observe-nor": {
+            "hint": "",
+            "instruction": "De NIET-poort keert het signaal om. Nu geeft het circuit alleen 1 als uitvoer wanneer geen van de ingangen 1 is"
+        },
+        "toggle-observe-or": {
+            "hint": "",
+            "instruction": "Experimenteer met de ingangen en let op hoe de OF-poort 1 als uitvoer geeft wanneer een van de ingangen 1 is"
+        }
     },
-    "connect-inputs": {
-      "hint": "Klik en sleep vanaf een uitgangspoort van een InputSwitch (rechterkant) naar een van de ingangspoorten van de EN-poort (linkerkant). Herhaal voor de tweede schakelaar.",
-      "instruction": "Verbind beide invoerschakelaars met de EN-poort"
+    "clock-led-waveform": {
+        "combinational-mode": {
+            "hint": "Klik op Bewerken → Combinatorisch in de menubalk van BeWavedDolphin. Dit vult de Klok-rij met alle mogelijke waarden en berekent de LED-uitvoer voor elke waarde — een volledige waarheidstabel in één klik.",
+            "instruction": "Automatisch alle invoercombinaties genereren"
+        },
+        "connect-clock-led": {
+            "hint": "Klik en sleep vanaf de uitgangspoort van de Klok (rechterkant) naar de ingangspoort van de LED (linkerkant).",
+            "instruction": "Verbind de uitgang van de Klok met de ingang van de LED"
+        },
+        "description": "Bouw een minimaal Klok-LED-circuit en verken de golfvormviewer: combinatorische modus en handmatige celbewerking.",
+        "open-waveform": {
+            "hint": "BeWavedDolphin toont de signalen van je circuit als rijen. De Klok-rij is de ingang, en de Led-rij is de uitgang. Elke kolom is één simulatietijdstap.",
+            "instruction": "De golfvormviewer is nu geopend — neem een kijkje!"
+        },
+        "place-clock": {
+            "hint": "Klik op het tabblad I/O in het linkerpaneel en sleep vervolgens het Klok-element naar het canvas.",
+            "instruction": "Plaats een Klok-element op het canvas"
+        },
+        "place-led": {
+            "hint": "Blijf op het tabblad I/O en sleep een Led-element naar het canvas rechts van de Klok.",
+            "instruction": "Plaats een LED op het canvas"
+        },
+        "title": "Klok en LED: basisprincipes van golfvormen",
+        "toggle-cell": {
+            "hint": "Dubbelklik op een willekeurige cel in de Klok-rij om deze tussen 0 en 1 om te schakelen. Zie hoe de Led-rij direct wordt bijgewerkt om de nieuwe uitvoer weer te geven.",
+            "instruction": "Schakel een Klok-cel handmatig om"
+        }
     },
-    "description": "Leer logische poorten te plaatsen, ingangen en uitgangen toe te voegen, en ze met elkaar te verbinden.",
-    "place-and-gate": {
-      "hint": "Klik op het tabblad Poorten in het linkerpaneel en sleep vervolgens de EN-poort naar het canvas.",
-      "instruction": "Plaats een EN-poort op het canvas"
+    "combinational-circuits-one": {
+        "add-demux": {
+            "hint": "Je circuit zou nu twee InputSwitch, twee LED's en één DEMUX-circuit moeten hebben",
+            "instruction": "Voeg een DEMUX-circuit toe en verbind de InputSwitch met de In- en S0-poorten ervan. Verbind vervolgens elke uitgang van de DEMUX met een andere LED"
+        },
+        "add-inputs": {
+            "hint": "Klik op het tabblad I/O in het linkerpaneel, sleep vervolgens twee InputSwitch-elementen naar het canvas en plaats ze links van het MUX-circuit.",
+            "instruction": "Voeg drie InputSwitch-elementen toe aan het canvas"
+        },
+        "add-output": {
+            "hint": "Sleep een LED vanaf het tabblad I/O en plaats deze rechts van het MUX-circuit. Verbind vervolgens de uitgangspoort van het MUX-circuit (rechterkant) met de ingangspoort van de LED (linkerkant).",
+            "instruction": "Voeg een LED toe en verbind deze met de uitgang van het MUX-circuit"
+        },
+        "connect-inputs": {
+            "hint": "Klik en sleep vanaf een uitgangspoort van een InputSwitch (rechterkant) naar een van de ingangspoorten van de MUX-poort (linkerkant). Herhaal voor de tweede schakelaar. Verbind vervolgens de derde invoerschakelaar met de selectiepoort van de MUX (onderkant)",
+            "instruction": "Verbind alle invoerschakelaars met het MUX-circuit"
+        },
+        "description": "Leer over de MUX- en DEMUX-circuits.",
+        "explain-demux-select": {
+            "hint": "",
+            "instruction": "De S0-poort onderaan de DEMUX selecteert welke uitgang het signaal van de ingang ontvangt. Wanneer S0 = 0, is Out0 = In0. Wanneer S0 = 1, is Out1 = In0"
+        },
+        "explain-mux-select": {
+            "hint": "",
+            "instruction": "De S0-poort onderaan de MUX selecteert welke ingang naar de uitgang wordt geleid. Wanneer S0 = 0, wordt het signaal van Ingang 0 naar de uitgang gestuurd. Wanneer S0 = 1, wordt het signaal van Ingang 1 naar de uitgang gestuurd."
+        },
+        "place-mux": {
+            "hint": "Klik op het tabblad Combinatorisch in het linkerpaneel en sleep vervolgens het MUX-circuit naar het canvas.",
+            "instruction": "Plaats een MUX-circuit op het canvas"
+        },
+        "prepare-demux": {
+            "hint": "Je circuit zou nu twee InputSwitch en twee LED's moeten hebben",
+            "instruction": "Verwijder het MUX-circuit en een van de InputSwitch. Voeg vervolgens nog een LED toe"
+        },
+        "title": "Combinatorische circuits I: MUX en DEMUX"
     },
-    "title": "Een EN-poort-circuit bouwen",
-    "toggle-observe": {
-      "hint": "Klik op een InputSwitch om deze om te schakelen. De LED gaat alleen branden wanneer BEIDE schakelaars AAN staan. Dat komt omdat EN alleen 1 als uitvoer geeft wanneer alle ingangen 1 zijn.",
-      "instruction": "Schakel de schakelaars om en observeer de LED — dit is EN-logica!"
+    "combinational-circuits-three": {
+        "add-cin-and-gates": {
+            "hint": "Verbind de uitgangen van de InputSwitch met de ingangen van de poorten.",
+            "instruction": "Voeg nog een InputSwitch toe aan het canvas en geef deze het label Cin. Voeg vervolgens een XOR-poort, een EN-poort en een OF-poort toe"
+        },
+        "add-half-adder-gates": {
+            "hint": "Gebruik het tabblad Poorten om de XOR- en EN-poorten toe te voegen, en gebruik vervolgens het tabblad I/O om twee LED's toe te voegen.",
+            "instruction": "Voeg een XOR-poort, een EN-poort en twee LED's toe aan het canvas. Verbind vervolgens elke poort met een andere LED"
+        },
+        "add-inputs": {
+            "hint": "Klik op het tabblad I/O in het linkerpaneel, sleep vervolgens drie InputSwitch-elementen naar het canvas. De derde InputSwitch wordt later gebruikt als carry-in (Cin).",
+            "instruction": "Voeg twee InputSwitch-elementen toe aan het canvas"
+        },
+        "description": "Leer een optelschakeling te bouwen.",
+        "explain-full-adder": {
+            "hint": "",
+            "instruction": "Dit circuit vormt een volledige optelschakeling. In tegenstelling tot een halve optelschakeling accepteert een volledige optelschakeling een carry-in (Cin) van een voorgaande optelling en produceert een carry-out (Cout) voor de volgende fase. Door de Cout van één volledige optelschakeling met de Cin van een andere te verbinden, kunnen meerdere volledige optelschakelingen aan elkaar worden geschakeld om binaire getallen van elke lengte op te tellen"
+        },
+        "label-half-adder-outputs": {
+            "hint": "Klik op een LED en typ in het labelvak linksonder op het scherm om een LED een label te geven.",
+            "instruction": "Geef de LED die met de XOR-poort is verbonden het label Sum, en geef vervolgens de LED die met de EN-poort is verbonden het label Cout. Dit circuit vormt een halve optelschakeling, die twee eenbits-ingangen optelt"
+        },
+        "title": "Combinatorische circuits III: Optelschakeling",
+        "wire-full-adder": {
+            "hint": "Verwijder de oude verbindingen met de LED's om de nieuwe te kunnen toevoegen.",
+            "instruction": "Verbind de oude XOR-poort en de Cin-schakelaar met de nieuwe XOR-poort, en verbind vervolgens de nieuwe XOR-poort met de Sum-uitgang. Verbind ook de oude XOR-poort en de Cin-schakelaar met de nieuwe EN-poort. Sluit af door beide EN-poorten met de OF-poort te verbinden, en de OF-poort met Cout"
+        },
+        "wire-half-adder": {
+            "hint": "Verbind de uitgangen van de InputSwitch met de ingangen van de poorten.",
+            "instruction": "Verbind de twee InputSwitch met de XOR-poort en de EN-poort. Elke InputSwitch moet met beide poorten verbonden zijn. De XOR-poort produceert de Sum-uitgang, terwijl de EN-poort de Carry-uitgang produceert"
+        }
+    },
+    "combinational-circuits-two": {
+        "add-and-gates-leds": {
+            "hint": "Gebruik het tabblad Poorten in het linkerpaneel om de EN-poorten toe te voegen en het tabblad I/O om de LED's toe te voegen.",
+            "instruction": "Voeg vier EN-poorten en vier LED's toe aan het canvas en verbind vervolgens elke EN-poort met een van de LED's"
+        },
+        "add-inputs": {
+            "hint": "Klik op het tabblad I/O in het linkerpaneel en sleep twee InputSwitch-elementen naar het canvas.",
+            "instruction": "Voeg twee InputSwitch-elementen toe aan het canvas"
+        },
+        "add-not-gates": {
+            "hint": "Klik op het tabblad Poorten in het linkerpaneel, sleep vervolgens twee NIET-poort-elementen naar het canvas en verbind de InputSwitch ermee.",
+            "instruction": "Voeg twee NIET-poorten toe aan het canvas en verbind elke InputSwitch met een aparte NIET-poort"
+        },
+        "description": "Leer een 2-naar-4-decoder te bouwen.",
+        "explain-decoder": {
+            "hint": "",
+            "instruction": "Voor elke specifieke combinatie van invoerbits wordt slechts één bijbehorende uitvoerlijn geactiveerd, terwijl alle andere inactief blijven"
+        },
+        "title": "Combinatorische circuits II: Decoder",
+        "wire-decoder": {
+            "hint": "Elke EN-poort moet één signaal van elke ingang ontvangen. Gebruik het oorspronkelijke InputSwitch-signaal voor een 1 en de bijbehorende uitgang van de NIET-poort voor een 0.",
+            "instruction": "Verbind de uitgangen van de NIET-poorten en de InputSwitch met de EN-poorten, zodat elke EN-poort een invoercombinatie vertegenwoordigt"
+        }
+    },
+    "sequential-circuits-one": {
+        "add-d-latch": {
+            "hint": "De D-latch slaat één enkele invoerwaarde op en vermijdt de ongeldige invoercombinatie van een SR-latch.",
+            "instruction": "Verwijder de SR-latch met behoud van de InputSwitch en LED's. Voeg vervolgens een D-latch toe"
+        },
+        "add-sr-latch": {
+            "hint": "Gebruik het tabblad Geheugen om een SR-latch toe te voegen. Gebruik vervolgens het tabblad I/O om twee InputSwitch en twee LED's toe te voegen.",
+            "instruction": "Voeg een SR-latch, twee InputSwitch en twee LED's toe aan het canvas"
+        },
+        "description": "Leer latches te gebruiken.",
+        "explain-d-latch": {
+            "hint": "",
+            "instruction": "Schakel de InputSwitch om en observeer de D-latch. Wanneer Enable 1 is, volgt de uitgang de D-ingang. Wanneer Enable 0 is, onthoudt de latch zijn vorige waarde"
+        },
+        "explain-sr-latch": {
+            "hint": "",
+            "instruction": "Schakel de InputSwitch om en observeer hoe de SR-latch zijn toestand opslaat. Het instellen van de S-ingang op 1 zorgt ervoor dat de Q-uitgang 1 wordt, terwijl het instellen van de R-ingang op 1 Q terugzet naar 0. Wanneer beide ingangen terugkeren naar 0, onthoudt de latch zijn laatste toestand totdat deze opnieuw wordt ingesteld of teruggezet"
+        },
+        "title": "Sequentiële circuits I: Latches",
+        "wire-d-latch": {
+            "hint": "De D-ingang is de waarde die moet worden opgeslagen. De Enable-ingang bepaalt wanneer de latch zijn opgeslagen waarde bijwerkt.",
+            "instruction": "Verbind één InputSwitch met de D-ingang en de andere met de Enable-ingang (E). Verbind de Q- en Q̅-uitgangen met de LED's"
+        },
+        "wire-sr-latch": {
+            "hint": "Verbind één InputSwitch met de Set-ingang (S) en de andere met de Reset-ingang (R). Verbind elke uitgang van de latch met een andere LED.",
+            "instruction": "Verbind de InputSwitch met de S- en R-ingangen van de SR-latch. Verbind vervolgens de Q- en Q̅-uitgangen met de LED's"
+        }
+    },
+    "sequential-circuits-three": {
+        "add-flipflops": {
+            "hint": "Gebruik het tabblad Geheugen om de T-flipflops en een Klok toe te voegen. Gebruik vervolgens het tabblad I/O om drie InputSwitch en drie LED's toe te voegen.",
+            "instruction": "Voeg drie T-flipflops, drie InputSwitch, een Klok en drie LED's toe aan het canvas"
+        },
+        "description": "Leer een tellercircuit te bouwen.",
+        "explain-counter": {
+            "hint": "",
+            "instruction": "Zet alle drie de InputSwitch aan en start de Klok. Observeer de LED's terwijl de teller loopt. De eerste LED verandert van toestand bij elke klokpuls, de tweede verandert om de twee pulsen, en de derde verandert om de vier pulsen, wat een herhalende 3-bit binaire telling van 000 tot 111 laat zien"
+        },
+        "title": "Sequentiële circuits III: Teller",
+        "wire-clock": {
+            "hint": "De eerste flipflop ontvangt het externe kloksignaal.",
+            "instruction": "Verbind de Klok met de Clk-ingang van de eerste T-flipflop"
+        },
+        "wire-outputs": {
+            "hint": "Elke LED vertegenwoordigt één bit van de teller, waarbij de eerste LED het minst significante bit is.",
+            "instruction": "Verbind de Q-uitgang van elke flipflop met een andere LED"
+        },
+        "wire-ripple-clock": {
+            "hint": "",
+            "instruction": "Verbind de Q-uitgang van de eerste flipflop met de Clk-ingang van de tweede flipflop, en verbind vervolgens de Q-uitgang van de tweede flipflop met de Clk-ingang van de derde flipflop. Elke flipflop wordt aangestuurd door de uitgang van de vorige, waardoor een ripple-teller ontstaat"
+        },
+        "wire-t-inputs": {
+            "hint": "Zet alle drie de InputSwitch aan. Een T-flipflop schakelt alleen om wanneer de T-ingang 1 is.",
+            "instruction": "Verbind elke InputSwitch met de T-ingang van een andere flipflop"
+        }
+    },
+    "sequential-circuits-two": {
+        "add-d-flipflop": {
+            "hint": "Gebruik het tabblad Geheugen om een D-flipflop en een Klok toe te voegen. Gebruik vervolgens het tabblad I/O om twee InputSwitch en twee LED's toe te voegen.",
+            "instruction": "Voeg een D-flipflop, twee InputSwitch, een Klok en twee LED's toe aan het canvas"
+        },
+        "add-jk-flipflop": {
+            "hint": "De JK-flipflop heeft J- en K-ingangen in plaats van een D-ingang. Laat de Clear- en Preset-ingangen niet aangesloten.",
+            "instruction": "Vervang de D-flipflop door een JK-flipflop met behoud van de Klok, InputSwitch en LED's"
+        },
+        "add-t-flipflop": {
+            "hint": "Een T-flipflop heeft naast de klok maar één enkele ingang nodig.",
+            "instruction": "Vervang de JK-flipflop door een T-flipflop en verwijder een van de InputSwitch"
+        },
+        "description": "Leer over flipflops.",
+        "explain-clear-preset": {
+            "hint": "",
+            "instruction": "Verbind de tweede InputSwitch met de Clear- of Preset-ingang en observeer het effect. In tegenstelling tot de D-ingang werken de Clear- en Preset-ingangen onmiddellijk, zonder op een klokflank te wachten. Clear dwingt Q naar 0, terwijl Preset Q naar 1 dwingt"
+        },
+        "explain-d-flipflop": {
+            "hint": "",
+            "instruction": "Schakel de D-InputSwitch om en observeer de D-flipflop. De waarde op de D-ingang wordt alleen naar de Q-uitgang gekopieerd bij de actieve klokflank. Tussen klokflanken blijft de uitgang ongewijzigd"
+        },
+        "explain-jk-flipflop": {
+            "hint": "",
+            "instruction": "Schakel de InputSwitch om en observeer de JK-flipflop. Wanneer J = K = 0, behoudt de uitgang zijn huidige toestand. Wanneer J = 1 en K = 0, wordt de uitgang ingesteld. Wanneer J = 0 en K = 1, wordt de uitgang teruggezet. Wanneer J = K = 1, schakelt de uitgang om bij elke actieve klokflank"
+        },
+        "explain-t-flipflop": {
+            "hint": "",
+            "instruction": "Schakel de InputSwitch om en observeer de T-flipflop. Wanneer T = 0, behoudt de uitgang zijn huidige toestand. Wanneer T = 1, schakelt de uitgang om bij elke actieve klokflank. T-flipflops worden vaak gebruikt om binaire tellers en frequentiedelers te bouwen"
+        },
+        "title": "Sequentiële circuits II: Flipflops",
+        "wire-d-flipflop": {
+            "hint": "Laat de Clear- en Preset-ingangen voorlopig niet aangesloten.",
+            "instruction": "Verbind één InputSwitch met de D-ingang, de Klok met de Clk-ingang, en de Q- en Q̅-uitgangen met de LED's. De D-ingang levert de waarde die moet worden opgeslagen, terwijl de Klok bepaalt wanneer de waarde wordt opgeslagen"
+        },
+        "wire-jk-flipflop": {
+            "hint": "De JK-flipflop verandert zijn uitgang alleen bij de actieve klokflank.",
+            "instruction": "Verbind de InputSwitch met de J- en K-ingangen, de Klok met de Clk-ingang, en de Q- en Q̅-uitgangen met de LED's"
+        },
+        "wire-t-flipflop": {
+            "hint": "Laat de Clear- en Preset-ingangen niet aangesloten.",
+            "instruction": "Verbind de resterende InputSwitch met de T-ingang, de Klok met de Clk-ingang, en de Q- en Q̅-uitgangen met de LED's"
+        }
+    },
+    "ui-overview": {
+        "canvas": {
+            "body": "Bouw hier je circuit. Sleep componenten vanuit het palet en verbind ze vervolgens door te klikken en te slepen van een uitgangspoort (rechterkant van een component) naar een ingangspoort (linkerkant van een andere).",
+            "title": "Het canvas"
+        },
+        "combinational-mode": {
+            "body": "De gemarkeerde knop (Combinatorisch) is zojuist automatisch geactiveerd — deze vult de invoerrijen met elke mogelijke 0/1-combinatie, wat je in één klik een volledige waarheidstabel geeft.",
+            "title": "Combinatorische modus"
+        },
+        "component-palette": {
+            "body": "Dit paneel toont alle beschikbare componenten — logische poorten, ingangen, uitgangen, flipflops en meer. Componenten zijn per categorie georganiseerd via de tabbladen bovenaan. Klik op een tabblad om die categorie te bekijken.",
+            "title": "Componentenpalet"
+        },
+        "description": "Een begeleide rondleiding door de hoofdinterface — palet, canvas, werkbalk en eigenschappenpaneel.",
+        "editing-cells": {
+            "body": "Je kunt de golfvorm ook handmatig bewerken. Dubbelklik op een willekeurige cel in de Klok-rij om deze tussen 0 en 1 om te schakelen — de Led-rij wordt direct bijgewerkt om de nieuwe uitgang weer te geven.",
+            "title": "Cellen handmatig bewerken"
+        },
+        "element-properties": {
+            "body": "Wanneer je een component op het canvas selecteert, verschijnen de eigenschappen hier. Je kunt labels, kleuren, triggertypen en andere componentspecifieke instellingen instellen. Probeer een geplaatst component te selecteren om de opties ervan te zien.",
+            "title": "Elementeigenschappen"
+        },
+        "logic-gates": {
+            "body": "Het tabblad Poorten bevat EN, OF, NIET, NAND, NOR, XOR en andere fundamentele logische poorten. Sleep een willekeurige poort uit deze lijst naar het canvas om deze aan je circuit toe te voegen.",
+            "title": "Logische poorten"
+        },
+        "search-bar": {
+            "body": "Gebruik de zoekbalk om snel een component op naam te vinden. Terwijl je typt, verschijnt hieronder een gefilterde lijst met overeenkomende componenten uit alle categorieën.",
+            "title": "Zoekbalk"
+        },
+        "title": "Rondleiding door de wiRedPanda-interface",
+        "waveform-table": {
+            "body": "De golfvormtabel toont elk signaal in je circuit. De Klok-rij is de ingang; de Led-rij is de berekende uitgang. Elke kolom is één simulatietijdstap — zo zie je precies hoe de uitgang de ingang volgt.",
+            "title": "De golfvormtabel lezen"
+        },
+        "waveform-viewer": {
+            "body": "wiRedPanda bevat een golfvormviewer genaamd BeWavedDolphin. Deze toont hoe elk signaal in je circuit in de loop van de tijd verandert — ingangen als rijen bovenaan, uitgangen daaronder, waarbij elke kolom één simulatietijdstap voorstelt. Klik op de gemarkeerde knop in de werkbalk om deze te openen.",
+            "title": "Golfvormviewer"
+        },
+        "welcome": {
+            "body": "wiRedPanda is een simulator voor digitale logische circuits. Je kunt circuits bouwen door componenten te plaatsen en ze met elkaar te verbinden. Deze rondleiding laat je de belangrijkste onderdelen van de interface zien.",
+            "title": "Welkom bij wiRedPanda!"
+        }
     }
-  },
-  "basic-or-not-gates": {
-    "add-inputs": {
-      "hint": "Klik op het tabblad I/O in het linkerpaneel, sleep vervolgens twee InputSwitch-elementen naar het canvas en plaats ze links van de OF-poort.",
-      "instruction": "Voeg twee InputSwitch-elementen toe aan het canvas"
-    },
-    "add-not-gate": {
-      "hint": "Sleep de draad tussen de OF-poort en de LED om deze te verwijderen.",
-      "instruction": "Koppel de LED los van de OF-poort, verbind vervolgens de OF-poort met een NIET-poort en de NIET-poort met de LED"
-    },
-    "add-output": {
-      "hint": "Sleep een LED vanaf het tabblad I/O en plaats deze rechts van de OF-poort. Verbind vervolgens de uitgangspoort van de OF-poort (rechterkant) met de ingangspoort van de LED (linkerkant).",
-      "instruction": "Voeg een LED toe en verbind deze met de uitgang van de OF-poort"
-    },
-    "connect-inputs": {
-      "hint": "Klik en sleep vanaf een uitgangspoort van een InputSwitch (rechterkant) naar een van de ingangspoorten van de OF-poort (linkerkant). Herhaal voor de tweede schakelaar.",
-      "instruction": "Verbind beide invoerschakelaars met de OF-poort"
-    },
-    "description": "Leer de OF- en NIET-poort te gebruiken.",
-    "place-or-gate": {
-      "hint": "Klik op het tabblad Poorten in het linkerpaneel en sleep vervolgens de OF-poort naar het canvas.",
-      "instruction": "Plaats een OF-poort op het canvas"
-    },
-    "title": "Meer basispoorten: OF en NIET",
-    "toggle-observe-nor": {
-      "hint": "",
-      "instruction": "De NIET-poort keert het signaal om. Nu geeft het circuit alleen 1 als uitvoer wanneer geen van de ingangen 1 is"
-    },
-    "toggle-observe-or": {
-      "hint": "",
-      "instruction": "Experimenteer met de ingangen en let op hoe de OF-poort 1 als uitvoer geeft wanneer een van de ingangen 1 is"
-    }
-  },
-  "clock-led-waveform": {
-    "combinational-mode": {
-      "hint": "Klik op Bewerken → Combinatorisch in de menubalk van BeWavedDolphin. Dit vult de Klok-rij met alle mogelijke waarden en berekent de LED-uitvoer voor elke waarde — een volledige waarheidstabel in één klik.",
-      "instruction": "Automatisch alle invoercombinaties genereren"
-    },
-    "connect-clock-led": {
-      "hint": "Klik en sleep vanaf de uitgangspoort van de Klok (rechterkant) naar de ingangspoort van de LED (linkerkant).",
-      "instruction": "Verbind de uitgang van de Klok met de ingang van de LED"
-    },
-    "description": "Bouw een minimaal Klok-LED-circuit en verken de golfvormviewer: combinatorische modus en handmatige celbewerking.",
-    "open-waveform": {
-      "hint": "BeWavedDolphin toont de signalen van je circuit als rijen. De Klok-rij is de ingang, en de Led-rij is de uitgang. Elke kolom is één simulatietijdstap.",
-      "instruction": "De golfvormviewer is nu geopend — neem een kijkje!"
-    },
-    "place-clock": {
-      "hint": "Klik op het tabblad I/O in het linkerpaneel en sleep vervolgens het Klok-element naar het canvas.",
-      "instruction": "Plaats een Klok-element op het canvas"
-    },
-    "place-led": {
-      "hint": "Blijf op het tabblad I/O en sleep een Led-element naar het canvas rechts van de Klok.",
-      "instruction": "Plaats een LED op het canvas"
-    },
-    "title": "Klok en LED: basisprincipes van golfvormen",
-    "toggle-cell": {
-      "hint": "Dubbelklik op een willekeurige cel in de Klok-rij om deze tussen 0 en 1 om te schakelen. Zie hoe de Led-rij direct wordt bijgewerkt om de nieuwe uitvoer weer te geven.",
-      "instruction": "Schakel een Klok-cel handmatig om"
-    }
-  },
-  "combinational-circuits-one": {
-    "add-demux": {
-      "hint": "Je circuit zou nu twee InputSwitch, twee LED's en één DEMUX-circuit moeten hebben",
-      "instruction": "Voeg een DEMUX-circuit toe en verbind de InputSwitch met de In- en S0-poorten ervan. Verbind vervolgens elke uitgang van de DEMUX met een andere LED"
-    },
-    "add-inputs": {
-      "hint": "Klik op het tabblad I/O in het linkerpaneel, sleep vervolgens twee InputSwitch-elementen naar het canvas en plaats ze links van het MUX-circuit.",
-      "instruction": "Voeg drie InputSwitch-elementen toe aan het canvas"
-    },
-    "add-output": {
-      "hint": "Sleep een LED vanaf het tabblad I/O en plaats deze rechts van het MUX-circuit. Verbind vervolgens de uitgangspoort van het MUX-circuit (rechterkant) met de ingangspoort van de LED (linkerkant).",
-      "instruction": "Voeg een LED toe en verbind deze met de uitgang van het MUX-circuit"
-    },
-    "connect-inputs": {
-      "hint": "Klik en sleep vanaf een uitgangspoort van een InputSwitch (rechterkant) naar een van de ingangspoorten van de MUX-poort (linkerkant). Herhaal voor de tweede schakelaar. Verbind vervolgens de derde invoerschakelaar met de selectiepoort van de MUX (onderkant)",
-      "instruction": "Verbind alle invoerschakelaars met het MUX-circuit"
-    },
-    "description": "Leer over de MUX- en DEMUX-circuits.",
-    "explain-demux-select": {
-      "hint": "",
-      "instruction": "De S0-poort onderaan de DEMUX selecteert welke uitgang het signaal van de ingang ontvangt. Wanneer S0 = 0, is Out0 = In0. Wanneer S0 = 1, is Out1 = In0"
-    },
-    "explain-mux-select": {
-      "hint": "",
-      "instruction": "De S0-poort onderaan de MUX selecteert welke ingang naar de uitgang wordt geleid. Wanneer S0 = 0, wordt het signaal van Ingang 0 naar de uitgang gestuurd. Wanneer S0 = 1, wordt het signaal van Ingang 1 naar de uitgang gestuurd."
-    },
-    "place-mux": {
-      "hint": "Klik op het tabblad Combinatorisch in het linkerpaneel en sleep vervolgens het MUX-circuit naar het canvas.",
-      "instruction": "Plaats een MUX-circuit op het canvas"
-    },
-    "prepare-demux": {
-      "hint": "Je circuit zou nu twee InputSwitch en twee LED's moeten hebben",
-      "instruction": "Verwijder het MUX-circuit en een van de InputSwitch. Voeg vervolgens nog een LED toe"
-    },
-    "title": "Combinatorische circuits I: MUX en DEMUX"
-  },
-  "combinational-circuits-three": {
-    "add-cin-and-gates": {
-      "hint": "Verbind de uitgangen van de InputSwitch met de ingangen van de poorten.",
-      "instruction": "Voeg nog een InputSwitch toe aan het canvas en geef deze het label Cin. Voeg vervolgens een XOR-poort, een EN-poort en een OF-poort toe"
-    },
-    "add-half-adder-gates": {
-      "hint": "Gebruik het tabblad Poorten om de XOR- en EN-poorten toe te voegen, en gebruik vervolgens het tabblad I/O om twee LED's toe te voegen.",
-      "instruction": "Voeg een XOR-poort, een EN-poort en twee LED's toe aan het canvas. Verbind vervolgens elke poort met een andere LED"
-    },
-    "add-inputs": {
-      "hint": "Klik op het tabblad I/O in het linkerpaneel, sleep vervolgens drie InputSwitch-elementen naar het canvas. De derde InputSwitch wordt later gebruikt als carry-in (Cin).",
-      "instruction": "Voeg twee InputSwitch-elementen toe aan het canvas"
-    },
-    "description": "Leer een optelschakeling te bouwen.",
-    "explain-full-adder": {
-      "hint": "",
-      "instruction": "Dit circuit vormt een volledige optelschakeling. In tegenstelling tot een halve optelschakeling accepteert een volledige optelschakeling een carry-in (Cin) van een voorgaande optelling en produceert een carry-out (Cout) voor de volgende fase. Door de Cout van één volledige optelschakeling met de Cin van een andere te verbinden, kunnen meerdere volledige optelschakelingen aan elkaar worden geschakeld om binaire getallen van elke lengte op te tellen"
-    },
-    "label-half-adder-outputs": {
-      "hint": "Klik op een LED en typ in het labelvak linksonder op het scherm om een LED een label te geven.",
-      "instruction": "Geef de LED die met de XOR-poort is verbonden het label Sum, en geef vervolgens de LED die met de EN-poort is verbonden het label Cout. Dit circuit vormt een halve optelschakeling, die twee eenbits-ingangen optelt"
-    },
-    "title": "Combinatorische circuits III: Optelschakeling",
-    "wire-full-adder": {
-      "hint": "Verwijder de oude verbindingen met de LED's om de nieuwe te kunnen toevoegen.",
-      "instruction": "Verbind de oude XOR-poort en de Cin-schakelaar met de nieuwe XOR-poort, en verbind vervolgens de nieuwe XOR-poort met de Sum-uitgang. Verbind ook de oude XOR-poort en de Cin-schakelaar met de nieuwe EN-poort. Sluit af door beide EN-poorten met de OF-poort te verbinden, en de OF-poort met Cout"
-    },
-    "wire-half-adder": {
-      "hint": "Verbind de uitgangen van de InputSwitch met de ingangen van de poorten.",
-      "instruction": "Verbind de twee InputSwitch met de XOR-poort en de EN-poort. Elke InputSwitch moet met beide poorten verbonden zijn. De XOR-poort produceert de Sum-uitgang, terwijl de EN-poort de Carry-uitgang produceert"
-    }
-  },
-  "combinational-circuits-two": {
-    "add-and-gates-leds": {
-      "hint": "Gebruik het tabblad Poorten in het linkerpaneel om de EN-poorten toe te voegen en het tabblad I/O om de LED's toe te voegen.",
-      "instruction": "Voeg vier EN-poorten en vier LED's toe aan het canvas en verbind vervolgens elke EN-poort met een van de LED's"
-    },
-    "add-inputs": {
-      "hint": "Klik op het tabblad I/O in het linkerpaneel en sleep twee InputSwitch-elementen naar het canvas.",
-      "instruction": "Voeg twee InputSwitch-elementen toe aan het canvas"
-    },
-    "add-not-gates": {
-      "hint": "Klik op het tabblad Poorten in het linkerpaneel, sleep vervolgens twee NIET-poort-elementen naar het canvas en verbind de InputSwitch ermee.",
-      "instruction": "Voeg twee NIET-poorten toe aan het canvas en verbind elke InputSwitch met een aparte NIET-poort"
-    },
-    "description": "Leer een 2-naar-4-decoder te bouwen.",
-    "explain-decoder": {
-      "hint": "",
-      "instruction": "Voor elke specifieke combinatie van invoerbits wordt slechts één bijbehorende uitvoerlijn geactiveerd, terwijl alle andere inactief blijven"
-    },
-    "title": "Combinatorische circuits II: Decoder",
-    "wire-decoder": {
-      "hint": "Elke EN-poort moet één signaal van elke ingang ontvangen. Gebruik het oorspronkelijke InputSwitch-signaal voor een 1 en de bijbehorende uitgang van de NIET-poort voor een 0.",
-      "instruction": "Verbind de uitgangen van de NIET-poorten en de InputSwitch met de EN-poorten, zodat elke EN-poort een invoercombinatie vertegenwoordigt"
-    }
-  },
-  "sequential-circuits-one": {
-    "add-d-latch": {
-      "hint": "De D-latch slaat één enkele invoerwaarde op en vermijdt de ongeldige invoercombinatie van een SR-latch.",
-      "instruction": "Verwijder de SR-latch met behoud van de InputSwitch en LED's. Voeg vervolgens een D-latch toe"
-    },
-    "add-sr-latch": {
-      "hint": "Gebruik het tabblad Geheugen om een SR-latch toe te voegen. Gebruik vervolgens het tabblad I/O om twee InputSwitch en twee LED's toe te voegen.",
-      "instruction": "Voeg een SR-latch, twee InputSwitch en twee LED's toe aan het canvas"
-    },
-    "description": "Leer latches te gebruiken.",
-    "explain-d-latch": {
-      "hint": "",
-      "instruction": "Schakel de InputSwitch om en observeer de D-latch. Wanneer Enable 1 is, volgt de uitgang de D-ingang. Wanneer Enable 0 is, onthoudt de latch zijn vorige waarde"
-    },
-    "explain-sr-latch": {
-      "hint": "",
-      "instruction": "Schakel de InputSwitch om en observeer hoe de SR-latch zijn toestand opslaat. Het instellen van de S-ingang op 1 zorgt ervoor dat de Q-uitgang 1 wordt, terwijl het instellen van de R-ingang op 1 Q terugzet naar 0. Wanneer beide ingangen terugkeren naar 0, onthoudt de latch zijn laatste toestand totdat deze opnieuw wordt ingesteld of teruggezet"
-    },
-    "title": "Sequentiële circuits I: Latches",
-    "wire-d-latch": {
-      "hint": "De D-ingang is de waarde die moet worden opgeslagen. De Enable-ingang bepaalt wanneer de latch zijn opgeslagen waarde bijwerkt.",
-      "instruction": "Verbind één InputSwitch met de D-ingang en de andere met de Enable-ingang (E). Verbind de Q- en Q̅-uitgangen met de LED's"
-    },
-    "wire-sr-latch": {
-      "hint": "Verbind één InputSwitch met de Set-ingang (S) en de andere met de Reset-ingang (R). Verbind elke uitgang van de latch met een andere LED.",
-      "instruction": "Verbind de InputSwitch met de S- en R-ingangen van de SR-latch. Verbind vervolgens de Q- en Q̅-uitgangen met de LED's"
-    }
-  },
-  "sequential-circuits-three": {
-    "add-flipflops": {
-      "hint": "Gebruik het tabblad Geheugen om de T-flipflops en een Klok toe te voegen. Gebruik vervolgens het tabblad I/O om drie InputSwitch en drie LED's toe te voegen.",
-      "instruction": "Voeg drie T-flipflops, drie InputSwitch, een Klok en drie LED's toe aan het canvas"
-    },
-    "description": "Leer een tellercircuit te bouwen.",
-    "explain-counter": {
-      "hint": "",
-      "instruction": "Zet alle drie de InputSwitch aan en start de Klok. Observeer de LED's terwijl de teller loopt. De eerste LED verandert van toestand bij elke klokpuls, de tweede verandert om de twee pulsen, en de derde verandert om de vier pulsen, wat een herhalende 3-bit binaire telling van 000 tot 111 laat zien"
-    },
-    "title": "Sequentiële circuits III: Teller",
-    "wire-clock": {
-      "hint": "De eerste flipflop ontvangt het externe kloksignaal.",
-      "instruction": "Verbind de Klok met de Clk-ingang van de eerste T-flipflop"
-    },
-    "wire-outputs": {
-      "hint": "Elke LED vertegenwoordigt één bit van de teller, waarbij de eerste LED het minst significante bit is.",
-      "instruction": "Verbind de Q-uitgang van elke flipflop met een andere LED"
-    },
-    "wire-ripple-clock": {
-      "hint": "",
-      "instruction": "Verbind de Q-uitgang van de eerste flipflop met de Clk-ingang van de tweede flipflop, en verbind vervolgens de Q-uitgang van de tweede flipflop met de Clk-ingang van de derde flipflop. Elke flipflop wordt aangestuurd door de uitgang van de vorige, waardoor een ripple-teller ontstaat"
-    },
-    "wire-t-inputs": {
-      "hint": "Zet alle drie de InputSwitch aan. Een T-flipflop schakelt alleen om wanneer de T-ingang 1 is.",
-      "instruction": "Verbind elke InputSwitch met de T-ingang van een andere flipflop"
-    }
-  },
-  "sequential-circuits-two": {
-    "add-d-flipflop": {
-      "hint": "Gebruik het tabblad Geheugen om een D-flipflop en een Klok toe te voegen. Gebruik vervolgens het tabblad I/O om twee InputSwitch en twee LED's toe te voegen.",
-      "instruction": "Voeg een D-flipflop, twee InputSwitch, een Klok en twee LED's toe aan het canvas"
-    },
-    "add-jk-flipflop": {
-      "hint": "De JK-flipflop heeft J- en K-ingangen in plaats van een D-ingang. Laat de Clear- en Preset-ingangen niet aangesloten.",
-      "instruction": "Vervang de D-flipflop door een JK-flipflop met behoud van de Klok, InputSwitch en LED's"
-    },
-    "add-t-flipflop": {
-      "hint": "Een T-flipflop heeft naast de klok maar één enkele ingang nodig.",
-      "instruction": "Vervang de JK-flipflop door een T-flipflop en verwijder een van de InputSwitch"
-    },
-    "description": "Leer over flipflops.",
-    "explain-clear-preset": {
-      "hint": "",
-      "instruction": "Verbind de tweede InputSwitch met de Clear- of Preset-ingang en observeer het effect. In tegenstelling tot de D-ingang werken de Clear- en Preset-ingangen onmiddellijk, zonder op een klokflank te wachten. Clear dwingt Q naar 0, terwijl Preset Q naar 1 dwingt"
-    },
-    "explain-d-flipflop": {
-      "hint": "",
-      "instruction": "Schakel de D-InputSwitch om en observeer de D-flipflop. De waarde op de D-ingang wordt alleen naar de Q-uitgang gekopieerd bij de actieve klokflank. Tussen klokflanken blijft de uitgang ongewijzigd"
-    },
-    "explain-jk-flipflop": {
-      "hint": "",
-      "instruction": "Schakel de InputSwitch om en observeer de JK-flipflop. Wanneer J = K = 0, behoudt de uitgang zijn huidige toestand. Wanneer J = 1 en K = 0, wordt de uitgang ingesteld. Wanneer J = 0 en K = 1, wordt de uitgang teruggezet. Wanneer J = K = 1, schakelt de uitgang om bij elke actieve klokflank"
-    },
-    "explain-t-flipflop": {
-      "hint": "",
-      "instruction": "Schakel de InputSwitch om en observeer de T-flipflop. Wanneer T = 0, behoudt de uitgang zijn huidige toestand. Wanneer T = 1, schakelt de uitgang om bij elke actieve klokflank. T-flipflops worden vaak gebruikt om binaire tellers en frequentiedelers te bouwen"
-    },
-    "title": "Sequentiële circuits II: Flipflops",
-    "wire-d-flipflop": {
-      "hint": "Laat de Clear- en Preset-ingangen voorlopig niet aangesloten.",
-      "instruction": "Verbind één InputSwitch met de D-ingang, de Klok met de Clk-ingang, en de Q- en Q̅-uitgangen met de LED's. De D-ingang levert de waarde die moet worden opgeslagen, terwijl de Klok bepaalt wanneer de waarde wordt opgeslagen"
-    },
-    "wire-jk-flipflop": {
-      "hint": "De JK-flipflop verandert zijn uitgang alleen bij de actieve klokflank.",
-      "instruction": "Verbind de InputSwitch met de J- en K-ingangen, de Klok met de Clk-ingang, en de Q- en Q̅-uitgangen met de LED's"
-    },
-    "wire-t-flipflop": {
-      "hint": "Laat de Clear- en Preset-ingangen niet aangesloten.",
-      "instruction": "Verbind de resterende InputSwitch met de T-ingang, de Klok met de Clk-ingang, en de Q- en Q̅-uitgangen met de LED's"
-    }
-  },
-  "ui-overview": {
-    "canvas": {
-      "body": "Bouw hier je circuit. Sleep componenten vanuit het palet en verbind ze vervolgens door te klikken en te slepen van een uitgangspoort (rechterkant van een component) naar een ingangspoort (linkerkant van een andere).",
-      "title": "Het canvas"
-    },
-    "combinational-mode": {
-      "body": "De gemarkeerde knop (Combinatorisch) is zojuist automatisch geactiveerd — deze vult de invoerrijen met elke mogelijke 0/1-combinatie, wat je in één klik een volledige waarheidstabel geeft.",
-      "title": "Combinatorische modus"
-    },
-    "component-palette": {
-      "body": "Dit paneel toont alle beschikbare componenten — logische poorten, ingangen, uitgangen, flipflops en meer. Componenten zijn per categorie georganiseerd via de tabbladen bovenaan. Klik op een tabblad om die categorie te bekijken.",
-      "title": "Componentenpalet"
-    },
-    "description": "Een begeleide rondleiding door de hoofdinterface — palet, canvas, werkbalk en eigenschappenpaneel.",
-    "editing-cells": {
-      "body": "Je kunt de golfvorm ook handmatig bewerken. Dubbelklik op een willekeurige cel in de Klok-rij om deze tussen 0 en 1 om te schakelen — de Led-rij wordt direct bijgewerkt om de nieuwe uitgang weer te geven.",
-      "title": "Cellen handmatig bewerken"
-    },
-    "element-properties": {
-      "body": "Wanneer je een component op het canvas selecteert, verschijnen de eigenschappen hier. Je kunt labels, kleuren, triggertypen en andere componentspecifieke instellingen instellen. Probeer een geplaatst component te selecteren om de opties ervan te zien.",
-      "title": "Elementeigenschappen"
-    },
-    "logic-gates": {
-      "body": "Het tabblad Poorten bevat EN, OF, NIET, NAND, NOR, XOR en andere fundamentele logische poorten. Sleep een willekeurige poort uit deze lijst naar het canvas om deze aan je circuit toe te voegen.",
-      "title": "Logische poorten"
-    },
-    "search-bar": {
-      "body": "Gebruik de zoekbalk om snel een component op naam te vinden. Terwijl je typt, verschijnt hieronder een gefilterde lijst met overeenkomende componenten uit alle categorieën.",
-      "title": "Zoekbalk"
-    },
-    "title": "Rondleiding door de wiRedPanda-interface",
-    "waveform-table": {
-      "body": "De golfvormtabel toont elk signaal in je circuit. De Klok-rij is de ingang; de Led-rij is de berekende uitgang. Elke kolom is één simulatietijdstap — zo zie je precies hoe de uitgang de ingang volgt.",
-      "title": "De golfvormtabel lezen"
-    },
-    "waveform-viewer": {
-      "body": "wiRedPanda bevat een golfvormviewer genaamd BeWavedDolphin. Deze toont hoe elk signaal in je circuit in de loop van de tijd verandert — ingangen als rijen bovenaan, uitgangen daaronder, waarbij elke kolom één simulatietijdstap voorstelt. Klik op de gemarkeerde knop in de werkbalk om deze te openen.",
-      "title": "Golfvormviewer"
-    },
-    "welcome": {
-      "body": "wiRedPanda is een simulator voor digitale logische circuits. Je kunt circuits bouwen door componenten te plaatsen en ze met elkaar te verbinden. Deze rondleiding laat je de belangrijkste onderdelen van de interface zien.",
-      "title": "Welkom bij wiRedPanda!"
-    }
-  }
 }
