@@ -1713,7 +1713,7 @@ Nu opslaan?</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="400"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
-        <translation>%1 IC('s) ingesloten; er blijven nog bestandsgebaseerde IC's over.</translation>
+        <translation>%1 IC(&apos;s) ingesloten; er blijven nog bestandsgebaseerde IC&apos;s over.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="410"/>
@@ -1769,7 +1769,7 @@ Nu opslaan?</translation>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="143"/>
         <source>IC nesting depth limit (%1) exceeded while loading %2</source>
-        <translation>Nestdieptelimiet voor IC's (%1) overschreden tijdens het laden van %2</translation>
+        <translation>Nestdieptelimiet voor IC&apos;s (%1) overschreden tijdens het laden van %2</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="154"/>
@@ -1812,7 +1812,7 @@ Nu opslaan?</translation>
     <message>
         <location filename="../../Scene/ICRegistry.cpp" line="341"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
-        <translation>De afhankelijkheidsketen van ingesloten IC's overschrijdt de maximale nestdiepte (%1) bij het herleiden van &apos;%2&apos;</translation>
+        <translation>De afhankelijkheidsketen van ingesloten IC&apos;s overschrijdt de maximale nestdiepte (%1) bij het herleiden van &apos;%2&apos;</translation>
     </message>
 </context>
 <context>

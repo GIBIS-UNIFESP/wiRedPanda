@@ -1263,7 +1263,7 @@ Başka bir ad seçin.</translation>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="86"/>
         <source>D flip-flop: stores D on the active clock edge.</source>
-        <translation>D-Flip-Flop: aktif saat kenarında D'yi saklar.</translation>
+        <translation>D-Flip-Flop: aktif saat kenarında D&apos;yi saklar.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="87"/>
@@ -1324,7 +1324,7 @@ Başka bir ad seçin.</translation>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="26"/>
         <source>Type to filter the palette by element name. Press Enter to add the first match to the circuit.</source>
-        <translation>Paleti eleman adına göre filtrelemek için yazın. İlk eşleşmeyi devreye eklemek için Enter'a basın.</translation>
+        <translation>Paleti eleman adına göre filtrelemek için yazın. İlk eşleşmeyi devreye eklemek için Enter&apos;a basın.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="28"/>
@@ -1713,7 +1713,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="400"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
-        <translation>%1 IC gömüldü; bazı dosya tabanlı IC'ler kalıyor.</translation>
+        <translation>%1 IC gömüldü; bazı dosya tabanlı IC&apos;ler kalıyor.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="410"/>
@@ -1751,12 +1751,12 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="58"/>
         <source>Drop here to embed this IC in the circuit</source>
-        <translation>Bu IC'yi devreye gömmek için buraya bırakın</translation>
+        <translation>Bu IC&apos;yi devreye gömmek için buraya bırakın</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="59"/>
         <source>Drop here to extract this IC to a file</source>
-        <translation>Bu IC'yi bir dosyaya ayıklamak için buraya bırakın</translation>
+        <translation>Bu IC&apos;yi bir dosyaya ayıklamak için buraya bırakın</translation>
     </message>
 </context>
 <context>
@@ -2503,7 +2503,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
     <message>
         <location filename="../../UI/MainWindow.cpp" line="636"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>&lt;h1&gt;Klavye Kısayolları&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Eleman Özelliği Gezinme&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Önceki / sonraki birincil özellik &lt;/li&gt;&lt;li&gt; { / } : Önceki / sonraki ikincil özellik &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Önceki / sonraki elemana dönüştür &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Genel İpuçları&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Bir düğüm oluşturmak için bir kabloya çift tıklayın &lt;/li&gt;&lt;li&gt; Eklemek için sol panelden bir elemanı tuvale sürükleyin &lt;/li&gt;&lt;li&gt; Seçimi ok tuşlarıyla kaydırın (daha büyük adımlar için Shift'e basılı tutun) &lt;/li&gt;&lt;li&gt; Açmak için tuvale bir .panda dosyası bırakın &lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation>&lt;h1&gt;Klavye Kısayolları&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Eleman Özelliği Gezinme&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Önceki / sonraki birincil özellik &lt;/li&gt;&lt;li&gt; { / } : Önceki / sonraki ikincil özellik &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Önceki / sonraki elemana dönüştür &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Genel İpuçları&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Bir düğüm oluşturmak için bir kabloya çift tıklayın &lt;/li&gt;&lt;li&gt; Eklemek için sol panelden bir elemanı tuvale sürükleyin &lt;/li&gt;&lt;li&gt; Seçimi ok tuşlarıyla kaydırın (daha büyük adımlar için Shift&apos;e basılı tutun) &lt;/li&gt;&lt;li&gt; Açmak için tuvale bir .panda dosyası bırakın &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="687"/>
