@@ -3,12 +3,15 @@
 
 #include "Tests/Unit/Tour/TestTourEngine.h"
 
+#include <QApplication>
 #include <QFile>
+#include <QFont>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 
 #include "App/Core/Settings.h"
 #include "App/Tour/TourEngine.h"
+#include "App/Tour/TourOverlay.h"
 
 namespace {
 
@@ -116,4 +119,24 @@ void TestTourEngine::testRetranslateEmitsRetranslatedOnly()
     QCOMPARE(stepChangedSpy.count(), 0);
 
     Settings::setLanguage(originalLang);
+}
+
+void TestTourEngine::testOverlayFontScalesWithApplicationFont()
+{
+    const QFont originalFont = QApplication::font();
+
+    QFont smallFont = originalFont;
+    smallFont.setPointSize(8);
+    QApplication::setFont(smallFont);
+    const int smallPx = TourOverlay::scaledFontPx(13);
+
+    QFont largeFont = originalFont;
+    largeFont.setPointSize(24);
+    QApplication::setFont(largeFont);
+    const int largePx = TourOverlay::scaledFontPx(13);
+
+    QApplication::setFont(originalFont);
+
+    QVERIFY2(largePx > smallPx, "scaledFontPx must grow with the application's font size, "
+                                "so the tour overlay's text respects an OS/Qt font-scale setting");
 }

@@ -15,4 +15,7 @@ private slots:
     void testRetranslateWhileInactiveIsNoOp();
     void testRetranslatePreservesProgressAndData();
     void testRetranslateEmitsRetranslatedOnly();
+
+    // TourOverlay::scaledFontPx() (#14 accessibility: font-scale-hostile hardcoded px sizes)
+    void testOverlayFontScalesWithApplicationFont();
 };
