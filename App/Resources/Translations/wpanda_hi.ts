@@ -50,7 +50,7 @@
     <message>
         <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1067"/>
         <source>This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>इस सर्किट को %1 I/O पिन चाहिए, लेकिन सबसे बड़ा समर्थित बोर्ड (%2) केवल %3 प्रदान करता है। इनपुट और आउटपुट की संख्या घटाएं, या सर्किट को विभाजित करें।</translation>
     </message>
     <message>
         <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1265"/>
@@ -196,12 +196,12 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="274"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>अनडू</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="276"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>रीडू</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
@@ -282,21 +282,21 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>CSV files</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV फ़ाइलें</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>Dolphin files</source>
-        <translation type="unfinished"></translation>
+        <translation>Dolphin फ़ाइलें</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>All supported files</source>
-        <translation type="unfinished"></translation>
+        <translation>सभी समर्थित फ़ाइलें</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="880"/>
@@ -306,12 +306,12 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
         <source>PNG files</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG फ़ाइलें</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>PDF files</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF फ़ाइलें</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1012"/>
@@ -332,7 +332,7 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="480"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>निर्यात नहीं हो सकता: वह सर्किट जिससे यह वेवफ़ॉर्म बनाया गया था, बदल गया है।</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="601"/>
@@ -391,7 +391,7 @@
     <message>
         <location filename="../../Scene/ClipboardManager.cpp" line="160"/>
         <source>Paste</source>
-        <translation type="unfinished">पेस्ट करें</translation>
+        <translation>चिपकाएं</translation>
     </message>
 </context>
 <context>
@@ -422,7 +422,7 @@
     <message>
         <location filename="../../UI/ClockDialogUI.cpp" line="75"/>
         <source>Clock</source>
-        <translation type="unfinished">क्लॉक</translation>
+        <translation>क्लॉक</translation>
     </message>
     <message>
         <location filename="../../UI/ClockDialogUI.cpp" line="76"/>
@@ -440,27 +440,27 @@
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="252"/>
         <source>This connection is not allowed.</source>
-        <translation type="unfinished"></translation>
+        <translation>इस कनेक्शन की अनुमति नहीं है।</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="255"/>
         <source>Can&apos;t connect an element to itself.</source>
-        <translation type="unfinished"></translation>
+        <translation>किसी एलिमेंट को खुद से नहीं जोड़ा जा सकता।</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="258"/>
         <source>These ports are already connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>ये पोर्ट पहले से ही जुड़े हुए हैं।</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
         <source>This element receives wirelessly — no input wire needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>यह एलिमेंट वायरलेस तरीके से प्राप्त करता है — इनपुट वायर की आवश्यकता नहीं है।</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
         <source>This element transmits wirelessly — no output wire needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>यह एलिमेंट वायरलेस तरीके से भेजता है — आउटपुट वायर की आवश्यकता नहीं है।</translation>
     </message>
 </context>
 <context>
@@ -806,12 +806,12 @@
         <location filename="../../UI/ElementEditorUI.cpp" line="330"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="331"/>
         <source>Choose audio file</source>
-        <translation type="unfinished"></translation>
+        <translation>ऑडियो फ़ाइल चुनें</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="334"/>
         <source>Sound file:</source>
-        <translation type="unfinished"></translation>
+        <translation>साउंड फ़ाइल:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="335"/>
@@ -826,12 +826,12 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="310"/>
         <source>A6</source>
-        <translation type="unfinished"></translation>
+        <translation>A6</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="311"/>
         <source>B6</source>
-        <translation type="unfinished"></translation>
+        <translation>B6</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="315"/>
@@ -841,7 +841,7 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="318"/>
         <source>Appearance for:</source>
-        <translation type="unfinished"></translation>
+        <translation>के लिए स्वरूप:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="326"/>
@@ -856,37 +856,37 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="295"/>
         <source>Element Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>एलिमेंट एडिटर</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="299"/>
         <source>Identity</source>
-        <translation type="unfinished"></translation>
+        <translation>पहचान</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="300"/>
         <source>Ports</source>
-        <translation type="unfinished"></translation>
+        <translation>पोर्ट</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="301"/>
         <source>Timing</source>
-        <translation type="unfinished"></translation>
+        <translation>टाइमिंग</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="302"/>
         <source>Sound</source>
-        <translation type="unfinished"></translation>
+        <translation>साउंड</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="303"/>
         <source>Interaction</source>
-        <translation type="unfinished"></translation>
+        <translation>इंटरैक्शन</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="304"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>स्वरूप</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="306"/>
@@ -911,27 +911,27 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="347"/>
         <source>Prevent this element from being toggled by clicking it during simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>सिमुलेशन के दौरान इस एलिमेंट पर क्लिक करके इसे टॉगल होने से रोकता है।</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="352"/>
         <source>Nodes with the same label connect wirelessly — Transmit sends its input, Receive outputs it.</source>
-        <translation type="unfinished"></translation>
+        <translation>एक ही लेबल वाले नोड वायरलेस तरीके से जुड़ते हैं — Transmit अपना इनपुट भेजता है, Receive उसे आउटपुट के रूप में देता है।</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="357"/>
         <source>The value this input element outputs.</source>
-        <translation type="unfinished"></translation>
+        <translation>वह मान जो यह इनपुट एलिमेंट आउटपुट करता है।</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="361"/>
         <source>Keyboard key that toggles this element during simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>कीबोर्ड की जो सिमुलेशन के दौरान इस एलिमेंट को टॉगल करती है।</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="366"/>
         <source>Phase offset from the driving clock, as a fraction of its period.</source>
-        <translation type="unfinished"></translation>
+        <translation>ड्राइविंग क्लॉक से फेज़ ऑफ़सेट, उसकी अवधि के अंश के रूप में।</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="312"/>
@@ -951,7 +951,7 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="337"/>
         <source>Tone:</source>
-        <translation type="unfinished"></translation>
+        <translation>टोन:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="344"/>
@@ -1017,7 +1017,7 @@
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="227"/>
         <source>Change appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>स्वरूप बदलें</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="291"/>
@@ -1054,13 +1054,14 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="746"/>
         <source>Duplicate IC Name</source>
-        <translation type="unfinished"></translation>
+        <translation>डुप्लिकेट IC नाम</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="747"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; नाम का एक एम्बेडेड IC पहले से मौजूद है।
+कोई दूसरा नाम चुनें।</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="955"/>
@@ -1070,7 +1071,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="956"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>ऑडियो</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="290"/>
@@ -1137,152 +1138,152 @@ Choose a different name.</source>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="61"/>
         <source>Constant logic HIGH (1) source.</source>
-        <translation type="unfinished"></translation>
+        <translation>स्थिर लॉजिक उच्च (1) स्रोत।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="62"/>
         <source>Constant logic LOW (0) source.</source>
-        <translation type="unfinished"></translation>
+        <translation>स्थिर लॉजिक निम्न (0) स्रोत।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="63"/>
         <source>Push button: outputs HIGH only while pressed.</source>
-        <translation type="unfinished"></translation>
+        <translation>पुश बटन: केवल दबाए रखने पर उच्च आउटपुट देता है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="64"/>
         <source>Toggle switch: click to flip between 0 and 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>इनपुट स्विच: 0 और 1 के बीच टॉगल करने के लिए क्लिक करें।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="65"/>
         <source>Rotary switch with several selectable positions.</source>
-        <translation type="unfinished"></translation>
+        <translation>कई चयन योग्य स्थितियों वाला रोटरी स्विच।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="66"/>
         <source>Clock: a square wave at a configurable frequency.</source>
-        <translation type="unfinished"></translation>
+        <translation>क्लॉक: कॉन्फ़िगर करने योग्य आवृत्ति वाली एक वर्ग तरंग।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="67"/>
         <source>LED: lights up while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>LED: तब तक जलता है जब तक इसका इनपुट उच्च है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="68"/>
         <source>7-segment display for a single digit.</source>
-        <translation type="unfinished"></translation>
+        <translation>एक अंक के लिए 7-खंड प्रदर्शक।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>14-segment alphanumeric display.</source>
-        <translation type="unfinished"></translation>
+        <translation>अल्फ़ान्यूमेरिक 14-खंड डिस्प्ले।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="70"/>
         <source>16-segment alphanumeric display.</source>
-        <translation type="unfinished"></translation>
+        <translation>अल्फ़ान्यूमेरिक 16-खंड डिस्प्ले।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="71"/>
         <source>Buzzer: plays a tone while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>बज़र: तब तक टोन बजाता है जब तक इसका इनपुट उच्च है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Audio box: plays an audio file while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>ऑडियो बॉक्स: तब तक ऑडियो फ़ाइल चलाता है जब तक इसका इनपुट उच्च है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="73"/>
         <source>AND gate: output is HIGH only when every input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>और गेट: आउटपुट तभी उच्च होता है जब हर इनपुट उच्च हो।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="74"/>
         <source>OR gate: output is HIGH when any input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>या गेट: आउटपुट उच्च होता है जब कोई भी इनपुट उच्च हो।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>NOT gate: inverts its input.</source>
-        <translation type="unfinished"></translation>
+        <translation>नॉट गेट: अपने इनपुट को उलट देता है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="76"/>
         <source>NAND gate: LOW only when every input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>नैंड गेट: तभी निम्न होता है जब हर इनपुट उच्च हो।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="77"/>
         <source>NOR gate: HIGH only when every input is LOW.</source>
-        <translation type="unfinished"></translation>
+        <translation>नॉर गेट: तभी उच्च होता है जब हर इनपुट निम्न हो।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>XOR gate: HIGH when an odd number of inputs are HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>एक्सॉर गेट: उच्च होता है जब इनपुट की विषम संख्या उच्च हो।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="79"/>
         <source>XNOR gate: HIGH when the inputs match.</source>
-        <translation type="unfinished"></translation>
+        <translation>एक्सनॉर गेट: उच्च होता है जब इनपुट मेल खाते हों।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="80"/>
         <source>Node: a wire junction / branch point.</source>
-        <translation type="unfinished"></translation>
+        <translation>नोड: एक वायर जंक्शन / शाखा बिंदु।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="81"/>
         <source>Truth table: custom logic you define, output by output.</source>
-        <translation type="unfinished"></translation>
+        <translation>सत्य तालिका: कस्टम लॉजिक जिसे आप परिभाषित करते हैं, आउटपुट दर आउटपुट।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="82"/>
         <source>Multiplexer: routes the selected input to the output.</source>
-        <translation type="unfinished"></translation>
+        <translation>मल्टिप्लेक्सर: चयनित इनपुट को आउटपुट पर भेजता है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="83"/>
         <source>Demultiplexer: routes the input to the selected output.</source>
-        <translation type="unfinished"></translation>
+        <translation>डीमल्टिप्लेक्सर: इनपुट को चयनित आउटपुट पर भेजता है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="84"/>
         <source>D latch: stores the D input while Enable is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>D-लैच: Enable के उच्च रहने तक D इनपुट को संग्रहीत करता है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="85"/>
         <source>SR latch: a Set/Reset storage element.</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-लैच: एक Set/Reset संग्रहण एलिमेंट।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="86"/>
         <source>D flip-flop: stores D on the active clock edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>D-फ्लिप-फ्लॉप: सक्रिय क्लॉक एज पर D को संग्रहीत करता है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="87"/>
         <source>JK flip-flop: set, reset or toggle on the active clock edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-फ्लिप-फ्लॉप: सक्रिय क्लॉक एज पर सेट, रीसेट या टॉगल करता है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="88"/>
         <source>T flip-flop: toggles on the active clock edge when T is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>T-फ्लिप-फ्लॉप: T के उच्च होने पर सक्रिय क्लॉक एज पर टॉगल करता है।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="89"/>
         <source>Text: a free-text annotation on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>टेक्स्ट: कैनवास पर एक फ्री-टेक्स्ट टिप्पणी।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="90"/>
         <source>Line: a decorative annotation on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>लाइन: कैनवास पर एक सजावटी टिप्पणी।</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="109"/>
@@ -1300,17 +1301,17 @@ Choose a different name.</source>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="40"/>
         <source>Embedded IC: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>एम्बेडेड IC: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="42"/>
         <source>IC from file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>फ़ाइल से IC: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="46"/>
         <source>Drag or double-click to add.</source>
-        <translation type="unfinished"></translation>
+        <translation>जोड़ने के लिए खींचें या डबल-क्लिक करें।</translation>
     </message>
 </context>
 <context>
@@ -1318,22 +1319,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="25"/>
         <source>Search elements</source>
-        <translation type="unfinished"></translation>
+        <translation>एलिमेंट खोजें</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="26"/>
         <source>Type to filter the palette by element name. Press Enter to add the first match to the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>एलिमेंट नाम के आधार पर पैलेट को फ़िल्टर करने के लिए टाइप करें। सर्किट में पहला मिलान जोड़ने के लिए Enter दबाएं।</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="28"/>
         <source>Element palette</source>
-        <translation type="unfinished"></translation>
+        <translation>एलिमेंट पैलेट</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="29"/>
         <source>Elements grouped by category. Drag one onto the canvas, or double-click to add it to the active circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>श्रेणी के अनुसार समूहीकृत एलिमेंट। एक को कैनवास पर खींचें, या सक्रिय सर्किट में जोड़ने के लिए डबल-क्लिक करें।</translation>
     </message>
 </context>
 <context>
@@ -1431,22 +1432,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file</source>
-        <translation type="unfinished"></translation>
+        <translation>Arduino फ़ाइल</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file</source>
-        <translation type="unfinished"></translation>
+        <translation>SystemVerilog फ़ाइल</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF फ़ाइलें</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG फ़ाइलें</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
@@ -1554,12 +1555,12 @@ Choose a different name.</source>
     <message>
         <location filename="../../Scene/GraphicsView.cpp" line="26"/>
         <source>Circuit canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>सर्किट कैनवास</translation>
     </message>
     <message>
         <location filename="../../Scene/GraphicsView.cpp" line="27"/>
         <source>The circuit canvas. Drag elements here from the palette to build a circuit, drag between ports to wire them together, and drag a selection to move it.</source>
-        <translation type="unfinished"></translation>
+        <translation>सर्किट कैनवास। एक सर्किट बनाने के लिए पैलेट से एलिमेंट यहां खींचें, उन्हें वायर करने के लिए पोर्ट के बीच खींचें, और चयन को स्थानांतरित करने के लिए उसे खींचें।</translation>
     </message>
 </context>
 <context>
@@ -1590,7 +1591,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="71"/>
         <source>Panda</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="79"/>
@@ -1606,22 +1607,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="91"/>
         <source>File name conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>फ़ाइल नाम विरोध</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="92"/>
         <source>A different file named &quot;%1&quot; already exists in the project folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>प्रोजेक्ट फ़ोल्डर में &quot;%1&quot; नाम की एक अलग फ़ाइल पहले से मौजूद है।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>बदलें</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="95"/>
         <source>Keep Existing</source>
-        <translation type="unfinished"></translation>
+        <translation>मौजूदा को रखें</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="119"/>
@@ -1631,7 +1632,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="146"/>
         <source>Error moving file to trash: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>फ़ाइल को ट्रैश में ले जाते समय त्रुटि: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="168"/>
@@ -1648,14 +1649,16 @@ Suggested name:</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="189"/>
         <source>Save required</source>
-        <translation type="unfinished"></translation>
+        <translation>सहेजना आवश्यक है</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="190"/>
         <source>This action needs the project saved to a file first, so IC paths can be resolved.
 
 Save it now?</source>
-        <translation type="unfinished"></translation>
+        <translation>इस क्रिया के लिए पहले प्रोजेक्ट को किसी फ़ाइल में सहेजना आवश्यक है, ताकि IC पथों को हल किया जा सके।
+
+अभी सहेजें?</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="222"/>
@@ -1689,7 +1692,7 @@ Save it now?</source>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <location filename="../../UI/ICController.cpp" line="410"/>
         <source>Panda files</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda फ़ाइलें</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="262"/>
@@ -1710,7 +1713,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="400"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 IC एम्बेड किए गए; कुछ फ़ाइल-आधारित IC शेष हैं।</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="410"/>
@@ -1728,32 +1731,32 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="46"/>
         <source>Embedded IC drop zone</source>
-        <translation type="unfinished"></translation>
+        <translation>एम्बेडेड IC ड्रॉप ज़ोन</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="46"/>
         <source>File-based IC drop zone</source>
-        <translation type="unfinished"></translation>
+        <translation>फ़ाइल-आधारित IC ड्रॉप ज़ोन</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="48"/>
         <source>Drop a file-based IC here to embed it directly in the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>इसे सर्किट में सीधे एम्बेड करने के लिए यहां एक फ़ाइल-आधारित IC छोड़ें।</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="49"/>
         <source>Drop an embedded IC here to extract it to its own file.</source>
-        <translation type="unfinished"></translation>
+        <translation>इसे अपनी खुद की फ़ाइल में निकालने के लिए यहां एक एम्बेडेड IC छोड़ें।</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="58"/>
         <source>Drop here to embed this IC in the circuit</source>
-        <translation type="unfinished"></translation>
+        <translation>इस IC को सर्किट में एम्बेड करने के लिए यहां छोड़ें</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="59"/>
         <source>Drop here to extract this IC to a file</source>
-        <translation type="unfinished"></translation>
+        <translation>इस IC को फ़ाइल में निकालने के लिए यहां छोड़ें</translation>
     </message>
 </context>
 <context>
@@ -1766,7 +1769,7 @@ Save it now?</source>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="143"/>
         <source>IC nesting depth limit (%1) exceeded while loading %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 लोड करते समय IC नेस्टिंग गहराई सीमा (%1) पार हो गई</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="154"/>
@@ -1809,7 +1812,7 @@ Save it now?</source>
     <message>
         <location filename="../../Scene/ICRegistry.cpp" line="341"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%2&apos; को हल करते समय एम्बेडेड IC निर्भरता श्रृंखला अधिकतम नेस्टिंग गहराई (%1) से अधिक हो जाती है</translation>
     </message>
 </context>
 <context>
@@ -1917,7 +1920,7 @@ Save it now?</source>
     <message>
         <location filename="../../Element/GraphicElements/Led.cpp" line="245"/>
         <source>Port %1=%2</source>
-        <translation type="unfinished"></translation>
+        <translation>पोर्ट %1=%2</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
@@ -2123,7 +2126,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>Dupli&amp;cate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;डुप्लिकेट करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="790"/>
@@ -2208,12 +2211,12 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="822"/>
         <source>Zoom to &amp;Fit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;विंडो में फ़िट करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
-        <translation type="unfinished"></translation>
+        <translation>पूरे सर्किट (या चयन) को फ़िट करने के लिए ज़ूम इन या आउट करता है</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="827"/>
@@ -2234,42 +2237,42 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Align &amp;Left</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;बाईं ओर संरेखित करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Align &amp;Right</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;दाईं ओर संरेखित करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Align &amp;Top</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ऊपर संरेखित करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>Align &amp;Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;नीचे संरेखित करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Align Horizontal &amp;Centers</source>
-        <translation type="unfinished"></translation>
+        <translation>क्षैतिज &amp;केंद्र संरेखित करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
         <source>Align &amp;Vertical Centers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;लंबवत केंद्र संरेखित करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Distribute &amp;Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;क्षैतिज रूप से वितरित करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="857"/>
         <source>Distribute Verti&amp;cally</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;लंबवत रूप से वितरित करें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="861"/>
@@ -2309,7 +2312,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="871"/>
         <source>Check for updates automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>अपडेट के लिए स्वचालित रूप से जांचें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="874"/>
@@ -2329,7 +2332,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="909"/>
         <source>&amp;Learn</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;सीखें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="910"/>
@@ -2431,7 +2434,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="860"/>
         <source>%1[*] — wiRedPanda %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1018"/>
@@ -2460,27 +2463,27 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../UI/MainWindow.cpp" line="292"/>
         <source>Error</source>
-        <translation type="unfinished">त्रुटि</translation>
+        <translation>त्रुटि</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="321"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished">मेरा अभ्यास फ़ोल्डर खोलें</translation>
+        <translation>मेरा अभ्यास फ़ोल्डर खोलें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="322"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished">कस्टम अभ्यासों के लिए फ़ोल्डर बनाया या एक्सेस नहीं किया जा सका।</translation>
+        <translation>कस्टम अभ्यासों के लिए फ़ोल्डर नहीं बनाया या खोला जा सका।</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="332"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished">मेरा टूर फ़ोल्डर खोलें</translation>
+        <translation>मेरा टूर फ़ोल्डर खोलें</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="333"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished">कस्टम टूर के लिए फ़ोल्डर बनाया या एक्सेस नहीं किया जा सका।</translation>
+        <translation>कस्टम टूर के लिए फ़ोल्डर नहीं बनाया या खोला जा सका।</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="586"/>
@@ -2490,17 +2493,17 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../UI/MainWindow.cpp" line="610"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>रीडू</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>अनडू</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="636"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;कीबोर्ड शॉर्टकट&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;एलिमेंट गुण नेविगेशन&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : पिछला / अगला प्राथमिक गुण &lt;/li&gt;&lt;li&gt; { / } : पिछला / अगला द्वितीयक गुण &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : पिछले / अगले एलिमेंट में रूपांतरित करें &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;सामान्य सुझाव&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; नोड बनाने के लिए किसी वायर पर डबल-क्लिक करें &lt;/li&gt;&lt;li&gt; इसे जोड़ने के लिए बाएं पैनल से किसी एलिमेंट को कैनवास पर खींचें &lt;/li&gt;&lt;li&gt; तीर कुंजियों से चयन को खिसकाएं (बड़े चरणों के लिए Shift दबाए रखें) &lt;/li&gt;&lt;li&gt; इसे खोलने के लिए कैनवास पर .panda फ़ाइल छोड़ें &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="687"/>
@@ -2528,12 +2531,12 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="27"/>
         <source>Circuit minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>सर्किट मिनीमैप</translation>
     </message>
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="28"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
-        <translation type="unfinished"></translation>
+        <translation>संपूर्ण सर्किट का एक लघु अवलोकन। मुख्य कैनवास को उस स्थान पर ले जाने के लिए इसके अंदर क्लिक करें या खींचें।</translation>
     </message>
 </context>
 <context>
@@ -2636,13 +2639,13 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="44"/>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="145"/>
         <source>Cycle element properties</source>
-        <translation type="unfinished"></translation>
+        <translation>एलिमेंट गुणों को चक्रित करें</translation>
     </message>
     <message>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="221"/>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="252"/>
         <source>Morph elements</source>
-        <translation type="unfinished"></translation>
+        <translation>एलिमेंट रूपांतरित करें</translation>
     </message>
 </context>
 <context>
@@ -2688,12 +2691,12 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="49"/>
         <source>Flip horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>क्षैतिज रूप से पलटें</translation>
     </message>
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="50"/>
         <source>Flip vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>लंबवत रूप से पलटें</translation>
     </message>
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="54"/>
@@ -2751,7 +2754,7 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../BeWavedDolphin/DolphinCommands.cpp" line="17"/>
         <source>Edit waveform</source>
-        <translation type="unfinished"></translation>
+        <translation>वेवफ़ॉर्म संपादित करें</translation>
     </message>
 </context>
 <context>
@@ -2775,7 +2778,7 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../Scene/Commands.cpp" line="1170"/>
         <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>IC &quot;%1&quot; का नाम बदलकर &quot;%2&quot; करें</translation>
     </message>
 </context>
 <context>
@@ -2834,7 +2837,7 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../Scene/Scene.cpp" line="620"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>सभी चुनें</translation>
     </message>
 </context>
 <context>
@@ -2842,7 +2845,7 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="60"/>
         <source>Zoom: %1%    Selected: %2 / %3</source>
-        <translation type="unfinished"></translation>
+        <translation>ज़ूम: %1%    चयनित: %2 / %3</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="214"/>
@@ -2931,7 +2934,7 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../IO/Serialization.cpp" line="739"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%2&apos; की प्रतिलिपि बनाते समय Panda फ़ाइल निर्भरता श्रृंखला अधिकतम नेस्टिंग गहराई (%1) से अधिक हो जाती है</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="758"/>
@@ -3021,7 +3024,7 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../Element/GraphicElements/Text.cpp" line="58"/>
         <source>Double-click to add text</source>
-        <translation type="unfinished"></translation>
+        <translation>टेक्स्ट जोड़ने के लिए डबल-क्लिक करें</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Text.cpp" line="25"/>
@@ -3097,7 +3100,7 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
     <message>
         <location filename="../../UI/TrashButton.cpp" line="61"/>
         <source>Remove this IC? Its file will be moved to the system trash and its instances deleted from the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>इस IC को हटाएं? इसकी फ़ाइल को सिस्टम ट्रैश में ले जाया जाएगा और इसके इंस्टेंस सर्किट से हटा दिए जाएंगे।</translation>
     </message>
 </context>
 <context>
@@ -3233,7 +3236,7 @@ Please update wiRedPanda to save changes to this file.</source>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="252"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
-        <translation type="unfinished"></translation>
+        <translation>सहेजा नहीं जा सका: उप-सर्किट &quot;%1&quot; को एम्बेड करने के लिए पढ़ा नहीं जा सका।</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="329"/>
@@ -3346,12 +3349,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="75"/>
         <source> (recovered)</source>
-        <translation type="unfinished"></translation>
+        <translation> (पुनर्प्राप्त)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="138"/>
         <source>New Project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>नया प्रोजेक्ट %1</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
@@ -3360,7 +3363,7 @@ Do you want to save your changes?</source>
         <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
         <source>Panda files</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda फ़ाइलें</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="226"/>

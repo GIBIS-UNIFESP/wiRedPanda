@@ -50,7 +50,7 @@
     <message>
         <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1067"/>
         <source>This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Denne kretsen trenger %1 I/O-pinner, men det største støttede kortet (%2) gir bare %3. Reduser antall innganger og utganger, eller del opp kretsen.</translation>
     </message>
     <message>
         <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1265"/>
@@ -196,12 +196,12 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="274"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Angre</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="276"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Gjør om</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
@@ -282,21 +282,21 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>CSV files</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-filer</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>Dolphin files</source>
-        <translation type="unfinished"></translation>
+        <translation>Dolphin-filer</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>All supported files</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle støttede filer</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="880"/>
@@ -306,12 +306,12 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
         <source>PNG files</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG-filer</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>PDF files</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-filer</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1012"/>
@@ -332,7 +332,7 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="480"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke eksportere: kretsen denne bølgeformen ble bygget fra, er endret.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="601"/>
@@ -391,7 +391,7 @@
     <message>
         <location filename="../../Scene/ClipboardManager.cpp" line="160"/>
         <source>Paste</source>
-        <translation type="unfinished">Lim inn</translation>
+        <translation>Lim inn</translation>
     </message>
 </context>
 <context>
@@ -422,7 +422,7 @@
     <message>
         <location filename="../../UI/ClockDialogUI.cpp" line="75"/>
         <source>Clock</source>
-        <translation type="unfinished">Klokke</translation>
+        <translation>Klokke</translation>
     </message>
     <message>
         <location filename="../../UI/ClockDialogUI.cpp" line="76"/>
@@ -440,27 +440,27 @@
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="252"/>
         <source>This connection is not allowed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Denne tilkoblingen er ikke tillatt.</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="255"/>
         <source>Can&apos;t connect an element to itself.</source>
-        <translation type="unfinished"></translation>
+        <translation>Et element kan ikke kobles til seg selv.</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="258"/>
         <source>These ports are already connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Disse terminalene er allerede tilkoblet.</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
         <source>This element receives wirelessly — no input wire needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dette elementet mottar trådløst — ingen inngangsledning nødvendig.</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
         <source>This element transmits wirelessly — no output wire needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dette elementet sender trådløst — ingen utgangsledning nødvendig.</translation>
     </message>
 </context>
 <context>
@@ -806,12 +806,12 @@
         <location filename="../../UI/ElementEditorUI.cpp" line="330"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="331"/>
         <source>Choose audio file</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg lydfil</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="334"/>
         <source>Sound file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lydfil:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="335"/>
@@ -826,12 +826,12 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="310"/>
         <source>A6</source>
-        <translation type="unfinished"></translation>
+        <translation>A6</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="311"/>
         <source>B6</source>
-        <translation type="unfinished"></translation>
+        <translation>B6</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="315"/>
@@ -841,7 +841,7 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="318"/>
         <source>Appearance for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Utseende for:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="326"/>
@@ -856,37 +856,37 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="295"/>
         <source>Element Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementredigering</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="299"/>
         <source>Identity</source>
-        <translation type="unfinished"></translation>
+        <translation>Identitet</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="300"/>
         <source>Ports</source>
-        <translation type="unfinished"></translation>
+        <translation>Terminaler</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="301"/>
         <source>Timing</source>
-        <translation type="unfinished"></translation>
+        <translation>Timing</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="302"/>
         <source>Sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Lyd</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="303"/>
         <source>Interaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Interaksjon</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="304"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Utseende</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="306"/>
@@ -911,27 +911,27 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="347"/>
         <source>Prevent this element from being toggled by clicking it during simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hindrer at dette elementet slås om ved å klikke på det under simuleringen.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="352"/>
         <source>Nodes with the same label connect wirelessly — Transmit sends its input, Receive outputs it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noder med samme etikett kobles trådløst — Transmit sender sin inngang, Receive gir den ut som utgang.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="357"/>
         <source>The value this input element outputs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verdien dette inngangselementet gir ut.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="361"/>
         <source>Keyboard key that toggles this element during simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastaturtast som slår om dette elementet under simuleringen.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="366"/>
         <source>Phase offset from the driving clock, as a fraction of its period.</source>
-        <translation type="unfinished"></translation>
+        <translation>Faseforskyvning fra den styrende klokken, som en brøkdel av perioden.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="312"/>
@@ -951,7 +951,7 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="337"/>
         <source>Tone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tone:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="344"/>
@@ -1017,7 +1017,7 @@
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="227"/>
         <source>Change appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Endre utseende</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="291"/>
@@ -1054,13 +1054,14 @@ Hver trådløs kanal må ha en unik etikett.</translation>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="746"/>
         <source>Duplicate IC Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplisert IC-navn</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="747"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Det finnes allerede en innebygd IC med navnet &quot;%1&quot;.
+Velg et annet navn.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="955"/>
@@ -1070,7 +1071,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="956"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Lyd</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="290"/>
@@ -1137,152 +1138,152 @@ Choose a different name.</source>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="61"/>
         <source>Constant logic HIGH (1) source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstant logisk HØY (1)-kilde.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="62"/>
         <source>Constant logic LOW (0) source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstant logisk LAV (0)-kilde.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="63"/>
         <source>Push button: outputs HIGH only while pressed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trykknapp: gir bare ut HØY mens den holdes inne.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="64"/>
         <source>Toggle switch: click to flip between 0 and 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inngangsbryter: klikk for å veksle mellom 0 og 1.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="65"/>
         <source>Rotary switch with several selectable positions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotasjonsbryter med flere valgbare posisjoner.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="66"/>
         <source>Clock: a square wave at a configurable frequency.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klokke: en firkantbølge med konfigurerbar frekvens.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="67"/>
         <source>LED: lights up while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>LED: lyser så lenge inngangen er HØY.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="68"/>
         <source>7-segment display for a single digit.</source>
-        <translation type="unfinished"></translation>
+        <translation>7-segment display for ett enkelt siffer.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>14-segment alphanumeric display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alfanumerisk 14-segment display.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="70"/>
         <source>16-segment alphanumeric display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alfanumerisk 16-segment display.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="71"/>
         <source>Buzzer: plays a tone while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Summer: spiller en tone så lenge inngangen er HØY.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Audio box: plays an audio file while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lydboks: spiller av en lydfil så lenge inngangen er HØY.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="73"/>
         <source>AND gate: output is HIGH only when every input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>AND-port: utgangen er kun HØY når alle innganger er HØYE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="74"/>
         <source>OR gate: output is HIGH when any input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>OR-port: utgangen er HØY når en hvilken som helst inngang er HØY.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>NOT gate: inverts its input.</source>
-        <translation type="unfinished"></translation>
+        <translation>NOT-port: inverterer inngangen sin.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="76"/>
         <source>NAND gate: LOW only when every input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>NAND-port: LAV kun når alle innganger er HØYE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="77"/>
         <source>NOR gate: HIGH only when every input is LOW.</source>
-        <translation type="unfinished"></translation>
+        <translation>NOR-port: HØY kun når alle innganger er LAVE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>XOR gate: HIGH when an odd number of inputs are HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>XOR-port: HØY når et oddetall av innganger er HØYE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="79"/>
         <source>XNOR gate: HIGH when the inputs match.</source>
-        <translation type="unfinished"></translation>
+        <translation>XNOR-port: HØY når inngangene stemmer overens.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="80"/>
         <source>Node: a wire junction / branch point.</source>
-        <translation type="unfinished"></translation>
+        <translation>Node: en ledningsforgrening / et forgreningspunkt.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="81"/>
         <source>Truth table: custom logic you define, output by output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sannhetstabell: tilpasset logikk du definerer, utgang for utgang.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="82"/>
         <source>Multiplexer: routes the selected input to the output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Multiplekser: dirigerer den valgte inngangen til utgangen.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="83"/>
         <source>Demultiplexer: routes the input to the selected output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Demultiplekser: dirigerer inngangen til den valgte utgangen.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="84"/>
         <source>D latch: stores the D input while Enable is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>D-lås: lagrer D-inngangen mens Enable er HØY.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="85"/>
         <source>SR latch: a Set/Reset storage element.</source>
-        <translation type="unfinished"></translation>
+        <translation>SR-lås: et Set/Reset-lagringselement.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="86"/>
         <source>D flip-flop: stores D on the active clock edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>D-vippekrets: lagrer D ved den aktive klokkeflanken.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="87"/>
         <source>JK flip-flop: set, reset or toggle on the active clock edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>JK-vippekrets: setter, tilbakestiller eller slår om ved den aktive klokkeflanken.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="88"/>
         <source>T flip-flop: toggles on the active clock edge when T is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>T-vippekrets: slår om ved den aktive klokkeflanken når T er HØY.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="89"/>
         <source>Text: a free-text annotation on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst: en fritekstannotasjon på tegneflaten.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="90"/>
         <source>Line: a decorative annotation on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Linje: en dekorativ annotasjon på tegneflaten.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="109"/>
@@ -1300,17 +1301,17 @@ Choose a different name.</source>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="40"/>
         <source>Embedded IC: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Innebygd IC: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="42"/>
         <source>IC from file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>IC fra fil: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="46"/>
         <source>Drag or double-click to add.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dra eller dobbeltklikk for å legge til.</translation>
     </message>
 </context>
 <context>
@@ -1318,22 +1319,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="25"/>
         <source>Search elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Søk elementer</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="26"/>
         <source>Type to filter the palette by element name. Press Enter to add the first match to the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv for å filtrere paletten etter elementnavn. Trykk Enter for å legge det første treffet til i kretsen.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="28"/>
         <source>Element palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementpalett</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="29"/>
         <source>Elements grouped by category. Drag one onto the canvas, or double-click to add it to the active circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementer gruppert etter kategori. Dra ett til tegneflaten, eller dobbeltklikk for å legge det til i den aktive kretsen.</translation>
     </message>
 </context>
 <context>
@@ -1431,22 +1432,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file</source>
-        <translation type="unfinished"></translation>
+        <translation>Arduino-fil</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file</source>
-        <translation type="unfinished"></translation>
+        <translation>SystemVerilog-fil</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-filer</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG-filer</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
@@ -1554,12 +1555,12 @@ Choose a different name.</source>
     <message>
         <location filename="../../Scene/GraphicsView.cpp" line="26"/>
         <source>Circuit canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Kretstegneflate</translation>
     </message>
     <message>
         <location filename="../../Scene/GraphicsView.cpp" line="27"/>
         <source>The circuit canvas. Drag elements here from the palette to build a circuit, drag between ports to wire them together, and drag a selection to move it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kretstegneflaten. Dra elementer hit fra paletten for å bygge en krets, dra mellom terminaler for å koble dem sammen, og dra en markering for å flytte den.</translation>
     </message>
 </context>
 <context>
@@ -1590,7 +1591,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="71"/>
         <source>Panda</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="79"/>
@@ -1606,22 +1607,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="91"/>
         <source>File name conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Filnavnkonflikt</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="92"/>
         <source>A different file named &quot;%1&quot; already exists in the project folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Det finnes allerede en annen fil med navnet &quot;%1&quot; i prosjektmappen.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstatt</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="95"/>
         <source>Keep Existing</source>
-        <translation type="unfinished"></translation>
+        <translation>Behold eksisterende</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="119"/>
@@ -1631,7 +1632,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="146"/>
         <source>Error moving file to trash: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Feil ved flytting av fil til papirkurven: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="168"/>
@@ -1648,14 +1649,16 @@ Foreslått navn:</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="189"/>
         <source>Save required</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagring kreves</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="190"/>
         <source>This action needs the project saved to a file first, so IC paths can be resolved.
 
 Save it now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Denne handlingen krever at prosjektet først lagres til en fil, slik at IC-stier kan løses.
+
+Lagre nå?</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="222"/>
@@ -1689,7 +1692,7 @@ Save it now?</source>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <location filename="../../UI/ICController.cpp" line="410"/>
         <source>Panda files</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda-filer</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="262"/>
@@ -1710,7 +1713,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="400"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 IC innebygd; noen filbaserte IC-er gjenstår.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="410"/>
@@ -1728,32 +1731,32 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="46"/>
         <source>Embedded IC drop zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Slippsone for innebygd IC</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="46"/>
         <source>File-based IC drop zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Slippsone for filbasert IC</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="48"/>
         <source>Drop a file-based IC here to embed it directly in the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Slipp en filbasert IC her for å bygge den inn direkte i kretsen.</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="49"/>
         <source>Drop an embedded IC here to extract it to its own file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Slipp en innebygd IC her for å hente den ut til sin egen fil.</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="58"/>
         <source>Drop here to embed this IC in the circuit</source>
-        <translation type="unfinished"></translation>
+        <translation>Slipp her for å bygge inn denne IC-en i kretsen</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="59"/>
         <source>Drop here to extract this IC to a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Slipp her for å hente ut denne IC-en til en fil</translation>
     </message>
 </context>
 <context>
@@ -1766,7 +1769,7 @@ Save it now?</source>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="143"/>
         <source>IC nesting depth limit (%1) exceeded while loading %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Grense for IC-nestingsdybde (%1) overskredet under innlasting av %2</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="154"/>
@@ -1809,7 +1812,7 @@ Save it now?</source>
     <message>
         <location filename="../../Scene/ICRegistry.cpp" line="341"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Avhengighetskjeden for innebygde IC-er overskrider maksimal nestingsdybde (%1) ved løsning av &apos;%2&apos;</translation>
     </message>
 </context>
 <context>
@@ -1917,7 +1920,7 @@ Save it now?</source>
     <message>
         <location filename="../../Element/GraphicElements/Led.cpp" line="245"/>
         <source>Port %1=%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Terminal %1=%2</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
@@ -2159,7 +2162,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>Dupli&amp;cate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dupliser</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="790"/>
@@ -2244,12 +2247,12 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="822"/>
         <source>Zoom to &amp;Fit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tilpass til vindu</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoomer for å vise hele kretsen (eller utvalget)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="827"/>
@@ -2319,42 +2322,42 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Align &amp;Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Juster til &amp;venstre</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Align &amp;Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Juster til &amp;høyre</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Align &amp;Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Juster &amp;øverst</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>Align &amp;Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Juster &amp;nederst</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Align Horizontal &amp;Centers</source>
-        <translation type="unfinished"></translation>
+        <translation>Juster vannrette &amp;sentre</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
         <source>Align &amp;Vertical Centers</source>
-        <translation type="unfinished"></translation>
+        <translation>Juster &amp;loddrette sentre</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Distribute &amp;Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Fordel &amp;vannrett</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="857"/>
         <source>Distribute Verti&amp;cally</source>
-        <translation type="unfinished"></translation>
+        <translation>Fordel &amp;loddrett</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="858"/>
@@ -2364,12 +2367,12 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="871"/>
         <source>Check for updates automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Se automatisk etter oppdateringer</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="909"/>
         <source>&amp;Learn</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lær</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="910"/>
@@ -2460,27 +2463,27 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../UI/MainWindow.cpp" line="292"/>
         <source>Error</source>
-        <translation type="unfinished">Feil</translation>
+        <translation>Feil</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="321"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished">Åpne øvelsesmappen min</translation>
+        <translation>Åpne Min Øvelsesmappe</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="322"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished">Kunne ikke opprette eller få tilgang til en mappe for tilpassede øvelser.</translation>
+        <translation>Kunne ikke opprette eller åpne en mappe for egendefinerte øvelser.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="332"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished">Åpne omvisningsmappen min</translation>
+        <translation>Åpne Min Omvisningsmappe</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="333"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished">Kunne ikke opprette eller få tilgang til en mappe for tilpassede omvisninger.</translation>
+        <translation>Kunne ikke opprette eller åpne en mappe for egendefinerte omvisninger.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="586"/>
@@ -2490,17 +2493,17 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../UI/MainWindow.cpp" line="610"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Gjør om</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Angre</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="636"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Tastatursnarveier&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Navigering av Elementegenskaper&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Forrige / neste primære egenskap &lt;/li&gt;&lt;li&gt; { / } : Forrige / neste sekundære egenskap &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Omform til forrige / neste element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Generelle Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Dobbeltklikk på en ledning for å opprette en node &lt;/li&gt;&lt;li&gt; Dra et element fra venstre panel til tegneflaten for å legge det til &lt;/li&gt;&lt;li&gt; Flytt utvalget med piltastene (hold inne Shift for større steg) &lt;/li&gt;&lt;li&gt; Slipp en .panda-fil på tegneflaten for å åpne den &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="686"/>
@@ -2510,7 +2513,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../UI/MainWindow.cpp" line="860"/>
         <source>%1[*] — wiRedPanda %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1325"/>
@@ -2528,12 +2531,12 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="27"/>
         <source>Circuit minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>Kretsminikart</translation>
     </message>
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="28"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
-        <translation type="unfinished"></translation>
+        <translation>En miniatyroversikt over hele kretsen. Klikk eller dra i den for å hoppe hovedtegneflaten til det stedet.</translation>
     </message>
 </context>
 <context>
@@ -2636,13 +2639,13 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="44"/>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="145"/>
         <source>Cycle element properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Bla gjennom elementegenskaper</translation>
     </message>
     <message>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="221"/>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="252"/>
         <source>Morph elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Omform elementer</translation>
     </message>
 </context>
 <context>
@@ -2688,12 +2691,12 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="49"/>
         <source>Flip horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Vend horisontalt</translation>
     </message>
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="50"/>
         <source>Flip vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Vend vertikalt</translation>
     </message>
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="54"/>
@@ -2751,7 +2754,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../BeWavedDolphin/DolphinCommands.cpp" line="17"/>
         <source>Edit waveform</source>
-        <translation type="unfinished"></translation>
+        <translation>Rediger bølgeform</translation>
     </message>
 </context>
 <context>
@@ -2775,7 +2778,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../Scene/Commands.cpp" line="1170"/>
         <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Gi nytt navn til IC &quot;%1&quot; til &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -2834,7 +2837,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../Scene/Scene.cpp" line="620"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg alle</translation>
     </message>
 </context>
 <context>
@@ -2842,7 +2845,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="60"/>
         <source>Zoom: %1%    Selected: %2 / %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom: %1%    Valgt: %2 / %3</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="214"/>
@@ -2931,7 +2934,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../IO/Serialization.cpp" line="739"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Avhengighetskjeden for Panda-filen overskrider maksimal nestingsdybde (%1) ved kopiering av &apos;%2&apos;</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="758"/>
@@ -3021,7 +3024,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../Element/GraphicElements/Text.cpp" line="58"/>
         <source>Double-click to add text</source>
-        <translation type="unfinished"></translation>
+        <translation>Dobbeltklikk for å legge til tekst</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Text.cpp" line="25"/>
@@ -3097,7 +3100,7 @@ Du må lagre nye prosjekter før du får tilgang til IC-er og utseender, eller k
     <message>
         <location filename="../../UI/TrashButton.cpp" line="61"/>
         <source>Remove this IC? Its file will be moved to the system trash and its instances deleted from the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjerne denne IC-en? Filen flyttes til systemets papirkurv, og forekomstene slettes fra kretsen.</translation>
     </message>
 </context>
 <context>
@@ -3233,7 +3236,7 @@ Vennligst oppdater wiRedPanda for å lagre endringer i denne filen.</translation
     <message>
         <location filename="../../Scene/Workspace.cpp" line="252"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke lagre: underkretsen &quot;%1&quot; kunne ikke leses for å bygge den inn.</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="329"/>
@@ -3346,12 +3349,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="75"/>
         <source> (recovered)</source>
-        <translation type="unfinished"></translation>
+        <translation> (gjenopprettet)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="138"/>
         <source>New Project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt Prosjekt %1</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
@@ -3360,7 +3363,7 @@ Do you want to save your changes?</source>
         <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
         <source>Panda files</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda-filer</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="226"/>

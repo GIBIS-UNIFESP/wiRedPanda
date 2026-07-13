@@ -50,7 +50,7 @@
     <message>
         <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1067"/>
         <source>This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>此電路需要 %1 個 I/O 接腳,但支援的最大電路板(%2)僅提供 %3 個。請減少輸入和輸出的數量,或分割電路。</translation>
     </message>
     <message>
         <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1265"/>
@@ -196,12 +196,12 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="274"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>復原</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="276"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>重做</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
@@ -282,21 +282,21 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>CSV files</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV 檔案</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>Dolphin files</source>
-        <translation type="unfinished"></translation>
+        <translation>Dolphin 檔案</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>All supported files</source>
-        <translation type="unfinished"></translation>
+        <translation>所有支援的檔案</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="880"/>
@@ -306,12 +306,12 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
         <source>PNG files</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG 檔案</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>PDF files</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF 檔案</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1012"/>
@@ -332,7 +332,7 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="480"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法匯出: 建立此波形的電路已變更。</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="601"/>
@@ -391,7 +391,7 @@
     <message>
         <location filename="../../Scene/ClipboardManager.cpp" line="160"/>
         <source>Paste</source>
-        <translation type="unfinished">貼上</translation>
+        <translation>貼上</translation>
     </message>
 </context>
 <context>
@@ -422,7 +422,7 @@
     <message>
         <location filename="../../UI/ClockDialogUI.cpp" line="75"/>
         <source>Clock</source>
-        <translation type="unfinished">時脈</translation>
+        <translation>時脈</translation>
     </message>
     <message>
         <location filename="../../UI/ClockDialogUI.cpp" line="76"/>
@@ -440,27 +440,27 @@
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="252"/>
         <source>This connection is not allowed.</source>
-        <translation type="unfinished"></translation>
+        <translation>不允許此連線。</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="255"/>
         <source>Can&apos;t connect an element to itself.</source>
-        <translation type="unfinished"></translation>
+        <translation>元件無法連接到自身。</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="258"/>
         <source>These ports are already connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>這些連接埠已經連接。</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
         <source>This element receives wirelessly — no input wire needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>此元件以無線方式接收 — 不需要輸入線路。</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
         <source>This element transmits wirelessly — no output wire needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>此元件以無線方式傳送 — 不需要輸出線路。</translation>
     </message>
 </context>
 <context>
@@ -806,12 +806,12 @@
         <location filename="../../UI/ElementEditorUI.cpp" line="330"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="331"/>
         <source>Choose audio file</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇音訊檔案</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="334"/>
         <source>Sound file:</source>
-        <translation type="unfinished"></translation>
+        <translation>音效檔案:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="335"/>
@@ -826,12 +826,12 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="310"/>
         <source>A6</source>
-        <translation type="unfinished"></translation>
+        <translation>A6</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="311"/>
         <source>B6</source>
-        <translation type="unfinished"></translation>
+        <translation>B6</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="315"/>
@@ -841,7 +841,7 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="318"/>
         <source>Appearance for:</source>
-        <translation type="unfinished"></translation>
+        <translation>外觀套用於:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="326"/>
@@ -856,37 +856,37 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="295"/>
         <source>Element Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>元件編輯器</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="299"/>
         <source>Identity</source>
-        <translation type="unfinished"></translation>
+        <translation>識別</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="300"/>
         <source>Ports</source>
-        <translation type="unfinished"></translation>
+        <translation>連接埠</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="301"/>
         <source>Timing</source>
-        <translation type="unfinished"></translation>
+        <translation>時序</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="302"/>
         <source>Sound</source>
-        <translation type="unfinished"></translation>
+        <translation>音效</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="303"/>
         <source>Interaction</source>
-        <translation type="unfinished"></translation>
+        <translation>互動</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="304"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>外觀</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="306"/>
@@ -911,27 +911,27 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="347"/>
         <source>Prevent this element from being toggled by clicking it during simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>防止在模擬期間透過點擊此元件來切換它。</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="352"/>
         <source>Nodes with the same label connect wirelessly — Transmit sends its input, Receive outputs it.</source>
-        <translation type="unfinished"></translation>
+        <translation>具有相同標籤的節點以無線方式連接 — Transmit 傳送其輸入,Receive 將其作為輸出輸出。</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="357"/>
         <source>The value this input element outputs.</source>
-        <translation type="unfinished"></translation>
+        <translation>此輸入元件輸出的值。</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="361"/>
         <source>Keyboard key that toggles this element during simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>在模擬期間切換此元件的鍵盤按鍵。</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="366"/>
         <source>Phase offset from the driving clock, as a fraction of its period.</source>
-        <translation type="unfinished"></translation>
+        <translation>相對於驅動時脈的相位偏移,以其週期的分數表示。</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="312"/>
@@ -951,7 +951,7 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="337"/>
         <source>Tone:</source>
-        <translation type="unfinished"></translation>
+        <translation>音調:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="344"/>
@@ -1017,7 +1017,7 @@
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="227"/>
         <source>Change appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>變更外觀</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="291"/>
@@ -1054,13 +1054,14 @@ Each wireless channel must have a unique label.</source>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="746"/>
         <source>Duplicate IC Name</source>
-        <translation type="unfinished"></translation>
+        <translation>重複的 IC 名稱</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="747"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
-        <translation type="unfinished"></translation>
+        <translation>名為 &quot;%1&quot; 的內嵌 IC 已存在。
+請選擇其他名稱。</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="955"/>
@@ -1070,7 +1071,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="956"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>音訊</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="290"/>
@@ -1137,152 +1138,152 @@ Choose a different name.</source>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="61"/>
         <source>Constant logic HIGH (1) source.</source>
-        <translation type="unfinished"></translation>
+        <translation>恆定邏輯高(1)訊號源。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="62"/>
         <source>Constant logic LOW (0) source.</source>
-        <translation type="unfinished"></translation>
+        <translation>恆定邏輯低(0)訊號源。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="63"/>
         <source>Push button: outputs HIGH only while pressed.</source>
-        <translation type="unfinished"></translation>
+        <translation>按鈕: 僅在按住時輸出高電位。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="64"/>
         <source>Toggle switch: click to flip between 0 and 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入開關: 點擊以在 0 和 1 之間切換。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="65"/>
         <source>Rotary switch with several selectable positions.</source>
-        <translation type="unfinished"></translation>
+        <translation>具有多個可選位置的旋轉開關。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="66"/>
         <source>Clock: a square wave at a configurable frequency.</source>
-        <translation type="unfinished"></translation>
+        <translation>時脈: 頻率可設定的方波。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="67"/>
         <source>LED: lights up while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>LED: 只要其輸入為高電位就會亮起。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="68"/>
         <source>7-segment display for a single digit.</source>
-        <translation type="unfinished"></translation>
+        <translation>用於單一數字的 7 段顯示器。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>14-segment alphanumeric display.</source>
-        <translation type="unfinished"></translation>
+        <translation>英數字 14 段顯示器。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="70"/>
         <source>16-segment alphanumeric display.</source>
-        <translation type="unfinished"></translation>
+        <translation>英數字 16 段顯示器。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="71"/>
         <source>Buzzer: plays a tone while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>警示器: 只要其輸入為高電位就會發出音調。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Audio box: plays an audio file while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>音響盒: 只要其輸入為高電位就會播放音訊檔案。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="73"/>
         <source>AND gate: output is HIGH only when every input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>及閘: 只有當每個輸入都為高電位時,輸出才為高電位。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="74"/>
         <source>OR gate: output is HIGH when any input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>或閘: 當任一輸入為高電位時,輸出為高電位。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>NOT gate: inverts its input.</source>
-        <translation type="unfinished"></translation>
+        <translation>反相器: 反轉其輸入。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="76"/>
         <source>NAND gate: LOW only when every input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>反及閘: 只有當每個輸入都為高電位時,才為低電位。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="77"/>
         <source>NOR gate: HIGH only when every input is LOW.</source>
-        <translation type="unfinished"></translation>
+        <translation>反或閘: 只有當每個輸入都為低電位時,才為高電位。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>XOR gate: HIGH when an odd number of inputs are HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>互排或閘: 當高電位輸入的數量為奇數時,為高電位。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="79"/>
         <source>XNOR gate: HIGH when the inputs match.</source>
-        <translation type="unfinished"></translation>
+        <translation>反互排或閘: 當輸入相符時,為高電位。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="80"/>
         <source>Node: a wire junction / branch point.</source>
-        <translation type="unfinished"></translation>
+        <translation>節點: 導線的交會點 / 分支點。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="81"/>
         <source>Truth table: custom logic you define, output by output.</source>
-        <translation type="unfinished"></translation>
+        <translation>真值表: 您逐一輸出定義的自訂邏輯。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="82"/>
         <source>Multiplexer: routes the selected input to the output.</source>
-        <translation type="unfinished"></translation>
+        <translation>多工器: 將選定的輸入路由到輸出。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="83"/>
         <source>Demultiplexer: routes the input to the selected output.</source>
-        <translation type="unfinished"></translation>
+        <translation>解多工器: 將輸入路由到選定的輸出。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="84"/>
         <source>D latch: stores the D input while Enable is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>D 型鎖存器: 只要 Enable 為高電位,就儲存 D 輸入。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="85"/>
         <source>SR latch: a Set/Reset storage element.</source>
-        <translation type="unfinished"></translation>
+        <translation>SR 型鎖存器: 一種 Set/Reset 儲存元件。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="86"/>
         <source>D flip-flop: stores D on the active clock edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>D 型正反器: 在有效時脈邊緣儲存 D。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="87"/>
         <source>JK flip-flop: set, reset or toggle on the active clock edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>JK 型正反器: 在有效時脈邊緣設定、重設或翻轉。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="88"/>
         <source>T flip-flop: toggles on the active clock edge when T is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>T 型正反器: 當 T 為高電位時,在有效時脈邊緣翻轉。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="89"/>
         <source>Text: a free-text annotation on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>文字: 畫布上的自由文字注釋。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="90"/>
         <source>Line: a decorative annotation on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>線段: 畫布上的裝飾性注釋。</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="109"/>
@@ -1300,17 +1301,17 @@ Choose a different name.</source>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="40"/>
         <source>Embedded IC: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>內嵌 IC: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="42"/>
         <source>IC from file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>來自檔案的 IC: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="46"/>
         <source>Drag or double-click to add.</source>
-        <translation type="unfinished"></translation>
+        <translation>拖曳或按兩下以新增。</translation>
     </message>
 </context>
 <context>
@@ -1318,22 +1319,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="25"/>
         <source>Search elements</source>
-        <translation type="unfinished"></translation>
+        <translation>搜尋元件</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="26"/>
         <source>Type to filter the palette by element name. Press Enter to add the first match to the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入以依元件名稱篩選面板。按 Enter 將第一個相符項目新增到電路。</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="28"/>
         <source>Element palette</source>
-        <translation type="unfinished"></translation>
+        <translation>元件面板</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="29"/>
         <source>Elements grouped by category. Drag one onto the canvas, or double-click to add it to the active circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>依類別分組的元件。將一個拖曳到畫布上,或按兩下以將其新增到使用中的電路。</translation>
     </message>
 </context>
 <context>
@@ -1431,22 +1432,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file</source>
-        <translation type="unfinished"></translation>
+        <translation>Arduino 檔案</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file</source>
-        <translation type="unfinished"></translation>
+        <translation>SystemVerilog 檔案</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF 檔案</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG 檔案</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
@@ -1554,12 +1555,12 @@ Choose a different name.</source>
     <message>
         <location filename="../../Scene/GraphicsView.cpp" line="26"/>
         <source>Circuit canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>電路畫布</translation>
     </message>
     <message>
         <location filename="../../Scene/GraphicsView.cpp" line="27"/>
         <source>The circuit canvas. Drag elements here from the palette to build a circuit, drag between ports to wire them together, and drag a selection to move it.</source>
-        <translation type="unfinished"></translation>
+        <translation>電路畫布。從面板拖曳元件到此處以建立電路,在連接埠之間拖曳以將它們連接起來,並拖曳選取範圍以移動它。</translation>
     </message>
 </context>
 <context>
@@ -1590,7 +1591,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="71"/>
         <source>Panda</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="79"/>
@@ -1606,22 +1607,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="91"/>
         <source>File name conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案名稱衝突</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="92"/>
         <source>A different file named &quot;%1&quot; already exists in the project folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>專案資料夾中已存在名為 &quot;%1&quot; 的其他檔案。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>取代</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="95"/>
         <source>Keep Existing</source>
-        <translation type="unfinished"></translation>
+        <translation>保留現有檔案</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="119"/>
@@ -1631,7 +1632,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="146"/>
         <source>Error moving file to trash: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>將檔案移至回收筒時發生錯誤: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="168"/>
@@ -1648,14 +1649,16 @@ Suggested name:</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="189"/>
         <source>Save required</source>
-        <translation type="unfinished"></translation>
+        <translation>需要儲存</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="190"/>
         <source>This action needs the project saved to a file first, so IC paths can be resolved.
 
 Save it now?</source>
-        <translation type="unfinished"></translation>
+        <translation>此動作需要先將專案儲存到檔案,以便解析 IC 路徑。
+
+是否立即儲存?</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="222"/>
@@ -1689,7 +1692,7 @@ Save it now?</source>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <location filename="../../UI/ICController.cpp" line="410"/>
         <source>Panda files</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda 檔案</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="262"/>
@@ -1710,7 +1713,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="400"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
-        <translation type="unfinished"></translation>
+        <translation>已內嵌 %1 個 IC;仍有一些以檔案為基礎的 IC 保留。</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="410"/>
@@ -1728,32 +1731,32 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="46"/>
         <source>Embedded IC drop zone</source>
-        <translation type="unfinished"></translation>
+        <translation>內嵌 IC 放置區</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="46"/>
         <source>File-based IC drop zone</source>
-        <translation type="unfinished"></translation>
+        <translation>以檔案為基礎的 IC 放置區</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="48"/>
         <source>Drop a file-based IC here to embed it directly in the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>將以檔案為基礎的 IC 拖放到此處,以將其直接內嵌到電路。</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="49"/>
         <source>Drop an embedded IC here to extract it to its own file.</source>
-        <translation type="unfinished"></translation>
+        <translation>將內嵌 IC 拖放到此處,以將其擷取到自己的檔案。</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="58"/>
         <source>Drop here to embed this IC in the circuit</source>
-        <translation type="unfinished"></translation>
+        <translation>拖放到此處以將此 IC 內嵌到電路</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="59"/>
         <source>Drop here to extract this IC to a file</source>
-        <translation type="unfinished"></translation>
+        <translation>拖放到此處以將此 IC 擷取到檔案</translation>
     </message>
 </context>
 <context>
@@ -1766,7 +1769,7 @@ Save it now?</source>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="143"/>
         <source>IC nesting depth limit (%1) exceeded while loading %2</source>
-        <translation type="unfinished"></translation>
+        <translation>載入 %2 時超出了 IC 巢狀深度限制(%1)</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="154"/>
@@ -1809,7 +1812,7 @@ Save it now?</source>
     <message>
         <location filename="../../Scene/ICRegistry.cpp" line="341"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>解析 &apos;%2&apos; 時,內嵌 IC 相依鏈超出了最大巢狀深度(%1)</translation>
     </message>
 </context>
 <context>
@@ -1917,7 +1920,7 @@ Save it now?</source>
     <message>
         <location filename="../../Element/GraphicElements/Led.cpp" line="245"/>
         <source>Port %1=%2</source>
-        <translation type="unfinished"></translation>
+        <translation>連接埠 %1=%2</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
@@ -2159,7 +2162,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>Dupli&amp;cate</source>
-        <translation type="unfinished"></translation>
+        <translation>複製(&amp;D)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="790"/>
@@ -2244,12 +2247,12 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="822"/>
         <source>Zoom to &amp;Fit</source>
-        <translation type="unfinished"></translation>
+        <translation>符合視窗(&amp;F)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
-        <translation type="unfinished"></translation>
+        <translation>縮放以符合整個電路(或選取範圍)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="827"/>
@@ -2319,42 +2322,42 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Align &amp;Left</source>
-        <translation type="unfinished"></translation>
+        <translation>靠左對齊(&amp;L)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Align &amp;Right</source>
-        <translation type="unfinished"></translation>
+        <translation>靠右對齊(&amp;R)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Align &amp;Top</source>
-        <translation type="unfinished"></translation>
+        <translation>靠上對齊(&amp;T)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>Align &amp;Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>靠下對齊(&amp;B)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Align Horizontal &amp;Centers</source>
-        <translation type="unfinished"></translation>
+        <translation>水平置中對齊(&amp;H)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
         <source>Align &amp;Vertical Centers</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直置中對齊(&amp;V)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Distribute &amp;Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>水平分佈(&amp;H)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="857"/>
         <source>Distribute Verti&amp;cally</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直分佈(&amp;V)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="858"/>
@@ -2364,12 +2367,12 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="871"/>
         <source>Check for updates automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>自動檢查更新</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="909"/>
         <source>&amp;Learn</source>
-        <translation type="unfinished"></translation>
+        <translation>學習(&amp;L)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="910"/>
@@ -2460,27 +2463,27 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../UI/MainWindow.cpp" line="292"/>
         <source>Error</source>
-        <translation type="unfinished">錯誤</translation>
+        <translation>錯誤</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="321"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished">開啟我的練習資料夾</translation>
+        <translation>開啟我的練習資料夾</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="322"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished">無法建立或存取自訂練習的資料夾。</translation>
+        <translation>無法建立或存取自訂練習的資料夾。</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="332"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished">開啟我的導覽資料夾</translation>
+        <translation>開啟我的導覽資料夾</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="333"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished">無法建立或存取自訂導覽的資料夾。</translation>
+        <translation>無法建立或存取自訂導覽的資料夾。</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="586"/>
@@ -2490,17 +2493,17 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../UI/MainWindow.cpp" line="610"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>重做</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>復原</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="636"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;鍵盤快速鍵&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;元件屬性導覽&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : 上一個 / 下一個主要屬性 &lt;/li&gt;&lt;li&gt; { / } : 上一個 / 下一個次要屬性 &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : 變形為上一個 / 下一個元件 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;一般提示&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; 按兩下導線以建立節點 &lt;/li&gt;&lt;li&gt; 將元件從左側面板拖曳到畫布以新增它 &lt;/li&gt;&lt;li&gt; 使用方向鍵移動選取範圍(按住 Shift 可加大步幅) &lt;/li&gt;&lt;li&gt; 將 .panda 檔案拖放到畫布上以開啟它 &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="686"/>
@@ -2510,7 +2513,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../UI/MainWindow.cpp" line="860"/>
         <source>%1[*] — wiRedPanda %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1325"/>
@@ -2528,12 +2531,12 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="27"/>
         <source>Circuit minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>電路小地圖</translation>
     </message>
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="28"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
-        <translation type="unfinished"></translation>
+        <translation>整個電路的縮圖概覽。在其中點擊或拖曳,可將主畫布跳到該位置。</translation>
     </message>
 </context>
 <context>
@@ -2636,13 +2639,13 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="44"/>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="145"/>
         <source>Cycle element properties</source>
-        <translation type="unfinished"></translation>
+        <translation>循環切換元件屬性</translation>
     </message>
     <message>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="221"/>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="252"/>
         <source>Morph elements</source>
-        <translation type="unfinished"></translation>
+        <translation>變形元件</translation>
     </message>
 </context>
 <context>
@@ -2688,12 +2691,12 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="49"/>
         <source>Flip horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>水平翻轉</translation>
     </message>
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="50"/>
         <source>Flip vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直翻轉</translation>
     </message>
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="54"/>
@@ -2751,7 +2754,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../BeWavedDolphin/DolphinCommands.cpp" line="17"/>
         <source>Edit waveform</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯波形</translation>
     </message>
 </context>
 <context>
@@ -2775,7 +2778,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../Scene/Commands.cpp" line="1170"/>
         <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>將 IC &quot;%1&quot; 重新命名為 &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -2834,7 +2837,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../Scene/Scene.cpp" line="620"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>全選</translation>
     </message>
 </context>
 <context>
@@ -2842,7 +2845,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="60"/>
         <source>Zoom: %1%    Selected: %2 / %3</source>
-        <translation type="unfinished"></translation>
+        <translation>縮放: %1%    已選取: %2 / %3</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="214"/>
@@ -2931,7 +2934,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../IO/Serialization.cpp" line="739"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>複製 &apos;%2&apos; 時,Panda 檔案相依鏈超出了最大巢狀深度(%1)</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="758"/>
@@ -3021,7 +3024,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../Element/GraphicElements/Text.cpp" line="58"/>
         <source>Double-click to add text</source>
-        <translation type="unfinished"></translation>
+        <translation>按兩下以新增文字</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Text.cpp" line="25"/>
@@ -3097,7 +3100,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
     <message>
         <location filename="../../UI/TrashButton.cpp" line="61"/>
         <source>Remove this IC? Its file will be moved to the system trash and its instances deleted from the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>是否移除此 IC? 其檔案將移至系統回收筒,其執行個體將從電路中刪除。</translation>
     </message>
 </context>
 <context>
@@ -3233,7 +3236,7 @@ Please update wiRedPanda to save changes to this file.</source>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="252"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法儲存: 無法讀取子電路 &quot;%1&quot; 以將其內嵌。</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="329"/>
@@ -3346,12 +3349,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="75"/>
         <source> (recovered)</source>
-        <translation type="unfinished"></translation>
+        <translation>(已復原)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="138"/>
         <source>New Project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>新增專案 %1</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
@@ -3360,7 +3363,7 @@ Do you want to save your changes?</source>
         <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
         <source>Panda files</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda 檔案</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="226"/>
