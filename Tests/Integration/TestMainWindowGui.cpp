@@ -637,6 +637,51 @@ void TestMainWindowGui::testUpdateChecksToggle()
 }
 
 // ===========================================================================
+// Menu structure (#8: Exercises+Tours -> Learn; Report-Translation -> Help)
+// ===========================================================================
+
+void TestMainWindowGui::testLearnMenuHostsExercisesAndToursAsSubmenus()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    auto *menuLearn = window->findChild<QMenu *>("menuLearn");
+    QVERIFY2(menuLearn, "menuLearn not found -- Exercises/Tours consolidation missing");
+
+    auto *menuExercises = window->findChild<QMenu *>("menuExercises");
+    auto *menuTours = window->findChild<QMenu *>("menuTours");
+    QVERIFY(menuExercises);
+    QVERIFY(menuTours);
+
+    // Re-parented as submenus, not flattened -- the two-category structure must survive.
+    QCOMPARE(menuLearn->actions().contains(menuExercises->menuAction()), true);
+    QCOMPARE(menuLearn->actions().contains(menuTours->menuAction()), true);
+
+    // The old standalone menu no longer exists as a separate top-level menu.
+    QVERIFY(!window->findChild<QMenu *>("menuTranslation"));
+
+    // populateContentMenu() (MainWindow::setupExercisesMenu/setupToursMenu) still drives both
+    // submenus via aboutToShow -- re-parenting under menuLearn must not have disturbed that
+    // wiring, since it's keyed off object identity, not the menu's position in the menu bar.
+    emit menuExercises->aboutToShow();
+    QVERIFY2(!menuExercises->isEmpty(), "menuExercises did not populate after re-parenting under menuLearn");
+    emit menuTours->aboutToShow();
+    QVERIFY2(!menuTours->isEmpty(), "menuTours did not populate after re-parenting under menuLearn");
+}
+
+void TestMainWindowGui::testReportTranslationErrorReachableViaHelpMenu()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    auto *menuHelp = window->findChild<QMenu *>("menuHelp");
+    QVERIFY(menuHelp);
+
+    auto *action = window->findChild<QAction *>("actionReportTranslationError");
+    QVERIFY2(action, "actionReportTranslationError not found");
+
+    QCOMPARE(menuHelp->actions().contains(action), true);
+}
+
+// ===========================================================================
 // Element manipulation via keyboard
 // ===========================================================================
 

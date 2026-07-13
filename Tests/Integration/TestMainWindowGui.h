@@ -51,6 +51,11 @@ private slots:
     void testLabelsUnderIconsToggle();
     void testUpdateChecksToggle();
 
+    // --- Menu structure (#8: Exercises+Tours -> Learn; Report-Translation -> Help) ---
+
+    void testLearnMenuHostsExercisesAndToursAsSubmenus();
+    void testReportTranslationErrorReachableViaHelpMenu();
+
     // --- Element manipulation via keyboard ---
 
     void testDeleteViaKeyboard();
