@@ -1,322 +1,322 @@
 {
-  "basic-and-gate": {
-    "add-inputs": {
-      "hint": "Klikněte na kartu V/V v levém panelu, poté přetáhněte dva prvky InputSwitch na pracovní plochu a umístěte je nalevo od hradla A.",
-      "instruction": "Přidejte na pracovní plochu dva prvky InputSwitch"
+    "basic-and-gate": {
+        "add-inputs": {
+            "hint": "Klikněte na kartu V/V v levém panelu, poté přetáhněte dva prvky InputSwitch na pracovní plochu a umístěte je nalevo od hradla A.",
+            "instruction": "Přidejte na pracovní plochu dva prvky InputSwitch"
+        },
+        "add-output": {
+            "hint": "Přetáhněte LED z karty V/V a umístěte ji napravo od hradla A. Poté připojte výstupní port hradla A (pravá strana) ke vstupnímu portu LED (levá strana).",
+            "instruction": "Přidejte LED a připojte ji k výstupu hradla A"
+        },
+        "connect-inputs": {
+            "hint": "Klikněte a táhněte z výstupního portu InputSwitch (pravá strana) na jeden ze vstupních portů hradla A (levá strana). Opakujte pro druhý přepínač.",
+            "instruction": "Připojte oba vstupní přepínače k hradlu A"
+        },
+        "description": "Naučte se umísťovat logická hradla, přidávat vstupy a výstupy a propojovat je.",
+        "place-and-gate": {
+            "hint": "Klikněte na kartu Hradla v levém panelu a poté přetáhněte hradlo A na pracovní plochu.",
+            "instruction": "Umístěte hradlo A na pracovní plochu"
+        },
+        "title": "Sestavení obvodu s hradlem A",
+        "toggle-observe": {
+            "hint": "Kliknutím na InputSwitch jej přepnete. LED se rozsvítí pouze tehdy, když jsou OBA přepínače zapnuté. Je to proto, že A dává na výstupu 1 pouze tehdy, když jsou všechny vstupy 1.",
+            "instruction": "Přepínejte přepínače a sledujte LED — to je logika A!"
+        }
     },
-    "add-output": {
-      "hint": "Přetáhněte LED z karty V/V a umístěte ji napravo od hradla A. Poté připojte výstupní port hradla A (pravá strana) ke vstupnímu portu LED (levá strana).",
-      "instruction": "Přidejte LED a připojte ji k výstupu hradla A"
+    "basic-or-not-gates": {
+        "add-inputs": {
+            "hint": "Klikněte na kartu V/V v levém panelu, poté přetáhněte dva prvky InputSwitch na pracovní plochu a umístěte je nalevo od hradla Nebo.",
+            "instruction": "Přidejte na pracovní plochu dva prvky InputSwitch"
+        },
+        "add-not-gate": {
+            "hint": "Přetažením odstraňte vodič mezi hradlem Nebo a LED.",
+            "instruction": "Odpojte LED od hradla Nebo, poté připojte hradlo Nebo k hradlu Ne a hradlo Ne k LED"
+        },
+        "add-output": {
+            "hint": "Přetáhněte LED z karty V/V a umístěte ji napravo od hradla Nebo. Poté připojte výstupní port hradla Nebo (pravá strana) ke vstupnímu portu LED (levá strana).",
+            "instruction": "Přidejte LED a připojte ji k výstupu hradla Nebo"
+        },
+        "connect-inputs": {
+            "hint": "Klikněte a táhněte z výstupního portu InputSwitch (pravá strana) na jeden ze vstupních portů hradla Nebo (levá strana). Opakujte pro druhý přepínač.",
+            "instruction": "Připojte oba vstupní přepínače k hradlu Nebo"
+        },
+        "description": "Naučte se používat hradla Nebo a Ne.",
+        "place-or-gate": {
+            "hint": "Klikněte na kartu Hradla v levém panelu a poté přetáhněte hradlo Nebo na pracovní plochu.",
+            "instruction": "Umístěte hradlo Nebo na pracovní plochu"
+        },
+        "title": "Další základní hradla: Nebo a Ne",
+        "toggle-observe-nor": {
+            "hint": "",
+            "instruction": "Hradlo Ne obrací signál. Nyní bude obvod dávat na výstupu 1 pouze tehdy, když žádný ze vstupů není 1"
+        },
+        "toggle-observe-or": {
+            "hint": "",
+            "instruction": "Vyzkoušejte vstupy a všimněte si, jak hradlo Nebo dává na výstupu 1, když je kterýkoli z jeho vstupů 1"
+        }
     },
-    "connect-inputs": {
-      "hint": "Klikněte a táhněte z výstupního portu InputSwitch (pravá strana) na jeden ze vstupních portů hradla A (levá strana). Opakujte pro druhý přepínač.",
-      "instruction": "Připojte oba vstupní přepínače k hradlu A"
+    "clock-led-waveform": {
+        "combinational-mode": {
+            "hint": "Klikněte na Upravit → Kombinační v nabídce BeWavedDolphin. Tím se vyplní řádek Hodiny všemi možnými hodnotami a vypočítá se výstup LED pro každou z nich — kompletní tabulka pravdivosti na jedno kliknutí.",
+            "instruction": "Automaticky vygenerovat všechny vstupní kombinace"
+        },
+        "connect-clock-led": {
+            "hint": "Klikněte a táhněte z výstupního portu Hodin (pravá strana) na vstupní port LED (levá strana).",
+            "instruction": "Připojte výstup Hodin ke vstupu LED"
+        },
+        "description": "Sestavte minimální obvod Hodiny-LED a prozkoumejte prohlížeč časových průběhů: kombinační režim a ruční úpravu buněk.",
+        "open-waveform": {
+            "hint": "BeWavedDolphin zobrazuje signály vašeho obvodu jako řádky. Řádek Hodiny je vstup a řádek Led je výstup. Každý sloupec je jeden časový krok simulace.",
+            "instruction": "Prohlížeč časových průběhů je nyní otevřený — podívejte se!"
+        },
+        "place-clock": {
+            "hint": "Klikněte na kartu V/V v levém panelu a poté přetáhněte prvek Hodiny na pracovní plochu.",
+            "instruction": "Umístěte prvek Hodiny na pracovní plochu"
+        },
+        "place-led": {
+            "hint": "Stále na kartě V/V přetáhněte prvek Led na pracovní plochu napravo od Hodin.",
+            "instruction": "Umístěte LED na pracovní plochu"
+        },
+        "title": "Hodiny a LED: základy časových průběhů",
+        "toggle-cell": {
+            "hint": "Dvojklikem na libovolnou buňku v řádku Hodiny ji přepnete mezi 0 a 1. Sledujte, jak se řádek Led okamžitě aktualizuje a odráží nový výstup.",
+            "instruction": "Ručně přepněte buňku Hodin"
+        }
     },
-    "description": "Naučte se umísťovat logická hradla, přidávat vstupy a výstupy a propojovat je.",
-    "place-and-gate": {
-      "hint": "Klikněte na kartu Hradla v levém panelu a poté přetáhněte hradlo A na pracovní plochu.",
-      "instruction": "Umístěte hradlo A na pracovní plochu"
+    "combinational-circuits-one": {
+        "add-demux": {
+            "hint": "Váš obvod by nyní měl mít dva InputSwitch, dvě LED a jeden obvod DEMUX",
+            "instruction": "Přidejte obvod DEMUX a připojte InputSwitch k jeho portům In a S0. Poté připojte každý z výstupů DEMUX k jiné LED"
+        },
+        "add-inputs": {
+            "hint": "Klikněte na kartu V/V v levém panelu, poté přetáhněte dva prvky InputSwitch na pracovní plochu a umístěte je nalevo od obvodu MUX.",
+            "instruction": "Přidejte na pracovní plochu tři prvky InputSwitch"
+        },
+        "add-output": {
+            "hint": "Přetáhněte LED z karty V/V a umístěte ji napravo od obvodu MUX. Poté připojte výstupní port obvodu MUX (pravá strana) ke vstupnímu portu LED (levá strana).",
+            "instruction": "Přidejte LED a připojte ji k výstupu obvodu MUX"
+        },
+        "connect-inputs": {
+            "hint": "Klikněte a táhněte z výstupního portu InputSwitch (pravá strana) na jeden ze vstupních portů hradla MUX (levá strana). Opakujte pro druhý přepínač. Poté připojte třetí vstupní přepínač k výběrovému portu MUX (dole)",
+            "instruction": "Připojte všechny vstupní přepínače k obvodu MUX"
+        },
+        "description": "Seznamte se s obvody MUX a DEMUX.",
+        "explain-demux-select": {
+            "hint": "",
+            "instruction": "Port S0 dole na DEMUX vybírá, který výstup obdrží signál ze vstupu. Když S0 = 0, platí Out0 = In0. Když S0 = 1, platí Out1 = In0"
+        },
+        "explain-mux-select": {
+            "hint": "",
+            "instruction": "Port S0 dole na MUX vybírá, který vstup je směrován na výstup. Když S0 = 0, je na výstup odeslán signál ze Vstupu 0. Když S0 = 1, je na výstup odeslán signál ze Vstupu 1."
+        },
+        "place-mux": {
+            "hint": "Klikněte na kartu Kombinační v levém panelu a poté přetáhněte obvod MUX na pracovní plochu.",
+            "instruction": "Umístěte obvod MUX na pracovní plochu"
+        },
+        "prepare-demux": {
+            "hint": "Váš obvod by nyní měl mít dva InputSwitch a dvě LED",
+            "instruction": "Odstraňte obvod MUX a jeden z InputSwitch. Poté přidejte další LED"
+        },
+        "title": "Kombinační obvody I: MUX a DEMUX"
     },
-    "title": "Sestavení obvodu s hradlem A",
-    "toggle-observe": {
-      "hint": "Kliknutím na InputSwitch jej přepnete. LED se rozsvítí pouze tehdy, když jsou OBA přepínače zapnuté. Je to proto, že A dává na výstupu 1 pouze tehdy, když jsou všechny vstupy 1.",
-      "instruction": "Přepínejte přepínače a sledujte LED — to je logika A!"
+    "combinational-circuits-three": {
+        "add-cin-and-gates": {
+            "hint": "Připojte výstupy InputSwitch ke vstupům hradel.",
+            "instruction": "Přidejte na pracovní plochu další InputSwitch a dejte mu popisek Cin. Poté přidejte hradlo Xor, hradlo A a hradlo Nebo"
+        },
+        "add-half-adder-gates": {
+            "hint": "Pomocí karty Hradla přidejte hradla Xor a A, poté pomocí karty V/V přidejte dvě LED.",
+            "instruction": "Přidejte na pracovní plochu hradlo Xor, hradlo A a dvě LED. Poté připojte každé hradlo k jiné LED"
+        },
+        "add-inputs": {
+            "hint": "Klikněte na kartu V/V v levém panelu, poté přetáhněte tři prvky InputSwitch na pracovní plochu. Třetí InputSwitch bude později použit jako vstupní přenos (Cin).",
+            "instruction": "Přidejte na pracovní plochu dva prvky InputSwitch"
+        },
+        "description": "Naučte se sestavit obvod sčítačky.",
+        "explain-full-adder": {
+            "hint": "",
+            "instruction": "Tento obvod tvoří úplnou sčítačku. Na rozdíl od poloviční sčítačky přijímá úplná sčítačka vstupní přenos (Cin) z předchozího sčítání a vytváří výstupní přenos (Cout) pro další stupeň. Propojením Cout jedné úplné sčítačky se vstupem Cin jiné lze zřetězit více úplných sčítaček a sčítat binární čísla libovolné délky"
+        },
+        "label-half-adder-outputs": {
+            "hint": "Kliknutím na LED a zapsáním textu do pole popisku vlevo dole na obrazovce dáte LED popisek.",
+            "instruction": "Přidejte LED připojené k hradlu Xor popisek Sum, poté přidejte LED připojené k hradlu A popisek Cout. Tento obvod tvoří polovičku sčítačky, která sčítá dva jednobitové vstupy"
+        },
+        "title": "Kombinační obvody III: Sčítačka",
+        "wire-full-adder": {
+            "hint": "Odstraňte staré spoje k LED, abyste mohli přidat nové.",
+            "instruction": "Připojte staré hradlo Xor a přepínač Cin k novému hradlu Xor, poté připojte nové hradlo Xor k výstupu Sum. Také připojte staré hradlo Xor a přepínač Cin k novému hradlu A. Nakonec připojte obě hradla A k hradlu Nebo a hradlo Nebo k Cout"
+        },
+        "wire-half-adder": {
+            "hint": "Připojte výstupy InputSwitch ke vstupům hradel.",
+            "instruction": "Připojte oba InputSwitch k hradlu Xor a hradlu A. Každý InputSwitch by měl být připojen k oběma hradlům. Hradlo Xor vytváří výstup Sum, zatímco hradlo A vytváří výstup Carry"
+        }
+    },
+    "combinational-circuits-two": {
+        "add-and-gates-leds": {
+            "hint": "Pomocí karty Hradla v levém panelu přidejte hradla A a pomocí karty V/V přidejte LED.",
+            "instruction": "Přidejte na pracovní plochu čtyři hradla A a čtyři LED, poté připojte každé hradlo A k jedné z LED"
+        },
+        "add-inputs": {
+            "hint": "Klikněte na kartu V/V v levém panelu a přetáhněte dva prvky InputSwitch na pracovní plochu.",
+            "instruction": "Přidejte na pracovní plochu dva prvky InputSwitch"
+        },
+        "add-not-gates": {
+            "hint": "Klikněte na kartu Hradla v levém panelu, poté přetáhněte dva prvky hradla Ne na pracovní plochu a připojte k nim InputSwitch.",
+            "instruction": "Přidejte na pracovní plochu dvě hradla Ne a připojte každý InputSwitch k samostatnému hradlu Ne"
+        },
+        "description": "Naučte se sestavit dekodér 2 na 4.",
+        "explain-decoder": {
+            "hint": "",
+            "instruction": "Pro každou konkrétní kombinaci vstupních bitů je aktivována pouze jedna odpovídající výstupní linka, zatímco všechny ostatní zůstávají neaktivní"
+        },
+        "title": "Kombinační obvody II: Dekodér",
+        "wire-decoder": {
+            "hint": "Každé hradlo A by mělo dostávat jeden signál z každého vstupu. Pro 1 použijte původní signál InputSwitch a pro 0 odpovídající výstup hradla Ne.",
+            "instruction": "Připojte výstupy hradel Ne a InputSwitch k hradlům A tak, aby každé hradlo A reprezentovalo jednu vstupní kombinaci"
+        }
+    },
+    "sequential-circuits-one": {
+        "add-d-latch": {
+            "hint": "D zámek ukládá jednu vstupní hodnotu a vyhýbá se neplatné vstupní kombinaci SR zámku.",
+            "instruction": "Odstraňte SR zámek při zachování InputSwitch a LED. Poté přidejte D zámek"
+        },
+        "add-sr-latch": {
+            "hint": "Pomocí karty Paměť přidejte SR zámek. Poté pomocí karty V/V přidejte dva InputSwitch a dvě LED.",
+            "instruction": "Přidejte na pracovní plochu SR zámek, dva InputSwitch a dvě LED"
+        },
+        "description": "Naučte se používat zámky (latche).",
+        "explain-d-latch": {
+            "hint": "",
+            "instruction": "Přepínejte InputSwitch a sledujte D zámek. Když je Enable 1, výstup sleduje vstup D. Když je Enable 0, zámek si pamatuje svou předchozí hodnotu"
+        },
+        "explain-sr-latch": {
+            "hint": "",
+            "instruction": "Přepínejte InputSwitch a sledujte, jak SR zámek ukládá svůj stav. Nastavení vstupu S na 1 způsobí, že výstup Q se stane 1, zatímco nastavení vstupu R na 1 nastaví Q zpět na 0. Když se oba vstupy vrátí na 0, zámek si pamatuje svůj poslední stav, dokud není znovu nastaven nebo resetován"
+        },
+        "title": "Sekvenční obvody I: Klopné obvody typu zámek",
+        "wire-d-latch": {
+            "hint": "Vstup D je hodnota, která má být uložena. Vstup Enable určuje, kdy zámek aktualizuje svou uloženou hodnotu.",
+            "instruction": "Připojte jeden InputSwitch ke vstupu D a druhý ke vstupu Enable (E). Připojte výstupy Q a Q̅ k LED"
+        },
+        "wire-sr-latch": {
+            "hint": "Připojte jeden InputSwitch ke vstupu Set (S) a druhý ke vstupu Reset (R). Připojte každý výstup zámku k jiné LED.",
+            "instruction": "Připojte InputSwitch ke vstupům S a R SR zámku. Poté připojte výstupy Q a Q̅ k LED"
+        }
+    },
+    "sequential-circuits-three": {
+        "add-flipflops": {
+            "hint": "Pomocí karty Paměť přidejte klopné obvody T a Hodiny. Poté pomocí karty V/V přidejte tři InputSwitch a tři LED.",
+            "instruction": "Přidejte na pracovní plochu tři klopné obvody T, tři InputSwitch, Hodiny a tři LED"
+        },
+        "description": "Naučte se sestavit čítací obvod.",
+        "explain-counter": {
+            "hint": "",
+            "instruction": "Zapněte všechny tři InputSwitch a spusťte Hodiny. Sledujte LED, zatímco čítač běží. První LED mění stav při každém hodinovém impulzu, druhá se mění každé dva impulzy a třetí každé čtyři impulzy, čímž zobrazuje opakující se 3bitové binární počítání od 000 do 111"
+        },
+        "title": "Sekvenční obvody III: Čítač",
+        "wire-clock": {
+            "hint": "První klopný obvod přijímá externí signál hodin.",
+            "instruction": "Připojte Hodiny ke vstupu Clk prvního klopného obvodu T"
+        },
+        "wire-outputs": {
+            "hint": "Každá LED představuje jeden bit čítače, přičemž první LED je nejméně významný bit.",
+            "instruction": "Připojte výstup Q každého klopného obvodu k jiné LED"
+        },
+        "wire-ripple-clock": {
+            "hint": "",
+            "instruction": "Připojte výstup Q prvního klopného obvodu ke vstupu Clk druhého klopného obvodu, poté připojte výstup Q druhého klopného obvodu ke vstupu Clk třetího klopného obvodu. Každý klopný obvod je taktován výstupem předchozího, čímž vzniká asynchronní čítač"
+        },
+        "wire-t-inputs": {
+            "hint": "Zapněte všechny tři InputSwitch. Klopný obvod T se přepíná pouze tehdy, když je jeho vstup T roven 1.",
+            "instruction": "Připojte každý InputSwitch ke vstupu T jiného klopného obvodu"
+        }
+    },
+    "sequential-circuits-two": {
+        "add-d-flipflop": {
+            "hint": "Pomocí karty Paměť přidejte klopný obvod D a Hodiny. Poté pomocí karty V/V přidejte dva InputSwitch a dvě LED.",
+            "instruction": "Přidejte na pracovní plochu klopný obvod D, dva InputSwitch, Hodiny a dvě LED"
+        },
+        "add-jk-flipflop": {
+            "hint": "Klopný obvod JK má vstupy J a K místo vstupu D. Vstupy Clear a Preset ponechte nepřipojené.",
+            "instruction": "Nahraďte klopný obvod D klopným obvodem JK při zachování Hodin, InputSwitch a LED"
+        },
+        "add-t-flipflop": {
+            "hint": "Klopný obvod T vyžaduje kromě hodin pouze jeden jediný vstup.",
+            "instruction": "Nahraďte klopný obvod JK klopným obvodem T a odstraňte jeden z InputSwitch"
+        },
+        "description": "Seznamte se s klopnými obvody.",
+        "explain-clear-preset": {
+            "hint": "",
+            "instruction": "Připojte druhý InputSwitch buď ke vstupu Clear, nebo Preset, a sledujte jeho účinek. Na rozdíl od vstupu D působí vstupy Clear a Preset okamžitě, aniž by čekaly na hranu hodin. Clear vynutí Q na 0, zatímco Preset vynutí Q na 1"
+        },
+        "explain-d-flipflop": {
+            "hint": "",
+            "instruction": "Přepněte InputSwitch D a sledujte klopný obvod D. Hodnota na vstupu D se kopíruje na výstup Q pouze při aktivní hraně hodin. Mezi hranami hodin zůstává výstup nezměněn"
+        },
+        "explain-jk-flipflop": {
+            "hint": "",
+            "instruction": "Přepínejte InputSwitch a sledujte klopný obvod JK. Když J = K = 0, výstup si udržuje svůj aktuální stav. Když J = 1 a K = 0, výstup se nastaví. Když J = 0 a K = 1, výstup se resetuje. Když J = K = 1, výstup se přepíná při každé aktivní hraně hodin"
+        },
+        "explain-t-flipflop": {
+            "hint": "",
+            "instruction": "Přepněte InputSwitch a sledujte klopný obvod T. Když T = 0, výstup si udržuje svůj aktuální stav. Když T = 1, výstup se přepíná při každé aktivní hraně hodin. Klopné obvody T se běžně používají k sestavení binárních čítačů a kmitočtových děličů"
+        },
+        "title": "Sekvenční obvody II: Klopné obvody",
+        "wire-d-flipflop": {
+            "hint": "Vstupy Clear a Preset zatím ponechte nepřipojené.",
+            "instruction": "Připojte jeden InputSwitch ke vstupu D, Hodiny ke vstupu Clk a výstupy Q a Q̅ k LED. Vstup D poskytuje hodnotu, která má být uložena, zatímco Hodiny určují, kdy je hodnota uložena"
+        },
+        "wire-jk-flipflop": {
+            "hint": "Klopný obvod JK mění svůj výstup pouze při aktivní hraně hodin.",
+            "instruction": "Připojte InputSwitch ke vstupům J a K, Hodiny ke vstupu Clk a výstupy Q a Q̅ k LED"
+        },
+        "wire-t-flipflop": {
+            "hint": "Vstupy Clear a Preset ponechte nepřipojené.",
+            "instruction": "Připojte zbývající InputSwitch ke vstupu T, Hodiny ke vstupu Clk a výstupy Q a Q̅ k LED"
+        }
+    },
+    "ui-overview": {
+        "canvas": {
+            "body": "Sestavte zde svůj obvod. Přetahujte komponenty z palety a poté je propojujte kliknutím a tažením z výstupního portu (pravá strana komponenty) na vstupní port (levá strana jiné).",
+            "title": "Pracovní plocha"
+        },
+        "combinational-mode": {
+            "body": "Zvýrazněné tlačítko (Kombinační) bylo právě automaticky aktivováno — vyplní vstupní řádky všemi možnými kombinacemi 0/1 a poskytne vám kompletní tabulku pravdivosti na jedno kliknutí.",
+            "title": "Kombinační režim"
+        },
+        "component-palette": {
+            "body": "Tento panel uvádí všechny dostupné komponenty — logická hradla, vstupy, výstupy, klopné obvody a další. Komponenty jsou uspořádány podle kategorií pomocí karet nahoře. Kliknutím na kartu procházejte její kategorii.",
+            "title": "Paleta komponent"
+        },
+        "description": "Průvodce hlavním rozhraním — paleta, pracovní plocha, panel nástrojů a panel vlastností.",
+        "editing-cells": {
+            "body": "Časový průběh můžete také upravovat ručně. Dvojklikem na libovolnou buňku v řádku Hodiny ji přepnete mezi 0 a 1 — řádek Led se okamžitě aktualizuje, aby odrážel nový výstup.",
+            "title": "Ruční úprava buněk"
+        },
+        "element-properties": {
+            "body": "Když na pracovní ploše vyberete komponentu, zobrazí se zde její vlastnosti. Můžete nastavit popisky, barvy, typy spouštění a další nastavení specifická pro danou komponentu. Vyzkoušejte vybrat umístěnou komponentu, abyste viděli její možnosti.",
+            "title": "Vlastnosti prvku"
+        },
+        "logic-gates": {
+            "body": "Karta Hradla obsahuje hradla A, Nebo, Ne, NAND, NOR, Xor a další základní logická hradla. Přetáhněte libovolné hradlo z tohoto seznamu na pracovní plochu, abyste ho přidali do svého obvodu.",
+            "title": "Logická hradla"
+        },
+        "search-bar": {
+            "body": "Pomocí vyhledávací lišty rychle najdete libovolnou komponentu podle názvu. Během psaní se níže zobrazuje filtrovaný seznam odpovídajících komponent ze všech kategorií.",
+            "title": "Vyhledávací lišta"
+        },
+        "title": "Prohlídka rozhraní wiRedPanda",
+        "waveform-table": {
+            "body": "Tabulka časových průběhů zobrazuje každý signál ve vašem obvodu. Řádek Hodiny je vstup; řádek Led je vypočítaný výstup. Každý sloupec je jeden časový krok simulace — přesně vidíte, jak výstup sleduje vstup.",
+            "title": "Čtení tabulky časových průběhů"
+        },
+        "waveform-viewer": {
+            "body": "wiRedPanda obsahuje prohlížeč časových průběhů zvaný BeWavedDolphin. Ukazuje, jak se každý signál ve vašem obvodu mění v čase — vstupy jako řádky nahoře, výstupy pod nimi, přičemž každý sloupec představuje jeden časový krok simulace. Otevřete jej kliknutím na zvýrazněné tlačítko na panelu nástrojů.",
+            "title": "Prohlížeč časových průběhů"
+        },
+        "welcome": {
+            "body": "wiRedPanda je simulátor digitálních logických obvodů. Můžete sestavovat obvody umísťováním komponent a jejich vzájemným propojováním. Tato prohlídka vám ukáže hlavní části rozhraní.",
+            "title": "Vítejte ve wiRedPanda!"
+        }
     }
-  },
-  "basic-or-not-gates": {
-    "add-inputs": {
-      "hint": "Klikněte na kartu V/V v levém panelu, poté přetáhněte dva prvky InputSwitch na pracovní plochu a umístěte je nalevo od hradla Nebo.",
-      "instruction": "Přidejte na pracovní plochu dva prvky InputSwitch"
-    },
-    "add-not-gate": {
-      "hint": "Přetažením odstraňte vodič mezi hradlem Nebo a LED.",
-      "instruction": "Odpojte LED od hradla Nebo, poté připojte hradlo Nebo k hradlu Ne a hradlo Ne k LED"
-    },
-    "add-output": {
-      "hint": "Přetáhněte LED z karty V/V a umístěte ji napravo od hradla Nebo. Poté připojte výstupní port hradla Nebo (pravá strana) ke vstupnímu portu LED (levá strana).",
-      "instruction": "Přidejte LED a připojte ji k výstupu hradla Nebo"
-    },
-    "connect-inputs": {
-      "hint": "Klikněte a táhněte z výstupního portu InputSwitch (pravá strana) na jeden ze vstupních portů hradla Nebo (levá strana). Opakujte pro druhý přepínač.",
-      "instruction": "Připojte oba vstupní přepínače k hradlu Nebo"
-    },
-    "description": "Naučte se používat hradla Nebo a Ne.",
-    "place-or-gate": {
-      "hint": "Klikněte na kartu Hradla v levém panelu a poté přetáhněte hradlo Nebo na pracovní plochu.",
-      "instruction": "Umístěte hradlo Nebo na pracovní plochu"
-    },
-    "title": "Další základní hradla: Nebo a Ne",
-    "toggle-observe-nor": {
-      "hint": "",
-      "instruction": "Hradlo Ne obrací signál. Nyní bude obvod dávat na výstupu 1 pouze tehdy, když žádný ze vstupů není 1"
-    },
-    "toggle-observe-or": {
-      "hint": "",
-      "instruction": "Vyzkoušejte vstupy a všimněte si, jak hradlo Nebo dává na výstupu 1, když je kterýkoli z jeho vstupů 1"
-    }
-  },
-  "clock-led-waveform": {
-    "combinational-mode": {
-      "hint": "Klikněte na Upravit → Kombinační v nabídce BeWavedDolphin. Tím se vyplní řádek Hodiny všemi možnými hodnotami a vypočítá se výstup LED pro každou z nich — kompletní tabulka pravdivosti na jedno kliknutí.",
-      "instruction": "Automaticky vygenerovat všechny vstupní kombinace"
-    },
-    "connect-clock-led": {
-      "hint": "Klikněte a táhněte z výstupního portu Hodin (pravá strana) na vstupní port LED (levá strana).",
-      "instruction": "Připojte výstup Hodin ke vstupu LED"
-    },
-    "description": "Sestavte minimální obvod Hodiny-LED a prozkoumejte prohlížeč časových průběhů: kombinační režim a ruční úpravu buněk.",
-    "open-waveform": {
-      "hint": "BeWavedDolphin zobrazuje signály vašeho obvodu jako řádky. Řádek Hodiny je vstup a řádek Led je výstup. Každý sloupec je jeden časový krok simulace.",
-      "instruction": "Prohlížeč časových průběhů je nyní otevřený — podívejte se!"
-    },
-    "place-clock": {
-      "hint": "Klikněte na kartu V/V v levém panelu a poté přetáhněte prvek Hodiny na pracovní plochu.",
-      "instruction": "Umístěte prvek Hodiny na pracovní plochu"
-    },
-    "place-led": {
-      "hint": "Stále na kartě V/V přetáhněte prvek Led na pracovní plochu napravo od Hodin.",
-      "instruction": "Umístěte LED na pracovní plochu"
-    },
-    "title": "Hodiny a LED: základy časových průběhů",
-    "toggle-cell": {
-      "hint": "Dvojklikem na libovolnou buňku v řádku Hodiny ji přepnete mezi 0 a 1. Sledujte, jak se řádek Led okamžitě aktualizuje a odráží nový výstup.",
-      "instruction": "Ručně přepněte buňku Hodin"
-    }
-  },
-  "combinational-circuits-one": {
-    "add-demux": {
-      "hint": "Váš obvod by nyní měl mít dva InputSwitch, dvě LED a jeden obvod DEMUX",
-      "instruction": "Přidejte obvod DEMUX a připojte InputSwitch k jeho portům In a S0. Poté připojte každý z výstupů DEMUX k jiné LED"
-    },
-    "add-inputs": {
-      "hint": "Klikněte na kartu V/V v levém panelu, poté přetáhněte dva prvky InputSwitch na pracovní plochu a umístěte je nalevo od obvodu MUX.",
-      "instruction": "Přidejte na pracovní plochu tři prvky InputSwitch"
-    },
-    "add-output": {
-      "hint": "Přetáhněte LED z karty V/V a umístěte ji napravo od obvodu MUX. Poté připojte výstupní port obvodu MUX (pravá strana) ke vstupnímu portu LED (levá strana).",
-      "instruction": "Přidejte LED a připojte ji k výstupu obvodu MUX"
-    },
-    "connect-inputs": {
-      "hint": "Klikněte a táhněte z výstupního portu InputSwitch (pravá strana) na jeden ze vstupních portů hradla MUX (levá strana). Opakujte pro druhý přepínač. Poté připojte třetí vstupní přepínač k výběrovému portu MUX (dole)",
-      "instruction": "Připojte všechny vstupní přepínače k obvodu MUX"
-    },
-    "description": "Seznamte se s obvody MUX a DEMUX.",
-    "explain-demux-select": {
-      "hint": "",
-      "instruction": "Port S0 dole na DEMUX vybírá, který výstup obdrží signál ze vstupu. Když S0 = 0, platí Out0 = In0. Když S0 = 1, platí Out1 = In0"
-    },
-    "explain-mux-select": {
-      "hint": "",
-      "instruction": "Port S0 dole na MUX vybírá, který vstup je směrován na výstup. Když S0 = 0, je na výstup odeslán signál ze Vstupu 0. Když S0 = 1, je na výstup odeslán signál ze Vstupu 1."
-    },
-    "place-mux": {
-      "hint": "Klikněte na kartu Kombinační v levém panelu a poté přetáhněte obvod MUX na pracovní plochu.",
-      "instruction": "Umístěte obvod MUX na pracovní plochu"
-    },
-    "prepare-demux": {
-      "hint": "Váš obvod by nyní měl mít dva InputSwitch a dvě LED",
-      "instruction": "Odstraňte obvod MUX a jeden z InputSwitch. Poté přidejte další LED"
-    },
-    "title": "Kombinační obvody I: MUX a DEMUX"
-  },
-  "combinational-circuits-three": {
-    "add-cin-and-gates": {
-      "hint": "Připojte výstupy InputSwitch ke vstupům hradel.",
-      "instruction": "Přidejte na pracovní plochu další InputSwitch a dejte mu popisek Cin. Poté přidejte hradlo Xor, hradlo A a hradlo Nebo"
-    },
-    "add-half-adder-gates": {
-      "hint": "Pomocí karty Hradla přidejte hradla Xor a A, poté pomocí karty V/V přidejte dvě LED.",
-      "instruction": "Přidejte na pracovní plochu hradlo Xor, hradlo A a dvě LED. Poté připojte každé hradlo k jiné LED"
-    },
-    "add-inputs": {
-      "hint": "Klikněte na kartu V/V v levém panelu, poté přetáhněte tři prvky InputSwitch na pracovní plochu. Třetí InputSwitch bude později použit jako vstupní přenos (Cin).",
-      "instruction": "Přidejte na pracovní plochu dva prvky InputSwitch"
-    },
-    "description": "Naučte se sestavit obvod sčítačky.",
-    "explain-full-adder": {
-      "hint": "",
-      "instruction": "Tento obvod tvoří úplnou sčítačku. Na rozdíl od poloviční sčítačky přijímá úplná sčítačka vstupní přenos (Cin) z předchozího sčítání a vytváří výstupní přenos (Cout) pro další stupeň. Propojením Cout jedné úplné sčítačky se vstupem Cin jiné lze zřetězit více úplných sčítaček a sčítat binární čísla libovolné délky"
-    },
-    "label-half-adder-outputs": {
-      "hint": "Kliknutím na LED a zapsáním textu do pole popisku vlevo dole na obrazovce dáte LED popisek.",
-      "instruction": "Přidejte LED připojené k hradlu Xor popisek Sum, poté přidejte LED připojené k hradlu A popisek Cout. Tento obvod tvoří polovičku sčítačky, která sčítá dva jednobitové vstupy"
-    },
-    "title": "Kombinační obvody III: Sčítačka",
-    "wire-full-adder": {
-      "hint": "Odstraňte staré spoje k LED, abyste mohli přidat nové.",
-      "instruction": "Připojte staré hradlo Xor a přepínač Cin k novému hradlu Xor, poté připojte nové hradlo Xor k výstupu Sum. Také připojte staré hradlo Xor a přepínač Cin k novému hradlu A. Nakonec připojte obě hradla A k hradlu Nebo a hradlo Nebo k Cout"
-    },
-    "wire-half-adder": {
-      "hint": "Připojte výstupy InputSwitch ke vstupům hradel.",
-      "instruction": "Připojte oba InputSwitch k hradlu Xor a hradlu A. Každý InputSwitch by měl být připojen k oběma hradlům. Hradlo Xor vytváří výstup Sum, zatímco hradlo A vytváří výstup Carry"
-    }
-  },
-  "combinational-circuits-two": {
-    "add-and-gates-leds": {
-      "hint": "Pomocí karty Hradla v levém panelu přidejte hradla A a pomocí karty V/V přidejte LED.",
-      "instruction": "Přidejte na pracovní plochu čtyři hradla A a čtyři LED, poté připojte každé hradlo A k jedné z LED"
-    },
-    "add-inputs": {
-      "hint": "Klikněte na kartu V/V v levém panelu a přetáhněte dva prvky InputSwitch na pracovní plochu.",
-      "instruction": "Přidejte na pracovní plochu dva prvky InputSwitch"
-    },
-    "add-not-gates": {
-      "hint": "Klikněte na kartu Hradla v levém panelu, poté přetáhněte dva prvky hradla Ne na pracovní plochu a připojte k nim InputSwitch.",
-      "instruction": "Přidejte na pracovní plochu dvě hradla Ne a připojte každý InputSwitch k samostatnému hradlu Ne"
-    },
-    "description": "Naučte se sestavit dekodér 2 na 4.",
-    "explain-decoder": {
-      "hint": "",
-      "instruction": "Pro každou konkrétní kombinaci vstupních bitů je aktivována pouze jedna odpovídající výstupní linka, zatímco všechny ostatní zůstávají neaktivní"
-    },
-    "title": "Kombinační obvody II: Dekodér",
-    "wire-decoder": {
-      "hint": "Každé hradlo A by mělo dostávat jeden signál z každého vstupu. Pro 1 použijte původní signál InputSwitch a pro 0 odpovídající výstup hradla Ne.",
-      "instruction": "Připojte výstupy hradel Ne a InputSwitch k hradlům A tak, aby každé hradlo A reprezentovalo jednu vstupní kombinaci"
-    }
-  },
-  "sequential-circuits-one": {
-    "add-d-latch": {
-      "hint": "D zámek ukládá jednu vstupní hodnotu a vyhýbá se neplatné vstupní kombinaci SR zámku.",
-      "instruction": "Odstraňte SR zámek při zachování InputSwitch a LED. Poté přidejte D zámek"
-    },
-    "add-sr-latch": {
-      "hint": "Pomocí karty Paměť přidejte SR zámek. Poté pomocí karty V/V přidejte dva InputSwitch a dvě LED.",
-      "instruction": "Přidejte na pracovní plochu SR zámek, dva InputSwitch a dvě LED"
-    },
-    "description": "Naučte se používat zámky (latche).",
-    "explain-d-latch": {
-      "hint": "",
-      "instruction": "Přepínejte InputSwitch a sledujte D zámek. Když je Enable 1, výstup sleduje vstup D. Když je Enable 0, zámek si pamatuje svou předchozí hodnotu"
-    },
-    "explain-sr-latch": {
-      "hint": "",
-      "instruction": "Přepínejte InputSwitch a sledujte, jak SR zámek ukládá svůj stav. Nastavení vstupu S na 1 způsobí, že výstup Q se stane 1, zatímco nastavení vstupu R na 1 nastaví Q zpět na 0. Když se oba vstupy vrátí na 0, zámek si pamatuje svůj poslední stav, dokud není znovu nastaven nebo resetován"
-    },
-    "title": "Sekvenční obvody I: Klopné obvody typu zámek",
-    "wire-d-latch": {
-      "hint": "Vstup D je hodnota, která má být uložena. Vstup Enable určuje, kdy zámek aktualizuje svou uloženou hodnotu.",
-      "instruction": "Připojte jeden InputSwitch ke vstupu D a druhý ke vstupu Enable (E). Připojte výstupy Q a Q̅ k LED"
-    },
-    "wire-sr-latch": {
-      "hint": "Připojte jeden InputSwitch ke vstupu Set (S) a druhý ke vstupu Reset (R). Připojte každý výstup zámku k jiné LED.",
-      "instruction": "Připojte InputSwitch ke vstupům S a R SR zámku. Poté připojte výstupy Q a Q̅ k LED"
-    }
-  },
-  "sequential-circuits-three": {
-    "add-flipflops": {
-      "hint": "Pomocí karty Paměť přidejte klopné obvody T a Hodiny. Poté pomocí karty V/V přidejte tři InputSwitch a tři LED.",
-      "instruction": "Přidejte na pracovní plochu tři klopné obvody T, tři InputSwitch, Hodiny a tři LED"
-    },
-    "description": "Naučte se sestavit čítací obvod.",
-    "explain-counter": {
-      "hint": "",
-      "instruction": "Zapněte všechny tři InputSwitch a spusťte Hodiny. Sledujte LED, zatímco čítač běží. První LED mění stav při každém hodinovém impulzu, druhá se mění každé dva impulzy a třetí každé čtyři impulzy, čímž zobrazuje opakující se 3bitové binární počítání od 000 do 111"
-    },
-    "title": "Sekvenční obvody III: Čítač",
-    "wire-clock": {
-      "hint": "První klopný obvod přijímá externí signál hodin.",
-      "instruction": "Připojte Hodiny ke vstupu Clk prvního klopného obvodu T"
-    },
-    "wire-outputs": {
-      "hint": "Každá LED představuje jeden bit čítače, přičemž první LED je nejméně významný bit.",
-      "instruction": "Připojte výstup Q každého klopného obvodu k jiné LED"
-    },
-    "wire-ripple-clock": {
-      "hint": "",
-      "instruction": "Připojte výstup Q prvního klopného obvodu ke vstupu Clk druhého klopného obvodu, poté připojte výstup Q druhého klopného obvodu ke vstupu Clk třetího klopného obvodu. Každý klopný obvod je taktován výstupem předchozího, čímž vzniká asynchronní čítač"
-    },
-    "wire-t-inputs": {
-      "hint": "Zapněte všechny tři InputSwitch. Klopný obvod T se přepíná pouze tehdy, když je jeho vstup T roven 1.",
-      "instruction": "Připojte každý InputSwitch ke vstupu T jiného klopného obvodu"
-    }
-  },
-  "sequential-circuits-two": {
-    "add-d-flipflop": {
-      "hint": "Pomocí karty Paměť přidejte klopný obvod D a Hodiny. Poté pomocí karty V/V přidejte dva InputSwitch a dvě LED.",
-      "instruction": "Přidejte na pracovní plochu klopný obvod D, dva InputSwitch, Hodiny a dvě LED"
-    },
-    "add-jk-flipflop": {
-      "hint": "Klopný obvod JK má vstupy J a K místo vstupu D. Vstupy Clear a Preset ponechte nepřipojené.",
-      "instruction": "Nahraďte klopný obvod D klopným obvodem JK při zachování Hodin, InputSwitch a LED"
-    },
-    "add-t-flipflop": {
-      "hint": "Klopný obvod T vyžaduje kromě hodin pouze jeden jediný vstup.",
-      "instruction": "Nahraďte klopný obvod JK klopným obvodem T a odstraňte jeden z InputSwitch"
-    },
-    "description": "Seznamte se s klopnými obvody.",
-    "explain-clear-preset": {
-      "hint": "",
-      "instruction": "Připojte druhý InputSwitch buď ke vstupu Clear, nebo Preset, a sledujte jeho účinek. Na rozdíl od vstupu D působí vstupy Clear a Preset okamžitě, aniž by čekaly na hranu hodin. Clear vynutí Q na 0, zatímco Preset vynutí Q na 1"
-    },
-    "explain-d-flipflop": {
-      "hint": "",
-      "instruction": "Přepněte InputSwitch D a sledujte klopný obvod D. Hodnota na vstupu D se kopíruje na výstup Q pouze při aktivní hraně hodin. Mezi hranami hodin zůstává výstup nezměněn"
-    },
-    "explain-jk-flipflop": {
-      "hint": "",
-      "instruction": "Přepínejte InputSwitch a sledujte klopný obvod JK. Když J = K = 0, výstup si udržuje svůj aktuální stav. Když J = 1 a K = 0, výstup se nastaví. Když J = 0 a K = 1, výstup se resetuje. Když J = K = 1, výstup se přepíná při každé aktivní hraně hodin"
-    },
-    "explain-t-flipflop": {
-      "hint": "",
-      "instruction": "Přepněte InputSwitch a sledujte klopný obvod T. Když T = 0, výstup si udržuje svůj aktuální stav. Když T = 1, výstup se přepíná při každé aktivní hraně hodin. Klopné obvody T se běžně používají k sestavení binárních čítačů a kmitočtových děličů"
-    },
-    "title": "Sekvenční obvody II: Klopné obvody",
-    "wire-d-flipflop": {
-      "hint": "Vstupy Clear a Preset zatím ponechte nepřipojené.",
-      "instruction": "Připojte jeden InputSwitch ke vstupu D, Hodiny ke vstupu Clk a výstupy Q a Q̅ k LED. Vstup D poskytuje hodnotu, která má být uložena, zatímco Hodiny určují, kdy je hodnota uložena"
-    },
-    "wire-jk-flipflop": {
-      "hint": "Klopný obvod JK mění svůj výstup pouze při aktivní hraně hodin.",
-      "instruction": "Připojte InputSwitch ke vstupům J a K, Hodiny ke vstupu Clk a výstupy Q a Q̅ k LED"
-    },
-    "wire-t-flipflop": {
-      "hint": "Vstupy Clear a Preset ponechte nepřipojené.",
-      "instruction": "Připojte zbývající InputSwitch ke vstupu T, Hodiny ke vstupu Clk a výstupy Q a Q̅ k LED"
-    }
-  },
-  "ui-overview": {
-    "canvas": {
-      "body": "Sestavte zde svůj obvod. Přetahujte komponenty z palety a poté je propojujte kliknutím a tažením z výstupního portu (pravá strana komponenty) na vstupní port (levá strana jiné).",
-      "title": "Pracovní plocha"
-    },
-    "combinational-mode": {
-      "body": "Zvýrazněné tlačítko (Kombinační) bylo právě automaticky aktivováno — vyplní vstupní řádky všemi možnými kombinacemi 0/1 a poskytne vám kompletní tabulku pravdivosti na jedno kliknutí.",
-      "title": "Kombinační režim"
-    },
-    "component-palette": {
-      "body": "Tento panel uvádí všechny dostupné komponenty — logická hradla, vstupy, výstupy, klopné obvody a další. Komponenty jsou uspořádány podle kategorií pomocí karet nahoře. Kliknutím na kartu procházejte její kategorii.",
-      "title": "Paleta komponent"
-    },
-    "description": "Průvodce hlavním rozhraním — paleta, pracovní plocha, panel nástrojů a panel vlastností.",
-    "editing-cells": {
-      "body": "Časový průběh můžete také upravovat ručně. Dvojklikem na libovolnou buňku v řádku Hodiny ji přepnete mezi 0 a 1 — řádek Led se okamžitě aktualizuje, aby odrážel nový výstup.",
-      "title": "Ruční úprava buněk"
-    },
-    "element-properties": {
-      "body": "Když na pracovní ploše vyberete komponentu, zobrazí se zde její vlastnosti. Můžete nastavit popisky, barvy, typy spouštění a další nastavení specifická pro danou komponentu. Vyzkoušejte vybrat umístěnou komponentu, abyste viděli její možnosti.",
-      "title": "Vlastnosti prvku"
-    },
-    "logic-gates": {
-      "body": "Karta Hradla obsahuje hradla A, Nebo, Ne, NAND, NOR, Xor a další základní logická hradla. Přetáhněte libovolné hradlo z tohoto seznamu na pracovní plochu, abyste ho přidali do svého obvodu.",
-      "title": "Logická hradla"
-    },
-    "search-bar": {
-      "body": "Pomocí vyhledávací lišty rychle najdete libovolnou komponentu podle názvu. Během psaní se níže zobrazuje filtrovaný seznam odpovídajících komponent ze všech kategorií.",
-      "title": "Vyhledávací lišta"
-    },
-    "title": "Prohlídka rozhraní wiRedPanda",
-    "waveform-table": {
-      "body": "Tabulka časových průběhů zobrazuje každý signál ve vašem obvodu. Řádek Hodiny je vstup; řádek Led je vypočítaný výstup. Každý sloupec je jeden časový krok simulace — přesně vidíte, jak výstup sleduje vstup.",
-      "title": "Čtení tabulky časových průběhů"
-    },
-    "waveform-viewer": {
-      "body": "wiRedPanda obsahuje prohlížeč časových průběhů zvaný BeWavedDolphin. Ukazuje, jak se každý signál ve vašem obvodu mění v čase — vstupy jako řádky nahoře, výstupy pod nimi, přičemž každý sloupec představuje jeden časový krok simulace. Otevřete jej kliknutím na zvýrazněné tlačítko na panelu nástrojů.",
-      "title": "Prohlížeč časových průběhů"
-    },
-    "welcome": {
-      "body": "wiRedPanda je simulátor digitálních logických obvodů. Můžete sestavovat obvody umísťováním komponent a jejich vzájemným propojováním. Tato prohlídka vám ukáže hlavní části rozhraní.",
-      "title": "Vítejte ve wiRedPanda!"
-    }
-  }
 }
