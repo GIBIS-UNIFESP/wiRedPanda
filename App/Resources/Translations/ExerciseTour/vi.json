@@ -1,322 +1,322 @@
 {
-  "basic-and-gate": {
-    "add-inputs": {
-      "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo hai phần tử InputSwitch vào khung vẽ và đặt chúng bên trái cổng Và.",
-      "instruction": "Thêm hai phần tử InputSwitch vào khung vẽ"
+    "basic-and-gate": {
+        "add-inputs": {
+            "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo hai phần tử InputSwitch vào khung vẽ và đặt chúng bên trái cổng Và.",
+            "instruction": "Thêm hai phần tử InputSwitch vào khung vẽ"
+        },
+        "add-output": {
+            "hint": "Kéo một đèn LED từ tab I/O và đặt nó bên phải cổng Và. Sau đó nối cổng đầu ra của cổng Và (bên phải) với cổng đầu vào của đèn LED (bên trái).",
+            "instruction": "Thêm một đèn LED và nối nó với đầu ra của cổng Và"
+        },
+        "connect-inputs": {
+            "hint": "Nhấp và kéo từ cổng đầu ra của InputSwitch (bên phải) đến một trong các cổng đầu vào của cổng Và (bên trái). Lặp lại cho công tắc thứ hai.",
+            "instruction": "Nối cả hai công tắc đầu vào với cổng Và"
+        },
+        "description": "Học cách đặt các cổng logic, thêm đầu vào và đầu ra, và nối chúng lại với nhau.",
+        "place-and-gate": {
+            "hint": "Nhấp vào tab Cổng ở bảng bên trái, sau đó kéo cổng Và vào khung vẽ.",
+            "instruction": "Đặt một cổng Và lên khung vẽ"
+        },
+        "title": "Xây dựng mạch với cổng Và",
+        "toggle-observe": {
+            "hint": "Nhấp vào InputSwitch để bật tắt nó. Đèn LED chỉ sáng khi CẢ HAI công tắc đều BẬT. Đó là vì Và chỉ cho ra đầu ra là 1 khi tất cả đầu vào đều là 1.",
+            "instruction": "Bật tắt các công tắc và quan sát đèn LED — đây là logic Và!"
+        }
     },
-    "add-output": {
-      "hint": "Kéo một đèn LED từ tab I/O và đặt nó bên phải cổng Và. Sau đó nối cổng đầu ra của cổng Và (bên phải) với cổng đầu vào của đèn LED (bên trái).",
-      "instruction": "Thêm một đèn LED và nối nó với đầu ra của cổng Và"
+    "basic-or-not-gates": {
+        "add-inputs": {
+            "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo hai phần tử InputSwitch vào khung vẽ và đặt chúng bên trái cổng Or.",
+            "instruction": "Thêm hai phần tử InputSwitch vào khung vẽ"
+        },
+        "add-not-gate": {
+            "hint": "Kéo dây nối giữa cổng Or và đèn LED để xóa nó.",
+            "instruction": "Ngắt kết nối đèn LED khỏi cổng Or, sau đó nối cổng Or với một cổng Not và cổng Not với đèn LED"
+        },
+        "add-output": {
+            "hint": "Kéo một đèn LED từ tab I/O và đặt nó bên phải cổng Or. Sau đó nối cổng đầu ra của cổng Or (bên phải) với cổng đầu vào của đèn LED (bên trái).",
+            "instruction": "Thêm một đèn LED và nối nó với đầu ra của cổng Or"
+        },
+        "connect-inputs": {
+            "hint": "Nhấp và kéo từ cổng đầu ra của InputSwitch (bên phải) đến một trong các cổng đầu vào của cổng Or (bên trái). Lặp lại cho công tắc thứ hai.",
+            "instruction": "Nối cả hai công tắc đầu vào với cổng Or"
+        },
+        "description": "Học cách sử dụng các cổng Or và Not.",
+        "place-or-gate": {
+            "hint": "Nhấp vào tab Cổng ở bảng bên trái, sau đó kéo cổng Or vào khung vẽ.",
+            "instruction": "Đặt một cổng Or lên khung vẽ"
+        },
+        "title": "Thêm các cổng cơ bản: Or và Not",
+        "toggle-observe-nor": {
+            "hint": "",
+            "instruction": "Cổng Not đảo ngược tín hiệu. Bây giờ, mạch sẽ chỉ cho ra đầu ra là 1 khi không có đầu vào nào là 1"
+        },
+        "toggle-observe-or": {
+            "hint": "",
+            "instruction": "Thử nghiệm với các đầu vào và quan sát cách cổng Or cho ra đầu ra là 1 khi bất kỳ đầu vào nào của nó là 1"
+        }
     },
-    "connect-inputs": {
-      "hint": "Nhấp và kéo từ cổng đầu ra của InputSwitch (bên phải) đến một trong các cổng đầu vào của cổng Và (bên trái). Lặp lại cho công tắc thứ hai.",
-      "instruction": "Nối cả hai công tắc đầu vào với cổng Và"
+    "clock-led-waveform": {
+        "combinational-mode": {
+            "hint": "Nhấp vào Chỉnh sửa → Tổ hợp trong thanh menu của BeWavedDolphin. Thao tác này sẽ điền hàng Đồng Hồ với tất cả các giá trị có thể và tính toán đầu ra LED cho từng giá trị — một bảng chân trị đầy đủ chỉ với một cú nhấp chuột.",
+            "instruction": "Tự động tạo tất cả các tổ hợp đầu vào"
+        },
+        "connect-clock-led": {
+            "hint": "Nhấp và kéo từ cổng đầu ra của Đồng Hồ (bên phải) đến cổng đầu vào của đèn LED (bên trái).",
+            "instruction": "Nối đầu ra của Đồng Hồ với đầu vào của đèn LED"
+        },
+        "description": "Xây dựng một mạch Đồng Hồ-LED tối giản và khám phá trình xem dạng sóng: chế độ tổ hợp và chỉnh sửa ô thủ công.",
+        "open-waveform": {
+            "hint": "BeWavedDolphin hiển thị các tín hiệu của mạch bạn dưới dạng hàng. Hàng Đồng Hồ là đầu vào, và hàng Led là đầu ra. Mỗi cột là một bước thời gian mô phỏng.",
+            "instruction": "Trình xem dạng sóng hiện đã mở — hãy xem qua!"
+        },
+        "place-clock": {
+            "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo phần tử Đồng Hồ vào khung vẽ.",
+            "instruction": "Đặt một phần tử Đồng Hồ lên khung vẽ"
+        },
+        "place-led": {
+            "hint": "Vẫn ở tab I/O, kéo một phần tử Led vào khung vẽ bên phải Đồng Hồ.",
+            "instruction": "Đặt một đèn LED lên khung vẽ"
+        },
+        "title": "Đồng Hồ và LED: Kiến Thức Cơ Bản Về Dạng Sóng",
+        "toggle-cell": {
+            "hint": "Nhấp đúp vào bất kỳ ô nào trong hàng Đồng Hồ để bật tắt nó giữa 0 và 1. Quan sát hàng Led cập nhật ngay lập tức để phản ánh đầu ra mới.",
+            "instruction": "Bật tắt một ô Đồng Hồ thủ công"
+        }
     },
-    "description": "Học cách đặt các cổng logic, thêm đầu vào và đầu ra, và nối chúng lại với nhau.",
-    "place-and-gate": {
-      "hint": "Nhấp vào tab Cổng ở bảng bên trái, sau đó kéo cổng Và vào khung vẽ.",
-      "instruction": "Đặt một cổng Và lên khung vẽ"
+    "combinational-circuits-one": {
+        "add-demux": {
+            "hint": "Đến thời điểm này mạch của bạn nên có hai InputSwitch, hai đèn LED và một mạch DEMUX",
+            "instruction": "Thêm một mạch DEMUX và nối các InputSwitch với các cổng In và S0 của nó. Sau đó nối từng đầu ra của DEMUX với một đèn LED khác nhau"
+        },
+        "add-inputs": {
+            "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo hai phần tử InputSwitch vào khung vẽ và đặt chúng bên trái mạch MUX.",
+            "instruction": "Thêm ba phần tử InputSwitch vào khung vẽ"
+        },
+        "add-output": {
+            "hint": "Kéo một đèn LED từ tab I/O và đặt nó bên phải mạch MUX. Sau đó nối cổng đầu ra của mạch MUX (bên phải) với cổng đầu vào của đèn LED (bên trái).",
+            "instruction": "Thêm một đèn LED và nối nó với đầu ra của mạch MUX"
+        },
+        "connect-inputs": {
+            "hint": "Nhấp và kéo từ cổng đầu ra của InputSwitch (bên phải) đến một trong các cổng đầu vào của cổng MUX (bên trái). Lặp lại cho công tắc thứ hai. Sau đó, nối công tắc đầu vào thứ ba với cổng chọn của MUX (phía dưới)",
+            "instruction": "Nối tất cả các công tắc đầu vào với mạch MUX"
+        },
+        "description": "Tìm hiểu về các mạch MUX và DEMUX.",
+        "explain-demux-select": {
+            "hint": "",
+            "instruction": "Cổng S0 ở phía dưới DEMUX chọn đầu ra nào sẽ nhận tín hiệu của đầu vào. Khi S0 = 0, Out0 = In0. Khi S0 = 1, Out1 = In0"
+        },
+        "explain-mux-select": {
+            "hint": "",
+            "instruction": "Cổng S0 ở phía dưới MUX chọn đầu vào nào được định tuyến đến đầu ra. Khi S0 = 0, tín hiệu từ Đầu vào 0 được gửi đến đầu ra. Khi S0 = 1, tín hiệu từ Đầu vào 1 được gửi đến đầu ra."
+        },
+        "place-mux": {
+            "hint": "Nhấp vào tab Tổ hợp ở bảng bên trái, sau đó kéo mạch MUX vào khung vẽ.",
+            "instruction": "Đặt một mạch MUX lên khung vẽ"
+        },
+        "prepare-demux": {
+            "hint": "Đến thời điểm này mạch của bạn nên có hai InputSwitch và hai đèn LED",
+            "instruction": "Xóa mạch MUX và một trong các InputSwitch. Sau đó thêm một đèn LED khác"
+        },
+        "title": "Mạch Tổ Hợp I: MUX và DEMUX"
     },
-    "title": "Xây dựng mạch với cổng Và",
-    "toggle-observe": {
-      "hint": "Nhấp vào InputSwitch để bật tắt nó. Đèn LED chỉ sáng khi CẢ HAI công tắc đều BẬT. Đó là vì Và chỉ cho ra đầu ra là 1 khi tất cả đầu vào đều là 1.",
-      "instruction": "Bật tắt các công tắc và quan sát đèn LED — đây là logic Và!"
+    "combinational-circuits-three": {
+        "add-cin-and-gates": {
+            "hint": "Nối các đầu ra của InputSwitch với các đầu vào của các cổng.",
+            "instruction": "Thêm một InputSwitch khác vào khung vẽ và đặt nhãn Cin cho nó. Sau đó thêm một cổng Xor, một cổng Và và một cổng Or"
+        },
+        "add-half-adder-gates": {
+            "hint": "Sử dụng tab Cổng để thêm các cổng Xor và Và, sau đó sử dụng tab I/O để thêm hai đèn LED.",
+            "instruction": "Thêm một cổng Xor, một cổng Và và hai đèn LED vào khung vẽ. Sau đó nối mỗi cổng với một đèn LED khác nhau"
+        },
+        "add-inputs": {
+            "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo ba phần tử InputSwitch vào khung vẽ. InputSwitch thứ ba sẽ được sử dụng sau này làm số nhớ vào (Cin).",
+            "instruction": "Thêm hai phần tử InputSwitch vào khung vẽ"
+        },
+        "description": "Học cách xây dựng một mạch bộ cộng.",
+        "explain-full-adder": {
+            "hint": "",
+            "instruction": "Mạch này tạo thành một bộ cộng đầy đủ. Không giống như bộ bán cộng, một bộ cộng đầy đủ chấp nhận số nhớ vào (Cin) từ phép cộng trước đó và tạo ra số nhớ ra (Cout) cho giai đoạn tiếp theo. Bằng cách nối Cout của một bộ cộng đầy đủ với Cin của một bộ khác, nhiều bộ cộng đầy đủ có thể được nối chuỗi với nhau để cộng các số nhị phân có độ dài bất kỳ"
+        },
+        "label-half-adder-outputs": {
+            "hint": "Nhấp vào một đèn LED và gõ vào hộp văn bản nhãn ở góc dưới bên trái màn hình để đặt nhãn cho đèn LED.",
+            "instruction": "Đặt nhãn Sum cho đèn LED được nối với cổng Xor, sau đó đặt nhãn Cout cho đèn LED được nối với cổng Và. Mạch này tạo thành một bộ bán cộng, cộng hai đầu vào một bit"
+        },
+        "title": "Mạch Tổ Hợp III: Bộ Cộng",
+        "wire-full-adder": {
+            "hint": "Xóa các kết nối cũ với đèn LED để có thể thêm các kết nối mới.",
+            "instruction": "Nối cổng Xor cũ và công tắc Cin với cổng Xor mới, sau đó nối cổng Xor mới với đầu ra Sum. Cũng nối cổng Xor cũ và công tắc Cin với cổng Và mới. Hoàn thành bằng cách nối cả hai cổng Và với cổng Or, và cổng Or với Cout"
+        },
+        "wire-half-adder": {
+            "hint": "Nối các đầu ra của InputSwitch với các đầu vào của các cổng.",
+            "instruction": "Nối cả hai InputSwitch với cổng Xor và cổng Và. Mỗi InputSwitch nên được nối với cả hai cổng. Cổng Xor tạo ra đầu ra Sum, trong khi cổng Và tạo ra đầu ra Carry"
+        }
+    },
+    "combinational-circuits-two": {
+        "add-and-gates-leds": {
+            "hint": "Sử dụng tab Cổng ở bảng bên trái để thêm các cổng Và và tab I/O để thêm các đèn LED.",
+            "instruction": "Thêm bốn cổng Và và bốn đèn LED vào khung vẽ, sau đó nối mỗi cổng Và với một trong các đèn LED"
+        },
+        "add-inputs": {
+            "hint": "Nhấp vào tab I/O ở bảng bên trái và kéo hai phần tử InputSwitch vào khung vẽ.",
+            "instruction": "Thêm hai phần tử InputSwitch vào khung vẽ"
+        },
+        "add-not-gates": {
+            "hint": "Nhấp vào tab Cổng ở bảng bên trái, sau đó kéo hai phần tử cổng Not vào khung vẽ và nối các InputSwitch với chúng.",
+            "instruction": "Thêm hai cổng Not vào khung vẽ và nối mỗi InputSwitch với một cổng Not riêng biệt"
+        },
+        "description": "Học cách xây dựng một bộ giải mã 2 sang 4.",
+        "explain-decoder": {
+            "hint": "",
+            "instruction": "Với mỗi tổ hợp cụ thể của các bit đầu vào, chỉ có một đường đầu ra tương ứng được kích hoạt, trong khi tất cả các đường khác vẫn không hoạt động"
+        },
+        "title": "Mạch Tổ Hợp II: Bộ Giải Mã",
+        "wire-decoder": {
+            "hint": "Mỗi cổng Và nên nhận một tín hiệu từ mỗi đầu vào. Sử dụng tín hiệu InputSwitch gốc cho giá trị 1 và đầu ra tương ứng của cổng Not cho giá trị 0.",
+            "instruction": "Nối các đầu ra của các cổng Not và InputSwitch với các cổng Và sao cho mỗi cổng Và đại diện cho một tổ hợp đầu vào"
+        }
+    },
+    "sequential-circuits-one": {
+        "add-d-latch": {
+            "hint": "Chốt D lưu trữ một giá trị đầu vào duy nhất và tránh tổ hợp đầu vào không hợp lệ của chốt SR.",
+            "instruction": "Xóa chốt SR trong khi vẫn giữ các InputSwitch và đèn LED. Sau đó thêm một chốt D"
+        },
+        "add-sr-latch": {
+            "hint": "Sử dụng tab Bộ nhớ để thêm một chốt SR. Sau đó sử dụng tab I/O để thêm hai InputSwitch và hai đèn LED.",
+            "instruction": "Thêm một chốt SR, hai InputSwitch và hai đèn LED vào khung vẽ"
+        },
+        "description": "Học cách sử dụng chốt (latch).",
+        "explain-d-latch": {
+            "hint": "",
+            "instruction": "Bật tắt các InputSwitch và quan sát chốt D. Khi Enable là 1, đầu ra theo sau đầu vào D. Khi Enable là 0, chốt nhớ giá trị trước đó của nó"
+        },
+        "explain-sr-latch": {
+            "hint": "",
+            "instruction": "Bật tắt các InputSwitch và quan sát cách chốt SR lưu trữ trạng thái của nó. Đặt đầu vào S thành 1 khiến đầu ra Q trở thành 1, trong khi đặt đầu vào R thành 1 đặt lại Q về 0. Khi cả hai đầu vào trở về 0, chốt sẽ nhớ trạng thái cuối cùng của nó cho đến khi nó được đặt hoặc đặt lại lần nữa"
+        },
+        "title": "Mạch Tuần Tự I: Chốt",
+        "wire-d-latch": {
+            "hint": "Đầu vào D là giá trị cần được lưu trữ. Đầu vào Enable xác định khi nào chốt cập nhật giá trị đã lưu trữ của nó.",
+            "instruction": "Nối một InputSwitch với đầu vào D và cái còn lại với đầu vào Enable (E). Nối các đầu ra Q và Q̅ với các đèn LED"
+        },
+        "wire-sr-latch": {
+            "hint": "Nối một InputSwitch với đầu vào Set (S) và cái còn lại với đầu vào Reset (R). Nối mỗi đầu ra của chốt với một đèn LED khác nhau.",
+            "instruction": "Nối các InputSwitch với các đầu vào S và R của chốt SR. Sau đó nối các đầu ra Q và Q̅ với các đèn LED"
+        }
+    },
+    "sequential-circuits-three": {
+        "add-flipflops": {
+            "hint": "Sử dụng tab Bộ nhớ để thêm các flip-flop T và một Đồng Hồ. Sau đó sử dụng tab I/O để thêm ba InputSwitch và ba đèn LED.",
+            "instruction": "Thêm ba flip-flop T, ba InputSwitch, một Đồng Hồ và ba đèn LED vào khung vẽ"
+        },
+        "description": "Học cách xây dựng một mạch bộ đếm.",
+        "explain-counter": {
+            "hint": "",
+            "instruction": "Bật cả ba InputSwitch và khởi động Đồng Hồ. Quan sát các đèn LED khi bộ đếm hoạt động. Đèn LED đầu tiên thay đổi trạng thái ở mỗi xung nhịp, đèn LED thứ hai thay đổi sau mỗi hai xung, và đèn LED thứ ba sau mỗi bốn xung, hiển thị một chuỗi đếm nhị phân 3-bit lặp lại từ 000 đến 111"
+        },
+        "title": "Mạch Tuần Tự III: Bộ Đếm",
+        "wire-clock": {
+            "hint": "Flip-flop đầu tiên nhận tín hiệu xung nhịp bên ngoài.",
+            "instruction": "Nối Đồng Hồ với đầu vào Clk của flip-flop T đầu tiên"
+        },
+        "wire-outputs": {
+            "hint": "Mỗi đèn LED đại diện cho một bit của bộ đếm, với đèn LED đầu tiên là bit có trọng số thấp nhất.",
+            "instruction": "Nối đầu ra Q của mỗi flip-flop với một đèn LED khác nhau"
+        },
+        "wire-ripple-clock": {
+            "hint": "",
+            "instruction": "Nối đầu ra Q của flip-flop đầu tiên với đầu vào Clk của flip-flop thứ hai, sau đó nối đầu ra Q của flip-flop thứ hai với đầu vào Clk của flip-flop thứ ba. Mỗi flip-flop được cấp xung nhịp bởi đầu ra của flip-flop trước đó, tạo thành một bộ đếm gợn sóng (ripple counter)"
+        },
+        "wire-t-inputs": {
+            "hint": "Bật cả ba InputSwitch. Một flip-flop T chỉ bật tắt khi đầu vào T của nó là 1.",
+            "instruction": "Nối mỗi InputSwitch với đầu vào T của một flip-flop khác nhau"
+        }
+    },
+    "sequential-circuits-two": {
+        "add-d-flipflop": {
+            "hint": "Sử dụng tab Bộ nhớ để thêm một flip-flop D và một Đồng Hồ. Sau đó sử dụng tab I/O để thêm hai InputSwitch và hai đèn LED.",
+            "instruction": "Thêm một flip-flop D, hai InputSwitch, một Đồng Hồ và hai đèn LED vào khung vẽ"
+        },
+        "add-jk-flipflop": {
+            "hint": "Flip-flop JK có các đầu vào J và K thay vì đầu vào D. Để các đầu vào Clear và Preset chưa kết nối.",
+            "instruction": "Thay thế flip-flop D bằng một flip-flop JK trong khi vẫn giữ Đồng Hồ, InputSwitch và đèn LED"
+        },
+        "add-t-flipflop": {
+            "hint": "Một flip-flop T chỉ cần một đầu vào duy nhất ngoài xung nhịp.",
+            "instruction": "Thay thế flip-flop JK bằng một flip-flop T và loại bỏ một trong các InputSwitch"
+        },
+        "description": "Tìm hiểu về flip-flop.",
+        "explain-clear-preset": {
+            "hint": "",
+            "instruction": "Nối InputSwitch thứ hai với đầu vào Clear hoặc Preset và quan sát tác động của nó. Không giống như đầu vào D, các đầu vào Clear và Preset tác động ngay lập tức mà không cần chờ cạnh xung nhịp. Clear buộc Q về 0, trong khi Preset buộc Q về 1"
+        },
+        "explain-d-flipflop": {
+            "hint": "",
+            "instruction": "Bật tắt InputSwitch D và quan sát flip-flop D. Giá trị tại đầu vào D chỉ được sao chép sang đầu ra Q tại cạnh xung nhịp hoạt động. Giữa các cạnh xung nhịp, đầu ra vẫn không đổi"
+        },
+        "explain-jk-flipflop": {
+            "hint": "",
+            "instruction": "Bật tắt các InputSwitch và quan sát flip-flop JK. Khi J = K = 0, đầu ra giữ nguyên trạng thái hiện tại của nó. Khi J = 1 và K = 0, đầu ra được đặt. Khi J = 0 và K = 1, đầu ra được đặt lại. Khi J = K = 1, đầu ra bật tắt tại mỗi cạnh xung nhịp hoạt động"
+        },
+        "explain-t-flipflop": {
+            "hint": "",
+            "instruction": "Bật tắt InputSwitch và quan sát flip-flop T. Khi T = 0, đầu ra giữ nguyên trạng thái hiện tại của nó. Khi T = 1, đầu ra bật tắt tại mỗi cạnh xung nhịp hoạt động. Flip-flop T thường được sử dụng để xây dựng bộ đếm nhị phân và bộ chia tần số"
+        },
+        "title": "Mạch Tuần Tự II: Flip-Flop",
+        "wire-d-flipflop": {
+            "hint": "Tạm thời để các đầu vào Clear và Preset chưa kết nối.",
+            "instruction": "Nối một InputSwitch với đầu vào D, Đồng Hồ với đầu vào Clk, và các đầu ra Q và Q̅ với các đèn LED. Đầu vào D cung cấp giá trị cần được lưu trữ, trong khi Đồng Hồ xác định khi nào giá trị được lưu trữ"
+        },
+        "wire-jk-flipflop": {
+            "hint": "Flip-flop JK chỉ thay đổi đầu ra của nó tại cạnh xung nhịp hoạt động.",
+            "instruction": "Nối các InputSwitch với các đầu vào J và K, Đồng Hồ với đầu vào Clk, và các đầu ra Q và Q̅ với các đèn LED"
+        },
+        "wire-t-flipflop": {
+            "hint": "Để các đầu vào Clear và Preset chưa kết nối.",
+            "instruction": "Nối InputSwitch còn lại với đầu vào T, Đồng Hồ với đầu vào Clk, và các đầu ra Q và Q̅ với các đèn LED"
+        }
+    },
+    "ui-overview": {
+        "canvas": {
+            "body": "Xây dựng mạch của bạn ở đây. Kéo các thành phần từ bảng công cụ, sau đó nối chúng bằng cách nhấp và kéo từ cổng đầu ra (bên phải của một thành phần) đến cổng đầu vào (bên trái của một thành phần khác).",
+            "title": "Khung Vẽ"
+        },
+        "combinational-mode": {
+            "body": "Nút được làm nổi bật (Tổ hợp) vừa được kích hoạt tự động — nó điền các hàng đầu vào với mọi tổ hợp 0/1 có thể, cho bạn một bảng chân trị đầy đủ chỉ với một cú nhấp chuột.",
+            "title": "Chế Độ Tổ Hợp"
+        },
+        "component-palette": {
+            "body": "Bảng này liệt kê tất cả các thành phần có sẵn — cổng logic, đầu vào, đầu ra, flip-flop và nhiều hơn nữa. Các thành phần được sắp xếp theo danh mục bằng các tab ở trên cùng. Nhấp vào một tab để duyệt danh mục của nó.",
+            "title": "Bảng Thành Phần"
+        },
+        "description": "Một chuyến tham quan có hướng dẫn về giao diện chính — bảng công cụ, khung vẽ, thanh công cụ và bảng thuộc tính.",
+        "editing-cells": {
+            "body": "Bạn cũng có thể chỉnh sửa dạng sóng bằng tay. Nhấp đúp vào bất kỳ ô nào trong hàng Đồng Hồ để bật tắt nó giữa 0 và 1 — hàng Led cập nhật ngay lập tức để phản ánh đầu ra mới.",
+            "title": "Chỉnh Sửa Ô Thủ Công"
+        },
+        "element-properties": {
+            "body": "Khi bạn chọn một thành phần trên khung vẽ, các thuộc tính của nó sẽ xuất hiện ở đây. Bạn có thể đặt nhãn, màu sắc, loại kích hoạt và các cài đặt khác dành riêng cho thành phần. Hãy thử chọn một thành phần đã được đặt để xem các tùy chọn của nó.",
+            "title": "Thuộc Tính Phần Tử"
+        },
+        "logic-gates": {
+            "body": "Tab Cổng chứa các cổng Và, Or, Not, Nand, Nor, Xor và các cổng logic cơ bản khác. Kéo bất kỳ cổng nào từ danh sách này vào khung vẽ để thêm nó vào mạch của bạn.",
+            "title": "Cổng Logic"
+        },
+        "search-bar": {
+            "body": "Sử dụng thanh tìm kiếm để nhanh chóng tìm bất kỳ thành phần nào theo tên. Khi bạn gõ, một danh sách được lọc sẽ xuất hiện bên dưới hiển thị các thành phần khớp từ tất cả các danh mục.",
+            "title": "Thanh Tìm Kiếm"
+        },
+        "title": "Tham Quan Giao Diện wiRedPanda",
+        "waveform-table": {
+            "body": "Bảng dạng sóng hiển thị mỗi tín hiệu trong mạch của bạn. Hàng Đồng Hồ là đầu vào; hàng Led là đầu ra được tính toán. Mỗi cột là một bước thời gian mô phỏng — bạn có thể thấy chính xác đầu ra theo sau đầu vào như thế nào.",
+            "title": "Đọc Bảng Dạng Sóng"
+        },
+        "waveform-viewer": {
+            "body": "wiRedPanda bao gồm một trình xem dạng sóng có tên BeWavedDolphin. Nó cho thấy mỗi tín hiệu trong mạch của bạn thay đổi như thế nào theo thời gian — đầu vào là các hàng ở trên cùng, đầu ra bên dưới, mỗi cột đại diện cho một bước thời gian mô phỏng. Nhấp vào nút thanh công cụ được làm nổi bật để mở nó.",
+            "title": "Trình Xem Dạng Sóng"
+        },
+        "welcome": {
+            "body": "wiRedPanda là một trình mô phỏng mạch logic kỹ thuật số. Bạn có thể xây dựng mạch bằng cách đặt các thành phần và nối chúng lại với nhau. Chuyến tham quan này sẽ cho bạn thấy các phần chính của giao diện.",
+            "title": "Chào mừng đến với wiRedPanda!"
+        }
     }
-  },
-  "basic-or-not-gates": {
-    "add-inputs": {
-      "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo hai phần tử InputSwitch vào khung vẽ và đặt chúng bên trái cổng Or.",
-      "instruction": "Thêm hai phần tử InputSwitch vào khung vẽ"
-    },
-    "add-not-gate": {
-      "hint": "Kéo dây nối giữa cổng Or và đèn LED để xóa nó.",
-      "instruction": "Ngắt kết nối đèn LED khỏi cổng Or, sau đó nối cổng Or với một cổng Not và cổng Not với đèn LED"
-    },
-    "add-output": {
-      "hint": "Kéo một đèn LED từ tab I/O và đặt nó bên phải cổng Or. Sau đó nối cổng đầu ra của cổng Or (bên phải) với cổng đầu vào của đèn LED (bên trái).",
-      "instruction": "Thêm một đèn LED và nối nó với đầu ra của cổng Or"
-    },
-    "connect-inputs": {
-      "hint": "Nhấp và kéo từ cổng đầu ra của InputSwitch (bên phải) đến một trong các cổng đầu vào của cổng Or (bên trái). Lặp lại cho công tắc thứ hai.",
-      "instruction": "Nối cả hai công tắc đầu vào với cổng Or"
-    },
-    "description": "Học cách sử dụng các cổng Or và Not.",
-    "place-or-gate": {
-      "hint": "Nhấp vào tab Cổng ở bảng bên trái, sau đó kéo cổng Or vào khung vẽ.",
-      "instruction": "Đặt một cổng Or lên khung vẽ"
-    },
-    "title": "Thêm các cổng cơ bản: Or và Not",
-    "toggle-observe-nor": {
-      "hint": "",
-      "instruction": "Cổng Not đảo ngược tín hiệu. Bây giờ, mạch sẽ chỉ cho ra đầu ra là 1 khi không có đầu vào nào là 1"
-    },
-    "toggle-observe-or": {
-      "hint": "",
-      "instruction": "Thử nghiệm với các đầu vào và quan sát cách cổng Or cho ra đầu ra là 1 khi bất kỳ đầu vào nào của nó là 1"
-    }
-  },
-  "clock-led-waveform": {
-    "combinational-mode": {
-      "hint": "Nhấp vào Chỉnh sửa → Tổ hợp trong thanh menu của BeWavedDolphin. Thao tác này sẽ điền hàng Đồng Hồ với tất cả các giá trị có thể và tính toán đầu ra LED cho từng giá trị — một bảng chân trị đầy đủ chỉ với một cú nhấp chuột.",
-      "instruction": "Tự động tạo tất cả các tổ hợp đầu vào"
-    },
-    "connect-clock-led": {
-      "hint": "Nhấp và kéo từ cổng đầu ra của Đồng Hồ (bên phải) đến cổng đầu vào của đèn LED (bên trái).",
-      "instruction": "Nối đầu ra của Đồng Hồ với đầu vào của đèn LED"
-    },
-    "description": "Xây dựng một mạch Đồng Hồ-LED tối giản và khám phá trình xem dạng sóng: chế độ tổ hợp và chỉnh sửa ô thủ công.",
-    "open-waveform": {
-      "hint": "BeWavedDolphin hiển thị các tín hiệu của mạch bạn dưới dạng hàng. Hàng Đồng Hồ là đầu vào, và hàng Led là đầu ra. Mỗi cột là một bước thời gian mô phỏng.",
-      "instruction": "Trình xem dạng sóng hiện đã mở — hãy xem qua!"
-    },
-    "place-clock": {
-      "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo phần tử Đồng Hồ vào khung vẽ.",
-      "instruction": "Đặt một phần tử Đồng Hồ lên khung vẽ"
-    },
-    "place-led": {
-      "hint": "Vẫn ở tab I/O, kéo một phần tử Led vào khung vẽ bên phải Đồng Hồ.",
-      "instruction": "Đặt một đèn LED lên khung vẽ"
-    },
-    "title": "Đồng Hồ và LED: Kiến Thức Cơ Bản Về Dạng Sóng",
-    "toggle-cell": {
-      "hint": "Nhấp đúp vào bất kỳ ô nào trong hàng Đồng Hồ để bật tắt nó giữa 0 và 1. Quan sát hàng Led cập nhật ngay lập tức để phản ánh đầu ra mới.",
-      "instruction": "Bật tắt một ô Đồng Hồ thủ công"
-    }
-  },
-  "combinational-circuits-one": {
-    "add-demux": {
-      "hint": "Đến thời điểm này mạch của bạn nên có hai InputSwitch, hai đèn LED và một mạch DEMUX",
-      "instruction": "Thêm một mạch DEMUX và nối các InputSwitch với các cổng In và S0 của nó. Sau đó nối từng đầu ra của DEMUX với một đèn LED khác nhau"
-    },
-    "add-inputs": {
-      "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo hai phần tử InputSwitch vào khung vẽ và đặt chúng bên trái mạch MUX.",
-      "instruction": "Thêm ba phần tử InputSwitch vào khung vẽ"
-    },
-    "add-output": {
-      "hint": "Kéo một đèn LED từ tab I/O và đặt nó bên phải mạch MUX. Sau đó nối cổng đầu ra của mạch MUX (bên phải) với cổng đầu vào của đèn LED (bên trái).",
-      "instruction": "Thêm một đèn LED và nối nó với đầu ra của mạch MUX"
-    },
-    "connect-inputs": {
-      "hint": "Nhấp và kéo từ cổng đầu ra của InputSwitch (bên phải) đến một trong các cổng đầu vào của cổng MUX (bên trái). Lặp lại cho công tắc thứ hai. Sau đó, nối công tắc đầu vào thứ ba với cổng chọn của MUX (phía dưới)",
-      "instruction": "Nối tất cả các công tắc đầu vào với mạch MUX"
-    },
-    "description": "Tìm hiểu về các mạch MUX và DEMUX.",
-    "explain-demux-select": {
-      "hint": "",
-      "instruction": "Cổng S0 ở phía dưới DEMUX chọn đầu ra nào sẽ nhận tín hiệu của đầu vào. Khi S0 = 0, Out0 = In0. Khi S0 = 1, Out1 = In0"
-    },
-    "explain-mux-select": {
-      "hint": "",
-      "instruction": "Cổng S0 ở phía dưới MUX chọn đầu vào nào được định tuyến đến đầu ra. Khi S0 = 0, tín hiệu từ Đầu vào 0 được gửi đến đầu ra. Khi S0 = 1, tín hiệu từ Đầu vào 1 được gửi đến đầu ra."
-    },
-    "place-mux": {
-      "hint": "Nhấp vào tab Tổ hợp ở bảng bên trái, sau đó kéo mạch MUX vào khung vẽ.",
-      "instruction": "Đặt một mạch MUX lên khung vẽ"
-    },
-    "prepare-demux": {
-      "hint": "Đến thời điểm này mạch của bạn nên có hai InputSwitch và hai đèn LED",
-      "instruction": "Xóa mạch MUX và một trong các InputSwitch. Sau đó thêm một đèn LED khác"
-    },
-    "title": "Mạch Tổ Hợp I: MUX và DEMUX"
-  },
-  "combinational-circuits-three": {
-    "add-cin-and-gates": {
-      "hint": "Nối các đầu ra của InputSwitch với các đầu vào của các cổng.",
-      "instruction": "Thêm một InputSwitch khác vào khung vẽ và đặt nhãn Cin cho nó. Sau đó thêm một cổng Xor, một cổng Và và một cổng Or"
-    },
-    "add-half-adder-gates": {
-      "hint": "Sử dụng tab Cổng để thêm các cổng Xor và Và, sau đó sử dụng tab I/O để thêm hai đèn LED.",
-      "instruction": "Thêm một cổng Xor, một cổng Và và hai đèn LED vào khung vẽ. Sau đó nối mỗi cổng với một đèn LED khác nhau"
-    },
-    "add-inputs": {
-      "hint": "Nhấp vào tab I/O ở bảng bên trái, sau đó kéo ba phần tử InputSwitch vào khung vẽ. InputSwitch thứ ba sẽ được sử dụng sau này làm số nhớ vào (Cin).",
-      "instruction": "Thêm hai phần tử InputSwitch vào khung vẽ"
-    },
-    "description": "Học cách xây dựng một mạch bộ cộng.",
-    "explain-full-adder": {
-      "hint": "",
-      "instruction": "Mạch này tạo thành một bộ cộng đầy đủ. Không giống như bộ bán cộng, một bộ cộng đầy đủ chấp nhận số nhớ vào (Cin) từ phép cộng trước đó và tạo ra số nhớ ra (Cout) cho giai đoạn tiếp theo. Bằng cách nối Cout của một bộ cộng đầy đủ với Cin của một bộ khác, nhiều bộ cộng đầy đủ có thể được nối chuỗi với nhau để cộng các số nhị phân có độ dài bất kỳ"
-    },
-    "label-half-adder-outputs": {
-      "hint": "Nhấp vào một đèn LED và gõ vào hộp văn bản nhãn ở góc dưới bên trái màn hình để đặt nhãn cho đèn LED.",
-      "instruction": "Đặt nhãn Sum cho đèn LED được nối với cổng Xor, sau đó đặt nhãn Cout cho đèn LED được nối với cổng Và. Mạch này tạo thành một bộ bán cộng, cộng hai đầu vào một bit"
-    },
-    "title": "Mạch Tổ Hợp III: Bộ Cộng",
-    "wire-full-adder": {
-      "hint": "Xóa các kết nối cũ với đèn LED để có thể thêm các kết nối mới.",
-      "instruction": "Nối cổng Xor cũ và công tắc Cin với cổng Xor mới, sau đó nối cổng Xor mới với đầu ra Sum. Cũng nối cổng Xor cũ và công tắc Cin với cổng Và mới. Hoàn thành bằng cách nối cả hai cổng Và với cổng Or, và cổng Or với Cout"
-    },
-    "wire-half-adder": {
-      "hint": "Nối các đầu ra của InputSwitch với các đầu vào của các cổng.",
-      "instruction": "Nối cả hai InputSwitch với cổng Xor và cổng Và. Mỗi InputSwitch nên được nối với cả hai cổng. Cổng Xor tạo ra đầu ra Sum, trong khi cổng Và tạo ra đầu ra Carry"
-    }
-  },
-  "combinational-circuits-two": {
-    "add-and-gates-leds": {
-      "hint": "Sử dụng tab Cổng ở bảng bên trái để thêm các cổng Và và tab I/O để thêm các đèn LED.",
-      "instruction": "Thêm bốn cổng Và và bốn đèn LED vào khung vẽ, sau đó nối mỗi cổng Và với một trong các đèn LED"
-    },
-    "add-inputs": {
-      "hint": "Nhấp vào tab I/O ở bảng bên trái và kéo hai phần tử InputSwitch vào khung vẽ.",
-      "instruction": "Thêm hai phần tử InputSwitch vào khung vẽ"
-    },
-    "add-not-gates": {
-      "hint": "Nhấp vào tab Cổng ở bảng bên trái, sau đó kéo hai phần tử cổng Not vào khung vẽ và nối các InputSwitch với chúng.",
-      "instruction": "Thêm hai cổng Not vào khung vẽ và nối mỗi InputSwitch với một cổng Not riêng biệt"
-    },
-    "description": "Học cách xây dựng một bộ giải mã 2 sang 4.",
-    "explain-decoder": {
-      "hint": "",
-      "instruction": "Với mỗi tổ hợp cụ thể của các bit đầu vào, chỉ có một đường đầu ra tương ứng được kích hoạt, trong khi tất cả các đường khác vẫn không hoạt động"
-    },
-    "title": "Mạch Tổ Hợp II: Bộ Giải Mã",
-    "wire-decoder": {
-      "hint": "Mỗi cổng Và nên nhận một tín hiệu từ mỗi đầu vào. Sử dụng tín hiệu InputSwitch gốc cho giá trị 1 và đầu ra tương ứng của cổng Not cho giá trị 0.",
-      "instruction": "Nối các đầu ra của các cổng Not và InputSwitch với các cổng Và sao cho mỗi cổng Và đại diện cho một tổ hợp đầu vào"
-    }
-  },
-  "sequential-circuits-one": {
-    "add-d-latch": {
-      "hint": "Chốt D lưu trữ một giá trị đầu vào duy nhất và tránh tổ hợp đầu vào không hợp lệ của chốt SR.",
-      "instruction": "Xóa chốt SR trong khi vẫn giữ các InputSwitch và đèn LED. Sau đó thêm một chốt D"
-    },
-    "add-sr-latch": {
-      "hint": "Sử dụng tab Bộ nhớ để thêm một chốt SR. Sau đó sử dụng tab I/O để thêm hai InputSwitch và hai đèn LED.",
-      "instruction": "Thêm một chốt SR, hai InputSwitch và hai đèn LED vào khung vẽ"
-    },
-    "description": "Học cách sử dụng chốt (latch).",
-    "explain-d-latch": {
-      "hint": "",
-      "instruction": "Bật tắt các InputSwitch và quan sát chốt D. Khi Enable là 1, đầu ra theo sau đầu vào D. Khi Enable là 0, chốt nhớ giá trị trước đó của nó"
-    },
-    "explain-sr-latch": {
-      "hint": "",
-      "instruction": "Bật tắt các InputSwitch và quan sát cách chốt SR lưu trữ trạng thái của nó. Đặt đầu vào S thành 1 khiến đầu ra Q trở thành 1, trong khi đặt đầu vào R thành 1 đặt lại Q về 0. Khi cả hai đầu vào trở về 0, chốt sẽ nhớ trạng thái cuối cùng của nó cho đến khi nó được đặt hoặc đặt lại lần nữa"
-    },
-    "title": "Mạch Tuần Tự I: Chốt",
-    "wire-d-latch": {
-      "hint": "Đầu vào D là giá trị cần được lưu trữ. Đầu vào Enable xác định khi nào chốt cập nhật giá trị đã lưu trữ của nó.",
-      "instruction": "Nối một InputSwitch với đầu vào D và cái còn lại với đầu vào Enable (E). Nối các đầu ra Q và Q̅ với các đèn LED"
-    },
-    "wire-sr-latch": {
-      "hint": "Nối một InputSwitch với đầu vào Set (S) và cái còn lại với đầu vào Reset (R). Nối mỗi đầu ra của chốt với một đèn LED khác nhau.",
-      "instruction": "Nối các InputSwitch với các đầu vào S và R của chốt SR. Sau đó nối các đầu ra Q và Q̅ với các đèn LED"
-    }
-  },
-  "sequential-circuits-three": {
-    "add-flipflops": {
-      "hint": "Sử dụng tab Bộ nhớ để thêm các flip-flop T và một Đồng Hồ. Sau đó sử dụng tab I/O để thêm ba InputSwitch và ba đèn LED.",
-      "instruction": "Thêm ba flip-flop T, ba InputSwitch, một Đồng Hồ và ba đèn LED vào khung vẽ"
-    },
-    "description": "Học cách xây dựng một mạch bộ đếm.",
-    "explain-counter": {
-      "hint": "",
-      "instruction": "Bật cả ba InputSwitch và khởi động Đồng Hồ. Quan sát các đèn LED khi bộ đếm hoạt động. Đèn LED đầu tiên thay đổi trạng thái ở mỗi xung nhịp, đèn LED thứ hai thay đổi sau mỗi hai xung, và đèn LED thứ ba sau mỗi bốn xung, hiển thị một chuỗi đếm nhị phân 3-bit lặp lại từ 000 đến 111"
-    },
-    "title": "Mạch Tuần Tự III: Bộ Đếm",
-    "wire-clock": {
-      "hint": "Flip-flop đầu tiên nhận tín hiệu xung nhịp bên ngoài.",
-      "instruction": "Nối Đồng Hồ với đầu vào Clk của flip-flop T đầu tiên"
-    },
-    "wire-outputs": {
-      "hint": "Mỗi đèn LED đại diện cho một bit của bộ đếm, với đèn LED đầu tiên là bit có trọng số thấp nhất.",
-      "instruction": "Nối đầu ra Q của mỗi flip-flop với một đèn LED khác nhau"
-    },
-    "wire-ripple-clock": {
-      "hint": "",
-      "instruction": "Nối đầu ra Q của flip-flop đầu tiên với đầu vào Clk của flip-flop thứ hai, sau đó nối đầu ra Q của flip-flop thứ hai với đầu vào Clk của flip-flop thứ ba. Mỗi flip-flop được cấp xung nhịp bởi đầu ra của flip-flop trước đó, tạo thành một bộ đếm gợn sóng (ripple counter)"
-    },
-    "wire-t-inputs": {
-      "hint": "Bật cả ba InputSwitch. Một flip-flop T chỉ bật tắt khi đầu vào T của nó là 1.",
-      "instruction": "Nối mỗi InputSwitch với đầu vào T của một flip-flop khác nhau"
-    }
-  },
-  "sequential-circuits-two": {
-    "add-d-flipflop": {
-      "hint": "Sử dụng tab Bộ nhớ để thêm một flip-flop D và một Đồng Hồ. Sau đó sử dụng tab I/O để thêm hai InputSwitch và hai đèn LED.",
-      "instruction": "Thêm một flip-flop D, hai InputSwitch, một Đồng Hồ và hai đèn LED vào khung vẽ"
-    },
-    "add-jk-flipflop": {
-      "hint": "Flip-flop JK có các đầu vào J và K thay vì đầu vào D. Để các đầu vào Clear và Preset chưa kết nối.",
-      "instruction": "Thay thế flip-flop D bằng một flip-flop JK trong khi vẫn giữ Đồng Hồ, InputSwitch và đèn LED"
-    },
-    "add-t-flipflop": {
-      "hint": "Một flip-flop T chỉ cần một đầu vào duy nhất ngoài xung nhịp.",
-      "instruction": "Thay thế flip-flop JK bằng một flip-flop T và loại bỏ một trong các InputSwitch"
-    },
-    "description": "Tìm hiểu về flip-flop.",
-    "explain-clear-preset": {
-      "hint": "",
-      "instruction": "Nối InputSwitch thứ hai với đầu vào Clear hoặc Preset và quan sát tác động của nó. Không giống như đầu vào D, các đầu vào Clear và Preset tác động ngay lập tức mà không cần chờ cạnh xung nhịp. Clear buộc Q về 0, trong khi Preset buộc Q về 1"
-    },
-    "explain-d-flipflop": {
-      "hint": "",
-      "instruction": "Bật tắt InputSwitch D và quan sát flip-flop D. Giá trị tại đầu vào D chỉ được sao chép sang đầu ra Q tại cạnh xung nhịp hoạt động. Giữa các cạnh xung nhịp, đầu ra vẫn không đổi"
-    },
-    "explain-jk-flipflop": {
-      "hint": "",
-      "instruction": "Bật tắt các InputSwitch và quan sát flip-flop JK. Khi J = K = 0, đầu ra giữ nguyên trạng thái hiện tại của nó. Khi J = 1 và K = 0, đầu ra được đặt. Khi J = 0 và K = 1, đầu ra được đặt lại. Khi J = K = 1, đầu ra bật tắt tại mỗi cạnh xung nhịp hoạt động"
-    },
-    "explain-t-flipflop": {
-      "hint": "",
-      "instruction": "Bật tắt InputSwitch và quan sát flip-flop T. Khi T = 0, đầu ra giữ nguyên trạng thái hiện tại của nó. Khi T = 1, đầu ra bật tắt tại mỗi cạnh xung nhịp hoạt động. Flip-flop T thường được sử dụng để xây dựng bộ đếm nhị phân và bộ chia tần số"
-    },
-    "title": "Mạch Tuần Tự II: Flip-Flop",
-    "wire-d-flipflop": {
-      "hint": "Tạm thời để các đầu vào Clear và Preset chưa kết nối.",
-      "instruction": "Nối một InputSwitch với đầu vào D, Đồng Hồ với đầu vào Clk, và các đầu ra Q và Q̅ với các đèn LED. Đầu vào D cung cấp giá trị cần được lưu trữ, trong khi Đồng Hồ xác định khi nào giá trị được lưu trữ"
-    },
-    "wire-jk-flipflop": {
-      "hint": "Flip-flop JK chỉ thay đổi đầu ra của nó tại cạnh xung nhịp hoạt động.",
-      "instruction": "Nối các InputSwitch với các đầu vào J và K, Đồng Hồ với đầu vào Clk, và các đầu ra Q và Q̅ với các đèn LED"
-    },
-    "wire-t-flipflop": {
-      "hint": "Để các đầu vào Clear và Preset chưa kết nối.",
-      "instruction": "Nối InputSwitch còn lại với đầu vào T, Đồng Hồ với đầu vào Clk, và các đầu ra Q và Q̅ với các đèn LED"
-    }
-  },
-  "ui-overview": {
-    "canvas": {
-      "body": "Xây dựng mạch của bạn ở đây. Kéo các thành phần từ bảng công cụ, sau đó nối chúng bằng cách nhấp và kéo từ cổng đầu ra (bên phải của một thành phần) đến cổng đầu vào (bên trái của một thành phần khác).",
-      "title": "Khung Vẽ"
-    },
-    "combinational-mode": {
-      "body": "Nút được làm nổi bật (Tổ hợp) vừa được kích hoạt tự động — nó điền các hàng đầu vào với mọi tổ hợp 0/1 có thể, cho bạn một bảng chân trị đầy đủ chỉ với một cú nhấp chuột.",
-      "title": "Chế Độ Tổ Hợp"
-    },
-    "component-palette": {
-      "body": "Bảng này liệt kê tất cả các thành phần có sẵn — cổng logic, đầu vào, đầu ra, flip-flop và nhiều hơn nữa. Các thành phần được sắp xếp theo danh mục bằng các tab ở trên cùng. Nhấp vào một tab để duyệt danh mục của nó.",
-      "title": "Bảng Thành Phần"
-    },
-    "description": "Một chuyến tham quan có hướng dẫn về giao diện chính — bảng công cụ, khung vẽ, thanh công cụ và bảng thuộc tính.",
-    "editing-cells": {
-      "body": "Bạn cũng có thể chỉnh sửa dạng sóng bằng tay. Nhấp đúp vào bất kỳ ô nào trong hàng Đồng Hồ để bật tắt nó giữa 0 và 1 — hàng Led cập nhật ngay lập tức để phản ánh đầu ra mới.",
-      "title": "Chỉnh Sửa Ô Thủ Công"
-    },
-    "element-properties": {
-      "body": "Khi bạn chọn một thành phần trên khung vẽ, các thuộc tính của nó sẽ xuất hiện ở đây. Bạn có thể đặt nhãn, màu sắc, loại kích hoạt và các cài đặt khác dành riêng cho thành phần. Hãy thử chọn một thành phần đã được đặt để xem các tùy chọn của nó.",
-      "title": "Thuộc Tính Phần Tử"
-    },
-    "logic-gates": {
-      "body": "Tab Cổng chứa các cổng Và, Or, Not, Nand, Nor, Xor và các cổng logic cơ bản khác. Kéo bất kỳ cổng nào từ danh sách này vào khung vẽ để thêm nó vào mạch của bạn.",
-      "title": "Cổng Logic"
-    },
-    "search-bar": {
-      "body": "Sử dụng thanh tìm kiếm để nhanh chóng tìm bất kỳ thành phần nào theo tên. Khi bạn gõ, một danh sách được lọc sẽ xuất hiện bên dưới hiển thị các thành phần khớp từ tất cả các danh mục.",
-      "title": "Thanh Tìm Kiếm"
-    },
-    "title": "Tham Quan Giao Diện wiRedPanda",
-    "waveform-table": {
-      "body": "Bảng dạng sóng hiển thị mỗi tín hiệu trong mạch của bạn. Hàng Đồng Hồ là đầu vào; hàng Led là đầu ra được tính toán. Mỗi cột là một bước thời gian mô phỏng — bạn có thể thấy chính xác đầu ra theo sau đầu vào như thế nào.",
-      "title": "Đọc Bảng Dạng Sóng"
-    },
-    "waveform-viewer": {
-      "body": "wiRedPanda bao gồm một trình xem dạng sóng có tên BeWavedDolphin. Nó cho thấy mỗi tín hiệu trong mạch của bạn thay đổi như thế nào theo thời gian — đầu vào là các hàng ở trên cùng, đầu ra bên dưới, mỗi cột đại diện cho một bước thời gian mô phỏng. Nhấp vào nút thanh công cụ được làm nổi bật để mở nó.",
-      "title": "Trình Xem Dạng Sóng"
-    },
-    "welcome": {
-      "body": "wiRedPanda là một trình mô phỏng mạch logic kỹ thuật số. Bạn có thể xây dựng mạch bằng cách đặt các thành phần và nối chúng lại với nhau. Chuyến tham quan này sẽ cho bạn thấy các phần chính của giao diện.",
-      "title": "Chào mừng đến với wiRedPanda!"
-    }
-  }
 }
