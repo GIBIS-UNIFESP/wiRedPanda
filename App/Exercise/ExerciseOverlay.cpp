@@ -3,6 +3,8 @@
 
 #include "App/Exercise/ExerciseOverlay.h"
 
+#include <QApplication>
+#include <QFontInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
@@ -90,9 +92,17 @@ void ExerciseOverlay::setupUi()
     applyTheme();
 }
 
+int ExerciseOverlay::scaledFontPx(int basePx)
+{
+    constexpr int baselinePx = 13;
+    const int currentPx = QFontInfo(QApplication::font()).pixelSize();
+    return qRound(static_cast<double>(basePx) * currentPx / baselinePx);
+}
+
 void ExerciseOverlay::applyTheme()
 {
     const bool dark = (ThemeManager::effectiveTheme() == Theme::Dark);
+    const int navFontPx = scaledFontPx(13);
 
     if (dark) {
         m_bgColor      = QColor(30, 30, 30, 200);
@@ -101,21 +111,23 @@ void ExerciseOverlay::applyTheme()
         m_counterColor = QColor(255, 255, 255, 200);
 
         const QString navStyle =
-            "QPushButton { color: white; background: rgba(255,255,255,40);"
-            " border: 1px solid rgba(255,255,255,80); border-radius: 4px;"
-            " padding: 3px 10px; font-size: 13px; }"
-            "QPushButton:hover { background: rgba(255,255,255,60); }"
-            "QPushButton:disabled { color: rgba(255,255,255,80); background: rgba(80,80,80,60); }";
+            QString("QPushButton { color: white; background: rgba(255,255,255,40);"
+                     " border: 1px solid rgba(255,255,255,80); border-radius: 4px;"
+                     " padding: 3px 10px; font-size: %1px; }"
+                     "QPushButton:hover { background: rgba(255,255,255,60); }"
+                     "QPushButton:disabled { color: rgba(255,255,255,80); background: rgba(80,80,80,60); }")
+                .arg(navFontPx);
         m_closeButton->setStyleSheet(navStyle);
         m_hintButton->setStyleSheet(navStyle);
         m_prevButton->setStyleSheet(navStyle);
         m_nextButton->setStyleSheet(
-            "QPushButton { color: white; background: rgba(60,150,60,180);"
-            " border: 1px solid rgba(255,255,255,80); border-radius: 4px;"
-            " padding: 3px 10px; font-size: 13px; }"
-            "QPushButton:hover { background: rgba(60,180,60,200); }"
-            "QPushButton:disabled { background: rgba(100,100,100,80);"
-            " color: rgba(255,255,255,100); }");
+            QString("QPushButton { color: white; background: rgba(60,150,60,180);"
+                     " border: 1px solid rgba(255,255,255,80); border-radius: 4px;"
+                     " padding: 3px 10px; font-size: %1px; }"
+                     "QPushButton:hover { background: rgba(60,180,60,200); }"
+                     "QPushButton:disabled { background: rgba(100,100,100,80);"
+                     " color: rgba(255,255,255,100); }")
+                .arg(navFontPx));
     } else {
         m_bgColor      = QColor(245, 245, 245, 230);
         m_textColor    = QColor(20, 20, 20);
@@ -123,34 +135,37 @@ void ExerciseOverlay::applyTheme()
         m_counterColor = QColor(80, 80, 80, 200);
 
         const QString navStyle =
-            "QPushButton { color: rgb(20,20,20); background: rgba(0,0,0,20);"
-            " border: 1px solid rgba(0,0,0,80); border-radius: 4px;"
-            " padding: 3px 10px; font-size: 13px; }"
-            "QPushButton:hover { background: rgba(0,0,0,40); }"
-            "QPushButton:disabled { color: rgba(0,0,0,60); background: rgba(0,0,0,10); }";
+            QString("QPushButton { color: rgb(20,20,20); background: rgba(0,0,0,20);"
+                     " border: 1px solid rgba(0,0,0,80); border-radius: 4px;"
+                     " padding: 3px 10px; font-size: %1px; }"
+                     "QPushButton:hover { background: rgba(0,0,0,40); }"
+                     "QPushButton:disabled { color: rgba(0,0,0,60); background: rgba(0,0,0,10); }")
+                .arg(navFontPx);
         m_closeButton->setStyleSheet(navStyle);
         m_hintButton->setStyleSheet(navStyle);
         m_prevButton->setStyleSheet(navStyle);
         m_nextButton->setStyleSheet(
-            "QPushButton { color: white; background: rgba(40,130,40,220);"
-            " border: 1px solid rgba(0,100,0,150); border-radius: 4px;"
-            " padding: 3px 10px; font-size: 13px; }"
-            "QPushButton:hover { background: rgba(40,160,40,230); }"
-            "QPushButton:disabled { background: rgba(150,150,150,80);"
-            " color: rgba(255,255,255,120); }");
+            QString("QPushButton { color: white; background: rgba(40,130,40,220);"
+                     " border: 1px solid rgba(0,100,0,150); border-radius: 4px;"
+                     " padding: 3px 10px; font-size: %1px; }"
+                     "QPushButton:hover { background: rgba(40,160,40,230); }"
+                     "QPushButton:disabled { background: rgba(150,150,150,80);"
+                     " color: rgba(255,255,255,120); }")
+                .arg(navFontPx));
     }
 
     m_stepCounter->setStyleSheet(
-        QString("color: rgba(%1,%2,%3,%4); font-size: 12px;")
+        QString("color: rgba(%1,%2,%3,%4); font-size: %5px;")
             .arg(m_counterColor.red()).arg(m_counterColor.green())
-            .arg(m_counterColor.blue()).arg(m_counterColor.alpha()));
+            .arg(m_counterColor.blue()).arg(m_counterColor.alpha()).arg(scaledFontPx(12)));
     m_instructionLabel->setStyleSheet(
-        QString("color: rgb(%1,%2,%3); font-size: 14px; font-weight: bold;")
-            .arg(m_textColor.red()).arg(m_textColor.green()).arg(m_textColor.blue()));
+        QString("color: rgb(%1,%2,%3); font-size: %4px; font-weight: bold;")
+            .arg(m_textColor.red()).arg(m_textColor.green()).arg(m_textColor.blue())
+            .arg(scaledFontPx(14)));
     m_hintLabel->setStyleSheet(
-        QString("color: rgba(%1,%2,%3,%4); font-size: 13px;")
+        QString("color: rgba(%1,%2,%3,%4); font-size: %5px;")
             .arg(m_hintColor.red()).arg(m_hintColor.green())
-            .arg(m_hintColor.blue()).arg(m_hintColor.alpha()));
+            .arg(m_hintColor.blue()).arg(m_hintColor.alpha()).arg(scaledFontPx(13)));
 
     update();
 }

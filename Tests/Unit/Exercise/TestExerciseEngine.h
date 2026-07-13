@@ -16,4 +16,7 @@ private slots:
     void testRetranslatePreservesProgressAndData();
     void testRetranslateEmitsRetranslatedOnly();
     void testNegativeMinCountClampsToZero();
+
+    // ExerciseOverlay::scaledFontPx() (#14 accessibility: font-scale-hostile hardcoded px sizes)
+    void testOverlayFontScalesWithApplicationFont();
 };

@@ -24,6 +24,7 @@ class TourEngine;
 class TourOverlay : public QWidget
 {
     Q_OBJECT
+    friend class TestTourEngine;
 
 public:
     using TargetResolver = std::function<QRect(const QString &targetId)>;
@@ -70,4 +71,9 @@ private:
     QPushButton *m_closeButton    = nullptr;
 
     void applyTheme();
+
+    /// Scales a \a basePx literal (tuned against a 13px baseline) by the application's current
+    /// font size, so this overlay's text respects an OS/Qt font-scale accessibility setting
+    /// instead of staying visually frozen at a fixed pixel size.
+    static int scaledFontPx(int basePx);
 };

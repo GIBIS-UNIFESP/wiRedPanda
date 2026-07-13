@@ -3,12 +3,15 @@
 
 #include "Tests/Unit/Exercise/TestExerciseEngine.h"
 
+#include <QApplication>
 #include <QFile>
+#include <QFont>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 
 #include "App/Core/Settings.h"
 #include "App/Exercise/ExerciseEngine.h"
+#include "App/Exercise/ExerciseOverlay.h"
 
 namespace {
 
@@ -155,4 +158,24 @@ void TestExerciseEngine::testNegativeMinCountClampsToZero()
     QCOMPARE(step.requiredElements[0].minCount, 0);
     QCOMPARE(step.requiredConnections.size(), 1);
     QCOMPARE(step.requiredConnections[0].minCount, 0);
+}
+
+void TestExerciseEngine::testOverlayFontScalesWithApplicationFont()
+{
+    const QFont originalFont = QApplication::font();
+
+    QFont smallFont = originalFont;
+    smallFont.setPointSize(8);
+    QApplication::setFont(smallFont);
+    const int smallPx = ExerciseOverlay::scaledFontPx(13);
+
+    QFont largeFont = originalFont;
+    largeFont.setPointSize(24);
+    QApplication::setFont(largeFont);
+    const int largePx = ExerciseOverlay::scaledFontPx(13);
+
+    QApplication::setFont(originalFont);
+
+    QVERIFY2(largePx > smallPx, "scaledFontPx must grow with the application's font size, "
+                                "so exercise overlay text respects an OS/Qt font-scale setting");
 }

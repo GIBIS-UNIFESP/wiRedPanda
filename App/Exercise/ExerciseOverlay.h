@@ -16,6 +16,7 @@ class ExerciseEngine;
 class ExerciseOverlay : public QWidget
 {
     Q_OBJECT
+    friend class TestExerciseEngine;
 
 public:
     explicit ExerciseOverlay(ExerciseEngine *engine, QWidget *parent = nullptr);
@@ -39,6 +40,11 @@ private:
     void setupUi();
     void updateNextButton(bool isLastStep);
     void applyTheme();
+
+    /// Scales a \a basePx literal (tuned against a 13px baseline) by the application's current
+    /// font size, so this overlay's text respects an OS/Qt font-scale accessibility setting
+    /// instead of staying visually frozen at a fixed pixel size.
+    static int scaledFontPx(int basePx);
 
     ExerciseEngine *m_engine;
 
