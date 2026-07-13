@@ -1,322 +1,322 @@
 {
-  "basic-and-gate": {
-    "add-inputs": {
-      "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite du InputSwitch elementus į darbalaukį ir padėkite juos į kairę nuo Ir elemento.",
-      "instruction": "Pridėkite du InputSwitch elementus į darbalaukį"
+    "basic-and-gate": {
+        "add-inputs": {
+            "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite du InputSwitch elementus į darbalaukį ir padėkite juos į kairę nuo Ir elemento.",
+            "instruction": "Pridėkite du InputSwitch elementus į darbalaukį"
+        },
+        "add-output": {
+            "hint": "Nutempkite šviesos diodą iš I/O skirtuko ir padėkite jį į dešinę nuo Ir elemento. Tada sujunkite Ir elemento išvesties prievadą (dešinė pusė) su šviesos diodo įvesties prievadu (kairė pusė).",
+            "instruction": "Pridėkite šviesos diodą ir sujunkite jį su Ir elemento išvestimi"
+        },
+        "connect-inputs": {
+            "hint": "Spustelėkite ir tempkite nuo InputSwitch išvesties prievado (dešinė pusė) iki vieno iš Ir elemento įvesties prievadų (kairė pusė). Pakartokite su antruoju jungikliu.",
+            "instruction": "Sujunkite abu įvesties jungiklius su Ir elementu"
+        },
+        "description": "Išmokite dėti loginius elementus, pridėti įėjimus ir išėjimus bei juos sujungti.",
+        "place-and-gate": {
+            "hint": "Spustelėkite skirtuką Elementai kairiajame skydelyje, tada nutempkite Ir elementą į darbalaukį.",
+            "instruction": "Padėkite Ir elementą darbalaukyje"
+        },
+        "title": "Grandinės su Ir loginiu elementu kūrimas",
+        "toggle-observe": {
+            "hint": "Spustelėkite InputSwitch, kad jį perjungtumėte. Šviesos diodas užsidega tik tada, kai ABU jungikliai yra ĮJUNGTI. Taip yra todėl, kad Ir pateikia 1 tik tada, kai visi įėjimai yra 1.",
+            "instruction": "Perjunkite jungiklius ir stebėkite šviesos diodą — tai Ir logika!"
+        }
     },
-    "add-output": {
-      "hint": "Nutempkite šviesos diodą iš I/O skirtuko ir padėkite jį į dešinę nuo Ir elemento. Tada sujunkite Ir elemento išvesties prievadą (dešinė pusė) su šviesos diodo įvesties prievadu (kairė pusė).",
-      "instruction": "Pridėkite šviesos diodą ir sujunkite jį su Ir elemento išvestimi"
+    "basic-or-not-gates": {
+        "add-inputs": {
+            "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite du InputSwitch elementus į darbalaukį ir padėkite juos į kairę nuo Arba elemento.",
+            "instruction": "Pridėkite du InputSwitch elementus į darbalaukį"
+        },
+        "add-not-gate": {
+            "hint": "Nutempkite laidą tarp Arba elemento ir šviesos diodo, kad jį pašalintumėte.",
+            "instruction": "Atjunkite šviesos diodą nuo Arba elemento, tada sujunkite Arba elementą su Ne elementu, o Ne elementą su šviesos diodu"
+        },
+        "add-output": {
+            "hint": "Nutempkite šviesos diodą iš I/O skirtuko ir padėkite jį į dešinę nuo Arba elemento. Tada sujunkite Arba elemento išvesties prievadą (dešinė pusė) su šviesos diodo įvesties prievadu (kairė pusė).",
+            "instruction": "Pridėkite šviesos diodą ir sujunkite jį su Arba elemento išvestimi"
+        },
+        "connect-inputs": {
+            "hint": "Spustelėkite ir tempkite nuo InputSwitch išvesties prievado (dešinė pusė) iki vieno iš Arba elemento įvesties prievadų (kairė pusė). Pakartokite su antruoju jungikliu.",
+            "instruction": "Sujunkite abu įvesties jungiklius su Arba elementu"
+        },
+        "description": "Išmokite naudoti Arba ir Ne elementus.",
+        "place-or-gate": {
+            "hint": "Spustelėkite skirtuką Elementai kairiajame skydelyje, tada nutempkite Arba elementą į darbalaukį.",
+            "instruction": "Padėkite Arba elementą darbalaukyje"
+        },
+        "title": "Daugiau pagrindinių elementų: Arba ir Ne",
+        "toggle-observe-nor": {
+            "hint": "",
+            "instruction": "Ne elementas apverčia signalą. Dabar grandinė pateiks 1 tik tada, kai nė vienas iš įėjimų nebus 1"
+        },
+        "toggle-observe-or": {
+            "hint": "",
+            "instruction": "Paeksperimentuokite su įėjimais ir pastebėkite, kaip Arba elementas pateikia 1, kai bet kuris iš jo įėjimų yra 1"
+        }
     },
-    "connect-inputs": {
-      "hint": "Spustelėkite ir tempkite nuo InputSwitch išvesties prievado (dešinė pusė) iki vieno iš Ir elemento įvesties prievadų (kairė pusė). Pakartokite su antruoju jungikliu.",
-      "instruction": "Sujunkite abu įvesties jungiklius su Ir elementu"
+    "clock-led-waveform": {
+        "combinational-mode": {
+            "hint": "Spustelėkite Redaguoti → Kombinacinis BeWavedDolphin meniu juostoje. Tai užpildys Laikrodžio eilutę visomis galimomis reikšmėmis ir apskaičiuos šviesos diodo išvestį kiekvienai iš jų — pilną tiesos lentelę vienu spustelėjimu.",
+            "instruction": "Automatiškai sugeneruoti visus įvesties derinius"
+        },
+        "connect-clock-led": {
+            "hint": "Spustelėkite ir tempkite nuo Laikrodžio išvesties prievado (dešinė pusė) iki šviesos diodo įvesties prievado (kairė pusė).",
+            "instruction": "Sujunkite Laikrodžio išvestį su šviesos diodo įvestimi"
+        },
+        "description": "Sukurkite minimalią Laikrodis-šviesos diodas grandinę ir susipažinkite su signalo formos peržiūros priemone: kombinacine veiksena ir rankiniu langelių redagavimu.",
+        "open-waveform": {
+            "hint": "BeWavedDolphin rodo jūsų grandinės signalus kaip eilutes. Laikrodžio eilutė yra įvestis, o Led eilutė yra išvestis. Kiekvienas stulpelis yra vienas modeliavimo laiko žingsnis.",
+            "instruction": "Signalo formos peržiūros priemonė dabar atverta — pažiūrėkite!"
+        },
+        "place-clock": {
+            "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite Laikrodžio elementą į darbalaukį.",
+            "instruction": "Padėkite Laikrodžio elementą darbalaukyje"
+        },
+        "place-led": {
+            "hint": "Likdami I/O skirtuke, nutempkite Led elementą į darbalaukį į dešinę nuo Laikrodžio.",
+            "instruction": "Padėkite šviesos diodą darbalaukyje"
+        },
+        "title": "Laikrodis ir šviesos diodas: signalo formos pagrindai",
+        "toggle-cell": {
+            "hint": "Dukart spustelėkite bet kurį langelį Laikrodžio eilutėje, kad perjungtumėte jį tarp 0 ir 1. Stebėkite, kaip Led eilutė akimirksniu atsinaujina, atspindėdama naują išvestį.",
+            "instruction": "Rankiniu būdu perjunkite Laikrodžio langelį"
+        }
     },
-    "description": "Išmokite dėti loginius elementus, pridėti įėjimus ir išėjimus bei juos sujungti.",
-    "place-and-gate": {
-      "hint": "Spustelėkite skirtuką Elementai kairiajame skydelyje, tada nutempkite Ir elementą į darbalaukį.",
-      "instruction": "Padėkite Ir elementą darbalaukyje"
+    "combinational-circuits-one": {
+        "add-demux": {
+            "hint": "Jūsų grandinėje šiuo metu turėtų būti du InputSwitch, du šviesos diodai ir viena DEMUX grandinė",
+            "instruction": "Pridėkite DEMUX grandinę ir sujunkite InputSwitch su jos In ir S0 prievadais. Tada sujunkite kiekvieną DEMUX išvestį su skirtingu šviesos diodu"
+        },
+        "add-inputs": {
+            "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite du InputSwitch elementus į darbalaukį ir padėkite juos į kairę nuo MUX grandinės.",
+            "instruction": "Pridėkite tris InputSwitch elementus į darbalaukį"
+        },
+        "add-output": {
+            "hint": "Nutempkite šviesos diodą iš I/O skirtuko ir padėkite jį į dešinę nuo MUX grandinės. Tada sujunkite MUX grandinės išvesties prievadą (dešinė pusė) su šviesos diodo įvesties prievadu (kairė pusė).",
+            "instruction": "Pridėkite šviesos diodą ir sujunkite jį su MUX grandinės išvestimi"
+        },
+        "connect-inputs": {
+            "hint": "Spustelėkite ir tempkite nuo InputSwitch išvesties prievado (dešinė pusė) iki vieno iš MUX elemento įvesties prievadų (kairė pusė). Pakartokite su antruoju jungikliu. Tada sujunkite trečiąjį įvesties jungiklį su MUX pasirinkimo prievadu (apačioje)",
+            "instruction": "Sujunkite visus įvesties jungiklius su MUX grandine"
+        },
+        "description": "Sužinokite apie MUX ir DEMUX grandines.",
+        "explain-demux-select": {
+            "hint": "",
+            "instruction": "S0 prievadas DEMUX apačioje pasirenka, kuri išvestis gaus įėjimo signalą. Kai S0 = 0, Out0 = In0. Kai S0 = 1, Out1 = In0"
+        },
+        "explain-mux-select": {
+            "hint": "",
+            "instruction": "S0 prievadas MUX apačioje pasirenka, kuris įėjimas nukreipiamas į išvestį. Kai S0 = 0, signalas iš Įėjimo 0 siunčiamas į išvestį. Kai S0 = 1, signalas iš Įėjimo 1 siunčiamas į išvestį."
+        },
+        "place-mux": {
+            "hint": "Spustelėkite skirtuką Kombinacinis kairiajame skydelyje, tada nutempkite MUX grandinę į darbalaukį.",
+            "instruction": "Padėkite MUX grandinę darbalaukyje"
+        },
+        "prepare-demux": {
+            "hint": "Jūsų grandinėje šiuo metu turėtų būti du InputSwitch ir du šviesos diodai",
+            "instruction": "Ištrinkite MUX grandinę ir vieną iš InputSwitch. Tada pridėkite dar vieną šviesos diodą"
+        },
+        "title": "Kombinacinės grandinės I: MUX ir DEMUX"
     },
-    "title": "Grandinės su Ir loginiu elementu kūrimas",
-    "toggle-observe": {
-      "hint": "Spustelėkite InputSwitch, kad jį perjungtumėte. Šviesos diodas užsidega tik tada, kai ABU jungikliai yra ĮJUNGTI. Taip yra todėl, kad Ir pateikia 1 tik tada, kai visi įėjimai yra 1.",
-      "instruction": "Perjunkite jungiklius ir stebėkite šviesos diodą — tai Ir logika!"
+    "combinational-circuits-three": {
+        "add-cin-and-gates": {
+            "hint": "Sujunkite InputSwitch išvestis su elementų įėjimais.",
+            "instruction": "Pridėkite dar vieną InputSwitch į darbalaukį ir suteikite jam žymę Cin. Tada pridėkite Xor elementą, Ir elementą ir Arba elementą"
+        },
+        "add-half-adder-gates": {
+            "hint": "Naudokite skirtuką Elementai Xor ir Ir elementams pridėti, tada naudokite skirtuką I/O dviem šviesos diodams pridėti.",
+            "instruction": "Pridėkite Xor elementą, Ir elementą ir du šviesos diodus į darbalaukį. Tada sujunkite kiekvieną elementą su skirtingu šviesos diodu"
+        },
+        "add-inputs": {
+            "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite tris InputSwitch elementus į darbalaukį. Trečiasis InputSwitch vėliau bus naudojamas kaip pernaša į įėjimą (Cin).",
+            "instruction": "Pridėkite du InputSwitch elementus į darbalaukį"
+        },
+        "description": "Išmokite sukurti sumatoriaus grandinę.",
+        "explain-full-adder": {
+            "hint": "",
+            "instruction": "Ši grandinė sudaro pilną sumatorių. Skirtingai nuo pusiau sumatoriaus, pilnas sumatorius priima pernašą į įėjimą (Cin) iš ankstesnio sudėjimo ir sukuria pernašą iš išėjimo (Cout) kitam etapui. Sujungiant vieno pilno sumatoriaus Cout su kito Cin, kelis pilnus sumatorius galima sujungti grandine bet kokio ilgio dvejetainiams skaičiams sudėti"
+        },
+        "label-half-adder-outputs": {
+            "hint": "Spustelėkite šviesos diodą ir įveskite tekstą žymės teksto laukelyje ekrano apačioje kairėje, kad suteiktumėte šviesos diodui žymę.",
+            "instruction": "Suteikite šviesos diodui, sujungtam su Xor elementu, žymę Sum, tada suteikite šviesos diodui, sujungtam su Ir elementu, žymę Cout. Ši grandinė sudaro pusiau sumatorių, kuris sudeda du vieno bito įėjimus"
+        },
+        "title": "Kombinacinės grandinės III: Sumatorius",
+        "wire-full-adder": {
+            "hint": "Pašalinkite senus sujungimus su šviesos diodais, kad galėtumėte pridėti naujus.",
+            "instruction": "Sujunkite seną Xor elementą ir Cin jungiklį su nauju Xor elementu, tada sujunkite naują Xor elementą su Sum išvestimi. Taip pat sujunkite seną Xor elementą ir Cin jungiklį su nauju Ir elementu. Baikite sujungdami abu Ir elementus su Arba elementu, o Arba elementą su Cout"
+        },
+        "wire-half-adder": {
+            "hint": "Sujunkite InputSwitch išvestis su elementų įėjimais.",
+            "instruction": "Sujunkite abu InputSwitch su Xor elementu ir Ir elementu. Kiekvienas InputSwitch turėtų būti sujungtas su abiem elementais. Xor elementas sukuria Sum išvestį, o Ir elementas sukuria Carry išvestį"
+        }
+    },
+    "combinational-circuits-two": {
+        "add-and-gates-leds": {
+            "hint": "Naudokite skirtuką Elementai kairiajame skydelyje Ir elementams pridėti ir skirtuką I/O šviesos diodams pridėti.",
+            "instruction": "Pridėkite keturis Ir elementus ir keturis šviesos diodus į darbalaukį, tada sujunkite kiekvieną Ir elementą su vienu iš šviesos diodų"
+        },
+        "add-inputs": {
+            "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje ir nutempkite du InputSwitch elementus į darbalaukį.",
+            "instruction": "Pridėkite du InputSwitch elementus į darbalaukį"
+        },
+        "add-not-gates": {
+            "hint": "Spustelėkite skirtuką Elementai kairiajame skydelyje, tada nutempkite du Ne elemento elementus į darbalaukį ir sujunkite su jais InputSwitch.",
+            "instruction": "Pridėkite du Ne elementus į darbalaukį ir sujunkite kiekvieną InputSwitch su atskiru Ne elementu"
+        },
+        "description": "Išmokite sukurti 2-į-4 dekoderį.",
+        "explain-decoder": {
+            "hint": "",
+            "instruction": "Kiekvienam konkrečiam įvesties bitų deriniui aktyvinama tik viena atitinkama išvesties linija, o visos kitos lieka neaktyvios"
+        },
+        "title": "Kombinacinės grandinės II: Dekoderis",
+        "wire-decoder": {
+            "hint": "Kiekvienas Ir elementas turėtų gauti po vieną signalą iš kiekvieno įėjimo. Naudokite originalų InputSwitch signalą 1 reikšmei ir atitinkamą Ne elemento išvestį 0 reikšmei.",
+            "instruction": "Sujunkite Ne elementų ir InputSwitch išvestis su Ir elementais taip, kad kiekvienas Ir elementas atstovautų vieną įvesties derinį"
+        }
+    },
+    "sequential-circuits-one": {
+        "add-d-latch": {
+            "hint": "D sklendė išsaugo vieną įvesties reikšmę ir išvengia SR sklendės neteisingo įvesties derinio.",
+            "instruction": "Pašalinkite SR sklendę, palikdami InputSwitch ir šviesos diodus. Tada pridėkite D sklendę"
+        },
+        "add-sr-latch": {
+            "hint": "Naudokite skirtuką Atmintis SR sklendei pridėti. Tada naudokite skirtuką I/O dviem InputSwitch ir dviem šviesos diodams pridėti.",
+            "instruction": "Pridėkite SR sklendę, du InputSwitch ir du šviesos diodus į darbalaukį"
+        },
+        "description": "Išmokite naudoti sklendes (latch).",
+        "explain-d-latch": {
+            "hint": "",
+            "instruction": "Perjunkite InputSwitch ir stebėkite D sklendę. Kai Enable yra 1, išvestis seka D įėjimą. Kai Enable yra 0, sklendė prisimena savo ankstesnę reikšmę"
+        },
+        "explain-sr-latch": {
+            "hint": "",
+            "instruction": "Perjunkite InputSwitch ir stebėkite, kaip SR sklendė išsaugo savo būseną. S įėjimo nustatymas į 1 sukelia, kad Q išvestis taps 1, o R įėjimo nustatymas į 1 grąžina Q į 0. Kai abu įėjimai grįžta į 0, sklendė prisimena savo paskutinę būseną, kol vėl nustatoma arba grąžinama"
+        },
+        "title": "Nuoseklios grandinės I: Sklendės",
+        "wire-d-latch": {
+            "hint": "D įėjimas yra reikšmė, kurią reikia išsaugoti. Enable įėjimas nustato, kada sklendė atnaujina savo išsaugotą reikšmę.",
+            "instruction": "Sujunkite vieną InputSwitch su D įėjimu, o kitą su Enable (E) įėjimu. Sujunkite Q ir Q̅ išvestis su šviesos diodais"
+        },
+        "wire-sr-latch": {
+            "hint": "Sujunkite vieną InputSwitch su Set (S) įėjimu, o kitą su Reset (R) įėjimu. Sujunkite kiekvieną sklendės išvestį su skirtingu šviesos diodu.",
+            "instruction": "Sujunkite InputSwitch su SR sklendės S ir R įėjimais. Tada sujunkite Q ir Q̅ išvestis su šviesos diodais"
+        }
+    },
+    "sequential-circuits-three": {
+        "add-flipflops": {
+            "hint": "Naudokite skirtuką Atmintis T trigeriams ir Laikrodžiui pridėti. Tada naudokite skirtuką I/O trims InputSwitch ir trims šviesos diodams pridėti.",
+            "instruction": "Pridėkite tris T trigerius, tris InputSwitch, Laikrodį ir tris šviesos diodus į darbalaukį"
+        },
+        "description": "Išmokite sukurti skaitiklio grandinę.",
+        "explain-counter": {
+            "hint": "",
+            "instruction": "Įjunkite visus tris InputSwitch ir paleiskite Laikrodį. Stebėkite šviesos diodus, kol veikia skaitiklis. Pirmasis šviesos diodas keičia būseną su kiekvienu laikrodžio impulsu, antrasis keičiasi kas du impulsus, o trečiasis kas keturis impulsus, rodydamas pasikartojantį 3 bitų dvejetainį skaičiavimą nuo 000 iki 111"
+        },
+        "title": "Nuoseklios grandinės III: Skaitiklis",
+        "wire-clock": {
+            "hint": "Pirmasis trigeris gauna išorinį laikrodžio signalą.",
+            "instruction": "Sujunkite Laikrodį su pirmojo T trigerio Clk įėjimu"
+        },
+        "wire-outputs": {
+            "hint": "Kiekvienas šviesos diodas atstovauja vienam skaitiklio bitui, o pirmasis šviesos diodas yra mažiausiai reikšmingas bitas.",
+            "instruction": "Sujunkite kiekvieno trigerio Q išvestį su skirtingu šviesos diodu"
+        },
+        "wire-ripple-clock": {
+            "hint": "",
+            "instruction": "Sujunkite pirmojo trigerio Q išvestį su antrojo trigerio Clk įėjimu, tada sujunkite antrojo trigerio Q išvestį su trečiojo trigerio Clk įėjimu. Kiekvieną trigerį taktuoja ankstesniojo išvestis, sukuriant bangelinį skaitiklį (ripple counter)"
+        },
+        "wire-t-inputs": {
+            "hint": "Įjunkite visus tris InputSwitch. T trigeris persijungia tik tada, kai jo T įėjimas yra 1.",
+            "instruction": "Sujunkite kiekvieną InputSwitch su kito trigerio T įėjimu"
+        }
+    },
+    "sequential-circuits-two": {
+        "add-d-flipflop": {
+            "hint": "Naudokite skirtuką Atmintis D trigeriui ir Laikrodžiui pridėti. Tada naudokite skirtuką I/O dviem InputSwitch ir dviem šviesos diodams pridėti.",
+            "instruction": "Pridėkite D trigerį, du InputSwitch, Laikrodį ir du šviesos diodus į darbalaukį"
+        },
+        "add-jk-flipflop": {
+            "hint": "JK trigeris turi J ir K įėjimus vietoj D įėjimo. Palikite Clear ir Preset įėjimus nesujungtus.",
+            "instruction": "Pakeiskite D trigerį JK trigeriu, palikdami Laikrodį, InputSwitch ir šviesos diodus"
+        },
+        "add-t-flipflop": {
+            "hint": "T trigeriui reikia tik vieno įėjimo, be laikrodžio.",
+            "instruction": "Pakeiskite JK trigerį T trigeriu ir pašalinkite vieną iš InputSwitch"
+        },
+        "description": "Sužinokite apie trigerius.",
+        "explain-clear-preset": {
+            "hint": "",
+            "instruction": "Sujunkite antrąjį InputSwitch su Clear arba Preset įėjimu ir stebėkite jo poveikį. Skirtingai nuo D įėjimo, Clear ir Preset įėjimai veikia iš karto, nelaukdami laikrodžio fronto. Clear priverčia Q į 0, o Preset priverčia Q į 1"
+        },
+        "explain-d-flipflop": {
+            "hint": "",
+            "instruction": "Perjunkite D InputSwitch ir stebėkite D trigerį. Reikšmė D įėjime kopijuojama į Q išvestį tik aktyviame laikrodžio fronte. Tarp laikrodžio frontų išvestis lieka nepakitusi"
+        },
+        "explain-jk-flipflop": {
+            "hint": "",
+            "instruction": "Perjunkite InputSwitch ir stebėkite JK trigerį. Kai J = K = 0, išvestis išlaiko savo dabartinę būseną. Kai J = 1 ir K = 0, išvestis nustatoma. Kai J = 0 ir K = 1, išvestis grąžinama. Kai J = K = 1, išvestis persijungia kiekviename aktyviame laikrodžio fronte"
+        },
+        "explain-t-flipflop": {
+            "hint": "",
+            "instruction": "Perjunkite InputSwitch ir stebėkite T trigerį. Kai T = 0, išvestis išlaiko savo dabartinę būseną. Kai T = 1, išvestis persijungia kiekviename aktyviame laikrodžio fronte. T trigeriai dažnai naudojami dvejetainiams skaitikliams ir dažnio daliklikams kurti"
+        },
+        "title": "Nuoseklios grandinės II: Trigeriai",
+        "wire-d-flipflop": {
+            "hint": "Kol kas palikite Clear ir Preset įėjimus nesujungtus.",
+            "instruction": "Sujunkite vieną InputSwitch su D įėjimu, Laikrodį su Clk įėjimu, o Q ir Q̅ išvestis su šviesos diodais. D įėjimas suteikia išsaugotiną reikšmę, o Laikrodis nustato, kada reikšmė išsaugoma"
+        },
+        "wire-jk-flipflop": {
+            "hint": "JK trigeris keičia savo išvestį tik aktyviame laikrodžio fronte.",
+            "instruction": "Sujunkite InputSwitch su J ir K įėjimais, Laikrodį su Clk įėjimu, o Q ir Q̅ išvestis su šviesos diodais"
+        },
+        "wire-t-flipflop": {
+            "hint": "Palikite Clear ir Preset įėjimus nesujungtus.",
+            "instruction": "Sujunkite likusį InputSwitch su T įėjimu, Laikrodį su Clk įėjimu, o Q ir Q̅ išvestis su šviesos diodais"
+        }
+    },
+    "ui-overview": {
+        "canvas": {
+            "body": "Kurkite savo grandinę čia. Tempkite komponentus iš paletės, tada sujunkite juos spustelėdami ir tempdami nuo išvesties prievado (komponento dešinė pusė) iki įvesties prievado (kito komponento kairė pusė).",
+            "title": "Darbalaukis"
+        },
+        "combinational-mode": {
+            "body": "Paryškintas mygtukas (Kombinacinis) ką tik buvo automatiškai suaktyvintas — jis užpildo įvesties eilutes visais galimais 0/1 deriniais, suteikdamas jums pilną tiesos lentelę vienu spustelėjimu.",
+            "title": "Kombinacinė veiksena"
+        },
+        "component-palette": {
+            "body": "Šiame skydelyje pateikiami visi galimi komponentai — loginiai elementai, įėjimai, išėjimai, trigeriai ir kiti. Komponentai suskirstyti pagal kategorijas naudojant skirtukus viršuje. Spustelėkite skirtuką, kad naršytumėte jo kategoriją.",
+            "title": "Komponentų paletė"
+        },
+        "description": "Vedama pagrindinės sąsajos apžvalga — paletė, darbalaukis, įrankių juosta ir savybių skydelis.",
+        "editing-cells": {
+            "body": "Signalo formą taip pat galite redaguoti rankiniu būdu. Dukart spustelėkite bet kurį langelį Laikrodžio eilutėje, kad perjungtumėte jį tarp 0 ir 1 — Led eilutė akimirksniu atsinaujina, atspindėdama naują išvestį.",
+            "title": "Rankinis langelių redagavimas"
+        },
+        "element-properties": {
+            "body": "Kai pasirenkate komponentą darbalaukyje, čia rodomos jo savybės. Galite nustatyti žymes, spalvas, suveikimo tipus ir kitus komponentui būdingus nustatymus. Pabandykite pasirinkti padėtą komponentą, kad pamatytumėte jo parinktis.",
+            "title": "Elemento savybės"
+        },
+        "logic-gates": {
+            "body": "Skirtuke Elementai yra Ir, Arba, Ne, Ne-IR, Ne-ARBA, Xor ir kiti pagrindiniai loginiai elementai. Nutempkite bet kurį elementą iš šio sąrašo į darbalaukį, kad pridėtumėte jį prie savo grandinės.",
+            "title": "Loginiai elementai"
+        },
+        "search-bar": {
+            "body": "Naudokite paieškos juostą, kad greitai rastumėte bet kurį komponentą pagal pavadinimą. Rašant apačioje pasirodo filtruotas sąrašas, rodantis atitinkančius komponentus iš visų kategorijų.",
+            "title": "Paieškos juosta"
+        },
+        "title": "wiRedPanda sąsajos apžvalga",
+        "waveform-table": {
+            "body": "Signalo formos lentelė rodo kiekvieną jūsų grandinės signalą. Laikrodžio eilutė yra įvestis; Led eilutė yra apskaičiuota išvestis. Kiekvienas stulpelis yra vienas modeliavimo laiko žingsnis — galite tiksliai matyti, kaip išvestis seka įvestį.",
+            "title": "Signalo formos lentelės skaitymas"
+        },
+        "waveform-viewer": {
+            "body": "wiRedPanda turi signalo formos peržiūros priemonę, vadinamą BeWavedDolphin. Ji rodo, kaip kiekvienas jūsų grandinės signalas keičiasi laikui bėgant — įėjimai kaip eilutės viršuje, išėjimai apačioje, kiekvienam stulpeliui atstovaujant vieną modeliavimo laiko žingsnį. Spustelėkite paryškintą įrankių juostos mygtuką, kad ją atvertumėte.",
+            "title": "Signalo formos peržiūros priemonė"
+        },
+        "welcome": {
+            "body": "wiRedPanda yra skaitmeninių loginių grandinių simuliatorius. Galite kurti grandines dėdami komponentus ir juos sujungdami. Ši apžvalga parodys jums pagrindines sąsajos dalis.",
+            "title": "Sveiki atvykę į wiRedPanda!"
+        }
     }
-  },
-  "basic-or-not-gates": {
-    "add-inputs": {
-      "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite du InputSwitch elementus į darbalaukį ir padėkite juos į kairę nuo Arba elemento.",
-      "instruction": "Pridėkite du InputSwitch elementus į darbalaukį"
-    },
-    "add-not-gate": {
-      "hint": "Nutempkite laidą tarp Arba elemento ir šviesos diodo, kad jį pašalintumėte.",
-      "instruction": "Atjunkite šviesos diodą nuo Arba elemento, tada sujunkite Arba elementą su Ne elementu, o Ne elementą su šviesos diodu"
-    },
-    "add-output": {
-      "hint": "Nutempkite šviesos diodą iš I/O skirtuko ir padėkite jį į dešinę nuo Arba elemento. Tada sujunkite Arba elemento išvesties prievadą (dešinė pusė) su šviesos diodo įvesties prievadu (kairė pusė).",
-      "instruction": "Pridėkite šviesos diodą ir sujunkite jį su Arba elemento išvestimi"
-    },
-    "connect-inputs": {
-      "hint": "Spustelėkite ir tempkite nuo InputSwitch išvesties prievado (dešinė pusė) iki vieno iš Arba elemento įvesties prievadų (kairė pusė). Pakartokite su antruoju jungikliu.",
-      "instruction": "Sujunkite abu įvesties jungiklius su Arba elementu"
-    },
-    "description": "Išmokite naudoti Arba ir Ne elementus.",
-    "place-or-gate": {
-      "hint": "Spustelėkite skirtuką Elementai kairiajame skydelyje, tada nutempkite Arba elementą į darbalaukį.",
-      "instruction": "Padėkite Arba elementą darbalaukyje"
-    },
-    "title": "Daugiau pagrindinių elementų: Arba ir Ne",
-    "toggle-observe-nor": {
-      "hint": "",
-      "instruction": "Ne elementas apverčia signalą. Dabar grandinė pateiks 1 tik tada, kai nė vienas iš įėjimų nebus 1"
-    },
-    "toggle-observe-or": {
-      "hint": "",
-      "instruction": "Paeksperimentuokite su įėjimais ir pastebėkite, kaip Arba elementas pateikia 1, kai bet kuris iš jo įėjimų yra 1"
-    }
-  },
-  "clock-led-waveform": {
-    "combinational-mode": {
-      "hint": "Spustelėkite Redaguoti → Kombinacinis BeWavedDolphin meniu juostoje. Tai užpildys Laikrodžio eilutę visomis galimomis reikšmėmis ir apskaičiuos šviesos diodo išvestį kiekvienai iš jų — pilną tiesos lentelę vienu spustelėjimu.",
-      "instruction": "Automatiškai sugeneruoti visus įvesties derinius"
-    },
-    "connect-clock-led": {
-      "hint": "Spustelėkite ir tempkite nuo Laikrodžio išvesties prievado (dešinė pusė) iki šviesos diodo įvesties prievado (kairė pusė).",
-      "instruction": "Sujunkite Laikrodžio išvestį su šviesos diodo įvestimi"
-    },
-    "description": "Sukurkite minimalią Laikrodis-šviesos diodas grandinę ir susipažinkite su signalo formos peržiūros priemone: kombinacine veiksena ir rankiniu langelių redagavimu.",
-    "open-waveform": {
-      "hint": "BeWavedDolphin rodo jūsų grandinės signalus kaip eilutes. Laikrodžio eilutė yra įvestis, o Led eilutė yra išvestis. Kiekvienas stulpelis yra vienas modeliavimo laiko žingsnis.",
-      "instruction": "Signalo formos peržiūros priemonė dabar atverta — pažiūrėkite!"
-    },
-    "place-clock": {
-      "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite Laikrodžio elementą į darbalaukį.",
-      "instruction": "Padėkite Laikrodžio elementą darbalaukyje"
-    },
-    "place-led": {
-      "hint": "Likdami I/O skirtuke, nutempkite Led elementą į darbalaukį į dešinę nuo Laikrodžio.",
-      "instruction": "Padėkite šviesos diodą darbalaukyje"
-    },
-    "title": "Laikrodis ir šviesos diodas: signalo formos pagrindai",
-    "toggle-cell": {
-      "hint": "Dukart spustelėkite bet kurį langelį Laikrodžio eilutėje, kad perjungtumėte jį tarp 0 ir 1. Stebėkite, kaip Led eilutė akimirksniu atsinaujina, atspindėdama naują išvestį.",
-      "instruction": "Rankiniu būdu perjunkite Laikrodžio langelį"
-    }
-  },
-  "combinational-circuits-one": {
-    "add-demux": {
-      "hint": "Jūsų grandinėje šiuo metu turėtų būti du InputSwitch, du šviesos diodai ir viena DEMUX grandinė",
-      "instruction": "Pridėkite DEMUX grandinę ir sujunkite InputSwitch su jos In ir S0 prievadais. Tada sujunkite kiekvieną DEMUX išvestį su skirtingu šviesos diodu"
-    },
-    "add-inputs": {
-      "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite du InputSwitch elementus į darbalaukį ir padėkite juos į kairę nuo MUX grandinės.",
-      "instruction": "Pridėkite tris InputSwitch elementus į darbalaukį"
-    },
-    "add-output": {
-      "hint": "Nutempkite šviesos diodą iš I/O skirtuko ir padėkite jį į dešinę nuo MUX grandinės. Tada sujunkite MUX grandinės išvesties prievadą (dešinė pusė) su šviesos diodo įvesties prievadu (kairė pusė).",
-      "instruction": "Pridėkite šviesos diodą ir sujunkite jį su MUX grandinės išvestimi"
-    },
-    "connect-inputs": {
-      "hint": "Spustelėkite ir tempkite nuo InputSwitch išvesties prievado (dešinė pusė) iki vieno iš MUX elemento įvesties prievadų (kairė pusė). Pakartokite su antruoju jungikliu. Tada sujunkite trečiąjį įvesties jungiklį su MUX pasirinkimo prievadu (apačioje)",
-      "instruction": "Sujunkite visus įvesties jungiklius su MUX grandine"
-    },
-    "description": "Sužinokite apie MUX ir DEMUX grandines.",
-    "explain-demux-select": {
-      "hint": "",
-      "instruction": "S0 prievadas DEMUX apačioje pasirenka, kuri išvestis gaus įėjimo signalą. Kai S0 = 0, Out0 = In0. Kai S0 = 1, Out1 = In0"
-    },
-    "explain-mux-select": {
-      "hint": "",
-      "instruction": "S0 prievadas MUX apačioje pasirenka, kuris įėjimas nukreipiamas į išvestį. Kai S0 = 0, signalas iš Įėjimo 0 siunčiamas į išvestį. Kai S0 = 1, signalas iš Įėjimo 1 siunčiamas į išvestį."
-    },
-    "place-mux": {
-      "hint": "Spustelėkite skirtuką Kombinacinis kairiajame skydelyje, tada nutempkite MUX grandinę į darbalaukį.",
-      "instruction": "Padėkite MUX grandinę darbalaukyje"
-    },
-    "prepare-demux": {
-      "hint": "Jūsų grandinėje šiuo metu turėtų būti du InputSwitch ir du šviesos diodai",
-      "instruction": "Ištrinkite MUX grandinę ir vieną iš InputSwitch. Tada pridėkite dar vieną šviesos diodą"
-    },
-    "title": "Kombinacinės grandinės I: MUX ir DEMUX"
-  },
-  "combinational-circuits-three": {
-    "add-cin-and-gates": {
-      "hint": "Sujunkite InputSwitch išvestis su elementų įėjimais.",
-      "instruction": "Pridėkite dar vieną InputSwitch į darbalaukį ir suteikite jam žymę Cin. Tada pridėkite Xor elementą, Ir elementą ir Arba elementą"
-    },
-    "add-half-adder-gates": {
-      "hint": "Naudokite skirtuką Elementai Xor ir Ir elementams pridėti, tada naudokite skirtuką I/O dviem šviesos diodams pridėti.",
-      "instruction": "Pridėkite Xor elementą, Ir elementą ir du šviesos diodus į darbalaukį. Tada sujunkite kiekvieną elementą su skirtingu šviesos diodu"
-    },
-    "add-inputs": {
-      "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje, tada nutempkite tris InputSwitch elementus į darbalaukį. Trečiasis InputSwitch vėliau bus naudojamas kaip pernaša į įėjimą (Cin).",
-      "instruction": "Pridėkite du InputSwitch elementus į darbalaukį"
-    },
-    "description": "Išmokite sukurti sumatoriaus grandinę.",
-    "explain-full-adder": {
-      "hint": "",
-      "instruction": "Ši grandinė sudaro pilną sumatorių. Skirtingai nuo pusiau sumatoriaus, pilnas sumatorius priima pernašą į įėjimą (Cin) iš ankstesnio sudėjimo ir sukuria pernašą iš išėjimo (Cout) kitam etapui. Sujungiant vieno pilno sumatoriaus Cout su kito Cin, kelis pilnus sumatorius galima sujungti grandine bet kokio ilgio dvejetainiams skaičiams sudėti"
-    },
-    "label-half-adder-outputs": {
-      "hint": "Spustelėkite šviesos diodą ir įveskite tekstą žymės teksto laukelyje ekrano apačioje kairėje, kad suteiktumėte šviesos diodui žymę.",
-      "instruction": "Suteikite šviesos diodui, sujungtam su Xor elementu, žymę Sum, tada suteikite šviesos diodui, sujungtam su Ir elementu, žymę Cout. Ši grandinė sudaro pusiau sumatorių, kuris sudeda du vieno bito įėjimus"
-    },
-    "title": "Kombinacinės grandinės III: Sumatorius",
-    "wire-full-adder": {
-      "hint": "Pašalinkite senus sujungimus su šviesos diodais, kad galėtumėte pridėti naujus.",
-      "instruction": "Sujunkite seną Xor elementą ir Cin jungiklį su nauju Xor elementu, tada sujunkite naują Xor elementą su Sum išvestimi. Taip pat sujunkite seną Xor elementą ir Cin jungiklį su nauju Ir elementu. Baikite sujungdami abu Ir elementus su Arba elementu, o Arba elementą su Cout"
-    },
-    "wire-half-adder": {
-      "hint": "Sujunkite InputSwitch išvestis su elementų įėjimais.",
-      "instruction": "Sujunkite abu InputSwitch su Xor elementu ir Ir elementu. Kiekvienas InputSwitch turėtų būti sujungtas su abiem elementais. Xor elementas sukuria Sum išvestį, o Ir elementas sukuria Carry išvestį"
-    }
-  },
-  "combinational-circuits-two": {
-    "add-and-gates-leds": {
-      "hint": "Naudokite skirtuką Elementai kairiajame skydelyje Ir elementams pridėti ir skirtuką I/O šviesos diodams pridėti.",
-      "instruction": "Pridėkite keturis Ir elementus ir keturis šviesos diodus į darbalaukį, tada sujunkite kiekvieną Ir elementą su vienu iš šviesos diodų"
-    },
-    "add-inputs": {
-      "hint": "Spustelėkite skirtuką I/O kairiajame skydelyje ir nutempkite du InputSwitch elementus į darbalaukį.",
-      "instruction": "Pridėkite du InputSwitch elementus į darbalaukį"
-    },
-    "add-not-gates": {
-      "hint": "Spustelėkite skirtuką Elementai kairiajame skydelyje, tada nutempkite du Ne elemento elementus į darbalaukį ir sujunkite su jais InputSwitch.",
-      "instruction": "Pridėkite du Ne elementus į darbalaukį ir sujunkite kiekvieną InputSwitch su atskiru Ne elementu"
-    },
-    "description": "Išmokite sukurti 2-į-4 dekoderį.",
-    "explain-decoder": {
-      "hint": "",
-      "instruction": "Kiekvienam konkrečiam įvesties bitų deriniui aktyvinama tik viena atitinkama išvesties linija, o visos kitos lieka neaktyvios"
-    },
-    "title": "Kombinacinės grandinės II: Dekoderis",
-    "wire-decoder": {
-      "hint": "Kiekvienas Ir elementas turėtų gauti po vieną signalą iš kiekvieno įėjimo. Naudokite originalų InputSwitch signalą 1 reikšmei ir atitinkamą Ne elemento išvestį 0 reikšmei.",
-      "instruction": "Sujunkite Ne elementų ir InputSwitch išvestis su Ir elementais taip, kad kiekvienas Ir elementas atstovautų vieną įvesties derinį"
-    }
-  },
-  "sequential-circuits-one": {
-    "add-d-latch": {
-      "hint": "D sklendė išsaugo vieną įvesties reikšmę ir išvengia SR sklendės neteisingo įvesties derinio.",
-      "instruction": "Pašalinkite SR sklendę, palikdami InputSwitch ir šviesos diodus. Tada pridėkite D sklendę"
-    },
-    "add-sr-latch": {
-      "hint": "Naudokite skirtuką Atmintis SR sklendei pridėti. Tada naudokite skirtuką I/O dviem InputSwitch ir dviem šviesos diodams pridėti.",
-      "instruction": "Pridėkite SR sklendę, du InputSwitch ir du šviesos diodus į darbalaukį"
-    },
-    "description": "Išmokite naudoti sklendes (latch).",
-    "explain-d-latch": {
-      "hint": "",
-      "instruction": "Perjunkite InputSwitch ir stebėkite D sklendę. Kai Enable yra 1, išvestis seka D įėjimą. Kai Enable yra 0, sklendė prisimena savo ankstesnę reikšmę"
-    },
-    "explain-sr-latch": {
-      "hint": "",
-      "instruction": "Perjunkite InputSwitch ir stebėkite, kaip SR sklendė išsaugo savo būseną. S įėjimo nustatymas į 1 sukelia, kad Q išvestis taps 1, o R įėjimo nustatymas į 1 grąžina Q į 0. Kai abu įėjimai grįžta į 0, sklendė prisimena savo paskutinę būseną, kol vėl nustatoma arba grąžinama"
-    },
-    "title": "Nuoseklios grandinės I: Sklendės",
-    "wire-d-latch": {
-      "hint": "D įėjimas yra reikšmė, kurią reikia išsaugoti. Enable įėjimas nustato, kada sklendė atnaujina savo išsaugotą reikšmę.",
-      "instruction": "Sujunkite vieną InputSwitch su D įėjimu, o kitą su Enable (E) įėjimu. Sujunkite Q ir Q̅ išvestis su šviesos diodais"
-    },
-    "wire-sr-latch": {
-      "hint": "Sujunkite vieną InputSwitch su Set (S) įėjimu, o kitą su Reset (R) įėjimu. Sujunkite kiekvieną sklendės išvestį su skirtingu šviesos diodu.",
-      "instruction": "Sujunkite InputSwitch su SR sklendės S ir R įėjimais. Tada sujunkite Q ir Q̅ išvestis su šviesos diodais"
-    }
-  },
-  "sequential-circuits-three": {
-    "add-flipflops": {
-      "hint": "Naudokite skirtuką Atmintis T trigeriams ir Laikrodžiui pridėti. Tada naudokite skirtuką I/O trims InputSwitch ir trims šviesos diodams pridėti.",
-      "instruction": "Pridėkite tris T trigerius, tris InputSwitch, Laikrodį ir tris šviesos diodus į darbalaukį"
-    },
-    "description": "Išmokite sukurti skaitiklio grandinę.",
-    "explain-counter": {
-      "hint": "",
-      "instruction": "Įjunkite visus tris InputSwitch ir paleiskite Laikrodį. Stebėkite šviesos diodus, kol veikia skaitiklis. Pirmasis šviesos diodas keičia būseną su kiekvienu laikrodžio impulsu, antrasis keičiasi kas du impulsus, o trečiasis kas keturis impulsus, rodydamas pasikartojantį 3 bitų dvejetainį skaičiavimą nuo 000 iki 111"
-    },
-    "title": "Nuoseklios grandinės III: Skaitiklis",
-    "wire-clock": {
-      "hint": "Pirmasis trigeris gauna išorinį laikrodžio signalą.",
-      "instruction": "Sujunkite Laikrodį su pirmojo T trigerio Clk įėjimu"
-    },
-    "wire-outputs": {
-      "hint": "Kiekvienas šviesos diodas atstovauja vienam skaitiklio bitui, o pirmasis šviesos diodas yra mažiausiai reikšmingas bitas.",
-      "instruction": "Sujunkite kiekvieno trigerio Q išvestį su skirtingu šviesos diodu"
-    },
-    "wire-ripple-clock": {
-      "hint": "",
-      "instruction": "Sujunkite pirmojo trigerio Q išvestį su antrojo trigerio Clk įėjimu, tada sujunkite antrojo trigerio Q išvestį su trečiojo trigerio Clk įėjimu. Kiekvieną trigerį taktuoja ankstesniojo išvestis, sukuriant bangelinį skaitiklį (ripple counter)"
-    },
-    "wire-t-inputs": {
-      "hint": "Įjunkite visus tris InputSwitch. T trigeris persijungia tik tada, kai jo T įėjimas yra 1.",
-      "instruction": "Sujunkite kiekvieną InputSwitch su kito trigerio T įėjimu"
-    }
-  },
-  "sequential-circuits-two": {
-    "add-d-flipflop": {
-      "hint": "Naudokite skirtuką Atmintis D trigeriui ir Laikrodžiui pridėti. Tada naudokite skirtuką I/O dviem InputSwitch ir dviem šviesos diodams pridėti.",
-      "instruction": "Pridėkite D trigerį, du InputSwitch, Laikrodį ir du šviesos diodus į darbalaukį"
-    },
-    "add-jk-flipflop": {
-      "hint": "JK trigeris turi J ir K įėjimus vietoj D įėjimo. Palikite Clear ir Preset įėjimus nesujungtus.",
-      "instruction": "Pakeiskite D trigerį JK trigeriu, palikdami Laikrodį, InputSwitch ir šviesos diodus"
-    },
-    "add-t-flipflop": {
-      "hint": "T trigeriui reikia tik vieno įėjimo, be laikrodžio.",
-      "instruction": "Pakeiskite JK trigerį T trigeriu ir pašalinkite vieną iš InputSwitch"
-    },
-    "description": "Sužinokite apie trigerius.",
-    "explain-clear-preset": {
-      "hint": "",
-      "instruction": "Sujunkite antrąjį InputSwitch su Clear arba Preset įėjimu ir stebėkite jo poveikį. Skirtingai nuo D įėjimo, Clear ir Preset įėjimai veikia iš karto, nelaukdami laikrodžio fronto. Clear priverčia Q į 0, o Preset priverčia Q į 1"
-    },
-    "explain-d-flipflop": {
-      "hint": "",
-      "instruction": "Perjunkite D InputSwitch ir stebėkite D trigerį. Reikšmė D įėjime kopijuojama į Q išvestį tik aktyviame laikrodžio fronte. Tarp laikrodžio frontų išvestis lieka nepakitusi"
-    },
-    "explain-jk-flipflop": {
-      "hint": "",
-      "instruction": "Perjunkite InputSwitch ir stebėkite JK trigerį. Kai J = K = 0, išvestis išlaiko savo dabartinę būseną. Kai J = 1 ir K = 0, išvestis nustatoma. Kai J = 0 ir K = 1, išvestis grąžinama. Kai J = K = 1, išvestis persijungia kiekviename aktyviame laikrodžio fronte"
-    },
-    "explain-t-flipflop": {
-      "hint": "",
-      "instruction": "Perjunkite InputSwitch ir stebėkite T trigerį. Kai T = 0, išvestis išlaiko savo dabartinę būseną. Kai T = 1, išvestis persijungia kiekviename aktyviame laikrodžio fronte. T trigeriai dažnai naudojami dvejetainiams skaitikliams ir dažnio daliklikams kurti"
-    },
-    "title": "Nuoseklios grandinės II: Trigeriai",
-    "wire-d-flipflop": {
-      "hint": "Kol kas palikite Clear ir Preset įėjimus nesujungtus.",
-      "instruction": "Sujunkite vieną InputSwitch su D įėjimu, Laikrodį su Clk įėjimu, o Q ir Q̅ išvestis su šviesos diodais. D įėjimas suteikia išsaugotiną reikšmę, o Laikrodis nustato, kada reikšmė išsaugoma"
-    },
-    "wire-jk-flipflop": {
-      "hint": "JK trigeris keičia savo išvestį tik aktyviame laikrodžio fronte.",
-      "instruction": "Sujunkite InputSwitch su J ir K įėjimais, Laikrodį su Clk įėjimu, o Q ir Q̅ išvestis su šviesos diodais"
-    },
-    "wire-t-flipflop": {
-      "hint": "Palikite Clear ir Preset įėjimus nesujungtus.",
-      "instruction": "Sujunkite likusį InputSwitch su T įėjimu, Laikrodį su Clk įėjimu, o Q ir Q̅ išvestis su šviesos diodais"
-    }
-  },
-  "ui-overview": {
-    "canvas": {
-      "body": "Kurkite savo grandinę čia. Tempkite komponentus iš paletės, tada sujunkite juos spustelėdami ir tempdami nuo išvesties prievado (komponento dešinė pusė) iki įvesties prievado (kito komponento kairė pusė).",
-      "title": "Darbalaukis"
-    },
-    "combinational-mode": {
-      "body": "Paryškintas mygtukas (Kombinacinis) ką tik buvo automatiškai suaktyvintas — jis užpildo įvesties eilutes visais galimais 0/1 deriniais, suteikdamas jums pilną tiesos lentelę vienu spustelėjimu.",
-      "title": "Kombinacinė veiksena"
-    },
-    "component-palette": {
-      "body": "Šiame skydelyje pateikiami visi galimi komponentai — loginiai elementai, įėjimai, išėjimai, trigeriai ir kiti. Komponentai suskirstyti pagal kategorijas naudojant skirtukus viršuje. Spustelėkite skirtuką, kad naršytumėte jo kategoriją.",
-      "title": "Komponentų paletė"
-    },
-    "description": "Vedama pagrindinės sąsajos apžvalga — paletė, darbalaukis, įrankių juosta ir savybių skydelis.",
-    "editing-cells": {
-      "body": "Signalo formą taip pat galite redaguoti rankiniu būdu. Dukart spustelėkite bet kurį langelį Laikrodžio eilutėje, kad perjungtumėte jį tarp 0 ir 1 — Led eilutė akimirksniu atsinaujina, atspindėdama naują išvestį.",
-      "title": "Rankinis langelių redagavimas"
-    },
-    "element-properties": {
-      "body": "Kai pasirenkate komponentą darbalaukyje, čia rodomos jo savybės. Galite nustatyti žymes, spalvas, suveikimo tipus ir kitus komponentui būdingus nustatymus. Pabandykite pasirinkti padėtą komponentą, kad pamatytumėte jo parinktis.",
-      "title": "Elemento savybės"
-    },
-    "logic-gates": {
-      "body": "Skirtuke Elementai yra Ir, Arba, Ne, Ne-IR, Ne-ARBA, Xor ir kiti pagrindiniai loginiai elementai. Nutempkite bet kurį elementą iš šio sąrašo į darbalaukį, kad pridėtumėte jį prie savo grandinės.",
-      "title": "Loginiai elementai"
-    },
-    "search-bar": {
-      "body": "Naudokite paieškos juostą, kad greitai rastumėte bet kurį komponentą pagal pavadinimą. Rašant apačioje pasirodo filtruotas sąrašas, rodantis atitinkančius komponentus iš visų kategorijų.",
-      "title": "Paieškos juosta"
-    },
-    "title": "wiRedPanda sąsajos apžvalga",
-    "waveform-table": {
-      "body": "Signalo formos lentelė rodo kiekvieną jūsų grandinės signalą. Laikrodžio eilutė yra įvestis; Led eilutė yra apskaičiuota išvestis. Kiekvienas stulpelis yra vienas modeliavimo laiko žingsnis — galite tiksliai matyti, kaip išvestis seka įvestį.",
-      "title": "Signalo formos lentelės skaitymas"
-    },
-    "waveform-viewer": {
-      "body": "wiRedPanda turi signalo formos peržiūros priemonę, vadinamą BeWavedDolphin. Ji rodo, kaip kiekvienas jūsų grandinės signalas keičiasi laikui bėgant — įėjimai kaip eilutės viršuje, išėjimai apačioje, kiekvienam stulpeliui atstovaujant vieną modeliavimo laiko žingsnį. Spustelėkite paryškintą įrankių juostos mygtuką, kad ją atvertumėte.",
-      "title": "Signalo formos peržiūros priemonė"
-    },
-    "welcome": {
-      "body": "wiRedPanda yra skaitmeninių loginių grandinių simuliatorius. Galite kurti grandines dėdami komponentus ir juos sujungdami. Ši apžvalga parodys jums pagrindines sąsajos dalis.",
-      "title": "Sveiki atvykę į wiRedPanda!"
-    }
-  }
 }
