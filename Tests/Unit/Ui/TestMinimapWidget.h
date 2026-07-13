@@ -19,4 +19,5 @@ private slots:
     void testWidgetToSceneCenter();
     void testWidgetToSceneClampsOutOfBoundsX();
     void testWidgetToSceneNullSceneDegradesToOrigin();
+    void testAccessibleNameSet(); // #14 accessibility sweep
 };

@@ -141,3 +141,11 @@ void TestMinimapWidget::testWidgetToSceneNullSceneDegradesToOrigin()
     MinimapWidget minimap(nullptr, nullptr);
     QCOMPARE(minimap.widgetToScene(QPointF(10.0, 10.0)), QPointF());
 }
+
+void TestMinimapWidget::testAccessibleNameSet()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    QVERIFY(!minimap.accessibleName().isEmpty());
+    QVERIFY(!minimap.whatsThis().isEmpty());
+}

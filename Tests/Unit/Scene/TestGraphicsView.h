@@ -18,4 +18,5 @@ private slots:
     void testZoomToFit();
     void testFastMode();
     void testDragModeToggle();
+    void testAccessibleNameSet(); // #14 accessibility sweep
 };

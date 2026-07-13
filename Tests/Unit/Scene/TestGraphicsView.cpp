@@ -105,3 +105,11 @@ void TestGraphicsView::testDragModeToggle()
     view->setDragMode(QGraphicsView::NoDrag);
     QCOMPARE(view->dragMode(), QGraphicsView::NoDrag);
 }
+
+void TestGraphicsView::testAccessibleNameSet()
+{
+    WorkSpace workspace;
+    GraphicsView *view = workspace.view();
+    QVERIFY(!view->accessibleName().isEmpty());
+    QVERIFY(!view->whatsThis().isEmpty());
+}

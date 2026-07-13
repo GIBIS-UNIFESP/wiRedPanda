@@ -73,3 +73,17 @@ void TestElementPalette::testElementLabelHasDescriptiveTooltip()
     QVERIFY(!switchLabel.toolTip().isEmpty());
     QVERIFY(switchLabel.toolTip() != andLabel.toolTip());
 }
+
+void TestElementPalette::testAccessibleNameSet()
+{
+    QMainWindow window;
+    MainWindowUi ui;
+    ui.setupUi(&window);
+
+    ElementPalette palette(&ui);
+
+    QVERIFY(!ui.lineEditSearch->accessibleName().isEmpty());
+    QVERIFY(!ui.lineEditSearch->whatsThis().isEmpty());
+    QVERIFY(!ui.tabElements->accessibleName().isEmpty());
+    QVERIFY(!ui.tabElements->whatsThis().isEmpty());
+}

@@ -24,6 +24,9 @@ MinimapWidget::MinimapWidget(Scene *scene, GraphicsView *view, QWidget *parent)
     // Default minimap size; can be tuned later or made a setting.
     setFixedSize(220, 160);
     setToolTip(tr("Mini-map: click or drag to navigate"));
+    setAccessibleName(tr("Circuit minimap"));
+    setWhatsThis(tr("A miniature overview of the whole circuit. Click or drag inside it to "
+                     "jump the main canvas to that location."));
 
     if (m_scene) {
         connect(m_scene, &Scene::circuitHasChanged, this, &MinimapWidget::invalidateCache);
