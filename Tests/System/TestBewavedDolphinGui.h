@@ -113,6 +113,18 @@ private slots:
     // clamp to SignalModel::kMaxColumns (2048), the same bound the sibling already uses.
     void testSaveToTxtClampsColumnCountForManyInputPorts();
 
+    // --- Undo/Redo (#19) ---
+
+    void testUndoStackStartsCleanAfterCreateWaveform();
+    void testUndoRedoSetTo0();
+    void testUndoRedoSetTo1();
+    void testUndoRedoInvert();
+    void testUndoRedoClear();
+    void testUndoRedoSetClockWave();
+    void testUndoRedoCombinational();
+    void testUndoRedoDoubleClickToggle();
+    void testUndoRedoMultipleOperationsRestoresOriginalState();
+
 private:
     QTemporaryDir m_tempDir;
 };

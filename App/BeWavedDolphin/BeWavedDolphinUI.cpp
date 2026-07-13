@@ -43,6 +43,16 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     actionSaveAs->setObjectName("actionSaveAs");
     actionSaveAs->setIcon(QIcon(":/Interface/Dolphin/save.svg"));
 
+    actionUndo = new QAction(BewavedDolphin);
+    actionUndo->setObjectName("actionUndo");
+    actionUndo->setIcon(QIcon(":/Interface/Toolbar/undo.svg"));
+    actionUndo->setEnabled(false);
+
+    actionRedo = new QAction(BewavedDolphin);
+    actionRedo->setObjectName("actionRedo");
+    actionRedo->setIcon(QIcon(":/Interface/Toolbar/redo.svg"));
+    actionRedo->setEnabled(false);
+
     actionCopy = new QAction(BewavedDolphin);
     actionCopy->setObjectName("actionCopy");
     actionCopy->setIcon(QIcon(":/Interface/Toolbar/copy.svg"));
@@ -173,6 +183,9 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     mainToolBar->addAction(actionExportToPdf);
     mainToolBar->addAction(actionExportToPng);
     mainToolBar->addSeparator();
+    mainToolBar->addAction(actionUndo);
+    mainToolBar->addAction(actionRedo);
+    mainToolBar->addSeparator();
     mainToolBar->addAction(actionCut);
     mainToolBar->addAction(actionCopy);
     mainToolBar->addAction(actionPaste);
@@ -207,6 +220,9 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     menuFile->addAction(actionExit);
     menuAbout->addAction(actionAbout);
     menuAbout->addAction(actionAboutQt);
+    menuEdit->addAction(actionUndo);
+    menuEdit->addAction(actionRedo);
+    menuEdit->addSeparator();
     menuEdit->addAction(actionCut);
     menuEdit->addAction(actionCopy);
     menuEdit->addAction(actionPaste);
@@ -255,6 +271,10 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     actionSave->setShortcut(QStringLiteral("Ctrl+S"));
     actionSaveAs->setText(QCoreApplication::translate("BewavedDolphin", "Save As..."));
     actionSaveAs->setShortcut(QStringLiteral("Ctrl+Shift+S"));
+    actionUndo->setText(QCoreApplication::translate("BewavedDolphin", "Undo"));
+    actionUndo->setShortcut(QKeySequence::Undo);
+    actionRedo->setText(QCoreApplication::translate("BewavedDolphin", "Redo"));
+    actionRedo->setShortcut(QKeySequence::Redo);
     actionCopy->setText(QCoreApplication::translate("BewavedDolphin", "Copy"));
     actionCopy->setShortcut(QStringLiteral("Ctrl+C"));
     actionPaste->setText(QCoreApplication::translate("BewavedDolphin", "Paste"));

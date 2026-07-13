@@ -1209,3 +1209,248 @@ void TestBewavedDolphinGui::testSaveToTxtClampsColumnCountForManyInputPorts()
     const qsizetype columnCount = firstLine.section(" : ", 0, 0).length();
     QCOMPARE(columnCount, static_cast<qsizetype>(SignalModel::kMaxColumns));
 }
+
+// ===========================================================================
+// Undo/Redo (#19)
+// ===========================================================================
+
+void TestBewavedDolphinGui::testUndoStackStartsCleanAfterCreateWaveform()
+{
+    // loadNewTable()'s internal "clear all inputs" call (run once per window, before the
+    // user gets control) must not leave a spurious entry on the undo stack.
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    QCOMPARE(dolphin->m_undoStack.count(), 0);
+    QVERIFY(!dolphin->m_undoStack.canUndo());
+}
+
+void TestBewavedDolphinGui::testUndoRedoSetTo0()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+
+    dolphin->setCellValue(0, 0, 1);
+    dolphin->setCellValue(0, 1, 1);
+
+    selectCells(dolphin.get(), 0, 0, 0, 1);
+    auto *action = dolphin->findChild<QAction *>("actionSetTo0");
+    QVERIFY(action);
+    action->trigger();
+
+    QCOMPARE(model->index(0, 0).data().toInt(), 0);
+    QCOMPARE(model->index(0, 1).data().toInt(), 0);
+    QVERIFY(dolphin->m_undoStack.canUndo());
+
+    dolphin->m_undoStack.undo();
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 1);
+
+    dolphin->m_undoStack.redo();
+    QCOMPARE(model->index(0, 0).data().toInt(), 0);
+    QCOMPARE(model->index(0, 1).data().toInt(), 0);
+}
+
+void TestBewavedDolphinGui::testUndoRedoSetTo1()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+
+    selectCells(dolphin.get(), 0, 0, 0, 1);
+    auto *action = dolphin->findChild<QAction *>("actionSetTo1");
+    QVERIFY(action);
+    action->trigger();
+
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 1);
+
+    dolphin->m_undoStack.undo();
+    QCOMPARE(model->index(0, 0).data().toInt(), 0);
+    QCOMPARE(model->index(0, 1).data().toInt(), 0);
+
+    dolphin->m_undoStack.redo();
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 1);
+}
+
+void TestBewavedDolphinGui::testUndoRedoInvert()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+
+    dolphin->setCellValue(0, 0, 0);
+    dolphin->setCellValue(0, 1, 1);
+
+    selectCells(dolphin.get(), 0, 0, 0, 1);
+    auto *action = dolphin->findChild<QAction *>("actionInvert");
+    QVERIFY(action);
+    action->trigger();
+
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 0);
+
+    dolphin->m_undoStack.undo();
+    QCOMPARE(model->index(0, 0).data().toInt(), 0);
+    QCOMPARE(model->index(0, 1).data().toInt(), 1);
+
+    dolphin->m_undoStack.redo();
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 0);
+}
+
+void TestBewavedDolphinGui::testUndoRedoClear()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+
+    dolphin->setCellValue(0, 0, 1);
+    dolphin->setCellValue(0, 1, 1);
+    dolphin->setCellValue(1, 0, 1);
+
+    auto *action = dolphin->findChild<QAction *>("actionClear");
+    QVERIFY(action);
+    action->trigger();
+
+    // Every input cell, across the whole column range, must come back after undo -- not
+    // just the ones this test happened to set.
+    for (int col = 0; col < model->columnCount(); ++col) {
+        QCOMPARE(model->index(0, col).data().toInt(), 0);
+        QCOMPARE(model->index(1, col).data().toInt(), 0);
+    }
+
+    dolphin->m_undoStack.undo();
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 1);
+    QCOMPARE(model->index(1, 0).data().toInt(), 1);
+    for (int col = 2; col < model->columnCount(); ++col) {
+        QCOMPARE(model->index(0, col).data().toInt(), 0);
+        QCOMPARE(model->index(1, col).data().toInt(), 0);
+    }
+
+    dolphin->m_undoStack.redo();
+    for (int col = 0; col < model->columnCount(); ++col) {
+        QCOMPARE(model->index(0, col).data().toInt(), 0);
+        QCOMPARE(model->index(1, col).data().toInt(), 0);
+    }
+}
+
+void TestBewavedDolphinGui::testUndoRedoSetClockWave()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+
+    // Snapshot the pre-edit values across the full selected range.
+    QVector<int> before;
+    for (int col = 0; col <= 7; ++col) {
+        before.append(model->index(0, col).data().toInt());
+    }
+
+    selectCells(dolphin.get(), 0, 0, 0, 7);
+
+    QTimer::singleShot(0, [&dolphin] {
+        auto *dialog = dolphin->findChild<QDialog *>();
+        if (dialog) dialog->accept();
+    });
+
+    auto *action = dolphin->findChild<QAction *>("actionSetClockWave");
+    QVERIFY(action);
+    action->trigger();
+
+    QVERIFY(dolphin->m_undoStack.canUndo());
+
+    dolphin->m_undoStack.undo();
+    for (int col = 0; col <= 7; ++col) {
+        QCOMPARE(model->index(0, col).data().toInt(), before.at(col));
+    }
+}
+
+void TestBewavedDolphinGui::testUndoRedoCombinational()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+    int inputCount = static_cast<int>(dolphin->inputElements().size());
+    int outputRow = inputCount;
+
+    auto *action = dolphin->findChild<QAction *>("actionCombinational");
+    QVERIFY(action);
+    action->trigger();
+
+    QCOMPARE(model->index(outputRow, 3).data().toInt(), 1);
+
+    dolphin->m_undoStack.undo();
+
+    // The value grid must revert to the pre-combinational (all-zero, freshly-created)
+    // state across every input cell -- setLength() itself grew the column count and
+    // isn't undone here (out of scope), but the value fill it exposed must be.
+    for (int col = 0; col < model->columnCount(); ++col) {
+        for (int row = 0; row < inputCount; ++row) {
+            QCOMPARE(model->index(row, col).data().toInt(), 0);
+        }
+    }
+}
+
+void TestBewavedDolphinGui::testUndoRedoDoubleClickToggle()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+
+    dolphin->setCellValue(0, 0, 0);
+
+    auto *tv = findTableView(dolphin.get());
+    QVERIFY2(tv, "QTableView not found in BewavedDolphin");
+
+    selectCells(dolphin.get(), 0, 0, 0, 0);
+    emit tv->doubleClicked(model->index(0, 0));
+
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QVERIFY(dolphin->m_undoStack.canUndo());
+
+    dolphin->m_undoStack.undo();
+    QCOMPARE(model->index(0, 0).data().toInt(), 0);
+}
+
+void TestBewavedDolphinGui::testUndoRedoMultipleOperationsRestoresOriginalState()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+
+    // Pristine snapshot right after creation.
+    QVector<int> pristine;
+    for (int col = 0; col < model->columnCount(); ++col) {
+        pristine.append(model->index(0, col).data().toInt());
+        pristine.append(model->index(1, col).data().toInt());
+    }
+
+    selectCells(dolphin.get(), 0, 0, 0, 1);
+    dolphin->findChild<QAction *>("actionSetTo1")->trigger();
+
+    selectCells(dolphin.get(), 1, 0, 1, 1);
+    dolphin->findChild<QAction *>("actionSetTo1")->trigger();
+
+    selectCells(dolphin.get(), 0, 0, 0, 1);
+    dolphin->findChild<QAction *>("actionInvert")->trigger();
+
+    QCOMPARE(dolphin->m_undoStack.count(), 3);
+
+    // Undoing all three, in reverse order, must return to the exact pristine grid --
+    // not just each op's own delta undone in isolation.
+    dolphin->m_undoStack.undo();
+    dolphin->m_undoStack.undo();
+    dolphin->m_undoStack.undo();
+
+    QVERIFY(!dolphin->m_undoStack.canUndo());
+
+    int i = 0;
+    for (int col = 0; col < model->columnCount(); ++col) {
+        QCOMPARE(model->index(0, col).data().toInt(), pristine.at(i++));
+        QCOMPARE(model->index(1, col).data().toInt(), pristine.at(i++));
+    }
+}
